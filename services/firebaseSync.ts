@@ -8,6 +8,15 @@ import { Role } from '../types';
 
 export const useFirebaseSync = () => {
   useEffect(() => {
+    const useRealApi =
+      (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+
+    // When the platform is running against the real backend, Firebase listeners
+    // become a second source of truth and can overwrite newer Mongo-backed data.
+    if (useRealApi) {
+      return;
+    }
+
     let unsubCourses: () => void;
     let unsubQuestions: () => void;
     let unsubQuizzes: () => void;
