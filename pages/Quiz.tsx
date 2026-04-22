@@ -129,6 +129,21 @@ const Quiz: React.FC = () => {
             });
             
             const score = Math.round((correct / questions.length) * 100);
+            const questionReview = questions.map((question, idx) => {
+                const selectedOptionIndex = answers[idx];
+
+                return {
+                    questionId: question.id.toString(),
+                    text: question.text,
+                    options: question.options,
+                    correctOptionIndex: question.correctOptionIndex,
+                    selectedOptionIndex,
+                    explanation: question.explanation,
+                    videoUrl: question.videoUrl,
+                    imageUrl: question.imageUrl,
+                    isCorrect: selectedOptionIndex === question.correctOptionIndex
+                };
+            });
             
             saveExamResult({
                 quizId: `quiz-${Date.now()}`,
@@ -140,7 +155,8 @@ const Quiz: React.FC = () => {
                 timeSpent: formatTime(1200 - timeLeft),
                 date: new Date().toISOString(),
                 skillsAnalysis: [], // Could be populated based on question tags
-                totalQuestions: questions.length
+                totalQuestions: questions.length,
+                questionReview
             });
             
             localStorage.removeItem('quiz_progress');
