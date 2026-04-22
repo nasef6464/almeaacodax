@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { authRouter } from "./auth.routes.js";
+import { healthRouter } from "./health.routes.js";
+import { taxonomyRouter } from "./taxonomy.routes.js";
+import { courseRouter } from "./course.routes.js";
+import { quizRouter } from "./quiz.routes.js";
+import { contentRouter } from "./content.routes.js";
+
+export const apiRouter = Router();
+
+apiRouter.use("/health", healthRouter);
+apiRouter.use("/auth", authRouter);
+apiRouter.use("/taxonomy", taxonomyRouter);
+apiRouter.use("/content", contentRouter);
+apiRouter.use("/courses", courseRouter);
+apiRouter.use("/quizzes", quizRouter);

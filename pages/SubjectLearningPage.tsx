@@ -1,0 +1,502 @@
+import React, { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { 
+  Play, CheckCircle2, Lock, FileText, Download, 
+  Eye, X, BookOpen, Video, HelpCircle, FileCheck, Target, Layers, Clock, Award
+} from 'lucide-react';
+import { useStore } from '../store/useStore';
+import { Card } from '../components/ui/Card';
+
+import { VideoModal } from '../components/VideoModal';
+
+import { Topic, Lesson } from '../types';
+
+export const SubjectLearningPage: React.FC = () => {
+  const { pathId, subjectId } = useParams();
+  const { courses, nestedSkills, libraryItems, questions, quizzes, paths, subjects, topics, lessons } = useStore();
+  const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
+  
+  // Modal State
+  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
+  const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
+  const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
+  const [videoData, setVideoData] = useState<{url: string, title: string} | null>(null);
+
+  // Map URL params to internal IDs if needed, or use directly
+  const internalSubjectId = 
+    subjectId === 'quant' ? 'qudrat_kammi' : 
+    subjectId === 'verbal' ? 'qudrat_lafzi' : 
+    subjectId === 'math' ? 'tahsili_math' :
+    subjectId === 'physics' ? 'tahsili_physics' :
+    subjectId === 'chemistry' ? 'tahsili_chemistry' :
+    subjectId === 'biology' ? 'tahsili_biology' :
+    subjectId;
+  const internalPathId = pathId;
+
+  const subjectCourses = courses.filter(c => c.subject === internalSubjectId || c.subject === subjectId);
+  const subjectLibrary = libraryItems.filter(item => item.subjectId === internalSubjectId || item.subjectId === subjectId);
+  const subjectQuestions = questions.filter(q => q.subject === internalSubjectId || q.subject === subjectId);
+  const subjectQuizzes = quizzes.filter(q => q.subjectId === internalSubjectId || q.subjectId === subjectId);
+  const subjectSkills = nestedSkills.filter(s => s.subjectId === internalSubjectId || s.subjectId === subjectId);
+  const subjectTopics = topics.filter(t => t.subjectId === internalSubjectId || t.subjectId === subjectId);
+  const mainTopics = subjectTopics.filter(t => !t.parentId).sort((a,b) => a.order - b.order);
+
+  // Find path and subject names for header
+  const matchedPath = paths.find(p => p.id === pathId);
+  const matchedSubject = subjects.find(s => s.id === subjectId);
+  const currentPathName = matchedPath ? matchedPath.name : (pathId === 'qudrat' ? 'القدرات' : pathId === 'tahsili' ? 'التحصيلي' : pathId);
+  const currentSubjectName = matchedSubject ? matchedSubject.name : (
+    subjectId === 'quant' ? 'الكمي' : 
+    subjectId === 'verbal' ? 'اللفظي' : 
+    subjectId === 'math' ? 'الرياضيات' :
+    subjectId === 'physics' ? 'الفيزياء' :
+    subjectId === 'chemistry' ? 'الكيمياء' :
+    subjectId === 'biology' ? 'الأحياء' :
+    subjectId
+  );
+
+  const handleOpenTopicModal = (mainTopic: Topic) => {
+    setSelectedTopic(mainTopic);
+    const subTopics = subjectTopics.filter(t => t.parentId === mainTopic.id).sort((a,b) => a.order - b.order);
+    if (subTopics && subTopics.length > 0) {
+      setSelectedSubTopic(subTopics[0]);
+    } else {
+      setSelectedSubTopic(null);
+    }
+    setTopicModalTab('lessons');
+  };
+
+  const renderTabs = () => (
+    <div className="flex flex-wrap justify-center gap-3 mb-12">
+      {[
+        { id: 'courses', label: 'الدورات', icon: <BookOpen size={18} /> },
+        { id: 'skills', label: 'التأسيس', icon: <Target size={18} /> },
+        { id: 'questions', label: 'التدريب', icon: <HelpCircle size={18} /> },
+        { id: 'exams', label: 'الاختبارات المحاكية', icon: <FileCheck size={18} /> },
+        { id: 'library', label: 'المكتبة', icon: <FileText size={18} /> },
+      ].map(tab => (
+        <button
+          key={tab.id}
+          onClick={() => setActiveTab(tab.id as any)}
+          className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all ${
+            activeTab === tab.id 
+            ? 'bg-[#f59e0b] text-white shadow-md' 
+            : 'bg-white text-gray-600 border border-gray-200 hover:border-[#f59e0b] hover:text-[#f59e0b]'
+          }`}
+        >
+          {tab.icon}
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="bg-gray-50 min-h-screen pb-20 font-sans" dir="rtl">
+      {/* Header */}
+      <div className="bg-[#2e2b70] py-16 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+          <h1 className="text-4xl font-black text-white mb-4">{currentPathName} ({currentSubjectName})</h1>
+          <p className="text-indigo-200 max-w-2xl mx-auto text-lg">تأسيس شامل، تدريب مكثف، واختبارات محاكية</p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 mt-8">
+        {renderTabs()}
+
+        {/* --- COURSES TAB --- */}
+        {activeTab === 'courses' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
+            {subjectCourses.map(course => (
+              <Card key={course.id} className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden rounded-2xl">
+                <div className="relative h-48 bg-gray-100 group overflow-hidden">
+                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                  <div className="absolute top-3 right-3 bg-black/50 backdrop-blur p-2 rounded-lg text-white">
+                    <Lock size={16} />
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 leading-snug">{course.title}</h3>
+                  <div className="mt-auto">
+                    <div className="flex justify-between text-xs text-gray-500 mb-2 font-bold">
+                      <span>{course.progress}% مكتمل</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 mb-4 overflow-hidden">
+                      <div className="bg-[#10b981] h-2.5 rounded-full" style={{ width: `${course.progress}%` }}></div>
+                    </div>
+                    <button className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
+                      course.progress > 0 ? 'bg-[#f59e0b] text-white hover:bg-amber-600' : 'bg-[#f59e0b] text-white hover:bg-amber-600'
+                    }`}>
+                      {course.progress > 0 ? 'مواصلة التعلم' : 'اشترك الآن'}
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* --- FOUNDATION TAB (التأسيس) --- */}
+        {activeTab === 'skills' && (
+          <div className="animate-fade-in">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">تعلم المواضيع والتأسيس</h2>
+              <p className="text-gray-500">اختر الموضوع للبدء في تعلم فروعه ومفاهيمه.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {mainTopics.length > 0 ? mainTopics.map(topic => {
+                const subTopics = subjectTopics.filter(t => t.parentId === topic.id);
+                let totalLessons = topic.lessonIds?.length || 0;
+                let totalQuizzes = topic.quizIds?.length || 0;
+                subTopics.forEach(sub => {
+                  totalLessons += (sub.lessonIds?.length || 0);
+                  totalQuizzes += (sub.quizIds?.length || 0);
+                });
+                
+                return (
+                  <div 
+                    key={topic.id} 
+                    onClick={() => handleOpenTopicModal(topic)}
+                    className={`bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group`}
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors`}>
+                        <Target size={28} />
+                      </div>
+                      <div className="text-left">
+                        <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
+                          {subTopics.length} مواضيع فرعية
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800 mb-1">{topic.title}</h3>
+                    </div>
+
+                    <div className="mt-auto">
+                      <div className="flex justify-between text-xs font-bold text-gray-600 mb-2">
+                        <span className="text-gray-400">{totalLessons} درس · {totalQuizzes} تدريب قصير</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }) : (
+                <div className="col-span-full text-center py-12 text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                  لا توجد مواضيع تأسيسية مضافة حالياً.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* --- LIBRARY TAB (المكتبة) --- */}
+        {activeTab === 'library' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {subjectLibrary.length > 0 ? subjectLibrary.map(item => (
+              <div key={item.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full">
+                <div className="flex justify-between items-start mb-6">
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold">{item.size}</span>
+                  <div className="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center">
+                    <FileText size={24} />
+                  </div>
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2 text-center">{item.title}</h3>
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-500 mb-6">
+                  <Download size={14} /> {item.downloads} تحميل
+                </div>
+                <div className="mt-auto grid grid-cols-2 gap-3">
+                  <button className="bg-emerald-50 text-emerald-600 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 transition-colors flex items-center justify-center gap-2">
+                    <Eye size={16} /> عرض
+                  </button>
+                  <button className="bg-indigo-50 text-indigo-600 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2">
+                    <Download size={16} /> تحميل
+                  </button>
+                </div>
+              </div>
+            )) : (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                لا توجد ملفات في المكتبة حالياً.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* --- QUESTIONS TAB (التدريب) --- */}
+        {activeTab === 'questions' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div>
+                <h3 className="text-xl font-bold text-gray-800">بنك الأسئلة الشامل</h3>
+                <p className="text-gray-500 mt-1">تدرب على {subjectQuestions.length} سؤال في مختلف المهارات</p>
+              </div>
+              <button className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+                ابدأ التدريب العشوائي
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {subjectSkills.map(skill => (
+                <div key={skill.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                      <Target size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-800">{skill.name}</h4>
+                      <p className="text-xs text-gray-500">{subjectQuestions.filter(q => q.skillIds?.includes(skill.id) || skill.subSkills.some(sub => q.skillIds?.includes(sub.id))).length} سؤال متاح</p>
+                    </div>
+                  </div>
+                  <button className="w-full py-2 bg-gray-50 text-indigo-600 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
+                    تدرب على هذه المهارة
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* --- EXAMS TAB (الاختبارات المحاكية) --- */}
+        {activeTab === 'exams' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+            {subjectQuizzes.length > 0 ? subjectQuizzes.map(quiz => (
+              <div key={quiz.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                    <Award size={24} />
+                  </div>
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+                    <Clock size={14} /> {quiz.settings?.timeLimit || 60} دقيقة
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>
+                <p className="text-gray-500 text-sm mb-6 line-clamp-2">{quiz.description}</p>
+                <div className="mt-auto flex items-center justify-between">
+                  <span className="text-sm font-bold text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
+                  <button className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+                    ابدأ الاختبار
+                  </button>
+                </div>
+              </div>
+            )) : (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                لا توجد اختبارات محاكية حالياً.
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Foundation Topic Modal */}
+      {selectedTopic && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" dir="rtl">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedTopic(null)}></div>
+          <div className="relative bg-white rounded-3xl w-full max-w-5xl h-[85vh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-scale-in">
+            
+            {/* Header */}
+            <div className="flex-none bg-gradient-to-l from-indigo-900 to-[#2e2b70] p-6 sm:p-8 text-white relative h-32 sm:h-40 flex flex-col justify-between">
+              {/* Decorative background elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-bl-full"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 opacity-10 rounded-tr-full"></div>
+              
+              <button 
+                onClick={() => setSelectedTopic(null)}
+                className="absolute top-4 left-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+              >
+                <X size={20} />
+              </button>
+              <div>
+                <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold inline-block mb-3 backdrop-blur-sm">
+                  {currentSubjectName}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black">{selectedTopic.title}</h2>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-gray-50">
+              {/* Sidebar: Sub Topics */}
+              <div className="w-full md:w-80 flex-none bg-white border-l border-gray-100 h-1/3 md:h-full overflow-y-auto">
+                <div className="p-4 border-b border-gray-100 bg-gray-50 flex gap-2">
+                  <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
+                  <h3 className="font-bold text-gray-800">المواضيع الفرعية</h3>
+                </div>
+                <div className="p-2 space-y-1">
+                  {/* General Topic Level selection */}
+                  <button
+                    onClick={() => setSelectedSubTopic(null)}
+                    className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
+                      selectedSubTopic === null
+                      ? 'bg-indigo-50 border border-indigo-100' 
+                      : 'hover:bg-gray-50 border border-transparent'
+                    }`}
+                  >
+                    <div>
+                      <h4 className={`font-bold ${selectedSubTopic === null ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
+                        عام (للموضوع الرئيسي)
+                      </h4>
+                    </div>
+                  </button>
+
+                  {subjectTopics.filter(t => t.parentId === selectedTopic.id).sort((a,b) => a.order - b.order).map(subTopic => (
+                    <button
+                      key={subTopic.id}
+                      onClick={() => setSelectedSubTopic(subTopic)}
+                      className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
+                        selectedSubTopic?.id === subTopic.id 
+                        ? 'bg-indigo-50 border border-indigo-100 shadow-sm' 
+                        : 'hover:bg-gray-50 border border-transparent'
+                      }`}
+                    >
+                      <div>
+                        <h4 className={`font-bold transition-colors ${selectedSubTopic?.id === subTopic.id ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
+                          {subTopic.title}
+                        </h4>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Detail Area */}
+              <div className="flex-1 h-2/3 md:h-full flex flex-col overflow-hidden bg-gray-50/50">
+                {/* Tabs */}
+                <div className="flex-none p-4 sm:p-6 pb-0">
+                  <div className="flex border-b border-gray-200">
+                    <button 
+                      onClick={() => setTopicModalTab('lessons')}
+                      className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
+                        topicModalTab === 'lessons' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
+                      }`}
+                    >
+                      <Video size={18} /> الشروحات
+                    </button>
+                    <button 
+                      onClick={() => setTopicModalTab('quizzes')}
+                      className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
+                        topicModalTab === 'quizzes' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
+                      }`}
+                    >
+                      <Target size={18} /> التدريبات القصيرة
+                    </button>
+                  </div>
+                </div>
+
+                {/* Content Details */}
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                  {topicModalTab === 'lessons' && (
+                    <div className="space-y-4">
+                      {/* Fetch Lessons based on selectedSubTopic or selectedTopic */}
+                      {(() => {
+                        const targetTopic = selectedSubTopic || selectedTopic;
+                        const topicLessons = lessons.filter(l => targetTopic.lessonIds?.includes(l.id));
+
+                        if (topicLessons.length === 0) {
+                          return (
+                            <div className="text-center py-16 px-4 bg-white rounded-2xl border border-gray-100 border-dashed">
+                              <Video size={48} className="mx-auto text-gray-300 mb-4" />
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">لا توجد شروحات متاحة</h3>
+                              <p className="text-gray-500 max-w-sm mx-auto">سيتم إضافة مقاطع الفيديو والدروس التأسيسية لهذا الموضوع قريباً.</p>
+                            </div>
+                          );
+                        }
+
+                        return topicLessons.map((lesson, idx) => (
+                           <div key={idx} className="bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between hover:shadow-md transition-all group">
+                             <div className="flex items-center gap-4">
+                               <div className="relative w-28 h-16 sm:w-32 sm:h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0 group-cursor-pointer" onClick={() => lesson.videoUrl && setVideoData({ url: lesson.videoUrl, title: lesson.title })}>
+                                  {lesson.videoUrl?.includes('youtube') || lesson.videoUrl?.includes('youtu.be') ? (
+                                     <img src={`https://img.youtube.com/vi/${lesson.videoUrl.split('youtu.be/')[1] || lesson.videoUrl.split('v=')[1]?.split('&')[0]}/mqdefault.jpg`} alt={lesson.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                  ) : (
+                                     <div className="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-300 group-hover:bg-indigo-100 group-hover:text-indigo-400 transition-colors">
+                                       <Video size={24} />
+                                     </div>
+                                  )}
+                                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                      <Play size={14} className="text-indigo-600 ml-1" fill="currentColor" />
+                                    </div>
+                                  </div>
+                               </div>
+                               <div>
+                                 <h4 className="font-bold text-gray-800 line-clamp-1">{lesson.title}</h4>
+                                 <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
+                                   <span className="flex items-center gap-1 font-bold"><Clock size={12} /> {lesson.duration || 'غير محدد'}</span>
+                                   <span className="flex items-center gap-1"><Layers size={12} /> المادة العلمية</span>
+                                 </div>
+                               </div>
+                             </div>
+                             <div className="hidden sm:block">
+                                <button
+                                  onClick={() => lesson.videoUrl && setVideoData({ url: lesson.videoUrl, title: lesson.title })}
+                                  className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors"
+                                >
+                                  مشاهدة الدرس
+                                </button>
+                             </div>
+                           </div>
+                        ));
+                      })()}
+                    </div>
+                  )}
+
+                  {topicModalTab === 'quizzes' && (
+                    <div className="space-y-4">
+                      {(() => {
+                        const targetTopic = selectedSubTopic || selectedTopic;
+                        const topicQuizzes = quizzes.filter(q => targetTopic.quizIds?.includes(q.id));
+
+                        if (topicQuizzes.length === 0) {
+                          return (
+                            <div className="text-center py-16 px-4 bg-white rounded-2xl border border-gray-100 border-dashed">
+                              <Target size={48} className="mx-auto text-gray-300 mb-4" />
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">لا توجد تدريبات قصيرة</h3>
+                              <p className="text-gray-500 max-w-sm mx-auto">لم يتم إضافة اختبارات قصيرة لهذا الموضوع بعد. تساهم التدريبات في قياس مدى استيعابك للشروحات.</p>
+                            </div>
+                          );
+                        }
+
+                        return topicQuizzes.map((quiz, idx) => (
+                           <div key={idx} className="bg-white p-5 rounded-xl border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-md transition-all">
+                             <div className="flex items-start gap-4">
+                               <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center shrink-0">
+                                 <HelpCircle size={24} />
+                               </div>
+                               <div>
+                                 <h4 className="font-bold text-gray-800">{quiz.title}</h4>
+                                 <div className="flex items-center gap-4 mt-2 text-xs font-bold text-gray-500">
+                                   <span className="flex items-center gap-1"><Layers size={14} /> {quiz.questionIds?.length || 0} سؤال</span>
+                                   <span className="flex items-center gap-1"><Target size={14} /> +{(quiz.questionIds?.length || 0) * 10} نقطة إنجاز</span>
+                                 </div>
+                               </div>
+                             </div>
+                             <Link
+                               to={`/quiz/${quiz.id}`}
+                               className="px-6 py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:hover:bg-gray-800 transition-colors shrink-0 text-center"
+                             >
+                               ابدأ التدريب
+                             </Link>
+                           </div>
+                        ));
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {videoData && (
+        <VideoModal 
+          videoUrl={videoData.url} 
+          title={videoData.title} 
+          onClose={() => setVideoData(null)} 
+        />
+      )}
+    </div>
+  );
+};

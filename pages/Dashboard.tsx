@@ -1,0 +1,684 @@
+
+import React, { useState, Suspense } from 'react';
+import { schedule, skillsData, saherUpcomingTests } from '../services/mockData';
+import { 
+    Clock, TrendingUp, AlertTriangle, Zap, FileText, 
+    PieChart, Heart, Map, HelpCircle, LayoutDashboard, 
+    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star,
+    Route as RouteIcon, Brain, Calendar, User
+} from 'lucide-react';
+import { Card } from '../components/ui/Card';
+import { ProgressBar } from '../components/ui/ProgressBar';
+import { Link } from 'react-router-dom';
+import { SmartLearningPath } from '../components/SmartLearningPath';
+import { useStore } from '../store/useStore';
+
+// Lazy Load Sub-Pages to optimize Dashboard initial load
+const Quizzes = React.lazy(() => import('./Quizzes'));
+const Reports = React.lazy(() => import('./Reports'));
+const Favorites = React.lazy(() => import('./Favorites'));
+const Plan = React.lazy(() => import('./Plan'));
+const QA = React.lazy(() => import('./QA'));
+const MyRequests = React.lazy(() => import('./MyRequests').then(module => ({ default: module.MyRequests })));
+
+const TabLoading = () => (
+    <div className="flex items-center justify-center h-64 text-amber-500">
+        <Loader2 size={40} className="animate-spin" />
+    </div>
+);
+
+const PathsTab = () => {
+    const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, enrolledCourses, completedLessons } = useStore();
+    
+    // Fallback for icons and colors
+    const getPathStyle = (pathId: string) => {
+        if (pathId === 'p_qudrat') return { icon: <Target size={24} className="text-purple-500" />, bg: 'bg-purple-50', color: 'purple' };
+        if (pathId === 'p_tahsili') return { icon: <BookOpen size={24} className="text-blue-500" />, bg: 'bg-blue-50', color: 'blue' };
+        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={24} className="text-emerald-500" />, bg: 'bg-emerald-50', color: 'emerald' };
+        return { icon: <RouteIcon size={24} className="text-indigo-500" />, bg: 'bg-indigo-50', color: 'indigo' };
+    };
+
+    const dPaths = storePaths.map(p => ({
+        id: p.id,
+        title: p.name,
+        description: `مسار ${p.name}`,
+        category: p.name,
+        ...getPathStyle(p.id)
+    }));
+
+    const activePaths = dPaths.filter(p => enrolledPaths?.includes(p.id));
+    const availablePaths = dPaths.filter(p => !enrolledPaths?.includes(p.id));
+
+    return (
+        <div className="space-y-8 animate-fade-in">
+            <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية</h2>
+                <p className="text-gray-500">تابع تقدمك في المسارات المسجل بها واستكشف مسارات جديدة.</p>
+            </div>
+
+            {/* Active Paths */}
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <CheckCircle className="text-emerald-500" size={20} />
+                    المسارات الحالية
+                </h3>
+                {activePaths.length > 0 ? (
+                    <div className="grid gap-6">
+                        {activePaths.map(path => {
+                            // Calculate progress based on enrolled courses in this path
+                            const pathCourses = courses.filter(c => (c.category === path.category || c.category === path.title) && enrolledCourses.includes(c.id));
+                            let pathTotalLessons = 0;
+                            let pathCompletedLessons = 0;
+                            pathCourses.forEach(course => {
+                                course.modules?.forEach(mod => {
+                                    pathTotalLessons += mod.lessons.length;
+                                    pathCompletedLessons += mod.lessons.filter(l => completedLessons.includes(l.id)).length;
+                                });
+                            });
+                            const pathProgress = pathTotalLessons > 0 ? Math.round((pathCompletedLessons / pathTotalLessons) * 100) : 0;
+
+                            return (
+                                <Card key={path.id} className="p-6 border-2 border-transparent hover:border-gray-100 transition-all">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                                {path.icon}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-xl text-gray-900 mb-1">{path.title}</h3>
+                                                <p className="text-sm text-gray-500">{path.description}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 max-w-md w-full">
+                                            <div className="flex justify-between text-sm mb-2">
+                                                <span className="font-bold text-gray-700">نسبة الإنجاز</span>
+                                                <span className="font-bold text-amber-500">{pathProgress}%</span>
+                                            </div>
+                                            <ProgressBar percentage={pathProgress} color="secondary" />
+                                            <p className="text-xs text-gray-400 mt-2 text-left">
+                                                {pathCourses.length} دورات مسجلة
+                                            </p>
+                                        </div>
+                                        <div className="shrink-0 flex flex-col gap-2">
+                                            <Link to={`/category/${path.id}`} className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors inline-block text-center w-full md:w-auto">
+                                                متابعة المسار
+                                            </Link>
+                                            <button 
+                                                onClick={() => unenrollPath(path.id)}
+                                                className="text-red-500 text-sm font-bold hover:text-red-600 transition-colors text-center w-full"
+                                            >
+                                                إلغاء التسجيل
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                        <RouteIcon size={40} className="mx-auto text-gray-300 mb-3" />
+                        <p className="text-gray-500">لست مسجلاً في أي مسار حالياً.</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Available Paths */}
+            {availablePaths.length > 0 && (
+                <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <Target className="text-indigo-500" size={20} />
+                        مسارات متاحة للتسجيل
+                    </h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {availablePaths.map(path => (
+                            <Card key={path.id} className="p-6 flex flex-col h-full hover:shadow-md transition-shadow">
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${path.bg}`}>
+                                    {path.icon}
+                                </div>
+                                <h3 className="font-bold text-lg text-gray-900 mb-2">{path.title}</h3>
+                                <p className="text-sm text-gray-500 mb-6 flex-1">{path.description}</p>
+                                <button 
+                                    onClick={() => enrollPath(path.id)}
+                                    className="w-full bg-indigo-50 text-indigo-700 py-2 rounded-lg font-bold hover:bg-indigo-100 transition-colors"
+                                >
+                                    تسجيل في المسار
+                                </button>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const SmartPathTab = () => {
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">مسار التعلم الذكي</h2>
+            <p className="text-gray-600 mb-8">نظام الذكاء الاصطناعي يحلل أداءك ويقترح لك أفضل الخطوات التالية لرفع مستواك.</p>
+            <SmartLearningPath skills={skillsData} />
+        </div>
+    );
+};
+
+const SessionsTab = () => {
+    const { recentActivity } = useStore();
+    const sessions = recentActivity.filter(a => a.type === 'session_booked');
+
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">جلساتي الخاصة</h2>
+                <Link to="/book-session" className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2">
+                    <Calendar size={18} />
+                    حجز حصة جديدة
+                </Link>
+            </div>
+
+            {sessions.length > 0 ? (
+                <div className="grid gap-4">
+                    {sessions.map(session => (
+                        <Card key={session.id} className="p-5 flex items-center justify-between border-l-4 border-indigo-500">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                                    <Clock size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg text-gray-900">{session.title}</h3>
+                                    <p className="text-sm text-gray-500">{new Date(session.date).toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                </div>
+                            </div>
+                            <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
+                                مؤكد
+                            </span>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                    <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">لا توجد جلسات قادمة</h3>
+                    <p className="text-gray-500 mb-6">احجز حصة خاصة مع نخبة من المعلمين لمساعدتك في نقاط ضعفك.</p>
+                    <Link to="/book-session" className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors inline-block">
+                        احجز الآن
+                    </Link>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const MyCoursesTab = () => {
+    const { courses, enrolledCourses, completedLessons } = useStore();
+    const activeCourses = courses.filter(c => enrolledCourses.includes(c.id));
+
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">دوراتي</h2>
+                <Link to="/courses" className="text-amber-500 font-bold hover:text-amber-600 transition-colors">
+                    تصفح المزيد من الدورات
+                </Link>
+            </div>
+
+            {activeCourses.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {activeCourses.map(course => {
+                        const totalLessons = course.modules?.reduce((acc, mod) => acc + mod.lessons.length, 0) || 0;
+                        const completed = course.modules?.reduce((acc, mod) => acc + mod.lessons.filter(l => completedLessons.includes(l.id)).length, 0) || 0;
+                        const progress = totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
+
+                        return (
+                            <Card key={course.id} className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden">
+                                <div className="relative h-40 bg-gray-100 group overflow-hidden">
+                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                                </div>
+                                <div className="p-5 flex-1 flex flex-col">
+                                    <h3 className="font-bold text-lg text-gray-900 mb-2">{course.title}</h3>
+                                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                                        <User size={14} />
+                                        <span>{course.instructor}</span>
+                                    </div>
+                                    <div className="mt-auto">
+                                        <div className="flex justify-between text-sm mb-2">
+                                            <span className="font-bold text-gray-700">نسبة الإنجاز</span>
+                                            <span className="font-bold text-amber-500">{progress}%</span>
+                                        </div>
+                                        <ProgressBar percentage={progress} color="secondary" />
+                                        <Link to={`/course/${course.id}`} className="mt-4 w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-gray-800 transition-colors block text-center">
+                                            متابعة التعلم
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Card>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                    <BookOpen size={48} className="mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">لا توجد دورات مسجلة</h3>
+                    <p className="text-gray-500 mb-6">قم بالتسجيل في دورات لتبدأ رحلتك التعليمية</p>
+                    <Link to="/courses" className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-amber-600 transition-colors inline-block">
+                        تصفح الدورات
+                    </Link>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const Dashboard: React.FC = () => {
+    const [activeTab, setActiveTab] = useState<'overview' | 'paths' | 'my-courses' | 'smart-path' | 'sessions' | 'saher' | 'quizzes' | 'reports' | 'favorites' | 'plan' | 'qa' | 'requests'>('overview');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { user } = useStore();
+
+    const menuItems = [
+        { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
+        { id: 'paths', label: 'مساراتي', icon: <RouteIcon size={20} /> },
+        { id: 'my-courses', label: 'دوراتي', icon: <BookOpen size={20} /> },
+        { id: 'smart-path', label: 'التعلم الذكي', icon: <Brain size={20} /> },
+        { id: 'sessions', label: 'جلساتي', icon: <Calendar size={20} /> },
+        { id: 'saher', label: 'اختبار ساهر', icon: <Zap size={20} /> },
+        { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
+        { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
+        { id: 'favorites', label: 'الأسئلة المفضلة', icon: <Heart size={20} /> },
+        { id: 'plan', label: 'خطتي', icon: <Map size={20} /> },
+        { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
+        { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
+    ];
+
+    // Render Content Based on Tab
+    const renderContent = () => {
+        switch(activeTab) {
+            case 'overview': return <OverviewTab setActiveTab={setActiveTab} />;
+            case 'paths': return <PathsTab />;
+            case 'my-courses': return <MyCoursesTab />;
+            case 'smart-path': return <SmartPathTab />;
+            case 'sessions': return <SessionsTab />;
+            case 'saher': return <SaherTab />;
+            case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes /></Suspense>;
+            case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
+            case 'favorites': return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
+            case 'plan': return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
+            case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
+            case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
+            default: return <OverviewTab setActiveTab={setActiveTab} />;
+        }
+    };
+
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            {/* Mobile Menu Toggle */}
+            <button 
+                className="lg:hidden fixed bottom-6 left-6 z-50 bg-amber-500 text-white p-3 rounded-full shadow-lg"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+                {isSidebarOpen ? <X /> : <Menu />}
+            </button>
+
+            {/* Sidebar Navigation */}
+            <aside className={`
+                fixed lg:sticky top-20 right-0 bottom-0 w-64 bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
+                ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+            `}>
+                <div className="p-6">
+                    <div className="flex items-center gap-3 mb-8">
+                        <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full border-2 border-amber-100" loading="lazy" />
+                        <div>
+                            <h3 className="font-bold text-gray-800 text-sm">{user.name}</h3>
+                            <span className="text-xs text-gray-500">لوحة تحكم الطالب</span>
+                        </div>
+                    </div>
+
+                    <nav className="space-y-2">
+                        {menuItems.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => {
+                                    setActiveTab(item.id as any);
+                                    setIsSidebarOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                                    activeTab === item.id 
+                                    ? 'bg-amber-50 text-amber-600 shadow-sm' 
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    {item.icon}
+                                    {item.label}
+                                </div>
+                                {activeTab === item.id && <ChevronLeft size={16} />}
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="flex-1 p-4 lg:p-8 w-full max-w-[100vw] lg:max-w-[calc(100vw-16rem)]">
+                <div className="max-w-5xl mx-auto">
+                    {renderContent()}
+                </div>
+            </main>
+        </div>
+    );
+};
+
+// -- Sub-Components --
+
+// 1. OverviewTab (Smart Dashboard Content)
+const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity } = useStore();
+    
+    // Debugging logs as requested
+    console.log("Dashboard Data:", { enrolledCourses, completedLessons, examResults });
+
+    // Get full course objects for enrolled courses
+    const activeCourses = courses.filter(c => enrolledCourses.includes(c.id));
+
+    // Calculate overall progress
+    let totalLessonsInEnrolled = 0;
+    activeCourses.forEach(course => {
+        course.modules?.forEach(mod => {
+            totalLessonsInEnrolled += mod.lessons.length;
+        });
+    });
+    const overallProgress = totalLessonsInEnrolled > 0 
+        ? Math.round((completedLessons.length / totalLessonsInEnrolled) * 100) 
+        : 0;
+
+    // --- Smart Action Logic ---
+    let smartAction = null;
+    
+    // 1. Check for weak skills in recent exams
+    const recentExamsWithSkills = examResults.filter(r => r.skillsAnalysis && r.skillsAnalysis.length > 0);
+    if (recentExamsWithSkills.length > 0) {
+        const latestExam = recentExamsWithSkills[0];
+        const weakSkill = latestExam.skillsAnalysis.find(s => s.status === 'weak' || s.mastery < 50);
+        if (weakSkill) {
+            smartAction = {
+                type: 'skill',
+                title: 'مراجعة مهارة ضعيفة',
+                desc: `لاحظنا ضعف في مهارة "${weakSkill.skill}". ننصحك بمراجعتها.`,
+                buttonText: 'راجع المهارة الآن',
+                link: '/reports',
+                icon: <AlertTriangle size={24} className="text-rose-500" />,
+                bg: 'bg-rose-50',
+                btnBg: 'bg-rose-600 hover:bg-rose-700'
+            };
+        }
+    }
+
+    // 2. If no weak skill, check for next lesson in an active course
+    if (!smartAction && activeCourses.length > 0) {
+        const courseToContinue = activeCourses.find(course => {
+            const courseLessons = course.modules?.flatMap(m => m.lessons) || [];
+            const completedInCourse = courseLessons.filter(l => completedLessons.includes(l.id)).length;
+            return completedInCourse < courseLessons.length;
+        });
+
+        if (courseToContinue) {
+            smartAction = {
+                type: 'course',
+                title: 'استكمل تعلمك',
+                desc: `أنت تبلي بلاءً حسناً في دورة "${courseToContinue.title}". واصل التقدم!`,
+                buttonText: 'متابعة الدورة',
+                link: `/course/${courseToContinue.id}`,
+                icon: <TrendingUp size={24} className="text-indigo-500" />,
+                bg: 'bg-indigo-50',
+                btnBg: 'bg-indigo-600 hover:bg-indigo-700'
+            };
+        }
+    }
+
+    // 3. Fallback action
+    if (!smartAction) {
+        smartAction = {
+            type: 'quiz',
+            title: 'اختبر مستواك',
+            desc: 'جرب اختبار ساهر السريع لتقييم مستواك العام.',
+            buttonText: 'ابدأ اختبار ساهر',
+            link: '/quiz',
+            icon: <Zap size={24} className="text-amber-500" />,
+            bg: 'bg-amber-50',
+            btnBg: 'bg-amber-600 hover:bg-amber-700'
+        };
+    }
+
+    // --- Group courses by category for "My Paths" ---
+    const paths = [
+        { id: 'qudrat', title: 'مسار القدرات', courses: activeCourses.filter(c => c.category === 'القدرات'), icon: <Target size={20} className="text-purple-500" />, bg: 'bg-purple-50' },
+        { id: 'tahsili', title: 'مسار التحصيلي', courses: activeCourses.filter(c => c.category === 'التحصيلي'), icon: <BookOpen size={20} className="text-blue-500" />, bg: 'bg-blue-50' },
+        { id: 'nafes', title: 'مسار نافس', courses: activeCourses.filter(c => c.category === 'نافس'), icon: <Star size={20} className="text-emerald-500" />, bg: 'bg-emerald-50' }
+    ].filter(p => p.courses.length > 0);
+
+    return (
+    <div className="space-y-8 animate-fade-in pb-20">
+        {/* Header */}
+        <div className="flex justify-between items-end">
+            <div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">لوحة تحكم ذكية - مرحباً، {user.name.split(' ')[0]} 👋</h2>
+                <p className="text-gray-500 text-lg">جاهز لتحقيق أهدافك اليوم؟</p>
+            </div>
+            <Link to="/book-session" className="bg-indigo-100 text-indigo-700 px-4 py-2 md:px-6 md:py-3 rounded-2xl text-sm font-bold flex items-center gap-2 shadow-sm hover:bg-indigo-200 transition-colors">
+                <Clock size={20} />
+                <span className="hidden md:inline">حجز حصة خاصة</span>
+                <span className="md:hidden">حجز حصة</span>
+            </Link>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+                
+                {/* 1. Smart Summary Cards */}
+                <div className="grid grid-cols-3 gap-4">
+                    <Card className="p-4 flex flex-col items-center text-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-0">
+                        <div className="font-black text-3xl mb-1">{overallProgress}%</div>
+                        <div className="text-xs font-medium text-indigo-100">التقدم العام</div>
+                    </Card>
+                    <Card className="p-4 flex flex-col items-center text-center justify-center">
+                        <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+                            <CheckCircle size={20} />
+                        </div>
+                        <div className="font-black text-xl text-gray-800">{completedLessons.length}</div>
+                        <div className="text-xs font-medium text-gray-500">دروس مكتملة</div>
+                    </Card>
+                    <Card className="p-4 flex flex-col items-center text-center justify-center">
+                        <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-2">
+                            <FileText size={20} />
+                        </div>
+                        <div className="font-black text-xl text-gray-800">{examResults.length}</div>
+                        <div className="text-xs font-medium text-gray-500">اختبارات منتهية</div>
+                    </Card>
+                </div>
+
+                {/* 2. Smart Action ("ماذا أفعل الآن؟") */}
+                <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">ماذا أفعل الآن؟</h3>
+                    <Card className={`p-6 border-0 shadow-md ${smartAction.bg}`}>
+                        <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-right">
+                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm shrink-0">
+                                {smartAction.icon}
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="font-bold text-lg text-gray-900 mb-2">{smartAction.title}</h4>
+                                <p className="text-gray-600 text-sm mb-4">{smartAction.desc}</p>
+                            </div>
+                            <Link 
+                                to={smartAction.link || '#'}
+                                className={`${smartAction.btnBg} text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap`}
+                            >
+                                {smartAction.buttonText}
+                            </Link>
+                        </div>
+                    </Card>
+                </section>
+
+                {/* 3. My Paths ("مساراتي") */}
+                {paths.length > 0 && (
+                    <section>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">مساراتي</h3>
+                        <div className="space-y-4">
+                            {paths.map(path => {
+                                // Calculate progress for this specific path
+                                let pathTotalLessons = 0;
+                                let pathCompletedLessons = 0;
+                                path.courses.forEach(course => {
+                                    course.modules?.forEach(mod => {
+                                        pathTotalLessons += mod.lessons.length;
+                                        pathCompletedLessons += mod.lessons.filter(l => completedLessons.includes(l.id)).length;
+                                    });
+                                });
+                                const pathProgress = pathTotalLessons > 0 ? Math.round((pathCompletedLessons / pathTotalLessons) * 100) : 0;
+
+                                return (
+                                    <Card key={path.id} className="p-5 flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow">
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                            {path.icon}
+                                        </div>
+                                        <div className="flex-1 w-full text-center md:text-right">
+                                            <h4 className="font-bold text-gray-900 mb-1">{path.title}</h4>
+                                            <p className="text-xs text-gray-500 mb-3">{path.courses.length} دورات مسجلة</p>
+                                            <ProgressBar percentage={pathProgress} color="secondary" showPercentage={true} />
+                                        </div>
+                                        <Link 
+                                            to={`/course/${path.courses[0].id}`} 
+                                            className="w-full md:w-auto mt-4 md:mt-0 bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-bold text-sm hover:bg-gray-200 transition-colors text-center"
+                                        >
+                                            استكمل
+                                        </Link>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    </section>
+                )}
+
+                {/* Quick Access Grid (Shortcuts) */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <button onClick={() => setActiveTab('saher')} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center gap-2 group">
+                        <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <Zap size={24} />
+                        </div>
+                        <span className="font-bold text-gray-800 text-xs">ساهر</span>
+                    </button>
+                    <button onClick={() => setActiveTab('quizzes')} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center gap-2 group">
+                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <FileText size={24} />
+                        </div>
+                        <span className="font-bold text-gray-800 text-xs">اختباراتي</span>
+                    </button>
+                    <button onClick={() => setActiveTab('reports')} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center gap-2 group">
+                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            <PieChart size={24} />
+                        </div>
+                        <span className="font-bold text-gray-800 text-xs">التقارير</span>
+                    </button>
+                    <button onClick={() => setActiveTab('plan')} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center gap-2 group">
+                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <Map size={24} />
+                        </div>
+                        <span className="font-bold text-gray-800 text-xs">خطتي</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-8">
+                {/* 4. Recent Activity (100% from useStore) */}
+                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-gray-900">آخر الأنشطة</h3>
+                    </div>
+                    {recentActivity.length > 0 ? (
+                        <div className="space-y-4">
+                            {recentActivity.slice(0, 5).map((activity, index) => (
+                                <div key={activity.id} className="flex items-start gap-3 border-b border-gray-50 last:border-0 pb-3 last:pb-0">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                                        activity.type === 'lesson_complete' ? 'bg-emerald-50 text-emerald-600' :
+                                        activity.type === 'quiz_complete' ? 'bg-blue-50 text-blue-600' :
+                                        activity.type === 'skill_practice' ? 'bg-purple-50 text-purple-600' :
+                                        'bg-gray-50 text-gray-600'
+                                    }`}>
+                                        {activity.type === 'lesson_complete' ? <CheckCircle size={18} /> :
+                                         activity.type === 'quiz_complete' ? <FileText size={18} /> :
+                                         activity.type === 'skill_practice' ? <Clock size={18} /> :
+                                         <Clock size={18} />}
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-sm text-gray-800 leading-snug">{activity.title}</p>
+                                        <p className="text-xs text-gray-500 mt-1">{new Date(activity.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-gray-400">
+                            <Clock size={32} className="mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">لم تقم بأي نشاط بعد.</p>
+                        </div>
+                    )}
+                </section>
+
+                {/* Keep Smart Learning Path for now, but it could be replaced later */}
+                <SmartLearningPath skills={skillsData} />
+            </div>
+        </div>
+    </div>
+)};
+
+// 2. Saher Tab
+const SaherTab = () => (
+    <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
+        {/* Hero Card */}
+        <div className="bg-[#a855f7] text-white rounded-2xl p-8 md:p-12 shadow-lg shadow-purple-100 text-center relative overflow-hidden">
+            <div className="relative z-10">
+                <h1 className="text-3xl font-bold mb-3">اختبار "ساهر" السريع</h1>
+                <p className="text-purple-100 text-lg mb-8">اختبر معرفتك في جميع المواد باختبار شامل وسريع</p>
+                
+                <Link 
+                    to="/quiz" 
+                    className="inline-block bg-white text-[#a855f7] px-8 py-3 rounded-xl font-bold text-lg hover:bg-gray-50 transition-transform hover:-translate-y-1 shadow-md"
+                >
+                    ابدأ اختبار ساهر
+                </Link>
+            </div>
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-900 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+        </div>
+
+        {/* Upcoming Tests Section */}
+        <div>
+            <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات القادمة</h3>
+            <div className="space-y-4">
+                {saherUpcomingTests.map(test => (
+                    <Card key={test.id} className="p-4 flex justify-between items-center hover:shadow-md transition-all border border-gray-100">
+                        {/* Button on Left (End in Flex RTL) */}
+                        <button className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
+                            تفاصيل
+                        </button>
+
+                        {/* Content on Right (Start in Flex RTL) */}
+                        <div className="flex items-center gap-4">
+                            <div className="text-right">
+                                <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
+                                <span className="text-gray-400 text-sm font-sans font-medium">{test.date}</span>
+                            </div>
+                            <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 border-2 border-purple-100 shrink-0">
+                                <Target size={24} />
+                            </div>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    </div>
+);
+
+export default Dashboard;
