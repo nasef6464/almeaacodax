@@ -217,6 +217,10 @@ export interface Skill {
 }
 
 export interface SkillGap {
+    skillId?: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
     section?: string;
     skill: string;
     mastery: number; // 0-100 percentage

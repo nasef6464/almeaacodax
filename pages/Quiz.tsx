@@ -161,6 +161,10 @@ const Quiz: React.FC = () => {
                             : undefined);
 
                 return {
+                    skillId,
+                    pathId: topicSkill?.pathId,
+                    subjectId: topicSkill?.subjectId || ('subjectId' in (nestedSkill || {}) ? nestedSkill?.subjectId : undefined),
+                    sectionId: topicSkill?.sectionId,
                     skill: topicSkill?.title || nestedSkill?.name || 'مهارة غير معروفة',
                     mastery,
                     status,

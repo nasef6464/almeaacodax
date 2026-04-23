@@ -22,14 +22,52 @@ import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
 import { useStore } from '../store/useStore';
 import { QuizQuestionReview, QuizResult } from '../types';
 
+interface SkillRecommendation {
+  lessonTitle?: string;
+  lessonLink?: string;
+  quizTitle?: string;
+  quizLink?: string;
+}
+
+const getSkillRecommendation = (
+  skill: QuizResult['skillsAnalysis'][number] | undefined,
+  topics: ReturnType<typeof useStore.getState>['topics'],
+  lessons: ReturnType<typeof useStore.getState>['lessons'],
+  quizzes: ReturnType<typeof useStore.getState>['quizzes'],
+) : SkillRecommendation => {
+  if (!skill) {
+    return {};
+  }
+
+  const topic = skill.skillId
+    ? topics.find((item) => item.id === skill.skillId)
+    : topics.find((item) => item.title === skill.skill);
+
+  if (!topic) {
+    return {};
+  }
+
+  const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
+  const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
+
+  return {
+    lessonTitle: recommendedLesson?.title,
+    lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}` : undefined,
+    quizTitle: recommendedQuiz?.title,
+    quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+  };
+};
+
 const Results: React.FC = () => {
-  const { examResults } = useStore();
+  const { examResults, topics, lessons, quizzes } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
 
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
+  const weakestSkill = latestResult?.skillsAnalysis?.slice().sort((a, b) => a.mastery - b.mastery)[0];
+  const weakestSkillRecommendation = getSkillRecommendation(weakestSkill, topics, lessons, quizzes);
 
   const data = [
     { name: 'Success', value: latestResult?.score || 0 },
@@ -170,12 +208,31 @@ const Results: React.FC = () => {
 
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white text-right relative overflow-hidden mt-6">
         <div className="relative z-10">
+          {weakestSkill ? (
+            <p className="text-indigo-100 mb-4 text-sm">أضعف مهارة لديك الآن هي "{weakestSkill.skill}"، ولذلك ستجد هنا محتوى حقيقيًا مرتبطًا بنفس المهارة.</p>
+          ) : null}
+          {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle) ? (
+            <div className="bg-white/10 rounded-xl p-4 mb-4 space-y-2 text-sm">
+              {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
+              {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
+            </div>
+          ) : null}
           <h3 className="text-xl font-bold mb-2">تحسين مستواك</h3>
           <p className="text-indigo-100 mb-4 text-sm">بناءً على نتيجتك، نقترح عليك مراجعة المهارات الأضعف ثم تنفيذ اختبار تدريبي جديد.</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/reports" className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
               افتح تقرير الأداء
             </Link>
+            {weakestSkillRecommendation.lessonLink ? (
+              <Link to={weakestSkillRecommendation.lessonLink} className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
+                راجع نفس المهارة
+              </Link>
+            ) : null}
+            {weakestSkillRecommendation.quizLink ? (
+              <Link to={weakestSkillRecommendation.quizLink} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-700 transition-colors">
+                اختبر نفس المهارة
+              </Link>
+            ) : null}
             <Link to="/quizzes" className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
               اعرض كل محاولاتك
             </Link>
@@ -421,6 +478,7 @@ const ReviewSolutions = ({
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
   const skills = result.skillsAnalysis || [];
+  const { topics, lessons, quizzes } = useStore();
 
   return (
     <div className="space-y-6 pb-20">
@@ -459,6 +517,27 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
                 style={{ width: `${s.mastery}%` }}
               />
             </div>
+            {(() => {
+              const recommendation = getSkillRecommendation(s, topics, lessons, quizzes);
+              if (!recommendation.lessonTitle && !recommendation.quizTitle) {
+                return null;
+              }
+
+              return (
+                <div className="mt-4 grid gap-2 md:grid-cols-2">
+                  {recommendation.lessonTitle ? (
+                    <Link to={recommendation.lessonLink || '/reports'} className="border border-indigo-100 bg-indigo-50 text-indigo-700 rounded-xl px-4 py-3 text-sm font-bold hover:bg-indigo-100 transition-colors">
+                      راجع الدرس: {recommendation.lessonTitle}
+                    </Link>
+                  ) : null}
+                  {recommendation.quizTitle ? (
+                    <Link to={recommendation.quizLink || '/quizzes'} className="border border-emerald-100 bg-emerald-50 text-emerald-700 rounded-xl px-4 py-3 text-sm font-bold hover:bg-emerald-100 transition-colors">
+                      اختبر نفسك: {recommendation.quizTitle}
+                    </Link>
+                  ) : null}
+                </div>
+              );
+            })()}
           </Card>
         ))}
       </div>

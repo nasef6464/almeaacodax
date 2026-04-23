@@ -125,6 +125,10 @@ export const QuizPage: React.FC = () => {
       };
       
       return {
+        skillId,
+        pathId: topicSkill?.pathId,
+        subjectId: topicSkill?.subjectId || ('subjectId' in (nestedSkill || {}) ? nestedSkill?.subjectId : undefined),
+        sectionId: topicSkill?.sectionId,
         skill: skill ? skill.name : 'مهارة غير معروفة',
         mastery,
         status,

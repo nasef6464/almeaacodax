@@ -5,8 +5,40 @@ import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 
+interface SkillRecommendation {
+    lessonTitle?: string;
+    lessonLink?: string;
+    quizTitle?: string;
+    quizLink?: string;
+}
+
+const getSkillRecommendation = (
+    skill: { skill?: string; skillId?: string } | undefined,
+    topics: ReturnType<typeof useStore.getState>['topics'],
+    lessons: ReturnType<typeof useStore.getState>['lessons'],
+    quizzes: ReturnType<typeof useStore.getState>['quizzes'],
+): SkillRecommendation => {
+    if (!skill) return {};
+
+    const topic = skill.skillId
+        ? topics.find((item) => item.id === skill.skillId)
+        : topics.find((item) => item.title === skill.skill);
+
+    if (!topic) return {};
+
+    const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
+    const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
+
+    return {
+        lessonTitle: recommendedLesson?.title,
+        lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}` : undefined,
+        quizTitle: recommendedQuiz?.title,
+        quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+    };
+};
+
 const Reports: React.FC = () => {
-    const { examResults } = useStore();
+    const { examResults, topics, lessons, quizzes } = useStore();
 
     // Calculate Performance Analysis
     const stats = useMemo(() => {
@@ -42,16 +74,19 @@ const Reports: React.FC = () => {
 
     // Aggregate Skill Analysis
     const aggregatedSkills = useMemo(() => {
-        const skillsMap: Record<string, { totalMastery: number, count: number }> = {};
+        const skillsMap: Record<string, { totalMastery: number, count: number, skillId?: string }> = {};
         
         examResults.forEach(result => {
             if (result.skillsAnalysis) {
                 result.skillsAnalysis.forEach(skill => {
                     if (!skillsMap[skill.skill]) {
-                        skillsMap[skill.skill] = { totalMastery: 0, count: 0 };
+                        skillsMap[skill.skill] = { totalMastery: 0, count: 0, skillId: skill.skillId };
                     }
                     skillsMap[skill.skill].totalMastery += skill.mastery;
                     skillsMap[skill.skill].count += 1;
+                    if (!skillsMap[skill.skill].skillId && skill.skillId) {
+                        skillsMap[skill.skill].skillId = skill.skillId;
+                    }
                 });
             }
         });
@@ -60,6 +95,7 @@ const Reports: React.FC = () => {
             const mastery = Math.round(data.totalMastery / data.count);
             return {
                 skill,
+                skillId: data.skillId,
                 mastery,
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
             };
@@ -67,6 +103,7 @@ const Reports: React.FC = () => {
     }, [examResults]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
+    const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, topics, lessons, quizzes);
 
     if (examResults.length === 0) {
         return (
@@ -150,12 +187,18 @@ const Reports: React.FC = () => {
                                 لاحظنا أنك تواجه بعض الصعوبة في مهارة <span className="font-bold text-amber-700">"{weakestSkill.skill}"</span>. 
                                 لا تقلق، هذا طبيعي! نقترح عليك القيام بالآتي لتحسين مستواك:
                             </p>
+                            {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle) ? (
+                                <div className="bg-white/70 border border-amber-100 rounded-xl p-4 mb-4 text-sm text-gray-700 space-y-2">
+                                    {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
+                                    {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
+                                </div>
+                            ) : null}
                             <div className="flex flex-wrap gap-3">
-                                <Link to="/courses" className="bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 flex items-center gap-2 border border-gray-200">
+                                <Link to={weakestSkillRecommendation.lessonLink || "/courses"} className="bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 flex items-center gap-2 border border-gray-200">
                                     <Video size={16} className="text-indigo-500" />
                                     مراجعة الدرس
                                 </Link>
-                                <Link to="/quiz" className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-amber-600 flex items-center gap-2">
+                                <Link to={weakestSkillRecommendation.quizLink || "/quiz"} className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-amber-600 flex items-center gap-2">
                                     <FileText size={16} />
                                     اختبار تدريبي
                                 </Link>
@@ -174,6 +217,7 @@ const Reports: React.FC = () => {
 
                 <div className="space-y-6">
                     {aggregatedSkills.map((skill, index) => {
+                        const recommendation = getSkillRecommendation(skill, topics, lessons, quizzes);
                         let colorClass = 'bg-emerald-500';
                         let textClass = 'text-emerald-600';
                         let bgLight = 'bg-emerald-50';
@@ -207,7 +251,7 @@ const Reports: React.FC = () => {
                                     {/* Action Buttons for each skill (C) */}
                                     <div className="flex flex-wrap gap-2 shrink-0 md:w-auto w-full">
                                         <Link 
-                                            to="/courses" 
+                                            to={recommendation.lessonLink || "/courses"} 
                                             className="flex-1 md:flex-none bg-white text-gray-700 px-3 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-gray-50 flex items-center justify-center gap-1 border border-gray-200"
                                             title="مشاهدة شرح"
                                         >
@@ -215,7 +259,7 @@ const Reports: React.FC = () => {
                                             <span className="hidden md:inline">شرح</span>
                                         </Link>
                                         <Link 
-                                            to="/quiz" 
+                                            to={recommendation.quizLink || "/quiz"} 
                                             className="flex-1 md:flex-none bg-white text-gray-700 px-3 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-gray-50 flex items-center justify-center gap-1 border border-gray-200"
                                             title="حل اختبار"
                                         >
