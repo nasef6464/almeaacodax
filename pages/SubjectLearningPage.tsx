@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { 
   Play, CheckCircle2, Lock, FileText, Download, 
   Eye, X, BookOpen, Video, HelpCircle, FileCheck, Target, Layers, Clock, Award
@@ -13,6 +13,7 @@ import { Topic, Lesson } from '../types';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { courses, nestedSkills, libraryItems, questions, quizzes, paths, subjects, topics, lessons } = useStore();
   const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
   
@@ -41,6 +42,56 @@ export const SubjectLearningPage: React.FC = () => {
   const subjectTopics = topics.filter(t => t.subjectId === internalSubjectId || t.subjectId === subjectId);
   const mainTopics = subjectTopics.filter(t => !t.parentId).sort((a,b) => a.order - b.order);
 
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && ['courses', 'skills', 'questions', 'exams', 'library'].includes(tab)) {
+      setActiveTab(tab as typeof activeTab);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const topicId = searchParams.get('topic');
+    const content = searchParams.get('content');
+
+    if (content === 'lessons' || content === 'quizzes') {
+      setTopicModalTab(content);
+    }
+
+    if (!topicId) {
+      setSelectedTopic(null);
+      setSelectedSubTopic(null);
+      return;
+    }
+
+    const directTopic = subjectTopics.find((item) => item.id === topicId);
+    if (!directTopic) {
+      return;
+    }
+
+    if (directTopic.parentId) {
+      const parentTopic = subjectTopics.find((item) => item.id === directTopic.parentId);
+      setSelectedTopic(parentTopic || directTopic);
+      setSelectedSubTopic(parentTopic ? directTopic : null);
+    } else {
+      setSelectedTopic(directTopic);
+      setSelectedSubTopic(null);
+    }
+
+    setActiveTab('skills');
+  }, [searchParams, subjectTopics]);
+
+  const updateSubjectQuery = (updates: Record<string, string | null>) => {
+    const nextParams = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        nextParams.set(key, value);
+      } else {
+        nextParams.delete(key);
+      }
+    });
+    setSearchParams(nextParams);
+  };
+
   // Find path and subject names for header
   const matchedPath = paths.find(p => p.id === pathId);
   const matchedSubject = subjects.find(s => s.id === subjectId);
@@ -60,8 +111,10 @@ export const SubjectLearningPage: React.FC = () => {
     const subTopics = subjectTopics.filter(t => t.parentId === mainTopic.id).sort((a,b) => a.order - b.order);
     if (subTopics && subTopics.length > 0) {
       setSelectedSubTopic(subTopics[0]);
+      updateSubjectQuery({ tab: 'skills', topic: subTopics[0].id, content: 'lessons' });
     } else {
       setSelectedSubTopic(null);
+      updateSubjectQuery({ tab: 'skills', topic: mainTopic.id, content: 'lessons' });
     }
     setTopicModalTab('lessons');
   };
@@ -77,7 +130,14 @@ export const SubjectLearningPage: React.FC = () => {
       ].map(tab => (
         <button
           key={tab.id}
-          onClick={() => setActiveTab(tab.id as any)}
+          onClick={() => {
+            setActiveTab(tab.id as any);
+            updateSubjectQuery({
+              tab: tab.id,
+              topic: tab.id === 'skills' ? searchParams.get('topic') : null,
+              content: tab.id === 'skills' ? searchParams.get('content') : null,
+            });
+          }}
           className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all ${
             activeTab === tab.id 
             ? 'bg-[#f59e0b] text-white shadow-md' 
@@ -291,7 +351,7 @@ export const SubjectLearningPage: React.FC = () => {
       {/* Foundation Topic Modal */}
       {selectedTopic && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" dir="rtl">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedTopic(null)}></div>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => updateSubjectQuery({ topic: null, content: null })}></div>
           <div className="relative bg-white rounded-3xl w-full max-w-5xl h-[85vh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-scale-in">
             
             {/* Header */}
@@ -301,7 +361,7 @@ export const SubjectLearningPage: React.FC = () => {
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 opacity-10 rounded-tr-full"></div>
               
               <button 
-                onClick={() => setSelectedTopic(null)}
+                onClick={() => updateSubjectQuery({ topic: null, content: null })}
                 className="absolute top-4 left-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
               >
                 <X size={20} />
@@ -325,7 +385,7 @@ export const SubjectLearningPage: React.FC = () => {
                 <div className="p-2 space-y-1">
                   {/* General Topic Level selection */}
                   <button
-                    onClick={() => setSelectedSubTopic(null)}
+                    onClick={() => updateSubjectQuery({ topic: selectedTopic.id, content: topicModalTab })}
                     className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
                       selectedSubTopic === null
                       ? 'bg-indigo-50 border border-indigo-100' 
@@ -342,7 +402,7 @@ export const SubjectLearningPage: React.FC = () => {
                   {subjectTopics.filter(t => t.parentId === selectedTopic.id).sort((a,b) => a.order - b.order).map(subTopic => (
                     <button
                       key={subTopic.id}
-                      onClick={() => setSelectedSubTopic(subTopic)}
+                      onClick={() => updateSubjectQuery({ topic: subTopic.id, content: topicModalTab })}
                       className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
                         selectedSubTopic?.id === subTopic.id 
                         ? 'bg-indigo-50 border border-indigo-100 shadow-sm' 
@@ -365,7 +425,7 @@ export const SubjectLearningPage: React.FC = () => {
                 <div className="flex-none p-4 sm:p-6 pb-0">
                   <div className="flex border-b border-gray-200">
                     <button 
-                      onClick={() => setTopicModalTab('lessons')}
+                      onClick={() => updateSubjectQuery({ topic: selectedSubTopic?.id || selectedTopic.id, content: 'lessons' })}
                       className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
                         topicModalTab === 'lessons' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
                       }`}
@@ -373,7 +433,7 @@ export const SubjectLearningPage: React.FC = () => {
                       <Video size={18} /> الشروحات
                     </button>
                     <button 
-                      onClick={() => setTopicModalTab('quizzes')}
+                      onClick={() => updateSubjectQuery({ topic: selectedSubTopic?.id || selectedTopic.id, content: 'quizzes' })}
                       className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
                         topicModalTab === 'quizzes' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
                       }`}

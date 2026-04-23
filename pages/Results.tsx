@@ -56,7 +56,7 @@ const getSkillRecommendation = (
 
   return {
     lessonTitle: recommendedLesson?.title,
-    lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}` : undefined,
+    lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}?tab=skills&topic=${topic.id}&content=lessons` : undefined,
     quizTitle: recommendedQuiz?.title,
     quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
     resourceTitle: recommendedResource?.title,
