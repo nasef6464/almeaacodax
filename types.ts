@@ -436,7 +436,10 @@ export interface LibraryItem {
     size: string;
     downloads: number;
     type: 'pdf' | 'doc' | 'video';
+    pathId?: string;
     subjectId: string;
+    sectionId?: string;
+    skillIds?: string[];
     url?: string;
 }
 

@@ -812,13 +812,22 @@ export const useStore = create<AppState>()(
             ],
             nestedSkills: initialNestedSkills,
             libraryItems: initialLibraryItems,
-            addLibraryItem: (item) => set((state) => ({ libraryItems: [...state.libraryItems, item] })),
-            updateLibraryItem: (id, item) => set((state) => ({
-                libraryItems: state.libraryItems.map(i => i.id === id ? { ...i, ...item } : i)
-            })),
-            deleteLibraryItem: (id) => set((state) => ({
-                libraryItems: state.libraryItems.filter(i => i.id !== id)
-            })),
+            addLibraryItem: (item) => {
+                api.createLibraryItem(item).catch(console.error);
+                set((state) => ({ libraryItems: [item, ...state.libraryItems] }));
+            },
+            updateLibraryItem: (id, item) => {
+                api.updateLibraryItem(id, item).catch(console.error);
+                set((state) => ({
+                    libraryItems: state.libraryItems.map(i => i.id === id ? { ...i, ...item } : i)
+                }));
+            },
+            deleteLibraryItem: (id) => {
+                api.deleteLibraryItem(id).catch(console.error);
+                set((state) => ({
+                    libraryItems: state.libraryItems.filter(i => i.id !== id)
+                }));
+            },
             enrolledCourses: ['c1', 'c3', 'c5'],
             enrolledPaths: ['p_qudrat'], // Default enrolled path
             completedLessons: ['l1', 'l2'], // Some initial progress
@@ -902,6 +911,9 @@ export const useStore = create<AppState>()(
                       .map((item: any) => ({
                         ...item,
                         id: String(item?.id || item?._id || ''),
+                        pathId: item?.pathId ? String(item.pathId) : undefined,
+                        sectionId: item?.sectionId ? String(item.sectionId) : undefined,
+                        skillIds: Array.isArray(item?.skillIds) ? item.skillIds.map(String) : [],
                       }))
                       .filter((item: any) => item.id && item.title)
                   : state.libraryItems,

@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { LibraryItem } from '../../types';
-import { Plus, Edit2, Trash2, FileText, Search, Filter } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText } from 'lucide-react';
 
 interface LibraryManagerProps {
   subjectId: string;
 }
 
 export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => {
-  const { libraryItems, addLibraryItem, updateLibraryItem, deleteLibraryItem } = useStore();
+  const { libraryItems, addLibraryItem, updateLibraryItem, deleteLibraryItem, subjects, topics } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<Partial<LibraryItem> | null>(null);
 
   const subjectItems = libraryItems.filter(item => item.subjectId === subjectId);
+  const currentSubject = subjects.find(item => item.id === subjectId);
+  const availableSkills = useMemo(
+    () => topics
+      .filter(item => item.subjectId === subjectId)
+      .sort((a, b) => a.order - b.order),
+    [subjectId, topics],
+  );
 
   const handleSave = () => {
+    if (!currentSubject?.pathId) {
+      alert('تعذر تحديد المسار المرتبط بهذه المادة.');
+      return;
+    }
+
+    if (!editingItem?.skillIds || editingItem.skillIds.length === 0) {
+      alert('اختر مهارة واحدة على الأقل لربط الملف بها.');
+      return;
+    }
+
     if (editingItem?.id) {
-      updateLibraryItem(editingItem.id, editingItem);
+      updateLibraryItem(editingItem.id, {
+        ...editingItem,
+        pathId: currentSubject.pathId,
+        subjectId,
+      });
     } else {
       addLibraryItem({
         id: `lib_${Date.now()}`,
@@ -24,12 +45,24 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
         size: editingItem?.size || '0 MB',
         downloads: 0,
         type: editingItem?.type || 'pdf',
+        pathId: currentSubject.pathId,
         subjectId,
+        sectionId: editingItem?.sectionId,
+        skillIds: editingItem?.skillIds || [],
         url: editingItem?.url || ''
       });
     }
     setIsEditing(false);
     setEditingItem(null);
+  };
+
+  const toggleSkill = (skillId: string) => {
+    const currentIds = editingItem?.skillIds || [];
+    const nextIds = currentIds.includes(skillId)
+      ? currentIds.filter((id) => id !== skillId)
+      : [...currentIds, skillId];
+
+    setEditingItem({ ...editingItem, skillIds: nextIds });
   };
 
   if (isEditing) {
@@ -84,6 +117,32 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
               dir="ltr"
             />
             <p className="text-xs text-gray-500 mt-2">ضع رابط الملف المباشر أو رابط المشاركة السحابية (مثلاً رابط Google Drive).</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-3">ربط الملف بالمهارات</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50">
+              {availableSkills.length > 0 ? availableSkills.map((skill) => {
+                const isSelected = editingItem?.skillIds?.includes(skill.id);
+                return (
+                  <button
+                    key={skill.id}
+                    type="button"
+                    onClick={() => toggleSkill(skill.id)}
+                    className={`text-right px-3 py-2 rounded-lg border text-sm font-bold transition-colors ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300'
+                    }`}
+                  >
+                    {skill.title}
+                  </button>
+                );
+              }) : (
+                <div className="text-sm text-gray-500">لا توجد مهارات مضافة لهذه المادة بعد.</div>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">كل ملف في المكتبة يجب أن يكون مربوطًا بمهارة واحدة على الأقل حتى يدخل في التوصيات الذكية.</p>
           </div>
 
           <div className="flex gap-3 pt-4">

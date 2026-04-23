@@ -156,6 +156,23 @@ export const api = {
       method: "DELETE",
       token,
     }),
+  createLibraryItem: (payload: unknown, token?: string | null) =>
+    request<unknown>("/content/library-items", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateLibraryItem: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/content/library-items/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  deleteLibraryItem: (id: string, token?: string | null) =>
+    request<{ success: boolean }>(`/content/library-items/${id}`, {
+      method: "DELETE",
+      token,
+    }),
   getCourses: () => request<unknown[]>("/courses"),
   getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
   createCourse: (payload: unknown, token?: string | null) =>

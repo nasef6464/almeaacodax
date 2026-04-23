@@ -10,6 +10,8 @@ interface SkillRecommendation {
     lessonLink?: string;
     quizTitle?: string;
     quizLink?: string;
+    resourceTitle?: string;
+    resourceUrl?: string;
 }
 
 const getSkillRecommendation = (
@@ -17,6 +19,7 @@ const getSkillRecommendation = (
     topics: ReturnType<typeof useStore.getState>['topics'],
     lessons: ReturnType<typeof useStore.getState>['lessons'],
     quizzes: ReturnType<typeof useStore.getState>['quizzes'],
+    libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
 ): SkillRecommendation => {
     if (!skill) return {};
 
@@ -28,17 +31,20 @@ const getSkillRecommendation = (
 
     const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
     const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
+    const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(topic.id));
 
     return {
         lessonTitle: recommendedLesson?.title,
         lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}` : undefined,
         quizTitle: recommendedQuiz?.title,
         quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+        resourceTitle: recommendedResource?.title,
+        resourceUrl: recommendedResource?.url,
     };
 };
 
 const Reports: React.FC = () => {
-    const { examResults, topics, lessons, quizzes } = useStore();
+    const { examResults, topics, lessons, quizzes, libraryItems } = useStore();
 
     // Calculate Performance Analysis
     const stats = useMemo(() => {
@@ -103,7 +109,7 @@ const Reports: React.FC = () => {
     }, [examResults]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
-    const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, topics, lessons, quizzes);
+    const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, topics, lessons, quizzes, libraryItems);
 
     if (examResults.length === 0) {
         return (
@@ -187,10 +193,11 @@ const Reports: React.FC = () => {
                                 لاحظنا أنك تواجه بعض الصعوبة في مهارة <span className="font-bold text-amber-700">"{weakestSkill.skill}"</span>. 
                                 لا تقلق، هذا طبيعي! نقترح عليك القيام بالآتي لتحسين مستواك:
                             </p>
-                            {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle) ? (
+                            {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle || weakestSkillRecommendation.resourceTitle) ? (
                                 <div className="bg-white/70 border border-amber-100 rounded-xl p-4 mb-4 text-sm text-gray-700 space-y-2">
                                     {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
                                     {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
+                                    {weakestSkillRecommendation.resourceTitle ? <div>الملف الداعم: <span className="font-bold">{weakestSkillRecommendation.resourceTitle}</span></div> : null}
                                 </div>
                             ) : null}
                             <div className="flex flex-wrap gap-3">
@@ -202,6 +209,12 @@ const Reports: React.FC = () => {
                                     <FileText size={16} />
                                     اختبار تدريبي
                                 </Link>
+                                {weakestSkillRecommendation.resourceUrl ? (
+                                    <a href={weakestSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="bg-white text-amber-700 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-amber-50 flex items-center gap-2 border border-amber-200">
+                                        <BookOpen size={16} />
+                                        ملف داعم
+                                    </a>
+                                ) : null}
                             </div>
                         </div>
                     </div>
@@ -217,7 +230,7 @@ const Reports: React.FC = () => {
 
                 <div className="space-y-6">
                     {aggregatedSkills.map((skill, index) => {
-                        const recommendation = getSkillRecommendation(skill, topics, lessons, quizzes);
+                        const recommendation = getSkillRecommendation(skill, topics, lessons, quizzes, libraryItems);
                         let colorClass = 'bg-emerald-500';
                         let textClass = 'text-emerald-600';
                         let bgLight = 'bg-emerald-50';

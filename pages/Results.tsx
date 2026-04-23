@@ -27,6 +27,8 @@ interface SkillRecommendation {
   lessonLink?: string;
   quizTitle?: string;
   quizLink?: string;
+  resourceTitle?: string;
+  resourceUrl?: string;
 }
 
 const getSkillRecommendation = (
@@ -34,6 +36,7 @@ const getSkillRecommendation = (
   topics: ReturnType<typeof useStore.getState>['topics'],
   lessons: ReturnType<typeof useStore.getState>['lessons'],
   quizzes: ReturnType<typeof useStore.getState>['quizzes'],
+  libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
 ) : SkillRecommendation => {
   if (!skill) {
     return {};
@@ -49,17 +52,20 @@ const getSkillRecommendation = (
 
   const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
   const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
+  const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(topic.id));
 
   return {
     lessonTitle: recommendedLesson?.title,
     lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}` : undefined,
     quizTitle: recommendedQuiz?.title,
     quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+    resourceTitle: recommendedResource?.title,
+    resourceUrl: recommendedResource?.url,
   };
 };
 
 const Results: React.FC = () => {
-  const { examResults, topics, lessons, quizzes } = useStore();
+  const { examResults, topics, lessons, quizzes, libraryItems } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -67,7 +73,7 @@ const Results: React.FC = () => {
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
   const weakestSkill = latestResult?.skillsAnalysis?.slice().sort((a, b) => a.mastery - b.mastery)[0];
-  const weakestSkillRecommendation = getSkillRecommendation(weakestSkill, topics, lessons, quizzes);
+  const weakestSkillRecommendation = getSkillRecommendation(weakestSkill, topics, lessons, quizzes, libraryItems);
 
   const data = [
     { name: 'Success', value: latestResult?.score || 0 },
@@ -211,10 +217,11 @@ const Results: React.FC = () => {
           {weakestSkill ? (
             <p className="text-indigo-100 mb-4 text-sm">أضعف مهارة لديك الآن هي "{weakestSkill.skill}"، ولذلك ستجد هنا محتوى حقيقيًا مرتبطًا بنفس المهارة.</p>
           ) : null}
-          {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle) ? (
+          {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle || weakestSkillRecommendation.resourceTitle) ? (
             <div className="bg-white/10 rounded-xl p-4 mb-4 space-y-2 text-sm">
               {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
               {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
+              {weakestSkillRecommendation.resourceTitle ? <div>الملف الداعم: <span className="font-bold">{weakestSkillRecommendation.resourceTitle}</span></div> : null}
             </div>
           ) : null}
           <h3 className="text-xl font-bold mb-2">تحسين مستواك</h3>
@@ -232,6 +239,11 @@ const Results: React.FC = () => {
               <Link to={weakestSkillRecommendation.quizLink} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-700 transition-colors">
                 اختبر نفس المهارة
               </Link>
+            ) : null}
+            {weakestSkillRecommendation.resourceUrl ? (
+              <a href={weakestSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors">
+                افتح الملف الداعم
+              </a>
             ) : null}
             <Link to="/quizzes" className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
               اعرض كل محاولاتك
@@ -478,7 +490,7 @@ const ReviewSolutions = ({
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
   const skills = result.skillsAnalysis || [];
-  const { topics, lessons, quizzes } = useStore();
+  const { topics, lessons, quizzes, libraryItems } = useStore();
 
   return (
     <div className="space-y-6 pb-20">
@@ -518,8 +530,8 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
               />
             </div>
             {(() => {
-              const recommendation = getSkillRecommendation(s, topics, lessons, quizzes);
-              if (!recommendation.lessonTitle && !recommendation.quizTitle) {
+              const recommendation = getSkillRecommendation(s, topics, lessons, quizzes, libraryItems);
+              if (!recommendation.lessonTitle && !recommendation.quizTitle && !recommendation.resourceTitle) {
                 return null;
               }
 
@@ -534,6 +546,11 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
                     <Link to={recommendation.quizLink || '/quizzes'} className="border border-emerald-100 bg-emerald-50 text-emerald-700 rounded-xl px-4 py-3 text-sm font-bold hover:bg-emerald-100 transition-colors">
                       اختبر نفسك: {recommendation.quizTitle}
                     </Link>
+                  ) : null}
+                  {recommendation.resourceTitle && recommendation.resourceUrl ? (
+                    <a href={recommendation.resourceUrl} target="_blank" rel="noreferrer" className="border border-amber-100 bg-amber-50 text-amber-700 rounded-xl px-4 py-3 text-sm font-bold hover:bg-amber-100 transition-colors">
+                      الملف الداعم: {recommendation.resourceTitle}
+                    </a>
                   ) : null}
                 </div>
               );

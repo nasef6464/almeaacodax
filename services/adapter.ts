@@ -83,7 +83,10 @@ const normalizeLibraryItem = (item: any): LibraryItem => ({
   size: String(item?.size || ""),
   downloads: Number(item?.downloads ?? 0),
   type: item?.type || "pdf",
+  pathId: item?.pathId ? String(item.pathId) : undefined,
   subjectId: String(item?.subjectId || ""),
+  sectionId: item?.sectionId ? String(item.sectionId) : undefined,
+  skillIds: Array.isArray(item?.skillIds) ? item.skillIds.map((value: unknown) => String(value)) : [],
   url: item?.url || undefined,
 });
 

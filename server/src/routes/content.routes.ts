@@ -47,11 +47,15 @@ const buildDocumentQuery = (value: string) => {
 };
 
 const librarySchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1),
   size: z.string().default(""),
   downloads: z.number().default(0),
   type: z.enum(["pdf", "doc", "video"]).default("pdf"),
+  pathId: z.string().min(1),
   subjectId: z.string().min(1),
+  sectionId: z.string().nullable().optional(),
+  skillIds: z.array(z.string()).min(1),
   url: z.string().optional(),
 });
 
@@ -178,6 +182,39 @@ contentRouter.post(
     const payload = librarySchema.parse(req.body);
     const created = await LibraryItemModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+contentRouter.patch(
+  "/library-items/:id",
+  requireAuth,
+  requireRole(["admin", "teacher", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const payload = librarySchema.partial().parse(req.body);
+    const updated = await LibraryItemModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
+    }
+
+    return res.json(updated);
+  }),
+);
+
+contentRouter.delete(
+  "/library-items/:id",
+  requireAuth,
+  requireRole(["admin", "teacher", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const deleted = await LibraryItemModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+
+    if (!deleted) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
+    }
+
+    return res.json({ success: true });
   }),
 );
 
