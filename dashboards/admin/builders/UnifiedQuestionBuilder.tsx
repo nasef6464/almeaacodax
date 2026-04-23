@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
 import { Save, X, Wand2, Loader2 } from 'lucide-react';
@@ -13,14 +13,14 @@ interface UnifiedQuestionBuilderProps {
   sectionId?: string;
 }
 
-export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({ 
-  initialQuestion, 
-  onSave, 
+export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
+  initialQuestion,
+  onSave,
   onCancel,
   subjectId,
   sectionId
 }) => {
-  const { nestedSkills, subjects, sections, paths } = useStore();
+  const { topics, subjects, sections, paths } = useStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const [question, setQuestion] = useState<Partial<Question>>(initialQuestion || {
     text: '',
@@ -35,6 +35,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     sectionId: sectionId || '',
     skillIds: []
   });
+
+  const availableSkillTopics = useMemo(
+    () => topics.filter(topic => !!question.subject && topic.subjectId === question.subject && !topic.parentId),
+    [topics, question.subject]
+  );
 
   const handleSave = () => {
     if (!question.text) {
@@ -53,7 +58,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       alert('يرجى ربط السؤال بمهارة واحدة على الأقل');
       return;
     }
-    if (question.type === 'mcq' && question.options?.some(o => !o)) {
+    if (question.type === 'mcq' && question.options?.some(option => !option)) {
       alert('يرجى تعبئة جميع الخيارات');
       return;
     }
@@ -62,23 +67,23 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    let topicName = "القدرات العقلية"; // fallback
-    
+    let topicName = 'القدرات العقلية';
+
     if (question.subject) {
-      const subjectName = subjects.find(s => s.id === question.subject)?.name;
+      const subjectName = subjects.find(subject => subject.id === question.subject)?.name;
       if (subjectName) topicName = subjectName;
     } else if (question.pathId) {
-      const pathName = paths.find(p => p.id === question.pathId)?.name;
+      const pathName = paths.find(path => path.id === question.pathId)?.name;
       if (pathName) topicName = pathName;
     }
 
     if (question.sectionId) {
-      const sectionName = sections.find(s => s.id === question.sectionId)?.name;
+      const sectionName = sections.find(section => section.id === question.sectionId)?.name;
       if (sectionName) topicName += ` - ${sectionName}`;
     }
 
     if (question.skillIds && question.skillIds.length > 0) {
-      const topic = useStore.getState().topics.find(t => t.id === question.skillIds![0])?.title;
+      const topic = topics.find(item => item.id === question.skillIds![0])?.title;
       if (topic) topicName += ` - ${topic}`;
     }
 
@@ -94,8 +99,8 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           type: 'mcq'
         }));
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
       alert('حدث خطأ أثناء التوليد');
     } finally {
       setIsGenerating(false);
@@ -113,42 +118,42 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
             <X size={20} />
           </button>
         </div>
-        
+
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
           <div className="flex justify-between items-center">
             <label className="block text-sm font-bold text-gray-700">نص السؤال</label>
-            <button 
-              onClick={handleGenerate} 
+            <button
+              onClick={handleGenerate}
               disabled={isGenerating}
               className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 hover:bg-indigo-100 disabled:opacity-50"
             >
-              {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />} 
-              {isGenerating ? 'جارِ التوليد...' : 'توليد بالذكاء الاصطناعي'}
+              {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+              {isGenerating ? 'جارٍ التوليد...' : 'توليد بالذكاء الاصطناعي'}
             </button>
           </div>
-          <RichTextEditor 
-            value={question.text || ''} 
-            onChange={val => setQuestion(prev => ({ ...prev, text: val }))} 
+          <RichTextEditor
+            value={question.text || ''}
+            onChange={value => setQuestion(prev => ({ ...prev, text: value }))}
           />
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">نوع السؤال</label>
-              <select 
+              <select
                 value={question.type || 'mcq'}
-                onChange={(e) => setQuestion(prev => ({ ...prev, type: e.target.value as any }))}
+                onChange={event => setQuestion(prev => ({ ...prev, type: event.target.value as Question['type'] }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="mcq">اختيار من متعدد</option>
                 <option value="true_false">صح أم خطأ</option>
-                <option value="essay">مقال / نصي</option>
+                <option value="essay">مقالي / نصي</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">مستوى الصعوبة</label>
-              <select 
+              <select
                 value={question.difficulty || 'Medium'}
-                onChange={(e) => setQuestion(prev => ({ ...prev, difficulty: e.target.value as any }))}
+                onChange={event => setQuestion(prev => ({ ...prev, difficulty: event.target.value as Question['difficulty'] }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="Easy">سهل</option>
@@ -160,15 +165,15 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-bold text-gray-700 mb-2">المسار (اختياري)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">المسار</label>
               <select
                 value={question.pathId || ''}
-                onChange={(e) => setQuestion({ ...question, pathId: e.target.value, subject: '', sectionId: '', skillIds: [] })}
+                onChange={event => setQuestion({ ...question, pathId: event.target.value, subject: '', sectionId: '', skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
-                <option value="">-- كل المسارات --</option>
-                {paths.map(p => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
+                <option value="">-- اختر المسار --</option>
+                {paths.map(path => (
+                  <option key={path.id} value={path.id}>{path.name}</option>
                 ))}
               </select>
             </div>
@@ -176,13 +181,13 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-2">المادة</label>
               <select
                 value={question.subject || ''}
-                onChange={(e) => setQuestion({ ...question, subject: e.target.value, sectionId: '', skillIds: [] })}
+                onChange={event => setQuestion({ ...question, subject: event.target.value, sectionId: '', skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                disabled={!!question.pathId && subjects.filter(s => s.pathId === question.pathId).length === 0}
+                disabled={!!question.pathId && subjects.filter(subject => subject.pathId === question.pathId).length === 0}
               >
                 <option value="">-- اختر المادة --</option>
-                {subjects.filter(s => !question.pathId || s.pathId === question.pathId).map(s => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
+                {subjects.filter(subject => !question.pathId || subject.pathId === question.pathId).map(subject => (
+                  <option key={subject.id} value={subject.id}>{subject.name}</option>
                 ))}
               </select>
             </div>
@@ -190,59 +195,68 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-2">القسم</label>
               <select
                 value={question.sectionId || ''}
-                onChange={(e) => setQuestion({ ...question, sectionId: e.target.value, skillIds: [] })}
+                onChange={event => setQuestion({ ...question, sectionId: event.target.value, skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 disabled={!question.subject}
               >
                 <option value="">-- اختر القسم --</option>
-                {sections.filter(s => s.subjectId === question.subject).map(s => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
+                {sections.filter(section => section.subjectId === question.subject).map(section => (
+                  <option key={section.id} value={section.id}>{section.name}</option>
                 ))}
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">ربط بالمهارات (اختياري)</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">ربط بالمهارات</label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {question.skillIds?.map(skillId => {
-                  const topic = useStore.getState().topics.find(t => t.id === skillId);
+                  const topic = topics.find(item => item.id === skillId);
                   return topic ? (
                     <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
                       {topic.title}
-                      <button onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))} className="text-indigo-600 hover:text-indigo-900">
+                      <button
+                        onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))}
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
                         <X size={14} />
                       </button>
                     </span>
                   ) : null;
                 })}
               </div>
-              <select 
+              <select
                 value=""
-                onChange={(e) => {
-                  if (e.target.value && !question.skillIds?.includes(e.target.value)) {
-                    setQuestion(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), e.target.value] }));
+                onChange={event => {
+                  if (event.target.value && !question.skillIds?.includes(event.target.value)) {
+                    setQuestion(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), event.target.value] }));
                   }
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                disabled={!question.subject || availableSkillTopics.length === 0}
               >
-                <option value="">-- أضف مهارة --</option>
-                {useStore.getState().topics.filter(t => 
-                  (!question.subject || t.subjectId === question.subject) && !t.parentId
-                ).map(mainTopic => (
+                <option value="">
+                  {!question.subject
+                    ? '-- اختر المادة أولاً --'
+                    : availableSkillTopics.length === 0
+                      ? '-- لا توجد مهارات لهذه المادة بعد --'
+                      : '-- أضف مهارة --'}
+                </option>
+                {availableSkillTopics.map(mainTopic => (
                   <optgroup key={mainTopic.id} label={mainTopic.title}>
                     <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                    {useStore.getState().topics.filter(sub => sub.parentId === mainTopic.id).map(sub => (
-                      <option key={sub.id} value={sub.id}>- {sub.title}</option>
+                    {topics.filter(subTopic => subTopic.parentId === mainTopic.id).map(subTopic => (
+                      <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
                     ))}
                   </optgroup>
                 ))}
               </select>
+              <p className="text-xs text-gray-500 mt-1">المهارات تظهر ديناميكيًا من مركز المهارات حسب المادة المختارة.</p>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">رابط فيديو الشرح (اختياري)</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={question.videoUrl || ''}
-                onChange={(e) => setQuestion(prev => ({ ...prev, videoUrl: e.target.value }))}
+                onChange={event => setQuestion(prev => ({ ...prev, videoUrl: event.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 placeholder="https://..."
               />
@@ -252,29 +266,29 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           {question.type === 'mcq' && (
             <div className="space-y-3">
               <label className="block text-sm font-bold text-gray-700">الخيارات</label>
-              {question.options?.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <input 
-                    type="radio" 
+              {question.options?.map((option, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <input
+                    type="radio"
                     name="correctOption"
-                    checked={question.correctOptionIndex === idx} 
-                    onChange={() => setQuestion(prev => ({ ...prev, correctOptionIndex: idx }))} 
+                    checked={question.correctOptionIndex === index}
+                    onChange={() => setQuestion(prev => ({ ...prev, correctOptionIndex: index }))}
                     className="w-5 h-5 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <input 
-                    type="text" 
-                    value={opt} 
-                    onChange={e => {
-                      const newOpts = [...(question.options || [])];
-                      newOpts[idx] = e.target.value;
-                      setQuestion(prev => ({ ...prev, options: newOpts }));
-                    }} 
-                    className={`flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 ${question.correctOptionIndex === idx ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300'}`} 
-                    placeholder={`الخيار ${idx + 1}`} 
+                  <input
+                    type="text"
+                    value={option}
+                    onChange={event => {
+                      const newOptions = [...(question.options || [])];
+                      newOptions[index] = event.target.value;
+                      setQuestion(prev => ({ ...prev, options: newOptions }));
+                    }}
+                    className={`flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 ${question.correctOptionIndex === index ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300'}`}
+                    placeholder={`الخيار ${index + 1}`}
                   />
                 </div>
               ))}
-              <p className="text-xs text-gray-500 mt-2">اختر الزر الدائري بجانب الخيار الصحيح.</p>
+              <p className="text-xs text-gray-500 mt-2">اختر الزر الدائري بجانب الإجابة الصحيحة.</p>
             </div>
           )}
 
@@ -283,11 +297,23 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700">الإجابة الصحيحة</label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="tf" checked={question.correctOptionIndex === 0} onChange={() => setQuestion(prev => ({...prev, correctOptionIndex: 0, options: ['صح', 'خطأ']}))} className="w-5 h-5 text-emerald-600" />
+                  <input
+                    type="radio"
+                    name="tf"
+                    checked={question.correctOptionIndex === 0}
+                    onChange={() => setQuestion(prev => ({ ...prev, correctOptionIndex: 0, options: ['صح', 'خطأ'] }))}
+                    className="w-5 h-5 text-emerald-600"
+                  />
                   <span className="font-bold">صح</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="tf" checked={question.correctOptionIndex === 1} onChange={() => setQuestion(prev => ({...prev, correctOptionIndex: 1, options: ['صح', 'خطأ']}))} className="w-5 h-5 text-emerald-600" />
+                  <input
+                    type="radio"
+                    name="tf"
+                    checked={question.correctOptionIndex === 1}
+                    onChange={() => setQuestion(prev => ({ ...prev, correctOptionIndex: 1, options: ['صح', 'خطأ'] }))}
+                    className="w-5 h-5 text-emerald-600"
+                  />
                   <span className="font-bold">خطأ</span>
                 </label>
               </div>
@@ -296,19 +322,19 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">شرح الإجابة (اختياري)</label>
-            <RichTextEditor 
-              value={question.explanation || ''} 
-              onChange={val => setQuestion(prev => ({ ...prev, explanation: val }))} 
+            <RichTextEditor
+              value={question.explanation || ''}
+              onChange={value => setQuestion(prev => ({ ...prev, explanation: value }))}
             />
           </div>
         </div>
-        
+
         <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
           <button onClick={onCancel} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
             إلغاء
           </button>
-          <button 
-            onClick={handleSave} 
+          <button
+            onClick={handleSave}
             className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Save size={18} /> حفظ السؤال

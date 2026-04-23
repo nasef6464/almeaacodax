@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Lesson, LessonType } from '../../../types';
 import { Save, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
 import { QuizBuilder } from '../QuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
-import { Question } from '../../../types';
 import { useStore } from '../../../store/useStore';
 
 interface UnifiedLessonBuilderProps {
@@ -13,27 +12,40 @@ interface UnifiedLessonBuilderProps {
   onCancel: () => void;
 }
 
-export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({ 
-  initialLesson, 
+export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
+  initialLesson,
   moduleId,
-  onSave, 
-  onCancel 
+  onSave,
+  onCancel
 }) => {
   const [lesson, setLesson] = useState<Lesson>(initialLesson);
   const [showQuizBuilder, setShowQuizBuilder] = useState(false);
   const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
-  const { quizzes, paths, subjects, sections } = useStore();
+  const { quizzes, paths, subjects, sections, topics } = useStore();
+
+  const availableSkillTopics = useMemo(
+    () => topics.filter(topic => !!lesson.subjectId && topic.subjectId === lesson.subjectId && !topic.parentId),
+    [topics, lesson.subjectId]
+  );
 
   const getLessonIcon = (type: LessonType) => {
     switch (type) {
-      case 'video': return <Video size={18} className="text-blue-500" />;
-      case 'text': return <FileText size={18} className="text-emerald-500" />;
-      case 'quiz': return <HelpCircle size={18} className="text-purple-500" />;
-      case 'live_youtube': return <Youtube size={18} className="text-red-500" />;
-      case 'zoom': return <VideoIcon size={18} className="text-blue-400" />;
-      case 'google_meet': return <VideoIcon size={18} className="text-green-500" />;
-      case 'teams': return <VideoIcon size={18} className="text-indigo-600" />;
-      default: return <FileText size={18} className="text-gray-500" />;
+      case 'video':
+        return <Video size={18} className="text-blue-500" />;
+      case 'text':
+        return <FileText size={18} className="text-emerald-500" />;
+      case 'quiz':
+        return <HelpCircle size={18} className="text-purple-500" />;
+      case 'live_youtube':
+        return <Youtube size={18} className="text-red-500" />;
+      case 'zoom':
+        return <VideoIcon size={18} className="text-blue-400" />;
+      case 'google_meet':
+        return <VideoIcon size={18} className="text-green-500" />;
+      case 'teams':
+        return <VideoIcon size={18} className="text-indigo-600" />;
+      default:
+        return <FileText size={18} className="text-gray-500" />;
     }
   };
 
@@ -69,25 +81,23 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             <X size={20} />
           </button>
         </div>
-        
+
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
-          
-          {/* Common Settings */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">اسم الدرس</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={lesson.title || ''}
-                onChange={(e) => setLesson({ ...lesson, title: e.target.value })}
+                onChange={event => setLesson({ ...lesson, title: event.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">الوصول (Access)</label>
-              <select 
+              <label className="block text-sm font-bold text-gray-700 mb-1">الوصول</label>
+              <select
                 value={lesson.accessControl || 'enrolled'}
-                onChange={(e) => setLesson({ ...lesson, accessControl: e.target.value as any })}
+                onChange={event => setLesson({ ...lesson, accessControl: event.target.value as Lesson['accessControl'] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
               >
                 <option value="public">متاح للجميع (معاينة مجانية)</option>
@@ -99,48 +109,11 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">وصف قصير للدرس</label>
-            <textarea 
+            <textarea
               value={lesson.description || ''}
-              onChange={(e) => setLesson({ ...lesson, description: e.target.value })}
+              onChange={event => setLesson({ ...lesson, description: event.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">ربط بمهارات (Skill Mapping)</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {lesson.skillIds?.map(skillId => {
-                const topic = useStore.getState().topics.find(t => t.id === skillId);
-                return topic ? (
-                  <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                    {topic.title}
-                    <button onClick={() => setLesson(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))} className="text-indigo-600 hover:text-indigo-900">
-                      <X size={14} />
-                    </button>
-                  </span>
-                ) : null;
-              })}
-            </div>
-            <select 
-              value=""
-              onChange={(e) => {
-                if (e.target.value && !lesson.skillIds?.includes(e.target.value)) {
-                  setLesson(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), e.target.value] }));
-                }
-              }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-            >
-              <option value="">-- أضف مهارة --</option>
-              {useStore.getState().topics.filter(t => !lesson.subjectId || t.subjectId === lesson.subjectId).filter(t => !t.parentId).map(mainTopic => (
-                <optgroup key={mainTopic.id} label={mainTopic.title}>
-                  <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                  {useStore.getState().topics.filter(sub => sub.parentId === mainTopic.id).map(sub => (
-                    <option key={sub.id} value={sub.id}>- {sub.title}</option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">عند ربط الدرس بمهارة، سيظهر أيضاً في "مركز المهارات" للطالب.</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -148,7 +121,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
               <select
                 value={lesson.pathId || ''}
-                onChange={(e) => setLesson({ ...lesson, pathId: e.target.value, subjectId: '', sectionId: undefined, skillIds: [] })}
+                onChange={event => setLesson({ ...lesson, pathId: event.target.value, subjectId: '', sectionId: undefined, skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
               >
                 <option value="">-- اختر المسار --</option>
@@ -161,7 +134,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
               <select
                 value={lesson.subjectId || ''}
-                onChange={(e) => setLesson({ ...lesson, subjectId: e.target.value, sectionId: undefined, skillIds: [] })}
+                onChange={event => setLesson({ ...lesson, subjectId: event.target.value, sectionId: undefined, skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 disabled={!lesson.pathId}
               >
@@ -175,7 +148,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-1">القسم</label>
               <select
                 value={lesson.sectionId || ''}
-                onChange={(e) => setLesson({ ...lesson, sectionId: e.target.value || undefined, skillIds: [] })}
+                onChange={event => setLesson({ ...lesson, sectionId: event.target.value || undefined, skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 disabled={!lesson.subjectId}
               >
@@ -187,64 +160,114 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             </div>
           </div>
 
-          {/* Video Specific Settings */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">ربط بالمهارات</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {lesson.skillIds?.map(skillId => {
+                const topic = topics.find(item => item.id === skillId);
+                return topic ? (
+                  <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                    {topic.title}
+                    <button
+                      onClick={() => setLesson(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ) : null;
+              })}
+            </div>
+            <select
+              value=""
+              onChange={event => {
+                if (event.target.value && !lesson.skillIds?.includes(event.target.value)) {
+                  setLesson(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), event.target.value] }));
+                }
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              disabled={!lesson.subjectId || availableSkillTopics.length === 0}
+            >
+              <option value="">
+                {!lesson.subjectId
+                  ? '-- اختر المادة أولاً --'
+                  : availableSkillTopics.length === 0
+                    ? '-- لا توجد مهارات لهذه المادة بعد --'
+                    : '-- أضف مهارة --'}
+              </option>
+              {availableSkillTopics.map(mainTopic => (
+                <optgroup key={mainTopic.id} label={mainTopic.title}>
+                  <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
+                  {topics.filter(subTopic => subTopic.parentId === mainTopic.id).map(subTopic => (
+                    <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">المهارات تظهر ديناميكيًا من مركز المهارات حسب المادة المختارة، والدرس المرتبط سيظهر لاحقًا داخل مركز المهارات للطالب.</p>
+          </div>
+
           {lesson.type === 'video' && (
             <div className="space-y-4 border-t border-gray-100 pt-4">
-              <h4 className="font-bold text-gray-800 flex items-center gap-2"><Video size={18} className="text-blue-500"/> إعدادات الفيديو</h4>
-              
+              <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                <Video size={18} className="text-blue-500" /> إعدادات الفيديو
+              </h4>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">مصدر الفيديو</label>
-                  <select 
+                  <select
                     value={lesson.videoSource || 'upload'}
-                    onChange={(e) => setLesson({ ...lesson, videoSource: e.target.value as any })}
+                    onChange={event => setLesson({ ...lesson, videoSource: event.target.value as Lesson['videoSource'] })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                   >
                     <option value="upload">رفع مباشر (مكتبة المنصة)</option>
-                    <option value="youtube">رابط يوتيوب (بدون أدوات يوتيوب)</option>
+                    <option value="youtube">رابط يوتيوب</option>
                     <option value="vimeo">رابط Vimeo</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">رابط الفيديو / الملف</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={lesson.videoUrl || ''}
-                    onChange={(e) => setLesson({ ...lesson, videoUrl: e.target.value })}
+                    onChange={event => setLesson({ ...lesson, videoUrl: event.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     placeholder="https://..."
                   />
                 </div>
               </div>
 
-              {/* Interactive Video Features */}
               <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mt-4">
                 <div className="flex justify-between items-center mb-3">
                   <div>
                     <h5 className="font-bold text-purple-800 flex items-center gap-2">
                       <HelpCircle size={16} /> الأسئلة التفاعلية داخل الفيديو
                     </h5>
-                    <p className="text-xs text-purple-600">إيقاف الفيديو عند وقت محدد وعرض سؤال للطالب.</p>
+                    <p className="text-xs text-purple-600">يمكن إيقاف الفيديو عند وقت محدد وعرض سؤال للطالب.</p>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setShowQuestionBuilder(true)}
                     className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-purple-700 transition-colors"
                   >
                     + إضافة سؤال
                   </button>
                 </div>
-                
+
                 {(!lesson.interactiveQuestions || lesson.interactiveQuestions.length === 0) ? (
                   <div className="text-center py-4 text-purple-400 text-sm bg-white/50 rounded-lg border border-purple-100 border-dashed">
-                    لم يتم إضافة أسئلة تفاعلية لهذا الفيديو.
+                    لم تتم إضافة أسئلة تفاعلية لهذا الفيديو بعد.
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {lesson.interactiveQuestions.map((q, idx) => (
-                      <div key={idx} className="flex items-center justify-between bg-white p-2 rounded border border-purple-100">
-                        <span className="text-sm font-bold text-gray-700 truncate flex-1" dangerouslySetInnerHTML={{__html: q.inlineQuestion?.text || 'سؤال من بنك الأسئلة'}} />
-                        <button 
-                          onClick={() => setLesson(prev => ({ ...prev, interactiveQuestions: prev.interactiveQuestions?.filter((_, i) => i !== idx) }))}
+                    {lesson.interactiveQuestions.map((interactiveQuestion, index) => (
+                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-purple-100">
+                        <span
+                          className="text-sm font-bold text-gray-700 truncate flex-1"
+                          dangerouslySetInnerHTML={{ __html: interactiveQuestion.inlineQuestion?.text || 'سؤال من بنك الأسئلة' }}
+                        />
+                        <button
+                          onClick={() => setLesson(prev => ({ ...prev, interactiveQuestions: prev.interactiveQuestions?.filter((_, itemIndex) => itemIndex !== index) }))}
                           className="text-red-500 hover:bg-red-50 p-1 rounded"
                         >
                           <X size={14} />
@@ -257,30 +280,29 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             </div>
           )}
 
-          {/* Live Meeting Specific Settings */}
           {['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type) && (
             <div className="space-y-4 border-t border-gray-100 pt-4">
               <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                <VideoIcon size={18} className="text-green-500"/> إعدادات البث / الاجتماع
+                <VideoIcon size={18} className="text-green-500" /> إعدادات البث / الاجتماع
               </h4>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">رابط الاجتماع / البث</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={lesson.meetingUrl || ''}
-                    onChange={(e) => setLesson({ ...lesson, meetingUrl: e.target.value })}
+                    onChange={event => setLesson({ ...lesson, meetingUrl: event.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     placeholder="https://..."
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">موعد الاجتماع</label>
-                  <input 
-                    type="datetime-local" 
+                  <input
+                    type="datetime-local"
                     value={lesson.meetingDate || ''}
-                    onChange={(e) => setLesson({ ...lesson, meetingDate: e.target.value })}
+                    onChange={event => setLesson({ ...lesson, meetingDate: event.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
@@ -288,25 +310,24 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             </div>
           )}
 
-          {/* Quiz Specific Settings */}
           {lesson.type === 'quiz' && (
             <div className="space-y-4 border-t border-gray-100 pt-4">
               <h4 className="font-bold text-gray-800 flex items-center gap-2">
-                <HelpCircle size={18} className="text-purple-500"/> إعدادات الاختبار
+                <HelpCircle size={18} className="text-purple-500" /> إعدادات الاختبار
               </h4>
-              <p className="text-sm text-gray-500">يمكنك ربط هذا الدرس باختبار موجود أو إنشاء اختبار جديد باستخدام منشئ الاختبارات الموحد.</p>
-              
+              <p className="text-sm text-gray-500">يمكنك ربط هذا الدرس باختبار موجود أو إنشاء اختبار جديد من منشئ الاختبارات الموحد.</p>
+
               <div className="flex flex-col gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">اختيار من بنك الاختبارات</label>
-                  <select 
+                  <select
                     value={lesson.quizId || ''}
-                    onChange={(e) => setLesson({ ...lesson, quizId: e.target.value })}
+                    onChange={event => setLesson({ ...lesson, quizId: event.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                   >
-                    <option value="">-- اختر اختباراً --</option>
-                    {quizzes.map(q => (
-                      <option key={q.id} value={q.id}>{q.title}</option>
+                    <option value="">-- اختر اختبارًا --</option>
+                    {quizzes.map(quiz => (
+                      <option key={quiz.id} value={quiz.id}>{quiz.title}</option>
                     ))}
                   </select>
                 </div>
@@ -315,7 +336,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                   <span className="text-sm text-gray-400 font-bold">أو</span>
                   <div className="flex-1 h-px bg-gray-200"></div>
                 </div>
-                <button 
+                <button
                   onClick={() => setShowQuizBuilder(true)}
                   className="w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700 transition-colors"
                 >
@@ -324,15 +345,14 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
               </div>
             </div>
           )}
-
         </div>
-        
+
         <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
           <button onClick={onCancel} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
             إلغاء
           </button>
-          <button 
-            onClick={handleSave} 
+          <button
+            onClick={handleSave}
             className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Save size={18} /> حفظ التغييرات
@@ -352,13 +372,12 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
       )}
 
       {showQuestionBuilder && (
-        <UnifiedQuestionBuilder 
-          onSave={(q) => {
-            // Add to interactive questions
-            const newQ = { ...q, id: `q_${Date.now()}`, timestamp: 0 } as any;
+        <UnifiedQuestionBuilder
+          onSave={question => {
+            const newQuestion = { ...question, id: `q_${Date.now()}`, timestamp: 0 } as any;
             setLesson(prev => ({
               ...prev,
-              interactiveQuestions: [...(prev.interactiveQuestions || []), newQ]
+              interactiveQuestions: [...(prev.interactiveQuestions || []), newQuestion]
             }));
             setShowQuestionBuilder(false);
           }}
