@@ -273,6 +273,34 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   );
 
   const availableQuestions = questions.filter(q => q.subject === currentQuiz.subjectId);
+  const selectedQuestions = useMemo(
+    () => questions.filter(q => currentQuiz.questionIds?.includes(q.id)),
+    [questions, currentQuiz.questionIds]
+  );
+  const derivedQuizSkills = useMemo(() => {
+    const skillQuestionCounts = new Map<string, number>();
+
+    selectedQuestions.forEach(question => {
+      const uniqueSkillIds = [...new Set(question.skillIds || [])];
+      uniqueSkillIds.forEach(skillId => {
+        skillQuestionCounts.set(skillId, (skillQuestionCounts.get(skillId) || 0) + 1);
+      });
+    });
+
+    return Array.from(skillQuestionCounts.entries())
+      .map(([skillId, questionCount]) => {
+        const topic = topics.find(item => item.id === skillId);
+        if (!topic) return null;
+
+        return {
+          id: skillId,
+          title: topic.title,
+          questionCount,
+        };
+      })
+      .filter((item): item is { id: string; title: string; questionCount: number } => !!item)
+      .sort((a, b) => b.questionCount - a.questionCount || a.title.localeCompare(b.title, 'ar'));
+  }, [selectedQuestions, topics]);
 
   if (isEditing) {
     return (
@@ -330,85 +358,94 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
                 <div className="grid grid-cols-2 gap-4 pb-4 border-b border-gray-100 mb-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">المسار (اختياري / لتصنيف الاختبار)</label>
-                    <select 
+                    <label className="block text-sm font-bold text-gray-700 mb-2">?????? (??????? / ?????? ????????)</label>
+                    <select
                       value={currentQuiz.pathId || ''}
                       onChange={(e) => setCurrentQuiz(prev => ({ ...prev, pathId: e.target.value, subjectId: '', skillIds: [] }))}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                     >
-                      <option value="">-- كل المسارات --</option>
-                      {paths.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      <option value="">-- ?? ???????? --</option>
+                      {paths.map(path => (
+                        <option key={path.id} value={path.id}>{path.name}</option>
+                      ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">المادة الأساسية</label>
-                    <select 
+                    <label className="block text-sm font-bold text-gray-700 mb-2">?????? ????????</label>
+                    <select
                       value={currentQuiz.subjectId || ''}
                       onChange={(e) => setCurrentQuiz(prev => ({ ...prev, subjectId: e.target.value, skillIds: [] }))}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
-                      disabled={!!currentQuiz.pathId && subjects.filter(s => s.pathId === currentQuiz.pathId).length === 0}
+                      disabled={!!currentQuiz.pathId && subjects.filter(subject => subject.pathId === currentQuiz.pathId).length === 0}
                     >
-                      <option value="">-- اختر المادة --</option>
-                      {subjects.filter(s => !currentQuiz.pathId || s.pathId === currentQuiz.pathId).map(s => (
-                         <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
+                      <option value="">-- ???? ?????? --</option>
+                      {subjects
+                        .filter(subject => !currentQuiz.pathId || subject.pathId === currentQuiz.pathId)
+                        .map(subject => (
+                          <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">عنوان الاختبار</label>
-                  <input 
-                    type="text" 
+                  <label className="block text-sm font-bold text-gray-700 mb-2">????? ????????</label>
+                  <input
+                    type="text"
                     value={currentQuiz.title || ''}
                     onChange={(e) => setCurrentQuiz(prev => ({ ...prev, title: e.target.value }))}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    placeholder="مثال: اختبار تجريبي شامل - كمي"
+                    placeholder="????: ?????? ???? - ???"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">وصف الاختبار (اختياري)</label>
-                  <textarea 
+                  <label className="block text-sm font-bold text-gray-700 mb-2">??? ???????? (???????)</label>
+                  <textarea
                     value={currentQuiz.description || ''}
                     onChange={(e) => setCurrentQuiz(prev => ({ ...prev, description: e.target.value }))}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-24"
-                    placeholder="وصف قصير يظهر للطلاب قبل بدء الاختبار..."
+                    placeholder="??? ???? ???? ?????? ??? ??? ????????..."
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">ربط بمهارات (اختياري)</label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {currentQuiz.skillIds?.map(skillId => {
-                      const skill = useStore.getState().nestedSkills.flatMap(s => [s, ...s.subSkills]).find(s => s.id === skillId);
-                      return skill ? (
-                        <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                          {skill.name}
-                          <button onClick={() => setCurrentQuiz(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))} className="text-indigo-600 hover:text-indigo-900">
-                            <X size={14} />
-                          </button>
-                        </span>
-                      ) : null;
-                    })}
+
+                <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-800">???????? ??????? ??????</h4>
+                      <p className="text-xs text-gray-600 mt-1">
+                        ??? ??????? ????? ???????? ?? ??????? ??????? ??? ????????? ??? ???? ?????? ?? ???? ????? ????????.
+                      </p>
+                    </div>
+                    <div className="text-xs font-bold text-indigo-700 bg-white border border-indigo-200 rounded-lg px-3 py-2">
+                      {selectedQuestions.length} ????
+                    </div>
                   </div>
-                  <select 
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value && !currentQuiz.skillIds?.includes(e.target.value)) {
-                        setCurrentQuiz(prev => ({ ...prev, skillIds: [...(prev.skillIds || []), e.target.value] }));
-                      }
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <option value="">-- أضف مهارة --</option>
-                    {useStore.getState().nestedSkills.filter(s => !currentQuiz.subjectId || s.subjectId === currentQuiz.subjectId).map(mainSkill => (
-                      <optgroup key={mainSkill.id} label={mainSkill.name}>
-                        <option value={mainSkill.id}>{mainSkill.name} (رئيسية)</option>
-                        {mainSkill.subSkills?.map(sub => (
-                          <option key={sub.id} value={sub.id}>- {sub.name}</option>
+
+                  {derivedQuizSkills.length > 0 ? (
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        {derivedQuizSkills.map(skill => (
+                          <span
+                            key={skill.id}
+                            className="bg-white text-indigo-800 border border-indigo-200 px-3 py-2 rounded-lg text-sm font-medium"
+                          >
+                            {skill.title}
+                            <span className="text-xs text-indigo-600 mr-2">
+                              ({skill.questionCount} ????)
+                            </span>
+                          </span>
                         ))}
-                      </optgroup>
-                    ))}
-                  </select>
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        ??? ???? ?? ???? ???????? ????? ??????? ??? ?????? ?????? ??????? ???? ??????? ?? ??? ???????.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-600 bg-white border border-dashed border-indigo-200 rounded-lg p-4">
+                      ?? ??????? ?????? ???. ??? ????? ???????? ????? ??? ???????? ????? ???????? ???????? ???? ????????.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
