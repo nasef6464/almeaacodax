@@ -1028,7 +1028,7 @@ export const PathsManager: React.FC = () => {
             <div className="max-w-2xl mx-auto text-right space-y-4">
               {[
                 { key: 'showCourses', label: 'تبويب "الدورات"', desc: 'إظهار أو إخفاء تبويب الدورات بالكامل.', default: true },
-                { key: 'showSkills', label: 'تبويب "التأسيس" (المهارات)', desc: 'إظهار أو إخفاء تبويب التأسيس بالكامل.', default: true },
+                { key: 'showSkills', label: 'تبويب "التأسيس" (الموضوعات)', desc: 'إظهار أو إخفاء تبويب التأسيس بالكامل.', default: true },
                 { key: 'lockSkillsForNonSubscribers', label: 'قفل التأسيس لغير المشتركين', desc: 'سيظهر المحتوى وعليه علامة 🔒 للطلاب غير المشتركين.', default: false },
                 { key: 'showBanks', label: 'تبويب "التدريب الحر"', desc: 'إظهار أو إخفاء تبويب التدريب بالكامل.', default: true },
                 { key: 'lockBanksForNonSubscribers', label: 'قفل التدريب لغير المشتركين', desc: 'سيظهر التدريب وعليها علامة 🔒 للطلاب غير المشتركين.', default: false },

@@ -9,6 +9,7 @@ const quizSchema = new Schema(
     subjectId: { type: String, required: true, index: true },
     sectionId: { type: String, default: null },
     type: { type: String, enum: ["quiz", "bank"], default: "quiz" },
+    mode: { type: String, enum: ["regular", "saher", "central"], default: "regular" },
     settings: {
       showExplanations: { type: Boolean, default: true },
       showAnswers: { type: Boolean, default: true },
@@ -27,6 +28,9 @@ const quizSchema = new Schema(
     },
     questionIds: { type: [String], default: [] },
     skillIds: { type: [String], default: [] },
+    targetGroupIds: { type: [String], default: [] },
+    targetUserIds: { type: [String], default: [] },
+    dueDate: { type: String, default: null },
     isPublished: { type: Boolean, default: false },
   },
   {

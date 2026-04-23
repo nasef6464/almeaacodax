@@ -85,6 +85,9 @@ export interface Course {
     progress: number; // 0-100
     category: string;
     subject?: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
     features: string[];
     description?: string;
     instructorBio?: string;
@@ -298,12 +301,16 @@ export interface Quiz {
     subjectId: string;
     sectionId?: string;
     type?: 'quiz' | 'bank'; // Added type for Training vs Simulated Test
+    mode?: 'regular' | 'saher' | 'central';
     settings: QuizSettings;
     access: QuizAccess;
     questionIds: string[]; // References to Question bank
     createdAt: number;
     isPublished: boolean;
     skillIds?: string[];
+    targetGroupIds?: string[];
+    targetUserIds?: string[];
+    dueDate?: string;
 }
 
 export interface Question {

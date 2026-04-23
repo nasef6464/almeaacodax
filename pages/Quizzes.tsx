@@ -1,10 +1,37 @@
 import React, { useMemo, useState } from 'react';
-import { Sparkles, TrendingUp, CheckCircle, FileText, ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  FileText,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Zap,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 
+const formatQuizDate = (date?: string) => {
+  if (!date) return 'متاح الآن';
+  return new Date(date).toLocaleDateString('ar-SA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+const formatCreatedDate = (date?: number) => {
+  if (!date) return 'متاح الآن';
+  return new Date(date).toLocaleDateString('ar-SA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
 const Quizzes: React.FC = () => {
-  const { examResults } = useStore();
+  const { examResults, quizzes, subjects, lessons, libraryItems, user, checkAccess } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
   const totalQuizzes = examResults.length;
@@ -21,6 +48,140 @@ const Quizzes: React.FC = () => {
     const last = ordered[ordered.length - 1]?.score || 0;
     return Math.max(0, last - first);
   }, [examResults]);
+
+  const canAccessQuiz = useMemo(
+    () => (quiz: (typeof quizzes)[number]) => {
+      if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
+
+      if (quiz.dueDate) {
+        const deadline = new Date(`${quiz.dueDate}T23:59:59`);
+        if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) {
+          return false;
+        }
+      }
+
+      if ((quiz.mode || 'regular') === 'central') {
+        const userGroups = user.groupIds || [];
+        const userTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+        const groupTargeted =
+          (quiz.targetGroupIds || []).length === 0 ||
+          (quiz.targetGroupIds || []).some((groupId) => userGroups.includes(groupId));
+
+        if (!userTargeted || !groupTargeted) return false;
+      }
+
+      if (quiz.access.type === 'free') return true;
+      if (quiz.access.type === 'paid') return checkAccess(quiz.id, true);
+      if (quiz.access.type === 'private') {
+        const userGroups = user.groupIds || [];
+        return !!quiz.access.allowedGroupIds?.some((groupId) => userGroups.includes(groupId));
+      }
+
+      return false;
+    },
+    [checkAccess, quizzes, user.groupIds, user.id],
+  );
+
+  const availablePreparedQuizzes = useMemo(
+    () =>
+      quizzes
+        .filter((quiz) => canAccessQuiz(quiz))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [canAccessQuiz, quizzes],
+  );
+
+  const saherQuizzes = useMemo(
+    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'saher'),
+    [availablePreparedQuizzes],
+  );
+
+  const centralQuizzes = useMemo(
+    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'central'),
+    [availablePreparedQuizzes],
+  );
+
+  const regularPreparedQuizzes = useMemo(
+    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'regular'),
+    [availablePreparedQuizzes],
+  );
+
+  const weakSkillRecommendations = useMemo(() => {
+    const weakSkillsMap = new Map<
+      string,
+      {
+        key: string;
+        skillId?: string;
+        subjectId?: string;
+        sectionId?: string;
+        section?: string;
+        skill: string;
+        masterySum: number;
+        attempts: number;
+      }
+    >();
+
+    examResults.forEach((result) => {
+      (result.skillsAnalysis || []).forEach((skill) => {
+        if (skill.mastery >= 75 && skill.status !== 'weak') return;
+
+        const key = skill.skillId || [skill.subjectId, skill.sectionId, skill.skill].filter(Boolean).join(':');
+        const existing = weakSkillsMap.get(key);
+
+        if (existing) {
+          existing.masterySum += skill.mastery;
+          existing.attempts += 1;
+          return;
+        }
+
+        weakSkillsMap.set(key, {
+          key,
+          skillId: skill.skillId,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          section: skill.section,
+          skill: skill.skill,
+          masterySum: skill.mastery,
+          attempts: 1,
+        });
+      });
+    });
+
+    return Array.from(weakSkillsMap.values())
+      .map((item) => {
+        const mastery = Math.round(item.masterySum / item.attempts);
+        const relatedQuizzes = availablePreparedQuizzes
+          .filter((quiz) => {
+            const directSkillMatch = !!item.skillId && (quiz.skillIds || []).includes(item.skillId);
+            const subjectMatch = !!item.subjectId && quiz.subjectId === item.subjectId;
+            const sectionMatch = !item.sectionId || quiz.sectionId === item.sectionId;
+
+            return directSkillMatch || (subjectMatch && sectionMatch);
+          })
+          .sort((a, b) => {
+            const rank = (mode?: string) => (mode === 'saher' ? 0 : mode === 'regular' ? 1 : 2);
+            return rank(a.mode) - rank(b.mode);
+          });
+
+        return {
+          ...item,
+          mastery,
+          subjectName: subjects.find((subject) => subject.id === item.subjectId)?.name || 'بدون مادة',
+          recommendedQuiz: relatedQuizzes[0],
+          relatedCount: relatedQuizzes.length,
+          recommendedLesson: lessons.find((lesson) =>
+            (!!item.skillId && lesson.skillIds?.includes(item.skillId)) ||
+            (!!item.subjectId && lesson.subjectId === item.subjectId && (!item.sectionId || lesson.sectionId === item.sectionId))
+          ),
+          recommendedResource: libraryItems.find((resource) =>
+            (!!item.skillId && resource.skillIds?.includes(item.skillId)) ||
+            (!!item.subjectId && resource.subjectId === item.subjectId && (!item.sectionId || resource.sectionId === item.sectionId))
+          ),
+        };
+      })
+      .filter((item) => item.mastery < 75)
+      .sort((a, b) => a.mastery - b.mastery || b.relatedCount - a.relatedCount)
+      .slice(0, 3);
+  }, [availablePreparedQuizzes, examResults, subjects, lessons, libraryItems]);
 
   const courseFilters = useMemo(() => {
     const titles = Array.from(new Set(examResults.map((result) => result.quizTitle).filter(Boolean)));
@@ -45,7 +206,146 @@ const Quizzes: React.FC = () => {
         <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
         <StatCard icon={<TrendingUp size={24} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
         <StatCard icon={<CheckCircle size={24} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
-        <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="إجمالي الاختبارات" color="emerald" />
+        <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">مركز الاختبارات</div>
+          <div className="p-6 space-y-5">
+            <div className="grid md:grid-cols-2 gap-4">
+              <ActionCard
+                icon={<Zap size={24} />}
+                title="اختبار ساهر الذاتي"
+                description="أنشئ اختبارك بنفسك: المسار، المادة، عدد الأسئلة، الصعوبة، والوقت."
+                to="/quiz"
+                buttonLabel="ابدأ الآن"
+                tone="purple"
+              />
+              <ActionCard
+                icon={<Target size={24} />}
+                title="الاختبارات المركزية"
+                description="اختبارات موجّهة لك من الإدارة أو المدرسة وتظهر فقط إذا كنت مستهدفًا بها."
+                to={centralQuizzes[0] ? `/quiz/${centralQuizzes[0].id}` : '/quiz'}
+                buttonLabel={centralQuizzes.length > 0 ? 'افتح الاختبارات المركزية' : 'لا يوجد حاليًا'}
+                tone="amber"
+                disabled={centralQuizzes.length === 0}
+              />
+            </div>
+
+            {weakSkillRecommendations.length > 0 && (
+              <div className="rounded-2xl border border-amber-100 bg-amber-50/40 p-5 space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-bold text-gray-900">اختبارات مقترحة حسب المهارات الضعيفة</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      هذه الترشيحات مبنية على نتائجك السابقة حتى تعالج المهارات التي تحتاج دعمًا أسرع.
+                    </p>
+                  </div>
+                  <div className="hidden md:flex items-center justify-center w-11 h-11 rounded-xl bg-white text-amber-600">
+                    <Target size={22} />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+                  {weakSkillRecommendations.map((item) => (
+                    <div key={item.key} className="rounded-xl border border-white/80 bg-white/80 p-4 space-y-3">
+                      <div className="space-y-1">
+                        <div className="font-bold text-gray-900">{item.skill}</div>
+                        <div className="text-xs text-gray-500">
+                          {item.subjectName}
+                          {item.section ? ` - ${item.section}` : ''}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">الإتقان الحالي</span>
+                        <span className={`font-bold ${item.mastery < 50 ? 'text-red-500' : 'text-amber-600'}`}>{item.mastery}%</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">اختبارات مناسبة</span>
+                        <span className="font-bold text-gray-900">{item.relatedCount}</span>
+                      </div>
+
+                      {(item.recommendedLesson || item.recommendedResource) ? (
+                        <div className="text-xs text-gray-600 space-y-1">
+                          {item.recommendedLesson ? <div>شرح مقترح: <span className="font-bold">{item.recommendedLesson.title}</span></div> : null}
+                          {item.recommendedResource ? <div>ملف داعم: <span className="font-bold">{item.recommendedResource.title}</span></div> : null}
+                        </div>
+                      ) : null}
+
+                      <div className="space-y-2">
+                        <Link
+                          to={item.recommendedQuiz ? `/quiz/${item.recommendedQuiz.id}` : '/quiz'}
+                          className="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors text-center block"
+                        >
+                          {item.recommendedQuiz ? 'ابدأ الاختبار المقترح' : 'أنشئ اختبار ساهر لهذه المهارة'}
+                        </Link>
+                        {item.recommendedLesson ? (
+                          <Link
+                            to={item.subjectId ? `/category/${item.recommendedLesson.pathId}/${item.subjectId}` : '/courses'}
+                            className="bg-white border border-gray-200 text-gray-800 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors text-center block"
+                          >
+                            راجع الشرح أولًا
+                          </Link>
+                        ) : null}
+                        {item.recommendedResource?.url ? (
+                          <a
+                            href={item.recommendedResource.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-100 transition-colors text-center block"
+                          >
+                            افتح الملف الداعم
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <QuizSection
+              title="اختبارات ساهر الجاهزة"
+              emptyMessage="لا توجد اختبارات ساهر جاهزة منشورة لك حاليًا."
+              items={saherQuizzes}
+              subjects={subjects}
+              badgeClassName="bg-purple-100 text-purple-700"
+              badgeLabel="ساهر"
+            />
+
+            <QuizSection
+              title="اختبارات مركزية موجّهة"
+              emptyMessage="لا توجد اختبارات مركزية موجّهة لحسابك حاليًا."
+              items={centralQuizzes}
+              subjects={subjects}
+              badgeClassName="bg-amber-100 text-amber-700"
+              badgeLabel="مركزي"
+            />
+
+            <QuizSection
+              title="اختبارات جاهزة أخرى"
+              emptyMessage="لا توجد اختبارات جاهزة إضافية منشورة حاليًا."
+              items={regularPreparedQuizzes}
+              subjects={subjects}
+              badgeClassName="bg-gray-100 text-gray-700"
+              badgeLabel="جاهز"
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-gray-900 text-white p-4 text-center font-bold text-lg">ملخص سريع</div>
+          <div className="p-6 space-y-4">
+            <SummaryRow label="اختبارات جاهزة متاحة" value={availablePreparedQuizzes.length} />
+            <SummaryRow label="اختبارات ساهر" value={saherQuizzes.length} />
+            <SummaryRow label="اختبارات مركزية" value={centralQuizzes.length} />
+            <SummaryRow label="أفضل نتيجة" value={`${maxScore}%`} />
+            <SummaryRow label="آخر محاولة" value={examResults[0] ? formatQuizDate(examResults[0].date) : 'لا يوجد'} />
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3 justify-center">
@@ -65,11 +365,11 @@ const Quizzes: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">تفاصيل الاختبارات</div>
+        <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">سجل المحاولات</div>
 
         {filteredQuizzes.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px]">
+            <table className="w-full min-w-[850px]">
               <thead className="bg-gray-50 text-gray-500 text-xs font-bold">
                 <tr>
                   <th className="p-4 text-right">اسم الاختبار وعدد الأسئلة</th>
@@ -123,6 +423,113 @@ const Quizzes: React.FC = () => {
     </div>
   );
 };
+
+const QuizSection = ({
+  title,
+  emptyMessage,
+  items,
+  subjects,
+  badgeClassName,
+  badgeLabel,
+}: {
+  title: string;
+  emptyMessage: string;
+  items: Array<{
+    id: string;
+    title: string;
+    subjectId: string;
+    questionIds: string[];
+    createdAt: number;
+    dueDate?: string;
+  }>;
+  subjects: ReturnType<typeof useStore.getState>['subjects'];
+  badgeClassName: string;
+  badgeLabel: string;
+}) => (
+  <div className="space-y-3">
+    <div className="flex items-center justify-between">
+      <h3 className="font-bold text-gray-800">{title}</h3>
+      <span className={`px-3 py-1 rounded-full text-xs font-bold ${badgeClassName}`}>{badgeLabel}</span>
+    </div>
+
+    {items.length > 0 ? (
+      <div className="space-y-3">
+        {items.slice(0, 4).map((quiz) => (
+          <div
+            key={quiz.id}
+            className="border border-gray-100 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-indigo-200 transition-colors"
+          >
+            <div className="space-y-1">
+              <div className="font-bold text-gray-900">{quiz.title}</div>
+              <div className="text-sm text-gray-500">
+                {subjects.find((subject) => subject.id === quiz.subjectId)?.name || 'بدون مادة'} - {quiz.questionIds.length} سؤال
+              </div>
+              <div className="text-xs text-gray-400 flex items-center gap-2">
+                <Clock size={14} />
+                <span>{quiz.dueDate ? `متاح حتى ${formatQuizDate(quiz.dueDate)}` : formatCreatedDate(quiz.createdAt)}</span>
+              </div>
+            </div>
+            <Link
+              to={`/quiz/${quiz.id}`}
+              className="bg-gray-900 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors text-center"
+            >
+              دخول الاختبار
+            </Link>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center text-sm text-gray-500">
+        {emptyMessage}
+      </div>
+    )}
+  </div>
+);
+
+const ActionCard = ({
+  icon,
+  title,
+  description,
+  to,
+  buttonLabel,
+  tone,
+  disabled = false,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  to: string;
+  buttonLabel: string;
+  tone: 'purple' | 'amber';
+  disabled?: boolean;
+}) => {
+  const toneClasses =
+    tone === 'purple'
+      ? 'bg-purple-50 text-purple-700 border-purple-100'
+      : 'bg-amber-50 text-amber-700 border-amber-100';
+
+  return (
+    <div className={`rounded-2xl border p-5 ${toneClasses}`}>
+      <div className="w-12 h-12 rounded-xl bg-white/70 flex items-center justify-center mb-4">{icon}</div>
+      <h3 className="font-bold text-lg mb-2">{title}</h3>
+      <p className="text-sm leading-6 mb-5">{description}</p>
+      {disabled ? (
+        <div className="bg-white/70 text-gray-500 py-2 rounded-lg font-bold text-center text-sm">لا يوجد الآن</div>
+      ) : (
+        <Link to={to} className="bg-white text-gray-900 py-2 rounded-lg font-bold text-center block text-sm hover:bg-gray-50">
+          {buttonLabel}
+        </Link>
+      )}
+    </div>
+  );
+};
+
+const SummaryRow = ({ label, value }: { label: string; value: string | number }) => (
+  <div className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+    <span className="text-sm text-gray-500">{label}</span>
+    <span className="font-bold text-gray-900">{value}</span>
+  </div>
+);
 
 const StatCard = ({
   icon,

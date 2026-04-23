@@ -32,10 +32,14 @@ const quizSchema = z.object({
   subjectId: z.string().min(1),
   sectionId: z.string().nullable().optional(),
   type: z.enum(["quiz", "bank"]).default("quiz"),
+  mode: z.enum(["regular", "saher", "central"]).default("regular"),
   settings: z.record(z.any()),
   access: z.record(z.any()),
   questionIds: z.array(z.string()).default([]),
   skillIds: z.array(z.string()).optional(),
+  targetGroupIds: z.array(z.string()).default([]),
+  targetUserIds: z.array(z.string()).default([]),
+  dueDate: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
 });
 

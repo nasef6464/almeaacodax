@@ -7,7 +7,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 export const QuizPage: React.FC = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
-  const { quizzes, questions, user, checkAccess, saveExamResult, nestedSkills, topics, subjects, sections } = useStore();
+  const { quizzes, questions, user, checkAccess, saveExamResult, skills, subjects, sections } = useStore();
   
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
@@ -16,11 +16,35 @@ export const QuizPage: React.FC = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حالياً.');
 
   useEffect(() => {
     const foundQuiz = quizzes.find(q => q.id === quizId);
     if (foundQuiz) {
       setQuiz(foundQuiz);
+      setAccessMessage('هذا الاختبار غير متاح لك حالياً.');
+
+      const isExpired = !!foundQuiz.dueDate && Date.now() > new Date(`${foundQuiz.dueDate}T23:59:59`).getTime();
+      if (isExpired) {
+        setHasAccess(false);
+        setAccessMessage('انتهت صلاحية هذا الاختبار.');
+        return;
+      }
+
+      if ((foundQuiz.mode || 'regular') === 'central') {
+        const userGroups = user.groupIds || [];
+        const isUserTargeted =
+          (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
+        const isGroupTargeted =
+          (foundQuiz.targetGroupIds || []).length === 0 ||
+          (foundQuiz.targetGroupIds || []).some(id => userGroups.includes(id));
+
+        if (!isUserTargeted || !isGroupTargeted) {
+          setHasAccess(false);
+          setAccessMessage('هذا اختبار مركزي موجّه لطلاب محددين فقط.');
+          return;
+        }
+      }
       
       // Check access
       if (foundQuiz.access.type === 'free') {
@@ -75,8 +99,8 @@ export const QuizPage: React.FC = () => {
     }
   };
 
-  const handleFinish = () => {
-    setIsFinished(true);
+    const handleFinish = () => {
+        setIsFinished(true);
     
     if (!quiz) return;
 
@@ -103,10 +127,22 @@ export const QuizPage: React.FC = () => {
       }
     });
 
-    const allSkills = nestedSkills.flatMap(s => [s, ...s.subSkills]);
     const skillsAnalysis = Object.entries(skillStats).map(([skillId, stats]) => {
-      const topicSkill = topics.find(topic => topic.id === skillId);
-      const nestedSkill = allSkills.find(skill => skill.id === skillId);
+      const resolvedSkill = skills.find(skill => skill.id === skillId);
+      const topicSkill = resolvedSkill
+        ? {
+            title: resolvedSkill.name,
+            pathId: resolvedSkill.pathId,
+            subjectId: resolvedSkill.subjectId,
+            sectionId: resolvedSkill.sectionId,
+          }
+        : undefined;
+      const nestedSkill = resolvedSkill
+        ? {
+            name: resolvedSkill.name,
+            subjectId: resolvedSkill.subjectId,
+          }
+        : undefined;
       const mastery = Math.round((stats.correct / stats.total) * 100);
       let status: 'weak' | 'average' | 'strong' = 'average';
       if (mastery < 50) status = 'weak';
@@ -169,6 +205,7 @@ export const QuizPage: React.FC = () => {
     };
 
     saveExamResult(result);
+    navigate('/results');
   };
 
   if (hasAccess === null) {
@@ -183,7 +220,7 @@ export const QuizPage: React.FC = () => {
             <AlertCircle size={32} />
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">عذراً، لا يمكنك الوصول</h2>
-          <p className="text-gray-500 mb-6">هذا الاختبار غير متاح لك حالياً. قد يكون مدفوعاً أو مخصصاً لمجموعة معينة.</p>
+          <p className="text-gray-500 mb-6">{accessMessage}</p>
           <button onClick={() => navigate('/')} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
             العودة للرئيسية
           </button>

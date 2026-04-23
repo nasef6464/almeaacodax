@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Course } from '../types';
 import { 
     PlayCircle, BookOpen, Clock, Star, User, 
@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
 import { useStore } from '../store/useStore';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseOverviewProps {
     course: Course;
@@ -21,7 +22,8 @@ type TabType = 'description' | 'syllabus' | 'tests' | 'qa' | 'files';
 export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue }) => {
     const [activeTab, setActiveTab] = useState<TabType>('syllabus');
     const [newQuestion, setNewQuestion] = useState('');
-    const { enrolledCourses, enrollCourse, completedLessons } = useStore();
+    const { enrolledCourses, enrollCourse, completedLessons, quizzes } = useStore();
+    const navigate = useNavigate();
 
     const isEnrolled = enrolledCourses.includes(course.id);
     
@@ -30,6 +32,34 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const completedCount = course.modules?.reduce((acc, mod) => 
         acc + mod.lessons.filter(l => completedLessons.includes(l.id)).length, 0) || 0;
     const progress = Math.round((completedCount / totalLessons) * 100);
+
+    const relatedTests = useMemo(() => {
+        const courseSkillIds = new Set(course.skills || []);
+
+        return quizzes
+            .filter((quiz) => {
+                if (quiz.isPublished === false || quiz.type === 'bank') {
+                    return false;
+                }
+
+                const sameSubject = quiz.subjectId && course.subjectId && quiz.subjectId === course.subjectId;
+                const samePath = quiz.pathId && course.pathId && quiz.pathId === course.pathId;
+                const hasSharedSkill = (quiz.skillIds || []).some((skillId) => courseSkillIds.has(skillId));
+
+                return Boolean((sameSubject && samePath) || hasSharedSkill);
+            })
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(0, 6)
+            .map((quiz) => ({
+                id: quiz.id,
+                title: quiz.title,
+                duration: `${quiz.settings.timeLimit || 30} دقيقة`,
+                questions: quiz.questionIds.length,
+                type: quiz.mode === 'central' ? 'comprehensive' : quiz.mode === 'saher' ? 'simulated' : 'trial',
+                level: quiz.mode === 'central' ? 'مركزي' : quiz.mode === 'saher' ? 'ساهر' : 'تدريبي',
+                isLocked: false,
+            }));
+    }, [course.pathId, course.skills, course.subjectId, quizzes]);
 
     const handleEnroll = () => {
         enrollCourse(course.id);
@@ -113,12 +143,17 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6"
                     >
-                        <SimulatedTestExperience 
-                            tests={[
-                                { id: 1, title: 'اختبار الدورة الشامل', duration: '60 دقيقة', questions: 40, type: 'comprehensive', level: 'متقدم', isLocked: false },
-                                { id: 2, title: 'اختبار الوحدة الأولى', duration: '30 دقيقة', questions: 20, type: 'simulated', level: 'متوسط', isLocked: false }
-                            ]} 
-                        />
+                        {relatedTests.length > 0 ? (
+                            <SimulatedTestExperience
+                                tests={relatedTests}
+                                onStartTest={(test) => navigate(`/quiz/${test.id}`)}
+                            />
+                        ) : (
+                            <div className="text-center py-12">
+                                <BarChart size={48} className="mx-auto text-gray-200 mb-4" />
+                                <p className="text-gray-400">لا توجد اختبارات مرتبطة بهذه الدورة بعد.</p>
+                            </div>
+                        )}
                     </motion.div>
                 );
             case 'qa':

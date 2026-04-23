@@ -9,13 +9,22 @@ interface CoursesManagerProps {
 }
 
 export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => {
-  const { courses, addCourse, updateCourse, deleteCourse } = useStore();
+  const { courses, addCourse, updateCourse, deleteCourse, subjects } = useStore();
   const [isBuilding, setIsBuilding] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
+  const currentSubject = subjectId ? subjects.find((item) => item.id === subjectId) : undefined;
 
   const handleCreateNew = () => {
-    setEditingCourse(subjectId ? { subject: subjectId } as Partial<Course> as Course : undefined);
+    setEditingCourse(
+      subjectId
+        ? ({
+            subject: subjectId,
+            subjectId,
+            pathId: currentSubject?.pathId,
+          } as Partial<Course> as Course)
+        : undefined,
+    );
     setIsBuilding(true);
   };
 
@@ -25,15 +34,25 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   };
 
   const handleSaveCourse = (courseData: Partial<Course>) => {
+    const normalizedSubjectId = subjectId || courseData.subjectId || courseData.subject || '';
+    const normalizedSubject = normalizedSubjectId || courseData.subject || '';
+    const normalizedPathId =
+      courseData.pathId || currentSubject?.pathId || subjects.find((item) => item.id === normalizedSubjectId)?.pathId || '';
+    const normalizedCourseData: Partial<Course> = {
+      ...courseData,
+      subject: normalizedSubject,
+      subjectId: normalizedSubjectId || undefined,
+      pathId: normalizedPathId || undefined,
+    };
+
     if (editingCourse?.id) {
       // Update existing
-      updateCourse(editingCourse.id, courseData);
+      updateCourse(editingCourse.id, normalizedCourseData);
     } else {
       // Create new
       const newCourse = {
-        ...courseData,
+        ...normalizedCourseData,
         id: `course_${Date.now()}`,
-        subject: subjectId || courseData.subject || '',
       } as Course;
       addCourse(newCourse);
     }
@@ -49,7 +68,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   const filteredCourses = courses.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           c.category.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSubject = subjectId ? c.subject === subjectId : true;
+    const matchesSubject = subjectId ? (c.subjectId || c.subject) === subjectId : true;
     return matchesSearch && matchesSubject;
   });
 

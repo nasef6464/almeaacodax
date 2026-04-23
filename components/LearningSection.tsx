@@ -18,14 +18,14 @@ interface LearningSectionProps {
 }
 
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { subjects, courses, nestedSkills, libraryItems, questions, quizzes } = useStore();
+    const { subjects, courses, libraryItems, quizzes } = useStore();
     const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'banks' | 'tests' | 'library'>('courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     
     // Get Subject Settings
-    const currentSubjectData = subjects.find(s => s.id === subject || s.id === `${category}_${subject}` || s.id === `sub_${subject}`);
+    const currentSubjectData = subjects.find(s => s.id === subject);
     const settings = currentSubjectData?.settings || {};
 
     
@@ -60,9 +60,15 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         }
         return c.category === category || c.subject === subject;
     });
+    sectionCourses = sectionCourses.filter((course) => {
+        const coursePathId = course.pathId || course.category;
+        const courseSubjectId = course.subjectId || course.subject;
+        const pathMatches = !!coursePathId && coursePathId === category;
+        const subjectMatches = !!courseSubjectId && courseSubjectId === subject;
+        return subject ? (subjectMatches || (pathMatches && !courseSubjectId)) : pathMatches;
+    });
 
     const topicList = useStore(state => state.topics);
-    const lessonList = useStore(state => state.lessons);
     const quizList = useStore(state => state.quizzes);
 
     let mappedSkills = topicList
@@ -91,6 +97,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 originalTopic: topic // Keep a reference to the real topic
             };
         });
+    mappedSkills = mappedSkills.filter((skill) => {
+        const topic = skill.originalTopic;
+        const pathMatches = !topic?.pathId || topic.pathId === category;
+        const subjectMatches = !topic?.subjectId || topic.subjectId === subject;
+        return pathMatches && subjectMatches;
+    });
 
     let banks = quizzes.filter(q => (q.subjectId === subject || q.subjectId === `${category}_${subject}`) && q.type === 'bank').map(q => ({
         id: q.id,
@@ -117,6 +129,19 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         ...item,
         isLocked: settings.lockLibraryForNonSubscribers
     }));
+    banks = banks.filter((bank) => {
+        const sourceQuiz = quizList.find((quiz) => quiz.id === bank.id);
+        return !!sourceQuiz && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
+    });
+    tests = tests.filter((test) => {
+        const sourceQuiz = quizList.find((quiz) => quiz.id === test.id);
+        return !!sourceQuiz && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
+    });
+    sectionLibraryItems = sectionLibraryItems.filter((item) => {
+        const pathMatches = !item.pathId || item.pathId === category;
+        const subjectMatches = !subject || item.subjectId === subject;
+        return pathMatches && subjectMatches;
+    });
 
     const handleItemClick = (item: any, type: string) => {
         if (item.isLocked) {
@@ -206,7 +231,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     <div>
                                         <h3 className="font-bold text-gray-800 text-lg">{skill.title}</h3>
                                         <span className="text-xs text-gray-500 font-medium">
-                                            {skill.totalLessons} درس • {skill.totalQuizzes || 2} اختبار
+                                            {skill.totalLessons} درس • {skill.totalQuizzes || 0} تدريب قصير
                                         </span>
                                     </div>
                                 </div>
@@ -234,6 +259,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             level: 'متعدد',
                             isLocked: bank.isLocked
                         }))} 
+                        onStartTest={(test) => navigate(`/quiz/${test.id}`)}
                         onLockedClick={(test) => handleItemClick(test, 'bank')}
                     />
                 )}
@@ -241,6 +267,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 {activeTab === 'tests' && (
                     <SimulatedTestExperience 
                         tests={tests} 
+                        onStartTest={(test) => navigate(`/quiz/${test.id}`)}
                         onLockedClick={(test) => handleItemClick(test, 'test')}
                     />
                 )}
@@ -326,7 +353,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 onClose={() => setPaymentModalData({ isOpen: false, item: null, type: '' })} 
                 item={{
                     id: paymentModalData.item?.id || 'pkg',
-                    title: `باقة ${paymentModalData.type === 'skill' ? 'المهارات' : paymentModalData.type === 'bank' ? 'بنك الأسئلة' : paymentModalData.type === 'test' ? 'الاختبارات' : 'شاملة'}`,
+                    title: `باقة ${paymentModalData.type === 'skill' ? 'التأسيس' : paymentModalData.type === 'bank' ? 'بنك الأسئلة' : paymentModalData.type === 'test' ? 'الاختبارات' : 'شاملة'}`,
                     price: 99,
                     currency: 'ر.س',
                     description: `اشترك الآن للوصول إلى ${paymentModalData.item?.title || 'المحتوى'} والمزيد من المحتوى الحصري.`,

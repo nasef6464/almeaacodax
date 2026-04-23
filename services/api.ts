@@ -44,7 +44,16 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     throw new Error(payload.message || "Request failed");
   }
 
-  return response.json() as Promise<T>;
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const raw = await response.text();
+  if (!raw) {
+    return undefined as T;
+  }
+
+  return JSON.parse(raw) as T;
 }
 
 export const api = {
@@ -68,7 +77,7 @@ export const api = {
       token,
     }),
   getTaxonomyBootstrap: () =>
-    request<{ paths: unknown[]; levels: unknown[]; subjects: unknown[] }>("/taxonomy/bootstrap"),
+    request<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>("/taxonomy/bootstrap"),
   createPath: (payload: unknown, token?: string | null) =>
     request<unknown>("/taxonomy/paths", {
       method: "POST",
@@ -117,6 +126,40 @@ export const api = {
     }),
   deleteSubject: (id: string, token?: string | null) =>
     request<void>(`/taxonomy/subjects/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+  createSection: (payload: unknown, token?: string | null) =>
+    request<unknown>("/taxonomy/sections", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateSection: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/taxonomy/sections/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  deleteSection: (id: string, token?: string | null) =>
+    request<void>(`/taxonomy/sections/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+  createSkill: (payload: unknown, token?: string | null) =>
+    request<unknown>("/taxonomy/skills", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateSkill: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/taxonomy/skills/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  deleteSkill: (id: string, token?: string | null) =>
+    request<void>(`/taxonomy/skills/${id}`, {
       method: "DELETE",
       token,
     }),

@@ -266,7 +266,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">المهارات المرتبطة (اختياري)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">موضوعات التأسيس المرتبطة (اختياري)</label>
                     <select 
                       multiple
                       value={courseData.skills || []}
@@ -289,7 +289,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                               const subTopics = subjectTopics.filter(topic => topic.parentId === mainTopic.id);
                               return (
                                 <React.Fragment key={mainTopic.id}>
-                                  <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
+                                  <option value={mainTopic.id}>{mainTopic.title} (موضوع رئيسي)</option>
                                   {subTopics.map(subTopic => (
                                     <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
                                   ))}

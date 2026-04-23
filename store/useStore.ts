@@ -4,7 +4,7 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, Topic } from '../types';
-import { currentUser, courses as mockCourses } from '../services/mockData';
+import { currentUser } from '../services/mockData';
 
 // Initial mock questions
 const initialQuestions: Question[] = [
@@ -597,6 +597,8 @@ interface AppState {
         paths?: CategoryPath[];
         levels?: import('../types').CategoryLevel[];
         subjects?: CategorySubject[];
+        sections?: CategorySection[];
+        skills?: Skill[];
     }) => void;
     hydrateContentBootstrap: (payload: {
         topics?: import('../types').Topic[];
@@ -676,6 +678,8 @@ interface AppState {
     updateSubject: (subjectId: string, data: Partial<CategorySubject>) => void;
     deleteSubject: (subjectId: string) => void;
     addSection: (section: CategorySection) => void;
+    updateSection: (sectionId: string, data: Partial<CategorySection>) => void;
+    deleteSection: (sectionId: string) => void;
 
     // Skill Actions
     createSkill: (skill: Skill) => void;
@@ -740,7 +744,7 @@ const initialUser: User = {
     ...currentUser,
     subscription: {
         plan: 'free',
-        purchasedCourses: ['c1', 'c3', 'c5'], // Initial purchased from mockData
+        purchasedCourses: [],
         purchasedPackages: []
     }
 };
@@ -808,7 +812,7 @@ export const useStore = create<AppState>()(
                     createdAt: Date.now()
                 }
             ],
-            courses: mockCourses as Course[],
+            courses: [],
             questions: initialQuestions,
             quizzes: [],
             lessons: [],
@@ -873,7 +877,7 @@ export const useStore = create<AppState>()(
                     libraryItems: state.libraryItems.filter(i => i.id !== id)
                 }));
             },
-            enrolledCourses: ['c1', 'c3', 'c5'],
+            enrolledCourses: [],
             enrolledPaths: ['p_qudrat'], // Default enrolled path
             completedLessons: ['l1', 'l2'], // Some initial progress
             examResults: [],
@@ -892,8 +896,8 @@ export const useStore = create<AppState>()(
             reviewLater: [],
             recentActivity: [],
 
-            hydrateCourses: (courses) => set((state) => ({
-                courses: courses.length > 0 ? courses : state.courses
+            hydrateCourses: (courses) => set(() => ({
+                courses
             })),
 
             hydrateQuestions: (questions) => set((state) => ({
@@ -931,6 +935,29 @@ export const useStore = create<AppState>()(
                       }))
                       .filter((subject: any) => subject.id && subject.pathId && subject.name)
                   : state.subjects,
+                sections: payload.sections && payload.sections.length > 0
+                  ? payload.sections
+                      .map((section: any) => ({
+                        ...section,
+                        id: String(section?.id || section?._id || ''),
+                        subjectId: String(section?.subjectId || ''),
+                      }))
+                      .filter((section: any) => section.id && section.subjectId && section.name)
+                  : state.sections,
+                skills: payload.skills && payload.skills.length > 0
+                  ? payload.skills
+                      .map((skill: any) => ({
+                        ...skill,
+                        id: String(skill?.id || skill?._id || ''),
+                        pathId: String(skill?.pathId || ''),
+                        subjectId: String(skill?.subjectId || ''),
+                        sectionId: String(skill?.sectionId || ''),
+                        lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
+                        questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
+                        createdAt: typeof skill?.createdAt === 'number' ? skill.createdAt : Date.now(),
+                      }))
+                      .filter((skill: any) => skill.id && skill.pathId && skill.subjectId && skill.sectionId && skill.name)
+                  : state.skills,
             })),
 
             hydrateContentBootstrap: (payload) => set((state) => ({
@@ -1407,7 +1434,12 @@ export const useStore = create<AppState>()(
                 set((state) => ({
                     paths: state.paths.filter(p => p.id !== pathId),
                     subjects: state.subjects.filter(s => s.pathId !== pathId),
-                    levels: state.levels.filter(l => l.pathId !== pathId)
+                    levels: state.levels.filter(l => l.pathId !== pathId),
+                    sections: state.sections.filter(section => {
+                        const subject = state.subjects.find(s => s.id === section.subjectId);
+                        return subject?.pathId !== pathId;
+                    }),
+                    skills: state.skills.filter(skill => skill.pathId !== pathId)
                 }));
             },
             addLevel: (level) => {
@@ -1426,7 +1458,15 @@ export const useStore = create<AppState>()(
                 api.deleteLevel(levelId).catch(console.error);
                 set((state) => ({
                     levels: state.levels.filter(l => l.id !== levelId),
-                    subjects: state.subjects.filter(s => s.levelId !== levelId)
+                    subjects: state.subjects.filter(s => s.levelId !== levelId),
+                    sections: state.sections.filter(section => {
+                        const subject = state.subjects.find(s => s.id === section.subjectId);
+                        return subject?.levelId !== levelId;
+                    }),
+                    skills: state.skills.filter(skill => {
+                        const subject = state.subjects.find(s => s.id === skill.subjectId);
+                        return subject?.levelId !== levelId;
+                    })
                 }));
             },
             addSubject: (subject) => {
@@ -1445,28 +1485,85 @@ export const useStore = create<AppState>()(
                 api.deleteSubject(subjectId).catch(console.error);
                 set((state) => ({
                     subjects: state.subjects.filter(s => s.id !== subjectId),
-                    sections: state.sections.filter(sec => sec.subjectId !== subjectId)
+                    sections: state.sections.filter(sec => sec.subjectId !== subjectId),
+                    skills: state.skills.filter(skill => skill.subjectId !== subjectId),
+                    lessons: state.lessons.map(lesson =>
+                        lesson.subjectId === subjectId ? { ...lesson, sectionId: undefined, skillIds: [] } : lesson
+                    ),
+                    questions: state.questions.map(question =>
+                        question.subject === subjectId ? { ...question, sectionId: undefined, skillIds: [] } : question
+                    ),
+                    libraryItems: state.libraryItems.map(item =>
+                        item.subjectId === subjectId ? { ...item, sectionId: undefined, skillIds: [] } : item
+                    ),
+                    quizzes: state.quizzes.map(quiz =>
+                        quiz.subjectId === subjectId ? { ...quiz, sectionId: undefined, skillIds: [] } : quiz
+                    )
                 }));
             },
             addSection: (section) => {
-                setDoc(doc(db, 'sections', section.id), section).catch(console.error);
+                api.createSection(section).catch(console.error);
                 set((state) => ({
-                    sections: [...state.sections, section]
+                    sections: [...state.sections.filter(existingSection => existingSection.id !== section.id), section]
+                }));
+            },
+            updateSection: (sectionId, data) => {
+                api.updateSection(sectionId, data).catch(console.error);
+                set((state) => ({
+                    sections: state.sections.map(section => section.id === sectionId ? { ...section, ...data } : section)
+                }));
+            },
+            deleteSection: (sectionId) => {
+                api.deleteSection(sectionId).catch(console.error);
+                set((state) => ({
+                    sections: state.sections.filter(section => section.id !== sectionId),
+                    skills: state.skills.filter(skill => skill.sectionId !== sectionId),
+                    lessons: state.lessons.map(lesson =>
+                        lesson.sectionId === sectionId ? { ...lesson, sectionId: undefined } : lesson
+                    ),
+                    questions: state.questions.map(question =>
+                        question.sectionId === sectionId ? { ...question, sectionId: undefined } : question
+                    )
                 }));
             },
 
             // Skill Actions
-            createSkill: (skill) => set((state) => ({
-                skills: [...state.skills, skill]
-            })),
+            createSkill: (skill) => {
+                api.createSkill(skill).catch(console.error);
+                set((state) => ({
+                    skills: [...state.skills.filter(existingSkill => existingSkill.id !== skill.id), skill]
+                }));
+            },
 
-            updateSkill: (skillId, data) => set((state) => ({
-                skills: state.skills.map(s => s.id === skillId ? { ...s, ...data } : s)
-            })),
+            updateSkill: (skillId, data) => {
+                api.updateSkill(skillId, data).catch(console.error);
+                set((state) => ({
+                    skills: state.skills.map(s => s.id === skillId ? { ...s, ...data } : s)
+                }));
+            },
 
-            deleteSkill: (skillId) => set((state) => ({
-                skills: state.skills.filter(s => s.id !== skillId)
-            })),
+            deleteSkill: (skillId) => {
+                api.deleteSkill(skillId).catch(console.error);
+                set((state) => ({
+                    skills: state.skills.filter(s => s.id !== skillId),
+                    lessons: state.lessons.map(lesson => ({
+                        ...lesson,
+                        skillIds: lesson.skillIds.filter(id => id !== skillId)
+                    })),
+                    questions: state.questions.map(question => ({
+                        ...question,
+                        skillIds: question.skillIds.filter(id => id !== skillId)
+                    })),
+                    libraryItems: state.libraryItems.map(item => ({
+                        ...item,
+                        skillIds: (item.skillIds || []).filter(id => id !== skillId)
+                    })),
+                    quizzes: state.quizzes.map(quiz => ({
+                        ...quiz,
+                        skillIds: (quiz.skillIds || []).filter(id => id !== skillId)
+                    }))
+                }));
+            },
 
             linkSkillToLesson: (skillId, lessonId) => set((state) => ({
                 skills: state.skills.map(s => {

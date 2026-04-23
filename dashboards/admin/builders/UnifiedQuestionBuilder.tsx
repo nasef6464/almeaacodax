@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
 import { Save, X, Wand2, Loader2 } from 'lucide-react';
@@ -20,7 +20,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   subjectId,
   sectionId
 }) => {
-  const { topics, subjects, sections, paths } = useStore();
+  const { skills, subjects, sections, paths } = useStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const [question, setQuestion] = useState<Partial<Question>>(initialQuestion || {
     text: '',
@@ -36,10 +36,53 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     skillIds: []
   });
 
-  const availableSkillTopics = useMemo(
-    () => topics.filter(topic => !!question.subject && topic.subjectId === question.subject && !topic.parentId),
-    [topics, question.subject]
+  const availableMainSkills = useMemo(
+    () => sections.filter((section) => !!question.subject && section.subjectId === question.subject),
+    [sections, question.subject]
   );
+
+  const availableSubSkills = useMemo(
+    () => skills.filter((skill) => !!question.subject && skill.subjectId === question.subject && (!question.sectionId || skill.sectionId === question.sectionId)),
+    [skills, question.subject, question.sectionId]
+  );
+
+  const selectedSubSkills = useMemo(
+    () => availableSubSkills.filter((skill) => question.skillIds?.includes(skill.id)),
+    [availableSubSkills, question.skillIds]
+  );
+
+  useEffect(() => {
+    if (!question.subject) return;
+
+    const currentSubject = subjects.find((subject) => subject.id === question.subject);
+    if (!currentSubject) return;
+
+    const nextPathId = currentSubject.pathId;
+    const sectionBelongsToSubject = !question.sectionId || sections.some(
+      (section) => section.id === question.sectionId && section.subjectId === question.subject
+    );
+    const filteredSkillIds = (question.skillIds || []).filter((skillId) =>
+      skills.some(
+        (skill) =>
+          skill.id === skillId &&
+          skill.subjectId === question.subject &&
+          (!question.sectionId || skill.sectionId === question.sectionId)
+      )
+    );
+
+    if (
+      question.pathId !== nextPathId ||
+      !sectionBelongsToSubject ||
+      filteredSkillIds.length !== (question.skillIds || []).length
+    ) {
+      setQuestion((prev) => ({
+        ...prev,
+        pathId: nextPathId,
+        sectionId: sectionBelongsToSubject ? prev.sectionId : '',
+        skillIds: filteredSkillIds
+      }));
+    }
+  }, [question.subject, question.sectionId, question.pathId, question.skillIds, subjects, sections, skills]);
 
   const handleSave = () => {
     if (!question.text) {
@@ -54,8 +97,12 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       alert('يرجى اختيار المادة');
       return;
     }
+    if (!question.sectionId) {
+      alert('يرجى اختيار المهارة الرئيسة');
+      return;
+    }
     if (!question.skillIds || question.skillIds.length === 0) {
-      alert('يرجى ربط السؤال بمهارة واحدة على الأقل');
+      alert('يرجى ربط السؤال بمهارة فرعية واحدة على الأقل');
       return;
     }
     if (question.type === 'mcq' && question.options?.some(option => !option)) {
@@ -67,30 +114,30 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    let topicName = 'القدرات العقلية';
+    let topicName = 'القدرات العامة';
 
     if (question.subject) {
-      const subjectName = subjects.find(subject => subject.id === question.subject)?.name;
+      const subjectName = subjects.find((subject) => subject.id === question.subject)?.name;
       if (subjectName) topicName = subjectName;
     } else if (question.pathId) {
-      const pathName = paths.find(path => path.id === question.pathId)?.name;
+      const pathName = paths.find((path) => path.id === question.pathId)?.name;
       if (pathName) topicName = pathName;
     }
 
     if (question.sectionId) {
-      const sectionName = sections.find(section => section.id === question.sectionId)?.name;
-      if (sectionName) topicName += ` - ${sectionName}`;
+      const mainSkill = sections.find((section) => section.id === question.sectionId)?.name;
+      if (mainSkill) topicName += ` - ${mainSkill}`;
     }
 
     if (question.skillIds && question.skillIds.length > 0) {
-      const topic = topics.find(item => item.id === question.skillIds![0])?.title;
-      if (topic) topicName += ` - ${topic}`;
+      const subSkill = skills.find((item) => item.id === question.skillIds![0])?.name;
+      if (subSkill) topicName += ` - ${subSkill}`;
     }
 
     try {
       const generated = await generateQuizQuestion(topicName);
       if (generated) {
-        setQuestion(prev => ({
+        setQuestion((prev) => ({
           ...prev,
           text: generated.question,
           options: generated.options,
@@ -192,36 +239,33 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               </select>
             </div>
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-bold text-gray-700 mb-2">القسم</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">المهارة الرئيسة</label>
               <select
                 value={question.sectionId || ''}
                 onChange={event => setQuestion({ ...question, sectionId: event.target.value, skillIds: [] })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                 disabled={!question.subject}
               >
-                <option value="">-- اختر القسم --</option>
-                {sections.filter(section => section.subjectId === question.subject).map(section => (
+                <option value="">-- اختر المهارة الرئيسة --</option>
+                {availableMainSkills.map(section => (
                   <option key={section.id} value={section.id}>{section.name}</option>
                 ))}
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">ربط بالمهارات</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">ربط بالمهارات الفرعية</label>
               <div className="flex flex-wrap gap-2 mb-2">
-                {question.skillIds?.map(skillId => {
-                  const topic = topics.find(item => item.id === skillId);
-                  return topic ? (
-                    <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                      {topic.title}
-                      <button
-                        onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) }))}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        <X size={14} />
-                      </button>
-                    </span>
-                  ) : null;
-                })}
+                {selectedSubSkills.map(subSkill => (
+                  <span key={subSkill.id} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
+                    {subSkill.name}
+                    <button
+                      onClick={() => setQuestion(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== subSkill.id) }))}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
               </div>
               <select
                 value=""
@@ -231,25 +275,22 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                   }
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                disabled={!question.subject || availableSkillTopics.length === 0}
+                disabled={!question.subject || !question.sectionId || availableSubSkills.length === 0}
               >
                 <option value="">
                   {!question.subject
-                    ? '-- اختر المادة أولاً --'
-                    : availableSkillTopics.length === 0
-                      ? '-- لا توجد مهارات لهذه المادة بعد --'
-                      : '-- أضف مهارة --'}
+                    ? '-- اختر المادة أولًا --'
+                    : !question.sectionId
+                      ? '-- اختر المهارة الرئيسة أولًا --'
+                      : availableSubSkills.length === 0
+                        ? '-- لا توجد مهارات فرعية لهذه المهارة الرئيسة بعد --'
+                        : '-- أضف مهارة فرعية --'}
                 </option>
-                {availableSkillTopics.map(mainTopic => (
-                  <optgroup key={mainTopic.id} label={mainTopic.title}>
-                    <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                    {topics.filter(subTopic => subTopic.parentId === mainTopic.id).map(subTopic => (
-                      <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
-                    ))}
-                  </optgroup>
+                {availableSubSkills.map(subSkill => (
+                  <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">المهارات تظهر ديناميكيًا من مركز المهارات حسب المادة المختارة.</p>
+              <p className="text-xs text-gray-500 mt-1">المهارات هنا تُسحب من مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها.</p>
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">رابط فيديو الشرح (اختياري)</label>

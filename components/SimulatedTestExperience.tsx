@@ -20,9 +20,10 @@ interface SimulatedTestExperienceProps {
     tests: Test[];
     mode?: 'test' | 'bank';
     onLockedClick?: (test: Test) => void;
+    onStartTest?: (test: Test) => void;
 }
 
-export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = ({ tests, mode = 'test', onLockedClick }) => {
+export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = ({ tests, mode = 'test', onLockedClick, onStartTest }) => {
     const [selectedTest, setSelectedTest] = useState<Test | null>(null);
     const [testState, setTestState] = useState<'list' | 'popup' | 'pre-test' | 'in-progress' | 'confirm-submit' | 'result'>('list');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -70,6 +71,10 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                 setTestState('popup');
             }
         } else {
+            if (onStartTest) {
+                onStartTest(test);
+                return;
+            }
             setTestState('pre-test');
         }
     };

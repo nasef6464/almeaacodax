@@ -6,7 +6,7 @@ import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 
 export const Landing: React.FC = () => {
-    const { paths } = useStore();
+    const { paths, courses, quizzes, questions } = useStore();
 
     const getPathLink = (pathId: string) => {
         return `/category/${pathId}`;
@@ -22,7 +22,46 @@ export const Landing: React.FC = () => {
         return <span className="text-xl">{path.icon}</span>;
     }
 
-    const homepagePaths = paths.filter(p => p.showInHome !== false && p.isActive !== false);
+    const homepagePaths = paths.filter(
+        p =>
+            p.showInHome !== false &&
+            p.isActive !== false &&
+            typeof p.id === 'string' &&
+            p.id.trim().length > 0 &&
+            typeof p.name === 'string' &&
+            p.name.trim().length > 0
+    );
+
+    const featuredCourses = courses
+        .filter(course => !course.isPackage && course.isPublished !== false)
+        .sort((a, b) => {
+            const studentsA = a.fakeStudentsCount || a.studentCount || 0;
+            const studentsB = b.fakeStudentsCount || b.studentCount || 0;
+            const ratingA = a.fakeRating || a.rating || 0;
+            const ratingB = b.fakeRating || b.rating || 0;
+            return (studentsB + ratingB * 100) - (studentsA + ratingA * 100);
+        })
+        .slice(0, 3);
+
+    const publishedCourses = courses.filter(course => !course.isPackage && course.isPublished !== false);
+    const totalStudents = publishedCourses.reduce((sum, course) => sum + (course.fakeStudentsCount || course.studentCount || 0), 0);
+    const totalQA = publishedCourses.reduce((sum, course) => sum + (course.qa?.length || 0), 0);
+    const averageRating = publishedCourses.length > 0
+        ? (publishedCourses.reduce((sum, course) => sum + (course.fakeRating || course.rating || 0), 0) / publishedCourses.length)
+        : 0;
+    const publishedQuizzes = quizzes.filter(quiz => quiz.isPublished !== false).length;
+    const totalLearningAssets = questions.length + publishedQuizzes;
+
+    const formatCompactNumber = (value: number) => {
+        if (value >= 1000) {
+            return new Intl.NumberFormat('en', {
+                notation: 'compact',
+                maximumFractionDigits: 1,
+            }).format(value);
+        }
+
+        return value.toString();
+    };
 
     return (
         <div className="bg-white font-tajawal">
@@ -136,19 +175,19 @@ export const Landing: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-blue-800 divide-x-reverse">
                         <div>
-                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">+50k</div>
+                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">{formatCompactNumber(totalStudents)}</div>
                             <div className="text-blue-200 text-sm font-bold">طالب وطالبة</div>
                         </div>
                         <div>
-                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">+120</div>
+                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">{publishedCourses.length}</div>
                             <div className="text-blue-200 text-sm font-bold">دورة تدريبية</div>
                         </div>
                         <div>
-                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">+5k</div>
-                            <div className="text-blue-200 text-sm font-bold">سؤال وجواب</div>
+                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">{formatCompactNumber(totalQA || totalLearningAssets)}</div>
+                            <div className="text-blue-200 text-sm font-bold">{totalQA > 0 ? 'سؤال وجواب' : 'مواد تعليمية'}</div>
                         </div>
                         <div>
-                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">4.9</div>
+                            <div className="text-3xl md:text-4xl font-black text-amber-400 mb-1">{averageRating.toFixed(1)}</div>
                             <div className="text-blue-200 text-sm font-bold">تقييم عام</div>
                         </div>
                     </div>
@@ -202,11 +241,7 @@ export const Landing: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[
-                            { id: 'c2', title: 'القدرات والتحصيلي - دورة التدريبات', price: 199, instructor: 'أ. أحمد السالم', rating: 4.9, students: '10k+', thumbnail: 'https://picsum.photos/seed/math/400/250' },
-                            { id: 'c_math_100', title: 'دورة الـ 100 % ( رياضيات تأسيس 2026 )', price: 299, instructor: 'أ. ناصف أحمد', rating: 5.0, students: '455', thumbnail: 'https://placehold.co/400x250/2563eb/ffffff?text=Math+100' },
-                            { id: 'c1', title: 'دورة التأسيس الشاملة - قدرات', price: 150, instructor: 'أ. محمد القحطاني', rating: 4.8, students: '5k+', thumbnail: 'https://picsum.photos/seed/study/400/250' }
-                        ].map((course, idx) => (
+                        {featuredCourses.map((course, idx) => (
                             <Link key={`fcourse-${course.id}-${idx}`} to={`/course/${course.id}`} className="group">
                                 <Card className="overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 rounded-3xl group-hover:-translate-y-2">
                                     <div className="relative aspect-video overflow-hidden">
@@ -219,10 +254,10 @@ export const Landing: React.FC = () => {
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-1 text-amber-400">
                                                 <Star size={14} fill="currentColor" />
-                                                <span className="text-xs font-bold text-gray-600">{course.rating}</span>
+                                                <span className="text-xs font-bold text-gray-600">{course.fakeRating || course.rating || 0}</span>
                                             </div>
                                             <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1">
-                                                <Users size={12} /> {course.students} طالب
+                                                <Users size={12} /> {course.fakeStudentsCount || course.studentCount || 0} طالب
                                             </span>
                                         </div>
                                         <h3 className="font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">{course.title}</h3>
@@ -240,6 +275,11 @@ export const Landing: React.FC = () => {
                             </Link>
                         ))}
                     </div>
+                    {featuredCourses.length === 0 && (
+                        <div className="text-center py-12 text-gray-500">
+                            لا توجد دورات منشورة حاليًا.
+                        </div>
+                    )}
                 </div>
             </section>
 

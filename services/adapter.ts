@@ -1,6 +1,5 @@
 import { api } from "./api";
-import { courses as mockCourses } from "./mockData";
-import { CategoryLevel, CategoryPath, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Topic } from "../types";
+import { CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, Topic } from "../types";
 
 const USE_REAL_API =
   (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== "false";
@@ -37,6 +36,24 @@ const normalizeSubject = (subject: any): CategorySubject => ({
   iconUrl: subject?.iconUrl,
   iconStyle: subject?.iconStyle,
   settings: subject?.settings,
+});
+
+const normalizeSection = (section: any): CategorySection => ({
+  id: String(section?.id || section?._id || ""),
+  subjectId: String(section?.subjectId || ""),
+  name: String(section?.name || ""),
+});
+
+const normalizeSkill = (skill: any): Skill => ({
+  id: String(skill?.id || skill?._id || ""),
+  name: String(skill?.name || ""),
+  pathId: String(skill?.pathId || ""),
+  subjectId: String(skill?.subjectId || ""),
+  sectionId: String(skill?.sectionId || ""),
+  description: skill?.description || "",
+  lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
+  questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
+  createdAt: Number(skill?.createdAt ? new Date(skill.createdAt).getTime() : Date.now()),
 });
 
 const normalizeLesson = (lesson: any, moduleIndex: number, lessonIndex: number): Lesson => ({
@@ -130,6 +147,9 @@ const normalizeCourse = (course: any): Course => ({
   progress: Number(course?.progress ?? 0),
   category: String(course?.category || "عام"),
   subject: course?.subject || "",
+  pathId: course?.pathId ? String(course.pathId) : undefined,
+  subjectId: course?.subjectId ? String(course.subjectId) : undefined,
+  sectionId: course?.sectionId ? String(course.sectionId) : undefined,
   features: Array.isArray(course?.features) ? course.features : [],
   description: course?.description || "",
   instructorBio: course?.instructorBio || "",
@@ -177,6 +197,7 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   subjectId: String(quiz?.subjectId || ""),
   sectionId: quiz?.sectionId || undefined,
   type: quiz?.type || "quiz",
+  mode: quiz?.mode || "regular",
   settings: {
     showExplanations: Boolean(quiz?.settings?.showExplanations),
     showAnswers: Boolean(quiz?.settings?.showAnswers),
@@ -193,27 +214,30 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   createdAt: Number(quiz?.createdAt ?? Date.now()),
   isPublished: Boolean(quiz?.isPublished),
   skillIds: Array.isArray(quiz?.skillIds) ? quiz.skillIds.map(String) : [],
+  targetGroupIds: Array.isArray(quiz?.targetGroupIds) ? quiz.targetGroupIds.map(String) : [],
+  targetUserIds: Array.isArray(quiz?.targetUserIds) ? quiz.targetUserIds.map(String) : [],
+  dueDate: quiz?.dueDate || undefined,
 });
 
 export const adapter = {
   async getCourses() {
     if (!USE_REAL_API) {
-      return mockCourses;
+      return [];
     }
 
     try {
       const data = await api.getCourses();
       const normalized = Array.isArray(data) ? data.map(normalizeCourse).filter((course) => course.id) : [];
-      return normalized.length > 0 ? normalized : mockCourses;
+      return normalized;
     } catch (error) {
-      console.warn("Falling back to mock courses:", error);
-      return mockCourses;
+      console.warn("Falling back to empty courses:", error);
+      return [];
     }
   },
 
   async getCourseById(courseId: string) {
     if (!USE_REAL_API) {
-      return mockCourses.find((course) => course.id === courseId) || null;
+      return null;
     }
 
     try {
@@ -225,10 +249,10 @@ export const adapter = {
         }
       }
     } catch (error) {
-      console.warn(`Falling back to mock course for ${courseId}:`, error);
+      console.warn(`Unable to fetch course for ${courseId}:`, error);
     }
 
-    return mockCourses.find((course) => course.id === courseId) || null;
+    return null;
   },
 
   async getTaxonomyBootstrap() {
@@ -237,6 +261,8 @@ export const adapter = {
         paths: [],
         levels: [],
         subjects: [],
+        sections: [],
+        skills: [],
       };
     }
 
@@ -249,6 +275,12 @@ export const adapter = {
         subjects: Array.isArray(data?.subjects)
           ? data.subjects.map(normalizeSubject).filter((subject) => subject.id && subject.pathId && subject.name)
           : [],
+        sections: Array.isArray(data?.sections)
+          ? data.sections.map(normalizeSection).filter((section) => section.id && section.subjectId && section.name)
+          : [],
+        skills: Array.isArray(data?.skills)
+          ? data.skills.map(normalizeSkill).filter((skill) => skill.id && skill.pathId && skill.subjectId && skill.sectionId && skill.name)
+          : [],
       };
     } catch (error) {
       console.warn("Falling back to empty taxonomy bootstrap:", error);
@@ -256,6 +288,8 @@ export const adapter = {
         paths: [],
         levels: [],
         subjects: [],
+        sections: [],
+        skills: [],
       };
     }
   },

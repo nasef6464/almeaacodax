@@ -77,6 +77,8 @@ const App: React.FC = () => {
           paths: taxonomy.paths as any[],
           levels: taxonomy.levels as any[],
           subjects: taxonomy.subjects as any[],
+          sections: taxonomy.sections as any[],
+          skills: taxonomy.skills as any[],
         });
         hydrateContentBootstrap({
           topics: content.topics as any[],

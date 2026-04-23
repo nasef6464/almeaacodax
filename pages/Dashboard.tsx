@@ -110,13 +110,15 @@ const PathsTab = () => {
         return { icon: <RouteIcon size={24} className="text-indigo-500" />, bg: 'bg-indigo-50', color: 'indigo' };
     };
 
-    const dPaths = storePaths.map(p => ({
-        id: p.id,
-        title: p.name,
-        description: `مسار ${p.name}`,
-        category: p.name,
-        ...getPathStyle(p.id)
-    }));
+    const dPaths = storePaths
+        .filter(p => typeof p.id === 'string' && p.id.trim().length > 0 && typeof p.name === 'string' && p.name.trim().length > 0)
+        .map(p => ({
+            id: p.id,
+            title: p.name,
+            description: `مسار ${p.name}`,
+            category: p.name,
+            ...getPathStyle(p.id)
+        }));
 
     const activePaths = dPaths.filter(p => enrolledPaths?.includes(p.id));
     const availablePaths = dPaths.filter(p => !enrolledPaths?.includes(p.id));
@@ -742,11 +744,108 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
 
 // 2. Saher Tab
 const SaherTab = () => {
-    const { quizzes } = useStore();
-    const upcomingTests = quizzes
-        .filter((quiz) => quiz.isPublished && (quiz.type ?? 'quiz') === 'quiz')
+    const { quizzes, user, checkAccess, examResults, subjects, lessons, libraryItems } = useStore();
+    const canAccessQuiz = (quiz: (typeof quizzes)[number]) => {
+        if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
+
+        if (quiz.dueDate) {
+            const deadline = new Date(`${quiz.dueDate}T23:59:59`);
+            if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        }
+
+        if ((quiz.mode || 'regular') === 'central') {
+            const userGroups = user.groupIds || [];
+            const userTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+            const groupTargeted =
+                (quiz.targetGroupIds || []).length === 0 ||
+                (quiz.targetGroupIds || []).some(groupId => userGroups.includes(groupId));
+            if (!userTargeted || !groupTargeted) return false;
+        }
+
+        if (quiz.access.type === 'free') return true;
+        if (quiz.access.type === 'paid') return checkAccess(quiz.id, true);
+        if (quiz.access.type === 'private') {
+            const userGroups = user.groupIds || [];
+            return !!quiz.access.allowedGroupIds?.some(groupId => userGroups.includes(groupId));
+        }
+        return false;
+    };
+
+    const preparedTests = quizzes
+        .filter((quiz) => canAccessQuiz(quiz))
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    const saherTests = preparedTests
+        .filter((quiz) => (quiz.mode || 'regular') === 'saher')
         .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
-        .slice(0, 6);
+        .slice(0, 4);
+    const centralTests = preparedTests
+        .filter((quiz) => (quiz.mode || 'regular') === 'central')
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+        .slice(0, 4);
+    const weakSkillRecommendations = Array.from(
+        examResults.reduce((map, result) => {
+            (result.skillsAnalysis || []).forEach(skill => {
+                if (skill.mastery >= 75 && skill.status !== 'weak') return;
+
+                const key = skill.skillId || [skill.subjectId, skill.sectionId, skill.skill].filter(Boolean).join(':');
+                const existing = map.get(key);
+                if (existing) {
+                    existing.masterySum += skill.mastery;
+                    existing.attempts += 1;
+                    return;
+                }
+
+                map.set(key, {
+                    key,
+                    skillId: skill.skillId,
+                    subjectId: skill.subjectId,
+                    sectionId: skill.sectionId,
+                    section: skill.section,
+                    skill: skill.skill,
+                    masterySum: skill.mastery,
+                    attempts: 1,
+                });
+            });
+
+            return map;
+        }, new Map<string, {
+            key: string;
+            skillId?: string;
+            subjectId?: string;
+            sectionId?: string;
+            section?: string;
+            skill: string;
+            masterySum: number;
+            attempts: number;
+        }>())
+    )
+        .map(([, item]) => {
+            const mastery = Math.round(item.masterySum / item.attempts);
+            const relatedQuiz = preparedTests.find((quiz) => {
+                const skillMatch = !!item.skillId && (quiz.skillIds || []).includes(item.skillId);
+                const subjectMatch = !!item.subjectId && quiz.subjectId === item.subjectId;
+                const sectionMatch = !item.sectionId || quiz.sectionId === item.sectionId;
+                return skillMatch || (subjectMatch && sectionMatch);
+            });
+
+            return {
+                ...item,
+                mastery,
+                subjectName: subjects.find(subject => subject.id === item.subjectId)?.name || 'بدون مادة',
+                relatedQuiz,
+                recommendedLesson: lessons.find((lesson) =>
+                    (!!item.skillId && lesson.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && lesson.subjectId === item.subjectId && (!item.sectionId || lesson.sectionId === item.sectionId))
+                ),
+                recommendedResource: libraryItems.find((resource) =>
+                    (!!item.skillId && resource.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && resource.subjectId === item.subjectId && (!item.sectionId || resource.sectionId === item.sectionId))
+                ),
+            };
+        })
+        .filter(item => item.mastery < 75)
+        .sort((a, b) => a.mastery - b.mastery)
+        .slice(0, 2);
 
     return (
         <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
@@ -768,12 +867,72 @@ const SaherTab = () => {
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-900 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
             </div>
 
-            {/* Upcoming Tests Section */}
+            {weakSkillRecommendations.length > 0 && (
+                <div className="bg-white rounded-2xl border border-amber-100 p-5 space-y-4">
+                    <div className="text-right">
+                        <h3 className="text-lg font-bold text-gray-800">ترشيحات سريعة حسب نقاط الضعف</h3>
+                        <p className="text-sm text-gray-500 mt-1">هذه التوصيات مبنية على نتائجك الأخيرة لمساعدتك على العلاج بسرعة.</p>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {weakSkillRecommendations.map(item => (
+                            <Card key={item.key} className="p-4 border border-amber-100">
+                                <div className="space-y-3 text-right">
+                                    <div>
+                                        <div className="font-bold text-gray-800">{item.skill}</div>
+                                        <div className="text-xs text-gray-500">
+                                            {item.subjectName}
+                                            {item.section ? ` - ${item.section}` : ''}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className={`font-bold ${item.mastery < 50 ? 'text-red-500' : 'text-amber-600'}`}>{item.mastery}%</span>
+                                        <span className="text-gray-500">الإتقان الحالي</span>
+                                    </div>
+                                    {(item.recommendedLesson || item.recommendedResource) ? (
+                                        <div className="text-xs text-gray-600 space-y-1">
+                                            {item.recommendedLesson ? <div>شرح مقترح: <span className="font-bold">{item.recommendedLesson.title}</span></div> : null}
+                                            {item.recommendedResource ? <div>ملف داعم: <span className="font-bold">{item.recommendedResource.title}</span></div> : null}
+                                        </div>
+                                    ) : null}
+                                    <div className="space-y-2">
+                                        <Link
+                                            to={item.relatedQuiz ? `/quiz/${item.relatedQuiz.id}` : '/quiz'}
+                                            className="inline-block w-full text-center bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors"
+                                        >
+                                            {item.relatedQuiz ? 'ابدأ الاختبار المقترح' : 'أنشئ اختبار ساهر'}
+                                        </Link>
+                                        {item.recommendedLesson ? (
+                                            <Link
+                                                to={item.subjectId ? `/category/${item.recommendedLesson.pathId}/${item.subjectId}` : '/courses'}
+                                                className="inline-block w-full text-center bg-white border border-gray-200 text-gray-800 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors"
+                                            >
+                                                راجع الشرح أولًا
+                                            </Link>
+                                        ) : null}
+                                        {item.recommendedResource?.url ? (
+                                            <a
+                                                href={item.recommendedResource.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-block w-full text-center bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-100 transition-colors"
+                                            >
+                                                افتح الملف الداعم
+                                            </a>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Ready Saher Tests */}
             <div>
-                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات القادمة</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">اختبارات ساهر الجاهزة</h3>
                 <div className="space-y-4">
-                    {upcomingTests.length > 0 ? (
-                        upcomingTests.map(test => (
+                    {saherTests.length > 0 ? (
+                        saherTests.map(test => (
                             <Card key={test.id} className="p-4 flex justify-between items-center hover:shadow-md transition-all border border-gray-100">
                                 {/* Button on Left (End in Flex RTL) */}
                                 <Link to={`/quiz/${test.id}`} className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
@@ -794,7 +953,36 @@ const SaherTab = () => {
                         ))
                     ) : (
                         <Card className="p-6 text-center border border-dashed border-gray-200">
-                            <p className="text-sm text-gray-500">لا توجد اختبارات منشورة بعد.</p>
+                            <p className="text-sm text-gray-500">لا توجد اختبارات ساهر جاهزة لك حاليًا.</p>
+                        </Card>
+                    )}
+                </div>
+            </div>
+
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات المركزية الموجهة</h3>
+                <div className="space-y-4">
+                    {centralTests.length > 0 ? (
+                        centralTests.map(test => (
+                            <Card key={test.id} className="p-4 flex justify-between items-center hover:shadow-md transition-all border border-amber-100">
+                                <Link to={`/quiz/${test.id}`} className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
+                                    دخول
+                                </Link>
+
+                                <div className="flex items-center gap-4">
+                                    <div className="text-right">
+                                        <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
+                                        <span className="text-gray-400 text-sm font-sans font-medium">{formatQuizCardDate(test.createdAt)}</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 border-2 border-amber-100 shrink-0">
+                                        <FileText size={24} />
+                                    </div>
+                                </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="p-6 text-center border border-dashed border-gray-200">
+                            <p className="text-sm text-gray-500">لا توجد اختبارات مركزية موجهة لك الآن.</p>
                         </Card>
                     )}
                 </div>

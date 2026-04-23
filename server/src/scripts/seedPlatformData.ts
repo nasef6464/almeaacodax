@@ -4,6 +4,7 @@ import { PathModel } from "../models/Path.js";
 import { LevelModel } from "../models/Level.js";
 import { SubjectModel } from "../models/Subject.js";
 import { CourseModel } from "../models/Course.js";
+import { ensureSkillTaxonomy } from "../services/ensureSkillTaxonomy.js";
 import { courses as mockCourses } from "../../../services/mockData.js";
 
 const seedPaths = [
@@ -88,6 +89,8 @@ async function seedCollection() {
         }),
       ),
     );
+
+    await ensureSkillTaxonomy();
 
     await Promise.all(
       mockCourses.map((course: any) =>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { Quiz, Question } from '../../types';
 import { Plus, Search, Edit2, Trash2, Save, X, Settings, Link as LinkIcon, Users, FileQuestion, Filter, CheckCircle2 } from 'lucide-react';
@@ -12,10 +12,11 @@ interface QuizBuilderProps {
 }
 
 export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz' }) => {
-  const { quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, addQuestion, topics } = useStore();
+  const { quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'settings' | 'access'>('info');
+  const initialSubject = initialSubjectId ? useStore.getState().subjects.find(subject => subject.id === initialSubjectId) : undefined;
   
   const [currentQuiz, setCurrentQuiz] = useState<Partial<Quiz>>(() => {
     if (initialQuizId) {
@@ -25,9 +26,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     return {
       title: '',
       description: '',
-      pathId: '',
+      pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
       type: initialType,
+      mode: 'regular',
       settings: {
         showExplanations: true,
         showAnswers: true,
@@ -40,6 +42,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
         allowedGroupIds: [],
       },
       questionIds: [],
+      targetGroupIds: [],
+      targetUserIds: [],
+      dueDate: '',
       isPublished: false,
     };
   });
@@ -62,26 +67,53 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     subject: currentQuiz.subjectId,
     skillIds: []
   });
-  const availableQuizSkillTopics = useMemo(
-    () => topics.filter(topic => !!currentQuiz.subjectId && topic.subjectId === currentQuiz.subjectId && !topic.parentId),
-    [topics, currentQuiz.subjectId]
+  const availableQuizMainSkills = useMemo(
+    () => sections.filter(section => !!currentQuiz.subjectId && section.subjectId === currentQuiz.subjectId),
+    [sections, currentQuiz.subjectId]
   );
-  const quizSkillChildrenMap = useMemo(() => {
-    const byParent = new Map<string, typeof topics>();
-    topics
-      .filter(topic => !currentQuiz.subjectId || topic.subjectId === currentQuiz.subjectId)
-      .forEach(topic => {
-        if (!topic.parentId) return;
-        const currentChildren = byParent.get(topic.parentId) || [];
-        byParent.set(topic.parentId, [...currentChildren, topic]);
-      });
+  const availableQuizSubSkills = useMemo(
+    () =>
+      skills
+        .filter(skill =>
+          !!currentQuiz.subjectId &&
+          skill.subjectId === currentQuiz.subjectId &&
+          (!currentQuiz.sectionId || skill.sectionId === currentQuiz.sectionId)
+        )
+        .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
+    [skills, currentQuiz.sectionId, currentQuiz.subjectId]
+  );
 
-    byParent.forEach((children, parentId) => {
-      byParent.set(parentId, [...children].sort((a, b) => a.order - b.order));
-    });
+  useEffect(() => {
+    if (!currentQuiz.subjectId) return;
 
-    return byParent;
-  }, [topics, currentQuiz.subjectId]);
+    const currentSubject = subjects.find(subject => subject.id === currentQuiz.subjectId);
+    if (!currentSubject) return;
+
+    const nextPathId = currentSubject.pathId;
+    const sectionBelongsToSubject = !currentQuiz.sectionId || sections.some(
+      section => section.id === currentQuiz.sectionId && section.subjectId === currentQuiz.subjectId
+    );
+    const filteredAutoGenSkillIds = (autoGenConfig.skillIds || []).filter(skillId =>
+      skills.some(
+        skill =>
+          skill.id === skillId &&
+          skill.subjectId === currentQuiz.subjectId &&
+          (!currentQuiz.sectionId || skill.sectionId === currentQuiz.sectionId)
+      )
+    );
+
+    if (currentQuiz.pathId !== nextPathId || !sectionBelongsToSubject) {
+      setCurrentQuiz(prev => ({
+        ...prev,
+        pathId: nextPathId,
+        sectionId: sectionBelongsToSubject ? prev.sectionId : '',
+      }));
+    }
+
+    if (filteredAutoGenSkillIds.length !== (autoGenConfig.skillIds || []).length) {
+      setAutoGenConfig(prev => ({ ...prev, skillIds: filteredAutoGenSkillIds }));
+    }
+  }, [currentQuiz.subjectId, currentQuiz.sectionId, currentQuiz.pathId, autoGenConfig.skillIds, subjects, sections, skills]);
 
   const [isAiGenerating, setIsAiGenerating] = useState(false);
 
@@ -114,6 +146,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     
     if (currentQuiz.subjectId) {
        pool = pool.filter(q => q.subject === currentQuiz.subjectId);
+    }
+
+    if (currentQuiz.sectionId) {
+       pool = pool.filter(q => q.sectionId === currentQuiz.sectionId);
     }
 
     if (autoGenConfig.skillIds && autoGenConfig.skillIds.length > 0) {
@@ -155,7 +191,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
               topicName = subjects.find(s => s.id === currentQuiz.subjectId)?.name || topicName;
            }
            if (autoGenConfig.skillIds.length > 0) {
-              const skillNames = autoGenConfig.skillIds.map(id => topics.find(t => t.id === id)?.title).filter(Boolean);
+              const skillNames = autoGenConfig.skillIds.map(id => skills.find(skill => skill.id === id)?.name).filter(Boolean);
               if (skillNames.length > 0) {
                  topicName += " - " + skillNames.join(', ');
               }
@@ -172,7 +208,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   explanation: generated.explanation,
                   type: 'mcq',
                   difficulty: 'Medium', // Default to medium for AI
+                  pathId: currentQuiz.pathId || '',
                   subject: currentQuiz.subjectId || '',
+                  sectionId: currentQuiz.sectionId,
                   skillIds: autoGenConfig.skillIds
                 };
                 addQuestion(newQ);
@@ -218,8 +256,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     setCurrentQuiz({
       title: '',
       description: '',
-      pathId: '',
+      pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
+      mode: 'regular',
       settings: {
         showExplanations: true,
         showAnswers: true,
@@ -232,6 +271,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
         allowedGroupIds: [],
       },
       questionIds: [],
+      targetGroupIds: [],
+      targetUserIds: [],
+      dueDate: '',
       isPublished: false,
     });
     setIsEditing(true);
@@ -288,7 +330,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     (!initialSubjectId || q.subjectId === initialSubjectId)
   );
 
-  const availableQuestions = questions.filter(q => q.subject === currentQuiz.subjectId);
+  const availableQuestions = questions.filter(q =>
+    q.subject === currentQuiz.subjectId &&
+    (!currentQuiz.sectionId || q.sectionId === currentQuiz.sectionId)
+  );
   const selectedQuestions = useMemo(
     () => questions.filter(q => currentQuiz.questionIds?.includes(q.id)),
     [questions, currentQuiz.questionIds]
@@ -305,18 +350,18 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
 
     return Array.from(skillQuestionCounts.entries())
       .map(([skillId, questionCount]) => {
-        const topic = topics.find(item => item.id === skillId);
-        if (!topic) return null;
+        const subSkill = skills.find(item => item.id === skillId);
+        if (!subSkill) return null;
 
         return {
           id: skillId,
-          title: topic.title,
+          title: subSkill.name,
           questionCount,
         };
       })
       .filter((item): item is { id: string; title: string; questionCount: number } => !!item)
       .sort((a, b) => b.questionCount - a.questionCount || a.title.localeCompare(b.title, 'ar'));
-  }, [selectedQuestions, topics]);
+  }, [selectedQuestions, skills]);
   const totalSelectedQuestions = selectedQuestions.length;
 
   if (isEditing) {
@@ -373,12 +418,20 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
             {/* Tab: Info */}
             {activeTab === 'info' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <div className="grid grid-cols-2 gap-4 pb-4 border-b border-gray-100 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4 border-b border-gray-100 mb-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">{'\u0627\u0644\u0645\u0633\u0627\u0631 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a / \u0644\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631)'}</label>
                     <select
                       value={currentQuiz.pathId || ''}
-                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, pathId: e.target.value, subjectId: '', skillIds: [] }))}
+                      onChange={(e) =>
+                        setCurrentQuiz(prev => ({
+                          ...prev,
+                          pathId: e.target.value,
+                          subjectId: '',
+                          sectionId: '',
+                          skillIds: [],
+                        }))
+                      }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                     >
                       <option value="">{'-- \u0643\u0644 \u0627\u0644\u0645\u0633\u0627\u0631\u0627\u062a --'}</option>
@@ -391,7 +444,14 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     <label className="block text-sm font-bold text-gray-700 mb-2">{'\u0627\u0644\u0645\u0627\u062f\u0629 \u0627\u0644\u0623\u0633\u0627\u0633\u064a\u0629'}</label>
                     <select
                       value={currentQuiz.subjectId || ''}
-                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, subjectId: e.target.value, skillIds: [] }))}
+                      onChange={(e) =>
+                        setCurrentQuiz(prev => ({
+                          ...prev,
+                          subjectId: e.target.value,
+                          sectionId: '',
+                          skillIds: [],
+                        }))
+                      }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                       disabled={!!currentQuiz.pathId && subjects.filter(subject => subject.pathId === currentQuiz.pathId).length === 0}
                     >
@@ -400,7 +460,48 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                         .filter(subject => !currentQuiz.pathId || subject.pathId === currentQuiz.pathId)
                         .map(subject => (
                           <option key={subject.id} value={subject.id}>{subject.name}</option>
-                        ))}
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">{'\u0627\u0644\u0645\u0647\u0627\u0631\u0629 \u0627\u0644\u0631\u0626\u064a\u0633\u0629'}</label>
+                    <select
+                      value={currentQuiz.sectionId || ''}
+                      onChange={(e) =>
+                        setCurrentQuiz(prev => ({
+                          ...prev,
+                          sectionId: e.target.value,
+                          skillIds: [],
+                        }))
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
+                      disabled={!currentQuiz.subjectId}
+                    >
+                      <option value="">{'\u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u0647\u0627\u0631\u0627\u062a \u0627\u0644\u0631\u0626\u064a\u0633\u0629'}</option>
+                      {availableQuizMainSkills.map(section => (
+                        <option key={section.id} value={section.id}>{section.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">تصنيف الاختبار</label>
+                    <select
+                      value={currentQuiz.mode || 'regular'}
+                      onChange={(e) => {
+                        const mode = e.target.value as Quiz['mode'];
+                        setCurrentQuiz(prev => ({
+                          ...prev,
+                          mode,
+                          access: mode === 'central'
+                            ? { ...prev.access!, type: 'private' }
+                            : prev.access
+                        }));
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
+                    >
+                      <option value="regular">اختبار عادي</option>
+                      <option value="saher">اختبار ساهر</option>
+                      <option value="central">اختبار مركزي موجّه</option>
                     </select>
                   </div>
                 </div>
@@ -425,6 +526,58 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     placeholder={'\u0648\u0635\u0641 \u0642\u0635\u064a\u0631 \u064a\u0638\u0647\u0631 \u0644\u0644\u0637\u0644\u0627\u0628 \u0642\u0628\u0644 \u0628\u062f\u0621 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631...'}
                   />
                 </div>
+
+                {currentQuiz.mode === 'central' && (
+                  <div className="rounded-xl border border-amber-100 bg-amber-50/40 p-4 space-y-4">
+                    <h4 className="text-sm font-bold text-gray-800">توجيه الاختبار المركزي</h4>
+                    <p className="text-xs text-gray-600">يمكنك تحديد مجموعات أو طلاب بعينهم ليظهر لهم هذا الاختبار بشكل مباشر.</p>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-2">المجموعات المستهدفة</label>
+                      <select
+                        multiple
+                        value={currentQuiz.targetGroupIds || []}
+                        onChange={(e) => {
+                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          setCurrentQuiz(prev => ({ ...prev, targetGroupIds: values }));
+                        }}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
+                      >
+                        {groups.map(group => (
+                          <option key={group.id} value={group.id}>{group.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-2">الطلاب المستهدفون (اختياري)</label>
+                      <select
+                        multiple
+                        value={currentQuiz.targetUserIds || []}
+                        onChange={(e) => {
+                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          setCurrentQuiz(prev => ({ ...prev, targetUserIds: values }));
+                        }}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
+                      >
+                        {users
+                          .filter(u => u.role === 'student')
+                          .map(student => (
+                            <option key={student.id} value={student.id}>
+                              {student.name} ({student.email || student.id})
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-2">موعد الاستحقاق (اختياري)</label>
+                      <input
+                        type="date"
+                        value={currentQuiz.dueDate || ''}
+                        onChange={(e) => setCurrentQuiz(prev => ({ ...prev, dueDate: e.target.value }))}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
                   <div className="flex items-center justify-between gap-3 mb-3">
@@ -522,10 +675,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                                   {q.difficulty === 'Easy' ? 'سهل' : q.difficulty === 'Medium' ? 'متوسط' : 'صعب'}
                                 </span>
                                 {q.skillIds?.map(skillId => {
-                                  const topic = topics.find(t => t.id === skillId);
-                                  return topic ? (
+                                  const subSkill = skills.find(skill => skill.id === skillId);
+                                  return subSkill ? (
                                     <span key={skillId} className="bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                                      {topic.title}
+                                      {subSkill.name}
                                     </span>
                                   ) : null;
                                 })}
@@ -713,10 +866,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   <label className="block text-sm font-bold text-gray-700 mb-2">المهارات المشمولة (اختياري)</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {autoGenConfig.skillIds?.map(skillId => {
-                      const topic = topics.find(t => t.id === skillId);
-                      return topic ? (
+                      const subSkill = skills.find(skill => skill.id === skillId);
+                      return subSkill ? (
                         <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
-                          {topic.title}
+                          {subSkill.name}
                           <button onClick={() => setAutoGenConfig(prev => ({ ...prev, skillIds: prev.skillIds.filter(id => id !== skillId) }))} className="text-indigo-600 hover:text-indigo-900">
                             <X size={14} />
                           </button>
@@ -733,12 +886,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     }}
                     className="w-full border rounded-lg px-3 py-2"
                   >
-                    <option value="">-- أضف مهارة للتوليد --</option>
-                    {availableQuizSkillTopics.map(mainTopic => (
-                      <optgroup key={mainTopic.id} label={mainTopic.title}>
-                        <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                        {(quizSkillChildrenMap.get(mainTopic.id) || []).map(sub => (
-                          <option key={sub.id} value={sub.id}>- {sub.title}</option>
+                    <option value="">-- أضف مهارة فرعية للتوليد --</option>
+                    {availableQuizMainSkills.map(mainSkill => (
+                      <optgroup key={mainSkill.id} label={mainSkill.name}>
+                        {availableQuizSubSkills.filter(subSkill => subSkill.sectionId === mainSkill.id).map(subSkill => (
+                          <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
                         ))}
                       </optgroup>
                     ))}
@@ -757,7 +909,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
 
         {isAddQuestionModalOpen && (
             <UnifiedQuestionBuilder 
-              initialQuestion={{ pathId: currentQuiz.pathId || '', subject: currentQuiz.subjectId || '', skillIds: [] }}
+              initialQuestion={{ pathId: currentQuiz.pathId || '', subject: currentQuiz.subjectId || '', sectionId: currentQuiz.sectionId, skillIds: [] }}
               subjectId={currentQuiz.subjectId}
               onSave={handleSaveNewQuestion}
               onCancel={() => setIsAddQuestionModalOpen(false)}
@@ -817,7 +969,12 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-bold text-gray-800">{quiz.title}</div>
-                      <div className="text-xs text-gray-500 mt-1">{quiz.access.type === 'free' ? 'مجاني' : quiz.access.type === 'paid' ? 'مدفوع' : 'مخصص'}</div>
+                      <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
+                        <span>{quiz.access.type === 'free' ? 'مجاني' : quiz.access.type === 'paid' ? 'مدفوع' : 'مخصص'}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                          {quiz.mode === 'saher' ? 'ساهر' : quiz.mode === 'central' ? 'مركزي' : 'عادي'}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold">

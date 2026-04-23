@@ -12,39 +12,58 @@ interface SkillRecommendation {
     quizLink?: string;
     resourceTitle?: string;
     resourceUrl?: string;
+    subjectName?: string;
+    sectionName?: string;
+    actionText?: string;
 }
 
 const getSkillRecommendation = (
     skill: { skill?: string; skillId?: string } | undefined,
-    topics: ReturnType<typeof useStore.getState>['topics'],
+    allSkills: ReturnType<typeof useStore.getState>['skills'],
     lessons: ReturnType<typeof useStore.getState>['lessons'],
     quizzes: ReturnType<typeof useStore.getState>['quizzes'],
     libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
+    questions: ReturnType<typeof useStore.getState>['questions'],
 ): SkillRecommendation => {
     if (!skill) return {};
 
-    const topic = skill.skillId
-        ? topics.find((item) => item.id === skill.skillId)
-        : topics.find((item) => item.title === skill.skill);
+    const resolvedSkill = skill.skillId
+        ? allSkills.find((item) => item.id === skill.skillId)
+        : allSkills.find((item) => item.name === skill.skill);
 
-    if (!topic) return {};
+    if (!resolvedSkill) return {};
 
-    const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
-    const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
-    const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(topic.id));
+    const recommendedLesson = lessons.find((lesson) => lesson.skillIds?.includes(resolvedSkill.id));
+    const recommendedQuiz = quizzes.find((quiz) =>
+        quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
+        quiz.skillIds?.includes(resolvedSkill.id)
+    );
+    const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(resolvedSkill.id));
 
     return {
         lessonTitle: recommendedLesson?.title,
-        lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}?tab=skills&topic=${topic.id}&content=lessons` : undefined,
+        lessonLink: resolvedSkill.pathId && resolvedSkill.subjectId ? `/category/${resolvedSkill.pathId}/${resolvedSkill.subjectId}` : undefined,
         quizTitle: recommendedQuiz?.title,
         quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
         resourceTitle: recommendedResource?.title,
         resourceUrl: recommendedResource?.url,
+        subjectName: resolvedSkill.subjectId ? useStore.getState().subjects.find((item) => item.id === resolvedSkill.subjectId)?.name : undefined,
+        sectionName: resolvedSkill.sectionId ? useStore.getState().sections.find((item) => item.id === resolvedSkill.sectionId)?.name : undefined,
+        actionText:
+            recommendedLesson && recommendedQuiz
+                ? 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.'
+                : recommendedLesson
+                    ? 'هذه المهارة تحتاج مراجعة شرحها قبل أي تدريب إضافي.'
+                    : recommendedQuiz
+                        ? 'هذه المهارة جاهزة لتدريب علاجي مباشر عبر الاختبار المقترح.'
+                        : recommendedResource
+                            ? 'راجع الملف الداعم ثم ارجع لتكرار التدريب على نفس المهارة.'
+                            : 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.',
     };
 };
 
 const Reports: React.FC = () => {
-    const { examResults, topics, lessons, quizzes, libraryItems } = useStore();
+    const { examResults, skills, lessons, quizzes, libraryItems, questions } = useStore();
 
     // Calculate Performance Analysis
     const stats = useMemo(() => {
@@ -109,7 +128,7 @@ const Reports: React.FC = () => {
     }, [examResults]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
-    const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, topics, lessons, quizzes, libraryItems);
+    const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
 
     if (examResults.length === 0) {
         return (
@@ -195,9 +214,12 @@ const Reports: React.FC = () => {
                             </p>
                             {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle || weakestSkillRecommendation.resourceTitle) ? (
                                 <div className="bg-white/70 border border-amber-100 rounded-xl p-4 mb-4 text-sm text-gray-700 space-y-2">
+                                    {weakestSkillRecommendation.subjectName ? <div>المادة: <span className="font-bold">{weakestSkillRecommendation.subjectName}</span></div> : null}
+                                    {weakestSkillRecommendation.sectionName ? <div>المهارة الرئيسة: <span className="font-bold">{weakestSkillRecommendation.sectionName}</span></div> : null}
                                     {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
                                     {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
                                     {weakestSkillRecommendation.resourceTitle ? <div>الملف الداعم: <span className="font-bold">{weakestSkillRecommendation.resourceTitle}</span></div> : null}
+                                    {weakestSkillRecommendation.actionText ? <div className="text-amber-800">الإجراء المقترح الآن: <span className="font-bold">{weakestSkillRecommendation.actionText}</span></div> : null}
                                 </div>
                             ) : null}
                             <div className="flex flex-wrap gap-3">
@@ -230,7 +252,7 @@ const Reports: React.FC = () => {
 
                 <div className="space-y-6">
                     {aggregatedSkills.map((skill, index) => {
-                        const recommendation = getSkillRecommendation(skill, topics, lessons, quizzes, libraryItems);
+                        const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions);
                         let colorClass = 'bg-emerald-500';
                         let textClass = 'text-emerald-600';
                         let bgLight = 'bg-emerald-50';
@@ -249,17 +271,29 @@ const Reports: React.FC = () => {
                             <div key={index} className={`p-4 rounded-2xl border border-gray-100 ${bgLight}`}>
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                                     <div className="flex-1">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="font-bold text-gray-800 text-lg">{skill.skill}</span>
-                                            <span className={`font-black text-lg ${textClass}`}>{skill.mastery}%</span>
-                                        </div>
-                                        <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden">
-                                            <div 
-                                                className={`h-full rounded-full ${colorClass} transition-all duration-1000 ease-out`} 
-                                                style={{ width: `${skill.mastery}%` }}
-                                            ></div>
-                                        </div>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-bold text-gray-800 text-lg">{skill.skill}</span>
+                                        <span className={`font-black text-lg ${textClass}`}>{skill.mastery}%</span>
                                     </div>
+                                    <div className="text-xs text-gray-500 mb-3 flex flex-wrap gap-2">
+                                        {recommendation.subjectName ? <span>المادة: {recommendation.subjectName}</span> : null}
+                                        {recommendation.sectionName ? <span>المهارة الرئيسة: {recommendation.sectionName}</span> : null}
+                                    </div>
+                                    <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden">
+                                        <div 
+                                            className={`h-full rounded-full ${colorClass} transition-all duration-1000 ease-out`} 
+                                            style={{ width: `${skill.mastery}%` }}
+                                        ></div>
+                                    </div>
+                                    {(recommendation.lessonTitle || recommendation.quizTitle || recommendation.resourceTitle || recommendation.actionText) ? (
+                                        <div className="mt-3 text-xs text-gray-600 space-y-1">
+                                            {recommendation.lessonTitle ? <div>شرح مقترح: <span className="font-bold">{recommendation.lessonTitle}</span></div> : null}
+                                            {recommendation.quizTitle ? <div>تدريب مقترح: <span className="font-bold">{recommendation.quizTitle}</span></div> : null}
+                                            {recommendation.resourceTitle ? <div>ملف داعم: <span className="font-bold">{recommendation.resourceTitle}</span></div> : null}
+                                            {recommendation.actionText ? <div className="text-indigo-700">الخطوة التالية: <span className="font-bold">{recommendation.actionText}</span></div> : null}
+                                        </div>
+                                    ) : null}
+                                </div>
                                     
                                     {/* Action Buttons for each skill (C) */}
                                     <div className="flex flex-wrap gap-2 shrink-0 md:w-auto w-full">

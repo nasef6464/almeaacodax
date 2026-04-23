@@ -9,7 +9,7 @@ interface QuestionBankManagerProps {
 }
 
 export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjectId }) => {
-  const { questions: globalQuestions, addQuestion, updateQuestion, deleteQuestion, paths, subjects, sections, topics } = useStore();
+  const { questions: globalQuestions, addQuestion, updateQuestion, deleteQuestion, paths, subjects, sections, skills } = useStore();
 
   const [selectedPathId, setSelectedPathId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(subjectId || '');
@@ -31,32 +31,28 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     skillIds: []
   });
 
-  const availableSkillTopics = useMemo(
-    () =>
-      topics.filter(topic =>
-        !!selectedSubjectId &&
-        topic.subjectId === selectedSubjectId &&
-        !topic.parentId &&
-        (!selectedSectionId || topic.sectionId === selectedSectionId || !topic.sectionId)
-      ),
-    [topics, selectedSubjectId, selectedSectionId]
+  const availableMainSkills = useMemo(
+    () => sections.filter((section) => section.subjectId === selectedSubjectId),
+    [sections, selectedSubjectId]
   );
 
-  const questions = globalQuestions.filter(question => {
+  const availableSubSkills = useMemo(
+    () => skills
+      .filter((skill) => skill.subjectId === selectedSubjectId && (!selectedSectionId || skill.sectionId === selectedSectionId))
+      .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
+    [skills, selectedSectionId, selectedSubjectId]
+  );
+
+  const questions = globalQuestions.filter((question) => {
     if (subjectId && question.subject !== subjectId) return false;
     if (selectedSubjectId && question.subject !== selectedSubjectId) return false;
     if (selectedSectionId && question.sectionId !== selectedSectionId) return false;
-    if (selectedPathId && !subjectId && !selectedSubjectId) {
-      const pathSubjects = subjects.filter(subject => subject.pathId === selectedPathId).map(subject => subject.id);
-      if (!pathSubjects.includes(question.subject)) return false;
-    }
+    if (selectedPathId && !subjectId && !selectedSubjectId && question.pathId !== selectedPathId) return false;
     if (selectedSkillId && (!question.skillIds || !question.skillIds.includes(selectedSkillId))) return false;
     return true;
   });
 
-  const filteredQuestions = questions.filter(question =>
-    question.text.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredQuestions = questions.filter((question) => question.text.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleCreateNew = () => {
     setCurrentQuestion({
@@ -126,7 +122,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">مركز الأسئلة</h2>
-          <p className="text-gray-500 text-sm mt-1">إدارة جميع الأسئلة في المنصة وربطها ديناميكيًا بالمسارات والمواد والمهارات.</p>
+          <p className="text-gray-500 text-sm mt-1">إدارة جميع الأسئلة في المنصة وربطها بالمسارات والمواد والمهارات الحقيقية.</p>
         </div>
         <button
           onClick={handleCreateNew}
@@ -182,8 +178,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           disabled={!selectedSubjectId}
         >
-          <option value="">كل الأقسام</option>
-          {sections.filter(section => section.subjectId === selectedSubjectId).map(section => (
+          <option value="">كل المهارات الرئيسة</option>
+          {availableMainSkills.map(section => (
             <option key={section.id} value={section.id}>{section.name}</option>
           ))}
         </select>
@@ -192,22 +188,11 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           value={selectedSkillId}
           onChange={event => setSelectedSkillId(event.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          disabled={!selectedSubjectId || availableSkillTopics.length === 0}
+          disabled={!selectedSubjectId}
         >
-          <option value="">
-            {!selectedSubjectId
-              ? 'اختر المادة أولاً'
-              : availableSkillTopics.length === 0
-                ? 'لا توجد مهارات لهذه المادة'
-                : 'كل المهارات'}
-          </option>
-          {availableSkillTopics.map(mainTopic => (
-            <optgroup key={mainTopic.id} label={mainTopic.title}>
-              <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-              {topics.filter(subTopic => subTopic.parentId === mainTopic.id).map(subTopic => (
-                <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
-              ))}
-            </optgroup>
+          <option value="">كل المهارات الفرعية</option>
+          {availableSubSkills.map(subSkill => (
+            <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
           ))}
         </select>
 
@@ -229,7 +214,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600 w-1/2">نص السؤال</th>
-                <th className="px-6 py-4 text-sm font-bold text-gray-600">المهارة</th>
+                <th className="px-6 py-4 text-sm font-bold text-gray-600">المهارات الفرعية</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الصعوبة</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الإجراءات</th>
               </tr>
@@ -246,10 +231,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1">
                       {question.skillIds?.map(skillId => {
-                        const skill = topics.find(topic => topic.id === skillId);
-                        return skill ? (
+                        const subSkill = skills.find(skill => skill.id === skillId);
+                        return subSkill ? (
                           <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold">
-                            {skill.title}
+                            {subSkill.name}
                           </span>
                         ) : null;
                       })}

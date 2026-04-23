@@ -56,7 +56,7 @@ export const GenericPathPage: React.FC = () => {
     const pathLevels = levels?.filter(l => l.pathId === path.id) || [];
     const pathSubjects = subjects.filter(s => s.pathId === path.id);
     const { courses } = useStore();
-    const pathPackages = courses.filter(c => c.category === path.id && c.isPackage);
+    const pathPackages = courses.filter(c => (c.pathId || c.category) === path.id && c.isPackage);
     const isPackagesTab = searchParams.get('tab') === 'packages';
 
     const getPathStyle = () => {

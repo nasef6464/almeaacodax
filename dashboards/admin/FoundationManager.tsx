@@ -20,8 +20,23 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   const [attachingToTopicId, setAttachingToTopicId] = useState<string | null>(null);
   const [attachType, setAttachType] = useState<'lesson' | 'quiz'>('lesson');
 
+  const currentSubject = subjects.find(item => item.id === subjectId);
   const subjectTopics = topics.filter(t => t.subjectId === subjectId).sort((a, b) => a.order - b.order);
   const mainTopics = subjectTopics.filter(t => !t.parentId);
+  const availableLessons = lessons
+    .filter((lesson) => {
+      const matchesSubject = lesson.subjectId === subjectId;
+      const matchesPath = currentSubject?.pathId ? lesson.pathId === currentSubject.pathId : true;
+      return matchesSubject && matchesPath;
+    })
+    .sort((a, b) => (a.order || 0) - (b.order || 0) || a.title.localeCompare(b.title, 'ar'));
+  const availableQuizzes = quizzes
+    .filter((quiz) => {
+      const matchesSubject = quiz.subjectId === subjectId;
+      const matchesPath = currentSubject?.pathId ? quiz.pathId === currentSubject.pathId : true;
+      return matchesSubject && matchesPath && quiz.type === 'quiz';
+    })
+    .sort((a, b) => a.title.localeCompare(b.title, 'ar'));
 
   const toggleExpand = (topicId: string) => {
     const newExpanded = new Set(expandedTopics);
@@ -34,9 +49,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   };
 
   const handleCreateNew = (parentId?: string) => {
-    const subject = subjects.find(item => item.id === subjectId);
     setEditingTopic({
-      pathId: subject?.pathId,
+      pathId: currentSubject?.pathId,
       subjectId,
       parentId,
       title: '',
@@ -209,8 +223,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">إدارة التأسيس (المواضيع)</h2>
-          <p className="text-gray-500 text-sm mt-1">قم ببناء شجرة المواضيع وربطها بالدروس والتدريبات من المراكز المركزية.</p>
+          <h2 className="text-2xl font-bold text-gray-800">إدارة التأسيس (الموضوعات)</h2>
+          <p className="text-gray-500 text-sm mt-1">قم ببناء شجرة الموضوعات التأسيسية وربطها بالدروس والتدريبات. هذه المساحة خاصة بالتعلّم وليست مصدر مهارات التقييم والتحليل.</p>
         </div>
         <button 
           onClick={() => handleCreateNew()}
@@ -302,11 +316,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
 
             <div className="flex-1 overflow-y-auto border border-gray-100 rounded-xl p-2">
               {attachType === 'lesson' ? (
-                <div className="space-y-2">
-                  {lessons.length === 0 ? (
+                  <div className="space-y-2">
+                  {availableLessons.length === 0 ? (
                     <p className="text-center text-gray-500 py-4">لا توجد دروس في المكتبة المركزية.</p>
                   ) : (
-                    lessons.map(lesson => (
+                    availableLessons
+                      .filter((lesson) => !topics.find((topic) => topic.id === attachingToTopicId)?.lessonIds.includes(lesson.id))
+                      .map(lesson => (
                       <div key={lesson.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
                         <div className="flex items-center gap-3">
                           <BookOpen size={18} className="text-blue-500" />
@@ -323,11 +339,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                   )}
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {quizzes.length === 0 ? (
+                  <div className="space-y-2">
+                  {availableQuizzes.length === 0 ? (
                     <p className="text-center text-gray-500 py-4">لا توجد اختبارات في المركز المركزي.</p>
                   ) : (
-                    quizzes.map(quiz => (
+                    availableQuizzes
+                      .filter((quiz) => !topics.find((topic) => topic.id === attachingToTopicId)?.quizIds.includes(quiz.id))
+                      .map(quiz => (
                       <div key={quiz.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
                         <div className="flex items-center gap-3">
                           <FileQuestion size={18} className="text-amber-500" />

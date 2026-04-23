@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Lesson } from '../../types';
-import { Plus, Search, Edit2, Trash2, Play, FileText, CheckCircle2, X } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Lesson, Skill } from '../../types';
+import { Plus, Search, Edit2, Trash2, Play, FileText } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 
@@ -9,29 +9,24 @@ interface LessonsManagerProps {
 }
 
 export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => {
-  const { lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, topics } = useStore();
-  
+  const { lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills } = useStore();
+
   const [selectedPathId, setSelectedPathId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(subjectId || '');
   const [selectedSectionId, setSelectedSectionId] = useState<string>('');
   const [selectedSkillId, setSelectedSkillId] = useState<string>('');
-  
-  // Filter lessons
-  const lessons = globalLessons.filter(l => {
-    if (subjectId && l.subjectId !== subjectId) return false;
-    if (selectedSubjectId && l.subjectId !== selectedSubjectId) return false;
-    if (selectedSectionId && l.sectionId !== selectedSectionId) return false;
-    if (selectedPathId && !subjectId && !selectedSubjectId) {
-      const pathSubjects = subjects.filter(s => s.pathId === selectedPathId).map(s => s.id);
-      if (!l.subjectId || !pathSubjects.includes(l.subjectId)) return false;
-    }
-    if (selectedSkillId && (!l.skillIds || !l.skillIds.includes(selectedSkillId))) return false;
-    return true;
-  });
-  
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
+  const lessons = globalLessons.filter((lesson) => {
+    if (subjectId && lesson.subjectId !== subjectId) return false;
+    if (selectedSubjectId && lesson.subjectId !== selectedSubjectId) return false;
+    if (selectedSectionId && lesson.sectionId !== selectedSectionId) return false;
+    if (selectedPathId && !subjectId && !selectedSubjectId && lesson.pathId !== selectedPathId) return false;
+    if (selectedSkillId && (!lesson.skillIds || !lesson.skillIds.includes(selectedSkillId))) return false;
+    return true;
+  });
+
   const [currentLesson, setCurrentLesson] = useState<Partial<Lesson>>({
     title: '',
     type: 'video',
@@ -43,6 +38,23 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     skillIds: [],
     order: 1
   });
+
+  const availableMainSkills = useMemo(
+    () => sections.filter((section) => section.subjectId === selectedSubjectId),
+    [sections, selectedSubjectId]
+  );
+
+  const availableSubSkills = useMemo(
+    () => skills
+      .filter((skill) => skill.subjectId === selectedSubjectId && (!selectedSectionId || skill.sectionId === selectedSectionId))
+      .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
+    [skills, selectedSectionId, selectedSubjectId]
+  );
+
+  const subSkillNameMap = useMemo(
+    () => new Map(availableSubSkills.map((skill) => [skill.id, skill.name])),
+    [availableSubSkills]
+  );
 
   const handleCreateNew = () => {
     setCurrentLesson({
@@ -65,7 +77,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('هل أنت متأكد من حذف هذا الدرس نهائياً؟')) {
+    if (confirm('هل أنت متأكد من حذف هذا الدرس نهائيًا؟')) {
       deleteLesson(id);
     }
   };
@@ -79,38 +91,25 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     addLesson(duplicatedLesson);
   };
 
-  const handleSave = (moduleId: string | undefined, lessonToSave: Lesson) => {
+  const handleSave = (_moduleId: string | undefined, lessonToSave: Lesson) => {
     if (currentLesson.id) {
       updateLesson(lessonToSave.id, lessonToSave);
     } else {
       const newLesson: Lesson = {
         ...lessonToSave,
-        id: `l_${Date.now()}`,
-      } as Lesson;
+        id: `l_${Date.now()}`
+      };
       addLesson(newLesson);
     }
     setIsEditing(false);
   };
 
-  const filteredLessons = lessons.filter(l => 
-    l.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const availableSections = sections.filter(section => section.subjectId === selectedSubjectId);
-  const filteredTopics = topics
-    .filter(topic => {
-      if (selectedSubjectId && topic.subjectId !== selectedSubjectId) return false;
-      if (selectedSectionId && topic.sectionId !== selectedSectionId) return false;
-      if (selectedPathId && topic.pathId && topic.pathId !== selectedPathId) return false;
-      return true;
-    })
-    .sort((a, b) => a.order - b.order);
-  const mainTopics = filteredTopics.filter(topic => !topic.parentId);
+  const filteredLessons = lessons.filter((lesson) => lesson.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   if (isEditing) {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in relative z-50">
-        <UnifiedLessonBuilder 
+        <UnifiedLessonBuilder
           initialLesson={currentLesson as Lesson}
           onSave={handleSave}
           onCancel={() => setIsEditing(false)}
@@ -126,7 +125,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           <h2 className="text-2xl font-bold text-gray-800">مركز الدروس</h2>
           <p className="text-gray-500 text-sm mt-1">إدارة جميع الدروس في المنصة لاستخدامها في الدورات والمهارات.</p>
         </div>
-        <button 
+        <button
           onClick={handleCreateNew}
           className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
         >
@@ -135,24 +134,25 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
         </button>
       </div>
 
-      {/* Filters & Search */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
         {!subjectId && (
           <>
-            <select 
+            <select
               value={selectedPathId}
               onChange={(e) => {
                 setSelectedPathId(e.target.value);
                 setSelectedSubjectId('');
+                setSelectedSectionId('');
+                setSelectedSkillId('');
               }}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">كل المسارات</option>
-              {paths.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
+              {paths.map((path) => (
+                <option key={path.id} value={path.id}>{path.name}</option>
               ))}
             </select>
-            <select 
+            <select
               value={selectedSubjectId}
               onChange={(e) => {
                 setSelectedSubjectId(e.target.value);
@@ -163,13 +163,13 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
               disabled={!selectedPathId}
             >
               <option value="">كل المواد</option>
-              {subjects.filter(s => s.pathId === selectedPathId).map(s => (
-                <option key={s.id} value={s.id}>{s.name}</option>
+              {subjects.filter((subject) => subject.pathId === selectedPathId).map((subject) => (
+                <option key={subject.id} value={subject.id}>{subject.name}</option>
               ))}
             </select>
           </>
         )}
-        <select 
+        <select
           value={selectedSectionId}
           onChange={(e) => {
             setSelectedSectionId(e.target.value);
@@ -178,34 +178,27 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           disabled={!selectedSubjectId}
         >
-          <option value="">كل الأقسام</option>
-          {availableSections.map(s => (
-            <option key={s.id} value={s.id}>{s.name}</option>
+          <option value="">كل المهارات الرئيسة</option>
+          {availableMainSkills.map((section) => (
+            <option key={section.id} value={section.id}>{section.name}</option>
           ))}
         </select>
-        <select 
+        <select
           value={selectedSkillId}
           onChange={(e) => setSelectedSkillId(e.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          disabled={!selectedSubjectId}
         >
-          <option value="">كل المهارات</option>
-          {mainTopics.map(mainTopic => {
-            const subTopics = filteredTopics.filter(topic => topic.parentId === mainTopic.id);
-            return (
-              <optgroup key={mainTopic.id} label={mainTopic.title}>
-                <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                {subTopics.map(subTopic => (
-                  <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
-                ))}
-              </optgroup>
-            );
-          })}
+          <option value="">كل المهارات الفرعية</option>
+          {availableSubSkills.map((skill) => (
+            <option key={skill.id} value={skill.id}>{skill.name}</option>
+          ))}
         </select>
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="ابحث في عنوان الدرس..." 
+          <input
+            type="text"
+            placeholder="ابحث في عنوان الدرس..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -213,7 +206,6 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
         </div>
       </div>
 
-      {/* Lessons List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right">
@@ -223,11 +215,12 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">النوع</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">المدة</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">المادة</th>
+                <th className="px-6 py-4 text-sm font-bold text-gray-600">المهارات الفرعية</th>
                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الإجراءات</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredLessons.map(lesson => (
+              {filteredLessons.map((lesson) => (
                 <tr key={lesson.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -247,8 +240,20 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                   </td>
                   <td className="px-6 py-4">
                     <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-bold">
-                      {subjects.find(s => s.id === lesson.subjectId)?.name || 'غير محدد'}
+                      {subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'غير محدد'}
                     </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap gap-1">
+                      {(lesson.skillIds || []).slice(0, 3).map((skillId) => (
+                        <span key={skillId} className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold">
+                          {subSkillNameMap.get(skillId) || 'مهارة'}
+                        </span>
+                      ))}
+                      {(lesson.skillIds || []).length > 3 && (
+                        <span className="text-xs text-gray-500">+{(lesson.skillIds || []).length - 3}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
@@ -267,7 +272,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
               ))}
               {filteredLessons.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                     لا توجد دروس مطابقة للبحث.
                   </td>
                 </tr>

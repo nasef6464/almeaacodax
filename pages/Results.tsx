@@ -29,43 +29,62 @@ interface SkillRecommendation {
   quizLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
+  subjectName?: string;
+  sectionName?: string;
+  actionText?: string;
 }
 
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
-  topics: ReturnType<typeof useStore.getState>['topics'],
+  allSkills: ReturnType<typeof useStore.getState>['skills'],
   lessons: ReturnType<typeof useStore.getState>['lessons'],
   quizzes: ReturnType<typeof useStore.getState>['quizzes'],
   libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
+  questions: ReturnType<typeof useStore.getState>['questions'],
 ) : SkillRecommendation => {
   if (!skill) {
     return {};
   }
 
-  const topic = skill.skillId
-    ? topics.find((item) => item.id === skill.skillId)
-    : topics.find((item) => item.title === skill.skill);
+  const resolvedSkill = skill.skillId
+    ? allSkills.find((item) => item.id === skill.skillId)
+    : allSkills.find((item) => item.name === skill.skill);
 
-  if (!topic) {
+  if (!resolvedSkill) {
     return {};
   }
 
-  const recommendedLesson = lessons.find((lesson) => topic.lessonIds?.includes(lesson.id));
-  const recommendedQuiz = quizzes.find((quiz) => topic.quizIds?.includes(quiz.id));
-  const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(topic.id));
+  const recommendedLesson = lessons.find((lesson) => lesson.skillIds?.includes(resolvedSkill.id));
+  const recommendedQuiz = quizzes.find((quiz) =>
+    quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
+    quiz.skillIds?.includes(resolvedSkill.id)
+  );
+  const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(resolvedSkill.id));
 
   return {
     lessonTitle: recommendedLesson?.title,
-    lessonLink: topic.pathId && topic.subjectId ? `/category/${topic.pathId}/${topic.subjectId}?tab=skills&topic=${topic.id}&content=lessons` : undefined,
+    lessonLink: resolvedSkill.pathId && resolvedSkill.subjectId ? `/category/${resolvedSkill.pathId}/${resolvedSkill.subjectId}` : undefined,
     quizTitle: recommendedQuiz?.title,
     quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
     resourceTitle: recommendedResource?.title,
     resourceUrl: recommendedResource?.url,
+    subjectName: resolvedSkill.subjectId ? useStore.getState().subjects.find((item) => item.id === resolvedSkill.subjectId)?.name : undefined,
+    sectionName: resolvedSkill.sectionId ? useStore.getState().sections.find((item) => item.id === resolvedSkill.sectionId)?.name : undefined,
+    actionText:
+      recommendedLesson && recommendedQuiz
+        ? 'ابدأ بمراجعة الشرح ثم نفّذ اختبارًا قصيرًا على نفس المهارة.'
+        : recommendedLesson
+          ? 'الأولوية الآن لمراجعة الشرح المرتبط بهذه المهارة.'
+          : recommendedQuiz
+            ? 'ابدأ بالتدريب العلاجي مباشرة عبر الاختبار المقترح.'
+            : recommendedResource
+              ? 'راجع الملف الداعم ثم أعد اختبار المهارة.'
+              : 'أنشئ اختبارًا جديدًا لنفس المهارة لتثبيت التحسن.',
   };
 };
 
 const Results: React.FC = () => {
-  const { examResults, topics, lessons, quizzes, libraryItems } = useStore();
+  const { examResults, skills, lessons, quizzes, libraryItems, questions } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -73,7 +92,7 @@ const Results: React.FC = () => {
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
   const weakestSkill = latestResult?.skillsAnalysis?.slice().sort((a, b) => a.mastery - b.mastery)[0];
-  const weakestSkillRecommendation = getSkillRecommendation(weakestSkill, topics, lessons, quizzes, libraryItems);
+  const weakestSkillRecommendation = getSkillRecommendation(weakestSkill, skills, lessons, quizzes, libraryItems, questions);
 
   const data = [
     { name: 'Success', value: latestResult?.score || 0 },
@@ -219,9 +238,12 @@ const Results: React.FC = () => {
           ) : null}
           {(weakestSkillRecommendation.lessonTitle || weakestSkillRecommendation.quizTitle || weakestSkillRecommendation.resourceTitle) ? (
             <div className="bg-white/10 rounded-xl p-4 mb-4 space-y-2 text-sm">
+              {weakestSkillRecommendation.subjectName ? <div>المادة: <span className="font-bold">{weakestSkillRecommendation.subjectName}</span></div> : null}
+              {weakestSkillRecommendation.sectionName ? <div>المهارة الرئيسة: <span className="font-bold">{weakestSkillRecommendation.sectionName}</span></div> : null}
               {weakestSkillRecommendation.lessonTitle ? <div>الدرس المقترح: <span className="font-bold">{weakestSkillRecommendation.lessonTitle}</span></div> : null}
               {weakestSkillRecommendation.quizTitle ? <div>الاختبار المقترح: <span className="font-bold">{weakestSkillRecommendation.quizTitle}</span></div> : null}
               {weakestSkillRecommendation.resourceTitle ? <div>الملف الداعم: <span className="font-bold">{weakestSkillRecommendation.resourceTitle}</span></div> : null}
+              {weakestSkillRecommendation.actionText ? <div className="text-indigo-100">الإجراء المقترح الآن: <span className="font-bold text-white">{weakestSkillRecommendation.actionText}</span></div> : null}
             </div>
           ) : null}
           <h3 className="text-xl font-bold mb-2">تحسين مستواك</h3>
@@ -489,8 +511,8 @@ const ReviewSolutions = ({
 };
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
-  const skills = result.skillsAnalysis || [];
-  const { topics, lessons, quizzes, libraryItems } = useStore();
+  const analysisItems = result.skillsAnalysis || [];
+  const { skills, lessons, quizzes, libraryItems, questions } = useStore();
 
   return (
     <div className="space-y-6 pb-20">
@@ -502,7 +524,7 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
       </header>
 
       <div className="grid gap-4">
-        {skills.map((s, idx) => (
+        {analysisItems.map((s, idx) => (
           <Card key={idx} className="p-5">
             <div className="flex justify-between items-center mb-3">
               <div>
@@ -530,7 +552,7 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
               />
             </div>
             {(() => {
-              const recommendation = getSkillRecommendation(s, topics, lessons, quizzes, libraryItems);
+              const recommendation = getSkillRecommendation(s, skills, lessons, quizzes, libraryItems, questions);
               if (!recommendation.lessonTitle && !recommendation.quizTitle && !recommendation.resourceTitle) {
                 return null;
               }

@@ -1,54 +1,95 @@
-
-import React, { useState } from 'react';
-import { Search, MessageCircle, ThumbsUp, Filter, Plus, ArrowRight, User } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Search, MessageCircle, Filter, Plus, ArrowRight, BookOpen, HelpCircle } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Link } from 'react-router-dom';
+import { useStore } from '../store/useStore';
+
+type QAFilter = 'all' | 'answered' | 'unanswered' | string;
+
+interface QAItem {
+    id: string;
+    user: string;
+    date: string;
+    title: string;
+    content: string;
+    subject: string;
+    courseId: string;
+    courseTitle: string;
+    category: string;
+    hasAnswer: boolean;
+    answer?: string;
+}
 
 const QA: React.FC = () => {
-    const [filter, setFilter] = useState('all');
-    
-    const questions = [
-        {
-            id: 1,
-            user: 'أحمد محمد',
-            avatar: 'https://picsum.photos/seed/ahmed/50',
-            date: 'منذ ساعتين',
-            title: 'سؤال بخصوص قاعدة أرخميدس في الفيزياء',
-            content: 'هل يمكن شرح الفرق بين قوة الطفو والوزن الظاهري؟ أجد صعوبة في التفريق بينهما في المسائل الحسابية.',
-            subject: 'الفيزياء',
-            replies: 5,
-            likes: 12,
-            isAnswered: true
-        },
-        {
-            id: 2,
-            user: 'سارة العلي',
-            avatar: 'https://picsum.photos/seed/sara/50',
-            date: 'منذ 5 ساعات',
-            title: 'أفضل طريقة لحفظ مفردات اللغة الإنجليزية',
-            content: 'أعاني من نسيان الكلمات بسرعة، هل هناك استراتيجيات فعالة للمراجعة؟',
-            subject: 'اللغة الإنجليزية',
-            replies: 2,
-            likes: 8,
-            isAnswered: false
-        },
-        {
-            id: 3,
-            user: 'خالد عمر',
-            avatar: 'https://picsum.photos/seed/khaled/50',
-            date: 'أمس',
-            title: 'استفسار عن موعد اختبار القدرات القادم',
-            content: 'متى يبدأ التسجيل للفترة الثانية؟',
-            subject: 'عام',
-            replies: 10,
-            likes: 25,
-            isAnswered: true
-        }
-    ];
+    const [filter, setFilter] = useState<QAFilter>('all');
+    const [searchQuery, setSearchQuery] = useState('');
+    const { courses, subjects, paths } = useStore();
+
+    const qaItems = useMemo<QAItem[]>(() => {
+        const publishedCourses = courses.filter((course) => course.isPublished !== false);
+
+        return publishedCourses
+            .flatMap((course) => {
+                const subject = subjects.find((item) => item.id === course.subjectId);
+                const path = paths.find((item) => item.id === course.pathId);
+                const subjectLabel = subject?.name || path?.name || course.category || 'عام';
+
+                return (course.qa || []).map((item, index) => ({
+                    id: `${course.id}-${item.id || index}`,
+                    user: item.user || 'طالب بالمنصة',
+                    date: item.date || 'حديثًا',
+                    title: item.question,
+                    content: item.answer || 'بانتظار رد المدرس أو فريق المنصة على هذا السؤال.',
+                    subject: subjectLabel,
+                    courseId: course.id,
+                    courseTitle: course.title,
+                    category: course.category || subjectLabel,
+                    hasAnswer: Boolean(item.answer && item.answer.trim().length > 0),
+                    answer: item.answer,
+                }));
+            })
+            .reverse();
+    }, [courses, subjects, paths]);
+
+    const availableTags = useMemo(() => {
+        const tags = new Set<string>();
+        qaItems.forEach((item) => {
+            if (item.subject.trim()) {
+                tags.add(item.subject.trim());
+            }
+        });
+
+        return ['الكل', 'تمت الإجابة', 'بانتظار الرد', ...Array.from(tags).slice(0, 8)];
+    }, [qaItems]);
+
+    const filteredQuestions = useMemo(() => {
+        const normalizedQuery = searchQuery.trim().toLowerCase();
+
+        return qaItems.filter((item) => {
+            const matchesFilter =
+                filter === 'all'
+                    ? true
+                    : filter === 'answered'
+                        ? item.hasAnswer
+                        : filter === 'unanswered'
+                            ? !item.hasAnswer
+                            : item.subject === filter;
+
+            const matchesQuery =
+                !normalizedQuery ||
+                item.title.toLowerCase().includes(normalizedQuery) ||
+                item.content.toLowerCase().includes(normalizedQuery) ||
+                item.courseTitle.toLowerCase().includes(normalizedQuery) ||
+                item.user.toLowerCase().includes(normalizedQuery);
+
+            return matchesFilter && matchesQuery;
+        });
+    }, [filter, qaItems, searchQuery]);
+
+    const totalAnswered = qaItems.filter((item) => item.hasAnswer).length;
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Header */}
             <header className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Link to="/" className="text-gray-500 hover:text-gray-700">
@@ -56,22 +97,41 @@ const QA: React.FC = () => {
                     </Link>
                     <div>
                         <h1 className="text-2xl font-bold text-amber-600">سؤال وجواب</h1>
-                        <p className="text-sm text-gray-500">تفاعل مع المعلمين والطلاب</p>
+                        <p className="text-sm text-gray-500">الأسئلة الحقيقية المرتبطة بالدورات والمنشورة داخل المنصة</p>
                     </div>
                 </div>
-                <button className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 transition-colors shadow-md">
+                <Link
+                    to="/courses"
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 transition-colors shadow-md"
+                >
                     <Plus size={18} />
-                    <span className="hidden md:inline">اطرح سؤالاً</span>
-                </button>
+                    <span className="hidden md:inline">استعرض الدورات واسأل من داخلها</span>
+                </Link>
             </header>
 
-            {/* Search & Filter */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-4 border border-amber-100 bg-amber-50">
+                    <div className="text-2xl font-black text-amber-600">{qaItems.length}</div>
+                    <div className="text-sm text-gray-600 font-bold">إجمالي الأسئلة المنشورة</div>
+                </Card>
+                <Card className="p-4 border border-emerald-100 bg-emerald-50">
+                    <div className="text-2xl font-black text-emerald-600">{totalAnswered}</div>
+                    <div className="text-sm text-gray-600 font-bold">أسئلة تمت الإجابة عليها</div>
+                </Card>
+                <Card className="p-4 border border-blue-100 bg-blue-50">
+                    <div className="text-2xl font-black text-blue-600">{Math.max(qaItems.length - totalAnswered, 0)}</div>
+                    <div className="text-sm text-gray-600 font-bold">أسئلة بانتظار الرد</div>
+                </Card>
+            </div>
+
             <div className="flex gap-3">
                 <div className="flex-1 relative">
-                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    <input 
-                        type="text" 
-                        placeholder="ابحث في الأسئلة..." 
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        placeholder="ابحث في الأسئلة أو أسماء الدورات..."
                         className="w-full pr-10 pl-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-all"
                     />
                 </div>
@@ -80,66 +140,111 @@ const QA: React.FC = () => {
                 </button>
             </div>
 
-            {/* Tags */}
             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                {['الكل', 'الرياضيات', 'الفيزياء', 'الكيمياء', 'القدرات', 'عام'].map((tag) => (
-                    <button
-                        key={tag}
-                        onClick={() => setFilter(tag)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
-                            (filter === 'all' && tag === 'الكل') || filter === tag
-                                ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-                        }`}
-                    >
-                        {tag}
-                    </button>
-                ))}
+                {availableTags.map((tag) => {
+                    const isActive =
+                        (filter === 'all' && tag === 'الكل') ||
+                        (filter === 'answered' && tag === 'تمت الإجابة') ||
+                        (filter === 'unanswered' && tag === 'بانتظار الرد') ||
+                        filter === tag;
+
+                    return (
+                        <button
+                            key={tag}
+                            onClick={() => {
+                                if (tag === 'الكل') {
+                                    setFilter('all');
+                                } else if (tag === 'تمت الإجابة') {
+                                    setFilter('answered');
+                                } else if (tag === 'بانتظار الرد') {
+                                    setFilter('unanswered');
+                                } else {
+                                    setFilter(tag);
+                                }
+                            }}
+                            className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                                isActive
+                                    ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                            }`}
+                        >
+                            {tag}
+                        </button>
+                    );
+                })}
             </div>
 
-            {/* Questions List */}
             <div className="space-y-4">
-                {questions.map((q) => (
-                    <Card key={q.id} className="p-5 hover:shadow-md transition-shadow cursor-pointer group">
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex items-center gap-3">
-                                <img src={q.avatar} alt={q.user} className="w-10 h-10 rounded-full" />
-                                <div>
-                                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-amber-600 transition-colors">{q.user}</h4>
-                                    <span className="text-xs text-gray-400">{q.date}</span>
+                {filteredQuestions.map((item) => (
+                    <Card key={item.id} className="p-5 hover:shadow-md transition-shadow cursor-pointer group">
+                        <div className="flex justify-between items-start mb-3 gap-4">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${item.hasAnswer ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
+                                    <HelpCircle size={18} />
+                                </div>
+                                <div className="min-w-0">
+                                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-amber-600 transition-colors truncate">{item.user}</h4>
+                                    <span className="text-xs text-gray-400">{item.date}</span>
                                 </div>
                             </div>
-                            <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-md font-medium">
-                                {q.subject}
+                            <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-md font-medium shrink-0">
+                                {item.subject}
                             </span>
                         </div>
 
-                        <h3 className="font-bold text-lg text-gray-800 mb-2">{q.title}</h3>
+                        <h3 className="font-bold text-lg text-gray-800 mb-2">{item.title}</h3>
                         <p className="text-gray-500 text-sm line-clamp-2 mb-4">
-                            {q.content}
+                            {item.content}
                         </p>
 
-                        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+                        <div className="flex items-center justify-between border-t border-gray-100 pt-3 gap-3 flex-wrap">
                             <div className="flex gap-4 text-gray-500 text-sm">
-                                <span className="flex items-center gap-1 hover:text-amber-600 transition-colors">
+                                <span className="flex items-center gap-1">
                                     <MessageCircle size={16} />
-                                    {q.replies} إجابات
+                                    {item.hasAnswer ? 'إجابة واحدة' : 'بدون إجابة'}
                                 </span>
-                                <span className="flex items-center gap-1 hover:text-amber-600 transition-colors">
-                                    <ThumbsUp size={16} />
-                                    {q.likes}
+                                <span className="flex items-center gap-1">
+                                    <BookOpen size={16} />
+                                    {item.courseTitle}
                                 </span>
                             </div>
-                            
-                            {q.isAnswered && (
-                                <span className="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded flex items-center gap-1">
-                                    تمت الإجابة
-                                </span>
-                            )}
+
+                            <div className="flex items-center gap-2">
+                                {item.hasAnswer ? (
+                                    <span className="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded flex items-center gap-1">
+                                        تمت الإجابة
+                                    </span>
+                                ) : (
+                                    <span className="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded flex items-center gap-1">
+                                        بانتظار الرد
+                                    </span>
+                                )}
+                                <Link
+                                    to={`/course/${item.courseId}`}
+                                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700"
+                                >
+                                    صفحة الدورة
+                                </Link>
+                            </div>
                         </div>
                     </Card>
                 ))}
             </div>
+
+            {filteredQuestions.length === 0 && (
+                <Card className="p-12 text-center border-dashed border-2 border-gray-200">
+                    <div className="w-16 h-16 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center mx-auto mb-4">
+                        <MessageCircle size={28} />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-800 mb-2">لا توجد أسئلة مطابقة الآن</h3>
+                    <p className="text-sm text-gray-500 mb-4">
+                        إمّا أنه لا توجد أسئلة منشورة بعد، أو أن نتائج البحث/الفلترة الحالية لا تطابق البيانات الموجودة.
+                    </p>
+                    <Link to="/courses" className="text-indigo-600 font-bold hover:underline">
+                        انتقل إلى الدورات
+                    </Link>
+                </Card>
+            )}
         </div>
     );
 };

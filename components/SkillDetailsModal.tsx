@@ -63,7 +63,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
               <div className="w-full md:w-80 flex-none bg-white border-l border-gray-100 h-1/3 md:h-full overflow-y-auto">
                 <div className="p-4 border-b border-gray-100 bg-gray-50 flex gap-2">
                   <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                  <h3 className="font-bold text-gray-800">المواضيع الفرعية</h3>
+                  <h3 className="font-bold text-gray-800">الموضوعات الفرعية</h3>
                 </div>
                 <div className="p-2 space-y-1">
                   {/* General Topic Level selection */}
@@ -77,7 +77,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                   >
                     <div>
                       <h4 className={`font-bold ${selectedSubTopic === null ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
-                        عام (للموضوع الرئيسي)
+                        عام (للموضوع التأسيسي الرئيس)
                       </h4>
                     </div>
                   </button>

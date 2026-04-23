@@ -3,10 +3,12 @@ import { createApp } from "./app.js";
 import { connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
 import { ensureAdminAccount } from "./services/ensureAdminAccount.js";
+import { ensureSkillTaxonomy } from "./services/ensureSkillTaxonomy.js";
 import { createSocketServer } from "./sockets/index.js";
 
 async function bootstrap() {
   await connectToDatabase();
+  await ensureSkillTaxonomy();
   await ensureAdminAccount();
 
   const app = createApp();
