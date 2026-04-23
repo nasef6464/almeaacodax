@@ -20,7 +20,7 @@ interface AdvancedCourseBuilderProps {
 }
 
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { nestedSkills } = useStore();
+  const { topics, subjects } = useStore();
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
   const [settingsTab, setSettingsTab] = useState<'basic' | 'pricing' | 'advanced'>('basic');
   
@@ -461,14 +461,29 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"
                       >
-                        {nestedSkills.map(mainSkill => (
-                          <optgroup key={mainSkill.id} label={mainSkill.name}>
-                            <option value={mainSkill.id}>{mainSkill.name} (رئيسية)</option>
-                            {mainSkill.subSkills?.map(sub => (
-                              <option key={sub.id} value={sub.id}>- {sub.name}</option>
-                            ))}
-                          </optgroup>
-                        ))}
+                        {subjects.map(subject => {
+                          const subjectTopics = topics
+                            .filter(topic => topic.subjectId === subject.id)
+                            .sort((a, b) => a.order - b.order);
+                          const mainTopics = subjectTopics.filter(topic => !topic.parentId);
+                          if (mainTopics.length === 0) return null;
+
+                          return (
+                            <optgroup key={subject.id} label={subject.name}>
+                              {mainTopics.map(mainTopic => {
+                                const subTopics = subjectTopics.filter(topic => topic.parentId === mainTopic.id);
+                                return (
+                                  <React.Fragment key={mainTopic.id}>
+                                    <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
+                                    {subTopics.map(subTopic => (
+                                      <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
+                                    ))}
+                                  </React.Fragment>
+                                );
+                              })}
+                            </optgroup>
+                          );
+                        })}
                       </select>
                       <p className="text-xs text-gray-500 mt-1">اضغط Ctrl (أو Cmd) لاختيار أكثر من مهارة.</p>
                     </div>

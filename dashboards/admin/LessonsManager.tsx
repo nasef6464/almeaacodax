@@ -9,7 +9,7 @@ interface LessonsManagerProps {
 }
 
 export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => {
-  const { lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects } = useStore();
+  const { lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, topics } = useStore();
   
   const [selectedPathId, setSelectedPathId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(subjectId || '');
@@ -96,6 +96,17 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     l.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const availableSections = sections.filter(section => section.subjectId === selectedSubjectId);
+  const filteredTopics = topics
+    .filter(topic => {
+      if (selectedSubjectId && topic.subjectId !== selectedSubjectId) return false;
+      if (selectedSectionId && topic.sectionId !== selectedSectionId) return false;
+      if (selectedPathId && topic.pathId && topic.pathId !== selectedPathId) return false;
+      return true;
+    })
+    .sort((a, b) => a.order - b.order);
+  const mainTopics = filteredTopics.filter(topic => !topic.parentId);
+
   if (isEditing) {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in relative z-50">
@@ -168,7 +179,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           disabled={!selectedSubjectId}
         >
           <option value="">كل الأقسام</option>
-          {useStore.getState().sections.filter(s => s.subjectId === selectedSubjectId).map(s => (
+          {availableSections.map(s => (
             <option key={s.id} value={s.id}>{s.name}</option>
           ))}
         </select>
@@ -178,17 +189,17 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">كل المهارات</option>
-          {useStore.getState().nestedSkills.filter(s => 
-            (!selectedSubjectId || s.subjectId === selectedSubjectId) &&
-            (!selectedSectionId || s.sectionId === selectedSectionId)
-          ).map(mainSkill => (
-            <optgroup key={mainSkill.id} label={mainSkill.name}>
-              <option value={mainSkill.id}>{mainSkill.name} (رئيسية)</option>
-              {mainSkill.subSkills?.map(sub => (
-                <option key={sub.id} value={sub.id}>- {sub.name}</option>
-              ))}
-            </optgroup>
-          ))}
+          {mainTopics.map(mainTopic => {
+            const subTopics = filteredTopics.filter(topic => topic.parentId === mainTopic.id);
+            return (
+              <optgroup key={mainTopic.id} label={mainTopic.title}>
+                <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
+                {subTopics.map(subTopic => (
+                  <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
+                ))}
+              </optgroup>
+            );
+          })}
         </select>
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />

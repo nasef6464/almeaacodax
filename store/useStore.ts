@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { api } from '../services/api';
-import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson } from '../types';
+import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, Topic } from '../types';
 import { currentUser, courses as mockCourses } from '../services/mockData';
 
 // Initial mock questions
@@ -690,6 +690,51 @@ interface AppState {
     // Library Actions
 }
 
+const buildLegacyTopicsFromNestedSkills = (skills: NestedSkill[]): Topic[] => {
+    const topics: Topic[] = [];
+
+    skills.forEach((mainSkill, mainIndex) => {
+        if (!mainSkill.subjectId) return;
+
+        topics.push({
+            id: mainSkill.id,
+            title: mainSkill.name,
+            subjectId: mainSkill.subjectId,
+            pathId: mainSkill.pathId,
+            sectionId: mainSkill.sectionId,
+            parentId: null,
+            order: mainIndex + 1,
+            lessonIds: [],
+            quizIds: [],
+        });
+
+        (mainSkill.subSkills || []).forEach((subSkill, subIndex) => {
+            topics.push({
+                id: subSkill.id,
+                title: subSkill.name,
+                subjectId: mainSkill.subjectId!,
+                pathId: mainSkill.pathId,
+                sectionId: mainSkill.sectionId,
+                parentId: mainSkill.id,
+                order: subIndex + 1,
+                lessonIds: [],
+                quizIds: [],
+            });
+        });
+    });
+
+    return topics;
+};
+
+const getLegacyTopicIdsFromNestedSkills = (skills: NestedSkill[]): Set<string> => {
+    const ids = new Set<string>();
+    skills.forEach(mainSkill => {
+        ids.add(mainSkill.id);
+        (mainSkill.subSkills || []).forEach(subSkill => ids.add(subSkill.id));
+    });
+    return ids;
+};
+
 // Initial user with subscription
 const initialUser: User = {
     ...currentUser,
@@ -767,7 +812,7 @@ export const useStore = create<AppState>()(
             questions: initialQuestions,
             quizzes: [],
             lessons: [],
-            topics: [],
+            topics: buildLegacyTopicsFromNestedSkills(initialNestedSkills),
             paths: [
                 { id: 'p_qudrat', name: 'مسار القدرات' },
                 { id: 'p_tahsili', name: 'مسار التحصيلي' },
@@ -1442,9 +1487,16 @@ export const useStore = create<AppState>()(
             })),
             
             // Nested Skill Actions
-            updateNestedSkills: (skills) => set(() => ({
-                nestedSkills: skills
-            }))
+            updateNestedSkills: (skills) => set((state) => {
+                const generatedTopics = buildLegacyTopicsFromNestedSkills(skills);
+                const previousLegacyTopicIds = getLegacyTopicIdsFromNestedSkills(state.nestedSkills);
+                const nonLegacyTopics = state.topics.filter(topic => !previousLegacyTopicIds.has(topic.id));
+
+                return {
+                    nestedSkills: skills,
+                    topics: [...nonLegacyTopics, ...generatedTopics]
+                };
+            })
         }),
         {
             name: 'learning-platform-storage', // unique name
@@ -1456,7 +1508,9 @@ export const useStore = create<AppState>()(
                 if (version === 0) {
                     persistedState.nestedSkills = initialNestedSkills;
                     // Ensure new fields and topics are initialized
-                    if (!persistedState.topics) persistedState.topics = [];
+                    if (!persistedState.topics || persistedState.topics.length === 0) {
+                        persistedState.topics = buildLegacyTopicsFromNestedSkills(initialNestedSkills);
+                    }
                 }
                 return persistedState;
             }
