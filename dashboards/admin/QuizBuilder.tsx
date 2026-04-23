@@ -66,6 +66,22 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     () => topics.filter(topic => !!currentQuiz.subjectId && topic.subjectId === currentQuiz.subjectId && !topic.parentId),
     [topics, currentQuiz.subjectId]
   );
+  const quizSkillChildrenMap = useMemo(() => {
+    const byParent = new Map<string, typeof topics>();
+    topics
+      .filter(topic => !currentQuiz.subjectId || topic.subjectId === currentQuiz.subjectId)
+      .forEach(topic => {
+        if (!topic.parentId) return;
+        const currentChildren = byParent.get(topic.parentId) || [];
+        byParent.set(topic.parentId, [...currentChildren, topic]);
+      });
+
+    byParent.forEach((children, parentId) => {
+      byParent.set(parentId, [...children].sort((a, b) => a.order - b.order));
+    });
+
+    return byParent;
+  }, [topics, currentQuiz.subjectId]);
 
   const [isAiGenerating, setIsAiGenerating] = useState(false);
 
@@ -136,10 +152,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
            const { generateQuizQuestion } = await import('../../services/geminiService');
            let topicName = "القدرات العامة";
            if (currentQuiz.subjectId) {
-              topicName = useStore.getState().subjects.find(s => s.id === currentQuiz.subjectId)?.name || topicName;
+              topicName = subjects.find(s => s.id === currentQuiz.subjectId)?.name || topicName;
            }
            if (autoGenConfig.skillIds.length > 0) {
-              const skillNames = autoGenConfig.skillIds.map(id => useStore.getState().topics.find(t => t.id === id)?.title).filter(Boolean);
+              const skillNames = autoGenConfig.skillIds.map(id => topics.find(t => t.id === id)?.title).filter(Boolean);
               if (skillNames.length > 0) {
                  topicName += " - " + skillNames.join(', ');
               }
@@ -159,7 +175,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   subject: currentQuiz.subjectId || '',
                   skillIds: autoGenConfig.skillIds
                 };
-                useStore.getState().addQuestion(newQ);
+                addQuestion(newQ);
                 selectedIds.push(newQ.id);
               }
            }
@@ -506,7 +522,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                                   {q.difficulty === 'Easy' ? 'سهل' : q.difficulty === 'Medium' ? 'متوسط' : 'صعب'}
                                 </span>
                                 {q.skillIds?.map(skillId => {
-                                  const topic = useStore.getState().topics.find(t => t.id === skillId);
+                                  const topic = topics.find(t => t.id === skillId);
                                   return topic ? (
                                     <span key={skillId} className="bg-gray-100 text-gray-600 px-2 py-1 rounded">
                                       {topic.title}
@@ -697,7 +713,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   <label className="block text-sm font-bold text-gray-700 mb-2">المهارات المشمولة (اختياري)</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {autoGenConfig.skillIds?.map(skillId => {
-                      const topic = useStore.getState().topics.find(t => t.id === skillId);
+                      const topic = topics.find(t => t.id === skillId);
                       return topic ? (
                         <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
                           {topic.title}
@@ -718,10 +734,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     className="w-full border rounded-lg px-3 py-2"
                   >
                     <option value="">-- أضف مهارة للتوليد --</option>
-                    {useStore.getState().topics.filter(t => !currentQuiz.subjectId || t.subjectId === currentQuiz.subjectId).filter(t => !t.parentId).map(mainTopic => (
+                    {availableQuizSkillTopics.map(mainTopic => (
                       <optgroup key={mainTopic.id} label={mainTopic.title}>
                         <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-                        {useStore.getState().topics.filter(sub => sub.parentId === mainTopic.id).map(sub => (
+                        {(quizSkillChildrenMap.get(mainTopic.id) || []).map(sub => (
                           <option key={sub.id} value={sub.id}>- {sub.title}</option>
                         ))}
                       </optgroup>

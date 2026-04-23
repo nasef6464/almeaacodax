@@ -10,7 +10,7 @@ interface QuizzesManagerProps {
 }
 
 export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filterType }) => {
-  const { quizzes: globalQuizzes, deleteQuiz, paths, subjects } = useStore();
+  const { quizzes: globalQuizzes, deleteQuiz, paths, subjects, sections, topics, addQuiz } = useStore();
   
   const [selectedPathId, setSelectedPathId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(subjectId || '');
@@ -49,7 +49,6 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   const handleDuplicate = (quiz: Quiz) => {
-    const { addQuiz } = useStore.getState();
     const duplicatedQuiz: Quiz = {
       ...quiz,
       id: `quiz_${Date.now()}_copy`,
@@ -61,6 +60,16 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const filteredQuizzes = quizzes.filter(q => 
     q.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const availableSections = sections.filter(section => section.subjectId === selectedSubjectId);
+  const filteredTopics = topics
+    .filter(topic => {
+      if (selectedSubjectId && topic.subjectId !== selectedSubjectId) return false;
+      if (selectedSectionId && topic.sectionId !== selectedSectionId) return false;
+      if (selectedPathId && topic.pathId && topic.pathId !== selectedPathId) return false;
+      return true;
+    })
+    .sort((a, b) => a.order - b.order);
+  const mainTopics = filteredTopics.filter(topic => !topic.parentId);
 
   if (isEditing) {
     return (
@@ -147,7 +156,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           disabled={!selectedSubjectId}
         >
           <option value="">كل الأقسام</option>
-          {useStore.getState().sections.filter(s => s.subjectId === selectedSubjectId).map(s => (
+          {availableSections.map(s => (
             <option key={s.id} value={s.id}>{s.name}</option>
           ))}
         </select>
@@ -157,12 +166,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">كل المهارات</option>
-          {useStore.getState().topics.filter(t => 
-            (!selectedSubjectId || t.subjectId === selectedSubjectId) && !t.parentId
-          ).map(mainTopic => (
+          {mainTopics.map(mainTopic => (
             <optgroup key={mainTopic.id} label={mainTopic.title}>
               <option value={mainTopic.id}>{mainTopic.title} (رئيسية)</option>
-              {useStore.getState().topics.filter(sub => sub.parentId === mainTopic.id).map(sub => (
+              {filteredTopics.filter(sub => sub.parentId === mainTopic.id).map(sub => (
                 <option key={sub.id} value={sub.id}>- {sub.title}</option>
               ))}
             </optgroup>
