@@ -1,6 +1,5 @@
 
 import React, { useState, Suspense } from 'react';
-import { saherUpcomingTests } from '../services/mockData';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map, HelpCircle, LayoutDashboard, 
@@ -89,6 +88,15 @@ const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] 
         })
         .sort((a, b) => a.mastery - b.mastery)
         .slice(0, 12);
+};
+
+const formatQuizCardDate = (createdAt?: number) => {
+    if (!createdAt) return 'متاح الآن';
+    return new Date(createdAt).toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 };
 
 const PathsTab = () => {
@@ -440,7 +448,7 @@ const Dashboard: React.FC = () => {
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity } = useStore();
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     
     // Debugging logs as requested
@@ -518,12 +526,45 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         };
     }
 
-    // --- Group courses by category for "My Paths" ---
-    const paths = [
-        { id: 'qudrat', title: 'مسار القدرات', courses: activeCourses.filter(c => c.category === 'القدرات'), icon: <Target size={20} className="text-purple-500" />, bg: 'bg-purple-50' },
-        { id: 'tahsili', title: 'مسار التحصيلي', courses: activeCourses.filter(c => c.category === 'التحصيلي'), icon: <BookOpen size={20} className="text-blue-500" />, bg: 'bg-blue-50' },
-        { id: 'nafes', title: 'مسار نافس', courses: activeCourses.filter(c => c.category === 'نافس'), icon: <Star size={20} className="text-emerald-500" />, bg: 'bg-emerald-50' }
-    ].filter(p => p.courses.length > 0);
+    // --- Group courses by real paths for "My Paths" ---
+    const normalize = (value?: string) => (value ?? '').trim().toLowerCase();
+    const getSmallPathStyle = (pathId: string) => {
+        if (pathId === 'p_qudrat') return { icon: <Target size={20} className="text-purple-500" />, bg: 'bg-purple-50' };
+        if (pathId === 'p_tahsili') return { icon: <BookOpen size={20} className="text-blue-500" />, bg: 'bg-blue-50' };
+        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={20} className="text-emerald-500" />, bg: 'bg-emerald-50' };
+        return { icon: <RouteIcon size={20} className="text-indigo-500" />, bg: 'bg-indigo-50' };
+    };
+
+    const enrolledPathSet = new Set(enrolledPaths ?? []);
+    const hasExplicitEnrolledPaths = enrolledPathSet.size > 0;
+    const relevantPaths = hasExplicitEnrolledPaths
+        ? storePaths.filter((path) => enrolledPathSet.has(path.id))
+        : storePaths.filter((path) => {
+            const pathName = normalize(path.name);
+            const pathId = normalize(path.id);
+            return activeCourses.some((course) => {
+                const category = normalize(course.category);
+                return category === pathName || category === pathId;
+            });
+        });
+
+    const paths = relevantPaths
+        .map((path) => {
+            const pathName = normalize(path.name);
+            const pathId = normalize(path.id);
+            const pathCourses = activeCourses.filter((course) => {
+                const category = normalize(course.category);
+                return category === pathName || category === pathId;
+            });
+
+            return {
+                id: path.id,
+                title: `مسار ${path.name}`,
+                courses: pathCourses,
+                ...getSmallPathStyle(path.id)
+            };
+        })
+        .filter((path) => path.courses.length > 0);
 
     return (
     <div className="space-y-8 animate-fade-in pb-20">
@@ -700,52 +741,66 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
 )};
 
 // 2. Saher Tab
-const SaherTab = () => (
-    <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
-        {/* Hero Card */}
-        <div className="bg-[#a855f7] text-white rounded-2xl p-8 md:p-12 shadow-lg shadow-purple-100 text-center relative overflow-hidden">
-            <div className="relative z-10">
-                <h1 className="text-3xl font-bold mb-3">اختبار "ساهر" السريع</h1>
-                <p className="text-purple-100 text-lg mb-8">اختبر معرفتك في جميع المواد باختبار شامل وسريع</p>
-                
-                <Link 
-                    to="/quiz" 
-                    className="inline-block bg-white text-[#a855f7] px-8 py-3 rounded-xl font-bold text-lg hover:bg-gray-50 transition-transform hover:-translate-y-1 shadow-md"
-                >
-                    ابدأ اختبار ساهر
-                </Link>
-            </div>
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-900 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
-        </div>
+const SaherTab = () => {
+    const { quizzes } = useStore();
+    const upcomingTests = quizzes
+        .filter((quiz) => quiz.isPublished && (quiz.type ?? 'quiz') === 'quiz')
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+        .slice(0, 6);
 
-        {/* Upcoming Tests Section */}
-        <div>
-            <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات القادمة</h3>
-            <div className="space-y-4">
-                {saherUpcomingTests.map(test => (
-                    <Card key={test.id} className="p-4 flex justify-between items-center hover:shadow-md transition-all border border-gray-100">
-                        {/* Button on Left (End in Flex RTL) */}
-                        <button className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
-                            تفاصيل
-                        </button>
+    return (
+        <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
+            {/* Hero Card */}
+            <div className="bg-[#a855f7] text-white rounded-2xl p-8 md:p-12 shadow-lg shadow-purple-100 text-center relative overflow-hidden">
+                <div className="relative z-10">
+                    <h1 className="text-3xl font-bold mb-3">اختبار "ساهر" السريع</h1>
+                    <p className="text-purple-100 text-lg mb-8">اختبر معرفتك في جميع المواد باختبار شامل وسريع</p>
+                    
+                    <Link 
+                        to="/quiz" 
+                        className="inline-block bg-white text-[#a855f7] px-8 py-3 rounded-xl font-bold text-lg hover:bg-gray-50 transition-transform hover:-translate-y-1 shadow-md"
+                    >
+                        ابدأ اختبار ساهر
+                    </Link>
+                </div>
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-900 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+            </div>
 
-                        {/* Content on Right (Start in Flex RTL) */}
-                        <div className="flex items-center gap-4">
-                            <div className="text-right">
-                                <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
-                                <span className="text-gray-400 text-sm font-sans font-medium">{test.date}</span>
-                            </div>
-                            <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 border-2 border-purple-100 shrink-0">
-                                <Target size={24} />
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+            {/* Upcoming Tests Section */}
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات القادمة</h3>
+                <div className="space-y-4">
+                    {upcomingTests.length > 0 ? (
+                        upcomingTests.map(test => (
+                            <Card key={test.id} className="p-4 flex justify-between items-center hover:shadow-md transition-all border border-gray-100">
+                                {/* Button on Left (End in Flex RTL) */}
+                                <Link to={`/quiz/${test.id}`} className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
+                                    تفاصيل
+                                </Link>
+
+                                {/* Content on Right (Start in Flex RTL) */}
+                                <div className="flex items-center gap-4">
+                                    <div className="text-right">
+                                        <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
+                                        <span className="text-gray-400 text-sm font-sans font-medium">{formatQuizCardDate(test.createdAt)}</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 border-2 border-purple-100 shrink-0">
+                                        <Target size={24} />
+                                    </div>
+                                </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="p-6 text-center border border-dashed border-gray-200">
+                            <p className="text-sm text-gray-500">لا توجد اختبارات منشورة بعد.</p>
+                        </Card>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default Dashboard;
