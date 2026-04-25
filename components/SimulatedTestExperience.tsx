@@ -15,6 +15,8 @@ interface Test {
     type: string;
     level: string;
     isLocked: boolean;
+    pathId?: string;
+    subjectId?: string;
 }
 
 interface SimulatedTestExperienceProps {
@@ -38,6 +40,16 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
     const [favorites, setFavorites] = useState<Record<number, boolean>>({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+    const selectedTestSkillsLink =
+        selectedTest?.pathId && selectedTest?.subjectId
+            ? `/category/${selectedTest.pathId}?subject=${selectedTest.subjectId}&tab=skills`
+            : '/quizzes';
+
+    const selectedTestBanksLink =
+        selectedTest?.pathId && selectedTest?.subjectId
+            ? `/category/${selectedTest.pathId}?subject=${selectedTest.subjectId}&tab=banks`
+            : '/quizzes';
 
     const toggleFavorite = (idx: number) => {
         setFavorites(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -632,10 +644,10 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                             <h3 className="text-xl font-bold mb-2">تحسين مستواك 🚀</h3>
                             <p className="text-indigo-100 mb-4 text-sm">بناءً على نتيجتك، نقترح عليك التالي لرفع درجتك:</p>
                             <div className="flex flex-wrap gap-3">
-                                <Link to="/qudrat/quant?tab=skills" className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
+                                <Link to={selectedTestSkillsLink} className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
                                     مراجعة مهارة الهندسة
                                 </Link>
-                                <Link to="/qudrat/quant?tab=banks" className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
+                                <Link to={selectedTestBanksLink} className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
                                     حل بنك أسئلة الجبر
                                 </Link>
                             </div>

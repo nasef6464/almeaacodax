@@ -494,6 +494,7 @@ export const AdminDashboard: React.FC = () => {
             case 'financial':
                 return <FinancialManager />;
             default:
+                return renderOverview();
                 return (
                     <div className="flex items-center justify-center h-[calc(100vh-8rem)] animate-fade-in">
                         <div className="text-center max-w-sm">

@@ -183,7 +183,7 @@ const App: React.FC = () => {
                     <Route path="/category/:pathId/:subjectId" element={<LegacySubjectRouteRedirect />} />
                     
                     {/* Placeholder for other routes */}
-                    <Route path="/section/:catId" element={<div className="p-20 text-center font-bold text-gray-500 text-xl">صفحة القسم (قيد التطوير)</div>} />
+                    <Route path="/section/:catId" element={<Navigate replace to="/dashboard" />} />
                   </Routes>
                 </Suspense>
               </Layout>
