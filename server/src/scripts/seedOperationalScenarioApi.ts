@@ -441,6 +441,32 @@ async function upsertLessonsQuestionsEtc(
   );
 
   snapshots = await fetchSnapshots(adminToken);
+  const pendingLesson = findLessonBySignature(
+    snapshots.content.lessons || [],
+    "مراجعة سريعة على الكسور المركبة",
+    "p_qudrat",
+    "sub_quant",
+  );
+  if (pendingLesson) {
+    await request(
+      `/content/lessons/${pendingLesson._id || pendingLesson.id}`,
+      "PATCH",
+      {
+        ownerType: "teacher",
+        ownerId: String(teacherQuant?._id || teacherQuant?.id || ""),
+        createdBy: String(teacherQuant?._id || teacherQuant?.id || ""),
+        assignedTeacherId: String(teacherQuant?._id || teacherQuant?.id || ""),
+        approvalStatus: "pending_review",
+        approvedBy: "",
+        approvedAt: null,
+        reviewerNotes: "بانتظار اعتماد الإدارة",
+        revenueSharePercentage: 35,
+      },
+      adminToken,
+    );
+  }
+
+  snapshots = await fetchSnapshots(adminToken);
   const questionsById = byIdOrMongoId(snapshots.questions || []);
 
   const questionSeeds = [
@@ -585,6 +611,23 @@ async function upsertLessonsQuestionsEtc(
     );
   }
 
+  await request(
+    "/quizzes/questions/q_seed_quant_pending",
+    "PATCH",
+    {
+      ownerType: "teacher",
+      ownerId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      createdBy: String(teacherQuant?._id || teacherQuant?.id || ""),
+      assignedTeacherId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      approvalStatus: "pending_review",
+      approvedBy: "",
+      approvedAt: null,
+      reviewerNotes: "بانتظار اعتماد الإدارة",
+      revenueSharePercentage: 35,
+    },
+    adminToken,
+  );
+
   snapshots = await fetchSnapshots(adminToken);
   const quizzesById = byIdOrMongoId(snapshots.quizzes || []);
 
@@ -722,6 +765,24 @@ async function upsertLessonsQuestionsEtc(
     );
   }
 
+  await request(
+    "/quizzes/quiz_seed_pending_review",
+    "PATCH",
+    {
+      ownerType: "teacher",
+      ownerId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      createdBy: String(teacherQuant?._id || teacherQuant?.id || ""),
+      assignedTeacherId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      approvalStatus: "pending_review",
+      approvedBy: "",
+      approvedAt: null,
+      reviewerNotes: "بانتظار اعتماد الإدارة",
+      revenueSharePercentage: 35,
+      isPublished: false,
+    },
+    adminToken,
+  );
+
   snapshots = await fetchSnapshots(adminToken);
   const libraryById = byIdOrMongoId(snapshots.content.libraryItems || []);
 
@@ -798,6 +859,23 @@ async function upsertLessonsQuestionsEtc(
       teacherQuantToken,
     );
   }
+
+  await request(
+    "/content/library-items/lib_seed_teacher_pending",
+    "PATCH",
+    {
+      ownerType: "teacher",
+      ownerId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      createdBy: String(teacherQuant?._id || teacherQuant?.id || ""),
+      assignedTeacherId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      approvalStatus: "pending_review",
+      approvedBy: "",
+      approvedAt: null,
+      reviewerNotes: "بانتظار اعتماد الإدارة",
+      revenueSharePercentage: 35,
+    },
+    adminToken,
+  );
 
   snapshots = await fetchSnapshots(adminToken);
   const coursesById = byIdOrMongoId(snapshots.courses || []);
@@ -950,6 +1028,24 @@ async function upsertLessonsQuestionsEtc(
     );
   }
 
+  await request(
+    "/courses/course_seed_teacher_pending",
+    "PATCH",
+    {
+      ownerType: "teacher",
+      ownerId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      createdBy: String(teacherQuant?._id || teacherQuant?.id || ""),
+      assignedTeacherId: String(teacherQuant?._id || teacherQuant?.id || ""),
+      approvalStatus: "pending_review",
+      approvedBy: "",
+      approvedAt: null,
+      reviewerNotes: "بانتظار اعتماد الإدارة",
+      revenueSharePercentage: 35,
+      isPublished: false,
+    },
+    adminToken,
+  );
+
   snapshots = await fetchSnapshots(adminToken);
   const topicsById = byIdOrMongoId(snapshots.content.topics || []);
 
@@ -1012,6 +1108,8 @@ async function upsertGroupsAndAssignments(adminToken: string, usersByEmail: Map<
   const groups = snapshots.content.groups || [];
 
   const adminUser = usersByEmail.get(ADMIN_EMAIL.toLowerCase());
+  const teacherQuant = usersByEmail.get("teacher.quant@almeaa.local");
+  const teacherMath = usersByEmail.get("teacher.math@almeaa.local");
   const schoolSupervisor = usersByEmail.get("supervisor.school@almeaa.local");
   const groupSupervisor = usersByEmail.get("supervisor.group@almeaa.local");
   const studentA = usersByEmail.get("student.a@almeaa.local");
@@ -1080,6 +1178,20 @@ async function upsertGroupsAndAssignments(adminToken: string, usersByEmail: Map<
   await request(`/auth/admin/users/${groupSupervisor._id || groupSupervisor.id}`, "PATCH", {
     schoolId: String(school._id || school.id),
     groupIds: [String(school._id || school.id), String(quantClass._id || quantClass.id)],
+  }, adminToken);
+
+  await request(`/auth/admin/users/${teacherQuant._id || teacherQuant.id}`, "PATCH", {
+    schoolId: String(school._id || school.id),
+    groupIds: [String(quantClass._id || quantClass.id)],
+    managedPathIds: ["p_qudrat"],
+    managedSubjectIds: ["sub_quant"],
+  }, adminToken);
+
+  await request(`/auth/admin/users/${teacherMath._id || teacherMath.id}`, "PATCH", {
+    schoolId: String(school._id || school.id),
+    groupIds: [String(mathClass._id || mathClass.id)],
+    managedPathIds: ["p_tahsili"],
+    managedSubjectIds: ["sub_math"],
   }, adminToken);
 
   await request(`/auth/admin/users/${studentA._id || studentA.id}`, "PATCH", {
@@ -1345,7 +1457,7 @@ async function runSmokeChecks(schoolId: string) {
   const student = await login("student.a@almeaa.local", "Student@123");
   const parent = await login("parent.a@almeaa.local", "Parent@123");
 
-  const [adminAnalytics, teacherAnalytics, supervisorAnalytics, parentAnalytics, studentResults, schoolReport] =
+  const [adminAnalytics, teacherAnalytics, supervisorAnalytics, parentAnalytics, studentResults, schoolReport, studentQuizzes, studentCourses] =
     await Promise.all([
       request<any>("/quizzes/analytics/overview", "GET", undefined, admin.token),
       request<any>("/quizzes/analytics/overview", "GET", undefined, teacher.token),
@@ -1353,6 +1465,8 @@ async function runSmokeChecks(schoolId: string) {
       request<any>("/quizzes/analytics/overview", "GET", undefined, parent.token),
       request<any[]>("/quizzes/results", "GET", undefined, student.token),
       request<any>(`/content/schools/${schoolId}/report`, "GET", undefined, supervisor.token),
+      request<any[]>("/quizzes", "GET", undefined, student.token),
+      request<any[]>("/courses", "GET", undefined, student.token),
     ]);
 
   return {
@@ -1361,8 +1475,10 @@ async function runSmokeChecks(schoolId: string) {
     supervisorWeakestStudents: supervisorAnalytics.weakestStudents?.length || 0,
     parentLinkedStudents: parentAnalytics.weakestStudents?.length || 0,
     studentResults: studentResults.length,
-    schoolClasses: schoolReport.classes?.length || 0,
-    schoolPackages: schoolReport.packages?.length || 0,
+    studentAvailableQuizzes: studentQuizzes.length,
+    studentAvailableCourses: studentCourses.length,
+    schoolClasses: schoolReport.metrics?.totalClasses || 0,
+    schoolPackages: schoolReport.metrics?.activePackages || 0,
   };
 }
 
