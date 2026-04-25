@@ -45,6 +45,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
     const [viewingFile, setViewingFile] = useState<any>(null);
     const [paymentModalData, setPaymentModalData] = useState<{ isOpen: boolean, item: any, type: string }>({ isOpen: false, item: null, type: '' });
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
     const accessibleCourseIds = new Set([
         ...enrolledCourses,
         ...(user.subscription?.purchasedCourses || []),
@@ -81,13 +82,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         };
     };
 
-    const hasCourseAccess = hasScopedPackageAccess('courses', category, subject);
-    const hasFoundationAccess = hasScopedPackageAccess('foundation', category, subject);
-    const hasBanksAccess = hasScopedPackageAccess('banks', category, subject);
-    const hasTestsAccess = hasScopedPackageAccess('tests', category, subject);
-    const hasLibraryAccess = hasScopedPackageAccess('library', category, subject);
+    const hasCourseAccess = isStaffViewer || hasScopedPackageAccess('courses', category, subject);
+    const hasFoundationAccess = isStaffViewer || hasScopedPackageAccess('foundation', category, subject);
+    const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', category, subject);
+    const hasTestsAccess = isStaffViewer || hasScopedPackageAccess('tests', category, subject);
+    const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', category, subject);
 
-    const isPremiumLocked = (shouldLock?: boolean, accessGranted = false) => Boolean(shouldLock && !accessGranted);
+    const isPremiumLocked = (shouldLock?: boolean, accessGranted = false) => Boolean(!isStaffViewer && shouldLock && !accessGranted);
 
     // Data Retrieval from Store
     let sectionCourses = courses.filter(c => {
@@ -294,9 +295,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 {activeTab === 'skills' && (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {mappedSkills.map((skill) => (
-                            <Card 
-                                key={skill.id} 
-                                className={`p-5 border-2 border-gray-100 hover:shadow-lg transition-all cursor-pointer group hover:border-${safeColorTheme}-300 rounded-3xl relative overflow-hidden`}
+                            <button
+                                type="button"
+                                key={skill.id}
+                                className={`p-5 border-2 border-gray-100 hover:shadow-lg transition-all cursor-pointer group hover:border-${safeColorTheme}-300 rounded-3xl relative overflow-hidden bg-white text-right`}
                                 onClick={() => handleItemClick(skill, 'skill')}
                             >
                                 {skill.isLocked && (
@@ -322,7 +324,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     </div>
                                     <ProgressBar percentage={(skill.completed / skill.totalLessons) * 100} showPercentage={false} color={safeColorTheme as any} />
                                 </div>
-                            </Card>
+                            </button>
                         ))}
                     </div>
                 )}

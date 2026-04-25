@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Question } from '../../types';
-import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Download, Upload } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
+import * as XLSX from 'xlsx';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -22,6 +23,60 @@ const getStatusMeta = (question: Question) => {
   }
 
   return { label: 'محتوى قديم', className: 'bg-gray-100 text-gray-600' };
+};
+
+const normalizeLookup = (value?: string) =>
+  String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
+
+const resolveDifficulty = (value?: string): Question['difficulty'] => {
+  const normalized = normalizeLookup(value);
+  if (['easy', 'سهل', 'سهلة'].includes(normalized)) return 'Easy';
+  if (['hard', 'صعب', 'صعبة'].includes(normalized)) return 'Hard';
+  return 'Medium';
+};
+
+const resolveQuestionType = (value?: string): Question['type'] => {
+  const normalized = normalizeLookup(value);
+  if (['true_false', 'true false', 'صح خطأ', 'صح/خطأ', 'صح او خطأ'].includes(normalized)) return 'true_false';
+  if (['essay', 'مقالي', 'مقاليّة'].includes(normalized)) return 'essay';
+  return 'mcq';
+};
+
+const normalizeQuestionContent = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return { text: '', imageUrl: undefined as string | undefined };
+  }
+
+  if (/^image:/i.test(trimmed)) {
+    return { text: '', imageUrl: trimmed.replace(/^image:/i, '').trim() };
+  }
+
+  if (/^https?:\/\/.+\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(trimmed)) {
+    return { text: '', imageUrl: trimmed };
+  }
+
+  return { text: trimmed, imageUrl: undefined as string | undefined };
+};
+
+const resolveCorrectOptionIndex = (value: string, options: string[]) => {
+  const normalized = normalizeLookup(value);
+  const letterMap: Record<string, number> = { a: 0, 'أ': 0, b: 1, 'ب': 1, c: 2, 'ج': 2, d: 3, 'د': 3 };
+
+  if (normalized in letterMap) {
+    return letterMap[normalized];
+  }
+
+  const numeric = Number(normalized);
+  if (!Number.isNaN(numeric) && numeric >= 1 && numeric <= options.length) {
+    return numeric - 1;
+  }
+
+  const matchedIndex = options.findIndex((option) => normalizeLookup(option) === normalized);
+  return matchedIndex >= 0 ? matchedIndex : -1;
 };
 
 export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjectId }) => {
@@ -46,6 +101,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isImporting, setIsImporting] = useState(false);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
@@ -136,6 +194,166 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsEditing(false);
   };
 
+  const downloadImportTemplate = () => {
+    const templateRows = [
+      {
+        السؤال: 'إذا كان 2 + 2 = ؟',
+        المسار: allowedPaths[0]?.name || '',
+        المادة: allowedSubjects[0]?.name || '',
+        'المهارة الرئيسية': availableMainSkills[0]?.name || '',
+        'المهارة الفرعية': availableSubSkills[0]?.name || '',
+        الصعوبة: 'متوسط',
+        النوع: 'mcq',
+        'الخيار أ': '3',
+        'الخيار ب': '4',
+        'الخيار ج': '5',
+        'الخيار د': '6',
+        'الإجابة الصحيحة': 'ب',
+        'رابط الشرح': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        ملاحظة: 'ضع نص السؤال أو image:https://example.com/question.png إذا كان السؤال صورة فقط',
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(templateRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'questions-template');
+    XLSX.writeFile(workbook, 'questions-import-template.xlsx');
+  };
+
+  const handleImportQuestions = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setIsImporting(true);
+    setImportMessage(null);
+    setImportError(null);
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: 'array' });
+      const firstSheetName = workbook.SheetNames[0];
+      const firstSheet = workbook.Sheets[firstSheetName];
+      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, { defval: '' });
+
+      if (rows.length === 0) {
+        throw new Error('الملف فارغ. ارفع ملفًا يحتوي على صفوف أسئلة.');
+      }
+
+      const importedQuestions: Question[] = [];
+      const rowErrors: string[] = [];
+
+      rows.forEach((row, rowIndex) => {
+        const rowNumber = rowIndex + 2;
+        const questionValue = String(row['السؤال'] || row.question || '').trim();
+        const pathName = String(row['المسار'] || row.path || '').trim();
+        const subjectName = String(row['المادة'] || row.subject || '').trim();
+        const sectionName = String(row['المهارة الرئيسية'] || row.section || '').trim();
+        const skillName = String(row['المهارة الفرعية'] || row.skill || '').trim();
+        const explanationLink = String(row['رابط الشرح'] || row.videoUrl || '').trim();
+        const typeValue = String(row['النوع'] || row.type || '').trim();
+        const optionA = String(row['الخيار أ'] || row['الخيار A'] || row.optionA || '').trim();
+        const optionB = String(row['الخيار ب'] || row['الخيار B'] || row.optionB || '').trim();
+        const optionC = String(row['الخيار ج'] || row['الخيار C'] || row.optionC || '').trim();
+        const optionD = String(row['الخيار د'] || row['الخيار D'] || row.optionD || '').trim();
+        const correctAnswer = String(row['الإجابة الصحيحة'] || row.correctAnswer || '').trim();
+
+        if (!questionValue || !pathName || !subjectName || !sectionName || !skillName) {
+          rowErrors.push(`الصف ${rowNumber}: البيانات الأساسية ناقصة.`);
+          return;
+        }
+
+        const matchedPath = paths.find((path) => normalizeLookup(path.name) === normalizeLookup(pathName));
+        if (!matchedPath) {
+          rowErrors.push(`الصف ${rowNumber}: المسار "${pathName}" غير موجود.`);
+          return;
+        }
+
+        const matchedSubject = subjects.find(
+          (subject) =>
+            subject.pathId === matchedPath.id &&
+            normalizeLookup(subject.name) === normalizeLookup(subjectName),
+        );
+        if (!matchedSubject) {
+          rowErrors.push(`الصف ${rowNumber}: المادة "${subjectName}" غير موجودة داخل المسار "${pathName}".`);
+          return;
+        }
+
+        const matchedSection = sections.find(
+          (section) =>
+            section.subjectId === matchedSubject.id &&
+            normalizeLookup(section.name) === normalizeLookup(sectionName),
+        );
+        if (!matchedSection) {
+          rowErrors.push(`الصف ${rowNumber}: المهارة الرئيسية "${sectionName}" غير موجودة داخل المادة "${subjectName}".`);
+          return;
+        }
+
+        const matchedSkill = skills.find(
+          (skill) =>
+            skill.subjectId === matchedSubject.id &&
+            skill.sectionId === matchedSection.id &&
+            normalizeLookup(skill.name) === normalizeLookup(skillName),
+        );
+        if (!matchedSkill) {
+          rowErrors.push(`الصف ${rowNumber}: المهارة الفرعية "${skillName}" غير موجودة تحت "${sectionName}".`);
+          return;
+        }
+
+        const { text, imageUrl } = normalizeQuestionContent(questionValue);
+        if (!text && !imageUrl) {
+          rowErrors.push(`الصف ${rowNumber}: حقل السؤال غير صالح.`);
+          return;
+        }
+
+        const type = resolveQuestionType(typeValue);
+        const options = type === 'true_false' ? ['صح', 'خطأ'] : [optionA, optionB, optionC, optionD].filter(Boolean);
+        if (type !== 'essay' && options.length < 2) {
+          rowErrors.push(`الصف ${rowNumber}: يجب توفير الخيارات للسؤال.`);
+          return;
+        }
+
+        const correctOptionIndex = type === 'essay' ? 0 : resolveCorrectOptionIndex(correctAnswer, options);
+        if (type !== 'essay' && correctOptionIndex < 0) {
+          rowErrors.push(`الصف ${rowNumber}: الإجابة الصحيحة غير مطابقة للخيارات.`);
+          return;
+        }
+
+        importedQuestions.push({
+          id: `q_import_${Date.now()}_${rowIndex}`,
+          text,
+          imageUrl,
+          options: type === 'essay' ? [] : options,
+          correctOptionIndex,
+          explanation: '',
+          videoUrl: explanationLink || undefined,
+          skillIds: [matchedSkill.id],
+          pathId: matchedPath.id,
+          subject: matchedSubject.id,
+          sectionId: matchedSection.id,
+          difficulty: resolveDifficulty(String(row['الصعوبة'] || row.difficulty || '')),
+          type,
+          ownerType: user.role === 'teacher' ? 'teacher' : 'platform',
+          ownerId: user.id,
+          createdBy: user.id,
+          approvalStatus: user.role === 'admin' ? 'approved' : 'pending_review',
+          approvedAt: user.role === 'admin' ? Date.now() : undefined,
+        });
+      });
+
+      if (rowErrors.length > 0) {
+        throw new Error(rowErrors.slice(0, 6).join(' '));
+      }
+
+      importedQuestions.forEach((question) => addQuestion(question));
+      setImportMessage(`تم استيراد ${importedQuestions.length} سؤال بنجاح.`);
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر استيراد ملف الأسئلة الآن.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const handleApprove = (question: Question) => {
     updateQuestion(question.id, {
       approvalStatus: 'approved',
@@ -178,6 +396,39 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           إضافة سؤال جديد
         </button>
       </div>
+
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-bold text-gray-800 mb-1">استيراد الأسئلة دفعة واحدة</h3>
+          <p className="text-sm text-gray-500">حمّل نموذج Excel، ثم ارفع الملف وسيتم ربط المسار والمادة والمهارات من مركز المهارات مباشرة.</p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={downloadImportTemplate}
+            className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
+          >
+            <Download size={18} />
+            تحميل نموذج Excel
+          </button>
+          <label className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors flex items-center gap-2 cursor-pointer">
+            <Upload size={18} />
+            رفع ملف أسئلة
+            <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportQuestions} />
+          </label>
+        </div>
+      </div>
+
+      {(importMessage || importError || isImporting) && (
+        <div className={`rounded-xl border px-4 py-3 text-sm ${
+          importError
+            ? 'border-red-100 bg-red-50 text-red-700'
+            : importMessage
+              ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+              : 'border-amber-100 bg-amber-50 text-amber-700'
+        }`}>
+          {isImporting ? 'جارٍ قراءة ملف الأسئلة وربطه بمركز المهارات...' : importError || importMessage}
+        </div>
+      )}
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
         {!subjectId && (

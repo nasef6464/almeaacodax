@@ -12,12 +12,25 @@ interface CustomVideoPlayerProps {
     title?: string;
 }
 
+const normalizeVideoUrl = (rawUrl: string) => {
+    const url = rawUrl.trim();
+    if (!url) return '';
+
+    const googleDriveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if (googleDriveMatch?.[1]) {
+        return `https://drive.google.com/file/d/${googleDriveMatch[1]}/preview`;
+    }
+
+    return url;
+};
+
 export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title }) => {
     const Player = ReactPlayer as any;
     const playerRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const normalizedUrl = normalizeVideoUrl(url);
     
-    const [playing, setPlaying] = useState(true);
+    const [playing, setPlaying] = useState(false);
     const [volume, setVolume] = useState(0.8);
     const [muted, setMuted] = useState(false);
     const [played, setPlayed] = useState(0);
@@ -25,6 +38,14 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     const [seeking, setSeeking] = useState(false);
     const [showControls, setShowControls] = useState(true);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [hasPlaybackError, setHasPlaybackError] = useState(false);
+
+    useEffect(() => {
+        setPlaying(false);
+        setPlayed(0);
+        setDuration(0);
+        setHasPlaybackError(false);
+    }, [normalizedUrl]);
 
     // Cleanup on unmount to prevent "play() request was interrupted" error
     useEffect(() => {
@@ -88,6 +109,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     };
 
     const handleReady = () => {
+        setHasPlaybackError(false);
         if (playerRef.current) {
             const dur = playerRef.current.getDuration();
             if (dur > 0) setDuration(dur);
@@ -134,15 +156,26 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
         >
             <Player
                 ref={playerRef}
-                url={url}
+                url={normalizedUrl}
                 width="100%"
                 height="100%"
                 playing={playing}
+                playsInline
                 volume={volume}
                 muted={muted}
                 onProgress={handleProgress as any}
                 onReady={handleReady}
+                onError={() => {
+                    setPlaying(false);
+                    setHasPlaybackError(true);
+                }}
                 config={{
+                    file: {
+                        attributes: {
+                            controlsList: 'nodownload',
+                            preload: 'metadata',
+                        },
+                    },
                     youtube: {
                         playerVars: { 
                             controls: 0,
@@ -155,6 +188,20 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
                 } as any}
                 style={{ pointerEvents: 'none' }}
             />
+
+            {hasPlaybackError && (
+                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 bg-black/80 px-6 text-center text-white">
+                    <p className="text-lg font-bold">تعذر تشغيل هذا الفيديو داخل المنصة.</p>
+                    <a
+                        href={normalizedUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition-colors font-bold"
+                    >
+                        فتح الفيديو في نافذة جديدة
+                    </a>
+                </div>
+            )}
 
             {/* Overlay to catch clicks and show play/pause animation */}
             <div 
