@@ -14,6 +14,7 @@ import { AccessCodeModel } from "../models/AccessCode.js";
 import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
+import { StudyPlanModel } from "../models/StudyPlan.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -44,6 +45,7 @@ const lessonSchema = z.object({
   recordingUrl: z.string().optional(),
   joinInstructions: z.string().optional(),
   showRecordingOnPlatform: z.boolean().optional(),
+  showOnPlatform: z.boolean().default(true),
   quizId: z.string().nullable().optional(),
   order: z.number().default(0),
   isLocked: z.boolean().default(false),
@@ -198,6 +200,24 @@ const accessCodeSchema = z.object({
   currentUses: z.number().min(0).default(0),
   expiresAt: z.number(),
   createdAt: z.number().optional(),
+});
+
+const studyPlanSchema = z.object({
+  id: z.string().min(1),
+  userId: z.string().optional(),
+  name: z.string().min(1),
+  pathId: z.string().min(1),
+  subjectIds: z.array(z.string()).default([]),
+  courseIds: z.array(z.string()).default([]),
+  startDate: z.string().min(1),
+  endDate: z.string().min(1),
+  skipCompletedQuizzes: z.boolean().default(true),
+  offDays: z.array(z.enum(["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"])).default([]),
+  dailyMinutes: z.number().min(15).default(90),
+  preferredStartTime: z.string().optional(),
+  status: z.enum(["active", "archived"]).default("active"),
+  createdAt: z.number().optional(),
+  updatedAt: z.number().optional(),
 });
 
 const schoolImportRowSchema = z.object({
@@ -365,6 +385,7 @@ contentRouter.get(
     const lessonFilter = isStaffRole(req.authUser?.role)
       ? {}
       : {
+          showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
     const topicFilter = isStaffRole(req.authUser?.role) ? {} : { showOnPlatform: { $ne: false } };
@@ -374,16 +395,75 @@ contentRouter.get(
           showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
-    const [topics, lessons, libraryItems, groups, b2bPackages, accessCodes] = await Promise.all([
+    const [topics, lessons, libraryItems, groups, b2bPackages, accessCodes, studyPlans] = await Promise.all([
       TopicModel.find(topicFilter).sort({ subjectId: 1, order: 1 }),
       LessonModel.find(lessonFilter).sort({ createdAt: -1 }),
       LibraryItemModel.find(libraryFilter).sort({ createdAt: -1 }),
       GroupModel.find().sort({ createdAt: -1 }),
       B2BPackageModel.find().sort({ createdAt: -1 }),
       AccessCodeModel.find().sort({ createdAt: -1 }),
+      req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }) : Promise.resolve([]),
     ]);
 
-    res.json({ topics, lessons, libraryItems, groups, b2bPackages, accessCodes });
+    res.json({ topics, lessons, libraryItems, groups, b2bPackages, accessCodes, studyPlans });
+  }),
+);
+
+contentRouter.post(
+  "/study-plans",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = studyPlanSchema.parse(req.body);
+    const now = Date.now();
+    const created = await StudyPlanModel.findOneAndUpdate(
+      { id: payload.id, userId: req.authUser!.id },
+      {
+        ...payload,
+        userId: req.authUser!.id,
+        createdAt: payload.createdAt || now,
+        updatedAt: now,
+      },
+      { new: true, upsert: true },
+    );
+
+    res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+contentRouter.patch(
+  "/study-plans/:id",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = studyPlanSchema.partial().parse(req.body);
+    const updated = await StudyPlanModel.findOneAndUpdate(
+      { id: req.params.id, userId: req.authUser!.id },
+      {
+        ...payload,
+        userId: req.authUser!.id,
+        updatedAt: Date.now(),
+      },
+      { new: true },
+    );
+
+    if (!updated) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Study plan not found" });
+    }
+
+    return res.json(updated);
+  }),
+);
+
+contentRouter.delete(
+  "/study-plans/:id",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const deleted = await StudyPlanModel.findOneAndDelete({ id: req.params.id, userId: req.authUser!.id });
+
+    if (!deleted) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Study plan not found" });
+    }
+
+    return res.json({ success: true });
   }),
 );
 

@@ -237,7 +237,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                 sectionId: currentQuiz.sectionId,
                 skillIds: autoGenConfig.skillIds
               };
-              addQuestion(newQ);
+              await addQuestion(newQ);
               selectedIds.push(newQ.id);
             }
           }
@@ -259,7 +259,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     setOperationMessage(`تمت إضافة ${selectedIds.length} سؤال بنجاح.`);
   };
 
-  const handleSaveNewQuestion = (savedQuestion: Partial<Question>) => {
+  const handleSaveNewQuestion = async (savedQuestion: Partial<Question>) => {
     const q: Question = {
       ...savedQuestion,
       id: `q_${Date.now()}`,
@@ -267,13 +267,17 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       subject: currentQuiz.subjectId || '',
     } as Question;
     
-    addQuestion(q);
-    setCurrentQuiz(prev => ({
-      ...prev,
-      questionIds: [...(prev.questionIds || []), q.id]
-    }));
-    
-    setIsAddQuestionModalOpen(false);
+    try {
+      await addQuestion(q);
+      setCurrentQuiz(prev => ({
+        ...prev,
+        questionIds: [...(prev.questionIds || []), q.id]
+      }));
+      setIsAddQuestionModalOpen(false);
+    } catch (error) {
+      console.error('Unable to save question', error);
+      setOperationError('تعذر حفظ السؤال الآن. تحقق من الاتصال ثم حاول مرة أخرى.');
+    }
   };
 
   const handleCreateNew = () => {

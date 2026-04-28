@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { AccessCode, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, Topic } from "../types";
+import { AccessCode, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
 
 const USE_REAL_API =
   (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== "false";
@@ -36,6 +36,25 @@ const normalizeSubject = (subject: any): CategorySubject => ({
   iconUrl: subject?.iconUrl,
   iconStyle: subject?.iconStyle,
   settings: subject?.settings,
+});
+
+const normalizeStudyPlan = (plan: any): StudyPlan => ({
+  ...plan,
+  id: String(plan?.id || plan?._id || ""),
+  userId: String(plan?.userId || ""),
+  name: String(plan?.name || ""),
+  pathId: String(plan?.pathId || ""),
+  subjectIds: Array.isArray(plan?.subjectIds) ? plan.subjectIds.map(String) : [],
+  courseIds: Array.isArray(plan?.courseIds) ? plan.courseIds.map(String) : [],
+  startDate: String(plan?.startDate || ""),
+  endDate: String(plan?.endDate || ""),
+  skipCompletedQuizzes: plan?.skipCompletedQuizzes !== false,
+  offDays: Array.isArray(plan?.offDays) ? plan.offDays.map(String) : [],
+  dailyMinutes: Number(plan?.dailyMinutes || 90),
+  preferredStartTime: plan?.preferredStartTime || "17:00",
+  status: plan?.status === "archived" ? "archived" : "active",
+  createdAt: Number(plan?.createdAt || Date.now()),
+  updatedAt: Number(plan?.updatedAt || Date.now()),
 });
 
 const normalizeSection = (section: any): CategorySection => ({
@@ -75,6 +94,7 @@ const normalizeLesson = (lesson: any, moduleIndex: number, lessonIndex: number):
   recordingUrl: lesson?.recordingUrl,
   joinInstructions: lesson?.joinInstructions,
   showRecordingOnPlatform: Boolean(lesson?.showRecordingOnPlatform),
+  showOnPlatform: lesson?.showOnPlatform !== false,
   isLocked: Boolean(lesson?.isLocked),
   accessControl: lesson?.accessControl,
   allowedGroupIds: Array.isArray(lesson?.allowedGroupIds) ? lesson.allowedGroupIds : [],
@@ -381,6 +401,7 @@ export const adapter = {
         groups: [],
         b2bPackages: [],
         accessCodes: [],
+        studyPlans: [],
       };
     }
 
@@ -393,6 +414,7 @@ export const adapter = {
         groups: Array.isArray(data?.groups) ? data.groups.map(normalizeGroup).filter((group) => group.id && group.name) : [],
         b2bPackages: Array.isArray(data?.b2bPackages) ? data.b2bPackages.map(normalizeB2BPackage).filter((pkg) => pkg.id && pkg.schoolId && pkg.name) : [],
         accessCodes: Array.isArray(data?.accessCodes) ? data.accessCodes.map(normalizeAccessCode).filter((code) => code.id && code.schoolId && code.packageId && code.code) : [],
+        studyPlans: Array.isArray(data?.studyPlans) ? data.studyPlans.map(normalizeStudyPlan).filter((plan) => plan.id && plan.userId && plan.name && plan.pathId) : [],
       };
     } catch (error) {
       console.warn("Falling back to empty content bootstrap:", error);
@@ -403,6 +425,7 @@ export const adapter = {
         groups: [],
         b2bPackages: [],
         accessCodes: [],
+        studyPlans: [],
       };
     }
   },

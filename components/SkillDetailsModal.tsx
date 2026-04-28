@@ -13,15 +13,22 @@ interface SkillDetailsModalProps {
 }
 
 export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill }) => {
-  const { topics, lessons, quizzes, libraryItems } = useStore();
+  const { user, topics, lessons, quizzes, libraryItems } = useStore();
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
+  const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const canStudentSeeLesson = (lesson: (typeof lessons)[number]) =>
+    isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
+  const canStudentSeeQuiz = (quiz: (typeof quizzes)[number]) =>
+    isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+  const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
+    isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
 
   useEffect(() => {
     if (isOpen && skill?.originalTopic?.id) {
       const subTopics = topics
-        .filter((topic) => topic.parentId === skill.originalTopic.id)
+        .filter((topic) => topic.parentId === skill.originalTopic.id && (isStaffViewer || topic.showOnPlatform !== false))
         .sort((a, b) => a.order - b.order);
 
       setSelectedSubTopic(subTopics[0] || null);
@@ -32,13 +39,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   if (!isOpen || !skill || !skill.originalTopic) return null;
 
   const selectedTopic = skill.originalTopic as Topic;
-  const subjectTopics = topics.filter((topic) => topic.subjectId === selectedTopic.subjectId);
+  const subjectTopics = topics.filter((topic) => topic.subjectId === selectedTopic.subjectId && (isStaffViewer || topic.showOnPlatform !== false));
   const activeTopic = selectedSubTopic || selectedTopic;
 
   const activeTopicLessons = useMemo(
     () =>
       lessons
-        .filter((lesson) => activeTopic.lessonIds?.includes(lesson.id))
+        .filter((lesson) => activeTopic.lessonIds?.includes(lesson.id) && canStudentSeeLesson(lesson))
         .sort((a, b) => (a.order || 0) - (b.order || 0)),
     [activeTopic, lessons],
   );
@@ -46,7 +53,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   const activeTopicQuizzes = useMemo(
     () =>
       quizzes
-        .filter((quiz) => activeTopic.quizIds?.includes(quiz.id))
+        .filter((quiz) => activeTopic.quizIds?.includes(quiz.id) && canStudentSeeQuiz(quiz))
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [activeTopic, quizzes],
   );
@@ -59,7 +66,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           const matchesSubject = lesson.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
           const notAttached = !activeTopic.lessonIds?.includes(lesson.id);
-          return matchesPath && matchesSubject && matchesSection && notAttached;
+          return matchesPath && matchesSubject && matchesSection && notAttached && canStudentSeeLesson(lesson);
         })
         .sort((a, b) => (a.order || 0) - (b.order || 0))
         .slice(0, 3),
@@ -74,7 +81,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           const matchesSubject = quiz.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
           const notAttached = !activeTopic.quizIds?.includes(quiz.id);
-          return matchesPath && matchesSubject && matchesSection && quiz.isPublished !== false && notAttached;
+          return matchesPath && matchesSubject && matchesSection && notAttached && canStudentSeeQuiz(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
         .slice(0, 3),
@@ -88,7 +95,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           const matchesPath = selectedTopic.pathId ? item.pathId === selectedTopic.pathId : true;
           const matchesSubject = item.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? item.sectionId === activeTopic.sectionId : true;
-          return matchesPath && matchesSubject && matchesSection && Boolean(item.url);
+          return matchesPath && matchesSubject && matchesSection && Boolean(item.url) && canStudentSeeLibraryItem(item);
         })
         .slice(0, 2),
     [activeTopic.sectionId, libraryItems, selectedTopic.pathId, selectedTopic.subjectId],

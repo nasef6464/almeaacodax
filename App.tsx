@@ -112,6 +112,7 @@ const App: React.FC = () => {
             groups: contentResult.value.groups as any[],
             b2bPackages: contentResult.value.b2bPackages as any[],
             accessCodes: contentResult.value.accessCodes as any[],
+            studyPlans: contentResult.value.studyPlans as any[],
           });
         }
       } catch (error) {

@@ -583,40 +583,6 @@ const Results: React.FC = () => {
         ) : null}
       </Card>
 
-      <Card className="p-4 sm:p-6">
-        <div className="mb-4 flex items-center gap-2 text-gray-800">
-          <Star size={18} className="text-amber-500" />
-          <h3 className="text-lg font-bold">إحصاءات إضافية مفيدة</h3>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-gray-100 p-4">
-            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-700">
-              <FileText size={16} className="text-indigo-500" />
-              ماذا أنهيت داخل الاختبار؟
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <SimpleResultStat label="الأسئلة المُجابة" value={(latestResult.correctAnswers + latestResult.wrongAnswers).toString()} />
-              <SimpleResultStat label="أسئلة للمراجعة" value={questionReviewCount.toString()} tone="warning" />
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-gray-100 p-4">
-            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-700">
-              <History size={16} className="text-emerald-500" />
-              قراءة سريعة للنتيجة
-            </div>
-            <p className="text-sm leading-7 text-gray-600">
-              {latestResult.score >= 85
-                ? 'أداؤك مطمئن جدًا. استمر بالمراجعة الخفيفة وحافظ على نفس المستوى.'
-                : latestResult.score >= 60
-                  ? 'أنت قريب من مستوى أفضل. ركّز على المهارات الضعيفة أولًا ثم أعد التدريب.'
-                  : 'ابدأ بالشرح المبسط ثم حل تدريبًا قصيرًا، وبعدها أعد القياس بهدوء.'}
-            </p>
-          </div>
-        </div>
-      </Card>
-
       <DetailedAnalysisModal
         isOpen={isAnalysisOpen}
         onClose={() => setIsAnalysisOpen(false)}
@@ -632,8 +598,8 @@ const Results: React.FC = () => {
 
       {videoData ? <VideoModal videoUrl={videoData.url} title={videoData.title} onClose={() => setVideoData(null)} /> : null}
 
-      <div className="flex flex-col gap-3 mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <Card className="p-4 sm:p-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <button
             onClick={() => setViewMode('review')}
             className="bg-emerald-500 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-emerald-100"
@@ -648,9 +614,6 @@ const Results: React.FC = () => {
             <BarChart3 size={20} />
             تحليل المهارات
           </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             to="/quiz"
             className="bg-white border border-emerald-500 text-emerald-600 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-emerald-50"
@@ -666,7 +629,7 @@ const Results: React.FC = () => {
             اختبار إضافي
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

@@ -104,24 +104,21 @@ export const QuizGenerator: React.FC = () => {
         try {
             const questionIds = quizQuestions.map(() => createId('ai-question'));
 
-            quizQuestions.forEach((questionItem, index) => {
-                const questionPayload: Question = {
-                    id: questionIds[index],
-                    text: questionItem.question,
-                    options: questionItem.options.slice(0, 4),
-                    correctOptionIndex: Math.min(questionItem.correctIndex, Math.max(questionItem.options.length - 1, 0)),
-                    explanation: questionItem.explanation,
-                    pathId: defaultTaxonomy.subject.pathId,
-                    subject: defaultTaxonomy.subject.id,
-                    sectionId: defaultTaxonomy.section.id,
-                    skillIds: [defaultTaxonomy.skill.id],
-                    difficulty: 'Medium',
-                    type: 'mcq',
-                };
+            const questionPayloads = quizQuestions.map((questionItem, index): Question => ({
+                id: questionIds[index],
+                text: questionItem.question,
+                options: questionItem.options.slice(0, 4),
+                correctOptionIndex: Math.min(questionItem.correctIndex, Math.max(questionItem.options.length - 1, 0)),
+                explanation: questionItem.explanation,
+                pathId: defaultTaxonomy.subject.pathId,
+                subject: defaultTaxonomy.subject.id,
+                sectionId: defaultTaxonomy.section.id,
+                skillIds: [defaultTaxonomy.skill.id],
+                difficulty: 'Medium',
+                type: 'mcq',
+            }));
 
-                addQuestion(questionPayload);
-            });
-
+            await Promise.all(questionPayloads.map((questionPayload) => addQuestion(questionPayload)));
             const leadingTopic = quizQuestions[0]?.sourceTopic || topic.trim() || defaultTaxonomy.subject.name;
             const quizPayload: Quiz = {
                 id: createId('ai-quiz'),

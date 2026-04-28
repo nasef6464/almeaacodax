@@ -99,8 +99,22 @@ const Quizzes: React.FC = () => {
     [canAccessQuiz, quizzes],
   );
 
+  const directedQuizzes = useMemo(
+    () =>
+      availablePreparedQuizzes.filter((quiz) => {
+        const mode = quiz.mode || 'regular';
+        const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+        return mode === 'central' || hasExplicitTargets;
+      }),
+    [availablePreparedQuizzes],
+  );
+
   const saherQuizzes = useMemo(
-    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'saher'),
+    () =>
+      availablePreparedQuizzes.filter((quiz) => {
+        const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+        return (quiz.mode || 'regular') === 'saher' && !hasExplicitTargets;
+      }),
     [availablePreparedQuizzes],
   );
 
@@ -120,7 +134,11 @@ const Quizzes: React.FC = () => {
   );
 
   const regularPreparedQuizzes = useMemo(
-    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'regular'),
+    () =>
+      availablePreparedQuizzes.filter((quiz) => {
+        const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+        return (quiz.mode || 'regular') === 'regular' && !hasExplicitTargets;
+      }),
     [availablePreparedQuizzes],
   );
 
@@ -257,12 +275,12 @@ const Quizzes: React.FC = () => {
               />
               <ActionCard
                 icon={<Target size={24} />}
-                title="الاختبارات المركزية"
-                description="اختبارات موجّهة لك من الإدارة أو المدرسة وتظهر فقط إذا كنت مستهدفًا بها."
-                to={centralQuizzes[0] ? `/quiz/${centralQuizzes[0].id}` : '/quiz'}
-                buttonLabel={centralQuizzes.length > 0 ? 'افتح الاختبارات المركزية' : 'لا يوجد حاليًا'}
+                title="اختبارات موجهة لك"
+                description="اختبارات مخصصة لك من الإدارة أو المدرسة أو المشرف، وتظهر فقط عندما تكون مستهدفًا بها."
+                to={directedQuizzes[0] ? `/quiz/${directedQuizzes[0].id}` : '/quiz'}
+                buttonLabel={directedQuizzes.length > 0 ? 'افتح الاختبارات الموجهة' : 'لا يوجد حاليًا'}
                 tone="amber"
-                disabled={centralQuizzes.length === 0}
+                disabled={directedQuizzes.length === 0}
               />
             </div>
 
@@ -345,21 +363,21 @@ const Quizzes: React.FC = () => {
             )}
 
             <QuizSection
+              title="اختبارات موجهة لك"
+              emptyMessage="لا توجد اختبارات موجهة لحسابك حاليًا."
+              items={directedQuizzes}
+              subjects={subjects}
+              badgeClassName="bg-amber-100 text-amber-700"
+              badgeLabel="موجّه"
+            />
+
+            <QuizSection
               title="اختبارات ساهر الجاهزة"
               emptyMessage="لا توجد اختبارات ساهر جاهزة منشورة لك حاليًا."
               items={saherQuizzes}
               subjects={subjects}
               badgeClassName="bg-purple-100 text-purple-700"
               badgeLabel="ساهر"
-            />
-
-            <QuizSection
-              title="اختبارات مركزية موجّهة"
-              emptyMessage="لا توجد اختبارات مركزية موجّهة لحسابك حاليًا."
-              items={centralQuizzes}
-              subjects={subjects}
-              badgeClassName="bg-amber-100 text-amber-700"
-              badgeLabel="مركزي"
             />
 
             <QuizSection
@@ -383,6 +401,7 @@ const Quizzes: React.FC = () => {
           <div className="bg-gray-900 text-white p-4 text-center font-bold text-lg">ملخص سريع</div>
           <div className="p-6 space-y-4">
             <SummaryRow label="اختبارات جاهزة متاحة" value={availablePreparedQuizzes.length} />
+            <SummaryRow label="اختبارات موجهة لك" value={directedQuizzes.length} />
             <SummaryRow label="اختبارات ساهر" value={saherQuizzes.length} />
             <SummaryRow label="اختبارات مركزية" value={centralQuizzes.length} />
             <SummaryRow label="أفضل نتيجة" value={`${maxScore}%`} />

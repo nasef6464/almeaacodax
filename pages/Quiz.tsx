@@ -822,6 +822,16 @@ const Quiz: React.FC = () => {
             <p className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words">
               ({currentQuestion + 1}) {questions[currentQuestion].text}
             </p>
+            {questions[currentQuestion].imageUrl && (
+              <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                <img
+                  src={questions[currentQuestion].imageUrl}
+                  alt="صورة السؤال"
+                  className="mx-auto max-h-[340px] w-full object-contain"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-4 dir-rtl">
               {questions[currentQuestion].options.map((option, idx) => {

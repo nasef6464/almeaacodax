@@ -90,6 +90,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', category, subject);
 
     const isPremiumLocked = (shouldLock?: boolean, accessGranted = false) => Boolean(!isStaffViewer && shouldLock && !accessGranted);
+    const canStudentSeeCourse = (course: (typeof courses)[number]) =>
+        isStaffViewer || (course.showOnPlatform !== false && course.isPublished !== false && (!course.approvalStatus || course.approvalStatus === 'approved'));
+    const canStudentSeeQuiz = (quiz: (typeof quizzes)[number]) =>
+        isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+    const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
+        isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
     const matchesScopedContent = (pathId?: string | null, subjectId?: string | null) => {
         const normalizedPathId = pathId || null;
         const normalizedSubjectId = subjectId || null;
@@ -102,9 +108,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     let sectionCourses = courses.filter((course) => {
         const coursePathId = course.pathId || course.category;
         const courseSubjectId = course.subjectId || course.subject;
-        if (!isStaffViewer && course.showOnPlatform === false) {
-            return false;
-        }
+        if (!canStudentSeeCourse(course)) return false;
         return matchesScopedContent(coursePathId, courseSubjectId);
     });
 
@@ -138,7 +142,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             };
         });
 
-    let banks = quizzes.filter(q => (isStaffViewer || q.showOnPlatform !== false) && matchesScopedContent(q.pathId, q.subjectId) && q.type === 'bank').map(q => ({
+    let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type === 'bank').map(q => ({
         id: q.id,
         title: q.title,
         questions: q.questionIds?.length || 0,
@@ -149,7 +153,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         duration: 'غير محدد'
     }));
 
-    let tests = quizzes.filter(q => (isStaffViewer || q.showOnPlatform !== false) && matchesScopedContent(q.pathId, q.subjectId) && q.type !== 'bank').map(q => ({
+    let tests = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type !== 'bank').map(q => ({
         id: q.id,
         title: q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
@@ -159,7 +163,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         isLocked: (q.access.type !== 'free' && !hasTestsAccess) || isPremiumLocked(settings.lockTestsForNonSubscribers, hasTestsAccess)
     }));
 
-    let sectionLibraryItems = libraryItems.filter(item => (isStaffViewer || item.showOnPlatform !== false) && matchesScopedContent(item.pathId, item.subjectId)).map(item => ({
+    let sectionLibraryItems = libraryItems.filter(item => canStudentSeeLibraryItem(item) && matchesScopedContent(item.pathId, item.subjectId)).map(item => ({
         ...item,
         isLocked: isPremiumLocked(settings.lockLibraryForNonSubscribers, hasLibraryAccess)
     }));
@@ -169,7 +173,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     });
     tests = tests.filter((test) => {
         const sourceQuiz = quizList.find((quiz) => quiz.id === test.id);
-        return !!sourceQuiz && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
+        if (!sourceQuiz) return false;
+        if (sourceQuiz.pathId !== category || (subject && sourceQuiz.subjectId !== subject)) return false;
+        if (!isStaffViewer) {
+            const mode = sourceQuiz.mode || 'regular';
+            const hasExplicitTargets = (sourceQuiz.targetUserIds || []).length > 0 || (sourceQuiz.targetGroupIds || []).length > 0;
+            if (mode === 'central' || mode === 'saher' || hasExplicitTargets) return false;
+        }
+        return true;
     });
     sectionLibraryItems = sectionLibraryItems.filter((item) => {
         const pathMatches = !item.pathId || item.pathId === category;

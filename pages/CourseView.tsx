@@ -15,6 +15,7 @@ const CourseView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [isPlaying, setIsPlaying] = useState(false);
     const { user, enrolledCourses, hasScopedPackageAccess } = useStore();
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
     useEffect(() => {
         let mounted = true;
@@ -53,10 +54,16 @@ const CourseView: React.FC = () => {
         );
     }
 
-    if (!course) {
+    const courseIsVisibleToStudent =
+        course &&
+        course.showOnPlatform !== false &&
+        course.isPublished !== false &&
+        (!course.approvalStatus || course.approvalStatus === 'approved');
+
+    if (!course || (!isStaffViewer && !courseIsVisibleToStudent)) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">الدورة غير موجودة</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">الدورة غير متاحة حاليًا</h1>
                 <button 
                     onClick={() => window.history.back()}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold w-full sm:w-auto"

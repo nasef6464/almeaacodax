@@ -60,6 +60,7 @@ interface AppState {
         groups?: Group[];
         b2bPackages?: B2BPackage[];
         accessCodes?: AccessCode[];
+        studyPlans?: StudyPlan[];
     }) => void;
     hydrateExamResults: (results: QuizResult[]) => void;
     enrollCourse: (courseId: string) => void;
@@ -93,7 +94,7 @@ interface AppState {
     deleteCourse: (courseId: string) => void;
 
     // Question Actions
-    addQuestion: (question: Question) => void;
+    addQuestion: (question: Question) => Promise<void>;
     updateQuestion: (questionId: string, data: Partial<Question>) => void;
     deleteQuestion: (questionId: string) => void;
 
@@ -419,6 +420,17 @@ export const useStore = create<AppState>()(
                       }))
                       .filter((code: any) => code.id && code.schoolId && code.packageId && code.code)
                   : state.accessCodes,
+                studyPlans: payload.studyPlans !== undefined
+                  ? payload.studyPlans
+                      .map((plan: any) => ({
+                        ...plan,
+                        id: String(plan?.id || plan?._id || ''),
+                        subjectIds: Array.isArray(plan?.subjectIds) ? plan.subjectIds.map(String) : [],
+                        courseIds: Array.isArray(plan?.courseIds) ? plan.courseIds.map(String) : [],
+                        offDays: Array.isArray(plan?.offDays) ? plan.offDays.map(String) : [],
+                      }))
+                      .filter((plan: any) => plan.id && plan.userId && plan.name && plan.pathId)
+                  : state.studyPlans,
             })),
 
             hydrateExamResults: (results) => set(() => ({
@@ -649,32 +661,46 @@ export const useStore = create<AppState>()(
                 user: { ...state.user, role }
             })),
 
-            createStudyPlan: (plan) => set((state) => ({
-                studyPlans: [
-                    plan,
-                    ...state.studyPlans.filter(existingPlan => existingPlan.id !== plan.id)
-                ]
-            })),
+            createStudyPlan: (plan) => {
+                api.createStudyPlan(plan).catch(console.error);
+                set((state) => ({
+                    studyPlans: [
+                        plan,
+                        ...state.studyPlans.filter(existingPlan => existingPlan.id !== plan.id)
+                    ]
+                }));
+            },
 
-            updateStudyPlan: (planId, data) => set((state) => ({
-                studyPlans: state.studyPlans.map(plan =>
-                    plan.id === planId
-                        ? { ...plan, ...data, updatedAt: Date.now() }
-                        : plan
-                )
-            })),
+            updateStudyPlan: (planId, data) => {
+                const updatedAt = Date.now();
+                api.updateStudyPlan(planId, { ...data, updatedAt }).catch(console.error);
+                set((state) => ({
+                    studyPlans: state.studyPlans.map(plan =>
+                        plan.id === planId
+                            ? { ...plan, ...data, updatedAt }
+                            : plan
+                    )
+                }));
+            },
 
-            deleteStudyPlan: (planId) => set((state) => ({
-                studyPlans: state.studyPlans.filter(plan => plan.id !== planId)
-            })),
+            deleteStudyPlan: (planId) => {
+                api.deleteStudyPlan(planId).catch(console.error);
+                set((state) => ({
+                    studyPlans: state.studyPlans.filter(plan => plan.id !== planId)
+                }));
+            },
 
-            archiveStudyPlan: (planId) => set((state) => ({
-                studyPlans: state.studyPlans.map(plan =>
-                    plan.id === planId
-                        ? { ...plan, status: 'archived', updatedAt: Date.now() }
-                        : plan
-                )
-            })),
+            archiveStudyPlan: (planId) => {
+                const updatedAt = Date.now();
+                api.updateStudyPlan(planId, { status: 'archived', updatedAt }).catch(console.error);
+                set((state) => ({
+                    studyPlans: state.studyPlans.map(plan =>
+                        plan.id === planId
+                            ? { ...plan, status: 'archived', updatedAt }
+                            : plan
+                    )
+                }));
+            },
 
             addUser: (user) => set((state) => ({
                 users: [...state.users, user]
@@ -723,10 +749,14 @@ export const useStore = create<AppState>()(
             },
 
             // Question Actions
-            addQuestion: (question) => {
-                api.createQuestion(question).catch(console.error);
+            addQuestion: async (question) => {
+                const created = await api.createQuestion(question) as any;
+                const normalizedQuestion = {
+                    ...question,
+                    id: String(created?.id || created?._id || question.id),
+                };
                 set((state) => ({
-                    questions: [question, ...state.questions]
+                    questions: [normalizedQuestion, ...state.questions.filter((item) => item.id !== normalizedQuestion.id)]
                 }));
             },
             updateQuestion: (questionId, data) => {

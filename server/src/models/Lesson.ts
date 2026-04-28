@@ -21,6 +21,7 @@ const lessonSchema = new Schema(
     recordingUrl: { type: String, default: "" },
     joinInstructions: { type: String, default: "" },
     showRecordingOnPlatform: { type: Boolean, default: false },
+    showOnPlatform: { type: Boolean, default: true },
     quizId: { type: String, default: null },
     order: { type: Number, default: 0 },
     isLocked: { type: Boolean, default: false },

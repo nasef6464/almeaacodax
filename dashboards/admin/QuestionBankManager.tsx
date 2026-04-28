@@ -62,6 +62,17 @@ const normalizeQuestionContent = (value: string) => {
   return { text: trimmed, imageUrl: undefined as string | undefined };
 };
 
+const readCell = (row: Record<string, unknown>, keys: string[]) => {
+  for (const key of keys) {
+    const value = row[key];
+    if (value !== undefined && value !== null && String(value).trim()) {
+      return String(value).trim();
+    }
+  }
+
+  return '';
+};
+
 const resolveCorrectOptionIndex = (value: string, options: string[]) => {
   const normalized = normalizeLookup(value);
   const letterMap: Record<string, number> = { a: 0, 'أ': 0, b: 1, 'ب': 1, c: 2, 'ج': 2, d: 3, 'د': 3 };
@@ -173,23 +184,32 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     }
   };
 
-  const handleDuplicate = (question: Question) => {
-    addQuestion({
-      ...question,
-      id: `q_${Date.now()}_copy`,
-      text: `${question.text} (نسخة)`,
-      approvalStatus: 'draft',
-    });
+  const handleDuplicate = async (question: Question) => {
+    try {
+      await addQuestion({
+        ...question,
+        id: `q_${Date.now()}_copy`,
+        text: `${question.text} (نسخة)`,
+        approvalStatus: 'draft',
+      });
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر نسخ السؤال الآن.');
+    }
   };
 
-  const handleSave = (savedQuestion: Partial<Question>) => {
+  const handleSave = async (savedQuestion: Partial<Question>) => {
     if (currentQuestion.id) {
       updateQuestion(currentQuestion.id, { ...savedQuestion, id: currentQuestion.id } as Question);
     } else {
-      addQuestion({
-        ...savedQuestion,
-        id: `q_${Date.now()}`,
-      } as Question);
+      try {
+        await addQuestion({
+          ...savedQuestion,
+          id: `q_${Date.now()}`,
+        } as Question);
+      } catch (error) {
+        setImportError(error instanceof Error ? error.message : 'تعذر حفظ السؤال الآن.');
+        return;
+      }
     }
     setIsEditing(false);
   };
@@ -210,7 +230,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         'الخيار د': '6',
         'الإجابة الصحيحة': 'ب',
         'رابط الشرح': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        ملاحظة: 'ضع نص السؤال أو image:https://example.com/question.png إذا كان السؤال صورة فقط',
+        'رابط صورة السؤال': '',
+        'شرح نصي': 'اجمع 2 + 2 للوصول إلى الإجابة الصحيحة.',
+        ملاحظة: 'ضع نص السؤال أو رابط صورة السؤال. ويمكن أيضًا كتابة image:https://example.com/question.png داخل خانة السؤال.',
       },
     ];
 
@@ -245,20 +267,22 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
       rows.forEach((row, rowIndex) => {
         const rowNumber = rowIndex + 2;
-        const questionValue = String(row['السؤال'] || row.question || '').trim();
-        const pathName = String(row['المسار'] || row.path || '').trim();
-        const subjectName = String(row['المادة'] || row.subject || '').trim();
-        const sectionName = String(row['المهارة الرئيسية'] || row.section || '').trim();
-        const skillName = String(row['المهارة الفرعية'] || row.skill || '').trim();
-        const explanationLink = String(row['رابط الشرح'] || row.videoUrl || '').trim();
-        const typeValue = String(row['النوع'] || row.type || '').trim();
-        const optionA = String(row['الخيار أ'] || row['الخيار A'] || row.optionA || '').trim();
-        const optionB = String(row['الخيار ب'] || row['الخيار B'] || row.optionB || '').trim();
-        const optionC = String(row['الخيار ج'] || row['الخيار C'] || row.optionC || '').trim();
-        const optionD = String(row['الخيار د'] || row['الخيار D'] || row.optionD || '').trim();
-        const correctAnswer = String(row['الإجابة الصحيحة'] || row.correctAnswer || '').trim();
+        const questionValue = readCell(row, ['السؤال', 'نص السؤال', 'question', 'questionText']);
+        const questionImageValue = readCell(row, ['رابط صورة السؤال', 'صورة السؤال', 'imageUrl', 'questionImage']);
+        const pathName = readCell(row, ['المسار', 'path', 'pathName']);
+        const subjectName = readCell(row, ['المادة', 'subject', 'subjectName']);
+        const sectionName = readCell(row, ['المهارة الرئيسية', 'المهارة الرئيسة', 'section', 'mainSkill']);
+        const skillName = readCell(row, ['المهارة الفرعية', 'skill', 'subSkill']);
+        const explanationLink = readCell(row, ['رابط الشرح', 'videoUrl', 'explanationVideo']);
+        const explanationText = readCell(row, ['شرح نصي', 'الشرح', 'explanation']);
+        const typeValue = readCell(row, ['النوع', 'type', 'questionType']);
+        const optionA = readCell(row, ['الخيار أ', 'الخيار A', 'optionA', 'A']);
+        const optionB = readCell(row, ['الخيار ب', 'الخيار B', 'optionB', 'B']);
+        const optionC = readCell(row, ['الخيار ج', 'الخيار C', 'optionC', 'C']);
+        const optionD = readCell(row, ['الخيار د', 'الخيار D', 'optionD', 'D']);
+        const correctAnswer = readCell(row, ['الإجابة الصحيحة', 'الاجابة الصحيحة', 'correctAnswer', 'answer']);
 
-        if (!questionValue || !pathName || !subjectName || !sectionName || !skillName) {
+        if ((!questionValue && !questionImageValue) || !pathName || !subjectName || !sectionName || !skillName) {
           rowErrors.push(`الصف ${rowNumber}: البيانات الأساسية ناقصة.`);
           return;
         }
@@ -300,8 +324,9 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           return;
         }
 
-        const { text, imageUrl } = normalizeQuestionContent(questionValue);
-        if (!text && !imageUrl) {
+        const { text, imageUrl } = normalizeQuestionContent(questionValue || (questionImageValue ? `image:${questionImageValue}` : ''));
+        const finalImageUrl = questionImageValue || imageUrl;
+        if (!text && !finalImageUrl) {
           rowErrors.push(`الصف ${rowNumber}: حقل السؤال غير صالح.`);
           return;
         }
@@ -322,16 +347,16 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         importedQuestions.push({
           id: `q_import_${Date.now()}_${rowIndex}`,
           text,
-          imageUrl,
+          imageUrl: finalImageUrl,
           options: type === 'essay' ? [] : options,
           correctOptionIndex,
-          explanation: '',
+          explanation: explanationText,
           videoUrl: explanationLink || undefined,
           skillIds: [matchedSkill.id],
           pathId: matchedPath.id,
           subject: matchedSubject.id,
           sectionId: matchedSection.id,
-          difficulty: resolveDifficulty(String(row['الصعوبة'] || row.difficulty || '')),
+          difficulty: resolveDifficulty(readCell(row, ['الصعوبة', 'difficulty'])),
           type,
           ownerType: user.role === 'teacher' ? 'teacher' : 'platform',
           ownerId: user.id,
@@ -345,7 +370,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         throw new Error(rowErrors.slice(0, 6).join(' '));
       }
 
-      importedQuestions.forEach((question) => addQuestion(question));
+      await Promise.all(importedQuestions.map((question) => addQuestion(question)));
       setImportMessage(`تم استيراد ${importedQuestions.length} سؤال بنجاح.`);
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر استيراد ملف الأسئلة الآن.');
@@ -524,7 +549,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <tr key={question.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: question.text }} />
+                        {question.text ? (
+                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: question.text }} />
+                        ) : question.imageUrl ? (
+                          <div className="text-sm font-bold text-indigo-600">سؤال بصورة مرفقة</div>
+                        ) : (
+                          <div className="text-sm text-gray-400">سؤال بدون نص</div>
+                        )}
                         <div className="text-[11px] text-gray-400 mt-1">
                           {question.ownerType === 'teacher' ? 'سؤال معلم' : question.ownerType === 'school' ? 'سؤال مدرسة' : 'سؤال المنصة'}
                         </div>

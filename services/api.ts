@@ -219,7 +219,15 @@ export const api = {
       token,
     }),
   getContentBootstrap: () =>
-    request<{ topics: unknown[]; lessons: unknown[]; libraryItems: unknown[]; groups: unknown[]; b2bPackages: unknown[]; accessCodes: unknown[] }>("/content/bootstrap"),
+    request<{
+      topics: unknown[];
+      lessons: unknown[];
+      libraryItems: unknown[];
+      groups: unknown[];
+      b2bPackages: unknown[];
+      accessCodes: unknown[];
+      studyPlans: unknown[];
+    }>("/content/bootstrap"),
   getHomepageSettings: (token?: string | null) =>
     request<unknown>("/content/homepage-settings", {
       token,
@@ -329,6 +337,23 @@ export const api = {
     }),
   deleteAccessCode: (id: string, token?: string | null) =>
     request<{ success: boolean }>(`/content/access-codes/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+  createStudyPlan: (payload: unknown, token?: string | null) =>
+    request<unknown>("/content/study-plans", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateStudyPlan: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/content/study-plans/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  deleteStudyPlan: (id: string, token?: string | null) =>
+    request<{ success: boolean }>(`/content/study-plans/${id}`, {
       method: "DELETE",
       token,
     }),

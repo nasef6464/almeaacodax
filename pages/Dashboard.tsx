@@ -518,8 +518,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     
     // Debugging logs as requested
-    console.log("Dashboard Data:", { enrolledCourses, completedLessons, examResults });
-
     // Get full course objects for enrolled courses
     const activeCourses = courses.filter(c => enrolledCourses.includes(c.id));
 

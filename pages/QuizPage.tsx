@@ -35,6 +35,7 @@ export const QuizPage: React.FC = () => {
     questions,
     user,
     checkAccess,
+    hasScopedPackageAccess,
     saveExamResult,
     skills,
     subjects,
@@ -63,6 +64,16 @@ export const QuizPage: React.FC = () => {
 
     setQuiz(foundQuiz);
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+
+    if (
+      !isStaffViewer &&
+      (!foundQuiz.isPublished || foundQuiz.showOnPlatform === false || (!!foundQuiz.approvalStatus && foundQuiz.approvalStatus !== 'approved'))
+    ) {
+      setHasAccess(false);
+      setAccessMessage('هذا الاختبار غير منشور للطلاب حاليًا.');
+      return;
+    }
 
     const isExpired = !!foundQuiz.dueDate && Date.now() > new Date(`${foundQuiz.dueDate}T23:59:59`).getTime();
     if (isExpired) {
@@ -71,7 +82,8 @@ export const QuizPage: React.FC = () => {
       return;
     }
 
-    if ((foundQuiz.mode || 'regular') === 'central') {
+    const hasExplicitTargets = (foundQuiz.targetUserIds || []).length > 0 || (foundQuiz.targetGroupIds || []).length > 0;
+    if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
       const userGroups = user.groupIds || [];
       const isUserTargeted =
         (foundQuiz.targetUserIds || []).length === 0 || (foundQuiz.targetUserIds || []).includes(user.id);
@@ -86,14 +98,18 @@ export const QuizPage: React.FC = () => {
       }
     }
 
-    if (foundQuiz.access.type === 'free') {
+    if (isStaffViewer) {
+      setHasAccess(true);
+    } else if (foundQuiz.access.type === 'free') {
       setHasAccess(true);
     } else if (foundQuiz.access.type === 'paid') {
-      setHasAccess(checkAccess(foundQuiz.id, true));
+      setHasAccess(checkAccess(foundQuiz.id, true) || hasScopedPackageAccess('tests', foundQuiz.pathId, foundQuiz.subjectId));
     } else if (foundQuiz.access.type === 'private') {
       const userGroups = user.groupIds || [];
-      const allowed = foundQuiz.access.allowedGroupIds?.some((id) => userGroups.includes(id));
+      const allowed = (foundQuiz.access.allowedGroupIds || []).length === 0 || foundQuiz.access.allowedGroupIds?.some((id) => userGroups.includes(id));
       setHasAccess(Boolean(allowed));
+    } else if (foundQuiz.access.type === 'course_only') {
+      setHasAccess(hasScopedPackageAccess('courses', foundQuiz.pathId, foundQuiz.subjectId));
     } else {
       setHasAccess(false);
     }
@@ -108,7 +124,7 @@ export const QuizPage: React.FC = () => {
     } else {
       setTimeLeft(null);
     }
-  }, [quizId, quizzes, questions, user, checkAccess]);
+  }, [quizId, quizzes, questions, user, checkAccess, hasScopedPackageAccess]);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !isFinished) {
@@ -378,7 +394,17 @@ export const QuizPage: React.FC = () => {
                 <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-bold">{currentQuestion?.difficulty}</span>
               </div>
 
-              <div className="text-base sm:text-lg text-gray-800 mb-8 break-words" dangerouslySetInnerHTML={{ __html: currentQuestion?.text || '' }} />
+              <div className="text-base sm:text-lg text-gray-800 mb-6 break-words" dangerouslySetInnerHTML={{ __html: currentQuestion?.text || '' }} />
+              {currentQuestion?.imageUrl && (
+                <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                  <img
+                    src={currentQuestion.imageUrl}
+                    alt="صورة السؤال"
+                    className="mx-auto max-h-[340px] w-full object-contain"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-4">
                 {currentQuestion?.options.map((option, index) => (
@@ -525,6 +551,16 @@ export const QuizPage: React.FC = () => {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={favorites.includes(question.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                               </button>
                             </div>
+                            {question.imageUrl && (
+                              <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                                <img
+                                  src={question.imageUrl}
+                                  alt="صورة السؤال"
+                                  className="mx-auto max-h-64 w-full object-contain"
+                                  referrerPolicy="no-referrer"
+                                />
+                              </div>
+                            )}
                             <div className="space-y-2">
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
