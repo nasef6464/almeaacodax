@@ -163,7 +163,11 @@ export const PathsManager: React.FC = () => {
 
   const handleTogglePathActive = (path: any, e: React.MouseEvent) => {
     e.stopPropagation();
-    useStore.getState().updatePath(path.id, { isActive: path.isActive === false });
+    const shouldShowPath = path.isActive === false;
+    useStore.getState().updatePath(path.id, {
+      isActive: shouldShowPath,
+      ...(shouldShowPath ? { showInNavbar: true } : {}),
+    });
   };
 
   const handleAddLevel = () => {
