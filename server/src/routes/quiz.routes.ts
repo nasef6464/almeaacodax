@@ -7,6 +7,7 @@ import { QuestionModel } from "../models/Question.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
+import { SkillProgressModel } from "../models/SkillProgress.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -171,6 +172,53 @@ const buildRecommendedAction = (mastery: number, attemptCount: number) => {
   }
 
   return "تثبيت المهارة بتدريب خفيف وإعادة قياس لاحقًا";
+};
+
+const buildSkillStatus = (mastery: number) => {
+  if (mastery >= 90) return "mastered";
+  if (mastery >= 75) return "good";
+  if (mastery >= 50) return "average";
+  return "weak";
+};
+
+const updateSkillProgressFromResult = async (result: any, userId: string) => {
+  const skillsAnalysis = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
+  if (skillsAnalysis.length === 0) return;
+
+  await Promise.all(
+    skillsAnalysis
+      .filter((skill: any) => skill?.skillId || skill?.skill)
+      .map(async (skill: any) => {
+        const skillId = String(skill.skillId || `${skill.subjectId || "subject"}:${skill.sectionId || "section"}:${skill.skill}`);
+        const mastery = Math.max(0, Math.min(100, Number(skill.mastery || 0)));
+        const existing = await SkillProgressModel.findOne({ userId, skillId });
+        const previousAttempts = Number(existing?.attempts || 0);
+        const nextAttempts = previousAttempts + 1;
+        const previousMastery = Number(existing?.mastery || 0);
+        const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
+        const nextStatus = buildSkillStatus(nextMastery);
+
+        await SkillProgressModel.findOneAndUpdate(
+          { userId, skillId },
+          {
+            userId,
+            skillId,
+            skill: String(skill.skill || existing?.skill || "مهارة غير مسماة"),
+            pathId: String(skill.pathId || existing?.pathId || ""),
+            subjectId: String(skill.subjectId || existing?.subjectId || ""),
+            sectionId: String(skill.sectionId || existing?.sectionId || ""),
+            mastery: nextMastery,
+            status: nextStatus,
+            attempts: nextAttempts,
+            lastQuizId: String(result.quizId || ""),
+            lastQuizTitle: String(result.quizTitle || ""),
+            lastAttemptAt: new Date(),
+            recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
+          },
+          { new: true, upsert: true },
+        );
+      }),
+  );
 };
 
 const matchesManagedScope = (
@@ -587,6 +635,15 @@ quizRouter.get(
 );
 
 quizRouter.get(
+  "/skill-progress",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const items = await SkillProgressModel.find({ userId: req.authUser!.id }).sort({ mastery: 1, lastAttemptAt: -1 });
+    res.json(items);
+  }),
+);
+
+quizRouter.get(
   "/results/latest",
   requireAuth,
   asyncHandler(async (req, res) => {
@@ -677,6 +734,7 @@ quizRouter.post(
       ...req.body,
       userId: req.authUser!.id,
     });
+    await updateSkillProgressFromResult(created, req.authUser!.id);
     res.status(StatusCodes.CREATED).json(created);
   }),
 );

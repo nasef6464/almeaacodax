@@ -425,6 +425,7 @@ export const api = {
     }),
   getQuizResults: () => request<unknown[]>("/quizzes/results"),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
+  getSkillProgress: () => request<unknown[]>("/quizzes/skill-progress"),
   createQuizResult: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/results", {
       method: "POST",
