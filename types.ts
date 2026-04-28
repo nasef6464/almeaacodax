@@ -252,6 +252,23 @@ export interface SkillGap {
     recommendation?: string; // Action text like "Additional test available"
 }
 
+export interface SkillProgress {
+    id?: string;
+    userId: string;
+    skillId: string;
+    skill: string;
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    mastery: number;
+    status: 'weak' | 'average' | 'good' | 'mastered';
+    attempts: number;
+    lastQuizId?: string;
+    lastQuizTitle?: string;
+    lastAttemptAt?: string;
+    recommendedAction?: string;
+}
+
 export interface QuizQuestionReview {
     questionId: string;
     text: string;

@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { AuthProvider } from './contexts/AuthContext';
 import { useFirebaseSync } from './services/firebaseSync';
 import { adapter } from './services/adapter';
+import { api } from './services/api';
 import { useStore } from './store/useStore';
 import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
@@ -64,18 +65,20 @@ const App: React.FC = () => {
   const hydrateQuizzes = useStore((state) => state.hydrateQuizzes);
   const hydrateTaxonomy = useStore((state) => state.hydrateTaxonomy);
   const hydrateContentBootstrap = useStore((state) => state.hydrateContentBootstrap);
+  const hydrateSkillProgress = useStore((state) => state.hydrateSkillProgress);
 
   useEffect(() => {
     let mounted = true;
 
     const bootstrapAppData = async () => {
       try {
-        const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult] = await Promise.allSettled([
+        const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
           adapter.getQuestions(),
           adapter.getQuizzes(),
           adapter.getTaxonomyBootstrap(),
           adapter.getContentBootstrap(),
+          api.getSkillProgress(),
         ]);
 
         if (!mounted) {
@@ -115,6 +118,10 @@ const App: React.FC = () => {
             studyPlans: contentResult.value.studyPlans as any[],
           });
         }
+
+        if (skillProgressResult.status === 'fulfilled') {
+          hydrateSkillProgress(skillProgressResult.value as any[]);
+        }
       } catch (error) {
         console.warn('App bootstrap fallback active:', error);
       } finally {
@@ -129,7 +136,7 @@ const App: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateTaxonomy]);
+  }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateSkillProgress, hydrateTaxonomy]);
 
   if (!bootstrapReady) {
     return <LoadingFallback />;

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { api } from '../services/api';
-import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, Topic, PackageContentType, StudyPlan } from '../types';
+import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, Topic, PackageContentType, StudyPlan, SkillProgress } from '../types';
 
 const USE_REAL_API =
     (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
@@ -43,6 +43,7 @@ interface AppState {
     reviewLater: string[];
     recentActivity: Activity[];
     studyPlans: StudyPlan[];
+    skillProgress: SkillProgress[];
     
     // Actions
     hydrateUsers: (users: User[]) => void;
@@ -66,6 +67,7 @@ interface AppState {
         studyPlans?: StudyPlan[];
     }) => void;
     hydrateExamResults: (results: QuizResult[]) => void;
+    hydrateSkillProgress: (items: SkillProgress[]) => void;
     enrollCourse: (courseId: string) => void;
     completePurchase: (payload: { courseId?: string; packageId?: string; includedCourseIds?: string[] }) => Promise<void>;
     redeemAccessCode: (code: string) => Promise<void>;
@@ -294,6 +296,7 @@ export const useStore = create<AppState>()(
             reviewLater: [],
             recentActivity: [],
             studyPlans: [],
+            skillProgress: [],
 
             hydrateUsers: (users) => set(() => ({
                 users
@@ -438,6 +441,20 @@ export const useStore = create<AppState>()(
 
             hydrateExamResults: (results) => set(() => ({
                 examResults: results
+            })),
+
+            hydrateSkillProgress: (items) => set(() => ({
+                skillProgress: items
+                    .map((item: any) => ({
+                        ...item,
+                        id: String(item?.id || item?._id || ''),
+                        userId: String(item?.userId || ''),
+                        skillId: String(item?.skillId || ''),
+                        skill: String(item?.skill || ''),
+                        mastery: Number(item?.mastery || 0),
+                        attempts: Number(item?.attempts || 0),
+                    }))
+                    .filter((item: SkillProgress) => item.userId && item.skillId)
             })),
 
             enrollCourse: (courseId) => {
@@ -1380,7 +1397,7 @@ export const useStore = create<AppState>()(
             name: 'learning-platform-storage', // unique name
             version: 3,
             partialize: (state) => Object.fromEntries(
-                Object.entries(state).filter(([key]) => !['paths', 'levels', 'subjects', 'sections', 'skills', 'nestedSkills', 'libraryItems', 'questions', 'users', 'courses', 'topics', 'lessons', 'quizzes', 'groups', 'b2bPackages', 'accessCodes'].includes(key))
+                Object.entries(state).filter(([key]) => !['paths', 'levels', 'subjects', 'sections', 'skills', 'nestedSkills', 'libraryItems', 'questions', 'users', 'courses', 'topics', 'lessons', 'quizzes', 'groups', 'b2bPackages', 'accessCodes', 'skillProgress'].includes(key))
             ),
             migrate: (persistedState: any) => {
                 if (!persistedState || typeof persistedState !== 'object') {
@@ -1405,6 +1422,7 @@ export const useStore = create<AppState>()(
                     nestedSkills: [],
                     libraryItems: [],
                     studyPlans: Array.isArray(persistedState.studyPlans) ? persistedState.studyPlans : [],
+                    skillProgress: [],
                 };
             }
         }
