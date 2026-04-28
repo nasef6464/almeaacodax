@@ -80,8 +80,8 @@ const Courses: React.FC = () => {
                 (user.subscription?.purchasedCourses || []).includes(c.id) ||
                 hasScopedPackageAccess('courses', c.pathId || c.category, c.subjectId || c.subject)
             ) &&
-            (c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            c.category.toLowerCase().includes(searchQuery.toLowerCase()))
+            ((c.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (c.category || c.pathId || '').toLowerCase().includes(searchQuery.toLowerCase()))
         );
     }, [searchQuery, coursesWithProgress, enrolledCourses, hasScopedPackageAccess, user.subscription?.purchasedCourses]);
 
