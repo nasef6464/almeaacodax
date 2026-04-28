@@ -118,8 +118,8 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.category.toLowerCase().includes(searchTerm.toLowerCase());
+      (course.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (course.category || course.pathId || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSubject = subjectId ? (course.subjectId || course.subject) === subjectId : true;
     return matchesSearch && matchesSubject;
   });
