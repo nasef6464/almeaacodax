@@ -897,12 +897,16 @@ const SaherTab = () => {
                 subjectName: subjects.find(subject => subject.id === item.subjectId)?.name || 'بدون مادة',
                 relatedQuiz,
                 recommendedLesson: lessons.find((lesson) =>
-                    (!!item.skillId && lesson.skillIds?.includes(item.skillId)) ||
-                    (!!item.subjectId && lesson.subjectId === item.subjectId && (!item.sectionId || lesson.sectionId === item.sectionId))
+                    lesson.showOnPlatform !== false &&
+                    (!lesson.approvalStatus || lesson.approvalStatus === 'approved') &&
+                    ((!!item.skillId && lesson.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && lesson.subjectId === item.subjectId && (!item.sectionId || lesson.sectionId === item.sectionId)))
                 ),
                 recommendedResource: libraryItems.find((resource) =>
-                    (!!item.skillId && resource.skillIds?.includes(item.skillId)) ||
-                    (!!item.subjectId && resource.subjectId === item.subjectId && (!item.sectionId || resource.sectionId === item.sectionId))
+                    resource.showOnPlatform !== false &&
+                    (!resource.approvalStatus || resource.approvalStatus === 'approved') &&
+                    ((!!item.skillId && resource.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && resource.subjectId === item.subjectId && (!item.sectionId || resource.sectionId === item.sectionId)))
                 ),
             };
         })
