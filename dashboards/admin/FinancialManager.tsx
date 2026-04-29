@@ -85,7 +85,15 @@ export const FinancialManager: React.FC = () => {
     }, []);
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
-    const b2cPremiumUsers = useMemo(() => users.filter((user) => user.subscription?.plan === 'premium'), [users]);
+    const schoolPackageIds = useMemo(() => new Set(b2bPackages.map((pkg) => pkg.id)), [b2bPackages]);
+    const publicPackages = useMemo(() => courses.filter((course) => course.isPackage), [courses]);
+    const publicPackageIds = useMemo(() => new Set(publicPackages.map((pkg) => pkg.id)), [publicPackages]);
+    const b2cPremiumUsers = useMemo(() => users.filter((user) => {
+        const purchasedPackages = user.subscription?.purchasedPackages || [];
+        const hasPublicPackage = purchasedPackages.some((packageId) => publicPackageIds.has(packageId));
+        const hasOnlySchoolPackages = purchasedPackages.length > 0 && purchasedPackages.every((packageId) => schoolPackageIds.has(packageId));
+        return hasPublicPackage || (user.subscription?.plan === 'premium' && !hasOnlySchoolPackages);
+    }), [publicPackageIds, schoolPackageIds, users]);
     const activePackages = useMemo(() => b2bPackages.filter((pkg) => pkg.status === 'active'), [b2bPackages]);
     const activeCodes = useMemo(() => accessCodes.filter((code) => code.expiresAt > Date.now()), [accessCodes]);
 
@@ -239,6 +247,35 @@ export const FinancialManager: React.FC = () => {
         }
     };
 
+    const publicPackageRows = useMemo(() => {
+        return publicPackages.map((pkg) => {
+            const packageRequests = paymentRequests.filter((request) => (
+                request.itemType === 'package' && (request.itemId === pkg.id || request.packageId === pkg.id)
+            ));
+            const approvedRequests = packageRequests.filter((request) => request.status === 'approved');
+            const pendingRequests = packageRequests.filter((request) => request.status === 'pending');
+            const purchasedUsers = users.filter((currentUser) => (currentUser.subscription?.purchasedPackages || []).includes(pkg.id));
+            const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
+            const pathName = paths.find((path) => path.id === (pkg.pathId || pkg.category))?.name || 'عام';
+            const subjectName = pkg.subjectId ? subjects.find((subject) => subject.id === pkg.subjectId)?.name : '';
+
+            return {
+                id: pkg.id,
+                title: pkg.title,
+                pathName,
+                subjectName,
+                price: pkg.price || 0,
+                originalPrice: pkg.originalPrice || 0,
+                isVisible: pkg.showOnPlatform !== false && pkg.isPublished !== false,
+                contentTypes,
+                requests: packageRequests.length,
+                pending: pendingRequests.length,
+                buyers: purchasedUsers.length,
+                revenue: approvedRequests.reduce((sum, request) => sum + (request.amount || 0), 0),
+            };
+        }).sort((a, b) => Number(b.isVisible) - Number(a.isVisible) || b.revenue - a.revenue);
+    }, [paths, paymentRequests, publicPackages, subjects, users]);
+
     const packageCoverageRows = useMemo(() => {
         return b2bPackages.map((pkg) => {
             const packagePathIds = new Set(pkg.pathIds || []);
@@ -299,11 +336,11 @@ export const FinancialManager: React.FC = () => {
             name: user.name,
             email: user.email || '-',
             courses: user.subscription?.purchasedCourses?.length || 0,
-            packages: user.subscription?.purchasedPackages?.length || 0,
+            packages: (user.subscription?.purchasedPackages || []).filter((packageId) => publicPackageIds.has(packageId)).length,
             plan: user.subscription?.plan || 'free',
             status: user.isActive === false ? 'موقوف' : 'نشط',
         }));
-    }, [b2cPremiumUsers]);
+    }, [b2cPremiumUsers, publicPackageIds]);
 
     const saveSettings = async () => {
         setLoading(true);
@@ -797,37 +834,99 @@ export const FinancialManager: React.FC = () => {
             )}
 
             {activeTab === 'b2c' && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6">اشتراكات الأفراد</h2>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-right">
-                            <thead className="bg-gray-50 text-gray-600 text-sm">
-                                <tr>
-                                    <th className="p-4 font-medium">الاسم</th>
-                                    <th className="p-4 font-medium">البريد</th>
-                                    <th className="p-4 font-medium">الخطة</th>
-                                    <th className="p-4 font-medium">الدورات</th>
-                                    <th className="p-4 font-medium">الباقات</th>
-                                    <th className="p-4 font-medium">الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {premiumRows.map((row) => (
-                                    <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="p-4 font-medium text-gray-900">{row.name}</td>
-                                        <td className="p-4 text-gray-600">{row.email}</td>
-                                        <td className="p-4 text-gray-600">{row.plan === 'premium' ? 'بريميوم' : 'مجاني'}</td>
-                                        <td className="p-4 text-gray-600">{row.courses}</td>
-                                        <td className="p-4 text-gray-600">{row.packages}</td>
-                                        <td className="p-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${row.status === 'نشط' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                                                {row.status}
-                                            </span>
-                                        </td>
+                <div className="space-y-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <div className="flex items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h2 className="text-lg font-bold text-gray-900">عروض الأفراد المعروضة على الموقع</h2>
+                                <p className="text-xs text-gray-500 mt-1">هذه هي الباقات التي تظهر للطالب المستقل داخل صفحات المسارات، منفصلة تمامًا عن باقات المدارس.</p>
+                            </div>
+                            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{publicPackageRows.length} عرض</span>
+                        </div>
+                        <div className="grid gap-4">
+                            {publicPackageRows.map((pkg) => (
+                                <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                        <div className="space-y-3">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <h3 className="text-base font-black text-gray-900">{pkg.title}</h3>
+                                                <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${pkg.isVisible ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-600'}`}>
+                                                    {pkg.isVisible ? 'ظاهر للطلاب' : 'مخفي'}
+                                                </span>
+                                                <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.pathName}</span>
+                                                {pkg.subjectName && <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.subjectName}</span>}
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {pkg.contentTypes.map((type) => (
+                                                    <span key={type} className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+                                                        <Eye size={12} />
+                                                        {contentTypeLabel(type)}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:min-w-[520px]">
+                                            <div className="rounded-2xl bg-white p-3 text-center">
+                                                <p className="text-xs font-bold text-gray-500">السعر</p>
+                                                <p className="text-lg font-black text-indigo-600">{settings.currency} {pkg.price.toLocaleString('en-US')}</p>
+                                                {pkg.originalPrice > pkg.price && <p className="text-[11px] text-gray-400 line-through">{pkg.originalPrice.toLocaleString('en-US')}</p>}
+                                            </div>
+                                            <div className="rounded-2xl bg-white p-3 text-center">
+                                                <p className="text-xs font-bold text-gray-500">طلبات معلقة</p>
+                                                <p className="text-lg font-black text-amber-600">{pkg.pending}</p>
+                                            </div>
+                                            <div className="rounded-2xl bg-white p-3 text-center">
+                                                <p className="text-xs font-bold text-gray-500">مشتركون</p>
+                                                <p className="text-lg font-black text-emerald-600">{pkg.buyers}</p>
+                                            </div>
+                                            <div className="rounded-2xl bg-white p-3 text-center">
+                                                <p className="text-xs font-bold text-gray-500">إيراد مثبت</p>
+                                                <p className="text-lg font-black text-gray-900">{pkg.revenue.toLocaleString('en-US')}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {publicPackageRows.length === 0 && (
+                                <div className="rounded-2xl border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">
+                                    لا توجد باقات عامة بعد. أنشئها من إدارة المسارات داخل تبويب الباقات الشاملة.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 className="text-lg font-bold text-gray-900 mb-6">طلاب الأفراد والمشتريات العامة</h2>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-right">
+                                <thead className="bg-gray-50 text-gray-600 text-sm">
+                                    <tr>
+                                        <th className="p-4 font-medium">الاسم</th>
+                                        <th className="p-4 font-medium">البريد</th>
+                                        <th className="p-4 font-medium">الخطة</th>
+                                        <th className="p-4 font-medium">الدورات</th>
+                                        <th className="p-4 font-medium">الباقات العامة</th>
+                                        <th className="p-4 font-medium">الحالة</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {premiumRows.map((row) => (
+                                        <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="p-4 font-medium text-gray-900">{row.name}</td>
+                                            <td className="p-4 text-gray-600">{row.email}</td>
+                                            <td className="p-4 text-gray-600">{row.plan === 'premium' ? 'بريميوم' : 'مجاني'}</td>
+                                            <td className="p-4 text-gray-600">{row.courses}</td>
+                                            <td className="p-4 text-gray-600">{row.packages}</td>
+                                            <td className="p-4">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${row.status === 'نشط' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                                                    {row.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
