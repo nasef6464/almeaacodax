@@ -13,6 +13,7 @@ import {
   Eye, EyeOff, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { Course } from '../../types';
 
 const getPathIcon = (path: any) => {
   if (path?.iconUrl) return <img src={path.iconUrl} alt={path.name} className="w-8 h-8 object-contain" />;
@@ -35,7 +36,7 @@ const getSubjectColor = (subject: any) => {
 };
 
 export const PathsManager: React.FC = () => {
-  const { paths, levels, subjects, courses, questions, lessons, quizzes, libraryItems, topics } = useStore();
+  const { paths, levels, subjects, courses, questions, lessons, quizzes, libraryItems, topics, addCourse, updateCourse, deleteCourse } = useStore();
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
@@ -73,13 +74,26 @@ export const PathsManager: React.FC = () => {
   const [newSubjectIconUrl, setNewSubjectIconUrl] = useState('');
   const [newSubjectIconStyle, setNewSubjectIconStyle] = useState<'default' | 'modern' | 'minimal' | 'playful'>('default');
 
+  const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
+  const [editingPackage, setEditingPackage] = useState<Course | null>(null);
+  const [packageTitle, setPackageTitle] = useState('');
+  const [packageDescription, setPackageDescription] = useState('');
+  const [packagePrice, setPackagePrice] = useState('0');
+  const [packageOriginalPrice, setPackageOriginalPrice] = useState('');
+  const [packageThumbnail, setPackageThumbnail] = useState('');
+  const [packageFeaturesText, setPackageFeaturesText] = useState('');
+  const [packageVisible, setPackageVisible] = useState(false);
+  const [packagePublished, setPackagePublished] = useState(true);
+
   const currentPath = paths.find(p => p.id === selectedPathId);
   const pathLevels = levels?.filter(l => l.pathId === selectedPathId) || [];
   const currentLevel = levels?.find(l => l.id === selectedLevelId);
   const pathSubjects = subjects.filter(s => s.pathId === selectedPathId && (selectedLevelId ? s.levelId === selectedLevelId : true));
   const currentSubject = subjects.find(s => s.id === selectedSubjectId);
+  const pathPackages = courses.filter((course: any) => (course.pathId || course.category) === selectedPathId && course.isPackage);
   const pathScopedContent = {
-    courses: courses.filter((course: any) => (course.pathId || course.category) === selectedPathId),
+    courses: courses.filter((course: any) => (course.pathId || course.category) === selectedPathId && !course.isPackage),
+    packages: pathPackages,
     lessons: lessons.filter((lesson: any) => lesson.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === lesson.subjectId)),
     topics: topics.filter((topic: any) => topic.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === topic.subjectId)),
     quizzes: quizzes.filter((quiz: any) => quiz.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === quiz.subjectId)),
@@ -92,6 +106,13 @@ export const PathsManager: React.FC = () => {
       total: pathScopedContent.courses.length,
       visible: pathScopedContent.courses.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
       locked: pathScopedContent.courses.filter((item: any) => item.isLocked || item.accessControl === 'enrolled' || item.accessControl === 'specific_groups').length,
+    },
+    {
+      id: 'packages',
+      title: 'الباقات والعروض العامة',
+      total: pathScopedContent.packages.length,
+      visible: pathScopedContent.packages.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
+      locked: pathScopedContent.packages.filter((item: any) => item.price > 0).length,
     },
     {
       id: 'topics',
@@ -322,9 +343,113 @@ export const PathsManager: React.FC = () => {
     } else if (deleteDialog.type === 'subject') {
       useStore.getState().deleteSubject(deleteDialog.id);
       if (selectedSubjectId === deleteDialog.id) setSelectedSubjectId(null);
+    } else if (deleteDialog.type === 'package') {
+      deleteCourse(deleteDialog.id);
     }
     
     setDeleteDialog({ ...deleteDialog, isOpen: false });
+  };
+
+  const resetPackageForm = () => {
+    setEditingPackage(null);
+    setPackageTitle('');
+    setPackageDescription('');
+    setPackagePrice('0');
+    setPackageOriginalPrice('');
+    setPackageThumbnail('');
+    setPackageFeaturesText('');
+    setPackageVisible(false);
+    setPackagePublished(true);
+  };
+
+  const openPackageModal = (pkg?: Course) => {
+    if (pkg) {
+      setEditingPackage(pkg);
+      setPackageTitle(pkg.title || '');
+      setPackageDescription(pkg.description || '');
+      setPackagePrice(String(pkg.price ?? 0));
+      setPackageOriginalPrice(pkg.originalPrice ? String(pkg.originalPrice) : '');
+      setPackageThumbnail(pkg.thumbnail || '');
+      setPackageFeaturesText((pkg.features || []).join('\n'));
+      setPackageVisible(pkg.showOnPlatform !== false);
+      setPackagePublished(pkg.isPublished !== false);
+    } else {
+      resetPackageForm();
+    }
+
+    setIsPackageModalOpen(true);
+  };
+
+  const handleSavePathPackage = () => {
+    if (!selectedPathId || !packageTitle.trim()) return;
+
+    const price = Number(packagePrice) || 0;
+    const originalPrice = packageOriginalPrice.trim() ? Number(packageOriginalPrice) || undefined : undefined;
+    const features = packageFeaturesText
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const packageData: Partial<Course> = {
+      title: packageTitle.trim(),
+      description: packageDescription.trim(),
+      thumbnail: packageThumbnail.trim() || 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80',
+      instructor: 'منصة المئة',
+      price,
+      currency: 'ر.س',
+      duration: 0,
+      level: 'Beginner',
+      rating: 5,
+      progress: 0,
+      category: selectedPathId,
+      pathId: selectedPathId,
+      features: features.length ? features : ['وصول منظم لمحتوى المسار', 'متابعة التقدم داخل المنصة'],
+      isPackage: true,
+      packageType: 'courses',
+      originalPrice,
+      includedCourses: courses
+        .filter((course) => (course.pathId || course.category) === selectedPathId && !course.isPackage)
+        .map((course) => course.id),
+      isPublished: packagePublished,
+      showOnPlatform: packageVisible,
+      approvalStatus: packagePublished ? 'approved' : 'draft',
+      approvedAt: packagePublished ? Date.now() : undefined,
+      fakeRating: 5,
+      fakeStudentsCount: editingPackage?.fakeStudentsCount || 0,
+      modules: editingPackage?.modules || [],
+      files: editingPackage?.files || [],
+      qa: editingPackage?.qa || [],
+    };
+
+    if (editingPackage?.id) {
+      updateCourse(editingPackage.id, packageData);
+    } else {
+      addCourse({
+        ...packageData,
+        id: `pkg_${Date.now()}`,
+      } as Course);
+    }
+
+    resetPackageForm();
+    setIsPackageModalOpen(false);
+  };
+
+  const handleTogglePackageVisibility = (pkg: Course) => {
+    updateCourse(pkg.id, {
+      showOnPlatform: pkg.showOnPlatform === false,
+      isPublished: true,
+      approvalStatus: 'approved',
+    });
+  };
+
+  const handleDeletePackage = (pkg: Course) => {
+    setDeleteDialog({
+      isOpen: true,
+      id: pkg.id,
+      type: 'package',
+      title: 'حذف باقة',
+      message: `هل أنت متأكد من حذف باقة "${pkg.title}"؟ سيؤثر ذلك فقط على العرض العام ولن يمس باقات المدارس.`,
+    });
   };
 
   const renderDeleteModal = () => {
@@ -758,7 +883,7 @@ export const PathsManager: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pathSubjects.map((subject, sidx) => {
-                  const subjectCoursesCount = courses.filter(c => c.subject === subject.id).length;
+                  const subjectCoursesCount = courses.filter(c => !c.isPackage && (c.subject === subject.id || c.subjectId === subject.id)).length;
                   const subjectQuestionsCount = questions.filter(q => q.subject === subject.id).length;
                   return (
                     <div 
@@ -792,16 +917,129 @@ export const PathsManager: React.FC = () => {
           )}
 
           {pathTab === 'packages' && (
-            <div className="bg-white p-12 rounded-2xl border border-gray-100 shadow-sm text-center animate-fade-in">
-              <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package size={40} />
+            <div className="space-y-6 animate-fade-in">
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Package size={32} />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-2">إدارة الباقات والعروض العامة</h3>
+                      <p className="text-gray-500 max-w-2xl leading-7">
+                        هذه الباقات تظهر للطالب المستقل داخل صفحة المسار بجانب المواد عند تفعيلها. باقات المدارس منفصلة وتدار من المدارس/المالية ولا تظهر هنا كعرض شراء عام.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => openPackageModal()}
+                    className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors inline-flex items-center gap-2 justify-center"
+                  >
+                    <Plus size={18} />
+                    إنشاء باقة جديدة
+                  </button>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">إدارة الباقات الشاملة</h3>
-              <p className="text-gray-500 max-w-md mx-auto mb-6">هنا يمكنك إنشاء باقات تجمع بين مواد المسار (مثال: باقة القدرات الشاملة التي تحتوي على دورات الكمي واللفظي معاً بسعر مخفض).</p>
-              <button className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors inline-flex items-center gap-2">
-                <Plus size={18} />
-                إنشاء باقة جديدة
-              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
+                  <div className="text-sm font-bold text-amber-700">إجمالي الباقات</div>
+                  <div className="mt-2 text-3xl font-black text-amber-700">{pathPackages.length}</div>
+                </div>
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+                  <div className="text-sm font-bold text-emerald-700">ظاهرة للطلاب</div>
+                  <div className="mt-2 text-3xl font-black text-emerald-700">
+                    {pathPackages.filter((pkg) => pkg.showOnPlatform !== false && pkg.isPublished !== false).length}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <div className="text-sm font-bold text-gray-700">مخفية/قيد الإعداد</div>
+                  <div className="mt-2 text-3xl font-black text-gray-700">
+                    {pathPackages.filter((pkg) => pkg.showOnPlatform === false || pkg.isPublished === false).length}
+                  </div>
+                </div>
+              </div>
+
+              {pathPackages.length === 0 ? (
+                <div className="bg-white p-12 rounded-2xl border border-gray-100 shadow-sm text-center">
+                  <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Package size={40} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">لا توجد باقات لهذا المسار بعد</h3>
+                  <p className="text-gray-500 max-w-md mx-auto mb-6">ابدأ بإنشاء باقة عامة تظهر للطلاب المستقلين داخل صفحة المسار عند تفعيلها.</p>
+                  <button
+                    onClick={() => openPackageModal()}
+                    className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors inline-flex items-center gap-2"
+                  >
+                    <Plus size={18} />
+                    إنشاء أول باقة
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  {pathPackages.map((pkg) => (
+                    <div key={pkg.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                      <div className="p-5 flex gap-4">
+                        <img
+                          src={pkg.thumbnail || 'https://via.placeholder.com/300x180'}
+                          alt={pkg.title}
+                          className="w-24 h-24 rounded-2xl object-cover bg-gray-100 flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <h4 className="text-lg font-black text-gray-800 leading-tight">{pkg.title}</h4>
+                              <p className="text-sm text-gray-500 mt-1 line-clamp-2">{pkg.description || 'باقة عامة مرتبطة بهذا المسار.'}</p>
+                            </div>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-bold flex-shrink-0 ${
+                                pkg.showOnPlatform === false || pkg.isPublished === false
+                                  ? 'bg-gray-100 text-gray-600'
+                                  : 'bg-emerald-50 text-emerald-700'
+                              }`}
+                            >
+                              {pkg.showOnPlatform === false || pkg.isPublished === false ? 'مخفية' : 'ظاهرة'}
+                            </span>
+                          </div>
+                          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+                            <span className="font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
+                            {pkg.originalPrice ? <span className="text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
+                            <span className="text-gray-400">•</span>
+                            <span className="text-gray-500">{pkg.features?.length || 0} مزايا</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border-t border-gray-100 bg-gray-50 px-5 py-3 flex flex-wrap justify-end gap-2">
+                        <button
+                          onClick={() => handleTogglePackageVisibility(pkg)}
+                          className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold ${
+                            pkg.showOnPlatform === false || pkg.isPublished === false
+                              ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {pkg.showOnPlatform === false || pkg.isPublished === false ? <Eye size={16} /> : <EyeOff size={16} />}
+                          {pkg.showOnPlatform === false || pkg.isPublished === false ? 'إظهار' : 'إخفاء'}
+                        </button>
+                        <button
+                          onClick={() => openPackageModal(pkg)}
+                          className="inline-flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100"
+                        >
+                          <Settings size={16} />
+                          تعديل
+                        </button>
+                        <button
+                          onClick={() => handleDeletePackage(pkg)}
+                          className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100"
+                        >
+                          <X size={16} />
+                          حذف
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -1038,6 +1276,136 @@ export const PathsManager: React.FC = () => {
                 </button>
                 <button type="button" onClick={handleAddSubject} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors">
                   {editingSubject ? 'حفظ التعديلات' : 'إضافة'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isPackageModalOpen && (
+          <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center animate-fade-in p-4">
+            <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-gray-100">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">{editingPackage ? 'تعديل باقة عامة' : 'إنشاء باقة عامة جديدة'}</h3>
+                  <p className="text-xs text-gray-500 mt-1">هذه الباقة تخص المسار الحالي وتظهر للطلاب المستقلين فقط عند تفعيل الظهور.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsPackageModalOpen(false);
+                    resetPackageForm();
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">اسم الباقة</label>
+                  <input
+                    type="text"
+                    value={packageTitle}
+                    onChange={(e) => setPackageTitle(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="مثال: باقة القدرات الشاملة"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">وصف مختصر</label>
+                  <textarea
+                    value={packageDescription}
+                    onChange={(e) => setPackageDescription(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none min-h-[90px]"
+                    placeholder="اكتب وصفًا واضحًا لما تحتويه الباقة."
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">السعر</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={packagePrice}
+                      onChange={(e) => setPackagePrice(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">السعر قبل الخصم</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={packageOriginalPrice}
+                      onChange={(e) => setPackageOriginalPrice(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                      placeholder="اختياري"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">رابط صورة الباقة</label>
+                    <input
+                      type="url"
+                      value={packageThumbnail}
+                      onChange={(e) => setPackageThumbnail(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                      placeholder="اختياري"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">مزايا الباقة</label>
+                  <textarea
+                    value={packageFeaturesText}
+                    onChange={(e) => setPackageFeaturesText(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none min-h-[120px]"
+                    placeholder={'اكتب كل ميزة في سطر مستقل\nمثال: تشمل الدورات والتدريبات\nمثال: متابعة تقدم الطالب'}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg cursor-pointer border border-transparent hover:border-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={packagePublished}
+                      onChange={(e) => setPackagePublished(e.target.checked)}
+                      className="w-5 h-5 text-indigo-600 rounded mt-0.5"
+                    />
+                    <span>
+                      <span className="block font-bold text-gray-700">اعتماد الباقة</span>
+                      <span className="text-xs text-gray-500">تجعل الباقة جاهزة للنشر عند تفعيل الظهور.</span>
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg cursor-pointer border border-transparent hover:border-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={packageVisible}
+                      onChange={(e) => setPackageVisible(e.target.checked)}
+                      className="w-5 h-5 text-indigo-600 rounded mt-0.5"
+                    />
+                    <span>
+                      <span className="block font-bold text-gray-700">إظهار في صفحة المسار</span>
+                      <span className="text-xs text-gray-500">يمكنك تركها مخفية أثناء التجهيز.</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPackageModalOpen(false);
+                    resetPackageForm();
+                  }}
+                  className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSavePathPackage}
+                  className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  {editingPackage ? 'حفظ التعديلات' : 'إنشاء الباقة'}
                 </button>
               </div>
             </div>
