@@ -232,6 +232,15 @@ const Plan: React.FC = () => {
     [courses, enrolledCourses, hasScopedPackageAccess, user.subscription?.purchasedCourses],
   );
 
+  const canUseCourseInStudentPlan = (course: (typeof courses)[number]) =>
+    course.showOnPlatform !== false && course.isPublished !== false && (!course.approvalStatus || course.approvalStatus === 'approved');
+  const canUseLessonInStudentPlan = (lesson: (typeof lessons)[number]) =>
+    lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved');
+  const canUseQuizInStudentPlan = (quiz: (typeof quizzes)[number]) =>
+    quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved');
+  const canUseLibraryItemInStudentPlan = (item: (typeof libraryItems)[number]) =>
+    item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved');
+
   const availablePaths = useMemo(
     () =>
       paths.filter((path) => {
@@ -309,6 +318,7 @@ const Plan: React.FC = () => {
       courses.filter(
         (course) =>
           accessibleCourseIds.has(course.id) &&
+          canUseCourseInStudentPlan(course) &&
           (course.pathId || course.category) === activePathId &&
           (!draft.subjectIds.length || !course.subjectId || draft.subjectIds.includes(course.subjectId)),
       ),
@@ -403,12 +413,12 @@ const Plan: React.FC = () => {
       const hasAccess =
         accessibleCourseIds.has(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
-      return matchesPath && matchesSubject && matchesSelection && hasAccess;
+      return matchesPath && matchesSubject && matchesSelection && hasAccess && canUseCourseInStudentPlan(course);
     });
 
     const lessonTasks = coursePool.flatMap((course) =>
       (course.modules || []).flatMap((module) =>
-        module.lessons.map((lesson) => ({
+        module.lessons.filter(canUseLessonInStudentPlan).map((lesson) => ({
           id: `lesson-${lesson.id}`,
           title: lesson.title,
           type: 'lesson' as const,
@@ -427,9 +437,8 @@ const Plan: React.FC = () => {
       .filter((quiz) => {
         const matchesPath = quiz.pathId === currentPlan.pathId;
         const matchesSubject = !selectedSubjectIds.size || selectedSubjectIds.has(quiz.subjectId);
-        const isPublished = quiz.isPublished !== false;
         const shouldSkip = currentPlan.skipCompletedQuizzes && completedQuizIds.has(quiz.id);
-        return matchesPath && matchesSubject && isPublished && !shouldSkip;
+        return matchesPath && matchesSubject && canUseQuizInStudentPlan(quiz) && !shouldSkip;
       })
       .map((quiz) => ({
         id: `quiz-${quiz.id}`,
@@ -448,7 +457,8 @@ const Plan: React.FC = () => {
       .filter(
         (item) =>
           item.pathId === currentPlan.pathId &&
-          (!selectedSubjectIds.size || selectedSubjectIds.has(item.subjectId)),
+          (!selectedSubjectIds.size || selectedSubjectIds.has(item.subjectId)) &&
+          canUseLibraryItemInStudentPlan(item),
       )
       .slice(0, 8)
       .map((item) => ({
