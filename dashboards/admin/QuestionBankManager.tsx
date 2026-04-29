@@ -73,6 +73,12 @@ const readCell = (row: Record<string, unknown>, keys: string[]) => {
   return '';
 };
 
+const splitSkillNames = (value: string) =>
+  value
+    .split(/[,،;؛|]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
 const resolveCorrectOptionIndex = (value: string, options: string[]) => {
   const normalized = normalizeLookup(value);
   const letterMap: Record<string, number> = { a: 0, 'أ': 0, b: 1, 'ب': 1, c: 2, 'ج': 2, d: 3, 'د': 3 };
@@ -232,7 +238,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         'رابط الشرح': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         'رابط صورة السؤال': '',
         'شرح نصي': 'اجمع 2 + 2 للوصول إلى الإجابة الصحيحة.',
-        ملاحظة: 'ضع نص السؤال أو رابط صورة السؤال. ويمكن أيضًا كتابة image:https://example.com/question.png داخل خانة السؤال.',
+        ملاحظة: 'ضع نص السؤال أو رابط صورة السؤال. ويمكن كتابة أكثر من مهارة فرعية مفصولة بفاصلة، أو كتابة image:https://example.com/question.png داخل خانة السؤال.',
       },
     ];
 
@@ -313,14 +319,22 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           return;
         }
 
-        const matchedSkill = skills.find(
-          (skill) =>
-            skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id &&
-            normalizeLookup(skill.name) === normalizeLookup(skillName),
-        );
-        if (!matchedSkill) {
-          rowErrors.push(`الصف ${rowNumber}: المهارة الفرعية "${skillName}" غير موجودة تحت "${sectionName}".`);
+        const requestedSkillNames = splitSkillNames(skillName);
+        const matchedSkills = requestedSkillNames
+          .map((requestedSkillName) =>
+            skills.find(
+              (skill) =>
+                skill.subjectId === matchedSubject.id &&
+                skill.sectionId === matchedSection.id &&
+                normalizeLookup(skill.name) === normalizeLookup(requestedSkillName),
+            ),
+          )
+          .filter(Boolean) as typeof skills;
+        if (requestedSkillNames.length === 0 || matchedSkills.length !== requestedSkillNames.length) {
+          const missingNames = requestedSkillNames.filter(
+            (requestedSkillName) => !matchedSkills.some((skill) => normalizeLookup(skill.name) === normalizeLookup(requestedSkillName)),
+          );
+          rowErrors.push(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || skillName}" غير موجودة تحت "${sectionName}".`);
           return;
         }
 
@@ -352,7 +366,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           correctOptionIndex,
           explanation: explanationText,
           videoUrl: explanationLink || undefined,
-          skillIds: [matchedSkill.id],
+          skillIds: [...new Set(matchedSkills.map((skill) => skill.id))],
           pathId: matchedPath.id,
           subject: matchedSubject.id,
           sectionId: matchedSection.id,
@@ -366,12 +380,16 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         });
       });
 
-      if (rowErrors.length > 0) {
-        throw new Error(rowErrors.slice(0, 6).join(' '));
+      if (importedQuestions.length === 0) {
+        throw new Error(rowErrors.slice(0, 6).join(' ') || 'لم يتم العثور على أسئلة صالحة للاستيراد.');
       }
 
       await Promise.all(importedQuestions.map((question) => addQuestion(question)));
-      setImportMessage(`تم استيراد ${importedQuestions.length} سؤال بنجاح.`);
+      setImportMessage(
+        rowErrors.length > 0
+          ? `تم استيراد ${importedQuestions.length} سؤال بنجاح، وتم تخطي ${rowErrors.length} صف يحتاج مراجعة. أول الملاحظات: ${rowErrors.slice(0, 3).join(' ')}`
+          : `تم استيراد ${importedQuestions.length} سؤال بنجاح.`,
+      );
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر استيراد ملف الأسئلة الآن.');
     } finally {
