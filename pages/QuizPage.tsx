@@ -37,6 +37,7 @@ export const QuizPage: React.FC = () => {
     checkAccess,
     hasScopedPackageAccess,
     saveExamResult,
+    recordQuestionAttempt,
     skills,
     subjects,
     sections,
@@ -196,6 +197,13 @@ export const QuizPage: React.FC = () => {
   const handleOptionSelect = (optionIndex: number) => {
     if (isFinished || !currentQuestion) return;
     setSelectedOptions((prev) => ({ ...prev, [currentQuestion.id]: optionIndex }));
+    recordQuestionAttempt({
+      questionId: currentQuestion.id.toString(),
+      selectedOptionIndex: optionIndex,
+      isCorrect: optionIndex === currentQuestion.correctOptionIndex,
+      timeSpentSeconds: 0,
+      date: new Date().toISOString(),
+    });
   };
 
   const handleNext = () => {
