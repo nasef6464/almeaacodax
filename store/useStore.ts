@@ -1382,16 +1382,9 @@ export const useStore = create<AppState>()(
             })),
             
             // Nested Skill Actions
-            updateNestedSkills: (skills) => set((state) => {
-                const generatedTopics = buildLegacyTopicsFromNestedSkills(skills);
-                const previousLegacyTopicIds = getLegacyTopicIdsFromNestedSkills(state.nestedSkills);
-                const nonLegacyTopics = state.topics.filter(topic => !previousLegacyTopicIds.has(topic.id));
-
-                return {
-                    nestedSkills: skills,
-                    topics: [...nonLegacyTopics, ...generatedTopics]
-                };
-            })
+            updateNestedSkills: (skills) => set(() => ({
+                nestedSkills: skills,
+            }))
         }),
         {
             name: 'learning-platform-storage', // unique name
