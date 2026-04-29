@@ -542,6 +542,11 @@ const Results: React.FC = () => {
                     افتح الملف الداعم
                   </a>
                 ) : null}
+                {weakestSkill.mastery < 75 ? (
+                  <Link to="/book-session" className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition-colors">
+                    حجز حصة علاجية لهذه المهارة
+                  </Link>
+                ) : null}
               </div>
             </div>
           ) : (
