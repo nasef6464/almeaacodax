@@ -1,12 +1,13 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Role } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { printElementAsPdf } from '../utils/printPdf';
 
 interface ScopedAnalyticsOverview {
     scope: {
@@ -296,7 +297,7 @@ const Reports: React.FC = () => {
     }
 
     return (
-        <div className="space-y-8 pb-20 animate-fade-in">
+        <div id="reports-print-area" className="space-y-8 pb-20 animate-fade-in">
             {/* Header */}
             <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3 sm:gap-4">
@@ -308,6 +309,13 @@ const Reports: React.FC = () => {
                         <p className="text-sm text-gray-500">تحليل ذكي لمستواك بناءً على نتائج اختباراتك</p>
                     </div>
                 </div>
+                <button
+                    onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
+                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50"
+                >
+                    <Download size={16} />
+                    تحميل PDF
+                </button>
             </header>
 
             {!isStudentView && (

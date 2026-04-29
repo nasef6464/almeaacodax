@@ -13,6 +13,7 @@ import {
   Star,
   Trash2,
   FileText,
+  Download,
   ChevronRight as ChevronRightIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -22,6 +23,7 @@ import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
 import { useStore } from '../store/useStore';
 import { QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { printElementAsPdf } from '../utils/printPdf';
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -311,7 +313,7 @@ const Results: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20">
+    <div id="quiz-result-print-area" className="space-y-6 pb-20">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link to="/dashboard" className="text-gray-500">
@@ -319,8 +321,17 @@ const Results: React.FC = () => {
           </Link>
           <h1 className="text-xl font-bold">نتيجة الاختبار</h1>
         </div>
-        <div className={`self-start px-4 py-1 rounded-full text-sm font-bold ${summaryTone.chipClassName}`}>
-          {summaryTone.title}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => printElementAsPdf('quiz-result-print-area', 'نتيجة الاختبار')}
+            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50"
+          >
+            <Download size={16} />
+            تحميل PDF
+          </button>
+          <div className={`self-start px-4 py-1 rounded-full text-sm font-bold ${summaryTone.chipClassName}`}>
+            {summaryTone.title}
+          </div>
         </div>
       </header>
 
