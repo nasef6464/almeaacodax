@@ -13,7 +13,15 @@ import {
   Eye, EyeOff, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { Course } from '../../types';
+import { Course, PackageContentType } from '../../types';
+
+const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
+  { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
+  { value: 'foundation', label: 'التأسيس', description: 'يفتح الموضوعات والدروس التأسيسية.' },
+  { value: 'banks', label: 'التدريب', description: 'يفتح بنوك التدريب والأسئلة.' },
+  { value: 'tests', label: 'الاختبارات', description: 'يفتح الاختبارات المحاكية والمركزية.' },
+  { value: 'library', label: 'المكتبة', description: 'يفتح ملفات ومراجع المكتبة.' },
+];
 
 const getPathIcon = (path: any) => {
   if (path?.iconUrl) return <img src={path.iconUrl} alt={path.name} className="w-8 h-8 object-contain" />;
@@ -84,6 +92,7 @@ export const PathsManager: React.FC = () => {
   const [packageFeaturesText, setPackageFeaturesText] = useState('');
   const [packageVisible, setPackageVisible] = useState(false);
   const [packagePublished, setPackagePublished] = useState(true);
+  const [packageContentTypes, setPackageContentTypes] = useState<PackageContentType[]>(['all']);
 
   const currentPath = paths.find(p => p.id === selectedPathId);
   const pathLevels = levels?.filter(l => l.pathId === selectedPathId) || [];
@@ -360,6 +369,7 @@ export const PathsManager: React.FC = () => {
     setPackageFeaturesText('');
     setPackageVisible(false);
     setPackagePublished(true);
+    setPackageContentTypes(['all']);
   };
 
   const openPackageModal = (pkg?: Course) => {
@@ -373,6 +383,7 @@ export const PathsManager: React.FC = () => {
       setPackageFeaturesText((pkg.features || []).join('\n'));
       setPackageVisible(pkg.showOnPlatform !== false);
       setPackagePublished(pkg.isPublished !== false);
+      setPackageContentTypes(pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all']);
     } else {
       resetPackageForm();
     }
@@ -389,6 +400,7 @@ export const PathsManager: React.FC = () => {
       .split('\n')
       .map((item) => item.trim())
       .filter(Boolean);
+    const normalizedContentTypes = packageContentTypes.length ? packageContentTypes : ['all' as PackageContentType];
 
     const packageData: Partial<Course> = {
       title: packageTitle.trim(),
@@ -406,6 +418,7 @@ export const PathsManager: React.FC = () => {
       features: features.length ? features : ['وصول منظم لمحتوى المسار', 'متابعة التقدم داخل المنصة'],
       isPackage: true,
       packageType: 'courses',
+      packageContentTypes: normalizedContentTypes,
       originalPrice,
       includedCourses: courses
         .filter((course) => (course.pathId || course.category) === selectedPathId && !course.isPackage)
@@ -440,6 +453,33 @@ export const PathsManager: React.FC = () => {
       isPublished: true,
       approvalStatus: 'approved',
     });
+  };
+
+  const togglePackageContentType = (type: PackageContentType) => {
+    setPackageContentTypes((current) => {
+      if (type === 'all') {
+        return ['all'];
+      }
+
+      const withoutAll = current.filter((item) => item !== 'all');
+      const next = withoutAll.includes(type)
+        ? withoutAll.filter((item) => item !== type)
+        : [...withoutAll, type];
+
+      return next.length ? next : ['all'];
+    });
+  };
+
+  const getPackageScopeLabel = (pkg: Course) => {
+    const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all'];
+    if (contentTypes.includes('all')) {
+      return 'شاملة';
+    }
+
+    return contentTypes
+      .map((type) => publicPackageContentOptions.find((option) => option.value === type)?.label)
+      .filter(Boolean)
+      .join(' + ');
   };
 
   const handleDeletePackage = (pkg: Course) => {
@@ -1006,6 +1046,8 @@ export const PathsManager: React.FC = () => {
                             {pkg.originalPrice ? <span className="text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-500">{pkg.features?.length || 0} مزايا</span>
+                            <span className="text-gray-400">•</span>
+                            <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-700">{getPackageScopeLabel(pkg)}</span>
                           </div>
                         </div>
                       </div>
@@ -1361,6 +1403,51 @@ export const PathsManager: React.FC = () => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none min-h-[120px]"
                     placeholder={'اكتب كل ميزة في سطر مستقل\nمثال: تشمل الدورات والتدريبات\nمثال: متابعة تقدم الطالب'}
                   />
+                </div>
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <label className="block text-sm font-black text-gray-800">ماذا تفتح هذه الباقة؟</label>
+                      <p className="mt-1 text-xs text-gray-500">اختر نطاق الباقة بدقة. لو اخترت شاملة ستفتح كل أجزاء المسار للطالب المستقل.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => togglePackageContentType('all')}
+                      className={`rounded-xl px-3 py-2 text-xs font-black ${
+                        packageContentTypes.includes('all')
+                          ? 'bg-indigo-600 text-white'
+                          : 'bg-white text-indigo-700 hover:bg-indigo-100'
+                      }`}
+                    >
+                      شاملة
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    {publicPackageContentOptions.map((option) => {
+                      const checked = packageContentTypes.includes('all') || packageContentTypes.includes(option.value);
+                      return (
+                        <label
+                          key={option.value}
+                          className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors ${
+                            checked
+                              ? 'border-indigo-200 bg-white text-indigo-800'
+                              : 'border-transparent bg-white/70 text-gray-600 hover:border-gray-200'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => togglePackageContentType(option.value)}
+                            className="mt-1 h-5 w-5 rounded text-indigo-600"
+                          />
+                          <span>
+                            <span className="block text-sm font-black">{option.label}</span>
+                            <span className="text-xs text-gray-500">{option.description}</span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <label className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg cursor-pointer border border-transparent hover:border-gray-200">

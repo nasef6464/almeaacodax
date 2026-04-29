@@ -666,10 +666,12 @@ export const useStore = create<AppState>()(
 
                     const packagePathId = course.pathId || course.category;
                     const packageSubjectId = course.subjectId || course.subject;
+                    const packageContentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
+                    const matchesType = packageContentTypes.includes('all') || packageContentTypes.includes(contentType);
                     const matchesPath = !pathId || !packagePathId || packagePathId === pathId;
                     const matchesSubject = !subjectId || !packageSubjectId || packageSubjectId === subjectId;
 
-                    return matchesPath && matchesSubject;
+                    return matchesType && matchesPath && matchesSubject;
                 });
                 if (hasPublicPathPackage) {
                     return true;

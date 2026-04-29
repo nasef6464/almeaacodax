@@ -115,6 +115,7 @@ export interface Course extends ContentWorkflow {
     isPurchased?: boolean;
     isPackage?: boolean;
     packageType?: 'courses' | 'videos' | 'tests';
+    packageContentTypes?: PackageContentType[];
     originalPrice?: number;
     includedCourses?: string[];
     studentCount?: number;

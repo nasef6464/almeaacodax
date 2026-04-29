@@ -36,6 +36,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
             purchaseType: 'package',
             includedCourseIds: course.includedCourses || [],
             courseIds: course.includedCourses || [],
+            contentTypes: course.packageContentTypes || ['all'],
         }
         : null;
     const purchaseItem = publicPackageItem || (matchedPackage
