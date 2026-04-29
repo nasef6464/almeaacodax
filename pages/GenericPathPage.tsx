@@ -6,6 +6,20 @@ import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 
+const packageContentLabels: Record<string, { label: string; description: string }> = {
+    courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
+    foundation: { label: 'التأسيس', description: 'الموضوعات والدروس التأسيسية.' },
+    banks: { label: 'التدريب', description: 'تدريبات وبنوك أسئلة.' },
+    tests: { label: 'الاختبارات', description: 'اختبارات محاكية وموجهة.' },
+    library: { label: 'المكتبة', description: 'ملفات ومراجع داعمة.' },
+    all: { label: 'شاملة', description: 'تفتح كل مساحات التعلم في هذا المسار.' },
+};
+
+const resolvePackageContentTypes = (pkg: { packageContentTypes?: string[] }) => {
+    const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all'];
+    return contentTypes.includes('all') ? ['all'] : contentTypes;
+};
+
 export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
@@ -91,13 +105,36 @@ export const GenericPathPage: React.FC = () => {
                     <p className="text-gray-500">اختر الباقة الأنسب لك للبدء في مسار {path.name}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {pathPackages.map(pkg => (
+                    {pathPackages.map(pkg => {
+                        const contentTypes = resolvePackageContentTypes(pkg);
+                        const scopeLabel = contentTypes.includes('all')
+                            ? 'باقة شاملة'
+                            : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
+
+                        return (
                          <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all cursor-pointer flex flex-col">
                              <div className="bg-amber-500 text-white p-5 sm:p-6 text-center">
                                  <h3 className="text-xl sm:text-2xl font-black mb-2 leading-tight break-words">{pkg.title}</h3>
                                  <div className="text-2xl sm:text-3xl font-bold">{pkg.price} {pkg.currency}</div>
+                                 <div className="mt-3 flex flex-wrap justify-center gap-2">
+                                     <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-black text-white">{scopeLabel}</span>
+                                     {pkg.showOnPlatform === false ? (
+                                         <span className="inline-flex rounded-full bg-gray-900/40 px-3 py-1 text-xs font-black text-white">مخفية عن الطلاب</span>
+                                     ) : null}
+                                 </div>
                              </div>
                              <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                                 <div className="mb-5 grid grid-cols-1 gap-2">
+                                     {contentTypes.map((type) => {
+                                         const meta = packageContentLabels[type] || { label: type, description: '' };
+                                         return (
+                                             <div key={type} className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-sm">
+                                                 <div className="font-black text-amber-800">{meta.label}</div>
+                                                 {meta.description ? <div className="mt-1 text-xs leading-5 text-amber-700">{meta.description}</div> : null}
+                                             </div>
+                                         );
+                                     })}
+                                 </div>
                                  <ul className="mb-6 space-y-3 flex-1">
                                      {pkg.features?.map((f, i) => (
                                          <li key={i} className="flex items-center gap-2 text-gray-600">
@@ -111,7 +148,8 @@ export const GenericPathPage: React.FC = () => {
                                  </button>
                              </div>
                          </Card>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         );
