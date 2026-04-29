@@ -1,6 +1,6 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText, Download } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -167,6 +167,7 @@ const Reports: React.FC = () => {
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
+    const [copiedScopedSummary, setCopiedScopedSummary] = useState(false);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -303,6 +304,35 @@ const Reports: React.FC = () => {
             },
         ];
     }, [scopedAnalytics]);
+    const scopedFollowUpSummary = useMemo(() => {
+        if (!scopedAnalytics) return '';
+
+        const weakestScopedSkill = scopedAnalytics.weakestSkills[0];
+        const weakestScopedStudent = scopedAnalytics.weakestStudents[0];
+        const weakestScopedSubject = scopedAnalytics.subjectSummaries[0];
+        const parts = [
+            `نطاق المتابعة: ${roleScopeTitle[user.role] || 'النطاق الحالي'}.`,
+            `عدد الطلاب: ${scopedAnalytics.scope.studentCount}.`,
+            `محاولات الاختبار: ${scopedAnalytics.scope.quizAttempts}.`,
+            weakestScopedSkill ? `أضعف مهارة: ${displayText(weakestScopedSkill.skill)} (${weakestScopedSkill.mastery}%).` : null,
+            weakestScopedStudent ? `أول طالب للمتابعة: ${displayText(weakestScopedStudent.name)} (${weakestScopedStudent.averageScore}%).` : null,
+            weakestScopedSubject ? `المادة التي تحتاج تدخلًا: ${displayText(weakestScopedSubject.subjectName)} (${weakestScopedSubject.mastery}%).` : null,
+            'الإجراء المقترح: شرح قصير، تدريب علاجي، ثم اختبار قياس قصير.',
+        ].filter(Boolean);
+
+        return parts.join(' ');
+    }, [scopedAnalytics, user.role]);
+    const copyScopedSummary = async () => {
+        if (!scopedFollowUpSummary) return;
+
+        try {
+            await navigator.clipboard.writeText(scopedFollowUpSummary);
+            setCopiedScopedSummary(true);
+            window.setTimeout(() => setCopiedScopedSummary(false), 1800);
+        } catch {
+            setCopiedScopedSummary(false);
+        }
+    };
 
     if (isStudentView && examResults.length === 0) {
         return (
@@ -397,8 +427,22 @@ const Reports: React.FC = () => {
                                             ثلاث خطوات عملية تصلح للمدير أو المعلم أو المشرف أو ولي الأمر، وتظهر في ملف PDF للمتابعة.
                                         </p>
                                     </div>
-                                    <span className="self-start rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">تشخيص - علاج - قياس</span>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            onClick={copyScopedSummary}
+                                            className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 hover:bg-indigo-50"
+                                        >
+                                            {copiedScopedSummary ? <CheckCircle size={13} /> : <Copy size={13} />}
+                                            {copiedScopedSummary ? 'تم النسخ' : 'نسخ ملخص المتابعة'}
+                                        </button>
+                                        <span className="self-start rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">تشخيص - علاج - قياس</span>
+                                    </div>
                                 </div>
+                                {scopedFollowUpSummary ? (
+                                    <div className="mb-4 rounded-2xl border border-white bg-white/70 p-3 text-sm leading-7 text-slate-600">
+                                        {scopedFollowUpSummary}
+                                    </div>
+                                ) : null}
                                 <div className="grid gap-3 lg:grid-cols-3">
                                     {scopedInterventionPlan.map((item) => (
                                         <div key={item.title} className={`rounded-2xl border p-4 ${item.className}`}>
