@@ -23,9 +23,10 @@ export const GroupsManager: React.FC = () => {
     const [typeFilter, setTypeFilter] = useState<GroupType | 'ALL'>('ALL');
     const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
     const [isEditingGroup, setIsEditingGroup] = useState(false);
-    const [groupDraft, setGroupDraft] = useState<{ name: string; type: GroupType }>({
+    const [groupDraft, setGroupDraft] = useState<{ name: string; type: GroupType; parentId?: string }>({
         name: '',
         type: 'CLASS',
+        parentId: '',
     });
 
     const filteredGroups = groups.filter(g => {
@@ -33,6 +34,7 @@ export const GroupsManager: React.FC = () => {
         const matchesType = typeFilter === 'ALL' || g.type === typeFilter;
         return matchesSearch && matchesType;
     });
+    const schools = groups.filter(group => group.type === 'SCHOOL');
     const publishedCourses = courses.filter(course => course.isPublished !== false);
 
     const getTypeBadge = (type: GroupType) => {
@@ -61,13 +63,13 @@ export const GroupsManager: React.FC = () => {
         };
         createGroup(newGroup);
         setSelectedGroup(newGroup);
-        setGroupDraft({ name: newGroup.name, type: newGroup.type });
+        setGroupDraft({ name: newGroup.name, type: newGroup.type, parentId: newGroup.parentId || '' });
         setIsEditingGroup(true);
     };
 
     const openGroupDetails = (group: Group) => {
         setSelectedGroup(group);
-        setGroupDraft({ name: group.name, type: group.type });
+        setGroupDraft({ name: group.name, type: group.type, parentId: group.parentId || '' });
         setIsEditingGroup(false);
     };
 
@@ -81,11 +83,13 @@ export const GroupsManager: React.FC = () => {
             ...selectedGroup,
             name: nextName,
             type: groupDraft.type,
+            parentId: groupDraft.type === 'CLASS' ? groupDraft.parentId || undefined : undefined,
         };
 
         updateGroup(selectedGroup.id, {
             name: updatedGroup.name,
             type: updatedGroup.type,
+            parentId: updatedGroup.parentId,
         });
         setSelectedGroup(updatedGroup);
         setIsEditingGroup(false);
@@ -96,6 +100,7 @@ export const GroupsManager: React.FC = () => {
         const groupStudents = users.filter(u => selectedGroup.studentIds.includes(u.id));
         const groupSupervisors = users.filter(u => selectedGroup.supervisorIds.includes(u.id));
         const groupCourses = publishedCourses.filter(course => selectedGroup.courseIds.includes(course.id));
+        const parentSchool = selectedGroup.parentId ? schools.find(school => school.id === selectedGroup.parentId) : undefined;
         
         const availableStudents = users.filter(u => u.role === Role.STUDENT && !selectedGroup.studentIds.includes(u.id));
         const availableSupervisors = users.filter(u => (u.role === Role.SUPERVISOR || u.role === Role.TEACHER) && !selectedGroup.supervisorIds.includes(u.id));
@@ -114,7 +119,7 @@ export const GroupsManager: React.FC = () => {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             {isEditingGroup ? (
-                                <div className="grid grid-cols-1 md:grid-cols-[minmax(220px,1fr)_180px_auto] gap-3 mb-3">
+                                <div className="grid grid-cols-1 md:grid-cols-[minmax(220px,1fr)_180px_180px_auto] gap-3 mb-3">
                                     <input
                                         type="text"
                                         value={groupDraft.name}
@@ -128,12 +133,32 @@ export const GroupsManager: React.FC = () => {
                                     />
                                     <select
                                         value={groupDraft.type}
-                                        onChange={(event) => setGroupDraft((current) => ({ ...current, type: event.target.value as GroupType }))}
+                                        onChange={(event) => {
+                                            const nextType = event.target.value as GroupType;
+                                            setGroupDraft((current) => ({
+                                                ...current,
+                                                type: nextType,
+                                                parentId: nextType === 'CLASS' ? current.parentId : '',
+                                            }));
+                                        }}
                                         className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                                     >
                                         <option value="SCHOOL">مدرسة</option>
                                         <option value="CLASS">فصل</option>
                                         <option value="PRIVATE_GROUP">مجموعة خاصة</option>
+                                    </select>
+                                    <select
+                                        value={groupDraft.parentId || ''}
+                                        onChange={(event) => setGroupDraft((current) => ({ ...current, parentId: event.target.value }))}
+                                        disabled={groupDraft.type !== 'CLASS'}
+                                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white disabled:bg-gray-50 disabled:text-gray-400"
+                                    >
+                                        <option value="">بدون مدرسة أم</option>
+                                        {schools
+                                            .filter((school) => school.id !== selectedGroup.id)
+                                            .map((school) => (
+                                                <option key={school.id} value={school.id}>{school.name}</option>
+                                            ))}
                                     </select>
                                     <button
                                         onClick={saveSelectedGroup}
@@ -158,7 +183,7 @@ export const GroupsManager: React.FC = () => {
                                         return;
                                     }
 
-                                    setGroupDraft({ name: selectedGroup.name, type: selectedGroup.type });
+                                    setGroupDraft({ name: selectedGroup.name, type: selectedGroup.type, parentId: selectedGroup.parentId || '' });
                                     setIsEditingGroup(true);
                                 }}
                                 className="p-2 text-gray-500 hover:text-amber-600 bg-gray-50 hover:bg-amber-50 rounded-lg transition-colors"
@@ -179,6 +204,12 @@ export const GroupsManager: React.FC = () => {
                             </button>
                         </div>
                     </div>
+
+                    {parentSchool ? (
+                        <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700">
+                            المدرسة الأم: {parentSchool.name}
+                        </div>
+                    ) : null}
 
                     <div className="grid grid-cols-3 gap-4 mb-8">
                         <div className="bg-blue-50 p-4 rounded-lg flex items-center gap-4">
