@@ -172,7 +172,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, subjects, sections, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
@@ -307,14 +307,26 @@ const Reports: React.FC = () => {
 
         return Object.entries(skillsMap).map(([skill, data]) => {
             const mastery = Math.round(data.totalMastery / data.count);
+            const resolvedSkill = data.skillId
+                ? skills.find((item) => item.id === data.skillId)
+                : skills.find((item) => displayText(item.name) === displayText(skill));
+            const subjectName = resolvedSkill?.subjectId
+                ? displayText(subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name)
+                : undefined;
+            const sectionName = resolvedSkill?.sectionId
+                ? displayText(sections.find((section) => section.id === resolvedSkill.sectionId)?.name)
+                : undefined;
+
             return {
                 skill: displayText(skill),
                 skillId: data.skillId,
+                subjectName,
+                sectionName,
                 mastery,
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
             };
         }).sort((a, b) => a.mastery - b.mastery); // Sort by weakest first
-    }, [examResults, questionAttempts, questions, skills]);
+    }, [examResults, questionAttempts, questions, sections, skills, subjects]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
     const focusedReportSkills = aggregatedSkills.slice(0, 6);
@@ -332,6 +344,8 @@ const Reports: React.FC = () => {
             return {
                 day: dayLabels[index],
                 skill: displayText(skill.skill),
+                subjectName: displayText(skill.subjectName),
+                sectionName: displayText(skill.sectionName),
                 mastery: skill.mastery,
                 lessonTitle: recommendation.lessonTitle,
                 quizTitle: recommendation.quizTitle,
@@ -395,7 +409,7 @@ const Reports: React.FC = () => {
                 summary: 'ابدأ بأضعف مهارة، راجع شرحًا بسيطًا، ثم حل تدريبًا قصيرًا وأعد القياس.',
                 steps: focusedReportSkills.slice(0, 3).map((skill, index) => ({
                     day: `اليوم ${index + 1}`,
-                    skill: displayText(skill.skill),
+                    skill: [displayText(skill.subjectName), displayText(skill.sectionName), displayText(skill.skill)].filter(Boolean).join(' - '),
                     action: skill.mastery < 50 ? 'راجع شرحًا قصيرًا ثم حل 5 أسئلة سهلة.' : 'حل تدريبًا متدرجًا ثم راجع الأخطاء.',
                     check: 'أعد اختبارًا مصغرًا من 5 أسئلة على نفس المهارة.',
                 })),
@@ -992,6 +1006,12 @@ const Reports: React.FC = () => {
                                     </span>
                                 </div>
                                 <div className="mt-3 font-black text-gray-900 leading-7 break-words">{item.skill}</div>
+                                {(item.subjectName || item.sectionName) ? (
+                                    <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-gray-500">
+                                        {item.subjectName ? <span className="rounded-full bg-white px-2 py-1">المادة: {displayText(item.subjectName)}</span> : null}
+                                        {item.sectionName ? <span className="rounded-full bg-white px-2 py-1">المهارة الرئيسية: {displayText(item.sectionName)}</span> : null}
+                                    </div>
+                                ) : null}
                                 <p className="mt-2 text-sm leading-7 text-gray-600">{displayText(item.actionText)}</p>
                                 <div className="mt-3 space-y-1 text-xs text-gray-500">
                                     {item.lessonTitle ? <div>شرح مقترح: <span className="font-bold">{displayText(item.lessonTitle)}</span></div> : null}

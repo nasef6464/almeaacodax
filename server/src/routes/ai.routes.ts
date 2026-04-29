@@ -55,6 +55,12 @@ const safeJsonParse = <T>(value: string | undefined, fallback: T): T => {
   }
 };
 
+const formatSkillContext = (skill: Record<string, unknown>) =>
+  [skill.subjectName, skill.sectionName || skill.section, skill.skill || skill.name]
+    .map((value) => String(value || "").trim())
+    .filter(Boolean)
+    .join(" - ") || "مهارة تحتاج متابعة";
+
 const resolveProvider = (): AiProvider => {
   if (env.AI_PROVIDER) return env.AI_PROVIDER;
   if (env.GEMINI_API_KEY) return "gemini";
@@ -259,7 +265,7 @@ aiRouter.post(
       steps: targetSkills.length
         ? targetSkills.map((skill, index) => ({
             day: `اليوم ${index + 1}`,
-            skill: String(skill.skill || skill.name || "مهارة تحتاج متابعة"),
+            skill: formatSkillContext(skill),
             action: index === 0 ? "راجع شرحًا قصيرًا ثم حل 5 أسئلة سهلة." : "حل تدريبًا متدرجًا ثم راجع الأخطاء.",
             check: "أعد اختبارًا مصغرًا من 5 أسئلة على نفس المهارة.",
           }))
@@ -281,6 +287,7 @@ ${ARABIC_TUTOR_RULES}
 ${JSON.stringify(targetSkills)}
 أعد JSON فقط بالشكل التالي:
 {"title":"...","summary":"...","steps":[{"day":"...","skill":"...","action":"...","check":"..."}],"parentNote":"..."}
+اجعل حقل skill واضحًا بهذه الصيغة عند توفر البيانات: المادة - المهارة الرئيسية - المهارة الفرعية.
 `;
 
     try {
