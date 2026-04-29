@@ -112,7 +112,7 @@ const buildOwnedDocumentQuery = (
 const isStaffRole = (role?: string) => role === "admin" || role === "teacher" || role === "supervisor";
 
 const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
-  if (isStaffRole(authUser?.role)) {
+  if (authUser?.role === "admin") {
     const [groups, b2bPackages, accessCodes] = await Promise.all([
       GroupModel.find().sort({ createdAt: -1 }),
       B2BPackageModel.find().sort({ createdAt: -1 }),
@@ -131,6 +131,17 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
     return { groups: [], b2bPackages: [], accessCodes: [] };
   }
 
+  const managedGroups =
+    user.role === "teacher" || user.role === "supervisor"
+      ? await GroupModel.find({
+          $or: [
+            { ownerId: authUser.id },
+            { supervisorIds: authUser.id },
+            ...(authUser.schoolId ? [{ parentId: authUser.schoolId }, { _id: authUser.schoolId }, { id: authUser.schoolId }] : []),
+          ],
+        }).select("id _id parentId type")
+      : [];
+
   const linkedStudents =
     user.role === "parent" && Array.isArray(user.linkedStudentIds) && user.linkedStudentIds.length
       ? await UserModel.find(buildDocumentsByIdsQuery(user.linkedStudentIds.map(String))).select("schoolId groupIds")
@@ -139,6 +150,7 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   const seedGroupIds = uniqueStrings([
     String(user.schoolId || ""),
     ...(user.groupIds || []).map(String),
+    ...managedGroups.flatMap((group) => [String(group.id || group._id), String(group.parentId || "")]),
     ...linkedStudents.flatMap((student) => [String(student.schoolId || ""), ...(student.groupIds || []).map(String)]),
   ]);
 
@@ -159,9 +171,14 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   const groups = visibleGroupIds.length
     ? await GroupModel.find(buildDocumentsByIdsQuery(visibleGroupIds)).sort({ createdAt: -1 })
     : [];
-  const b2bPackages = schoolIds.length ? await B2BPackageModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 }) : [];
+  const [b2bPackages, accessCodes] = await Promise.all([
+    schoolIds.length ? B2BPackageModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 }) : Promise.resolve([]),
+    user.role === "supervisor" && schoolIds.length
+      ? AccessCodeModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 })
+      : Promise.resolve([]),
+  ]);
 
-  return { groups, b2bPackages, accessCodes: [] };
+  return { groups, b2bPackages, accessCodes };
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
