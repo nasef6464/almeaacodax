@@ -51,6 +51,7 @@ const safeJsonParse = <T>(value: string | undefined, fallback: T): T => {
 const resolveProvider = (): AiProvider => {
   if (env.AI_PROVIDER) return env.AI_PROVIDER;
   if (env.GEMINI_API_KEY) return "gemini";
+  if (env.OLLAMA_BASE_URL && env.OLLAMA_MODEL) return "ollama";
   return "none";
 };
 
@@ -130,6 +131,7 @@ aiRouter.get(
       provider: resolveProvider(),
       ollamaConfigured: Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
       geminiConfigured: Boolean(env.GEMINI_API_KEY),
+      model: resolveProvider() === "ollama" ? env.OLLAMA_MODEL : env.GEMINI_MODEL,
     });
   }),
 );
