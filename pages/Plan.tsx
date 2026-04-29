@@ -797,6 +797,10 @@ const Plan: React.FC = () => {
       setFormError('تاريخ البداية يجب أن يكون قبل تاريخ النهاية.');
       return;
     }
+    if (draft.startDate < todayKey) {
+      setFormError('تاريخ البداية يجب أن يكون اليوم أو تاريخًا قادمًا.');
+      return;
+    }
 
     const payload: StudyPlan = {
       id: editingPlanId || `plan_${Date.now()}`,
@@ -959,6 +963,7 @@ const Plan: React.FC = () => {
               <input
                 type="date"
                 value={draft.startDate}
+                min={todayKey}
                 onChange={(event) => setDraft((current) => ({ ...current, startDate: event.target.value }))}
                 className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 text-right outline-none transition focus:border-emerald-400 focus:bg-white"
               />
@@ -968,6 +973,7 @@ const Plan: React.FC = () => {
               <input
                 type="date"
                 value={draft.endDate}
+                min={draft.startDate || todayKey}
                 onChange={(event) => setDraft((current) => ({ ...current, endDate: event.target.value }))}
                 className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 text-right outline-none transition focus:border-emerald-400 focus:bg-white"
               />
