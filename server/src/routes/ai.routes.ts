@@ -26,6 +26,13 @@ const courseSummarySchema = z.object({
 type AiResponseMimeType = "application/json";
 type AiProvider = "gemini" | "ollama" | "none";
 
+const ARABIC_TUTOR_RULES = `
+أنت مساعد تعليمي عربي داخل منصة تعليمية للقدرات والتحصيلي.
+اكتب بلغة عربية بسيطة ومشجعة ومناسبة للطلاب من المرحلة الابتدائية حتى الثانوية.
+اجعل الإجابة عملية ومختصرة، وركز دائمًا على: التشخيص، خطوة علاجية، تدريب قصير، ثم تحقق من الإتقان.
+لا تذكر أنك نموذج ذكاء اصطناعي، ولا تقدم وعودًا طبية أو قانونية، ولا تطلب بيانات حساسة من الطالب.
+`;
+
 const safeJsonParse = <T>(value: string | undefined, fallback: T): T => {
   if (!value) return fallback;
   const trimmed = value.trim();
@@ -48,9 +55,7 @@ const resolveProvider = (): AiProvider => {
 };
 
 const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
-  if (!env.GEMINI_API_KEY) {
-    return "";
-  }
+  if (!env.GEMINI_API_KEY) return "";
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${env.GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`,
@@ -118,6 +123,17 @@ const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => 
 
 export const aiRouter = Router();
 
+aiRouter.get(
+  "/status",
+  asyncHandler(async (_req, res) => {
+    res.json({
+      provider: resolveProvider(),
+      ollamaConfigured: Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
+      geminiConfigured: Boolean(env.GEMINI_API_KEY),
+    });
+  }),
+);
+
 aiRouter.post(
   "/chat",
   asyncHandler(async (req, res) => {
@@ -126,9 +142,9 @@ aiRouter.post(
       "أنا معك. اكتب السؤال أو المهارة التي تريد فهمها، وسأقترح لك خطوة بسيطة: راجع الفكرة، حل مثالًا قصيرًا، ثم جرّب سؤالًا مشابهًا.";
 
     const prompt = `
-أنت مساعد تعليمي عربي داخل منصة المئة. أجب بلغة سهلة ومشجعة ومختصرة.
-لا تعط وعودًا طبية أو قانونية. ركز على التعلم والخطوة القادمة.
-سؤال الطالب: ${message}
+${ARABIC_TUTOR_RULES}
+سؤال الطالب:
+${message}
 `;
 
     try {
@@ -153,9 +169,11 @@ aiRouter.post(
     };
 
     const prompt = `
-ضع خطة مذاكرة عربية قصيرة من 3 خطوات لطالب لديه ضعف في:
+${ARABIC_TUTOR_RULES}
+ضع خطة مذاكرة قصيرة من 3 خطوات لطالب لديه ضعف في:
 ${weaknesses.join(", ") || "مهارات عامة"}
-أعد JSON فقط بالشكل: {"steps":["...","...","..."]}
+أعد JSON فقط بالشكل التالي:
+{"steps":["...","...","..."]}
 `;
 
     try {
@@ -189,11 +207,12 @@ aiRouter.post(
     }
 
     const prompt = `
+${ARABIC_TUTOR_RULES}
 حلل فجوات المهارات التالية لطالب عربي:
 ${JSON.stringify(targetSkills)}
 اقترح 3 خطوات تعلم عملية. أعد JSON array فقط بهذه المفاتيح:
 id,type,title,duration,reason,skillTargeted,priority,actionLabel,link
-type واحد من lesson أو quiz أو flashcard. priority واحد من high أو medium.
+type واحد من lesson أو quiz أو flashcard. priority واحد من high أو medium أو low.
 `;
 
     try {
@@ -218,7 +237,9 @@ aiRouter.post(
     };
 
     const prompt = `
-أنشئ سؤال اختيار من متعدد باللغة العربية عن: ${topic}
+${ARABIC_TUTOR_RULES}
+أنشئ سؤال اختيار من متعدد باللغة العربية عن:
+${topic}
 يفضل أن يكون مناسبًا لمنصة قدرات/تحصيلي.
 أعد JSON فقط:
 {"question":"...","options":["...","...","...","..."],"correctIndex":0,"explanation":"..."}
@@ -240,6 +261,7 @@ aiRouter.post(
     const fallback = `هذه الدورة تساعدك على فهم ${courseTitle} بخطوات منظمة وتدريبات تدريجية حتى تصل للإتقان.`;
 
     const prompt = `
+${ARABIC_TUTOR_RULES}
 اكتب ملخصًا عربيًا قصيرًا جدًا من جملتين لدورة تعليمية عنوانها:
 ${courseTitle}
 اجعله بسيطًا ومشجعًا للطالب.
