@@ -164,7 +164,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, skills, lessons, quizzes, libraryItems, questions, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
@@ -207,7 +207,19 @@ const Reports: React.FC = () => {
 
     // Calculate Performance Analysis
     const stats = useMemo(() => {
-        if (examResults.length === 0) return null;
+        if (examResults.length === 0) {
+            if (questionAttempts.length === 0) return null;
+
+            const answeredAttempts = questionAttempts.filter((attempt) => attempt.selectedOptionIndex >= 0);
+            const correctAttempts = answeredAttempts.filter((attempt) => attempt.isCorrect).length;
+            const averageScore = answeredAttempts.length > 0 ? Math.round((correctAttempts / answeredAttempts.length) * 100) : 0;
+
+            return {
+                averageScore,
+                bestSubject: { name: 'تدريبات الأسئلة', score: averageScore },
+                worstSubject: { name: 'تحتاج متابعة', score: averageScore },
+            };
+        }
 
         const totalScore = examResults.reduce((acc, curr) => acc + curr.score, 0);
         const averageScore = Math.round(totalScore / examResults.length);
@@ -235,7 +247,7 @@ const Reports: React.FC = () => {
         });
 
         return { averageScore, bestSubject, worstSubject };
-    }, [examResults]);
+    }, [examResults, questionAttempts]);
 
     // Aggregate Skill Analysis
     const aggregatedSkills = useMemo(() => {
@@ -256,6 +268,31 @@ const Reports: React.FC = () => {
             }
         });
 
+        if (Object.keys(skillsMap).length === 0 && questionAttempts.length > 0) {
+            const questionById = new Map(questions.map((question) => [question.id, question]));
+            const skillById = new Map(skills.map((skill) => [skill.id, skill]));
+
+            questionAttempts.forEach((attempt) => {
+                const question = questionById.get(attempt.questionId);
+                const questionSkillIds = Array.isArray(question?.skillIds) ? question.skillIds : [];
+
+                questionSkillIds.forEach((skillId) => {
+                    const resolvedSkill = skillById.get(skillId);
+                    if (!resolvedSkill) return;
+
+                    const skillName = displayText(resolvedSkill.name);
+                    if (!skillName) return;
+
+                    if (!skillsMap[skillName]) {
+                        skillsMap[skillName] = { totalMastery: 0, count: 0, skillId: resolvedSkill.id };
+                    }
+
+                    skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0;
+                    skillsMap[skillName].count += 1;
+                });
+            });
+        }
+
         return Object.entries(skillsMap).map(([skill, data]) => {
             const mastery = Math.round(data.totalMastery / data.count);
             return {
@@ -265,7 +302,7 @@ const Reports: React.FC = () => {
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
             };
         }).sort((a, b) => a.mastery - b.mastery); // Sort by weakest first
-    }, [examResults]);
+    }, [examResults, questionAttempts, questions, skills]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
     const focusedReportSkills = aggregatedSkills.slice(0, 6);
@@ -273,7 +310,7 @@ const Reports: React.FC = () => {
     const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
     const isStudentView = user.role === Role.STUDENT;
-    const hasStudentAnalytics = examResults.length > 0;
+    const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
     const studentWeeklyPlan = useMemo(() => {
         const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
 
@@ -405,7 +442,7 @@ const Reports: React.FC = () => {
         }
     };
 
-    if (isStudentView && examResults.length === 0) {
+    if (isStudentView && !hasStudentAnalytics) {
         return (
             <div className="space-y-6 pb-20 animate-fade-in">
                 <header className="flex items-center gap-3 sm:gap-4">
