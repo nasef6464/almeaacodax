@@ -20,7 +20,7 @@ interface LearningSectionProps {
 }
 
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, courses, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'banks' | 'tests' | 'library'>('courses');
@@ -55,7 +55,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab as any);
-        // Remove URL replacement here to avoid clearing path/subject selections on GenericPathPage
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set('tab', tab);
+        setSearchParams(nextParams);
     };
 
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
