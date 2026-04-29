@@ -22,6 +22,11 @@ export const GroupsManager: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [typeFilter, setTypeFilter] = useState<GroupType | 'ALL'>('ALL');
     const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+    const [isEditingGroup, setIsEditingGroup] = useState(false);
+    const [groupDraft, setGroupDraft] = useState<{ name: string; type: GroupType }>({
+        name: '',
+        type: 'CLASS',
+    });
 
     const filteredGroups = groups.filter(g => {
         const matchesSearch = g.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -56,6 +61,34 @@ export const GroupsManager: React.FC = () => {
         };
         createGroup(newGroup);
         setSelectedGroup(newGroup);
+        setGroupDraft({ name: newGroup.name, type: newGroup.type });
+        setIsEditingGroup(true);
+    };
+
+    const openGroupDetails = (group: Group) => {
+        setSelectedGroup(group);
+        setGroupDraft({ name: group.name, type: group.type });
+        setIsEditingGroup(false);
+    };
+
+    const saveSelectedGroup = () => {
+        if (!selectedGroup) return;
+
+        const nextName = groupDraft.name.trim();
+        if (!nextName) return;
+
+        const updatedGroup = {
+            ...selectedGroup,
+            name: nextName,
+            type: groupDraft.type,
+        };
+
+        updateGroup(selectedGroup.id, {
+            name: updatedGroup.name,
+            type: updatedGroup.type,
+        });
+        setSelectedGroup(updatedGroup);
+        setIsEditingGroup(false);
     };
 
     if (selectedGroup) {
@@ -71,7 +104,7 @@ export const GroupsManager: React.FC = () => {
         return (
             <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => setSelectedGroup(null)} className="text-gray-500 hover:text-gray-900">
+                    <button onClick={() => { setSelectedGroup(null); setIsEditingGroup(false); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة للقائمة
                     </button>
                     <h1 className="text-2xl font-bold text-gray-900">تفاصيل المجموعة</h1>
@@ -80,14 +113,56 @@ export const GroupsManager: React.FC = () => {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex justify-between items-start mb-6">
                         <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <h2 className="text-xl font-bold text-gray-900">{selectedGroup.name}</h2>
-                                {getTypeBadge(selectedGroup.type)}
-                            </div>
+                            {isEditingGroup ? (
+                                <div className="grid grid-cols-1 md:grid-cols-[minmax(220px,1fr)_180px_auto] gap-3 mb-3">
+                                    <input
+                                        type="text"
+                                        value={groupDraft.name}
+                                        onChange={(event) => setGroupDraft((current) => ({ ...current, name: event.target.value }))}
+                                        onKeyDown={(event) => {
+                                            if (event.key === 'Enter') {
+                                                saveSelectedGroup();
+                                            }
+                                        }}
+                                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                    />
+                                    <select
+                                        value={groupDraft.type}
+                                        onChange={(event) => setGroupDraft((current) => ({ ...current, type: event.target.value as GroupType }))}
+                                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                                    >
+                                        <option value="SCHOOL">مدرسة</option>
+                                        <option value="CLASS">فصل</option>
+                                        <option value="PRIVATE_GROUP">مجموعة خاصة</option>
+                                    </select>
+                                    <button
+                                        onClick={saveSelectedGroup}
+                                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-bold transition-colors"
+                                    >
+                                        حفظ
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-3 mb-2">
+                                    <h2 className="text-xl font-bold text-gray-900">{selectedGroup.name}</h2>
+                                    {getTypeBadge(selectedGroup.type)}
+                                </div>
+                            )}
                             <p className="text-sm text-gray-500">تم الإنشاء: {new Date(selectedGroup.createdAt).toLocaleDateString('ar-SA')}</p>
                         </div>
                         <div className="flex gap-2">
-                            <button className="p-2 text-gray-500 hover:text-amber-600 bg-gray-50 hover:bg-amber-50 rounded-lg transition-colors">
+                            <button
+                                onClick={() => {
+                                    if (isEditingGroup) {
+                                        saveSelectedGroup();
+                                        return;
+                                    }
+
+                                    setGroupDraft({ name: selectedGroup.name, type: selectedGroup.type });
+                                    setIsEditingGroup(true);
+                                }}
+                                className="p-2 text-gray-500 hover:text-amber-600 bg-gray-50 hover:bg-amber-50 rounded-lg transition-colors"
+                            >
                                 <Edit2 size={18} />
                             </button>
                             <button 
@@ -95,6 +170,7 @@ export const GroupsManager: React.FC = () => {
                                     if(window.confirm('هل أنت متأكد من حذف هذه المجموعة؟')) {
                                         deleteGroup(selectedGroup.id);
                                         setSelectedGroup(null);
+                                        setIsEditingGroup(false);
                                     }
                                 }}
                                 className="p-2 text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 rounded-lg transition-colors"
@@ -317,7 +393,7 @@ export const GroupsManager: React.FC = () => {
                     <div 
                         key={group.id} 
                         className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all cursor-pointer group"
-                        onClick={() => setSelectedGroup(group)}
+                        onClick={() => openGroupDetails(group)}
                     >
                         <div className="flex justify-between items-start mb-4">
                             <div>
