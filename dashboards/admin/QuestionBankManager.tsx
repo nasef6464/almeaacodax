@@ -238,7 +238,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         'رابط الشرح': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         'رابط صورة السؤال': '',
         'شرح نصي': 'اجمع 2 + 2 للوصول إلى الإجابة الصحيحة.',
-        ملاحظة: 'ضع نص السؤال أو رابط صورة السؤال. ويمكن كتابة أكثر من مهارة فرعية مفصولة بفاصلة، أو كتابة image:https://example.com/question.png داخل خانة السؤال.',
+        ملاحظة: 'ضع نص السؤال أو رابط صورة السؤال. أسئلة الصور فقط مدعومة الآن بشرط وجود رابط صورة السؤال. ويمكن كتابة أكثر من مهارة فرعية مفصولة بفاصلة، أو كتابة image:https://example.com/question.png داخل خانة السؤال.',
       },
     ];
 

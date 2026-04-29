@@ -17,9 +17,9 @@ import { SectionModel } from "../models/Section.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const questionSchema = z.object({
+const questionBaseSchema = z.object({
   id: z.string().optional(),
-  text: z.string().min(1),
+  text: z.string().default(""),
   options: z.array(z.string()).default([]),
   correctOptionIndex: z.number().default(0),
   explanation: z.string().optional(),
@@ -41,6 +41,14 @@ const questionSchema = z.object({
   reviewerNotes: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
 });
+
+const questionSchema = questionBaseSchema.refine(
+  (value) => value.text.trim().length > 0 || String(value.imageUrl || "").trim().length > 0,
+  {
+    message: "Question must include text or an image URL",
+    path: ["text"],
+  },
+);
 
 const quizSchema = z.object({
   id: z.string().optional(),
@@ -560,7 +568,7 @@ quizRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = questionSchema.partial().parse(req.body);
+    const payload = questionBaseSchema.partial().parse(req.body);
     const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
     const existing = await QuestionModel.findOne(documentQuery);
 
@@ -568,10 +576,12 @@ quizRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
-    await assertTeacherManagedScope(req.authUser!, {
+    const mergedPayload = questionSchema.parse({
       ...existing.toObject(),
       ...payload,
     });
+
+    await assertTeacherManagedScope(req.authUser!, mergedPayload);
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
