@@ -1,9 +1,15 @@
-const buildPrintableDocument = (title: string, html: string) => `
+const getCurrentPageStyles = () =>
+  Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+    .map((node) => node.outerHTML)
+    .join('\n');
+
+const buildPrintableDocument = (title: string, html: string, styles: string) => `
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
     <title>${title}</title>
+    ${styles}
     <style>
       * { box-sizing: border-box; }
       body {
@@ -27,7 +33,8 @@ const buildPrintableDocument = (title: string, html: string) => `
         text-decoration: none;
       }
       button,
-      .print-hide {
+      .print-hide,
+      [data-print-hidden="true"] {
         display: none !important;
       }
       img,
@@ -70,7 +77,7 @@ export const printElementAsPdf = (elementId: string, title: string) => {
   }
 
   printWindow.document.open();
-  printWindow.document.write(buildPrintableDocument(title, element.innerHTML));
+  printWindow.document.write(buildPrintableDocument(title, element.innerHTML, getCurrentPageStyles()));
   printWindow.document.close();
   printWindow.focus();
 
