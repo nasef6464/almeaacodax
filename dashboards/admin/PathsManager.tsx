@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { CoursesManager } from './CoursesManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { FoundationManager } from './FoundationManager';
@@ -125,7 +125,7 @@ export const PathsManager: React.FC = () => {
     setEditingPath(null);
     setNewPathName('');
     setNewPathColor('indigo');
-    setNewPathIcon('ðŸ“š');
+    setNewPathIcon('📚');
     setNewPathIconUrl('');
     setNewPathIconStyle('default');
     setNewPathParentId('');
@@ -328,7 +328,7 @@ export const PathsManager: React.FC = () => {
               setEditingPath(null);
               setNewPathName('');
               setNewPathColor('indigo');
-              setNewPathIcon('ðŸ“š');
+              setNewPathIcon('📚');
               setNewPathIconUrl('');
               setNewPathIconStyle('default');
               setNewPathParentId('');

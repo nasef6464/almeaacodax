@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, PlayCircle, FileQuestion } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -40,6 +40,7 @@ const Quiz: React.FC = () => {
     sections,
     quizzes,
     questions: globalQuestionBank,
+    paths,
     user,
   } = useStore();
 
@@ -109,9 +110,20 @@ const Quiz: React.FC = () => {
     }
   }, [location.search]);
 
+  const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
+  const availablePaths = useMemo(
+    () => paths.filter((path) => canSeeHiddenPaths || path.isActive !== false),
+    [paths, canSeeHiddenPaths],
+  );
+  const availablePathIds = useMemo(() => new Set(availablePaths.map((path) => path.id)), [availablePaths]);
   const availableSubjects = useMemo(
-    () => subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId),
-    [subjects, selectedPathId],
+    () =>
+      subjects.filter(
+        (subject) =>
+          availablePathIds.has(subject.pathId) &&
+          (!selectedPathId || subject.pathId === selectedPathId),
+      ),
+    [subjects, selectedPathId, availablePathIds],
   );
   const availableSections = useMemo(
     () => sections.filter((section) => !selectedSubjectId || section.subjectId === selectedSubjectId),
@@ -596,7 +608,7 @@ const Quiz: React.FC = () => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">كل المسارات</option>
-                    {useStore.getState().paths.map((path) => (
+                    {availablePaths.map((path) => (
                       <option key={path.id} value={path.id}>{path.name}</option>
                     ))}
                   </select>
