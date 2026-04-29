@@ -195,17 +195,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) {
       syncStoreUser(null);
       useStore.getState().hydrateExamResults([]);
+      useStore.getState().hydrateQuestionAttempts([]);
       return;
     }
 
     Promise.all([
       api.getCurrentUser(),
       api.getQuizResults(),
+      api.getQuestionAttempts(),
       user.role === 'admin' ? api.getAdminUsers() : Promise.resolve({ users: [] }),
     ])
-      .then(([currentUserResponse, results, usersResponse]) => {
+      .then(([currentUserResponse, results, questionAttempts, usersResponse]) => {
         syncStoreUser(user, (currentUserResponse as { user?: BackendAuthUser })?.user || null);
         useStore.getState().hydrateExamResults(results as any[]);
+        useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
         if (user.role === 'admin') {
           const normalizedUsers = ((usersResponse as { users?: BackendAuthUser[] })?.users || []).map(normalizeStoreUser);
           useStore.getState().hydrateUsers(normalizedUsers);

@@ -68,6 +68,7 @@ interface AppState {
     }) => void;
     hydrateExamResults: (results: QuizResult[]) => void;
     hydrateSkillProgress: (items: SkillProgress[]) => void;
+    hydrateQuestionAttempts: (attempts: QuestionAttempt[]) => void;
     enrollCourse: (courseId: string) => void;
     completePurchase: (payload: { courseId?: string; packageId?: string; includedCourseIds?: string[] }) => Promise<void>;
     redeemAccessCode: (code: string) => Promise<void>;
@@ -396,6 +397,18 @@ export const useStore = create<AppState>()(
 
             hydrateExamResults: (results) => set(() => ({
                 examResults: results
+            })),
+
+            hydrateQuestionAttempts: (attempts) => set(() => ({
+                questionAttempts: attempts
+                    .map((attempt: any) => ({
+                        questionId: String(attempt?.questionId || ''),
+                        selectedOptionIndex: Number(attempt?.selectedOptionIndex ?? -1),
+                        isCorrect: Boolean(attempt?.isCorrect),
+                        timeSpentSeconds: Number(attempt?.timeSpentSeconds ?? 0),
+                        date: String(attempt?.date || attempt?.createdAt || new Date().toISOString()),
+                    }))
+                    .filter((attempt) => attempt.questionId)
             })),
 
             hydrateSkillProgress: (items) => set(() => ({
