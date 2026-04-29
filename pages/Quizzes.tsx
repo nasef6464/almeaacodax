@@ -441,7 +441,10 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         <Link to="/" className="text-gray-500 hover:text-gray-700">
           <ArrowRight />
         </Link>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">مركز الاختبارات وساهر</h1>
+          <p className="mt-1 text-sm text-gray-500">هنا تبدأ اختبارًا جديدًا أو تفتح اختبارًا موجّهًا لك، أما سجل محاولاتك فتجده من لوحة الطالب في تبويب اختباراتي.</p>
+        </div>
       </header>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
