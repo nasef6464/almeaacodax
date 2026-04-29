@@ -20,7 +20,7 @@ interface AdvancedCourseBuilderProps {
 }
 
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { topics, subjects } = useStore();
+  const { subjects, sections, skills } = useStore();
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
   const [settingsTab, setSettingsTab] = useState<'basic' | 'pricing' | 'advanced'>('basic');
   
@@ -452,7 +452,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">موضوعات التأسيس المرتبطة (اختياري)</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">مهارات الدورة من مركز المهارات (اختياري)</label>
                       <select 
                         multiple
                         value={courseData.skills || []}
@@ -463,30 +463,31 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"
                       >
                         {subjects.map(subject => {
-                          const subjectTopics = topics
-                            .filter(topic => topic.subjectId === subject.id)
-                            .sort((a, b) => a.order - b.order);
-                          const mainTopics = subjectTopics.filter(topic => !topic.parentId);
-                          if (mainTopics.length === 0) return null;
+                          const subjectSections = sections.filter(section => section.subjectId === subject.id);
+                          const subjectSkills = skills.filter(skill => skill.subjectId === subject.id);
+                          if (subjectSections.length === 0 && subjectSkills.length === 0) return null;
 
                           return (
                             <optgroup key={subject.id} label={subject.name}>
-                              {mainTopics.map(mainTopic => {
-                                const subTopics = subjectTopics.filter(topic => topic.parentId === mainTopic.id);
+                              {subjectSections.map(mainSection => {
+                                const subSkills = subjectSkills.filter(skill => skill.sectionId === mainSection.id);
                                 return (
-                                  <React.Fragment key={mainTopic.id}>
-                                    <option value={mainTopic.id}>{mainTopic.title} (موضوع رئيسي)</option>
-                                    {subTopics.map(subTopic => (
-                                      <option key={subTopic.id} value={subTopic.id}>- {subTopic.title}</option>
+                                  <React.Fragment key={mainSection.id}>
+                                    <option disabled>{mainSection.name}</option>
+                                    {subSkills.map(subSkill => (
+                                      <option key={subSkill.id} value={subSkill.id}>- {subSkill.name}</option>
                                     ))}
                                   </React.Fragment>
                                 );
                               })}
+                              {subjectSkills.filter(skill => !skill.sectionId).map(skill => (
+                                <option key={skill.id} value={skill.id}>{skill.name}</option>
+                              ))}
                             </optgroup>
                           );
                         })}
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">اضغط Ctrl (أو Cmd) لاختيار أكثر من مهارة.</p>
+                      <p className="text-xs text-gray-500 mt-1">هذه المهارات تستخدم في التحليل والتوصيات، ولا تختلط بموضوعات التأسيس.</p>
                     </div>
 
                     <div>
