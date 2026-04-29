@@ -9,7 +9,8 @@ import { LibraryManager } from './LibraryManager';
 import { 
   FolderOpen, BookOpen, Target, FileQuestion, 
   Award, Library, ChevronLeft, Plus, Settings,
-  Layers, Package, LayoutGrid, X, Lock, LockOpen
+  Layers, Package, LayoutGrid, X, Lock, LockOpen,
+  Eye, EyeOff, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
@@ -34,7 +35,7 @@ const getSubjectColor = (subject: any) => {
 };
 
 export const PathsManager: React.FC = () => {
-  const { paths, levels, subjects, courses, questions } = useStore();
+  const { paths, levels, subjects, courses, questions, lessons, quizzes, libraryItems, topics } = useStore();
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
@@ -77,6 +78,53 @@ export const PathsManager: React.FC = () => {
   const currentLevel = levels?.find(l => l.id === selectedLevelId);
   const pathSubjects = subjects.filter(s => s.pathId === selectedPathId && (selectedLevelId ? s.levelId === selectedLevelId : true));
   const currentSubject = subjects.find(s => s.id === selectedSubjectId);
+  const pathScopedContent = {
+    courses: courses.filter((course: any) => (course.pathId || course.category) === selectedPathId),
+    lessons: lessons.filter((lesson: any) => lesson.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === lesson.subjectId)),
+    topics: topics.filter((topic: any) => topic.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === topic.subjectId)),
+    quizzes: quizzes.filter((quiz: any) => quiz.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === quiz.subjectId)),
+    library: libraryItems.filter((item: any) => item.pathId === selectedPathId || subjects.some((subject: any) => subject.pathId === selectedPathId && subject.id === item.subjectId)),
+  };
+  const publicationRows = [
+    {
+      id: 'courses',
+      title: 'الدورات',
+      total: pathScopedContent.courses.length,
+      visible: pathScopedContent.courses.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
+      locked: pathScopedContent.courses.filter((item: any) => item.isLocked || item.accessControl === 'enrolled' || item.accessControl === 'specific_groups').length,
+    },
+    {
+      id: 'topics',
+      title: 'موضوعات التأسيس',
+      total: pathScopedContent.topics.length,
+      visible: pathScopedContent.topics.filter((item: any) => item.showOnPlatform !== false).length,
+      locked: pathSubjects.filter((subject: any) => subject.settings?.lockSkillsForNonSubscribers).length,
+    },
+    {
+      id: 'lessons',
+      title: 'الدروس والفيديوهات',
+      total: pathScopedContent.lessons.length,
+      visible: pathScopedContent.lessons.filter((item: any) => item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
+      locked: pathScopedContent.lessons.filter((item: any) => item.isLocked || item.accessControl === 'enrolled' || item.accessControl === 'specific_groups').length,
+    },
+    {
+      id: 'quizzes',
+      title: 'الاختبارات والتدريبات',
+      total: pathScopedContent.quizzes.length,
+      visible: pathScopedContent.quizzes.filter((item: any) => item.showOnPlatform !== false && item.isPublished !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
+      locked: pathScopedContent.quizzes.filter((item: any) => item.access?.type && item.access.type !== 'free').length,
+    },
+    {
+      id: 'library',
+      title: 'المكتبة',
+      total: pathScopedContent.library.length,
+      visible: pathScopedContent.library.filter((item: any) => item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved')).length,
+      locked: pathSubjects.filter((subject: any) => subject.settings?.lockLibraryForNonSubscribers).length,
+    },
+  ];
+  const visibleItemsCount = publicationRows.reduce((sum, row) => sum + row.visible, 0);
+  const hiddenItemsCount = publicationRows.reduce((sum, row) => sum + Math.max(row.total - row.visible, 0), 0);
+  const lockedItemsCount = publicationRows.reduce((sum, row) => sum + row.locked, 0);
 
   const handleIconUpload = (e: React.ChangeEvent<HTMLInputElement>, setUrl: (url: string) => void) => {
     const file = e.target.files?.[0];
@@ -758,12 +806,99 @@ export const PathsManager: React.FC = () => {
           )}
 
           {pathTab === 'settings' && (
-            <div className="bg-white p-12 rounded-2xl border border-gray-100 shadow-sm text-center animate-fade-in">
-              <div className="w-20 h-20 bg-gray-50 text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Settings size={40} />
+            <div className="space-y-6 animate-fade-in">
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700 mb-3">
+                      <Settings size={14} />
+                      إعدادات المسار ومراجعة النشر
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">مراجعة ما سيظهر للطالب</h3>
+                    <p className="text-gray-500 max-w-2xl leading-7">
+                      هذه اللوحة لا تغيّر شكل المنصة، لكنها تساعدك كمدير تعرف بسرعة ما الموجود داخل المستودع وما المعروض فعلًا في واجهة الطالب، وما المحتوى المقفول للباقات.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={(event) => currentPath && openEditPath(currentPath, event)}
+                      className="inline-flex items-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100"
+                    >
+                      <Settings size={16} />
+                      تعديل بيانات المسار
+                    </button>
+                    <button
+                      onClick={(event) => currentPath && handleTogglePathActive(currentPath, event)}
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold ${
+                        currentPath?.isActive === false
+                          ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {currentPath?.isActive === false ? <Eye size={16} /> : <EyeOff size={16} />}
+                      {currentPath?.isActive === false ? 'إظهار المسار' : 'إخفاء المسار مؤقتًا'}
+                    </button>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">إعدادات المسار</h3>
-              <p className="text-gray-500 max-w-md mx-auto">تعديل اسم المسار، الأيقونة، اللون، وحالته (مفعل/معطل).</p>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+                  <div className="flex items-center gap-2 text-emerald-700">
+                    <CheckCircle2 size={18} />
+                    <span className="text-sm font-bold">ظاهر للطالب</span>
+                  </div>
+                  <div className="mt-3 text-3xl font-black text-emerald-700">{visibleItemsCount}</div>
+                </div>
+                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <EyeOff size={18} />
+                    <span className="text-sm font-bold">مخفي أو غير منشور</span>
+                  </div>
+                  <div className="mt-3 text-3xl font-black text-gray-700">{hiddenItemsCount}</div>
+                </div>
+                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
+                  <div className="flex items-center gap-2 text-amber-700">
+                    <Lock size={18} />
+                    <span className="text-sm font-bold">مقفول/مرتبط بباقة</span>
+                  </div>
+                  <div className="mt-3 text-3xl font-black text-amber-700">{lockedItemsCount}</div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="grid grid-cols-5 gap-2 border-b border-gray-100 bg-gray-50 px-4 py-3 text-xs font-black text-gray-500">
+                  <div className="col-span-2">الجزء</div>
+                  <div className="text-center">الإجمالي</div>
+                  <div className="text-center">ظاهر</div>
+                  <div className="text-center">مقفول</div>
+                </div>
+                {publicationRows.map((row) => {
+                  const hidden = Math.max(row.total - row.visible, 0);
+                  return (
+                    <div key={row.id} className="grid grid-cols-5 gap-2 border-b border-gray-50 px-4 py-4 text-sm last:border-0">
+                      <div className="col-span-2">
+                        <div className="font-black text-gray-900">{row.title}</div>
+                        <div className="mt-1 text-xs text-gray-500">
+                          {hidden > 0 ? `${hidden} عنصر يحتاج إظهار/اعتماد قبل ظهوره للطلاب` : 'كل العناصر الجاهزة ظاهرة حسب الإعدادات'}
+                        </div>
+                      </div>
+                      <div className="text-center font-black text-gray-800">{row.total}</div>
+                      <div className="text-center font-black text-emerald-700">{row.visible}</div>
+                      <div className="text-center font-black text-amber-700">{row.locked}</div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {currentPath?.isActive === false ? (
+                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm leading-7 text-amber-800 flex gap-3">
+                  <AlertTriangle size={18} className="mt-1 shrink-0" />
+                  <div>
+                    هذا المسار مخفي حاليًا عن الطلاب. يمكنك العمل عليه وإضافة محتوى وباقات، ثم إظهاره عندما تكتمل المراجعة.
+                  </div>
+                </div>
+              ) : null}
             </div>
           )}
         </div>
