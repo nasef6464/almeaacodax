@@ -10,6 +10,8 @@ import { GroupModel } from "../models/Group.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { SkillModel } from "../models/Skill.js";
+import { SubjectModel } from "../models/Subject.js";
+import { SectionModel } from "../models/Section.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -502,6 +504,18 @@ quizRouter.get(
     const attemptSkillIds = uniqueStrings(questionAttempts.flatMap((attempt) => (attempt.skillIds || []).map(String)));
     const attemptSkills = attemptSkillIds.length ? await SkillModel.find(buildDocumentsByIdsQuery(attemptSkillIds)) : [];
     const skillById = new Map(attemptSkills.map((skill) => [String(skill.id || skill._id), skill]));
+    const attemptSubjectIds = uniqueStrings([
+      ...questionAttempts.map((attempt) => String(attempt.subjectId || "")),
+      ...attemptSkills.map((skill) => String(skill.subjectId || "")),
+    ]);
+    const attemptSectionIds = uniqueStrings([
+      ...questionAttempts.map((attempt) => String(attempt.sectionId || "")),
+      ...attemptSkills.map((skill) => String(skill.sectionId || "")),
+    ]);
+    const attemptSubjects = attemptSubjectIds.length ? await SubjectModel.find(buildDocumentsByIdsQuery(attemptSubjectIds)) : [];
+    const attemptSections = attemptSectionIds.length ? await SectionModel.find(buildDocumentsByIdsQuery(attemptSectionIds)) : [];
+    const subjectNameById = new Map(attemptSubjects.map((subject) => [String(subject.id || subject._id), String(subject.name || "")]));
+    const sectionNameById = new Map(attemptSections.map((section) => [String(section.id || section._id), String(section.name || "")]));
     const attemptsByStudent = new Map<string, any[]>();
     questionAttempts.forEach((attempt) => {
       const key = String(attempt.userId || "");
@@ -522,7 +536,8 @@ quizRouter.get(
             pathId: String(resolvedSkill.pathId || attempt.pathId || ""),
             subjectId: String(resolvedSkill.subjectId || attempt.subjectId || ""),
             sectionId: String(resolvedSkill.sectionId || attempt.sectionId || ""),
-            section: String(resolvedSkill.sectionId || attempt.sectionId || ""),
+            subjectName: subjectNameById.get(String(resolvedSkill.subjectId || attempt.subjectId || "")) || "",
+            section: sectionNameById.get(String(resolvedSkill.sectionId || attempt.sectionId || "")) || String(resolvedSkill.sectionId || attempt.sectionId || ""),
             mastery: attempt.isCorrect ? 100 : 0,
           };
         })
@@ -752,7 +767,7 @@ quizRouter.get(
         const key = String(gap.subjectId);
         const current = subjectMap.get(key) || {
           subjectId: gap.subjectId,
-          subjectName: String(gap.subjectId || "مادة غير مسماة"),
+          subjectName: String(gap.subjectName || subjectNameById.get(String(gap.subjectId)) || "مادة غير مسماة"),
           masterySum: 0,
           count: 0,
           weakStudents: new Set<string>(),

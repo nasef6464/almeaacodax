@@ -48,4 +48,10 @@ const quizSchema = new Schema(
   },
 );
 
+quizSchema.index({ pathId: 1, subjectId: 1, mode: 1, showOnPlatform: 1, isPublished: 1 });
+quizSchema.index({ targetGroupIds: 1, dueDate: 1 });
+quizSchema.index({ targetUserIds: 1, dueDate: 1 });
+quizSchema.index({ skillIds: 1, mode: 1 });
+quizSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
+
 export const QuizModel = mongoose.model("Quiz", quizSchema);

@@ -22,5 +22,8 @@ const skillProgressSchema = new Schema(
 );
 
 skillProgressSchema.index({ userId: 1, skillId: 1 }, { unique: true });
+skillProgressSchema.index({ userId: 1, status: 1, mastery: 1 });
+skillProgressSchema.index({ subjectId: 1, status: 1, mastery: 1 });
+skillProgressSchema.index({ pathId: 1, subjectId: 1, sectionId: 1 });
 
 export const SkillProgressModel = mongoose.model("SkillProgress", skillProgressSchema);

@@ -20,4 +20,9 @@ const quizResultSchema = new Schema(
   },
 );
 
+quizResultSchema.index({ userId: 1, createdAt: -1 });
+quizResultSchema.index({ quizId: 1, createdAt: -1 });
+quizResultSchema.index({ "skillsAnalysis.skillId": 1, userId: 1 });
+quizResultSchema.index({ "skillsAnalysis.subjectId": 1, createdAt: -1 });
+
 export const QuizResultModel = mongoose.model("QuizResult", quizResultSchema);

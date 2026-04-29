@@ -19,5 +19,9 @@ const questionAttemptSchema = new Schema(
 );
 
 questionAttemptSchema.index({ userId: 1, questionId: 1, createdAt: -1 });
+questionAttemptSchema.index({ userId: 1, createdAt: -1 });
+questionAttemptSchema.index({ userId: 1, skillIds: 1, createdAt: -1 });
+questionAttemptSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: -1 });
+questionAttemptSchema.index({ skillIds: 1, isCorrect: 1 });
 
 export const QuestionAttemptModel = mongoose.model("QuestionAttempt", questionAttemptSchema);

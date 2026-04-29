@@ -30,4 +30,8 @@ const questionSchema = new Schema(
   },
 );
 
+questionSchema.index({ pathId: 1, subject: 1, sectionId: 1, approvalStatus: 1 });
+questionSchema.index({ skillIds: 1, difficulty: 1 });
+questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
+
 export const QuestionModel = mongoose.model("Question", questionSchema);
