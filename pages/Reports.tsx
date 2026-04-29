@@ -59,6 +59,38 @@ const roleScopeTitle: Record<string, string> = {
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
+const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
+
+const getReportMasteryTone = (mastery: number) => {
+    if (mastery < 50) {
+        return {
+            label: 'ابدأ بها',
+            bg: 'bg-rose-50',
+            text: 'text-rose-700',
+            bar: 'bg-rose-500',
+            border: 'border-rose-100',
+        };
+    }
+
+    if (mastery < 75) {
+        return {
+            label: 'راجعها قريبًا',
+            bg: 'bg-amber-50',
+            text: 'text-amber-700',
+            bar: 'bg-amber-500',
+            border: 'border-amber-100',
+        };
+    }
+
+    return {
+        label: 'مطمئنة',
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-700',
+        bar: 'bg-emerald-500',
+        border: 'border-emerald-100',
+    };
+};
+
 interface SkillRecommendation {
     lessonTitle?: string;
     lessonLink?: string;
@@ -133,6 +165,7 @@ const Reports: React.FC = () => {
     const { examResults, skills, lessons, quizzes, libraryItems, questions, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
+    const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -229,7 +262,10 @@ const Reports: React.FC = () => {
     }, [examResults]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
+    const focusedReportSkills = aggregatedSkills.slice(0, 6);
+    const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || weakestSkill;
     const weakestSkillRecommendation = getSkillRecommendation(weakestSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
+    const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0;
 
@@ -415,6 +451,95 @@ const Reports: React.FC = () => {
 
             {isStudentView && hasStudentAnalytics && (
             <>
+            <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-5">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">مهاراتك أولًا</h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار، ثم نقترح لك خطوة علاجية مناسبة.
+                        </p>
+                    </div>
+                    <Link to="/quizzes" className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
+                        اختبر مهارة جديدة
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    {focusedReportSkills.map((skill) => {
+                        const tone = getReportMasteryTone(skill.mastery);
+                        const isSelected = selectedReportSkill && getReportSkillKey(selectedReportSkill) === getReportSkillKey(skill);
+
+                        return (
+                            <button
+                                key={getReportSkillKey(skill)}
+                                onClick={() => setSelectedSkillKey(getReportSkillKey(skill))}
+                                className={`text-right rounded-2xl border p-4 transition-all hover:shadow-md ${tone.bg} ${isSelected ? `${tone.border} ring-2 ring-indigo-100` : 'border-transparent'}`}
+                            >
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <div className={`inline-flex rounded-full px-3 py-1 text-[11px] font-black ${tone.text} bg-white/70`}>
+                                            {tone.label}
+                                        </div>
+                                        <div className="mt-3 font-black text-gray-900 leading-7 break-words">{displayText(skill.skill)}</div>
+                                    </div>
+                                    <div className={`text-2xl font-black ${tone.text}`}>{skill.mastery}%</div>
+                                </div>
+                                <div className="mt-4 h-2 rounded-full bg-white/70 overflow-hidden">
+                                    <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                                </div>
+                                <div className="mt-3 text-xs font-bold text-gray-500">اضغط لعرض المقترحات</div>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {selectedReportSkill ? (
+                    <div className="mt-5 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-3">
+                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">مقترحات لهذه المهارة</span>
+                                    {selectedSkillRecommendation.subjectName ? (
+                                        <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-gray-600">
+                                            المادة: {displayText(selectedSkillRecommendation.subjectName)}
+                                        </span>
+                                    ) : null}
+                                    {selectedSkillRecommendation.sectionName ? (
+                                        <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-gray-600">
+                                            المهارة الرئيسة: {displayText(selectedSkillRecommendation.sectionName)}
+                                        </span>
+                                    ) : null}
+                                </div>
+                                <h3 className="text-lg font-black text-gray-900 break-words">{displayText(selectedReportSkill.skill)}</h3>
+                                <p className="mt-2 text-sm leading-7 text-gray-600">
+                                    {displayText(selectedSkillRecommendation.actionText) || 'ابدأ بمراجعة قصيرة، ثم حل تدريبًا بسيطًا، وبعدها أعد القياس.'}
+                                </p>
+                            </div>
+                            <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
+                                <Link to={selectedSkillRecommendation.lessonLink || '/courses'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center gap-2">
+                                    <Video size={16} />
+                                    فيديو أو درس
+                                </Link>
+                                <Link to={selectedSkillRecommendation.quizLink || '/quiz'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center gap-2">
+                                    <FileText size={16} />
+                                    اختبار علاجي
+                                </Link>
+                                {selectedSkillRecommendation.resourceUrl ? (
+                                    <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
+                                        <BookOpen size={16} />
+                                        ملف داعم
+                                    </a>
+                                ) : null}
+                                <Link to="/book-session" className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center gap-2">
+                                    <Clock size={16} />
+                                    حجز حصة
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+            </Card>
+
             {/* 1. Performance Analysis (A) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="p-5 sm:p-6 flex flex-col items-center text-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-0 shadow-md">

@@ -2,8 +2,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import {
   ArrowRight,
-  RefreshCw,
-  PlusCircle,
   Eye,
   BarChart3,
   History,
@@ -610,39 +608,6 @@ const Results: React.FC = () => {
       />
 
       {videoData ? <VideoModal videoUrl={videoData.url} title={videoData.title} onClose={() => setVideoData(null)} /> : null}
-
-      <Card className="p-4 sm:p-5">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <button
-            onClick={() => setViewMode('review')}
-            className="bg-emerald-500 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-emerald-100"
-          >
-            <Eye size={20} />
-            مراجعة الحلول
-          </button>
-          <button
-            onClick={() => setViewMode('analysis')}
-            className="bg-indigo-600 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-indigo-100"
-          >
-            <BarChart3 size={20} />
-            تحليل المهارات
-          </button>
-          <Link
-            to="/quiz"
-            className="bg-white border border-emerald-500 text-emerald-600 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-emerald-50"
-          >
-            <RefreshCw size={20} />
-            إعادة الاختبار
-          </Link>
-          <Link
-            to="/quizzes"
-            className="bg-white border border-amber-500 text-amber-600 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-amber-50"
-          >
-            <PlusCircle size={20} />
-            اختبار إضافي
-          </Link>
-        </div>
-      </Card>
     </div>
   );
 };
