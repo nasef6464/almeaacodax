@@ -6,15 +6,14 @@ import { useStore } from '../store/useStore';
 import { courses as mockCourses, currentUser } from './mockData';
 import { Role } from '../types';
 
-export const useFirebaseSync = () => {
-  useEffect(() => {
+export const startFirebaseSync = () => {
     const useRealApi =
       (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
 
     // When the platform is running against the real backend, Firebase listeners
     // become a second source of truth and can overwrite newer Mongo-backed data.
     if (useRealApi) {
-      return;
+      return () => undefined;
     }
 
     let unsubCourses: () => void;
@@ -258,5 +257,8 @@ export const useFirebaseSync = () => {
       if (unsubLibrary) unsubLibrary();
       if (unsubGroups) unsubGroups();
     };
-  }, []);
+};
+
+export const useFirebaseSync = () => {
+  useEffect(() => startFirebaseSync(), []);
 };

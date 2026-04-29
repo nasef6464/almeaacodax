@@ -4,7 +4,6 @@ import { HashRouter as Router, Routes, Route, Navigate, useParams } from 'react-
 import Layout from './components/Layout';
 import { Loader2 } from 'lucide-react';
 import { AuthProvider } from './contexts/AuthContext';
-import { useFirebaseSync } from './services/firebaseSync';
 import { adapter } from './services/adapter';
 import { api } from './services/api';
 import { useStore } from './store/useStore';
@@ -58,7 +57,6 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  useFirebaseSync();
   const [bootstrapReady, setBootstrapReady] = useState(false);
   const hydrateCourses = useStore((state) => state.hydrateCourses);
   const hydrateQuestions = useStore((state) => state.hydrateQuestions);
@@ -66,6 +64,33 @@ const App: React.FC = () => {
   const hydrateTaxonomy = useStore((state) => state.hydrateTaxonomy);
   const hydrateContentBootstrap = useStore((state) => state.hydrateContentBootstrap);
   const hydrateSkillProgress = useStore((state) => state.hydrateSkillProgress);
+
+  useEffect(() => {
+    const useRealApi =
+      (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+
+    if (useRealApi) {
+      return;
+    }
+
+    let cleanup: (() => void) | undefined;
+    let cancelled = false;
+
+    import('./services/firebaseSync')
+      .then((module) => {
+        if (!cancelled) {
+          cleanup = module.startFirebaseSync();
+        }
+      })
+      .catch((error) => {
+        console.warn('Legacy Firebase sync unavailable:', error);
+      });
+
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
