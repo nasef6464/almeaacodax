@@ -7,13 +7,16 @@ export const GroupsManager: React.FC = () => {
     const { 
         groups, 
         users, 
+        courses,
         createGroup, 
         updateGroup, 
         deleteGroup, 
         assignStudentToGroup, 
         removeStudentFromGroup,
         assignSupervisorToGroup,
-        removeSupervisorFromGroup
+        removeSupervisorFromGroup,
+        assignCourseToGroup,
+        removeCourseFromGroup,
     } = useStore();
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +28,7 @@ export const GroupsManager: React.FC = () => {
         const matchesType = typeFilter === 'ALL' || g.type === typeFilter;
         return matchesSearch && matchesType;
     });
+    const publishedCourses = courses.filter(course => course.isPublished !== false);
 
     const getTypeBadge = (type: GroupType) => {
         switch (type) {
@@ -58,9 +62,11 @@ export const GroupsManager: React.FC = () => {
         // Detailed View
         const groupStudents = users.filter(u => selectedGroup.studentIds.includes(u.id));
         const groupSupervisors = users.filter(u => selectedGroup.supervisorIds.includes(u.id));
+        const groupCourses = publishedCourses.filter(course => selectedGroup.courseIds.includes(course.id));
         
         const availableStudents = users.filter(u => u.role === Role.STUDENT && !selectedGroup.studentIds.includes(u.id));
         const availableSupervisors = users.filter(u => (u.role === Role.SUPERVISOR || u.role === Role.TEACHER) && !selectedGroup.supervisorIds.includes(u.id));
+        const availableCourses = publishedCourses.filter(course => !selectedGroup.courseIds.includes(course.id));
 
         return (
             <div className="space-y-6 animate-fade-in">
@@ -119,6 +125,49 @@ export const GroupsManager: React.FC = () => {
                                 <p className="text-sm text-gray-500">الدورات</p>
                                 <p className="text-xl font-bold text-gray-900">{selectedGroup.courseIds.length}</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="border border-gray-100 rounded-xl p-5 mb-8 bg-gray-50/40">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                            <div>
+                                <h3 className="font-bold text-gray-900">الدورات المرتبطة بالمجموعة</h3>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    اربط الدورات المنشورة بالمدرسة أو الفصل أو المجموعة حتى تظهر ضمن نطاق الطلاب.
+                                </p>
+                            </div>
+                            <select
+                                className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                onChange={(e) => {
+                                    if (e.target.value) {
+                                        assignCourseToGroup(e.target.value, selectedGroup.id);
+                                        setSelectedGroup(useStore.getState().groups.find(g => g.id === selectedGroup.id) || null);
+                                        e.target.value = '';
+                                    }
+                                }}
+                                value=""
+                            >
+                                <option value="">+ إضافة دورة منشورة</option>
+                                {availableCourses.map(course => (
+                                    <option key={course.id} value={course.id}>{course.title}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {groupCourses.length === 0 ? (
+                                <span className="text-sm text-gray-400">لا توجد دورات مرتبطة بهذه المجموعة حتى الآن.</span>
+                            ) : groupCourses.map(course => (
+                                <button
+                                    key={course.id}
+                                    onClick={() => {
+                                        removeCourseFromGroup(course.id, selectedGroup.id);
+                                        setSelectedGroup(useStore.getState().groups.find(g => g.id === selectedGroup.id) || null);
+                                    }}
+                                    className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
+                                >
+                                    {course.title} ×
+                                </button>
+                            ))}
                         </div>
                     </div>
 
