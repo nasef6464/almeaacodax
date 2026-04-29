@@ -273,6 +273,46 @@ const updateSkillProgressFromResult = async (result: any, userId: string) => {
   );
 };
 
+const updateSkillProgressFromQuestionAttempt = async (attempt: any, userId: string) => {
+  const skillIds = uniqueStrings(Array.isArray(attempt.skillIds) ? attempt.skillIds.map(String) : []);
+  if (skillIds.length === 0) return;
+
+  const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds));
+  const mastery = attempt.isCorrect ? 100 : 0;
+
+  await Promise.all(
+    skills.map(async (skill) => {
+      const skillId = String(skill.id || skill._id);
+      const existing = await SkillProgressModel.findOne({ userId, skillId });
+      const previousAttempts = Number(existing?.attempts || 0);
+      const nextAttempts = previousAttempts + 1;
+      const previousMastery = Number(existing?.mastery || 0);
+      const nextMastery = Math.round(((previousMastery * previousAttempts) + mastery) / nextAttempts);
+      const nextStatus = buildSkillStatus(nextMastery);
+
+      await SkillProgressModel.findOneAndUpdate(
+        { userId, skillId },
+        {
+          userId,
+          skillId,
+          skill: String(skill.name || existing?.skill || "مهارة غير مسماة"),
+          pathId: String(skill.pathId || existing?.pathId || attempt.pathId || ""),
+          subjectId: String(skill.subjectId || existing?.subjectId || attempt.subjectId || ""),
+          sectionId: String(skill.sectionId || existing?.sectionId || attempt.sectionId || ""),
+          mastery: nextMastery,
+          status: nextStatus,
+          attempts: nextAttempts,
+          lastQuizId: String(existing?.lastQuizId || ""),
+          lastQuizTitle: String(existing?.lastQuizTitle || ""),
+          lastAttemptAt: new Date(),
+          recommendedAction: buildRecommendedAction(nextMastery, nextAttempts),
+        },
+        { new: true, upsert: true },
+      );
+    }),
+  );
+};
+
 const matchesManagedScope = (
   gap: any,
   managedPathIds: Set<string>,
@@ -830,6 +870,7 @@ quizRouter.post(
       sectionId: String(question?.sectionId || ""),
       skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
     });
+    await updateSkillProgressFromQuestionAttempt(created, req.authUser!.id);
 
     res.status(StatusCodes.CREATED).json(created);
   }),
