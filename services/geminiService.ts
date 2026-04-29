@@ -15,7 +15,9 @@ export const generateStudyPlan = async (weaknesses: string[]): Promise<string> =
     const response = await api.aiStudyPlan({ weaknesses });
     return JSON.stringify({ steps: response.steps || [] });
   } catch {
-    return JSON.stringify({ steps: ["راجع الفكرة الأساسية", "حل تدريبًا قصيرًا", "أعد اختبارًا مصغرًا"] });
+    return JSON.stringify({
+      steps: ["راجع الفكرة الأساسية", "حل تدريبًا قصيرًا", "أعد اختبارًا مصغرًا"],
+    });
   }
 };
 

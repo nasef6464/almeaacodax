@@ -23,6 +23,9 @@ const courseSummarySchema = z.object({
   courseTitle: z.string().min(1).max(500),
 });
 
+type AiResponseMimeType = "application/json";
+type AiProvider = "gemini" | "ollama" | "none";
+
 const safeJsonParse = <T>(value: string | undefined, fallback: T): T => {
   if (!value) return fallback;
   const trimmed = value.trim();
@@ -38,7 +41,11 @@ const safeJsonParse = <T>(value: string | undefined, fallback: T): T => {
   }
 };
 
-type AiResponseMimeType = "application/json";
+const resolveProvider = (): AiProvider => {
+  if (env.AI_PROVIDER) return env.AI_PROVIDER;
+  if (env.GEMINI_API_KEY) return "gemini";
+  return "none";
+};
 
 const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
   if (!env.GEMINI_API_KEY) {
@@ -68,6 +75,47 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType)
   return payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
 };
 
+const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+  const response = await fetch(`${env.OLLAMA_BASE_URL.replace(/\/$/, "")}/api/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: env.OLLAMA_MODEL,
+      prompt,
+      stream: false,
+      format: responseMimeType === "application/json" ? "json" : undefined,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ollama request failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as { response?: string };
+  return payload.response?.trim() || "";
+};
+
+const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+  const provider = resolveProvider();
+
+  if (provider === "ollama") {
+    try {
+      return await callOllama(prompt, responseMimeType);
+    } catch (error) {
+      if (env.GEMINI_API_KEY) {
+        return callGemini(prompt, responseMimeType);
+      }
+      throw error;
+    }
+  }
+
+  if (provider === "gemini") {
+    return callGemini(prompt, responseMimeType);
+  }
+
+  return "";
+};
+
 export const aiRouter = Router();
 
 aiRouter.post(
@@ -75,16 +123,16 @@ aiRouter.post(
   asyncHandler(async (req, res) => {
     const { message } = chatSchema.parse(req.body);
     const fallback =
-      "أنا معك. اسألني عن الدرس أو السؤال، وسأقترح لك خطوة بسيطة: راجع الفكرة، حل مثالًا قصيرًا، ثم جرّب سؤالًا مشابهًا.";
+      "أنا معك. اكتب السؤال أو المهارة التي تريد فهمها، وسأقترح لك خطوة بسيطة: راجع الفكرة، حل مثالًا قصيرًا، ثم جرّب سؤالًا مشابهًا.";
 
     const prompt = `
 أنت مساعد تعليمي عربي داخل منصة المئة. أجب بلغة سهلة ومشجعة ومختصرة.
-لا تعط وعودًا طبية أو قانونية. ركّز على التعلم والخطوة القادمة.
+لا تعط وعودًا طبية أو قانونية. ركز على التعلم والخطوة القادمة.
 سؤال الطالب: ${message}
 `;
 
     try {
-      const answer = await callGemini(prompt);
+      const answer = await callAi(prompt);
       return res.json({ text: answer || fallback });
     } catch {
       return res.json({ text: fallback });
@@ -96,7 +144,13 @@ aiRouter.post(
   "/study-plan",
   asyncHandler(async (req, res) => {
     const { weaknesses } = studyPlanSchema.parse(req.body);
-    const fallback = { steps: ["راجع شرح المهارة الأساسية.", "حل 10 أسئلة متدرجة.", "أعد اختبارًا قصيرًا للتأكد من التحسن."] };
+    const fallback = {
+      steps: [
+        "راجع شرح المهارة الأساسية في فيديو قصير.",
+        "حل 10 أسئلة متدرجة من السهل إلى المتوسط.",
+        "أعد اختبارًا قصيرًا للتأكد من التحسن.",
+      ],
+    };
 
     const prompt = `
 ضع خطة مذاكرة عربية قصيرة من 3 خطوات لطالب لديه ضعف في:
@@ -105,7 +159,7 @@ ${weaknesses.join(", ") || "مهارات عامة"}
 `;
 
     try {
-      const text = await callGemini(prompt, "application/json");
+      const text = await callAi(prompt, "application/json");
       return res.json(safeJsonParse(text, fallback));
     } catch {
       return res.json(fallback);
@@ -143,7 +197,7 @@ type واحد من lesson أو quiz أو flashcard. priority واحد من high 
 `;
 
     try {
-      const text = await callGemini(prompt, "application/json");
+      const text = await callAi(prompt, "application/json");
       const parsed = safeJsonParse(text, fallback);
       return res.json(Array.isArray(parsed) ? parsed : fallback);
     } catch {
@@ -171,7 +225,7 @@ aiRouter.post(
 `;
 
     try {
-      const text = await callGemini(prompt, "application/json");
+      const text = await callAi(prompt, "application/json");
       return res.json(safeJsonParse(text, fallback));
     } catch {
       return res.json(fallback);
@@ -192,7 +246,7 @@ ${courseTitle}
 `;
 
     try {
-      const text = await callGemini(prompt);
+      const text = await callAi(prompt);
       return res.json({ text: text || fallback });
     } catch {
       return res.json({ text: fallback });
