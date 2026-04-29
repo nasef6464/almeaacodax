@@ -357,20 +357,8 @@ const Quiz: React.FC = () => {
     
     const skillsAnalysis = Object.entries(skillStats).map(([skillId, stats]) => {
       const resolvedSkill = skills.find((skill) => skill.id === skillId);
-      const topicSkill = resolvedSkill
-        ? {
-            title: resolvedSkill.name,
-            pathId: resolvedSkill.pathId,
-            subjectId: resolvedSkill.subjectId,
-            sectionId: resolvedSkill.sectionId,
-          }
-        : undefined;
-      const nestedSkill = resolvedSkill
-        ? {
-            name: resolvedSkill.name,
-            subjectId: resolvedSkill.subjectId,
-          }
-        : undefined;
+      const topicSkill = resolvedSkill ? { title: resolvedSkill.name } : undefined;
+      const nestedSkill = resolvedSkill ? { name: resolvedSkill.name } : undefined;
       const mastery = Math.round((stats.correct / stats.total) * 100);
       const status: 'weak' | 'average' | 'strong' = mastery < 50 ? 'weak' : mastery >= 80 ? 'strong' : 'average';
 

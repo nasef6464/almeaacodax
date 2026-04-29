@@ -71,12 +71,22 @@ const getSkillRecommendation = (
     return {};
   }
 
-  const recommendedLesson = lessons.find((lesson) => lesson.skillIds?.includes(resolvedSkill.id));
-  const recommendedQuiz = quizzes.find((quiz) =>
-    quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
-    quiz.skillIds?.includes(resolvedSkill.id),
+  const recommendedLesson = lessons.find(
+    (lesson) =>
+      lesson.skillIds?.includes(resolvedSkill.id) &&
+      lesson.showOnPlatform !== false &&
+      (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
   );
-  const recommendedResource = libraryItems.find((item) => item.skillIds?.includes(resolvedSkill.id));
+  const recommendedQuiz = quizzes.find((quiz) =>
+    quiz.showOnPlatform !== false &&
+    quiz.isPublished !== false &&
+    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
+    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
+      quiz.skillIds?.includes(resolvedSkill.id)),
+  );
+  const recommendedResource = libraryItems.find(
+    (item) => item.skillIds?.includes(resolvedSkill.id) && item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'),
+  );
 
   return {
     lessonTitle: recommendedLesson?.title,
