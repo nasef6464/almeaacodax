@@ -1,12 +1,29 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../services/firebase';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
 
 const USE_REAL_API =
     (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+
+const writeLegacyFirebaseDoc = async (
+    collectionName: string,
+    id: string,
+    data: Record<string, unknown>,
+    options?: { merge?: boolean },
+) => {
+    if (USE_REAL_API) return;
+
+    try {
+        const [{ doc, setDoc }, { db }] = await Promise.all([
+            import('firebase/firestore'),
+            import('../services/firebase'),
+        ]);
+        await setDoc(doc(db, collectionName, id), data, options);
+    } catch (error) {
+        console.error('Legacy Firebase write failed:', error);
+    }
+};
 
 interface AppState {
     user: User;
@@ -549,8 +566,13 @@ export const useStore = create<AppState>()(
 
                 // Firebase writes are kept only for the legacy/demo mode.
                 if (!USE_REAL_API && state.user?.id) {
-                    setDoc(doc(db, 'activities', newActivity.id), { ...newActivity, userId: state.user.id }).catch(console.error);
-                    setDoc(doc(db, 'users', state.user.id), { completedLessons: [...state.completedLessons, lessonId] }, { merge: true }).catch(console.error);
+                    writeLegacyFirebaseDoc('activities', newActivity.id, { ...newActivity, userId: state.user.id });
+                    writeLegacyFirebaseDoc(
+                        'users',
+                        state.user.id,
+                        { completedLessons: [...state.completedLessons, lessonId] },
+                        { merge: true },
+                    );
                 }
 
                 set((state) => ({
@@ -580,7 +602,7 @@ export const useStore = create<AppState>()(
                 const state = get();
                 const attemptId = Date.now().toString();
                 if (!USE_REAL_API && state.user?.id) {
-                    setDoc(doc(db, 'questionAttempts', attemptId), { ...attempt, userId: state.user.id }).catch(console.error);
+                    writeLegacyFirebaseDoc('questionAttempts', attemptId, { ...attempt, userId: state.user.id });
                 }
                 if (USE_REAL_API && state.user?.email) {
                     api.createQuestionAttempt(attempt).catch(console.error);
@@ -629,7 +651,7 @@ export const useStore = create<AppState>()(
                 const newActivity = { ...activity, id: Date.now().toString(), date: new Date().toISOString() };
                 
                 if (!USE_REAL_API && state.user?.id) {
-                    setDoc(doc(db, 'activities', newActivity.id), { ...newActivity, userId: state.user.id }).catch(console.error);
+                    writeLegacyFirebaseDoc('activities', newActivity.id, { ...newActivity, userId: state.user.id });
                 }
 
                 set((state) => ({
