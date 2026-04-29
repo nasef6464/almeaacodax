@@ -2,6 +2,8 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import {
   ArrowRight,
+  RefreshCw,
+  PlusCircle,
   Eye,
   BarChart3,
   History,
@@ -396,6 +398,20 @@ const Results: React.FC = () => {
                 <History size={18} />
                 محاولاتك السابقة
               </button>
+              <Link
+                to="/quiz"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 border border-emerald-200 text-emerald-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-50 transition-colors"
+              >
+                <RefreshCw size={18} />
+                إعادة الاختبار
+              </Link>
+              <Link
+                to="/quizzes"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 border border-amber-200 text-amber-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-amber-50 transition-colors"
+              >
+                <PlusCircle size={18} />
+                اختبار إضافي
+              </Link>
             </div>
           </div>
         </Card>
