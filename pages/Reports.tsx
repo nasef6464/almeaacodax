@@ -1,6 +1,6 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Play, ChevronLeft, Target, PieChart, TrendingUp, Award, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -8,6 +8,7 @@ import { api } from '../services/api';
 import { Role } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
+import { shareTextSummary } from '../utils/shareText';
 
 interface ScopedAnalyticsOverview {
     scope: {
@@ -168,6 +169,7 @@ const Reports: React.FC = () => {
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
     const [copiedScopedSummary, setCopiedScopedSummary] = useState(false);
+    const [sharedScopedSummary, setSharedScopedSummary] = useState(false);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -333,6 +335,17 @@ const Reports: React.FC = () => {
             setCopiedScopedSummary(false);
         }
     };
+    const shareScopedSummary = async () => {
+        if (!scopedFollowUpSummary) return;
+
+        try {
+            await shareTextSummary('ملخص متابعة الأداء', scopedFollowUpSummary);
+            setSharedScopedSummary(true);
+            window.setTimeout(() => setSharedScopedSummary(false), 1800);
+        } catch {
+            setSharedScopedSummary(false);
+        }
+    };
 
     if (isStudentView && examResults.length === 0) {
         return (
@@ -434,6 +447,13 @@ const Reports: React.FC = () => {
                                         >
                                             {copiedScopedSummary ? <CheckCircle size={13} /> : <Copy size={13} />}
                                             {copiedScopedSummary ? 'تم النسخ' : 'نسخ ملخص المتابعة'}
+                                        </button>
+                                        <button
+                                            onClick={shareScopedSummary}
+                                            className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700 hover:bg-emerald-50"
+                                        >
+                                            {sharedScopedSummary ? <CheckCircle size={13} /> : <Share2 size={13} />}
+                                            {sharedScopedSummary ? 'تمت المشاركة' : 'مشاركة'}
                                         </button>
                                         <span className="self-start rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">تشخيص - علاج - قياس</span>
                                     </div>

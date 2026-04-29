@@ -15,6 +15,7 @@ import {
   FileText,
   Download,
   Copy,
+  Share2,
   ChevronRight as ChevronRightIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -25,6 +26,7 @@ import { useStore } from '../store/useStore';
 import { QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
+import { shareTextSummary } from '../utils/shareText';
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -215,6 +217,7 @@ const Results: React.FC = () => {
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
   const [copiedSummary, setCopiedSummary] = React.useState(false);
+  const [sharedSummary, setSharedSummary] = React.useState(false);
 
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
@@ -297,6 +300,15 @@ const Results: React.FC = () => {
       window.setTimeout(() => setCopiedSummary(false), 1800);
     } catch {
       setCopiedSummary(false);
+    }
+  };
+  const shareGuardianSummary = async () => {
+    try {
+      await shareTextSummary('ملخص نتيجة الاختبار', guardianFollowUpSummary);
+      setSharedSummary(true);
+      window.setTimeout(() => setSharedSummary(false), 1800);
+    } catch {
+      setSharedSummary(false);
     }
   };
 
@@ -478,6 +490,13 @@ const Results: React.FC = () => {
                   >
                     {copiedSummary ? <CheckCircle2 size={13} /> : <Copy size={13} />}
                     {copiedSummary ? 'تم النسخ' : 'نسخ الملخص'}
+                  </button>
+                  <button
+                    onClick={shareGuardianSummary}
+                    className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-black text-emerald-700 hover:bg-emerald-50"
+                  >
+                    {sharedSummary ? <CheckCircle2 size={13} /> : <Share2 size={13} />}
+                    {sharedSummary ? 'تمت المشاركة' : 'مشاركة'}
                   </button>
                   <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700">
                     مناسب للمتابعة
