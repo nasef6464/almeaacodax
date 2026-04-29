@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, Landmark, Save, TrendingUp, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
@@ -114,6 +114,14 @@ export const FinancialManager: React.FC = () => {
     const averageCustomerValue = users.length > 0 ? Math.round(estimatedTotalRevenue / users.length) : 0;
 
     const pendingRequestsCount = paymentRequests.filter((request) => request.status === 'pending').length;
+    const pendingPaymentRequests = useMemo(
+        () => paymentRequests.filter((request) => request.status === 'pending'),
+        [paymentRequests],
+    );
+    const reviewedPaymentRequests = useMemo(
+        () => paymentRequests.filter((request) => request.status !== 'pending'),
+        [paymentRequests],
+    );
 
     const kpis = [
         {
@@ -375,8 +383,11 @@ export const FinancialManager: React.FC = () => {
             {activeTab === 'requests' && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold text-gray-900">طلبات الدفع المرسلة من الطلاب</h2>
-                        <span className="text-sm text-gray-500">{paymentRequests.length} طلب</span>
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-900">طلبات الدفع المرسلة من الطلاب</h2>
+                            <p className="text-xs text-gray-500 mt-1">الطلبات المعلقة تظهر أولًا حتى لا تضيع وسط السجل القديم.</p>
+                        </div>
+                        <span className="text-sm text-gray-500">{pendingRequestsCount} بانتظار المراجعة / {paymentRequests.length} إجمالي</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-right">
@@ -392,7 +403,7 @@ export const FinancialManager: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {paymentRequests.map((request) => (
+                                {[...pendingPaymentRequests, ...reviewedPaymentRequests].map((request) => (
                                     <tr key={request.id} className="hover:bg-gray-50 transition-colors align-top">
                                         <td className="p-4">
                                             <div className="font-medium text-gray-900">{request.userName || 'طالب'}</div>

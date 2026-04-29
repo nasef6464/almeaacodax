@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -115,6 +115,9 @@ const getOrCreateSettings = async () => {
   return settings;
 };
 
+const isPaymentMethodEnabled = (settings: any, method: "card" | "transfer" | "wallet") =>
+  Boolean(settings?.[method]?.enabled);
+
 export const paymentRouter = Router();
 
 paymentRouter.get(
@@ -159,10 +162,29 @@ paymentRouter.post(
   requireAuth,
   asyncHandler(async (req, res) => {
     const payload = paymentRequestCreateSchema.parse(req.body);
+    const settings = await getOrCreateSettings();
     const user = await UserModel.findById(req.authUser?.id);
 
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    if (!isPaymentMethodEnabled(settings, payload.paymentMethod)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment method is not available now" });
+    }
+
+    const pendingDuplicate = await PaymentRequestModel.findOne({
+      userId: String(user._id),
+      itemType: payload.itemType,
+      itemId: payload.itemId,
+      status: "pending",
+    });
+
+    if (pendingDuplicate) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "There is already a pending payment request for this item",
+        request: pendingDuplicate,
+      });
     }
 
     const created = await PaymentRequestModel.create({
