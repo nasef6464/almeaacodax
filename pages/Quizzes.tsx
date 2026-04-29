@@ -314,14 +314,14 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           {courseFilters.map((filter) => (
             <button
               key={filter}
-              onClick={() => setActiveFilter(filter === 'Ø§Ù„ÙƒÙ„' ? 'all' : filter)}
+              onClick={() => setActiveFilter(filter === 'الكل' ? 'all' : filter)}
               className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                (activeFilter === 'all' && filter === 'Ø§Ù„ÙƒÙ„') || activeFilter === filter
+                (activeFilter === 'all' && filter === 'الكل') || activeFilter === filter
                   ? 'bg-secondary-500 text-white shadow-md'
                   : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
               }`}
             >
-              {filter === 'Ø§Ù„ÙƒÙ„' ? 'الكل' : filter}
+              {filter}
             </button>
           ))}
         </div>
@@ -604,77 +604,22 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3 justify-center">
-        {courseFilters.map((filter) => (
-          <button
-            key={filter}
-            onClick={() => setActiveFilter(filter === 'الكل' ? 'all' : filter)}
-            className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-              (activeFilter === 'all' && filter === 'الكل') || activeFilter === filter
-                ? 'bg-secondary-500 text-white shadow-md'
-                : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-            }`}
+      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="text-lg font-black text-gray-900">سجل المحاولات في مكان واحد</h3>
+            <p className="mt-2 text-sm leading-7 text-gray-600">
+              هذه الصفحة لبدء اختبارات جديدة أو فتح اختبارات موجهة. أما نتائجك السابقة، مراجعة الإجابات، وتحليل المهارات فتجدها من تبويب اختباراتي.
+            </p>
+          </div>
+          <Link
+            to="/dashboard?tab=quizzes"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3 text-sm font-bold text-white hover:bg-gray-800"
           >
-            {filter}
-          </button>
-        ))}
-      </div>
-
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">سجل المحاولات</div>
-
-        {filteredQuizzes.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[850px]">
-              <thead className="bg-gray-50 text-gray-500 text-xs font-bold">
-                <tr>
-                  <th className="p-4 text-right">اسم الاختبار وعدد الأسئلة</th>
-                  <th className="p-4 text-center">الدرجة</th>
-                  <th className="p-4 text-center">الوقت والتاريخ</th>
-                  <th className="p-4 text-center">الحالة</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredQuizzes.map((quiz, index) => (
-                  <tr key={`${quiz.quizId}-${quiz.date}-${index}`} className="hover:bg-gray-50 transition-colors group">
-                    <td className="p-4">
-                      <div className="flex flex-col gap-1">
-                        <div className="font-bold text-gray-800">{quiz.quizTitle}</div>
-                        <span className="text-xs text-gray-500">{quiz.totalQuestions} سؤال</span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className={`text-sm font-bold ${quiz.score < 50 ? 'text-red-500' : 'text-emerald-600'}`}>
-                        {quiz.score}%
-                      </div>
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className="text-[10px] text-gray-400" dir="ltr">
-                        {new Date(quiz.date).toLocaleDateString()}
-                      </div>
-                      <div className="text-[10px] text-gray-400" dir="ltr">
-                        {new Date(quiz.date).toLocaleTimeString()}
-                      </div>
-                    </td>
-                    <td className="p-4 text-center">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                          quiz.score >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-                        }`}
-                      >
-                        {quiz.score >= 50 ? 'ناجح' : 'يحتاج إعادة'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="p-10 text-center text-gray-500">
-            لا توجد نتائج مطابقة للفلاتر الحالية. بعد إكمال أول اختبار ستظهر المحاولات هنا.
-          </div>
-        )}
+            <FileText size={16} />
+            افتح اختباراتي
+          </Link>
+        </div>
       </div>
 
       <PaymentModal

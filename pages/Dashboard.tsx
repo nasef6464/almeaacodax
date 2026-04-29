@@ -1,5 +1,5 @@
 ﻿
-import React, { useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { useStore } from '../store/useStore';
 import { QuizResult, SkillGap } from '../types';
@@ -415,6 +415,7 @@ const Dashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'overview' | 'paths' | 'my-courses' | 'smart-path' | 'sessions' | 'saher' | 'quizzes' | 'reports' | 'favorites' | 'plan' | 'qa' | 'requests'>('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { user } = useStore();
+    const location = useLocation();
 
     const menuItems = [
         { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
@@ -430,6 +431,15 @@ const Dashboard: React.FC = () => {
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
         { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
     ];
+
+    useEffect(() => {
+        const requestedTab = new URLSearchParams(location.search).get('tab');
+        const allowedTabs = new Set(menuItems.map((item) => item.id));
+
+        if (requestedTab && allowedTabs.has(requestedTab)) {
+            setActiveTab(requestedTab as typeof activeTab);
+        }
+    }, [location.search]);
 
     // Render Content Based on Tab
     const renderContent = () => {
