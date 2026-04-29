@@ -9,7 +9,7 @@ import { adapter } from '../services/adapter';
 import { Course } from '../types';
 
 const Courses: React.FC = () => {
-    const { user, enrolledCourses, completedLessons, hasScopedPackageAccess } = useStore();
+    const { user, paths, enrolledCourses, completedLessons, hasScopedPackageAccess } = useStore();
     const [activeTab, setActiveTab] = useState<'enrolled' | 'active' | 'completed'>('active');
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
@@ -39,6 +39,18 @@ const Courses: React.FC = () => {
             mounted = false;
         };
     }, []);
+
+    const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
+    const visiblePathIds = useMemo(
+        () => new Set(paths.filter((path) => canSeeHiddenPaths || path.isActive !== false).map((path) => path.id)),
+        [canSeeHiddenPaths, paths],
+    );
+
+    const canShowCourse = (course: Course) =>
+        (canSeeHiddenPaths || !course.pathId || visiblePathIds.has(course.pathId)) &&
+        course.showOnPlatform !== false &&
+        course.isPublished !== false &&
+        (!course.approvalStatus || course.approvalStatus === 'approved');
 
     // Map courses with dynamic progress based on completedLessons
     const coursesWithProgress = useMemo(() => {
@@ -75,6 +87,7 @@ const Courses: React.FC = () => {
     // Optimized Filter Logic with useMemo
     const filteredCourses = useMemo(() => {
         return coursesWithProgress.filter(c => 
+            canShowCourse(c) &&
             (
                 enrolledCourses.includes(c.id) ||
                 (user.subscription?.purchasedCourses || []).includes(c.id) ||
@@ -83,7 +96,7 @@ const Courses: React.FC = () => {
             ((c.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             (c.category || c.pathId || '').toLowerCase().includes(searchQuery.toLowerCase()))
         );
-    }, [searchQuery, coursesWithProgress, enrolledCourses, hasScopedPackageAccess, user.subscription?.purchasedCourses]);
+    }, [searchQuery, coursesWithProgress, enrolledCourses, hasScopedPackageAccess, user.subscription?.purchasedCourses, canSeeHiddenPaths, visiblePathIds]);
 
     const displayedCourses = useMemo(() => activeTab === 'completed' 
         ? filteredCourses.filter(c => c.progress === 100)

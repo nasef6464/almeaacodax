@@ -32,7 +32,7 @@ const formatCreatedDate = (date?: number) => {
 };
 
 const Quizzes: React.FC = () => {
-  const { examResults, quizzes, subjects, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
+  const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
 
@@ -51,10 +51,18 @@ const Quizzes: React.FC = () => {
     return Math.max(0, last - first);
   }, [examResults]);
 
+  const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
+  const visiblePathIds = useMemo(
+    () => new Set(paths.filter((path) => canSeeHiddenPaths || path.isActive !== false).map((path) => path.id)),
+    [canSeeHiddenPaths, paths],
+  );
+
   const canAccessQuiz = useMemo(
     () => (quiz: (typeof quizzes)[number]) => {
       if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
       if (quiz.showOnPlatform === false) return false;
+      if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
+      if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
 
       if (quiz.dueDate) {
         const deadline = new Date(`${quiz.dueDate}T23:59:59`);
@@ -88,7 +96,7 @@ const Quizzes: React.FC = () => {
 
       return false;
     },
-    [checkAccess, hasScopedPackageAccess, quizzes, user.groupIds, user.id],
+    [canSeeHiddenPaths, checkAccess, hasScopedPackageAccess, quizzes, user.groupIds, user.id, visiblePathIds],
   );
 
   const availablePreparedQuizzes = useMemo(
@@ -148,12 +156,14 @@ const Quizzes: React.FC = () => {
         .filter((quiz) => {
           if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
           if (quiz.showOnPlatform === false) return false;
+          if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
+          if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
           if (quiz.access.type !== 'paid') return false;
           return !canAccessQuiz(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
         .slice(0, 4),
-    [canAccessQuiz, quizzes],
+    [canAccessQuiz, canSeeHiddenPaths, quizzes, visiblePathIds],
   );
 
   const weakSkillRecommendations = useMemo(() => {
