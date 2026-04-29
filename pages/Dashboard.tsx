@@ -440,7 +440,7 @@ const Dashboard: React.FC = () => {
             case 'smart-path': return <SmartPathTab />;
             case 'sessions': return <SessionsTab />;
             case 'saher': return <SaherTab />;
-            case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes /></Suspense>;
+            case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes view="attempts" /></Suspense>;
             case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
             case 'favorites': return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
             case 'plan': return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;

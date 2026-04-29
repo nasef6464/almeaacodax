@@ -1,9 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import {
   ArrowRight,
+  BarChart3,
   CheckCircle,
   Clock,
+  Eye,
   FileText,
+  RotateCcw,
   Sparkles,
   Target,
   TrendingUp,
@@ -11,7 +14,13 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
+import { QuizDetailsModal } from '../components/QuizDetailsModal';
 import { useStore } from '../store/useStore';
+import { QuizResult } from '../types';
+
+interface QuizzesProps {
+  view?: 'catalog' | 'attempts';
+}
 
 const formatQuizDate = (date?: string) => {
   if (!date) return 'متاح الآن';
@@ -31,10 +40,34 @@ const formatCreatedDate = (date?: number) => {
   });
 };
 
-const Quizzes: React.FC = () => {
+const toQuizHistoryItem = (result: QuizResult) => ({
+  id: result.quizId || result.date,
+  title: result.quizTitle,
+  questionCount: result.totalQuestions,
+  courseName: result.quizTitle,
+  passMark: 50,
+  difficulty: 'Medium' as const,
+  firstAttempt: {
+    score: result.score,
+    time: result.timeSpent,
+    date: result.date,
+  },
+  bestAttempt: {
+    score: result.score,
+    time: result.timeSpent,
+    date: result.date,
+  },
+  improvement: 0,
+  status: result.score >= 50 ? 'passed' as const : 'failed' as const,
+  skillsAnalysis: result.skillsAnalysis || [],
+});
+
+const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
+  const [selectedAttempt, setSelectedAttempt] = useState<(typeof examResults)[number] | null>(null);
+  const isAttemptsView = view === 'attempts';
 
   const totalQuizzes = examResults.length;
   const passedQuizzes = examResults.filter((quiz) => quiz.score >= 50).length;
@@ -259,6 +292,148 @@ const Quizzes: React.FC = () => {
     activeFilter === 'all' || activeFilter === 'الكل'
       ? examResults
       : examResults.filter((quiz) => quiz.quizTitle.includes(activeFilter));
+
+  if (isAttemptsView) {
+    return (
+      <div className="space-y-8 pb-20">
+        <header className="flex flex-col gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
+          <p className="text-sm text-gray-500">
+            هنا سجل الاختبارات التي قمت بحلها فقط، مع تفاصيل الدرجة وتحليل المهارات وإمكانية مراجعة التقرير.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
+          <StatCard icon={<TrendingUp size={24} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
+          <StatCard icon={<CheckCircle size={24} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
+          <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
+        </div>
+
+        <div className="flex flex-wrap gap-3 justify-center">
+          {courseFilters.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter === 'Ø§Ù„ÙƒÙ„' ? 'all' : filter)}
+              className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                (activeFilter === 'all' && filter === 'Ø§Ù„ÙƒÙ„') || activeFilter === filter
+                  ? 'bg-secondary-500 text-white shadow-md'
+                  : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
+              }`}
+            >
+              {filter === 'Ø§Ù„ÙƒÙ„' ? 'الكل' : filter}
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">سجل محاولاتي</div>
+
+          {filteredQuizzes.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[980px]">
+                <thead className="bg-gray-50 text-gray-500 text-xs font-bold">
+                  <tr>
+                    <th className="p-4 text-right">اسم الاختبار وعدد الأسئلة</th>
+                    <th className="p-4 text-center">الدرجة</th>
+                    <th className="p-4 text-center">أضعف مهارة</th>
+                    <th className="p-4 text-center">الوقت والتاريخ</th>
+                    <th className="p-4 text-center">الحالة</th>
+                    <th className="p-4 text-center">الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredQuizzes.map((quiz, index) => {
+                    const weakestSkill = [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
+
+                    return (
+                      <tr key={`${quiz.quizId}-${quiz.date}-${index}`} className="hover:bg-gray-50 transition-colors group">
+                        <td className="p-4">
+                          <div className="flex flex-col gap-1">
+                            <div className="font-bold text-gray-800">{quiz.quizTitle}</div>
+                            <span className="text-xs text-gray-500">{quiz.totalQuestions} سؤال</span>
+                          </div>
+                        </td>
+                        <td className="p-4 text-center">
+                          <div className={`text-sm font-bold ${quiz.score < 50 ? 'text-red-500' : 'text-emerald-600'}`}>
+                            {quiz.score}%
+                          </div>
+                        </td>
+                        <td className="p-4 text-center">
+                          {weakestSkill ? (
+                            <div className="text-xs">
+                              <div className="font-bold text-gray-800">{weakestSkill.skill}</div>
+                              <div className={weakestSkill.mastery < 50 ? 'text-red-500' : 'text-amber-600'}>{weakestSkill.mastery}%</div>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400">لا يوجد تحليل</span>
+                          )}
+                        </td>
+                        <td className="p-4 text-center">
+                          <div className="text-[10px] text-gray-400" dir="ltr">
+                            {new Date(quiz.date).toLocaleDateString()}
+                          </div>
+                          <div className="text-[10px] text-gray-400" dir="ltr">
+                            {new Date(quiz.date).toLocaleTimeString()}
+                          </div>
+                        </td>
+                        <td className="p-4 text-center">
+                          <span
+                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                              quiz.score >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                            }`}
+                          >
+                            {quiz.score >= 50 ? 'ناجح' : 'يحتاج إعادة'}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex flex-wrap justify-center gap-2">
+                            <button
+                              onClick={() => setSelectedAttempt(quiz)}
+                              className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
+                            >
+                              <Eye size={14} />
+                              تفاصيل
+                            </button>
+                            <Link
+                              to="/reports"
+                              className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                            >
+                              <BarChart3 size={14} />
+                              التحليل
+                            </Link>
+                            <Link
+                              to={quiz.quizId ? `/quiz/${quiz.quizId}` : '/quiz'}
+                              className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white hover:bg-gray-800"
+                            >
+                              <RotateCcw size={14} />
+                              إعادة
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-10 text-center text-gray-500">
+              لا توجد محاولات بعد. ابدأ اختبارًا من صفحة ساهر أو من الاختبارات الموجهة، وبعد الإنهاء سيظهر السجل هنا.
+              <div className="mt-5">
+                <Link to="/quiz" className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white hover:bg-amber-600">
+                  <Zap size={16} />
+                  ابدأ اختبار ساهر
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {selectedAttempt ? <QuizDetailsModal quiz={toQuizHistoryItem(selectedAttempt)} onClose={() => setSelectedAttempt(null)} /> : null}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-20">
