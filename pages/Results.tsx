@@ -670,7 +670,7 @@ const Results: React.FC = () => {
                 <div className="mt-2 text-sm font-bold text-rose-700">{weakestSkill.mastery}%</div>
               </div>
 
-              {starterChecklist.length > 0 ? (
+              {isFullResult && starterChecklist.length > 0 ? (
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
                   <div className="mb-3 flex items-center gap-2 text-indigo-800">
                     <CheckCircle2 size={16} />
@@ -684,7 +684,7 @@ const Results: React.FC = () => {
                 </div>
               ) : null}
 
-              {recoveryPlanItems.length > 0 ? (
+              {isFullResult && recoveryPlanItems.length > 0 ? (
                 <div className="rounded-2xl border border-gray-100 bg-white p-4">
                   <div className="mb-3 text-sm font-black text-gray-800">خطة علاجية صغيرة قبل الإعادة</div>
                   <div className="grid gap-3">
@@ -698,6 +698,25 @@ const Results: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : null}
+
+              {!isFullResult ? (
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
+                  <div className="mb-2 flex items-center gap-2 text-indigo-800">
+                    <Sparkles size={16} />
+                    <span className="text-sm font-black">اختصرنا لك النتيجة</span>
+                  </div>
+                  <p className="text-sm leading-7 text-indigo-700">
+                    ركّز الآن على المهارة الأضعف فقط. لو احتجت كل المهارات والخطة العلاجية افتح التقرير الكامل.
+                  </p>
+                  <button
+                    onClick={() => setResultDepth('full')}
+                    className="print-hide mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-50"
+                  >
+                    <FileText size={16} />
+                    عرض التقرير الكامل
+                  </button>
                 </div>
               ) : null}
 
@@ -857,77 +876,7 @@ const Results: React.FC = () => {
           </div>
         ) : null}
       </Card>
-      ) : (
-        <Card className="p-4 sm:p-6 bg-white">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">ملخص مهارات سريع</h3>
-              <p className="text-sm leading-7 text-gray-500">
-                أبقينا التفاصيل الثقيلة مخفية حتى يركز الطالب على أهم خطوة الآن، ويمكن فتح التقرير الكامل عند الحاجة.
-              </p>
-            </div>
-            <button
-              onClick={() => setResultDepth('full')}
-              className="print-hide inline-flex items-center gap-2 self-start rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
-            >
-              <BarChart3 size={16} />
-              عرض التفاصيل
-            </button>
-          </div>
-
-          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
-              <div className="mb-2 flex items-center gap-2 text-rose-700">
-                <AlertCircle size={18} />
-                <span className="text-sm font-black">أولوية المذاكرة</span>
-              </div>
-              <p className="text-sm leading-7 text-rose-800">
-                {weakestSkill ? `${weakestSkill.skillName} - ${weakestSkill.mastery}%` : 'لا توجد مهارة ضعيفة واضحة في هذه المحاولة.'}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-              <div className="mb-2 flex items-center gap-2 text-amber-700">
-                <Lightbulb size={18} />
-                <span className="text-sm font-black">اقتراح سريع</span>
-              </div>
-              <p className="text-sm leading-7 text-amber-800">
-                {weakestSkill ? weakestSkill.actionText : 'راجع حلول الاختبار، ثم أعد اختبارًا قصيرًا لقياس التحسن.'}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-              <div className="mb-2 flex items-center gap-2 text-emerald-700">
-                <CheckCircle2 size={18} />
-                <span className="text-sm font-black">علامة تطمئنك</span>
-              </div>
-              <p className="text-sm leading-7 text-emerald-800">
-                لديك {strongSkillsCount} مهارات قوية و{averageSkillsCount} مهارات متوسطة. الهدف القادم هو رفع المهارات التي تحتاج دعمًا.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <button
-              onClick={() => setViewMode('review')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 transition-colors"
-            >
-              <Eye size={16} />
-              مراجعة الحلول
-            </button>
-            {weakestSkill?.lessonLink ? (
-              <Link to={weakestSkill.lessonLink} className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors">
-                <BookOpen size={16} />
-                ابدأ بالشرح المناسب
-              </Link>
-            ) : null}
-            {weakestSkill?.quizLink ? (
-              <Link to={weakestSkill.quizLink} className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-100 transition-colors">
-                <Target size={16} />
-                تدريب على نفس المهارة
-              </Link>
-            ) : null}
-          </div>
-        </Card>
-      )}
+      ) : null}
 
       <DetailedAnalysisModal
         isOpen={isAnalysisOpen}
