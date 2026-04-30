@@ -64,6 +64,19 @@ const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
 const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
 
+const buildSkillSessionLink = (skill?: { skill?: string; skillId?: string; subjectName?: string; sectionName?: string } | null) => {
+    if (!skill) return '/book-session';
+
+    const params = new URLSearchParams();
+    if (skill.skillId) params.set('skillId', skill.skillId);
+    if (skill.skill) params.set('skillName', displayText(skill.skill));
+    if (skill.subjectName) params.set('subjectName', displayText(skill.subjectName));
+    if (skill.sectionName) params.set('sectionName', displayText(skill.sectionName));
+    params.set('source', 'reports');
+
+    return `/book-session?${params.toString()}`;
+};
+
 const getReportMasteryTone = (mastery: number) => {
     if (mastery < 50) {
         return {
@@ -1074,7 +1087,7 @@ const Reports: React.FC = () => {
                                         ملف داعم
                                     </a>
                                 ) : null}
-                                <Link to="/book-session" className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center gap-2">
+                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center gap-2">
                                     <Clock size={16} />
                                     حجز حصة
                                 </Link>
@@ -1267,7 +1280,7 @@ const Reports: React.FC = () => {
                                             <span className="hidden md:inline">تدريب</span>
                                         </Link>
                                         <Link 
-                                            to="/book-session" 
+                                            to={buildSkillSessionLink(skill)} 
                                             className="flex-1 md:flex-none bg-indigo-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-indigo-700 flex items-center justify-center gap-1"
                                             title="طلب شرح خاص"
                                         >
