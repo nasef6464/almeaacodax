@@ -114,13 +114,13 @@ export const BookSession: React.FC = () => {
     addActivity({
       type: 'session_booked',
       title: `تم حجز حصة خاصة: ${selectedTargetLabel}`,
-      link: '/dashboard',
+      link: '/dashboard?tab=sessions',
     });
 
     setIsSubmitted(true);
 
     setTimeout(() => {
-      navigate('/dashboard');
+      navigate('/dashboard?tab=sessions');
     }, 3000);
   };
 
