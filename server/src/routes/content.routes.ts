@@ -15,6 +15,7 @@ import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
+import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -109,8 +110,6 @@ const buildOwnedDocumentQuery = (
 
   return { $and: [baseQuery, { $or: ownershipConditions }] };
 };
-
-const isStaffRole = (role?: string) => role === "admin" || role === "teacher" || role === "supervisor";
 
 const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (authUser?.role === "admin") {
@@ -507,10 +506,16 @@ contentRouter.get(
           showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
+    const [scopedTopicFilter, scopedLessonFilter, scopedLibraryFilter] = await Promise.all([
+      withLearnerVisiblePaths(topicFilter, req.authUser),
+      withLearnerVisiblePaths(lessonFilter, req.authUser),
+      withLearnerVisiblePaths(libraryFilter, req.authUser),
+    ]);
+
     const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-      TopicModel.find(topicFilter).sort({ subjectId: 1, order: 1 }),
-      LessonModel.find(lessonFilter).sort({ createdAt: -1 }),
-      LibraryItemModel.find(libraryFilter).sort({ createdAt: -1 }),
+      TopicModel.find(scopedTopicFilter).sort({ subjectId: 1, order: 1 }),
+      LessonModel.find(scopedLessonFilter).sort({ createdAt: -1 }),
+      LibraryItemModel.find(scopedLibraryFilter).sort({ createdAt: -1 }),
       getScopedOperationalData(req.authUser),
       req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }) : Promise.resolve([]),
     ]);

@@ -16,6 +16,7 @@ import { SubjectModel } from "../models/Subject.js";
 import { SectionModel } from "../models/Section.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
 const questionBaseSchema = z.object({
   id: z.string().optional(),
@@ -145,8 +146,6 @@ const resolveQuizSkillIds = async (questionIds: string[]) => {
   const questions = await QuestionModel.find({ id: { $in: questionIds } }).select("skillIds");
   return [...new Set(questions.flatMap((question) => question.skillIds || []).filter(Boolean))];
 };
-
-const isStaffRole = (role?: string) => role === "admin" || role === "teacher" || role === "supervisor";
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (!authUser) {
@@ -371,6 +370,14 @@ const canSubmitQuiz = async (quiz: any, user: any) => {
     return false;
   }
 
+  const pathId = String(quiz.pathId || "");
+  if (pathId) {
+    const activePathIds = await getActivePathIds();
+    if (!activePathIds.includes(pathId)) {
+      return false;
+    }
+  }
+
   const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
   const targetGroupIds = new Set((quiz.targetGroupIds || []).map(String));
   const userGroupIds = (user.groupIds || []).map(String);
@@ -400,7 +407,6 @@ const canSubmitQuiz = async (quiz: any, user: any) => {
     return hasExplicitTarget || matchesAllowedGroup;
   }
 
-  const pathId = String(quiz.pathId || "");
   const subjectId = String(quiz.subjectId || "");
   const purchasedPackageIds = (user.subscription?.purchasedPackages || []).map(String);
 
@@ -532,13 +538,13 @@ quizRouter.get(
   "/questions",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const items = await QuestionModel.find(
-      isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          },
-    ).sort({ createdAt: -1 });
+    const baseFilter = isStaffRole(req.authUser?.role)
+      ? {}
+      : {
+          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
+        };
+    const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
+    const items = await QuestionModel.find(filter).sort({ createdAt: -1 });
     res.json(items);
   }),
 );
@@ -607,15 +613,15 @@ quizRouter.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const items = await QuizModel.find(
-      isStaffRole(req.authUser?.role)
-        ? {}
-        : {
-            isPublished: true,
-            showOnPlatform: { $ne: false },
-            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-          },
-    ).sort({ createdAt: -1 });
+    const baseFilter = isStaffRole(req.authUser?.role)
+      ? {}
+      : {
+          isPublished: true,
+          showOnPlatform: { $ne: false },
+          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
+        };
+    const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
+    const items = await QuizModel.find(filter).sort({ createdAt: -1 });
     res.json(items);
   }),
 );

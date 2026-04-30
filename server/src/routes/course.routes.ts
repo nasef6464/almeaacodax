@@ -4,6 +4,7 @@ import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
 const courseSchema = z.object({
   id: z.string().optional(),
@@ -46,8 +47,6 @@ const courseSchema = z.object({
   reviewerNotes: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
 });
-
-const isStaffRole = (role?: string) => role === "admin" || role === "teacher" || role === "supervisor";
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (!authUser) {
@@ -163,8 +162,9 @@ export const courseRouter = Router();
 courseRouter.get(
   "/",
   optionalAuth,
-  asyncHandler(async (_req, res) => {
-    const items = await CourseModel.find(buildCourseVisibilityFilter(_req.authUser)).sort({ createdAt: -1 });
+  asyncHandler(async (req, res) => {
+    const filter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const items = await CourseModel.find(filter).sort({ createdAt: -1 });
     res.json(items);
   }),
 );
@@ -173,9 +173,10 @@ courseRouter.get(
   "/:id",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
     const item = await CourseModel.findOne({
       _id: req.params.id,
-      ...buildCourseVisibilityFilter(req.authUser),
+      ...visibilityFilter,
     });
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
