@@ -229,6 +229,7 @@ const Plan: React.FC = () => {
     paths,
     subjects,
     skills,
+    topics,
     courses,
     lessons,
     quizzes,
@@ -409,6 +410,21 @@ const Plan: React.FC = () => {
           const matchesSubject = !item.skillId && item.subjectId ? resource.subjectId === item.subjectId : false;
           return (matchesSkill || matchesSubject) && canUseLibraryItemInStudentPlan(resource);
         });
+        const relatedLessonTopic = relatedLesson
+          ? topics.find((topic) => topic.lessonIds?.includes(relatedLesson.id)) ||
+            topics.find(
+              (topic) =>
+                topic.pathId === relatedLesson.pathId &&
+                topic.subjectId === relatedLesson.subjectId &&
+                (!relatedLesson.sectionId || topic.sectionId === relatedLesson.sectionId),
+            )
+          : undefined;
+        const lessonLearningLink =
+          relatedLesson?.pathId && relatedLesson?.subjectId
+            ? `/category/${relatedLesson.pathId}?subject=${relatedLesson.subjectId}&tab=skills${
+                relatedLessonTopic ? `&topic=${relatedLessonTopic.id}&content=lessons&lesson=${relatedLesson.id}` : ''
+              }`
+            : '/reports';
 
         return {
           skillId: item.skillId,
@@ -418,7 +434,7 @@ const Plan: React.FC = () => {
           mastery,
           attempts: item.attempts,
           lesson: relatedLesson
-            ? { title: displayText(relatedLesson.title, 'درس مقترح'), link: `/lesson/${relatedLesson.id}` }
+            ? { title: displayText(relatedLesson.title, 'درس مقترح'), link: lessonLearningLink }
             : undefined,
           quiz: relatedQuiz
             ? { title: displayText(relatedQuiz.title, 'اختبار مقترح'), link: `/quiz/${relatedQuiz.id}` }
@@ -431,7 +447,7 @@ const Plan: React.FC = () => {
       .filter((item) => item.mastery < 85)
       .sort((a, b) => a.mastery - b.mastery)
       .slice(0, 4);
-  }, [activePathId, examResults, libraryItems, lessons, quizzes, skills]);
+  }, [activePathId, examResults, libraryItems, lessons, quizzes, skills, topics]);
 
   const smartPlanSummary = useMemo(() => {
     if (!smartSkillPlan.length) {
