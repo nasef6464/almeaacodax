@@ -63,6 +63,7 @@ const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
   allSkills: ReturnType<typeof useStore.getState>['skills'],
+  topics: ReturnType<typeof useStore.getState>['topics'],
   lessons: ReturnType<typeof useStore.getState>['lessons'],
   quizzes: ReturnType<typeof useStore.getState>['quizzes'],
   libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
@@ -75,14 +76,20 @@ const getSkillRecommendation = (
   const resolvedSkill = skill.skillId
     ? allSkills.find((item) => item.id === skill.skillId)
     : allSkills.find((item) => item.name === skill.skill);
+  const resolvedTopic = !resolvedSkill
+    ? skill.skillId
+      ? topics.find((item) => item.id === skill.skillId)
+      : topics.find((item) => item.title === skill.skill)
+    : undefined;
 
-  if (!resolvedSkill) {
+  if (!resolvedSkill && !resolvedTopic) {
     return {};
   }
 
   const recommendedLesson = lessons.find(
     (lesson) =>
-      lesson.skillIds?.includes(resolvedSkill.id) &&
+      ((resolvedSkill && lesson.skillIds?.includes(resolvedSkill.id)) ||
+        (resolvedTopic && resolvedTopic.lessonIds?.includes(lesson.id))) &&
       lesson.showOnPlatform !== false &&
       (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
   );
@@ -90,26 +97,35 @@ const getSkillRecommendation = (
     quiz.showOnPlatform !== false &&
     quiz.isPublished !== false &&
     (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
-      quiz.skillIds?.includes(resolvedSkill.id)),
+    ((resolvedSkill &&
+      (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
+        quiz.skillIds?.includes(resolvedSkill.id))) ||
+      (resolvedTopic && resolvedTopic.quizIds?.includes(quiz.id))),
   );
   const recommendedResource = libraryItems.find(
-    (item) => item.skillIds?.includes(resolvedSkill.id) && item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'),
+    (item) =>
+      ((resolvedSkill && item.skillIds?.includes(resolvedSkill.id)) ||
+        (resolvedTopic && item.subjectId === resolvedTopic.subjectId && (!resolvedTopic.sectionId || item.sectionId === resolvedTopic.sectionId))) &&
+      item.showOnPlatform !== false &&
+      (!item.approvalStatus || item.approvalStatus === 'approved'),
   );
+  const recommendationPathId = resolvedSkill?.pathId || resolvedTopic?.pathId;
+  const recommendationSubjectId = resolvedSkill?.subjectId || resolvedTopic?.subjectId;
+  const recommendationSectionId = resolvedSkill?.sectionId || resolvedTopic?.sectionId;
 
   return {
     lessonTitle: displayText(recommendedLesson?.title),
     lessonLink:
-      resolvedSkill.pathId && resolvedSkill.subjectId
-        ? `/category/${resolvedSkill.pathId}?subject=${resolvedSkill.subjectId}&tab=skills`
+      recommendationPathId && recommendationSubjectId
+        ? `/category/${recommendationPathId}?subject=${recommendationSubjectId}&tab=skills${resolvedTopic?.id ? `&topic=${resolvedTopic.id}&content=lessons` : ''}`
         : undefined,
     lessonVideoUrl: recommendedLesson?.videoUrl,
     quizTitle: displayText(recommendedQuiz?.title),
     quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
     resourceTitle: displayText(recommendedResource?.title),
     resourceUrl: recommendedResource?.url,
-    subjectName: resolvedSkill.subjectId ? displayText(useStore.getState().subjects.find((item) => item.id === resolvedSkill.subjectId)?.name) : undefined,
-    sectionName: resolvedSkill.sectionId ? displayText(useStore.getState().sections.find((item) => item.id === resolvedSkill.sectionId)?.name) : undefined,
+    subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
+    sectionName: recommendationSectionId ? displayText(useStore.getState().sections.find((item) => item.id === recommendationSectionId)?.name) : undefined,
     actionText:
       recommendedLesson && recommendedQuiz
         ? 'ابدأ بمراجعة الشرح أولًا ثم نفّذ تدريبًا قصيرًا على نفس المهارة.'
@@ -219,7 +235,7 @@ const NextStepChip = ({
 };
 
 const Results: React.FC = () => {
-  const { examResults, skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { examResults, skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -238,7 +254,7 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
-        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
+        const recommendation = getSkillRecommendation(item, skills, topics, lessons, quizzes, libraryItems, questions);
         const subjectName =
           recommendation.subjectName ||
           (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
@@ -293,7 +309,7 @@ const Results: React.FC = () => {
     return Array.from(aggregated.values())
       .map(({ totalMastery, lowestMastery, ...item }) => item)
       .sort((a, b) => a.mastery - b.mastery);
-  }, [latestResult, skills, lessons, quizzes, libraryItems, questions, subjects, sections]);
+  }, [latestResult, skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections]);
 
   const weakestSkill = analysisItems[0];
   const summaryTone = getFriendlyResultMessage(latestResult?.score || 0);
@@ -1023,10 +1039,10 @@ const ReviewSolutions = ({
 };
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
-  const { skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
-      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
+      const recommendation = getSkillRecommendation(item, skills, topics, lessons, quizzes, libraryItems, questions);
       return {
         ...item,
         subjectName:

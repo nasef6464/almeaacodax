@@ -65,7 +65,14 @@ function normalizeArabic(value: unknown) {
 }
 
 function byId(items: any[] = []) {
-  return new Map(items.map((item) => [documentId(item), item]).filter(([id]) => id));
+  const entries: Array<[string, any]> = [];
+  items.forEach((item) => {
+    const id = documentId(item);
+    if (id) {
+      entries.push([id, item]);
+    }
+  });
+  return new Map(entries);
 }
 
 async function fetchSnapshots(token: string) {
