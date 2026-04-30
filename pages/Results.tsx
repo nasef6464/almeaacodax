@@ -224,6 +224,30 @@ const getScoreVisualTone = (score: number) => {
   };
 };
 
+const getStudentFriendlyChecklist = (score: number) => {
+  if (score >= 85) {
+    return [
+      { title: 'حافظ على مستواك', body: 'راجع الأخطاء الصغيرة فقط ولا تطيل المراجعة.' },
+      { title: 'تدريب قصير', body: 'حل 5 أسئلة من نفس النوع لتثبيت المهارة.' },
+      { title: 'اختبار سريع', body: 'أعد القياس لاحقًا حتى تتأكد أن المستوى ثابت.' },
+    ];
+  }
+
+  if (score >= 60) {
+    return [
+      { title: 'راجع مهارة واحدة', body: 'ابدأ بالمهارة الأضعف الظاهرة أمامك.' },
+      { title: 'شاهد شرحًا قصيرًا', body: 'لا تبدأ بأسئلة كثيرة قبل فهم الفكرة.' },
+      { title: 'تدرب ثم قِس', body: 'حل تدريبًا بسيطًا ثم أعد اختبارًا قصيرًا.' },
+    ];
+  }
+
+  return [
+    { title: 'لا تقلق', body: 'سنبدأ بخطوة صغيرة جدًا حتى لا تتشتت.' },
+    { title: 'شرح أولًا', body: 'راجع شرح المهارة الأضعف قبل إعادة الحل.' },
+    { title: '5 أسئلة فقط', body: 'تدريب قصير يكفي كبداية، ثم نزيد بالتدريج.' },
+  ];
+};
+
 const SimpleResultStat = ({
   label,
   value,
@@ -340,6 +364,7 @@ const Results: React.FC = () => {
     : weakestSkill?.quizTitle
       ? 'ابدأ بتدريب قصير الآن ثم أعد القياس بعده.'
       : 'ابدأ بخطوة صغيرة على المهارة الأضعف ثم أعد الاختبار لاحقًا.';
+  const studentFriendlyChecklist = getStudentFriendlyChecklist(latestResult?.score || 0);
   const guardianFollowUpSummary = weakestSkill
     ? `نتيجة الاختبار ${latestResult?.score || 0}%. أضعف مهارة ظهرت هي "${weakestSkill.skillName}" بنسبة ${weakestSkill.mastery}%. الخطوة المناسبة الآن: ${weakestSkill.actionText}`
     : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
@@ -497,40 +522,72 @@ const Results: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
-                  <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
-                  <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
-                  <SimpleResultStat label="وقت الحل" value={latestResult.timeSpent} />
-                </div>
+                {isFullResult ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
+                      <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
+                      <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
+                      <SimpleResultStat label="وقت الحل" value={latestResult.timeSpent} />
+                    </div>
 
-                <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <div>
-                      <div className="text-sm font-black text-gray-800">خريطة المهارات في هذا الاختبار</div>
-                      <div className="mt-1 text-xs text-gray-500">نقرأها من الأسئلة التي حللتها، وليست من الدرجة فقط.</div>
+                    <div className="rounded-2xl border border-gray-100 bg-white p-4">
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <div className="text-sm font-black text-gray-800">خريطة المهارات في هذا الاختبار</div>
+                          <div className="mt-1 text-xs text-gray-500">نقرأها من الأسئلة التي حللتها، وليست من الدرجة فقط.</div>
+                        </div>
+                        {latestResult.unanswered > 0 ? (
+                          <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">
+                            {latestResult.unanswered} بدون إجابة
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="rounded-xl bg-emerald-50 px-3 py-3 text-emerald-700">
+                          <div className="text-xl font-black">{strongSkillsCount}</div>
+                          <div className="text-[11px] font-bold">قوية</div>
+                        </div>
+                        <div className="rounded-xl bg-amber-50 px-3 py-3 text-amber-700">
+                          <div className="text-xl font-black">{averageSkillsCount}</div>
+                          <div className="text-[11px] font-bold">متوسطة</div>
+                        </div>
+                        <div className="rounded-xl bg-rose-50 px-3 py-3 text-rose-700">
+                          <div className="text-xl font-black">{weakSkillsCount}</div>
+                          <div className="text-[11px] font-bold">تحتاج دعم</div>
+                        </div>
+                      </div>
                     </div>
-                    {latestResult.unanswered > 0 ? (
-                      <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">
-                        {latestResult.unanswered} بدون إجابة
+                  </>
+                ) : (
+                  <div className="rounded-3xl border border-white bg-white/85 p-4 shadow-sm">
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <div className="text-sm font-black text-gray-900">ملخص بسيط جدًا</div>
+                        <div className="mt-1 text-xs font-bold text-gray-500">مناسب للطالب وولي الأمر على الجوال والتابلت.</div>
+                      </div>
+                      <span className="rounded-full bg-gray-50 px-3 py-1 text-xs font-black text-gray-700">
+                        {latestResult.correctAnswers} من {latestResult.totalQuestions} صحيح
                       </span>
-                    ) : null}
+                    </div>
+                    <div className="grid gap-2">
+                      {studentFriendlyChecklist.map((item, index) => (
+                        <div key={item.title} className="flex gap-3 rounded-2xl bg-slate-50 p-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-indigo-700 shadow-sm">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <div className="text-sm font-black text-gray-900">{item.title}</div>
+                            <div className="mt-1 text-xs font-bold leading-6 text-gray-500">{item.body}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold leading-7 text-indigo-800">
+                      {weakestSkill ? `أول مهارة نركز عليها: ${weakestSkill.skillName}` : 'ابدأ بمراجعة الحلول ثم أعد اختبارًا قصيرًا.'}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="rounded-xl bg-emerald-50 px-3 py-3 text-emerald-700">
-                      <div className="text-xl font-black">{strongSkillsCount}</div>
-                      <div className="text-[11px] font-bold">قوية</div>
-                    </div>
-                    <div className="rounded-xl bg-amber-50 px-3 py-3 text-amber-700">
-                      <div className="text-xl font-black">{averageSkillsCount}</div>
-                      <div className="text-[11px] font-bold">متوسطة</div>
-                    </div>
-                    <div className="rounded-xl bg-rose-50 px-3 py-3 text-rose-700">
-                      <div className="text-xl font-black">{weakSkillsCount}</div>
-                      <div className="text-[11px] font-bold">تحتاج دعم</div>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 
