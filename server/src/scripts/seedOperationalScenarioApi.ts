@@ -234,6 +234,21 @@ function findLessonBySignature(lessons: any[], title: string, pathId: string, su
   );
 }
 
+function normalizeArabicLabel(value: unknown) {
+  return String(value || "")
+    .replace(/\s+/g, "")
+    .replace(/^ال/, "")
+    .toLowerCase();
+}
+
+function findSubjectsByPathAndNames(subjects: any[], pathId: string, names: string[]) {
+  const acceptedNames = names.map(normalizeArabicLabel);
+  return subjects.filter((subject) => {
+    const subjectName = normalizeArabicLabel(subject?.name);
+    return String(subject?.pathId || "") === pathId && acceptedNames.some((name) => subjectName.includes(name) || name.includes(subjectName));
+  });
+}
+
 function findGroupByName(groups: any[], name: string, type: string) {
   return groups.find((group) => String(group.name || "").trim() === name && String(group.type || "") === type);
 }
@@ -464,6 +479,84 @@ async function upsertLessonsQuestionsEtc(
       },
       adminToken,
     );
+  }
+
+  snapshots = await fetchSnapshots(adminToken);
+  const dynamicFoundationTargets = [
+    {
+      pathId: "p_qudrat",
+      names: ["اللفظي", "لفظي"],
+      topicIdPrefix: "topic_seed_dynamic_verbal_context",
+      lessonTitle: "تأسيس فهم السياق اللفظي",
+      lessonDescription: "درس افتتاحي يوضح طريقة قراءة النص واستخراج الفكرة الرئيسة والاستدلال من السياق.",
+      topicTitle: "فهم السياق اللفظي",
+      duration: "14 دقيقة",
+      fallbackSectionId: "sec_verbal_context",
+      fallbackSkillIds: ["skill_verbal_context"],
+    },
+    {
+      pathId: "p_tahsili",
+      names: ["الرياضيات", "رياضيات"],
+      topicIdPrefix: "topic_seed_dynamic_math_functions",
+      lessonTitle: "تأسيس قراءة الدوال من الرسم",
+      lessonDescription: "درس افتتاحي يربط الدالة بالتمثيل البياني ويجهز الطالب لتدريبات التحصيلي.",
+      topicTitle: "قراءة الدوال والتمثيل البياني",
+      duration: "18 دقيقة",
+      fallbackSectionId: "sec_math_functions",
+      fallbackSkillIds: ["skill_math_functions"],
+    },
+  ];
+
+  for (const target of dynamicFoundationTargets) {
+    const matchingSubjects = findSubjectsByPathAndNames(snapshots.taxonomy.subjects || [], target.pathId, target.names);
+
+    for (const subject of matchingSubjects) {
+      const subjectId = String(subject.id || subject._id || "");
+      if (!subjectId) continue;
+
+      const section = (snapshots.taxonomy.sections || []).find((item: any) => String(item.subjectId || "") === subjectId);
+      const skillIds = (snapshots.taxonomy.skills || [])
+        .filter((item: any) => String(item.subjectId || "") === subjectId)
+        .map((item: any) => String(item.id || item._id || ""))
+        .filter(Boolean);
+      const sectionId = String(section?.id || section?._id || target.fallbackSectionId);
+      const lesson = await ensureLesson(
+        {
+          title: target.lessonTitle,
+          description: target.lessonDescription,
+          pathId: target.pathId,
+          subjectId,
+          sectionId,
+          type: "video",
+          duration: target.duration,
+          videoUrl: SAMPLE_VIDEO_URL,
+          skillIds: skillIds.length ? skillIds.slice(0, 2) : target.fallbackSkillIds,
+          approvalStatus: "approved",
+          showOnPlatform: true,
+        },
+        adminToken,
+      );
+      const lessonId = String(lesson._id || lesson.id || "");
+      const topicId = `${target.topicIdPrefix}_${subjectId}`;
+      const topicPayload = {
+        id: topicId,
+        pathId: target.pathId,
+        subjectId,
+        sectionId,
+        title: target.topicTitle,
+        parentId: null,
+        order: 1,
+        showOnPlatform: true,
+        lessonIds: lessonId ? [lessonId] : [],
+        quizIds: [],
+      };
+      const topicsById = byIdOrMongoId((await fetchSnapshots(adminToken)).content.topics || []);
+      if (topicsById.has(topicId)) {
+        await request(`/content/topics/${topicId}`, "PATCH", topicPayload, adminToken);
+      } else {
+        await request("/content/topics", "POST", topicPayload, adminToken);
+      }
+    }
   }
 
   snapshots = await fetchSnapshots(adminToken);

@@ -503,6 +503,29 @@ async function run() {
       Boolean(subjectId) && topicCount > 0 && lessonCount > 0 && bankCount > 0 && examCount > 0 && libraryCount > 0 && courseCount > 0,
       `subject=${subjectId || "missing"}, topics=${topicCount}, lessons=${lessonCount}, banks=${bankCount}, exams=${examCount}, library=${libraryCount}, courses=${courseCount}`,
     );
+
+    const scopedTopics = (studentContent.topics || []).filter(
+      (item: any) => item.pathId === target.pathId && item.subjectId === subjectId,
+    );
+    const scopedLessons = (studentContent.lessons || []).filter(
+      (item: any) => item.pathId === target.pathId && item.subjectId === subjectId,
+    );
+    const topicWithPlayableLesson = scopedTopics.find((topic: any) =>
+      (topic.lessonIds || []).some((lessonId: string) => {
+        const lesson = scopedLessons.find((item: any) => documentId(item) === String(lessonId));
+        return Boolean(lesson?.videoUrl);
+      }),
+    );
+
+    pushResult(
+      results,
+      "student",
+      `foundation topic opens playable lesson: ${target.label}`,
+      Boolean(subjectId) && Boolean(topicWithPlayableLesson),
+      topicWithPlayableLesson
+        ? `topic=${documentId(topicWithPlayableLesson)}`
+        : `subject=${subjectId || "missing"}, scopedTopics=${scopedTopics.length}, scopedLessons=${scopedLessons.length}`,
+    );
   });
 
   pushResult(
