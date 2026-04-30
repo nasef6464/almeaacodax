@@ -258,6 +258,30 @@ export const FinancialManager: React.FC = () => {
             const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
             const pathName = paths.find((path) => path.id === (pkg.pathId || pkg.category))?.name || 'عام';
             const subjectName = pkg.subjectId ? subjects.find((subject) => subject.id === pkg.subjectId)?.name : '';
+            const coversAll = contentTypes.includes('all' as PackageContentType);
+            const hasType = (type: PackageContentType) => coversAll || contentTypes.includes(type);
+            const isInScope = (item: { pathId?: string; subjectId?: string }) => {
+                const pathId = pkg.pathId || pkg.category;
+                const subjectId = pkg.subjectId || pkg.subject;
+                const pathMatches = !pathId || item.pathId === pathId;
+                const subjectMatches = !subjectId || item.subjectId === subjectId;
+                return pathMatches && subjectMatches;
+            };
+            const coverageCounts = {
+                courses: courses.filter((course) => !course.isPackage && hasType('courses') && isInScope(course)).length,
+                foundation: lessons.filter((lesson) => hasType('foundation') && isInScope(lesson)).length,
+                banks: quizzes.filter((quiz) => hasType('banks') && quiz.type === 'bank' && isInScope(quiz)).length,
+                tests: quizzes.filter((quiz) => hasType('tests') && quiz.type !== 'bank' && isInScope(quiz)).length,
+                library: libraryItems.filter((item) => hasType('library') && isInScope(item)).length,
+            };
+            const coveredItems = coverageCounts.courses + coverageCounts.foundation + coverageCounts.banks + coverageCounts.tests + coverageCounts.library;
+            const readinessWarnings = [
+                pkg.price <= 0 ? 'السعر غير محدد' : '',
+                !(pkg.pathId || pkg.category) ? 'غير مربوطة بمسار' : '',
+                coveredItems === 0 ? 'لا يوجد محتوى داخل نطاق الباقة' : '',
+                pkg.showOnPlatform !== false && pkg.isPublished === false ? 'ظاهرة لكن غير منشورة' : '',
+                pkg.showOnPlatform !== false && pkg.approvalStatus && pkg.approvalStatus !== 'approved' ? 'تحتاج اعتماد قبل البيع' : '',
+            ].filter(Boolean);
 
             return {
                 id: pkg.id,
@@ -274,9 +298,13 @@ export const FinancialManager: React.FC = () => {
                 pending: pendingRequests.length,
                 buyers: purchasedUsers.length,
                 revenue: approvedRequests.reduce((sum, request) => sum + (request.amount || 0), 0),
+                coverageCounts,
+                coveredItems,
+                readinessWarnings,
+                isReadyForSale: readinessWarnings.length === 0,
             };
         }).sort((a, b) => Number(b.isVisible) - Number(a.isVisible) || b.revenue - a.revenue);
-    }, [paths, paymentRequests, publicPackages, subjects, users]);
+    }, [courses, lessons, libraryItems, paths, paymentRequests, publicPackages, quizzes, subjects, users]);
 
     const togglePublicPackageVisibility = (packageId: string) => {
         const pkg = publicPackages.find((item) => item.id === packageId);
@@ -885,6 +913,9 @@ export const FinancialManager: React.FC = () => {
                                                 <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${pkg.isVisible ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-600'}`}>
                                                     {pkg.isVisible ? 'ظاهر للطلاب' : 'مخفي'}
                                                 </span>
+                                                <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${pkg.isReadyForSale ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-100 text-amber-800'}`}>
+                                                    {pkg.isReadyForSale ? 'جاهزة للبيع' : 'تحتاج ضبط'}
+                                                </span>
                                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.pathName}</span>
                                                 {pkg.subjectName && <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.subjectName}</span>}
                                             </div>
@@ -896,6 +927,25 @@ export const FinancialManager: React.FC = () => {
                                                     </span>
                                                 ))}
                                             </div>
+                                            <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-600 sm:grid-cols-5">
+                                                {[
+                                                    ['دورات', pkg.coverageCounts.courses],
+                                                    ['تأسيس', pkg.coverageCounts.foundation],
+                                                    ['تدريب', pkg.coverageCounts.banks],
+                                                    ['اختبارات', pkg.coverageCounts.tests],
+                                                    ['مكتبة', pkg.coverageCounts.library],
+                                                ].map(([label, value]) => (
+                                                    <div key={label} className="rounded-xl bg-white px-3 py-2 text-center">
+                                                        <span className="text-gray-400">{label}</span>
+                                                        <span className="mx-1 text-gray-900">{value}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {pkg.readinessWarnings.length > 0 && (
+                                                <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-800">
+                                                    تنبيه قبل العرض: {pkg.readinessWarnings.join('، ')}
+                                                </div>
+                                            )}
                                             <div className="flex flex-wrap gap-2">
                                                 <button
                                                     onClick={() => previewPublicPackage(pkg.id)}
