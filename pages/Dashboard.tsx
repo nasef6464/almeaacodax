@@ -426,7 +426,7 @@ const Dashboard: React.FC = () => {
         { id: 'saher', label: 'اختبار ساهر', icon: <Zap size={20} /> },
         { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
         { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
-        { id: 'favorites', label: 'الأسئلة المفضلة', icon: <Heart size={20} /> },
+        { id: 'favorites', label: 'مركز مراجعة الأسئلة', icon: <Heart size={20} /> },
                 { id: 'plan', label: 'خطتي', icon: <MapIcon size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
         { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
