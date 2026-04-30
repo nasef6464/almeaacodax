@@ -13,6 +13,9 @@ import {
     User,
     Users,
     Award,
+    AlertTriangle,
+    CheckCircle2,
+    EyeOff,
     Video,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
@@ -93,6 +96,76 @@ export const AdminDashboard: React.FC = () => {
             },
         };
     }, [courses, examResults.length, groups, lessons, libraryItems, questions, quizzes, users]);
+
+    const platformReadiness = useMemo(() => {
+        const getSkillIds = (item: {
+            skillIds?: string[];
+            skillId?: string;
+            mainSkillId?: string;
+            subSkillId?: string;
+        }) =>
+            [
+                ...(item.skillIds || []),
+                item.skillId,
+                item.mainSkillId,
+                item.subSkillId,
+            ].filter(Boolean);
+
+        const questionsById = new Map(questions.map((question) => [question.id, question]));
+        const hiddenCourses = courses.filter((item) => item.showOnPlatform === false || item.isPublished === false).length;
+        const hiddenLessons = lessons.filter((item) => item.showOnPlatform === false).length;
+        const hiddenQuizzes = quizzes.filter((item) => item.showOnPlatform === false || item.isPublished === false).length;
+        const hiddenLibrary = libraryItems.filter((item) => item.showOnPlatform === false).length;
+        const quizzesWithoutQuestions = quizzes.filter((quiz) => (quiz.questionIds || []).length === 0).length;
+        const quizzesWithoutSkills = quizzes.filter((quiz) => {
+            const quizSkillIds = getSkillIds(quiz);
+            const questionSkillIds = (quiz.questionIds || []).flatMap((questionId) => getSkillIds(questionsById.get(questionId) || {}));
+            return [...quizSkillIds, ...questionSkillIds].length === 0;
+        }).length;
+        const lessonsWithoutSkills = lessons.filter((lesson) => getSkillIds(lesson).length === 0).length;
+        const libraryWithoutSkills = libraryItems.filter((item) => getSkillIds(item).length === 0).length;
+        const questionsWithoutSkills = questions.filter((question) => getSkillIds(question).length === 0).length;
+        const hiddenContent = hiddenCourses + hiddenLessons + hiddenQuizzes + hiddenLibrary;
+        const unlinkedContent = quizzesWithoutSkills + lessonsWithoutSkills + libraryWithoutSkills + questionsWithoutSkills;
+        const totalManagedContent = courses.length + lessons.length + quizzes.length + libraryItems.length + questions.length;
+        const issueCount =
+            overviewStats.pendingReview +
+            hiddenContent +
+            quizzesWithoutQuestions +
+            unlinkedContent;
+        const readinessScore = totalManagedContent
+            ? Math.max(0, Math.min(100, Math.round(((totalManagedContent - issueCount) / totalManagedContent) * 100)))
+            : 100;
+
+        const nextActions = [
+            overviewStats.pendingReview > 0
+                ? `راجع ${overviewStats.pendingReview.toLocaleString('ar-EG')} عنصرًا بانتظار الاعتماد قبل ظهوره للطلاب.`
+                : '',
+            hiddenContent > 0
+                ? `افحص ${hiddenContent.toLocaleString('ar-EG')} عنصرًا مخفيًا أو غير منشور قبل الإطلاق.`
+                : '',
+            quizzesWithoutQuestions > 0
+                ? `أضف أسئلة إلى ${quizzesWithoutQuestions.toLocaleString('ar-EG')} اختبارًا حتى لا يظهر فارغًا.`
+                : '',
+            unlinkedContent > 0
+                ? `اربط ${unlinkedContent.toLocaleString('ar-EG')} عنصرًا بالمهارات حتى تعمل التقارير والتوصيات بدقة.`
+                : '',
+        ].filter(Boolean);
+
+        return {
+            hiddenContent,
+            unlinkedContent,
+            quizzesWithoutQuestions,
+            readinessScore,
+            nextActions,
+            details: {
+                questionsWithoutSkills,
+                lessonsWithoutSkills,
+                quizzesWithoutSkills,
+                libraryWithoutSkills,
+            },
+        };
+    }, [courses, lessons, libraryItems, overviewStats.pendingReview, questions, quizzes]);
 
     const reviewQueue = useMemo<ReviewQueueItem[]>(() => {
         const normalizeItem = (
@@ -379,6 +452,99 @@ export const AdminDashboard: React.FC = () => {
                         <p className="text-3xl font-bold text-gray-900 mt-4">{kpi.value}</p>
                     </div>
                 ))}
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-6 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div>
+                        <h3 className="text-lg font-bold text-gray-900">مؤشر جاهزية المنصة قبل النشر</h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                            فحص سريع يساعدك تعرف هل المحتوى جاهز للطلاب أم يحتاج مراجعة أو ربط مهارات.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 rounded-full border-8 border-emerald-100 flex items-center justify-center bg-emerald-50">
+                            <span className="text-xl font-black text-emerald-700">{platformReadiness.readinessScore}%</span>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">حالة التشغيل</div>
+                            <div className={`font-black ${platformReadiness.readinessScore >= 85 ? 'text-emerald-700' : platformReadiness.readinessScore >= 60 ? 'text-amber-700' : 'text-rose-700'}`}>
+                                {platformReadiness.readinessScore >= 85 ? 'جاهزية عالية' : platformReadiness.readinessScore >= 60 ? 'تحتاج ضبط بسيط' : 'تحتاج مراجعة قبل النشر'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {[
+                        {
+                            title: 'بانتظار الاعتماد',
+                            value: overviewStats.pendingReview,
+                            hint: 'دورات، دروس، أسئلة أو اختبارات أضيفت وتحتاج قرار نشر.',
+                            icon: <AlertTriangle size={18} />,
+                            color: 'amber',
+                        },
+                        {
+                            title: 'مخفي عن الطلاب',
+                            value: platformReadiness.hiddenContent,
+                            hint: 'عناصر موجودة في الإدارة لكنها لن تظهر في واجهة الطالب.',
+                            icon: <EyeOff size={18} />,
+                            color: 'slate',
+                        },
+                        {
+                            title: 'اختبارات بلا أسئلة',
+                            value: platformReadiness.quizzesWithoutQuestions,
+                            hint: 'اختبارات تحتاج سحب أسئلة من بنك الأسئلة قبل عرضها.',
+                            icon: <FileQuestion size={18} />,
+                            color: 'rose',
+                        },
+                        {
+                            title: 'محتوى بلا مهارات',
+                            value: platformReadiness.unlinkedContent,
+                            hint: 'يؤثر على تقارير الضعف والتوصيات الذكية بعد الاختبار.',
+                            icon: <Target size={18} />,
+                            color: 'indigo',
+                        },
+                    ].map((item) => (
+                        <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                                    item.color === 'amber' ? 'bg-amber-100 text-amber-700' :
+                                    item.color === 'rose' ? 'bg-rose-100 text-rose-700' :
+                                    item.color === 'indigo' ? 'bg-indigo-100 text-indigo-700' :
+                                    'bg-slate-100 text-slate-700'
+                                }`}>
+                                    {item.icon}
+                                </div>
+                                <span className="text-2xl font-black text-gray-900">{item.value.toLocaleString('ar-EG')}</span>
+                            </div>
+                            <h4 className="font-black text-gray-900">{item.title}</h4>
+                            <p className="text-xs text-gray-500 mt-2 leading-6">{item.hint}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="px-6 pb-6">
+                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+                        <div className="flex items-center gap-2 font-black text-emerald-800 mb-3">
+                            <CheckCircle2 size={18} />
+                            أولوية العمل التالية
+                        </div>
+                        {platformReadiness.nextActions.length > 0 ? (
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                                {platformReadiness.nextActions.slice(0, 4).map((action) => (
+                                    <div key={action} className="rounded-xl bg-white border border-emerald-100 px-4 py-3 text-sm text-gray-700">
+                                        {action}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-emerald-700">
+                                ممتاز. لا توجد عوائق تشغيلية واضحة في المحتوى الحالي، ويمكنك التركيز على إضافة محتوى جديد أو مراجعة تجربة الطالب.
+                            </p>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
