@@ -147,6 +147,15 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         item?.pathIds?.length ? { label: 'مسارات مستهدفة', value: item.pathIds.length } : null,
         item?.subjectIds?.length ? { label: 'مواد مستهدفة', value: item.subjectIds.length } : null,
     ].filter(Boolean) as { label: string; value: number }[];
+    const scopeLabel = item?.subjectIds?.length
+        ? 'محتوى مادة محددة'
+        : item?.pathIds?.length
+            ? 'محتوى مسار كامل'
+            : shouldPurchaseAsPackage
+                ? 'باقة عامة'
+                : 'عنصر منفرد';
+    const audienceLabel = shouldPurchaseAsPackage ? 'عرض شراء فردي' : 'تفعيل مباشر لهذا العنصر';
+    const accessContext = typeof item?.accessContext === 'string' ? item.accessContext : '';
 
     const buildPaymentRequestPayload = () => {
         const packageId = item.packageId || (shouldPurchaseAsPackage ? item.id : undefined);
@@ -264,6 +273,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <div className="text-xs font-black text-gray-500">العنصر الذي ستفعله</div>
                 <div className="mt-2 text-lg font-black text-gray-900">{getItemName()}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-700">{audienceLabel}</span>
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-700">{scopeLabel}</span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
                     {itemContentTypes.map((contentType: string) => (
                         <span key={contentType} className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
                             {packageContentLabels[contentType] || contentType}
@@ -278,6 +291,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                                 <div className="text-[11px] font-bold text-gray-500">{entry.label}</div>
                             </div>
                         ))}
+                    </div>
+                ) : null}
+                {accessContext ? (
+                    <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold leading-6 text-amber-800">
+                        {accessContext}
                     </div>
                 ) : null}
             </div>

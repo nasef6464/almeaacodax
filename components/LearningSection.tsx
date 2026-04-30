@@ -140,6 +140,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             courseIds: matchedPackage?.courseIds || publicPackage?.includedCourses || [],
             thumbnail: publicPackage?.thumbnail,
             features: publicPackage?.features,
+            accessContext: matchedPackage
+                ? 'قد يكون هذا النطاق متاحًا لك عبر المدرسة أو عبر تفعيل إداري سابق. إذا كان ما زال مغلقًا على حسابك، فهذه هي الباقة المرتبطة بهذه المادة.'
+                : 'هذه باقة عامة مخصصة للطالب المستقل داخل المنصة، وتفتح هذا الجزء من المادة عند اعتماد الدفع.',
         };
     };
 
@@ -1013,6 +1016,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                     contentTypes: paymentModalData.item?.contentTypes || ['all'],
                     pathIds: paymentModalData.item?.pathIds || [category],
                     subjectIds: paymentModalData.item?.subjectIds || [subject],
+                    accessContext: paymentModalData.item?.accessContext || 'إذا كان هذا الجزء تابعًا لوصول مدرسي أو باقة مفعلة من الإدارة فلن تحتاج شراءه. أما إذا بقي مغلقًا على حسابك فهذه هي وسيلة التفعيل المناسبة.',
                 }}
                 type={paymentModalData.type as any}
             />

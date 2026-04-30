@@ -42,6 +42,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
             includedCourseIds: course.includedCourses || [],
             courseIds: course.includedCourses || [],
             contentTypes: course.packageContentTypes || ['all'],
+            accessContext: 'هذه باقة عامة للشراء الفردي. إذا كنت تابعًا لمدرسة أو لديك وصول مفعل مسبقًا فلن تحتاج شراءها مرة أخرى.',
         }
         : null;
     const purchaseItem = publicPackageItem || (matchedPackage
@@ -58,6 +59,9 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
             courseIds: matchedPackage.courseIds,
             price: course.price,
             currency: course.currency,
+            accessContext: hasPackageAccess
+                ? 'وصولك مفتوح بالفعل عبر باقة مرتبطة بهذه المادة.'
+                : 'قد يكون هذا المحتوى متاحًا عبر المدرسة أو المجموعة. إذا بقي مغلقًا على حسابك فهذه هي الباقة المناسبة لفتحه.',
         }
         : course);
     const purchaseType = publicPackageItem || matchedPackage ? 'package' : 'course';
