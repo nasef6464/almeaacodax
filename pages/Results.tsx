@@ -6,11 +6,16 @@ import {
   PlusCircle,
   Eye,
   BarChart3,
+  AlertCircle,
+  BookOpen,
   History,
   CheckCircle2,
   ChevronLeft,
+  Lightbulb,
   PlayCircle,
+  Sparkles,
   Star,
+  Target,
   Trash2,
   FileText,
   Download,
@@ -265,6 +270,7 @@ const Results: React.FC = () => {
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
   const [copiedSummary, setCopiedSummary] = React.useState(false);
   const [sharedSummary, setSharedSummary] = React.useState(false);
+  const [resultDepth, setResultDepth] = React.useState<'simple' | 'full'>('simple');
 
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
@@ -342,6 +348,7 @@ const Results: React.FC = () => {
   const averageSkillsCount = analysisItems.filter((item) => item.status === 'average').length;
   const weakSkillsCount = analysisItems.filter((item) => item.status === 'weak').length;
   const topThreeFocusSkills = analysisItems.slice(0, 3);
+  const isFullResult = resultDepth === 'full';
   const starterChecklist = [
     weakestSkill?.lessonTitle ? { id: 'lesson', label: 'ابدأ بشرح المهارة الأضعف', tone: 'danger' as const } : null,
     weakestSkill?.quizTitle ? { id: 'quiz', label: 'بعدها حل تدريبًا قصيرًا', tone: 'warning' as const } : null,
@@ -463,6 +470,13 @@ const Results: React.FC = () => {
           >
             <Download size={16} />
             تحميل PDF
+          </button>
+          <button
+            onClick={() => setResultDepth((current) => (current === 'simple' ? 'full' : 'simple'))}
+            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+          >
+            {isFullResult ? <Sparkles size={16} /> : <FileText size={16} />}
+            {isFullResult ? 'العودة للملخص البسيط' : 'عرض التقرير الكامل'}
           </button>
           <div className={`self-start px-4 py-1 rounded-full text-sm font-bold ${summaryTone.chipClassName}`}>
             {summaryTone.title}
@@ -726,6 +740,7 @@ const Results: React.FC = () => {
         </Card>
       </div>
 
+      {isFullResult ? (
       <Card className="p-4 sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -842,6 +857,77 @@ const Results: React.FC = () => {
           </div>
         ) : null}
       </Card>
+      ) : (
+        <Card className="p-4 sm:p-6 bg-white">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">ملخص مهارات سريع</h3>
+              <p className="text-sm leading-7 text-gray-500">
+                أبقينا التفاصيل الثقيلة مخفية حتى يركز الطالب على أهم خطوة الآن، ويمكن فتح التقرير الكامل عند الحاجة.
+              </p>
+            </div>
+            <button
+              onClick={() => setResultDepth('full')}
+              className="print-hide inline-flex items-center gap-2 self-start rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
+            >
+              <BarChart3 size={16} />
+              عرض التفاصيل
+            </button>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
+              <div className="mb-2 flex items-center gap-2 text-rose-700">
+                <AlertCircle size={18} />
+                <span className="text-sm font-black">أولوية المذاكرة</span>
+              </div>
+              <p className="text-sm leading-7 text-rose-800">
+                {weakestSkill ? `${weakestSkill.skillName} - ${weakestSkill.mastery}%` : 'لا توجد مهارة ضعيفة واضحة في هذه المحاولة.'}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+              <div className="mb-2 flex items-center gap-2 text-amber-700">
+                <Lightbulb size={18} />
+                <span className="text-sm font-black">اقتراح سريع</span>
+              </div>
+              <p className="text-sm leading-7 text-amber-800">
+                {weakestSkill ? weakestSkill.actionText : 'راجع حلول الاختبار، ثم أعد اختبارًا قصيرًا لقياس التحسن.'}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+              <div className="mb-2 flex items-center gap-2 text-emerald-700">
+                <CheckCircle2 size={18} />
+                <span className="text-sm font-black">علامة تطمئنك</span>
+              </div>
+              <p className="text-sm leading-7 text-emerald-800">
+                لديك {strongSkillsCount} مهارات قوية و{averageSkillsCount} مهارات متوسطة. الهدف القادم هو رفع المهارات التي تحتاج دعمًا.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <button
+              onClick={() => setViewMode('review')}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 transition-colors"
+            >
+              <Eye size={16} />
+              مراجعة الحلول
+            </button>
+            {weakestSkill?.lessonLink ? (
+              <Link to={weakestSkill.lessonLink} className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors">
+                <BookOpen size={16} />
+                ابدأ بالشرح المناسب
+              </Link>
+            ) : null}
+            {weakestSkill?.quizLink ? (
+              <Link to={weakestSkill.quizLink} className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-100 transition-colors">
+                <Target size={16} />
+                تدريب على نفس المهارة
+              </Link>
+            ) : null}
+          </div>
+        </Card>
+      )}
 
       <DetailedAnalysisModal
         isOpen={isAnalysisOpen}
