@@ -620,33 +620,58 @@ const Results: React.FC = () => {
               </Link>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="text-sm font-black text-slate-800">ملخص سريع لولي الأمر أو المعلم</div>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{guardianFollowUpSummary}</p>
+            {isFullResult ? (
+              <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="text-sm font-black text-slate-800">ملخص سريع لولي الأمر أو المعلم</div>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">{guardianFollowUpSummary}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={copyGuardianSummary}
+                      className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700 hover:bg-indigo-50"
+                    >
+                      {copiedSummary ? <CheckCircle2 size={13} /> : <Copy size={13} />}
+                      {copiedSummary ? 'تم النسخ' : 'نسخ الملخص'}
+                    </button>
+                    <button
+                      onClick={shareGuardianSummary}
+                      className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-black text-emerald-700 hover:bg-emerald-50"
+                    >
+                      {sharedSummary ? <CheckCircle2 size={13} /> : <Share2 size={13} />}
+                      {sharedSummary ? 'تمت المشاركة' : 'مشاركة'}
+                    </button>
+                    <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700">
+                      مناسب للمتابعة
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+              </div>
+            ) : (
+              <details className="print-hide mt-5 rounded-2xl border border-slate-100 bg-white/80 p-4 text-sm text-slate-700">
+                <summary className="cursor-pointer select-none font-black text-slate-800">
+                  ملخص ولي الأمر أو المعلم
+                </summary>
+                <p className="mt-3 leading-7 text-slate-600">{guardianFollowUpSummary}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={copyGuardianSummary}
-                    className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700 hover:bg-indigo-50"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-black text-indigo-700 hover:bg-indigo-100"
                   >
                     {copiedSummary ? <CheckCircle2 size={13} /> : <Copy size={13} />}
                     {copiedSummary ? 'تم النسخ' : 'نسخ الملخص'}
                   </button>
                   <button
                     onClick={shareGuardianSummary}
-                    className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-black text-emerald-700 hover:bg-emerald-50"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 hover:bg-emerald-100"
                   >
                     {sharedSummary ? <CheckCircle2 size={13} /> : <Share2 size={13} />}
                     {sharedSummary ? 'تمت المشاركة' : 'مشاركة'}
                   </button>
-                  <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700">
-                    مناسب للمتابعة
-                  </span>
                 </div>
-              </div>
-            </div>
+              </details>
+            )}
           </div>
         </Card>
 
