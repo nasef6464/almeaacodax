@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, Lock, LockOpen, Plus, Video } from 'lucide-react';
+import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, Video } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Lesson, LessonType } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
@@ -18,10 +18,24 @@ const providerLabelMap: Record<LessonType, string> = {
     teams: 'Microsoft Teams',
 };
 
+const downloadCsv = (fileName: string, rows: string[][]) => {
+    const csv = rows
+        .map((row) => row.map((cell) => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+};
+
 export const LiveSessionsManager: React.FC = () => {
     const { lessons, paths, subjects, updateLesson, addLesson, deleteLesson } = useStore();
     const [isEditing, setIsEditing] = useState(false);
     const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+    const [copyMessage, setCopyMessage] = useState('');
 
     const liveLessons = useMemo(
         () =>
@@ -34,6 +48,11 @@ export const LiveSessionsManager: React.FC = () => {
                 }),
         [lessons],
     );
+
+    const publishedLessons = liveLessons.filter((lesson) => lesson.approvalStatus === 'approved' && lesson.showOnPlatform);
+    const upcomingLessons = liveLessons.filter((lesson) => lesson.meetingDate && new Date(lesson.meetingDate).getTime() >= Date.now());
+    const recordedLessons = liveLessons.filter((lesson) => lesson.recordingUrl && lesson.showRecordingOnPlatform);
+    const needsSetupLessons = liveLessons.filter((lesson) => !lesson.meetingUrl || !lesson.meetingDate || !lesson.pathId || !lesson.subjectId);
 
     const createNewLesson = () => {
         setCurrentLesson({
@@ -80,6 +99,58 @@ export const LiveSessionsManager: React.FC = () => {
         });
     };
 
+    const formatMeetingDate = (meetingDate?: string) =>
+        meetingDate
+            ? new Date(meetingDate).toLocaleString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+            : 'غير محدد';
+
+    const buildInviteText = (lesson: Lesson) => {
+        const pathName = paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار';
+        const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة';
+        return [
+            `حصة مباشرة: ${lesson.title}`,
+            `المسار / المادة: ${pathName} - ${subjectName}`,
+            `الموعد: ${formatMeetingDate(lesson.meetingDate)}`,
+            lesson.meetingUrl ? `رابط الدخول: ${lesson.meetingUrl}` : 'رابط الدخول سيضاف لاحقًا.',
+            lesson.joinInstructions ? `تعليمات: ${lesson.joinInstructions}` : '',
+        ].filter(Boolean).join('\n');
+    };
+
+    const copyInvite = async (lesson: Lesson) => {
+        const inviteText = buildInviteText(lesson);
+        try {
+            await navigator.clipboard.writeText(inviteText);
+            setCopyMessage(`تم نسخ دعوة: ${lesson.title}`);
+        } catch {
+            setCopyMessage('تعذر النسخ التلقائي، يمكنك فتح الحصة ونسخ الرابط يدويًا.');
+        }
+        window.setTimeout(() => setCopyMessage(''), 2500);
+    };
+
+    const exportSchedule = () => {
+        downloadCsv('live-sessions-schedule.csv', [
+            ['الحصة', 'المزود', 'المسار', 'المادة', 'الموعد', 'المدة', 'الحالة', 'الإظهار', 'رابط الدخول', 'رابط التسجيل'],
+            ...liveLessons.map((lesson) => [
+                lesson.title,
+                providerLabelMap[lesson.type] || lesson.type,
+                paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار',
+                subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة',
+                formatMeetingDate(lesson.meetingDate),
+                `${lesson.duration} دقيقة`,
+                lesson.approvalStatus === 'approved' ? 'معتمد' : lesson.approvalStatus === 'pending_review' ? 'بانتظار المراجعة' : lesson.approvalStatus === 'rejected' ? 'مرفوض' : 'مسودة',
+                lesson.showOnPlatform ? 'ظاهر' : 'مخفي',
+                lesson.meetingUrl || '',
+                lesson.recordingUrl || '',
+            ]),
+        ]);
+    };
+
     if (isEditing && currentLesson) {
         return (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in relative z-50">
@@ -100,21 +171,47 @@ export const LiveSessionsManager: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-800">إدارة الحصص المباشرة</h2>
-                    <p className="text-gray-500 text-sm mt-1">نظّم جلسات Zoom وMeet وTeams والبث المباشر في مساحة مستقلة عن مستودع الدروس العام، مع الإظهار على المنصة عند الجاهزية فقط.</p>
+                    <p className="text-gray-500 text-sm mt-1">نظّم جلسات Zoom وMeet وTeams والبث المباشر في مساحة مستقلة، ولا تظهر للطالب إلا عند الجاهزية.</p>
                 </div>
-                <button
-                    onClick={createNewLesson}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
-                >
-                    <Plus size={18} />
-                    إضافة حصة مباشرة
-                </button>
+                <div className="flex flex-wrap gap-2">
+                    <a
+                        href="#/live-sessions"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-white text-indigo-700 border border-indigo-100 px-4 py-2 rounded-xl font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2"
+                    >
+                        <ExternalLink size={18} />
+                        معاينة الطالب
+                    </a>
+                    <button
+                        onClick={exportSchedule}
+                        className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl font-bold hover:bg-emerald-100 transition-colors flex items-center gap-2"
+                    >
+                        <Download size={18} />
+                        تصدير الجدول
+                    </button>
+                    <button
+                        onClick={createNewLesson}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                        <Plus size={18} />
+                        إضافة حصة مباشرة
+                    </button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {copyMessage && (
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-700">
+                    {copyMessage}
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <SummaryCard title="إجمالي الحصص" value={liveLessons.length.toString()} />
-                <SummaryCard title="المعتمد والمنشور" value={liveLessons.filter((lesson) => lesson.approvalStatus === 'approved' && lesson.showOnPlatform).length.toString()} />
-                <SummaryCard title="بانتظار المراجعة" value={liveLessons.filter((lesson) => lesson.approvalStatus === 'pending_review').length.toString()} />
+                <SummaryCard title="منشور للطلاب" value={publishedLessons.length.toString()} />
+                <SummaryCard title="قادمة" value={upcomingLessons.length.toString()} />
+                <SummaryCard title="لها تسجيل" value={recordedLessons.length.toString()} />
+                <SummaryCard title="تحتاج ضبط" value={needsSetupLessons.length.toString()} />
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -135,15 +232,12 @@ export const LiveSessionsManager: React.FC = () => {
                             {liveLessons.map((lesson) => {
                                 const pathName = paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار';
                                 const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة';
-                                const meetingDateLabel = lesson.meetingDate
-                                    ? new Date(lesson.meetingDate).toLocaleString('ar-SA', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })
-                                    : 'غير محدد';
+                                const meetingDateLabel = formatMeetingDate(lesson.meetingDate);
+                                const readinessNotes = [
+                                    !lesson.meetingUrl ? 'ينقص الرابط' : '',
+                                    !lesson.meetingDate ? 'ينقص الموعد' : '',
+                                    !lesson.pathId || !lesson.subjectId ? 'ينقص التصنيف' : '',
+                                ].filter(Boolean);
 
                                 return (
                                     <tr key={lesson.id} className="hover:bg-gray-50 transition-colors">
@@ -155,6 +249,15 @@ export const LiveSessionsManager: React.FC = () => {
                                                 <div>
                                                     <div className="font-bold text-gray-800">{lesson.title}</div>
                                                     <div className="text-xs text-gray-500 mt-1">{lesson.duration} دقيقة</div>
+                                                    {readinessNotes.length > 0 && (
+                                                        <div className="mt-2 flex flex-wrap gap-1">
+                                                            {readinessNotes.map((note) => (
+                                                                <span key={note} className="rounded-full bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-700">
+                                                                    {note}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>
@@ -205,6 +308,13 @@ export const LiveSessionsManager: React.FC = () => {
                                                 >
                                                     تعديل
                                                 </button>
+                                                <button
+                                                    onClick={() => void copyInvite(lesson)}
+                                                    className="px-3 py-2 rounded-lg bg-amber-50 text-amber-700 text-xs font-bold hover:bg-amber-100 inline-flex items-center gap-1"
+                                                >
+                                                    <Copy size={13} />
+                                                    نسخ الدعوة
+                                                </button>
                                                 {lesson.meetingUrl ? (
                                                     <a
                                                         href={lesson.meetingUrl}
@@ -248,7 +358,10 @@ export const LiveSessionsManager: React.FC = () => {
 
 const SummaryCard: React.FC<{ title: string; value: string }> = ({ title, value }) => (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-        <div className="text-sm text-gray-500">{title}</div>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+            <CalendarDays size={15} />
+            {title}
+        </div>
         <div className="text-3xl font-black text-gray-900 mt-2">{value}</div>
     </div>
 );

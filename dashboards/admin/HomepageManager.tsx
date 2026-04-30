@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { Image as ImageIcon, Plus, Save, Trash2 } from 'lucide-react';
+import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types';
@@ -218,14 +218,25 @@ export const HomepageManager: React.FC = () => {
                     <h1 className="text-2xl font-bold text-gray-900">إدارة الصفحة الرئيسية</h1>
                     <p className="text-sm text-gray-500 mt-1">تحكم في الهيرو والعدادات والدورات والمسارات المميزة وآراء الطلاب بدون تغيير شكل الموقع.</p>
                 </div>
-                <button
-                    onClick={() => void handleSave()}
-                    disabled={isSaving}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors disabled:opacity-60"
-                >
-                    <Save size={18} />
-                    {isSaving ? 'جارٍ الحفظ...' : 'حفظ التعديلات'}
-                </button>
+                <div className="flex flex-wrap gap-2">
+                    <a
+                        href="#/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-amber-100 bg-white text-amber-700 font-bold hover:bg-amber-50 transition-colors"
+                    >
+                        <ExternalLink size={18} />
+                        معاينة الصفحة
+                    </a>
+                    <button
+                        onClick={() => void handleSave()}
+                        disabled={isSaving}
+                        className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors disabled:opacity-60"
+                    >
+                        <Save size={18} />
+                        {isSaving ? 'جارٍ الحفظ...' : 'حفظ التعديلات'}
+                    </button>
+                </div>
             </div>
 
             {error && <div className="rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-sm text-rose-700">{error}</div>}
