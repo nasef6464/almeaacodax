@@ -160,6 +160,17 @@ export const BookSession: React.FC = () => {
 
       <Card className="p-5 sm:p-6 md:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {requestedSkillName ? (
+            <div className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm leading-7 text-indigo-800">
+              <div className="font-black">تم تجهيز طلب حصة علاجية من تقريرك</div>
+              <div className="mt-1">
+                {requestedSubjectName ? <span className="ml-2">المادة: <strong>{requestedSubjectName}</strong></span> : null}
+                {requestedSectionName ? <span className="ml-2">المهارة الرئيسية: <strong>{requestedSectionName}</strong></span> : null}
+                <span>المهارة: <strong>{requestedSkillName}</strong></span>
+              </div>
+            </div>
+          ) : null}
+
           <div className="space-y-2">
             <label className="block text-sm font-bold text-gray-700">المادة / المهارة</label>
             <div className="relative">
