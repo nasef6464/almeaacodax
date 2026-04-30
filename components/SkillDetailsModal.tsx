@@ -36,7 +36,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
         .sort((a, b) => a.order - b.order);
 
       setSelectedSubTopic(
-        subTopics.find((topic) => topic.id === skill.initialSubTopicId) || subTopics[0] || null,
+        skill.initialSubTopicId ? subTopics.find((topic) => topic.id === skill.initialSubTopicId) || null : null,
       );
       setTopicModalTab('lessons');
     }
@@ -53,22 +53,48 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   );
 
   const activeTopicLessons = useMemo(
-    () =>
-      activeTopic
-        ? lessons
-            .filter((lesson) => activeTopic.lessonIds?.includes(lesson.id) && canStudentSeeLesson(lesson))
-            .sort((a, b) => (a.order || 0) - (b.order || 0))
-        : [],
+    () => {
+      if (!activeTopic || !selectedTopic) return [];
+
+      const explicitLessonIds = new Set(activeTopic.lessonIds || []);
+      const hasExplicitLessons = explicitLessonIds.size > 0;
+
+      return lessons
+        .filter((lesson) => {
+          if (!canStudentSeeLesson(lesson)) return false;
+          if (explicitLessonIds.has(lesson.id)) return true;
+          if (hasExplicitLessons) return false;
+
+          const matchesPath = selectedTopic.pathId ? lesson.pathId === selectedTopic.pathId : true;
+          const matchesSubject = lesson.subjectId === selectedTopic.subjectId;
+          const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
+          return matchesPath && matchesSubject && matchesSection;
+        })
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+    },
     [activeTopic, lessons],
   );
 
   const activeTopicQuizzes = useMemo(
-    () =>
-      activeTopic
-        ? quizzes
-            .filter((quiz) => activeTopic.quizIds?.includes(quiz.id) && canStudentSeeQuiz(quiz))
-            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
-        : [],
+    () => {
+      if (!activeTopic || !selectedTopic) return [];
+
+      const explicitQuizIds = new Set(activeTopic.quizIds || []);
+      const hasExplicitQuizzes = explicitQuizIds.size > 0;
+
+      return quizzes
+        .filter((quiz) => {
+          if (!canStudentSeeQuiz(quiz)) return false;
+          if (explicitQuizIds.has(quiz.id)) return true;
+          if (hasExplicitQuizzes) return false;
+
+          const matchesPath = selectedTopic.pathId ? quiz.pathId === selectedTopic.pathId : true;
+          const matchesSubject = quiz.subjectId === selectedTopic.subjectId;
+          const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
+          return matchesPath && matchesSubject && matchesSection;
+        })
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    },
     [activeTopic, quizzes],
   );
 
@@ -123,6 +149,11 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
     if (lesson.videoUrl) {
       setVideoData({ url: lesson.videoUrl, title: lesson.title });
+      return;
+    }
+
+    if (lesson.fileUrl) {
+      openExternalUrl(lesson.fileUrl);
     }
   };
 
