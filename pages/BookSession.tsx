@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Calendar, Clock, BookOpen, Send, CheckCircle, ArrowRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 
 export const BookSession: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { addActivity, paths, subjects, sections, skills } = useStore();
   const [subject, setSubject] = useState('');
   const [date, setDate] = useState('');
@@ -14,6 +15,10 @@ export const BookSession: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
   const today = new Date().toISOString().slice(0, 10);
+  const requestedSkillId = searchParams.get('skillId');
+  const requestedSkillName = searchParams.get('skillName');
+  const requestedSubjectName = searchParams.get('subjectName');
+  const requestedSectionName = searchParams.get('sectionName');
 
   const sessionTargets = useMemo(() => {
     const primarySkillTargets = skills.map((skill) => {
@@ -61,6 +66,41 @@ export const BookSession: React.FC = () => {
     () => sessionTargets.find((target) => target.value === subject)?.label || subject,
     [sessionTargets, subject],
   );
+
+  useEffect(() => {
+    if (subject || sessionTargets.length === 0) return;
+
+    if (requestedSkillId) {
+      const directTarget = sessionTargets.find((target) => target.value === `skill:${requestedSkillId}`);
+      if (directTarget) {
+        setSubject(directTarget.value);
+        return;
+      }
+    }
+
+    if (requestedSkillName) {
+      const nameTarget = sessionTargets.find((target) => target.label.includes(requestedSkillName));
+      if (nameTarget) {
+        setSubject(nameTarget.value);
+        return;
+      }
+
+      setSubject('other');
+    }
+  }, [requestedSkillId, requestedSkillName, sessionTargets, subject]);
+
+  useEffect(() => {
+    if (notes || !requestedSkillName) return;
+
+    const details = [
+      requestedSubjectName ? `المادة: ${requestedSubjectName}` : null,
+      requestedSectionName ? `المهارة الرئيسية: ${requestedSectionName}` : null,
+      `المهارة المطلوبة: ${requestedSkillName}`,
+      'مصدر الطلب: نتيجة اختبار الطالب',
+    ].filter(Boolean);
+
+    setNotes(`أرغب في حصة علاجية مركزة على:\n${details.join('\n')}`);
+  }, [notes, requestedSectionName, requestedSkillName, requestedSubjectName]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

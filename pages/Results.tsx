@@ -47,6 +47,7 @@ interface SkillRecommendation {
 }
 
 interface ResolvedAnalysisItem {
+  skillId?: string;
   subjectName?: string;
   sectionName?: string;
   skillName: string;
@@ -298,6 +299,7 @@ const Results: React.FC = () => {
 
         if (!current) {
           aggregated.set(skillKey, {
+            skillId: item.skillId,
             subjectName,
             sectionName,
             skillName,
@@ -383,6 +385,18 @@ const Results: React.FC = () => {
   const guardianFollowUpSummary = weakestSkill
     ? `نتيجة الاختبار ${latestResult?.score || 0}%. أضعف مهارة ظهرت هي "${weakestSkill.skillName}" بنسبة ${weakestSkill.mastery}%. الخطوة المناسبة الآن: ${weakestSkill.actionText}`
     : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
+  const bookSessionLink = React.useMemo(() => {
+    if (!weakestSkill) return '/book-session';
+
+    const params = new URLSearchParams();
+    if (weakestSkill.skillId) params.set('skillId', weakestSkill.skillId);
+    params.set('skillName', weakestSkill.skillName);
+    if (weakestSkill.subjectName) params.set('subjectName', weakestSkill.subjectName);
+    if (weakestSkill.sectionName) params.set('sectionName', weakestSkill.sectionName);
+    params.set('source', 'quiz-result');
+
+    return `/book-session?${params.toString()}`;
+  }, [weakestSkill]);
   const copyGuardianSummary = async () => {
     try {
       await navigator.clipboard.writeText(guardianFollowUpSummary);
@@ -745,7 +759,7 @@ const Results: React.FC = () => {
                   </a>
                 ) : null}
                 {weakestSkill.mastery < 75 ? (
-                  <Link to="/book-session" className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition-colors">
+                  <Link to={bookSessionLink} className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition-colors">
                     حجز حصة علاجية لهذه المهارة
                   </Link>
                 ) : null}
