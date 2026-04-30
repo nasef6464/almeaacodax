@@ -1,4 +1,4 @@
-import { SkillGap, LearningRecommendation } from "../types";
+import { LearningRecommendation, SkillGap } from "../types";
 import { api } from "./api";
 import { sanitizeArabicText } from "../utils/sanitizeMojibakeArabic";
 
