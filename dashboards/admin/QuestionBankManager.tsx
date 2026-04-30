@@ -169,6 +169,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [isImporting, setIsImporting] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [importSummary, setImportSummary] = useState<{ imported: number; failed: number; samples: string[] } | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -453,6 +454,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsImporting(true);
     setImportMessage(null);
     setImportError(null);
+    setImportSummary(null);
 
     try {
       const buffer = await file.arrayBuffer();
@@ -483,6 +485,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       for (const question of importedQuestions) {
         await addQuestion(question);
       }
+
+      setImportSummary({
+        imported: importedQuestions.length,
+        failed: rowErrors.length,
+        samples: rowErrors.slice(0, 5),
+      });
 
       setImportMessage(
         rowErrors.length > 0
@@ -580,6 +588,34 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           }`}
         >
           {isImporting ? 'جارٍ قراءة ملف الأسئلة وربطه بمركز المهارات...' : importError || importMessage}
+        </div>
+      )}
+
+      {importSummary && (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-[220px_220px_1fr]">
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+            <p className="text-xs font-black text-emerald-700">أسئلة تم استيرادها</p>
+            <p className="mt-2 text-2xl font-black text-emerald-800">{importSummary.imported}</p>
+          </div>
+          <div className={`rounded-2xl border p-4 ${importSummary.failed ? 'border-amber-100 bg-amber-50' : 'border-gray-100 bg-gray-50'}`}>
+            <p className={`text-xs font-black ${importSummary.failed ? 'text-amber-700' : 'text-gray-500'}`}>صفوف تحتاج مراجعة</p>
+            <p className={`mt-2 text-2xl font-black ${importSummary.failed ? 'text-amber-800' : 'text-gray-700'}`}>{importSummary.failed}</p>
+          </div>
+          <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+            <p className="text-xs font-black text-indigo-700">فحص الربط</p>
+            <p className="mt-2 text-sm font-bold leading-7 text-indigo-900">
+              {importSummary.failed
+                ? 'تم إدخال الأسئلة الصالحة فقط. راجع الصفوف المتبقية غالبًا بسبب اسم مسار/مادة/مهارة غير مطابق لمركز المهارات.'
+                : 'كل الصفوف الصالحة تم ربطها بالمسار والمادة والمهارة الرئيسية والفرعية من مركز المهارات.'}
+            </p>
+            {importSummary.samples.length > 0 ? (
+              <ul className="mt-3 space-y-1 text-xs font-bold leading-6 text-amber-800">
+                {importSummary.samples.map((sample) => (
+                  <li key={sample}>{sample}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       )}
 
