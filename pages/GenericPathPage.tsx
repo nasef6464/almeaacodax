@@ -78,6 +78,7 @@ export const GenericPathPage: React.FC = () => {
 
     const pathLevels = levels?.filter(l => l.pathId === path.id) || [];
     const pathSubjects = subjects.filter(s => s.pathId === path.id);
+    const pathSubjectIds = new Set(pathSubjects.map((subject) => subject.id));
     const isPublicPackageVisible = (pkg: any) =>
         pkg.showOnPlatform !== false &&
         pkg.isPublished !== false &&
@@ -98,8 +99,8 @@ export const GenericPathPage: React.FC = () => {
     ) => {
         const itemPathId = item.pathId || item.category;
         const itemSubjectId = item.subjectId || item.subject;
-        const matchesPath = !itemPathId || itemPathId === path.id;
-        const matchesSubject = !packageSubjectId || !itemSubjectId || itemSubjectId === packageSubjectId;
+        const matchesPath = itemPathId ? itemPathId === path.id : !itemSubjectId || pathSubjectIds.has(itemSubjectId);
+        const matchesSubject = !packageSubjectId || itemSubjectId === packageSubjectId;
         return matchesPath && matchesSubject;
     };
     const getPackageCoverage = (pkg: any, contentTypes: string[]) => {

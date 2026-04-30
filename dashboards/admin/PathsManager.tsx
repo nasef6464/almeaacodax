@@ -93,6 +93,7 @@ export const PathsManager: React.FC = () => {
   const [packageVisible, setPackageVisible] = useState(false);
   const [packagePublished, setPackagePublished] = useState(true);
   const [packageContentTypes, setPackageContentTypes] = useState<PackageContentType[]>(['all']);
+  const [packageSubjectId, setPackageSubjectId] = useState('');
 
   const currentPath = paths.find(p => p.id === selectedPathId);
   const pathLevels = levels?.filter(l => l.pathId === selectedPathId) || [];
@@ -425,6 +426,7 @@ export const PathsManager: React.FC = () => {
     setPackageVisible(false);
     setPackagePublished(true);
     setPackageContentTypes(['all']);
+    setPackageSubjectId('');
   };
 
   const openPackageModal = (pkg?: Course) => {
@@ -439,6 +441,7 @@ export const PathsManager: React.FC = () => {
       setPackageVisible(pkg.showOnPlatform !== false);
       setPackagePublished(pkg.isPublished !== false);
       setPackageContentTypes(pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all']);
+      setPackageSubjectId(pkg.subjectId || pkg.subject || '');
     } else {
       resetPackageForm();
     }
@@ -456,6 +459,7 @@ export const PathsManager: React.FC = () => {
       .map((item) => item.trim())
       .filter(Boolean);
     const normalizedContentTypes = packageContentTypes.length ? packageContentTypes : ['all' as PackageContentType];
+    const scopedSubjectId = packageSubjectId.trim();
 
     const packageData: Partial<Course> = {
       title: packageTitle.trim(),
@@ -470,13 +474,19 @@ export const PathsManager: React.FC = () => {
       progress: 0,
       category: selectedPathId,
       pathId: selectedPathId,
+      subject: scopedSubjectId || undefined,
+      subjectId: scopedSubjectId || undefined,
       features: features.length ? features : ['وصول منظم لمحتوى المسار', 'متابعة التقدم داخل المنصة'],
       isPackage: true,
       packageType: 'courses',
       packageContentTypes: normalizedContentTypes,
       originalPrice,
       includedCourses: courses
-        .filter((course) => (course.pathId || course.category) === selectedPathId && !course.isPackage)
+        .filter((course) => (
+          (course.pathId || course.category) === selectedPathId &&
+          (!scopedSubjectId || course.subjectId === scopedSubjectId || course.subject === scopedSubjectId) &&
+          !course.isPackage
+        ))
         .map((course) => course.id),
       isPublished: packagePublished,
       showOnPlatform: packageVisible,
@@ -544,6 +554,44 @@ export const PathsManager: React.FC = () => {
       .map((type) => publicPackageContentOptions.find((option) => option.value === type)?.label)
       .filter(Boolean)
       .join(' + ');
+  };
+
+  const getPathPackageSubjectLabel = (pkg: Course) => {
+    const scopedSubjectId = pkg.subjectId || pkg.subject;
+    if (!scopedSubjectId) return 'كل مواد المسار';
+    return pathSubjects.find((subject) => subject.id === scopedSubjectId)?.name || 'مادة محددة';
+  };
+
+  const getPathPackageCoverage = (pkg: Course) => {
+    const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
+    const coversAll = contentTypes.includes('all' as PackageContentType);
+    const hasType = (type: PackageContentType) => coversAll || contentTypes.includes(type);
+    const pkgPathId = pkg.pathId || pkg.category || selectedPathId || '';
+    const pkgSubjectId = pkg.subjectId || pkg.subject || '';
+    const subjectIdsInPath = new Set(subjects.filter((subject: any) => subject.pathId === pkgPathId).map((subject: any) => subject.id));
+    const isInScope = (item: { pathId?: string; subjectId?: string; subject?: string }) => {
+      const itemSubjectId = item.subjectId || item.subject || '';
+      const pathMatches = !pkgPathId || item.pathId === pkgPathId || subjectIdsInPath.has(itemSubjectId);
+      const subjectMatches = !pkgSubjectId || itemSubjectId === pkgSubjectId;
+      return pathMatches && subjectMatches;
+    };
+
+    const counts = {
+      courses: courses.filter((course: any) => !course.isPackage && hasType('courses') && isInScope(course)).length,
+      foundation: topics.filter((topic: any) => hasType('foundation') && isInScope(topic)).length,
+      banks: quizzes.filter((quiz: any) => hasType('banks') && quiz.type === 'bank' && isInScope(quiz)).length,
+      tests: quizzes.filter((quiz: any) => hasType('tests') && quiz.type !== 'bank' && isInScope(quiz)).length,
+      library: libraryItems.filter((item: any) => hasType('library') && isInScope(item)).length,
+    };
+    const total = counts.courses + counts.foundation + counts.banks + counts.tests + counts.library;
+    const warnings = [
+      (pkg.price || 0) <= 0 ? 'السعر غير محدد' : '',
+      total === 0 ? 'لا يوجد محتوى داخل نطاق الباقة' : '',
+      pkg.showOnPlatform !== false && pkg.isPublished === false ? 'ظاهرة لكن غير معتمدة' : '',
+      pkg.showOnPlatform !== false && pkg.approvalStatus && pkg.approvalStatus !== 'approved' ? 'تحتاج اعتماد قبل البيع' : '',
+    ].filter(Boolean);
+
+    return { counts, total, warnings, isReady: warnings.length === 0 };
   };
 
   const handleDeletePackage = (pkg: Course) => {
@@ -1114,7 +1162,9 @@ export const PathsManager: React.FC = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  {pathPackages.map((pkg) => (
+                  {pathPackages.map((pkg) => {
+                    const coverage = getPathPackageCoverage(pkg);
+                    return (
                     <div key={pkg.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                       <div className="p-5 flex gap-4">
                         <img
@@ -1145,7 +1195,32 @@ export const PathsManager: React.FC = () => {
                             <span className="text-gray-500">{pkg.features?.length || 0} مزايا</span>
                             <span className="text-gray-400">•</span>
                             <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-700">{getPackageScopeLabel(pkg)}</span>
+                            <span className="text-gray-400">•</span>
+                            <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-bold text-amber-700">{getPathPackageSubjectLabel(pkg)}</span>
                           </div>
+                          <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-600 sm:grid-cols-5">
+                            {[
+                              ['دورات', coverage.counts.courses],
+                              ['تأسيس', coverage.counts.foundation],
+                              ['تدريب', coverage.counts.banks],
+                              ['اختبارات', coverage.counts.tests],
+                              ['مكتبة', coverage.counts.library],
+                            ].map(([label, value]) => (
+                              <div key={label} className="rounded-xl bg-gray-50 px-2 py-2 text-center">
+                                <span className="text-gray-400">{label}</span>
+                                <span className="mx-1 text-gray-900">{value}</span>
+                              </div>
+                            ))}
+                          </div>
+                          {coverage.warnings.length > 0 ? (
+                            <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
+                              قبل الإظهار: {coverage.warnings.join('، ')}
+                            </div>
+                          ) : (
+                            <div className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
+                              جاهزة للعرض والبيع: تغطي {coverage.total} عنصرًا داخل نطاقها.
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="border-t border-gray-100 bg-gray-50 px-5 py-3 flex flex-wrap justify-end gap-2">
@@ -1183,7 +1258,8 @@ export const PathsManager: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -1498,6 +1574,22 @@ export const PathsManager: React.FC = () => {
                       placeholder="اختياري"
                     />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">نطاق الباقة داخل المسار</label>
+                  <select
+                    value={packageSubjectId}
+                    onChange={(e) => setPackageSubjectId(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                  >
+                    <option value="">كل مواد المسار</option>
+                    {pathSubjects.map((subject) => (
+                      <option key={subject.id} value={subject.id}>{subject.name}</option>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-xs text-gray-500">
+                    استخدمها لو أردت باقة للكمي فقط أو اللفظي فقط مثلًا. لو تركتها على كل المواد ستكون باقة عامة للمسار كله.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">مزايا الباقة</label>
