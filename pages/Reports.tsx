@@ -1188,6 +1188,16 @@ const Reports: React.FC = () => {
                                     <FileText size={16} />
                                     ابدأ بالتدريب
                                 </Link>
+                                {selectedSkillRecommendation.resourceUrl ? (
+                                    <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                        <BookOpen size={16} />
+                                        ملف مساعد
+                                    </a>
+                                ) : null}
+                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center justify-center gap-2">
+                                    <Clock size={16} />
+                                    حجز حصة
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -1251,21 +1261,11 @@ const Reports: React.FC = () => {
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                             <div className="min-w-0">
                                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">تفصيل ومساندة لهذه المهارة</span>
-                                    {selectedSkillRecommendation.subjectName ? (
-                                        <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-gray-600">
-                                            المادة: {displayText(selectedSkillRecommendation.subjectName)}
-                                        </span>
-                                    ) : null}
-                                    {selectedSkillRecommendation.sectionName ? (
-                                        <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-gray-600">
-                                            المهارة الرئيسة: {displayText(selectedSkillRecommendation.sectionName)}
-                                        </span>
-                                    ) : null}
+                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">مقترحات لهذه المهارة</span>
                                 </div>
                                 <h3 className="text-lg font-black text-gray-900 break-words">{displayText(selectedReportSkill.skill)}</h3>
                                 <p className="mt-2 text-sm leading-7 text-gray-600">
-                                    {displayText(selectedSkillRecommendation.actionText) || 'ابدأ بمراجعة قصيرة، ثم حل تدريبًا بسيطًا، وبعدها أعد القياس.'}
+                                    اختر من المقترحات التالية ما يناسب وقتك الآن. الأفضل أن تبدأ بالشرح ثم تنتقل للتدريب.
                                 </p>
                                 <p className="mt-2 text-xs font-bold text-indigo-600">
                                     يمكنك تغيير المقترحات بالضغط على أي مهارة من البطاقات بالأعلى.

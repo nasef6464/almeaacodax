@@ -248,23 +248,6 @@ const SimpleResultStat = ({
   );
 };
 
-const NextStepChip = ({
-  label,
-  tone = 'default',
-}: {
-  label: string;
-  tone?: 'default' | 'success' | 'warning' | 'danger';
-}) => {
-  const toneClasses = {
-    default: 'bg-gray-50 text-gray-700 border-gray-200',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200',
-  };
-
-  return <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-black ${toneClasses[tone]}`}>{label}</span>;
-};
-
 const Results: React.FC = () => {
   const { examResults, skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
@@ -352,37 +335,11 @@ const Results: React.FC = () => {
   const weakSkillsCount = analysisItems.filter((item) => item.status === 'weak').length;
   const topThreeFocusSkills = analysisItems.slice(0, 3);
   const isFullResult = resultDepth === 'full';
-  const starterChecklist = [
-    weakestSkill?.lessonTitle ? { id: 'lesson', label: 'ابدأ بشرح المهارة الأضعف', tone: 'danger' as const } : null,
-    weakestSkill?.quizTitle ? { id: 'quiz', label: 'بعدها حل تدريبًا قصيرًا', tone: 'warning' as const } : null,
-    weakestSkill?.resourceTitle ? { id: 'resource', label: 'مرّ على الملف الداعم', tone: 'success' as const } : null,
-  ].filter(Boolean) as { id: string; label: string; tone: 'danger' | 'warning' | 'success' }[];
-  const recoveryPlanItems = weakestSkill
-    ? [
-        {
-          title: 'الخطوة 1',
-          label: 'افهم المهارة',
-          body: weakestSkill.lessonTitle
-            ? `راجع درس: ${weakestSkill.lessonTitle}`
-            : `راجع شرحًا قصيرًا عن ${weakestSkill.skillName}`,
-          className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
-        },
-        {
-          title: 'الخطوة 2',
-          label: 'درّب نفسك',
-          body: weakestSkill.quizTitle
-            ? `حل تدريب: ${weakestSkill.quizTitle}`
-            : 'حل 5 إلى 10 أسئلة قصيرة على نفس المهارة.',
-          className: 'border-amber-100 bg-amber-50 text-amber-800',
-        },
-        {
-          title: 'الخطوة 3',
-          label: 'أعد القياس',
-          body: 'بعد المراجعة، أعد اختبارًا قصيرًا وشاهد هل ارتفعت النسبة.',
-          className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
-        },
-      ]
-    : [];
+  const simplestNextStep = weakestSkill?.lessonTitle
+    ? 'ابدأ بشرح قصير لهذه المهارة ثم انتقل للتدريب.'
+    : weakestSkill?.quizTitle
+      ? 'ابدأ بتدريب قصير الآن ثم أعد القياس بعده.'
+      : 'ابدأ بخطوة صغيرة على المهارة الأضعف ثم أعد الاختبار لاحقًا.';
   const guardianFollowUpSummary = weakestSkill
     ? `نتيجة الاختبار ${latestResult?.score || 0}%. أضعف مهارة ظهرت هي "${weakestSkill.skillName}" بنسبة ${weakestSkill.mastery}%. الخطوة المناسبة الآن: ${weakestSkill.actionText}`
     : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
@@ -716,37 +673,6 @@ const Results: React.FC = () => {
                 <div className="mt-2 text-sm font-bold text-rose-700">{weakestSkill.mastery}%</div>
               </div>
 
-              {isFullResult && starterChecklist.length > 0 ? (
-                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
-                  <div className="mb-3 flex items-center gap-2 text-indigo-800">
-                    <CheckCircle2 size={16} />
-                    <span className="text-sm font-black">ابدأ بهذه الخطوات البسيطة</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {starterChecklist.map((item) => (
-                      <NextStepChip key={item.id} label={item.label} tone={item.tone} />
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {isFullResult && recoveryPlanItems.length > 0 ? (
-                <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                  <div className="mb-3 text-sm font-black text-gray-800">خطة علاجية صغيرة قبل الإعادة</div>
-                  <div className="grid gap-3">
-                    {recoveryPlanItems.map((item) => (
-                      <div key={item.title} className={`rounded-xl border px-4 py-3 ${item.className}`}>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-black">{item.title}</span>
-                          <span className="text-sm font-black">{item.label}</span>
-                        </div>
-                        <p className="mt-2 text-sm leading-7">{displayText(item.body)}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
               {!isFullResult ? (
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
                   <div className="mb-2 flex items-center gap-2 text-indigo-800">
@@ -770,12 +696,13 @@ const Results: React.FC = () => {
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
                   <div className="flex items-center gap-2 text-sm font-black text-emerald-800">
                     <Lightbulb size={16} />
-                    أفضل ترتيب الآن
+                    ما الذي أفعله الآن؟
                   </div>
+                  <p className="mt-3 text-sm leading-7 text-emerald-900">{simplestNextStep}</p>
                   <div className="mt-3 grid gap-2 text-xs font-bold text-emerald-700 sm:grid-cols-3">
-                    <span className="rounded-xl bg-white px-3 py-2">1. شاهد شرحًا قصيرًا</span>
-                    <span className="rounded-xl bg-white px-3 py-2">2. حل تدريبًا مناسبًا</span>
-                    <span className="rounded-xl bg-white px-3 py-2">3. أعد القياس</span>
+                    <span className="rounded-xl bg-white px-3 py-2">1. شرح</span>
+                    <span className="rounded-xl bg-white px-3 py-2">2. تدريب</span>
+                    <span className="rounded-xl bg-white px-3 py-2">3. إعادة قياس</span>
                   </div>
                 </div>
                 {weakestSkill.lessonLink ? (
@@ -805,6 +732,14 @@ const Results: React.FC = () => {
                   <Link to={bookSessionLink} className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition-colors">
                     حجز حصة علاجية لهذه المهارة
                   </Link>
+                ) : null}
+                {isFullResult ? (
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
+                    <div className="mb-2 text-sm font-black text-slate-800">خطة علاجية قصيرة</div>
+                    <div>1. افهم المهارة: {weakestSkill.lessonTitle ? `راجع ${weakestSkill.lessonTitle}` : `ابدأ بشرح بسيط عن ${weakestSkill.skillName}`}</div>
+                    <div className="mt-1">2. تدرب عليها: {weakestSkill.quizTitle ? `حل ${weakestSkill.quizTitle}` : 'حل 5 إلى 10 أسئلة قصيرة.'}</div>
+                    <div className="mt-1">3. أعد القياس: ارجع لاختبار قصير وتأكد أن النسبة ارتفعت.</div>
+                  </div>
                 ) : null}
               </div>
             </div>
