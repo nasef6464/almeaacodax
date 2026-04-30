@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { Topic, Lesson, Quiz } from '../../types';
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen } from 'lucide-react';
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen, Eye } from 'lucide-react';
 
 interface FoundationManagerProps {
   subjectId: string;
@@ -129,6 +129,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     updateTopic(topic.id, { showOnPlatform: topic.showOnPlatform === false });
   };
 
+  const handlePreviewTopic = (topic: Topic) => {
+    const pathId = topic.pathId || currentSubject?.pathId;
+    const targetSubjectId = topic.subjectId || subjectId;
+    if (!pathId || !targetSubjectId) return;
+    const url = `/#/category/${pathId}?subject=${targetSubjectId}&tab=skills&topic=${topic.id}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handlePreviewAttachment = (item: Lesson | Quiz, type: 'lesson' | 'quiz') => {
+    const url = type === 'lesson'
+      ? (item as Lesson).videoUrl || `/#/category/${item.pathId || currentSubject?.pathId || ''}?subject=${item.subjectId || subjectId}&tab=skills`
+      : `/#/quiz/${item.id}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const renderTopic = (topic: Topic, level: number = 0) => {
     const subtopics = subjectTopics.filter(t => t.parentId === topic.id);
     const isExpanded = expandedTopics.has(topic.id);
@@ -158,6 +173,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           </div>
           
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePreviewTopic(topic)}
+              className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              title="معاينة الموضوع كما سيظهر للطالب"
+            >
+              <Eye size={18} />
+            </button>
             <button 
               onClick={() => {
                 setAttachingToTopicId(topic.id);
@@ -207,6 +229,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               <div key={lesson.id} className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm border border-blue-100">
                 <BookOpen size={14} />
                 <span className="truncate max-w-[150px]">{lesson.title}</span>
+                <button
+                  onClick={() => handlePreviewAttachment(lesson, 'lesson')}
+                  className="text-blue-400 hover:text-blue-700"
+                  title="معاينة الدرس"
+                >
+                  <Eye size={14} />
+                </button>
                 <button onClick={() => handleRemoveAttachment(topic.id, lesson.id, 'lesson')} className="text-blue-400 hover:text-blue-600">
                   <X size={14} />
                 </button>
@@ -216,6 +245,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               <div key={quiz.id} className="flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg text-sm border border-amber-100">
                 <FileQuestion size={14} />
                 <span className="truncate max-w-[150px]">{quiz.title}</span>
+                <button
+                  onClick={() => handlePreviewAttachment(quiz, 'quiz')}
+                  className="text-amber-400 hover:text-amber-700"
+                  title="معاينة التدريب"
+                >
+                  <Eye size={14} />
+                </button>
                 <button onClick={() => handleRemoveAttachment(topic.id, quiz.id, 'quiz')} className="text-amber-400 hover:text-amber-600">
                   <X size={14} />
                 </button>

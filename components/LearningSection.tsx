@@ -266,6 +266,47 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             };
         });
 
+    useEffect(() => {
+        const previewTopicId = searchParams.get('topic');
+        if (!previewTopicId) return;
+
+        const requestedTopic = topicList.find((topic) => topic.id === previewTopicId);
+        if (!requestedTopic) return;
+
+        const parentTopic = requestedTopic.parentId
+            ? topicList.find((topic) => topic.id === requestedTopic.parentId)
+            : requestedTopic;
+        if (!parentTopic || !matchesScopedContent(parentTopic.pathId, parentTopic.subjectId)) return;
+
+        const subTopics = topicList.filter((topic) => topic.parentId === parentTopic.id && (isStaffViewer || topic.showOnPlatform !== false));
+        const countVisibleLessons = (lessonIds?: string[]) =>
+            (lessonIds || []).filter((lessonId) => {
+                const lesson = lessons.find((item) => item.id === lessonId);
+                return lesson ? canStudentSeeLesson(lesson) : false;
+            }).length;
+        const countVisibleQuizzes = (quizIds?: string[]) =>
+            (quizIds || []).filter((quizId) => {
+                const quiz = quizList.find((item) => item.id === quizId);
+                return quiz ? canStudentSeeQuiz(quiz) : false;
+            }).length;
+
+        const totalLessons = countVisibleLessons(parentTopic.lessonIds) + subTopics.reduce((sum, topic) => sum + countVisibleLessons(topic.lessonIds), 0);
+        const totalQuizzes = countVisibleQuizzes(parentTopic.quizIds) + subTopics.reduce((sum, topic) => sum + countVisibleQuizzes(topic.quizIds), 0);
+
+        setActiveTab('skills');
+        setSelectedSkill({
+            id: parentTopic.id,
+            title: parentTopic.title,
+            totalLessons: totalLessons || 1,
+            completed: 0,
+            totalQuizzes,
+            isLocked: false,
+            progress: 0,
+            originalTopic: parentTopic,
+            initialSubTopicId: requestedTopic.parentId ? requestedTopic.id : null,
+        });
+    }, [isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
+
     let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type === 'bank').map(q => ({
         id: q.id,
         title: q.title,

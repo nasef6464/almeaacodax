@@ -35,10 +35,12 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
         .filter((topic) => topic.parentId === skill.originalTopic.id && (isStaffViewer || topic.showOnPlatform !== false))
         .sort((a, b) => a.order - b.order);
 
-      setSelectedSubTopic(subTopics[0] || null);
+      setSelectedSubTopic(
+        subTopics.find((topic) => topic.id === skill.initialSubTopicId) || subTopics[0] || null,
+      );
       setTopicModalTab('lessons');
     }
-  }, [isOpen, isStaffViewer, skill?.originalTopic?.id, topics]);
+  }, [isOpen, isStaffViewer, skill?.initialSubTopicId, skill?.originalTopic?.id, topics]);
 
   const subTopics = useMemo(
     () =>
