@@ -65,6 +65,7 @@ interface ResolvedAnalysisItem {
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+const arabicOptionLabels = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
@@ -1013,30 +1014,43 @@ const ReviewSolutions = ({
             <div className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-relaxed px-2 sm:px-4 break-words" dangerouslySetInnerHTML={{ __html: displayText(q.text) }} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8">
-            {['A', 'B', 'C', 'D'].slice(0, q.options.length).map((label, i) => {
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6 mb-8">
+            {q.options.map((option, i) => {
+              const label = arabicOptionLabels[i] || `${i + 1}`;
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
 
               let borderClass = 'border-gray-200 text-gray-400';
               let bgClass = 'bg-white';
+              let helperLabel = '';
 
               if (showExplanation) {
                 if (isCorrect) {
                   borderClass = 'border-emerald-500 text-emerald-600';
                   bgClass = 'bg-emerald-50';
+                  helperLabel = 'الإجابة الصحيحة';
                 } else if (isUser && !isCorrect) {
                   borderClass = 'border-red-500 text-red-600';
                   bgClass = 'bg-red-50';
+                  helperLabel = 'اختيارك';
                 }
+              } else if (isUser) {
+                borderClass = 'border-indigo-500 text-indigo-600';
+                bgClass = 'bg-indigo-50';
+                helperLabel = 'اختيارك';
               }
 
               return (
-                <div key={i} className="flex flex-col items-center gap-2">
+                <div key={`${label}-${i}`} className="flex flex-col items-center gap-2 rounded-2xl border border-gray-100 bg-white/70 p-3">
                   <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center text-xl font-black transition-all ${borderClass} ${bgClass}`}>
                     {label}
                   </div>
-                  <span className="text-xs font-bold text-gray-500 text-center">{displayText(q.options[i])}</span>
+                  <span className="text-sm font-bold text-gray-700 text-center leading-7">{displayText(option)}</span>
+                  {helperLabel ? (
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${isCorrect ? 'bg-emerald-100 text-emerald-700' : isUser ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {helperLabel}
+                    </span>
+                  ) : null}
                 </div>
               );
             })}
