@@ -136,6 +136,12 @@ async function run() {
     adminPaymentSettings,
     adminPaymentRequests,
     studentPaymentRequests,
+    aiChat,
+    aiStudyPlan,
+    aiLearningPath,
+    aiRemediationPlan,
+    aiQuestion,
+    aiCourseSummary,
   ] = await Promise.all([
     request<any>("/auth/me", "GET", undefined, admin.token),
     request<any>("/auth/me", "GET", undefined, teacher.token),
@@ -166,6 +172,32 @@ async function run() {
     request<any>("/payments/settings", "GET", undefined, admin.token),
     request<any>("/payments/requests", "GET", undefined, admin.token),
     request<any>("/payments/requests", "GET", undefined, student.token),
+    request<any>("/ai/chat", "POST", { message: "اشرح لي فكرة النسبة باختصار" }, student.token),
+    request<any>("/ai/study-plan", "POST", { weaknesses: ["النسبة", "الكسور"] }, student.token),
+    request<any>(
+      "/ai/learning-path",
+      "POST",
+      {
+        skills: [
+          { skill: "النسبة", mastery: 42, status: "weak" },
+          { skill: "الكسور", mastery: 68, status: "average" },
+        ],
+      },
+      student.token,
+    ),
+    request<any>(
+      "/ai/remediation-plan",
+      "POST",
+      {
+        ageBand: "middle",
+        skills: [
+          { subjectName: "الكمي", sectionName: "النسبة", skill: "تحويل النسب", mastery: 42, status: "weak" },
+        ],
+      },
+      student.token,
+    ),
+    request<any>("/ai/question", "POST", { topic: "النسبة والتناسب" }, teacher.token),
+    request<any>("/ai/course-summary", "POST", { courseTitle: "تأسيس القدرات الكمي" }, teacher.token),
   ]);
 
   pushResult(results, "admin", "login", adminMe.user?.role === "admin", `role=${adminMe.user?.role}`);
@@ -183,6 +215,59 @@ async function run() {
       typeof aiStatus?.timeoutMs === "number" &&
       typeof aiStatus?.model === "string",
     `provider=${aiStatus?.provider || "unknown"}, model=${aiStatus?.model || "unknown"}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "ai chat fallback available",
+    typeof aiChat?.text === "string" && aiChat.text.trim().length > 0,
+    `chars=${String(aiChat?.text || "").length}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "ai study plan fallback available",
+    Array.isArray(aiStudyPlan?.steps) && aiStudyPlan.steps.length >= 3,
+    `steps=${aiStudyPlan?.steps?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "ai learning path fallback available",
+    Array.isArray(aiLearningPath) && aiLearningPath.length > 0,
+    `recommendations=${Array.isArray(aiLearningPath) ? aiLearningPath.length : 0}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "ai remediation plan fallback available",
+    typeof aiRemediationPlan?.summary === "string" &&
+      Array.isArray(aiRemediationPlan?.steps) &&
+      aiRemediationPlan.steps.length > 0,
+    `steps=${aiRemediationPlan?.steps?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "teacher",
+    "ai question fallback available",
+    typeof aiQuestion?.question === "string" &&
+      Array.isArray(aiQuestion?.options) &&
+      aiQuestion.options.length >= 4 &&
+      typeof aiQuestion?.correctIndex === "number",
+    `options=${aiQuestion?.options?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "teacher",
+    "ai course summary fallback available",
+    typeof aiCourseSummary?.text === "string" && aiCourseSummary.text.trim().length > 0,
+    `chars=${String(aiCourseSummary?.text || "").length}`,
   );
 
   pushResult(
