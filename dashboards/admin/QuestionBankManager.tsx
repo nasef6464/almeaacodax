@@ -235,6 +235,21 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [questions, searchTerm],
   );
 
+  const questionCoverageSummary = useMemo(() => {
+    const mainSkillCount = new Set(filteredQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
+    const subSkillCount = new Set(filteredQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
+    const pendingCount = filteredQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
+    const approvedCount = filteredQuestions.filter((question) => question.approvalStatus === 'approved').length;
+
+    return {
+      total: filteredQuestions.length,
+      mainSkillCount,
+      subSkillCount,
+      pendingCount,
+      approvedCount,
+    };
+  }, [filteredQuestions]);
+
   const resetEditorQuestion = () => {
     setCurrentQuestion({
       text: '',
@@ -283,6 +298,48 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر نسخ السؤال الآن.');
     }
+  };
+
+  const downloadQuestionsExport = () => {
+    const questionRows = filteredQuestions.map((question) => {
+      const pathName = paths.find((path) => path.id === question.pathId)?.name || '';
+      const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || '';
+      const mainSkillName = sections.find((section) => section.id === question.sectionId)?.name || '';
+      const subSkillNames = (question.skillIds || [])
+        .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+        .filter(Boolean)
+        .join(' | ');
+
+      return {
+        المسار: pathName,
+        المادة: subjectName,
+        'المهارة الرئيسية': mainSkillName,
+        'المهارات الفرعية': subSkillNames,
+        'نص السؤال': question.text || '',
+        'رابط صورة السؤال': question.imageUrl || '',
+        'الاختيار أ': question.options?.[0] || '',
+        'الاختيار ب': question.options?.[1] || '',
+        'الاختيار ج': question.options?.[2] || '',
+        'الاختيار د': question.options?.[3] || '',
+        'الإجابة الصحيحة': question.type === 'essay' ? 'essay' : (question.options?.[question.correctOptionIndex] || ''),
+        الصعوبة: difficultyLabel(question.difficulty),
+        النوع: question.type,
+        'رابط الشرح': question.videoUrl || '',
+        'شرح نصي': question.explanation || '',
+        'حالة الاعتماد': getStatusMeta(question).label,
+      };
+    });
+
+    const instructions = [
+      { البيان: 'التصدير الحالي', التوضيح: 'يعرض فقط الأسئلة الحالية بعد الفلترة والبحث.' },
+      { البيان: 'الربط', التوضيح: 'المسار ثم المادة ثم المهارة الرئيسية ثم المهارات الفرعية كلها مأخوذة من مركز المهارات.' },
+      { البيان: 'حالة الاعتماد', التوضيح: 'تظهر إن كان السؤال مسودة أو بانتظار مراجعة أو معتمدًا.' },
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(questionRows), 'questions');
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(instructions), 'instructions');
+    XLSX.writeFile(workbook, 'questions-export.xlsx');
   };
 
   const handleSave = async (savedQuestion: Partial<Question>) => {
@@ -558,6 +615,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
         <div className="flex flex-wrap gap-3">
           <button
+            onClick={downloadQuestionsExport}
+            className="bg-slate-50 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-colors flex items-center gap-2"
+          >
+            <Download size={18} />
+            تصدير الأسئلة الحالية
+          </button>
+          <button
             onClick={downloadImportTemplate}
             className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
@@ -618,6 +682,25 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </div>
         </div>
       )}
+
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+          <p className="text-xs font-black text-gray-500">الأسئلة الحالية</p>
+          <p className="mt-2 text-2xl font-black text-gray-900">{questionCoverageSummary.total}</p>
+        </div>
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+          <p className="text-xs font-black text-indigo-700">المهارات الرئيسية</p>
+          <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount}</p>
+        </div>
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+          <p className="text-xs font-black text-emerald-700">المهارات الفرعية</p>
+          <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount}</p>
+        </div>
+        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+          <p className="text-xs font-black text-amber-700">بانتظار المراجعة</p>
+          <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount}</p>
+        </div>
+      </div>
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
         {!subjectId && (
