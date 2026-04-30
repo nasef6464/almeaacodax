@@ -81,6 +81,14 @@ function countItemsOutsidePaths(items: any[] | undefined, visiblePathIds: Set<st
   }).length;
 }
 
+function isPublishedForStudents(item: any) {
+  return (
+    item?.showOnPlatform !== false &&
+    item?.isPublished !== false &&
+    (!item?.approvalStatus || item.approvalStatus === "approved")
+  );
+}
+
 function findSubject(subjects: any[] | undefined, pathId: string, names: string[]) {
   const normalizedNames = names.map(normalizeArabic);
   return (subjects || []).find((subject: any) => {
@@ -444,6 +452,21 @@ async function run() {
     "public packages visible as sellable catalog",
     (studentCourses || []).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0),
     `packages=${(studentCourses || []).filter((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0).length}`,
+  );
+
+  const learnerPublicPackages = (studentCourses || []).filter(
+    (item: any) => item.isPackage === true || item.packageContentTypes?.length > 0,
+  );
+  const unsafeLearnerPackages = learnerPublicPackages.filter((item: any) => !isPublishedForStudents(item));
+
+  pushResult(
+    results,
+    "student",
+    "public packages are approved before sale",
+    learnerPublicPackages.length > 0 && unsafeLearnerPackages.length === 0,
+    unsafeLearnerPackages.length
+      ? `unsafePackages=${unsafeLearnerPackages.map((item: any) => documentId(item)).join(",")}`
+      : `packages=${learnerPublicPackages.length}`,
   );
 
   pushResult(
