@@ -279,6 +279,7 @@ export const SchoolsManager: React.FC = () => {
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
     const [newCodeMaxUses, setNewCodeMaxUses] = useState('50');
     const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
+    const [bulkClassNames, setBulkClassNames] = useState('');
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
@@ -384,6 +385,55 @@ export const SchoolsManager: React.FC = () => {
         createGroup(newSchool);
         setSelectedSchool(newSchool);
         setActiveTab('overview');
+    };
+
+    const handleCreateBulkClasses = () => {
+        if (!selectedSchool) return;
+
+        const classNames = Array.from(new Set(
+            bulkClassNames
+                .split(/\r?\n|،|,/)
+                .map((name) => name.trim())
+                .filter(Boolean),
+        ));
+
+        if (classNames.length === 0) {
+            setManagementError('اكتب اسم فصل واحد على الأقل، ويمكنك فصل الأسماء بسطر جديد أو فاصلة.');
+            return;
+        }
+
+        const existingNames = new Set(
+            classes
+                .filter((group) => group.parentId === selectedSchool.id)
+                .map((group) => group.name.trim().toLowerCase()),
+        );
+        const now = Date.now();
+        const namesToCreate = classNames.filter((name) => !existingNames.has(name.toLowerCase()));
+
+        if (namesToCreate.length === 0) {
+            setManagementError('كل الفصول المكتوبة موجودة بالفعل داخل هذه المدرسة.');
+            return;
+        }
+
+        namesToCreate.forEach((name, index) => {
+            createGroup({
+                id: `class_${now}_${index}`,
+                name,
+                type: 'CLASS',
+                parentId: selectedSchool.id,
+                ownerId: user.id,
+                supervisorIds: [],
+                studentIds: [],
+                courseIds: [],
+                createdAt: now + index,
+                totalStudents: 0,
+                totalSupervisors: 0,
+                totalCourses: 0,
+            });
+        });
+
+        setBulkClassNames('');
+        setManagementError(null);
     };
 
     const downloadTemplate = () => {
@@ -612,6 +662,59 @@ export const SchoolsManager: React.FC = () => {
                             currentUser.name,
                             currentUser.email || '',
                             currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
+                        ]),
+                    ],
+                },
+            ]);
+        };
+
+        const downloadSchoolPerformanceReport = () => {
+            if (!schoolReport) return;
+
+            createWorkbookDownload(`${selectedSchool.name}-performance-report.xlsx`, [
+                {
+                    name: 'summary',
+                    rows: [
+                        ['البند', 'القيمة'],
+                        ['اسم المدرسة', schoolReport.school.name],
+                        ['إجمالي الطلاب', schoolReport.metrics.totalStudents],
+                        ['الطلاب النشطون', schoolReport.metrics.activeStudents],
+                        ['عدد الفصول', schoolReport.metrics.totalClasses],
+                        ['الباقات النشطة', schoolReport.metrics.activePackages],
+                        ['الأكواد النشطة', schoolReport.metrics.activeCodes],
+                        ['محاولات الاختبار', schoolReport.metrics.quizAttempts],
+                        ['متوسط الأداء', `${schoolReport.metrics.averageScore}%`],
+                    ],
+                },
+                {
+                    name: 'weak-skills',
+                    rows: [
+                        ['المهارة', 'المادة', 'المهارة الرئيسية', 'عدد المحاولات', 'نسبة الإتقان', 'الأولوية'],
+                        ...schoolReport.weakestSkills.map((item) => {
+                            const subjectName = subjects.find((subject) => subject.id === item.subjectId)?.name || '';
+                            const sectionName = sections.find((section) => section.id === item.sectionId)?.name || '';
+                            return [
+                                item.skill,
+                                subjectName,
+                                sectionName,
+                                item.attempts,
+                                `${item.mastery}%`,
+                                item.mastery < 50 ? 'خطة علاجية عاجلة' : 'متابعة وتدريب إضافي',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'classes',
+                    rows: [
+                        ['الفصل', 'عدد الطلاب', 'عدد المشرفين', 'محاولات الاختبار', 'متوسط الأداء', 'التوصية'],
+                        ...schoolReport.classSummaries.map((classroom) => [
+                            classroom.name,
+                            classroom.studentCount,
+                            classroom.supervisorCount,
+                            classroom.quizAttempts,
+                            `${classroom.averageScore}%`,
+                            classroom.averageScore < 50 ? 'متابعة قريبة وخطة علاجية' : classroom.averageScore < 70 ? 'تدريبات داعمة' : 'مستوى مطمئن',
                         ]),
                     ],
                 },
@@ -900,6 +1003,33 @@ export const SchoolsManager: React.FC = () => {
                                     >
                                         <Plus size={16} /> إضافة فصل
                                     </button>
+                                </div>
+
+                                <div className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                                    <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
+                                        <div>
+                                            <label className="mb-2 block text-sm font-bold text-amber-900">
+                                                إنشاء عدة فصول مرة واحدة
+                                            </label>
+                                            <textarea
+                                                value={bulkClassNames}
+                                                onChange={(event) => setBulkClassNames(event.target.value)}
+                                                placeholder="مثال: أول ثانوي أ&#10;أول ثانوي ب&#10;ثاني ثانوي قدرات"
+                                                rows={3}
+                                                className="w-full rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-amber-400"
+                                            />
+                                            <p className="mt-2 text-xs leading-6 text-amber-800">
+                                                اكتب كل فصل في سطر، أو افصل بينها بفاصلة. النظام يتجنب تكرار أسماء الفصول الموجودة.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={handleCreateBulkClasses}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-amber-600"
+                                        >
+                                            <Plus size={16} />
+                                            إنشاء الفصول
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {schoolClasses.length === 0 ? (
@@ -1738,6 +1868,22 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                             ) : schoolReport ? (
                                 <>
+                                    <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-5 md:flex-row md:items-center md:justify-between">
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900">ملف تقرير المدرسة</h3>
+                                            <p className="mt-1 text-sm text-gray-500">
+                                                لقطة تنفيذية للمدير أو المشرف تشمل الأداء العام، أضعف المهارات، وأداء الفصول.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={downloadSchoolPerformanceReport}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800"
+                                        >
+                                            <Download size={16} />
+                                            تصدير تقرير المدرسة
+                                        </button>
+                                    </div>
+
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                         <div className="bg-blue-50 p-5 rounded-xl">
                                             <p className="text-sm text-blue-700 mb-1">الطلاب النشطون</p>
