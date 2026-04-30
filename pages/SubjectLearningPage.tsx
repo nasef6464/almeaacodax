@@ -26,7 +26,7 @@ export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons } = useStore();
+  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons, user } = useStore();
   const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
@@ -37,6 +37,14 @@ export const SubjectLearningPage: React.FC = () => {
   const matchedSubject = subjects.find((item) => item.id === subjectId);
   const currentPathName = matchedPath?.name || pathId || 'المسار';
   const currentSubjectName = matchedSubject?.name || subjectId || 'المادة';
+  const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const canSeeTopic = (topic: Topic) => isStaffViewer || topic.showOnPlatform !== false;
+  const canSeeLesson = (lesson: (typeof lessons)[number]) =>
+    isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
+  const canSeeQuiz = (quiz: (typeof quizzes)[number]) =>
+    isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+  const canSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
+    isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
 
   const subjectCourses = useMemo(
     () =>
@@ -79,13 +87,13 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const subjectBanks = useMemo(
-    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'bank' && quiz.isPublished !== false),
-    [subjectQuizzes],
+    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'bank' && canSeeQuiz(quiz)),
+    [subjectQuizzes, isStaffViewer],
   );
 
   const subjectExams = useMemo(
-    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'quiz' && quiz.isPublished !== false),
-    [subjectQuizzes],
+    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz)),
+    [subjectQuizzes, isStaffViewer],
   );
 
   const subjectTopics = useMemo(
@@ -94,10 +102,10 @@ export const SubjectLearningPage: React.FC = () => {
         .filter((topic) => {
           const matchesPath = pathId ? topic.pathId === pathId : true;
           const matchesSubject = subjectId ? topic.subjectId === subjectId : true;
-          return matchesPath && matchesSubject;
+          return matchesPath && matchesSubject && canSeeTopic(topic);
         })
         .sort((a, b) => a.order - b.order),
-    [pathId, subjectId, topics],
+    [isStaffViewer, pathId, subjectId, topics],
   );
 
   const mainTopics = useMemo(() => subjectTopics.filter((topic) => !topic.parentId), [subjectTopics]);
@@ -190,18 +198,20 @@ export const SubjectLearningPage: React.FC = () => {
   const activeTopicLessons = useMemo(
     () =>
       activeTopic
-        ? lessons.filter((lesson) => activeTopic.lessonIds?.includes(lesson.id)).sort((a, b) => (a.order || 0) - (b.order || 0))
+        ? lessons
+            .filter((lesson) => activeTopic.lessonIds?.includes(lesson.id) && canSeeLesson(lesson))
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
         : [],
-    [activeTopic, lessons],
+    [activeTopic, isStaffViewer, lessons],
   );
   const activeTopicQuizzes = useMemo(
     () =>
       activeTopic
         ? quizzes
-            .filter((quiz) => activeTopic.quizIds?.includes(quiz.id) && (quiz.type || 'quiz') === 'quiz')
+            .filter((quiz) => activeTopic.quizIds?.includes(quiz.id) && (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz))
             .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
         : [],
-    [activeTopic, quizzes],
+    [activeTopic, isStaffViewer, quizzes],
   );
   const relatedLessonSuggestions = useMemo(
     () =>
@@ -212,12 +222,12 @@ export const SubjectLearningPage: React.FC = () => {
               const matchesSubject = subjectId ? lesson.subjectId === subjectId : true;
               const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
               const notAlreadyAttached = !activeTopic.lessonIds?.includes(lesson.id);
-              return matchesPath && matchesSubject && matchesSection && notAlreadyAttached;
+              return matchesPath && matchesSubject && matchesSection && notAlreadyAttached && canSeeLesson(lesson);
             })
             .sort((a, b) => (a.order || 0) - (b.order || 0))
             .slice(0, 3)
         : [],
-    [activeTopic, lessons, pathId, subjectId],
+    [activeTopic, isStaffViewer, lessons, pathId, subjectId],
   );
   const relatedQuizSuggestions = useMemo(
     () =>
@@ -226,12 +236,12 @@ export const SubjectLearningPage: React.FC = () => {
             .filter((quiz) => {
               const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
               const notAlreadyAttached = !activeTopic.quizIds?.includes(quiz.id);
-              return quiz.isPublished !== false && matchesSection && notAlreadyAttached;
+              return canSeeQuiz(quiz) && matchesSection && notAlreadyAttached;
             })
             .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
             .slice(0, 3)
         : [],
-    [activeTopic, subjectQuizzes],
+    [activeTopic, isStaffViewer, subjectQuizzes],
   );
   const relatedLibrarySuggestions = useMemo(
     () =>
@@ -239,12 +249,23 @@ export const SubjectLearningPage: React.FC = () => {
         ? subjectLibrary
             .filter((item) => {
               const matchesSection = activeTopic.sectionId ? item.sectionId === activeTopic.sectionId : true;
-              return matchesSection && Boolean(item.url);
+              return matchesSection && Boolean(item.url) && canSeeLibraryItem(item);
             })
             .slice(0, 2)
         : [],
-    [activeTopic, subjectLibrary],
+    [activeTopic, isStaffViewer, subjectLibrary],
   );
+
+  const openLessonContent = (lesson: (typeof lessons)[number]) => {
+    if (lesson.videoUrl) {
+      setVideoData({ url: lesson.videoUrl, title: lesson.title });
+      return;
+    }
+
+    if (lesson.fileUrl) {
+      openExternalUrl(lesson.fileUrl);
+    }
+  };
 
   const renderTabs = () => (
     <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center gap-3 mb-12">
@@ -588,7 +609,7 @@ export const SubjectLearningPage: React.FC = () => {
                                   {relatedLessonSuggestions.map((lesson) => (
                                     <button
                                       key={lesson.id}
-                                      onClick={() => lesson.videoUrl && setVideoData({ url: lesson.videoUrl, title: lesson.title })}
+                                      onClick={() => openLessonContent(lesson)}
                                       className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-right hover:border-indigo-200 hover:shadow-sm transition-all"
                                     >
                                       <div className="flex items-center justify-between gap-3">
@@ -640,7 +661,7 @@ export const SubjectLearningPage: React.FC = () => {
                           <div className="flex items-center gap-4">
                             <div
                               className="relative w-28 h-16 sm:w-32 sm:h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0 cursor-pointer"
-                              onClick={() => lesson.videoUrl && setVideoData({ url: lesson.videoUrl, title: lesson.title })}
+                               onClick={() => openLessonContent(lesson)}
                             >
                               {lesson.videoUrl?.includes('youtube') || lesson.videoUrl?.includes('youtu.be') ? (
                                 <img
@@ -670,7 +691,7 @@ export const SubjectLearningPage: React.FC = () => {
                           </div>
                           <div className="hidden sm:block">
                             <button
-                              onClick={() => lesson.videoUrl && setVideoData({ url: lesson.videoUrl, title: lesson.title })}
+                               onClick={() => openLessonContent(lesson)}
                               className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors"
                             >
                               مشاهدة الدرس
