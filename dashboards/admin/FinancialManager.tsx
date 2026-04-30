@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, Eye, Landmark, LockKeyhole, Save, TrendingUp, Users, Wallet } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
@@ -40,7 +40,7 @@ const defaultSettings: PaymentSettings = {
 };
 
 export const FinancialManager: React.FC = () => {
-    const { users, groups, b2bPackages, accessCodes, courses, paths, subjects, lessons, quizzes, libraryItems } = useStore();
+    const { users, groups, b2bPackages, accessCodes, courses, paths, subjects, lessons, quizzes, libraryItems, updateCourse } = useStore();
     const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'settings' | 'b2b' | 'b2c' | 'transactions'>('overview');
     const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
     const [settings, setSettings] = useState<PaymentSettings>(defaultSettings);
@@ -262,6 +262,8 @@ export const FinancialManager: React.FC = () => {
             return {
                 id: pkg.id,
                 title: pkg.title,
+                pathId: pkg.pathId || pkg.category || '',
+                subjectId: pkg.subjectId || pkg.subject || '',
                 pathName,
                 subjectName,
                 price: pkg.price || 0,
@@ -275,6 +277,31 @@ export const FinancialManager: React.FC = () => {
             };
         }).sort((a, b) => Number(b.isVisible) - Number(a.isVisible) || b.revenue - a.revenue);
     }, [paths, paymentRequests, publicPackages, subjects, users]);
+
+    const togglePublicPackageVisibility = (packageId: string) => {
+        const pkg = publicPackages.find((item) => item.id === packageId);
+        if (!pkg) return;
+
+        const nextVisible = pkg.showOnPlatform === false || pkg.isPublished === false;
+        updateCourse(packageId, {
+            showOnPlatform: nextVisible,
+            isPublished: true,
+            approvalStatus: 'approved',
+            approvedAt: Date.now(),
+        });
+        setFeedback(nextVisible ? 'تم إظهار الباقة العامة للطلاب.' : 'تم إخفاء الباقة العامة مؤقتًا بدون حذفها.');
+    };
+
+    const previewPublicPackage = (packageId: string) => {
+        const pkg = publicPackages.find((item) => item.id === packageId);
+        if (!pkg) return;
+
+        const pathId = pkg.pathId || pkg.category;
+        if (!pathId) return;
+        const subjectId = pkg.subjectId || pkg.subject || subjects.find((subject) => subject.pathId === pathId)?.id;
+        const query = subjectId ? `?subject=${subjectId}&tab=courses&package=${pkg.id}` : `?package=${pkg.id}`;
+        window.open(`/#/category/${pathId}${query}`, '_blank', 'noopener,noreferrer');
+    };
 
     const packageCoverageRows = useMemo(() => {
         return b2bPackages.map((pkg) => {
@@ -863,6 +890,26 @@ export const FinancialManager: React.FC = () => {
                                                         {contentTypeLabel(type)}
                                                     </span>
                                                 ))}
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                <button
+                                                    onClick={() => previewPublicPackage(pkg.id)}
+                                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                                                >
+                                                    <ExternalLink size={14} />
+                                                    معاينة صفحة العرض
+                                                </button>
+                                                <button
+                                                    onClick={() => togglePublicPackageVisibility(pkg.id)}
+                                                    className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold ${
+                                                        pkg.isVisible
+                                                            ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                            : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                                                    }`}
+                                                >
+                                                    {pkg.isVisible ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                    {pkg.isVisible ? 'إيقاف العرض مؤقتًا' : 'إظهار للطلاب'}
+                                                </button>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:min-w-[520px]">
