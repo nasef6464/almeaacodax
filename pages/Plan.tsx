@@ -15,6 +15,7 @@ import {
   Archive,
   Copy,
   Share2,
+  Download,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -23,6 +24,7 @@ import { useStore } from '../store/useStore';
 import { StudyPlan, StudyPlanDay } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { shareTextSummary } from '../utils/shareText';
+import { printElementAsPdf } from '../utils/printPdf';
 
 type GeneratedTask = {
   id: string;
@@ -1406,7 +1408,7 @@ const Plan: React.FC = () => {
       </Card>
 
       {currentPlan && (
-        <>
+        <div id="study-plan-print-area" className="space-y-6">
           <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white shadow-lg sm:p-6">
             <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -1415,8 +1417,18 @@ const Plan: React.FC = () => {
                   خطة وقتية من {currentPlan.startDate} إلى {currentPlan.endDate} بمتوسط {currentPlan.dailyMinutes} دقيقة يوميًا.
                 </p>
               </div>
-              <div className="self-start rounded-2xl bg-white/15 p-3 backdrop-blur-sm">
-                <Target size={24} />
+              <div className="print-hide flex flex-wrap gap-2 self-start">
+                <button
+                  type="button"
+                  onClick={() => printElementAsPdf('study-plan-print-area', currentPlan.name || 'الخطة الدراسية')}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-indigo-700 shadow-sm transition hover:bg-indigo-50"
+                >
+                  <Download size={16} />
+                  تحميل PDF
+                </button>
+                <div className="rounded-2xl bg-white/15 p-3 backdrop-blur-sm">
+                  <Target size={24} />
+                </div>
               </div>
             </div>
 
@@ -1440,6 +1452,21 @@ const Plan: React.FC = () => {
               <div className="rounded-2xl bg-white/10 p-4">
                 <div className="text-sm text-indigo-100">وقت الجلسة</div>
                 <div className="mt-1 text-2xl font-black">{currentPlan.preferredStartTime || '17:00'}</div>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white/10 p-4">
+                <div className="text-sm text-indigo-100">أيام الراحة</div>
+                <div className="mt-1 text-sm font-black">{offDayLabels}</div>
+              </div>
+              <div className="rounded-2xl bg-white/10 p-4">
+                <div className="text-sm text-indigo-100">وقت أسبوعي تقريبي</div>
+                <div className="mt-1 text-2xl font-black">{weeklyCadence.minutesPerWeek} دقيقة</div>
+              </div>
+              <div className="rounded-2xl bg-white/10 p-4">
+                <div className="text-sm text-indigo-100">نوع الخطة</div>
+                <div className="mt-1 text-sm font-black">زمنية ذكية قابلة للتعديل</div>
               </div>
             </div>
           </Card>
@@ -1697,7 +1724,7 @@ const Plan: React.FC = () => {
               </Card>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
