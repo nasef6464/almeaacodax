@@ -5,6 +5,7 @@ import { Card } from '../components/ui/Card';
 import { ChevronRight, LayoutGrid, Lock, Package, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
+import { PaymentModal } from '../components/PaymentModal';
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -31,6 +32,7 @@ export const GenericPathPage: React.FC = () => {
 
     const [selectedLevelId, setSelectedLevelId] = useState<string | null>(initialLevelId);
     const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialSubjectId);
+    const [selectedPackageForPayment, setSelectedPackageForPayment] = useState<any | null>(null);
     const normalizedPathId = normalizePathId(pathId);
 
     // Sync state with URL changes
@@ -187,6 +189,19 @@ export const GenericPathPage: React.FC = () => {
 
         return scopedTypes.every((type) => hasScopedPackageAccess(type as any, path.id, packageSubjectId));
     };
+    const getPackageStudentAccessNote = (pkg: any, contentTypes: string[]) => {
+        const packageSubjectId = pkg.subjectId || pkg.subject;
+        const packageSubjectName = packageSubjectId
+            ? subjects.find((subject) => subject.id === packageSubjectId)?.name
+            : '';
+        const contentLabel = contentTypes.includes('all')
+            ? 'كل مساحات التعلم'
+            : contentTypes.map((type) => packageContentLabels[type]?.label || type).join(' + ');
+
+        return packageSubjectName
+            ? `هذه الباقة تفتح ${contentLabel} داخل مادة ${packageSubjectName} في مسار ${path.name}.`
+            : `هذه الباقة تفتح ${contentLabel} داخل مسار ${path.name}.`;
+    };
     const pathOverview = {
         subjects: pathSubjects.length,
         packages: pathPackages.length,
@@ -244,9 +259,23 @@ export const GenericPathPage: React.FC = () => {
                         const contentTypes = resolvePackageContentTypes(pkg);
                         const packageCoverage = getPackageCoverage(pkg, contentTypes);
                         const packageIsActive = isPackageActiveForCurrentUser(pkg);
+                        const packageSubjectId = pkg.subjectId || pkg.subject;
+                        const packageAccessNote = getPackageStudentAccessNote(pkg, contentTypes);
                         const scopeLabel = contentTypes.includes('all')
                             ? 'باقة شاملة'
                             : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
+
+                        const paymentPackage = {
+                            ...pkg,
+                            packageId: pkg.id,
+                            purchaseType: 'package',
+                            contentTypes,
+                            packageContentTypes: contentTypes,
+                            pathIds: [path.id],
+                            subjectIds: packageSubjectId ? [packageSubjectId] : [],
+                            courseIds: [],
+                            accessContext: packageAccessNote,
+                        };
 
                         return (
                          <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all cursor-pointer flex flex-col">
@@ -264,6 +293,15 @@ export const GenericPathPage: React.FC = () => {
                                  </div>
                              </div>
                               <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                                  <div className={`mb-5 rounded-2xl border px-4 py-3 text-xs font-bold leading-6 ${
+                                      packageIsActive
+                                          ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                                          : 'border-slate-100 bg-slate-50 text-slate-600'
+                                  }`}>
+                                      {packageIsActive
+                                          ? 'الوصول مفعل لهذا الحساب. يمكنك فتح محتوى الباقة مباشرة.'
+                                          : packageAccessNote}
+                                  </div>
                                   {packageCoverage.length > 0 ? (
                                       <div className="mb-5 rounded-2xl border border-amber-100 bg-white p-4">
                                           <div className="mb-3 text-xs font-black text-gray-500">ماذا تفتح هذه الباقة؟</div>
@@ -297,8 +335,24 @@ export const GenericPathPage: React.FC = () => {
                                      ))}
                                  </ul>
                                  <button
+                                     type="button"
                                      onClick={() => {
-                                         const packageSubjectId = pkg.subjectId || pkg.subject;
+                                         if (packageSubjectId) {
+                                             navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                             return;
+                                         }
+                                         navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
+                                     }}
+                                     className="mb-3 w-full rounded-xl border border-amber-200 bg-amber-50 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                 >
+                                     معاينة الباقة
+                                 </button>
+                                 <button
+                                     onClick={() => {
+                                         if (!packageIsActive) {
+                                             setSelectedPackageForPayment(paymentPackage);
+                                             return;
+                                         }
                                          if (packageSubjectId) {
                                              navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
                                              return;
@@ -316,6 +370,12 @@ export const GenericPathPage: React.FC = () => {
                         );
                     })}
                 </div>
+                <PaymentModal
+                    isOpen={!!selectedPackageForPayment}
+                    onClose={() => setSelectedPackageForPayment(null)}
+                    item={selectedPackageForPayment || {}}
+                    type="package"
+                />
             </div>
         );
     };
