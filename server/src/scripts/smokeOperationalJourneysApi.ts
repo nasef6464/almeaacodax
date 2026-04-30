@@ -119,6 +119,10 @@ async function run() {
     supervisorAnalytics,
     parentAnalytics,
     aiStatus,
+    publicPaymentSettings,
+    adminPaymentSettings,
+    adminPaymentRequests,
+    studentPaymentRequests,
   ] = await Promise.all([
     request<any>("/auth/me", "GET", undefined, admin.token),
     request<any>("/auth/me", "GET", undefined, teacher.token),
@@ -143,6 +147,10 @@ async function run() {
     request<any>("/quizzes/analytics/overview", "GET", undefined, supervisor.token),
     request<any>("/quizzes/analytics/overview", "GET", undefined, parent.token),
     request<any>("/ai/status", "GET", undefined, admin.token),
+    request<any>("/payments/settings"),
+    request<any>("/payments/settings", "GET", undefined, admin.token),
+    request<any>("/payments/requests", "GET", undefined, admin.token),
+    request<any>("/payments/requests", "GET", undefined, student.token),
   ]);
 
   pushResult(results, "admin", "login", adminMe.user?.role === "admin", `role=${adminMe.user?.role}`);
@@ -160,6 +168,43 @@ async function run() {
       typeof aiStatus?.timeoutMs === "number" &&
       typeof aiStatus?.model === "string",
     `provider=${aiStatus?.provider || "unknown"}, model=${aiStatus?.model || "unknown"}`,
+  );
+
+  pushResult(
+    results,
+    "guest",
+    "public payment settings are safe",
+    Boolean(publicPaymentSettings?.currency) &&
+      publicPaymentSettings?.transfer?.enabled === true &&
+      publicPaymentSettings?.transfer?.publishDetailsToStudents === undefined,
+    `currency=${publicPaymentSettings?.currency || "missing"}, transfer=${Boolean(publicPaymentSettings?.transfer?.enabled)}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "admin payment settings available",
+    Boolean(adminPaymentSettings?.currency) &&
+      typeof adminPaymentSettings?.manualReviewRequired === "boolean" &&
+      adminPaymentSettings?.transfer?.publishDetailsToStudents !== undefined,
+    `currency=${adminPaymentSettings?.currency || "missing"}, manualReview=${adminPaymentSettings?.manualReviewRequired}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "payment requests inventory available",
+    Array.isArray(adminPaymentRequests?.requests),
+    `requests=${adminPaymentRequests?.requests?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "own payment requests scoped",
+    Array.isArray(studentPaymentRequests?.requests) &&
+      studentPaymentRequests.requests.every((item: any) => String(item.userId || "") === String(studentMe.user?._id || studentMe.user?.id || "")),
+    `requests=${studentPaymentRequests?.requests?.length || 0}`,
   );
 
   pushResult(
@@ -250,6 +295,23 @@ async function run() {
     "has learning inventory",
     (studentCourses || []).length > 0 && (studentQuizzes || []).length > 0,
     `courses=${studentCourses.length}, quizzes=${studentQuizzes.length}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "public packages visible as sellable catalog",
+    (studentCourses || []).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0),
+    `packages=${(studentCourses || []).filter((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0).length}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "school packages inventory available",
+    Array.isArray(adminContent.b2bPackages) &&
+      adminContent.b2bPackages.some((item: any) => String(item.status || "") === "active"),
+    `b2bPackages=${adminContent.b2bPackages?.length || 0}`,
   );
 
   const learningTargets = [
