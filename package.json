@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "server:dev": "npm --prefix server run dev",
     "server:build": "npm --prefix server run build",
     "server:check": "npm --prefix server run check",

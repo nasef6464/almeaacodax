@@ -15,6 +15,7 @@
     "seed:operational": "tsx src/scripts/seedOperationalScenario.ts",
     "seed:operational:api": "tsx src/scripts/seedOperationalScenarioApi.ts",
     "seed:learning:api": "tsx src/scripts/seedLearningInventoryApi.ts",
+    "smoke:operational": "npm run smoke:operational:api",
     "smoke:operational:api": "tsx src/scripts/smokeOperationalJourneysApi.ts"
   },
   "dependencies": {
