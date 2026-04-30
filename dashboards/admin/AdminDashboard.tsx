@@ -31,6 +31,7 @@ import { SkillsTreeManager } from './SkillsTreeManager';
 import { FinancialManager } from './FinancialManager';
 import { HomepageManager } from './HomepageManager';
 import { LiveSessionsManager } from './LiveSessionsManager';
+import { api } from '../../services/api';
 
 type ReviewQueueItem = {
     id: string;
@@ -52,6 +53,14 @@ type TeacherContributionItem = {
     publishedItems: number;
 };
 
+type AiStatus = {
+    provider: 'gemini' | 'ollama' | 'none';
+    ollamaConfigured: boolean;
+    geminiConfigured: boolean;
+    model: string;
+    timeoutMs: number;
+};
+
 export const AdminDashboard: React.FC = () => {
     const {
         user,
@@ -70,6 +79,32 @@ export const AdminDashboard: React.FC = () => {
         updateLibraryItem,
     } = useStore();
     const [activeTab, setActiveTab] = useState(user.role === Role.ADMIN ? 'paths' : 'overview');
+    const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
+    const [aiStatusLoading, setAiStatusLoading] = useState(false);
+    const [aiStatusError, setAiStatusError] = useState<string | null>(null);
+
+    const loadAiStatus = async () => {
+        if (user.role !== Role.ADMIN) {
+            return;
+        }
+
+        setAiStatusLoading(true);
+        setAiStatusError(null);
+
+        try {
+            const response = await api.aiStatus();
+            setAiStatus(response as AiStatus);
+        } catch (error) {
+            console.error('Failed to load AI status', error);
+            setAiStatusError('تعذر قراءة حالة الذكاء الاصطناعي الآن. تأكد من تشغيل الخادم ثم أعد المحاولة.');
+        } finally {
+            setAiStatusLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadAiStatus();
+    }, [user.role]);
 
     const overviewStats = useMemo(() => {
         const pendingCourses = courses.filter((item) => item.approvalStatus === 'pending_review').length;
@@ -287,6 +322,35 @@ export const AdminDashboard: React.FC = () => {
         () => teacherContributionStats.find((item) => item.id === user.id) || null,
         [teacherContributionStats, user.id],
     );
+
+    const aiProviderMeta = useMemo(() => {
+        const provider = aiStatus?.provider || 'none';
+
+        if (provider === 'ollama') {
+            return {
+                label: 'Ollama / Gemma محلي',
+                badge: 'بدون تكلفة لكل طلب',
+                color: 'emerald',
+                description: 'المنصة تستخدم نموذجًا محليًا مفتوح المصدر عند توفر Ollama، وهذا هو الاختيار الأفضل لتقليل التكلفة مستقبلاً.',
+            };
+        }
+
+        if (provider === 'gemini') {
+            return {
+                label: 'Gemini API',
+                badge: 'مزود خارجي',
+                color: 'blue',
+                description: 'المنصة تستخدم مفتاح Gemini الخارجي لتوليد التحليلات والمقترحات الذكية عبر الخادم وليس من المتصفح.',
+            };
+        }
+
+        return {
+            label: 'Fallback آمن',
+            badge: 'تشغيل احتياطي',
+            color: 'slate',
+            description: 'لا يوجد مزود ذكاء مفعّل حاليًا، لذلك تستخدم المنصة ردودًا آمنة داخلية حتى لا تتوقف تجربة الطالب.',
+        };
+    }, [aiStatus?.provider]);
 
     const supervisorScopeSummary = useMemo(() => {
         const scopedGroupIds = new Set(user.groupIds || []);
@@ -742,6 +806,136 @@ export const AdminDashboard: React.FC = () => {
         </div>
     );
 
+    const renderSystemOperations = () => (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        {activeTab === 'settings' ? 'الإعدادات التشغيلية' : 'مراقبة النظام'}
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1">
+                        متابعة حالة الخدمات المهمة بدون تغيير تجربة الطالب أو تعطيل أي جزء يعمل بالفعل.
+                    </p>
+                </div>
+                <button
+                    onClick={loadAiStatus}
+                    disabled={aiStatusLoading}
+                    className="rounded-xl bg-gray-900 px-5 py-3 text-sm font-black text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {aiStatusLoading ? 'جاري التحديث...' : 'تحديث الحالة'}
+                </button>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+                        <div>
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                                    aiProviderMeta.color === 'emerald'
+                                        ? 'bg-emerald-100 text-emerald-700'
+                                        : aiProviderMeta.color === 'blue'
+                                            ? 'bg-blue-100 text-blue-700'
+                                            : 'bg-slate-100 text-slate-700'
+                                }`}>
+                                    <Activity size={22} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-black text-gray-900">حالة الذكاء الاصطناعي</h2>
+                                    <p className="text-sm text-gray-500">مصدر التحليل والتوصيات الذكية داخل المنصة</p>
+                                </div>
+                            </div>
+                            <p className="text-sm leading-7 text-gray-600 max-w-2xl">{aiProviderMeta.description}</p>
+                        </div>
+                        <div className={`rounded-2xl px-5 py-4 text-center ${
+                            aiProviderMeta.color === 'emerald'
+                                ? 'bg-emerald-50 text-emerald-700'
+                                : aiProviderMeta.color === 'blue'
+                                    ? 'bg-blue-50 text-blue-700'
+                                    : 'bg-slate-50 text-slate-700'
+                        }`}>
+                            <div className="text-xs font-bold opacity-80">المزود الحالي</div>
+                            <div className="text-lg font-black mt-1">{aiProviderMeta.label}</div>
+                            <div className="text-xs font-bold mt-2">{aiProviderMeta.badge}</div>
+                        </div>
+                    </div>
+
+                    {aiStatusError && (
+                        <div className="mt-5 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
+                            {aiStatusError}
+                        </div>
+                    )}
+
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
+                            <div className="text-xs text-gray-500 mb-2">النموذج</div>
+                            <div className="font-black text-gray-900 break-words">{aiStatus?.model || 'غير محدد'}</div>
+                        </div>
+                        <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
+                            <div className="text-xs text-gray-500 mb-2">مهلة الطلب</div>
+                            <div className="font-black text-gray-900">
+                                {aiStatus?.timeoutMs ? `${aiStatus.timeoutMs.toLocaleString('ar-EG')} ms` : 'غير محدد'}
+                            </div>
+                        </div>
+                        <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
+                            <div className="text-xs text-gray-500 mb-2">Ollama / Gemma</div>
+                            <div className={`font-black ${aiStatus?.ollamaConfigured ? 'text-emerald-700' : 'text-gray-500'}`}>
+                                {aiStatus?.ollamaConfigured ? 'مفعل' : 'غير مفعل'}
+                            </div>
+                        </div>
+                        <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
+                            <div className="text-xs text-gray-500 mb-2">Gemini</div>
+                            <div className={`font-black ${aiStatus?.geminiConfigured ? 'text-emerald-700' : 'text-gray-500'}`}>
+                                {aiStatus?.geminiConfigured ? 'مفعل' : 'غير مفعل'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                    <h3 className="text-lg font-black text-gray-900 mb-4">قرار التشغيل الاحترافي</h3>
+                    <div className="space-y-3 text-sm leading-7 text-gray-600">
+                        <p className="rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-emerald-800">
+                            الأولوية المستقبلية: تشغيل Ollama/Gemma على سيرفر مستقل أو جهاز دائم لتقليل تكلفة الذكاء الاصطناعي.
+                        </p>
+                        <p className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-blue-800">
+                            في الإنتاج: كل طلبات الذكاء تمر من الخادم، لذلك مفاتيح API لا تظهر للطالب ولا للمتصفح.
+                        </p>
+                        <p className="rounded-2xl bg-amber-50 border border-amber-100 p-4 text-amber-800">
+                            لو تعطل مزود الذكاء، المنصة لا تتوقف وتعرض مقترحات احتياطية مناسبة حتى نعيد ضبط المزود.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                    {
+                        title: 'مصدر البيانات',
+                        value: 'MongoDB Atlas',
+                        hint: 'المسارات، المهارات، الاختبارات، النتائج، والتقارير مرتبطة بمصدر بيانات حقيقي.',
+                    },
+                    {
+                        title: 'النشر الحالي',
+                        value: 'Vercel + Render',
+                        hint: 'الواجهة والخادم منفصلان وجاهزان للتطوير المستمر بدون الاعتماد على جهازك.',
+                    },
+                    {
+                        title: 'السلامة',
+                        value: 'JWT + Server AI',
+                        hint: 'تسجيل الدخول الحقيقي وحماية مفاتيح الذكاء داخل الخادم بدل المتصفح.',
+                    },
+                ].map((item) => (
+                    <div key={item.title} className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
+                        <div className="text-sm text-gray-500">{item.title}</div>
+                        <div className="mt-2 text-xl font-black text-gray-900">{item.value}</div>
+                        <p className="mt-3 text-xs leading-6 text-gray-500">{item.hint}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+
     const renderContent = () => {
         switch (activeTab) {
             case 'overview':
@@ -766,6 +960,9 @@ export const AdminDashboard: React.FC = () => {
                 return <HomepageManager />;
             case 'live-sessions':
                 return <LiveSessionsManager />;
+            case 'monitoring':
+            case 'settings':
+                return renderSystemOperations();
             default:
                 return renderOverview();
         }
