@@ -415,6 +415,28 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         open: Math.max(activeInventory.total - activeInventory.locked, 0),
         label: activeInventory.label,
     };
+    const getScopedPackageCoverage = (pkg: any) => {
+        const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
+        const includesAll = contentTypes.includes('all');
+        const packagePathId = pkg.pathId || pkg.category || category;
+        const packageSubjectId = pkg.subjectId || pkg.subject || subject;
+        const matchesScope = (item: { pathId?: string; category?: string; subjectId?: string; subject?: string }) => {
+            const itemPathId = item.pathId || item.category;
+            const itemSubjectId = item.subjectId || item.subject;
+            const pathMatches = !itemPathId || itemPathId === packagePathId;
+            const subjectMatches = !itemSubjectId || itemSubjectId === packageSubjectId;
+            return pathMatches && subjectMatches;
+        };
+        const shouldCount = (type: PackageContentType) => includesAll || contentTypes.includes(type);
+
+        return [
+            { label: 'الدورات', count: shouldCount('courses') ? sectionCourses.filter((course) => matchesScope(course)).length : 0 },
+            { label: 'التأسيس', count: shouldCount('foundation') ? mappedSkills.length : 0 },
+            { label: 'التدريب', count: shouldCount('banks') ? banks.length : 0 },
+            { label: 'الاختبارات', count: shouldCount('tests') ? tests.length : 0 },
+            { label: 'المكتبة', count: shouldCount('library') ? sectionLibraryItems.filter((item) => matchesScope(item)).length : 0 },
+        ].filter((item) => item.count > 0);
+    };
 
     const handleItemClick = (item: any, type: string) => {
         if (item.isLocked) {
@@ -537,6 +559,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                                     {subjectPublicPackages.map((pkg) => {
                                         const pkgTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
+                                        const packageCoverage = getScopedPackageCoverage(pkg);
                                         const packageIsActive =
                                             isStaffViewer ||
                                             user.subscription?.plan === 'premium' ||
@@ -563,6 +586,19 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                 </div>
                                                 <div className="space-y-4 p-4">
                                                     <p className="line-clamp-2 text-sm text-gray-500">{pkg.description || 'باقة عامة لفتح محتوى هذا المسار حسب إعدادات الإدارة.'}</p>
+                                                    {packageCoverage.length > 0 ? (
+                                                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
+                                                            <div className="mb-2 text-[11px] font-black text-amber-700">ماذا ستفتح لك هذه الباقة؟</div>
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                                {packageCoverage.map((coverage) => (
+                                                                    <div key={coverage.label} className="rounded-xl bg-white px-3 py-2 text-center">
+                                                                        <div className="text-base font-black text-gray-900">{coverage.count}</div>
+                                                                        <div className="text-[11px] font-bold text-gray-500">{coverage.label}</div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
                                                     <div className="flex flex-wrap items-center gap-2">
                                                         <span className="text-xl font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
                                                         {pkg.originalPrice ? <span className="text-sm font-bold text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}

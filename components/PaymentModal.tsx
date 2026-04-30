@@ -108,6 +108,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         () => (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter((key) => settings[key]?.enabled),
         [settings],
     );
+    const packageContentLabels: Record<string, string> = {
+        courses: 'الدورات',
+        foundation: 'التأسيس',
+        banks: 'التدريب',
+        tests: 'الاختبارات',
+        library: 'المكتبة',
+        all: 'الباقة الشاملة',
+    };
 
     if (!isOpen || !item) return null;
 
@@ -127,6 +135,18 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const getItemName = () => item.title || item.name || 'العنصر المحدد';
     const getPrice = () => item.price || 0;
     const getCurrency = () => item.currency || settings.currency || 'SAR';
+    const itemContentTypes = Array.isArray(item?.contentTypes) && item.contentTypes.length
+        ? item.contentTypes
+        : Array.isArray(item?.packageContentTypes) && item.packageContentTypes.length
+            ? item.packageContentTypes
+            : shouldPurchaseAsPackage
+                ? ['all']
+                : [];
+    const itemCoverageSummary = [
+        item?.includedCourseIds?.length || item?.courseIds?.length ? { label: 'دورات مرفقة', value: item?.includedCourseIds?.length || item?.courseIds?.length } : null,
+        item?.pathIds?.length ? { label: 'مسارات مستهدفة', value: item.pathIds.length } : null,
+        item?.subjectIds?.length ? { label: 'مواد مستهدفة', value: item.subjectIds.length } : null,
+    ].filter(Boolean) as { label: string; value: number }[];
 
     const buildPaymentRequestPayload = () => {
         const packageId = item.packageId || (shouldPurchaseAsPackage ? item.id : undefined);
@@ -240,6 +260,27 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const renderMethodSelector = () => (
         <div className="space-y-4 animate-fade-in">
             <h3 className="text-xl font-black text-gray-800 mb-6 text-right">{getTitle()}</h3>
+            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-right">
+                <div className="text-xs font-black text-gray-500">العنصر الذي ستفعله</div>
+                <div className="mt-2 text-lg font-black text-gray-900">{getItemName()}</div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                    {itemContentTypes.map((contentType: string) => (
+                        <span key={contentType} className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
+                            {packageContentLabels[contentType] || contentType}
+                        </span>
+                    ))}
+                </div>
+                {itemCoverageSummary.length > 0 ? (
+                    <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                        {itemCoverageSummary.map((entry) => (
+                            <div key={entry.label} className="rounded-xl bg-white px-3 py-2 text-center">
+                                <div className="text-base font-black text-gray-900">{entry.value}</div>
+                                <div className="text-[11px] font-bold text-gray-500">{entry.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
+            </div>
 
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
                 <div>
