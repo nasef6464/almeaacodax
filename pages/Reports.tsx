@@ -213,6 +213,7 @@ const Reports: React.FC = () => {
     const [smartRemediationLoading, setSmartRemediationLoading] = useState(false);
     const [scopedSmartRemediation, setScopedSmartRemediation] = useState<SmartRemediationPlan | null>(null);
     const [scopedSmartRemediationLoading, setScopedSmartRemediationLoading] = useState(false);
+    const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -363,6 +364,7 @@ const Reports: React.FC = () => {
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, topics, lessons, quizzes, libraryItems, questions);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
+    const isStudentReportFull = studentReportDepth === 'full';
     const skillReadinessSummary = useMemo(() => {
         const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
         const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
@@ -638,6 +640,15 @@ const Reports: React.FC = () => {
                     <Download size={16} />
                     تحميل PDF
                 </button>
+                {isStudentView && hasStudentAnalytics ? (
+                    <button
+                        onClick={() => setStudentReportDepth((current) => (current === 'simple' ? 'full' : 'simple'))}
+                        className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+                    >
+                        <Sparkles size={16} />
+                        {isStudentReportFull ? 'العودة للملخص السريع' : 'عرض التقرير الكامل'}
+                    </button>
+                ) : null}
             </header>
 
             <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative">
@@ -1082,7 +1093,10 @@ const Reports: React.FC = () => {
                             افتح الخطة الذكية
                         </Link>
                         <button
-                            onClick={buildSmartRemediation}
+                            onClick={() => {
+                                setStudentReportDepth('full');
+                                void buildSmartRemediation();
+                            }}
                             disabled={smartRemediationLoading || focusedReportSkills.length === 0}
                             className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
                         >
@@ -1093,7 +1107,69 @@ const Reports: React.FC = () => {
                 </div>
             </Card>
 
-            {smartRemediation ? (
+            {!isStudentReportFull ? (
+                <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h2 className="text-xl font-black text-gray-900">ملخص المهارات الأهم</h2>
+                            <p className="mt-1 text-sm leading-7 text-gray-500">
+                                نعرض لك أقل عدد ممكن من التفاصيل: المهارة، مستواها، والخطوة التالية. افتح التقرير الكامل فقط لو احتجت كل البيانات.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setStudentReportDepth('full')}
+                            className="print-hide self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700"
+                        >
+                            عرض كل التفاصيل
+                        </button>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 md:grid-cols-3">
+                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, 3).map((skill, index) => {
+                            const tone = getReportMasteryTone(skill.mastery);
+                            const recommendation = getSkillRecommendation(skill, skills, topics, lessons, quizzes, libraryItems, questions);
+
+                            return (
+                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 ${tone.bg} ${tone.border}`}>
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <span className={`inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-black ${tone.text}`}>
+                                                {index === 0 ? 'ابدأ هنا' : tone.label}
+                                            </span>
+                                            <div className="mt-3 text-base font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                        </div>
+                                        <div className={`text-2xl font-black ${tone.text}`}>{skill.mastery}%</div>
+                                    </div>
+                                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
+                                        <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                                    </div>
+                                    <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
+                                        {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
+                                        {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
+                                    </div>
+                                    <p className="mt-3 text-sm font-bold leading-7 text-gray-700">
+                                        {displayText(recommendation.actionText) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}
+                                    </p>
+                                    <div className="print-hide mt-4 grid gap-2">
+                                        <Link to={recommendation.lessonLink || '/courses'} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50">
+                                            شرح مناسب
+                                        </Link>
+                                        <Link to={recommendation.quizLink || '/quiz'} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50">
+                                            تدريب قصير
+                                        </Link>
+                                    </div>
+                                </div>
+                            );
+                        }) : (
+                            <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm font-bold leading-7 text-gray-500 md:col-span-3">
+                                لا توجد مهارات كافية بعد. حل اختبارًا قصيرًا مرتبطًا بالمهارات، وسيظهر هنا ملخص واضح تلقائيًا.
+                            </div>
+                        )}
+                    </div>
+                </Card>
+            ) : null}
+
+            {smartRemediation && isStudentReportFull ? (
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-amber-50 via-white to-emerald-50">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -1137,6 +1213,7 @@ const Reports: React.FC = () => {
                 </Card>
             ) : null}
 
+            {isStudentReportFull ? (
             <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-5">
                     <div>
@@ -1295,8 +1372,9 @@ const Reports: React.FC = () => {
                     </div>
                 ) : null}
             </Card>
+            ) : null}
 
-            {studentWeeklyPlan.length > 0 ? (
+            {isStudentReportFull && studentWeeklyPlan.length > 0 ? (
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-5">
                         <div>
