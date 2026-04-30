@@ -150,6 +150,7 @@ async function run() {
     aiRemediationPlan,
     aiQuestion,
     aiCourseSummary,
+    homepageSettings,
   ] = await Promise.all([
     request<any>("/auth/me", "GET", undefined, admin.token),
     request<any>("/auth/me", "GET", undefined, teacher.token),
@@ -206,6 +207,7 @@ async function run() {
     ),
     request<any>("/ai/question", "POST", { topic: "النسبة والتناسب" }, teacher.token),
     request<any>("/ai/course-summary", "POST", { courseTitle: "تأسيس القدرات الكمي" }, teacher.token),
+    request<any>("/content/homepage-settings"),
   ]);
 
   pushResult(results, "admin", "login", adminMe.user?.role === "admin", `role=${adminMe.user?.role}`);
@@ -276,6 +278,16 @@ async function run() {
     "ai course summary fallback available",
     typeof aiCourseSummary?.text === "string" && aiCourseSummary.text.trim().length > 0,
     `chars=${String(aiCourseSummary?.text || "").length}`,
+  );
+
+  pushResult(
+    results,
+    "guest",
+    "homepage settings available",
+    Boolean(homepageSettings?.hero?.titleHighlight) &&
+      Array.isArray(homepageSettings?.stats) &&
+      Boolean(homepageSettings?.sections?.featuredCoursesTitle),
+    `stats=${homepageSettings?.stats?.length || 0}, highlight=${homepageSettings?.hero?.titleHighlight || "missing"}`,
   );
 
   pushResult(
@@ -354,6 +366,29 @@ async function run() {
       outOfScopeCourses === 0 &&
       outOfScopeQuizzes === 0,
     `topics=${outOfScopeTopics}, lessons=${outOfScopeLessons}, library=${outOfScopeLibrary}, courses=${outOfScopeCourses}, quizzes=${outOfScopeQuizzes}`,
+  );
+
+  const liveTypes = new Set(["live_youtube", "zoom", "google_meet", "teams"]);
+  const adminLiveSessions = (adminContent.lessons || []).filter((lesson: any) => liveTypes.has(String(lesson.type || "")));
+  const studentLiveSessions = (studentContent.lessons || []).filter((lesson: any) => liveTypes.has(String(lesson.type || "")));
+  const unsafeStudentLiveSessions = studentLiveSessions.filter((lesson: any) => !isPublishedForStudents(lesson));
+
+  pushResult(
+    results,
+    "admin",
+    "live sessions inventory queryable",
+    Array.isArray(adminContent.lessons) && adminLiveSessions.every((lesson: any) => Boolean(lesson.title)),
+    `liveSessions=${adminLiveSessions.length}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "live sessions respect publishing gates",
+    unsafeStudentLiveSessions.length === 0,
+    unsafeStudentLiveSessions.length
+      ? `unsafeLiveSessions=${unsafeStudentLiveSessions.map((lesson: any) => documentId(lesson)).join(",")}`
+      : `visibleLiveSessions=${studentLiveSessions.length}`,
   );
 
   pushResult(
