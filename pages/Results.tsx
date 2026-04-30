@@ -613,6 +613,10 @@ const Results: React.FC = () => {
                 <PlusCircle size={13} className="inline ml-1" />
                 اختبار إضافي
               </Link>
+              <Link to="/reports" className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700 hover:bg-indigo-100">
+                <BarChart3 size={13} className="inline ml-1" />
+                تقريري العام
+              </Link>
             </div>
 
             <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
@@ -648,7 +652,7 @@ const Results: React.FC = () => {
         <Card className="p-4 sm:p-6">
           <h3 className="text-lg font-bold text-gray-800">خطوتك التالية</h3>
           <p className="mt-2 text-sm leading-7 text-gray-500">
-            نبدأ دائمًا بالمهارة الأضعف أولًا، ثم نراجع الشرح أو الفيديو، وبعدها نحل تدريبًا قصيرًا.
+            اختر خطوة واحدة الآن. المنصة رتبتها لك من الأسهل للأهم حتى لا تتشتت بعد الاختبار.
           </p>
 
           {weakestSkill ? (
@@ -735,6 +739,17 @@ const Results: React.FC = () => {
               ) : null}
 
               <div className="grid grid-cols-1 gap-3">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                  <div className="flex items-center gap-2 text-sm font-black text-emerald-800">
+                    <Lightbulb size={16} />
+                    أفضل ترتيب الآن
+                  </div>
+                  <div className="mt-3 grid gap-2 text-xs font-bold text-emerald-700 sm:grid-cols-3">
+                    <span className="rounded-xl bg-white px-3 py-2">1. شاهد شرحًا قصيرًا</span>
+                    <span className="rounded-xl bg-white px-3 py-2">2. حل تدريبًا مناسبًا</span>
+                    <span className="rounded-xl bg-white px-3 py-2">3. أعد القياس</span>
+                  </div>
+                </div>
                 {weakestSkill.lessonLink ? (
                   <Link to={weakestSkill.lessonLink} className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors">
                     راجع الشرح المرتبط
