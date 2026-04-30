@@ -363,6 +363,27 @@ const Reports: React.FC = () => {
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, topics, lessons, quizzes, libraryItems, questions);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
+    const skillReadinessSummary = useMemo(() => {
+        const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
+        const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
+        const strong = aggregatedSkills.filter((skill) => skill.mastery >= 75).length;
+        const total = aggregatedSkills.length;
+
+        return {
+            weak,
+            average,
+            strong,
+            total,
+            message:
+                weak > 0
+                    ? `ابدأ بـ ${weak} مهارة تحتاج دعمًا واضحًا.`
+                    : average > 0
+                        ? `مستواك جيد، وراجع ${average} مهارة لتثبيت التحسن.`
+                        : total > 0
+                            ? 'مؤشراتك مطمئنة. حافظ على التدريب القصير.'
+                            : 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.',
+        };
+    }, [aggregatedSkills]);
     const studentWeeklyPlan = useMemo(() => {
         const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
 
@@ -1018,6 +1039,30 @@ const Reports: React.FC = () => {
                     <Link to="/quizzes" className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
                         اختبر مهارة جديدة
                     </Link>
+                </div>
+
+                <div className="mb-5 grid grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr]">
+                    <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+                        <div className="text-xs font-black text-indigo-600">قراءة سريعة للتقرير</div>
+                        <p className="mt-2 text-sm font-bold leading-7 text-indigo-900">{skillReadinessSummary.message}</p>
+                        <div className="mt-3 text-xs font-bold text-indigo-500">
+                            إجمالي المهارات المرصودة: {skillReadinessSummary.total}
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="rounded-2xl bg-rose-50 p-4 text-center">
+                            <div className="text-2xl font-black text-rose-700">{skillReadinessSummary.weak}</div>
+                            <div className="mt-1 text-xs font-bold text-rose-600">ابدأ بها</div>
+                        </div>
+                        <div className="rounded-2xl bg-amber-50 p-4 text-center">
+                            <div className="text-2xl font-black text-amber-700">{skillReadinessSummary.average}</div>
+                            <div className="mt-1 text-xs font-bold text-amber-600">تحت المراجعة</div>
+                        </div>
+                        <div className="rounded-2xl bg-emerald-50 p-4 text-center">
+                            <div className="text-2xl font-black text-emerald-700">{skillReadinessSummary.strong}</div>
+                            <div className="mt-1 text-xs font-bold text-emerald-600">مطمئنة</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
