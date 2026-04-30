@@ -282,6 +282,11 @@ export const FinancialManager: React.FC = () => {
                 pkg.showOnPlatform !== false && pkg.isPublished === false ? 'ظاهرة لكن غير منشورة' : '',
                 pkg.showOnPlatform !== false && pkg.approvalStatus && pkg.approvalStatus !== 'approved' ? 'تحتاج اعتماد قبل البيع' : '',
             ].filter(Boolean);
+            const scopeMode = pkg.subjectId || pkg.subject
+                ? 'عرض مادة محددة'
+                : (pkg.pathId || pkg.category)
+                    ? 'عرض مسار كامل'
+                    : 'عرض عام يحتاج ضبط';
 
             return {
                 id: pkg.id,
@@ -302,6 +307,7 @@ export const FinancialManager: React.FC = () => {
                 coveredItems,
                 readinessWarnings,
                 isReadyForSale: readinessWarnings.length === 0,
+                scopeMode,
             };
         }).sort((a, b) => Number(b.isVisible) - Number(a.isVisible) || b.revenue - a.revenue);
     }, [courses, lessons, libraryItems, paths, paymentRequests, publicPackages, quizzes, subjects, users]);
@@ -370,6 +376,20 @@ export const FinancialManager: React.FC = () => {
             const subjectNames = (pkg.subjectIds || [])
                 .map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name)
                 .filter(Boolean);
+            const totalItems = scopedCourses.length + scopedLessons.length + scopedTraining.length + scopedTests.length + scopedLibrary.length;
+            const scopeMode =
+                packageCourseIds.size > 0
+                    ? 'باقة مخصصة بمحتوى محدد'
+                    : packageSubjectIds.size > 0
+                        ? 'باقة مواد محددة'
+                        : packagePathIds.size > 0
+                            ? 'باقة مسارات كاملة'
+                            : 'باقة وصول عام';
+            const operationalWarnings = [
+                totalItems === 0 ? 'لا يوجد محتوى فعلي داخل نطاق هذه الباقة' : '',
+                activePackageCodes.length === 0 ? 'لا توجد أكواد مفعلة حاليًا لهذه الباقة' : '',
+                pkg.status === 'active' && pkg.maxStudents > 0 && usedSeats >= pkg.maxStudents ? 'تم استهلاك كل المقاعد المتاحة' : '',
+            ].filter(Boolean);
 
             return {
                 id: pkg.id,
@@ -380,12 +400,16 @@ export const FinancialManager: React.FC = () => {
                 discountPercentage: pkg.discountPercentage,
                 maxStudents: pkg.maxStudents,
                 isActive: pkg.status === 'active',
+                isPaused: pkg.status !== 'active',
                 usedSeats,
                 seatRate,
                 activeCodes: activePackageCodes.length,
                 contentTypes: pkg.contentTypes || ['all'],
                 pathNames,
                 subjectNames,
+                totalItems,
+                scopeMode,
+                operationalWarnings,
                 counts: {
                     courses: scopedCourses.length,
                     foundation: scopedLessons.length,
@@ -396,6 +420,25 @@ export const FinancialManager: React.FC = () => {
             };
         }).sort((a, b) => Number(b.status === 'active') - Number(a.status === 'active') || b.usedSeats - a.usedSeats);
     }, [accessCodes, b2bPackages, courses, groups, lessons, libraryItems, paths, quizzes, subjects]);
+
+    const schoolPackagesSummary = useMemo(() => ({
+        total: packageCoverageRows.length,
+        active: packageCoverageRows.filter((pkg) => pkg.isActive).length,
+        paused: packageCoverageRows.filter((pkg) => pkg.isPaused).length,
+        activeCodes: packageCoverageRows.reduce((sum, pkg) => sum + pkg.activeCodes, 0),
+        usedSeats: packageCoverageRows.reduce((sum, pkg) => sum + pkg.usedSeats, 0),
+        totalSeats: packageCoverageRows.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0),
+    }), [packageCoverageRows]);
+
+    const publicPackagesSummary = useMemo(() => ({
+        total: publicPackageRows.length,
+        visible: publicPackageRows.filter((pkg) => pkg.isVisible).length,
+        hidden: publicPackageRows.filter((pkg) => !pkg.isVisible).length,
+        ready: publicPackageRows.filter((pkg) => pkg.isReadyForSale).length,
+        needsSetup: publicPackageRows.filter((pkg) => !pkg.isReadyForSale).length,
+        pending: publicPackageRows.reduce((sum, pkg) => sum + pkg.pending, 0),
+        buyers: publicPackageRows.reduce((sum, pkg) => sum + pkg.buyers, 0),
+    }), [publicPackageRows]);
 
     const premiumRows = useMemo(() => {
         return b2cPremiumUsers.map((user) => ({
@@ -791,6 +834,29 @@ export const FinancialManager: React.FC = () => {
 
             {activeTab === 'b2b' && (
                 <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">إجمالي باقات المدارس</div>
+                            <div className="mt-2 text-2xl font-black text-gray-900">{schoolPackagesSummary.total}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">{schoolPackagesSummary.active} نشطة / {schoolPackagesSummary.paused} موقوفة مؤقتًا</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">الأكواد النشطة</div>
+                            <div className="mt-2 text-2xl font-black text-indigo-700">{schoolPackagesSummary.activeCodes}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">صالحة للاستخدام الآن</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">استخدام المقاعد</div>
+                            <div className="mt-2 text-2xl font-black text-amber-700">{schoolPackagesSummary.usedSeats}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">من أصل {schoolPackagesSummary.totalSeats || 0} مقعد</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">تنبيه مهم</div>
+                            <div className="mt-2 text-sm font-black text-gray-900">هذه الباقات منفصلة عن عروض الطلاب</div>
+                            <div className="mt-2 text-xs leading-6 text-gray-500">الطالب التابع للمدرسة لا يحتاج شراء الباقة العامة إذا كان وصوله مفعلًا من المدرسة أو المشرف.</div>
+                        </div>
+                    </div>
+
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h2 className="text-lg font-bold text-gray-900 mb-6">المدارس والجهات المتعاقدة</h2>
                         <div className="overflow-x-auto">
@@ -836,9 +902,10 @@ export const FinancialManager: React.FC = () => {
                                             <div className="flex flex-wrap items-center gap-2">
                                                 <h3 className="text-base font-black text-gray-900">{pkg.name}</h3>
                                                 <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${pkg.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                                                    {pkg.status === 'active' ? 'نشطة' : 'منتهية'}
+                                                    {pkg.status === 'active' ? 'نشطة' : 'موقوفة مؤقتًا'}
                                                 </span>
                                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.schoolName}</span>
+                                                <span className="rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-bold text-indigo-700">{pkg.scopeMode}</span>
                                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">
                                                     {pkg.type === 'free_access' ? 'فتح وصول' : `خصم ${pkg.discountPercentage || 0}%`}
                                                 </span>
@@ -857,6 +924,14 @@ export const FinancialManager: React.FC = () => {
                                             <div className="text-xs text-gray-500">
                                                 المواد: {pkg.subjectNames.length ? pkg.subjectNames.join('، ') : 'كل المواد داخل المسار المحدد'}
                                             </div>
+                                            <div className="text-xs font-bold text-gray-600">
+                                                إجمالي المحتوى الذي ستفتحه الباقة الآن: {pkg.totalItems}
+                                            </div>
+                                            {pkg.operationalWarnings.length > 0 && (
+                                                <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-800">
+                                                    تنبيه تشغيلي: {pkg.operationalWarnings.join('، ')}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="min-w-[220px] rounded-2xl bg-white p-4 shadow-sm">
@@ -876,7 +951,7 @@ export const FinancialManager: React.FC = () => {
                                                         : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
                                                 }`}
                                             >
-                                                {pkg.isActive ? 'إيقاف الباقة مؤقتًا' : 'تنشيط الباقة'}
+                                                {pkg.isActive ? 'إيقاف الباقة مؤقتًا' : 'إعادة تنشيط الباقة'}
                                             </button>
                                         </div>
                                     </div>
@@ -912,6 +987,29 @@ export const FinancialManager: React.FC = () => {
 
             {activeTab === 'b2c' && (
                 <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">إجمالي العروض العامة</div>
+                            <div className="mt-2 text-2xl font-black text-gray-900">{publicPackagesSummary.total}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">{publicPackagesSummary.visible} ظاهرة / {publicPackagesSummary.hidden} مخفية</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">جاهزة للبيع</div>
+                            <div className="mt-2 text-2xl font-black text-emerald-700">{publicPackagesSummary.ready}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">{publicPackagesSummary.needsSetup} تحتاج ضبط</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">طلبات معلقة</div>
+                            <div className="mt-2 text-2xl font-black text-amber-700">{publicPackagesSummary.pending}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">مرتبطة بالعروض العامة فقط</div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">مشتركون أفراد</div>
+                            <div className="mt-2 text-2xl font-black text-indigo-700">{publicPackagesSummary.buyers}</div>
+                            <div className="mt-2 text-xs leading-6 font-bold text-gray-500">هذه الباقات تظهر للطالب المستقل فقط، وليست بديلًا عن باقات المدارس.</div>
+                        </div>
+                    </div>
+
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center justify-between gap-4 mb-6">
                             <div>
@@ -933,6 +1031,7 @@ export const FinancialManager: React.FC = () => {
                                                 <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${pkg.isReadyForSale ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-100 text-amber-800'}`}>
                                                     {pkg.isReadyForSale ? 'جاهزة للبيع' : 'تحتاج ضبط'}
                                                 </span>
+                                                <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-700">{pkg.scopeMode}</span>
                                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.pathName}</span>
                                                 {pkg.subjectName && <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">{pkg.subjectName}</span>}
                                             </div>
