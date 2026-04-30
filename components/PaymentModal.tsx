@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { X, CreditCard, Landmark, Wallet, CheckCircle2, ChevronLeft, ShieldCheck, Lock } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, CreditCard, Landmark, Lock, ShieldCheck, Wallet, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { PaymentMethodKey, PaymentSettings } from '../types';
@@ -8,7 +8,7 @@ interface PaymentModalProps {
     isOpen: boolean;
     onClose: () => void;
     item: any;
-    type?: 'course' | 'package' | 'skill' | 'test';
+    type?: 'course' | 'package' | 'skill' | 'test' | 'bank';
 }
 
 const fallbackSettings: PaymentSettings = {
@@ -18,7 +18,7 @@ const fallbackSettings: PaymentSettings = {
     card: {
         enabled: true,
         label: 'بطاقة بنكية',
-        instructions: 'سيتم إرسال رابط دفع آمن بعد مراجعة الطلب.',
+        instructions: 'سيتم إرسال طلب دفع آمن ومراجعته من الإدارة قبل التفعيل.',
     },
     transfer: {
         enabled: true,
@@ -60,10 +60,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const { redeemAccessCode } = useStore();
 
     useEffect(() => {
-        if (!isOpen) {
-            return;
-        }
-
+        if (!isOpen) return;
         setStep('method');
         setMethod(null);
         setLoading(false);
@@ -80,12 +77,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     }, [isOpen, item?.id, type]);
 
     useEffect(() => {
-        if (!isOpen) {
-            return;
-        }
+        if (!isOpen) return;
 
         let cancelled = false;
-
         const loadSettings = async () => {
             setSettingsLoading(true);
             try {
@@ -111,31 +105,22 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     }, [isOpen]);
 
     const enabledMethods = useMemo(
-        () =>
-            (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter(
-                (key) => settings[key]?.enabled,
-            ),
+        () => (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter((key) => settings[key]?.enabled),
         [settings],
     );
 
     if (!isOpen || !item) return null;
 
-    const modalType = type as string;
     const shouldPurchaseAsPackage =
-        modalType === 'package' ||
+        type === 'package' ||
         item?.purchaseType === 'package' ||
-        ((modalType === 'skill' || modalType === 'test' || modalType === 'bank') && (item?.packageId || item?.includedCourseIds?.length));
-
-    const handleMethodSelect = (selectedMethod: PaymentMethodKey) => {
-        setActionError(null);
-        setMethod(selectedMethod);
-        setStep('details');
-    };
+        ((type === 'skill' || type === 'test' || type === 'bank') && (item?.packageId || item?.includedCourseIds?.length));
 
     const getTitle = () => {
         if (type === 'package') return 'الاشتراك في الباقة';
-        if (type === 'skill') return 'شراء المهارة';
-        if (type === 'test') return 'شراء الاختبار';
+        if (type === 'skill') return 'فتح التأسيس';
+        if (type === 'bank') return 'فتح التدريب';
+        if (type === 'test') return 'فتح الاختبار';
         return 'الاشتراك في الدورة';
     };
 
@@ -150,12 +135,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             notes.trim(),
             method === 'card' && cardHolderName.trim() ? `اسم حامل البطاقة: ${cardHolderName.trim()}` : '',
             method === 'card' && cardLast4.trim() ? `آخر 4 أرقام: ${cardLast4.trim()}` : '',
-        ]
-            .filter(Boolean)
-            .join(' | ');
+        ].filter(Boolean).join(' | ');
 
         return {
-            itemType: shouldPurchaseAsPackage ? 'package' : type,
+            itemType: shouldPurchaseAsPackage ? 'package' : type === 'bank' ? 'test' : type,
             itemId: item.id,
             itemName: getItemName(),
             packageId,
@@ -171,12 +154,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     };
 
     const handlePayment = async () => {
-        if (!method) {
-            return;
-        }
+        if (!method) return;
 
         if (method === 'transfer' && !transferReference.trim() && !receiptUrl.trim()) {
-            setActionError('أدخل رقم المرجع أو رابط إيصال التحويل حتى نراجع الطلب.');
+            setActionError('أدخل رقم مرجع التحويل أو رابط الإيصال حتى نراجع الطلب.');
             return;
         }
 
@@ -228,6 +209,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         }
     };
 
+    const selectMethod = (selectedMethod: PaymentMethodKey) => {
+        setActionError(null);
+        setMethod(selectedMethod);
+        setStep('details');
+    };
+
     const renderMethodButton = (
         selectedMethod: PaymentMethodKey,
         title: string,
@@ -236,13 +223,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         iconClasses: string,
     ) => (
         <button
-            onClick={() => handleMethodSelect(selectedMethod)}
+            onClick={() => selectMethod(selectedMethod)}
             className="w-full flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-5 rounded-2xl border-2 border-gray-100 hover:border-indigo-500 hover:bg-indigo-50 transition-all group"
         >
             <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl transition-colors ${iconClasses}`}>
-                    {icon}
-                </div>
+                <div className={`p-3 rounded-xl transition-colors ${iconClasses}`}>{icon}</div>
                 <div className="text-right">
                     <p className="font-bold text-gray-800">{title}</p>
                     <p className="text-xs text-gray-500">{description}</p>
@@ -259,7 +244,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
                 <div>
                     <p className="font-bold text-amber-900">لديك كود تفعيل؟</p>
-                    <p className="text-xs text-amber-700 mt-1">فعّل الباقة أو الدورات مباشرة من نفس النافذة بدون خطوات دفع إضافية.</p>
+                    <p className="text-xs text-amber-700 mt-1">فعّل الباقة أو الدورة مباشرة من نفس النافذة بدون خطوات دفع إضافية.</p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <input
@@ -278,71 +263,29 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 </div>
             </div>
 
-            {settings.notes && (
-                <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700 text-right">
-                    {settings.notes}
-                </div>
-            )}
-
-            {actionError && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-right">
-                    {actionError}
-                </div>
-            )}
-
-            {settingsLoading && (
-                <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 text-right">
-                    جارٍ تحميل إعدادات الدفع...
-                </div>
-            )}
-
+            {settings.notes && <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700 text-right">{settings.notes}</div>}
+            {actionError && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-right">{actionError}</div>}
+            {settingsLoading && <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 text-right">جارٍ تحميل إعدادات الدفع...</div>}
             {!settingsLoading && enabledMethods.length === 0 && (
                 <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-right">
                     لا توجد وسيلة دفع مفعلة حاليًا. يمكنك استخدام كود تفعيل أو التواصل مع الإدارة.
                 </div>
             )}
 
-            {enabledMethods.includes('card') &&
-                renderMethodButton(
-                    'card',
-                    settings.card.label || 'بطاقة بنكية',
-                    settings.card.instructions || 'إرسال طلب دفع ومراجعته من الإدارة أو تفعيل الدفع الآمن لاحقًا.',
-                    <CreditCard size={24} />,
-                    'bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white',
-                )}
-
-            {enabledMethods.includes('transfer') &&
-                renderMethodButton(
-                    'transfer',
-                    settings.transfer.label || 'تحويل بنكي',
-                    settings.transfer.instructions || 'سجّل رقم المرجع أو أرفق رابط إيصال التحويل.',
-                    <Landmark size={24} />,
-                    'bg-amber-100 text-amber-600 group-hover:bg-amber-600 group-hover:text-white',
-                )}
-
-            {enabledMethods.includes('wallet') &&
-                renderMethodButton(
-                    'wallet',
-                    settings.wallet.label || 'محفظة إلكترونية',
-                    settings.wallet.instructions || 'أدخل رقم المحفظة أو الجوال المرتبط بها.',
-                    <Wallet size={24} />,
-                    'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white',
-                )}
+            {enabledMethods.includes('card') && renderMethodButton('card', settings.card.label || 'بطاقة بنكية', settings.card.instructions || 'إرسال طلب دفع ومراجعته من الإدارة أو تفعيل الدفع الآمن لاحقًا.', <CreditCard size={24} />, 'bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white')}
+            {enabledMethods.includes('transfer') && renderMethodButton('transfer', settings.transfer.label || 'تحويل بنكي', settings.transfer.instructions || 'سجّل رقم المرجع أو أرفق رابط إيصال التحويل.', <Landmark size={24} />, 'bg-amber-100 text-amber-600 group-hover:bg-amber-600 group-hover:text-white')}
+            {enabledMethods.includes('wallet') && renderMethodButton('wallet', settings.wallet.label || 'محفظة إلكترونية', settings.wallet.instructions || 'أدخل رقم المحفظة أو الجوال المرتبط بها.', <Wallet size={24} />, 'bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white')}
         </div>
     );
 
     const renderDetails = () => (
         <div className="space-y-6 animate-fade-in text-right">
-            <div className="flex items-center gap-2 text-indigo-600 mb-4 cursor-pointer" onClick={() => setStep('method')}>
-                <ChevronLeft size={20} className="transform rotate-180" />
+            <button className="flex items-center gap-2 text-indigo-600 mb-4" onClick={() => setStep('method')}>
+                <ChevronLeft size={20} className="rotate-180" />
                 <span className="font-bold text-sm">العودة لطرق الدفع</span>
-            </div>
+            </button>
 
-            {actionError && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {actionError}
-                </div>
-            )}
+            {actionError && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{actionError}</div>}
 
             {method === 'card' && (
                 <div className="space-y-4">
@@ -350,26 +293,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
                         {settings.card.instructions || 'سيتم إرسال رابط دفع آمن أو مراجعة الطلب من الإدارة.'}
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">اسم حامل البطاقة</label>
-                        <input
-                            value={cardHolderName}
-                            onChange={(event) => setCardHolderName(event.target.value)}
-                            type="text"
-                            placeholder="الاسم كما يظهر على البطاقة"
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">آخر 4 أرقام من البطاقة (اختياري)</label>
-                        <input
-                            value={cardLast4}
-                            onChange={(event) => setCardLast4(event.target.value.replace(/\D/g, '').slice(0, 4))}
-                            type="text"
-                            placeholder="1234"
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
+                    <input value={cardHolderName} onChange={(event) => setCardHolderName(event.target.value)} placeholder="اسم حامل البطاقة" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                    <input value={cardLast4} onChange={(event) => setCardLast4(event.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="آخر 4 أرقام من البطاقة (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
             )}
 
@@ -377,51 +302,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <div className="space-y-4">
                     <h3 className="text-xl font-black text-gray-800">بيانات التحويل</h3>
                     <div className="bg-gray-50 p-6 rounded-2xl space-y-4 border border-gray-100">
-                        {settings.transfer.bankName && (
-                            <div>
-                                <p className="text-xs text-gray-400">اسم البنك</p>
-                                <p className="font-bold text-gray-800">{settings.transfer.bankName}</p>
-                            </div>
-                        )}
-                        {settings.transfer.iban && (
-                            <div>
-                                <p className="text-xs text-gray-400">رقم الآيبان (IBAN)</p>
-                                <p className="font-mono font-bold text-indigo-600 text-lg break-all">{settings.transfer.iban}</p>
-                            </div>
-                        )}
-                        {settings.transfer.accountName && (
-                            <div>
-                                <p className="text-xs text-gray-400">اسم المستفيد</p>
-                                <p className="font-bold text-gray-800">{settings.transfer.accountName}</p>
-                            </div>
-                        )}
-                        {settings.transfer.accountNumber && (
-                            <div>
-                                <p className="text-xs text-gray-400">رقم الحساب</p>
-                                <p className="font-bold text-gray-800">{settings.transfer.accountNumber}</p>
-                            </div>
-                        )}
+                        {settings.transfer.bankName && <InfoRow label="اسم البنك" value={settings.transfer.bankName} />}
+                        {settings.transfer.iban && <InfoRow label="رقم الآيبان (IBAN)" value={settings.transfer.iban} mono />}
+                        {settings.transfer.accountName && <InfoRow label="اسم المستفيد" value={settings.transfer.accountName} />}
+                        {settings.transfer.accountNumber && <InfoRow label="رقم الحساب" value={settings.transfer.accountNumber} />}
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">رقم مرجع التحويل</label>
-                        <input
-                            value={transferReference}
-                            onChange={(event) => setTransferReference(event.target.value)}
-                            type="text"
-                            placeholder="رقم المرجع أو العملية"
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">رابط إيصال التحويل (اختياري)</label>
-                        <input
-                            value={receiptUrl}
-                            onChange={(event) => setReceiptUrl(event.target.value)}
-                            type="text"
-                            placeholder="https://..."
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
+                    <input value={transferReference} onChange={(event) => setTransferReference(event.target.value)} placeholder="رقم مرجع التحويل أو العملية" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                    <input value={receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال التحويل (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
             )}
 
@@ -432,61 +319,28 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                         {settings.wallet.instructions || 'أدخل رقم المحفظة أو الجوال المرتبط بها ليتم مراجعة الطلب.'}
                     </div>
                     {settings.wallet.providerName && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="p-4 border-2 border-emerald-500 bg-emerald-50 rounded-xl text-center">
-                                <p className="font-bold text-emerald-700">{settings.wallet.providerName}</p>
-                                {settings.wallet.phoneNumber && <p className="text-xs text-emerald-500 mt-1">{settings.wallet.phoneNumber}</p>}
-                            </div>
+                        <div className="p-4 border-2 border-emerald-500 bg-emerald-50 rounded-xl text-center">
+                            <p className="font-bold text-emerald-700">{settings.wallet.providerName}</p>
+                            {settings.wallet.phoneNumber && <p className="text-xs text-emerald-500 mt-1">{settings.wallet.phoneNumber}</p>}
                         </div>
                     )}
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">رقم المحفظة / الجوال</label>
-                        <input
-                            value={walletNumber}
-                            onChange={(event) => setWalletNumber(event.target.value)}
-                            type="text"
-                            placeholder="05xxxxxxxx"
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-600">رابط إيصال الدفع (اختياري)</label>
-                        <input
-                            value={receiptUrl}
-                            onChange={(event) => setReceiptUrl(event.target.value)}
-                            type="text"
-                            placeholder="https://..."
-                            className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
-                    </div>
+                    <input value={walletNumber} onChange={(event) => setWalletNumber(event.target.value)} placeholder="رقم المحفظة / الجوال" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                    <input value={receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال الدفع (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
             )}
 
-            <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-600">ملاحظات إضافية (اختياري)</label>
-                <textarea
-                    value={notes}
-                    onChange={(event) => setNotes(event.target.value)}
-                    rows={3}
-                    placeholder="أي ملاحظات تريد إضافتها للإدارة"
-                    className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
-                />
-            </div>
+            <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} placeholder="ملاحظات إضافية للإدارة (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none resize-none" />
 
-            <div className="pt-6">
+            <div className="pt-2">
                 <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6 bg-gray-50 p-4 rounded-xl">
                     <span className="text-gray-500 font-bold">إجمالي المبلغ:</span>
                     <span className="text-xl sm:text-2xl font-black text-indigo-600">{getPrice()} {getCurrency()}</span>
                 </div>
 
-                <button
-                    onClick={() => void handlePayment()}
-                    disabled={loading}
-                    className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
-                >
+                <button onClick={() => void handlePayment()} disabled={loading} className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50">
                     {loading ? (
                         <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                             جارٍ إرسال الطلب...
                         </>
                     ) : (
@@ -510,10 +364,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             <p className="text-gray-500 mb-8 sm:mb-10 max-w-sm mx-auto leading-relaxed">
                 {successMessage || `تم تسجيل طلب الدفع الخاص بـ ${getItemName()} وسيظهر في طلباتك لحين المراجعة.`}
             </p>
-            <button
-                onClick={onClose}
-                className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg"
-            >
+            <button onClick={onClose} className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg">
                 إغلاق
             </button>
         </div>
@@ -522,13 +373,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
             <div className="bg-white w-full max-w-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-scale-up">
-                <button
-                    onClick={onClose}
-                    className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"
-                >
+                <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10">
                     <X size={20} />
                 </button>
-
                 <div className="p-5 sm:p-8 md:p-12">
                     {step === 'method' && renderMethodSelector()}
                     {step === 'details' && renderDetails()}
@@ -538,3 +385,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         </div>
     );
 };
+
+const InfoRow = ({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) => (
+    <div>
+        <p className="text-xs text-gray-400">{label}</p>
+        <p className={`font-bold text-gray-800 break-all ${mono ? 'font-mono text-indigo-600 text-lg' : ''}`}>{value}</p>
+    </div>
+);
