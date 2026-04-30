@@ -18,7 +18,7 @@ export const getChatResponse = async (message: string): Promise<string> => {
     const response = await api.aiChat({ message });
     return displayText(response.text) || "لم أفهم السؤال جيدًا. جرّب كتابته بطريقة أبسط وسأساعدك خطوة بخطوة.";
   } catch {
-    return "أواجه ضغطًا بسيطًا الآن. اكتب سؤالك مرة أخرى بعد قليل، أو حدّد المهارة التي تريد شرحها.";
+    return "أواجه ضغطًا بسيطًا الآن. اكتب سؤالك مرة أخرى بعد قليل، أو حدد المهارة التي تريد شرحها.";
   }
 };
 

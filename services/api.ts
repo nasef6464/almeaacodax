@@ -451,6 +451,14 @@ export const api = {
       body: payload,
       token,
     }),
+  aiStatus: (token?: string | null) =>
+    request<{
+      provider: "gemini" | "ollama" | "none";
+      ollamaConfigured: boolean;
+      geminiConfigured: boolean;
+      model: string;
+      timeoutMs: number;
+    }>("/ai/status", { token }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",
