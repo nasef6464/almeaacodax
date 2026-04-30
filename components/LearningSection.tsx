@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
-import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock } from 'lucide-react';
+import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package } from 'lucide-react';
 import { ProgressBar } from './ui/ProgressBar';
 import { SkillDetailsModal } from './SkillDetailsModal';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
@@ -160,10 +160,24 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         return pathMatches && subjectMatches;
     };
 
+    const purchasedPackageIds = new Set(user.subscription?.purchasedPackages || []);
+    const subjectPublicPackages = courses
+        .filter((course) => {
+            const packagePathId = course.pathId || course.category;
+            const packageSubjectId = course.subjectId || course.subject;
+            return course.isPackage && canStudentSeeCourse(course) && matchesScopedContent(packagePathId, packageSubjectId);
+        })
+        .sort((a, b) => {
+            const aSubject = (a.subjectId || a.subject) === subject ? 1 : 0;
+            const bSubject = (b.subjectId || b.subject) === subject ? 1 : 0;
+            return bSubject - aSubject || (a.price || 0) - (b.price || 0);
+        });
+
     // Data Retrieval from Store
     let sectionCourses = courses.filter((course) => {
         const coursePathId = course.pathId || course.category;
         const courseSubjectId = course.subjectId || course.subject;
+        if (course.isPackage) return false;
         if (!canStudentSeeCourse(course)) return false;
         return matchesScopedContent(coursePathId, courseSubjectId);
     });
@@ -290,6 +304,79 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             {/* Content */}
             <div className="animate-fade-in">
                 {activeTab === 'courses' && enabledTabs.courses && (
+                    <div className="space-y-6">
+                        {subjectPublicPackages.length > 0 && (
+                            <div className="rounded-3xl border border-amber-100 bg-amber-50/40 p-5">
+                                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                        <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">
+                                            <Package size={14} />
+                                            الباقات والعروض المتاحة
+                                        </div>
+                                        <h3 className="mt-2 text-xl font-black text-gray-900">اختر الباقة المناسبة لفتح المحتوى المقفول</h3>
+                                        <p className="mt-1 text-sm text-gray-500">الباقات هنا عامة للطلاب المستقلين، أما طلاب المدارس فيفتح لهم المحتوى حسب باقة المدرسة أو كود التفعيل.</p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                                    {subjectPublicPackages.map((pkg) => {
+                                        const pkgTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
+                                        const packageIsActive =
+                                            isStaffViewer ||
+                                            user.subscription?.plan === 'premium' ||
+                                            purchasedPackageIds.has(pkg.id) ||
+                                            hasScopedPackageAccess('all', category, subject);
+                                        const contentLabel = pkgTypes.includes('all')
+                                            ? 'باقة شاملة'
+                                            : pkgTypes.map((type) => packageContentLabels[type]).filter(Boolean).join(' + ');
+
+                                        return (
+                                            <div key={pkg.id} className="overflow-hidden rounded-3xl border border-white bg-white shadow-sm">
+                                                <div className="relative h-36 bg-gray-900">
+                                                    <img src={pkg.thumbnail} alt={pkg.title} className="absolute inset-0 h-full w-full object-cover opacity-80" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+                                                    <div className="absolute bottom-3 left-3 right-3">
+                                                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur">{contentLabel}</span>
+                                                        <h4 className="mt-2 line-clamp-2 text-lg font-black text-white">{pkg.title}</h4>
+                                                    </div>
+                                                    {!packageIsActive && (
+                                                        <div className="absolute left-3 top-3 rounded-full bg-black/50 p-2 text-white backdrop-blur">
+                                                            <Lock size={16} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="space-y-4 p-4">
+                                                    <p className="line-clamp-2 text-sm text-gray-500">{pkg.description || 'باقة عامة لفتح محتوى هذا المسار حسب إعدادات الإدارة.'}</p>
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <span className="text-xl font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
+                                                        {pkg.originalPrice ? <span className="text-sm font-bold text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {(pkg.features || []).slice(0, 3).map((feature) => (
+                                                            <span key={feature} className="rounded-full bg-gray-50 px-2 py-1 text-xs font-bold text-gray-600">{feature}</span>
+                                                        ))}
+                                                    </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            if (!packageIsActive) {
+                                                                setPaymentModalData({ isOpen: true, item: pkg, type: 'package' });
+                                                            }
+                                                        }}
+                                                        className={`w-full rounded-xl py-3 font-black transition-colors ${
+                                                            packageIsActive
+                                                                ? 'bg-emerald-50 text-emerald-700'
+                                                                : `bg-${safeColorTheme}-500 text-white hover:bg-${safeColorTheme}-600`
+                                                        }`}
+                                                    >
+                                                        {packageIsActive ? 'الباقة مفعلة لديك' : 'اشترك في الباقة'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {sectionCourses.map((baseCourse) => {
                             const coursePurchaseItem = buildScopedPackageItem(
@@ -357,6 +444,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 <p>لا توجد دورات متاحة حالياً في هذا القسم.</p>
                             </div>
                         )}
+                    </div>
                     </div>
                 )}
 
