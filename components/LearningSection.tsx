@@ -142,6 +142,48 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', category, subject);
     const hasTestsAccess = isStaffViewer || hasScopedPackageAccess('tests', category, subject);
     const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', category, subject);
+    const tabAccessMap: Record<typeof activeTab, { hasAccess: boolean; contentType: PackageContentType; title: string; description: string; action: string }> = {
+        courses: {
+            hasAccess: hasCourseAccess,
+            contentType: 'courses',
+            title: 'الدورات تحتاج اشتراكًا أو باقة مفعلة',
+            description: 'يمكنك فتح دورات هذه المادة عبر باقة الدورات أو الباقة الشاملة التي يحددها المدير.',
+            action: 'فتح باقة الدورات',
+        },
+        skills: {
+            hasAccess: hasFoundationAccess,
+            contentType: 'foundation',
+            title: 'موضوعات التأسيس تحتاج باقة مناسبة',
+            description: 'التأسيس منفصل عن مركز المهارات، لكنه يستخدم نفس المسار والمادة حتى يتدرج الطالب في التعلم.',
+            action: 'فتح باقة التأسيس',
+        },
+        banks: {
+            hasAccess: hasBanksAccess,
+            contentType: 'banks',
+            title: 'التدريبات وبنوك الأسئلة تحتاج اشتراكًا',
+            description: 'افتح باقة التدريب ليصل الطالب إلى الأسئلة القصيرة المرتبطة بالمهارات.',
+            action: 'فتح باقة التدريبات',
+        },
+        tests: {
+            hasAccess: hasTestsAccess,
+            contentType: 'tests',
+            title: 'الاختبارات المحاكية تحتاج باقة اختبارات',
+            description: 'باقة الاختبارات تفتح الاختبارات المحاكية والمركزية المنشورة داخل هذه المادة.',
+            action: 'فتح باقة الاختبارات',
+        },
+        library: {
+            hasAccess: hasLibraryAccess,
+            contentType: 'library',
+            title: 'المكتبة تحتاج باقة مكتبة أو باقة شاملة',
+            description: 'افتح ملفات المراجعة والملخصات والمرفقات العلمية الخاصة بهذه المادة.',
+            action: 'فتح باقة المكتبة',
+        },
+    };
+    const activeTabAccess = tabAccessMap[activeTab];
+    const activeTabPackage = activeTabAccess
+        ? buildScopedPackageItem(activeTabAccess.contentType, activeTabAccess.action, activeTabAccess.description)
+        : null;
+    const showActiveTabAccessNotice = !isStaffViewer && activeTabAccess && !activeTabAccess.hasAccess && Boolean(activeTabPackage);
 
     const isPremiumLocked = (shouldLock?: boolean, accessGranted = false) => Boolean(!isStaffViewer && shouldLock && !accessGranted);
     const canStudentSeeCourse = (course: (typeof courses)[number]) =>
@@ -303,6 +345,37 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
             {/* Content */}
             <div className="animate-fade-in">
+                {showActiveTabAccessNotice && activeTabPackage && (
+                    <div className="mb-6 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div className="flex items-start gap-4">
+                                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+                                    <Lock size={22} />
+                                </div>
+                                <div>
+                                    <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">
+                                        محتوى مقفول
+                                    </div>
+                                    <h3 className="mt-2 text-lg font-black text-gray-900">{activeTabAccess.title}</h3>
+                                    <p className="mt-1 max-w-2xl text-sm leading-7 text-gray-600">{activeTabAccess.description}</p>
+                                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold">
+                                        <span className="rounded-full bg-white px-3 py-1 text-gray-600">المسار الحالي</span>
+                                        <span className="rounded-full bg-white px-3 py-1 text-indigo-700">{currentSubjectData?.name || 'المادة الحالية'}</span>
+                                        <span className="rounded-full bg-white px-3 py-1 text-emerald-700">يفتح تلقائيًا بعد اعتماد الدفع أو الكود</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setPaymentModalData({ isOpen: true, item: activeTabPackage, type: 'package' })}
+                                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-100 transition hover:bg-amber-600"
+                            >
+                                <Package size={18} />
+                                {activeTabAccess.action}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {activeTab === 'courses' && enabledTabs.courses && (
                     <div className="space-y-6">
                         {subjectPublicPackages.length > 0 && (

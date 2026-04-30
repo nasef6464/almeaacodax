@@ -630,14 +630,14 @@ const Quiz: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">القسم</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-2">المهارة الرئيسية</label>
                   <select
                     value={selectedSectionId}
                     onChange={(e) => setSelectedSectionId(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                     disabled={!selectedSubjectId}
                   >
-                    <option value="">كل الأقسام</option>
+                    <option value="">كل المهارات الرئيسية</option>
                     {availableSections.map((section) => (
                       <option key={section.id} value={section.id}>{section.name}</option>
                     ))}
