@@ -24,7 +24,7 @@ export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { paths, levels, subjects, user, courses } = useStore();
+    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems } = useStore();
 
     const initialLevelId = searchParams.get('level') || null;
     const initialSubjectId = searchParams.get('subject') || null;
@@ -86,6 +86,64 @@ export const GenericPathPage: React.FC = () => {
         c => (c.pathId || c.category) === path.id && c.isPackage && (canSeeHiddenPaths || isPublicPackageVisible(c)),
     );
     const isPackagesTab = searchParams.get('tab') === 'packages';
+    const canStudentSeeContent = (item: { showOnPlatform?: boolean; approvalStatus?: string; isPublished?: boolean }) =>
+        canSeeHiddenPaths || (
+            item.showOnPlatform !== false &&
+            item.isPublished !== false &&
+            (!item.approvalStatus || item.approvalStatus === 'approved')
+        );
+    const isWithinPackageScope = (
+        item: { pathId?: string; subjectId?: string; category?: string; subject?: string },
+        packageSubjectId?: string,
+    ) => {
+        const itemPathId = item.pathId || item.category;
+        const itemSubjectId = item.subjectId || item.subject;
+        const matchesPath = !itemPathId || itemPathId === path.id;
+        const matchesSubject = !packageSubjectId || !itemSubjectId || itemSubjectId === packageSubjectId;
+        return matchesPath && matchesSubject;
+    };
+    const getPackageCoverage = (pkg: any, contentTypes: string[]) => {
+        const includesAll = contentTypes.includes('all');
+        const packageSubjectId = pkg.subjectId || pkg.subject;
+        const shouldCount = (type: string) => includesAll || contentTypes.includes(type);
+        const scopedCourses = courses.filter(
+            (course) =>
+                !course.isPackage &&
+                canStudentSeeContent(course) &&
+                isWithinPackageScope(course, packageSubjectId),
+        );
+
+        return [
+            {
+                label: 'دورات',
+                count: shouldCount('courses') ? scopedCourses.length : 0,
+            },
+            {
+                label: 'تأسيس',
+                count: shouldCount('foundation')
+                    ? topics.filter((topic) => canStudentSeeContent(topic) && isWithinPackageScope(topic, packageSubjectId)).length
+                    : 0,
+            },
+            {
+                label: 'تدريبات',
+                count: shouldCount('banks')
+                    ? quizzes.filter((quiz) => quiz.type === 'bank' && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    : 0,
+            },
+            {
+                label: 'اختبارات',
+                count: shouldCount('tests')
+                    ? quizzes.filter((quiz) => quiz.type !== 'bank' && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    : 0,
+            },
+            {
+                label: 'مكتبة',
+                count: shouldCount('library')
+                    ? libraryItems.filter((item) => canStudentSeeContent(item) && isWithinPackageScope(item, packageSubjectId)).length
+                    : 0,
+            },
+        ].filter((item) => item.count > 0);
+    };
 
     const getPathStyle = () => {
         const c = path.color || 'indigo';
@@ -111,6 +169,7 @@ export const GenericPathPage: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {pathPackages.map(pkg => {
                         const contentTypes = resolvePackageContentTypes(pkg);
+                        const packageCoverage = getPackageCoverage(pkg, contentTypes);
                         const scopeLabel = contentTypes.includes('all')
                             ? 'باقة شاملة'
                             : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
@@ -127,8 +186,21 @@ export const GenericPathPage: React.FC = () => {
                                      ) : null}
                                  </div>
                              </div>
-                             <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                                 <div className="mb-5 grid grid-cols-1 gap-2">
+                              <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                                  {packageCoverage.length > 0 ? (
+                                      <div className="mb-5 rounded-2xl border border-amber-100 bg-white p-4">
+                                          <div className="mb-3 text-xs font-black text-gray-500">ماذا تفتح هذه الباقة؟</div>
+                                          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                              {packageCoverage.map((item) => (
+                                                  <div key={item.label} className="rounded-xl bg-amber-50 px-3 py-2 text-center">
+                                                      <div className="text-lg font-black text-amber-700">{item.count}</div>
+                                                      <div className="text-[11px] font-bold text-amber-600">{item.label}</div>
+                                                  </div>
+                                              ))}
+                                          </div>
+                                      </div>
+                                  ) : null}
+                                  <div className="mb-5 grid grid-cols-1 gap-2">
                                      {contentTypes.map((type) => {
                                          const meta = packageContentLabels[type] || { label: type, description: '' };
                                          return (
