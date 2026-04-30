@@ -30,7 +30,7 @@ const getVisibilityMeta = (lesson: Lesson) =>
     : { label: 'ظاهر على المنصة', className: 'bg-sky-50 text-sky-700' };
 
 export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => {
-  const { user, lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills } = useStore();
+  const { user, lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills, topics } = useStore();
   const canReview = user.role === 'admin';
   const managedPathIds = user.managedPathIds || [];
   const managedSubjectIds = user.managedSubjectIds || [];
@@ -163,13 +163,18 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   };
 
   const handlePreviewLesson = (lesson: Lesson) => {
-    if (lesson.videoUrl) {
-      window.open(lesson.videoUrl, '_blank', 'noopener,noreferrer');
-      return;
-    }
+    const topic = topics.find((item) => item.lessonIds?.includes(lesson.id));
+    const pathId = lesson.pathId || topic?.pathId || selectedPathId || '';
+    const targetSubjectId = lesson.subjectId || topic?.subjectId || selectedSubjectId;
 
-    const query = lesson.subjectId ? `?subject=${lesson.subjectId}&tab=skills` : '?tab=skills';
-    window.open(`${window.location.origin}/#/category/${lesson.pathId || selectedPathId || ''}${query}`, '_blank', 'noopener,noreferrer');
+    const params = new URLSearchParams();
+    if (targetSubjectId) params.set('subject', targetSubjectId);
+    params.set('tab', 'skills');
+    params.set('content', 'lessons');
+    params.set('lesson', lesson.id);
+    if (topic?.id) params.set('topic', topic.id);
+
+    window.open(`${window.location.origin}/#/category/${pathId}?${params.toString()}`, '_blank', 'noopener,noreferrer');
   };
 
   const filteredLessons = lessons.filter((lesson) => lesson.title.toLowerCase().includes(searchTerm.toLowerCase()));
