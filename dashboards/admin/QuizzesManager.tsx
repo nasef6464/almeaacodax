@@ -37,6 +37,26 @@ const getVisibilityMeta = (quiz: Quiz) =>
     ? { label: 'مخفي عن المنصة', className: 'bg-gray-100 text-gray-600' }
     : { label: 'معروض على المنصة', className: 'bg-sky-50 text-sky-700' };
 
+const getAccessMeta = (quiz: Quiz) => {
+  if ((quiz.mode || 'regular') === 'central') {
+    return { label: 'اختبار موجه', className: 'bg-violet-50 text-violet-700' };
+  }
+
+  if (quiz.access.type === 'paid') {
+    return { label: 'مدفوع أو عبر باقة', className: 'bg-amber-50 text-amber-700' };
+  }
+
+  if (quiz.access.type === 'private') {
+    return { label: 'خاص / غير مفتوح للجميع', className: 'bg-rose-50 text-rose-700' };
+  }
+
+  if (quiz.access.type === 'course_only') {
+    return { label: 'داخل دورة فقط', className: 'bg-indigo-50 text-indigo-700' };
+  }
+
+  return { label: 'مفتوح للعرض', className: 'bg-emerald-50 text-emerald-700' };
+};
+
 const getMeasuredSkillIds = (quiz: Quiz, questions: Question[]) => {
   const directSkillIds = quiz.skillIds || [];
   const questionSkillIds = (quiz.questionIds || []).flatMap((questionId) => {
@@ -319,6 +339,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     updateQuiz(quiz.id, {
       approvalStatus: 'rejected',
       isPublished: false,
+    });
+  };
+
+  const handleToggleRepositoryPublish = (quiz: Quiz) => {
+    updateQuiz(quiz.id, {
+      isPublished: !quiz.isPublished,
     });
   };
 
@@ -623,6 +649,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                       <div className="flex flex-wrap gap-2">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${getAccessMeta(quiz).className}`}>{getAccessMeta(quiz).label}</span>
                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
                           {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
                           {readinessMeta.label}
@@ -662,6 +689,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                         </button>
                         <button onClick={() => handlePreviewQuiz(quiz)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="معاينة الاختبار قبل النشر">
                           <Eye size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleToggleRepositoryPublish(quiz)}
+                          className={`p-2 rounded-lg transition-colors ${
+                            quiz.isPublished ? 'text-emerald-600 hover:bg-emerald-50' : 'text-amber-600 hover:bg-amber-50'
+                          }`}
+                          title={quiz.isPublished ? 'إلغاء النشر من المستودع' : 'نشر داخل المستودع'}
+                        >
+                          {quiz.isPublished ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
                         </button>
                         <button
                           onClick={() => handleTogglePlatformVisibility(quiz)}

@@ -36,6 +36,13 @@ const getCourseVisibilityMeta = (course: Course) =>
     ? { label: 'مخفي عن المنصة', className: 'bg-gray-100 text-gray-600' }
     : { label: 'ظاهر على المنصة', className: 'bg-sky-50 text-sky-700' };
 
+const getCourseAccessMeta = (course: Course) =>
+  course.isPackage
+    ? { label: 'باقة بيع', className: 'bg-violet-50 text-violet-700' }
+    : course.price > 0
+      ? { label: 'مدفوعة / تحتاج اشتراك', className: 'bg-amber-50 text-amber-700' }
+      : { label: 'مفتوحة أو مجانية', className: 'bg-emerald-50 text-emerald-700' };
+
 export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => {
   const { courses, addCourse, updateCourse, deleteCourse, subjects } = useStore();
   const [isBuilding, setIsBuilding] = useState(false);
@@ -116,6 +123,12 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     });
   };
 
+  const handleToggleRepositoryPublish = (course: Course) => {
+    updateCourse(course.id, {
+      isPublished: course.isPublished === false,
+    });
+  };
+
   const handlePreviewCourse = (course: Course) => {
     if (course.isPackage) {
       const pathId = course.pathId || course.category || '';
@@ -135,6 +148,12 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     const matchesSubject = subjectId ? (course.subjectId || course.subject) === subjectId : true;
     return matchesSearch && matchesSubject;
   });
+  const courseOverview = {
+    total: filteredCourses.length,
+    visible: filteredCourses.filter((course) => course.showOnPlatform !== false).length,
+    published: filteredCourses.filter((course) => course.isPublished !== false).length,
+    sellable: filteredCourses.filter((course) => course.isPackage || course.price > 0).length,
+  };
 
   if (isBuilding) {
     return (
@@ -171,6 +190,20 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
             className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {[
+          { label: 'إجمالي الدورات', value: courseOverview.total, tone: 'text-slate-800 bg-slate-50' },
+          { label: 'الظاهر على المنصة', value: courseOverview.visible, tone: 'text-sky-800 bg-sky-50' },
+          { label: 'المنشور في المستودع', value: courseOverview.published, tone: 'text-emerald-800 bg-emerald-50' },
+          { label: 'القابل للبيع / الاشتراك', value: courseOverview.sellable, tone: 'text-amber-800 bg-amber-50' },
+        ].map((item) => (
+          <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="text-sm font-bold text-gray-500">{item.label}</div>
+            <div className={`mt-3 inline-flex rounded-2xl px-4 py-3 text-2xl font-black ${item.tone}`}>{item.value}</div>
+          </div>
+        ))}
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -237,6 +270,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                       <div className="flex flex-wrap gap-2">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${getCourseAccessMeta(course).className}`}>{getCourseAccessMeta(course).label}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -270,6 +304,15 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                           title="معاينة الدورة قبل النشر"
                         >
                           <Eye size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleToggleRepositoryPublish(course)}
+                          className={`p-2 rounded-lg transition-colors ${
+                            course.isPublished === false ? 'text-amber-600 hover:bg-amber-50' : 'text-emerald-600 hover:bg-emerald-50'
+                          }`}
+                          title={course.isPublished === false ? 'نشر داخل المستودع' : 'إلغاء النشر من المستودع'}
+                        >
+                          {course.isPublished === false ? <Lock size={18} /> : <LockOpen size={18} />}
                         </button>
                         <button
                           onClick={() => handleTogglePlatformVisibility(course)}
