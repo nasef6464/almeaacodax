@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Users, Wallet } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
@@ -37,6 +37,23 @@ const defaultSettings: PaymentSettings = {
     transfer: { enabled: true, label: 'تحويل بنكي', bankName: '', accountName: '', accountNumber: '', iban: '', instructions: '', publishDetailsToStudents: true },
     wallet: { enabled: true, label: 'محفظة إلكترونية', providerName: '', phoneNumber: '', instructions: '', publishDetailsToStudents: true },
     notes: '',
+};
+
+const downloadCsv = (fileName: string, rows: Array<Array<string | number>>) => {
+    const escapeCell = (cell: string | number) => {
+        const value = String(cell ?? '');
+        return `"${value.replace(/"/g, '""')}"`;
+    };
+    const csv = rows.map((row) => row.map(escapeCell).join(',')).join('\n');
+    const blob = new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 };
 
 export const FinancialManager: React.FC = () => {
@@ -342,6 +359,24 @@ export const FinancialManager: React.FC = () => {
         window.open(`/#/category/${pathId}${query}`, '_blank', 'noopener,noreferrer');
     };
 
+    const exportPublicPackages = () => {
+        downloadCsv('public-packages-offers.csv', [
+            ['اسم العرض', 'المسار', 'المادة', 'الحالة', 'جاهزية البيع', 'السعر', 'مشتركون', 'طلبات معلقة', 'تغطية المحتوى', 'ملاحظات'],
+            ...publicPackageRows.map((pkg) => [
+                pkg.title,
+                pkg.pathName,
+                pkg.subjectName || 'كل المواد',
+                pkg.isVisible ? 'ظاهر' : 'مخفي',
+                pkg.isReadyForSale ? 'جاهز' : 'يحتاج ضبط',
+                pkg.price,
+                pkg.buyers,
+                pkg.pending,
+                pkg.coveredItems,
+                pkg.readinessWarnings.join(' | ') || 'لا توجد',
+            ]),
+        ]);
+    };
+
     const toggleSchoolPackageStatus = (packageId: string, currentStatus: 'active' | 'expired') => {
         const nextStatus = currentStatus === 'active' ? 'expired' : 'active';
         updateB2BPackage(packageId, { status: nextStatus });
@@ -496,6 +531,25 @@ export const FinancialManager: React.FC = () => {
                 [field]: value,
             },
         }));
+    };
+
+    const exportSchoolPackages = () => {
+        downloadCsv('school-packages-coverage.csv', [
+            ['اسم الباقة', 'المدرسة', 'الحالة', 'النطاق', 'المسارات', 'المواد', 'المقاعد المستخدمة', 'إجمالي المقاعد', 'أكواد نشطة', 'إجمالي المحتوى', 'ملاحظات'],
+            ...packageCoverageRows.map((pkg) => [
+                pkg.name,
+                pkg.schoolName,
+                pkg.isActive ? 'نشطة' : 'موقوفة مؤقتًا',
+                pkg.scopeMode,
+                pkg.pathNames.join(' | ') || 'كل المسارات حسب الإعداد',
+                pkg.subjectNames.join(' | ') || 'كل المواد داخل النطاق',
+                pkg.usedSeats,
+                pkg.maxStudents || 0,
+                pkg.activeCodes,
+                pkg.totalItems,
+                pkg.operationalWarnings.join(' | ') || 'لا توجد',
+            ]),
+        ]);
     };
 
     return (
@@ -891,7 +945,16 @@ export const FinancialManager: React.FC = () => {
                                 <h2 className="text-lg font-bold text-gray-900">مراجعة تغطية الباقات والوصول</h2>
                                 <p className="text-xs text-gray-500 mt-1">هذه اللوحة تساعدك تعرف الباقة تفتح أي مسارات ومواد ومحتوى قبل تسليمها لمدرسة أو مجموعة.</p>
                             </div>
-                            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">{packageCoverageRows.length} باقة</span>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    onClick={exportSchoolPackages}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                                >
+                                    <Download size={14} />
+                                    تصدير التغطية
+                                </button>
+                                <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">{packageCoverageRows.length} باقة</span>
+                            </div>
                         </div>
 
                         <div className="grid gap-4">
@@ -1016,7 +1079,16 @@ export const FinancialManager: React.FC = () => {
                                 <h2 className="text-lg font-bold text-gray-900">عروض الأفراد المعروضة على الموقع</h2>
                                 <p className="text-xs text-gray-500 mt-1">هذه هي الباقات التي تظهر للطالب المستقل داخل صفحات المسارات، منفصلة تمامًا عن باقات المدارس.</p>
                             </div>
-                            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{publicPackageRows.length} عرض</span>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    onClick={exportPublicPackages}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                                >
+                                    <Download size={14} />
+                                    تصدير العروض
+                                </button>
+                                <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{publicPackageRows.length} عرض</span>
+                            </div>
                         </div>
                         <div className="grid gap-4">
                             {publicPackageRows.map((pkg) => (
