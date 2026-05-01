@@ -365,6 +365,28 @@ const Results: React.FC = () => {
       ? 'ابدأ بتدريب قصير الآن ثم أعد القياس بعده.'
       : 'ابدأ بخطوة صغيرة على المهارة الأضعف ثم أعد الاختبار لاحقًا.';
   const studentFriendlyChecklist = getStudentFriendlyChecklist(latestResult?.score || 0);
+  const quickResultHighlights = React.useMemo(() => {
+    const nextSkillLabel = displayText(weakestSkill?.skillName) || 'ابدأ بمراجعة الحلول';
+    const nextActionLabel = isFullResult ? simplestNextStep : studentFriendlyChecklist[0]?.title || 'ابدأ بخطوة صغيرة';
+
+    return [
+      {
+        label: 'الدرجة الحالية',
+        value: `${latestResult?.score || 0}%`,
+        tone: latestResult?.score && latestResult.score >= 80 ? 'success' : latestResult?.score && latestResult.score >= 60 ? 'warning' : 'danger',
+      },
+      {
+        label: 'أولوية المراجعة',
+        value: nextSkillLabel,
+        tone: 'default' as const,
+      },
+      {
+        label: 'الخطوة التالية',
+        value: nextActionLabel,
+        tone: 'default' as const,
+      },
+    ];
+  }, [isFullResult, latestResult?.score, simplestNextStep, studentFriendlyChecklist, weakestSkill?.skillName]);
   const guardianFollowUpSummary = weakestSkill
     ? `نتيجة الاختبار ${latestResult?.score || 0}%. أضعف مهارة ظهرت هي "${weakestSkill.skillName}" بنسبة ${weakestSkill.mastery}%. الخطوة المناسبة الآن: ${weakestSkill.actionText}`
     : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
@@ -480,6 +502,41 @@ const Results: React.FC = () => {
           </div>
         </div>
       </header>
+
+      <Card className="p-4 sm:p-5 border border-slate-100 bg-white shadow-sm">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+              ملخص 10 ثوانٍ
+            </div>
+            <h2 className="mt-3 text-lg sm:text-xl font-black text-gray-900">هذا هو المختصر الذي يهم الطالب وولي الأمر</h2>
+            <p className="mt-1 text-sm leading-7 text-gray-500">
+              بدل التفاصيل الكثيرة، نعرض لك النتيجة الأساسية ثم نحدد المهارة الأضعف والخطوة التالية مباشرة.
+            </p>
+          </div>
+          <div className="text-xs font-bold text-gray-400">مناسب للجوال والتابلت واللاب توب</div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {quickResultHighlights.map((item) => (
+            <div
+              key={item.label}
+              className={`rounded-2xl border px-4 py-4 shadow-sm ${
+                item.tone === 'success'
+                  ? 'border-emerald-100 bg-emerald-50/70'
+                  : item.tone === 'warning'
+                    ? 'border-amber-100 bg-amber-50/70'
+                    : item.tone === 'danger'
+                      ? 'border-rose-100 bg-rose-50/70'
+                      : 'border-slate-100 bg-slate-50'
+              }`}
+            >
+              <div className="text-xs font-black text-gray-500">{item.label}</div>
+              <div className="mt-2 text-base sm:text-lg font-black leading-7 text-gray-900">{item.value}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <Card className={`p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br ${scoreTone.soft}`}>
