@@ -56,6 +56,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
   const [copied, setCopied] = React.useState(false);
   const [shared, setShared] = React.useState(false);
   const [showAllSkills, setShowAllSkills] = React.useState(false);
+
   const sortedSkills = React.useMemo(
     () => [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery),
     [quiz.skillsAnalysis],
@@ -86,7 +87,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm sm:p-4" dir="rtl">
       <div className="flex h-[86vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl animate-fade-in">
         <div className="print-hide flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="min-w-0">
@@ -106,7 +107,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50"
             >
               {copied ? <CheckCircle2 size={15} /> : <Copy size={15} />}
-              {copied ? 'تم النسخ' : 'نسخ ملخص'}
+              {copied ? 'تم النسخ' : 'نسخ الملخص'}
             </button>
             <button
               onClick={shareSummary}
@@ -130,7 +131,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
               <div className="mt-4 flex items-center justify-center">
                 <div className="flex h-36 w-36 flex-col items-center justify-center rounded-full border-[12px] border-emerald-100 bg-white text-center shadow-inner">
                   <div className="text-3xl font-black text-emerald-600">{score}%</div>
-                  <div className="text-xs font-bold text-gray-400">أفضل نتيجة</div>
+                  <div className="text-xs font-bold text-gray-400">النتيجة</div>
                 </div>
               </div>
               <div className="mt-5 grid grid-cols-2 gap-2 text-center">
@@ -153,7 +154,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                 <div>
                   <h3 className="text-lg font-black text-gray-900">المهارات التي ظهرت في الاختبار</h3>
                   <p className="mt-1 text-sm leading-7 text-gray-500">
-                    مرتبة من الأكثر احتياجًا للدعم إلى الأفضل، حتى يعرف الطالب وولي الأمر أين يبدأ التحسين.
+                    مرتبة من الأضعف للأقوى حتى يعرف الطالب وولي الأمر من أين يبدأ التحسين.
                   </p>
                 </div>
                 <span className="self-start rounded-full bg-gray-50 px-3 py-1 text-xs font-black text-gray-600">
@@ -177,9 +178,13 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                                 </span>
                               ) : null}
                             </div>
-                            <div className="font-black leading-7 text-gray-900">{displayText(skill.skill) || 'مهارة غير مسماة'}</div>
+                            <div className="font-black leading-7 text-gray-900">
+                              {displayText(skill.skill) || 'مهارة غير مسماة'}
+                            </div>
                             {skill.recommendation ? (
-                              <p className="mt-2 text-sm font-bold leading-7 text-gray-600">{displayText(skill.recommendation)}</p>
+                              <p className="mt-2 text-sm font-bold leading-7 text-gray-600">
+                                {displayText(skill.recommendation)}
+                              </p>
                             ) : (
                               <p className="mt-2 text-sm font-bold leading-7 text-gray-600">
                                 شاهد شرحًا قصيرًا، ثم حل تدريبًا بسيطًا على نفس المهارة.
@@ -202,6 +207,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                     لا توجد بيانات مهارية تفصيلية لهذه المحاولة بعد. عند ربط الأسئلة بالمهارات سيظهر التحليل هنا تلقائيًا.
                   </div>
                 )}
+
                 {sortedSkills.length > 3 ? (
                   <button
                     onClick={() => setShowAllSkills((value) => !value)}
@@ -216,7 +222,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
 
           <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold leading-7 text-emerald-800">
             <Target size={16} className="ml-2 inline" />
-            القاعدة الذهبية: لا تذاكر كل شيء مرة واحدة. ابدأ بأضعف مهارة، ثم تدريب قصير، ثم أعد القياس.
+            القاعدة الذهبية: لا تراجع كل شيء دفعة واحدة. ابدأ بأضعف مهارة، ثم شرح قصير، ثم تدريب بسيط، ثم أعد القياس.
           </div>
         </div>
       </div>
