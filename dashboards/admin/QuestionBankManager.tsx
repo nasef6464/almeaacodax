@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
-import { Download, Edit2, Plus, Search, Trash2, Upload } from 'lucide-react';
+import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target } from 'lucide-react';
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
@@ -122,6 +122,8 @@ const difficultyLabel = (difficulty: Question['difficulty']) => {
   return 'متوسط';
 };
 
+const arabicOptionLabels = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+
 export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjectId }) => {
   const {
     user,
@@ -170,6 +172,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<{ imported: number; failed: number; samples: string[] } | null>(null);
+  const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -298,6 +301,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر نسخ السؤال الآن.');
     }
+  };
+
+  const handlePreviewQuestion = (question: Question) => {
+    setPreviewQuestion(question);
   };
 
   const downloadQuestionsExport = () => {
@@ -870,6 +877,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                           </button>
                         )}
                         <button
+                          onClick={() => handlePreviewQuestion(question)}
+                          className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
+                          title="معاينة السؤال"
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button
                           onClick={() => handleDuplicate(question)}
                           className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                           title="نسخ"
@@ -919,6 +933,127 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </table>
         </div>
       </div>
+
+      {previewQuestion && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewQuestion(null)}>
+          <div
+            className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">معاينة السؤال</div>
+                <h3 className="mt-3 text-xl font-black text-gray-900">
+                  {previewQuestion.text || 'سؤال بصوري/بدون نص'}
+                </h3>
+                <p className="mt-1 text-sm leading-7 text-gray-500">هذا الشكل يطابق ما يراه الطالب قبل النشر أو داخل الاختبار.</p>
+              </div>
+              <button
+                onClick={() => setPreviewQuestion(null)}
+                className="rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                aria-label="إغلاق المعاينة"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-black text-slate-500">المسار</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewQuestion.pathId)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 p-4">
+                <div className="text-xs font-black text-indigo-500">المادة</div>
+                <div className="mt-2 text-sm font-black text-indigo-900">{subjects.find((subject) => subject.id === previewQuestion.subject)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="text-xs font-black text-emerald-500">المهارة الرئيسية</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">{sections.find((section) => section.id === previewQuestion.sectionId)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <div className="text-xs font-black text-amber-500">الصعوبة</div>
+                <div className="mt-2 text-sm font-black text-amber-900">{difficultyLabel(previewQuestion.difficulty)}</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <BookOpen size={16} className="text-indigo-500" />
+                  شكل السؤال للطالب
+                </div>
+                <div className="mt-4 rounded-3xl border border-gray-100 bg-gradient-to-br from-slate-50 to-white p-4 sm:p-6">
+                  {previewQuestion.imageUrl ? (
+                    <div className="mb-4 overflow-hidden rounded-2xl border border-gray-100 bg-white">
+                      <img src={previewQuestion.imageUrl} alt="معاينة السؤال" className="max-h-72 w-full object-contain" />
+                    </div>
+                  ) : null}
+                  {previewQuestion.text ? (
+                    <div className="text-lg font-black leading-10 text-gray-900" dangerouslySetInnerHTML={{ __html: previewQuestion.text }} />
+                  ) : null}
+                  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    {(previewQuestion.type === 'essay' ? ['إجابة كتابية'] : previewQuestion.options || []).map((option, index) => {
+                      const isCorrect = previewQuestion.type !== 'essay' && previewQuestion.correctOptionIndex === index;
+                      return (
+                        <div
+                          key={`${option}-${index}`}
+                          className={`min-h-[72px] rounded-2xl border px-4 py-3 text-center text-base font-black leading-8 ${
+                            isCorrect ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-800'
+                          }`}
+                        >
+                          <div className="text-xs font-bold text-slate-400 mb-1">{arabicOptionLabels[index] || 'خيار'}</div>
+                          <div>{option}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-3xl border border-gray-100 bg-gray-50 p-4">
+                  <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                    <Target size={16} className="text-rose-500" />
+                    المهارات المرتبطة
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {(previewQuestion.skillIds || []).length > 0 ? (
+                      previewQuestion.skillIds!.map((skillId) => {
+                        const skill = skills.find((item) => item.id === skillId);
+                        return skill ? (
+                          <span key={skillId} className="rounded-full bg-white px-3 py-1 text-xs font-black text-gray-700 shadow-sm">
+                            {skill.name}
+                          </span>
+                        ) : null;
+                      })
+                    ) : (
+                      <span className="text-sm font-bold text-gray-500">لا توجد مهارات فرعية مرتبطة بعد</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
+                  <div className="text-sm font-black text-indigo-800">الشرح / الفيديو</div>
+                  <div className="mt-2 text-sm leading-7 text-indigo-900">
+                    {previewQuestion.videoUrl ? (
+                      <a href={previewQuestion.videoUrl} target="_blank" rel="noreferrer" className="font-black underline decoration-dotted">
+                        فتح رابط الشرح
+                      </a>
+                    ) : (
+                      'لا يوجد رابط شرح مرتبط بهذا السؤال.'
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-slate-100 bg-white p-4">
+                  <div className="text-sm font-black text-slate-800">ملاحظات السؤال</div>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">{previewQuestion.explanation || 'لا توجد ملاحظة تفسيرية محفوظة لهذا السؤال بعد.'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
