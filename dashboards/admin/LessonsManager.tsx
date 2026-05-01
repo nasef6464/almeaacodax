@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
+import * as XLSX from 'xlsx';
 import { Lesson } from '../../types';
-import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 
@@ -196,6 +197,63 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     locked: filteredLessons.filter((lesson) => lesson.isLocked === true).length,
   };
 
+  const downloadLessonsExport = () => {
+    const workbook = XLSX.utils.book_new();
+    const lessonRows = [
+      [
+        'عنوان الدرس',
+        'النوع',
+        'المسار',
+        'المادة',
+        'المهارة الرئيسية',
+        'المهارات الفرعية',
+        'المدة',
+        'حالة الاعتماد',
+        'الظهور على المنصة',
+        'القفل/الفتح',
+        'رابط الفيديو أو الملف',
+      ],
+      ...filteredLessons.map((lesson) => {
+        const pathName = paths.find((path) => path.id === lesson.pathId)?.name || '-';
+        const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || '-';
+        const sectionName = sections.find((section) => section.id === lesson.sectionId)?.name || '-';
+        const skillNames = (lesson.skillIds || [])
+          .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
+          .filter(Boolean)
+          .join('، ');
+        const status = getStatusMeta(lesson);
+        const visibility = getVisibilityMeta(lesson);
+        const access = getAccessMeta(lesson);
+
+        return [
+          lesson.title,
+          lesson.type === 'video' ? 'فيديو' : lesson.type === 'text' ? 'نص/مقال' : 'تفاعلي',
+          pathName,
+          subjectName,
+          sectionName,
+          skillNames || '-',
+          `${lesson.duration || 0} دقيقة`,
+          status.label,
+          visibility.label,
+          access.label,
+          lesson.videoUrl || lesson.fileUrl || '-',
+        ];
+      }),
+    ];
+    const summaryRows = [
+      ['البند', 'القيمة'],
+      ['إجمالي الدروس الحالية', lessonOverview.total],
+      ['الظاهر على المنصة', lessonOverview.visible],
+      ['الدروس المعتمدة', lessonOverview.approved],
+      ['الدروس المغلقة', lessonOverview.locked],
+      ['تاريخ التصدير', new Date().toLocaleString('ar-SA')],
+    ];
+
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summaryRows), 'summary');
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(lessonRows), 'lessons');
+    XLSX.writeFile(workbook, 'lessons-readiness.xlsx');
+  };
+
   if (isEditing) {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in relative z-50">
@@ -211,6 +269,13 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           <h2 className="text-2xl font-bold text-gray-800">مركز الدروس</h2>
           <p className="text-gray-500 text-sm mt-1">إدارة الدروس واعتماد ما يُرفع من المعلمين قبل ظهوره في المنصة.</p>
         </div>
+        <button
+          onClick={downloadLessonsExport}
+          className="bg-white text-emerald-700 border border-emerald-100 px-4 py-2 rounded-xl font-bold hover:bg-emerald-50 transition-colors flex items-center gap-2"
+        >
+          <Download size={18} />
+          تصدير الدروس
+        </button>
         <button
           onClick={handleCreateNew}
           className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
