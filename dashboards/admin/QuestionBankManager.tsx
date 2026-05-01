@@ -380,6 +380,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     const templateRows = [
       {
+        pathId: samplePath?.id || '',
+        subjectId: sampleSubject?.id || '',
+        mainSkillId: sampleMainSkill?.id || '',
+        subSkillIds: sampleSubSkill?.id || '',
         المسار: samplePath?.name || 'مسار القدرات',
         المادة: sampleSubject?.name || 'الكمي',
         'المهارة الرئيسية': sampleMainSkill?.name || 'العمليات الحسابية الأساسية',
@@ -410,15 +414,81 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(templateRows), 'questions');
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(instructions), 'instructions');
+    XLSX.utils.book_append_sheet(
+      workbook,
+      XLSX.utils.json_to_sheet(
+        allowedPaths.map((path) => ({
+          pathId: path.id,
+          pathName: path.name,
+          status: path.isActive === false ? 'hidden' : 'active',
+        })),
+      ),
+      'paths-reference',
+    );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      XLSX.utils.json_to_sheet(
+        allowedSubjects.map((subject) => ({
+          subjectId: subject.id,
+          pathId: subject.pathId,
+          subjectName: subject.name,
+          pathName: paths.find((path) => path.id === subject.pathId)?.name || '',
+        })),
+      ),
+      'subjects-reference',
+    );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      XLSX.utils.json_to_sheet(
+        sections
+          .filter((section) => allowedSubjects.some((subject) => subject.id === section.subjectId))
+          .map((section) => {
+            const subject = subjects.find((item) => item.id === section.subjectId);
+            return {
+              mainSkillId: section.id,
+              subjectId: section.subjectId,
+              mainSkillName: section.name,
+              subjectName: subject?.name || '',
+              pathName: paths.find((path) => path.id === subject?.pathId)?.name || '',
+            };
+          }),
+      ),
+      'main-skills-reference',
+    );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      XLSX.utils.json_to_sheet(
+        skills
+          .filter((skill) => allowedSubjects.some((subject) => subject.id === skill.subjectId))
+          .map((skill) => {
+            const subject = subjects.find((item) => item.id === skill.subjectId);
+            const section = sections.find((item) => item.id === skill.sectionId);
+            return {
+              subSkillId: skill.id,
+              mainSkillId: skill.sectionId || '',
+              subjectId: skill.subjectId,
+              subSkillName: skill.name,
+              mainSkillName: section?.name || '',
+              subjectName: subject?.name || '',
+              pathName: paths.find((path) => path.id === subject?.pathId)?.name || '',
+            };
+          }),
+      ),
+      'sub-skills-reference',
+    );
     XLSX.writeFile(workbook, 'questions-import-template.xlsx');
   };
 
   const buildQuestionFromRow = (row: Record<string, unknown>, rowNumber: number): ImportDraftQuestion => {
     const questionValue = readCell(row, ['نص السؤال', 'السؤال', 'question', 'questionText']);
     const questionImageValue = readCell(row, ['رابط صورة السؤال', 'صورة السؤال', 'imageUrl', 'questionImage']);
+    const pathIdValue = readCell(row, ['pathId', 'path_id']);
     const pathName = readCell(row, ['المسار', 'path', 'pathName']);
+    const subjectIdValue = readCell(row, ['subjectId', 'subject_id']);
     const subjectName = readCell(row, ['المادة', 'subject', 'subjectName']);
+    const sectionIdValue = readCell(row, ['mainSkillId', 'sectionId', 'section_id']);
     const sectionName = readCell(row, ['المهارة الرئيسية', 'المهارة الرئيسة', 'mainSkill', 'section']);
+    const skillIdsValue = readCell(row, ['subSkillIds', 'skillIds', 'skill_ids']);
     const skillName = readCell(row, ['المهارة الفرعية', 'skill', 'subSkill']);
     const explanationLink = readCell(row, ['رابط الشرح', 'videoUrl', 'explanationVideo']);
     const explanationText = readCell(row, ['شرح نصي', 'الشرح', 'explanation']);
@@ -430,31 +500,54 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     const correctAnswer = readCell(row, ['الإجابة الصحيحة', 'الاجابة الصحيحة', 'correctAnswer', 'answer']);
     const difficulty = readCell(row, ['الصعوبة', 'مستوى الصعوبة', 'difficulty']);
 
-    if ((!questionValue && !questionImageValue) || !pathName || !subjectName || !sectionName || !skillName) {
+    if (
+      (!questionValue && !questionImageValue) ||
+      (!pathIdValue && !pathName) ||
+      (!subjectIdValue && !subjectName) ||
+      (!sectionIdValue && !sectionName) ||
+      (!skillIdsValue && !skillName)
+    ) {
       throw new Error(`الصف ${rowNumber}: بيانات أساسية ناقصة.`);
     }
 
-    const matchedPath = allowedPaths.find((path) => normalizeLookup(path.name) === normalizeLookup(pathName));
+    const matchedPath = allowedPaths.find((path) =>
+      (pathIdValue && path.id === pathIdValue) || normalizeLookup(path.name) === normalizeLookup(pathName),
+    );
     if (!matchedPath) {
       throw new Error(`الصف ${rowNumber}: المسار "${pathName}" غير موجود أو ليس ضمن صلاحياتك.`);
     }
 
     const matchedSubject = allowedSubjects.find(
-      (subject) => subject.pathId === matchedPath.id && normalizeLookup(subject.name) === normalizeLookup(subjectName),
+      (subject) =>
+        subject.pathId === matchedPath.id &&
+        ((subjectIdValue && subject.id === subjectIdValue) || normalizeLookup(subject.name) === normalizeLookup(subjectName)),
     );
     if (!matchedSubject) {
       throw new Error(`الصف ${rowNumber}: المادة "${subjectName}" غير موجودة داخل المسار "${pathName}".`);
     }
 
     const matchedSection = sections.find(
-      (section) => section.subjectId === matchedSubject.id && normalizeLookup(section.name) === normalizeLookup(sectionName),
+      (section) =>
+        section.subjectId === matchedSubject.id &&
+        ((sectionIdValue && section.id === sectionIdValue) || normalizeLookup(section.name) === normalizeLookup(sectionName)),
     );
     if (!matchedSection) {
       throw new Error(`الصف ${rowNumber}: المهارة الرئيسية "${sectionName}" غير موجودة داخل المادة "${subjectName}".`);
     }
 
+    const requestedSkillIds = splitSkillNames(skillIdsValue);
     const requestedSkillNames = splitSkillNames(skillName);
-    const matchedSkills = requestedSkillNames
+    const matchedSkillsById = requestedSkillIds
+      .map((requestedSkillId) =>
+        skills.find(
+          (skill) =>
+            skill.id === requestedSkillId &&
+            skill.subjectId === matchedSubject.id &&
+            skill.sectionId === matchedSection.id,
+        ),
+      )
+      .filter(Boolean) as typeof skills;
+    const matchedSkillsByName = requestedSkillNames
       .map((requestedSkillName) =>
         skills.find(
           (skill) =>
@@ -464,12 +557,22 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         ),
       )
       .filter(Boolean) as typeof skills;
+    const matchedSkills = [...matchedSkillsById, ...matchedSkillsByName].filter(
+      (skill, index, allSkills) => allSkills.findIndex((item) => item.id === skill.id) === index,
+    );
 
-    if (requestedSkillNames.length === 0 || matchedSkills.length !== requestedSkillNames.length) {
+    if (
+      (requestedSkillIds.length > 0 && matchedSkillsById.length !== requestedSkillIds.length) ||
+      (requestedSkillNames.length > 0 && matchedSkillsByName.length !== requestedSkillNames.length) ||
+      matchedSkills.length === 0
+    ) {
       const missingNames = requestedSkillNames.filter(
-        (requestedSkillName) => !matchedSkills.some((skill) => normalizeLookup(skill.name) === normalizeLookup(requestedSkillName)),
+        (requestedSkillName) => !matchedSkillsByName.some((skill) => normalizeLookup(skill.name) === normalizeLookup(requestedSkillName)),
       );
-      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || skillName}" غير موجودة تحت "${sectionName}".`);
+      const missingIds = requestedSkillIds.filter(
+        (requestedSkillId) => !matchedSkillsById.some((skill) => skill.id === requestedSkillId),
+      );
+      throw new Error(`الصف ${rowNumber}: المهارة الفرعية "${missingNames.join('، ') || missingIds.join(', ') || skillName || skillIdsValue}" غير موجودة تحت "${sectionName || sectionIdValue}".`);
     }
 
     const { text, imageUrl } = normalizeQuestionContent(questionValue, questionImageValue);
