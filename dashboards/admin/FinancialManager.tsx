@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Users, Wallet } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
@@ -348,6 +348,52 @@ export const FinancialManager: React.FC = () => {
         setFeedback(nextVisible ? 'تم إظهار الباقة العامة للطلاب.' : 'تم إخفاء الباقة العامة مؤقتًا بدون حذفها.');
     };
 
+    const syncPublicPackagesByReadiness = () => {
+        if (publicPackageRows.length === 0) {
+            setFeedback('لا توجد باقات عامة لمزامنتها الآن.');
+            return;
+        }
+
+        let shown = 0;
+        let hidden = 0;
+
+        publicPackageRows.forEach((pkg) => {
+            const shouldBeVisible = pkg.isReadyForSale;
+            updateCourse(pkg.id, {
+                showOnPlatform: shouldBeVisible,
+                isPublished: shouldBeVisible,
+                approvalStatus: shouldBeVisible ? 'approved' : 'draft',
+                approvedAt: shouldBeVisible ? Date.now() : undefined,
+            });
+
+            if (shouldBeVisible) {
+                shown += 1;
+            } else {
+                hidden += 1;
+            }
+        });
+
+        setFeedback(`تمت مزامنة الباقات العامة: إظهار ${shown} جاهزة، وإخفاء ${hidden} غير جاهزة.`);
+    };
+
+    const hideAllPublicPackages = () => {
+        if (publicPackages.length === 0) {
+            setFeedback('لا توجد باقات عامة لإخفائها.');
+            return;
+        }
+
+        publicPackages.forEach((pkg) => {
+            updateCourse(pkg.id, {
+                showOnPlatform: false,
+                isPublished: false,
+                approvalStatus: 'draft',
+                approvedAt: undefined,
+            });
+        });
+
+        setFeedback(`تم إخفاء ${publicPackages.length} باقة عامة بدون حذفها.`);
+    };
+
     const previewPublicPackage = (packageId: string) => {
         const pkg = publicPackages.find((item) => item.id === packageId);
         if (!pkg) return;
@@ -421,6 +467,21 @@ export const FinancialManager: React.FC = () => {
         const nextStatus = currentStatus === 'active' ? 'expired' : 'active';
         updateB2BPackage(packageId, { status: nextStatus });
         setFeedback(nextStatus === 'active' ? 'تم تنشيط باقة المدرسة.' : 'تم إيقاف باقة المدرسة مؤقتًا بدون حذفها.');
+    };
+
+    const setAllSchoolPackagesStatus = (status: 'active' | 'expired') => {
+        if (b2bPackages.length === 0) {
+            setFeedback('لا توجد باقات مدارس لإدارتها الآن.');
+            return;
+        }
+
+        b2bPackages.forEach((pkg) => {
+            if (pkg.status !== status) {
+                updateB2BPackage(pkg.id, { status });
+            }
+        });
+
+        setFeedback(status === 'active' ? `تم تنشيط ${b2bPackages.length} باقة مدرسة.` : `تم إيقاف ${b2bPackages.length} باقة مدرسة مؤقتًا.`);
     };
 
     const packageCoverageRows = useMemo(() => {
@@ -1035,7 +1096,25 @@ export const FinancialManager: React.FC = () => {
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-900 mb-6">المدارس والجهات المتعاقدة</h2>
+                        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <h2 className="text-lg font-bold text-gray-900">المدارس والجهات المتعاقدة</h2>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    onClick={() => void setAllSchoolPackagesStatus('active')}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                                >
+                                    <Unlock size={14} />
+                                    تنشيط الكل
+                                </button>
+                                <button
+                                    onClick={() => void setAllSchoolPackagesStatus('expired')}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100"
+                                >
+                                    <LockKeyhole size={14} />
+                                    إيقاف الكل
+                                </button>
+                            </div>
+                        </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-right">
                                 <thead className="bg-gray-50 text-gray-600 text-sm">
@@ -1197,12 +1276,26 @@ export const FinancialManager: React.FC = () => {
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <div className="flex items-center justify-between gap-4 mb-6">
+                        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-900">عروض الأفراد المعروضة على الموقع</h2>
                                 <p className="text-xs text-gray-500 mt-1">هذه هي الباقات التي تظهر للطالب المستقل داخل صفحات المسارات، منفصلة تمامًا عن باقات المدارس.</p>
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    onClick={syncPublicPackagesByReadiness}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                                >
+                                    <CheckCircle size={14} />
+                                    مزامنة الجاهز
+                                </button>
+                                <button
+                                    onClick={hideAllPublicPackages}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100"
+                                >
+                                    <EyeOff size={14} />
+                                    إخفاء الكل
+                                </button>
                                 <button
                                     onClick={exportPublicPackages}
                                     className="inline-flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
