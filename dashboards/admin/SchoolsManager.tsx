@@ -138,13 +138,13 @@ const parseImportRows = (rows: unknown[][]): ImportRow[] => {
     });
 
     const headers = normalizedRows[0].map(normalizeHeader);
-    const nameIndex = headers.findIndex((header) => ['name', 'fullname', 'studentname', 'Ø§Ù„Ø§Ø³Ù…', 'Ø§Ø³Ù…Ø§Ù„Ø·Ø§Ù„Ø¨'].includes(header));
-    const emailIndex = headers.findIndex((header) => ['email', 'mail', 'Ø§Ù„Ø¨Ø±ÙŠØ¯', 'Ø§Ù„Ø¨Ø±ÙŠØ¯Ø§Ù„Ø§Ù„ÙƒØªØ±ÙˆÙ†ÙŠ'].includes(header));
-    const classIndex = headers.findIndex((header) => ['classname', 'class', 'Ø§Ù„ÙØµÙ„', 'Ø§Ø³Ù…Ø§Ù„ÙØµÙ„'].includes(header));
-    const passwordIndex = headers.findIndex((header) => ['password', 'pass', 'ÙƒÙ„Ù…Ø©Ø§Ù„Ù…Ø±ÙˆØ±', 'passwordhint'].includes(header));
+    const nameIndex = headers.findIndex((header) => ['name', 'fullname', 'studentname', 'الاسم', 'اسمالطالب'].includes(header));
+    const emailIndex = headers.findIndex((header) => ['email', 'mail', 'البريد', 'البريدالالكتروني', 'البريدالإلكتروني', 'الايميل', 'الإيميل'].includes(header));
+    const classIndex = headers.findIndex((header) => ['classname', 'class', 'الفصل', 'اسمالفصل', 'الصف', 'المجموعة'].includes(header));
+    const passwordIndex = headers.findIndex((header) => ['password', 'pass', 'كلمةالمرور', 'كلمةالسر', 'الرقمالسري', 'passwordhint'].includes(header));
 
     if (nameIndex === -1 || emailIndex === -1) {
-        throw new Error('Ø§Ù„Ù…Ù„Ù ÙŠØ­ØªØ§Ø¬ Ø¹Ù…ÙˆØ¯ÙŠÙ† Ø£Ø³Ø§Ø³ÙŠÙŠÙ† Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„: name Ùˆ email.');
+        throw new Error('الملف يحتاج عمودين أساسيين على الأقل: name و email.');
     }
 
     return normalizedRows
