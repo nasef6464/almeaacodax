@@ -356,6 +356,7 @@ const Reports: React.FC = () => {
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
+    const showCompactStudentView = isStudentView && !isStudentReportFull;
     const skillReadinessSummary = useMemo(() => {
         const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
         const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
@@ -1227,7 +1228,7 @@ const Reports: React.FC = () => {
                     </div>
 
                     <div className="mt-5 grid gap-3 md:grid-cols-3">
-                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, 3).map((skill, index) => {
+                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, showCompactStudentView ? 1 : 3).map((skill, index) => {
                             const tone = getReportMasteryTone(skill.mastery);
                             const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions);
 
@@ -1268,6 +1269,25 @@ const Reports: React.FC = () => {
                             </div>
                         )}
                     </div>
+
+                    {showCompactStudentView ? (
+                        <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                <div>
+                                    <div className="text-sm font-black text-gray-900">ملخص مبسط</div>
+                                    <p className="mt-1 text-sm leading-7 text-gray-500">
+                                        أبقينا لك مهارة واحدة فقط لتبدأ بها الآن. عند الحاجة يمكنك فتح العرض الكامل لرؤية باقي المهارات.
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => setStudentReportDepth('full')}
+                                    className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700"
+                                >
+                                    فتح التفاصيل
+                                </button>
+                            </div>
+                        </div>
+                    ) : null}
                 </Card>
             ) : null}
 
