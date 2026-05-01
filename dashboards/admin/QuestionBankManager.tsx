@@ -11,6 +11,24 @@ interface QuestionBankManagerProps {
 
 type ImportDraftQuestion = Question;
 
+type ImportPreviewRow = {
+  rowNumber: number;
+  title: string;
+  path: string;
+  subject: string;
+  mainSkill: string;
+  subSkills: string;
+  difficulty: string;
+  type: string;
+};
+
+type PendingImportBatch = {
+  fileName: string;
+  importedQuestions: Question[];
+  rowErrors: string[];
+  previewRows: ImportPreviewRow[];
+};
+
 const normalizeLookup = (value?: string) =>
   String(value || '')
     .trim()
@@ -172,6 +190,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<{ imported: number; failed: number; samples: string[] } | null>(null);
+  const [pendingImportBatch, setPendingImportBatch] = useState<PendingImportBatch | null>(null);
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
@@ -479,6 +498,82 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     XLSX.writeFile(workbook, 'questions-import-template.xlsx');
   };
 
+  const parseImportWorkbook = (rows: Record<string, unknown>[], fileName: string) => {
+    if (rows.length === 0) {
+      throw new Error('الملف فارغ. ارفع ملفًا يحتوي على صفوف أسئلة.');
+    }
+
+    const importedQuestions: Question[] = [];
+    const rowErrors: string[] = [];
+    const previewRows: ImportPreviewRow[] = [];
+
+    rows.forEach((row, rowIndex) => {
+      const rowNumber = rowIndex + 2;
+      try {
+        const question = buildQuestionFromRow(row, rowNumber);
+        importedQuestions.push(question);
+        previewRows.push({
+          rowNumber,
+          title: question.text || (question.imageUrl ? 'سؤال بصري' : 'بدون عنوان'),
+          path: paths.find((path) => path.id === question.pathId)?.name || 'غير محدد',
+          subject: subjects.find((subject) => subject.id === question.subject)?.name || 'غير محدد',
+          mainSkill: sections.find((section) => section.id === question.sectionId)?.name || 'غير محدد',
+          subSkills: (question.skillIds || [])
+            .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+            .filter(Boolean)
+            .join('، '),
+          difficulty: difficultyLabel(question.difficulty),
+          type: question.type === 'essay' ? 'مقالي' : question.type === 'true_false' ? 'صح / خطأ' : 'اختيار من متعدد',
+        });
+      } catch (error) {
+        rowErrors.push(error instanceof Error ? error.message : `الصف ${rowNumber}: تعذر قراءة البيانات.`);
+      }
+    });
+
+    if (importedQuestions.length === 0) {
+      throw new Error(rowErrors.slice(0, 6).join(' ') || 'لم يتم العثور على أسئلة صالحة للاستيراد.');
+    }
+
+    return { fileName, importedQuestions, rowErrors, previewRows };
+  };
+
+  const finalizePendingImport = async () => {
+    if (!pendingImportBatch) return;
+
+    setIsImporting(true);
+    setImportMessage(null);
+    setImportError(null);
+
+    try {
+      for (const question of pendingImportBatch.importedQuestions) {
+        await addQuestion(question);
+      }
+
+      setImportSummary({
+        imported: pendingImportBatch.importedQuestions.length,
+        failed: pendingImportBatch.rowErrors.length,
+        samples: pendingImportBatch.rowErrors.slice(0, 5),
+      });
+
+      setImportMessage(
+        pendingImportBatch.rowErrors.length > 0
+          ? `تم اعتماد ${pendingImportBatch.importedQuestions.length} سؤال من الملف "${pendingImportBatch.fileName}"، وتخطينا ${pendingImportBatch.rowErrors.length} صف يحتاج مراجعة.`
+          : `تم اعتماد ${pendingImportBatch.importedQuestions.length} سؤال من الملف "${pendingImportBatch.fileName}" وربطها بمركز المهارات.`,
+      );
+      setPendingImportBatch(null);
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر إتمام الاستيراد الآن.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const cancelPendingImport = () => {
+    setPendingImportBatch(null);
+    setImportMessage(null);
+    setImportError(null);
+  };
+
   const buildQuestionFromRow = (row: Record<string, unknown>, rowNumber: number): ImportDraftQuestion => {
     const questionValue = readCell(row, ['نص السؤال', 'السؤال', 'question', 'questionText']);
     const questionImageValue = readCell(row, ['رابط صورة السؤال', 'صورة السؤال', 'imageUrl', 'questionImage']);
@@ -622,6 +717,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setImportMessage(null);
     setImportError(null);
     setImportSummary(null);
+    setPendingImportBatch(null);
 
     try {
       const buffer = await file.arrayBuffer();
@@ -629,40 +725,17 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       const firstSheetName = workbook.SheetNames[0];
       const firstSheet = workbook.Sheets[firstSheetName];
       const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, { defval: '' });
-
-      if (rows.length === 0) {
-        throw new Error('الملف فارغ. ارفع ملفًا يحتوي على صفوف أسئلة.');
-      }
-
-      const importedQuestions: Question[] = [];
-      const rowErrors: string[] = [];
-
-      rows.forEach((row, rowIndex) => {
-        try {
-          importedQuestions.push(buildQuestionFromRow(row, rowIndex + 2));
-        } catch (error) {
-          rowErrors.push(error instanceof Error ? error.message : `الصف ${rowIndex + 2}: تعذر قراءة البيانات.`);
-        }
-      });
-
-      if (importedQuestions.length === 0) {
-        throw new Error(rowErrors.slice(0, 6).join(' ') || 'لم يتم العثور على أسئلة صالحة للاستيراد.');
-      }
-
-      for (const question of importedQuestions) {
-        await addQuestion(question);
-      }
-
+      const batch = parseImportWorkbook(rows, file.name);
+      setPendingImportBatch(batch);
       setImportSummary({
-        imported: importedQuestions.length,
-        failed: rowErrors.length,
-        samples: rowErrors.slice(0, 5),
+        imported: batch.importedQuestions.length,
+        failed: batch.rowErrors.length,
+        samples: batch.rowErrors.slice(0, 5),
       });
-
       setImportMessage(
-        rowErrors.length > 0
-          ? `تم استيراد ${importedQuestions.length} سؤال بنجاح، وتخطينا ${rowErrors.length} صف يحتاج مراجعة. أول الملاحظات: ${rowErrors.slice(0, 3).join(' ')}`
-          : `تم استيراد ${importedQuestions.length} سؤال بنجاح وربطها بمركز المهارات.`,
+        batch.rowErrors.length > 0
+          ? `تم فحص الملف "${file.name}" بنجاح. توجد ${batch.rowErrors.length} ملاحظات، ويمكنك مراجعتها قبل الاعتماد النهائي.`
+          : `تم فحص الملف "${file.name}" بنجاح. كل الصفوف الجاهزة مرتبطة بمركز المهارات ويمكن اعتمادها الآن.`,
       );
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر استيراد ملف الأسئلة الآن.');
@@ -716,7 +789,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h3 className="font-bold text-gray-800 mb-1">استيراد الأسئلة دفعة واحدة</h3>
           <p className="text-sm text-gray-500">
@@ -750,6 +823,101 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           <input ref={fileInputRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportQuestions} />
         </div>
       </div>
+
+      {pendingImportBatch && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 shadow-sm">معاينة قبل الاعتماد</div>
+              <h3 className="mt-3 text-lg font-black text-gray-900">{pendingImportBatch.fileName}</h3>
+              <p className="mt-1 text-sm leading-7 text-gray-600">
+                راجع الصفوف قبل الحفظ النهائي. بهذا الشكل نمنع إدخال أسئلة غير مرتبطة أو فيها اسم مسار/مادة/مهارة غير مطابق.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={finalizePendingImport}
+                disabled={isImporting}
+                className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Upload size={16} />
+                {isImporting ? 'جارٍ الاعتماد...' : 'اعتماد الاستيراد'}
+              </button>
+              <button
+                onClick={cancelPendingImport}
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-700 hover:bg-slate-50"
+              >
+                <X size={16} />
+                إلغاء
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-gray-500">جاهز للاعتماد</div>
+              <div className="mt-2 text-2xl font-black text-emerald-700">{pendingImportBatch.importedQuestions.length}</div>
+            </div>
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-gray-500">ملاحظات الفحص</div>
+              <div className="mt-2 text-2xl font-black text-amber-700">{pendingImportBatch.rowErrors.length}</div>
+            </div>
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-gray-500">الربط</div>
+              <div className="mt-2 text-sm font-black leading-7 text-gray-700">المسار → المادة → المهارة الرئيسية → المهارة الفرعية</div>
+            </div>
+          </div>
+
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-white bg-white">
+            <table className="min-w-full text-right">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">الصف</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">العنوان</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">المسار</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">المادة</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">المهارة الرئيسية</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">المهارات الفرعية</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">النوع</th>
+                  <th className="px-4 py-3 text-xs font-black text-gray-500">الصعوبة</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {pendingImportBatch.previewRows.slice(0, 6).map((row) => (
+                  <tr key={`${row.rowNumber}-${row.title}`} className="align-top">
+                    <td className="px-4 py-3 text-xs font-bold text-gray-500">{row.rowNumber}</td>
+                    <td className="px-4 py-3 text-sm font-bold text-gray-900">{row.title}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.path}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.subject}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.mainSkill}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.subSkills || 'غير محدد'}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.type}</td>
+                    <td className="px-4 py-3 text-xs text-gray-600">{row.difficulty}</td>
+                  </tr>
+                ))}
+                {pendingImportBatch.previewRows.length > 6 ? (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-3 text-xs font-bold text-gray-500">
+                      تم عرض أول 6 صفوف فقط من {pendingImportBatch.previewRows.length} صفًا جاهزًا للاعتماد.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+
+          {pendingImportBatch.rowErrors.length > 0 ? (
+            <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
+              <div className="text-sm font-black text-amber-800">ملاحظات تحتاج مراجعة</div>
+              <ul className="mt-2 space-y-1 text-xs font-bold leading-6 text-amber-700">
+                {pendingImportBatch.rowErrors.slice(0, 5).map((error) => (
+                  <li key={error}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+      )}
 
       {(importMessage || importError || isImporting) && (
         <div
