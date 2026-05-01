@@ -6,10 +6,12 @@ import {
   Clock,
   Eye,
   FileText,
+  LockKeyhole,
   RotateCcw,
   Sparkles,
   Target,
   TrendingUp,
+  Unlock,
   Zap,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -293,6 +295,22 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       ? examResults
       : examResults.filter((quiz) => quiz.quizTitle.includes(activeFilter));
 
+  const latestAttempt = useMemo(() => {
+    return [...examResults].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+  }, [examResults]);
+
+  const weakestTrackedSkill = useMemo(() => {
+    const allSkills = examResults.flatMap((result) =>
+      (result.skillsAnalysis || []).map((skill) => ({
+        ...skill,
+        quizTitle: result.quizTitle,
+        quizId: result.quizId,
+      })),
+    );
+
+    return allSkills.sort((a, b) => a.mastery - b.mastery)[0];
+  }, [examResults]);
+
   const subjectQuizReadiness = useMemo(
     () =>
       subjects
@@ -335,6 +353,45 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <StatCard icon={<CheckCircle size={24} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
           <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
         </div>
+
+        {latestAttempt || weakestTrackedSkill ? (
+          <div className="rounded-3xl border border-indigo-100 bg-gradient-to-l from-indigo-50 via-white to-emerald-50 p-5 shadow-sm">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 shadow-sm">
+                  <Sparkles size={14} />
+                  ملخص ذكي بعد آخر اختبار
+                </div>
+                <h2 className="mt-3 text-lg font-black text-gray-900">
+                  {weakestTrackedSkill ? `ركز الآن على: ${weakestTrackedSkill.skill}` : 'ابدأ أول اختبار لتحصل على تحليل مهاراتك'}
+                </h2>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  {weakestTrackedSkill
+                    ? `النظام يتابع أداءك من كل اختبار، وآخر نقطة تحتاج دعمًا ظهرت في ${weakestTrackedSkill.quizTitle}. افتح التقرير أو أعد اختبارًا قصيرًا لنفس المهارة.`
+                    : 'بعد أول محاولة سيظهر هنا أضعف مهارة، الدرجة، وخطوة المراجعة التالية بشكل مبسط.'}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Link
+                  to="/dashboard?tab=reports"
+                  className="rounded-2xl bg-white p-4 text-center shadow-sm border border-white hover:border-emerald-200"
+                >
+                  <BarChart3 className="mx-auto text-emerald-600" size={22} />
+                  <div className="mt-2 text-sm font-black text-gray-900">تقريري</div>
+                  <div className="mt-1 text-xs text-gray-500">تحليل مهارات</div>
+                </Link>
+                <Link
+                  to={weakestTrackedSkill?.quizId ? `/quiz/${weakestTrackedSkill.quizId}` : '/quiz'}
+                  className="rounded-2xl bg-gray-900 p-4 text-center text-white shadow-sm hover:bg-gray-800"
+                >
+                  <RotateCcw className="mx-auto" size={22} />
+                  <div className="mt-2 text-sm font-black">تدريب سريع</div>
+                  <div className="mt-1 text-xs text-gray-300">اختبار علاج</div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap gap-3 justify-center">
           {courseFilters.map((filter) => (
@@ -482,7 +539,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         <div>
           <div className="flex flex-wrap items-center gap-2 text-xs font-black mb-2">
             <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">أنت الآن في: مركز الاختبارات</span>
-            <Link to="/dashboard?tab=quizzes" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
+            <Link to="/my-quizzes" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
               الانتقال إلى اختباراتي
             </Link>
           </div>
@@ -539,7 +596,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                 icon={<FileText size={24} />}
                 title="اختباراتي السابقة"
                 description="هنا فقط تراجع المحاولات التي حللتها بالفعل، وتشاهد التفاصيل وتحليل المهارات لكل اختبار."
-                to="/dashboard?tab=quizzes"
+                to="/my-quizzes"
                 buttonLabel="افتح سجل اختباراتي"
                 tone="purple"
               />
@@ -731,7 +788,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             </p>
           </div>
           <Link
-            to="/dashboard?tab=quizzes"
+            to="/my-quizzes"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3 text-sm font-bold text-white hover:bg-gray-800"
           >
             <FileText size={16} />
@@ -794,6 +851,7 @@ const QuizSection = ({
     questionIds: string[];
     createdAt: number;
     dueDate?: string;
+    access?: { type?: string };
   }>;
   subjects: ReturnType<typeof useStore.getState>['subjects'];
   badgeClassName: string;
@@ -807,13 +865,25 @@ const QuizSection = ({
 
     {items.length > 0 ? (
       <div className="space-y-3">
-        {items.slice(0, 4).map((quiz) => (
+        {items.map((quiz) => (
           <div
             key={quiz.id}
             className="border border-gray-100 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-indigo-200 transition-colors"
           >
             <div className="space-y-1">
-              <div className="font-bold text-gray-900">{quiz.title}</div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="font-bold text-gray-900">{quiz.title}</div>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${
+                    quiz.access?.type === 'paid'
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-emerald-50 text-emerald-700'
+                  }`}
+                >
+                  {quiz.access?.type === 'paid' ? <LockKeyhole size={12} /> : <Unlock size={12} />}
+                  {quiz.access?.type === 'paid' ? 'مفتوح بالباقة' : 'مفتوح'}
+                </span>
+              </div>
               <div className="text-sm text-gray-500">
                 {subjects.find((subject) => subject.id === quiz.subjectId)?.name || 'بدون مادة'} - {quiz.questionIds.length} سؤال
               </div>
