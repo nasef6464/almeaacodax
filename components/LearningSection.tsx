@@ -22,7 +22,7 @@ interface LearningSectionProps {
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, enrolledCourses, subjects, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'banks' | 'tests' | 'library'>('courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     
@@ -285,6 +285,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
     const topicList = useStore(state => state.topics);
     const quizList = useStore(state => state.quizzes);
+    const previewTopicId = searchParams.get('topic');
+    const previewTopic = previewTopicId ? topicList.find((topic) => topic.id === previewTopicId) || null : null;
+    const previewParentTopic = previewTopic?.parentId
+        ? topicList.find((topic) => topic.id === previewTopic.parentId) || previewTopic
+        : previewTopic;
 
     const canStudentSeeTopic = (topic: (typeof topicList)[number]) => isStaffViewer || topic.showOnPlatform !== false;
 
@@ -788,7 +793,32 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 )}
 
                 {activeTab === 'skills' && enabledTabs.skills && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-5">
+                        {previewTopic && (
+                            <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-5 shadow-sm">
+                                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                    <div>
+                                        <div className="text-xs font-black text-indigo-700">معاينة الموضوع المفتوح</div>
+                                        <h3 className="mt-2 text-lg font-black text-gray-900">{previewParentTopic?.title || previewTopic.title}</h3>
+                                        {previewTopic?.parentId ? (
+                                            <p className="mt-1 text-sm text-gray-600">
+                                                الموضوع الفرعي الحالي: <span className="font-black text-gray-900">{previewTopic.title}</span>
+                                            </p>
+                                        ) : (
+                                            <p className="mt-1 text-sm text-gray-600">
+                                                هذا هو الموضوع الرئيسي المفتوح مباشرة من لوحة الإدارة.
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 text-xs font-black">
+                                        <span className="rounded-full bg-white px-3 py-2 text-indigo-700">المسار: {paths.find((path) => path.id === category)?.name || 'غير محدد'}</span>
+                                        <span className="rounded-full bg-white px-3 py-2 text-emerald-700">المادة: {currentSubjectData?.name || 'غير محددة'}</span>
+                                        <span className="rounded-full bg-white px-3 py-2 text-gray-700">الغرض: اختبار الربط والمعاينة</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {mappedSkills.map((skill) => {
                             const lockedFoundationMessage = skill.isLocked ? getLockedContentMessage('foundation') : null;
 
@@ -837,6 +867,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 </button>
                             );
                         })}
+                        </div>
                     </div>
                 )}
 

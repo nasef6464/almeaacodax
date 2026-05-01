@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Clock, FileText, Layers, Play, Target, Video, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
@@ -14,15 +14,18 @@ interface SkillDetailsModalProps {
 }
 
 export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill }) => {
-  const { user, topics, lessons, quizzes, libraryItems } = useStore();
+  const { user, topics, lessons, quizzes, libraryItems, paths, subjects } = useStore();
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
   const [openedInitialLessonId, setOpenedInitialLessonId] = useState<string | null>(null);
+  const subTopicRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
   const selectedTopic = skill?.originalTopic as Topic | undefined;
   const activeTopic = selectedSubTopic || selectedTopic;
+  const pathLabel = paths.find((path) => path.id === selectedTopic?.pathId)?.name || 'غير محدد';
+  const subjectLabel = subjects.find((subject) => subject.id === selectedTopic?.subjectId)?.name || 'غير محدد';
 
   const canStudentSeeLesson = (lesson: (typeof lessons)[number]) =>
     isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
@@ -44,6 +47,11 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       setOpenedInitialLessonId(null);
     }
   }, [isOpen, isStaffViewer, skill?.initialContentTab, skill?.initialSubTopicId, skill?.originalTopic?.id, topics]);
+
+  useEffect(() => {
+    if (!isOpen || !selectedSubTopic?.id) return;
+    subTopicRefs.current[selectedSubTopic.id]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [isOpen, selectedSubTopic?.id]);
 
   const subTopics = useMemo(
     () =>
@@ -191,6 +199,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           <div>
             <p className="mb-2 text-xs font-bold text-indigo-100">مساحة تعلم المهارة</p>
             <h2 className="text-2xl sm:text-3xl font-black">{selectedTopic.title}</h2>
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
+              <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المسار: {pathLabel}</span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المادة: {subjectLabel}</span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">
+                {selectedSubTopic ? `المفتوح الآن: ${selectedSubTopic.title}` : 'المفتوح الآن: المهارة الرئيسية'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -217,6 +232,9 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
               {subTopics.map((subTopic) => (
                 <button
                   key={subTopic.id}
+                  ref={(element) => {
+                    subTopicRefs.current[subTopic.id] = element;
+                  }}
                   onClick={() => setSelectedSubTopic(subTopic)}
                   className={`w-full text-right p-4 rounded-xl transition-all border ${
                     selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border-transparent'
