@@ -1,5 +1,6 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
+import * as XLSX from 'xlsx';
 import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -593,6 +594,110 @@ const Reports: React.FC = () => {
             displayText(scopedLeadStudent.recommendedAction) ? `الإجراء المقترح: ${displayText(scopedLeadStudent.recommendedAction)}.` : 'الإجراء المقترح: شرح قصير ثم تدريب علاجي ثم إعادة قياس.',
         ].filter(Boolean).join(' ');
     }, [scopedLeadStudent]);
+    const downloadPerformanceWorkbook = () => {
+        const workbook = XLSX.utils.book_new();
+        const now = new Date().toLocaleString('ar-SA');
+        const summaryRows = isStudentView
+            ? [
+                ['البند', 'القيمة'],
+                ['نوع التقرير', 'تقرير طالب'],
+                ['تاريخ التصدير', now],
+                ['متوسط الأداء', `${stats?.averageScore || 0}%`],
+                ['أفضل محور', `${displayText(stats?.bestSubject?.name)} - ${stats?.bestSubject?.score || 0}%`],
+                ['أضعف محور', `${displayText(stats?.worstSubject?.name)} - ${stats?.worstSubject?.score || 0}%`],
+                ['عدد المهارات الضعيفة', skillReadinessSummary.weak],
+                ['عدد المهارات المتوسطة', skillReadinessSummary.average],
+                ['عدد المهارات المطمئنة', skillReadinessSummary.strong],
+                ['الملخص', studentFollowUpSummary || skillReadinessSummary.message],
+            ]
+            : [
+                ['البند', 'القيمة'],
+                ['نوع التقرير', roleScopeTitle[user.role] || 'تقرير نطاق'],
+                ['تاريخ التصدير', now],
+                ['عدد الطلاب', scopedAnalytics?.scope.studentCount || 0],
+                ['عدد المجموعات', scopedAnalytics?.scope.groupCount || 0],
+                ['محاولات الاختبار', scopedAnalytics?.scope.quizAttempts || 0],
+                ['إجابات مرصودة', scopedAnalytics?.scope.questionAttempts || 0],
+                ['أول مهارة تحتاج تدخل', displayText(scopedLeadSkill?.skill) || '-'],
+                ['أول طالب للمتابعة', displayText(scopedLeadStudent?.name) || '-'],
+                ['الملخص', scopedFollowUpSummary || 'لا توجد بيانات كافية بعد.'],
+            ];
+
+        const skillRows = isStudentView
+            ? [
+                ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
+                ...aggregatedSkills.map((skill) => {
+                    const recommendation = getSkillRecommendation(skill, skills, topics, lessons, quizzes, libraryItems, questions);
+                    const tone = getReportMasteryTone(skill.mastery);
+
+                    return [
+                        displayText(skill.subjectName) || '-',
+                        displayText(skill.sectionName) || '-',
+                        displayText(skill.skill) || '-',
+                        `${skill.mastery}%`,
+                        tone.label,
+                        displayText(recommendation.actionText) || 'شرح قصير ثم تدريب ثم إعادة قياس.',
+                        displayText(recommendation.lessonTitle) || '-',
+                        displayText(recommendation.quizTitle) || '-',
+                    ];
+                }),
+            ]
+            : [
+                ['المهارة', 'المهارة الرئيسية', 'نسبة الإتقان', 'طلاب متأثرون', 'محاولات', 'الإجراء المقترح'],
+                ...(scopedAnalytics?.weakestSkills || []).map((skill) => [
+                    displayText(skill.skill) || '-',
+                    displayText(skill.section) || '-',
+                    `${skill.mastery}%`,
+                    skill.affectedStudents,
+                    skill.attempts,
+                    displayText(skill.recommendedAction) || 'شرح قصير ثم تدريب علاجي ثم اختبار متابعة.',
+                ]),
+            ];
+
+        const actionRows = isStudentView
+            ? [
+                ['اليوم', 'المادة', 'المهارة الرئيسية', 'المهارة', 'الإتقان', 'الخطوة العملية', 'شرح', 'اختبار'],
+                ...studentWeeklyPlan.map((step) => [
+                    displayText(step.day),
+                    displayText(step.subjectName) || '-',
+                    displayText(step.sectionName) || '-',
+                    displayText(step.skill) || '-',
+                    `${step.mastery}%`,
+                    displayText(step.actionText) || '-',
+                    displayText(step.lessonTitle) || '-',
+                    displayText(step.quizTitle) || '-',
+                ]),
+            ]
+            : [
+                ['الأولوية', 'العنوان', 'التفصيل', 'الإجراء العملي'],
+                ...scopedInterventionPlan.map((item, index) => [
+                    index + 1,
+                    displayText(item.title),
+                    displayText(item.label),
+                    displayText(item.body),
+                ]),
+            ];
+
+        const attemptsRows = [
+            ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ'],
+            ...examResults.map((result) => [
+                displayText(result.quizTitle) || '-',
+                `${result.score}%`,
+                result.totalQuestions,
+                result.correctAnswers,
+                result.wrongAnswers,
+                result.unanswered,
+                displayText(result.timeSpent) || '-',
+                displayText(result.date) || '-',
+            ]),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summaryRows), 'summary');
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(skillRows), 'skills');
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(actionRows), 'action-plan');
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(attemptsRows), 'attempts');
+        XLSX.writeFile(workbook, isStudentView ? 'student-performance-report.xlsx' : 'scoped-performance-report.xlsx');
+    };
 
     if (isStudentView && !hasStudentAnalytics) {
         return (
@@ -639,6 +744,13 @@ const Reports: React.FC = () => {
                 >
                     <Download size={16} />
                     تحميل PDF
+                </button>
+                <button
+                    onClick={downloadPerformanceWorkbook}
+                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
+                >
+                    <FileText size={16} />
+                    تصدير Excel
                 </button>
                 {isStudentView && hasStudentAnalytics ? (
                     <button
