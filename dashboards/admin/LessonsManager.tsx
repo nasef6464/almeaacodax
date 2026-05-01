@@ -9,6 +9,25 @@ interface LessonsManagerProps {
   subjectId?: string;
 }
 
+type ImportPreviewRow = {
+  rowNumber: number;
+  title: string;
+  path: string;
+  subject: string;
+  mainSkill: string;
+  subSkills: string;
+  type: string;
+  visibility: string;
+  access: string;
+};
+
+type PendingImportBatch = {
+  fileName: string;
+  importedLessons: Lesson[];
+  rowErrors: string[];
+  previewRows: ImportPreviewRow[];
+};
+
 const normalizeLookup = (value?: string) =>
   String(value || '')
     .trim()
@@ -111,6 +130,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [pendingImportBatch, setPendingImportBatch] = useState<PendingImportBatch | null>(null);
 
   const lessons = globalLessons.filter((lesson) => {
     if (user.role === 'teacher') {
@@ -230,6 +250,80 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
 
   const handlePreviewLesson = (lesson: Lesson) => {
     setPreviewLesson(lesson);
+  };
+
+  const createLessonPreviewRow = (lesson: Lesson, rowNumber: number): ImportPreviewRow => ({
+    rowNumber,
+    title: lesson.title || 'بدون عنوان',
+    path: paths.find((path) => path.id === lesson.pathId)?.name || 'غير محدد',
+    subject: subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'غير محدد',
+    mainSkill: sections.find((section) => section.id === lesson.sectionId)?.name || 'غير محدد',
+    subSkills: (lesson.skillIds || [])
+      .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
+      .filter(Boolean)
+      .join('، ') || 'غير محدد',
+    type: lesson.type === 'video' ? 'فيديو' : lesson.type === 'text' ? 'نصي' : lesson.type,
+    visibility: lesson.showOnPlatform === false ? 'مخفي' : 'ظاهر',
+    access: lesson.isLocked ? 'مغلق' : 'مفتوح',
+  });
+
+  const parseImportWorkbook = (rows: Record<string, unknown>[], fileName: string): PendingImportBatch => {
+    if (!rows.length) {
+      throw new Error('ملف الدروس فارغ.');
+    }
+
+    const importedLessons: Lesson[] = [];
+    const rowErrors: string[] = [];
+    const previewRows: ImportPreviewRow[] = [];
+
+    rows.forEach((row, index) => {
+      const rowNumber = index + 2;
+      try {
+        const lesson = buildLessonFromRow(row, rowNumber);
+        importedLessons.push(lesson);
+        previewRows.push(createLessonPreviewRow(lesson, rowNumber));
+      } catch (error) {
+        rowErrors.push(error instanceof Error ? error.message : `الصف ${rowNumber}: تعذر قراءة الدرس.`);
+      }
+    });
+
+    if (!importedLessons.length) {
+      throw new Error(rowErrors.slice(0, 5).join(' ') || 'لم يتم العثور على دروس صالحة للاستيراد.');
+    }
+
+    return {
+      fileName,
+      importedLessons,
+      rowErrors,
+      previewRows,
+    };
+  };
+
+  const finalizePendingImport = () => {
+    if (!pendingImportBatch) return;
+
+    setIsImporting(true);
+    setImportError(null);
+
+    try {
+      pendingImportBatch.importedLessons.forEach((lesson) => addLesson(lesson));
+      setImportMessage(
+        pendingImportBatch.rowErrors.length
+          ? `تم اعتماد ${pendingImportBatch.importedLessons.length} درس، وتخطينا ${pendingImportBatch.rowErrors.length} صف يحتاج مراجعة.`
+          : `تم اعتماد ${pendingImportBatch.importedLessons.length} درس وربطها بمركز المهارات بنجاح.`,
+      );
+      setPendingImportBatch(null);
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر اعتماد الدروس الآن.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const cancelPendingImport = () => {
+    setPendingImportBatch(null);
+    setImportMessage(null);
+    setImportError(null);
   };
 
   const resolveLessonScopeFromRow = (row: Record<string, unknown>, rowNumber: number) => {
@@ -443,6 +537,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     setIsImporting(true);
     setImportMessage(null);
     setImportError(null);
+    setPendingImportBatch(null);
 
     try {
       const buffer = await file.arrayBuffer();
@@ -450,29 +545,12 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
       const firstSheetName = workbook.SheetNames[0];
       const firstSheet = workbook.Sheets[firstSheetName];
       const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, { defval: '' });
-      if (!rows.length) {
-        throw new Error('ملف الدروس فارغ.');
-      }
-
-      const importedLessons: Lesson[] = [];
-      const rowErrors: string[] = [];
-      rows.forEach((row, index) => {
-        try {
-          importedLessons.push(buildLessonFromRow(row, index + 2));
-        } catch (error) {
-          rowErrors.push(error instanceof Error ? error.message : `الصف ${index + 2}: تعذر قراءة الدرس.`);
-        }
-      });
-
-      if (!importedLessons.length) {
-        throw new Error(rowErrors.slice(0, 5).join(' ') || 'لم يتم العثور على دروس صالحة للاستيراد.');
-      }
-
-      importedLessons.forEach((lesson) => addLesson(lesson));
+      const batch = parseImportWorkbook(rows, file.name);
+      setPendingImportBatch(batch);
       setImportMessage(
-        rowErrors.length
-          ? `تم استيراد ${importedLessons.length} درس، وتخطينا ${rowErrors.length} صف يحتاج مراجعة. ${rowErrors.slice(0, 2).join(' ')}`
-          : `تم استيراد ${importedLessons.length} درس وربطها بمركز المهارات بنجاح.`,
+        batch.rowErrors.length
+          ? `تم تجهيز ${batch.importedLessons.length} درس للمراجعة، ويوجد ${batch.rowErrors.length} صف يحتاج تصحيح قبل الاعتماد.`
+          : `تم تجهيز ${batch.importedLessons.length} درس للمراجعة. راجع الربط ثم اضغط اعتماد الدروس.`,
       );
     } catch (error) {
       setImportError(error instanceof Error ? error.message : 'تعذر استيراد ملف الدروس الآن.');
@@ -598,6 +676,103 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           إضافة درس جديد
         </button>
       </div>
+
+      {pendingImportBatch && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
+                مراجعة قبل الاعتماد
+              </div>
+              <h3 className="mt-3 text-lg font-black text-slate-900">ملف الدروس: {pendingImportBatch.fileName}</h3>
+              <p className="mt-1 text-sm font-bold leading-7 text-slate-600">
+                الدروس لم تُضاف بعد. راجع ربط المسار والمادة والمهارات وحالة الظهور والقفل، ثم اعتمدها عند التأكد.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={finalizePendingImport}
+                disabled={isImporting}
+                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white shadow-sm hover:bg-indigo-700 disabled:opacity-60"
+              >
+                {isImporting ? 'جارٍ الاعتماد...' : 'اعتماد الدروس'}
+              </button>
+              <button
+                onClick={cancelPendingImport}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-700 hover:bg-slate-50"
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-slate-500">جاهزة للاعتماد</div>
+              <div className="mt-2 text-2xl font-black text-indigo-700">{pendingImportBatch.importedLessons.length}</div>
+            </div>
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-slate-500">صفوف تحتاج مراجعة</div>
+              <div className="mt-2 text-2xl font-black text-amber-600">{pendingImportBatch.rowErrors.length}</div>
+            </div>
+            <div className="rounded-2xl bg-white p-4">
+              <div className="text-xs font-black text-slate-500">مصدر المهارات</div>
+              <div className="mt-2 text-sm font-black text-emerald-700">مركز المهارات فقط</div>
+            </div>
+          </div>
+
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-white bg-white">
+            <table className="w-full min-w-[920px] text-right text-sm">
+              <thead className="bg-slate-50 text-xs font-black text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">الصف</th>
+                  <th className="px-4 py-3">عنوان الدرس</th>
+                  <th className="px-4 py-3">المسار</th>
+                  <th className="px-4 py-3">المادة</th>
+                  <th className="px-4 py-3">المهارة الرئيسية</th>
+                  <th className="px-4 py-3">المهارات الفرعية</th>
+                  <th className="px-4 py-3">النوع</th>
+                  <th className="px-4 py-3">الظهور</th>
+                  <th className="px-4 py-3">القفل</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {pendingImportBatch.previewRows.slice(0, 6).map((row) => (
+                  <tr key={row.rowNumber} className="text-slate-700">
+                    <td className="px-4 py-3 font-black text-slate-400">{row.rowNumber}</td>
+                    <td className="px-4 py-3 font-black text-slate-900">{row.title}</td>
+                    <td className="px-4 py-3">{row.path}</td>
+                    <td className="px-4 py-3">{row.subject}</td>
+                    <td className="px-4 py-3">{row.mainSkill}</td>
+                    <td className="px-4 py-3">{row.subSkills}</td>
+                    <td className="px-4 py-3">{row.type}</td>
+                    <td className="px-4 py-3">{row.visibility}</td>
+                    <td className="px-4 py-3">{row.access}</td>
+                  </tr>
+                ))}
+                {pendingImportBatch.previewRows.length > 6 && (
+                  <tr>
+                    <td colSpan={9} className="px-4 py-3 text-center text-xs font-black text-slate-500">
+                      يتم عرض أول 6 دروس فقط، وسيتم اعتماد كل الدروس الجاهزة عند الضغط على اعتماد.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {pendingImportBatch.rowErrors.length > 0 && (
+            <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm font-bold text-amber-800">
+              <div className="mb-2 font-black">أول ملاحظات تحتاج تصحيح:</div>
+              <div className="space-y-1">
+                {pendingImportBatch.rowErrors.slice(0, 5).map((error, index) => (
+                  <div key={`${error}-${index}`}>{error}</div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {(importMessage || importError) && (
         <div className={`rounded-2xl border px-4 py-3 text-sm font-bold ${
