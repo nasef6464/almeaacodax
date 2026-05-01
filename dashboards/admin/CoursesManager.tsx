@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
-import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen, X, BookOpen, Target, ExternalLink, PlayCircle } from 'lucide-react';
 
 interface CoursesManagerProps {
   subjectId?: string;
@@ -48,6 +48,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   const [isBuilding, setIsBuilding] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
+  const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
   const currentSubject = subjectId ? subjects.find((item) => item.id === subjectId) : undefined;
 
   const handleCreateNew = () => {
@@ -130,15 +131,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   };
 
   const handlePreviewCourse = (course: Course) => {
-    if (course.isPackage) {
-      const pathId = course.pathId || course.category || '';
-      const subjectId = course.subjectId || course.subject || '';
-      const subjectQuery = subjectId ? `?subject=${subjectId}&tab=courses&package=${course.id}` : `?tab=packages&package=${course.id}`;
-      window.open(`${window.location.origin}/#/category/${pathId}${subjectQuery}`, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    window.open(`${window.location.origin}/#/course/${course.id}`, '_blank', 'noopener,noreferrer');
+    setPreviewCourse(course);
   };
 
   const filteredCourses = courses.filter((course) => {
@@ -348,6 +341,109 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
           </table>
         </div>
       </div>
+
+      {previewCourse ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewCourse(null)}>
+          <div
+            className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">معاينة الدورة</div>
+                <h3 className="mt-3 text-xl font-black text-gray-900">{previewCourse.title}</h3>
+                <p className="mt-1 text-sm leading-7 text-gray-500">هذا الملخص يوضح ما سيراه الطالب قبل الفتح أو النشر.</p>
+              </div>
+              <button
+                onClick={() => setPreviewCourse(null)}
+                className="rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                aria-label="إغلاق المعاينة"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-black text-slate-500">المسار</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{subjects.find((item) => item.id === (previewCourse.subjectId || previewCourse.subject || ''))?.pathId ? 'مرتبط بمسار' : 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 p-4">
+                <div className="text-xs font-black text-indigo-500">المادة</div>
+                <div className="mt-2 text-sm font-black text-indigo-900">{subjects.find((item) => item.id === (previewCourse.subjectId || previewCourse.subject || ''))?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="text-xs font-black text-emerald-500">النوع</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">{previewCourse.isPackage ? 'باقة' : 'دورة'}</div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <div className="text-xs font-black text-amber-500">السعر</div>
+                <div className="mt-2 text-sm font-black text-amber-900">{previewCourse.price || 0} {previewCourse.currency || 'SAR'}</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <PlayCircle size={16} className="text-emerald-500" />
+                  جاهزية العرض
+                </div>
+                <div className="mt-4 space-y-2 text-sm font-bold text-gray-700">
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">الحالة: {getCourseStatusMeta(previewCourse).label}</div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">الظهور: {getCourseVisibilityMeta(previewCourse).label}</div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">الوصول: {getCourseAccessMeta(previewCourse).label}</div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {previewCourse.ownerType ? (
+                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                      {previewCourse.ownerType === 'teacher' ? 'محتوى معلم' : previewCourse.ownerType === 'school' ? 'محتوى مدرسة' : 'محتوى المنصة'}
+                    </span>
+                  ) : null}
+                  {previewCourse.isPackage ? (
+                    <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">باقة قابلة للبيع</span>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-gray-100 bg-gray-50 p-4 sm:p-5">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <BookOpen size={16} className="text-indigo-500" />
+                  وصف ومحتوى مختصر
+                </div>
+                <p className="mt-3 text-sm leading-7 text-gray-600">
+                  {previewCourse.description || 'لا يوجد وصف مفصل محفوظ لهذه الدورة بعد.'}
+                </p>
+                <div className="mt-4 space-y-2 text-sm font-bold text-gray-700">
+                  <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">المدرب: {previewCourse.instructor || 'غير محدد'}</div>
+                  <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">الفئة: {previewCourse.category || 'غير محدد'}</div>
+                  <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">الطلاب: {previewCourse.fakeStudentsCount || previewCourse.studentCount || 0}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  const pathId = previewCourse.pathId || previewCourse.category || '';
+                  const subjectId = previewCourse.subjectId || previewCourse.subject || '';
+                  const subjectQuery = subjectId ? `?subject=${subjectId}&tab=courses&package=${previewCourse.id}` : `?tab=packages&package=${previewCourse.id}`;
+                  window.open(`${window.location.origin}/#/category/${pathId}${subjectQuery}`, '_blank', 'noopener,noreferrer');
+                }}
+                className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700"
+              >
+                <ExternalLink size={16} />
+                فتح الصفحة
+              </button>
+              <button
+                onClick={() => setPreviewCourse(null)}
+                className="rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
