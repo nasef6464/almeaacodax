@@ -168,6 +168,18 @@ export const UsersManager: React.FC = () => {
         () => users.filter((user) => user.role === Role.TEACHER && ((user.managedPathIds?.length || 0) > 0 || (user.managedSubjectIds?.length || 0) > 0)).length,
         [users],
     );
+    const manageableFilteredUsers = useMemo(
+        () => filteredUsers.filter((user) => user.role !== Role.ADMIN),
+        [filteredUsers],
+    );
+    const visibleActiveCount = useMemo(
+        () => manageableFilteredUsers.filter((user) => user.isActive !== false).length,
+        [manageableFilteredUsers],
+    );
+    const visibleInactiveCount = useMemo(
+        () => manageableFilteredUsers.filter((user) => user.isActive === false).length,
+        [manageableFilteredUsers],
+    );
 
     const handleRoleChange = (userId: string, newRole: Role) => {
         updateUser(userId, { role: newRole });
@@ -388,6 +400,18 @@ export const UsersManager: React.FC = () => {
         updateUser(userId, { managedSubjectIds });
     };
 
+    const setFilteredUsersStatus = (active: boolean) => {
+        if (manageableFilteredUsers.length === 0) {
+            return;
+        }
+
+        manageableFilteredUsers.forEach((currentUser) => {
+            if ((currentUser.isActive ?? true) !== active) {
+                toggleUserStatus(currentUser.id);
+            }
+        });
+    };
+
     const renderTeacherScopeEditor = (user: User) => {
         const selectedPathIds = user.managedPathIds || [];
         const subjectOptions = resolveTeacherSubjects(selectedPathIds, subjects).map((subject) => ({
@@ -515,6 +539,11 @@ export const UsersManager: React.FC = () => {
                 <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
                     <p className="text-xs text-gray-500 mb-2">حسابات متوقفة</p>
                     <p className="text-2xl font-black text-amber-600">{inactiveUsersCount}</p>
+                </div>
+                <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 rounded-2xl p-4 shadow-sm lg:col-span-1">
+                    <p className="text-xs text-indigo-700 font-bold mb-2">المعروض الآن</p>
+                    <p className="text-2xl font-black text-indigo-900">{filteredUsers.length}</p>
+                    <p className="text-xs text-indigo-600 mt-1">نشط: {visibleActiveCount} • موقوف: {visibleInactiveCount}</p>
                 </div>
             </div>
 
@@ -678,6 +707,24 @@ export const UsersManager: React.FC = () => {
                         <option value={Role.PARENT}>ولي أمر</option>
                         <option value={Role.STUDENT}>طالب</option>
                     </select>
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={() => setFilteredUsersStatus(true)}
+                            disabled={manageableFilteredUsers.length === 0}
+                            className="inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 disabled:opacity-50"
+                        >
+                            <UserCheck size={14} />
+                            تنشيط الكل
+                        </button>
+                        <button
+                            onClick={() => setFilteredUsersStatus(false)}
+                            disabled={manageableFilteredUsers.length === 0}
+                            className="inline-flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+                        >
+                            <UserX size={14} />
+                            إيقاف الكل
+                        </button>
+                    </div>
                 </div>
             </div>
 
