@@ -55,6 +55,7 @@ const buildSummaryText = (quiz: QuizHistoryItem, weakestSkill?: SkillGap) => {
 export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClose }) => {
   const [copied, setCopied] = React.useState(false);
   const [shared, setShared] = React.useState(false);
+  const [showAllSkills, setShowAllSkills] = React.useState(false);
   const sortedSkills = React.useMemo(
     () => [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery),
     [quiz.skillsAnalysis],
@@ -62,6 +63,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
   const weakestSkill = sortedSkills[0];
   const score = quiz.bestAttempt?.score ?? quiz.firstAttempt?.score ?? 0;
   const summaryText = buildSummaryText(quiz, weakestSkill);
+  const visibleSkills = showAllSkills ? sortedSkills : sortedSkills.slice(0, 3);
 
   const copySummary = async () => {
     try {
@@ -161,7 +163,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
 
               <div className="mt-5 grid gap-3">
                 {sortedSkills.length > 0 ? (
-                  sortedSkills.map((skill, index) => {
+                  visibleSkills.map((skill, index) => {
                     const tone = getMasteryTone(skill.mastery);
                     return (
                       <div key={`${skill.skill}-${index}`} className={`rounded-2xl border p-4 ${tone.card}`}>
@@ -200,6 +202,14 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                     لا توجد بيانات مهارية تفصيلية لهذه المحاولة بعد. عند ربط الأسئلة بالمهارات سيظهر التحليل هنا تلقائيًا.
                   </div>
                 )}
+                {sortedSkills.length > 3 ? (
+                  <button
+                    onClick={() => setShowAllSkills((value) => !value)}
+                    className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
+                  >
+                    {showAllSkills ? 'إظهار أول 3 مهارات فقط' : `عرض كل المهارات (${sortedSkills.length})`}
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

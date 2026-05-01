@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { generateQuizQuestion } from '../services/geminiService';
 import { Card } from './ui/Card';
 import { Sparkles, Check, RefreshCw, Plus, Trash2, Save, FileText } from 'lucide-react';
@@ -23,26 +23,84 @@ export const QuizGenerator: React.FC = () => {
     const [quizQuestions, setQuizQuestions] = useState<GeneratedQuestion[]>([]);
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const [statusType, setStatusType] = useState<'success' | 'error' | null>(null);
-    const { addQuestion, addQuiz, subjects, sections, skills } = useStore();
+    const [selectedPathId, setSelectedPathId] = useState('');
+    const [selectedSubjectId, setSelectedSubjectId] = useState('');
+    const [selectedSectionId, setSelectedSectionId] = useState('');
+    const [selectedSkillId, setSelectedSkillId] = useState('');
+    const { addQuestion, addQuiz, paths, subjects, sections, skills } = useStore();
+
+    const availableSubjects = useMemo(
+        () => subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId),
+        [selectedPathId, subjects],
+    );
+
+    const availableSections = useMemo(
+        () => sections.filter((section) => section.subjectId === selectedSubjectId),
+        [sections, selectedSubjectId],
+    );
+
+    const availableSkills = useMemo(
+        () => skills.filter((skill) => skill.subjectId === selectedSubjectId && skill.sectionId === selectedSectionId),
+        [selectedSectionId, selectedSubjectId, skills],
+    );
+
+    useEffect(() => {
+        if (selectedPathId && paths.some((path) => path.id === selectedPathId)) return;
+
+        const firstSkill = skills[0];
+        const firstSubject = firstSkill
+            ? subjects.find((subject) => subject.id === firstSkill.subjectId)
+            : subjects[0];
+        const nextPathId = firstSubject?.pathId || paths[0]?.id || '';
+
+        setSelectedPathId(nextPathId);
+    }, [paths, selectedPathId, skills, subjects]);
+
+    useEffect(() => {
+        const currentSubjectStillValid = availableSubjects.some((subject) => subject.id === selectedSubjectId);
+        if (currentSubjectStillValid) return;
+
+        const firstSubjectWithSkill = availableSubjects.find((subject) =>
+            skills.some((skill) => skill.subjectId === subject.id),
+        );
+        setSelectedSubjectId(firstSubjectWithSkill?.id || availableSubjects[0]?.id || '');
+    }, [availableSubjects, selectedSubjectId, skills]);
+
+    useEffect(() => {
+        const currentSectionStillValid = availableSections.some((section) => section.id === selectedSectionId);
+        if (currentSectionStillValid) return;
+
+        const firstSectionWithSkill = availableSections.find((section) =>
+            skills.some((skill) => skill.sectionId === section.id),
+        );
+        setSelectedSectionId(firstSectionWithSkill?.id || availableSections[0]?.id || '');
+    }, [availableSections, selectedSectionId, skills]);
+
+    useEffect(() => {
+        const currentSkillStillValid = availableSkills.some((skill) => skill.id === selectedSkillId);
+        if (currentSkillStillValid) return;
+
+        setSelectedSkillId(availableSkills[0]?.id || '');
+    }, [availableSkills, selectedSkillId]);
 
     const defaultTaxonomy = useMemo(() => {
-        const subject = subjects.find((candidate) => sections.some((section) => section.subjectId === candidate.id));
+        const subject = subjects.find((candidate) => candidate.id === selectedSubjectId);
         if (!subject) {
             return null;
         }
 
-        const section = sections.find((candidate) => candidate.subjectId === subject.id);
+        const section = sections.find((candidate) => candidate.id === selectedSectionId && candidate.subjectId === subject.id);
         if (!section) {
             return null;
         }
 
-        const skill = skills.find((candidate) => candidate.subjectId === subject.id && candidate.sectionId === section.id);
+        const skill = skills.find((candidate) => candidate.id === selectedSkillId && candidate.subjectId === subject.id && candidate.sectionId === section.id);
         if (!skill) {
             return null;
         }
 
         return { subject, section, skill };
-    }, [sections, skills, subjects]);
+    }, [sections, selectedSectionId, selectedSkillId, selectedSubjectId, skills, subjects]);
 
     const handleGenerate = async () => {
         if (!topic.trim()) return;
@@ -196,6 +254,61 @@ export const QuizGenerator: React.FC = () => {
                             <Sparkles className="text-indigo-600" size={24} />
                             توليد سؤال جديد
                         </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                            <select
+                                value={selectedPathId}
+                                onChange={(event) => {
+                                    setSelectedPathId(event.target.value);
+                                    setSelectedSubjectId('');
+                                    setSelectedSectionId('');
+                                    setSelectedSkillId('');
+                                }}
+                                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
+                            >
+                                <option value="">اختر المسار</option>
+                                {paths.map((path) => (
+                                    <option key={path.id} value={path.id}>{path.name}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={selectedSubjectId}
+                                onChange={(event) => {
+                                    setSelectedSubjectId(event.target.value);
+                                    setSelectedSectionId('');
+                                    setSelectedSkillId('');
+                                }}
+                                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
+                            >
+                                <option value="">اختر المادة</option>
+                                {availableSubjects.map((subject) => (
+                                    <option key={subject.id} value={subject.id}>{subject.name}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={selectedSectionId}
+                                onChange={(event) => {
+                                    setSelectedSectionId(event.target.value);
+                                    setSelectedSkillId('');
+                                }}
+                                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
+                            >
+                                <option value="">اختر المهارة الرئيسية</option>
+                                {availableSections.map((section) => (
+                                    <option key={section.id} value={section.id}>{section.name}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={selectedSkillId}
+                                onChange={(event) => setSelectedSkillId(event.target.value)}
+                                className="px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
+                            >
+                                <option value="">اختر المهارة الفرعية</option>
+                                {availableSkills.map((skill) => (
+                                    <option key={skill.id} value={skill.id}>{skill.name}</option>
+                                ))}
+                            </select>
+                        </div>
 
                         <div className="flex gap-3 mb-6">
                             <input

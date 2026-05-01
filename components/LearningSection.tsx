@@ -337,6 +337,32 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             : requestedTopic;
         if (!parentTopic || !matchesScopedContent(parentTopic.pathId, parentTopic.subjectId)) return;
 
+        const topicIsLocked =
+            !isStaffViewer &&
+            !hasFoundationAccess &&
+            (settings.lockSkillsForNonSubscribers === true || parentTopic.isLocked === true || requestedTopic.isLocked === true);
+        if (topicIsLocked) {
+            const packageItem = buildScopedPackageItem(
+                'foundation',
+                'باقة التأسيس',
+                'اشترك الآن لفتح موضوعات التأسيس المرتبطة بهذه المادة.',
+            );
+
+            setActiveTab('skills');
+            setPaymentModalData({
+                isOpen: true,
+                item: packageItem || {
+                    id: parentTopic.id,
+                    title: parentTopic.title,
+                    purchaseType: 'skill',
+                    price: 99,
+                    currency: 'ر.س',
+                },
+                type: packageItem ? 'package' : 'skill',
+            });
+            return;
+        }
+
         const subTopics = topicList.filter((topic) => topic.parentId === parentTopic.id && (isStaffViewer || topic.showOnPlatform !== false));
         const countVisibleLessons = (lessonIds?: string[]) =>
             (lessonIds || []).filter((lessonId) => {
@@ -369,7 +395,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             initialContentTab: requestedContentTab,
             initialLessonId: requestedLessonId || null,
         });
-    }, [isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
+    }, [category, hasFoundationAccess, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
     let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type === 'bank').map(q => ({
         id: q.id,

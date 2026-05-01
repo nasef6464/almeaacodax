@@ -70,7 +70,6 @@ const arabicOptionLabels = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
   allSkills: ReturnType<typeof useStore.getState>['skills'],
-  topics: ReturnType<typeof useStore.getState>['topics'],
   lessons: ReturnType<typeof useStore.getState>['lessons'],
   quizzes: ReturnType<typeof useStore.getState>['quizzes'],
   libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
@@ -83,20 +82,14 @@ const getSkillRecommendation = (
   const resolvedSkill = skill.skillId
     ? allSkills.find((item) => item.id === skill.skillId)
     : allSkills.find((item) => item.name === skill.skill);
-  const resolvedTopic = !resolvedSkill
-    ? skill.skillId
-      ? topics.find((item) => item.id === skill.skillId)
-      : topics.find((item) => item.title === skill.skill)
-    : undefined;
 
-  if (!resolvedSkill && !resolvedTopic) {
+  if (!resolvedSkill) {
     return {};
   }
 
   const recommendedLesson = lessons.find(
     (lesson) =>
-      ((resolvedSkill && lesson.skillIds?.includes(resolvedSkill.id)) ||
-        (resolvedTopic && resolvedTopic.lessonIds?.includes(lesson.id))) &&
+      lesson.skillIds?.includes(resolvedSkill.id) &&
       lesson.showOnPlatform !== false &&
       (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
   );
@@ -104,27 +97,24 @@ const getSkillRecommendation = (
     quiz.showOnPlatform !== false &&
     quiz.isPublished !== false &&
     (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    ((resolvedSkill &&
-      (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
-        quiz.skillIds?.includes(resolvedSkill.id))) ||
-      (resolvedTopic && resolvedTopic.quizIds?.includes(quiz.id))),
+    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkill.id)) ||
+      quiz.skillIds?.includes(resolvedSkill.id)),
   );
   const recommendedResource = libraryItems.find(
     (item) =>
-      ((resolvedSkill && item.skillIds?.includes(resolvedSkill.id)) ||
-        (resolvedTopic && item.subjectId === resolvedTopic.subjectId && (!resolvedTopic.sectionId || item.sectionId === resolvedTopic.sectionId))) &&
+      item.skillIds?.includes(resolvedSkill.id) &&
       item.showOnPlatform !== false &&
       (!item.approvalStatus || item.approvalStatus === 'approved'),
   );
-  const recommendationPathId = resolvedSkill?.pathId || resolvedTopic?.pathId;
-  const recommendationSubjectId = resolvedSkill?.subjectId || resolvedTopic?.subjectId;
-  const recommendationSectionId = resolvedSkill?.sectionId || resolvedTopic?.sectionId;
+  const recommendationPathId = resolvedSkill.pathId;
+  const recommendationSubjectId = resolvedSkill.subjectId;
+  const recommendationSectionId = resolvedSkill.sectionId;
 
   return {
     lessonTitle: displayText(recommendedLesson?.title),
     lessonLink:
       recommendationPathId && recommendationSubjectId
-        ? `/category/${recommendationPathId}?subject=${recommendationSubjectId}&tab=skills${resolvedTopic?.id ? `&topic=${resolvedTopic.id}&content=lessons` : ''}`
+        ? `/category/${recommendationPathId}?subject=${recommendationSubjectId}&tab=skills`
         : undefined,
     lessonVideoUrl: recommendedLesson?.videoUrl,
     quizTitle: displayText(recommendedQuiz?.title),
@@ -273,7 +263,7 @@ const SimpleResultStat = ({
 };
 
 const Results: React.FC = () => {
-  const { examResults, skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { examResults, skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -293,7 +283,7 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
-        const recommendation = getSkillRecommendation(item, skills, topics, lessons, quizzes, libraryItems, questions);
+        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
         const subjectName =
           recommendation.subjectName ||
           (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
@@ -349,7 +339,7 @@ const Results: React.FC = () => {
     return Array.from(aggregated.values())
       .map(({ totalMastery, lowestMastery, ...item }) => item)
       .sort((a, b) => a.mastery - b.mastery);
-  }, [latestResult, skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections]);
+  }, [latestResult, skills, lessons, quizzes, libraryItems, questions, subjects, sections]);
 
   const weakestSkill = analysisItems[0];
   const summaryTone = getFriendlyResultMessage(latestResult?.score || 0);
@@ -1143,7 +1133,7 @@ const ReviewSolutions = ({
             <div className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-relaxed px-2 sm:px-4 break-words" dangerouslySetInnerHTML={{ __html: displayText(q.text) }} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6 mb-8">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4 mb-8">
             {q.options.map((option, i) => {
               const label = arabicOptionLabels[i] || `${i + 1}`;
               const isCorrect = i === q.correctOptionIndex;
@@ -1170,17 +1160,33 @@ const ReviewSolutions = ({
               }
 
               return (
-                <div key={`${label}-${i}`} className="flex flex-col items-center gap-2 rounded-2xl border border-gray-100 bg-white/70 p-3">
-                  <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center text-xl font-black transition-all ${borderClass} ${bgClass}`}>
-                    {label}
+                <button
+                  key={`${label}-${i}`}
+                  type="button"
+                  className={`group flex items-center justify-between gap-3 rounded-2xl border p-4 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div
+                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 text-lg font-black transition-all ${borderClass} ${bgClass}`}
+                    >
+                      {label}
+                    </div>
+                    <span className="line-clamp-2 text-sm font-bold leading-7 text-gray-700">
+                      {displayText(option)}
+                    </span>
                   </div>
-                  <span className="text-sm font-bold text-gray-700 text-center leading-7">{displayText(option)}</span>
                   {helperLabel ? (
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${isCorrect ? 'bg-emerald-100 text-emerald-700' : isUser ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
+                    <span
+                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${
+                        isCorrect ? 'bg-emerald-100 text-emerald-700' : isUser ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
                       {helperLabel}
                     </span>
-                  ) : null}
-                </div>
+                  ) : (
+                    <span className="shrink-0 text-xs font-bold text-gray-300 group-hover:text-gray-400">●</span>
+                  )}
+                </button>
               );
             })}
           </div>
@@ -1273,10 +1279,10 @@ const ReviewSolutions = ({
 };
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
-  const { skills, topics, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
-      const recommendation = getSkillRecommendation(item, skills, topics, lessons, quizzes, libraryItems, questions);
+      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
       return {
         ...item,
         subjectName:
