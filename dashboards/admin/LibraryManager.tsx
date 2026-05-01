@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useStore } from '../../store/useStore';
 import { LibraryItem } from '../../types';
-import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink } from 'lucide-react';
 
 interface LibraryManagerProps {
   subjectId: string;
@@ -25,6 +25,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState<Partial<LibraryItem> | null>(null);
   const [validationError, setValidationError] = useState('');
+  const [previewItem, setPreviewItem] = useState<LibraryItem | null>(null);
 
   const subjectItems = libraryItems.filter((item) => item.subjectId === subjectId);
   const currentSubject = subjects.find((item) => item.id === subjectId);
@@ -197,13 +198,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
   };
 
   const handlePreviewLibraryItem = (item: LibraryItem) => {
-    if (item.url) {
-      window.open(item.url, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    const pathId = item.pathId || currentSubject?.pathId || '';
-    window.open(`${window.location.origin}/#/category/${pathId}?subject=${subjectId}&tab=library`, '_blank', 'noopener,noreferrer');
+    setPreviewItem(item);
   };
 
   if (isEditing) {
@@ -529,6 +524,102 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
           </div>
         )}
       </div>
+
+      {previewItem ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewItem(null)}>
+          <div
+            className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">معاينة الملف</div>
+                <h3 className="mt-3 text-xl font-black text-gray-900">{previewItem.title}</h3>
+                <p className="mt-1 text-sm leading-7 text-gray-500">هذه المعاينة تشرح للمدير أو المعلم ما سيظهر داخل المكتبة قبل النشر.</p>
+              </div>
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                aria-label="إغلاق المعاينة"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-black text-slate-500">المسار</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewItem.pathId)?.name || currentSubject?.pathId ? 'مرتبط بالمادة الحالية' : 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 p-4">
+                <div className="text-xs font-black text-indigo-500">المادة</div>
+                <div className="mt-2 text-sm font-black text-indigo-900">{currentSubject?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="text-xs font-black text-emerald-500">النوع</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">{previewItem.type === 'pdf' ? 'PDF' : previewItem.type === 'video' ? 'فيديو' : 'مستند'}</div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <div className="text-xs font-black text-amber-500">الحجم / التحميلات</div>
+                <div className="mt-2 text-sm font-black text-amber-900">{previewItem.size} - {previewItem.downloads || 0}</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_0.9fr]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <BookOpen size={16} className="text-emerald-500" />
+                  حالة النشر
+                </div>
+                <div className="mt-4 space-y-2 text-sm font-bold text-gray-700">
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">الظهور: {previewItem.showOnPlatform === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}</div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">القفل: {previewItem.isLocked ? 'مغلق على الطلاب' : 'مفتوح للعرض'}</div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                    الاعتماد: {previewItem.approvalStatus === 'approved' ? 'معتمد' : previewItem.approvalStatus === 'rejected' ? 'مرفوض' : 'مسودة'}
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {(previewItem.skillIds || []).slice(0, 4).map((skillId) => {
+                    const skill = skills.find((item) => item.id === skillId);
+                    return skill ? (
+                      <span key={skillId} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                        {skill.name}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-gray-100 bg-gray-50 p-4 sm:p-5">
+                <div className="text-sm font-black text-gray-800">طريقة الفتح</div>
+                <p className="mt-2 text-sm leading-7 text-gray-600">
+                  {previewItem.url ? 'يمكن فتح الملف مباشرة من الرابط أو استخدامه داخل صفحة المادة والدروس والمكتبة.' : 'لا يوجد رابط مباشر محفوظ، ويمكن ربطه لاحقًا من نفس الشاشة.'}
+                </p>
+                {previewItem.url ? (
+                  <a
+                    href={previewItem.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                  >
+                    <ExternalLink size={16} />
+                    فتح الملف
+                  </a>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                onClick={() => setPreviewItem(null)}
+                className="rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

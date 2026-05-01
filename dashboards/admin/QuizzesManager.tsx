@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Question, Quiz } from '../../types';
-import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 
@@ -148,6 +148,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
 
   const availableSections = useMemo(
     () =>
@@ -356,7 +357,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   const handlePreviewQuiz = (quiz: Quiz) => {
-    window.open(`${window.location.origin}/#/quiz/${quiz.id}`, '_blank', 'noopener,noreferrer');
+    setPreviewQuiz(quiz);
   };
 
   const downloadQuizzesReadinessExport = () => {
@@ -796,6 +797,125 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </table>
         </div>
       </div>
+
+      {previewQuiz ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewQuiz(null)}>
+          <div
+            className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <div className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">معاينة الاختبار</div>
+                <h3 className="mt-3 text-xl font-black text-gray-900">{previewQuiz.title}</h3>
+                <p className="mt-1 text-sm leading-7 text-gray-500">هذه المعاينة مختصرة وواضحة قبل النشر أو قبل الفتح للطالب.</p>
+              </div>
+              <button
+                onClick={() => setPreviewQuiz(null)}
+                className="rounded-full bg-gray-100 p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                aria-label="إغلاق المعاينة"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-black text-slate-500">المسار</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewQuiz.pathId)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 p-4">
+                <div className="text-xs font-black text-indigo-500">المادة</div>
+                <div className="mt-2 text-sm font-black text-indigo-900">{subjects.find((subject) => subject.id === previewQuiz.subjectId)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="text-xs font-black text-emerald-500">النمط</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">
+                  {(previewQuiz.mode || 'regular') === 'saher' ? 'ساهر' : (previewQuiz.mode || 'regular') === 'central' ? 'موجه / مركزي' : 'عادي'}
+                </div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <div className="text-xs font-black text-amber-500">الأسئلة</div>
+                <div className="mt-2 text-sm font-black text-amber-900">{previewQuiz.questionIds?.length || 0} سؤال</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <PlayCircle size={16} className="text-violet-500" />
+                  جاهزية النشر
+                </div>
+                <div className="mt-4 grid gap-2">
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700">
+                    الحالة: {getStatusMeta(previewQuiz).label}
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700">
+                    الظهور: {getVisibilityMeta(previewQuiz).label}
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700">
+                    الوصول: {getAccessMeta(previewQuiz).label}
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700">
+                    الجاهزية: {getQuizReadinessMeta(previewQuiz, questions).label}
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {(measuredSectionNames(previewQuiz) || []).slice(0, 4).map((sectionName) => (
+                    <span key={sectionName} className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                      {sectionName}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-gray-100 bg-gray-50 p-4 sm:p-5">
+                <div className="flex items-center gap-2 text-sm font-black text-gray-800">
+                  <BookOpen size={16} className="text-emerald-500" />
+                  أول أسئلة داخل الاختبار
+                </div>
+                <div className="mt-4 space-y-3">
+                  {(previewQuiz.questionIds || []).slice(0, 3).map((questionId, index) => {
+                    const question = questions.find((item) => item.id === questionId);
+                    return (
+                      <div key={questionId} className="rounded-2xl border border-white bg-white p-3 shadow-sm">
+                        <div className="text-[11px] font-black text-gray-400">سؤال {index + 1}</div>
+                        <div className="mt-1 text-sm font-bold text-gray-800 line-clamp-2">
+                          {question?.text || question?.imageUrl ? 'سؤال مرتبط بالمركز' : 'لا يوجد نص محفوظ لهذا السؤال'}
+                        </div>
+                        <div className="mt-2 text-xs font-bold text-gray-500">
+                          {question?.skillIds?.length ? `مهارات: ${question.skillIds.length}` : 'بدون مهارات فرعية محفوظة'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {(previewQuiz.questionIds || []).length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-4 text-sm font-bold text-gray-500">
+                      لا توجد أسئلة داخل هذا الاختبار بعد.
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                onClick={() => window.open(`${window.location.origin}/#/quiz/${previewQuiz.id}`, '_blank', 'noopener,noreferrer')}
+                className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 text-sm font-black text-white hover:bg-violet-700"
+              >
+                <ExternalLink size={16} />
+                فتح الاختبار
+              </button>
+              <button
+                onClick={() => setPreviewQuiz(null)}
+                className="rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
