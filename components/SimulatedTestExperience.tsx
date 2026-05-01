@@ -401,6 +401,24 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
         const score = calculateScore();
         const durationMinutes = parseInt(selectedTest?.duration || '60');
         const timeUsed = (durationMinutes * 60) - timeLeft;
+        const resultTone = score.percentage >= 80
+            ? {
+                label: 'ممتاز',
+                title: 'أداء قوي ومطمئن',
+                message: 'النتيجة تبين أنك فاهم أغلب الأفكار الأساسية، ونحتاج فقط تثبيت بعض النقاط الصغيرة.'
+            }
+            : score.percentage >= 60
+                ? {
+                    label: 'جيد',
+                    title: 'مستوى جيد ويحتاج تعزيز',
+                    message: 'أنت على الطريق الصحيح، ومع مراجعة مركزة ستحسن الدرجة بسرعة.'
+                }
+                : {
+                    label: 'يحتاج دعم',
+                    title: 'نحتاج خطة مراجعة قصيرة',
+                    message: 'النتيجة تقول إن أفضل خطوة الآن هي مراجعة المهارة الأساسية ثم حل تدريب قصير.'
+                };
+        const targetLabel = selectedTest?.title || (mode === 'bank' ? 'البنك المفتوح' : 'الاختبار الحالي');
 
         if (resultViewMode === 'review') {
             const q = mockQuestions[currentReviewIdx];
@@ -552,12 +570,12 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                     
                     <div className="flex justify-between items-center mb-6">
                         <div className="bg-indigo-50 text-indigo-700 px-4 py-1 rounded-full text-sm font-bold">
-                            المحاولة رقم 1
+                            ملخص الطالب وولي الأمر
                         </div>
                         <h2 className="text-2xl font-black text-gray-800">{mode === 'bank' ? 'نتيجة التصفح' : 'نتيجة الاختبار'}</h2>
                     </div>
                     
-                    <p className="text-gray-500 mb-8">{selectedTest?.title}</p>
+                    <p className="text-gray-500 mb-8">{targetLabel}</p>
 
                     <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
                         <div className="relative">
@@ -591,8 +609,23 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                         </div>
                     </div>
 
+                    <div className="grid md:grid-cols-2 gap-4 mb-8 text-right">
+                        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                            <h3 className="font-bold text-slate-800 mb-2">{resultTone.title}</h3>
+                            <p className="text-sm text-slate-600 leading-7">{resultTone.message}</p>
+                        </div>
+                        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                            <h3 className="font-bold text-amber-800 mb-2">ماذا نفعل الآن؟</h3>
+                            <ul className="text-sm text-amber-700 space-y-2 leading-6">
+                                <li>1) راجع المهارة الأضعف المرتبطة بهذا الاختبار.</li>
+                                <li>2) حل تدريبًا قصيرًا أو اختبارًا محاكيًا قريبًا.</li>
+                                <li>3) أعد الاختبار بعد المراجعة لقياس التحسن.</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div className="flex flex-col gap-3 mb-8">
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button 
                                 onClick={() => setResultViewMode('review')}
                                 className="bg-emerald-500 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-emerald-100"
@@ -603,11 +636,11 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                 onClick={() => setIsAnalysisOpen(true)}
                                 className="bg-indigo-600 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-indigo-100"
                             >
-                                <BarChart3 size={20} /> تحليل مفصل بالدرجات
+                                <BarChart3 size={20} /> التحليل المفصل
                             </button>
                         </div>
                         <button className="bg-white border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-indigo-50 transition-colors">
-                            <History size={20} /> محاولاتك السابقة
+                            <History size={20} /> المحاولات السابقة
                         </button>
                     </div>
 
@@ -617,39 +650,23 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                         mode={mode}
                     />
 
-                    <div className="bg-gray-50 rounded-xl p-6 text-right mb-8">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <Star className="text-amber-500" /> تحليل الأداء السريع
-                        </h3>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <h4 className="font-bold text-emerald-600 mb-2">نقاط القوة:</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                                    <li>العمليات الحسابية الأساسية</li>
-                                    <li>إدارة الوقت في القسم الأول</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-red-600 mb-2">تحتاج تحسين:</h4>
-                                <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                                    <li>أسئلة الهندسة الفراغية</li>
-                                    <li>التركيز في الأسئلة المقالية الطويلة</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white text-right relative overflow-hidden mb-8">
                         <div className="relative z-10">
-                            <h3 className="text-xl font-bold mb-2">تحسين مستواك 🚀</h3>
-                            <p className="text-indigo-100 mb-4 text-sm">بناءً على نتيجتك، نقترح عليك التالي لرفع درجتك:</p>
+                            <h3 className="text-xl font-bold mb-2">خطوتك التالية</h3>
+                            <p className="text-indigo-100 mb-4 text-sm">روابط مباشرة تساعدك على المراجعة بدون تعقيد.</p>
                             <div className="flex flex-wrap gap-3">
                                 <Link to={selectedTestSkillsLink} className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
-                                    مراجعة مهارة الهندسة
+                                    مراجعة المهارة المرتبطة
                                 </Link>
                                 <Link to={selectedTestBanksLink} className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
-                                    حل بنك أسئلة الجبر
+                                    حل تدريب أو بنك أسئلة
                                 </Link>
+                                <button
+                                    onClick={startTest}
+                                    className="bg-amber-400 text-slate-900 px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-300 transition-colors"
+                                >
+                                    أعد المحاولة الآن
+                                </button>
                             </div>
                         </div>
                         <Lock className="absolute left-[-20px] top-[-20px] w-40 h-40 text-white opacity-10 transform -rotate-12" />
