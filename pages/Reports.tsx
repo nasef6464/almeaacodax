@@ -406,10 +406,10 @@ const Reports: React.FC = () => {
         const weakest = focusedReportSkills[0];
         const nextTwo = focusedReportSkills.slice(0, 2).map((skill) => displayText(skill.skill)).filter(Boolean);
         const parts = [
-            `متوسط درجاتك الحالي ${stats?.averageScore || 0}%.`,
-            weakest ? `أهم مهارة تحتاج متابعة: ${displayText(weakest.skill)} (${weakest.mastery}%).` : null,
-            nextTwo.length ? `ابدأ هذا الأسبوع بهذه المهارات: ${nextTwo.join('، ')}.` : null,
-            'الخطة المقترحة: شرح قصير، تدريب بسيط، ثم اختبار قياس سريع.',
+            `متوسطك الحالي ${stats?.averageScore || 0}%.`,
+            weakest ? `ابدأ بمهارة ${displayText(weakest.skill)} (${weakest.mastery}%).` : null,
+            nextTwo.length ? `أمامك هذا الأسبوع: ${nextTwo.join('، ')}.` : null,
+            'الخطوة التالية: شرح قصير ثم تدريب بسيط ثم إعادة قياس.',
         ].filter(Boolean);
 
         return parts.join(' ');
@@ -1171,7 +1171,7 @@ const Reports: React.FC = () => {
                         <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
                             تقرير مبسط للطالب وولي الأمر
                         </div>
-                        <h2 className="text-2xl font-black leading-tight">أين أبدأ التحسين؟</h2>
+                        <h2 className="text-2xl font-black leading-tight">ابدأ من هنا</h2>
                         <p className="mt-3 max-w-3xl text-sm leading-7 text-indigo-100">
                             {studentFollowUpSummary}
                         </p>
@@ -1195,17 +1195,26 @@ const Reports: React.FC = () => {
                             <Target size={16} />
                             افتح الخطة الذكية
                         </Link>
-                        <button
-                            onClick={() => {
-                                setStudentReportDepth('full');
-                                void buildSmartRemediation();
-                            }}
-                            disabled={smartRemediationLoading || focusedReportSkills.length === 0}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
-                        >
-                            {smartRemediationLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-                            {smartRemediationLoading ? 'جارٍ تجهيز الخطة...' : 'اقتراح علاجي ذكي'}
-                        </button>
+                        {isStudentReportFull ? (
+                            <button
+                                onClick={() => {
+                                    void buildSmartRemediation();
+                                }}
+                                disabled={smartRemediationLoading || focusedReportSkills.length === 0}
+                                className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                            >
+                                {smartRemediationLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                                {smartRemediationLoading ? 'جارٍ تجهيز الخطة...' : 'اقتراح علاجي ذكي'}
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setStudentReportDepth('full')}
+                                className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 sm:col-span-2"
+                            >
+                                <Sparkles size={16} />
+                                عرض التقرير الكامل
+                            </button>
+                        )}
                     </div>
                 </div>
             </Card>
