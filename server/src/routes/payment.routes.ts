@@ -1,5 +1,6 @@
 ﻿import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
@@ -118,6 +119,39 @@ const getOrCreateSettings = async () => {
 const isPaymentMethodEnabled = (settings: any, method: "card" | "transfer" | "wallet") =>
   Boolean(settings?.[method]?.enabled);
 
+const userAlreadyOwnsPurchase = (
+  user: any,
+  payload: z.infer<typeof paymentRequestCreateSchema>,
+) => {
+  const purchasedCourses = new Set<string>([
+    ...((user.subscription?.purchasedCourses || []).map(String)),
+    ...((user.enrolledCourses || []).map(String)),
+  ]);
+  const purchasedPackages = new Set<string>((user.subscription?.purchasedPackages || []).map(String));
+  const targetPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
+
+  if (payload.itemType === "course" && purchasedCourses.has(payload.itemId)) {
+    return true;
+  }
+
+  if (targetPackageId && purchasedPackages.has(targetPackageId)) {
+    return true;
+  }
+
+  if (payload.includedCourseIds?.length && payload.includedCourseIds.every((courseId) => purchasedCourses.has(String(courseId)))) {
+    return true;
+  }
+
+  return false;
+};
+
+const buildPaymentRequestLookup = (id: string) => ({
+  $or: [
+    { id },
+    ...(Types.ObjectId.isValid(id) ? [{ _id: id }] : []),
+  ],
+});
+
 export const paymentRouter = Router();
 
 paymentRouter.get(
@@ -170,7 +204,13 @@ paymentRouter.post(
     }
 
     if (!isPaymentMethodEnabled(settings, payload.paymentMethod)) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment method is not available now" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة حاليًا" });
+    }
+
+    if (userAlreadyOwnsPurchase(user, payload)) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "هذا المحتوى مفعل بالفعل على حسابك",
+      });
     }
 
     const pendingDuplicate = await PaymentRequestModel.findOne({
@@ -182,7 +222,7 @@ paymentRouter.post(
 
     if (pendingDuplicate) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "There is already a pending payment request for this item",
+        message: "يوجد طلب دفع قيد المراجعة لهذا المحتوى بالفعل",
         request: pendingDuplicate,
       });
     }
@@ -208,12 +248,17 @@ paymentRouter.patch(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = paymentRequestReviewSchema.parse(req.body);
-    const requestDoc = await PaymentRequestModel.findOne({
-      $or: [{ id: req.params.id }, { _id: req.params.id }],
-    });
+    const requestDoc = await PaymentRequestModel.findOne(buildPaymentRequestLookup(req.params.id));
 
     if (!requestDoc) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    }
+
+    if (requestDoc.status === "approved" && payload.status === "approved") {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "طلب الدفع معتمد بالفعل",
+        request: requestDoc,
+      });
     }
 
     requestDoc.status = payload.status;

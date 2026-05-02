@@ -41,6 +41,15 @@ const fallbackSettings: PaymentSettings = {
     notes: '',
 };
 
+const packageContentLabels: Record<string, string> = {
+    courses: 'الدورات',
+    foundation: 'التأسيس',
+    banks: 'التدريب',
+    tests: 'الاختبارات',
+    library: 'المكتبة',
+    all: 'الباقة الشاملة',
+};
+
 export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, item, type = 'course' }) => {
     const [step, setStep] = useState<'method' | 'details' | 'success'>('method');
     const [method, setMethod] = useState<PaymentMethodKey | null>(null);
@@ -108,14 +117,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         () => (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter((key) => settings[key]?.enabled),
         [settings],
     );
-    const packageContentLabels: Record<string, string> = {
-        courses: 'الدورات',
-        foundation: 'التأسيس',
-        banks: 'التدريب',
-        tests: 'الاختبارات',
-        library: 'المكتبة',
-        all: 'الباقة الشاملة',
-    };
 
     if (!isOpen || !item) return null;
 
@@ -432,7 +433,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
             <div className="bg-white w-full max-w-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-scale-up">
-                <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10">
+                <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10" aria-label="إغلاق">
                     <X size={20} />
                 </button>
                 <div className="p-5 sm:p-8 md:p-12">

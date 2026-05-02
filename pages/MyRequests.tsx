@@ -4,6 +4,7 @@ import { CheckCircle, Clock, XCircle, FileText, Calendar } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { PaymentRequest } from '../types';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type RequestStatus = 'completed' | 'pending' | 'cancelled';
 
@@ -17,6 +18,25 @@ interface RequestRow {
   paymentMethod: string;
   typeLabel: string;
 }
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+
+const contentTypeLabel = (type: string) => {
+  switch (type) {
+    case 'courses':
+      return 'الدورات';
+    case 'foundation':
+      return 'التأسيس';
+    case 'banks':
+      return 'التدريبات';
+    case 'tests':
+      return 'الاختبارات';
+    case 'library':
+      return 'المكتبة';
+    default:
+      return 'المحتوى';
+  }
+};
 
 export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
@@ -69,7 +89,7 @@ export const MyRequests: React.FC = () => {
       .filter((activity) => activity.type === 'session_booked')
       .map((activity) => ({
         id: `session_${activity.id}`,
-        itemName: activity.title.replace(/^تم حجز حصة خاصة:\s*/u, '') || 'حصة خاصة',
+        itemName: displayText(activity.title).replace(/^تم حجز حصة خاصة:\s*/u, '') || 'حصة خاصة',
         status: 'pending' as const,
         orderDate: new Date(activity.date).toLocaleDateString('ar-SA'),
         sortDate: activity.date,
@@ -94,7 +114,7 @@ export const MyRequests: React.FC = () => {
           sortDate: todayIso,
           price: course.price || 0,
           paymentMethod: hasDirectPurchase
-            ? 'بطاقة إلكترونية / شراء مباشر'
+            ? 'شراء مباشر أو تفعيل فردي'
             : hasScopedPackage
               ? 'مفعلة ضمن باقة مرتبطة بالمسار أو المادة'
               : 'تفعيل ضمن اشتراك أو كود وصول',
@@ -110,24 +130,7 @@ export const MyRequests: React.FC = () => {
       const packageLabel =
         packageKinds.length === 0 || packageKinds.includes('all')
           ? 'باقة شاملة'
-          : `باقة ${packageKinds
-              .map((type) => {
-                switch (type) {
-                  case 'courses':
-                    return 'الدورات';
-                  case 'foundation':
-                    return 'التأسيس';
-                  case 'banks':
-                    return 'التدريبات';
-                  case 'tests':
-                    return 'الاختبارات';
-                  case 'library':
-                    return 'المكتبة';
-                  default:
-                    return 'المحتوى';
-                }
-              })
-              .join(' + ')}`;
+          : `باقة ${packageKinds.map(contentTypeLabel).join(' + ')}`;
 
       const baseRow = {
         id: `pkg_${packageId}`,
