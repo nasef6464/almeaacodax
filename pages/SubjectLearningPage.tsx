@@ -21,7 +21,7 @@ import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
-import { getYouTubeVideoId } from '../utils/videoLinks';
+import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -260,8 +260,9 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const openLessonContent = (lesson: (typeof lessons)[number]) => {
-    if (lesson.videoUrl) {
-      setVideoData({ url: lesson.videoUrl, title: lesson.title });
+    const safeVideoUrl = sanitizeVideoUrl(lesson.videoUrl);
+    if (safeVideoUrl) {
+      setVideoData({ url: safeVideoUrl, title: lesson.title });
       return;
     }
 

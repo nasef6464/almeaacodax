@@ -63,6 +63,33 @@ const lessonSchema = z.object({
   revenueSharePercentage: z.number().nullable().optional(),
 });
 
+const sanitizeVideoUrl = (rawUrl?: string | null) => {
+  if (!rawUrl) return "";
+
+  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, "");
+  if (!trimmedUrl) return "";
+
+  trimmedUrl = trimmedUrl
+    .replace(/^https?:\/\/https?:\/\//i, "https://")
+    .replace(/^https?:\/\/:\/\//i, "https://")
+    .replace(/^:\/\//, "https://")
+    .replace(/^\/\//, "https://");
+
+  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
+    return `https://${trimmedUrl}`;
+  }
+
+  return trimmedUrl;
+};
+
+const sanitizeLessonPayload = <T extends { videoUrl?: string; meetingUrl?: string; recordingUrl?: string; fileUrl?: string }>(payload: T): T => ({
+  ...payload,
+  ...(payload.videoUrl !== undefined ? { videoUrl: sanitizeVideoUrl(payload.videoUrl) } : {}),
+  ...(payload.meetingUrl !== undefined ? { meetingUrl: sanitizeVideoUrl(payload.meetingUrl) } : {}),
+  ...(payload.recordingUrl !== undefined ? { recordingUrl: sanitizeVideoUrl(payload.recordingUrl) } : {}),
+  ...(payload.fileUrl !== undefined ? { fileUrl: sanitizeVideoUrl(payload.fileUrl) } : {}),
+});
+
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {
     return { $or: [{ id: value }, { _id: value }] };
@@ -632,7 +659,7 @@ contentRouter.post(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = lessonSchema.parse(req.body);
+    const payload = sanitizeLessonPayload(lessonSchema.parse(req.body));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await LessonModel.create({
       ...payload,
@@ -651,7 +678,7 @@ contentRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = lessonSchema.partial().parse(req.body);
+    const payload = sanitizeLessonPayload(lessonSchema.partial().parse(req.body));
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await LessonModel.findOneAndUpdate(buildOwnedDocumentQuery(req.params.id, req.authUser!), sanitizedPayload, {
       new: true,

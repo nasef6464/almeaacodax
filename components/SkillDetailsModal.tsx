@@ -5,7 +5,7 @@ import { useStore } from '../store/useStore';
 import { Topic } from '../types';
 import { VideoModal } from './VideoModal';
 import { openExternalUrl } from '../utils/openExternalUrl';
-import { getYouTubeVideoId } from '../utils/videoLinks';
+import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 
 interface SkillDetailsModalProps {
   isOpen: boolean;
@@ -69,21 +69,26 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
 
       const explicitLessonIds = new Set(activeTopic.lessonIds || []);
       const hasExplicitLessons = explicitLessonIds.size > 0;
+      const initialLessonId = skill?.initialLessonId;
 
       return lessons
         .filter((lesson) => {
           if (!canStudentSeeLesson(lesson)) return false;
-          if (explicitLessonIds.has(lesson.id)) return true;
-          if (hasExplicitLessons) return false;
 
           const matchesPath = selectedTopic.pathId ? lesson.pathId === selectedTopic.pathId : true;
           const matchesSubject = lesson.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
+          const matchesScope = matchesPath && matchesSubject && matchesSection;
+
+          if (initialLessonId && lesson.id === initialLessonId && matchesScope) return true;
+          if (explicitLessonIds.has(lesson.id)) return true;
+          if (hasExplicitLessons) return false;
+
           return matchesPath && matchesSubject && matchesSection;
         })
         .sort((a, b) => (a.order || 0) - (b.order || 0));
     },
-    [activeTopic, lessons],
+    [activeTopic, lessons, selectedTopic?.pathId, selectedTopic?.subjectId, skill?.initialLessonId],
   );
 
   const activeTopicQuizzes = useMemo(
@@ -156,8 +161,9 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   );
 
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
-    if (lesson.videoUrl) {
-      setVideoData({ url: lesson.videoUrl, title: lesson.title });
+    const safeVideoUrl = sanitizeVideoUrl(lesson.videoUrl);
+    if (safeVideoUrl) {
+      setVideoData({ url: safeVideoUrl, title: lesson.title });
       return;
     }
 
@@ -279,7 +285,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                         type="button"
                         key={lesson.id}
                         className={`w-full bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between hover:shadow-md transition-all group text-right ${
-                          !lesson.videoUrl ? 'opacity-80' : ''
+                          !sanitizeVideoUrl(lesson.videoUrl) ? 'opacity-80' : ''
                         }`}
                         onClick={() => openLessonVideo(lesson)}
                       >
@@ -296,7 +302,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                                 <Video size={24} />
                               </div>
                             )}
-                            {lesson.videoUrl ? (
+                            {sanitizeVideoUrl(lesson.videoUrl) ? (
                               <>
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -321,8 +327,8 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                           </div>
                         </div>
 
-                        <span className={`hidden sm:block px-4 py-2 rounded-lg font-bold text-sm ${lesson.videoUrl ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
-                          {lesson.videoUrl ? 'مشاهدة الدرس' : 'لا يوجد رابط فيديو'}
+                        <span className={`hidden sm:block px-4 py-2 rounded-lg font-bold text-sm ${sanitizeVideoUrl(lesson.videoUrl) ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
+                          {sanitizeVideoUrl(lesson.videoUrl) ? 'مشاهدة الدرس' : 'لا يوجد رابط فيديو'}
                         </span>
                       </button>
                     ))

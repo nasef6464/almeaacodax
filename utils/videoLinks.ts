@@ -1,10 +1,27 @@
-export const getYouTubeVideoId = (rawUrl?: string | null) => {
+export const sanitizeVideoUrl = (rawUrl?: string | null) => {
   if (!rawUrl) return '';
 
-  const trimmedUrl = rawUrl.trim();
+  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, '');
   if (!trimmedUrl) return '';
 
-  const safeUrl = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+  trimmedUrl = trimmedUrl
+    .replace(/^https?:\/\/https?:\/\//i, 'https://')
+    .replace(/^https?:\/\/:\/\//i, 'https://')
+    .replace(/^:\/\//, 'https://')
+    .replace(/^\/\//, 'https://');
+
+  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
+    return `https://${trimmedUrl}`;
+  }
+
+  return trimmedUrl;
+};
+
+export const getYouTubeVideoId = (rawUrl?: string | null) => {
+  const normalizedUrl = sanitizeVideoUrl(rawUrl);
+  if (!normalizedUrl) return '';
+
+  const safeUrl = /^https?:\/\//i.test(normalizedUrl) ? normalizedUrl : `https://${normalizedUrl}`;
 
   try {
     const parsedUrl = new URL(safeUrl);
@@ -27,4 +44,3 @@ export const getYouTubeVideoId = (rawUrl?: string | null) => {
 
   return '';
 };
-

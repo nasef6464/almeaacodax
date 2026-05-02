@@ -4,6 +4,7 @@ import { Save, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } fro
 import { QuizBuilder } from '../QuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
 import { useStore } from '../../../store/useStore';
+import { sanitizeVideoUrl } from '../../../utils/videoLinks';
 
 interface UnifiedLessonBuilderProps {
   initialLesson: Lesson;
@@ -285,6 +286,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     type="text"
                     value={lesson.videoUrl || ''}
                     onChange={event => setLesson({ ...lesson, videoUrl: event.target.value })}
+                    onBlur={event => setLesson({ ...lesson, videoUrl: sanitizeVideoUrl(event.target.value) })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     placeholder="https://..."
                   />

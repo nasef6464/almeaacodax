@@ -12,6 +12,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
+import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 
 interface CustomVideoPlayerProps {
   url: string;
@@ -25,7 +26,7 @@ interface NormalizedVideoSource {
 }
 
 const normalizeVideoUrl = (rawUrl: string) => {
-  const url = rawUrl.trim();
+  const url = sanitizeVideoUrl(rawUrl);
   if (!url) return { playerUrl: '', externalUrl: '' };
 
   const safeUrl = /^https?:\/\//i.test(url) ? url : `https://${url}`;
@@ -38,17 +39,23 @@ const normalizeVideoUrl = (rawUrl: string) => {
       const videoId = parsedUrl.pathname.split('/').filter(Boolean)[0];
       if (videoId) {
         const normalized = `https://www.youtube.com/watch?v=${videoId}`;
-        return { playerUrl: normalized, externalUrl: normalized };
+        return {
+          playerUrl: normalized,
+          iframeUrl: `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`,
+          externalUrl: normalized,
+        };
       }
     }
 
     if (host.includes('youtube.com')) {
-      const videoId =
-        parsedUrl.searchParams.get('v') ||
-        parsedUrl.pathname.match(/\/(?:embed|shorts|live)\/([^/?#]+)/)?.[1];
+      const videoId = getYouTubeVideoId(safeUrl);
       if (videoId) {
         const normalized = `https://www.youtube.com/watch?v=${videoId}`;
-        return { playerUrl: normalized, externalUrl: normalized };
+        return {
+          playerUrl: normalized,
+          iframeUrl: `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`,
+          externalUrl: normalized,
+        };
       }
     }
 
