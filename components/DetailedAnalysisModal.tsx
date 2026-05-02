@@ -44,7 +44,7 @@ const defaultSkills: Skill[] = [
     percentage: 85,
     color: 'bg-blue-500',
     subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسة',
+    sectionName: 'المهارة الرئيسية',
     recommendation: 'استمر في تدريب قصير لتثبيت المستوى الحالي.',
   },
   {
@@ -52,7 +52,7 @@ const defaultSkills: Skill[] = [
     percentage: 70,
     color: 'bg-purple-500',
     subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسة',
+    sectionName: 'المهارة الرئيسية',
     recommendation: 'راجع شرحًا قصيرًا ثم حل بعض الأسئلة المتدرجة.',
   },
   {
@@ -60,7 +60,7 @@ const defaultSkills: Skill[] = [
     percentage: 92,
     color: 'bg-emerald-500',
     subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسة',
+    sectionName: 'المهارة الرئيسية',
     recommendation: 'مستواك مطمئن، فقط راجع بين فترة وأخرى.',
   },
   {
@@ -68,7 +68,7 @@ const defaultSkills: Skill[] = [
     percentage: 65,
     color: 'bg-amber-500',
     subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسة',
+    sectionName: 'المهارة الرئيسية',
     recommendation: 'ابدأ بالأبسط ثم ارفع الصعوبة تدريجيًا.',
   },
 ];

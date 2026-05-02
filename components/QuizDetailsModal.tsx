@@ -39,6 +39,12 @@ const getMasteryTone = (mastery: number) => {
   };
 };
 
+const getScoreTone = (score: number) => {
+  if (score >= 80) return 'border-emerald-100 text-emerald-600';
+  if (score >= 60) return 'border-amber-100 text-amber-600';
+  return 'border-rose-100 text-rose-600';
+};
+
 const buildSummaryText = (quiz: QuizHistoryItem, weakestSkill?: SkillGap) => {
   const title = displayText(quiz.title) || 'اختبار';
   const score = quiz.bestAttempt?.score ?? quiz.firstAttempt?.score ?? 0;
@@ -116,7 +122,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
               {shared ? <CheckCircle2 size={15} /> : <Share2 size={15} />}
               {shared ? 'تمت المشاركة' : 'مشاركة'}
             </button>
-            <button onClick={onClose} className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100">
+            <button onClick={onClose} className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100" aria-label="إغلاق">
               <X size={22} />
             </button>
           </div>
@@ -129,8 +135,8 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                 ملخص سريع
               </div>
               <div className="mt-4 flex items-center justify-center">
-                <div className="flex h-36 w-36 flex-col items-center justify-center rounded-full border-[12px] border-emerald-100 bg-white text-center shadow-inner">
-                  <div className="text-3xl font-black text-emerald-600">{score}%</div>
+                <div className={`flex h-36 w-36 flex-col items-center justify-center rounded-full border-[12px] bg-white text-center shadow-inner ${getScoreTone(score)}`}>
+                  <div className="text-3xl font-black">{score}%</div>
                   <div className="text-xs font-bold text-gray-400">النتيجة</div>
                 </div>
               </div>
@@ -140,7 +146,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                   <div className="text-[11px] font-bold text-gray-500">عدد الأسئلة</div>
                 </div>
                 <div className="rounded-2xl bg-gray-50 p-3">
-                  <div className="text-lg font-black text-gray-900">{quiz.bestAttempt?.time || quiz.firstAttempt?.time}</div>
+                  <div className="text-lg font-black text-gray-900">{quiz.bestAttempt?.time || quiz.firstAttempt?.time || 'غير محدد'}</div>
                   <div className="text-[11px] font-bold text-gray-500">وقت الحل</div>
                 </div>
               </div>
