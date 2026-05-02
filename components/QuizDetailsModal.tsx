@@ -172,24 +172,28 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                 {sortedSkills.length > 0 ? (
                   visibleSkills.map((skill, index) => {
                     const tone = getMasteryTone(skill.mastery);
+                    const skillName = displayText(skill.skill) || 'مهارة غير مسماة';
+                    const sectionName = displayText(skill.section);
+                    const recommendation = displayText(skill.recommendation);
+
                     return (
-                      <div key={`${skill.skill}-${index}`} className={`rounded-2xl border p-4 ${tone.card}`}>
+                      <div key={`${skillName}-${index}`} className={`rounded-2xl border p-4 ${tone.card}`}>
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div className="min-w-0">
                             <div className="mb-3 flex flex-wrap gap-2 text-[11px] font-black">
                               <span className={`rounded-full px-3 py-1 ${tone.badge}`}>{tone.label}</span>
-                              {displayText(skill.section) ? (
+                              {sectionName ? (
                                 <span className="rounded-full bg-white px-3 py-1 text-indigo-700">
-                                  المهارة الرئيسية: {displayText(skill.section)}
+                                  المهارة الرئيسية: {sectionName}
                                 </span>
                               ) : null}
                             </div>
                             <div className="font-black leading-7 text-gray-900">
-                              {displayText(skill.skill) || 'مهارة غير مسماة'}
+                              {skillName}
                             </div>
-                            {skill.recommendation ? (
+                            {recommendation ? (
                               <p className="mt-2 text-sm font-bold leading-7 text-gray-600">
-                                {displayText(skill.recommendation)}
+                                {recommendation}
                               </p>
                             ) : (
                               <p className="mt-2 text-sm font-bold leading-7 text-gray-600">

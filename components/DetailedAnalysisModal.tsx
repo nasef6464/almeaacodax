@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sparkles, TrendingUp, X } from 'lucide-react';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 interface Skill {
   name: string;
@@ -16,6 +17,8 @@ interface DetailedAnalysisModalProps {
   skills?: Skill[];
   mode?: 'test' | 'bank';
 }
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
 const getSimpleLevel = (percentage: number) => {
   if (percentage >= 80) {
@@ -81,7 +84,13 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const displaySkills = skills && skills.length > 0 ? skills : defaultSkills;
+  const displaySkills = (skills && skills.length > 0 ? skills : defaultSkills).map((skill) => ({
+    ...skill,
+    name: displayText(skill.name) || 'مهارة غير مسماة',
+    subjectName: displayText(skill.subjectName),
+    sectionName: displayText(skill.sectionName),
+    recommendation: displayText(skill.recommendation),
+  }));
   const weakestSkill = [...displaySkills].sort((a, b) => a.percentage - b.percentage)[0];
 
   return (
@@ -95,7 +104,7 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
             <div className="min-w-0">
               <h2 className="break-words text-lg font-bold sm:text-xl">تحليل المهارات ببساطة</h2>
               <p className="text-[11px] text-indigo-100 sm:text-xs">
-                بناءً على أداء الطالب في {mode === 'bank' ? 'التدريب' : 'الاختبار'}
+                بناء على أداء الطالب في {mode === 'bank' ? 'التدريب' : 'الاختبار'}
               </p>
             </div>
           </div>
