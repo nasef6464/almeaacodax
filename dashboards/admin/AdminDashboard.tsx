@@ -203,6 +203,77 @@ export const AdminDashboard: React.FC = () => {
         };
     }, [courses, lessons, libraryItems, overviewStats.pendingReview, questions, quizzes]);
 
+    const dailyOperationQueue = useMemo(() => {
+        const items = [
+            {
+                id: 'pending-review',
+                title: 'مراجعة واعتماد المحتوى',
+                description: 'يوجد محتوى أضافه الفريق وينتظر قرار الاعتماد قبل ظهوره للطلاب.',
+                count: overviewStats.pendingReview,
+                tab: 'overview',
+                actionLabel: 'راجع طابور الاعتماد',
+                color: 'amber',
+            },
+            {
+                id: 'empty-quizzes',
+                title: 'اختبارات بلا أسئلة',
+                description: 'أي اختبار بلا أسئلة قد يظهر للطالب فارغًا أو يربك رحلة الاختبار.',
+                count: platformReadiness.quizzesWithoutQuestions,
+                tab: 'quizzes',
+                actionLabel: 'فتح مركز الاختبارات',
+                color: 'rose',
+            },
+            {
+                id: 'question-skills',
+                title: 'أسئلة غير مربوطة بمهارات',
+                description: 'ربط الأسئلة بالمهارات يجعل التقارير والتوصيات الذكية أدق.',
+                count: platformReadiness.details.questionsWithoutSkills,
+                tab: 'questions',
+                actionLabel: 'فتح بنك الأسئلة',
+                color: 'indigo',
+            },
+            {
+                id: 'lesson-skills',
+                title: 'دروس غير مربوطة بمهارات',
+                description: 'ربط الدروس بالمهارات يساعد الطالب ينتقل من نتيجة الاختبار إلى العلاج المناسب.',
+                count: platformReadiness.details.lessonsWithoutSkills,
+                tab: 'lessons',
+                actionLabel: 'فتح مركز الدروس',
+                color: 'emerald',
+            },
+            {
+                id: 'hidden-content',
+                title: 'محتوى مخفي عن الطلاب',
+                description: 'راجع العناصر المخفية حتى تتأكد أنها مقصودة وليست سببًا في اختفاء مادة أو مسار.',
+                count: platformReadiness.hiddenContent,
+                tab: 'paths',
+                actionLabel: 'فتح مساحات التعلم',
+                color: 'slate',
+            },
+            {
+                id: 'library-skills',
+                title: 'ملفات مكتبة بلا مهارات',
+                description: 'ربط ملفات المراجعة بالمهارات يجعلها تظهر كتوصيات علاجية بعد الاختبار.',
+                count: platformReadiness.details.libraryWithoutSkills,
+                tab: 'lessons',
+                actionLabel: 'فتح مركز الدروس',
+                color: 'purple',
+            },
+        ];
+
+        return items
+            .filter((item) => item.count > 0)
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 6);
+    }, [
+        overviewStats.pendingReview,
+        platformReadiness.details.lessonsWithoutSkills,
+        platformReadiness.details.libraryWithoutSkills,
+        platformReadiness.details.questionsWithoutSkills,
+        platformReadiness.hiddenContent,
+        platformReadiness.quizzesWithoutQuestions,
+    ]);
+
     const reviewQueue = useMemo<ReviewQueueItem[]>(() => {
         const normalizeItem = (
             type: string,
@@ -526,6 +597,58 @@ export const AdminDashboard: React.FC = () => {
                         <p className="text-3xl font-bold text-gray-900 mt-4">{kpi.value}</p>
                     </div>
                 ))}
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <h3 className="text-lg font-black text-gray-900">مركز التشغيل اليومي</h3>
+                        <p className="mt-1 text-sm leading-6 text-gray-500">
+                            هذه القائمة تجمع أهم الأشياء التي قد تمنع الطالب من رؤية المحتوى أو الاستفادة من التقارير. ابدأ من الأعلى ثم انتقل للمركز المناسب للإصلاح.
+                        </p>
+                    </div>
+                    <div className={`rounded-2xl px-5 py-3 text-center ${
+                        dailyOperationQueue.length === 0
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'bg-amber-50 text-amber-700'
+                    }`}>
+                        <div className="text-xs font-bold">مهام حرجة الآن</div>
+                        <div className="mt-1 text-2xl font-black">{dailyOperationQueue.length}</div>
+                    </div>
+                </div>
+
+                {dailyOperationQueue.length > 0 ? (
+                    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {dailyOperationQueue.map((item) => (
+                            <div key={item.id} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                <div className="mb-3 flex items-start justify-between gap-3">
+                                    <div className={`rounded-xl px-3 py-1 text-xs font-black ${
+                                        item.color === 'rose' ? 'bg-rose-100 text-rose-700' :
+                                        item.color === 'indigo' ? 'bg-indigo-100 text-indigo-700' :
+                                        item.color === 'emerald' ? 'bg-emerald-100 text-emerald-700' :
+                                        item.color === 'purple' ? 'bg-purple-100 text-purple-700' :
+                                        item.color === 'slate' ? 'bg-slate-100 text-slate-700' :
+                                        'bg-amber-100 text-amber-700'
+                                    }`}>
+                                        {item.count.toLocaleString('ar-EG')}
+                                    </div>
+                                    <h4 className="text-right font-black text-gray-900">{item.title}</h4>
+                                </div>
+                                <p className="min-h-[48px] text-right text-xs leading-6 text-gray-500">{item.description}</p>
+                                <button
+                                    onClick={() => setActiveTab(item.tab)}
+                                    className="mt-4 w-full rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
+                                >
+                                    {item.actionLabel}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                        لا توجد عوائق تشغيلية ظاهرة الآن. المحتوى المنشور والاختبارات والربط بالمهارات في حالة جيدة حسب البيانات الحالية.
+                    </div>
+                )}
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
