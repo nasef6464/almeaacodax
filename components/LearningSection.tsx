@@ -82,6 +82,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [paymentModalData, setPaymentModalData] = useState<{ isOpen: boolean, item: any, type: string }>({ isOpen: false, item: null, type: '' });
     const [openedPreviewPackageId, setOpenedPreviewPackageId] = useState<string | null>(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const isAdminViewer = user.role === 'admin';
     const accessibleCourseIds = new Set([
         ...enrolledCourses,
         ...(user.subscription?.purchasedCourses || []),
@@ -874,9 +875,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-gray-800 text-lg">{skill.title}</h3>
-                                            <span className="text-xs text-gray-500 font-medium">
-                                                {skill.totalLessons} درس • {skill.totalQuizzes || 0} تدريب قصير
-                                            </span>
+                                            {isAdminViewer ? (
+                                                <span className="text-xs text-gray-500 font-medium">
+                                                    {skill.totalLessons} درس • {skill.totalQuizzes || 0} تدريب قصير
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs text-gray-400 font-medium">ابدأ من هنا</span>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="mb-4 flex flex-wrap gap-2">
@@ -892,11 +897,17 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                     )}
                                     <div className="space-y-2">
-                                        <div className="flex justify-between text-xs font-bold text-gray-600">
-                                            <span>التقدم</span>
-                                            <span>{Math.round((skill.completed / skill.totalLessons) * 100)}%</span>
-                                        </div>
-                                        <ProgressBar percentage={(skill.completed / skill.totalLessons) * 100} showPercentage={false} color={safeColorTheme as any} />
+                                        {isAdminViewer ? (
+                                            <>
+                                                <div className="flex justify-between text-xs font-bold text-gray-600">
+                                                    <span>التقدم</span>
+                                                    <span>{Math.round((skill.completed / skill.totalLessons) * 100)}%</span>
+                                                </div>
+                                                <ProgressBar percentage={(skill.completed / skill.totalLessons) * 100} showPercentage={false} color={safeColorTheme as any} />
+                                            </>
+                                        ) : (
+                                            <div className="text-xs font-bold text-gray-400">اضغط لفتح هذا المسار التعليمي</div>
+                                        )}
                                     </div>
                                 </button>
                             );
@@ -1016,13 +1027,21 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.type === 'pdf' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
                                             <FileText size={28} />
                                         </div>
-                                        <span className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg">{item.size}</span>
+                                        {isAdminViewer ? (
+                                            <span className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg">{item.size}</span>
+                                        ) : (
+                                            <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg">ملف</span>
+                                        )}
                                     </div>
                                     <h3 className="font-bold text-xl text-gray-900 mb-2">{item.title}</h3>
-                                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
-                                        <User size={16} />
-                                        <span>{item.downloads} تحميل</span>
-                                    </div>
+                                    {isAdminViewer ? (
+                                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
+                                            <User size={16} />
+                                            <span>{item.downloads} تحميل</span>
+                                        </div>
+                                    ) : (
+                                        <div className="mb-6 text-center text-xs text-gray-400">ملف متاح للعرض أو التحميل</div>
+                                    )}
                                     <div className="mb-4 flex flex-wrap gap-2">
                                         <span className={`rounded-full px-3 py-1 text-[11px] font-black ${item.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
                                             {item.isLocked ? 'مغلقة حتى التفعيل' : 'متاحة للعرض والتحميل'}

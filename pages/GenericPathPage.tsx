@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
-import { ChevronRight, LayoutGrid, Lock, Package, Unlock } from 'lucide-react';
+import { ChevronRight, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
@@ -53,6 +53,7 @@ export const GenericPathPage: React.FC = () => {
     const [selectedPackageForPayment, setSelectedPackageForPayment] = useState<any | null>(null);
     const normalizedPathId = normalizePathId(pathId);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    const isAdminViewer = user?.role === 'admin';
     const canSeeHiddenPaths = isStaffViewer;
     const path = paths.find(p => p.id === normalizedPathId);
     const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
@@ -262,7 +263,7 @@ export const GenericPathPage: React.FC = () => {
         openSubjects: pathSubjects.filter((subject) => getSubjectContentSummary(subject.id).lockedRows.length === 0).length,
     };
     const renderPathOverview = () => {
-        if (!isStaffViewer) return null;
+        if (!isAdminViewer) return null;
 
         return (
         <div className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -297,6 +298,98 @@ export const GenericPathPage: React.FC = () => {
 
     const renderPackages = () => {
         if (pathPackages.length === 0) return null;
+        if (!isAdminViewer) {
+            return (
+                <div className="mt-16 border-t border-gray-200 pt-16" id="packages">
+                    <div className="text-center mb-10">
+                        <h2 className="text-2xl sm:text-3xl font-black text-gray-800 mb-4 leading-tight">العروض والباقات</h2>
+                        <p className="text-gray-500">اختر الباقة المناسبة لك للبدء في مسار {path.name}</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {pathPackages.map(pkg => {
+                            const contentTypes = resolvePackageContentTypes(pkg);
+                            const packageIsActive = isPackageActiveForCurrentUser(pkg);
+                            const packageSubjectId = pkg.subjectId || pkg.subject;
+                            const packageAccessNote = getPackageStudentAccessNote(pkg, contentTypes);
+                            const scopeLabel = contentTypes.includes('all')
+                                ? 'باقة شاملة'
+                                : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
+
+                            return (
+                                <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all cursor-pointer flex flex-col">
+                                    <div className="bg-amber-500 text-white p-5 sm:p-6 text-center">
+                                        <h3 className="text-xl sm:text-2xl font-black mb-2 leading-tight break-words">{pkg.title}</h3>
+                                        <div className="text-2xl sm:text-3xl font-bold">{pkg.price} {pkg.currency}</div>
+                                        <div className="mt-3 flex flex-wrap justify-center gap-2">
+                                            <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-black text-white">{scopeLabel}</span>
+                                            {packageIsActive ? (
+                                                <span className="inline-flex rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-black text-white">مفعلة لديك</span>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                                        <p className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-600">
+                                            {packageIsActive
+                                                ? 'هذه الباقة مفعلة لديك ويمكنك فتح محتواها مباشرة.'
+                                                : packageAccessNote}
+                                        </p>
+                                        <ul className="mb-6 space-y-2 flex-1 text-sm text-gray-600">
+                                            {(pkg.features || []).slice(0, 3).map((f, i) => (
+                                                <li key={i} className="flex items-start gap-2">
+                                                    <div className="mt-1.5 w-2 h-2 rounded-full bg-amber-400 shrink-0"></div>
+                                                    <span>{f}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                if (packageSubjectId) {
+                                                    navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                                    return;
+                                                }
+                                                navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
+                                            }}
+                                            className="mb-3 w-full rounded-xl border border-amber-200 bg-amber-50 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                        >
+                                            معاينة الباقة
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                if (!packageIsActive) {
+                                                    setSelectedPackageForPayment({
+                                                        ...pkg,
+                                                        packageId: pkg.id,
+                                                        purchaseType: 'package',
+                                                        contentTypes,
+                                                        packageContentTypes: contentTypes,
+                                                        pathIds: [path.id],
+                                                        subjectIds: packageSubjectId ? [packageSubjectId] : [],
+                                                        courseIds: [],
+                                                        accessContext: packageAccessNote,
+                                                    });
+                                                    return;
+                                                }
+                                                if (packageSubjectId) {
+                                                    navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                                    return;
+                                                }
+                                                navigate(`/course/${pkg.id}`);
+                                            }}
+                                            className={`w-full rounded-xl py-3 font-bold transition-colors ${
+                                                packageIsActive ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-900 text-white hover:bg-black'
+                                            }`}
+                                        >
+                                            {packageIsActive ? 'افتح محتوى الباقة' : 'اشترك الآن'}
+                                        </button>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="mt-16 border-t border-gray-200 pt-16" id="packages">
                 <div className="text-center mb-10">
@@ -434,18 +527,14 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
         const icon = s.iconUrl ? <img src={s.iconUrl} className="w-12 h-12 object-contain mx-auto" alt={s.name} /> : <div className="text-4xl">{s.icon || '📚'}</div>;
         const summary = getSubjectContentSummary(s.id);
-        const topContentRows = isStaffViewer
+        const topContentRows = isAdminViewer
             ? contentAccessRows
                 .map((row) => ({ ...row, count: summary.visibleCounts[row.type] }))
                 .filter((row) => row.count > 0)
                 .slice(0, 3)
             : [];
         const hasLockedAreas = summary.lockedRows.length > 0;
-        const subjectPackageCount = pathPackages.filter((pkg) => {
-            const packageSubjectId = pkg.subjectId || pkg.subject;
-            return !packageSubjectId || packageSubjectId === s.id;
-        }).length;
-        const footer = isStaffViewer ? (
+        const footer = isAdminViewer ? (
             <>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                     <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black ${
@@ -454,12 +543,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         {hasLockedAreas ? <Lock size={14} /> : <Unlock size={14} />}
                         {hasLockedAreas ? `يحتاج باقة في ${summary.lockedRows.length} مساحة` : 'مفتوحة بالكامل'}
                     </span>
-                    {subjectPackageCount > 0 ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                            <Package size={14} />
-                            {subjectPackageCount} باقة مرتبطة
-                        </span>
-                    ) : null}
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2">
                     {topContentRows.length > 0 ? topContentRows.map((row) => (
@@ -480,14 +563,8 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     hasLockedAreas ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
                 }`}>
                     {hasLockedAreas ? <Lock size={14} /> : <Unlock size={14} />}
-                    {hasLockedAreas ? 'بعض الأجزاء تحتاج تفعيل' : 'المادة مفتوحة'}
+                    {hasLockedAreas ? 'يحتاج تفعيل' : 'مفتوحة'}
                 </span>
-                {subjectPackageCount > 0 ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                        <Package size={14} />
-                        {subjectPackageCount} باقة
-                    </span>
-                ) : null}
             </div>
         );
 
