@@ -39,6 +39,15 @@ It supports:
 The repository is beyond a prototype. It already contains a real backend foundation, a real database layer, a JWT-based auth system, a large domain model, and a feature-rich frontend.  
 However, some areas still look incomplete or mixed with older fallback logic.
 
+Production status as of the latest handover update:
+- GitHub `main` is connected to Render and Vercel.
+- Render service `almeaacodax` is live at `https://almeaacodax-k2ux.onrender.com`.
+- Vercel production is live at `https://almeaacodax.vercel.app`.
+- MongoDB Atlas project `almeaacodax`, cluster `almeaa`, database `almeaa` is seeded and used by Render.
+- Render health returns `database=connected`.
+- Seeded role login works through the Render API.
+- Latest operational smoke test result is `48/53`; remaining failures are demo-content completeness gaps, not infrastructure failures.
+
 ## What appears to be completed
 Evidence-based completed areas include:
 - JWT authentication and role checks in `server/src/middleware/auth.ts`
@@ -69,4 +78,3 @@ Evidence-based completed areas include:
 ## Non-technical explanation
 This is a real educational platform that already has the core engine running.  
 It is not finished, but it is not starting from zero either. The next work should focus on stabilizing the current system, completing the remaining learning and reporting features, and cleaning up legacy fallback logic without changing the existing design.
-

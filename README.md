@@ -81,9 +81,18 @@ Notes:
 ### Current production targets
 
 - Frontend: `https://almeaacodax.vercel.app`
+- Vercel preview/main branch: `https://almeaacodax-git-main-nasefs-projects-18e6bdb1.vercel.app`
 - Backend API: `https://almeaacodax-k2ux.onrender.com/api`
 - Backend health: `https://almeaacodax-k2ux.onrender.com/api/health`
 - MongoDB Atlas: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/almeaa?appName=almeaa`
+- GitHub repository: `https://github.com/nasef6464/almeaacodax`
+
+Current production notes:
+- Render service: `almeaacodax`
+- Render environment uses `NODE_ENV=production`, `CLIENT_URL=https://almeaacodax.vercel.app`, and `AI_PROVIDER=none`.
+- MongoDB Atlas project: `almeaacodax`, cluster: `almeaa`, production database: `almeaa`.
+- Production seed was run against the `almeaa` database. Render can log in with the seeded role accounts.
+- Latest operational smoke result after seeding: `48/53` checks passing. The remaining checks are seed-content gaps, not deployment or authentication failures.
 
 ### Local MongoDB option
 

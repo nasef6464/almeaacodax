@@ -1,5 +1,19 @@
 # Setup and Runbook
 
+## Current production snapshot
+- GitHub: `https://github.com/nasef6464/almeaacodax`
+- Branch: `main`
+- Render service: `almeaacodax`
+- Render backend: `https://almeaacodax-k2ux.onrender.com`
+- API base: `https://almeaacodax-k2ux.onrender.com/api`
+- Vercel production: `https://almeaacodax.vercel.app`
+- Vercel preview/main: `https://almeaacodax-git-main-nasefs-projects-18e6bdb1.vercel.app`
+- Atlas project: `almeaacodax`
+- Atlas cluster: `almeaa`
+- Production database: `almeaa`
+
+Secrets are intentionally not stored here. Use Render and Vercel environment settings for real values.
+
 ## Install dependencies
 ### Root
 ```bash
@@ -79,6 +93,15 @@ For production API seeding, the default API target is:
 https://almeaacodax-k2ux.onrender.com/api
 ```
 
+The current production seed was applied to the Atlas `almeaa` database because Render reads from that database.
+
+Seeded operational accounts:
+- Admin: `nasef64@gmail.com` / password stored in Render only
+- Teacher: `teacher.quant@almeaa.local / Teacher@123`
+- Student: `student.a@almeaa.local / Student@123`
+- Parent: `parent.a@almeaa.local / Parent@123`
+- Supervisor: `supervisor.group@almeaa.local / Supervisor@123`
+
 ## Run tests / checks
 ```bash
 npm run lint
@@ -121,13 +144,13 @@ What is visible:
 | Content looks empty | Seeds were not run or path filters hide content | Check taxonomy bootstrap and active paths |
 
 ## Production readiness checklist
-- [ ] MongoDB production connection confirmed
+- [x] MongoDB production connection confirmed
 - [ ] JWT secret set securely
-- [ ] Frontend origin allowed in CORS
-- [ ] AI provider configured or disabled intentionally
-- [ ] Seed/admin bootstrapping documented
+- [x] Frontend origin allowed in CORS
+- [x] AI provider configured or disabled intentionally
+- [x] Seed/admin bootstrapping documented
 - [ ] File storage strategy confirmed
 - [ ] Payment workflow confirmed
 - [ ] Legacy fallback behavior documented
-- [ ] Smoke tests run successfully
-- [ ] Deployment target confirmed
+- [ ] Smoke tests run successfully (`48/53` currently passing)
+- [x] Deployment target confirmed
