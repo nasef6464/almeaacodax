@@ -621,7 +621,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         <span className="rounded-full bg-white px-3 py-1 text-gray-600">المسار الحالي</span>
                                         <span className="rounded-full bg-white px-3 py-1 text-indigo-700">{currentSubjectData?.name || 'المادة الحالية'}</span>
                                         <span className="rounded-full bg-white px-3 py-1 text-emerald-700">يفتح تلقائيًا بعد اعتماد الدفع أو الكود</span>
-                                        {getLockedContentMessage(activeTabAccess.contentType).coverageSummary ? (
+                                        {isAdminViewer && getLockedContentMessage(activeTabAccess.contentType).coverageSummary ? (
                                             <span className="rounded-full bg-white px-3 py-1 text-amber-700">
                                                 {getLockedContentMessage(activeTabAccess.contentType).coverageSummary}
                                             </span>
@@ -786,7 +786,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             <div className="text-xs font-black text-amber-700">لماذا هذا المحتوى مغلق؟</div>
                                             <div className="mt-1 text-sm font-bold text-gray-900">{lockedCourseMessage.title}</div>
                                             <div className="mt-1 text-xs leading-6 text-gray-600">{lockedCourseMessage.description}</div>
-                                            {lockedCourseMessage.coverageSummary ? (
+                                            {isAdminViewer && lockedCourseMessage.coverageSummary ? (
                                                 <div className="mt-2 text-[11px] font-black text-amber-700">{lockedCourseMessage.coverageSummary}</div>
                                             ) : null}
                                         </div>
@@ -829,7 +829,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'skills' && enabledTabs.skills && (
                     <div className="space-y-5">
-                        {previewTopic && (
+                        {previewTopic && isAdminViewer && (
                             <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-5 shadow-sm">
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
