@@ -3,7 +3,6 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import { Loader2 } from 'lucide-react';
-import { AuthProvider } from './contexts/AuthContext';
 import { adapter } from './services/adapter';
 import { api } from './services/api';
 import { useStore } from './store/useStore';
@@ -175,66 +174,64 @@ const App: React.FC = () => {
   );
 
   return (
-    <AuthProvider>
-      <Router>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Routes without Main Layout (Full Screen) */}
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/quiz/:quizId" element={<QuizPage />} />
-            <Route path="/results" element={<Results />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin-dashboard" element={staffDashboard} />
-            <Route path="/instructor-dashboard" element={staffDashboard} />
-            <Route path="/supervisor-dashboard" element={staffDashboard} />
-            <Route
-              path="/parent-dashboard"
-              element={
-                <RequireRole allowedRoles={['parent']}>
-                  <Dashboard />
-                </RequireRole>
-              }
-            />
+    <Router>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          {/* Routes without Main Layout (Full Screen) */}
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/quiz/:quizId" element={<QuizPage />} />
+          <Route path="/results" element={<Results />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin-dashboard" element={staffDashboard} />
+          <Route path="/instructor-dashboard" element={staffDashboard} />
+          <Route path="/supervisor-dashboard" element={staffDashboard} />
+          <Route
+            path="/parent-dashboard"
+            element={
+              <RequireRole allowedRoles={['parent']}>
+                <Dashboard />
+              </RequireRole>
+            }
+          />
 
-            {/* Routes with Main Layout */}
-            <Route path="*" element={
-              <Layout>
-                <Suspense fallback={<LoadingFallback />}>
-                  <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/courses" element={<Courses />} />
-                    <Route path="/course/:courseId" element={<CourseView />} />
-                    <Route path="/quizzes" element={<Quizzes />} />
-                    <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route path="/favorites" element={<Favorites />} />
-                    <Route path="/plan" element={<Plan />} />
-                    <Route path="/qa" element={<QA />} />
-                    <Route path="/book-session" element={<BookSession />} />
-                    <Route path="/live-sessions" element={<LiveSessions />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
-                    <Route path="/achievements" element={<Achievements />} />
-                    <Route path="/blog" element={<Blog />} />
-                    
-                    {/* Old Hardcoded Routes mapped to generic or kept if needed. The new pattern replaces old Nafes */}
-                    <Route path="/category/:pathId" element={<GenericPathPage />} />
-                    <Route path="/category/:pathId/packages" element={<LegacyPackagesRouteRedirect />} />
-                    <Route path="/category/:pathId/:subjectId" element={<LegacySubjectRouteRedirect />} />
-                    
-                    {/* Placeholder for other routes */}
-                    <Route path="/section/:catId" element={<Navigate replace to="/dashboard" />} />
-                  </Routes>
-                </Suspense>
-              </Layout>
-            } />
-          </Routes>
-          {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
-        </Suspense>
-      </Router>
-    </AuthProvider>
+          {/* Routes with Main Layout */}
+          <Route path="*" element={
+            <Layout>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/course/:courseId" element={<CourseView />} />
+                  <Route path="/quizzes" element={<Quizzes />} />
+                  <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/plan" element={<Plan />} />
+                  <Route path="/qa" element={<QA />} />
+                  <Route path="/book-session" element={<BookSession />} />
+                  <Route path="/live-sessions" element={<LiveSessions />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
+                  <Route path="/achievements" element={<Achievements />} />
+                  <Route path="/blog" element={<Blog />} />
+                  
+                  {/* Old Hardcoded Routes mapped to generic or kept if needed. The new pattern replaces old Nafes */}
+                  <Route path="/category/:pathId" element={<GenericPathPage />} />
+                  <Route path="/category/:pathId/packages" element={<LegacyPackagesRouteRedirect />} />
+                  <Route path="/category/:pathId/:subjectId" element={<LegacySubjectRouteRedirect />} />
+                  
+                  {/* Placeholder for other routes */}
+                  <Route path="/section/:catId" element={<Navigate replace to="/dashboard" />} />
+                </Routes>
+              </Suspense>
+            </Layout>
+          } />
+        </Routes>
+        {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
+      </Suspense>
+    </Router>
   );
 };
 
