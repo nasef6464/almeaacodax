@@ -19,12 +19,29 @@ interface LearningSectionProps {
     colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
 }
 
+const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
+    indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
+    amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
+    emerald: { base: '#10b981', soft: '#d1fae5', border: '#a7f3d0', text: '#047857' },
+    purple: { base: '#7c3aed', soft: '#ede9fe', border: '#ddd6fe', text: '#6d28d9' },
+    rose: { base: '#f43f5e', soft: '#ffe4e6', border: '#fecdd3', text: '#be123c' },
+};
+
+const resolveThemePalette = (value?: string) => {
+    if (!value) return themePaletteMap.indigo;
+    if (value.startsWith('#')) {
+        return { base: value, soft: `${value}18`, border: `${value}33`, text: value };
+    }
+    return themePaletteMap[value] || themePaletteMap.indigo;
+};
+
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'banks' | 'tests' | 'library'>('courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
+    const theme = resolveThemePalette(colorTheme);
     
     // Get Subject Settings
     const currentSubjectData = subjects.find(s => s.id === subject);
@@ -481,7 +498,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         open: Math.max(activeInventory.total - activeInventory.locked, 0),
         label: activeInventory.label,
     };
-    const showStaffInventory = isStaffViewer;
+    const showStaffInventory = user.role === 'admin';
     const getScopedPackageCoverage = (pkg: any) => {
         const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
         const includesAll = contentTypes.includes('all');
@@ -695,10 +712,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                             }
                                                         }}
                                                         className={`w-full rounded-xl py-3 font-black transition-colors ${
-                                                            packageIsActive
-                                                                ? 'bg-emerald-50 text-emerald-700'
-                                                                : `bg-${safeColorTheme}-500 text-white hover:bg-${safeColorTheme}-600`
+                                                            packageIsActive ? 'bg-emerald-50 text-emerald-700' : 'text-white hover:opacity-90'
                                                         }`}
+                                                        style={packageIsActive ? undefined : { backgroundColor: theme.base }}
                                                     >
                                                         {packageIsActive ? 'الباقة مفعلة لديك' : 'اشترك في الباقة'}
                                                     </button>
@@ -725,7 +741,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             const lockedCourseMessage = !isPurchased ? getLockedContentMessage('courses') : null;
 
                             return (
-                            <Card key={course.id} className={`flex flex-col overflow-hidden border-2 border-transparent hover:border-${safeColorTheme}-300 hover:shadow-xl transition-all duration-300 cursor-pointer rounded-3xl`}>
+                            <Card
+                                key={course.id}
+                                className="flex flex-col overflow-hidden border-2 border-transparent hover:shadow-xl transition-all duration-300 cursor-pointer rounded-3xl"
+                                style={{ borderColor: theme.border }}
+                            >
                                 <div className="relative h-48 bg-gray-900 group">
                                     <img 
                                         src={course.thumbnail} 
@@ -774,12 +794,17 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                     item: coursePurchaseItem || course,
                                                     type: coursePurchaseItem ? 'package' : 'course',
                                                 })}
-                                                className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center bg-${safeColorTheme}-500 hover:bg-${safeColorTheme}-600 mb-0`}
+                                                className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center mb-0"
+                                                style={{ backgroundColor: theme.base }}
                                             >
                                                 افتح هذه الدورات الآن
                                             </button>
                                         )}
-                                        <Link to={`/course/${course.id}`} className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center bg-${safeColorTheme}-500 hover:bg-${safeColorTheme}-600 ${!isPurchased ? 'hidden' : ''}`}>
+                                        <Link
+                                            to={`/course/${course.id}`}
+                                            className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center ${!isPurchased ? 'hidden' : ''}`}
+                                            style={{ backgroundColor: theme.base }}
+                                        >
                                             {course.isPurchased ? (course.progress > 0 ? 'مواصلة التعلم' : 'ابدأ التعلم') : 'اشترك الآن'}
                                         </Link>
                                     </div>
@@ -831,7 +856,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 <button
                                     type="button"
                                     key={skill.id}
-                                    className={`p-5 border-2 border-gray-100 hover:shadow-lg transition-all cursor-pointer group hover:border-${safeColorTheme}-300 rounded-3xl relative overflow-hidden bg-white text-right`}
+                                    className="p-5 border-2 border-gray-100 hover:shadow-lg transition-all cursor-pointer group rounded-3xl relative overflow-hidden bg-white text-right"
+                                    style={{ borderColor: theme.border }}
                                     onClick={() => handleItemClick(skill, 'skill')}
                                 >
                                     {skill.isLocked && (
@@ -840,7 +866,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                     )}
                                     <div className="flex items-center gap-4 mb-4">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors bg-${safeColorTheme}-100 text-${safeColorTheme}-600 group-hover:bg-${safeColorTheme}-500 group-hover:text-white`}>
+                                        <div
+                                            className="w-14 h-14 rounded-2xl flex items-center justify-center transition-colors group-hover:text-white"
+                                            style={{ backgroundColor: theme.soft, color: theme.text }}
+                                        >
                                             <PlayCircle size={28} />
                                         </div>
                                         <div>
@@ -973,7 +1002,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             const lockedLibraryMessage = item.isLocked ? getLockedContentMessage('library') : null;
 
                             return (
-                                <Card key={item.id} className={`p-6 border-2 border-gray-100 hover:border-${safeColorTheme}-200 hover:shadow-lg transition-all flex flex-col rounded-3xl relative`}>
+                                <Card
+                                    key={item.id}
+                                    className="p-6 border-2 border-gray-100 hover:shadow-lg transition-all flex flex-col rounded-3xl relative"
+                                    style={{ borderColor: theme.border }}
+                                >
                                     {item.isLocked && (
                                         <div className="absolute top-4 left-4 text-gray-400">
                                             <Lock size={20} />
@@ -1087,16 +1120,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 };
 
 const TabButton = ({ active, onClick, icon, label, colorTheme }: any) => {
-    const isHex = colorTheme?.startsWith('#');
+    const palette = resolveThemePalette(colorTheme);
     return (
         <button 
             onClick={onClick}
             className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${
-                active 
-                ? `${isHex ? '' : `bg-${colorTheme}-600`} text-white shadow-lg transform -translate-y-1` 
-                : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                active ? 'text-white shadow-lg transform -translate-y-1' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
             }`}
-            style={active && isHex ? { backgroundColor: colorTheme } : {}}
+            style={active ? { backgroundColor: palette.base } : undefined}
         >
             {icon}
             {label}

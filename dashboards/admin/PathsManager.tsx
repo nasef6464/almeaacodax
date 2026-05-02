@@ -28,19 +28,27 @@ const getPathIcon = (path: any) => {
   return path?.icon || '📚';
 };
 
-const getPathColor = (path: any) => {
-  const color = path?.color || 'gray';
-  return `bg-${color}-100 text-${color}-600`;
+const colorMap: Record<string, { soft: string; text: string; border: string }> = {
+  gray: { soft: '#f3f4f6', text: '#4b5563', border: '#d1d5db' },
+  indigo: { soft: '#e0e7ff', text: '#4f46e5', border: '#c7d2fe' },
+  amber: { soft: '#fef3c7', text: '#b45309', border: '#fde68a' },
+  emerald: { soft: '#d1fae5', text: '#047857', border: '#a7f3d0' },
+  purple: { soft: '#ede9fe', text: '#6d28d9', border: '#ddd6fe' },
+  rose: { soft: '#ffe4e6', text: '#be123c', border: '#fecdd3' },
+  blue: { soft: '#dbeafe', text: '#1d4ed8', border: '#bfdbfe' },
+};
+
+const resolveColor = (value?: string) => {
+  if (!value) return colorMap.gray;
+  if (value.startsWith('#')) {
+    return { soft: `${value}18`, text: value, border: `${value}33` };
+  }
+  return colorMap[value] || colorMap.gray;
 };
 
 const getSubjectIcon = (subject: any) => {
   if (subject?.iconUrl) return <img src={subject.iconUrl} alt={subject.name} className="w-8 h-8 object-contain" />;
   return subject?.icon || '📖';
-};
-
-const getSubjectColor = (subject: any) => {
-  const color = subject?.color || 'gray';
-  return `bg-${color}-100 text-${color}-600`;
 };
 
 export const PathsManager: React.FC = () => {
@@ -680,7 +688,10 @@ export const PathsManager: React.FC = () => {
                 className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${getPathColor(path)}`}>
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
+                    style={{ backgroundColor: resolveColor(path.color).soft, color: resolveColor(path.color).text }}
+                  >
                     {getPathIcon(path)}
                   </div>
                   <div className="flex gap-2">
@@ -1077,7 +1088,10 @@ export const PathsManager: React.FC = () => {
                       className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group"
                     >
                       <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${getSubjectColor(subject)}`}>
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center text-xl"
+                          style={{ backgroundColor: resolveColor(subject.color).soft, color: resolveColor(subject.color).text }}
+                        >
                           {getSubjectIcon(subject)}
                         </div>
                         <div className="flex gap-2">

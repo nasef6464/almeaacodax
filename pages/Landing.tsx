@@ -67,6 +67,24 @@ const defaultHomepageSettings: HomepageSettings = {
     featuredArticleLessonIds: [],
 };
 
+const colorMap: Record<string, { soft: string; text: string; base: string; border: string }> = {
+    indigo: { soft: '#e0e7ff', text: '#4338ca', base: '#4f46e5', border: '#c7d2fe' },
+    amber: { soft: '#fef3c7', text: '#b45309', base: '#f59e0b', border: '#fde68a' },
+    emerald: { soft: '#d1fae5', text: '#047857', base: '#10b981', border: '#a7f3d0' },
+    purple: { soft: '#ede9fe', text: '#6d28d9', base: '#7c3aed', border: '#ddd6fe' },
+    rose: { soft: '#ffe4e6', text: '#be123c', base: '#f43f5e', border: '#fecdd3' },
+    blue: { soft: '#dbeafe', text: '#1d4ed8', base: '#2563eb', border: '#bfdbfe' },
+    gray: { soft: '#f3f4f6', text: '#4b5563', base: '#6b7280', border: '#d1d5db' },
+};
+
+const resolveColor = (value?: string) => {
+    if (!value) return colorMap.indigo;
+    if (value.startsWith('#')) {
+        return { soft: `${value}18`, text: value, base: value, border: `${value}33` };
+    }
+    return colorMap[value] || colorMap.indigo;
+};
+
 export const Landing: React.FC = () => {
     const { paths, courses, quizzes, questions, lessons, subjects, user } = useStore();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(defaultHomepageSettings);
@@ -547,21 +565,17 @@ export const Landing: React.FC = () => {
 };
 
 const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => {
-    const isHex = color?.startsWith('#');
-    const safeColor = color || 'indigo';
+    const palette = resolveColor(color);
 
     if (iconStyle === 'modern') {
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
                     className="w-full min-h-44 sm:h-48 bg-white border-2 border-gray-100 flex flex-col items-center justify-center shadow-sm hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
-                    style={isHex ? { borderColor: safeColor } : {}}
+                    style={{ borderColor: palette.border || palette.base }}
                 >
                     <div className="relative z-10 flex flex-col items-center">
-                        <div
-                            className={`mb-4 p-4 rounded-2xl ${isHex ? '' : `bg-${safeColor}-50 text-${safeColor}-600`} group-hover:scale-110 transition-transform shadow-sm`}
-                            style={isHex ? { backgroundColor: `${safeColor}20`, color: safeColor } : {}}
-                        >
+                        <div className="mb-4 p-4 rounded-2xl group-hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: palette.soft, color: palette.text }}>
                             {icon}
                         </div>
                         <h3 className="text-lg sm:text-xl font-bold tracking-wide text-gray-900 mb-2 text-center px-3 break-words">{title}</h3>
@@ -577,7 +591,7 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
             <Link to={link || '#'} className="group block h-full w-full">
                 <div className="w-full min-h-44 sm:h-48 bg-gray-50 flex flex-col items-center justify-center hover:bg-white transition-all duration-300 transform group-hover:-translate-y-1 rounded-2xl relative overflow-hidden">
                     <div className="relative z-10 flex flex-col items-center">
-                        <div className={`${isHex ? '' : `text-${safeColor}-600`} mb-3`} style={isHex ? { color: safeColor } : {}}>
+                        <div className="mb-3" style={{ color: palette.text }}>
                             {icon}
                         </div>
                         <h3 className="text-lg sm:text-xl font-extrabold text-gray-800 mb-2 text-center px-3 break-words">{title}</h3>
@@ -592,8 +606,8 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
         return (
             <Link to={link || '#'} className="group block h-full w-full">
                 <div
-                    className={`w-full min-h-44 sm:h-48 ${isHex ? '' : `bg-${safeColor}-400`} text-white flex flex-col items-center justify-center shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-300 transform group-hover:-translate-y-2 rounded-[2rem] border-4 border-white relative overflow-hidden`}
-                    style={isHex ? { backgroundColor: safeColor } : {}}
+                    className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-[8px_8px_0px_#00000020] hover:shadow-[12px_12px_0px_#00000030] transition-all duration-300 transform group-hover:-translate-y-2 rounded-[2rem] border-4 border-white relative overflow-hidden"
+                    style={{ backgroundColor: palette.base }}
                 >
                     <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-6xl">✨</div>
                     <div className="relative z-10 flex flex-col items-center">
@@ -610,8 +624,8 @@ const OrganicCard = ({ title, subtitle, icon, color, link, iconStyle }: any) => 
     return (
         <Link to={link || '#'} className="group block h-full w-full">
             <div
-                className={`w-full min-h-44 sm:h-48 ${isHex ? '' : `bg-${safeColor}-600 hover:bg-${safeColor}-700`} text-white flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden`}
-                style={isHex ? { backgroundColor: safeColor } : {}}
+                className="w-full min-h-44 sm:h-48 text-white flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2 rounded-3xl relative overflow-hidden"
+                style={{ backgroundColor: palette.base }}
             >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 transform group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-black opacity-10 rounded-full -ml-8 -mb-8 transform group-hover:scale-110 transition-transform duration-500" />
