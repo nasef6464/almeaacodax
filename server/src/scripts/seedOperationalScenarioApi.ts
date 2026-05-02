@@ -225,6 +225,10 @@ function byIdOrMongoId(items: any[]) {
   return map;
 }
 
+function documentId(item: any) {
+  return String(item?.id || item?._id || "");
+}
+
 function findLessonBySignature(lessons: any[], title: string, pathId: string, subjectId: string) {
   return lessons.find(
     (lesson) =>
@@ -1376,8 +1380,13 @@ async function upsertPackagesAndCodes(adminToken: string, schoolId: string) {
     expiresAt: Date.now() + 90 * 24 * 60 * 60 * 1000,
   };
 
-  if (codesById.has(accessCode.id)) {
-    await request(`/content/access-codes/${accessCode.id}`, "PATCH", accessCode, adminToken);
+  const existingAccessCode = (snapshots.content.accessCodes || []).find(
+    (item: any) => documentId(item) === accessCode.id || String(item?.code || "").toUpperCase() === accessCode.code,
+  );
+  const existingAccessCodeId = existingAccessCode ? documentId(existingAccessCode) : "";
+
+  if (existingAccessCodeId) {
+    await request(`/content/access-codes/${existingAccessCodeId}`, "PATCH", accessCode, adminToken);
   } else {
     await request("/content/access-codes", "POST", accessCode, adminToken);
   }
