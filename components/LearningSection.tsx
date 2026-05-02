@@ -10,6 +10,7 @@ import { PaymentModal } from './PaymentModal';
 import { useStore } from '../store/useStore';
 import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
+import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 
 interface LearningSectionProps {
     category: string;
@@ -310,9 +311,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const topicList = useStore(state => state.topics);
     const quizList = useStore(state => state.quizzes);
     const previewTopicId = searchParams.get('topic');
-    const previewTopic = previewTopicId ? topicList.find((topic) => topic.id === previewTopicId) || null : null;
+    const previewTopic = previewTopicId ? findByEntityId(topicList, previewTopicId) || null : null;
     const previewParentTopic = previewTopic?.parentId
-        ? topicList.find((topic) => topic.id === previewTopic.parentId) || previewTopic
+        ? findByEntityId(topicList, previewTopic.parentId) || previewTopic
         : previewTopic;
 
     const canStudentSeeTopic = (topic: (typeof topicList)[number]) => isStaffViewer || topic.showOnPlatform !== false;
@@ -324,12 +325,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             const subTopics = topicList.filter(t => t.parentId === topic.id && canStudentSeeTopic(t) && matchesScopedContent(t.pathId, t.subjectId));
             const visibleLessonCount = (lessonIds?: string[]) =>
                 (lessonIds || []).filter(lessonId => {
-                    const lesson = lessons.find(item => item.id === lessonId);
+                    const lesson = findByEntityId(lessons, lessonId);
                     return lesson ? canStudentSeeLesson(lesson) : false;
                 }).length;
             const visibleQuizCount = (quizIds?: string[]) =>
                 (quizIds || []).filter(quizId => {
-                    const quiz = quizList.find(item => item.id === quizId);
+                    const quiz = findByEntityId(quizList, quizId);
                     return quiz ? canStudentSeeQuiz(quiz) : false;
                 }).length;
             let totalLessons = visibleLessonCount(topic.lessonIds);
@@ -358,11 +359,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const previewTopicId = searchParams.get('topic');
         if (!previewTopicId) return;
 
-        const requestedTopic = topicList.find((topic) => topic.id === previewTopicId);
+        const requestedTopic = findByEntityId(topicList, previewTopicId);
         if (!requestedTopic) return;
 
         const parentTopic = requestedTopic.parentId
-            ? topicList.find((topic) => topic.id === requestedTopic.parentId)
+            ? findByEntityId(topicList, requestedTopic.parentId)
             : requestedTopic;
         if (!parentTopic || !matchesScopedContent(parentTopic.pathId, parentTopic.subjectId)) return;
 
@@ -395,12 +396,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const subTopics = topicList.filter((topic) => topic.parentId === parentTopic.id && (isStaffViewer || topic.showOnPlatform !== false));
         const countVisibleLessons = (lessonIds?: string[]) =>
             (lessonIds || []).filter((lessonId) => {
-                const lesson = lessons.find((item) => item.id === lessonId);
+                const lesson = findByEntityId(lessons, lessonId);
                 return lesson ? canStudentSeeLesson(lesson) : false;
             }).length;
         const countVisibleQuizzes = (quizIds?: string[]) =>
             (quizIds || []).filter((quizId) => {
-                const quiz = quizList.find((item) => item.id === quizId);
+                const quiz = findByEntityId(quizList, quizId);
                 return quiz ? canStudentSeeQuiz(quiz) : false;
             }).length;
 
@@ -452,11 +453,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         isLocked: isPremiumLocked(settings.lockLibraryForNonSubscribers, hasLibraryAccess) || (!isStaffViewer && item.isLocked === true && !hasLibraryAccess)
     }));
     banks = banks.filter((bank) => {
-        const sourceQuiz = quizList.find((quiz) => quiz.id === bank.id);
+        const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, bank.id));
         return !!sourceQuiz && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
     });
     tests = tests.filter((test) => {
-        const sourceQuiz = quizList.find((quiz) => quiz.id === test.id);
+        const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, test.id));
         if (!sourceQuiz) return false;
         if (sourceQuiz.pathId !== category || (subject && sourceQuiz.subjectId !== subject)) return false;
         if (!isStaffViewer) {

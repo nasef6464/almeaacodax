@@ -22,6 +22,7 @@ import { VideoModal } from '../components/VideoModal';
 import { Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
+import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -134,13 +135,13 @@ export const SubjectLearningPage: React.FC = () => {
       return;
     }
 
-    const directTopic = subjectTopics.find((item) => item.id === topicId);
+    const directTopic = findByEntityId(subjectTopics, topicId);
     if (!directTopic) {
       return;
     }
 
     if (directTopic.parentId) {
-      const parentTopic = subjectTopics.find((item) => item.id === directTopic.parentId);
+      const parentTopic = findByEntityId(subjectTopics, directTopic.parentId);
       setSelectedTopic(parentTopic || directTopic);
       setSelectedSubTopic(parentTopic ? directTopic : null);
     } else {
@@ -176,8 +177,8 @@ export const SubjectLearningPage: React.FC = () => {
       }
 
       return descendantIds.some((descendantId) => {
-        const descendantTopic = subjectTopics.find((item) => item.id === descendantId);
-        return descendantTopic?.quizIds?.includes(quiz.id);
+        const descendantTopic = findByEntityId(subjectTopics, descendantId);
+        return (descendantTopic?.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
       });
     });
   };
@@ -202,7 +203,7 @@ export const SubjectLearningPage: React.FC = () => {
     () =>
       activeTopic
         ? lessons
-            .filter((lesson) => activeTopic.lessonIds?.includes(lesson.id) && canSeeLesson(lesson))
+            .filter((lesson) => (activeTopic.lessonIds || []).some((lessonId) => matchesEntityId(lesson, lessonId)) && canSeeLesson(lesson))
             .sort((a, b) => (a.order || 0) - (b.order || 0))
         : [],
     [activeTopic, isStaffViewer, lessons],
@@ -211,7 +212,7 @@ export const SubjectLearningPage: React.FC = () => {
     () =>
       activeTopic
         ? quizzes
-            .filter((quiz) => activeTopic.quizIds?.includes(quiz.id) && (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz))
+            .filter((quiz) => (activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId)) && (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz))
             .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
         : [],
     [activeTopic, isStaffViewer, quizzes],
@@ -224,7 +225,7 @@ export const SubjectLearningPage: React.FC = () => {
               const matchesPath = pathId ? lesson.pathId === pathId : true;
               const matchesSubject = subjectId ? lesson.subjectId === subjectId : true;
               const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
-              const notAlreadyAttached = !activeTopic.lessonIds?.includes(lesson.id);
+              const notAlreadyAttached = !(activeTopic.lessonIds || []).some((lessonId) => matchesEntityId(lesson, lessonId));
               return matchesPath && matchesSubject && matchesSection && notAlreadyAttached && canSeeLesson(lesson);
             })
             .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -238,7 +239,7 @@ export const SubjectLearningPage: React.FC = () => {
         ? subjectQuizzes
             .filter((quiz) => {
               const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
-              const notAlreadyAttached = !activeTopic.quizIds?.includes(quiz.id);
+              const notAlreadyAttached = !(activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
               return canSeeQuiz(quiz) && matchesSection && notAlreadyAttached;
             })
             .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))

@@ -2,6 +2,7 @@
 import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
+import { normalizeIdList } from '../utils/entityIds';
 
 const USE_REAL_API =
     (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
@@ -374,6 +375,8 @@ export const useStore = create<AppState>()(
                       .map((topic: any) => ({
                         ...topic,
                         id: String(topic?.id || topic?._id || ''),
+                        lessonIds: normalizeIdList(topic?.lessonIds),
+                        quizIds: normalizeIdList(topic?.quizIds),
                       }))
                       .filter((topic: any) => topic.id && topic.subjectId && topic.title)
                   : state.topics,
@@ -382,7 +385,7 @@ export const useStore = create<AppState>()(
                       .map((lesson: any) => ({
                         ...lesson,
                         id: String(lesson?.id || lesson?._id || ''),
-                        skillIds: Array.isArray(lesson?.skillIds) ? lesson.skillIds.map(String) : [],
+                        skillIds: normalizeIdList(lesson?.skillIds),
                       }))
                       .filter((lesson: any) => lesson.id && lesson.title)
                   : state.lessons,
