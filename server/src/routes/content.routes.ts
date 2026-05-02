@@ -704,6 +704,9 @@ contentRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });
     }
 
+    const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
+    await TopicModel.updateMany({ lessonIds: { $in: deletedIds } }, { $pull: { lessonIds: { $in: deletedIds } } });
+
     return res.json({ success: true });
   }),
 );

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { Topic, Lesson, Quiz } from '../../types';
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { sanitizeVideoUrl } from '../../utils/videoLinks';
 
 interface FoundationManagerProps {
   subjectId: string;
 }
 
 export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId }) => {
-  const { topics, addTopic, updateTopic, deleteTopic, lessons, quizzes, subjects } = useStore();
+  const { topics, addTopic, updateTopic, deleteTopic, lessons, updateLesson, quizzes, updateQuiz, subjects } = useStore();
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   
   // Editing state
@@ -115,13 +116,42 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       if (!topic.lessonIds.includes(itemId)) {
         updateTopic(topic.id, { lessonIds: [...topic.lessonIds, itemId] });
       }
+      const lesson = lessons.find((item) => item.id === itemId);
+      if (lesson && topic.showOnPlatform !== false) {
+        updateLesson(itemId, {
+          pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
+          subjectId: lesson.subjectId || topic.subjectId,
+          sectionId: lesson.sectionId || topic.sectionId,
+          showOnPlatform: true,
+          approvalStatus: 'approved',
+          approvedAt: lesson.approvedAt || Date.now(),
+          videoUrl: lesson.videoUrl ? sanitizeVideoUrl(lesson.videoUrl) : lesson.videoUrl,
+        });
+      }
     } else {
       if (!topic.quizIds.includes(itemId)) {
         updateTopic(topic.id, { quizIds: [...topic.quizIds, itemId] });
       }
+      const quiz = quizzes.find((item) => item.id === itemId);
+      if (quiz && topic.showOnPlatform !== false) {
+        updateQuiz(itemId, {
+          pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
+          subjectId: quiz.subjectId || topic.subjectId,
+          sectionId: quiz.sectionId || topic.sectionId,
+          showOnPlatform: true,
+          isPublished: true,
+          approvalStatus: 'approved',
+          approvedAt: quiz.approvedAt || Date.now(),
+        });
+      }
     }
     setIsAttaching(false);
   };
+
+  const isLessonReadyForLearner = (lesson: Lesson) =>
+    lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved');
+  const isQuizReadyForLearner = (quiz: Quiz) =>
+    quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved');
 
   const handleRemoveAttachment = (topicId: string, itemId: string, type: 'lesson' | 'quiz') => {
     const topic = topics.find(t => t.id === topicId);
@@ -438,7 +468,27 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                       <div key={lesson.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
                         <div className="flex items-center gap-3">
                           <BookOpen size={18} className="text-blue-500" />
-                          <span className="font-medium text-gray-800">{lesson.title}</span>
+                          <div>
+                            <span className="font-medium text-gray-800">{lesson.title}</span>
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+                              {isLessonReadyForLearner(lesson) ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">
+                                  <CheckCircle2 size={12} />
+                                  جاهز للطالب
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                                  <AlertTriangle size={12} />
+                                  سيتم نشره عند الربط
+                                </span>
+                              )}
+                              {lesson.type === 'video' ? (
+                                <span className={`rounded-full px-2 py-0.5 ${lesson.videoUrl ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
+                                  {lesson.videoUrl ? 'به رابط فيديو' : 'بدون رابط فيديو'}
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
                         </div>
                         <button 
                           onClick={() => handleAttach(lesson.id)}
@@ -461,7 +511,25 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                       <div key={quiz.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
                         <div className="flex items-center gap-3">
                           <FileQuestion size={18} className="text-amber-500" />
-                          <span className="font-medium text-gray-800">{quiz.title}</span>
+                          <div>
+                            <span className="font-medium text-gray-800">{quiz.title}</span>
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+                              {isQuizReadyForLearner(quiz) ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">
+                                  <CheckCircle2 size={12} />
+                                  جاهز للطالب
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                                  <AlertTriangle size={12} />
+                                  سيتم نشره عند الربط
+                                </span>
+                              )}
+                              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600">
+                                {quiz.questionIds?.length || 0} سؤال
+                              </span>
+                            </div>
+                          </div>
                         </div>
                         <button 
                           onClick={() => handleAttach(quiz.id)}

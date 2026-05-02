@@ -14,6 +14,7 @@ import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
 import { SectionModel } from "../models/Section.js";
+import { TopicModel } from "../models/Topic.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
@@ -1377,6 +1378,9 @@ quizRouter.delete(
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
+
+    const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
+    await TopicModel.updateMany({ quizIds: { $in: deletedIds } }, { $pull: { quizIds: { $in: deletedIds } } });
 
     return res.json({ success: true });
   }),

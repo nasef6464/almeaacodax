@@ -19,6 +19,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
+  const [lessonNotice, setLessonNotice] = useState('');
   const [openedInitialLessonId, setOpenedInitialLessonId] = useState<string | null>(null);
   const subTopicRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -162,6 +163,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   );
 
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
+    setLessonNotice('');
     const safeVideoUrl = sanitizeVideoUrl(lesson.videoUrl);
     if (safeVideoUrl) {
       setVideoData({ url: safeVideoUrl, title: lesson.title });
@@ -170,7 +172,10 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
 
     if (lesson.fileUrl) {
       openExternalUrl(lesson.fileUrl);
+      return;
     }
+
+    setLessonNotice('هذا الدرس مربوط بالموضوع، لكنه يحتاج إضافة رابط فيديو أو ملف من الإدارة حتى يظهر للطالب بشكل كامل.');
   };
 
   useEffect(() => {
@@ -280,6 +285,11 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
             <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               {topicModalTab === 'lessons' ? (
                 <div className="space-y-4">
+                  {lessonNotice ? (
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold leading-7 text-amber-700">
+                      {lessonNotice}
+                    </div>
+                  ) : null}
                   {activeTopicLessons.length > 0 ? (
                     activeTopicLessons.map((lesson) => (
                       <button

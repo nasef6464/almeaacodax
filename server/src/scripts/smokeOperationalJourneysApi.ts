@@ -397,6 +397,37 @@ async function run() {
       : `visibleLiveSessions=${studentLiveSessions.length}`,
   );
 
+  const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
+  const learnerQuizIds = new Set<string>((studentQuizzes || []).map((quiz: any) => documentId(quiz)));
+  const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
+    (topic.lessonIds || [])
+      .map((lessonId: string) => String(lessonId))
+      .filter((lessonId: string) => lessonId && !learnerLessonIds.has(lessonId))
+      .map((lessonId: string) => `${documentId(topic)}:${lessonId}`),
+  );
+  const missingLearnerQuizRefs = (studentContent.topics || []).flatMap((topic: any) =>
+    (topic.quizIds || [])
+      .map((quizId: string) => String(quizId))
+      .filter((quizId: string) => quizId && !learnerQuizIds.has(quizId))
+      .map((quizId: string) => `${documentId(topic)}:${quizId}`),
+  );
+
+  pushResult(
+    results,
+    "student",
+    "published topic lesson links resolve for learners",
+    missingLearnerLessonRefs.length === 0,
+    missingLearnerLessonRefs.length ? `missing=${missingLearnerLessonRefs.slice(0, 5).join(",")}` : `linkedLessons=${learnerLessonIds.size}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "published topic quiz links resolve for learners",
+    missingLearnerQuizRefs.length === 0,
+    missingLearnerQuizRefs.length ? `missing=${missingLearnerQuizRefs.slice(0, 5).join(",")}` : `linkedQuizzes=${learnerQuizIds.size}`,
+  );
+
   pushResult(
     results,
     "teacher",

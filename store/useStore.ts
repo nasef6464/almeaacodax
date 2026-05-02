@@ -870,7 +870,13 @@ export const useStore = create<AppState>()(
             deleteQuiz: (quizId) => {
                 api.deleteQuiz(quizId).catch(console.error);
                 set((state) => ({
-                    quizzes: state.quizzes.filter(q => q.id !== quizId)
+                    quizzes: state.quizzes.filter(q => q.id !== quizId),
+                    topics: state.topics.map((topic) => {
+                        if (!topic.quizIds?.includes(quizId)) return topic;
+                        const nextQuizIds = topic.quizIds.filter((id) => id !== quizId);
+                        api.updateTopic(topic.id, { quizIds: nextQuizIds }).catch(console.error);
+                        return { ...topic, quizIds: nextQuizIds };
+                    })
                 }));
             },
 
@@ -894,7 +900,13 @@ export const useStore = create<AppState>()(
             deleteLesson: (lessonId) => {
                 api.deleteLesson(lessonId).catch(console.error);
                 set((state) => ({
-                    lessons: state.lessons.filter(l => l.id !== lessonId)
+                    lessons: state.lessons.filter(l => l.id !== lessonId),
+                    topics: state.topics.map((topic) => {
+                        if (!topic.lessonIds?.includes(lessonId)) return topic;
+                        const nextLessonIds = topic.lessonIds.filter((id) => id !== lessonId);
+                        api.updateTopic(topic.id, { lessonIds: nextLessonIds }).catch(console.error);
+                        return { ...topic, lessonIds: nextLessonIds };
+                    })
                 }));
             },
 
