@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
+import { AlertTriangle, ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, Search, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
@@ -63,6 +63,8 @@ export const FinancialManager: React.FC = () => {
     const [settings, setSettings] = useState<PaymentSettings>(defaultSettings);
     const [loading, setLoading] = useState(false);
     const [requestActionLoading, setRequestActionLoading] = useState<string | null>(null);
+    const [requestStatusFilter, setRequestStatusFilter] = useState<PaymentRequestStatus | 'all'>('pending');
+    const [requestSearchTerm, setRequestSearchTerm] = useState('');
     const [feedback, setFeedback] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -139,14 +141,6 @@ export const FinancialManager: React.FC = () => {
     const averageCustomerValue = users.length > 0 ? Math.round(estimatedTotalRevenue / users.length) : 0;
 
     const pendingRequestsCount = paymentRequests.filter((request) => request.status === 'pending').length;
-    const pendingPaymentRequests = useMemo(
-        () => paymentRequests.filter((request) => request.status === 'pending'),
-        [paymentRequests],
-    );
-    const reviewedPaymentRequests = useMemo(
-        () => paymentRequests.filter((request) => request.status !== 'pending'),
-        [paymentRequests],
-    );
 
     const kpis = [
         {
@@ -203,6 +197,81 @@ export const FinancialManager: React.FC = () => {
                 return 'bg-amber-100 text-amber-700';
         }
     };
+
+    const requestMethodLabel = (method: PaymentRequest['paymentMethod']) => {
+        switch (method) {
+            case 'card':
+                return 'بطاقة';
+            case 'transfer':
+                return 'تحويل بنكي';
+            case 'wallet':
+                return 'محفظة';
+            default:
+                return 'وسيلة دفع';
+        }
+    };
+
+    const requestItemTypeLabel = (type: PaymentRequest['itemType']) => {
+        switch (type) {
+            case 'package':
+                return 'باقة';
+            case 'course':
+                return 'دورة';
+            case 'test':
+                return 'اختبار';
+            case 'skill':
+                return 'مهارة';
+            default:
+                return 'محتوى';
+        }
+    };
+
+    const requestDateLabel = (value?: string | number) => (
+        new Date(value || Date.now()).toLocaleString('ar-SA', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+        })
+    );
+
+    const requestRiskNotes = (request: PaymentRequest) => [
+        request.status === 'pending' && request.paymentMethod === 'transfer' && !request.transferReference ? 'لا يوجد مرجع تحويل' : '',
+        request.status === 'pending' && request.paymentMethod === 'wallet' && !request.walletNumber ? 'لا يوجد رقم محفظة' : '',
+        request.status === 'pending' && request.paymentMethod !== 'card' && !request.receiptUrl ? 'لا يوجد رابط إيصال' : '',
+        request.amount <= 0 ? 'المبلغ غير محدد' : '',
+    ].filter(Boolean);
+
+    const paymentRequestStatusCounts = useMemo(() => ({
+        all: paymentRequests.length,
+        pending: paymentRequests.filter((request) => request.status === 'pending').length,
+        approved: paymentRequests.filter((request) => request.status === 'approved').length,
+        rejected: paymentRequests.filter((request) => request.status === 'rejected').length,
+        cancelled: paymentRequests.filter((request) => request.status === 'cancelled').length,
+    }), [paymentRequests]);
+
+    const visiblePaymentRequests = useMemo(() => {
+        const normalizedSearch = requestSearchTerm.trim().toLowerCase();
+
+        return paymentRequests
+            .filter((request) => requestStatusFilter === 'all' || request.status === requestStatusFilter)
+            .filter((request) => {
+                if (!normalizedSearch) return true;
+                return [
+                    request.id,
+                    request.userName,
+                    request.userEmail,
+                    request.itemName,
+                    request.transferReference,
+                    request.walletNumber,
+                    request.notes,
+                    request.reviewerNotes,
+                ].some((value) => String(value || '').toLowerCase().includes(normalizedSearch));
+            })
+            .sort((a, b) => {
+                const statusWeight = (request: PaymentRequest) => request.status === 'pending' ? 0 : request.status === 'approved' ? 1 : 2;
+                return statusWeight(a) - statusWeight(b)
+                    || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+            });
+    }, [paymentRequests, requestSearchTerm, requestStatusFilter]);
 
     const recentTransactions = useMemo<TransactionRow[]>(() => {
         const requestTransactions = paymentRequests.slice(0, 8).map((request) => ({
@@ -829,10 +898,10 @@ export const FinancialManager: React.FC = () => {
 
             {activeTab === 'requests' && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                             <h2 className="text-lg font-bold text-gray-900">طلبات الدفع المرسلة من الطلاب</h2>
-                            <p className="text-xs text-gray-500 mt-1">الطلبات المعلقة تظهر أولًا حتى لا تضيع وسط السجل القديم.</p>
+                            <p className="text-xs text-gray-500 mt-1">راجع الطلبات حسب الحالة وابحث بالطالب أو رقم الطلب أو مرجع الدفع قبل الاعتماد.</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
                             <button
@@ -845,10 +914,63 @@ export const FinancialManager: React.FC = () => {
                             <span className="text-sm text-gray-500">{pendingRequestsCount} بانتظار المراجعة / {paymentRequests.length} إجمالي</span>
                         </div>
                     </div>
+
+                    <div className="grid gap-3 xl:grid-cols-[1.3fr_2fr]">
+                        <div className="relative">
+                            <Search size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                value={requestSearchTerm}
+                                onChange={(event) => setRequestSearchTerm(event.target.value)}
+                                placeholder="ابحث برقم الطلب، الطالب، البريد، أو مرجع الدفع..."
+                                className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pr-11 pl-4 text-sm outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                            />
+                        </div>
+                        <div className="flex gap-2 overflow-x-auto pb-1">
+                            {([
+                                ['pending', 'بانتظار المراجعة', paymentRequestStatusCounts.pending],
+                                ['all', 'كل الطلبات', paymentRequestStatusCounts.all],
+                                ['approved', 'معتمدة', paymentRequestStatusCounts.approved],
+                                ['rejected', 'مرفوضة', paymentRequestStatusCounts.rejected],
+                                ['cancelled', 'ملغية', paymentRequestStatusCounts.cancelled],
+                            ] as Array<[PaymentRequestStatus | 'all', string, number]>).map(([status, label, count]) => (
+                                <button
+                                    key={status}
+                                    onClick={() => setRequestStatusFilter(status)}
+                                    className={`whitespace-nowrap rounded-2xl border px-4 py-3 text-xs font-black transition ${
+                                        requestStatusFilter === status
+                                            ? 'border-indigo-200 bg-indigo-600 text-white shadow-sm'
+                                            : 'border-gray-100 bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    {label}
+                                    <span className={`mr-2 rounded-full px-2 py-0.5 ${requestStatusFilter === status ? 'bg-white/20 text-white' : 'bg-white text-gray-500'}`}>
+                                        {count}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-3">
+                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+                            <div className="text-xs font-bold text-amber-700">قيمة معلقة للمراجعة</div>
+                            <div className="mt-2 text-2xl font-black text-amber-800">{settings.currency} {pendingRevenue.toLocaleString('en-US')}</div>
+                        </div>
+                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                            <div className="text-xs font-bold text-emerald-700">إيراد معتمد</div>
+                            <div className="mt-2 text-2xl font-black text-emerald-800">{settings.currency} {approvedRevenue.toLocaleString('en-US')}</div>
+                        </div>
+                        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                            <div className="text-xs font-bold text-slate-600">النتائج المعروضة الآن</div>
+                            <div className="mt-2 text-2xl font-black text-slate-900">{visiblePaymentRequests.length}</div>
+                        </div>
+                    </div>
+
                     <div className="overflow-x-auto">
                         <table className="w-full text-right">
                             <thead className="bg-gray-50 text-gray-600 text-sm">
                                 <tr>
+                                    <th className="p-4 font-medium">رقم الطلب</th>
                                     <th className="p-4 font-medium">الطالب</th>
                                     <th className="p-4 font-medium">العنصر</th>
                                     <th className="p-4 font-medium">الطريقة</th>
@@ -859,32 +981,56 @@ export const FinancialManager: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {[...pendingPaymentRequests, ...reviewedPaymentRequests].map((request) => (
+                                {visiblePaymentRequests.map((request) => {
+                                    const riskNotes = requestRiskNotes(request);
+                                    return (
                                     <tr key={request.id} className="hover:bg-gray-50 transition-colors align-top">
+                                        <td className="p-4">
+                                            <div className="font-mono text-xs font-bold text-gray-900">{request.id}</div>
+                                            <div className="mt-1 text-[11px] text-gray-400">{requestDateLabel(request.createdAt)}</div>
+                                        </td>
                                         <td className="p-4">
                                             <div className="font-medium text-gray-900">{request.userName || 'طالب'}</div>
                                             <div className="text-xs text-gray-500">{request.userEmail}</div>
                                         </td>
                                         <td className="p-4">
                                             <div className="font-medium text-gray-900">{request.itemName}</div>
-                                            <div className="text-xs text-gray-500">{request.itemType}</div>
+                                            <div className="text-xs text-gray-500">{requestItemTypeLabel(request.itemType)}</div>
+                                            {request.packageId && <div className="mt-1 font-mono text-[11px] text-gray-400">package: {request.packageId}</div>}
                                         </td>
-                                        <td className="p-4 text-gray-600">{request.paymentMethod}</td>
+                                        <td className="p-4 text-gray-600">
+                                            <div className="font-bold text-gray-800">{requestMethodLabel(request.paymentMethod)}</div>
+                                            {riskNotes.length > 0 && (
+                                                <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-700">
+                                                    <AlertTriangle size={12} />
+                                                    يحتاج تدقيق
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="p-4 font-bold text-indigo-600">{request.currency} {request.amount.toLocaleString('en-US')}</td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${requestStatusClasses(request.status)}`}>
                                                 {requestStatusLabel(request.status)}
                                             </span>
+                                            {request.reviewedAt && (
+                                                <div className="mt-1 text-[11px] text-gray-400">تمت المراجعة: {requestDateLabel(request.reviewedAt)}</div>
+                                            )}
                                         </td>
                                         <td className="p-4 text-xs text-gray-500 space-y-1">
-                                            {request.transferReference && <div>مرجع التحويل: {request.transferReference}</div>}
-                                            {request.walletNumber && <div>رقم المحفظة: {request.walletNumber}</div>}
+                                            {request.transferReference && <div><span className="font-bold text-gray-700">مرجع التحويل:</span> {request.transferReference}</div>}
+                                            {request.walletNumber && <div><span className="font-bold text-gray-700">رقم المحفظة:</span> {request.walletNumber}</div>}
                                             {request.receiptUrl && (
                                                 <a href={request.receiptUrl} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
                                                     فتح الإيصال
                                                 </a>
                                             )}
                                             {request.notes && <div>{request.notes}</div>}
+                                            {request.reviewerNotes && <div className="text-gray-400">ملاحظة الإدارة: {request.reviewerNotes}</div>}
+                                            {riskNotes.length > 0 && (
+                                                <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 font-bold leading-5 text-amber-800">
+                                                    {riskNotes.join('، ')}
+                                                </div>
+                                            )}
                                         </td>
                                         <td className="p-4">
                                             <div className="flex flex-col gap-2 min-w-[140px]">
@@ -905,7 +1051,15 @@ export const FinancialManager: React.FC = () => {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                    );
+                                })}
+                                {visiblePaymentRequests.length === 0 && (
+                                    <tr>
+                                        <td colSpan={8} className="p-8 text-center text-sm text-gray-500">
+                                            لا توجد طلبات مطابقة للبحث أو الفلتر الحالي.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
