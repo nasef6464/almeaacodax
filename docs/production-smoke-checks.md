@@ -17,7 +17,7 @@ Checks that:
 - The deployed entry asset can be downloaded.
 - The deployed asset is inspected for the current local commit/version.
 
-If the version line says `STALE`, the site is reachable but Vercel is still serving an older deployment or cache.
+If the output includes `WARN production deployment is stale`, the site is reachable and Render is responding, but Vercel is still serving an older deployment or cache. Redeploy the production deployment from the `main` branch or wait for Vercel to finish, then run the strict check.
 
 ## Strict Check
 
@@ -25,7 +25,7 @@ If the version line says `STALE`, the site is reachable but Vercel is still serv
 npm run smoke:frontend:strict
 ```
 
-Use this after Vercel says the deployment is complete. It fails if the production asset does not include the current Git commit/version.
+Use this after Vercel says the deployment is complete. It fails if the production asset does not include the current Git commit/version, which is the clearest sign that the browser is still seeing an older frontend build.
 
 ## Useful Environment Overrides
 

@@ -92,7 +92,9 @@ Current production notes:
 - Render environment uses `NODE_ENV=production`, `CLIENT_URL=https://almeaacodax.vercel.app`, and `AI_PROVIDER=none`.
 - MongoDB Atlas project: `almeaacodax`, cluster: `almeaa`, production database: `almeaa`.
 - Production seed was run against the `almeaa` database. Render can log in with the seeded role accounts.
-- Latest operational smoke result after seeding: `48/53` checks passing. The remaining checks are seed-content gaps, not deployment or authentication failures.
+- Latest operational smoke result: `58/58` checks passing, including published learner topic links resolving to visible lessons and quizzes.
+- Use `npm run smoke:frontend` after every push to confirm Vercel, Render, and Atlas are reachable. A `WARN production deployment is stale` line means GitHub has the commit, but Vercel is still serving an older frontend asset.
+- Use `npm run smoke:frontend:strict` when Vercel says the deployment is complete. It fails until the production frontend includes the expected Git commit/version.
 
 ### Local MongoDB option
 

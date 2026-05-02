@@ -26,10 +26,18 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function check(name, fn) {
   try {
-    const details = await fn();
-    checks.push({ name, passed: true, details });
+    const result = await fn();
+    if (result && typeof result === 'object') {
+      checks.push({
+        name,
+        status: result.status || 'pass',
+        details: result.details || '',
+      });
+      return;
+    }
+    checks.push({ name, status: 'pass', details: result });
   } catch (error) {
-    checks.push({ name, passed: false, details: error instanceof Error ? error.message : String(error) });
+    checks.push({ name, status: 'fail', details: error instanceof Error ? error.message : String(error) });
   }
 }
 
@@ -100,14 +108,18 @@ await check('entry asset loads', async () => {
 });
 
 if (EXPECTED_VERSION) {
-  await check(`deployed app version includes ${EXPECTED_VERSION}`, async () => {
+  await check(`deployed app version matches ${EXPECTED_VERSION}`, async () => {
     const matches = entryAssetText.includes(EXPECTED_VERSION);
     if (!matches && STRICT_VERSION) {
       throw new Error('production entry asset does not include expected version');
     }
-    return matches
-      ? 'production is serving the expected commit/version'
-      : 'STALE: production entry asset does not include the expected version yet';
+    if (!matches) {
+      return {
+        status: 'warn',
+        details: 'STALE: Vercel is reachable, but the entry asset does not include the expected Git commit yet. Redeploy the main branch or wait for Vercel to finish.',
+      };
+    }
+    return 'production is serving the expected commit/version';
   });
 }
 
@@ -119,9 +131,10 @@ for (const route of routes) {
   });
 }
 
-const failed = checks.filter((item) => !item.passed);
+const failed = checks.filter((item) => item.status === 'fail');
+const warnings = checks.filter((item) => item.status === 'warn');
 for (const item of checks) {
-  const mark = item.passed ? 'PASS' : 'FAIL';
+  const mark = item.status === 'pass' ? 'PASS' : item.status === 'warn' ? 'WARN' : 'FAIL';
   console.log(`${mark} ${item.name} - ${item.details}`);
 }
 
@@ -130,4 +143,6 @@ if (failed.length > 0) {
   process.exit(1);
 }
 
-console.log(`\nAll ${checks.length} frontend smoke checks passed.`);
+const passCount = checks.filter((item) => item.status === 'pass').length;
+const warningText = warnings.length ? ` ${warnings.length} warning(s) need attention.` : '';
+console.log(`\nAll ${passCount} blocking frontend smoke checks passed.${warningText}`);
