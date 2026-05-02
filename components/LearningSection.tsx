@@ -684,7 +684,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                 </div>
                                                 <div className="space-y-4 p-4">
                                                     <p className="line-clamp-2 text-sm text-gray-500">{pkg.description || 'باقة عامة لفتح محتوى هذا المسار حسب إعدادات الإدارة.'}</p>
-                                                    {packageCoverage.length > 0 ? (
+                                                    {isAdminViewer && packageCoverage.length > 0 ? (
                                                         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
                                                             <div className="mb-2 text-[11px] font-black text-amber-700">ماذا ستفتح لك هذه الباقة؟</div>
                                                             <div className="grid grid-cols-2 gap-2">
@@ -701,11 +701,15 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                         <span className="text-xl font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
                                                         {pkg.originalPrice ? <span className="text-sm font-bold text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
                                                     </div>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {(pkg.features || []).slice(0, 3).map((feature) => (
-                                                            <span key={feature} className="rounded-full bg-gray-50 px-2 py-1 text-xs font-bold text-gray-600">{feature}</span>
-                                                        ))}
-                                                    </div>
+                                                    {isAdminViewer ? (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {(pkg.features || []).slice(0, 3).map((feature) => (
+                                                                <span key={feature} className="rounded-full bg-gray-50 px-2 py-1 text-xs font-bold text-gray-600">{feature}</span>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-xs text-gray-400">اختيار بسيط يفتح المحتوى المناسب</div>
+                                                    )}
                                                     <button
                                                         onClick={() => {
                                                             if (!packageIsActive) {
@@ -918,12 +922,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'banks' && enabledTabs.banks && (
                     <>
-                    <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
-                        <div className="flex flex-wrap items-center gap-2 text-sm font-black">
-                            <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.banks.total - learningInventory.banks.locked}</span>
-                            <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج تفعيل: {learningInventory.banks.locked}</span>
+                    {isAdminViewer && (
+                        <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="flex flex-wrap items-center gap-2 text-sm font-black">
+                                <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.banks.total - learningInventory.banks.locked}</span>
+                                <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج تفعيل: {learningInventory.banks.locked}</span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     {!hasBanksAccess && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -968,12 +974,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'tests' && enabledTabs.tests && (
                     <>
-                    <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
-                        <div className="flex flex-wrap items-center gap-2 text-sm font-black">
-                            <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.tests.total - learningInventory.tests.locked}</span>
-                            <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج تفعيل: {learningInventory.tests.locked}</span>
+                    {isAdminViewer && (
+                        <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="flex flex-wrap items-center gap-2 text-sm font-black">
+                                <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.tests.total - learningInventory.tests.locked}</span>
+                                <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج تفعيل: {learningInventory.tests.locked}</span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     {!hasTestsAccess && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
