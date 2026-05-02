@@ -1,7 +1,13 @@
+const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
+const defaultApiBaseUrl =
+  runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
+    ? "https://almeaacodax-k2ux.onrender.com/api"
+    : "http://localhost:4000/api";
+
 const API_BASE_URL =
   (globalThis as { __API_BASE_URL__?: string }).__API_BASE_URL__ ||
   (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_API_URL ||
-  "http://localhost:4000/api";
+  defaultApiBaseUrl;
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 

@@ -14,7 +14,7 @@ npm --prefix server install
 ## Configure environment variables
 ### Frontend
 - `VITE_USE_REAL_API`
-- `VITE_API_URL`
+- `VITE_API_URL=https://almeaacodax-k2ux.onrender.com/api`
 
 ### Backend
 Copy `server/.env.example` to `server/.env` and set the documented variables:
@@ -74,6 +74,11 @@ Use the available seed scripts:
 - `npm --prefix server run seed:operational:api`
 - `npm --prefix server run seed:learning:api`
 
+For production API seeding, the default API target is:
+```bash
+https://almeaacodax-k2ux.onrender.com/api
+```
+
 ## Run tests / checks
 ```bash
 npm run lint
@@ -126,4 +131,3 @@ What is visible:
 - [ ] Legacy fallback behavior documented
 - [ ] Smoke tests run successfully
 - [ ] Deployment target confirmed
-

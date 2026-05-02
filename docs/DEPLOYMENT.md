@@ -9,9 +9,9 @@
 6.  **Environment Variables:**
     - `NODE_ENV`: production
     - `PORT`: 10000
-    - `MONGODB_URI`: (Connection string from Atlas)
+    - `MONGODB_URI`: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/the-hundred?appName=almeaa`
     - `JWT_SECRET`: (Random 64-char string)
-    - `CLIENT_URL`: (The Vercel Frontend URL)
+    - `CLIENT_URL`: `https://almeaacodax.vercel.app`
     - `AI_PROVIDER`: `gemini`, `ollama`, or `none` (optional)
     - `GEMINI_API_KEY`: (Google AI Key)
     - `GEMINI_MODEL`: Gemini model name, defaults to `gemini-2.5-flash`
@@ -27,10 +27,10 @@
 4.  **Build Command:** `npm run build`
 5.  **Output Directory:** `dist`
 6.  **Environment Variables:**
-    - `VITE_API_URL`: (The Render Backend URL, e.g., `https://api-hundred.onrender.com`)
+    - `VITE_API_URL`: `https://almeaacodax-k2ux.onrender.com/api`
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.
 2.  Create a Database User.
 3.  Network Access: Allow `0.0.0.0/0` (or specific IPs for tighter security).
-4.  Get Connection String for Render.
+4.  Use the `the-hundred` database name in the connection string so production data lands in the intended database.

@@ -78,6 +78,13 @@ Notes:
 - Keep AI keys and model endpoints in `server/.env` or hosting environment variables only.
 - Ollama/LM Studio style local models are useful for experimentation, while hosted production needs a reachable model endpoint.
 
+### Current production targets
+
+- Frontend: `https://almeaacodax.vercel.app`
+- Backend API: `https://almeaacodax-k2ux.onrender.com/api`
+- Backend health: `https://almeaacodax-k2ux.onrender.com/api/health`
+- MongoDB Atlas: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/the-hundred?appName=almeaa`
+
 ### Local MongoDB option
 
 This workspace is also prepared to run MongoDB locally on Windows without Atlas.
