@@ -32,6 +32,7 @@ const topicSchema = z.object({
 });
 
 const lessonSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1),
   description: z.string().optional(),
   pathId: z.string().min(1),
