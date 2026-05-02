@@ -62,7 +62,8 @@ export const GenericPathPage: React.FC = () => {
         }
     }, [navigate, normalizedPathId, pathId]);
 
-    const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    const canSeeHiddenPaths = isStaffViewer;
     const path = paths.find(p => p.id === normalizedPathId);
     
     if (!path || (!canSeeHiddenPaths && path.isActive === false)) {
@@ -208,7 +209,10 @@ export const GenericPathPage: React.FC = () => {
         activePackages: pathPackages.filter((pkg) => isPackageActiveForCurrentUser(pkg)).length,
         openSubjects: pathSubjects.filter((subject) => getSubjectContentSummary(subject.id).lockedRows.length === 0).length,
     };
-    const renderPathOverview = () => (
+    const renderPathOverview = () => {
+        if (!isStaffViewer) return null;
+
+        return (
         <div className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
             <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
                 <div className="text-xs font-black text-gray-500">مواد المسار</div>
@@ -231,7 +235,8 @@ export const GenericPathPage: React.FC = () => {
                 <div className="mt-2 text-xs font-bold text-indigo-600">بدون أجزاء مغلقة على الطالب</div>
             </div>
         </div>
-    );
+        );
+    };
 
     const getPathStyle = () => {
         const c = path.color || 'indigo';
@@ -386,16 +391,18 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
         const icon = s.iconUrl ? <img src={s.iconUrl} className="w-12 h-12 object-contain mx-auto" alt={s.name} /> : <div className="text-4xl">{s.icon || '📚'}</div>;
         const summary = getSubjectContentSummary(s.id);
-        const topContentRows = contentAccessRows
-            .map((row) => ({ ...row, count: summary.visibleCounts[row.type] }))
-            .filter((row) => row.count > 0)
-            .slice(0, 3);
+        const topContentRows = isStaffViewer
+            ? contentAccessRows
+                .map((row) => ({ ...row, count: summary.visibleCounts[row.type] }))
+                .filter((row) => row.count > 0)
+                .slice(0, 3)
+            : [];
         const hasLockedAreas = summary.lockedRows.length > 0;
         const subjectPackageCount = pathPackages.filter((pkg) => {
             const packageSubjectId = pkg.subjectId || pkg.subject;
             return !packageSubjectId || packageSubjectId === s.id;
         }).length;
-        const footer = (
+        const footer = isStaffViewer ? (
             <>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                     <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black ${
@@ -424,6 +431,21 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     )}
                 </div>
             </>
+        ) : (
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black ${
+                    hasLockedAreas ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                }`}>
+                    {hasLockedAreas ? <Lock size={14} /> : <Unlock size={14} />}
+                    {hasLockedAreas ? 'بعض الأجزاء تحتاج تفعيل' : 'المادة مفتوحة'}
+                </span>
+                {subjectPackageCount > 0 ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                        <Package size={14} />
+                        {subjectPackageCount} باقة
+                    </span>
+                ) : null}
+            </div>
         );
 
         if (iconStyle === 'modern') {

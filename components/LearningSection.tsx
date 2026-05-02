@@ -481,6 +481,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         open: Math.max(activeInventory.total - activeInventory.locked, 0),
         label: activeInventory.label,
     };
+    const showStaffInventory = isStaffViewer;
     const getScopedPackageCoverage = (pkg: any) => {
         const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
         const includesAll = contentTypes.includes('all');
@@ -538,51 +539,55 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={20} />} label="الاختبارات المحاكية" colorTheme={colorTheme} />}
                 {(settings.showLibrary ?? true) && <TabButton active={activeTab === 'library'} onClick={() => handleTabChange('library')} icon={<Library size={20} />} label="المكتبة" colorTheme={colorTheme} />}
             </div>
-            <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
-                {Object.entries(learningInventory).map(([key, item]) => {
-                    const isActive = activeTab === key;
-                    return (
-                        <div
-                            key={key}
-                            className={`rounded-3xl border p-4 shadow-sm transition-all ${
-                                isActive ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-white'
-                            }`}
-                        >
-                            <div className={`text-xs font-black ${isActive ? 'text-indigo-700' : 'text-gray-500'}`}>{item.label}</div>
-                            <div className="mt-2 text-2xl font-black text-gray-900">{item.total}</div>
-                            <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold">
-                                <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">مفتوح {Math.max(item.total - item.locked, 0)}</span>
-                                <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">مغلق {item.locked}</span>
+            {showStaffInventory ? (
+                <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+                    {Object.entries(learningInventory).map(([key, item]) => {
+                        const isActive = activeTab === key;
+                        return (
+                            <div
+                                key={key}
+                                className={`rounded-3xl border p-4 shadow-sm transition-all ${
+                                    isActive ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-white'
+                                }`}
+                            >
+                                <div className={`text-xs font-black ${isActive ? 'text-indigo-700' : 'text-gray-500'}`}>{item.label}</div>
+                                <div className="mt-2 text-2xl font-black text-gray-900">{item.total}</div>
+                                <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold">
+                                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">مفتوح {Math.max(item.total - item.locked, 0)}</span>
+                                    <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">مغلق {item.locked}</span>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
-            </div>
+                        );
+                    })}
+                </div>
+            ) : null}
 
             {/* Content */}
             <div className="animate-fade-in">
-                <div className="mb-6 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                        <div>
-                            <div className="text-xs font-black text-gray-500">حالة المساحة الحالية</div>
-                            <h3 className="mt-2 text-xl font-black text-gray-900">{activeTabSummary.label}</h3>
-                            <p className="mt-1 text-sm leading-7 text-gray-500">
-                                يوجد الآن {activeTabSummary.total} عنصرًا في هذا القسم، المفتوح منها {activeTabSummary.open} والمغلق {activeTabSummary.locked}.
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2 text-sm font-black">
-                            <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {activeTabSummary.open}</span>
-                            <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج باقة: {activeTabSummary.locked}</span>
-                            {activeTabAccess?.hasAccess ? (
-                                <span className="rounded-full bg-indigo-50 px-3 py-2 text-indigo-700">وصولك لهذا القسم مفعل</span>
-                            ) : (
-                                <span className="rounded-full bg-gray-100 px-3 py-2 text-gray-700">يمكن فتحه من الباقة المناسبة</span>
-                            )}
+                {showStaffInventory ? (
+                    <div className="mb-6 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <div className="text-xs font-black text-gray-500">حالة المساحة الحالية</div>
+                                <h3 className="mt-2 text-xl font-black text-gray-900">{activeTabSummary.label}</h3>
+                                <p className="mt-1 text-sm leading-7 text-gray-500">
+                                    يوجد الآن {activeTabSummary.total} عنصرًا في هذا القسم، المفتوح منها {activeTabSummary.open} والمغلق {activeTabSummary.locked}.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-sm font-black">
+                                <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {activeTabSummary.open}</span>
+                                <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج باقة: {activeTabSummary.locked}</span>
+                                {activeTabAccess?.hasAccess ? (
+                                    <span className="rounded-full bg-indigo-50 px-3 py-2 text-indigo-700">وصولك لهذا القسم مفعل</span>
+                                ) : (
+                                    <span className="rounded-full bg-gray-100 px-3 py-2 text-gray-700">يمكن فتحه من الباقة المناسبة</span>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : null}
                 {showActiveTabAccessNotice && activeTabPackage && (
-                    <div className="mb-6 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+                    <div className="mb-6 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-4 shadow-sm">
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                             <div className="flex items-start gap-4">
                                 <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
