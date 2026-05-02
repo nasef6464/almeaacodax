@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const lessonSchema = new Schema(
   {
+    id: { type: String, index: true, sparse: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     pathId: { type: String, default: null },
