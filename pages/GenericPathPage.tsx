@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
-import { ChevronRight, LayoutGrid, Lock, Unlock } from 'lucide-react';
+import { CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
@@ -261,6 +261,118 @@ export const GenericPathPage: React.FC = () => {
             ? `هذه الباقة تفتح ${contentLabel} داخل مادة ${packageSubjectName} في مسار ${path.name}.`
             : `هذه الباقة تفتح ${contentLabel} داخل مسار ${path.name}.`;
     };
+    const buildPaymentPackage = (pkg: any, contentTypes = resolvePackageContentTypes(pkg)) => {
+        const packageSubjectId = pkg.subjectId || pkg.subject;
+        return {
+            ...pkg,
+            packageId: pkg.id,
+            purchaseType: 'package',
+            contentTypes,
+            packageContentTypes: contentTypes,
+            pathIds: [path.id],
+            subjectIds: packageSubjectId ? [packageSubjectId] : [],
+            courseIds: [],
+            accessContext: getPackageStudentAccessNote(pkg, contentTypes),
+        };
+    };
+    const getSuggestedPackageForSubject = (subjectId: string, wantedTypes: readonly string[]) => {
+        return pathPackages
+            .filter((pkg) => canSeeHiddenPaths || isPublicPackageVisible(pkg))
+            .filter((pkg) => {
+                const packageSubjectId = pkg.subjectId || pkg.subject;
+                const contentTypes = resolvePackageContentTypes(pkg);
+                const matchesSubject = !packageSubjectId || packageSubjectId === subjectId;
+                const matchesType = contentTypes.includes('all') || wantedTypes.some((type) => contentTypes.includes(type));
+                return matchesSubject && matchesType;
+            })
+            .sort((a, b) => {
+                const scorePackage = (pkg: any) => {
+                    const packageSubjectId = pkg.subjectId || pkg.subject;
+                    const contentTypes = resolvePackageContentTypes(pkg);
+                    return (
+                        (packageSubjectId === subjectId ? 8 : 0) +
+                        (wantedTypes.some((type) => contentTypes.includes(type)) ? 4 : 0) +
+                        (contentTypes.includes('all') ? 1 : 0)
+                    );
+                };
+                return scorePackage(b) - scorePackage(a);
+            })[0];
+    };
+    const renderPackagePaymentModal = () => (
+        <PaymentModal
+            isOpen={!!selectedPackageForPayment}
+            onClose={() => setSelectedPackageForPayment(null)}
+            item={selectedPackageForPayment || {}}
+            type="package"
+        />
+    );
+    const renderSubjectAccessGuide = (subjectId: string) => {
+        if (isStaffViewer || showPublicAdminDiagnostics) return null;
+        const summary = getSubjectContentSummary(subjectId);
+        const availableRows = contentAccessRows
+            .map((row) => ({
+                ...row,
+                count: summary.visibleCounts[row.type],
+                isOpen: hasScopedPackageAccess(row.type, path.id, subjectId),
+            }))
+            .filter((row) => row.count > 0);
+
+        if (availableRows.length === 0) return null;
+
+        const lockedRows = availableRows.filter((row) => !row.isOpen);
+        const suggestedPackage = lockedRows.length
+            ? getSuggestedPackageForSubject(subjectId, lockedRows.map((row) => row.type))
+            : null;
+        const suggestedContentTypes = suggestedPackage ? resolvePackageContentTypes(suggestedPackage) : [];
+
+        return (
+            <Card className="mb-6 border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div className="text-xs font-black text-slate-500">حالة الوصول لهذه المادة</div>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {availableRows.map((row) => (
+                                <span
+                                    key={row.type}
+                                    className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-black ${
+                                        row.isOpen
+                                            ? 'bg-emerald-50 text-emerald-700'
+                                            : 'bg-amber-50 text-amber-700'
+                                    }`}
+                                >
+                                    {row.isOpen ? <CheckCircle2 size={14} /> : <Lock size={14} />}
+                                    {row.label}
+                                    <span className="font-bold opacity-75">{row.isOpen ? 'مفتوح' : 'يحتاج باقة'}</span>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {lockedRows.length > 0 ? (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (suggestedPackage) {
+                                    setSelectedPackageForPayment(buildPaymentPackage(suggestedPackage, suggestedContentTypes));
+                                    return;
+                                }
+                                navigate(`/category/${path.id}?tab=packages`);
+                            }}
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-100 transition hover:bg-amber-600"
+                        >
+                            <CreditCard size={18} />
+                            فتح المحتوى المقفول
+                        </button>
+                    ) : (
+                        <div className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
+                            <Unlock size={18} />
+                            كل المحتوى المنشور متاح لديك
+                        </div>
+                    )}
+                </div>
+            </Card>
+        );
+    };
     const pathOverview = {
         subjects: pathSubjects.length,
         packages: pathPackages.length,
@@ -392,6 +504,7 @@ export const GenericPathPage: React.FC = () => {
                             );
                         })}
                     </div>
+                    {renderPackagePaymentModal()}
                 </div>
             );
         }
@@ -702,7 +815,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         </div>
                     </header>
                     <div className="max-w-7xl mx-auto px-4 py-8">
+                        {renderSubjectAccessGuide(selectedSubjectId)}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
+                        {renderPackagePaymentModal()}
                     </div>
                 </div>
             );
@@ -791,7 +906,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             </header>
 
             <div className="max-w-7xl mx-auto px-4 py-8">
+                {renderSubjectAccessGuide(selectedSubjectId)}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
+                {renderPackagePaymentModal()}
             </div>
         </div>
     );
