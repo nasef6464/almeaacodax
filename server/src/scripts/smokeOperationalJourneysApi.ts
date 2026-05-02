@@ -1,6 +1,6 @@
 const API_BASE = process.env.SMOKE_API_BASE_URL || process.env.SEED_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "nasef64@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn@0120110367";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn0508438250";
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 

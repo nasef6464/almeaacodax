@@ -32,11 +32,13 @@ import { QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
+import { matchesEntityId } from '../utils/entityIds';
 
 interface SkillRecommendation {
   lessonTitle?: string;
   lessonLink?: string;
   lessonVideoUrl?: string;
+  lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
   resourceTitle?: string;
@@ -57,6 +59,7 @@ interface ResolvedAnalysisItem {
   lessonTitle?: string;
   lessonLink?: string;
   lessonVideoUrl?: string;
+  lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
   resourceTitle?: string;
@@ -74,6 +77,7 @@ const getSkillRecommendation = (
   quizzes: ReturnType<typeof useStore.getState>['quizzes'],
   libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
   questions: ReturnType<typeof useStore.getState>['questions'],
+  topics: ReturnType<typeof useStore.getState>['topics'],
 ): SkillRecommendation => {
   if (!skill) {
     return {};
@@ -109,14 +113,39 @@ const getSkillRecommendation = (
   const recommendationPathId = resolvedSkill.pathId;
   const recommendationSubjectId = resolvedSkill.subjectId;
   const recommendationSectionId = resolvedSkill.sectionId;
+  const recommendedTopic =
+    recommendedLesson && recommendationPathId && recommendationSubjectId
+      ? topics.find(
+          (topic) =>
+            topic.pathId === recommendationPathId &&
+            topic.subjectId === recommendationSubjectId &&
+            topic.showOnPlatform !== false &&
+            (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
+        )
+      : undefined;
+  const lessonLink =
+    recommendationPathId && recommendationSubjectId
+      ? (() => {
+          const params = new URLSearchParams({
+            subject: recommendationSubjectId,
+            tab: 'skills',
+          });
+
+          if (recommendedTopic?.id && recommendedLesson?.id) {
+            params.set('topic', recommendedTopic.id);
+            params.set('content', 'lessons');
+            params.set('lesson', recommendedLesson.id);
+          }
+
+          return `/category/${recommendationPathId}?${params.toString()}`;
+        })()
+      : undefined;
 
   return {
     lessonTitle: displayText(recommendedLesson?.title),
-    lessonLink:
-      recommendationPathId && recommendationSubjectId
-        ? `/category/${recommendationPathId}?subject=${recommendationSubjectId}&tab=skills`
-        : undefined,
+    lessonLink,
     lessonVideoUrl: recommendedLesson?.videoUrl,
+    lessonTopicTitle: displayText(recommendedTopic?.title),
     quizTitle: displayText(recommendedQuiz?.title),
     quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
     resourceTitle: displayText(recommendedResource?.title),
@@ -263,7 +292,7 @@ const SimpleResultStat = ({
 };
 
 const Results: React.FC = () => {
-  const { examResults, skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { examResults, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -283,7 +312,7 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
-        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
+        const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
         const subjectName =
           recommendation.subjectName ||
           (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
@@ -307,6 +336,7 @@ const Results: React.FC = () => {
             lessonTitle: recommendation.lessonTitle,
             lessonLink: recommendation.lessonLink,
             lessonVideoUrl: recommendation.lessonVideoUrl,
+            lessonTopicTitle: recommendation.lessonTopicTitle,
             quizTitle: recommendation.quizTitle,
             quizLink: recommendation.quizLink,
             resourceTitle: recommendation.resourceTitle,
@@ -329,6 +359,7 @@ const Results: React.FC = () => {
           current.lessonTitle = recommendation.lessonTitle || current.lessonTitle;
           current.lessonLink = recommendation.lessonLink || current.lessonLink;
           current.lessonVideoUrl = recommendation.lessonVideoUrl || current.lessonVideoUrl;
+          current.lessonTopicTitle = recommendation.lessonTopicTitle || current.lessonTopicTitle;
           current.quizTitle = recommendation.quizTitle || current.quizTitle;
           current.quizLink = recommendation.quizLink || current.quizLink;
           current.resourceTitle = recommendation.resourceTitle || current.resourceTitle;
@@ -339,7 +370,7 @@ const Results: React.FC = () => {
     return Array.from(aggregated.values())
       .map(({ totalMastery, lowestMastery, ...item }) => item)
       .sort((a, b) => a.mastery - b.mastery);
-  }, [latestResult, skills, lessons, quizzes, libraryItems, questions, subjects, sections]);
+  }, [latestResult, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections]);
 
   const weakestSkill = analysisItems[0];
   const summaryTone = getFriendlyResultMessage(latestResult?.score || 0);
@@ -392,6 +423,89 @@ const Results: React.FC = () => {
 
     return `/book-session?${params.toString()}`;
   }, [weakestSkill]);
+  const nextActionCards = React.useMemo(() => {
+    if (!weakestSkill) {
+      return [
+        {
+          id: 'review',
+          title: 'راجع الحلول أولًا',
+          body: 'افتح مراجعة الحلول لتعرف مواضع الخطأ قبل أي تدريب جديد.',
+          label: 'مراجعة الحلول',
+          tone: 'emerald',
+        },
+      ];
+    }
+
+    const cards: Array<{
+      id: 'lesson' | 'video' | 'quiz' | 'resource' | 'session';
+      title: string;
+      body: string;
+      label: string;
+      tone: 'indigo' | 'emerald' | 'amber' | 'slate' | 'rose';
+      to?: string;
+      href?: string;
+      videoUrl?: string;
+    }> = [];
+
+    if (weakestSkill.lessonLink) {
+      cards.push({
+        id: 'lesson',
+        title: 'ابدأ بالشرح المرتبط',
+        body: weakestSkill.lessonTopicTitle
+          ? `يفتح لك موضوع ${weakestSkill.lessonTopicTitle} مباشرة.`
+          : weakestSkill.lessonTitle
+            ? `يفتح لك درس ${weakestSkill.lessonTitle}.`
+            : 'يفتح لك مكان الدرس داخل المسار.',
+        label: 'فتح الدرس',
+        tone: 'indigo',
+        to: weakestSkill.lessonLink,
+      });
+    } else if (weakestSkill.lessonVideoUrl) {
+      cards.push({
+        id: 'video',
+        title: 'شاهد شرحًا سريعًا',
+        body: weakestSkill.lessonTitle ? `ابدأ بفيديو ${weakestSkill.lessonTitle}.` : 'شاهد فيديو قصير قبل التدريب.',
+        label: 'تشغيل الفيديو',
+        tone: 'emerald',
+        videoUrl: weakestSkill.lessonVideoUrl,
+      });
+    }
+
+    if (weakestSkill.quizLink) {
+      cards.push({
+        id: 'quiz',
+        title: 'حل تدريبًا قصيرًا',
+        body: weakestSkill.quizTitle ? `التدريب المناسب الآن: ${weakestSkill.quizTitle}.` : 'تدريب سريع على نفس المهارة.',
+        label: 'بدء التدريب',
+        tone: 'amber',
+        to: weakestSkill.quizLink,
+      });
+    }
+
+    if (weakestSkill.resourceUrl) {
+      cards.push({
+        id: 'resource',
+        title: 'راجع الملف الداعم',
+        body: weakestSkill.resourceTitle || 'ملف مختصر يساعدك قبل إعادة المحاولة.',
+        label: 'فتح الملف',
+        tone: 'slate',
+        href: weakestSkill.resourceUrl,
+      });
+    }
+
+    if (weakestSkill.mastery < 75) {
+      cards.push({
+        id: 'session',
+        title: 'اطلب متابعة عند الحاجة',
+        body: 'لو المهارة ما زالت صعبة بعد الشرح والتدريب، احجز متابعة عليها.',
+        label: 'حجز متابعة',
+        tone: 'rose',
+        to: bookSessionLink,
+      });
+    }
+
+    return cards.slice(0, 4);
+  }, [bookSessionLink, weakestSkill]);
   const copyGuardianSummary = async () => {
     try {
       await navigator.clipboard.writeText(guardianFollowUpSummary);
@@ -525,6 +639,92 @@ const Results: React.FC = () => {
               <div className="mt-2 text-base sm:text-lg font-black leading-7 text-gray-900">{item.value}</div>
             </div>
           ))}
+        </div>
+      </Card>
+
+      <Card className="p-4 sm:p-5 border-indigo-100 bg-white">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+              <Target size={14} />
+              ابدأ من هنا
+            </div>
+            <h2 className="mt-3 text-lg font-black text-gray-900">
+              {weakestSkill ? `خطة بسيطة لمهارة: ${weakestSkill.skillName}` : 'خطة بسيطة بعد الاختبار'}
+            </h2>
+            <p className="mt-1 text-sm leading-7 text-gray-500">
+              اختصرنا الطريق إلى خطوات عملية. افتح أول خطوة، ثم ارجع للتدريب والقياس.
+            </p>
+          </div>
+          {weakestSkill ? (
+            <span className="self-start rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
+              مستوى المهارة {weakestSkill.mastery}%
+            </span>
+          ) : null}
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {nextActionCards.map((card) => {
+            const toneClasses = {
+              indigo: 'border-indigo-100 bg-indigo-50 text-indigo-800 hover:bg-indigo-100',
+              emerald: 'border-emerald-100 bg-emerald-50 text-emerald-800 hover:bg-emerald-100',
+              amber: 'border-amber-100 bg-amber-50 text-amber-800 hover:bg-amber-100',
+              slate: 'border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100',
+              rose: 'border-rose-100 bg-rose-50 text-rose-800 hover:bg-rose-100',
+            }[card.tone];
+            const icon =
+              card.id === 'lesson' || card.id === 'video' ? (
+                <PlayCircle size={18} />
+              ) : card.id === 'quiz' ? (
+                <Target size={18} />
+              ) : card.id === 'resource' ? (
+                <BookOpen size={18} />
+              ) : (
+                <PlusCircle size={18} />
+              );
+            const content = (
+              <>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 shadow-sm">{icon}</span>
+                  <span className="text-xs font-black opacity-75">{card.label}</span>
+                </div>
+                <div className="mt-4 text-sm font-black">{card.title}</div>
+                <p className="mt-2 text-xs font-bold leading-6 opacity-75">{card.body}</p>
+              </>
+            );
+
+            if ('to' in card && card.to) {
+              return (
+                <Link key={card.id} to={card.to} className={`rounded-2xl border p-4 transition-colors ${toneClasses}`}>
+                  {content}
+                </Link>
+              );
+            }
+
+            if ('href' in card && card.href) {
+              return (
+                <a key={card.id} href={card.href} target="_blank" rel="noreferrer" className={`rounded-2xl border p-4 transition-colors ${toneClasses}`}>
+                  {content}
+                </a>
+              );
+            }
+
+            return (
+              <button
+                key={card.id}
+                onClick={() => {
+                  if ('videoUrl' in card && card.videoUrl) {
+                    setVideoData({ url: card.videoUrl, title: weakestSkill ? `شرح مهارة ${weakestSkill.skillName}` : 'شرح سريع' });
+                    return;
+                  }
+                  setViewMode('review');
+                }}
+                className={`rounded-2xl border p-4 text-right transition-colors ${toneClasses}`}
+              >
+                {content}
+              </button>
+            );
+          })}
         </div>
       </Card>
 
@@ -1311,10 +1511,10 @@ const ReviewSolutions = ({
 };
 
 const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: QuizResult }) => {
-  const { skills, lessons, quizzes, libraryItems, questions, subjects, sections } = useStore();
+  const { skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
-      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions);
+      const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
       return {
         ...item,
         subjectName:
