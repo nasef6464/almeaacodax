@@ -83,7 +83,7 @@ Notes:
 - Frontend: `https://almeaacodax.vercel.app`
 - Backend API: `https://almeaacodax-k2ux.onrender.com/api`
 - Backend health: `https://almeaacodax-k2ux.onrender.com/api/health`
-- MongoDB Atlas: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/the-hundred?appName=almeaa`
+- MongoDB Atlas: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/almeaa?appName=almeaa`
 
 ### Local MongoDB option
 
