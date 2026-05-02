@@ -532,6 +532,53 @@ const toSafeDate = (value?: string) => {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 };
 
+const resolveScopedStudents = async (authUser: any) => {
+  const allStudents = await UserModel.find({ role: "student" });
+  const managedPathIds = new Set<string>((authUser.managedPathIds || []).map(String));
+  const managedSubjectIds = new Set<string>((authUser.managedSubjectIds || []).map(String));
+
+  if (authUser.role === "admin") {
+    return { students: allStudents, managedPathIds, managedSubjectIds };
+  }
+
+  if (authUser.role === "teacher" || authUser.role === "supervisor") {
+    const allowedGroupIds = new Set((authUser.groupIds || []).map(String));
+    const students = allStudents.filter((student) => {
+      const studentGroupIds = (student.groupIds || []).map(String);
+      const sharesGroup = studentGroupIds.some((groupId) => allowedGroupIds.has(groupId));
+      const sharesSchool = !!authUser.schoolId && String(student.schoolId || "") === String(authUser.schoolId);
+      return sharesGroup || sharesSchool;
+    });
+
+    return { students, managedPathIds, managedSubjectIds };
+  }
+
+  if (authUser.role === "parent") {
+    const linkedStudentIds = new Set((authUser.linkedStudentIds || []).map(String));
+    const students = allStudents.filter((student) => linkedStudentIds.has(String(student.id)));
+    return { students, managedPathIds, managedSubjectIds };
+  }
+
+  const students = allStudents.filter((student) => String(student.id) === String(authUser.id));
+  return { students, managedPathIds, managedSubjectIds };
+};
+
+const filterResultsByManagedScope = (
+  results: any[],
+  role: string,
+  managedPathIds: Set<string>,
+  managedSubjectIds: Set<string>,
+) => {
+  if (role !== "teacher" || (managedPathIds.size === 0 && managedSubjectIds.size === 0)) {
+    return results;
+  }
+
+  return results.filter((result) => {
+    const skills = Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : [];
+    return skills.some((gap: any) => matchesManagedScope(gap, managedPathIds, managedSubjectIds));
+  });
+};
+
 export const quizRouter = Router();
 
 quizRouter.get(
@@ -1036,6 +1083,46 @@ quizRouter.get(
   asyncHandler(async (req, res) => {
     const items = await QuizResultModel.find({ userId: req.authUser!.id }).sort({ createdAt: -1 });
     res.json(items);
+  }),
+);
+
+quizRouter.get(
+  "/results/scoped",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const authUser = await UserModel.findById(req.authUser!.id);
+
+    if (!authUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    const { students, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser);
+    const studentIds = students.map((student) => String(student.id));
+    const studentById = new Map(students.map((student) => [String(student.id), student]));
+    const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+
+    let results = studentIds.length
+      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).limit(limit)
+      : [];
+    results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
+
+    return res.json({
+      scope: {
+        role: authUser.role,
+        studentCount: students.length,
+        resultCount: results.length,
+      },
+      results: results.map((result) => {
+        const student = studentById.get(String(result.userId || ""));
+        return {
+          ...(typeof result.toJSON === "function" ? result.toJSON() : result),
+          studentName: student?.name || "",
+          studentEmail: student?.email || "",
+          studentSchoolId: student?.schoolId || undefined,
+          studentGroupIds: student?.groupIds || [],
+        };
+      }),
+    });
   }),
 );
 

@@ -139,6 +139,9 @@ async function run() {
     teacherAnalytics,
     supervisorAnalytics,
     parentAnalytics,
+    teacherScopedResults,
+    supervisorScopedResults,
+    parentScopedResults,
     aiStatus,
     publicPaymentSettings,
     adminPaymentSettings,
@@ -176,6 +179,9 @@ async function run() {
     request<any>("/quizzes/analytics/overview", "GET", undefined, teacher.token),
     request<any>("/quizzes/analytics/overview", "GET", undefined, supervisor.token),
     request<any>("/quizzes/analytics/overview", "GET", undefined, parent.token),
+    request<any>("/quizzes/results/scoped", "GET", undefined, teacher.token),
+    request<any>("/quizzes/results/scoped", "GET", undefined, supervisor.token),
+    request<any>("/quizzes/results/scoped", "GET", undefined, parent.token),
     request<any>("/ai/status", "GET", undefined, admin.token),
     request<any>("/payments/settings"),
     request<any>("/payments/settings", "GET", undefined, admin.token),
@@ -620,6 +626,30 @@ async function run() {
     "analytics follow linked student",
     Array.isArray(parentAnalytics.weakestStudents) && parentAnalytics.weakestStudents.length > 0,
     `weakestStudents=${parentAnalytics.weakestStudents?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "teacher",
+    "scoped result attempts available",
+    Array.isArray(teacherScopedResults.results),
+    `results=${teacherScopedResults.results?.length || 0}, students=${teacherScopedResults.scope?.studentCount || 0}`,
+  );
+
+  pushResult(
+    results,
+    "supervisor",
+    "scoped result attempts available",
+    Array.isArray(supervisorScopedResults.results),
+    `results=${supervisorScopedResults.results?.length || 0}, students=${supervisorScopedResults.scope?.studentCount || 0}`,
+  );
+
+  pushResult(
+    results,
+    "parent",
+    "scoped result attempts follow linked student",
+    Array.isArray(parentScopedResults.results) && Number(parentScopedResults.scope?.studentCount || 0) > 0,
+    `results=${parentScopedResults.results?.length || 0}, students=${parentScopedResults.scope?.studentCount || 0}`,
   );
 
   const school = (adminContent.groups || []).find((group: any) => {

@@ -452,6 +452,7 @@ export const api = {
       token,
     }),
   getQuizResults: () => request<unknown[]>("/quizzes/results"),
+  getScopedQuizResults: () => request<unknown>("/quizzes/results/scoped"),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
   getSkillProgress: () => request<unknown[]>("/quizzes/skill-progress"),
   getQuestionAttempts: () => request<unknown[]>("/quizzes/question-attempts"),

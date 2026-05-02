@@ -104,6 +104,15 @@ async function seedDemoUsers() {
 
       console.log(`Seeded ${user.role}: ${user.email.toLowerCase()}`);
     }
+
+    const student = await UserModel.findOne({ email: "student@example.com" });
+    const parent = await UserModel.findOne({ email: "parent@example.com" });
+
+    if (student && parent) {
+      parent.linkedStudentIds = [String(student.id)];
+      await parent.save();
+      console.log(`Linked parent@example.com to student ${student.email}`);
+    }
   } finally {
     await mongoose.disconnect();
   }

@@ -27,6 +27,8 @@ const adminCreateUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]),
+  schoolId: z.string().nullable().optional(),
+  groupIds: z.array(z.string()).optional(),
   linkedStudentIds: z.array(z.string()).optional(),
   managedPathIds: z.array(z.string()).optional(),
   managedSubjectIds: z.array(z.string()).optional(),
@@ -126,6 +128,12 @@ authRouter.post(
       });
     }
 
+    if (user.isActive === false) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "Account is disabled",
+      });
+    }
+
     const token = signAccessToken({
       id: user.id,
       email: user.email,
@@ -157,6 +165,8 @@ authRouter.post(
         passwordHash,
         role: payload.role,
         isActive: true,
+        schoolId: payload.schoolId || null,
+        groupIds: payload.groupIds || [],
         linkedStudentIds: payload.linkedStudentIds || [],
         managedPathIds: payload.managedPathIds || [],
         managedSubjectIds: payload.managedSubjectIds || [],
