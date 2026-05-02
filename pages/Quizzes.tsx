@@ -117,15 +117,16 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         if (!userTargeted || !groupTargeted) return false;
       }
 
-      if (quiz.access.type === 'free') return true;
-      if (quiz.access.type === 'paid') {
+      const access = quiz.access || { type: 'free' as const };
+      if (access.type === 'free') return true;
+      if (access.type === 'paid') {
         return hasScopedPackageAccess('tests', quiz.pathId, quiz.subjectId) || checkAccess(quiz.id, true);
       }
-      if (quiz.access.type === 'private') {
+      if (access.type === 'private') {
         const userGroups = user.groupIds || [];
-        return (quiz.access.allowedGroupIds || []).length === 0 || !!quiz.access.allowedGroupIds?.some((groupId) => userGroups.includes(groupId));
+        return (access.allowedGroupIds || []).length === 0 || !!access.allowedGroupIds?.some((groupId) => userGroups.includes(groupId));
       }
-      if (quiz.access.type === 'course_only') {
+      if (access.type === 'course_only') {
         return hasScopedPackageAccess('courses', quiz.pathId, quiz.subjectId);
       }
 

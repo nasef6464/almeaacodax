@@ -253,6 +253,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
     const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
         isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
+    const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
+    const formatQuizUpdatedAt = (createdAt?: number) => {
+        const date = createdAt ? new Date(createdAt) : new Date();
+        return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+    };
     const matchesScopedContent = (pathId?: string | null, subjectId?: string | null) => {
         const normalizedPathId = pathId || null;
         const normalizedSubjectId = subjectId || null;
@@ -424,10 +429,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         id: q.id,
         title: q.title,
         questions: q.questionIds?.length || 0,
-        updated: new Date(q.createdAt).toISOString(),
+        updated: formatQuizUpdatedAt(q.createdAt),
         type: 'bank',
         level: 'متعدد',
-        isLocked: (q.access.type !== 'free' && !hasBanksAccess) || isPremiumLocked(settings.lockBanksForNonSubscribers, hasBanksAccess),
+        isLocked: (getQuizAccessType(q) !== 'free' && !hasBanksAccess) || isPremiumLocked(settings.lockBanksForNonSubscribers, hasBanksAccess),
         duration: 'غير محدد'
     }));
 
@@ -438,7 +443,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         questions: q.questionIds?.length || 0,
         type: 'simulated',
         level: 'متوسط',
-        isLocked: (q.access.type !== 'free' && !hasTestsAccess) || isPremiumLocked(settings.lockTestsForNonSubscribers, hasTestsAccess)
+        isLocked: (getQuizAccessType(q) !== 'free' && !hasTestsAccess) || isPremiumLocked(settings.lockTestsForNonSubscribers, hasTestsAccess)
     }));
 
     let sectionLibraryItems = libraryItems.filter(item => canStudentSeeLibraryItem(item) && matchesScopedContent(item.pathId, item.subjectId)).map(item => ({

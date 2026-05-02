@@ -835,11 +835,12 @@ const SaherTab = () => {
             if (!userTargeted || !groupTargeted) return false;
         }
 
-        if (quiz.access.type === 'free') return true;
-        if (quiz.access.type === 'paid') return checkAccess(quiz.id, true);
-        if (quiz.access.type === 'private') {
+        const access = quiz.access || { type: 'free' as const };
+        if (access.type === 'free') return true;
+        if (access.type === 'paid') return checkAccess(quiz.id, true);
+        if (access.type === 'private') {
             const userGroups = user.groupIds || [];
-            return !!quiz.access.allowedGroupIds?.some(groupId => userGroups.includes(groupId));
+            return !!access.allowedGroupIds?.some(groupId => userGroups.includes(groupId));
         }
         return false;
     };

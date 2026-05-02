@@ -104,17 +104,18 @@ export const QuizPage: React.FC = () => {
       }
     }
 
+    const access = foundQuiz.access || { type: 'free' as const };
     if (isStaffViewer) {
       setHasAccess(true);
-    } else if (foundQuiz.access.type === 'free') {
+    } else if (access.type === 'free') {
       setHasAccess(true);
-    } else if (foundQuiz.access.type === 'paid') {
+    } else if (access.type === 'paid') {
       setHasAccess(checkAccess(foundQuiz.id, true) || hasScopedPackageAccess('tests', foundQuiz.pathId, foundQuiz.subjectId));
-    } else if (foundQuiz.access.type === 'private') {
+    } else if (access.type === 'private') {
       const userGroups = user.groupIds || [];
-      const allowed = (foundQuiz.access.allowedGroupIds || []).length === 0 || foundQuiz.access.allowedGroupIds?.some((id) => userGroups.includes(id));
+      const allowed = (access.allowedGroupIds || []).length === 0 || access.allowedGroupIds?.some((id) => userGroups.includes(id));
       setHasAccess(Boolean(allowed));
-    } else if (foundQuiz.access.type === 'course_only') {
+    } else if (access.type === 'course_only') {
       setHasAccess(hasScopedPackageAccess('courses', foundQuiz.pathId, foundQuiz.subjectId));
     } else {
       setHasAccess(false);
@@ -125,7 +126,7 @@ export const QuizPage: React.FC = () => {
       .filter(Boolean) as Question[];
     setQuizQuestions(loadedQuestions);
 
-    if (foundQuiz.settings.timeLimit && foundQuiz.settings.timeLimit > 0) {
+    if (foundQuiz.settings?.timeLimit && foundQuiz.settings.timeLimit > 0) {
       setTimeLeft(foundQuiz.settings.timeLimit * 60);
     } else {
       setTimeLeft(null);
