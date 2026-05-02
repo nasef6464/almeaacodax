@@ -6,6 +6,27 @@ const USE_REAL_API =
 
 const FALLBACK_THUMBNAIL = "https://picsum.photos/seed/course-fallback/400/250";
 
+const toTimestamp = (value: unknown, fallback = Date.now()) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const numericValue = Number(value);
+    if (Number.isFinite(numericValue)) {
+      return numericValue;
+    }
+
+    const dateValue = new Date(value).getTime();
+    if (Number.isFinite(dateValue)) {
+      return dateValue;
+    }
+  }
+
+  const fallbackValue = typeof fallback === "number" ? fallback : Date.now();
+  return Number.isFinite(fallbackValue) ? fallbackValue : Date.now();
+};
+
 const normalizePath = (path: any): CategoryPath => ({
   id: String(path?.id || path?._id || ""),
   name: String(path?.name || ""),
@@ -53,8 +74,8 @@ const normalizeStudyPlan = (plan: any): StudyPlan => ({
   dailyMinutes: Number(plan?.dailyMinutes || 90),
   preferredStartTime: plan?.preferredStartTime || "17:00",
   status: plan?.status === "archived" ? "archived" : "active",
-  createdAt: Number(plan?.createdAt || Date.now()),
-  updatedAt: Number(plan?.updatedAt || Date.now()),
+  createdAt: toTimestamp(plan?.createdAt),
+  updatedAt: toTimestamp(plan?.updatedAt),
 });
 
 const normalizeSection = (section: any): CategorySection => ({
@@ -72,7 +93,7 @@ const normalizeSkill = (skill: any): Skill => ({
   description: skill?.description || "",
   lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
   questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
-  createdAt: Number(skill?.createdAt ? new Date(skill.createdAt).getTime() : Date.now()),
+  createdAt: toTimestamp(skill?.createdAt),
 });
 
 const normalizeLesson = (lesson: any, moduleIndex: number, lessonIndex: number): Lesson => ({
@@ -161,7 +182,7 @@ const normalizeGroup = (group: any): Group => ({
   supervisorIds: Array.isArray(group?.supervisorIds) ? group.supervisorIds.map(String) : [],
   studentIds: Array.isArray(group?.studentIds) ? group.studentIds.map(String) : [],
   courseIds: Array.isArray(group?.courseIds) ? group.courseIds.map(String) : [],
-  createdAt: Number(group?.createdAt ?? Date.now()),
+  createdAt: toTimestamp(group?.createdAt),
   metadata: group?.metadata,
   totalStudents: typeof group?.totalStudents === "number" ? group.totalStudents : undefined,
   totalSupervisors: typeof group?.totalSupervisors === "number" ? group.totalSupervisors : undefined,
@@ -182,7 +203,7 @@ const normalizeB2BPackage = (pkg: any): B2BPackage => ({
   discountPercentage: typeof pkg?.discountPercentage === "number" ? pkg.discountPercentage : undefined,
   maxStudents: Number(pkg?.maxStudents ?? 0),
   status: pkg?.status || "active",
-  createdAt: Number(pkg?.createdAt ?? Date.now()),
+  createdAt: toTimestamp(pkg?.createdAt),
 });
 
 const normalizeAccessCode = (code: any): AccessCode => ({
@@ -193,7 +214,7 @@ const normalizeAccessCode = (code: any): AccessCode => ({
   maxUses: Number(code?.maxUses ?? 1),
   currentUses: Number(code?.currentUses ?? 0),
   expiresAt: Number(code?.expiresAt ?? Date.now()),
-  createdAt: Number(code?.createdAt ?? Date.now()),
+  createdAt: toTimestamp(code?.createdAt),
 });
 
 const normalizeModule = (module: any, moduleIndex: number): Module => ({
@@ -302,7 +323,7 @@ const normalizeQuiz = (quiz: any): Quiz => ({
     allowedGroupIds: Array.isArray(quiz?.access?.allowedGroupIds) ? quiz.access.allowedGroupIds.map(String) : [],
   },
   questionIds: Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String) : [],
-  createdAt: Number(quiz?.createdAt ?? Date.now()),
+  createdAt: toTimestamp(quiz?.createdAt),
   isPublished: Boolean(quiz?.isPublished),
   showOnPlatform: quiz?.showOnPlatform !== false,
   skillIds: Array.isArray(quiz?.skillIds) ? quiz.skillIds.map(String) : [],

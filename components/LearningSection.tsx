@@ -254,8 +254,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
         isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
     const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
-    const formatQuizUpdatedAt = (createdAt?: number) => {
-        const date = createdAt ? new Date(createdAt) : new Date();
+    const formatQuizUpdatedAt = (createdAt?: unknown) => {
+        const date = createdAt ? new Date(createdAt as string | number | Date) : new Date();
         return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
     };
     const matchesScopedContent = (pathId?: string | null, subjectId?: string | null) => {
