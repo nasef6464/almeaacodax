@@ -21,6 +21,24 @@ const resolvePackageContentTypes = (pkg: { packageContentTypes?: string[] }) => 
     return contentTypes.includes('all') ? ['all'] : contentTypes;
 };
 
+const themeColorMap: Record<string, string> = {
+    purple: '#7c3aed',
+    blue: '#2563eb',
+    emerald: '#10b981',
+    amber: '#f59e0b',
+    indigo: '#4f46e5',
+    rose: '#f43f5e',
+    teal: '#14b8a6',
+    orange: '#f97316',
+    gray: '#6b7280',
+};
+
+const resolveThemeColor = (value?: string, fallback = '#4f46e5') => {
+    if (!value) return fallback;
+    if (value.startsWith('#')) return value;
+    return themeColorMap[value] || fallback;
+};
+
 export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
@@ -238,18 +256,10 @@ export const GenericPathPage: React.FC = () => {
         );
     };
 
-    const getPathStyle = () => {
-        const c = path.color || 'indigo';
-        const isHex = c.startsWith('#');
-        return { 
-            color: c, 
-            bg: isHex ? '' : `bg-${c}-600`, 
-            inlineBg: isHex ? { backgroundColor: c } : {},
-            icon: path.iconUrl ? <img src={path.iconUrl} className="w-10 h-10 object-contain mx-auto mb-2" alt={path.name}/> : (path.icon || '🎓') 
-        };
+    const style = {
+        color: resolveThemeColor(path.color, '#4f46e5'),
+        icon: path.iconUrl ? <img src={path.iconUrl} className="w-10 h-10 object-contain mx-auto mb-2" alt={path.name}/> : (path.icon || '🎓'),
     };
-
-    const style = getPathStyle();
 
     const renderPackages = () => {
         if (pathPackages.length === 0) return null;
@@ -386,8 +396,7 @@ export const GenericPathPage: React.FC = () => {
     };
 
 const renderSubjectCard = (s: any, levelId: string | null) => {
-        const sColor = s.color || style.color;
-        const isHex = sColor.startsWith('#');
+        const sColor = resolveThemeColor(s.color || style.color, style.color);
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
         const icon = s.iconUrl ? <img src={s.iconUrl} className="w-12 h-12 object-contain mx-auto" alt={s.name} /> : <div className="text-4xl">{s.icon || '📚'}</div>;
         const summary = getSubjectContentSummary(s.id);
@@ -452,11 +461,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             return (
                 <div 
                     key={s.id} 
-                    className={`p-8 bg-white border-2 border-gray-100 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-[2rem] shadow-sm hover:border-${isHex ? '' : sColor}-500 group`}
-                    style={isHex ? { borderColor: isHex ? sColor : undefined } : {}}
+                    className="p-8 bg-white border-2 border-gray-100 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-[2rem] shadow-sm group"
+                    style={{ borderColor: sColor }}
                     onClick={() => handleSubjectSelect(levelId, s.id)}
                 >
-                    <div className={`mb-4 inline-block p-4 rounded-2xl ${isHex ? '' : `bg-${sColor}-50`}`} style={isHex ? { backgroundColor: `${sColor}20` } : {}}>
+                    <div className="mb-4 inline-block p-4 rounded-2xl" style={{ backgroundColor: `${sColor}20` }}>
                         {icon}
                     </div>
                     <h3 className="text-2xl font-black text-gray-900 mb-3">{s.name}</h3>
@@ -475,7 +484,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     className="p-8 bg-gray-50 text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:bg-white rounded-2xl group border border-transparent hover:border-gray-200"
                     onClick={() => handleSubjectSelect(levelId, s.id)}
                 >
-                    <div className={`mb-3 ${isHex ? '' : `text-${sColor}-600`}`} style={isHex ? { color: sColor } : {}}>
+                    <div className="mb-3" style={{ color: sColor }}>
                         {icon}
                     </div>
                     <h3 className="text-2xl font-extrabold text-gray-800 mb-2">{s.name}</h3>
@@ -491,8 +500,8 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             return (
                 <div 
                     key={s.id} 
-                    className={`p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#00000030] shadow-[8px_8px_0px_#00000020] ${isHex ? '' : `bg-${sColor}-400`} text-white rounded-[2rem] border-4 border-white relative overflow-hidden group`}
-                    style={isHex ? { backgroundColor: sColor } : {}}
+                    className="p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#00000030] shadow-[8px_8px_0px_#00000020] text-white rounded-[2rem] border-4 border-white relative overflow-hidden group"
+                    style={{ backgroundColor: sColor }}
                     onClick={() => handleSubjectSelect(levelId, s.id)}
                 >
                     <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-5xl">✨</div>
@@ -508,8 +517,8 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         return (
             <div 
                 key={s.id} 
-                className={`p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${isHex ? '' : `bg-${sColor}-500 hover:bg-${sColor}-600`} text-white rounded-[2rem] shadow-md`}
-                style={isHex ? { backgroundColor: sColor } : {}}
+                className="p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
+                style={{ backgroundColor: sColor }}
                 onClick={() => handleSubjectSelect(levelId, s.id)}
             >
                 <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
@@ -528,7 +537,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     if (isPackagesTab) {
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className={`${style.bg} text-white py-16 text-center relative overflow-hidden`} style={style.inlineBg}>
+                <header className="text-white py-16 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة للمسار
@@ -551,7 +560,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         if (!selectedSubjectId) {
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className={`${style.bg} text-white py-16 text-center relative overflow-hidden`} style={style.inlineBg}>
+                    <header className="text-white py-16 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                         <div className="max-w-7xl mx-auto px-4 relative z-10">
                             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 leading-tight break-words">{path.name}</h1>
                             <p className="text-white/80 text-lg">تأسيس شامل، تدريب مكثف، واختبارات محاكية</p>
@@ -576,7 +585,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             const currentSubject = subjects.find(s => s.id === selectedSubjectId);
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className={`${style.bg} text-white py-12 relative overflow-hidden`} style={style.inlineBg}>
+                    <header className="text-white py-12 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                         <div className="max-w-7xl mx-auto px-4 relative z-10">
                             <button onClick={() => handleSubjectSelect(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                                 <ChevronRight size={20} /> عودة لصفحة المسار
@@ -597,7 +606,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     if (!selectedLevelId) {
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className={`${style.bg} text-white py-16 text-center relative overflow-hidden`} style={style.inlineBg}>
+                    <header className="text-white py-16 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 leading-tight break-words">{path.name}</h1>
                         <p className="text-white/80 text-lg">اختر المرحلة الدراسية للبدء</p>
@@ -607,13 +616,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     {renderPathOverview()}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {pathLevels.map(level => {
-                            const shortText = level.name.split(' ')[0] || level.name;
-                            const isHex = style.color.startsWith('#');
                             return (
                                 <div 
                                     key={level.id} 
-                                    className={`p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl ${isHex ? '' : `bg-${style.color}-500`} text-white rounded-[2rem] shadow-md`}
-                                    style={isHex ? { backgroundColor: style.color } : {}}
+                                    className="p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
+                                    style={{ backgroundColor: style.color }}
                                     onClick={() => handleLevelSelect(level.id)}
                                 >
                                     <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">{level.name}</h3>
@@ -635,7 +642,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className={`${style.bg} text-white py-12 relative overflow-hidden`} style={style.inlineBg}>
+                    <header className="text-white py-12 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة لصفحة المسار
@@ -666,7 +673,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
-            <header className={`${style.bg} text-white py-12 relative overflow-hidden`} style={style.inlineBg}>
+            <header className="text-white py-12 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                         <ChevronRight size={20} /> عودة لصفحة المسار
