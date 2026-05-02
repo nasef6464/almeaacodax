@@ -8,6 +8,7 @@ import { api } from './services/api';
 import { useStore } from './store/useStore';
 import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
+import { AppErrorBoundary } from './components/AppErrorBoundary';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
 
@@ -176,6 +177,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Suspense fallback={<LoadingFallback />}>
+        <AppErrorBoundary>
         <Routes>
           {/* Routes without Main Layout (Full Screen) */}
           <Route path="/quiz" element={<Quiz />} />
@@ -229,6 +231,7 @@ const App: React.FC = () => {
             </Layout>
           } />
         </Routes>
+        </AppErrorBoundary>
         {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
       </Suspense>
     </Router>
