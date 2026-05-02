@@ -59,11 +59,11 @@ export const GenericPathPage: React.FC = () => {
         setSelectedSubjectId(searchParams.get('subject') || null);
     }, [searchParams]);
 
-    const updateUrl = (levelId: string | null, subjectId: string | null) => {
+    const updateUrl = (levelId: string | null, subjectId: string | null, replace = false) => {
         const params = new URLSearchParams();
         if (levelId) params.set('level', levelId);
         if (subjectId) params.set('subject', subjectId);
-        navigate(`/category/${normalizedPathId}?${params.toString()}`);
+        navigate(`/category/${normalizedPathId}?${params.toString()}`, { replace });
     };
 
     const handleLevelSelect = (levelId: string | null) => {
@@ -79,6 +79,33 @@ export const GenericPathPage: React.FC = () => {
             navigate(`/category/${normalizedPathId}${window.location.search || ''}`, { replace: true });
         }
     }, [navigate, normalizedPathId, pathId]);
+
+    useEffect(() => {
+        if (pathLevels.length === 0) {
+            if (selectedLevelId || selectedSubjectId) {
+                updateUrl(null, null, true);
+            }
+            return;
+        }
+
+        const validLevel = selectedLevelId ? pathLevels.find((level) => level.id === selectedLevelId) : null;
+        if (selectedLevelId && !validLevel) {
+            updateUrl(pathLevels[0].id, null, true);
+            return;
+        }
+
+        if (!selectedLevelId && pathLevels.length === 1) {
+            updateUrl(pathLevels[0].id, null, true);
+            return;
+        }
+
+        if (selectedLevelId) {
+            const validLevelSubjects = subjects.filter((subject) => subject.levelId === selectedLevelId && subject.pathId === path.id);
+            if (selectedSubjectId && !validLevelSubjects.some((subject) => subject.id === selectedSubjectId)) {
+                updateUrl(selectedLevelId, null, true);
+            }
+        }
+    }, [path.id, pathLevels, selectedLevelId, selectedSubjectId, subjects]);
 
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     const canSeeHiddenPaths = isStaffViewer;
