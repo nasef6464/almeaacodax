@@ -52,6 +52,12 @@ export const GenericPathPage: React.FC = () => {
     const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialSubjectId);
     const [selectedPackageForPayment, setSelectedPackageForPayment] = useState<any | null>(null);
     const normalizedPathId = normalizePathId(pathId);
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    const canSeeHiddenPaths = isStaffViewer;
+    const path = paths.find(p => p.id === normalizedPathId);
+    const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
+    const pathSubjects = subjects.filter(s => s.pathId === path?.id);
+    const pathSubjectIds = new Set(pathSubjects.map((subject) => subject.id));
 
     // Sync state with URL changes
     useEffect(() => {
@@ -82,6 +88,10 @@ export const GenericPathPage: React.FC = () => {
 
     useEffect(() => {
         if (pathLevels.length === 0) {
+            if (!selectedLevelId && !selectedSubjectId && pathSubjects.length === 1) {
+                updateUrl(null, pathSubjects[0].id, true);
+                return;
+            }
             if (selectedLevelId || selectedSubjectId) {
                 updateUrl(null, null, true);
             }
@@ -101,15 +111,15 @@ export const GenericPathPage: React.FC = () => {
 
         if (selectedLevelId) {
             const validLevelSubjects = subjects.filter((subject) => subject.levelId === selectedLevelId && subject.pathId === path.id);
+            if (!selectedSubjectId && validLevelSubjects.length === 1) {
+                updateUrl(selectedLevelId, validLevelSubjects[0].id, true);
+                return;
+            }
             if (selectedSubjectId && !validLevelSubjects.some((subject) => subject.id === selectedSubjectId)) {
                 updateUrl(selectedLevelId, null, true);
             }
         }
-    }, [path.id, pathLevels, selectedLevelId, selectedSubjectId, subjects]);
-
-    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
-    const canSeeHiddenPaths = isStaffViewer;
-    const path = paths.find(p => p.id === normalizedPathId);
+    }, [path?.id, pathLevels, selectedLevelId, selectedSubjectId, subjects]);
     
     if (!path || (!canSeeHiddenPaths && path.isActive === false)) {
         return (
@@ -124,9 +134,6 @@ export const GenericPathPage: React.FC = () => {
         );
     }
 
-    const pathLevels = levels?.filter(l => l.pathId === path.id) || [];
-    const pathSubjects = subjects.filter(s => s.pathId === path.id);
-    const pathSubjectIds = new Set(pathSubjects.map((subject) => subject.id));
     const purchasedPackageIds = new Set(user.subscription?.purchasedPackages || []);
     const isPublicPackageVisible = (pkg: any) =>
         pkg.showOnPlatform !== false &&
