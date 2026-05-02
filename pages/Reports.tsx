@@ -10,6 +10,7 @@ import { Role } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
+import { matchesEntityId } from '../utils/entityIds';
 
 interface ScopedAnalyticsOverview {
     scope: {
@@ -127,6 +128,7 @@ const getReportMasteryTone = (mastery: number) => {
 interface SkillRecommendation {
     lessonTitle?: string;
     lessonLink?: string;
+    lessonTopicTitle?: string;
     quizTitle?: string;
     quizLink?: string;
     resourceTitle?: string;
@@ -150,12 +152,13 @@ const getSkillRecommendation = (
     quizzes: ReturnType<typeof useStore.getState>['quizzes'],
     libraryItems: ReturnType<typeof useStore.getState>['libraryItems'],
     questions: ReturnType<typeof useStore.getState>['questions'],
+    topics: ReturnType<typeof useStore.getState>['topics'],
 ): SkillRecommendation => {
     if (!skill) return {};
 
     const resolvedSkill = skill.skillId
         ? allSkills.find((item) => item.id === skill.skillId)
-        : allSkills.find((item) => item.name === skill.skill);
+        : allSkills.find((item) => displayText(item.name) === displayText(skill.skill));
 
     if (!resolvedSkill) return {};
 
@@ -181,13 +184,38 @@ const getSkillRecommendation = (
     const recommendationPathId = resolvedSkill.pathId;
     const recommendationSubjectId = resolvedSkill.subjectId;
     const recommendationSectionId = resolvedSkill.sectionId;
+    const recommendedTopic =
+        recommendedLesson && recommendationPathId && recommendationSubjectId
+            ? topics.find(
+                (topic) =>
+                    topic.pathId === recommendationPathId &&
+                    topic.subjectId === recommendationSubjectId &&
+                    topic.showOnPlatform !== false &&
+                    (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
+            )
+            : undefined;
+    const lessonLink =
+        recommendationPathId && recommendationSubjectId
+            ? (() => {
+                const params = new URLSearchParams({
+                    subject: recommendationSubjectId,
+                    tab: 'skills',
+                });
+
+                if (recommendedTopic?.id && recommendedLesson?.id) {
+                    params.set('topic', recommendedTopic.id);
+                    params.set('content', 'lessons');
+                    params.set('lesson', recommendedLesson.id);
+                }
+
+                return `/category/${recommendationPathId}?${params.toString()}`;
+            })()
+            : undefined;
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
-        lessonLink:
-          recommendationPathId && recommendationSubjectId
-            ? `/category/${recommendationPathId}?subject=${recommendationSubjectId}&tab=skills`
-            : undefined,
+        lessonLink,
+        lessonTopicTitle: displayText(recommendedTopic?.title),
         quizTitle: displayText(recommendedQuiz?.title),
         quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
         resourceTitle: displayText(recommendedResource?.title),
@@ -208,7 +236,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, subjects, sections, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -375,7 +403,7 @@ const Reports: React.FC = () => {
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
     const focusedReportSkills = aggregatedSkills.slice(0, 6);
     const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || weakestSkill;
-    const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions);
+    const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
@@ -405,7 +433,7 @@ const Reports: React.FC = () => {
         const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
 
         return focusedReportSkills.slice(0, 3).map((skill, index) => {
-            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions);
+            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
 
             return {
                 day: dayLabels[index],
@@ -414,7 +442,10 @@ const Reports: React.FC = () => {
                 sectionName: displayText(skill.sectionName),
                 mastery: skill.mastery,
                 lessonTitle: recommendation.lessonTitle,
+                lessonLink: recommendation.lessonLink,
+                lessonTopicTitle: recommendation.lessonTopicTitle,
                 quizTitle: recommendation.quizTitle,
+                quizLink: recommendation.quizLink,
                 actionText:
                     recommendation.actionText ||
                     (skill.mastery < 50
@@ -422,7 +453,7 @@ const Reports: React.FC = () => {
                         : 'حل تدريبًا قصيرًا للتأكد من ثبات المستوى.'),
             };
         });
-    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills]);
+    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
     const studentFollowUpSummary = useMemo(() => {
         if (!isStudentView || !hasStudentAnalytics) return '';
 
@@ -642,7 +673,7 @@ const Reports: React.FC = () => {
             ? [
                 ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
                 ...aggregatedSkills.map((skill) => {
-                    const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions);
+                    const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
                     const tone = getReportMasteryTone(skill.mastery);
 
                     return [
@@ -671,7 +702,7 @@ const Reports: React.FC = () => {
 
         const actionRows = isStudentView
             ? [
-                ['اليوم', 'المادة', 'المهارة الرئيسية', 'المهارة', 'الإتقان', 'الخطوة العملية', 'شرح', 'اختبار'],
+                ['اليوم', 'المادة', 'المهارة الرئيسية', 'المهارة', 'الإتقان', 'الخطوة العملية', 'شرح', 'رابط الشرح', 'اختبار', 'رابط الاختبار'],
                 ...studentWeeklyPlan.map((step) => [
                     displayText(step.day),
                     displayText(step.subjectName) || '-',
@@ -680,7 +711,9 @@ const Reports: React.FC = () => {
                     `${step.mastery}%`,
                     displayText(step.actionText) || '-',
                     displayText(step.lessonTitle) || '-',
+                    step.lessonLink || '-',
                     displayText(step.quizTitle) || '-',
+                    step.quizLink || '-',
                 ]),
             ]
             : [
@@ -1328,7 +1361,7 @@ const Reports: React.FC = () => {
                     <div className="mt-5 grid gap-3 md:grid-cols-3">
                         {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, showCompactStudentView ? 1 : 3).map((skill, index) => {
                             const tone = getReportMasteryTone(skill.mastery);
-                            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions);
+                            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
 
                             return (
                                 <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 ${tone.bg} ${tone.border}`}>
@@ -1352,12 +1385,24 @@ const Reports: React.FC = () => {
                                         {displayText(recommendation.actionText) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}
                                     </p>
                                     <div className="print-hide mt-4 grid gap-2">
-                                        <Link to={recommendation.lessonLink || '/courses'} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50">
-                                            شرح مناسب
-                                        </Link>
-                                        <Link to={recommendation.quizLink || '/quiz'} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50">
-                                            تدريب قصير
-                                        </Link>
+                                        {recommendation.lessonLink ? (
+                                            <Link to={recommendation.lessonLink} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50">
+                                                {recommendation.lessonTopicTitle ? `شرح: ${recommendation.lessonTopicTitle}` : 'شرح مناسب'}
+                                            </Link>
+                                        ) : (
+                                            <Link to="/courses" className="rounded-xl bg-white/70 px-3 py-2 text-center text-xs font-black text-slate-500 hover:bg-white">
+                                                استعرض الشروح
+                                            </Link>
+                                        )}
+                                        {recommendation.quizLink ? (
+                                            <Link to={recommendation.quizLink} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50">
+                                                تدريب قصير
+                                            </Link>
+                                        ) : (
+                                            <Link to="/quizzes" className="rounded-xl bg-white/70 px-3 py-2 text-center text-xs font-black text-slate-500 hover:bg-white">
+                                                ابحث عن تدريب
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             );
@@ -1477,14 +1522,28 @@ const Reports: React.FC = () => {
                                 </p>
                             </div>
                             <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-[320px]">
-                                <Link to={selectedSkillRecommendation.lessonLink || '/courses'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center justify-center gap-2">
-                                    <Video size={16} />
-                                    ابدأ بالشرح
-                                </Link>
-                                <Link to={selectedSkillRecommendation.quizLink || '/quiz'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center justify-center gap-2">
-                                    <FileText size={16} />
-                                    ابدأ بالتدريب
-                                </Link>
+                                {selectedSkillRecommendation.lessonLink ? (
+                                    <Link to={selectedSkillRecommendation.lessonLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center justify-center gap-2">
+                                        <Video size={16} />
+                                        {selectedSkillRecommendation.lessonTopicTitle ? `شرح: ${selectedSkillRecommendation.lessonTopicTitle}` : 'ابدأ بالشرح'}
+                                    </Link>
+                                ) : (
+                                    <Link to="/courses" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                        <Video size={16} />
+                                        استعرض الشروح
+                                    </Link>
+                                )}
+                                {selectedSkillRecommendation.quizLink ? (
+                                    <Link to={selectedSkillRecommendation.quizLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center justify-center gap-2">
+                                        <FileText size={16} />
+                                        ابدأ بالتدريب
+                                    </Link>
+                                ) : (
+                                    <Link to="/quizzes" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                        <FileText size={16} />
+                                        ابحث عن تدريب
+                                    </Link>
+                                )}
                                 {selectedSkillRecommendation.resourceUrl ? (
                                     <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
                                         <BookOpen size={16} />
@@ -1569,14 +1628,28 @@ const Reports: React.FC = () => {
                                 </p>
                             </div>
                             <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-[360px]">
-                                <Link to={selectedSkillRecommendation.lessonLink || '/courses'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center gap-2">
-                                    <Video size={16} />
-                                    فيديو أو درس
-                                </Link>
-                                <Link to={selectedSkillRecommendation.quizLink || '/quiz'} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center gap-2">
-                                    <FileText size={16} />
-                                    اختبار علاجي
-                                </Link>
+                                {selectedSkillRecommendation.lessonLink ? (
+                                    <Link to={selectedSkillRecommendation.lessonLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center gap-2">
+                                        <Video size={16} />
+                                        {selectedSkillRecommendation.lessonTopicTitle ? `درس: ${selectedSkillRecommendation.lessonTopicTitle}` : 'فيديو أو درس'}
+                                    </Link>
+                                ) : (
+                                    <Link to="/courses" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
+                                        <Video size={16} />
+                                        استعرض الشروح
+                                    </Link>
+                                )}
+                                {selectedSkillRecommendation.quizLink ? (
+                                    <Link to={selectedSkillRecommendation.quizLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center gap-2">
+                                        <FileText size={16} />
+                                        اختبار علاجي
+                                    </Link>
+                                ) : (
+                                    <Link to="/quizzes" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
+                                        <FileText size={16} />
+                                        ابحث عن اختبار
+                                    </Link>
+                                )}
                                 {selectedSkillRecommendation.resourceUrl ? (
                                     <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
                                         <BookOpen size={16} />
@@ -1626,7 +1699,20 @@ const Reports: React.FC = () => {
                                 <p className="mt-2 text-sm leading-7 text-gray-600">{displayText(item.actionText)}</p>
                                 <div className="mt-3 space-y-1 text-xs text-gray-500">
                                     {item.lessonTitle ? <div>شرح مقترح: <span className="font-bold">{displayText(item.lessonTitle)}</span></div> : null}
+                                    {item.lessonTopicTitle ? <div>داخل موضوع: <span className="font-bold">{displayText(item.lessonTopicTitle)}</span></div> : null}
                                     {item.quizTitle ? <div>تدريب مقترح: <span className="font-bold">{displayText(item.quizTitle)}</span></div> : null}
+                                </div>
+                                <div className="print-hide mt-4 grid gap-2">
+                                    {item.lessonLink ? (
+                                        <Link to={item.lessonLink} className="rounded-xl bg-indigo-600 px-3 py-2 text-center text-xs font-black text-white hover:bg-indigo-700">
+                                            فتح شرح اليوم
+                                        </Link>
+                                    ) : null}
+                                    {item.quizLink ? (
+                                        <Link to={item.quizLink} className="rounded-xl bg-amber-50 px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-100">
+                                            فتح تدريب اليوم
+                                        </Link>
+                                    ) : null}
                                 </div>
                             </div>
                         ))}
