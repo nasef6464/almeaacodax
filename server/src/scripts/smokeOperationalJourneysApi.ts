@@ -89,6 +89,10 @@ function isPublishedForStudents(item: any) {
   );
 }
 
+function hasPlayableLessonMedia(lesson: any) {
+  return Boolean(String(lesson?.videoUrl || "").trim() || String(lesson?.fileUrl || "").trim());
+}
+
 function findSubject(subjects: any[] | undefined, pathId: string, names: string[]) {
   const normalizedNames = names.map(normalizeArabic);
   return (subjects || []).find((subject: any) => {
@@ -399,10 +403,20 @@ async function run() {
 
   const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
   const learnerQuizIds = new Set<string>((studentQuizzes || []).map((quiz: any) => documentId(quiz)));
+  const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
     (topic.lessonIds || [])
       .map((lessonId: string) => String(lessonId))
       .filter((lessonId: string) => lessonId && !learnerLessonIds.has(lessonId))
+      .map((lessonId: string) => `${documentId(topic)}:${lessonId}`),
+  );
+  const unplayableLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
+    (topic.lessonIds || [])
+      .map((lessonId: string) => String(lessonId))
+      .filter((lessonId: string) => {
+        const lesson = learnerLessonsById.get(lessonId);
+        return Boolean(lesson) && !hasPlayableLessonMedia(lesson);
+      })
       .map((lessonId: string) => `${documentId(topic)}:${lessonId}`),
   );
   const missingLearnerQuizRefs = (studentContent.topics || []).flatMap((topic: any) =>
@@ -418,6 +432,16 @@ async function run() {
     "published topic lesson links resolve for learners",
     missingLearnerLessonRefs.length === 0,
     missingLearnerLessonRefs.length ? `missing=${missingLearnerLessonRefs.slice(0, 5).join(",")}` : `linkedLessons=${learnerLessonIds.size}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "published topic lesson links have playable media",
+    unplayableLearnerLessonRefs.length === 0,
+    unplayableLearnerLessonRefs.length
+      ? `unplayable=${unplayableLearnerLessonRefs.slice(0, 5).join(",")}`
+      : `playableLinkedLessons=${learnerLessonIds.size}`,
   );
 
   pushResult(
@@ -585,7 +609,7 @@ async function run() {
     const topicWithPlayableLesson = scopedTopics.find((topic: any) =>
       (topic.lessonIds || []).some((lessonId: string) => {
         const lesson = scopedLessons.find((item: any) => documentId(item) === String(lessonId));
-        return Boolean(lesson?.videoUrl);
+        return hasPlayableLessonMedia(lesson);
       }),
     );
 

@@ -35,6 +35,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
   const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
     isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
+  const hasPlayableLessonMedia = (lesson: (typeof lessons)[number]) =>
+    Boolean(sanitizeVideoUrl(lesson.videoUrl) || lesson.fileUrl);
+  const getLessonActionLabel = (lesson: (typeof lessons)[number]) => {
+    if (sanitizeVideoUrl(lesson.videoUrl)) return 'مشاهدة الدرس';
+    if (lesson.fileUrl) return 'فتح الملف';
+    return isStaffViewer ? 'ينقصه رابط' : 'قيد التجهيز';
+  };
 
   useEffect(() => {
     if (isOpen && skill?.originalTopic?.id) {
@@ -161,6 +168,10 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
         .slice(0, 2),
     [activeTopic?.sectionId, libraryItems, selectedTopic?.pathId, selectedTopic?.subjectId],
   );
+  const learnerTopicLessons = isStaffViewer
+    ? activeTopicLessons
+    : activeTopicLessons.filter((lesson) => hasPlayableLessonMedia(lesson));
+  const hasHiddenUnplayableLessons = !isStaffViewer && activeTopicLessons.length > learnerTopicLessons.length;
 
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
     setLessonNotice('');
@@ -212,8 +223,12 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
             <p className="mb-2 text-xs font-bold text-indigo-100">مساحة تعلم المهارة</p>
             <h2 className="text-2xl sm:text-3xl font-black">{selectedTopic.title}</h2>
             <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
-              <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المسار: {pathLabel}</span>
-              <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المادة: {subjectLabel}</span>
+              {isStaffViewer ? (
+                <>
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المسار: {pathLabel}</span>
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المادة: {subjectLabel}</span>
+                </>
+              ) : null}
               <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">
                 {selectedSubTopic ? `المفتوح الآن: ${selectedSubTopic.title}` : 'المفتوح الآن: المهارة الرئيسية'}
               </span>
@@ -290,13 +305,16 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                       {lessonNotice}
                     </div>
                   ) : null}
-                  {activeTopicLessons.length > 0 ? (
-                    activeTopicLessons.map((lesson) => (
+                  {learnerTopicLessons.length > 0 ? (
+                    learnerTopicLessons.map((lesson) => {
+                      const hasVideo = Boolean(sanitizeVideoUrl(lesson.videoUrl));
+                      const hasMedia = hasPlayableLessonMedia(lesson);
+                      return (
                       <button
                         type="button"
                         key={lesson.id}
                         className={`w-full bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between hover:shadow-md transition-all group text-right ${
-                          !sanitizeVideoUrl(lesson.videoUrl) ? 'opacity-80' : ''
+                          !hasMedia ? 'opacity-80' : ''
                         }`}
                         onClick={() => openLessonVideo(lesson)}
                       >
@@ -313,7 +331,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                                 <Video size={24} />
                               </div>
                             )}
-                            {sanitizeVideoUrl(lesson.videoUrl) ? (
+                            {hasVideo ? (
                               <>
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -338,22 +356,31 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                           </div>
                         </div>
 
-                        <span className={`hidden sm:block px-4 py-2 rounded-lg font-bold text-sm ${sanitizeVideoUrl(lesson.videoUrl) ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
-                          {sanitizeVideoUrl(lesson.videoUrl) ? 'مشاهدة الدرس' : 'لا يوجد رابط فيديو'}
+                        <span className={`hidden sm:block px-4 py-2 rounded-lg font-bold text-sm ${hasMedia ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
+                          {getLessonActionLabel(lesson)}
                         </span>
                       </button>
-                    ))
+                    );
+                  })
                   ) : (
                     <EmptyState
                       icon={<Video size={48} />}
-                      title="لا توجد شروحات مرتبطة مباشرة بهذا الجزء"
-                      description="اختر من الشروحات أو الملفات القريبة من نفس المادة حتى تضيف الإدارة درسًا مباشرًا لهذه المهارة."
+                      title={hasHiddenUnplayableLessons ? 'المحتوى المرتبط بهذا الجزء قيد التجهيز' : 'لا توجد شروحات مرتبطة مباشرة بهذا الجزء'}
+                      description={
+                        hasHiddenUnplayableLessons
+                          ? 'تم ربط درس بهذا الموضوع من الإدارة، لكنه يحتاج رابط فيديو أو ملف قبل ظهوره للطالب.'
+                          : isStaffViewer
+                            ? 'اختر من الشروحات أو الملفات القريبة من نفس المادة حتى تضيف الإدارة درسًا مباشرًا لهذه المهارة.'
+                            : 'سيظهر الشرح هنا فور إضافة درس مباشر لهذا الجزء من الإدارة.'
+                      }
                     >
-                      <SuggestionList
-                        lessons={relatedLessonSuggestions}
-                        libraryItems={relatedLibrarySuggestions}
-                        onOpenLesson={openLessonVideo}
-                      />
+                      {isStaffViewer ? (
+                        <SuggestionList
+                          lessons={relatedLessonSuggestions}
+                          libraryItems={relatedLibrarySuggestions}
+                          onOpenLesson={openLessonVideo}
+                        />
+                      ) : null}
                     </EmptyState>
                   )}
                 </div>
@@ -388,23 +415,25 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                     <EmptyState
                       icon={<Target size={48} />}
                       title="لا توجد تدريبات قصيرة مرتبطة مباشرة بهذا الجزء"
-                      description="يمكنك البدء من أقرب اختبار في نفس المادة أو الرجوع لملف مراجعة سريع."
+                      description={isStaffViewer ? 'يمكنك البدء من أقرب اختبار في نفس المادة أو الرجوع لملف مراجعة سريع.' : 'ستظهر التدريبات هنا فور ربط اختبار مباشر بهذا الجزء من الإدارة.'}
                     >
-                      <div className="grid gap-3">
-                        {relatedQuizSuggestions.map((quiz) => (
-                          <Link key={quiz.id} to={`/quiz/${quiz.id}`} className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <h4 className="font-bold text-gray-800">{quiz.title}</h4>
-                                <p className="text-xs text-gray-500 mt-1">{quiz.questionIds?.length || 0} سؤال</p>
+                      {isStaffViewer ? (
+                        <div className="grid gap-3">
+                          {relatedQuizSuggestions.map((quiz) => (
+                            <Link key={quiz.id} to={`/quiz/${quiz.id}`} className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all">
+                              <div className="flex items-center justify-between gap-3">
+                                <div>
+                                  <h4 className="font-bold text-gray-800">{quiz.title}</h4>
+                                  <p className="text-xs text-gray-500 mt-1">{quiz.questionIds?.length || 0} سؤال</p>
+                                </div>
+                                <span className="shrink-0 px-3 py-2 bg-amber-50 text-amber-600 rounded-lg text-xs font-bold">
+                                  ابدأ الآن
+                                </span>
                               </div>
-                              <span className="shrink-0 px-3 py-2 bg-amber-50 text-amber-600 rounded-lg text-xs font-bold">
-                                ابدأ الآن
-                              </span>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : null}
                     </EmptyState>
                   )}
                 </div>
