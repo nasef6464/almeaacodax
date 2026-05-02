@@ -1,5 +1,15 @@
+import { execSync } from 'node:child_process';
+
 const FRONTEND_URL = (process.env.SMOKE_FRONTEND_URL || 'https://almeaacodax.vercel.app').replace(/\/$/, '');
 const API_URL = (process.env.SMOKE_API_URL || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
+const EXPECTED_VERSION = process.env.SMOKE_EXPECT_VERSION || (() => {
+  try {
+    return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  } catch {
+    return '';
+  }
+})();
+const STRICT_VERSION = process.env.SMOKE_STRICT_VERSION === '1';
 
 const routes = [
   '/',
@@ -12,6 +22,7 @@ const routes = [
 ];
 
 const checks = [];
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function check(name, fn) {
   try {
@@ -22,8 +33,25 @@ async function check(name, fn) {
   }
 }
 
+async function fetchWithRetry(url, options = {}, attempts = 3) {
+  let lastError;
+  for (let index = 0; index < attempts; index += 1) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status < 500) {
+        return response;
+      }
+      lastError = new Error(`${response.status} ${response.statusText}`);
+    } catch (error) {
+      lastError = error;
+    }
+    await sleep(750 * (index + 1));
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError || 'fetch failed'));
+}
+
 async function fetchText(url) {
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     headers: {
       'cache-control': 'no-cache',
       pragma: 'no-cache',
@@ -41,7 +69,7 @@ async function fetchText(url) {
 }
 
 await check('api health is live', async () => {
-  const response = await fetch(`${API_URL}/health`);
+  const response = await fetchWithRetry(`${API_URL}/health`);
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
   const health = await response.json();
   if (health.status !== 'ok' && health.database !== 'connected') {
@@ -51,6 +79,7 @@ await check('api health is live', async () => {
 });
 
 let shellHtml = '';
+let entryAssetText = '';
 await check('frontend shell loads', async () => {
   const result = await fetchText(`${FRONTEND_URL}/?smoke=${Date.now()}`);
   shellHtml = result.text;
@@ -63,12 +92,24 @@ await check('entry asset loads', async () => {
   const match = shellHtml.match(/src="([^"]*\/assets\/index-[^"]+\.js)"/);
   if (!match) throw new Error('entry asset not found');
   const assetUrl = new URL(match[1], FRONTEND_URL).toString();
-  const response = await fetch(assetUrl, { headers: { 'cache-control': 'no-cache' } });
+  const response = await fetchWithRetry(assetUrl, { headers: { 'cache-control': 'no-cache' } });
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-  const text = await response.text();
-  if (text.length < 1000) throw new Error(`asset too small: ${text.length}`);
-  return `${assetUrl} (${Math.round(text.length / 1024)} KB)`;
+  entryAssetText = await response.text();
+  if (entryAssetText.length < 1000) throw new Error(`asset too small: ${entryAssetText.length}`);
+  return `${assetUrl} (${Math.round(entryAssetText.length / 1024)} KB)`;
 });
+
+if (EXPECTED_VERSION) {
+  await check(`deployed app version includes ${EXPECTED_VERSION}`, async () => {
+    const matches = entryAssetText.includes(EXPECTED_VERSION);
+    if (!matches && STRICT_VERSION) {
+      throw new Error('production entry asset does not include expected version');
+    }
+    return matches
+      ? 'production is serving the expected commit/version'
+      : 'STALE: production entry asset does not include the expected version yet';
+  });
+}
 
 for (const route of routes) {
   await check(`route shell: ${route}`, async () => {

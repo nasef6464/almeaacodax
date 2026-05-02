@@ -36,18 +36,33 @@ const getStoredSessionToken = (): string | null => {
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const resolvedToken = options.token === undefined ? getStoredSessionToken() : options.token;
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: options.method || "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...(resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : {}),
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      method: options.method || "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : {}),
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+  } catch (error) {
+    console.warn(`API network error for ${path}:`, error);
+    throw new Error("تعذر الاتصال بالخادم الآن. تحقق من الإنترنت أو جرّب مرة أخرى.");
+  }
 
   if (!response.ok) {
-    const payload = await response.json().catch(() => ({ message: "Request failed" }));
-    throw new Error(payload.message || "Request failed");
+    const rawError = await response.text().catch(() => "");
+    let message = "تعذر تنفيذ الطلب الآن.";
+    if (rawError) {
+      try {
+        const payload = JSON.parse(rawError) as { message?: string; error?: string };
+        message = payload.message || payload.error || message;
+      } catch {
+        message = rawError.slice(0, 240);
+      }
+    }
+    throw new Error(message);
   }
 
   if (response.status === 204) {
@@ -63,6 +78,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 }
 
 export const api = {
+  baseUrl: API_BASE_URL,
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
   login: (email: string, password: string) =>
     request<{ token: string; user: unknown }>("/auth/login", {

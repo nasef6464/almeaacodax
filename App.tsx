@@ -9,6 +9,7 @@ import { useStore } from './store/useStore';
 import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
+import { APP_VERSION } from './utils/appVersion';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
 
@@ -64,6 +65,11 @@ const App: React.FC = () => {
   const hydrateTaxonomy = useStore((state) => state.hydrateTaxonomy);
   const hydrateContentBootstrap = useStore((state) => state.hydrateContentBootstrap);
   const hydrateSkillProgress = useStore((state) => state.hydrateSkillProgress);
+
+  useEffect(() => {
+    window.__ALMEAA_APP_VERSION__ = APP_VERSION;
+    window.__ALMEAA_API_BASE_URL__ = api.baseUrl;
+  }, []);
 
   useEffect(() => {
     const useRealApi = import.meta.env.VITE_USE_REAL_API !== 'false';

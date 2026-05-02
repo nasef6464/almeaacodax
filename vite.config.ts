@@ -1,9 +1,24 @@
 import path from 'path';
+import { execSync } from 'child_process';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(() => {
+    const appVersion =
+      process.env.VERCEL_GIT_COMMIT_SHA ||
+      process.env.CF_PAGES_COMMIT_SHA ||
+      (() => {
+        try {
+          return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+        } catch {
+          return 'local';
+        }
+      })();
+
     return {
+      define: {
+        __APP_VERSION__: JSON.stringify(appVersion),
+      },
       server: {
         port: 3000,
         host: '0.0.0.0',
