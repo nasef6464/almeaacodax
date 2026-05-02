@@ -58,6 +58,7 @@ export const QuizPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
+  const [isSubmittingResult, setIsSubmittingResult] = useState(false);
   const [qaDraft, setQaDraft] = useState('');
   const [qaThread, setQaThread] = useState<QuestionThreadItem[]>(INITIAL_QA_THREAD);
 
@@ -165,7 +166,9 @@ export const QuizPage: React.FC = () => {
   );
 
   const finalScore = Math.round((correctAnswersCount / Math.max(quizQuestions.length, 1)) * 100);
-  const isPassed = isFinished && quiz ? finalScore >= quiz.settings.passingScore : false;
+  const passingScore = quiz?.settings?.passingScore ?? 50;
+  const quizTimeLimit = quiz?.settings?.timeLimit || 0;
+  const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
 
   const weakSkillIds = useMemo(
     () =>
@@ -189,7 +192,7 @@ export const QuizPage: React.FC = () => {
     params.set('mode', 'self');
     params.set('autostart', '1');
     params.set('questionCount', String(Math.max(quizQuestions.length, 10)));
-    params.set('timeLimit', String(quiz?.settings.timeLimit || 30));
+    params.set('timeLimit', String(quiz?.settings?.timeLimit || 30));
     params.set('difficulty', focusWeakSkills ? 'Medium' : (quizQuestions[0]?.difficulty || 'Medium'));
 
     if (quiz?.pathId) params.set('pathId', quiz.pathId);
@@ -252,9 +255,11 @@ export const QuizPage: React.FC = () => {
   };
 
   const handleFinish = async () => {
+    if (isSubmittingResult) return;
     setIsFinished(true);
 
     if (!quiz) return;
+    setIsSubmittingResult(true);
 
     const skillStats: Record<string, { total: number; correct: number }> = {};
     quizQuestions.forEach((question) => {
@@ -314,7 +319,7 @@ export const QuizPage: React.FC = () => {
       };
     });
 
-    const timeSpentSeconds = quiz.settings.timeLimit ? quiz.settings.timeLimit * 60 - (timeLeft || 0) : 0;
+    const timeSpentSeconds = quizTimeLimit ? quizTimeLimit * 60 - (timeLeft || 0) : 0;
     const result: QuizResult = {
       quizId: quiz.id,
       quizTitle: quiz.title,
@@ -323,7 +328,7 @@ export const QuizPage: React.FC = () => {
       correctAnswers: correctAnswersCount,
       wrongAnswers: quizQuestions.length - correctAnswersCount - (quizQuestions.length - Object.keys(selectedOptions).length),
       unanswered: quizQuestions.length - Object.keys(selectedOptions).length,
-      timeSpent: quiz.settings.timeLimit ? `${Math.floor(timeSpentSeconds / 60)} دقيقة` : 'غير محدد',
+      timeSpent: quizTimeLimit ? `${Math.floor(timeSpentSeconds / 60)} دقيقة` : 'غير محدد',
       date: new Date().toISOString(),
       skillsAnalysis,
       questionReview,
@@ -338,6 +343,8 @@ export const QuizPage: React.FC = () => {
     } catch (error) {
       console.error('Unable to submit quiz on server, saving local result instead:', error);
       saveExamResult(result);
+    } finally {
+      setIsSubmittingResult(false);
     }
 
     navigate('/results');
@@ -351,7 +358,7 @@ export const QuizPage: React.FC = () => {
     setIsFinished(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
-    setTimeLeft(quiz.settings.timeLimit && quiz.settings.timeLimit > 0 ? quiz.settings.timeLimit * 60 : null);
+    setTimeLeft(quiz.settings?.timeLimit && quiz.settings.timeLimit > 0 ? quiz.settings.timeLimit * 60 : null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -489,9 +496,10 @@ export const QuizPage: React.FC = () => {
               {currentQuestionIndex === quizQuestions.length - 1 ? (
                 <button
                   onClick={handleFinish}
-                  className="w-full sm:w-auto bg-emerald-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-colors"
+                  disabled={isSubmittingResult}
+                  className="w-full sm:w-auto bg-emerald-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  إنهاء الاختبار
+                  {isSubmittingResult ? 'جاري حفظ النتيجة...' : 'إنهاء الاختبار'}
                 </button>
               ) : (
                 <button
@@ -516,7 +524,7 @@ export const QuizPage: React.FC = () => {
                 {isPassed ? 'مبروك! لقد اجتزت الاختبار' : 'للأسف، لم تجتز الاختبار'}
               </h2>
               <p className="text-gray-500 mb-8">
-                درجة النجاح المطلوبة هي {quiz.settings.passingScore}%
+                درجة النجاح المطلوبة هي {passingScore}%
               </p>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -537,7 +545,7 @@ export const QuizPage: React.FC = () => {
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <div className="text-sm text-gray-500 mb-1">الوقت المستغرق</div>
                   <div className="text-2xl font-bold text-gray-800">
-                    {quiz.settings.timeLimit ? Math.floor((quiz.settings.timeLimit * 60 - (timeLeft || 0)) / 60) : 0} د
+                    {quizTimeLimit ? Math.floor((quizTimeLimit * 60 - (timeLeft || 0)) / 60) : 0} د
                   </div>
                 </div>
               </div>

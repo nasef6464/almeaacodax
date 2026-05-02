@@ -12,7 +12,8 @@
     "server:dev": "npm --prefix server run dev",
     "server:build": "npm --prefix server run build",
     "server:check": "npm --prefix server run check",
-    "smoke:operational": "npm --prefix server run smoke:operational:api"
+    "smoke:operational": "npm --prefix server run smoke:operational:api",
+    "smoke:frontend": "node scripts/smoke-frontend-routes.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",

@@ -52,14 +52,12 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) =>
   );
 
   useEffect(() => {
-    if (course.modules && course.modules.length > 0) {
-      const firstModule = course.modules[0];
-      if (firstModule.lessons.length > 0) {
-        setActiveLesson(firstModule.lessons[0]);
-        setExpandedModules([firstModule.id]);
-      }
-    }
-  }, [course]);
+    const firstModuleWithLessons = course.modules?.find((module) => module.lessons.length > 0);
+    const firstUnlockedLesson = flattenedLessons.find((lesson) => !lesson.isLocked) || flattenedLessons[0] || null;
+
+    setActiveLesson(firstUnlockedLesson);
+    setExpandedModules(firstModuleWithLessons ? [firstModuleWithLessons.id] : []);
+  }, [course, flattenedLessons]);
 
   const handleMarkComplete = () => {
     if (activeLesson) {
@@ -272,6 +270,20 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) =>
                   </div>
                 </div>
               </motion.div>
+            ) : flattenedLessons.length === 0 ? (
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
+                <BookOpen className="w-14 h-14 text-indigo-200 mb-4" />
+                <h2 className="text-2xl font-black text-gray-900">لا توجد دروس منشورة في هذه الدورة بعد</h2>
+                <p className="mt-3 max-w-md text-sm leading-7 text-gray-500">
+                  الدورة موجودة، لكن محتواها لم يجهز للعرض للطالب بعد. يمكنك الرجوع لصفحة الدورة أو مراجعة الإدارة لإضافة الدروس.
+                </p>
+                <button
+                  onClick={handleBack}
+                  className="mt-6 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white hover:bg-indigo-700"
+                >
+                  الرجوع للدورة
+                </button>
+              </div>
             ) : (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
                 <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mb-4" />

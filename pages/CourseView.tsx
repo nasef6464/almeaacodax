@@ -5,7 +5,7 @@ import { Course } from '../types';
 import { CoursePlayer } from '../components/CoursePlayer';
 import { CourseLanding } from '../components/CourseLanding';
 import { CourseOverview } from '../components/CourseOverview';
-import { Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { adapter } from '../services/adapter';
 
@@ -13,6 +13,7 @@ const CourseView: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
     const { user, enrolledCourses, hasScopedPackageAccess } = useStore();
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -27,10 +28,17 @@ const CourseView: React.FC = () => {
             }
 
             setLoading(true);
+            setLoadError('');
             try {
                 const foundCourse = await adapter.getCourseById(courseId);
                 if (mounted) {
                     setCourse(foundCourse);
+                }
+            } catch (error) {
+                console.warn('Unable to load course', error);
+                if (mounted) {
+                    setCourse(null);
+                    setLoadError('تعذر تحميل الدورة الآن. تأكد أن الدورة منشورة أو جرّب مرة أخرى بعد لحظات.');
                 }
             } finally {
                 if (mounted) {
@@ -50,6 +58,26 @@ const CourseView: React.FC = () => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
                 <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
+            </div>
+        );
+    }
+
+    if (loadError) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
+                <div className="max-w-md rounded-3xl border border-amber-100 bg-white p-8 shadow-sm">
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+                        <AlertCircle size={32} />
+                    </div>
+                    <h1 className="mb-3 text-xl sm:text-2xl font-black leading-tight text-gray-900">لم نستطع فتح الدورة</h1>
+                    <p className="mb-6 text-sm leading-7 text-gray-500">{loadError}</p>
+                    <button
+                        onClick={() => window.history.back()}
+                        className="w-full rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white hover:bg-indigo-700 sm:w-auto"
+                    >
+                        العودة للخلف
+                    </button>
+                </div>
             </div>
         );
     }
