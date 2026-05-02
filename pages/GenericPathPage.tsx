@@ -54,6 +54,7 @@ export const GenericPathPage: React.FC = () => {
     const normalizedPathId = normalizePathId(pathId);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     const isAdminViewer = user?.role === 'admin';
+    const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
     const canSeeHiddenPaths = isStaffViewer;
     const path = paths.find(p => p.id === normalizedPathId);
     const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
@@ -89,6 +90,10 @@ export const GenericPathPage: React.FC = () => {
 
     useEffect(() => {
         if (pathLevels.length === 0) {
+            if (selectedSubjectId && !pathSubjects.some((subject) => subject.id === selectedSubjectId)) {
+                updateUrl(null, null, true);
+                return;
+            }
             if (!selectedLevelId && !selectedSubjectId && pathSubjects.length === 1) {
                 updateUrl(null, pathSubjects[0].id, true);
                 return;
@@ -263,7 +268,7 @@ export const GenericPathPage: React.FC = () => {
         openSubjects: pathSubjects.filter((subject) => getSubjectContentSummary(subject.id).lockedRows.length === 0).length,
     };
     const renderPathOverview = () => {
-        if (!isAdminViewer) return null;
+        if (!showPublicAdminDiagnostics) return null;
 
         return (
         <div className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -298,7 +303,7 @@ export const GenericPathPage: React.FC = () => {
 
     const renderPackages = () => {
         if (pathPackages.length === 0) return null;
-        if (!isAdminViewer) {
+        if (!showPublicAdminDiagnostics) {
             return (
                 <div className="mt-16 border-t border-gray-200 pt-16" id="packages">
                     <div className="text-center mb-10">
@@ -527,14 +532,14 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
         const icon = s.iconUrl ? <img src={s.iconUrl} className="w-12 h-12 object-contain mx-auto" alt={s.name} /> : <div className="text-4xl">{s.icon || '📚'}</div>;
         const summary = getSubjectContentSummary(s.id);
-        const topContentRows = isAdminViewer
+        const topContentRows = showPublicAdminDiagnostics
             ? contentAccessRows
                 .map((row) => ({ ...row, count: summary.visibleCounts[row.type] }))
                 .filter((row) => row.count > 0)
                 .slice(0, 3)
             : [];
         const hasLockedAreas = summary.lockedRows.length > 0;
-        const footer = isAdminViewer ? (
+        const footer = showPublicAdminDiagnostics ? (
             <>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                     <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black ${
@@ -557,16 +562,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     )}
                 </div>
             </>
-        ) : (
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black ${
-                    hasLockedAreas ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
-                }`}>
-                    {hasLockedAreas ? <Lock size={14} /> : <Unlock size={14} />}
-                    {hasLockedAreas ? 'يحتاج تفعيل' : 'مفتوحة'}
-                </span>
-            </div>
-        );
+        ) : null;
 
         if (iconStyle === 'modern') {
             return (
@@ -749,7 +745,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     // Scene 3: Level is selected -> display level subjects
     if (!selectedSubjectId) {
         const currentLevel = levels.find(l => l.id === selectedLevelId);
-        const levelSubjects = subjects.filter(s => s.levelId === selectedLevelId);
+        const levelSubjects = subjects.filter(s => s.levelId === selectedLevelId && s.pathId === path.id);
         
         return (
             <div className="bg-gray-50 min-h-screen pb-20">

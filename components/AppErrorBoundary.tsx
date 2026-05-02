@@ -19,6 +19,15 @@ export class AppErrorBoundary extends React.Component<Props, State> {
         console.error('App error boundary caught:', error);
     }
 
+    private recoverToHome = () => {
+        this.setState({ hasError: false });
+        window.location.hash = '#/';
+    };
+
+    private reloadPage = () => {
+        window.location.reload();
+    };
+
     render() {
         if (this.state.hasError) {
             return (
@@ -26,15 +35,24 @@ export class AppErrorBoundary extends React.Component<Props, State> {
                     <div className="max-w-lg rounded-3xl border border-gray-200 bg-white p-8 shadow-sm">
                         <h1 className="text-2xl font-black text-gray-900">حدث خلل في الصفحة</h1>
                         <p className="mt-3 text-sm leading-7 text-gray-600">
-                            حصل خطأ أثناء عرض المحتوى. جرّب تحديث الصفحة، ولو استمر سنعالج المسار نفسه.
+                            لم نستطع عرض هذا الجزء الآن. يمكنك الرجوع للرئيسية أو إعادة تحميل الصفحة، ولن يؤثر ذلك على بياناتك المحفوظة.
                         </p>
-                        <button
-                            type="button"
-                            onClick={() => window.location.reload()}
-                            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700"
-                        >
-                            إعادة التحميل
-                        </button>
+                        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                            <button
+                                type="button"
+                                onClick={this.recoverToHome}
+                                className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700"
+                            >
+                                الرجوع للرئيسية
+                            </button>
+                            <button
+                                type="button"
+                                onClick={this.reloadPage}
+                                className="inline-flex items-center justify-center rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+                            >
+                                إعادة التحميل
+                            </button>
+                        </div>
                     </div>
                 </div>
             );

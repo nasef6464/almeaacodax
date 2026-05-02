@@ -267,6 +267,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     };
 
     const purchasedPackageIds = new Set(user.subscription?.purchasedPackages || []);
+    const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
     const subjectPublicPackages = courses
         .filter((course) => {
             const packagePathId = course.pathId || course.category;
@@ -504,7 +505,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         open: Math.max(activeInventory.total - activeInventory.locked, 0),
         label: activeInventory.label,
     };
-    const showStaffInventory = user.role === 'admin';
+    const showStaffInventory = showPublicAdminDiagnostics;
     const getScopedPackageCoverage = (pkg: any) => {
         const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
         const includesAll = contentTypes.includes('all');
@@ -626,7 +627,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         <span className="rounded-full bg-white px-3 py-1 text-gray-600">المسار الحالي</span>
                                         <span className="rounded-full bg-white px-3 py-1 text-indigo-700">{currentSubjectData?.name || 'المادة الحالية'}</span>
                                         <span className="rounded-full bg-white px-3 py-1 text-emerald-700">يفتح تلقائيًا بعد اعتماد الدفع أو الكود</span>
-                                        {isAdminViewer && getLockedContentMessage(activeTabAccess.contentType).coverageSummary ? (
+                                        {showPublicAdminDiagnostics && getLockedContentMessage(activeTabAccess.contentType).coverageSummary ? (
                                             <span className="rounded-full bg-white px-3 py-1 text-amber-700">
                                                 {getLockedContentMessage(activeTabAccess.contentType).coverageSummary}
                                             </span>
@@ -689,7 +690,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                 </div>
                                                 <div className="space-y-4 p-4">
                                                     <p className="line-clamp-2 text-sm text-gray-500">{pkg.description || 'باقة عامة لفتح محتوى هذا المسار حسب إعدادات الإدارة.'}</p>
-                                                    {isAdminViewer && packageCoverage.length > 0 ? (
+                                                    {showPublicAdminDiagnostics && packageCoverage.length > 0 ? (
                                                         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
                                                             <div className="mb-2 text-[11px] font-black text-amber-700">ماذا ستفتح لك هذه الباقة؟</div>
                                                             <div className="grid grid-cols-2 gap-2">
@@ -706,7 +707,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                         <span className="text-xl font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
                                                         {pkg.originalPrice ? <span className="text-sm font-bold text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
                                                     </div>
-                                                    {isAdminViewer ? (
+                                                    {showPublicAdminDiagnostics ? (
                                                         <div className="flex flex-wrap gap-2">
                                                             {(pkg.features || []).slice(0, 3).map((feature) => (
                                                                 <span key={feature} className="rounded-full bg-gray-50 px-2 py-1 text-xs font-bold text-gray-600">{feature}</span>
@@ -791,7 +792,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             <div className="text-xs font-black text-amber-700">لماذا هذا المحتوى مغلق؟</div>
                                             <div className="mt-1 text-sm font-bold text-gray-900">{lockedCourseMessage.title}</div>
                                             <div className="mt-1 text-xs leading-6 text-gray-600">{lockedCourseMessage.description}</div>
-                                            {isAdminViewer && lockedCourseMessage.coverageSummary ? (
+                                            {showPublicAdminDiagnostics && lockedCourseMessage.coverageSummary ? (
                                                 <div className="mt-2 text-[11px] font-black text-amber-700">{lockedCourseMessage.coverageSummary}</div>
                                             ) : null}
                                         </div>
@@ -834,7 +835,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'skills' && enabledTabs.skills && (
                     <div className="space-y-5">
-                        {previewTopic && isAdminViewer && (
+                        {previewTopic && showPublicAdminDiagnostics && (
                             <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-5 shadow-sm">
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
@@ -884,7 +885,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-gray-800 text-lg">{skill.title}</h3>
-                                            {isAdminViewer ? (
+                                            {showPublicAdminDiagnostics ? (
                                                 <span className="text-xs text-gray-500 font-medium">
                                                     {skill.totalLessons} درس • {skill.totalQuizzes || 0} تدريب قصير
                                                 </span>
@@ -906,7 +907,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                     )}
                                     <div className="space-y-2">
-                                        {isAdminViewer ? (
+                                        {showPublicAdminDiagnostics ? (
                                             <>
                                                 <div className="flex justify-between text-xs font-bold text-gray-600">
                                                     <span>التقدم</span>
@@ -927,7 +928,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'banks' && enabledTabs.banks && (
                     <>
-                    {isAdminViewer && (
+                    {showPublicAdminDiagnostics && (
                         <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
                             <div className="flex flex-wrap items-center gap-2 text-sm font-black">
                                 <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.banks.total - learningInventory.banks.locked}</span>
@@ -944,7 +945,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     </div>
                                     <h3 className="mt-2 text-lg font-black text-gray-900">{getLockedContentMessage('banks').title}</h3>
                                     <p className="mt-1 text-sm leading-7 text-gray-600">{getLockedContentMessage('banks').description}</p>
-                                    {getLockedContentMessage('banks').coverageSummary ? (
+                                    {showPublicAdminDiagnostics && getLockedContentMessage('banks').coverageSummary ? (
                                         <div className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">
                                             {getLockedContentMessage('banks').coverageSummary}
                                         </div>
@@ -979,7 +980,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'tests' && enabledTabs.tests && (
                     <>
-                    {isAdminViewer && (
+                    {showPublicAdminDiagnostics && (
                         <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
                             <div className="flex flex-wrap items-center gap-2 text-sm font-black">
                                 <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {learningInventory.tests.total - learningInventory.tests.locked}</span>
@@ -996,7 +997,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     </div>
                                     <h3 className="mt-2 text-lg font-black text-gray-900">{getLockedContentMessage('tests').title}</h3>
                                     <p className="mt-1 text-sm leading-7 text-gray-600">{getLockedContentMessage('tests').description}</p>
-                                    {getLockedContentMessage('tests').coverageSummary ? (
+                                    {showPublicAdminDiagnostics && getLockedContentMessage('tests').coverageSummary ? (
                                         <div className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">
                                             {getLockedContentMessage('tests').coverageSummary}
                                         </div>
@@ -1040,14 +1041,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.type === 'pdf' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
                                             <FileText size={28} />
                                         </div>
-                                        {isAdminViewer ? (
+                                        {showPublicAdminDiagnostics ? (
                                             <span className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg">{item.size}</span>
                                         ) : (
                                             <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg">ملف</span>
                                         )}
                                     </div>
                                     <h3 className="font-bold text-xl text-gray-900 mb-2">{item.title}</h3>
-                                    {isAdminViewer ? (
+                                    {showPublicAdminDiagnostics ? (
                                         <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
                                             <User size={16} />
                                             <span>{item.downloads} تحميل</span>
