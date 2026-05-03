@@ -19,7 +19,9 @@
     "smoke:operational:api": "tsx src/scripts/smokeOperationalJourneysApi.ts",
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
-    "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts"
+    "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
+    "backup:learning": "tsx src/scripts/backupLearningContent.ts",
+    "restore:learning": "tsx src/scripts/restoreLearningContent.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

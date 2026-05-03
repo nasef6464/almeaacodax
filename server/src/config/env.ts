@@ -1,7 +1,15 @@
 import dotenv from "dotenv";
 import { z } from "zod";
 
-dotenv.config();
+dotenv.config({
+  path: [
+    ".env.codex.local",
+    "../.env.codex.local",
+    ".env",
+    "server/.env",
+    ".env.development",
+  ],
+});
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(4000),

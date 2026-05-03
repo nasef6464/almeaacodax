@@ -14,7 +14,9 @@
     "server:check": "npm --prefix server run check",
     "smoke:operational": "npm --prefix server run smoke:operational:api",
     "smoke:frontend": "node scripts/smoke-frontend-routes.mjs",
-    "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs"
+    "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs",
+    "backup:learning": "npm --prefix server run backup:learning",
+    "restore:learning": "npm --prefix server run restore:learning"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
