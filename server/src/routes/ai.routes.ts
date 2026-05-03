@@ -245,7 +245,7 @@ const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiC
 
   if (!user || user.role !== "student") return null;
 
-  const weakSkillRows = weaknesses.map((item) => ({
+  const progressWeakSkillRows = weaknesses.map((item) => ({
     skill: String(item.skill || "مهارة تحتاج مراجعة"),
     mastery: Number(item.mastery || 0),
     status: String(item.status || "weak"),
@@ -257,6 +257,16 @@ const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiC
     totalQuestions: Number(item.totalQuestions || 0),
     wrongAnswers: Number(item.wrongAnswers || 0),
   }));
+  const resultWeakSkillRows = recentResults
+    .flatMap((item) => (Array.isArray(item.skillsAnalysis) ? item.skillsAnalysis : []))
+    .filter((item) => String(item?.status || "") === "weak" || String(item?.status || "") === "average" || Number(item?.mastery || 0) < 75)
+    .map((item) => ({
+      skill: String(item.skill || item.name || "مهارة تحتاج مراجعة"),
+      mastery: Number(item.mastery || 0),
+      status: String(item.status || "weak"),
+      action: String(item.recommendation || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
+    }));
+  const weakSkillRows = progressWeakSkillRows.length ? progressWeakSkillRows : resultWeakSkillRows;
 
   const summaryLines = [
     `اسم الطالب: ${String(user.name || "طالب")}`,
