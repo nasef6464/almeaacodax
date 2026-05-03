@@ -4,7 +4,7 @@ import {
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star,
-    Route as RouteIcon, Brain, Calendar, User, Video
+    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -273,6 +273,35 @@ const useParentScopedResults = () => {
             )
             .sort((a, b) => a.mastery - b.mastery);
 
+        const followUpPlan = weakSkills.slice(0, 3).map((skill, index) => {
+            const dayLabels = ['اليوم الأول', 'اليوم الثاني', 'اليوم الثالث'];
+            const action =
+                skill.mastery < 50
+                    ? 'راجع معه شرحًا قصيرًا ثم اطلب منه حل 5 أسئلة سهلة فقط.'
+                    : 'اطلب منه حل تدريب متوسط ثم مراجعة السؤال الذي أخطأ فيه بصوت عال.';
+            const check =
+                skill.mastery < 50
+                    ? 'علامة النجاح: يشرح لك فكرة المهارة في دقيقة واحدة.'
+                    : 'علامة النجاح: يصل إلى 75% أو أكثر في محاولة قصيرة.';
+
+            return {
+                id: `${skill.key}-${skill.studentName}-${index}`,
+                day: dayLabels[index],
+                studentName: skill.studentName,
+                skill: skill.skill,
+                mastery: skill.mastery,
+                action,
+                check,
+            };
+        });
+
+        const topWeakSkill = weakSkills[0];
+        const coachMessage = topWeakSkill
+            ? `ابدأ بهدوء مع ${topWeakSkill.studentName}. الأولوية الآن: ${topWeakSkill.skill} لأنها عند ${Math.round(topWeakSkill.mastery)}%. الأفضل جلسة قصيرة 15 دقيقة: شرح سريع، 5 أسئلة، ثم مراجعة خطأ واحد فقط بدون ضغط.`
+            : scopedResults.length > 0
+                ? 'الأداء مطمئن حاليًا. استمر بمتابعة خفيفة: سؤال واحد يوميًا عن ما تعلمه، ومراجعة قصيرة قبل أي اختبار.'
+                : 'اربط حساب الطالب أو انتظر أول اختبار حتى تظهر خطة متابعة مخصصة.';
+
         const averageScore = scopedResults.length
             ? Math.round(scopedResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.length)
             : 0;
@@ -290,6 +319,8 @@ const useParentScopedResults = () => {
             recentResults: scopedResults.slice(0, 6),
             weakSkills,
             priorityWeakSkills: weakSkills.slice(0, 6),
+            followUpPlan,
+            coachMessage,
             childrenCount: Math.max(childCards.length, linkedStudents.length),
             averageScore,
             lastThreeAverage,
@@ -776,6 +807,17 @@ const ParentErrorState = ({ message }: { message: string }) => (
 const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: DashboardTab) => void }) => {
     const data = useParentScopedResults();
     const trend = data.lastThreeAverage - data.olderThreeAverage;
+    const [copiedCoachMessage, setCopiedCoachMessage] = useState(false);
+
+    const copyCoachMessage = async () => {
+        try {
+            await navigator.clipboard?.writeText(data.coachMessage);
+            setCopiedCoachMessage(true);
+            window.setTimeout(() => setCopiedCoachMessage(false), 1800);
+        } catch {
+            setCopiedCoachMessage(false);
+        }
+    };
 
     return (
         <div className="space-y-8 animate-fade-in pb-20">
@@ -825,7 +867,7 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                             </Card>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                             <Card className="p-5">
                                 <div className="mb-4 flex items-center justify-between">
                                     <h3 className="text-lg font-black text-gray-900">الأبناء</h3>
@@ -885,7 +927,63 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                     </div>
                                 )}
                             </Card>
+
+                            <Card className="p-5">
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">رسالة ولي الأمر</h3>
+                                    <MessageCircle size={18} className="text-emerald-600" />
+                                </div>
+                                <div className="rounded-2xl bg-emerald-50 p-4 text-sm font-bold leading-7 text-emerald-900">
+                                    {data.coachMessage}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => void copyCoachMessage()}
+                                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                >
+                                    <Copy size={16} />
+                                    {copiedCoachMessage ? 'تم النسخ' : 'نسخ الرسالة'}
+                                </button>
+                            </Card>
                         </div>
+
+                        <Card className="p-5">
+                            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h3 className="text-lg font-black text-gray-900">خطة متابعة 3 أيام</h3>
+                                    <p className="mt-1 text-sm text-gray-500">خطوات بسيطة لولي الأمر بدون ضغط على الطالب.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveTab('parent-skills')}
+                                    className="self-start rounded-xl bg-slate-900 px-4 py-2 text-sm font-black text-white hover:bg-slate-800"
+                                >
+                                    عرض كل المهارات
+                                </button>
+                            </div>
+                            {data.followUpPlan.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                    {data.followUpPlan.map((item) => (
+                                        <div key={item.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                                    {Math.round(item.mastery)}%
+                                                </span>
+                                            </div>
+                                            <div className="mt-3 text-xs font-bold text-gray-500">{item.studentName}</div>
+                                            <div className="mt-1 font-black leading-7 text-gray-900">{item.skill}</div>
+                                            <p className="mt-3 text-sm leading-7 text-gray-600">{item.action}</p>
+                                            <div className="mt-3 rounded-xl bg-white p-3 text-xs font-bold leading-6 text-emerald-700">{item.check}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
+                                    لا توجد خطة علاجية الآن لأن النتائج الحالية لا تظهر ضعفًا واضحًا.
+                                </div>
+                            )}
+                        </Card>
                     </>
                 )
             ) : null}
