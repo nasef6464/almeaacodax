@@ -64,13 +64,27 @@ const sanitizeRecommendation = (item: LearningRecommendation): LearningRecommend
   actionLabel: displayText(item.actionLabel),
 });
 
-export const getChatResponse = async (message: string): Promise<string> => {
+export type StudentChatResponse = {
+  text: string;
+  personalized: boolean;
+  weaknessesCount: number;
+};
+
+export const getChatResponse = async (message: string): Promise<StudentChatResponse> => {
   try {
     const response = await api.aiChat({ message });
     const text = displayText(response.text);
-    return text || buildLocalStudentReply(message);
+    return {
+      text: text || buildLocalStudentReply(message),
+      personalized: Boolean(response.personalized),
+      weaknessesCount: Number(response.weaknessesCount || 0),
+    };
   } catch {
-    return buildLocalStudentReply(message);
+    return {
+      text: buildLocalStudentReply(message),
+      personalized: false,
+      weaknessesCount: 0,
+    };
   }
 };
 
@@ -91,7 +105,8 @@ export const explainQuestion = async (
   correctAnswer: string,
 ): Promise<string> => {
   const message = `اشرح لي ببساطة لماذا إجابتي "${studentAnswer}" ليست الأنسب في السؤال "${questionText}"، ولماذا الإجابة الصحيحة هي "${correctAnswer}".`;
-  return getChatResponse(message);
+  const response = await getChatResponse(message);
+  return response.text;
 };
 
 export const generateLearningPath = async (skills: SkillGap[]): Promise<LearningRecommendation[]> => {

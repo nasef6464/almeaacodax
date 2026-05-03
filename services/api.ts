@@ -477,7 +477,7 @@ export const api = {
       token,
     }),
   aiChat: (payload: { message: string }, token?: string | null) =>
-    request<{ text: string }>("/ai/chat", {
+    request<{ text: string; personalized?: boolean; weaknessesCount?: number }>("/ai/chat", {
       method: "POST",
       body: payload,
       token,

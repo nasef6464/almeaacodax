@@ -294,19 +294,23 @@ const buildPersonalizedTutorFallback = (message: string, context: StudentAiConte
 
   const asksAboutWeakness =
     /ضعيف|ضعفي|مستواي|ابدأ|ابدا|خطة|أذاكر|اذاكر|ماذا أراجع|ايه اراجع|إيه أراجع/.test(message.trim().toLowerCase());
-  if (!asksAboutWeakness || context.weaknesses.length === 0) return base;
+  if (context.weaknesses.length === 0) return base;
 
   const topWeakness = context.weaknesses[0];
   const nextWeakness = context.weaknesses[1];
-  return [
+  const advisorIntro = [
     `حسب أدائك الحالي، ابدأ بمهارة: ${topWeakness.skill} لأنها عند ${topWeakness.mastery}%.`,
     nextWeakness ? `بعدها راجع: ${nextWeakness.skill} (${nextWeakness.mastery}%).` : "",
-    "خطة عملية:",
+    asksAboutWeakness ? "خطة عملية:" : "ملاحظة سريعة قبل الإجابة:",
     "1. شاهد شرحا قصيرا للمهارة الأولى.",
     "2. حل 5 أسئلة سهلة ثم 5 أسئلة متوسطة.",
     "3. سجل سبب كل خطأ: فهم قانون، استعجال، أو اختيار طريقة غير مناسبة.",
     "4. أعد اختبارا قصيرا، ولو وصلت 75% انتقل للمهارة التالية.",
     topWeakness.action ? `توجيه المنصة لك: ${topWeakness.action}` : "",
+  ].filter(Boolean);
+
+  return [
+    ...advisorIntro,
     "",
     base,
   ]

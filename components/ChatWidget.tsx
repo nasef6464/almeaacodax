@@ -1,12 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Sparkles } from 'lucide-react';
 import { getChatResponse } from '../services/geminiService';
 
 interface Message {
     id: string;
     text: string;
     sender: 'user' | 'bot';
+    personalized?: boolean;
+    weaknessesCount?: number;
 }
+
+const quickPrompts = [
+    'أنا ضعيف في إيه وابدأ أذاكر منين؟',
+    'اعمل لي خطة مذاكرة اليوم',
+    'اشرح لي فكرة الكسور ببساطة',
+    'إزاي أراجع أخطائي بعد الاختبار؟',
+];
 
 export const ChatWidget: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -29,17 +38,24 @@ export const ChatWidget: React.FC = () => {
         scrollToBottom();
     }, [messages, isOpen]);
 
-    const handleSend = async () => {
-        if (!inputValue.trim()) return;
+    const handleSend = async (override?: string) => {
+        const text = (override || inputValue).trim();
+        if (!text) return;
 
-        const userMsg: Message = { id: Date.now().toString(), text: inputValue, sender: 'user' };
+        const userMsg: Message = { id: Date.now().toString(), text, sender: 'user' };
         setMessages((prev) => [...prev, userMsg]);
         setInputValue('');
         setIsLoading(true);
 
         const responseText = await getChatResponse(userMsg.text);
 
-        const botMsg: Message = { id: (Date.now() + 1).toString(), text: responseText, sender: 'bot' };
+        const botMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            text: responseText.text,
+            sender: 'bot',
+            personalized: responseText.personalized,
+            weaknessesCount: responseText.weaknessesCount,
+        };
         setMessages((prev) => [...prev, botMsg]);
         setIsLoading(false);
     };
@@ -56,9 +72,12 @@ export const ChatWidget: React.FC = () => {
 
             {isOpen && (
                 <div className="fixed bottom-36 md:bottom-24 left-4 md:left-8 w-[90vw] md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 flex flex-col max-h-[60vh] md:max-h-[500px]">
-                    <div className="bg-primary-600 p-4 text-white flex items-center gap-2">
-                        <MessageCircle size={20} />
-                        <h3 className="font-bold">المساعد الذكي</h3>
+                    <div className="bg-primary-600 p-4 text-white flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <MessageCircle size={20} />
+                            <h3 className="font-bold">المساعد الذكي</h3>
+                        </div>
+                        <span className="text-[11px] bg-white/15 px-2 py-1 rounded-full">موجه الطالب</span>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
@@ -71,6 +90,12 @@ export const ChatWidget: React.FC = () => {
                                             : 'bg-white border border-gray-200 text-gray-800 rounded-br-none'
                                     }`}
                                 >
+                                    {msg.personalized && (
+                                        <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-bold text-emerald-700">
+                                            <Sparkles size={12} />
+                                            مبني على أدائك{msg.weaknessesCount ? `: ${msg.weaknessesCount} مهارات` : ''}
+                                        </div>
+                                    )}
                                     {msg.text}
                                 </div>
                             </div>
@@ -86,24 +111,39 @@ export const ChatWidget: React.FC = () => {
                         <div ref={messagesEndRef} />
                     </div>
 
-                    <div className="p-3 bg-white border-t border-gray-100 flex gap-2">
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && void handleSend()}
-                            placeholder="اكتب سؤالك هنا..."
-                            className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            disabled={isLoading}
-                        />
-                        <button
-                            onClick={() => void handleSend()}
-                            disabled={isLoading || !inputValue.trim()}
-                            className="bg-primary-600 text-white p-2 rounded-full hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="إرسال السؤال"
-                        >
-                            <Send size={18} className={document.dir === 'rtl' ? 'rotate-180' : ''} />
-                        </button>
+                    <div className="p-3 bg-white border-t border-gray-100 space-y-3">
+                        <div className="flex gap-2 overflow-x-auto pb-1">
+                            {quickPrompts.map((prompt) => (
+                                <button
+                                    key={prompt}
+                                    type="button"
+                                    onClick={() => void handleSend(prompt)}
+                                    disabled={isLoading}
+                                    className="shrink-0 rounded-full bg-gray-50 border border-gray-200 px-3 py-1.5 text-xs font-bold text-gray-600 hover:border-primary-300 hover:text-primary-700 disabled:opacity-50"
+                                >
+                                    {prompt}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && void handleSend()}
+                                placeholder="اكتب سؤالك هنا..."
+                                className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                disabled={isLoading}
+                            />
+                            <button
+                                onClick={() => void handleSend()}
+                                disabled={isLoading || !inputValue.trim()}
+                                className="bg-primary-600 text-white p-2 rounded-full hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                aria-label="إرسال السؤال"
+                            >
+                                <Send size={18} className={document.dir === 'rtl' ? 'rotate-180' : ''} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
