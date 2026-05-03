@@ -686,6 +686,36 @@ export const api = {
         samples?: string[];
       }>;
     }>("/operations/audit", { token }),
+  getDeliveryReadiness: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      score: number;
+      status: "ready" | "ready_with_notes" | "blocked";
+      summary: {
+        failed: number;
+        warnings: number;
+        passed: number;
+        auditScore: number;
+        latestBackupAt: string;
+        backupAgeHours: number | null;
+        clientErrors24h: number;
+        aiErrors24h: number;
+      };
+      checks: Array<{
+        id: string;
+        title: string;
+        status: "pass" | "warning" | "fail";
+        detail: string;
+        action: string;
+        routeHint?: string;
+      }>;
+      nextActions: Array<{
+        id: string;
+        title: string;
+        action: string;
+        routeHint?: string;
+      }>;
+    }>("/operations/delivery-readiness", { token }),
   getSeoStatus: (token?: string | null) =>
     request<{
       checkedAt: string;

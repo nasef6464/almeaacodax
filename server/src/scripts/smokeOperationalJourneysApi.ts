@@ -200,6 +200,7 @@ async function run() {
     aiInteractions,
     homepageSettings,
     clientEvents,
+    deliveryReadiness,
     backupSnapshots,
     backupActivities,
     operationLessonRepairPreview,
@@ -269,6 +270,7 @@ async function run() {
     request<any>("/ai/interactions?limit=5", "GET", undefined, admin.token),
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
+    request<any>("/operations/delivery-readiness", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
     request<any>("/backups/learning/activity", "GET", undefined, admin.token),
     request<any>("/operations/repair", "POST", { action: "unlink-unavailable-topic-lessons", apply: false }, admin.token),
@@ -371,6 +373,16 @@ async function run() {
       typeof clientEvents?.summary?.unresolvedCount === "number" &&
       typeof clientEvents?.summary?.last24hCount === "number",
     `events=${clientEvents?.events?.length || 0}, last24h=${clientEvents?.summary?.last24hCount ?? "missing"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "delivery readiness checklist available",
+    Number(deliveryReadiness?.score || 0) > 0 &&
+      Array.isArray(deliveryReadiness?.checks) &&
+      deliveryReadiness.checks.length >= 5,
+    `score=${deliveryReadiness?.score || 0}, checks=${deliveryReadiness?.checks?.length || 0}, status=${deliveryReadiness?.status || "missing"}`,
   );
 
   pushResult(

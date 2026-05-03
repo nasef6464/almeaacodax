@@ -117,6 +117,36 @@ type SeoStatus = {
     sampleRoutes: Array<{ title: string; loc: string }>;
 };
 
+type DeliveryReadiness = {
+    checkedAt: string;
+    score: number;
+    status: 'ready' | 'ready_with_notes' | 'blocked';
+    summary: {
+        failed: number;
+        warnings: number;
+        passed: number;
+        auditScore: number;
+        latestBackupAt: string;
+        backupAgeHours: number | null;
+        clientErrors24h: number;
+        aiErrors24h: number;
+    };
+    checks: Array<{
+        id: string;
+        title: string;
+        status: 'pass' | 'warning' | 'fail';
+        detail: string;
+        action: string;
+        routeHint?: string;
+    }>;
+    nextActions: Array<{
+        id: string;
+        title: string;
+        action: string;
+        routeHint?: string;
+    }>;
+};
+
 const areaLabels: Record<string, string> = {
     student_journey: 'رحلة الطالب',
     content: 'المحتوى',
@@ -192,6 +222,7 @@ export const OperationsCommandCenter: React.FC = () => {
     const [audit, setAudit] = useState<OperationsAudit | null>(null);
     const [clientEvents, setClientEvents] = useState<ClientEventsResponse | null>(null);
     const [seoStatus, setSeoStatus] = useState<SeoStatus | null>(null);
+    const [deliveryReadiness, setDeliveryReadiness] = useState<DeliveryReadiness | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
@@ -203,16 +234,18 @@ export const OperationsCommandCenter: React.FC = () => {
         setError(null);
 
         try {
-            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus] = await Promise.all([
+            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus, nextDeliveryReadiness] = await Promise.all([
                 api.getOperationalStatus(),
                 api.getOperationsAudit(),
                 api.getClientEvents(12),
                 api.getSeoStatus(),
+                api.getDeliveryReadiness(),
             ]);
             setStatus(nextStatus as OperationalStatus);
             setAudit(nextAudit as OperationsAudit);
             setClientEvents(nextClientEvents as ClientEventsResponse);
             setSeoStatus(nextSeoStatus as SeoStatus);
+            setDeliveryReadiness(nextDeliveryReadiness as DeliveryReadiness);
         } catch (loadError) {
             console.error('Failed to load operations command center', loadError);
             setError(loadError instanceof Error ? loadError.message : 'تعذر تحميل فحص النظام الآن.');
@@ -241,6 +274,12 @@ export const OperationsCommandCenter: React.FC = () => {
             : (audit?.score || 0) >= 55
                 ? 'يحتاج ضبط قبل التوسع'
                 : 'يحتاج تدخل عاجل';
+
+    const deliveryLabel = deliveryReadiness?.status === 'ready'
+        ? 'جاهز للتسليم'
+        : deliveryReadiness?.status === 'ready_with_notes'
+            ? 'جاهز مع ملاحظات'
+            : 'معلّق قبل التسليم';
 
     const downloadAudit = () => {
         if (!audit) return;
@@ -343,6 +382,104 @@ export const OperationsCommandCenter: React.FC = () => {
                     {repairMessage}
                 </div>
             )}
+
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+                <div className="p-5 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <ShieldCheck size={18} className="text-emerald-600" />
+                            جاهزية التسليم النهائي
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            ملخص واحد يجمع الربط، المحتوى، النسخ الاحتياطي، الأخطاء، والمساعد الذكي قبل أي تسليم أو إطلاق.
+                        </p>
+                    </div>
+                    <div className={`rounded-2xl px-5 py-3 text-center ${
+                        deliveryReadiness?.status === 'ready'
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : deliveryReadiness?.status === 'ready_with_notes'
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-red-50 text-red-700'
+                    }`}>
+                        <div className="text-xs font-bold">الحالة</div>
+                        <div className="mt-1 text-lg font-black">{deliveryLabel}</div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 p-5 lg:grid-cols-4">
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">درجة التسليم</p>
+                        <p className="mt-2 text-3xl font-black text-gray-900">{formatNumber(deliveryReadiness?.score)}%</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">ناجح</p>
+                        <p className="mt-2 text-3xl font-black text-emerald-700">{formatNumber(deliveryReadiness?.summary.passed)}</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">تنبيهات</p>
+                        <p className="mt-2 text-3xl font-black text-amber-700">{formatNumber(deliveryReadiness?.summary.warnings)}</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                        <p className="text-xs font-bold text-gray-500">مانع تسليم</p>
+                        <p className="mt-2 text-3xl font-black text-red-700">{formatNumber(deliveryReadiness?.summary.failed)}</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 px-5 pb-5 xl:grid-cols-2">
+                    <div className="rounded-2xl border border-gray-100">
+                        <div className="border-b border-gray-100 px-4 py-3 font-bold text-gray-900">قائمة التسليم</div>
+                        <div className="divide-y divide-gray-100">
+                            {(deliveryReadiness?.checks || []).map((item) => (
+                                <div key={item.id} className="p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="font-black text-gray-900">{item.title}</p>
+                                            <p className="mt-1 text-xs leading-5 text-gray-500">{item.detail}</p>
+                                        </div>
+                                        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+                                            item.status === 'pass'
+                                                ? 'bg-emerald-50 text-emerald-700'
+                                                : item.status === 'warning'
+                                                    ? 'bg-amber-50 text-amber-700'
+                                                    : 'bg-red-50 text-red-700'
+                                        }`}>
+                                            {item.status === 'pass' ? 'سليم' : item.status === 'warning' ? 'تنبيه' : 'مهم'}
+                                        </span>
+                                    </div>
+                                    {item.status !== 'pass' && (
+                                        <p className="mt-3 rounded-xl bg-gray-50 p-3 text-xs font-bold leading-6 text-gray-700">{item.action}</p>
+                                    )}
+                                </div>
+                            ))}
+                            {!deliveryReadiness && (
+                                <div className="p-4 text-sm text-gray-500">جاري تحميل جاهزية التسليم...</div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-gray-100">
+                        <div className="border-b border-gray-100 px-4 py-3 font-bold text-gray-900">خطوات قبل التسليم</div>
+                        <div className="space-y-3 p-4">
+                            {(deliveryReadiness?.nextActions || []).length > 0 ? deliveryReadiness?.nextActions.map((item) => (
+                                <div key={item.id} className="rounded-2xl bg-amber-50 p-4">
+                                    <p className="font-black text-amber-900">{item.title}</p>
+                                    <p className="mt-2 text-sm leading-6 text-amber-800">{item.action}</p>
+                                </div>
+                            )) : (
+                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                    لا توجد خطوات مانعة للتسليم الآن.
+                                </div>
+                            )}
+
+                            <div className="rounded-2xl bg-slate-50 p-4 text-xs leading-6 text-slate-600">
+                                آخر نسخة احتياطية: {deliveryReadiness?.summary.latestBackupAt ? new Date(deliveryReadiness.summary.latestBackupAt).toLocaleString('ar-SA') : 'غير موجودة'}.
+                                أخطاء الواجهة آخر 24 ساعة: {formatNumber(deliveryReadiness?.summary.clientErrors24h)}.
+                                أخطاء المساعد آخر 24 ساعة: {formatNumber(deliveryReadiness?.summary.aiErrors24h)}.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
