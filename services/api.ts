@@ -114,7 +114,10 @@ export const api = {
     }),
   createLearningBackup: () =>
     request<unknown>("/backups/learning"),
-  restoreLearningBackup: (payload: { backup: unknown; apply?: boolean; replace?: boolean }, token?: string | null) =>
+  restoreLearningBackup: (
+    payload: { backup: unknown; apply?: boolean; replace?: boolean; confirmText?: string },
+    token?: string | null,
+  ) =>
     request<unknown>("/backups/learning/restore", {
       method: "POST",
       body: payload,

@@ -31,8 +31,15 @@ const collectionLabels: Record<string, string> = {
     quizzes: 'الاختبارات',
     courses: 'الدورات والباقات',
     libraryItems: 'المكتبة',
+    groups: 'المدارس والمجموعات',
+    b2bPackages: 'باقات المدارس',
+    accessCodes: 'أكواد الوصول',
+    studyPlans: 'خطط الدراسة',
     homepageSettings: 'إعدادات الرئيسية',
+    paymentSettings: 'إعدادات الدفع',
 };
+
+const essentialCollections = ['paths', 'subjects', 'sections', 'skills', 'topics', 'lessons', 'questions', 'quizzes'];
 
 const isValidLearningBackup = (payload: BackupPayload | null) =>
     payload?.kind === 'almeaa-learning-content-backup' &&
@@ -60,6 +67,7 @@ export const BackupManager: React.FC = () => {
     const [statusMessage, setStatusMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [replaceMode, setReplaceMode] = useState(false);
+    const [confirmText, setConfirmText] = useState('');
 
     const backupSummaryRows = useMemo(() => {
         const summary = backupPayload?.summary || Object.fromEntries((backupPayload?.collections || []).map((item) => [item.name, item.documents.length]));
@@ -69,6 +77,14 @@ export const BackupManager: React.FC = () => {
             count,
         }));
     }, [backupPayload]);
+
+    const missingEssentialCollections = useMemo(() => {
+        const existing = new Set((backupPayload?.collections || []).map((item) => item.name));
+        return essentialCollections.filter((name) => !existing.has(name));
+    }, [backupPayload]);
+
+    const backupTotals = useMemo(() => backupSummaryRows.reduce((sum, row) => sum + Number(row.count || 0), 0), [backupSummaryRows]);
+    const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
 
     const createBackup = async () => {
         setIsCreating(true);
@@ -84,6 +100,7 @@ export const BackupManager: React.FC = () => {
             setBackupPayload(payload);
             setSelectedFileName('');
             setRestorePreview(null);
+            setConfirmText('');
             const safeDate = (payload.createdAt || new Date().toISOString()).replace(/[:.]/g, '-');
             downloadJson(payload, `almeaa-learning-content-${safeDate}.json`);
             setStatusMessage('تم إنشاء نسخة احتياطية من محتوى التعلم وتحميلها.');
@@ -108,6 +125,7 @@ export const BackupManager: React.FC = () => {
 
             setBackupPayload(parsed);
             setSelectedFileName(file.name);
+            setConfirmText('');
             setStatusMessage('تم قراءة الملف. ابدأ بالفحص قبل أي استرجاع.');
         } catch (error) {
             setBackupPayload(null);
@@ -131,6 +149,7 @@ export const BackupManager: React.FC = () => {
                 backup: backupPayload,
                 apply,
                 replace: apply ? replaceMode : false,
+                confirmText: apply ? confirmText : undefined,
             }) as RestoreResponse;
 
             setRestorePreview(response);
@@ -194,13 +213,38 @@ export const BackupManager: React.FC = () => {
                     </div>
 
                     {backupPayload ? (
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                            {backupSummaryRows.map((row) => (
-                                <div key={row.name} className="rounded-2xl bg-gray-50 p-4">
-                                    <div className="text-xs font-bold text-gray-500">{row.label}</div>
-                                    <div className="mt-2 text-2xl font-black text-gray-900">{row.count}</div>
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                <div className="rounded-2xl bg-emerald-50 p-4">
+                                    <div className="text-xs font-bold text-emerald-700">إجمالي العناصر</div>
+                                    <div className="mt-2 text-2xl font-black text-emerald-900">{backupTotals}</div>
                                 </div>
-                            ))}
+                                <div className="rounded-2xl bg-blue-50 p-4">
+                                    <div className="text-xs font-bold text-blue-700">تاريخ النسخة</div>
+                                    <div className="mt-2 text-sm font-black text-blue-900">{backupPayload.createdAt ? new Date(backupPayload.createdAt).toLocaleString('ar-SA') : 'غير محدد'}</div>
+                                </div>
+                                <div className={`rounded-2xl p-4 ${missingEssentialCollections.length ? 'bg-amber-50' : 'bg-emerald-50'}`}>
+                                    <div className={`text-xs font-bold ${missingEssentialCollections.length ? 'text-amber-700' : 'text-emerald-700'}`}>حالة الملف</div>
+                                    <div className={`mt-2 text-sm font-black ${missingEssentialCollections.length ? 'text-amber-900' : 'text-emerald-900'}`}>
+                                        {missingEssentialCollections.length ? `ينقص ${missingEssentialCollections.length} مجموعات` : 'جاهز للفحص'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {missingEssentialCollections.length ? (
+                                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-800">
+                                    هذه النسخة قديمة أو ناقصة. المجموعات الناقصة: {missingEssentialCollections.map((name) => collectionLabels[name] || name).join('، ')}.
+                                </div>
+                            ) : null}
+
+                            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                                {backupSummaryRows.map((row) => (
+                                    <div key={row.name} className="rounded-2xl bg-gray-50 p-4">
+                                        <div className="text-xs font-bold text-gray-500">{row.label}</div>
+                                        <div className="mt-2 text-2xl font-black text-gray-900">{row.count}</div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         <div className="rounded-2xl border border-dashed border-gray-200 p-8 text-center text-sm leading-7 text-gray-500">
@@ -243,7 +287,10 @@ export const BackupManager: React.FC = () => {
                             <input
                                 type="checkbox"
                                 checked={replaceMode}
-                                onChange={(event) => setReplaceMode(event.target.checked)}
+                                onChange={(event) => {
+                                    setReplaceMode(event.target.checked);
+                                    setConfirmText('');
+                                }}
                                 className="mt-1"
                             />
                             <span>
@@ -251,9 +298,22 @@ export const BackupManager: React.FC = () => {
                             </span>
                         </label>
 
+                        <div className="rounded-2xl border border-gray-200 bg-white p-3">
+                            <label className="text-xs font-black text-gray-600">
+                                للتطبيق الحقيقي اكتب: <span className="text-slate-900">{requiredConfirmText}</span>
+                            </label>
+                            <input
+                                type="text"
+                                value={confirmText}
+                                onChange={(event) => setConfirmText(event.target.value)}
+                                className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                placeholder={requiredConfirmText}
+                            />
+                        </div>
+
                         <button
                             onClick={() => runRestore(true)}
-                            disabled={!backupPayload || isRestoring}
+                            disabled={!backupPayload || isRestoring || confirmText !== requiredConfirmText}
                             className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-60"
                         >
                             تطبيق الاسترجاع

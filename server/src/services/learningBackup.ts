@@ -1,14 +1,19 @@
 import { Model } from "mongoose";
+import { AccessCodeModel } from "../models/AccessCode.js";
+import { B2BPackageModel } from "../models/B2BPackage.js";
 import { CourseModel } from "../models/Course.js";
+import { GroupModel } from "../models/Group.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { LessonModel } from "../models/Lesson.js";
 import { LevelModel } from "../models/Level.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
+import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { PathModel } from "../models/Path.js";
 import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
 import { SectionModel } from "../models/Section.js";
 import { SkillModel } from "../models/Skill.js";
+import { StudyPlanModel } from "../models/StudyPlan.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
 
@@ -40,7 +45,12 @@ const learningCollections: Array<{ name: string; model: Model<any> }> = [
   { name: "quizzes", model: QuizModel },
   { name: "courses", model: CourseModel },
   { name: "libraryItems", model: LibraryItemModel },
+  { name: "groups", model: GroupModel },
+  { name: "b2bPackages", model: B2BPackageModel },
+  { name: "accessCodes", model: AccessCodeModel },
+  { name: "studyPlans", model: StudyPlanModel },
   { name: "homepageSettings", model: HomepageSettingsModel },
+  { name: "paymentSettings", model: PaymentSettingsModel },
 ];
 
 export async function createLearningBackup(databaseName?: string): Promise<LearningBackupPayload> {
