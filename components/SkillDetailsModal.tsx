@@ -172,6 +172,9 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     ? activeTopicLessons
     : activeTopicLessons.filter((lesson) => hasPlayableLessonMedia(lesson));
   const hasHiddenUnplayableLessons = !isStaffViewer && activeTopicLessons.length > learnerTopicLessons.length;
+  const firstPlayableLesson = learnerTopicLessons[0] || null;
+  const firstTrainingQuiz = activeTopicQuizzes[0] || null;
+  const firstSupportFile = relatedLibrarySuggestions[0] || null;
 
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
     setLessonNotice('');
@@ -277,6 +280,74 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
 
           <div className="flex-1 h-2/3 md:h-full flex flex-col overflow-hidden bg-gray-50/50">
             <div className="flex-none p-4 sm:p-6 pb-0">
+              <div className="mb-4 rounded-3xl border border-indigo-100 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <div className="text-xs font-black text-indigo-600">رحلتك داخل هذا الجزء</div>
+                    <h3 className="mt-1 text-lg font-black text-gray-900">شاهد، تدرب، ثم ثبّت المعلومة</h3>
+                    <p className="mt-1 text-sm leading-7 text-gray-500">
+                      هذه البطاقة تختصر المطلوب من الطالب داخل الموضوع بدل التنقل العشوائي بين الشروحات والتدريبات.
+                    </p>
+                  </div>
+                  <div className="grid w-full gap-2 sm:grid-cols-3 lg:w-auto lg:min-w-[560px]">
+                    <button
+                      type="button"
+                      onClick={() => firstPlayableLesson && openLessonVideo(firstPlayableLesson)}
+                      disabled={!firstPlayableLesson}
+                      className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-right transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400"
+                    >
+                      <span className="flex items-center gap-2 text-xs font-black text-indigo-700">
+                        <Video size={15} />
+                        1. الشرح
+                      </span>
+                      <span className="line-clamp-2 text-sm font-black text-gray-900">
+                        {firstPlayableLesson ? firstPlayableLesson.title : 'ينتظر درسًا مباشرًا'}
+                      </span>
+                      <span className="text-xs font-bold text-indigo-600">{firstPlayableLesson ? getLessonActionLabel(firstPlayableLesson) : 'قيد التجهيز'}</span>
+                    </button>
+
+                    {firstTrainingQuiz ? (
+                      <Link
+                        to={`/quiz/${firstTrainingQuiz.id}`}
+                        className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-right transition hover:bg-amber-100"
+                      >
+                        <span className="flex items-center gap-2 text-xs font-black text-amber-700">
+                          <Target size={15} />
+                          2. التدريب
+                        </span>
+                        <span className="line-clamp-2 text-sm font-black text-gray-900">{firstTrainingQuiz.title}</span>
+                        <span className="text-xs font-bold text-amber-700">ابدأ التدريب</span>
+                      </Link>
+                    ) : (
+                      <div className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-right text-gray-400">
+                        <span className="flex items-center gap-2 text-xs font-black">
+                          <Target size={15} />
+                          2. التدريب
+                        </span>
+                        <span className="line-clamp-2 text-sm font-black">لا يوجد تدريب مباشر بعد</span>
+                        <span className="text-xs font-bold">قيد التجهيز</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => firstSupportFile && openExternalUrl(firstSupportFile.url)}
+                      disabled={!firstSupportFile}
+                      className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-right transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400"
+                    >
+                      <span className="flex items-center gap-2 text-xs font-black text-emerald-700">
+                        <FileText size={15} />
+                        3. ملف دعم
+                      </span>
+                      <span className="line-clamp-2 text-sm font-black text-gray-900">
+                        {firstSupportFile ? firstSupportFile.title : 'لا يوجد ملف مطلوب'}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-700">{firstSupportFile ? 'فتح الملف' : 'اختياري'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex border-b border-gray-200">
                 <button
                   onClick={() => setTopicModalTab('lessons')}
