@@ -885,6 +885,31 @@ async function run() {
     `results=${parentScopedResults.results?.length || 0}, students=${parentScopedResults.scope?.studentCount || 0}`,
   );
 
+  const parentLinkedStudentIds = new Set((parentMe.user?.linkedStudentIds || []).map((id: unknown) => String(id)));
+  const parentScopedRows = Array.isArray(parentScopedResults.results) ? parentScopedResults.results : [];
+  const parentRowsStayLinked =
+    parentScopedRows.length > 0 &&
+    parentScopedRows.every((result: any) => parentLinkedStudentIds.has(String(result.userId || result.studentId || "")));
+  const parentRowsHaveSkillSignals = parentScopedRows.some(
+    (result: any) => Array.isArray(result.skillsAnalysis) && result.skillsAnalysis.some((skill: any) => Number(skill.mastery || 0) < 70),
+  );
+
+  pushResult(
+    results,
+    "parent",
+    "follow-up data stays scoped to linked children",
+    parentRowsStayLinked,
+    `linked=${parentLinkedStudentIds.size}, rows=${parentScopedRows.length}`,
+  );
+
+  pushResult(
+    results,
+    "parent",
+    "follow-up plan has skill signals",
+    parentRowsHaveSkillSignals,
+    `rowsWithSkills=${parentScopedRows.filter((result: any) => Array.isArray(result.skillsAnalysis) && result.skillsAnalysis.length > 0).length}`,
+  );
+
   const school = (adminContent.groups || []).find((group: any) => {
     const normalizedName = String(group.name || "").trim();
     const normalizedType = String(group.type || "").trim();
