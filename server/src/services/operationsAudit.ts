@@ -115,6 +115,8 @@ export async function createOperationsAudit() {
   const skillIds = new Set(skills.map(idOf));
   const visibleLessons = lessons.filter((lesson: any) => isVisibleContent(lesson) && activePathIds.has(lesson.pathId));
   const visibleQuizzes = quizzes.filter((quiz: any) => isVisibleContent(quiz) && activePathIds.has(quiz.pathId));
+  const visibleCourses = courses.filter((course: any) => isVisibleContent(course) && activePathIds.has(course.pathId || course.category));
+  const visibleLibraryItems = libraryItems.filter((item: any) => isVisibleContent(item) && activePathIds.has(item.pathId));
   const visibleTopics = topics.filter((topic: any) => topic.showOnPlatform !== false && activePathIds.has(topic.pathId));
   const lessonIds = new Set(visibleLessons.map(idOf));
   const quizIds = new Set(visibleQuizzes.map(idOf));
@@ -129,8 +131,8 @@ export async function createOperationsAudit() {
       !visibleTopics.some((item: any) => item.subjectId === subjectId) &&
       !visibleLessons.some((item: any) => item.subjectId === subjectId) &&
       !visibleQuizzes.some((item: any) => item.subjectId === subjectId) &&
-      !courses.some((item: any) => isVisibleContent(item) && (item.subjectId || item.subject) === subjectId) &&
-      !libraryItems.some((item: any) => isVisibleContent(item) && item.subjectId === subjectId)
+      !visibleCourses.some((item: any) => (item.subjectId || item.subject) === subjectId) &&
+      !visibleLibraryItems.some((item: any) => item.subjectId === subjectId)
     );
   });
   const topicsWithoutLinkedContent = visibleTopics.filter((topic: any) => (topic.lessonIds || []).length === 0 && (topic.quizIds || []).length === 0);
@@ -165,11 +167,12 @@ export async function createOperationsAudit() {
     );
   });
   const questionsWithoutExplanations = questions.filter((question: any) => question.type !== "essay" && !String(question.explanation || "").trim());
+  const visibleQuestions = questions.filter((question: any) => isVisibleContent(question) && activePathIds.has(question.pathId));
   const unskilledContent = [
-    ...lessons.filter((item: any) => (item.skillIds || []).length === 0),
-    ...questions.filter((item: any) => (item.skillIds || []).length === 0),
-    ...quizzes.filter((item: any) => (item.skillIds || []).length === 0),
-    ...libraryItems.filter((item: any) => (item.skillIds || []).length === 0),
+    ...visibleLessons.filter((item: any) => (item.skillIds || []).length === 0),
+    ...visibleQuestions.filter((item: any) => (item.skillIds || []).length === 0),
+    ...visibleQuizzes.filter((item: any) => (item.skillIds || []).length === 0),
+    ...visibleLibraryItems.filter((item: any) => (item.skillIds || []).length === 0),
   ];
   const pendingContent = [
     ...courses.filter((item: any) => item.approvalStatus === "pending_review"),
