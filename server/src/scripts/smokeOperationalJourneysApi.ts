@@ -202,6 +202,7 @@ async function run() {
     clientEvents,
     clientEventsResolveAllInfo,
     deliveryReadiness,
+    backupStatus,
     backupSnapshots,
     backupActivities,
     operationLessonRepairPreview,
@@ -273,6 +274,7 @@ async function run() {
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/operations/client-events/resolve-all", "POST", { severity: "info" }, admin.token),
     request<any>("/operations/delivery-readiness", "GET", undefined, admin.token),
+    request<any>("/backups/learning/status", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
     request<any>("/backups/learning/activity", "GET", undefined, admin.token),
     request<any>("/operations/repair", "POST", { action: "unlink-unavailable-topic-lessons", apply: false }, admin.token),
@@ -395,6 +397,16 @@ async function run() {
       Array.isArray(deliveryReadiness?.checks) &&
       deliveryReadiness.checks.length >= 5,
     `score=${deliveryReadiness?.score || 0}, checks=${deliveryReadiness?.checks?.length || 0}, status=${deliveryReadiness?.status || "missing"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "backup readiness status available",
+    ["ready", "ready_with_notes", "action_required"].includes(String(backupStatus?.status || "")) &&
+      Array.isArray(backupStatus?.checks) &&
+      typeof backupStatus?.totalSnapshots === "number",
+    `status=${backupStatus?.status || "missing"}, snapshots=${backupStatus?.totalSnapshots ?? "missing"}, checks=${backupStatus?.checks?.length || 0}`,
   );
 
   pushResult(

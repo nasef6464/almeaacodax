@@ -43,6 +43,17 @@ type BackupActivity = {
     createdAt: string;
 };
 
+type BackupStatus = {
+    status: 'ready' | 'ready_with_notes' | 'action_required';
+    totalSnapshots: number;
+    restoreAppliedCount: number;
+    latestSnapshot?: BackupSnapshot | null;
+    latestActivity?: BackupActivity | null;
+    backupAgeHours?: number | null;
+    checks?: Array<{ key: string; label: string; passed: boolean; severity: 'ok' | 'warning' | 'critical' }>;
+    recommendation?: string;
+};
+
 const collectionLabels: Record<string, string> = {
     paths: 'المسارات',
     levels: 'المراحل',
@@ -97,6 +108,7 @@ export const BackupManager: React.FC = () => {
     const [snapshotsLoading, setSnapshotsLoading] = useState(false);
     const [snapshotTitle, setSnapshotTitle] = useState('');
     const [selectedSnapshotId, setSelectedSnapshotId] = useState('');
+    const [backupStatus, setBackupStatus] = useState<BackupStatus | null>(null);
 
     const backupSummaryRows = useMemo(() => {
         const summary = backupPayload?.summary || Object.fromEntries((backupPayload?.collections || []).map((item) => [item.name, item.documents.length]));
@@ -116,6 +128,23 @@ export const BackupManager: React.FC = () => {
     const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
 
     const latestSafetySnapshot = activities.find((activity) => activity.action === 'restore-safety-snapshot');
+    const statusTone = backupStatus?.status === 'ready'
+        ? {
+            label: 'جاهز',
+            box: 'border-emerald-100 bg-emerald-50 text-emerald-800',
+            dot: 'bg-emerald-500',
+        }
+        : backupStatus?.status === 'ready_with_notes'
+            ? {
+                label: 'جاهز مع تنبيه',
+                box: 'border-amber-100 bg-amber-50 text-amber-800',
+                dot: 'bg-amber-500',
+            }
+            : {
+                label: 'يحتاج نسخة',
+                box: 'border-rose-100 bg-rose-50 text-rose-800',
+                dot: 'bg-rose-500',
+            };
 
     const activityLabel = (action: BackupActivity['action']) => {
         if (action === 'snapshot-created') return 'حفظ نسخة';
@@ -130,12 +159,14 @@ export const BackupManager: React.FC = () => {
         setErrorMessage('');
 
         try {
-            const [snapshotsResponse, activitiesResponse] = await Promise.all([
+            const [snapshotsResponse, activitiesResponse, statusResponse] = await Promise.all([
                 api.listLearningBackupSnapshots(),
                 api.listLearningBackupActivity(),
+                api.getLearningBackupStatus(),
             ]);
             setSnapshots((snapshotsResponse.snapshots || []) as BackupSnapshot[]);
             setActivities((activitiesResponse.activities || []) as BackupActivity[]);
+            setBackupStatus(statusResponse as BackupStatus);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'تعذر تحميل النسخ المحفوظة على السيرفر.');
         } finally {
@@ -337,6 +368,57 @@ export const BackupManager: React.FC = () => {
                     {errorMessage}
                 </div>
             ) : null}
+
+            <section className={`rounded-3xl border p-5 shadow-sm ${statusTone.box}`}>
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className={`h-3 w-3 rounded-full ${statusTone.dot}`} />
+                            <h3 className="text-lg font-black">حالة النسخ الاحتياطي: {statusTone.label}</h3>
+                        </div>
+                        <p className="mt-2 max-w-3xl text-sm font-bold leading-7">
+                            {backupStatus?.recommendation || 'جاري قراءة حالة النسخ الاحتياطي من السيرفر.'}
+                        </p>
+                        {backupStatus?.latestSnapshot ? (
+                            <p className="mt-1 text-xs font-bold opacity-80">
+                                آخر نسخة: {backupStatus.latestSnapshot.title} · {new Date(backupStatus.latestSnapshot.createdAt).toLocaleString('ar-SA')}
+                            </p>
+                        ) : null}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:min-w-[520px]">
+                        <div className="rounded-2xl bg-white/70 p-4">
+                            <div className="text-xs font-black opacity-75">عدد النسخ</div>
+                            <div className="mt-2 text-2xl font-black">{backupStatus?.totalSnapshots ?? snapshots.length}</div>
+                        </div>
+                        <div className="rounded-2xl bg-white/70 p-4">
+                            <div className="text-xs font-black opacity-75">عمر آخر نسخة</div>
+                            <div className="mt-2 text-2xl font-black">
+                                {typeof backupStatus?.backupAgeHours === 'number' ? `${backupStatus.backupAgeHours}س` : '--'}
+                            </div>
+                        </div>
+                        <div className="rounded-2xl bg-white/70 p-4">
+                            <div className="text-xs font-black opacity-75">عناصر آخر نسخة</div>
+                            <div className="mt-2 text-2xl font-black">{backupStatus?.latestSnapshot?.totalDocuments ?? 0}</div>
+                        </div>
+                        <div className="rounded-2xl bg-white/70 p-4">
+                            <div className="text-xs font-black opacity-75">استرجاع فعلي</div>
+                            <div className="mt-2 text-2xl font-black">{backupStatus?.restoreAppliedCount ?? 0}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {backupStatus?.checks?.length ? (
+                    <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-3">
+                        {backupStatus.checks.map((check) => (
+                            <div key={check.key} className="flex items-center gap-2 rounded-2xl bg-white/70 p-3 text-sm font-black">
+                                {check.passed ? <CheckCircle2 size={17} /> : <AlertTriangle size={17} />}
+                                <span>{check.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
+            </section>
 
             <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">

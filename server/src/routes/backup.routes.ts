@@ -32,6 +32,13 @@ const totalDocumentsFromSummary = (summary: Record<string, number>) =>
 const backupCountFromRestoreSummary = (summary: Record<string, { backup: number }>) =>
   Object.values(summary).reduce((total, row) => total + Number(row.backup || 0), 0);
 
+const backupAgeHours = (createdAt?: unknown) => {
+  if (!createdAt) return null;
+  const createdAtMs = new Date(String(createdAt)).getTime();
+  if (!Number.isFinite(createdAtMs)) return null;
+  return Math.max(0, Math.round((Date.now() - createdAtMs) / 36_000) / 100);
+};
+
 const snapshotResponse = (snapshot: {
   _id: unknown;
   kind?: string;
@@ -113,6 +120,84 @@ async function createRestoreActivity(options: {
     totalDocuments: backupCountFromRestoreSummary(options.summary),
   });
 }
+
+backupRouter.get(
+  "/learning/status",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const [latestSnapshot, latestActivity, totalSnapshots, restoreAppliedCount] = await Promise.all([
+      BackupSnapshotModel.findOne({ kind: "learning-content" })
+        .select("kind title createdAt createdByEmail database summary totalDocuments")
+        .sort({ createdAt: -1 })
+        .lean(),
+      BackupActivityModel.findOne({ kind: "learning-content" })
+        .select("action title createdAt actorEmail source applied replaced totalDocuments")
+        .sort({ createdAt: -1 })
+        .lean(),
+      BackupSnapshotModel.countDocuments({ kind: "learning-content" }),
+      BackupActivityModel.countDocuments({ kind: "learning-content", action: "restore-applied" }),
+    ]);
+
+    const ageHours = backupAgeHours(latestSnapshot?.createdAt);
+    const latestTotalDocuments = Number(latestSnapshot?.totalDocuments || 0);
+    const hasSnapshot = Boolean(latestSnapshot);
+    const hasUsefulSnapshot = hasSnapshot && latestTotalDocuments > 0;
+    const isRecent = typeof ageHours === "number" && ageHours <= 48;
+
+    const checks = [
+      {
+        key: "has-server-snapshot",
+        label: "توجد نسخة محفوظة على السيرفر",
+        passed: hasSnapshot,
+        severity: hasSnapshot ? "ok" : "critical",
+      },
+      {
+        key: "snapshot-has-content",
+        label: "النسخة تحتوي على بيانات تعليمية",
+        passed: hasUsefulSnapshot,
+        severity: hasUsefulSnapshot ? "ok" : "critical",
+      },
+      {
+        key: "snapshot-is-recent",
+        label: "آخر نسخة خلال آخر 48 ساعة",
+        passed: isRecent,
+        severity: isRecent ? "ok" : "warning",
+      },
+    ];
+
+    const failedCritical = checks.some((check) => check.severity === "critical" && !check.passed);
+    const failedWarning = checks.some((check) => check.severity === "warning" && !check.passed);
+    const status = failedCritical ? "action_required" : failedWarning ? "ready_with_notes" : "ready";
+
+    res.json({
+      status,
+      totalSnapshots,
+      restoreAppliedCount,
+      latestSnapshot: latestSnapshot ? snapshotResponse(latestSnapshot) : null,
+      latestActivity: latestActivity
+        ? {
+            id: String(latestActivity._id),
+            action: latestActivity.action,
+            title: latestActivity.title,
+            actorEmail: latestActivity.actorEmail,
+            source: latestActivity.source,
+            applied: latestActivity.applied,
+            replaced: latestActivity.replaced,
+            totalDocuments: latestActivity.totalDocuments,
+            createdAt: latestActivity.createdAt,
+          }
+        : null,
+      backupAgeHours: ageHours,
+      checks,
+      recommendation: failedCritical
+        ? "أنشئ Snapshot جديد الآن قبل أي تعديل كبير."
+        : failedWarning
+          ? "الوضع مقبول، لكن يفضل إنشاء نسخة حديثة قبل التطوير أو الاستيراد."
+          : "النسخ الاحتياطي جاهز ومناسب قبل أي تطوير أو استرجاع.",
+    });
+  }),
+);
 
 backupRouter.get(
   "/learning",

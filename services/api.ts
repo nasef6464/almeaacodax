@@ -114,6 +114,10 @@ export const api = {
     }),
   createLearningBackup: () =>
     request<unknown>("/backups/learning"),
+  getLearningBackupStatus: (token?: string | null) =>
+    request<unknown>("/backups/learning/status", {
+      token,
+    }),
   createLearningBackupSnapshot: (payload?: { title?: string }, token?: string | null) =>
     request<unknown>("/backups/learning/snapshots", {
       method: "POST",
