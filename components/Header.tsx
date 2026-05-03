@@ -188,10 +188,7 @@ export const Header: React.FC = () => {
       menu.push(menuNode);
     });
 
-    menu.push(
-      { id: 'tests', label: text.quizzesNav, link: '/quizzes', iconName: 'file-text' },
-      { id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' },
-    );
+    menu.push({ id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' });
 
     return menu;
   }, [levels, paths, subjects, user?.role]);

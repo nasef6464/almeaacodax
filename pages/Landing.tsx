@@ -377,8 +377,7 @@ export const Landing: React.FC = () => {
                         <p className="text-gray-600 max-w-2xl mx-auto">نقدم لك أدوات تعليمية متكاملة تغطي كافة جوانب التدريب والتقييم.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <OrganicCard title="اختبر نفسك" subtitle="بنوك أسئلة ذكية ومحدثة" icon={<Zap size={24} />} color="blue" link="/quiz" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {displayedHomepagePaths.map((path, idx) => (
                             <OrganicCard
                                 key={`hpath-${path.id}-${idx}`}
