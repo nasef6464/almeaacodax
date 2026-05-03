@@ -68,6 +68,9 @@ export type StudentChatResponse = {
   text: string;
   personalized: boolean;
   weaknessesCount: number;
+  provider?: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+  model?: string;
+  usedFallback?: boolean;
 };
 
 export const getChatResponse = async (message: string): Promise<StudentChatResponse> => {
@@ -78,12 +81,18 @@ export const getChatResponse = async (message: string): Promise<StudentChatRespo
       text: text || buildLocalStudentReply(message),
       personalized: Boolean(response.personalized),
       weaknessesCount: Number(response.weaknessesCount || 0),
+      provider: response.provider || "none",
+      model: response.model || "local-fallback",
+      usedFallback: Boolean(response.usedFallback),
     };
   } catch {
     return {
       text: buildLocalStudentReply(message),
       personalized: false,
       weaknessesCount: 0,
+      provider: "none",
+      model: "local-fallback",
+      usedFallback: true,
     };
   }
 };

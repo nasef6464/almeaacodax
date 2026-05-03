@@ -39,14 +39,54 @@ The project now includes a backend foundation under [server](</C:/ALMEAA MAY - c
 
 ### AI Engine
 
-The platform uses the backend as the only AI gateway. The frontend never talks to Gemini directly, so keys stay private and the UI stays unchanged.
+The platform uses the backend as the only AI gateway. The frontend never talks to AI providers directly, so keys stay private and the UI stays unchanged.
 
-Default managed provider:
+Recommended production order:
+
+```env
+AI_PROVIDER_ORDER=gemini,openrouter,qwen,deepseek,openai
+AI_REQUEST_TIMEOUT_MS=15000
+```
+
+Gemini provider:
 
 ```env
 AI_PROVIDER=gemini
 GEMINI_API_KEY=your-key
 GEMINI_MODEL=gemini-2.5-flash
+```
+
+OpenRouter provider, useful for many hosted models and some free-tier models when available:
+
+```env
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=your-key
+OPENROUTER_MODEL=qwen/qwen3-235b-a22b:free
+```
+
+Qwen / Alibaba Model Studio:
+
+```env
+AI_PROVIDER=qwen
+QWEN_API_KEY=your-key
+QWEN_MODEL=qwen-plus
+QWEN_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+```
+
+DeepSeek provider:
+
+```env
+AI_PROVIDER=deepseek
+DEEPSEEK_API_KEY=your-key
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+OpenAI provider:
+
+```env
+AI_PROVIDER=openai
+OPENAI_API_KEY=your-key
+OPENAI_MODEL=gpt-4.1-mini
 ```
 
 Local/open-source provider for development labs:
@@ -76,6 +116,7 @@ AI_PROVIDER=none
 Notes:
 - Use `MONGODB_URI` as the single MongoDB variable name.
 - Keep AI keys and model endpoints in `server/.env` or hosting environment variables only.
+- `AI_PROVIDER_ORDER` lets production try more than one provider. If the first provider fails, the server moves to the next configured provider, then to the safe fallback.
 - Ollama/LM Studio style local models are useful for experimentation, while hosted production needs a reachable model endpoint.
 
 ### Current production targets

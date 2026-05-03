@@ -31,13 +31,26 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
     - `ADMIN_NAME`: production admin display name
     - `ADMIN_PASSWORD`: production admin password, kept only in Render
     - `DEV_LOCAL_ADMIN_BYPASS`: `false`
-    - `AI_PROVIDER`: `gemini`, `ollama`, or `none` (optional)
+    - `AI_PROVIDER`: one of `gemini`, `openrouter`, `qwen`, `deepseek`, `openai`, `ollama`, `lmstudio`, or `none` (optional)
+    - `AI_PROVIDER_ORDER`: recommended production order such as `gemini,openrouter,qwen,deepseek,openai`
+    - `AI_REQUEST_TIMEOUT_MS`: defaults to `15000`
     - `GEMINI_API_KEY`: (Google AI Key)
     - `GEMINI_MODEL`: Gemini model name, defaults to `gemini-2.5-flash`
+    - `OPENROUTER_API_KEY`: OpenRouter key if used
+    - `OPENROUTER_MODEL`: defaults to `qwen/qwen3-235b-a22b:free`
+    - `QWEN_API_KEY`: Qwen / Alibaba key if used
+    - `QWEN_MODEL`: defaults to `qwen-plus`
+    - `QWEN_BASE_URL`: defaults to `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`
+    - `DEEPSEEK_API_KEY`: DeepSeek key if used
+    - `DEEPSEEK_MODEL`: defaults to `deepseek-chat`
+    - `OPENAI_API_KEY`: OpenAI key if used
+    - `OPENAI_MODEL`: defaults to `gpt-4.1-mini`
     - `OLLAMA_BASE_URL`: Ollama server URL, defaults to `http://127.0.0.1:11434`
     - `OLLAMA_MODEL`: Ollama model name, defaults to `gemma3:4b`
+    - `LM_STUDIO_BASE_URL`: LM Studio OpenAI-compatible URL, defaults to `http://127.0.0.1:1234/v1`
+    - `LM_STUDIO_MODEL`: local LM Studio model name
 
-> Production note: Render cannot call Ollama on your personal computer. Use `AI_PROVIDER=gemini` on Render, or host Ollama/Gemma on a reachable private server and set `OLLAMA_BASE_URL` to that server.
+> Production note: Render cannot call Ollama or LM Studio on your personal computer. For production, use a hosted provider such as Gemini, OpenRouter, Qwen, DeepSeek, or OpenAI, or host a local model on a reachable private server. Without keys, `AI_PROVIDER=none` keeps the assistant working through safe internal fallback responses.
 
 ## 2. Frontend (Vercel)
 1.  Create a **New Project**.

@@ -821,6 +821,9 @@ ${message}
         text: responseText,
         personalized: Boolean(studentContext?.weaknesses.length),
         weaknessesCount: studentContext?.weaknesses.length || 0,
+        provider: result.text ? result.provider : "none",
+        model: result.text ? result.model : "local-fallback",
+        usedFallback: !result.text,
       });
     } catch (error) {
       await recordAiInteraction({
@@ -840,6 +843,9 @@ ${message}
         text: fallback,
         personalized: Boolean(studentContext?.weaknesses.length),
         weaknessesCount: studentContext?.weaknesses.length || 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
       });
     }
   }),

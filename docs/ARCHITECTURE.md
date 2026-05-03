@@ -11,7 +11,7 @@ graph TD
     LB[Load Balancer / API Gateway]
     Server[Node.js Express Server (Render)]
     DB[(MongoDB Atlas)]
-    AI[Gemini API]
+    AI[AI Providers: Gemini / OpenRouter / Qwen / DeepSeek / OpenAI / Local]
 
     Client -- REST/JSON --> Server
     Server -- Mongoose --> DB
@@ -37,5 +37,5 @@ graph TD
 - **Auth:** JWT (Access + Refresh Tokens)
 
 ## Integration Points
-1.  **AI Layer:** All AI requests (Chat, Question Gen) go to `POST /api/ai/*`. The Backend holds the API Key.
+1.  **AI Layer:** All AI requests (Chat, Question Gen, Student Advisor, Admin Assistant) go to `POST /api/ai/*`. The backend holds all provider keys and can fail over through `AI_PROVIDER_ORDER` before using the safe internal fallback.
 2.  **Legacy Support:** The `pages/` directory (Student View) currently uses `services/mockData.ts`. We will create `services/api.ts` and `services/adapter.ts` to switch data sources without rewriting UI.

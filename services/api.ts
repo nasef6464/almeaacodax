@@ -517,7 +517,14 @@ export const api = {
       token,
     }),
   aiChat: (payload: { message: string }, token?: string | null) =>
-    request<{ text: string; personalized?: boolean; weaknessesCount?: number }>("/ai/chat", {
+    request<{
+      text: string;
+      personalized?: boolean;
+      weaknessesCount?: number;
+      provider?: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+      model?: string;
+      usedFallback?: boolean;
+    }>("/ai/chat", {
       method: "POST",
       body: payload,
       token,
