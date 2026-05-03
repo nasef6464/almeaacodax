@@ -578,9 +578,17 @@ ${message}
 
     try {
       const answer = await callAi(prompt);
-      return res.json({ text: answer || fallback });
+      return res.json({
+        text: answer || fallback,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        weaknessesCount: studentContext?.weaknesses.length || 0,
+      });
     } catch {
-      return res.json({ text: fallback });
+      return res.json({
+        text: fallback,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        weaknessesCount: studentContext?.weaknesses.length || 0,
+      });
     }
   }),
 );
