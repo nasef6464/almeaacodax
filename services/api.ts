@@ -557,6 +557,35 @@ export const api = {
       body: payload,
       token,
     }),
+  getAiInteractions: (limit = 20, token?: string | null) =>
+    request<{
+      summary: {
+        total: number;
+        last24h: number;
+        fallbackCount: number;
+        errorCount: number;
+        byAudience: Array<{ audience: string; count: number }>;
+        byProvider: Array<{ provider: string; count: number; avgLatencyMs: number }>;
+      };
+      items: Array<{
+        _id: string;
+        audience: string;
+        endpoint: string;
+        provider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+        model: string;
+        status: "success" | "fallback" | "error";
+        usedFallback: boolean;
+        personalized: boolean;
+        latencyMs: number;
+        messagePreview: string;
+        responsePreview: string;
+        responseLength: number;
+        error?: string;
+        userEmail?: string;
+        role?: string;
+        createdAt: string;
+      }>;
+    }>(`/ai/interactions?limit=${limit}`, { token }),
   getOperationalStatus: (token?: string | null) =>
     request<{
       checkedAt: string;

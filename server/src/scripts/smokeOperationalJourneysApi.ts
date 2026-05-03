@@ -196,6 +196,7 @@ async function run() {
     aiRemediationPlan,
     aiQuestion,
     aiCourseSummary,
+    aiInteractions,
     homepageSettings,
     clientEvents,
     backupSnapshots,
@@ -263,6 +264,7 @@ async function run() {
     ),
     request<any>("/ai/question", "POST", { topic: "النسبة والتناسب" }, teacher.token),
     request<any>("/ai/course-summary", "POST", { courseTitle: "تأسيس القدرات الكمي" }, teacher.token),
+    request<any>("/ai/interactions?limit=5", "GET", undefined, admin.token),
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
@@ -341,6 +343,14 @@ async function run() {
     "ai course summary fallback available",
     typeof aiCourseSummary?.text === "string" && aiCourseSummary.text.trim().length > 0,
     `chars=${String(aiCourseSummary?.text || "").length}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "ai interaction usage log queryable",
+    Number(aiInteractions?.summary?.total || 0) >= 0 && Array.isArray(aiInteractions?.items),
+    `total=${aiInteractions?.summary?.total || 0}, last24h=${aiInteractions?.summary?.last24h || 0}`,
   );
 
   pushResult(

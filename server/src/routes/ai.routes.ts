@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { env } from "../config/env.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
+import { AiInteractionModel } from "../models/AiInteraction.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { UserModel } from "../models/User.js";
@@ -58,6 +59,14 @@ type ProviderDescriptor = {
   category: "free-friendly" | "paid" | "local" | "fallback";
   envKeys: string[];
   note: string;
+};
+
+type AiCallResult = {
+  text: string;
+  provider: AiProvider;
+  model: string;
+  usedFallback: boolean;
+  errors: string[];
 };
 
 const isOllamaExplicitlyConfigured = () =>
@@ -318,6 +327,56 @@ const buildPersonalizedTutorFallback = (message: string, context: StudentAiConte
     .join("\n");
 };
 
+const preview = (value: unknown, maxLength = 260) =>
+  String(value || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+
+const modelForProvider = (provider: AiProvider) =>
+  configuredProviders().find((candidate) => candidate.id === provider)?.model || "local-fallback";
+
+const recordAiInteraction = async (payload: {
+  req: any;
+  endpoint: string;
+  audience?: string;
+  message: string;
+  responseText: string;
+  provider: AiProvider;
+  model?: string;
+  usedFallback: boolean;
+  personalized?: boolean;
+  latencyMs: number;
+  error?: string;
+  metadata?: Record<string, unknown>;
+}) => {
+  try {
+    const role = String(payload.req.authUser?.role || payload.audience || "guest");
+    await AiInteractionModel.create({
+      audience: payload.audience || role || "guest",
+      endpoint: payload.endpoint,
+      provider: payload.provider,
+      model: payload.model || modelForProvider(payload.provider),
+      status: payload.error ? "error" : payload.usedFallback ? "fallback" : "success",
+      usedFallback: payload.usedFallback,
+      personalized: Boolean(payload.personalized),
+      latencyMs: payload.latencyMs,
+      messagePreview: preview(payload.message),
+      responsePreview: preview(payload.responseText),
+      responseLength: String(payload.responseText || "").length,
+      error: preview(payload.error, 500),
+      userId: payload.req.authUser?.id || "",
+      userEmail: payload.req.authUser?.email || "",
+      role,
+      metadata: payload.metadata || {},
+    });
+  } catch (error) {
+    if (process.env.NODE_ENV !== "test") {
+      console.warn("Failed to record AI interaction", error);
+    }
+  }
+};
+
 const resolveProvider = (): AiProvider =>
   providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
   "none";
@@ -462,26 +521,37 @@ const callOpenAiCompatible = async (
   return payload.choices?.[0]?.message?.content?.trim() || "";
 };
 
-const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType): Promise<AiCallResult> => {
   const errors: string[] = [];
 
   for (const provider of providerPriority()) {
-    if (!configuredProviders().find((candidate) => candidate.id === provider)?.configured || provider === "none") {
+    const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
+    if (!descriptor?.configured || provider === "none") {
       continue;
     }
 
     try {
+      let text = "";
       if (provider === "gemini") {
-        return await callGemini(prompt, responseMimeType);
+        text = await callGemini(prompt, responseMimeType);
       }
       if (provider === "ollama") {
-        return await callOllama(prompt, responseMimeType);
+        text = await callOllama(prompt, responseMimeType);
       }
       if (provider === "lmstudio") {
-        return await callLmStudio(prompt, responseMimeType);
+        text = await callLmStudio(prompt, responseMimeType);
       }
       if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
-        return await callOpenAiCompatible(provider, prompt, responseMimeType);
+        text = await callOpenAiCompatible(provider, prompt, responseMimeType);
+      }
+      if (text) {
+        return {
+          text,
+          provider,
+          model: descriptor.model,
+          usedFallback: false,
+          errors,
+        };
       }
     } catch (error) {
       errors.push(`${provider}: ${error instanceof Error ? error.message : "unknown error"}`);
@@ -492,8 +562,16 @@ const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => 
     console.warn("AI providers failed, using fallback:", errors.join(" | "));
   }
 
-  return "";
+  return {
+    text: "",
+    provider: "none",
+    model: "local-fallback",
+    usedFallback: true,
+    errors,
+  };
 };
+
+const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => (await callAiWithMeta(prompt, responseMimeType)).text;
 
 const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt: string) => {
   if (provider === "gemini") return callGemini(prompt);
@@ -518,6 +596,47 @@ aiRouter.get(
       providerOrder: providerPriority(),
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+    });
+  }),
+);
+
+aiRouter.get(
+  "/interactions",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 100);
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider] = await Promise.all([
+      AiInteractionModel.find().sort({ createdAt: -1 }).limit(limit).lean(),
+      AiInteractionModel.countDocuments(),
+      AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
+      AiInteractionModel.countDocuments({ usedFallback: true }),
+      AiInteractionModel.countDocuments({ status: "error" }),
+      AiInteractionModel.aggregate([
+        { $group: { _id: "$audience", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+      ]),
+      AiInteractionModel.aggregate([
+        { $group: { _id: "$provider", count: { $sum: 1 }, avgLatencyMs: { $avg: "$latencyMs" } } },
+        { $sort: { count: -1 } },
+      ]),
+    ]);
+
+    res.json({
+      summary: {
+        total,
+        last24h,
+        fallbackCount,
+        errorCount,
+        byAudience: byAudience.map((item) => ({ audience: item._id || "unknown", count: item.count })),
+        byProvider: byProvider.map((item) => ({
+          provider: item._id || "none",
+          count: item.count,
+          avgLatencyMs: Math.round(Number(item.avgLatencyMs || 0)),
+        })),
+      },
+      items,
     });
   }),
 );
@@ -563,6 +682,7 @@ aiRouter.post(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const { message } = chatSchema.parse(req.body);
+    const startedAt = Date.now();
     const studentContext = await buildStudentAiContext(req.authUser?.id);
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
 
@@ -581,13 +701,44 @@ ${message}
 `;
 
     try {
-      const answer = await callAi(prompt);
+      const result = await callAiWithMeta(prompt);
+      const responseText = result.text || fallback;
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/chat",
+        audience: req.authUser?.role || "guest",
+        message,
+        responseText,
+        provider: result.text ? result.provider : "none",
+        model: result.text ? result.model : "local-fallback",
+        usedFallback: !result.text,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          weaknessesCount: studentContext?.weaknesses.length || 0,
+          recentResultsCount: studentContext?.recentResults.length || 0,
+          providerErrors: result.errors.slice(0, 3),
+        },
+      });
       return res.json({
-        text: answer || fallback,
+        text: responseText,
         personalized: Boolean(studentContext?.weaknesses.length),
         weaknessesCount: studentContext?.weaknesses.length || 0,
       });
-    } catch {
+    } catch (error) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/chat",
+        audience: req.authUser?.role || "guest",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        latencyMs: Date.now() - startedAt,
+        error: error instanceof Error ? error.message : "AI chat failed",
+      });
       return res.json({
         text: fallback,
         personalized: Boolean(studentContext?.weaknesses.length),
@@ -603,6 +754,7 @@ aiRouter.post(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const { message } = adminAssistantSchema.parse(req.body);
+    const startedAt = Date.now();
     const audit = await createOperationsAudit();
     const priorities = audit.priorities
       .slice(0, 6)
@@ -640,17 +792,52 @@ ${message}
 `;
 
     try {
-      const answer = await callAi(prompt);
+      const result = await callAiWithMeta(prompt);
+      const responseText = result.text || fallback;
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/admin-assistant",
+        audience: "admin",
+        message,
+        responseText,
+        provider: result.text ? result.provider : "none",
+        model: result.text ? result.model : "local-fallback",
+        usedFallback: !result.text,
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          auditScore: audit.score,
+          critical: audit.totals.critical,
+          warnings: audit.totals.warnings,
+          providerErrors: result.errors.slice(0, 3),
+        },
+      });
       return res.json({
-        text: answer || fallback,
+        text: responseText,
         audit: {
           score: audit.score,
           totals: audit.totals,
           priorities: audit.priorities.slice(0, 6),
         },
-        provider: resolveProvider(),
+        provider: result.text ? result.provider : "none",
       });
-    } catch {
+    } catch (error) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/admin-assistant",
+        audience: "admin",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        latencyMs: Date.now() - startedAt,
+        error: error instanceof Error ? error.message : "AI admin assistant failed",
+        metadata: {
+          auditScore: audit.score,
+          critical: audit.totals.critical,
+          warnings: audit.totals.warnings,
+        },
+      });
       return res.json({
         text: fallback,
         audit: {

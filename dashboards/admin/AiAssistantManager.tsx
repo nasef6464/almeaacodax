@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Bot, CheckCircle2, Loader2, MessageCircle, Send, Settings, Sparkles, Zap } from 'lucide-react';
+import { Activity, Bot, CheckCircle2, Clock, Loader2, MessageCircle, Send, Settings, Sparkles, Zap } from 'lucide-react';
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 
@@ -30,6 +30,35 @@ type Message = {
     text: string;
 };
 
+type AiInteractionsResponse = {
+    summary: {
+        total: number;
+        last24h: number;
+        fallbackCount: number;
+        errorCount: number;
+        byAudience: Array<{ audience: string; count: number }>;
+        byProvider: Array<{ provider: string; count: number; avgLatencyMs: number }>;
+    };
+    items: Array<{
+        _id: string;
+        audience: string;
+        endpoint: string;
+        provider: AiStatus['provider'];
+        model: string;
+        status: 'success' | 'fallback' | 'error';
+        usedFallback: boolean;
+        personalized: boolean;
+        latencyMs: number;
+        messagePreview: string;
+        responsePreview: string;
+        responseLength: number;
+        error?: string;
+        userEmail?: string;
+        role?: string;
+        createdAt: string;
+    }>;
+};
+
 const providerLabel: Record<AiStatus['provider'], string> = {
     gemini: 'Google Gemini',
     openrouter: 'OpenRouter',
@@ -42,6 +71,14 @@ const providerLabel: Record<AiStatus['provider'], string> = {
 };
 
 const cleanText = (value: string) => sanitizeArabicText(value) || value;
+const formatNumber = (value: number | undefined) => (value || 0).toLocaleString('ar-EG');
+const formatDate = (value: string) => {
+    try {
+        return new Date(value).toLocaleString('ar-SA', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    } catch {
+        return value;
+    }
+};
 
 const categoryLabel: Record<AiProviderStatus['category'], string> = {
     'free-friendly': 'مناسب للمجاني',
@@ -65,6 +102,7 @@ export const AiAssistantManager: React.FC = () => {
     const [sending, setSending] = useState(false);
     const [testingProvider, setTestingProvider] = useState<string | null>(null);
     const [providerTestResults, setProviderTestResults] = useState<Record<string, string>>({});
+    const [interactions, setInteractions] = useState<AiInteractionsResponse | null>(null);
     const endRef = useRef<HTMLDivElement>(null);
 
     const loadStatus = async () => {
@@ -72,7 +110,9 @@ export const AiAssistantManager: React.FC = () => {
         setStatusError(null);
         try {
             const response = await api.aiStatus();
+            const usage = await api.getAiInteractions(12);
             setStatus(response as AiStatus);
+            setInteractions(usage as AiInteractionsResponse);
         } catch (error) {
             console.error('Failed to load AI status', error);
             setStatusError(error instanceof Error ? error.message : 'تعذر قراءة حالة الذكاء الاصطناعي.');
@@ -116,6 +156,10 @@ export const AiAssistantManager: React.FC = () => {
             ]);
             if (response.provider && status?.provider !== response.provider) {
                 await loadStatus();
+            } else {
+                api.getAiInteractions(12)
+                    .then((usage) => setInteractions(usage as AiInteractionsResponse))
+                    .catch(() => undefined);
             }
         } catch (error) {
             setMessages((current) => [
@@ -280,6 +324,66 @@ export const AiAssistantManager: React.FC = () => {
                                 <p className="text-sm font-bold text-gray-900 mt-1 break-words">{status?.model || 'غير محدد'}</p>
                             </div>
                             <p className="text-sm text-gray-600 leading-6">{modeDescription}</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                        <h2 className="font-bold text-gray-900 flex items-center gap-2">
+                            <Activity size={18} />
+                            سجل استخدام المساعد
+                        </h2>
+                        <p className="mt-2 text-sm leading-6 text-gray-500">
+                            مراقبة مباشرة لأسئلة الطالب والمدير، وهل الرد خرج من مزود ذكاء حقيقي أو من الرد الاحتياطي.
+                        </p>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">آخر 24 ساعة</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(interactions?.summary.last24h)}</p>
+                            </div>
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">ردود احتياطية</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(interactions?.summary.fallbackCount)}</p>
+                            </div>
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">إجمالي</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(interactions?.summary.total)}</p>
+                            </div>
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">أخطاء</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(interactions?.summary.errorCount)}</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 space-y-3">
+                            {(interactions?.items || []).slice(0, 5).map((item) => (
+                                <div key={item._id} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="text-sm font-black text-gray-900">{item.audience === 'admin' ? 'مساعد المدير' : 'مساعد الطالب'}</p>
+                                            <p className="mt-1 text-xs text-gray-500">{providerLabel[item.provider] || item.provider} · {item.model || 'fallback'}</p>
+                                        </div>
+                                        <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${
+                                            item.status === 'error'
+                                                ? 'bg-red-50 text-red-700'
+                                                : item.usedFallback
+                                                    ? 'bg-amber-50 text-amber-700'
+                                                    : 'bg-emerald-50 text-emerald-700'
+                                        }`}>
+                                            {item.status === 'error' ? 'خطأ' : item.usedFallback ? 'احتياطي' : 'ناجح'}
+                                        </span>
+                                    </div>
+                                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-gray-600">{cleanText(item.messagePreview)}</p>
+                                    <div className="mt-2 flex items-center justify-between gap-2 text-[11px] font-bold text-gray-400">
+                                        <span className="flex items-center gap-1"><Clock size={12} /> {formatDate(item.createdAt)}</span>
+                                        <span>{formatNumber(item.latencyMs)}ms</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {!loadingStatus && !interactions?.items.length && (
+                                <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">
+                                    لا توجد محادثات مسجلة حتى الآن.
+                                </div>
+                            )}
                         </div>
                     </div>
 
