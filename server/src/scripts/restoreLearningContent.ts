@@ -54,6 +54,11 @@ const getArgValue = (name: string) => {
 
 const getDocumentId = (document: Record<string, unknown>) => document._id || document.id;
 
+const stripImmutableId = (document: Record<string, unknown>) => {
+  const { _id, ...rest } = document;
+  return rest;
+};
+
 async function run() {
   const fileArg = getArgValue("file") || process.argv.find((arg) => arg.endsWith(".json"));
   if (!fileArg) {
@@ -94,7 +99,7 @@ async function run() {
       for (const document of documents) {
         const documentId = getDocumentId(document);
         if (!documentId) continue;
-        await collection.model.updateOne({ _id: documentId }, { $set: document }, { upsert: true });
+        await collection.model.updateOne({ _id: documentId }, { $set: stripImmutableId(document) }, { upsert: true });
       }
     }
 

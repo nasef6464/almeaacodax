@@ -112,6 +112,14 @@ export const api = {
       body: payload,
       token,
     }),
+  createLearningBackup: () =>
+    request<unknown>("/backups/learning"),
+  restoreLearningBackup: (payload: { backup: unknown; apply?: boolean; replace?: boolean }, token?: string | null) =>
+    request<unknown>("/backups/learning/restore", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   completePurchase: (
     payload: { courseId?: string; packageId?: string; includedCourseIds?: string[] },
     token?: string | null,

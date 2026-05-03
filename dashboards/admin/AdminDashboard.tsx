@@ -31,6 +31,7 @@ import { SkillsTreeManager } from './SkillsTreeManager';
 import { FinancialManager } from './FinancialManager';
 import { HomepageManager } from './HomepageManager';
 import { LiveSessionsManager } from './LiveSessionsManager';
+import { BackupManager } from './BackupManager';
 import { api } from '../../services/api';
 
 type ReviewQueueItem = {
@@ -544,6 +545,16 @@ export const AdminDashboard: React.FC = () => {
                 ...nextItems.slice(0, insertIndex),
                 { id: 'homepage', label: 'إدارة الصفحة الرئيسية', icon: <BookOpen size={20} /> },
                 ...nextItems.slice(insertIndex),
+            ];
+        }
+
+        if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'backups')) {
+            const settingsIndex = nextItems.findIndex((item) => item.id === 'settings');
+            const targetIndex = settingsIndex === -1 ? nextItems.length : settingsIndex;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'backups', label: 'النسخ الاحتياطي', icon: <Activity size={20} /> },
+                ...nextItems.slice(targetIndex),
             ];
         }
 
@@ -1235,6 +1246,8 @@ export const AdminDashboard: React.FC = () => {
                 return <HomepageManager />;
             case 'live-sessions':
                 return <LiveSessionsManager />;
+            case 'backups':
+                return <BackupManager />;
             case 'monitoring':
             case 'settings':
                 return renderSystemOperations();

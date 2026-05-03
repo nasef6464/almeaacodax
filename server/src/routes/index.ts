@@ -8,6 +8,7 @@ import { contentRouter } from "./content.routes.js";
 import { paymentRouter } from "./payment.routes.js";
 import { aiRouter } from "./ai.routes.js";
 import { operationsRouter } from "./operations.routes.js";
+import { backupRouter } from "./backup.routes.js";
 
 export const apiRouter = Router();
 
@@ -20,3 +21,4 @@ apiRouter.use("/quizzes", quizRouter);
 apiRouter.use("/payments", paymentRouter);
 apiRouter.use("/ai", aiRouter);
 apiRouter.use("/operations", operationsRouter);
+apiRouter.use("/backups", backupRouter);
