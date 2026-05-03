@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Download, FileJson, Loader2, RefreshCw, Save, ShieldCheck, Trash2, Upload } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Download, FileJson, History, Loader2, RefreshCw, Save, ShieldCheck, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
 
 type BackupPayload = {
@@ -27,6 +27,20 @@ type BackupSnapshot = {
     database?: string;
     summary?: Record<string, number>;
     totalDocuments?: number;
+};
+
+type BackupActivity = {
+    id: string;
+    action: 'snapshot-created' | 'snapshot-deleted' | 'restore-preview' | 'restore-applied' | 'restore-safety-snapshot';
+    title: string;
+    actorEmail?: string;
+    snapshotId?: string;
+    safetySnapshotId?: string;
+    source?: string;
+    applied?: boolean;
+    replaced?: boolean;
+    totalDocuments?: number;
+    createdAt: string;
 };
 
 const collectionLabels: Record<string, string> = {
@@ -79,6 +93,7 @@ export const BackupManager: React.FC = () => {
     const [replaceMode, setReplaceMode] = useState(false);
     const [confirmText, setConfirmText] = useState('');
     const [snapshots, setSnapshots] = useState<BackupSnapshot[]>([]);
+    const [activities, setActivities] = useState<BackupActivity[]>([]);
     const [snapshotsLoading, setSnapshotsLoading] = useState(false);
     const [snapshotTitle, setSnapshotTitle] = useState('');
     const [selectedSnapshotId, setSelectedSnapshotId] = useState('');
@@ -100,13 +115,27 @@ export const BackupManager: React.FC = () => {
     const backupTotals = useMemo(() => backupSummaryRows.reduce((sum, row) => sum + Number(row.count || 0), 0), [backupSummaryRows]);
     const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
 
+    const latestSafetySnapshot = activities.find((activity) => activity.action === 'restore-safety-snapshot');
+
+    const activityLabel = (action: BackupActivity['action']) => {
+        if (action === 'snapshot-created') return 'حفظ نسخة';
+        if (action === 'snapshot-deleted') return 'حذف نسخة';
+        if (action === 'restore-preview') return 'فحص استرجاع';
+        if (action === 'restore-applied') return 'استرجاع فعلي';
+        return 'نسخة أمان تلقائية';
+    };
+
     const loadSnapshots = async () => {
         setSnapshotsLoading(true);
         setErrorMessage('');
 
         try {
-            const response = await api.listLearningBackupSnapshots();
-            setSnapshots((response.snapshots || []) as BackupSnapshot[]);
+            const [snapshotsResponse, activitiesResponse] = await Promise.all([
+                api.listLearningBackupSnapshots(),
+                api.listLearningBackupActivity(),
+            ]);
+            setSnapshots((snapshotsResponse.snapshots || []) as BackupSnapshot[]);
+            setActivities((activitiesResponse.activities || []) as BackupActivity[]);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'تعذر تحميل النسخ المحفوظة على السيرفر.');
         } finally {
@@ -261,6 +290,7 @@ export const BackupManager: React.FC = () => {
             }) as RestoreResponse;
 
             setRestorePreview(response);
+            await loadSnapshots();
             setStatusMessage(apply ? 'تم تطبيق الاسترجاع بنجاح.' : 'تم فحص الملف بدون أي تعديل على قاعدة البيانات.');
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : 'تعذر تنفيذ العملية الآن.');
@@ -404,6 +434,76 @@ export const BackupManager: React.FC = () => {
                                             <Trash2 size={14} />
                                             حذف
                                         </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h3 className="flex items-center gap-2 text-lg font-black text-gray-900">
+                            <History size={19} className="text-slate-700" />
+                            سجل النسخ والاسترجاع
+                        </h3>
+                        <p className="mt-1 text-sm leading-6 text-gray-500">
+                            أي حفظ أو فحص أو استرجاع فعلي يظهر هنا. قبل أي استرجاع فعلي يحفظ السيرفر نسخة أمان تلقائية يمكن الرجوع لها.
+                        </p>
+                    </div>
+                    {latestSafetySnapshot ? (
+                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">
+                            آخر نسخة أمان: {new Date(latestSafetySnapshot.createdAt).toLocaleString('ar-SA')}
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-bold text-gray-600">
+                            لم يتم تنفيذ استرجاع فعلي بعد
+                        </div>
+                    )}
+                </div>
+
+                <div className="mt-5 overflow-hidden rounded-2xl border border-gray-100">
+                    {snapshotsLoading ? (
+                        <div className="p-5 text-sm text-gray-500">جاري تحميل سجل العمليات...</div>
+                    ) : activities.length === 0 ? (
+                        <div className="p-8 text-center">
+                            <History className="mx-auto mb-3 text-slate-400" size={34} />
+                            <p className="font-bold text-gray-900">لا توجد عمليات مسجلة بعد</p>
+                            <p className="mt-1 text-sm text-gray-500">ابدأ بحفظ Snapshot أو فحص ملف استرجاع.</p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-gray-100">
+                            {activities.slice(0, 8).map((activity) => (
+                                <div key={activity.id} className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
+                                    <div className="min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className={`rounded-full px-2.5 py-1 text-xs font-black ${
+                                                activity.action === 'restore-applied'
+                                                    ? 'bg-rose-50 text-rose-700'
+                                                    : activity.action === 'restore-safety-snapshot'
+                                                        ? 'bg-emerald-50 text-emerald-700'
+                                                        : 'bg-slate-100 text-slate-700'
+                                            }`}>
+                                                {activityLabel(activity.action)}
+                                            </span>
+                                            {activity.replaced ? (
+                                                <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">استبدال كامل</span>
+                                            ) : null}
+                                        </div>
+                                        <p className="mt-2 font-black text-gray-900">{activity.title}</p>
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            {new Date(activity.createdAt).toLocaleString('ar-SA')} · {activity.actorEmail || 'النظام'} · {activity.totalDocuments || 0} عنصر
+                                        </p>
+                                        {activity.safetySnapshotId ? (
+                                            <p className="mt-1 text-xs font-bold text-emerald-700">
+                                                تم حفظ نسخة أمان قبل التنفيذ: {activity.safetySnapshotId}
+                                            </p>
+                                        ) : null}
+                                    </div>
+                                    <div className="text-xs font-bold text-gray-400">
+                                        {activity.source === 'uploaded-file' ? 'ملف خارجي' : activity.source === 'server-snapshot' ? 'Snapshot داخلي' : 'النظام'}
                                     </div>
                                 </div>
                             ))}

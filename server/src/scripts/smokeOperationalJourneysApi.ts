@@ -199,6 +199,7 @@ async function run() {
     homepageSettings,
     clientEvents,
     backupSnapshots,
+    backupActivities,
     seoStatus,
     sitemapXml,
     robotsTxt,
@@ -264,6 +265,7 @@ async function run() {
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
+    request<any>("/backups/learning/activity", "GET", undefined, admin.token),
     request<any>("/seo/status"),
     requestText("/seo/sitemap.xml"),
     requestText("/seo/robots.txt"),
@@ -355,6 +357,14 @@ async function run() {
     "server backup snapshots queryable",
     Array.isArray(backupSnapshots?.snapshots),
     `snapshots=${backupSnapshots?.snapshots?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "backup activity log queryable",
+    Array.isArray(backupActivities?.activities),
+    `activities=${backupActivities?.activities?.length || 0}`,
   );
 
   pushResult(

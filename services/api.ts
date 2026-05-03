@@ -124,6 +124,10 @@ export const api = {
     request<{ snapshots: unknown[] }>("/backups/learning/snapshots", {
       token,
     }),
+  listLearningBackupActivity: (token?: string | null) =>
+    request<{ activities: unknown[] }>("/backups/learning/activity", {
+      token,
+    }),
   getLearningBackupSnapshot: (id: string, token?: string | null) =>
     request<{ snapshot: unknown; backup: unknown }>(`/backups/learning/snapshots/${id}`, {
       token,
