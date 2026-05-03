@@ -189,14 +189,12 @@ export const QuizPage: React.FC = () => {
   const quizTimeLimit = quiz?.settings?.timeLimit || 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
   const optionLayout = quiz?.settings?.optionLayout || 'auto';
-  const optionGridClass =
-    optionLayout === 'two_columns'
-      ? 'grid-cols-1 sm:grid-cols-2'
-      : optionLayout === 'horizontal'
-        ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4'
-        : (currentQuestion?.options?.length || 0) <= 2
-          ? 'grid-cols-1 sm:grid-cols-2'
-          : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+  const getOptionGridClass = (question?: Question) => {
+    if (optionLayout === 'two_columns') return 'grid-cols-1 sm:grid-cols-2';
+    if (optionLayout === 'horizontal') return 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+    return (question?.options?.length || 0) <= 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+  };
+  const optionGridClass = getOptionGridClass(currentQuestion);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
   const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
@@ -730,7 +728,7 @@ export const QuizPage: React.FC = () => {
                                 />
                               </div>
                             )}
-                            <div className={`grid ${optionGridClass} gap-2`}>
+                            <div className={`grid ${getOptionGridClass(question)} gap-2`}>
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';

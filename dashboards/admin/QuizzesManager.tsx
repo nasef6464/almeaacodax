@@ -182,9 +182,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         if (filterType === 'quiz' && !isMockQuiz(quiz)) return false;
         if (subjectId && quiz.subjectId !== subjectId) return false;
         if (selectedSubjectId && quiz.subjectId !== selectedSubjectId) return false;
-        if (selectedSectionId && quiz.sectionId !== selectedSectionId) return false;
+        if (
+          selectedSectionId &&
+          quiz.sectionId !== selectedSectionId &&
+          !getMeasuredSkillIds(quiz, questions).some((skillId) => skills.find((skill) => skill.id === skillId)?.sectionId === selectedSectionId)
+        ) {
+          return false;
+        }
         if (selectedPathId && !subjectId && !selectedSubjectId && quiz.pathId !== selectedPathId) return false;
-        if (selectedSkillId && (!quiz.skillIds || !quiz.skillIds.includes(selectedSkillId))) return false;
+        if (selectedSkillId && !getMeasuredSkillIds(quiz, questions).includes(selectedSkillId)) return false;
         if (modeFilter !== 'all' && (quiz.mode || 'regular') !== modeFilter) return false;
         if (visibilityFilter === 'shown' && quiz.showOnPlatform === false) return false;
         if (visibilityFilter === 'hidden' && quiz.showOnPlatform !== false) return false;
@@ -196,10 +202,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       managedPathIds,
       managedSubjectIds,
       modeFilter,
+      questions,
       selectedPathId,
       selectedSectionId,
       selectedSkillId,
       selectedSubjectId,
+      skills,
       subjectId,
       user.role,
       visibilityFilter,
@@ -294,6 +302,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         maxAttempts: 3,
         passingScore: 60,
         timeLimit: 60,
+        randomizeQuestions: true,
+        showProgressBar: true,
+        requireAnswerBeforeNext: mode !== 'central',
+        allowQuestionReview: true,
+        optionLayout: mode === 'central' ? 'horizontal' : 'auto',
       },
       access: mode === 'central' ? { type: 'private', allowedGroupIds: [] } : { type: 'free', allowedGroupIds: [] },
       questionIds: [],
@@ -566,50 +579,48 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </>
         )}
 
+        <select
+          value={selectedSectionId}
+          onChange={(event) => {
+            setSelectedSectionId(event.target.value);
+            setSelectedSkillId('');
+          }}
+          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          disabled={!selectedSubjectId}
+        >
+          <option value="">كل المهارات الرئيسية</option>
+          {availableSections.map((section) => (
+            <option key={section.id} value={section.id}>
+              {section.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedSkillId}
+          onChange={(event) => setSelectedSkillId(event.target.value)}
+          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          disabled={!selectedSubjectId}
+        >
+          <option value="">كل المهارات الفرعية</option>
+          {availableSubSkills.map((skill) => (
+            <option key={skill.id} value={skill.id}>
+              {skill.name}
+            </option>
+          ))}
+        </select>
+
         {!filterType && (
-          <>
-            <select
-              value={selectedSectionId}
-              onChange={(event) => {
-                setSelectedSectionId(event.target.value);
-                setSelectedSkillId('');
-              }}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              disabled={!selectedSubjectId}
-            >
-              <option value="">كل المهارات الرئيسية</option>
-              {availableSections.map((section) => (
-                <option key={section.id} value={section.id}>
-                  {section.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedSkillId}
-              onChange={(event) => setSelectedSkillId(event.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              disabled={!selectedSubjectId}
-            >
-              <option value="">كل المهارات الفرعية</option>
-              {availableSubSkills.map((skill) => (
-                <option key={skill.id} value={skill.id}>
-                  {skill.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={modeFilter}
-              onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="all">كل الأنماط</option>
-              <option value="regular">اختبار عادي</option>
-              <option value="saher">اختبار ساهر</option>
-              <option value="central">اختبار موجّه</option>
-            </select>
-          </>
+          <select
+            value={modeFilter}
+            onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="all">كل الأنماط</option>
+            <option value="regular">اختبار عادي</option>
+            <option value="saher">اختبار ساهر</option>
+            <option value="central">اختبار موجّه</option>
+          </select>
         )}
 
         <select

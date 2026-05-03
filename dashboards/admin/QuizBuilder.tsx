@@ -453,6 +453,13 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     totalSelectedQuestions,
   ]);
   const isPublishReady = publishChecklist.length === 0;
+  const previewOptionLayout = currentQuiz.settings?.optionLayout || 'auto';
+  const previewOptionGridClass =
+    previewOptionLayout === 'two_columns'
+      ? 'grid-cols-1 sm:grid-cols-2'
+      : previewOptionLayout === 'horizontal'
+        ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4'
+        : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
 
   if (isEditing) {
     return (
@@ -886,6 +893,31 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       <option value="horizontal">أفقي على الشاشات الواسعة</option>
                     </select>
                     <p className="text-xs text-gray-500 mt-1">على الجوال ستظهر الاختيارات تحت بعض للحفاظ على وضوح السؤال.</p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h4 className="text-sm font-black text-gray-800">معاينة شكل السؤال للطالب</h4>
+                      <p className="mt-1 text-xs text-gray-500">هذه المعاينة تساعدك تختار شكل الاختيارات قبل نشر الاختبار، والجوال يظل عمودًا واحدًا للوضوح.</p>
+                    </div>
+                    <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-indigo-700">
+                      {previewOptionLayout === 'two_columns' ? 'اختياران في الصف' : previewOptionLayout === 'horizontal' ? 'أفقي واسع' : 'تلقائي'}
+                    </span>
+                  </div>
+                  <div className="mt-4 rounded-2xl border border-white bg-white p-4 shadow-sm">
+                    <div className="mb-4 text-sm font-bold text-gray-800">مثال: ما أول خطوة صحيحة عند حل المسألة؟</div>
+                    <div className={`grid ${previewOptionGridClass} gap-3`}>
+                      {['فهم المطلوب', 'تجاهل المعطيات', 'اختيار عشوائي', 'ترك السؤال'].map((label, index) => (
+                        <div key={label} className="flex min-h-[64px] items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
+                          <span className="text-sm font-black text-gray-800">{label}</span>
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 bg-white text-lg font-black text-gray-700">
+                            {['أ', 'ب', 'ج', 'د'][index]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
