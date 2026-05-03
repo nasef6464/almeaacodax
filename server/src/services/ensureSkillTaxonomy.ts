@@ -92,27 +92,28 @@ export async function ensureSkillTaxonomy() {
   }> = [];
 
   subjects.forEach((subject) => {
-    const subjectSections = existingSections.filter((section) => section.subjectId === subject.id);
-    const subjectSkills = existingSkills.filter((skill) => skill.subjectId === subject.id);
+    const subjectId = String(subject.id || subject._id);
+    const subjectSections = existingSections.filter((section) => String(section.subjectId) === subjectId);
+    const subjectSkills = existingSkills.filter((skill) => String(skill.subjectId) === subjectId);
 
     if (subjectSections.length > 0 || subjectSkills.length > 0) {
       return;
     }
 
-    const template = getTemplateForSubject(subject.id, subject.name);
+    const template = getTemplateForSubject(subjectId, subject.name);
     template.forEach((sectionTemplate, sectionIndex) => {
-      const sectionId = slugId("sec", subject.id, sectionIndex);
+      const sectionId = slugId("sec", subjectId, sectionIndex);
       sectionsToCreate.push({
         _id: sectionId,
-        subjectId: subject.id,
+        subjectId,
         name: sectionTemplate.name,
       });
 
       sectionTemplate.skills.forEach((skillName, skillIndex) => {
         skillsToCreate.push({
-          _id: slugId("sk", subject.id, sectionIndex, skillIndex),
+          _id: slugId("sk", subjectId, sectionIndex, skillIndex),
           pathId: subject.pathId,
-          subjectId: subject.id,
+          subjectId,
           sectionId,
           name: skillName,
           description: `مهارة افتراضية مبدئية لمادة ${subject.name} قابلة للتعديل من مركز المهارات.`,
@@ -124,11 +125,29 @@ export async function ensureSkillTaxonomy() {
   });
 
   if (sectionsToCreate.length > 0) {
-    await SectionModel.insertMany(sectionsToCreate, { ordered: false });
+    await SectionModel.bulkWrite(
+      sectionsToCreate.map((section) => ({
+        updateOne: {
+          filter: { _id: section._id },
+          update: { $setOnInsert: section },
+          upsert: true,
+        },
+      })),
+      { ordered: false },
+    );
   }
 
   if (skillsToCreate.length > 0) {
-    await SkillModel.insertMany(skillsToCreate, { ordered: false });
+    await SkillModel.bulkWrite(
+      skillsToCreate.map((skill) => ({
+        updateOne: {
+          filter: { _id: skill._id },
+          update: { $setOnInsert: skill },
+          upsert: true,
+        },
+      })),
+      { ordered: false },
+    );
   }
 
   return {

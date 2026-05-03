@@ -43,16 +43,38 @@ const env = {
 const idOf = (item: any) => String(item?.id || item?._id || "");
 const slug = (value: string) => value.replace(/[^a-zA-Z0-9_]+/g, "_").replace(/^_+|_+$/g, "");
 
-const subjectTemplate = (subjectName: string) => {
-  const isVerbal = /لفظ/.test(subjectName);
-  const title = isVerbal ? "فهم السياق والفكرة الرئيسة" : "ترتيب العمليات والكسور";
+const subjectTemplate = (subjectName: string, pathName = "") => {
+  const searchableName = `${subjectName} ${pathName}`;
+  const isVerbal = /لفظ|لغة|قراءة|نص/.test(searchableName);
+  const isScience = /تحصيلي|رياض|فيز|كيم|أحيا|احيا|علوم/.test(searchableName);
+  const title = isVerbal
+    ? "فهم السياق والفكرة الرئيسية"
+    : isScience
+      ? "أساسيات المادة والقوانين المهمة"
+      : "ترتيب العمليات والمهارات الأساسية";
 
   return {
     title,
-    lessonTitle: isVerbal ? "شرح فهم السياق في النص" : "شرح ترتيب العمليات والكسور",
-    quizTitle: isVerbal ? "تدريب اللفظي: فهم السياق" : "تدريب الكمي: العمليات والكسور",
-    libraryTitle: isVerbal ? "ملخص اللفظي: فهم السياق" : "ملخص الكمي: العمليات والكسور",
-    courseTitle: isVerbal ? "تأسيس اللفظي: فهم المقروء" : "تأسيس الكمي: العمليات والكسور",
+    lessonTitle: isVerbal
+      ? "شرح فهم السياق في النص"
+      : isScience
+        ? `شرح تأسيسي في ${subjectName}`
+        : "شرح ترتيب العمليات والمهارات الأساسية",
+    quizTitle: isVerbal
+      ? "تدريب اللفظي: فهم السياق"
+      : isScience
+        ? `تدريب ${subjectName}: المفاهيم الأساسية`
+        : "تدريب الكمي: العمليات والمهارات الأساسية",
+    libraryTitle: isVerbal
+      ? "ملخص اللفظي: فهم السياق"
+      : isScience
+        ? `ملخص ${subjectName}: أهم النقاط`
+        : "ملخص الكمي: العمليات والمهارات الأساسية",
+    courseTitle: isVerbal
+      ? "تأسيس اللفظي: فهم المقروء"
+      : isScience
+        ? `تأسيس ${subjectName}`
+        : "تأسيس الكمي: العمليات والمهارات الأساسية",
   };
 };
 
@@ -65,7 +87,7 @@ async function run() {
 
   const activePaths = await PathModel.find({ isActive: { $ne: false } }).lean();
   const subjects = await SubjectModel.find({ pathId: { $in: activePaths.map(idOf) } }).lean();
-  const targetSubjects = subjects.filter((subject: any) => /كمي|لفظ|رياض|علوم|تحصيل|نافس|قدرات/.test(String(subject.name || "")));
+  const targetSubjects = subjects;
 
   if (!targetSubjects.length) {
     console.log("No active subjects found to repair.");
@@ -79,7 +101,7 @@ async function run() {
     const subjectId = idOf(subject);
     const pathId = String(subject.pathId || "");
     const pathDoc = activePaths.find((item: any) => idOf(item) === pathId);
-    const template = subjectTemplate(String(subject.name || ""));
+    const template = subjectTemplate(String(subject.name || ""), String(pathDoc?.name || ""));
     const suffix = slug(`${pathId}_${subjectId}`);
 
     const topicId = `topic_current_${suffix}_foundation`;

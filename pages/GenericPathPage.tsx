@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
@@ -72,6 +72,13 @@ export const GenericPathPage: React.FC = () => {
         if (levelId) params.set('level', levelId);
         if (subjectId) params.set('subject', subjectId);
         navigate(`/category/${normalizedPathId}?${params.toString()}`, { replace });
+    };
+
+    const buildSubjectUrl = (levelId: string | null, subjectId: string) => {
+        const params = new URLSearchParams();
+        if (levelId) params.set('level', levelId);
+        params.set('subject', subjectId);
+        return `/category/${normalizedPathId}?${params.toString()}`;
     };
 
     const handleLevelSelect = (levelId: string | null) => {
@@ -679,11 +686,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
         if (iconStyle === 'modern') {
             return (
-                <div 
+                <Link
                     key={s.id} 
-                    className="p-8 bg-white border-2 border-gray-100 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-[2rem] shadow-sm group"
+                    to={buildSubjectUrl(levelId, s.id)}
+                    className="block p-8 bg-white border-2 border-gray-100 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-[2rem] shadow-sm group"
                     style={{ borderColor: sColor }}
-                    onClick={() => handleSubjectSelect(levelId, s.id)}
                 >
                     <div className="mb-4 inline-block p-4 rounded-2xl" style={{ backgroundColor: `${sColor}20` }}>
                         {icon}
@@ -693,16 +700,16 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         <span>تأسيس</span> • <span>نماذج</span> • <span>تدريب</span>
                     </div>
                     {footer}
-                </div>
+                </Link>
             );
         }
 
         if (iconStyle === 'minimal') {
             return (
-                <div 
+                <Link
                     key={s.id} 
-                    className="p-8 bg-gray-50 text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:bg-white rounded-2xl group border border-transparent hover:border-gray-200"
-                    onClick={() => handleSubjectSelect(levelId, s.id)}
+                    to={buildSubjectUrl(levelId, s.id)}
+                    className="block p-8 bg-gray-50 text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:bg-white rounded-2xl group border border-transparent hover:border-gray-200"
                 >
                     <div className="mb-3" style={{ color: sColor }}>
                         {icon}
@@ -712,17 +719,17 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         <span>تأسيس</span> • <span>نماذج</span>
                     </div>
                     {footer}
-                </div>
+                </Link>
             );
         }
 
         if (iconStyle === 'playful') {
             return (
-                <div 
+                <Link
                     key={s.id} 
-                    className="p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#00000030] shadow-[8px_8px_0px_#00000020] text-white rounded-[2rem] border-4 border-white relative overflow-hidden group"
+                    to={buildSubjectUrl(levelId, s.id)}
+                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#00000030] shadow-[8px_8px_0px_#00000020] text-white rounded-[2rem] border-4 border-white relative overflow-hidden group"
                     style={{ backgroundColor: sColor }}
-                    onClick={() => handleSubjectSelect(levelId, s.id)}
                 >
                     <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-5xl">✨</div>
                     <div className="mb-4 bg-white text-gray-800 p-4 rounded-full shadow-md inline-block group-hover:rotate-12 transition-transform">
@@ -730,16 +737,16 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     </div>
                     <h3 className="text-3xl font-black mb-3">{s.name}</h3>
                     {footer}
-                </div>
+                </Link>
             );
         }
 
         return (
-            <div 
+            <Link
                 key={s.id} 
-                className="p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
+                to={buildSubjectUrl(levelId, s.id)}
+                className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
                 style={{ backgroundColor: sColor }}
-                onClick={() => handleSubjectSelect(levelId, s.id)}
             >
                 <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
                     {icon}
@@ -749,7 +756,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     <span>تأسيس</span> • <span>نماذج</span> • <span>تدريب</span>
                 </div>
                 {footer}
-            </div>
+            </Link>
         );
     };
 
