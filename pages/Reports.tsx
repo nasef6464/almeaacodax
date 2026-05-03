@@ -786,6 +786,33 @@ const Reports: React.FC = () => {
             : 0;
         const weakSkill = scopedAnalytics?.weakestSkills?.[0] || null;
         const leadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
+        const parentBriefSummary = scopedFollowUpSummary || [
+            `الأداء العام ${averageScore}%.`,
+            weakSkill ? `ابدأ بمتابعة ${displayText(weakSkill.skill)}.` : null,
+            leadStudent ? `أكثر طالب يحتاج متابعة الآن: ${displayText(leadStudent.name)}.` : null,
+            'الخطوة العملية: شرح قصير، 5 أسئلة، ثم إعادة قياس هادئة.',
+        ].filter(Boolean).join(' ');
+        const parentActionItems = [
+            {
+                title: 'اليوم',
+                body: weakSkill
+                    ? `اسأل الطالب عن ${displayText(weakSkill.skill)}، وشاهد معه شرحًا قصيرًا لا يزيد عن 15 دقيقة.`
+                    : 'اطلب من الطالب حل اختبار قصير حتى تظهر المهارة التي تحتاج متابعة.',
+                tone: 'bg-emerald-50 text-emerald-800 border-emerald-100',
+            },
+            {
+                title: 'بعد الشرح',
+                body: 'خليه يحل 5 أسئلة فقط على نفس الفكرة. الهدف الفهم، وليس كثرة الأسئلة.',
+                tone: 'bg-indigo-50 text-indigo-800 border-indigo-100',
+            },
+            {
+                title: 'نهاية الأسبوع',
+                body: averageScore < 60
+                    ? 'أعد قياس نفس المهارة. إذا بقيت أقل من 60%، احجز حصة علاجية قصيرة.'
+                    : 'أعد قياسًا بسيطًا. إذا تحسنت النتيجة، انتقل لمهارة أخرى بهدوء.',
+                tone: 'bg-amber-50 text-amber-800 border-amber-100',
+            },
+        ];
 
         return (
             <div id="reports-print-area" className="space-y-6 pb-20 animate-fade-in">
@@ -799,13 +826,31 @@ const Reports: React.FC = () => {
                             <p className="text-sm text-gray-500">ملخص بسيط وواضح عن أداء الأبناء بدون تفاصيل مرهقة.</p>
                         </div>
                     </div>
-                    <button
-                        onClick={() => printElementAsPdf('reports-print-area', 'تقرير ولي الأمر')}
-                        className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
-                    >
-                        <Download size={16} />
-                        تحميل PDF
-                    </button>
+                    <div className="print-hide flex flex-wrap gap-2">
+                        <button
+                            onClick={copyScopedSummary}
+                            disabled={!parentBriefSummary}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {copiedScopedSummary ? <CheckCircle size={16} /> : <Copy size={16} />}
+                            {copiedScopedSummary ? 'تم النسخ' : 'نسخ الملخص'}
+                        </button>
+                        <button
+                            onClick={shareScopedSummary}
+                            disabled={!parentBriefSummary}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {sharedScopedSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
+                            {sharedScopedSummary ? 'تمت المشاركة' : 'مشاركة'}
+                        </button>
+                        <button
+                            onClick={() => printElementAsPdf('reports-print-area', 'تقرير ولي الأمر')}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
+                        >
+                            <Download size={16} />
+                            تحميل PDF
+                        </button>
+                    </div>
                 </header>
 
                 {scopedAnalyticsLoading ? (
@@ -849,6 +894,38 @@ const Reports: React.FC = () => {
                                         <div className="mt-1 text-xs font-bold text-emerald-100">مهارات</div>
                                     </div>
                                 </div>
+                            </div>
+                        </Card>
+
+                        <Card className="p-5 border-emerald-100 bg-white">
+                            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                <div>
+                                    <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                                        مناسب لولي الأمر
+                                    </div>
+                                    <h2 className="mt-3 text-xl font-black text-gray-900">ماذا أفعل الآن؟</h2>
+                                    <p className="mt-2 max-w-3xl text-sm leading-7 text-gray-600">
+                                        {parentBriefSummary}
+                                    </p>
+                                </div>
+                                <Link
+                                    to="/book-session"
+                                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                                >
+                                    <Clock size={16} />
+                                    حصة علاجية عند الحاجة
+                                </Link>
+                            </div>
+                            <div className="mt-5 grid gap-3 md:grid-cols-3">
+                                {parentActionItems.map((item) => (
+                                    <div key={item.title} className={`rounded-2xl border p-4 ${item.tone}`}>
+                                        <div className="text-xs font-black opacity-80">{item.title}</div>
+                                        <p className="mt-2 text-sm font-bold leading-7">{item.body}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm leading-7 text-slate-600">
+                                علامة تستدعي متابعة أقرب: تكرار نفس المهارة تحت 50% في أكثر من محاولة، أو ترك الاختبار بدون إجابات كثيرة.
                             </div>
                         </Card>
 
