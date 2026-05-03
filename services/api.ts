@@ -537,6 +537,32 @@ export const api = {
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
+  aiReadiness: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      score: number;
+      activeProvider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+      configuredProviders: Array<{ id: string; label: string; model: string }>;
+      recommendedProviderOrder: string;
+      studentAdvisor: {
+        ready: boolean;
+        studentCount: number;
+        studentsWithResults: number;
+        weakSkillSignals: number;
+        studentChats24h: number;
+        personalizedStudentChats7d: number;
+        fallbackStudentChats24h: number;
+      };
+      adminAssistant: {
+        ready: boolean;
+        chats24h: number;
+      };
+      monitoring: {
+        aiErrors24h: number;
+        fallbackStudentChats24h: number;
+      };
+      nextActions: string[];
+    }>("/ai/readiness", { token }),
   aiTestProvider: (payload: { provider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" }, token?: string | null) =>
     request<{ ok: boolean; provider: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
       method: "POST",

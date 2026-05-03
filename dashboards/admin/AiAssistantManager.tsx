@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, Bot, CheckCircle2, Clock, Loader2, MessageCircle, Send, Settings, Sparkles, Zap } from 'lucide-react';
+import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Loader2, MessageCircle, Send, Settings, ShieldCheck, Sparkles, Target, Users, Zap } from 'lucide-react';
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 
@@ -59,6 +59,32 @@ type AiInteractionsResponse = {
     }>;
 };
 
+type AiReadiness = {
+    checkedAt: string;
+    score: number;
+    activeProvider: AiStatus['provider'];
+    configuredProviders: Array<{ id: string; label: string; model: string }>;
+    recommendedProviderOrder: string;
+    studentAdvisor: {
+        ready: boolean;
+        studentCount: number;
+        studentsWithResults: number;
+        weakSkillSignals: number;
+        studentChats24h: number;
+        personalizedStudentChats7d: number;
+        fallbackStudentChats24h: number;
+    };
+    adminAssistant: {
+        ready: boolean;
+        chats24h: number;
+    };
+    monitoring: {
+        aiErrors24h: number;
+        fallbackStudentChats24h: number;
+    };
+    nextActions: string[];
+};
+
 const providerLabel: Record<AiStatus['provider'], string> = {
     gemini: 'Google Gemini',
     openrouter: 'OpenRouter',
@@ -103,16 +129,21 @@ export const AiAssistantManager: React.FC = () => {
     const [testingProvider, setTestingProvider] = useState<string | null>(null);
     const [providerTestResults, setProviderTestResults] = useState<Record<string, string>>({});
     const [interactions, setInteractions] = useState<AiInteractionsResponse | null>(null);
+    const [readiness, setReadiness] = useState<AiReadiness | null>(null);
     const endRef = useRef<HTMLDivElement>(null);
 
     const loadStatus = async () => {
         setLoadingStatus(true);
         setStatusError(null);
         try {
-            const response = await api.aiStatus();
-            const usage = await api.getAiInteractions(12);
+            const [response, usage, aiReadiness] = await Promise.all([
+                api.aiStatus(),
+                api.getAiInteractions(12),
+                api.aiReadiness(),
+            ]);
             setStatus(response as AiStatus);
             setInteractions(usage as AiInteractionsResponse);
+            setReadiness(aiReadiness as AiReadiness);
         } catch (error) {
             console.error('Failed to load AI status', error);
             setStatusError(error instanceof Error ? error.message : 'تعذر قراءة حالة الذكاء الاصطناعي.');
@@ -139,6 +170,14 @@ export const AiAssistantManager: React.FC = () => {
         }
         return 'المساعد مضبوط على مزود محلي. هذا مناسب للتجارب على جهاز قوي، لكنه لا يعمل عادة على Render المجاني إلا إذا كان المزود متاحا للخادم.';
     }, [status]);
+
+    const readinessLabel = useMemo(() => {
+        const score = readiness?.score || 0;
+        if (score >= 85) return 'جاهز بقوة';
+        if (score >= 65) return 'جاهز مع ملاحظات';
+        if (score >= 40) return 'يحتاج ضبط';
+        return 'وضع احتياطي';
+    }, [readiness?.score]);
 
     const sendMessage = async (override?: string) => {
         const text = (override || input).trim();
@@ -222,6 +261,116 @@ export const AiAssistantManager: React.FC = () => {
             {statusError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{statusError}</div>
             )}
+
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm xl:col-span-1">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500">جاهزية المساعد</p>
+                            <p className="mt-2 text-3xl font-black text-gray-900">{formatNumber(readiness?.score)}%</p>
+                        </div>
+                        <div className={`rounded-2xl p-3 ${Number(readiness?.score || 0) >= 80 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                            {Number(readiness?.score || 0) >= 80 ? <ShieldCheck size={24} /> : <AlertTriangle size={24} />}
+                        </div>
+                    </div>
+                    <p className="mt-3 text-sm font-bold text-gray-600">{readinessLabel}</p>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500">توجيه الطالب</p>
+                            <p className="mt-2 text-xl font-black text-gray-900">
+                                {readiness?.studentAdvisor.ready ? 'شخصي' : 'عام'}
+                            </p>
+                        </div>
+                        <Target className={readiness?.studentAdvisor.ready ? 'text-emerald-600' : 'text-gray-400'} size={24} />
+                    </div>
+                    <p className="mt-3 text-xs leading-5 text-gray-500">
+                        {formatNumber(readiness?.studentAdvisor.weakSkillSignals)} إشارة مهارية، و{formatNumber(readiness?.studentAdvisor.studentsWithResults)} طالب لديهم نتائج.
+                    </p>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500">المزودات المفعلة</p>
+                            <p className="mt-2 text-xl font-black text-gray-900">{formatNumber(readiness?.configuredProviders.length)}</p>
+                        </div>
+                        <Zap className={readiness?.configuredProviders.length ? 'text-indigo-600' : 'text-gray-400'} size={24} />
+                    </div>
+                    <p className="mt-3 text-xs leading-5 text-gray-500">
+                        النشط الآن: {readiness ? providerLabel[readiness.activeProvider] : 'جاري الفحص'}
+                    </p>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500">استخدام 24 ساعة</p>
+                            <p className="mt-2 text-xl font-black text-gray-900">
+                                {formatNumber((readiness?.studentAdvisor.studentChats24h || 0) + (readiness?.adminAssistant.chats24h || 0))}
+                            </p>
+                        </div>
+                        <Users className="text-blue-600" size={24} />
+                    </div>
+                    <p className="mt-3 text-xs leading-5 text-gray-500">
+                        أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)}، احتياطي للطلاب: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
+                    </p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+                    <h2 className="flex items-center gap-2 font-bold text-gray-900">
+                        <CheckCircle2 size={18} />
+                        خطة تفعيل المساعد من داخل المنصة
+                    </h2>
+                    <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                        {[
+                            {
+                                title: 'طالب مرشد أكاديمي',
+                                value: readiness?.studentAdvisor.ready ? 'جاهز' : 'يحتاج نتائج',
+                                hint: 'يرد على الطالب حسب ضعفه ومهاراته ونتائج اختباراته.',
+                            },
+                            {
+                                title: 'مدير تشغيلي',
+                                value: readiness?.adminAssistant.ready ? 'جاهز' : 'غير جاهز',
+                                hint: 'يفحص حالة المنصة ويقترح أولويات التسليم.',
+                            },
+                            {
+                                title: 'ترتيب احتياطي',
+                                value: readiness?.recommendedProviderOrder || 'غير محدد',
+                                hint: 'إذا فشل مزود ينتقل النظام للذي بعده ثم للرد الاحتياطي.',
+                            },
+                        ].map((item) => (
+                            <div key={item.title} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+                                <p className="text-xs font-bold text-gray-500">{item.title}</p>
+                                <p className="mt-2 line-clamp-2 text-sm font-black text-gray-900">{item.value}</p>
+                                <p className="mt-2 text-xs leading-5 text-gray-500">{item.hint}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="rounded-lg border border-amber-100 bg-amber-50 p-5 shadow-sm">
+                    <h2 className="flex items-center gap-2 font-bold text-amber-900">
+                        <AlertTriangle size={18} />
+                        المطلوب التالي
+                    </h2>
+                    <div className="mt-4 space-y-3">
+                        {(readiness?.nextActions || []).length > 0 ? readiness?.nextActions.map((action) => (
+                            <div key={action} className="rounded-lg bg-white/80 p-3 text-xs font-bold leading-6 text-amber-800">
+                                {action}
+                            </div>
+                        )) : (
+                            <div className="rounded-lg bg-white/80 p-3 text-xs font-bold leading-6 text-emerald-700">
+                                لا توجد إجراءات عاجلة للمساعد الآن.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">

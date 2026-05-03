@@ -186,6 +186,7 @@ async function run() {
     supervisorScopedResults,
     parentScopedResults,
     aiStatus,
+    aiReadiness,
     publicPaymentSettings,
     adminPaymentSettings,
     adminPaymentRequests,
@@ -234,6 +235,7 @@ async function run() {
     request<any>("/quizzes/results/scoped", "GET", undefined, supervisor.token),
     request<any>("/quizzes/results/scoped", "GET", undefined, parent.token),
     request<any>("/ai/status", "GET", undefined, admin.token),
+    request<any>("/ai/readiness", "GET", undefined, admin.token),
     request<any>("/payments/settings"),
     request<any>("/payments/settings", "GET", undefined, admin.token),
     request<any>("/payments/requests", "GET", undefined, admin.token),
@@ -286,10 +288,18 @@ async function run() {
     results,
     "admin",
     "ai status available",
-    ["gemini", "ollama", "none"].includes(String(aiStatus?.provider || "")) &&
+    ["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"].includes(String(aiStatus?.provider || "")) &&
       typeof aiStatus?.timeoutMs === "number" &&
       typeof aiStatus?.model === "string",
     `provider=${aiStatus?.provider || "unknown"}, model=${aiStatus?.model || "unknown"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "ai readiness dashboard available",
+    Number(aiReadiness?.score || 0) > 0 && Number(aiReadiness?.studentAdvisor?.studentCount || 0) > 0,
+    `score=${aiReadiness?.score || 0}, studentSignals=${aiReadiness?.studentAdvisor?.weakSkillSignals || 0}`,
   );
 
   pushResult(

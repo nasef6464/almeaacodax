@@ -601,6 +601,103 @@ aiRouter.get(
 );
 
 aiRouter.get(
+  "/readiness",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const providers = configuredProviders();
+    const activeProvider = resolveProvider();
+    const configuredRealProviders = providers.filter((provider) => provider.id !== "none" && provider.configured);
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [
+      studentCount,
+      studentsWithResults,
+      weakSkillSignals,
+      studentChats24h,
+      personalizedStudentChats7d,
+      fallbackStudentChats24h,
+      adminChats24h,
+      aiErrors24h,
+    ] = await Promise.all([
+      UserModel.countDocuments({ role: "student" }),
+      QuizResultModel.distinct("userId").then((ids) => ids.length),
+      SkillProgressModel.countDocuments({ status: { $in: ["weak", "average"] } }),
+      AiInteractionModel.countDocuments({ endpoint: "/ai/chat", audience: "student", createdAt: { $gte: since24h } }),
+      AiInteractionModel.countDocuments({
+        endpoint: "/ai/chat",
+        audience: "student",
+        personalized: true,
+        createdAt: { $gte: since7d },
+      }),
+      AiInteractionModel.countDocuments({
+        endpoint: "/ai/chat",
+        audience: "student",
+        usedFallback: true,
+        createdAt: { $gte: since24h },
+      }),
+      AiInteractionModel.countDocuments({ endpoint: "/ai/admin-assistant", audience: "admin", createdAt: { $gte: since24h } }),
+      AiInteractionModel.countDocuments({ status: "error", createdAt: { $gte: since24h } }),
+    ]);
+
+    const providerScore = configuredRealProviders.length > 0 ? 30 : 12;
+    const dataScore = studentCount > 0 && studentsWithResults > 0 ? 25 : studentCount > 0 ? 12 : 0;
+    const guidanceScore = weakSkillSignals > 0 ? 25 : 8;
+    const monitoringScore = aiErrors24h === 0 ? 20 : Math.max(0, 20 - Math.min(aiErrors24h * 5, 20));
+    const score = Math.max(0, Math.min(100, providerScore + dataScore + guidanceScore + monitoringScore));
+
+    const nextActions = [
+      configuredRealProviders.length === 0
+        ? "أضف مفتاح مزود ذكاء واحد على الأقل في Render حتى ينتقل المساعد من الرد الاحتياطي إلى ذكاء توليدي حقيقي."
+        : "",
+      studentsWithResults === 0
+        ? "اجعل طالبا يجري اختبارا قصيرا حتى يمتلك المساعد بيانات أداء يبني عليها خطة شخصية."
+        : "",
+      weakSkillSignals === 0
+        ? "اربط الأسئلة والنتائج بالمهارات حتى يعرف المساعد نقاط الضعف بدقة."
+        : "",
+      fallbackStudentChats24h > 0 && configuredRealProviders.length > 0
+        ? "راجع ترتيب AI_PROVIDER_ORDER أو اختبر المزودين لأن بعض محادثات الطالب استخدمت الرد الاحتياطي."
+        : "",
+      aiErrors24h > 0
+        ? "راجع سجل استخدام المساعد لأن هناك أخطاء في آخر 24 ساعة."
+        : "",
+    ].filter(Boolean);
+
+    res.json({
+      checkedAt: new Date().toISOString(),
+      score,
+      activeProvider,
+      configuredProviders: configuredRealProviders.map((provider) => ({
+        id: provider.id,
+        label: provider.label,
+        model: provider.model,
+      })),
+      recommendedProviderOrder: providerPriority().join(","),
+      studentAdvisor: {
+        ready: studentCount > 0 && (studentsWithResults > 0 || weakSkillSignals > 0),
+        studentCount,
+        studentsWithResults,
+        weakSkillSignals,
+        studentChats24h,
+        personalizedStudentChats7d,
+        fallbackStudentChats24h,
+      },
+      adminAssistant: {
+        ready: true,
+        chats24h: adminChats24h,
+      },
+      monitoring: {
+        aiErrors24h,
+        fallbackStudentChats24h,
+      },
+      nextActions,
+    });
+  }),
+);
+
+aiRouter.get(
   "/interactions",
   requireAuth,
   requireRole(["admin"]),
