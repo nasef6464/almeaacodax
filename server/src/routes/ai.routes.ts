@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { z } from "zod";
 import { env } from "../config/env.js";
-import { requireAuth, requireRole } from "../middleware/auth.js";
+import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
+import { QuizResultModel } from "../models/QuizResult.js";
+import { SkillProgressModel } from "../models/SkillProgress.js";
+import { UserModel } from "../models/User.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -11,6 +14,10 @@ const chatSchema = z.object({
 
 const adminAssistantSchema = z.object({
   message: z.string().min(1).max(2000),
+});
+
+const providerTestSchema = z.object({
+  provider: z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"]),
 });
 
 const studyPlanSchema = z.object({
@@ -35,12 +42,114 @@ const courseSummarySchema = z.object({
 });
 
 type AiResponseMimeType = "application/json";
-type AiProvider = "gemini" | "ollama" | "lmstudio" | "none";
+type AiProvider = "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+
+type StudentAiContext = {
+  summary: string;
+  weaknesses: Array<{ skill: string; mastery: number; status: string; action: string }>;
+  recentResults: Array<{ title: string; score: number; totalQuestions: number; wrongAnswers: number }>;
+};
+
+type ProviderDescriptor = {
+  id: AiProvider;
+  label: string;
+  model: string;
+  configured: boolean;
+  category: "free-friendly" | "paid" | "local" | "fallback";
+  envKeys: string[];
+  note: string;
+};
 
 const isOllamaExplicitlyConfigured = () =>
   Boolean(process.env.AI_PROVIDER === "ollama" || process.env.OLLAMA_BASE_URL || process.env.OLLAMA_MODEL);
 const isLmStudioExplicitlyConfigured = () =>
   Boolean(process.env.AI_PROVIDER === "lmstudio" || process.env.LM_STUDIO_BASE_URL || process.env.LM_STUDIO_MODEL);
+
+const configuredProviders = (): ProviderDescriptor[] => [
+  {
+    id: "gemini",
+    label: "Google Gemini",
+    model: env.GEMINI_MODEL,
+    configured: Boolean(env.GEMINI_API_KEY),
+    category: "free-friendly",
+    envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
+    note: "مناسب كبداية مجانية أو منخفضة التكلفة حسب حدود حساب Google AI Studio.",
+  },
+  {
+    id: "openrouter",
+    label: "OpenRouter",
+    model: env.OPENROUTER_MODEL,
+    configured: Boolean(env.OPENROUTER_API_KEY),
+    category: "free-friendly",
+    envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
+    note: "يدعم موديلات كثيرة ومنها Qwen وDeepSeek وبعض النماذج المجانية عند توفرها.",
+  },
+  {
+    id: "deepseek",
+    label: "DeepSeek",
+    model: env.DEEPSEEK_MODEL,
+    configured: Boolean(env.DEEPSEEK_API_KEY),
+    category: "paid",
+    envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
+    note: "قوي ورخيص عادة، مناسب لمساعد المدير والتحليلات الطويلة.",
+  },
+  {
+    id: "qwen",
+    label: "Qwen / Alibaba Model Studio",
+    model: env.QWEN_MODEL,
+    configured: Boolean(env.QWEN_API_KEY),
+    category: "free-friendly",
+    envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
+    note: "خيار صيني ممتاز، وغالبا مناسب للتجارب والحصص المجانية حسب الحساب.",
+  },
+  {
+    id: "openai",
+    label: "OpenAI",
+    model: env.OPENAI_MODEL,
+    configured: Boolean(env.OPENAI_API_KEY),
+    category: "paid",
+    envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
+    note: "مناسب عند الحاجة لجودة واستقرار أعلى، وغالبا يكون مدفوعا حسب الاستهلاك.",
+  },
+  {
+    id: "ollama",
+    label: "Ollama محلي",
+    model: env.OLLAMA_MODEL,
+    configured: isOllamaExplicitlyConfigured() && Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
+    category: "local",
+    envKeys: ["AI_PROVIDER_ORDER", "OLLAMA_BASE_URL", "OLLAMA_MODEL"],
+    note: "مجاني محليا، لكنه يحتاج جهاز أو خادم دائم متاح للسيرفر.",
+  },
+  {
+    id: "lmstudio",
+    label: "LM Studio محلي",
+    model: env.LM_STUDIO_MODEL,
+    configured: isLmStudioExplicitlyConfigured() && Boolean(env.LM_STUDIO_BASE_URL && env.LM_STUDIO_MODEL),
+    category: "local",
+    envKeys: ["AI_PROVIDER_ORDER", "LM_STUDIO_BASE_URL", "LM_STUDIO_MODEL"],
+    note: "مجاني محليا للتجارب، وليس مثاليا لإنتاج Render المجاني.",
+  },
+  {
+    id: "none",
+    label: "ردود احتياطية داخلية",
+    model: "local-fallback",
+    configured: true,
+    category: "fallback",
+    envKeys: [],
+    note: "يضمن أن المساعد لا يتوقف حتى لو تعطلت كل المفاتيح.",
+  },
+];
+
+const providerPriority = () => {
+  const fromEnv = env.AI_PROVIDER_ORDER.split(",")
+    .map((value) => value.trim().toLowerCase() as AiProvider)
+    .filter(Boolean);
+  const preferred = env.AI_PROVIDER ? [env.AI_PROVIDER] : [];
+  const defaults: AiProvider[] = ["gemini", "openrouter", "qwen", "deepseek", "openai", "ollama", "lmstudio", "none"];
+  return [...new Set([...preferred, ...fromEnv, ...defaults])].filter((provider) =>
+    configuredProviders().some((candidate) => candidate.id === provider),
+  );
+};
 
 const ARABIC_TUTOR_RULES = `
 أنت مساعد تعليمي عربي داخل منصة تعليمية للقدرات والتحصيلي.
@@ -122,13 +231,81 @@ const buildTutorFallback = (message: string) => {
   ].join("\n");
 };
 
-const resolveProvider = (): AiProvider => {
-  if (env.AI_PROVIDER) return env.AI_PROVIDER;
-  if (env.GEMINI_API_KEY) return "gemini";
-  if (isOllamaExplicitlyConfigured() && env.OLLAMA_BASE_URL && env.OLLAMA_MODEL) return "ollama";
-  if (isLmStudioExplicitlyConfigured() && env.LM_STUDIO_BASE_URL && env.LM_STUDIO_MODEL) return "lmstudio";
-  return "none";
+const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiContext | null> => {
+  if (!userId) return null;
+
+  const [user, weaknesses, recentResults] = await Promise.all([
+    UserModel.findById(userId).select("name role subscription completedLessons enrolledPaths").lean(),
+    SkillProgressModel.find({ userId, status: { $in: ["weak", "average"] } })
+      .sort({ mastery: 1, lastAttemptAt: -1 })
+      .limit(6)
+      .lean(),
+    QuizResultModel.find({ userId }).sort({ createdAt: -1 }).limit(3).lean(),
+  ]);
+
+  if (!user || user.role !== "student") return null;
+
+  const weakSkillRows = weaknesses.map((item) => ({
+    skill: String(item.skill || "مهارة تحتاج مراجعة"),
+    mastery: Number(item.mastery || 0),
+    status: String(item.status || "weak"),
+    action: String(item.recommendedAction || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
+  }));
+  const resultRows = recentResults.map((item) => ({
+    title: String(item.quizTitle || "اختبار سابق"),
+    score: Number(item.score || 0),
+    totalQuestions: Number(item.totalQuestions || 0),
+    wrongAnswers: Number(item.wrongAnswers || 0),
+  }));
+
+  const summaryLines = [
+    `اسم الطالب: ${String(user.name || "طالب")}`,
+    weakSkillRows.length
+      ? `أضعف المهارات الحالية: ${weakSkillRows
+          .map((item) => `${item.skill} (${item.mastery}%)`)
+          .join("، ")}`
+      : "لا توجد مهارات ضعيفة مسجلة حتى الآن.",
+    resultRows.length
+      ? `آخر النتائج: ${resultRows.map((item) => `${item.title}: ${item.score}%`).join("، ")}`
+      : "لا توجد نتائج اختبارات حديثة.",
+    `الدروس المكتملة: ${Array.isArray(user.completedLessons) ? user.completedLessons.length : 0}`,
+  ];
+
+  return {
+    summary: summaryLines.join("\n"),
+    weaknesses: weakSkillRows,
+    recentResults: resultRows,
+  };
 };
+
+const buildPersonalizedTutorFallback = (message: string, context: StudentAiContext | null) => {
+  const base = buildTutorFallback(message);
+  if (!context) return base;
+
+  const asksAboutWeakness =
+    /ضعيف|ضعفي|مستواي|ابدأ|ابدا|خطة|أذاكر|اذاكر|ماذا أراجع|ايه اراجع|إيه أراجع/.test(message.trim().toLowerCase());
+  if (!asksAboutWeakness || context.weaknesses.length === 0) return base;
+
+  const topWeakness = context.weaknesses[0];
+  const nextWeakness = context.weaknesses[1];
+  return [
+    `حسب أدائك الحالي، ابدأ بمهارة: ${topWeakness.skill} لأنها عند ${topWeakness.mastery}%.`,
+    nextWeakness ? `بعدها راجع: ${nextWeakness.skill} (${nextWeakness.mastery}%).` : "",
+    "خطة عملية:",
+    "1. شاهد شرحا قصيرا للمهارة الأولى.",
+    "2. حل 5 أسئلة سهلة ثم 5 أسئلة متوسطة.",
+    "3. سجل سبب كل خطأ: فهم قانون، استعجال، أو اختيار طريقة غير مناسبة.",
+    "4. أعد اختبارا قصيرا، ولو وصلت 75% انتقل للمهارة التالية.",
+    topWeakness.action ? `توجيه المنصة لك: ${topWeakness.action}` : "",
+    "",
+    base,
+  ]
+    .filter(Boolean)
+    .join("\n");
+};
+
+const resolveProvider = (): AiProvider =>
+  providerPriority().find((provider) => configuredProviders().find((candidate) => candidate.id === provider)?.configured) || "none";
 
 const fetchWithTimeout = async (url: string, init: RequestInit) => {
   const controller = new AbortController();
@@ -210,36 +387,104 @@ const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeTyp
   return payload.choices?.[0]?.message?.content?.trim() || "";
 };
 
+const callOpenAiCompatible = async (
+  provider: Exclude<AiProvider, "gemini" | "ollama" | "lmstudio" | "none">,
+  prompt: string,
+  responseMimeType?: AiResponseMimeType,
+) => {
+  const settings: Record<typeof provider, { baseUrl: string; apiKey?: string; model: string; headers?: Record<string, string> }> = {
+    openrouter: {
+      baseUrl: "https://openrouter.ai/api/v1",
+      apiKey: env.OPENROUTER_API_KEY,
+      model: env.OPENROUTER_MODEL,
+      headers: {
+        "HTTP-Referer": env.CLIENT_URL,
+        "X-Title": "Almeaa Educational Platform",
+      },
+    },
+    deepseek: {
+      baseUrl: "https://api.deepseek.com",
+      apiKey: env.DEEPSEEK_API_KEY,
+      model: env.DEEPSEEK_MODEL,
+    },
+    qwen: {
+      baseUrl: env.QWEN_BASE_URL,
+      apiKey: env.QWEN_API_KEY,
+      model: env.QWEN_MODEL,
+    },
+    openai: {
+      baseUrl: "https://api.openai.com/v1",
+      apiKey: env.OPENAI_API_KEY,
+      model: env.OPENAI_MODEL,
+    },
+  };
+  const selected = settings[provider];
+  if (!selected.apiKey) return "";
+
+  const response = await fetchWithTimeout(`${selected.baseUrl.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${selected.apiKey}`,
+      ...(selected.headers || {}),
+    },
+    body: JSON.stringify({
+      model: selected.model,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.25,
+      response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`${provider} request failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+
+  return payload.choices?.[0]?.message?.content?.trim() || "";
+};
+
 const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
-  const provider = resolveProvider();
+  const errors: string[] = [];
 
-  if (provider === "ollama") {
+  for (const provider of providerPriority()) {
+    if (!configuredProviders().find((candidate) => candidate.id === provider)?.configured || provider === "none") {
+      continue;
+    }
+
     try {
-      return await callOllama(prompt, responseMimeType);
-    } catch (error) {
-      if (env.GEMINI_API_KEY) {
-        return callGemini(prompt, responseMimeType);
+      if (provider === "gemini") {
+        return await callGemini(prompt, responseMimeType);
       }
-      throw error;
+      if (provider === "ollama") {
+        return await callOllama(prompt, responseMimeType);
+      }
+      if (provider === "lmstudio") {
+        return await callLmStudio(prompt, responseMimeType);
+      }
+      if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
+        return await callOpenAiCompatible(provider, prompt, responseMimeType);
+      }
+    } catch (error) {
+      errors.push(`${provider}: ${error instanceof Error ? error.message : "unknown error"}`);
     }
   }
 
-  if (provider === "lmstudio") {
-    try {
-      return await callLmStudio(prompt, responseMimeType);
-    } catch (error) {
-      if (env.GEMINI_API_KEY) {
-        return callGemini(prompt, responseMimeType);
-      }
-      throw error;
-    }
-  }
-
-  if (provider === "gemini") {
-    return callGemini(prompt, responseMimeType);
+  if (errors.length && process.env.NODE_ENV !== "test") {
+    console.warn("AI providers failed, using fallback:", errors.join(" | "));
   }
 
   return "";
+};
+
+const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt: string) => {
+  if (provider === "gemini") return callGemini(prompt);
+  if (provider === "ollama") return callOllama(prompt);
+  if (provider === "lmstudio") return callLmStudio(prompt);
+  return callOpenAiCompatible(provider, prompt);
 };
 
 export const aiRouter = Router();
@@ -247,25 +492,75 @@ export const aiRouter = Router();
 aiRouter.get(
   "/status",
   asyncHandler(async (_req, res) => {
+    const providers = configuredProviders();
+    const activeProvider = resolveProvider();
     res.json({
-      provider: resolveProvider(),
+      provider: activeProvider,
       ollamaConfigured: isOllamaExplicitlyConfigured() && Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
       lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(env.LM_STUDIO_BASE_URL && env.LM_STUDIO_MODEL),
       geminiConfigured: Boolean(env.GEMINI_API_KEY),
-      model: resolveProvider() === "ollama" ? env.OLLAMA_MODEL : resolveProvider() === "lmstudio" ? env.LM_STUDIO_MODEL : env.GEMINI_MODEL,
+      providers,
+      providerOrder: providerPriority(),
+      model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
     });
   }),
 );
 
 aiRouter.post(
+  "/providers/test",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const { provider } = providerTestSchema.parse(req.body);
+    const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
+    if (!descriptor?.configured) {
+      return res.json({
+        ok: false,
+        provider,
+        message: "المزود غير مفعل. أضف مفاتيحه في Render Environment Variables ثم أعد النشر.",
+      });
+    }
+
+    try {
+      const startedAt = Date.now();
+      const text = await callSingleProvider(provider, "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.");
+      return res.json({
+        ok: Boolean(text),
+        provider,
+        model: descriptor.model,
+        latencyMs: Date.now() - startedAt,
+        sample: text.slice(0, 240),
+      });
+    } catch (error) {
+      return res.json({
+        ok: false,
+        provider,
+        model: descriptor.model,
+        message: error instanceof Error ? error.message : "تعذر اختبار المزود.",
+      });
+    }
+  }),
+);
+
+aiRouter.post(
   "/chat",
+  optionalAuth,
   asyncHandler(async (req, res) => {
     const { message } = chatSchema.parse(req.body);
-    const fallback = buildTutorFallback(message);
+    const studentContext = await buildStudentAiContext(req.authUser?.id);
+    const fallback = buildPersonalizedTutorFallback(message, studentContext);
 
     const prompt = `
 ${ARABIC_TUTOR_RULES}
+بيانات الطالب من المنصة إن وجدت:
+${studentContext?.summary || "الطالب غير مسجل أو لا توجد بيانات أداء متاحة."}
+
+تعليمات مهمة:
+- إذا سأل الطالب عن ضعفه أو ماذا يذاكر، استخدم بيانات أدائه أولا.
+- لا تعرض بيانات حساسة، واجعل الرد كمرشد أكاديمي بسيط.
+- اقترح خطوة واحدة واضحة ثم تدريب قصير.
+
 سؤال الطالب:
 ${message}
 `;

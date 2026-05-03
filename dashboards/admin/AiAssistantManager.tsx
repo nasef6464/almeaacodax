@@ -4,12 +4,24 @@ import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 
 type AiStatus = {
-    provider: 'gemini' | 'ollama' | 'lmstudio' | 'none';
+    provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
     ollamaConfigured: boolean;
     lmStudioConfigured?: boolean;
     geminiConfigured: boolean;
+    providers?: AiProviderStatus[];
+    providerOrder?: string[];
     model: string;
     timeoutMs: number;
+};
+
+type AiProviderStatus = {
+    id: AiStatus['provider'];
+    label: string;
+    model: string;
+    configured: boolean;
+    category: 'free-friendly' | 'paid' | 'local' | 'fallback';
+    envKeys: string[];
+    note: string;
 };
 
 type Message = {
@@ -20,12 +32,23 @@ type Message = {
 
 const providerLabel: Record<AiStatus['provider'], string> = {
     gemini: 'Google Gemini',
+    openrouter: 'OpenRouter',
+    deepseek: 'DeepSeek',
+    qwen: 'Qwen / Alibaba',
+    openai: 'OpenAI',
     ollama: 'Ollama محلي',
     lmstudio: 'LM Studio محلي',
     none: 'وضع احتياطي بدون مزود',
 };
 
 const cleanText = (value: string) => sanitizeArabicText(value) || value;
+
+const categoryLabel: Record<AiProviderStatus['category'], string> = {
+    'free-friendly': 'مناسب للمجاني',
+    paid: 'مدفوع / احترافي',
+    local: 'محلي',
+    fallback: 'احتياطي',
+};
 
 export const AiAssistantManager: React.FC = () => {
     const [status, setStatus] = useState<AiStatus | null>(null);
@@ -40,6 +63,8 @@ export const AiAssistantManager: React.FC = () => {
     ]);
     const [input, setInput] = useState('ما أهم شيء أراجعه الآن؟');
     const [sending, setSending] = useState(false);
+    const [testingProvider, setTestingProvider] = useState<string | null>(null);
+    const [providerTestResults, setProviderTestResults] = useState<Record<string, string>>({});
     const endRef = useRef<HTMLDivElement>(null);
 
     const loadStatus = async () => {
@@ -103,6 +128,26 @@ export const AiAssistantManager: React.FC = () => {
             ]);
         } finally {
             setSending(false);
+        }
+    };
+
+    const testProvider = async (provider: Exclude<AiStatus['provider'], 'none'>) => {
+        setTestingProvider(provider);
+        try {
+            const response = await api.aiTestProvider({ provider });
+            setProviderTestResults((current) => ({
+                ...current,
+                [provider]: response.ok
+                    ? `يعمل - ${response.latencyMs || 0}ms${response.sample ? ` - ${cleanText(response.sample)}` : ''}`
+                    : cleanText(response.message || 'لم ينجح الاختبار'),
+            }));
+        } catch (error) {
+            setProviderTestResults((current) => ({
+                ...current,
+                [provider]: error instanceof Error ? cleanText(error.message) : 'تعذر اختبار المزود',
+            }));
+        } finally {
+            setTestingProvider(null);
         }
     };
 
@@ -235,6 +280,60 @@ export const AiAssistantManager: React.FC = () => {
                                 <p className="text-sm font-bold text-gray-900 mt-1 break-words">{status?.model || 'غير محدد'}</p>
                             </div>
                             <p className="text-sm text-gray-600 leading-6">{modeDescription}</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                        <h2 className="font-bold text-gray-900 flex items-center gap-2">
+                            <Settings size={18} />
+                            مزودو الذكاء المتاحون
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-2 leading-6">
+                            أضف المفاتيح في Render Environment Variables، وضع الترتيب في AI_PROVIDER_ORDER مثل:
+                            <span className="block mt-1 font-mono text-xs bg-gray-50 border border-gray-100 rounded-md p-2 text-gray-700">
+                                gemini,openrouter,qwen,deepseek,openai
+                            </span>
+                        </p>
+                        <div className="mt-4 space-y-3">
+                            {(status?.providers || []).map((provider) => (
+                                <div key={provider.id} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <p className="font-black text-gray-900">{provider.label}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{categoryLabel[provider.category]} · {provider.model}</p>
+                                        </div>
+                                        <span
+                                            className={`text-xs px-2 py-1 rounded-full font-bold ${
+                                                provider.configured ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-600'
+                                            }`}
+                                        >
+                                            {provider.configured ? 'مفعل' : 'غير مفعل'}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-600 leading-5 mt-2">{cleanText(provider.note)}</p>
+                                    {provider.envKeys.length > 0 && (
+                                        <p className="text-[11px] text-gray-500 mt-2 font-mono break-words">
+                                            {provider.envKeys.join(' · ')}
+                                        </p>
+                                    )}
+                                    {provider.id !== 'none' && (
+                                        <div className="mt-3 flex flex-col gap-2">
+                                            <button
+                                                type="button"
+                                                disabled={!provider.configured || testingProvider === provider.id}
+                                                onClick={() => void testProvider(provider.id as Exclude<AiStatus['provider'], 'none'>)}
+                                                className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                                            >
+                                                {testingProvider === provider.id ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
+                                                اختبار المزود
+                                            </button>
+                                            {providerTestResults[provider.id] && (
+                                                <p className="text-xs text-gray-600 leading-5">{providerTestResults[provider.id]}</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
 

@@ -484,17 +484,33 @@ export const api = {
     }),
   aiStatus: (token?: string | null) =>
     request<{
-      provider: "gemini" | "ollama" | "lmstudio" | "none";
+      provider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
       ollamaConfigured: boolean;
       lmStudioConfigured?: boolean;
       geminiConfigured: boolean;
+      providers?: Array<{
+        id: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
+        label: string;
+        model: string;
+        configured: boolean;
+        category: "free-friendly" | "paid" | "local" | "fallback";
+        envKeys: string[];
+        note: string;
+      }>;
+      providerOrder?: string[];
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
+  aiTestProvider: (payload: { provider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" }, token?: string | null) =>
+    request<{ ok: boolean; provider: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   aiAdminAssistant: (payload: { message: string }, token?: string | null) =>
     request<{
       text: string;
-      provider: "gemini" | "ollama" | "lmstudio" | "none";
+      provider: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
       audit: {
         score: number;
         totals: { checks: number; issues: number; critical: number; warnings: number; info: number };
