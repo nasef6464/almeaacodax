@@ -94,6 +94,7 @@ export const GenericPathPage: React.FC = () => {
     const resolvedPathId = path?.id || normalizedPathId;
     const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
     const pathSubjects = subjects.filter(s => s.pathId === path?.id);
+    const selectedSubject = selectedSubjectId ? pathSubjects.find((subject) => subject.id === selectedSubjectId) || null : null;
     const pathSubjectIds = new Set(pathSubjects.map((subject) => subject.id));
     const resolveSubjectId = (subjectId: string | null) => {
         if (!subjectId) return null;
@@ -822,6 +823,58 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         );
     };
 
+    const renderUnavailableSubjectState = (levelId: string | null) => {
+        const fallbackSubjects = (levelId ? pathSubjects.filter((subject) => subject.levelId === levelId) : pathSubjects).slice(0, 6);
+
+        return (
+            <div className="bg-gray-50 min-h-screen pb-20">
+                <header className="text-white py-14 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <div className="max-w-7xl mx-auto px-4 relative z-10">
+                        <button onClick={() => updateUrl(levelId, null, true)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-5 transition-colors">
+                            <ChevronRight size={20} /> عودة لصفحة المسار
+                        </button>
+                        <h1 className="text-2xl sm:text-3xl font-black mb-3 leading-tight break-words">{path.name}</h1>
+                        <p className="text-white/80 text-base sm:text-lg">هذه المادة غير متاحة الآن أو تم تغييرها من لوحة الإدارة</p>
+                    </div>
+                </header>
+
+                <div className="max-w-4xl mx-auto px-4 py-10">
+                    <div className="rounded-3xl border border-amber-100 bg-white p-6 text-center shadow-sm">
+                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                            <LayoutGrid size={26} />
+                        </div>
+                        <h2 className="text-xl font-black text-gray-900">المادة غير موجودة داخل هذا المسار</h2>
+                        <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-gray-500">
+                            الرابط الذي فتحته يشير إلى مادة قديمة أو محذوفة. لم نعرض صفحة بيضاء، ويمكنك اختيار مادة متاحة الآن من نفس المسار.
+                        </p>
+
+                        {fallbackSubjects.length > 0 ? (
+                            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                {fallbackSubjects.map((subject) => (
+                                    <Link
+                                        key={subject.id}
+                                        to={buildSubjectUrl(levelId, subject.id)}
+                                        className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm font-black text-gray-800 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                                    >
+                                        {subject.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="mt-6 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-5 text-sm text-gray-500">
+                                لا توجد مواد منشورة في هذا المسار حاليا.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    if (selectedSubjectId && !selectedSubject) {
+        return renderUnavailableSubjectState(selectedLevelId);
+    }
+
     // If tab=packages, scroll or only show packages
     if (isPackagesTab) {
         return (
@@ -871,7 +924,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 </div>
             );
         } else {
-            const currentSubject = subjects.find(s => s.id === selectedSubjectId);
+            const currentSubject = selectedSubject;
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
                     <header className="text-white py-12 relative overflow-hidden" style={{ backgroundColor: style.color }}>
@@ -960,7 +1013,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
     // Scene 4: Subject selected within a level
     const currentLevel = levels.find(l => l.id === selectedLevelId);
-    const currentSubject = subjects.find(s => s.id === selectedSubjectId);
+    const currentSubject = selectedSubject;
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
