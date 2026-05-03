@@ -672,8 +672,7 @@ const Dashboard: React.FC = () => {
         { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
         { id: 'parent-results', label: 'نتائج الأبناء', icon: <FileText size={20} /> },
         { id: 'parent-skills', label: 'المهارات الضعيفة', icon: <Target size={20} /> },
-        { id: 'parent-followup', label: 'خطة المتابعة', icon: <Calendar size={20} /> },
-        { id: 'reports', label: 'التقارير التفصيلية', icon: <PieChart size={20} /> },
+        { id: 'reports', label: 'تقرير مبسط', icon: <PieChart size={20} /> },
         { id: 'requests', label: 'طلبات الدفع', icon: <ShoppingCart size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
     ];
@@ -696,7 +695,7 @@ const Dashboard: React.FC = () => {
                 case 'overview': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
                 case 'parent-results': return <ParentResultsTab />;
                 case 'parent-skills': return <ParentSkillsTab />;
-                case 'parent-followup': return <ParentFollowUpTab />;
+                case 'parent-followup': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
                 case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
                 case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
                 case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
@@ -837,7 +836,7 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                         onClick={() => setActiveTab('reports')}
                         className="rounded-xl bg-white px-5 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-50"
                     >
-                        فتح التقرير التفصيلي
+                        فتح التقرير المبسط
                     </button>
                 </div>
             </div>
@@ -953,37 +952,37 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                         <Card className="p-5">
                             <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                 <div>
-                                    <h3 className="text-lg font-black text-gray-900">خطة متابعة 3 أيام</h3>
-                                    <p className="mt-1 text-sm text-gray-500">خطوات بسيطة لولي الأمر بدون ضغط على الطالب.</p>
+                                    <h3 className="text-lg font-black text-gray-900">متابعة اليوم</h3>
+                                    <p className="mt-1 text-sm text-gray-500">ما يحتاجه ولي الأمر الآن في سطر واضح وخطوة واحدة.</p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab('parent-followup')}
-                                    className="self-start rounded-xl bg-slate-900 px-4 py-2 text-sm font-black text-white hover:bg-slate-800"
-                                >
-                                    فتح خطة المتابعة
-                                </button>
+                                <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                                    مبسط لولي الأمر
+                                </span>
                             </div>
-                            {data.followUpPlan.length > 0 ? (
+                            {data.priorityWeakSkills.length > 0 ? (
                                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                                    {data.followUpPlan.map((item) => (
-                                        <div key={item.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
-                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
-                                                    {Math.round(item.mastery)}%
-                                                </span>
-                                            </div>
-                                            <div className="mt-3 text-xs font-bold text-gray-500">{item.studentName}</div>
-                                            <div className="mt-1 font-black leading-7 text-gray-900">{item.skill}</div>
-                                            <p className="mt-3 text-sm leading-7 text-gray-600">{item.action}</p>
-                                            <div className="mt-3 rounded-xl bg-white p-3 text-xs font-bold leading-6 text-emerald-700">{item.check}</div>
-                                        </div>
-                                    ))}
+                                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:col-span-2">
+                                        <div className="text-xs font-black text-amber-700">الأولوية الأقرب</div>
+                                        <div className="mt-2 text-lg font-black leading-7 text-gray-900">{data.priorityWeakSkills[0].skill}</div>
+                                        <p className="mt-2 text-sm leading-7 text-gray-600">
+                                            راجعها مع {data.priorityWeakSkills[0].studentName} لمدة 10 دقائق، ثم اطلب منه حل سؤالين فقط وشرح طريقة التفكير بصوته.
+                                        </p>
+                                    </div>
+                                    <div className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                        <div className="text-xs font-black text-gray-500">درجة الإتقان</div>
+                                        <div className="mt-2 text-3xl font-black text-amber-700">{Math.round(data.priorityWeakSkills[0].mastery)}%</div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveTab('parent-skills')}
+                                            className="mt-4 w-full rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                        >
+                                            عرض المهارات
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
-                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
-                                    لا توجد خطة علاجية الآن لأن النتائج الحالية لا تظهر ضعفًا واضحًا.
+                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                    الأداء الحالي لا يحتاج خطة متابعة. يكفي سؤال قصير بعد المذاكرة: ما أسهل فكرة اليوم وما أصعب فكرة؟
                                 </div>
                             )}
                         </Card>
