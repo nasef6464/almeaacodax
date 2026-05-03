@@ -460,6 +460,41 @@ const Reports: React.FC = () => {
             };
         });
     }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const studentTodayFocus = studentWeeklyPlan[0] || null;
+    const studentQuickActions = useMemo(() => {
+        if (!studentTodayFocus) return [];
+
+        return [
+            {
+                title: 'راجع الشرح',
+                body: studentTodayFocus.lessonTitle
+                    ? `ابدأ بشرح ${displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)}.`
+                    : 'افتح الشروحات واختر أقرب درس لهذه المهارة.',
+                label: studentTodayFocus.lessonLink ? 'فتح الشرح' : 'استعراض الشروحات',
+                link: studentTodayFocus.lessonLink || '/courses',
+                Icon: Video,
+                className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
+            },
+            {
+                title: 'حل تدريب قصير',
+                body: studentTodayFocus.quizTitle
+                    ? `بعد الشرح حل ${displayText(studentTodayFocus.quizTitle)} بدون استعجال.`
+                    : 'حل تدريبًا قصيرًا من مركز الاختبارات على نفس المهارة.',
+                label: studentTodayFocus.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
+                link: studentTodayFocus.quizLink || '/quizzes',
+                Icon: FileText,
+                className: 'border-amber-100 bg-amber-50 text-amber-800',
+            },
+            {
+                title: 'أعد القياس',
+                body: 'بعد المراجعة والتدريب، كرر قياسًا قصيرًا حتى نعرف هل تحسنت المهارة أم تحتاج مراجعة ثانية.',
+                label: 'قياس التحسن',
+                link: studentTodayFocus.quizLink || '/quizzes',
+                Icon: CheckCircle,
+                className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
+            },
+        ];
+    }, [studentTodayFocus]);
     const studentFollowUpSummary = useMemo(() => {
         if (!isStudentView || !hasStudentAnalytics) return '';
 
@@ -1501,14 +1536,13 @@ const Reports: React.FC = () => {
 
             {isStudentView && hasStudentAnalytics && (
             <>
-            <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 to-indigo-900 text-white overflow-hidden relative">
-                <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10" />
-                <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <Card className="p-4 sm:p-6 border-0 shadow-sm bg-slate-900 text-white overflow-hidden">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
                         <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
-                            تقرير مبسط للطالب وولي الأمر
+                            تقرير مبسط للطالب
                         </div>
-                        <h2 className="text-2xl font-black leading-tight">ابدأ من هنا</h2>
+                        <h2 className="text-2xl font-black leading-tight">خطوة واحدة واضحة اليوم</h2>
                         <p className="mt-3 max-w-3xl text-sm leading-7 text-indigo-100">
                             {studentFollowUpSummary}
                         </p>
@@ -1560,9 +1594,9 @@ const Reports: React.FC = () => {
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">ملخص المهارات الأهم</h2>
+                            <h2 className="text-xl font-black text-gray-900">ابدأ من هذه المهارة فقط</h2>
                             <p className="mt-1 text-sm leading-7 text-gray-500">
-                                نعرض لك أقل عدد ممكن من التفاصيل: المهارة، مستواها، والخطوة التالية. افتح التقرير الكامل فقط لو احتجت كل البيانات.
+                                هنا نعرض للطالب أقل قدر من التفاصيل: مهارة واحدة، ثم ثلاث خطوات تنفيذ. باقي التحليل موجود في التقرير الكامل.
                             </p>
                         </div>
                         <button
@@ -1573,56 +1607,54 @@ const Reports: React.FC = () => {
                         </button>
                     </div>
 
-                    <div className="mt-5 grid gap-3 md:grid-cols-3">
-                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, showCompactStudentView ? 1 : 3).map((skill, index) => {
+                    <div className="mt-5">
+                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, 1).map((skill, index) => {
                             const tone = getReportMasteryTone(skill.mastery);
                             const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
 
                             return (
-                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 ${tone.bg} ${tone.border}`}>
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <span className={`inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-black ${tone.text}`}>
-                                                {index === 0 ? 'ابدأ هنا' : tone.label}
-                                            </span>
-                                            <div className="mt-3 text-base font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 sm:p-5 ${tone.bg} ${tone.border}`}>
+                                    <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_1.4fr]">
+                                        <div>
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="min-w-0">
+                                                    <span className={`inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-black ${tone.text}`}>
+                                                        ابدأ هنا
+                                                    </span>
+                                                    <div className="mt-3 text-lg font-black leading-8 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                                </div>
+                                                <div className={`text-3xl font-black ${tone.text}`}>{skill.mastery}%</div>
+                                            </div>
+                                            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
+                                                <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                                            </div>
+                                            <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
+                                                {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
+                                                {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
+                                            </div>
+                                            <p className="mt-3 text-sm font-bold leading-7 text-gray-700">
+                                                {displayText(recommendation.actionText) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}
+                                            </p>
                                         </div>
-                                        <div className={`text-2xl font-black ${tone.text}`}>{skill.mastery}%</div>
-                                    </div>
-                                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
-                                        <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
-                                    </div>
-                                    <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
-                                        {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
-                                        {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
-                                    </div>
-                                    <p className="mt-3 text-sm font-bold leading-7 text-gray-700">
-                                        {displayText(recommendation.actionText) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}
-                                    </p>
-                                    <div className="print-hide mt-4 grid gap-2">
-                                        {recommendation.lessonLink ? (
-                                            <Link to={recommendation.lessonLink} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50">
-                                                {recommendation.lessonTopicTitle ? `شرح: ${recommendation.lessonTopicTitle}` : 'شرح مناسب'}
-                                            </Link>
-                                        ) : (
-                                            <Link to="/courses" className="rounded-xl bg-white/70 px-3 py-2 text-center text-xs font-black text-slate-500 hover:bg-white">
-                                                استعرض الشروح
-                                            </Link>
-                                        )}
-                                        {recommendation.quizLink ? (
-                                            <Link to={recommendation.quizLink} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50">
-                                                تدريب قصير
-                                            </Link>
-                                        ) : (
-                                            <Link to="/quizzes" className="rounded-xl bg-white/70 px-3 py-2 text-center text-xs font-black text-slate-500 hover:bg-white">
-                                                ابحث عن تدريب
-                                            </Link>
-                                        )}
+                                        <div className="grid gap-3 sm:grid-cols-3">
+                                            {studentQuickActions.map(({ title, body, label, link, Icon, className }) => (
+                                                <Link key={title} to={link} className={`print-hide flex min-h-[154px] flex-col justify-between rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
+                                                    <div>
+                                                        <Icon size={20} />
+                                                        <div className="mt-3 text-sm font-black">{title}</div>
+                                                        <p className="mt-2 text-xs font-bold leading-6 opacity-80">{body}</p>
+                                                    </div>
+                                                    <span className="mt-4 inline-flex justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-800">
+                                                        {label}
+                                                    </span>
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             );
                         }) : (
-                            <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm font-bold leading-7 text-gray-500 md:col-span-3">
+                            <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm font-bold leading-7 text-gray-500">
                                 لا توجد مهارات كافية بعد. حل اختبارًا قصيرًا مرتبطًا بالمهارات، وسيظهر هنا ملخص واضح تلقائيًا.
                             </div>
                         )}
@@ -1632,9 +1664,9 @@ const Reports: React.FC = () => {
                         <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                 <div>
-                                    <div className="text-sm font-black text-gray-900">ملخص مبسط</div>
+                                    <div className="text-sm font-black text-gray-900">لماذا التقرير قصير؟</div>
                                     <p className="mt-1 text-sm leading-7 text-gray-500">
-                                        أبقينا لك مهارة واحدة فقط لتبدأ بها الآن. عند الحاجة يمكنك فتح العرض الكامل لرؤية باقي المهارات.
+                                        المقصود أن يعرف الطالب ماذا يذاكر الآن فقط. المدير وولي الأمر والتقرير الكامل يحتفظون بالتفاصيل والأرقام.
                                     </p>
                                 </div>
                                 <button
