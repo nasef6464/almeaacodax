@@ -67,8 +67,8 @@ const sampleTitles = (items: any[], limit = 5) =>
 const check = (payload: OperationsAuditCheck) => payload;
 
 const severityWeight: Record<Severity, number> = {
-  critical: 18,
-  warning: 8,
+  critical: 15,
+  warning: 6,
   info: 2,
   success: 0,
 };
@@ -471,7 +471,7 @@ export async function createOperationsAudit() {
   ];
 
   const issueChecks = checks.filter((item) => item.severity !== "success" && item.count > 0);
-  const penalty = issueChecks.reduce((total, item) => total + severityWeight[item.severity] * Math.max(1, Math.min(item.count, 5)), 0);
+  const penalty = issueChecks.reduce((total, item) => total + severityWeight[item.severity], 0);
   const score = Math.max(0, Math.min(100, 100 - penalty));
   const areaSummary = checks.reduce<Record<Area, { total: number; issues: number; critical: number }>>((summary, item) => {
     summary[item.area] ||= { total: 0, issues: 0, critical: 0 };
