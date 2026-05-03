@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import type { Lesson } from '../types';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type BlogFilter = 'all' | string;
 
@@ -20,6 +21,14 @@ interface BlogEntry {
     actionLink: string;
     actionLabel: string;
 }
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+
+const plainSummary = (value?: string | null) =>
+    displayText(value)
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
 const formatDateLabel = (timestamp?: number) => {
     if (!timestamp) return 'محتوى حديث';
@@ -52,24 +61,28 @@ const Blog: React.FC = () => {
                 const isPublished = lesson.approvalStatus !== 'pending_review' && lesson.approvalStatus !== 'rejected';
                 const hasArticleContent = lesson.type === 'text' || Boolean(lesson.content?.trim());
                 const isVisiblePath = !lesson.pathId || visiblePathIds.has(lesson.pathId);
+
                 return isPublished && hasArticleContent && lesson.showOnPlatform !== false && isVisiblePath;
             })
             .map((lesson: Lesson) => {
                 const path = paths.find((item) => item.id === lesson.pathId);
                 const subject = subjects.find((item) => item.id === lesson.subjectId);
+                const hasLearningSpace = Boolean(lesson.pathId && lesson.subjectId);
 
                 return {
                     id: `lesson-${lesson.id}`,
-                    title: lesson.title,
-                    summary: lesson.description || lesson.content?.slice(0, 180) || 'مقالة تعليمية مرتبطة مباشرة بمسارك الحالي داخل المنصة.',
+                    title: displayText(lesson.title) || 'شرح تعليمي',
+                    summary:
+                        plainSummary(lesson.description || lesson.content).slice(0, 220) ||
+                        'مقالة تعليمية مرتبطة مباشرة بمسار الطالب داخل المنصة.',
                     pathId: lesson.pathId,
-                    pathName: path?.name || 'مسار عام',
+                    pathName: displayText(path?.name) || 'مسار عام',
                     subjectId: lesson.subjectId,
-                    subjectName: subject?.name || path?.name || 'عام',
+                    subjectName: displayText(subject?.name || path?.name) || 'عام',
                     typeLabel: lesson.type === 'text' ? 'مقالة تعليمية' : 'شرح نصي',
                     dateLabel: formatDateLabel(lesson.approvedAt),
-      actionLink: lesson.pathId && lesson.subjectId ? `/category/${lesson.pathId}?subject=${lesson.subjectId}&tab=skills` : '/courses',
-                    actionLabel: lesson.pathId && lesson.subjectId ? 'افتح مساحة التعلّم' : 'استعرض الدورات',
+                    actionLink: hasLearningSpace ? `/category/${lesson.pathId}?subject=${lesson.subjectId}&tab=skills` : '/courses',
+                    actionLabel: hasLearningSpace ? 'افتح مساحة التعلم' : 'استعرض الدورات',
                 };
             });
 
@@ -82,6 +95,7 @@ const Blog: React.FC = () => {
                 if (course.isPackage) return false;
                 if (course.isPublished === false || course.showOnPlatform === false) return false;
                 if (course.approvalStatus && course.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
+
                 return !course.pathId || visiblePathIds.has(course.pathId);
             })
             .map((course) => {
@@ -90,12 +104,14 @@ const Blog: React.FC = () => {
 
                 return {
                     id: `course-${course.id}`,
-                    title: course.title,
-                    summary: course.description || 'محتوى منشور داخل المنصة يمكن للطالب الوصول إليه من نفس المسار التعليمي.',
+                    title: displayText(course.title) || 'محتوى منشور',
+                    summary:
+                        plainSummary(course.description).slice(0, 220) ||
+                        'محتوى منشور داخل المنصة يمكن للطالب الوصول إليه من نفس المسار التعليمي.',
                     pathId: course.pathId,
-                    pathName: path?.name || course.category || 'مسار عام',
+                    pathName: displayText(path?.name || course.category) || 'مسار عام',
                     subjectId: course.subjectId,
-                    subjectName: subject?.name || path?.name || course.category || 'عام',
+                    subjectName: displayText(subject?.name || path?.name || course.category) || 'عام',
                     typeLabel: 'محتوى من الدورات',
                     dateLabel: 'محتوى منشور داخل الدورات',
                     actionLink: `/course/${course.id}`,
@@ -110,6 +126,7 @@ const Blog: React.FC = () => {
         blogEntries.forEach((entry) => {
             if (entry.subjectName.trim()) names.add(entry.subjectName.trim());
         });
+
         return ['الكل', ...Array.from(names).slice(0, 8)];
     }, [blogEntries]);
 
@@ -138,7 +155,9 @@ const Blog: React.FC = () => {
                     </Link>
                     <div>
                         <h1 className="text-xl sm:text-2xl font-bold text-amber-600 leading-tight">المدونة التعليمية</h1>
-                        <p className="text-sm text-gray-500">مقالات وشروحات ونبض المحتوى المنشور داخل المنصة في مكان واحد</p>
+                        <p className="text-sm text-gray-500">
+                            مقالات وشروحات ونبض المحتوى المنشور داخل المنصة في مكان واحد.
+                        </p>
                     </div>
                 </div>
                 <Link
@@ -182,6 +201,7 @@ const Blog: React.FC = () => {
             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
                 {availableFilters.map((label) => {
                     const isActive = (filter === 'all' && label === 'الكل') || filter === label;
+
                     return (
                         <button
                             key={label}
@@ -213,7 +233,9 @@ const Blog: React.FC = () => {
                                         {entry.typeLabel}
                                     </span>
                                 </div>
-                                <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2 leading-7 break-words">{entry.title}</h3>
+                                <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2 leading-7 break-words">
+                                    {entry.title}
+                                </h3>
                                 <p className="text-gray-500 text-sm leading-6 line-clamp-3">{entry.summary}</p>
                             </div>
                         </div>
