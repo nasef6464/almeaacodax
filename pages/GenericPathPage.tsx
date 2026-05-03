@@ -177,10 +177,30 @@ export const GenericPathPage: React.FC = () => {
     }, [path?.id, pathLevels, selectedLevelId, selectedSubjectId, subjects]);
     
     if (!path || (!canSeeHiddenPaths && path.isActive === false)) {
+        const visiblePathSuggestions = paths
+            .filter((item) => (canSeeHiddenPaths || item.isActive !== false) && item.showInNavbar !== false)
+            .slice(0, 6);
+
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-                <div className="text-center">
+                <div className="w-full max-w-2xl text-center">
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">المسار غير موجود</h2>
+                    <p className="mx-auto mb-6 max-w-xl text-sm leading-7 text-gray-500">
+                        قد يكون الرابط قديمًا أو أن المسار تغير من لوحة الإدارة. اختر مسارًا متاحًا الآن أو عد للوحة التحكم.
+                    </p>
+                    {visiblePathSuggestions.length > 0 ? (
+                        <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            {visiblePathSuggestions.map((item) => (
+                                <Link
+                                    key={item.id}
+                                    to={`/category/${item.id}`}
+                                    className="rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm font-black text-gray-800 shadow-sm transition hover:border-indigo-200 hover:text-indigo-700"
+                                >
+                                    {item.name}
+                                </Link>
+                            ))}
+                        </div>
+                    ) : null}
                     <button onClick={() => navigate('/dashboard')} className="text-indigo-600 hover:underline">
                         العودة للوحة التحكم
                     </button>

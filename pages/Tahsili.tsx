@@ -4,12 +4,15 @@ import { useStore } from '../store/useStore';
 import { PathLayout, PathCard } from '../components/PathLayout';
 
 export const Tahsili: React.FC = () => {
-    const { subjects, courses } = useStore();
+    const { paths, subjects, courses } = useStore();
     
     // Filter only Tahsili courses for the grid below
     const filteredCourses = courses.filter(course => course.category === 'التحصيلي' || course.category === 'تحصيلي');
 
-    const pathSubjects = subjects.filter(s => s.pathId === 'p_tahsili');
+    const tahsiliPath = paths.find((path) => path.id === 'p_tahsili')
+        || paths.find((path) => path.name.includes('التحصيلي') || path.name.includes('تحصيلي'));
+    const tahsiliPathId = tahsiliPath?.id || 'p_tahsili';
+    const pathSubjects = subjects.filter(s => s.pathId === tahsiliPathId);
 
     const tahsiliCards: PathCard[] = [
         {
@@ -17,7 +20,7 @@ export const Tahsili: React.FC = () => {
             title: 'الباقات',
             subtitle: 'عروض حصرية',
             color: 'bg-[#e11d48]',
-            link: '/category/p_tahsili?tab=packages',
+            link: `/category/${tahsiliPathId}?tab=packages`,
             isPillSubtitle: true
         },
         ...pathSubjects.map((subject, index) => {
@@ -27,7 +30,7 @@ export const Tahsili: React.FC = () => {
                 title: subject.name,
                 subtitle: 'شروحات - تجميعات - تدريب',
                 color: colors[index % colors.length],
-      link: `/category/p_tahsili?subject=${subject.id}`
+      link: `/category/${tahsiliPathId}?subject=${subject.id}`
             };
         })
     ];

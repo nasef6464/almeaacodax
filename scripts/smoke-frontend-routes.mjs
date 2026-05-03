@@ -11,15 +11,20 @@ const EXPECTED_VERSION = process.env.SMOKE_EXPECT_VERSION || (() => {
 })();
 const STRICT_VERSION = process.env.SMOKE_STRICT_VERSION === '1';
 
-const routes = [
+const baseRoutes = [
   '/',
-  '/#/category/p_qudrat',
-  '/#/category/p_qudrat?level=lvl_qudrat_general',
-  '/#/category/p_tahsili',
   '/#/quizzes',
   '/#/reports',
   '/#/login',
 ];
+const legacyLearningRoutes = [
+  '/#/category/p_qudrat',
+  '/#/category/p_qudrat?subject=sub_quant',
+  '/#/category/p_qudrat?subject=sub_verbal',
+  '/#/category/p_tahsili',
+  '/#/category/p_tahsili?subject=sub_math',
+];
+const routes = [...baseRoutes];
 
 const checks = [];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -84,6 +89,43 @@ await check('api health is live', async () => {
     throw new Error(`unexpected health payload: ${JSON.stringify(health)}`);
   }
   return `status=${health.status || 'unknown'}, database=${health.database || 'unknown'}`;
+});
+
+await check('learning taxonomy exposes current student routes', async () => {
+  const response = await fetchWithRetry(`${API_URL}/taxonomy/bootstrap`, {
+    headers: {
+      'cache-control': 'no-cache',
+      pragma: 'no-cache',
+    },
+  });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+  const taxonomy = await response.json();
+  const paths = Array.isArray(taxonomy?.paths) ? taxonomy.paths : [];
+  const subjects = Array.isArray(taxonomy?.subjects) ? taxonomy.subjects : [];
+  const activePaths = paths.filter((path) => path?.isActive !== false);
+  if (activePaths.length === 0) throw new Error('no active learning paths returned');
+
+  const pathIdOf = (path) => String(path?.id || path?._id || '').trim();
+  const subjectIdOf = (subject) => String(subject?.id || subject?._id || '').trim();
+  const pathIds = new Set(activePaths.map(pathIdOf).filter(Boolean));
+  const currentSubjectRoutes = [];
+
+  for (const path of activePaths.slice(0, 5)) {
+    const pathId = pathIdOf(path);
+    if (!pathId) continue;
+    routes.push(`/#/category/${pathId}`);
+    const pathSubjects = subjects.filter((subject) => pathIds.has(String(subject?.pathId || '')) && String(subject?.pathId || '') === pathId);
+    for (const subject of pathSubjects.slice(0, 3)) {
+      const subjectId = subjectIdOf(subject);
+      if (!subjectId) continue;
+      const route = `/#/category/${pathId}?subject=${subjectId}`;
+      currentSubjectRoutes.push(route);
+      routes.push(route);
+    }
+  }
+
+  routes.push(...legacyLearningRoutes);
+  return `paths=${activePaths.length}, subjectRoutes=${currentSubjectRoutes.length}, legacyRoutes=${legacyLearningRoutes.length}`;
 });
 
 let shellHtml = '';
