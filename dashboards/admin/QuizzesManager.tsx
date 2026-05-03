@@ -173,6 +173,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
+  const activeSubject = useMemo(
+    () => allowedSubjects.find((subject) => subject.id === (selectedSubjectId || subjectId)),
+    [allowedSubjects, selectedSubjectId, subjectId],
+  );
+  const activePathId = selectedPathId || activeSubject?.pathId || '';
 
   const availableSections = useMemo(
     () =>
@@ -312,12 +317,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   const handleCreateByMode = (mode: 'regular' | 'saher' | 'central') => {
+    const draftSubjectId = selectedSubjectId || subjectId || '';
     const draftQuiz: Quiz = {
       id: `quiz_${Date.now()}_${mode}`,
       title: mode === 'saher' ? 'اختبار ساهر جديد' : mode === 'central' ? 'اختبار موجّه جديد' : 'اختبار جديد',
       description: '',
-      pathId: selectedPathId || '',
-      subjectId: selectedSubjectId || '',
+      pathId: activePathId,
+      subjectId: draftSubjectId,
       ...getQuizPlacementDefaults(filterType || 'quiz'),
       mode,
       settings: {
@@ -517,6 +523,23 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </button>
         </div>
       </div>
+
+      {filterType && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h3 className="text-sm font-black text-indigo-900">الاستدعاء هنا من مركز الاختبارات نفسه</h3>
+              <p className="mt-1 text-xs font-bold leading-6 text-indigo-700">
+                لا توجد نسخة منفصلة داخل مساحة التعلم. أي اختبار تعدله هنا هو نفس الاختبار الموجود في مركز الاختبارات، والفصل يتم فقط بتحديد مكان الظهور:
+                {filterType === 'bank' ? ' تدريب فقط أو الاثنين.' : ' محاكي فقط أو الاثنين.'}
+              </p>
+            </div>
+            <div className="rounded-xl bg-white px-4 py-3 text-xs font-black text-slate-700">
+              {activeSubject ? `المادة الحالية: ${activeSubject.name}` : 'اختر مادة لضمان الربط الصحيح'}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <div className="bg-white border border-gray-100 rounded-xl p-4">
