@@ -41,7 +41,6 @@ const normalizeVideoUrl = (rawUrl: string) => {
         const normalized = `https://www.youtube.com/watch?v=${videoId}`;
         return {
           playerUrl: normalized,
-          iframeUrl: `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`,
           externalUrl: normalized,
         };
       }
@@ -53,7 +52,6 @@ const normalizeVideoUrl = (rawUrl: string) => {
         const normalized = `https://www.youtube.com/watch?v=${videoId}`;
         return {
           playerUrl: normalized,
-          iframeUrl: `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`,
           externalUrl: normalized,
         };
       }
@@ -256,11 +254,15 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
             },
             youtube: {
               playerVars: {
+                autoplay: 0,
                 controls: 0,
+                disablekb: 1,
+                fs: 0,
                 modestbranding: 1,
                 rel: 0,
                 showinfo: 0,
                 iv_load_policy: 3,
+                origin: window.location.origin,
               },
             },
           } as any}
@@ -275,10 +277,10 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
             قد يكون الرابط يمنع التشغيل المدمج. يمكنك فتحه في نافذة جديدة الآن، وسنظل محتفظين بالدرس داخل المنصة.
           </p>
           <a
-            href={videoSource.externalUrl || normalizedUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition-colors font-bold"
+            href="#"
+            aria-hidden="true"
+            tabIndex={-1}
+            className="hidden px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition-colors font-bold"
           >
             فتح الفيديو في نافذة جديدة
           </a>
