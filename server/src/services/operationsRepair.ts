@@ -1,8 +1,12 @@
 import { PathModel } from "../models/Path.js";
 import { QuizModel } from "../models/Quiz.js";
 import { SubjectModel } from "../models/Subject.js";
+import { TopicModel } from "../models/Topic.js";
 
-export type OperationsRepairAction = "hide-empty-published-quizzes" | "hide-empty-active-paths";
+export type OperationsRepairAction =
+  | "hide-empty-published-quizzes"
+  | "hide-empty-active-paths"
+  | "unlink-unavailable-topic-quizzes";
 
 export async function runOperationsRepair(action: OperationsRepairAction, apply = false) {
   if (action === "hide-empty-published-quizzes") {
@@ -70,6 +74,53 @@ export async function runOperationsRepair(action: OperationsRepairAction, apply 
       samples: targetPaths.slice(0, 8).map((path: any) => ({
         id: String(path._id),
         title: path.name,
+      })),
+    };
+  }
+
+  if (action === "unlink-unavailable-topic-quizzes") {
+    const [topics, quizzes] = await Promise.all([
+      TopicModel.find({ quizIds: { $exists: true, $ne: [] } }).lean(),
+      QuizModel.find({ showOnPlatform: { $ne: false }, isPublished: { $ne: false } }).lean(),
+    ]);
+    const visibleQuizIds = new Set(quizzes.map((quiz: any) => String(quiz.id || quiz._id)));
+    const targetTopics = topics
+      .map((topic: any) => {
+        const quizIds = (topic.quizIds || []).map(String);
+        const nextQuizIds = quizIds.filter((quizId: string) => visibleQuizIds.has(quizId));
+        return {
+          topic,
+          nextQuizIds,
+          removed: quizIds.length - nextQuizIds.length,
+        };
+      })
+      .filter((item) => item.removed > 0);
+
+    if (apply && targetTopics.length > 0) {
+      await Promise.all(
+        targetTopics.map((item) =>
+          TopicModel.updateOne(
+            { _id: item.topic._id },
+            {
+              $set: {
+                quizIds: item.nextQuizIds,
+              },
+            },
+          ),
+        ),
+      );
+    }
+
+    return {
+      action,
+      applied: apply,
+      affected: targetTopics.reduce((total, item) => total + item.removed, 0),
+      message: apply
+        ? "تم تنظيف روابط الاختبارات غير المتاحة من الموضوعات."
+        : "سيتم تنظيف روابط الاختبارات غير المتاحة من الموضوعات.",
+      samples: targetTopics.slice(0, 8).map((item: any) => ({
+        id: String(item.topic.id || item.topic._id),
+        title: item.topic.title,
       })),
     };
   }

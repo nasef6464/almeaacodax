@@ -183,7 +183,7 @@ operationsRouter.post("/repair", requireAuth, requireRole(["admin"]), async (req
   try {
     const action = String(req.body?.action || "") as OperationsRepairAction;
     const apply = req.body?.apply === true;
-    if (!["hide-empty-published-quizzes", "hide-empty-active-paths"].includes(action)) {
+    if (!["hide-empty-published-quizzes", "hide-empty-active-paths", "unlink-unavailable-topic-quizzes"].includes(action)) {
       return res.status(400).json({
         message: "Unsupported repair action",
       });

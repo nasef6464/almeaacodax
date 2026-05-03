@@ -565,7 +565,7 @@ export const api = {
       }>;
     }>("/operations/audit", { token }),
   runOperationsRepair: (
-    payload: { action: "hide-empty-published-quizzes" | "hide-empty-active-paths"; apply?: boolean },
+    payload: { action: "hide-empty-published-quizzes" | "hide-empty-active-paths" | "unlink-unavailable-topic-quizzes"; apply?: boolean },
     token?: string | null,
   ) =>
     request<{
