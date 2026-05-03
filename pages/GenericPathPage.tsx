@@ -101,12 +101,8 @@ export const GenericPathPage: React.FC = () => {
                 updateUrl(null, null, true);
                 return;
             }
-            if (!selectedLevelId && !selectedSubjectId && pathSubjects.length === 1) {
-                updateUrl(null, pathSubjects[0].id, true);
-                return;
-            }
-            if (selectedLevelId || selectedSubjectId) {
-                updateUrl(null, null, true);
+            if (selectedLevelId) {
+                updateUrl(null, selectedSubjectId, true);
             }
             return;
         }

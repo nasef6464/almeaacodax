@@ -19,16 +19,13 @@ export const VideoModal: React.FC<VideoModalProps> = ({ videoUrl, title, onClose
     return (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4 backdrop-blur-sm animate-fade-in" dir="rtl">
             <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col relative">
-                <div className="flex items-start justify-between gap-3 p-3 sm:p-4 bg-white border-b border-gray-100 absolute top-0 left-0 right-0 z-10 opacity-90 hover:opacity-100 transition-opacity">
-                    <h3 className="font-bold text-sm sm:text-base text-gray-800 pl-2 leading-6 break-words">{title}</h3>
-                    <button
-                        onClick={handleClose}
-                        className="bg-red-50 text-red-500 p-2 rounded-full hover:bg-red-100 transition-colors shrink-0"
-                        aria-label="إغلاق مشغل الفيديو"
-                    >
-                        <X size={24} />
-                    </button>
-                </div>
+                <button
+                    onClick={handleClose}
+                    className="absolute left-3 top-3 z-[90] rounded-full bg-white/95 p-2.5 text-gray-800 shadow-lg transition hover:bg-white hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-white/80"
+                    aria-label="إغلاق مشغل الفيديو"
+                >
+                    <X size={22} />
+                </button>
 
                 <div className="relative w-full pt-[56.25%] bg-black">
                     <div className="absolute top-0 left-0 w-full h-full">

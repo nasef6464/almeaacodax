@@ -88,8 +88,8 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title })
         data-plyr-embed-id={videoId}
         aria-label={title || 'مشغل فيديو منصة المئة'}
       />
-      <div className="absolute left-0 right-0 top-0 z-[15] h-20 cursor-default bg-transparent" />
-      <div className="absolute bottom-12 right-0 z-[15] h-16 w-36 cursor-default bg-transparent" />
+      <div className="absolute left-0 right-0 top-0 z-[15] h-24 cursor-default bg-gradient-to-b from-black via-black/90 to-transparent" />
+      <div className="absolute bottom-12 right-0 z-[15] h-16 w-40 cursor-default bg-gradient-to-l from-black via-black/85 to-transparent" />
       {title ? (
         <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 rounded-2xl bg-black/35 px-4 py-2 text-right text-sm font-bold text-white backdrop-blur" dir="rtl">
           {title}
