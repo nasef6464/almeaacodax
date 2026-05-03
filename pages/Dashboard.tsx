@@ -1,5 +1,5 @@
 ﻿
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
@@ -127,6 +127,180 @@ const getResultTimestamp = (result: ScopedQuizResult) => {
     }
     return 0;
 };
+
+type DashboardTab =
+    | 'overview'
+    | 'paths'
+    | 'my-courses'
+    | 'smart-path'
+    | 'sessions'
+    | 'saher'
+    | 'quizzes'
+    | 'reports'
+    | 'favorites'
+    | 'plan'
+    | 'qa'
+    | 'requests'
+    | 'parent-results'
+    | 'parent-skills';
+
+const formatParentDate = (result: ScopedQuizResult) => {
+    const timestamp = getResultTimestamp(result);
+    if (!timestamp) return 'غير محدد';
+    return new Date(timestamp).toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
+
+const getStudentLabel = (result: ScopedQuizResult) =>
+    result.studentName || result.studentEmail || result.studentId || result.userId || 'طالب مرتبط';
+
+const scoreTone = (score: number) => {
+    if (score < 60) return 'text-rose-600 bg-rose-50 border-rose-100';
+    if (score < 80) return 'text-amber-600 bg-amber-50 border-amber-100';
+    return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+};
+
+const useParentScopedResults = () => {
+    const { user, users } = useStore();
+    const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (user.role !== Role.PARENT) return;
+
+        let isMounted = true;
+        setIsLoading(true);
+        setLoadError(null);
+
+        api.getScopedQuizResults()
+            .then((payload) => {
+                if (!isMounted) return;
+                setScopedResults(
+                    extractScopedQuizResults(payload)
+                        .sort((a, b) => getResultTimestamp(b) - getResultTimestamp(a))
+                );
+            })
+            .catch((error) => {
+                console.error('Failed to load parent scoped quiz results', error);
+                if (isMounted) {
+                    setLoadError('تعذر تحميل نتائج الأبناء الآن. حاول تحديث الصفحة بعد قليل.');
+                }
+            })
+            .finally(() => {
+                if (isMounted) setIsLoading(false);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [user.role]);
+
+    return useMemo(() => {
+        const linkedStudentIds = new Set(user.linkedStudentIds || []);
+        const linkedStudents = users.filter((item) => item.role === Role.STUDENT && linkedStudentIds.has(item.id));
+        const resultsByStudent = new globalThis.Map<string, ScopedQuizResult[]>();
+
+        scopedResults.forEach((result) => {
+            const key = String(result.studentId || result.userId || getStudentLabel(result));
+            const current = resultsByStudent.get(key) || [];
+            current.push(result);
+            resultsByStudent.set(key, current);
+        });
+
+        const fallbackNames = Array.from(
+            new Set(scopedResults.map((result) => getStudentLabel(result)).filter(Boolean))
+        );
+
+        const childCards = linkedStudents.length > 0
+            ? linkedStudents.map((student) => {
+                const studentResults = resultsByStudent.get(student.id) || scopedResults.filter((result) => result.studentId === student.id || result.userId === student.id);
+                const average = studentResults.length
+                    ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
+                    : 0;
+                const weakCount = studentResults.reduce(
+                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                    0
+                );
+                return {
+                    id: student.id,
+                    name: student.name,
+                    email: student.email,
+                    avatar: student.avatar,
+                    results: studentResults.length,
+                    average,
+                    weakCount,
+                    latestResult: studentResults[0],
+                };
+            })
+            : fallbackNames.map((name) => {
+                const studentResults = scopedResults.filter((result) => getStudentLabel(result) === name);
+                const average = studentResults.length
+                    ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
+                    : 0;
+                const weakCount = studentResults.reduce(
+                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                    0
+                );
+                return {
+                    id: name,
+                    name,
+                    email: '',
+                    avatar: `https://i.pravatar.cc/100?u=${encodeURIComponent(name)}`,
+                    results: studentResults.length,
+                    average,
+                    weakCount,
+                    latestResult: studentResults[0],
+                };
+            });
+
+        const weakSkills = scopedResults
+            .flatMap((result) =>
+                (result.skillsAnalysis || [])
+                    .filter((skill) => skill.mastery < 75 || skill.status === 'weak')
+                    .map((skill) => ({
+                        key: skill.skillId || `${skill.subjectId || ''}:${skill.sectionId || ''}:${skill.skill}`,
+                        skill: skill.skill,
+                        section: skill.section,
+                        mastery: skill.mastery,
+                        status: skill.status,
+                        studentName: getStudentLabel(result),
+                        quizTitle: result.quizTitle,
+                    }))
+            )
+            .sort((a, b) => a.mastery - b.mastery);
+
+        const averageScore = scopedResults.length
+            ? Math.round(scopedResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.length)
+            : 0;
+        const lastThreeAverage = scopedResults.slice(0, 3).length
+            ? Math.round(scopedResults.slice(0, 3).reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.slice(0, 3).length)
+            : 0;
+        const olderThreeAverage = scopedResults.slice(3, 6).length
+            ? Math.round(scopedResults.slice(3, 6).reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.slice(3, 6).length)
+            : 0;
+
+        return {
+            linkedStudents,
+            childCards,
+            scopedResults,
+            recentResults: scopedResults.slice(0, 6),
+            weakSkills,
+            priorityWeakSkills: weakSkills.slice(0, 6),
+            childrenCount: Math.max(childCards.length, linkedStudents.length),
+            averageScore,
+            lastThreeAverage,
+            olderThreeAverage,
+            isLoading,
+            loadError,
+        };
+    }, [isLoading, linkedStudentIdsKey(user.linkedStudentIds), loadError, scopedResults, user.linkedStudentIds, users]);
+};
+
+const linkedStudentIdsKey = (ids?: string[]) => (ids || []).join('|');
 
 const PathsTab = () => {
     const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, enrolledCourses, completedLessons, user } = useStore();
@@ -441,12 +615,13 @@ const MyCoursesTab = () => {
 };
 
 const Dashboard: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'paths' | 'my-courses' | 'smart-path' | 'sessions' | 'saher' | 'quizzes' | 'reports' | 'favorites' | 'plan' | 'qa' | 'requests'>('overview');
+    const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { user } = useStore();
     const location = useLocation();
+    const isParentDashboard = user.role === Role.PARENT;
 
-    const menuItems = [
+    const studentMenuItems = [
         { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
         { id: 'paths', label: 'مساراتي', icon: <RouteIcon size={20} /> },
         { id: 'my-courses', label: 'دوراتي', icon: <BookOpen size={20} /> },
@@ -461,6 +636,17 @@ const Dashboard: React.FC = () => {
         { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
     ];
 
+    const parentMenuItems = [
+        { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
+        { id: 'parent-results', label: 'نتائج الأبناء', icon: <FileText size={20} /> },
+        { id: 'parent-skills', label: 'المهارات الضعيفة', icon: <Target size={20} /> },
+        { id: 'reports', label: 'التقارير التفصيلية', icon: <PieChart size={20} /> },
+        { id: 'requests', label: 'طلبات الدفع', icon: <ShoppingCart size={20} /> },
+        { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
+    ];
+
+    const menuItems = isParentDashboard ? parentMenuItems : studentMenuItems;
+
     useEffect(() => {
         const requestedTab = new URLSearchParams(location.search).get('tab');
         const allowedTabs = new Set(menuItems.map((item) => item.id));
@@ -472,6 +658,18 @@ const Dashboard: React.FC = () => {
 
     // Render Content Based on Tab
     const renderContent = () => {
+        if (isParentDashboard) {
+            switch(activeTab) {
+                case 'overview': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+                case 'parent-results': return <ParentResultsTab />;
+                case 'parent-skills': return <ParentSkillsTab />;
+                case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
+                case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
+                case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
+                default: return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+            }
+        }
+
         switch(activeTab) {
             case 'overview': return <OverviewTab setActiveTab={setActiveTab} />;
             case 'paths': return <PathsTab />;
@@ -552,71 +750,236 @@ const Dashboard: React.FC = () => {
 
 // -- Sub-Components --
 
-const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { user, users } = useStore();
-    const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [loadError, setLoadError] = useState<string | null>(null);
+const ParentLoadingState = () => (
+    <div className="flex items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-sm font-bold text-gray-500">
+        <Loader2 size={18} className="ml-2 animate-spin text-emerald-600" />
+        جاري تحميل بيانات الأبناء...
+    </div>
+);
 
-    useEffect(() => {
-        if (user.role !== Role.PARENT) return;
+const ParentEmptyState = () => (
+    <Card className="p-8 text-center">
+        <User size={42} className="mx-auto mb-4 text-gray-300" />
+        <h3 className="text-xl font-black text-gray-900">لا توجد بيانات متابعة بعد</h3>
+        <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
+            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا.
+        </p>
+    </Card>
+);
 
-        let isMounted = true;
-        setIsLoading(true);
-        setLoadError(null);
+const ParentErrorState = ({ message }: { message: string }) => (
+    <div className="rounded-2xl border border-rose-100 bg-rose-50 p-5 text-sm font-bold text-rose-700">
+        {message}
+    </div>
+);
 
-        api.getScopedQuizResults()
-            .then((payload) => {
-                if (!isMounted) return;
-                setScopedResults(
-                    extractScopedQuizResults(payload)
-                        .sort((a, b) => getResultTimestamp(b) - getResultTimestamp(a))
-                );
-            })
-            .catch((error) => {
-                console.error('Failed to load parent scoped quiz results', error);
-                if (isMounted) {
-                    setLoadError('تعذر تحميل نتائج الأبناء الآن. حاول تحديث الصفحة بعد قليل.');
-                }
-            })
-            .finally(() => {
-                if (isMounted) setIsLoading(false);
-            });
+const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: DashboardTab) => void }) => {
+    const data = useParentScopedResults();
+    const trend = data.lastThreeAverage - data.olderThreeAverage;
 
-        return () => {
-            isMounted = false;
-        };
-    }, [user.role]);
+    return (
+        <div className="space-y-8 animate-fade-in pb-20">
+            <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-slate-900 p-6 text-white shadow-lg">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <div className="mb-2 text-sm font-bold text-emerald-100">لوحة ولي الأمر</div>
+                        <h2 className="text-2xl font-black md:text-3xl">متابعة واضحة لأداء الأبناء</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-emerald-50">
+                            هنا ترى آخر درجات الأبناء، المهارات التي تحتاج متابعة، وهل الأداء يتحسن أم يحتاج تدخل هادئ.
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setActiveTab('reports')}
+                        className="rounded-xl bg-white px-5 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                    >
+                        فتح التقرير التفصيلي
+                    </button>
+                </div>
+            </div>
 
-    if (user.role !== Role.PARENT) return null;
+            {data.isLoading ? <ParentLoadingState /> : data.loadError ? <ParentErrorState message={data.loadError} /> : null}
 
-    const linkedStudentIds = new Set(user.linkedStudentIds || []);
-    const linkedStudents = users.filter((item) => item.role === Role.STUDENT && linkedStudentIds.has(item.id));
-    const distinctStudentNames = Array.from(
-        new Set(
-            scopedResults
-                .map((result) => result.studentName || result.studentEmail || result.userId || result.studentId)
-                .filter(Boolean) as string[]
-        )
+            {!data.isLoading && !data.loadError ? (
+                data.scopedResults.length === 0 ? (
+                    <ParentEmptyState />
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">الأبناء المرتبطون</div>
+                                <div className="mt-2 text-3xl font-black text-gray-900">{data.childrenCount}</div>
+                            </Card>
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">اختبارات مرصودة</div>
+                                <div className="mt-2 text-3xl font-black text-blue-700">{data.scopedResults.length}</div>
+                            </Card>
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">متوسط الأداء</div>
+                                <div className="mt-2 text-3xl font-black text-emerald-700">{data.averageScore}%</div>
+                            </Card>
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">اتجاه آخر المحاولات</div>
+                                <div className={`mt-2 text-3xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                                    {trend > 0 ? '+' : ''}{trend}%
+                                </div>
+                            </Card>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <Card className="p-5">
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">الأبناء</h3>
+                                    <button onClick={() => setActiveTab('parent-results')} className="text-sm font-bold text-emerald-700 hover:underline">
+                                        كل النتائج
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.childCards.map((child) => (
+                                        <div key={child.id} className="rounded-2xl border border-gray-100 p-4">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="flex min-w-0 items-center gap-3">
+                                                    <img src={child.avatar} alt={child.name} className="h-11 w-11 rounded-full object-cover" />
+                                                    <div className="min-w-0">
+                                                        <div className="truncate font-black text-gray-900">{child.name}</div>
+                                                        <div className="text-xs text-gray-500">{child.results} محاولة مرصودة</div>
+                                                    </div>
+                                                </div>
+                                                <div className={`rounded-xl border px-3 py-2 text-sm font-black ${scoreTone(child.average)}`}>
+                                                    {child.average}%
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
+                                                <div className="rounded-xl bg-gray-50 p-3 text-gray-600">آخر اختبار: {child.latestResult?.quizTitle || 'لا يوجد'}</div>
+                                                <div className="rounded-xl bg-amber-50 p-3 text-amber-700">مهارات تحتاج متابعة: {child.weakCount}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Card>
+
+                            <Card className="p-5">
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">أولويات هذا الأسبوع</h3>
+                                    <button onClick={() => setActiveTab('parent-skills')} className="text-sm font-bold text-emerald-700 hover:underline">
+                                        كل المهارات
+                                    </button>
+                                </div>
+                                {data.priorityWeakSkills.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {data.priorityWeakSkills.map((skill) => (
+                                            <div key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="rounded-2xl bg-amber-50 p-4">
+                                                <div className="flex items-center justify-between gap-4">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate font-black text-gray-900">{skill.skill}</div>
+                                                        <div className="mt-1 text-xs text-gray-500">{skill.studentName} - {skill.quizTitle}</div>
+                                                    </div>
+                                                    <div className="font-black text-amber-700">{Math.round(skill.mastery)}%</div>
+                                                </div>
+                                                <div className="mt-2 text-xs font-bold text-amber-700">تابعها بمراجعة قصيرة ثم تدريب خفيف، بدون ضغط زائد.</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
+                                        لا توجد نقاط ضعف واضحة في آخر النتائج. استمر في المتابعة الهادئة.
+                                    </div>
+                                )}
+                            </Card>
+                        </div>
+                    </>
+                )
+            ) : null}
+        </div>
     );
-    const childrenCount = Math.max(linkedStudents.length, distinctStudentNames.length);
-    const latestResults = scopedResults.slice(0, 4);
-    const weakSkills = scopedResults
-        .flatMap((result) =>
-            (result.skillsAnalysis || [])
-                .filter((skill) => skill.mastery < 75 || skill.status === 'weak')
-                .map((skill) => ({
-                    key: skill.skillId || `${skill.subjectId || ''}:${skill.sectionId || ''}:${skill.skill}`,
-                    skill: skill.skill,
-                    mastery: skill.mastery,
-                    studentName: result.studentName || result.studentEmail || 'طالب مرتبط',
-                }))
-        )
-        .sort((a, b) => a.mastery - b.mastery)
-        .slice(0, 5);
-    const averageScore = scopedResults.length
-        ? Math.round(scopedResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.length)
-        : 0;
+};
+
+const ParentResultsTab = () => {
+    const data = useParentScopedResults();
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div>
+                <h2 className="text-2xl font-black text-gray-900">نتائج الأبناء</h2>
+                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار.</p>
+            </div>
+            <div className="space-y-3">
+                {data.scopedResults.map((result, index) => (
+                    <Card key={result.id || `${result.quizId}-${index}`} className="p-4">
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <div className="text-lg font-black text-gray-900">{result.quizTitle}</div>
+                                <div className="mt-1 text-sm text-gray-500">{getStudentLabel(result)} - {formatParentDate(result)}</div>
+                            </div>
+                            <div className={`self-start rounded-2xl border px-4 py-3 text-xl font-black md:self-auto ${scoreTone(Number(result.score) || 0)}`}>
+                                {Math.round(Number(result.score) || 0)}%
+                            </div>
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-gray-600 sm:grid-cols-4">
+                            <div className="rounded-xl bg-gray-50 p-3">الأسئلة: {result.totalQuestions || 0}</div>
+                            <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">صحيح: {result.correctAnswers || 0}</div>
+                            <div className="rounded-xl bg-rose-50 p-3 text-rose-700">خطأ: {result.wrongAnswers || 0}</div>
+                            <div className="rounded-xl bg-blue-50 p-3 text-blue-700">الوقت: {result.timeSpent || 'غير محدد'}</div>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const ParentSkillsTab = () => {
+    const data = useParentScopedResults();
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div>
+                <h2 className="text-2xl font-black text-gray-900">المهارات التي تحتاج متابعة</h2>
+                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية.</p>
+            </div>
+            {data.weakSkills.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {data.weakSkills.map((skill) => (
+                        <Card key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="p-5">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="min-w-0">
+                                    <h3 className="truncate text-lg font-black text-gray-900">{skill.skill}</h3>
+                                    <p className="mt-1 text-sm text-gray-500">{skill.studentName}</p>
+                                    <p className="mt-1 text-xs text-gray-400">{skill.quizTitle}</p>
+                                </div>
+                                <div className={`rounded-xl border px-3 py-2 text-sm font-black ${scoreTone(skill.mastery)}`}>
+                                    {Math.round(skill.mastery)}%
+                                </div>
+                            </div>
+                            <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-7 text-slate-600">
+                                خطة متابعة مقترحة: مراجعة شرح قصير، حل 5 أسئلة على نفس المهارة، ثم إعادة محاولة صغيرة بعد يوم.
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <Card className="p-8 text-center">
+                    <CheckCircle size={42} className="mx-auto mb-4 text-emerald-500" />
+                    <h3 className="text-xl font-black text-gray-900">الأداء مستقر حاليًا</h3>
+                    <p className="mt-2 text-sm text-gray-500">لا توجد مهارات ضعيفة واضحة في النتائج الحالية.</p>
+                </Card>
+            )}
+        </div>
+    );
+};
+
+const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
+    const data = useParentScopedResults();
+    const trend = data.lastThreeAverage - data.olderThreeAverage;
+
+    if (data.scopedResults.length === 0 && !data.isLoading && !data.loadError) return null;
 
     return (
         <section className="rounded-3xl border border-emerald-100 bg-white p-5 shadow-sm">
@@ -635,77 +998,24 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
                 </button>
             </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-4">
                 <div className="rounded-2xl bg-emerald-50 p-4">
                     <div className="text-xs font-bold text-emerald-700">الأبناء المرتبطون</div>
-                    <div className="mt-2 text-2xl font-black text-emerald-800">{childrenCount}</div>
+                    <div className="mt-2 text-2xl font-black text-emerald-800">{data.childrenCount}</div>
                 </div>
                 <div className="rounded-2xl bg-blue-50 p-4">
                     <div className="text-xs font-bold text-blue-700">اختبارات مرصودة</div>
-                    <div className="mt-2 text-2xl font-black text-blue-800">{scopedResults.length}</div>
+                    <div className="mt-2 text-2xl font-black text-blue-800">{data.scopedResults.length}</div>
                 </div>
                 <div className="rounded-2xl bg-amber-50 p-4">
                     <div className="text-xs font-bold text-amber-700">متوسط الأداء</div>
-                    <div className="mt-2 text-2xl font-black text-amber-800">{averageScore}%</div>
+                    <div className="mt-2 text-2xl font-black text-amber-800">{data.averageScore}%</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-4">
+                    <div className="text-xs font-bold text-slate-700">الاتجاه</div>
+                    <div className={`mt-2 text-2xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>{trend > 0 ? '+' : ''}{trend}%</div>
                 </div>
             </div>
-
-            {isLoading ? (
-                <div className="mt-5 flex items-center justify-center rounded-2xl border border-dashed border-gray-200 p-6 text-sm font-bold text-gray-500">
-                    <Loader2 size={18} className="ml-2 animate-spin text-emerald-600" />
-                    جاري تحميل متابعة الأبناء...
-                </div>
-            ) : loadError ? (
-                <div className="mt-5 rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm font-bold text-rose-700">
-                    {loadError}
-                </div>
-            ) : scopedResults.length === 0 ? (
-                <div className="mt-5 rounded-2xl border border-dashed border-gray-200 p-5 text-sm leading-7 text-gray-500">
-                    لا توجد نتائج ظاهرة لحساب ولي الأمر بعد. تأكد من ربط الطالب بولي الأمر من إدارة المستخدمين، وبعد أول اختبار ستظهر النتائج هنا تلقائيًا.
-                </div>
-            ) : (
-                <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    <div className="rounded-2xl border border-gray-100 p-4">
-                        <h4 className="mb-3 font-black text-gray-900">آخر الاختبارات</h4>
-                        <div className="space-y-3">
-                            {latestResults.map((result, index) => (
-                                <div key={result.id || `${result.quizId}-${index}`} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
-                                    <div>
-                                        <div className="font-bold text-gray-900">{result.quizTitle}</div>
-                                        <div className="mt-1 text-xs text-gray-500">{result.studentName || result.studentEmail || 'طالب مرتبط'}</div>
-                                    </div>
-                                    <div className={`text-lg font-black ${result.score < 60 ? 'text-rose-600' : result.score < 80 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                                        {Math.round(result.score)}%
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-gray-100 p-4">
-                        <h4 className="mb-3 font-black text-gray-900">نقاط تحتاج متابعة</h4>
-                        {weakSkills.length > 0 ? (
-                            <div className="space-y-3">
-                                {weakSkills.map((skill) => (
-                                    <div key={`${skill.key}-${skill.studentName}`} className="rounded-xl bg-amber-50 px-4 py-3">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <div className="min-w-0">
-                                                <div className="truncate font-bold text-gray-900">{skill.skill}</div>
-                                                <div className="mt-1 text-xs text-gray-500">{skill.studentName}</div>
-                                            </div>
-                                            <div className="font-black text-amber-700">{Math.round(skill.mastery)}%</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="rounded-xl bg-emerald-50 p-4 text-sm font-bold text-emerald-700">
-                                لا توجد نقاط ضعف واضحة في النتائج الأخيرة.
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
         </section>
     );
 };
