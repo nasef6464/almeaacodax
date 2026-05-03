@@ -468,6 +468,48 @@ const Plan: React.FC = () => {
       }),
     ].join('\n');
   }, [smartSkillPlan]);
+  const latestResult = examResults[0] || null;
+  const primarySmartSkill = smartSkillPlan[0] || null;
+  const weeklyRemediationJourney = useMemo(() => {
+    const skillTitle = primarySmartSkill?.skillName || 'أضعف مهارة ظهرت في آخر اختبار';
+
+    return [
+      {
+        title: 'اليوم',
+        label: 'راجع النتيجة',
+        body: latestResult
+          ? `ابدأ من نتيجة ${displayText(latestResult.quizTitle, 'آخر اختبار')} وحدد موضع الخطأ.`
+          : 'حل اختبارًا تشخيصيًا أولًا حتى تظهر لك نقطة البداية.',
+        to: latestResult ? '/results' : '/quizzes',
+        tone: 'border-emerald-100 bg-emerald-50 text-emerald-800',
+      },
+      {
+        title: 'اليوم 1-2',
+        label: 'افهم المهارة',
+        body: primarySmartSkill?.lesson
+          ? `راجع شرح ${primarySmartSkill.lesson.title}.`
+          : `ابدأ بشرح قصير عن ${skillTitle}.`,
+        to: primarySmartSkill?.lesson?.link || '/reports',
+        tone: 'border-indigo-100 bg-indigo-50 text-indigo-800',
+      },
+      {
+        title: 'اليوم 3-4',
+        label: 'تدرب وقِس',
+        body: primarySmartSkill?.quiz
+          ? `حل ${primarySmartSkill.quiz.title} ثم راجع الأخطاء.`
+          : 'حل تدريبًا قصيرًا ثم أعد القياس على نفس المهارة.',
+        to: primarySmartSkill?.quiz?.link || '/quizzes',
+        tone: 'border-amber-100 bg-amber-50 text-amber-800',
+      },
+      {
+        title: 'نهاية الأسبوع',
+        label: 'تابع التحسن',
+        body: 'افتح التقرير وشاهد هل ارتفعت المهارة بعد الشرح والتدريب.',
+        to: '/reports',
+        tone: 'border-slate-200 bg-slate-50 text-slate-800',
+      },
+    ];
+  }, [latestResult, primarySmartSkill]);
 
   const currentPlan = activePlan;
 
@@ -1081,6 +1123,38 @@ const Plan: React.FC = () => {
               <Share2 size={16} />
               {sharedSmartPlan ? 'تمت المشاركة' : 'مشاركة'}
             </button>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-3xl border border-slate-100 bg-slate-50/70 p-4">
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-base font-black text-gray-900">متابعة أسبوعية بعد آخر نتيجة</h3>
+              <p className="text-xs font-bold leading-6 text-gray-500">
+                هذه ليست تفاصيل كثيرة؛ هي ترتيب عملي حتى يعرف الطالب ماذا يفعل بعد الاختبار.
+              </p>
+            </div>
+            <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-slate-700">
+              نتيجة ثم شرح ثم تدريب ثم تقرير
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
+            {weeklyRemediationJourney.map((step, index) => (
+              <Link
+                key={step.title}
+                to={step.to}
+                className={`min-h-[126px] rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${step.tone}`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-black text-slate-800">
+                    {index + 1}
+                  </span>
+                  <span className="text-[11px] font-black opacity-75">{step.title}</span>
+                </div>
+                <div className="mt-3 text-sm font-black">{step.label}</div>
+                <p className="mt-1 text-xs font-bold leading-6 opacity-80">{step.body}</p>
+              </Link>
+            ))}
           </div>
         </div>
 
