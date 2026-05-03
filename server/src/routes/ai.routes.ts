@@ -305,7 +305,8 @@ const buildPersonalizedTutorFallback = (message: string, context: StudentAiConte
 };
 
 const resolveProvider = (): AiProvider =>
-  providerPriority().find((provider) => configuredProviders().find((candidate) => candidate.id === provider)?.configured) || "none";
+  providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
+  "none";
 
 const fetchWithTimeout = async (url: string, init: RequestInit) => {
   const controller = new AbortController();
