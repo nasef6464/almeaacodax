@@ -142,7 +142,8 @@ type DashboardTab =
     | 'qa'
     | 'requests'
     | 'parent-results'
-    | 'parent-skills';
+    | 'parent-skills'
+    | 'parent-followup';
 
 const formatParentDate = (result: ScopedQuizResult) => {
     const timestamp = getResultTimestamp(result);
@@ -671,6 +672,7 @@ const Dashboard: React.FC = () => {
         { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
         { id: 'parent-results', label: 'نتائج الأبناء', icon: <FileText size={20} /> },
         { id: 'parent-skills', label: 'المهارات الضعيفة', icon: <Target size={20} /> },
+        { id: 'parent-followup', label: 'خطة المتابعة', icon: <Calendar size={20} /> },
         { id: 'reports', label: 'التقارير التفصيلية', icon: <PieChart size={20} /> },
         { id: 'requests', label: 'طلبات الدفع', icon: <ShoppingCart size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
@@ -694,6 +696,7 @@ const Dashboard: React.FC = () => {
                 case 'overview': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
                 case 'parent-results': return <ParentResultsTab />;
                 case 'parent-skills': return <ParentSkillsTab />;
+                case 'parent-followup': return <ParentFollowUpTab />;
                 case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
                 case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
                 case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
@@ -955,10 +958,10 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveTab('parent-skills')}
+                                    onClick={() => setActiveTab('parent-followup')}
                                     className="self-start rounded-xl bg-slate-900 px-4 py-2 text-sm font-black text-white hover:bg-slate-800"
                                 >
-                                    عرض كل المهارات
+                                    فتح خطة المتابعة
                                 </button>
                             </div>
                             {data.followUpPlan.length > 0 ? (
@@ -1073,6 +1076,148 @@ const ParentSkillsTab = () => {
     );
 };
 
+const ParentFollowUpTab = () => {
+    const data = useParentScopedResults();
+    const [copiedPlan, setCopiedPlan] = useState(false);
+    const urgentChildren = data.childCards.filter((child) => child.average < 70 || child.weakCount >= 3);
+    const stableChildren = data.childCards.filter((child) => child.average >= 80 && child.weakCount === 0);
+    const weeklyPlanText = [
+        'خطة متابعة ولي الأمر:',
+        ...data.followUpPlan.map((item) => `${item.day}: ${item.studentName} - ${item.skill} (${Math.round(item.mastery)}%). ${item.action} ${item.check}`),
+        data.coachMessage ? `ملاحظة عامة: ${data.coachMessage}` : '',
+    ].filter(Boolean).join('\n');
+
+    const copyWeeklyPlan = async () => {
+        try {
+            await navigator.clipboard?.writeText(weeklyPlanText);
+            setCopiedPlan(true);
+            window.setTimeout(() => setCopiedPlan(false), 1800);
+        } catch {
+            setCopiedPlan(false);
+        }
+    };
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <div className="text-sm font-bold text-emerald-600">خطة ولي الأمر</div>
+                        <h2 className="mt-2 text-2xl font-black text-gray-900">متابعة أسبوعية بدون ضغط</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-gray-500">
+                            هذه الصفحة تحول النتائج والمهارات الضعيفة إلى خطوات متابعة بسيطة تستطيع تنفيذها في البيت.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => void copyWeeklyPlan()}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        <Copy size={16} />
+                        {copiedPlan ? 'تم نسخ الخطة' : 'نسخ خطة المتابعة'}
+                    </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">يحتاجون متابعة قريبة</div>
+                    <div className="mt-2 text-3xl font-black text-rose-600">{urgentChildren.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">متوسط أقل من 70% أو ثلاث مهارات ضعيفة فأكثر.</p>
+                </Card>
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">أداء مستقر</div>
+                    <div className="mt-2 text-3xl font-black text-emerald-700">{stableChildren.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">متوسط 80% فأكثر ولا توجد مهارات ضعيفة واضحة.</p>
+                </Card>
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">خطوات هذا الأسبوع</div>
+                    <div className="mt-2 text-3xl font-black text-indigo-700">{data.followUpPlan.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">كل خطوة قصيرة ومحددة بعلامة تحقق واضحة.</p>
+                </Card>
+            </div>
+
+            <Card className="p-5">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h3 className="text-lg font-black text-gray-900">جدول 3 أيام</h3>
+                        <p className="mt-1 text-sm text-gray-500">نفذ خطوة واحدة فقط في اليوم، والهدف هو تحسين عادة المراجعة لا الضغط.</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                        مناسب لولي الأمر
+                    </span>
+                </div>
+
+                {data.followUpPlan.length > 0 ? (
+                    <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                        {data.followUpPlan.map((item) => (
+                            <div key={item.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-5">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
+                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                        {Math.round(item.mastery)}%
+                                    </span>
+                                </div>
+                                <div className="mt-4 text-sm font-bold text-gray-500">{item.studentName}</div>
+                                <h4 className="mt-1 text-lg font-black leading-7 text-gray-900">{item.skill}</h4>
+                                <p className="mt-3 text-sm leading-7 text-gray-600">{item.action}</p>
+                                <div className="mt-4 rounded-xl bg-white p-3 text-xs font-bold leading-6 text-emerald-700">{item.check}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-5 rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
+                        لا توجد خطة علاجية الآن لأن النتائج الحالية لا تظهر ضعفًا واضحًا.
+                    </div>
+                )}
+            </Card>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card className="p-5">
+                    <h3 className="text-lg font-black text-gray-900">تنبيهات تحتاج انتباه</h3>
+                    <div className="mt-4 space-y-3">
+                        {urgentChildren.length > 0 ? urgentChildren.map((child) => (
+                            <div key={child.id} className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="font-black text-gray-900">{child.name}</div>
+                                    <div className="rounded-full bg-white px-3 py-1 text-xs font-black text-rose-700">{child.average}%</div>
+                                </div>
+                                <p className="mt-2 text-sm leading-6 text-rose-700">
+                                    ابدأ معه بجلسة قصيرة، وركز على مهارة واحدة فقط من القائمة بدل مراجعة كل شيء مرة واحدة.
+                                </p>
+                            </div>
+                        )) : (
+                            <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                لا توجد تنبيهات عاجلة الآن. المتابعة الخفيفة كافية.
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                <Card className="p-5">
+                    <h3 className="text-lg font-black text-gray-900">أسئلة تسألها لابنك</h3>
+                    <div className="mt-4 space-y-3">
+                        {[
+                            'ما السؤال الذي كان أصعب شيء عليك اليوم؟',
+                            'ما المهارة التي تريد أن نراجعها في 10 دقائق فقط؟',
+                            'هل الخطأ كان بسبب فهم الفكرة أم بسبب السرعة؟',
+                            'اشرح لي الحل بصوتك كأنك أنت المعلم.',
+                        ].map((question) => (
+                            <div key={question} className="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm font-bold leading-7 text-gray-700">
+                                {question}
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
 const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
     const data = useParentScopedResults();
     const trend = data.lastThreeAverage - data.olderThreeAverage;
@@ -1089,10 +1234,10 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
                     </p>
                 </div>
                 <button
-                    onClick={() => setActiveTab('reports')}
+                    onClick={() => setActiveTab('parent-followup')}
                     className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
                 >
-                    فتح التقارير
+                    فتح خطة المتابعة
                 </button>
             </div>
 
