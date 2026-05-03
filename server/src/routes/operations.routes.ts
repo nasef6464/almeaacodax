@@ -268,7 +268,7 @@ operationsRouter.get("/delivery-readiness", requireAuth, requireRole(["admin"]),
       {
         id: "client-errors",
         title: "أخطاء الواجهة",
-        status: unresolvedClientErrors === 0 && clientErrors24h === 0 ? "pass" : clientErrors24h > 0 ? "fail" : "warning",
+        status: unresolvedClientErrors > 0 ? "fail" : clientErrors24h > 0 ? "warning" : "pass",
         detail: `أخطاء آخر 24 ساعة: ${clientErrors24h}، غير مغلقة: ${unresolvedClientErrors}.`,
         action: "راجع سجل أخطاء الواجهة داخل مركز القيادة عند ظهور أي صفحة بيضاء أو خطأ فيديو.",
         routeHint: "#/admin-dashboard?tab=monitoring",
