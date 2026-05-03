@@ -564,6 +564,21 @@ export const api = {
         samples?: string[];
       }>;
     }>("/operations/audit", { token }),
+  runOperationsRepair: (
+    payload: { action: "hide-empty-published-quizzes" | "hide-empty-active-paths"; apply?: boolean },
+    token?: string | null,
+  ) =>
+    request<{
+      action: string;
+      applied: boolean;
+      affected: number;
+      message: string;
+      samples: Array<{ id: string; title: string }>;
+    }>("/operations/repair", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",

@@ -57,6 +57,8 @@ type AuditCheck = {
     samples?: string[];
 };
 
+type RepairAction = 'hide-empty-published-quizzes' | 'hide-empty-active-paths';
+
 type OperationsAudit = {
     checkedAt: string;
     score: number;
@@ -137,6 +139,8 @@ export const OperationsCommandCenter: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
+    const [repairingAction, setRepairingAction] = useState<RepairAction | null>(null);
+    const [repairMessage, setRepairMessage] = useState<string | null>(null);
 
     const loadData = async () => {
         setLoading(true);
@@ -189,6 +193,39 @@ export const OperationsCommandCenter: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
+    const repairActionByCheckId: Partial<Record<string, { action: RepairAction; label: string; confirm: string }>> = {
+        'published-quizzes-without-questions': {
+            action: 'hide-empty-published-quizzes',
+            label: 'إخفاء الاختبارات الفارغة',
+            confirm: 'سيتم إخفاء الاختبارات المنشورة التي لا تحتوي أسئلة عن الطلاب. هل تريد المتابعة؟',
+        },
+        'active-paths-without-subjects': {
+            action: 'hide-empty-active-paths',
+            label: 'إخفاء المسارات الفارغة',
+            confirm: 'سيتم إخفاء المسارات النشطة التي لا تحتوي مواد من الصفحة الرئيسية والقائمة. هل تريد المتابعة؟',
+        },
+    };
+
+    const runRepair = async (action: RepairAction, confirmMessage: string) => {
+        if (!window.confirm(confirmMessage)) {
+            return;
+        }
+
+        setRepairingAction(action);
+        setRepairMessage(null);
+
+        try {
+            const result = await api.runOperationsRepair({ action, apply: true });
+            setRepairMessage(`${result.message} العدد المتأثر: ${formatNumber(result.affected)}.`);
+            await loadData();
+        } catch (repairError) {
+            console.error('Failed to run operations repair', repairError);
+            setRepairMessage(repairError instanceof Error ? repairError.message : 'تعذر تنفيذ الإصلاح الآن.');
+        } finally {
+            setRepairingAction(null);
+        }
+    };
+
     return (
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
@@ -228,6 +265,12 @@ export const OperationsCommandCenter: React.FC = () => {
             {error && (
                 <div className="p-4 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm">
                     {error}
+                </div>
+            )}
+
+            {repairMessage && (
+                <div className="p-4 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 text-sm">
+                    {repairMessage}
                 </div>
             )}
 
@@ -313,6 +356,7 @@ export const OperationsCommandCenter: React.FC = () => {
                         )}
                         {filteredChecks.map((item) => {
                             const style = severityStyles[item.severity];
+                            const repair = repairActionByCheckId[item.id];
                             return (
                                 <div key={item.id} className="p-5 hover:bg-gray-50/70 transition-colors">
                                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
@@ -352,6 +396,17 @@ export const OperationsCommandCenter: React.FC = () => {
                                         <div className="lg:text-left min-w-[120px]">
                                             <p className="text-2xl font-black text-gray-900">{formatNumber(item.count)}</p>
                                             <p className="text-xs text-gray-500">المسؤول: {ownerLabels[item.owner] || item.owner}</p>
+                                            {repair && item.count > 0 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => runRepair(repair.action, repair.confirm)}
+                                                    disabled={repairingAction === repair.action}
+                                                    className="mt-3 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-900 text-white text-xs font-bold hover:bg-gray-800 disabled:opacity-60"
+                                                >
+                                                    {repairingAction === repair.action ? <RefreshCw size={14} className="animate-spin" /> : <Wrench size={14} />}
+                                                    {repair.label}
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

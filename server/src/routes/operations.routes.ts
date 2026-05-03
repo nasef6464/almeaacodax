@@ -9,6 +9,7 @@ import { QuizModel } from "../models/Quiz.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
+import { runOperationsRepair, type OperationsRepairAction } from "../services/operationsRepair.js";
 
 export const operationsRouter = Router();
 
@@ -173,6 +174,22 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
 operationsRouter.get("/audit", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
     res.json(await createOperationsAudit());
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.post("/repair", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    const action = String(req.body?.action || "") as OperationsRepairAction;
+    const apply = req.body?.apply === true;
+    if (!["hide-empty-published-quizzes", "hide-empty-active-paths"].includes(action)) {
+      return res.status(400).json({
+        message: "Unsupported repair action",
+      });
+    }
+
+    res.json(await runOperationsRepair(action, apply));
   } catch (error) {
     next(error);
   }
