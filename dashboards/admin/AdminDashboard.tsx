@@ -62,6 +62,42 @@ type AiStatus = {
     timeoutMs: number;
 };
 
+type OperationalStatus = {
+    checkedAt: string;
+    database: { status: string; name: string };
+    counts: Record<string, number>;
+    visible: Record<string, number>;
+    learningReadiness: {
+        score: number;
+        usableSpaces: number;
+        emptySpaces: number;
+        spaces: Array<{
+            pathId: string;
+            subjectId: string;
+            subjectName: string;
+            total: number;
+            topics: number;
+            lessons: number;
+            quizzes: number;
+            courses: number;
+            library: number;
+        }>;
+    };
+    issues: {
+        missingTopicSubjects: number;
+        missingLessonRefs: number;
+        missingQuizRefs: number;
+        unplayableLinkedLessons: number;
+    };
+    deployment: {
+        api: string;
+        database: string;
+        frontend: string;
+        nodeEnv: string;
+        clientUrl: string;
+    };
+};
+
 export const AdminDashboard: React.FC = () => {
     const {
         user,
@@ -83,6 +119,8 @@ export const AdminDashboard: React.FC = () => {
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
     const [aiStatusError, setAiStatusError] = useState<string | null>(null);
+    const [operationalStatus, setOperationalStatus] = useState<OperationalStatus | null>(null);
+    const [operationalStatusError, setOperationalStatusError] = useState<string | null>(null);
 
     const loadAiStatus = async () => {
         if (user.role !== Role.ADMIN) {
@@ -91,13 +129,19 @@ export const AdminDashboard: React.FC = () => {
 
         setAiStatusLoading(true);
         setAiStatusError(null);
+        setOperationalStatusError(null);
 
         try {
-            const response = await api.aiStatus();
-            setAiStatus(response as AiStatus);
+            const [aiResponse, operationsResponse] = await Promise.all([
+                api.aiStatus(),
+                api.getOperationalStatus(),
+            ]);
+            setAiStatus(aiResponse as AiStatus);
+            setOperationalStatus(operationsResponse as OperationalStatus);
         } catch (error) {
             console.error('Failed to load AI status', error);
             setAiStatusError('تعذر قراءة حالة الذكاء الاصطناعي الآن. تأكد من تشغيل الخادم ثم أعد المحاولة.');
+            setOperationalStatusError('تعذر قراءة حالة التشغيل من الخادم الآن.');
         } finally {
             setAiStatusLoading(false);
         }
@@ -957,6 +1001,98 @@ export const AdminDashboard: React.FC = () => {
                 >
                     {aiStatusLoading ? 'جاري التحديث...' : 'تحديث الحالة'}
                 </button>
+            </div>
+
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <h2 className="text-xl font-black text-gray-900">حالة التشغيل الحية</h2>
+                        <p className="mt-1 text-sm leading-6 text-gray-500">
+                            فحص مباشر من الخادم لقاعدة البيانات، المحتوى المرئي للطالب، وروابط التعلم الأساسية.
+                        </p>
+                    </div>
+                    <div className={`rounded-2xl px-5 py-3 text-center ${
+                        (operationalStatus?.learningReadiness.score || 0) >= 85
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : (operationalStatus?.learningReadiness.score || 0) >= 60
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-rose-50 text-rose-700'
+                    }`}>
+                        <div className="text-xs font-bold">جاهزية التعلم</div>
+                        <div className="mt-1 text-2xl font-black">
+                            {operationalStatus ? `${operationalStatus.learningReadiness.score}%` : '...'}
+                        </div>
+                    </div>
+                </div>
+
+                {operationalStatusError ? (
+                    <div className="mt-5 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
+                        {operationalStatusError}
+                    </div>
+                ) : null}
+
+                <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {[
+                        {
+                            title: 'قاعدة البيانات',
+                            value: operationalStatus?.database.status === 'connected' ? 'متصلة' : 'غير متصلة',
+                            hint: operationalStatus?.database.name || 'غير محدد',
+                            ok: operationalStatus?.database.status === 'connected',
+                        },
+                        {
+                            title: 'مساحات ظاهرة',
+                            value: `${operationalStatus?.learningReadiness.usableSpaces || 0}`,
+                            hint: `فارغة: ${operationalStatus?.learningReadiness.emptySpaces || 0}`,
+                            ok: (operationalStatus?.learningReadiness.usableSpaces || 0) > 0 && (operationalStatus?.learningReadiness.emptySpaces || 0) === 0,
+                        },
+                        {
+                            title: 'روابط الدروس',
+                            value: `${operationalStatus?.issues.missingLessonRefs || 0}`,
+                            hint: `دروس غير قابلة للتشغيل: ${operationalStatus?.issues.unplayableLinkedLessons || 0}`,
+                            ok: (operationalStatus?.issues.missingLessonRefs || 0) === 0 && (operationalStatus?.issues.unplayableLinkedLessons || 0) === 0,
+                        },
+                        {
+                            title: 'النشر',
+                            value: operationalStatus?.deployment.api || 'Render',
+                            hint: `${operationalStatus?.deployment.frontend || 'Vercel'} + ${operationalStatus?.deployment.database || 'Atlas'}`,
+                            ok: true,
+                        },
+                    ].map((item) => (
+                        <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                            <div className="flex items-center justify-between gap-3">
+                                <span className={`rounded-full px-2.5 py-1 text-xs font-black ${
+                                    item.ok ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+                                }`}>
+                                    {item.ok ? 'سليم' : 'يحتاج مراجعة'}
+                                </span>
+                                <div className="text-sm font-bold text-gray-500">{item.title}</div>
+                            </div>
+                            <div className="mt-3 text-2xl font-black text-gray-900">{item.value}</div>
+                            <div className="mt-2 text-xs leading-5 text-gray-500">{item.hint}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {operationalStatus?.learningReadiness.spaces?.length ? (
+                    <div className="mt-5 overflow-hidden rounded-2xl border border-gray-100">
+                        <div className="grid grid-cols-6 bg-gray-50 px-4 py-3 text-xs font-black text-gray-500">
+                            <div className="col-span-2 text-right">المادة</div>
+                            <div className="text-center">موضوعات</div>
+                            <div className="text-center">دروس</div>
+                            <div className="text-center">اختبارات</div>
+                            <div className="text-center">ملفات</div>
+                        </div>
+                        {operationalStatus.learningReadiness.spaces.map((space) => (
+                            <div key={`${space.pathId}-${space.subjectId}`} className="grid grid-cols-6 border-t border-gray-100 px-4 py-3 text-sm">
+                                <div className="col-span-2 text-right font-bold text-gray-800">{space.subjectName}</div>
+                                <div className="text-center text-gray-600">{space.topics}</div>
+                                <div className="text-center text-gray-600">{space.lessons}</div>
+                                <div className="text-center text-gray-600">{space.quizzes}</div>
+                                <div className="text-center text-gray-600">{space.library}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

@@ -482,6 +482,42 @@ export const api = {
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
+  getOperationalStatus: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      database: { status: string; name: string };
+      counts: Record<string, number>;
+      visible: Record<string, number>;
+      learningReadiness: {
+        score: number;
+        usableSpaces: number;
+        emptySpaces: number;
+        spaces: Array<{
+          pathId: string;
+          subjectId: string;
+          subjectName: string;
+          total: number;
+          topics: number;
+          lessons: number;
+          quizzes: number;
+          courses: number;
+          library: number;
+        }>;
+      };
+      issues: {
+        missingTopicSubjects: number;
+        missingLessonRefs: number;
+        missingQuizRefs: number;
+        unplayableLinkedLessons: number;
+      };
+      deployment: {
+        api: string;
+        database: string;
+        frontend: string;
+        nodeEnv: string;
+        clientUrl: string;
+      };
+    }>("/operations/status", { token }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",
