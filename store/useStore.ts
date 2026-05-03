@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
 import { normalizeIdList } from '../utils/entityIds';
+import { normalizeQuizPlacement } from '../utils/quizPlacement';
 
 const USE_REAL_API =
     (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
@@ -314,7 +315,7 @@ export const useStore = create<AppState>()(
             })),
 
             hydrateQuizzes: (quizzes) => set(() => ({
-                quizzes
+                quizzes: quizzes.map((quiz) => normalizeQuizPlacement(quiz))
             })),
 
             hydrateTaxonomy: (payload) => set((state) => ({
@@ -852,19 +853,25 @@ export const useStore = create<AppState>()(
 
             // Quiz Actions
             addQuiz: (quiz) => {
-                const normalizedQuiz = {
+                const normalizedQuiz = normalizeQuizPlacement({
                     ...quiz,
                     showOnPlatform: typeof quiz.showOnPlatform === 'boolean' ? quiz.showOnPlatform : false,
-                };
+                });
                 api.createQuiz(normalizedQuiz).catch(console.error);
                 set((state) => ({
                     quizzes: [normalizedQuiz, ...state.quizzes]
                 }));
             },
             updateQuiz: (quizId, data) => {
-                api.updateQuiz(quizId, data).catch(console.error);
+                const shouldNormalizePlacement =
+                    'type' in data ||
+                    'placement' in data ||
+                    'showInTraining' in data ||
+                    'showInMock' in data;
+                const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
+                api.updateQuiz(quizId, updatePayload).catch(console.error);
                 set((state) => ({
-                    quizzes: state.quizzes.map(q => q.id === quizId ? { ...q, ...data } : q)
+                    quizzes: state.quizzes.map(q => q.id === quizId ? (shouldNormalizePlacement ? normalizeQuizPlacement({ ...q, ...updatePayload }) : { ...q, ...updatePayload }) : q)
                 }));
             },
             deleteQuiz: (quizId) => {

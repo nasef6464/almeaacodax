@@ -60,6 +60,9 @@ const quizSchema = z.object({
   subjectId: z.string().min(1),
   sectionId: z.string().nullable().optional(),
   type: z.enum(["quiz", "bank"]).default("quiz"),
+  placement: z.enum(["training", "mock", "both"]).optional(),
+  showInTraining: z.boolean().optional(),
+  showInMock: z.boolean().optional(),
   mode: z.enum(["regular", "saher", "central"]).default("regular"),
   settings: z.record(z.any()),
   access: z.record(z.any()),
@@ -80,6 +83,39 @@ const quizSchema = z.object({
   reviewerNotes: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
 });
+
+const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
+  const hasPlacementFields =
+    payload.type !== undefined ||
+    payload.placement !== undefined ||
+    payload.showInTraining !== undefined ||
+    payload.showInMock !== undefined;
+
+  if (!hasPlacementFields) return payload;
+
+  const inferredType = payload.type || fallbackType;
+  const showInTraining =
+    typeof payload.showInTraining === "boolean"
+      ? payload.showInTraining
+      : payload.placement
+        ? payload.placement === "training" || payload.placement === "both"
+        : inferredType === "bank";
+  const showInMock =
+    typeof payload.showInMock === "boolean"
+      ? payload.showInMock
+      : payload.placement
+        ? payload.placement === "mock" || payload.placement === "both"
+        : inferredType !== "bank";
+  const placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+
+  return {
+    ...payload,
+    type: showInTraining && !showInMock ? "bank" : "quiz",
+    placement,
+    showInTraining,
+    showInMock,
+  };
+};
 
 const questionAttemptSchema = z.object({
   questionId: z.string().min(1),
@@ -1185,7 +1221,7 @@ quizRouter.post(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = quizSchema.parse(req.body);
+    const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
     await assertTeacherManagedScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(payload.questionIds);
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
@@ -1355,9 +1391,10 @@ quizRouter.patch(
     const resolvedSkillIds = payload.questionIds
       ? await resolveQuizSkillIds(payload.questionIds)
       : undefined;
+    const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
     const sanitizedPayload = sanitizeWorkflowUpdate(
       {
-        ...payload,
+        ...normalizedPayload,
         ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
       } as Record<string, unknown>,
       req.authUser!,

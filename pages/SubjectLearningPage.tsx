@@ -23,6 +23,7 @@ import { Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
+import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -91,12 +92,12 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const subjectBanks = useMemo(
-    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'bank' && canSeeQuiz(quiz)),
+    () => subjectQuizzes.filter((quiz) => isTrainingQuiz(quiz) && canSeeQuiz(quiz)),
     [subjectQuizzes, isStaffViewer],
   );
 
   const subjectExams = useMemo(
-    () => subjectQuizzes.filter((quiz) => (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz)),
+    () => subjectQuizzes.filter((quiz) => isMockQuiz(quiz) && canSeeQuiz(quiz)),
     [subjectQuizzes, isStaffViewer],
   );
 
@@ -212,7 +213,7 @@ export const SubjectLearningPage: React.FC = () => {
     () =>
       activeTopic
         ? quizzes
-            .filter((quiz) => (activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId)) && (quiz.type || 'quiz') === 'quiz' && canSeeQuiz(quiz))
+            .filter((quiz) => (activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId)) && isTrainingQuiz(quiz) && canSeeQuiz(quiz))
             .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
         : [],
     [activeTopic, isStaffViewer, quizzes],
@@ -240,7 +241,7 @@ export const SubjectLearningPage: React.FC = () => {
             .filter((quiz) => {
               const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
               const notAlreadyAttached = !(activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
-              return canSeeQuiz(quiz) && matchesSection && notAlreadyAttached;
+              return canSeeQuiz(quiz) && isTrainingQuiz(quiz) && matchesSection && notAlreadyAttached;
             })
             .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
             .slice(0, 3)

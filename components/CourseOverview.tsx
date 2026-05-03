@@ -13,6 +13,7 @@ import { PaymentModal } from './PaymentModal';
 import { useStore } from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { openExternalUrl } from '../utils/openExternalUrl';
+import { isMockQuiz } from '../utils/quizPlacement';
 
 interface CourseOverviewProps {
     course: Course;
@@ -45,7 +46,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
         return quizzes
             .filter((quiz) => {
-                if (quiz.isPublished === false || quiz.type === 'bank') {
+                if (quiz.isPublished === false || !isMockQuiz(quiz)) {
                     return false;
                 }
 
@@ -72,7 +73,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
         return quizzes
             .filter((quiz) => {
-                if (quiz.isPublished === false || quiz.type === 'bank' || relatedIds.has(quiz.id)) {
+                if (quiz.isPublished === false || !isMockQuiz(quiz) || relatedIds.has(quiz.id)) {
                     return false;
                 }
 

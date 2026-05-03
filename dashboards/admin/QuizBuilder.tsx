@@ -3,6 +3,7 @@ import { useStore } from '../../store/useStore';
 import { Quiz, Question } from '../../types';
 import { AlertTriangle, Plus, Search, Edit2, Trash2, Save, X, Settings, Link as LinkIcon, Users, FileQuestion, Filter, CheckCircle2, Lock, LockOpen } from 'lucide-react';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
+import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
 
 interface QuizBuilderProps {
   onClose?: () => void;
@@ -15,6 +16,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const { quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [questionSearchTerm, setQuestionSearchTerm] = useState('');
+  const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
+  const [questionSkillFilter, setQuestionSkillFilter] = useState('');
   const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'settings' | 'access'>('info');
   const initialSubject = initialSubjectId ? useStore.getState().subjects.find(subject => subject.id === initialSubjectId) : undefined;
   
@@ -28,7 +32,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       description: '',
       pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
-      type: initialType,
+      ...getQuizPlacementDefaults(initialType),
       mode: 'regular',
       settings: {
         showExplanations: true,
@@ -36,6 +40,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
         maxAttempts: 3,
         passingScore: 60,
         timeLimit: 60,
+        randomizeQuestions: true,
+        showProgressBar: true,
+        requireAnswerBeforeNext: false,
+        allowQuestionReview: true,
+        optionLayout: 'auto',
       },
       access: {
         type: 'free',
@@ -288,6 +297,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       description: '',
       pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
+      ...getQuizPlacementDefaults(initialType),
       mode: 'regular',
       settings: {
         showExplanations: true,
@@ -295,6 +305,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
         maxAttempts: 3,
         passingScore: 60,
         timeLimit: 60,
+        randomizeQuestions: true,
+        showProgressBar: true,
+        requireAnswerBeforeNext: false,
+        allowQuestionReview: true,
+        optionLayout: 'auto',
       },
       access: {
         type: 'free',
@@ -343,7 +358,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     setOperationError('');
     setOperationMessage('');
 
-    const quizPayload = { ...currentQuiz };
+    const quizPayload = normalizeQuizPlacement({ ...currentQuiz }, initialType);
     delete (quizPayload as any).skillIds;
 
     if (currentQuiz.id) {
@@ -379,7 +394,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
 
   const availableQuestions = questions.filter(q =>
     q.subject === currentQuiz.subjectId &&
-    (!currentQuiz.sectionId || q.sectionId === currentQuiz.sectionId)
+    (!currentQuiz.sectionId || q.sectionId === currentQuiz.sectionId) &&
+    (questionDifficultyFilter === 'all' || q.difficulty === questionDifficultyFilter) &&
+    (!questionSkillFilter || (q.skillIds || []).includes(questionSkillFilter)) &&
+    (!questionSearchTerm.trim() || q.text.toLowerCase().includes(questionSearchTerm.trim().toLowerCase()))
   );
   const selectedQuestions = useMemo(
     () => questions.filter(q => currentQuiz.questionIds?.includes(q.id)),
@@ -584,6 +602,30 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       <option value="central">اختبار مركزي موجّه</option>
                     </select>
                   </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">مكان الظهور للطالب</label>
+                    <select
+                      value={getPlacementFromFlags(currentQuiz)}
+                      onChange={(e) => {
+                        const placement = e.target.value as Quiz['placement'];
+                        const showInTraining = placement === 'training' || placement === 'both';
+                        const showInMock = placement === 'mock' || placement === 'both';
+                        setCurrentQuiz(prev => ({
+                          ...prev,
+                          placement,
+                          showInTraining,
+                          showInMock,
+                          type: showInTraining && !showInMock ? 'bank' : 'quiz',
+                        }));
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
+                    >
+                      <option value="training">التدريب فقط</option>
+                      <option value="mock">الاختبارات المحاكية فقط</option>
+                      <option value="both">التدريب والمحاكي</option>
+                    </select>
+                    <p className="mt-1 text-xs text-gray-500">هذا هو الفصل الحقيقي بين تبويب التدريب وتبويب الاختبارات المحاكية.</p>
+                  </div>
                 </div>
 
                 <div>
@@ -725,11 +767,35 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
                   <div className="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
                     <span className="text-sm font-bold text-gray-600">اختر من بنك الأسئلة</span>
-                    <input 
-                      type="text" 
-                      placeholder="بحث في الأسئلة..." 
-                      className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <select
+                        value={questionDifficultyFilter}
+                        onChange={(e) => setQuestionDifficultyFilter(e.target.value as typeof questionDifficultyFilter)}
+                        className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                        <option value="all">كل الصعوبات</option>
+                        <option value="Easy">سهل</option>
+                        <option value="Medium">متوسط</option>
+                        <option value="Hard">صعب</option>
+                      </select>
+                      <select
+                        value={questionSkillFilter}
+                        onChange={(e) => setQuestionSkillFilter(e.target.value)}
+                        className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                        <option value="">كل المهارات</option>
+                        {availableQuizSubSkills.map(skill => (
+                          <option key={skill.id} value={skill.id}>{skill.name}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="بحث في الأسئلة..."
+                        value={questionSearchTerm}
+                        onChange={(e) => setQuestionSearchTerm(e.target.value)}
+                        className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
                   </div>
                   <div className="max-h-96 overflow-y-auto divide-y divide-gray-100">
                     {availableQuestions.length === 0 ? (
@@ -808,9 +874,70 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       min="1"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">طريقة عرض الاختيارات</label>
+                    <select
+                      value={currentQuiz.settings?.optionLayout || 'auto'}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, optionLayout: e.target.value as any } }))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="auto">تلقائي حسب مساحة الشاشة</option>
+                      <option value="two_columns">اختياران في كل صف</option>
+                      <option value="horizontal">أفقي على الشاشات الواسعة</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">على الجوال ستظهر الاختيارات تحت بعض للحفاظ على وضوح السؤال.</p>
+                  </div>
                 </div>
 
                 <div className="space-y-4 pt-4 border-t border-gray-100">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.randomizeQuestions !== false}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, randomizeQuestions: e.target.checked } }))}
+                      className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">خلط ترتيب الأسئلة للطالب</span>
+                      <span className="block text-xs text-gray-500">يقلل تكرار نفس ترتيب الاختبار بين الطلاب.</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.showProgressBar !== false}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, showProgressBar: e.target.checked } }))}
+                      className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">إظهار شريط تقدم الاختبار</span>
+                      <span className="block text-xs text-gray-500">يبقي الطالب عارف هو فين داخل الرحلة بدون تشتيت.</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.requireAnswerBeforeNext === true}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, requireAnswerBeforeNext: e.target.checked } }))}
+                      className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">منع الانتقال قبل اختيار إجابة</span>
+                      <span className="block text-xs text-gray-500">مفيد للتدريبات القصيرة، ويمكن تركه مغلقًا للاختبارات المحاكية.</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.allowQuestionReview !== false}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, allowQuestionReview: e.target.checked } }))}
+                      className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">تفعيل زر المراجعة للطالب</span>
+                      <span className="block text-xs text-gray-500">يسمح للطالب بتعليم السؤال للمراجعة لاحقًا.</span>
+                    </div>
+                  </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input 
                       type="checkbox" 

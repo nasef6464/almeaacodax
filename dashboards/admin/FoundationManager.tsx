@@ -3,6 +3,7 @@ import { useStore } from '../../store/useStore';
 import { Topic, Lesson, Quiz } from '../../types';
 import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { sanitizeVideoUrl } from '../../utils/videoLinks';
+import { isTrainingQuiz } from '../../utils/quizPlacement';
 
 interface FoundationManagerProps {
   subjectId: string;
@@ -35,7 +36,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     .filter((quiz) => {
       const matchesSubject = quiz.subjectId === subjectId;
       const matchesPath = currentSubject?.pathId ? quiz.pathId === currentSubject.pathId : true;
-      return matchesSubject && matchesPath && quiz.type === 'quiz';
+      return matchesSubject && matchesPath && isTrainingQuiz(quiz);
     })
     .sort((a, b) => a.title.localeCompare(b.title, 'ar'));
   const foundationOverview = {
@@ -140,6 +141,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           sectionId: quiz.sectionId || topic.sectionId,
           showOnPlatform: true,
           isPublished: true,
+          type: 'bank',
+          placement: 'training',
+          showInTraining: true,
+          showInMock: false,
           approvalStatus: 'approved',
           approvedAt: quiz.approvedAt || Date.now(),
         });

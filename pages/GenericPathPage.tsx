@@ -6,6 +6,7 @@ import { CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
+import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -260,13 +261,13 @@ export const GenericPathPage: React.FC = () => {
             {
                 label: 'تدريبات',
                 count: shouldCount('banks')
-                    ? quizzes.filter((quiz) => quiz.type === 'bank' && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    ? quizzes.filter((quiz) => isTrainingQuiz(quiz) && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
                     : 0,
             },
             {
                 label: 'اختبارات',
                 count: shouldCount('tests')
-                    ? quizzes.filter((quiz) => quiz.type !== 'bank' && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    ? quizzes.filter((quiz) => isMockQuiz(quiz) && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
                     : 0,
             },
             {
@@ -293,8 +294,8 @@ export const GenericPathPage: React.FC = () => {
         const visibleCounts = {
             courses: courses.filter((course) => !course.isPackage && canStudentSeeContent(course) && matchesSubjectScope(course)).length,
             foundation: topics.filter((topic) => canStudentSeeContent(topic) && matchesSubjectScope(topic)).length,
-            banks: quizzes.filter((quiz) => quiz.type === 'bank' && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
-            tests: quizzes.filter((quiz) => quiz.type !== 'bank' && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
+            banks: quizzes.filter((quiz) => isTrainingQuiz(quiz) && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
+            tests: quizzes.filter((quiz) => isMockQuiz(quiz) && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
             library: libraryItems.filter((item) => canStudentSeeContent(item) && matchesSubjectScope(item)).length,
         };
         const unlockedRows = contentAccessRows.filter(({ type }) => hasScopedPackageAccess(type, path.id, subjectId));

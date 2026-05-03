@@ -3,6 +3,7 @@ import { AlertTriangle, ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, D
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
+import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 
 type TransactionRow = {
     id: string;
@@ -356,8 +357,8 @@ export const FinancialManager: React.FC = () => {
             const coverageCounts = {
                 courses: courses.filter((course) => !course.isPackage && hasType('courses') && isInScope(course)).length,
                 foundation: lessons.filter((lesson) => hasType('foundation') && isInScope(lesson)).length,
-                banks: quizzes.filter((quiz) => hasType('banks') && quiz.type === 'bank' && isInScope(quiz)).length,
-                tests: quizzes.filter((quiz) => hasType('tests') && quiz.type !== 'bank' && isInScope(quiz)).length,
+        banks: quizzes.filter((quiz) => hasType('banks') && isTrainingQuiz(quiz) && isInScope(quiz)).length,
+        tests: quizzes.filter((quiz) => hasType('tests') && isMockQuiz(quiz) && isInScope(quiz)).length,
                 library: libraryItems.filter((item) => hasType('library') && isInScope(item)).length,
             };
             const coveredItems = coverageCounts.courses + coverageCounts.foundation + coverageCounts.banks + coverageCounts.tests + coverageCounts.library;
@@ -568,8 +569,8 @@ export const FinancialManager: React.FC = () => {
 
             const scopedCourses = courses.filter((course) => packageCourseIds.has(course.id) || (hasType('courses') && isInScope(course)));
             const scopedLessons = lessons.filter((lesson) => hasType('foundation') && isInScope(lesson));
-            const scopedTraining = quizzes.filter((quiz) => hasType('banks') && quiz.type === 'bank' && isInScope(quiz));
-            const scopedTests = quizzes.filter((quiz) => hasType('tests') && quiz.type !== 'bank' && isInScope(quiz));
+    const scopedTraining = quizzes.filter((quiz) => hasType('banks') && isTrainingQuiz(quiz) && isInScope(quiz));
+    const scopedTests = quizzes.filter((quiz) => hasType('tests') && isMockQuiz(quiz) && isInScope(quiz));
             const scopedLibrary = libraryItems.filter((item) => hasType('library') && isInScope(item));
             const packageCodes = accessCodes.filter((code) => code.packageId === pkg.id);
             const activePackageCodes = packageCodes.filter((code) => code.expiresAt > Date.now());

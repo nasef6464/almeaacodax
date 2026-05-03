@@ -11,6 +11,7 @@ import { useStore } from '../store/useStore';
 import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
+import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 
 interface LearningSectionProps {
     category: string;
@@ -427,7 +428,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
     }, [category, hasFoundationAccess, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
-    let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type === 'bank').map(q => ({
+    let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && isTrainingQuiz(q)).map(q => ({
         id: q.id,
         title: q.title,
         questions: q.questionIds?.length || 0,
@@ -438,7 +439,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         duration: 'غير محدد'
     }));
 
-    let tests = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && q.type !== 'bank').map(q => ({
+    let tests = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && isMockQuiz(q)).map(q => ({
         id: q.id,
         title: q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,

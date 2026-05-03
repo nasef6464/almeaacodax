@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Course, PackageContentType } from '../../types';
+import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -587,8 +588,8 @@ export const PathsManager: React.FC = () => {
     const counts = {
       courses: courses.filter((course: any) => !course.isPackage && hasType('courses') && isInScope(course)).length,
       foundation: topics.filter((topic: any) => hasType('foundation') && isInScope(topic)).length,
-      banks: quizzes.filter((quiz: any) => hasType('banks') && quiz.type === 'bank' && isInScope(quiz)).length,
-      tests: quizzes.filter((quiz: any) => hasType('tests') && quiz.type !== 'bank' && isInScope(quiz)).length,
+        banks: quizzes.filter((quiz: any) => hasType('banks') && isTrainingQuiz(quiz) && isInScope(quiz)).length,
+        tests: quizzes.filter((quiz: any) => hasType('tests') && isMockQuiz(quiz) && isInScope(quiz)).length,
       library: libraryItems.filter((item: any) => hasType('library') && isInScope(item)).length,
     };
     const total = counts.courses + counts.foundation + counts.banks + counts.tests + counts.library;

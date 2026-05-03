@@ -125,7 +125,11 @@ export const QuizPage: React.FC = () => {
     const loadedQuestions = foundQuiz.questionIds
       .map((id) => questions.find((question) => question.id === id))
       .filter(Boolean) as Question[];
-    setQuizQuestions(loadedQuestions);
+    const preparedQuestions =
+      foundQuiz.settings?.randomizeQuestions === false
+        ? loadedQuestions
+        : [...loadedQuestions].sort(() => 0.5 - Math.random());
+    setQuizQuestions(preparedQuestions);
 
     if (foundQuiz.settings?.timeLimit && foundQuiz.settings.timeLimit > 0) {
       setTimeLeft(foundQuiz.settings.timeLimit * 60);
@@ -169,6 +173,21 @@ export const QuizPage: React.FC = () => {
   const passingScore = quiz?.settings?.passingScore ?? 50;
   const quizTimeLimit = quiz?.settings?.timeLimit || 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
+  const optionLayout = quiz?.settings?.optionLayout || 'auto';
+  const optionGridClass =
+    optionLayout === 'two_columns'
+      ? 'grid-cols-1 sm:grid-cols-2'
+      : optionLayout === 'horizontal'
+        ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4'
+        : (currentQuestion?.options?.length || 0) <= 2
+          ? 'grid-cols-1 sm:grid-cols-2'
+          : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+  const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
+  const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
+  const isNextBlocked =
+    quiz?.settings?.requireAnswerBeforeNext === true &&
+    currentQuestion &&
+    selectedOptions[currentQuestion.id] === undefined;
 
   const weakSkillIds = useMemo(
     () =>
@@ -221,6 +240,7 @@ export const QuizPage: React.FC = () => {
   };
 
   const handleNext = () => {
+    if (isNextBlocked) return;
     if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       return;
@@ -418,24 +438,28 @@ export const QuizPage: React.FC = () => {
 
         {!isFinished ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="h-2 bg-gray-100 w-full">
-              <div
-                className="h-full bg-indigo-600 transition-all duration-300"
-                style={{ width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%` }}
-              />
-            </div>
+            {shouldShowProgressBar ? (
+              <div className="h-2 bg-gray-100 w-full">
+                <div
+                  className="h-full bg-indigo-600 transition-all duration-300"
+                  style={{ width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%` }}
+                />
+              </div>
+            ) : null}
 
             <div className="p-4 sm:p-8">
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6">
                 <span className="text-sm font-bold text-gray-500">السؤال {currentQuestionIndex + 1} من {quizQuestions.length}</span>
                 <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    onClick={handleToggleCurrentReviewLater}
-                    className={`${reviewLater.includes(currentQuestion.id) ? 'bg-purple-100 text-purple-700' : 'bg-amber-50 text-amber-700'} inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition hover:opacity-90`}
-                  >
-                    <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current' : ''} />
-                    {reviewLater.includes(currentQuestion.id) ? 'للمراجعة' : 'مراجعة لاحقًا'}
-                  </button>
+                  {shouldShowQuestionReview ? (
+                    <button
+                      onClick={handleToggleCurrentReviewLater}
+                      className={`${reviewLater.includes(currentQuestion.id) ? 'bg-purple-100 text-purple-700' : 'bg-amber-50 text-amber-700'} inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition hover:opacity-90`}
+                    >
+                      <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current' : ''} />
+                      {reviewLater.includes(currentQuestion.id) ? 'للمراجعة' : 'مراجعة لاحقًا'}
+                    </button>
+                  ) : null}
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-bold">{currentQuestion?.difficulty}</span>
                 </div>
               </div>
@@ -452,7 +476,7 @@ export const QuizPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-4">
+              <div className={`grid ${optionGridClass} gap-x-4 sm:gap-x-6 gap-y-4`}>
                 {currentQuestion?.options.map((option, index) => (
                   <button
                     key={index}
@@ -504,7 +528,9 @@ export const QuizPage: React.FC = () => {
               ) : (
                 <button
                   onClick={handleNext}
-                  className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+                  disabled={Boolean(isNextBlocked)}
+                  title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}
+                  className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   التالي
                   <ArrowLeft size={18} />
@@ -608,7 +634,7 @@ export const QuizPage: React.FC = () => {
                                 />
                               </div>
                             )}
-                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                            <div className={`grid ${optionGridClass} gap-2`}>
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';

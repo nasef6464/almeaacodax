@@ -326,6 +326,11 @@ export interface QuizSettings {
     maxAttempts: number;
     passingScore: number; // percentage
     timeLimit?: number; // in minutes
+    randomizeQuestions?: boolean;
+    showProgressBar?: boolean;
+    requireAnswerBeforeNext?: boolean;
+    allowQuestionReview?: boolean;
+    optionLayout?: 'auto' | 'horizontal' | 'two_columns';
 }
 
 export interface QuizAccess {
@@ -342,6 +347,9 @@ export interface Quiz extends ContentWorkflow {
     subjectId: string;
     sectionId?: string;
     type?: 'quiz' | 'bank'; // Added type for Training vs Simulated Test
+    placement?: 'training' | 'mock' | 'both';
+    showInTraining?: boolean;
+    showInMock?: boolean;
     mode?: 'regular' | 'saher' | 'central';
     settings: QuizSettings;
     access: QuizAccess;

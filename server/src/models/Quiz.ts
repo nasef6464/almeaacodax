@@ -9,6 +9,9 @@ const quizSchema = new Schema(
     subjectId: { type: String, required: true, index: true },
     sectionId: { type: String, default: null },
     type: { type: String, enum: ["quiz", "bank"], default: "quiz" },
+    placement: { type: String, enum: ["training", "mock", "both"], default: undefined },
+    showInTraining: { type: Boolean, default: undefined },
+    showInMock: { type: Boolean, default: undefined },
     mode: { type: String, enum: ["regular", "saher", "central"], default: "regular" },
     settings: {
       showExplanations: { type: Boolean, default: true },
@@ -16,6 +19,11 @@ const quizSchema = new Schema(
       maxAttempts: { type: Number, default: 3 },
       passingScore: { type: Number, default: 60 },
       timeLimit: { type: Number, default: 60 },
+      randomizeQuestions: { type: Boolean, default: true },
+      showProgressBar: { type: Boolean, default: true },
+      requireAnswerBeforeNext: { type: Boolean, default: false },
+      allowQuestionReview: { type: Boolean, default: true },
+      optionLayout: { type: String, enum: ["auto", "horizontal", "two_columns"], default: "auto" },
     },
     access: {
       type: {
@@ -48,6 +56,7 @@ const quizSchema = new Schema(
   },
 );
 
+quizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ pathId: 1, subjectId: 1, mode: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ targetGroupIds: 1, dueDate: 1 });
 quizSchema.index({ targetUserIds: 1, dueDate: 1 });

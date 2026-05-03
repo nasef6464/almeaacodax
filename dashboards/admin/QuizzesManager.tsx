@@ -4,6 +4,7 @@ import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
+import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -177,7 +178,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           if (managedSubjectIds.length > 0 && !managedSubjectIds.includes(quiz.subjectId)) return false;
           if (managedPathIds.length > 0 && quiz.pathId && !managedPathIds.includes(quiz.pathId)) return false;
         }
-        if (filterType && quiz.type !== filterType) return false;
+        if (filterType === 'bank' && !isTrainingQuiz(quiz)) return false;
+        if (filterType === 'quiz' && !isMockQuiz(quiz)) return false;
         if (subjectId && quiz.subjectId !== subjectId) return false;
         if (selectedSubjectId && quiz.subjectId !== selectedSubjectId) return false;
         if (selectedSectionId && quiz.sectionId !== selectedSectionId) return false;
@@ -235,11 +237,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     [questions, quizzes],
   );
 
-  const managerTitle = filterType === 'bank' ? 'مستودع التدريبات' : 'مستودع الاختبارات';
+  const managerTitle = filterType === 'bank' ? 'إدارة التدريب من مركز الاختبارات' : filterType === 'quiz' ? 'إدارة الاختبارات المحاكية من مركز الاختبارات' : 'مركز الاختبارات';
   const managerDescription =
     filterType === 'bank'
-      ? 'هذا المستودع لحفظ بنوك التدريب والأسئلة القصيرة. ظهورها للطالب في صفحة التدريب قرار منفصل من الإدارة عبر الفتح أو الإخفاء.'
-      : 'هذا المستودع لحفظ الاختبارات. اعتماد الاختبار داخل المستودع لا يعني ظهوره للطالب إلا بعد فتحه على المنصة.';
+      ? 'اختر هنا الاختبارات التي تظهر في تبويب التدريب فقط. أي اختبار جديد تضيفه هنا يبقى محفوظًا داخل مركز الاختبارات ومصنفًا على نفس المسار والمادة.'
+      : filterType === 'quiz'
+        ? 'هذه القائمة تعرض الاختبارات المحاكية فقط، ولا تخلط معها تدريبات أو بنوك أسئلة. التحكم هنا يحدد ما يراه الطالب في تبويب الاختبارات المحاكية.'
+        : 'هذا هو المصدر الرئيسي لكل التدريبات والاختبارات. من هنا تحدد مكان ظهور كل اختبار للطالب.';
 
   const quizzesWithoutQuestions = useMemo(
     () => globalQuizzes.filter((quiz) => (quiz.questionIds || []).length === 0).length,
@@ -282,7 +286,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       description: '',
       pathId: selectedPathId || '',
       subjectId: selectedSubjectId || '',
-      type: filterType || 'quiz',
+      ...getQuizPlacementDefaults(filterType || 'quiz'),
       mode,
       settings: {
         showExplanations: true,
@@ -562,47 +566,51 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </>
         )}
 
-        <select
-          value={selectedSectionId}
-          onChange={(event) => {
-            setSelectedSectionId(event.target.value);
-            setSelectedSkillId('');
-          }}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          disabled={!selectedSubjectId}
-        >
-          <option value="">كل المهارات الرئيسية</option>
-          {availableSections.map((section) => (
-            <option key={section.id} value={section.id}>
-              {section.name}
-            </option>
-          ))}
-        </select>
+        {!filterType && (
+          <>
+            <select
+              value={selectedSectionId}
+              onChange={(event) => {
+                setSelectedSectionId(event.target.value);
+                setSelectedSkillId('');
+              }}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={!selectedSubjectId}
+            >
+              <option value="">كل المهارات الرئيسية</option>
+              {availableSections.map((section) => (
+                <option key={section.id} value={section.id}>
+                  {section.name}
+                </option>
+              ))}
+            </select>
 
-        <select
-          value={selectedSkillId}
-          onChange={(event) => setSelectedSkillId(event.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          disabled={!selectedSubjectId}
-        >
-          <option value="">كل المهارات الفرعية</option>
-          {availableSubSkills.map((skill) => (
-            <option key={skill.id} value={skill.id}>
-              {skill.name}
-            </option>
-          ))}
-        </select>
+            <select
+              value={selectedSkillId}
+              onChange={(event) => setSelectedSkillId(event.target.value)}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={!selectedSubjectId}
+            >
+              <option value="">كل المهارات الفرعية</option>
+              {availableSubSkills.map((skill) => (
+                <option key={skill.id} value={skill.id}>
+                  {skill.name}
+                </option>
+              ))}
+            </select>
 
-        <select
-          value={modeFilter}
-          onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="all">كل الأنماط</option>
-          <option value="regular">اختبار عادي</option>
-          <option value="saher">اختبار ساهر</option>
-          <option value="central">اختبار موجّه</option>
-        </select>
+            <select
+              value={modeFilter}
+              onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="all">كل الأنماط</option>
+              <option value="regular">اختبار عادي</option>
+              <option value="saher">اختبار ساهر</option>
+              <option value="central">اختبار موجّه</option>
+            </select>
+          </>
+        )}
 
         <select
           value={visibilityFilter}
@@ -669,7 +677,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{quiz.type === 'bank' ? 'تدريب (بنك)' : 'اختبار محاكي'}</span>
+                      <div className="space-y-1">
+                        <span className="text-sm font-bold text-gray-700">{getQuizPlacementLabel(quiz)}</span>
+                        <div className="text-[11px] text-gray-400">من مركز الاختبارات</div>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-sm text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
