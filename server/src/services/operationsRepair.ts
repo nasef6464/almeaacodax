@@ -1,4 +1,5 @@
 import { PathModel } from "../models/Path.js";
+import { LessonModel } from "../models/Lesson.js";
 import { QuizModel } from "../models/Quiz.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
@@ -6,6 +7,7 @@ import { TopicModel } from "../models/Topic.js";
 export type OperationsRepairAction =
   | "hide-empty-published-quizzes"
   | "hide-empty-active-paths"
+  | "unlink-unavailable-topic-lessons"
   | "unlink-unavailable-topic-quizzes";
 
 export async function runOperationsRepair(action: OperationsRepairAction, apply = false) {
@@ -118,6 +120,57 @@ export async function runOperationsRepair(action: OperationsRepairAction, apply 
       message: apply
         ? "تم تنظيف روابط الاختبارات غير المتاحة من الموضوعات."
         : "سيتم تنظيف روابط الاختبارات غير المتاحة من الموضوعات.",
+      samples: targetTopics.slice(0, 8).map((item: any) => ({
+        id: String(item.topic.id || item.topic._id),
+        title: item.topic.title,
+      })),
+    };
+  }
+
+  if (action === "unlink-unavailable-topic-lessons") {
+    const [topics, lessons] = await Promise.all([
+      TopicModel.find({ lessonIds: { $exists: true, $ne: [] } }).lean(),
+      LessonModel.find({
+        showOnPlatform: { $ne: false },
+        isPublished: { $ne: false },
+        $or: [{ approvalStatus: { $exists: false } }, { approvalStatus: "approved" }],
+      }).lean(),
+    ]);
+    const visibleLessonIds = new Set(lessons.map((lesson: any) => String(lesson.id || lesson._id)));
+    const targetTopics = topics
+      .map((topic: any) => {
+        const lessonIds = (topic.lessonIds || []).map(String);
+        const nextLessonIds = lessonIds.filter((lessonId: string) => visibleLessonIds.has(lessonId));
+        return {
+          topic,
+          nextLessonIds,
+          removed: lessonIds.length - nextLessonIds.length,
+        };
+      })
+      .filter((item) => item.removed > 0);
+
+    if (apply && targetTopics.length > 0) {
+      await Promise.all(
+        targetTopics.map((item) =>
+          TopicModel.updateOne(
+            { _id: item.topic._id },
+            {
+              $set: {
+                lessonIds: item.nextLessonIds,
+              },
+            },
+          ),
+        ),
+      );
+    }
+
+    return {
+      action,
+      applied: apply,
+      affected: targetTopics.reduce((total, item) => total + item.removed, 0),
+      message: apply
+        ? "تم تنظيف روابط الدروس غير المتاحة من الموضوعات."
+        : "سيتم تنظيف روابط الدروس غير المتاحة من الموضوعات.",
       samples: targetTopics.slice(0, 8).map((item: any) => ({
         id: String(item.topic.id || item.topic._id),
         title: item.topic.title,

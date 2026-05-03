@@ -61,7 +61,11 @@ type AuditCheck = {
     samples?: string[];
 };
 
-type RepairAction = 'hide-empty-published-quizzes' | 'hide-empty-active-paths' | 'unlink-unavailable-topic-quizzes';
+type RepairAction =
+    | 'hide-empty-published-quizzes'
+    | 'hide-empty-active-paths'
+    | 'unlink-unavailable-topic-lessons'
+    | 'unlink-unavailable-topic-quizzes';
 
 type OperationsAudit = {
     checkedAt: string;
@@ -259,6 +263,11 @@ export const OperationsCommandCenter: React.FC = () => {
             action: 'hide-empty-active-paths',
             label: 'إخفاء المسارات الفارغة',
             confirm: 'سيتم إخفاء المسارات النشطة التي لا تحتوي مواد من الصفحة الرئيسية والقائمة. هل تريد المتابعة؟',
+        },
+        'missing-linked-lessons': {
+            action: 'unlink-unavailable-topic-lessons',
+            label: 'تنظيف روابط الدروس',
+            confirm: 'سيتم حذف روابط الدروس غير المتاحة من الموضوعات فقط، بدون حذف أي درس من مركز الدروس. هل تريد المتابعة؟',
         },
         'missing-linked-quizzes': {
             action: 'unlink-unavailable-topic-quizzes',

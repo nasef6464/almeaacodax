@@ -200,6 +200,7 @@ async function run() {
     clientEvents,
     backupSnapshots,
     backupActivities,
+    operationLessonRepairPreview,
     seoStatus,
     sitemapXml,
     robotsTxt,
@@ -266,6 +267,7 @@ async function run() {
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
     request<any>("/backups/learning/activity", "GET", undefined, admin.token),
+    request<any>("/operations/repair", "POST", { action: "unlink-unavailable-topic-lessons", apply: false }, admin.token),
     request<any>("/seo/status"),
     requestText("/seo/sitemap.xml"),
     requestText("/seo/robots.txt"),
@@ -365,6 +367,16 @@ async function run() {
     "backup activity log queryable",
     Array.isArray(backupActivities?.activities),
     `activities=${backupActivities?.activities?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "lesson link repair preview available",
+    operationLessonRepairPreview?.action === "unlink-unavailable-topic-lessons" &&
+      operationLessonRepairPreview?.applied === false &&
+      typeof operationLessonRepairPreview?.affected === "number",
+    `affected=${operationLessonRepairPreview?.affected ?? "unknown"}`,
   );
 
   pushResult(

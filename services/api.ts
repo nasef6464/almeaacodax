@@ -645,7 +645,14 @@ export const api = {
       sampleRoutes: Array<{ title: string; loc: string }>;
     }>("/seo/status", { token }),
   runOperationsRepair: (
-    payload: { action: "hide-empty-published-quizzes" | "hide-empty-active-paths" | "unlink-unavailable-topic-quizzes"; apply?: boolean },
+    payload: {
+      action:
+        | "hide-empty-published-quizzes"
+        | "hide-empty-active-paths"
+        | "unlink-unavailable-topic-lessons"
+        | "unlink-unavailable-topic-quizzes";
+      apply?: boolean;
+    },
     token?: string | null,
   ) =>
     request<{
