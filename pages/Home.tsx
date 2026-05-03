@@ -1,11 +1,15 @@
 ﻿import React, { useMemo } from 'react';
-import { Clock, TrendingUp, AlertTriangle, Zap, FileText, PieChart, Heart, Map as MapIcon, HelpCircle } from 'lucide-react';
+import { Clock, TrendingUp, AlertTriangle, Zap, FileText, PieChart, Heart, Map as MapIcon, HelpCircle, Star } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { Link } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { useStore } from '../store/useStore';
 import { QuizResult, SkillGap } from '../types';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+const DASH = '-';
 
 const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] => {
   if (!examResults || examResults.length === 0) return [];
@@ -68,8 +72,8 @@ const Home: React.FC = () => {
         (course.modules || []).flatMap((mod) =>
           mod.lessons.map((lesson) => ({
             id: `${course.id}_${lesson.id}`,
-            subject: `${course.title} - ${lesson.title}`,
-            duration: lesson.duration || 'â€”',
+            subject: `${displayText(course.title)} - ${displayText(lesson.title)}`,
+            duration: lesson.duration || DASH,
           }))
         )
       )
@@ -77,7 +81,7 @@ const Home: React.FC = () => {
       .slice(0, 3)
       .map((lesson, index) => ({
         ...lesson,
-        day: index === 0 ? 'Ø§Ù„ÙŠÙˆÙ…' : 'Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
+        day: index === 0 ? 'اليوم' : 'هذا الأسبوع',
         status: index === 0 ? 'in-progress' : 'upcoming',
       }));
 
@@ -85,9 +89,9 @@ const Home: React.FC = () => {
 
     return recentActivity.slice(0, 3).map((item) => ({
       id: item.id,
-      subject: item.title,
+      subject: displayText(item.title),
       day: new Date(item.date).toLocaleDateString('ar-SA'),
-      duration: 'â€”',
+      duration: DASH,
       status: 'completed' as const,
     }));
   }, [activeCourses, completedLessons, recentActivity]);
@@ -96,12 +100,12 @@ const Home: React.FC = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Ù…Ø±Ø­Ø¨Ø§Ù‹ØŒ {user.name.split(' ')[0]} ðŸ‘‹</h2>
-          <p className="text-gray-500">Ù„Ù†ÙˆØ§ØµÙ„ Ø±Ø­Ù„Ø© Ø§Ù„ØªØ¹Ù„Ù… Ø§Ù„ÙŠÙˆÙ…</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">مرحبًا، {displayText(user.name).split(' ')[0]}</h2>
+          <p className="text-gray-500">لنواصل رحلة التعلم اليوم</p>
         </div>
         <Link to="/gamification" className="w-full sm:w-auto bg-secondary-100 text-secondary-600 px-4 py-2 rounded-full text-sm font-bold flex items-center justify-center gap-2">
           <TrendingUp size={16} />
-          Ø§Ù„Ù…Ø³ØªÙˆÙ‰ 12
+          المستوى 12
         </Link>
       </div>
 
@@ -112,55 +116,55 @@ const Home: React.FC = () => {
               <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center group-hover:bg-purple-100 transition-colors">
                 <Zap size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø­Ø§ÙƒÙŠØ©</span>
+              <span className="font-bold text-gray-800 text-sm">الاختبارات المحاكية</span>
             </Link>
 
             <Link to="/quizzes" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                 <FileText size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">Ø§Ø®ØªØ¨Ø§Ø±Ø§ØªÙŠ</span>
+              <span className="font-bold text-gray-800 text-sm">اختباراتي</span>
             </Link>
 
             <Link to="/reports" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
                 <PieChart size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">ØªÙ‚Ø§Ø±ÙŠØ±ÙŠ</span>
+              <span className="font-bold text-gray-800 text-sm">تقاريري</span>
             </Link>
 
             <Link to="/favorites" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center group-hover:bg-rose-100 transition-colors">
                 <Heart size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">Ø§Ù„Ø£Ø³Ø¦Ù„Ø© Ø§Ù„Ù…ÙØ¶Ù„Ø©</span>
+              <span className="font-bold text-gray-800 text-sm">الأسئلة المفضلة</span>
             </Link>
 
             <Link to="/plan" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
                 <MapIcon size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">Ø®ÙØ·ØªÙŠ</span>
+              <span className="font-bold text-gray-800 text-sm">خطتي</span>
             </Link>
 
             <Link to="/qa" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center group-hover:bg-amber-100 transition-colors">
                 <HelpCircle size={24} />
               </div>
-              <span className="font-bold text-gray-800 text-sm">Ø³Ø¤Ø§Ù„ ÙˆØ¬ÙˆØ§Ø¨</span>
+              <span className="font-bold text-gray-800 text-sm">سؤال وجواب</span>
             </Link>
           </div>
 
           <section>
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
-              <h3 className="text-lg font-bold">Ø§Ù„ÙƒÙˆØ±Ø³Ø§Øª Ø§Ù„Ù†Ø´Ø·Ø©</h3>
-              <Link to="/courses" className="text-primary-600 text-sm font-medium">Ø¹Ø±Ø¶ Ø§Ù„ÙƒÙ„</Link>
+              <h3 className="text-lg font-bold">الكورسات النشطة</h3>
+              <Link to="/courses" className="text-primary-600 text-sm font-medium">عرض الكل</Link>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {activeCourses.map((course) => (
                 <Card key={course.id} className="flex flex-col h-full">
                   <div className="relative h-32 bg-gray-900">
-                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover opacity-80" />
+                    <img src={course.thumbnail} alt={displayText(course.title)} className="w-full h-full object-cover opacity-80" />
                     <div className="absolute top-3 right-3 bg-secondary-500 text-white text-xs font-bold px-2 py-1 rounded">
                       {course.price} {course.currency}
                     </div>
@@ -170,20 +174,20 @@ const Home: React.FC = () => {
                       <div className="flex justify-between items-start gap-3 mb-2">
                         <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full">{course.level}</span>
                         <div className="flex items-center text-amber-400 text-sm font-bold">
-                          <span>â˜…</span> {course.rating}
+                          <Star size={14} fill="currentColor" aria-hidden="true" /> {course.rating}
                         </div>
                       </div>
-                      <h4 className="font-bold text-gray-900 leading-snug mb-1 break-words">{course.title}</h4>
-                      <p className="text-xs text-gray-500 mb-3">Ø§Ù„Ù…Ø¯Ø±Ø³: {course.instructor}</p>
+                      <h4 className="font-bold text-gray-900 leading-snug mb-1 break-words">{displayText(course.title)}</h4>
+                      <p className="text-xs text-gray-500 mb-3">المدرس: {displayText(course.instructor)}</p>
                     </div>
                     <div className="space-y-3">
                       <div className="flex flex-wrap gap-2">
                         {course.features.slice(0, 2).map((feat, idx) => (
-                          <span key={idx} className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-1 rounded text-gray-600">{feat}</span>
+                          <span key={idx} className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-1 rounded text-gray-600">{displayText(feat)}</span>
                         ))}
                       </div>
                       <Link to={`/course/${course.id}`} className="block w-full bg-secondary-500 hover:bg-secondary-600 text-white text-center py-2 rounded-lg font-bold transition-colors">
-                        Ø´Ø±Ø§Ø¡ / Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„ÙƒÙˆØ±Ø³
+                        شراء / متابعة الكورس
                       </Link>
                     </div>
                   </div>
@@ -198,7 +202,7 @@ const Home: React.FC = () => {
 
           <section>
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
-              <h3 className="text-lg font-bold">Ø§Ù„Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠ</h3>
+              <h3 className="text-lg font-bold">الجدول الدراسي</h3>
             </div>
             <div className="space-y-3">
               {scheduleItems.map((item) => (
@@ -220,13 +224,13 @@ const Home: React.FC = () => {
                       <Clock size={20} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-800">{item.subject}</h4>
+                      <h4 className="font-bold text-gray-800">{displayText(item.subject)}</h4>
                       <p className="text-sm text-gray-500">{item.day}</p>
                     </div>
                   </div>
                   <div className="text-right sm:text-left self-start sm:self-auto">
                     <span className="block font-bold text-gray-800">{item.duration}</span>
-                    {item.status === 'in-progress' && <span className="text-xs text-secondary-600 font-bold animate-pulse">Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¢Ù†</span>}
+                    {item.status === 'in-progress' && <span className="text-xs text-secondary-600 font-bold animate-pulse">جاري الآن</span>}
                   </div>
                 </div>
               ))}
@@ -237,23 +241,23 @@ const Home: React.FC = () => {
             <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6">
               <h3 className="text-lg font-bold flex items-center gap-2">
                 <AlertTriangle className="text-secondary-500" size={20} />
-                Ù†Ù‚Ø§Ø· Ø§Ù„Ø¶Ø¹Ù
+                نقاط الضعف
               </h3>
-              <Link to="/reports" className="text-xs text-primary-600 font-bold">Ø§Ù„ØªÙØ§ØµÙŠÙ„</Link>
+              <Link to="/reports" className="text-xs text-primary-600 font-bold">التفاصيل</Link>
             </div>
 
             <div className="space-y-6">
               {smartSkills.slice(0, 2).map((skill, index) => (
                 <div key={`${skill.skill}-${index}`}>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-gray-700 text-sm">{skill.skill}</span>
+                    <span className="font-medium text-gray-700 text-sm">{displayText(skill.skill)}</span>
                     <span className={`text-xs font-bold ${skill.mastery < 50 ? 'text-red-500' : 'text-amber-500'}`}>{skill.mastery}%</span>
                   </div>
                   <ProgressBar percentage={skill.mastery} showPercentage={false} color={skill.mastery < 50 ? 'danger' : 'secondary'} />
                 </div>
               ))}
               {smartSkills.length === 0 && (
-                <p className="text-sm text-gray-500">Ø§Ø¨Ø¯Ø£ Ø£ÙˆÙ„ Ø§Ø®ØªØ¨Ø§Ø± Ù„ØªØ¸Ù‡Ø± Ù„Ùƒ Ù†Ù‚Ø§Ø· Ø§Ù„ØªØ­Ø³ÙŠÙ† ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§.</p>
+                <p className="text-sm text-gray-500">ابدأ أول اختبار لتظهر لك نقاط التحسين تلقائيًا.</p>
               )}
             </div>
           </section>

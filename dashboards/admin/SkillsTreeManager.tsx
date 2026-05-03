@@ -409,11 +409,11 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
           <div className="text-2xl font-bold text-amber-600">{totalLinkedQuestions}</div>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div className="text-gray-500 text-sm mb-1">Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø±ØªØ¨Ø·Ø©</div>
+          <div className="text-gray-500 text-sm mb-1">الاختبارات المرتبطة</div>
           <div className="text-2xl font-bold text-purple-600">{totalLinkedQuizzes}</div>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div className="text-gray-500 text-sm mb-1">Ù…Ù„ÙØ§Øª Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©</div>
+          <div className="text-gray-500 text-sm mb-1">ملفات المراجعة</div>
           <div className="text-2xl font-bold text-gray-700">{totalLinkedLibraryItems}</div>
         </div>
       </div>
