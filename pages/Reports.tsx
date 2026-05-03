@@ -125,6 +125,12 @@ const getReportMasteryTone = (mastery: number) => {
     };
 };
 
+const scoreTone = (score: number) => {
+    if (score < 60) return 'text-rose-600 bg-rose-50 border-rose-100';
+    if (score < 80) return 'text-amber-600 bg-amber-50 border-amber-100';
+    return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+};
+
 interface SkillRecommendation {
     lessonTitle?: string;
     lessonLink?: string;
@@ -769,6 +775,138 @@ const Reports: React.FC = () => {
                         ابدأ أول اختبار
                     </Link>
                 </Card>
+            </div>
+        );
+    }
+
+    if (user.role === Role.PARENT) {
+        const latestResult = scopedLatestResults[0];
+        const averageScore = scopedResults.length
+            ? Math.round(scopedResults.reduce((total, result) => total + (Number(result.score) || 0), 0) / scopedResults.length)
+            : 0;
+        const weakSkill = scopedAnalytics?.weakestSkills?.[0] || null;
+        const leadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
+
+        return (
+            <div id="reports-print-area" className="space-y-6 pb-20 animate-fade-in">
+                <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <Link to="/dashboard" className="text-gray-500 hover:text-gray-700">
+                            <ArrowRight size={24} />
+                        </Link>
+                        <div>
+                            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">تقرير ولي الأمر</h1>
+                            <p className="text-sm text-gray-500">ملخص بسيط وواضح عن أداء الأبناء بدون تفاصيل مرهقة.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => printElementAsPdf('reports-print-area', 'تقرير ولي الأمر')}
+                        className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
+                    >
+                        <Download size={16} />
+                        تحميل PDF
+                    </button>
+                </header>
+
+                {scopedAnalyticsLoading ? (
+                    <Card className="p-8 text-center text-sm font-bold text-gray-500">
+                        جارٍ تحميل تقرير الأبناء...
+                    </Card>
+                ) : !scopedAnalytics || scopedResults.length === 0 ? (
+                    <Card className="p-10 text-center">
+                        <PieChart size={42} className="mx-auto mb-4 text-gray-300" />
+                        <h2 className="text-xl font-black text-gray-900">لا توجد نتائج بعد</h2>
+                        <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
+                            بعد أن يحل الطالب أول اختبار ستظهر هنا الدرجة، آخر محاولة، والمهارة التي تحتاج متابعة.
+                        </p>
+                    </Card>
+                ) : (
+                    <>
+                        <Card className="overflow-hidden border-0 bg-gradient-to-br from-emerald-600 to-slate-900 p-6 text-white shadow-sm">
+                            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                                <div>
+                                    <div className="mb-2 text-sm font-bold text-emerald-100">الملخص السريع</div>
+                                    <h2 className="text-2xl font-black">الأداء العام {averageScore}%</h2>
+                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-emerald-50">
+                                        {averageScore >= 80
+                                            ? 'الأداء مطمئن. استمر في متابعة تدريب قصير أسبوعيًا.'
+                                            : averageScore >= 60
+                                                ? 'المستوى جيد، ويحتاج مراجعة هادئة للمهارات الأضعف.'
+                                                : 'يحتاج الطالب متابعة قريبة، ابدأ بمهارة واحدة فقط حتى لا تزيد عليه الضغط.'}
+                                    </p>
+                                </div>
+                                <div className="grid grid-cols-3 gap-3 text-center">
+                                    <div className="rounded-2xl bg-white/10 p-4">
+                                        <div className="text-2xl font-black">{scopedAnalytics.scope.studentCount}</div>
+                                        <div className="mt-1 text-xs font-bold text-emerald-100">أبناء</div>
+                                    </div>
+                                    <div className="rounded-2xl bg-white/10 p-4">
+                                        <div className="text-2xl font-black">{scopedAnalytics.scope.quizAttempts}</div>
+                                        <div className="mt-1 text-xs font-bold text-emerald-100">محاولات</div>
+                                    </div>
+                                    <div className="rounded-2xl bg-white/10 p-4">
+                                        <div className="text-2xl font-black">{scopedAnalytics.weakestSkills.length}</div>
+                                        <div className="mt-1 text-xs font-bold text-emerald-100">مهارات</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <div className="grid gap-4 lg:grid-cols-3">
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">آخر نتيجة</div>
+                                <div className="mt-3 text-xl font-black text-gray-900">{displayText(latestResult?.quizTitle) || 'لا يوجد اختبار'}</div>
+                                <div className="mt-2 text-sm text-gray-500">{displayText(latestResult?.studentName || latestResult?.studentEmail) || 'طالب مرتبط'}</div>
+                                <div className={`mt-4 inline-flex rounded-2xl border px-4 py-3 text-2xl font-black ${scoreTone(Number(latestResult?.score) || 0)}`}>
+                                    {Math.round(Number(latestResult?.score) || 0)}%
+                                </div>
+                            </Card>
+
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">أهم مهارة تحتاج متابعة</div>
+                                <div className="mt-3 text-xl font-black text-gray-900">{displayText(weakSkill?.skill) || 'بانتظار بيانات المهارات'}</div>
+                                <div className="mt-2 text-sm text-gray-500">{displayText(weakSkill?.section) || 'مهارة عامة'}</div>
+                                <div className="mt-4 rounded-full bg-gray-100 h-2 overflow-hidden">
+                                    <div className="h-full rounded-full bg-amber-500" style={{ width: `${Math.max(0, Math.min(100, Number(weakSkill?.mastery) || 0))}%` }} />
+                                </div>
+                                <div className="mt-2 text-xs font-bold text-amber-700">الإتقان: {Math.round(Number(weakSkill?.mastery) || 0)}%</div>
+                            </Card>
+
+                            <Card className="p-5">
+                                <div className="text-xs font-bold text-gray-500">المتابعة المقترحة</div>
+                                <div className="mt-3 text-xl font-black text-gray-900">{displayText(leadStudent?.name) || 'كل الأبناء'}</div>
+                                <p className="mt-3 text-sm leading-7 text-gray-600">
+                                    راجع معه المهارة الأضعف لمدة 15 دقيقة، ثم اطلب منه حل تدريب قصير. ركز على التشجيع وليس اللوم.
+                                </p>
+                            </Card>
+                        </div>
+
+                        <Card className="p-5">
+                            <div className="mb-4 flex items-center justify-between gap-3">
+                                <div>
+                                    <h2 className="text-lg font-black text-gray-900">آخر المحاولات</h2>
+                                    <p className="mt-1 text-sm text-gray-500">قائمة مختصرة تكفي للمتابعة اليومية.</p>
+                                </div>
+                                <Link to="/dashboard?tab=parent-results" className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-100">
+                                    عرض النتائج
+                                </Link>
+                            </div>
+                            <div className="space-y-3">
+                                {scopedLatestResults.slice(0, 4).map((result) => (
+                                    <div key={result.id || result._id || `${result.quizTitle}-${result.date}`} className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <div className="font-black text-gray-900">{displayText(result.quizTitle)}</div>
+                                            <div className="mt-1 text-xs font-bold text-gray-500">{displayText(result.studentName || result.studentEmail) || 'طالب مرتبط'} - {displayText(result.date || result.createdAt) || 'تاريخ غير محدد'}</div>
+                                        </div>
+                                        <div className={`self-start rounded-xl border px-3 py-2 text-lg font-black sm:self-auto ${scoreTone(Number(result.score) || 0)}`}>
+                                            {Math.round(Number(result.score) || 0)}%
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Card>
+                    </>
+                )}
             </div>
         );
     }

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, CheckCircle, ChevronRight, Lock, Unlock, PlayCircle, AlertTriangle, ArrowRight, ArrowLeft, Star, FileText, BarChart3, History, Eye, Trash2, CheckCircle2, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { Clock, CheckCircle, ChevronRight, Lock, Unlock, PlayCircle, AlertTriangle, ArrowRight, ArrowLeft, Star, FileText, Eye, Trash2, CheckCircle2, ChevronRight as ChevronRightIcon, Moon, Sun } from 'lucide-react';
 import { Card } from './ui/Card';
 import { ProgressBar } from './ui/ProgressBar';
-import { DetailedAnalysisModal } from './DetailedAnalysisModal';
 import { VideoModal } from './VideoModal';
 import { PaymentModal } from './PaymentModal';
-import { Link } from 'react-router-dom';
 
 interface Test {
     id: string | number;
@@ -26,6 +24,11 @@ interface SimulatedTestExperienceProps {
     onStartTest?: (test: Test) => void;
 }
 
+const OPTION_LABELS_AR = ['أ', 'ب', 'ج', 'د'];
+
+const stripOptionLabel = (value: string) =>
+    value.replace(/^\s*[أابجدهـA-D]\s*[\)\-\.]\s*/i, '').trim();
+
 export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = ({ tests, mode = 'test', onLockedClick, onStartTest }) => {
     const [selectedTest, setSelectedTest] = useState<Test | null>(null);
     const [testState, setTestState] = useState<'list' | 'popup' | 'pre-test' | 'in-progress' | 'confirm-submit' | 'result'>('list');
@@ -33,23 +36,13 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [markedForReview, setMarkedForReview] = useState<Record<number, boolean>>({});
     const [timeLeft, setTimeLeft] = useState(0);
-    const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
     const [resultViewMode, setResultViewMode] = useState<'summary' | 'review'>('summary');
     const [currentReviewIdx, setCurrentReviewIdx] = useState(0);
     const [showExplanation, setShowExplanation] = useState(false);
     const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
     const [favorites, setFavorites] = useState<Record<number, boolean>>({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-    const selectedTestSkillsLink =
-        selectedTest?.pathId && selectedTest?.subjectId
-            ? `/category/${selectedTest.pathId}?subject=${selectedTest.subjectId}&tab=skills`
-            : '/quizzes';
-
-    const selectedTestBanksLink =
-        selectedTest?.pathId && selectedTest?.subjectId
-            ? `/category/${selectedTest.pathId}?subject=${selectedTest.subjectId}&tab=banks`
-            : '/quizzes';
+    const [isNightMode, setIsNightMode] = useState(false);
 
     const toggleFavorite = (idx: number) => {
         setFavorites(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -258,28 +251,47 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
         const question = mockQuestions[currentQuestionIndex];
         const answeredCount = Object.keys(answers).length;
         const progress = (answeredCount / mockQuestions.length) * 100;
+        const answeredThisQuestion = Boolean(answers[currentQuestionIndex]);
 
         return (
-            <div className="max-w-4xl mx-auto">
+            <div className={`mx-auto max-w-5xl rounded-3xl p-3 transition-colors ${isNightMode ? 'bg-slate-950 text-white' : 'bg-transparent text-gray-900'}`}>
                 {/* Top Bar */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex flex-wrap items-center justify-between gap-4 sticky top-4 z-10">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => setTestState('confirm-submit')} className="bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors">
+                <div className={`sticky top-4 z-10 mb-5 rounded-2xl border p-3 shadow-sm ${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'}`}>
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <button onClick={() => setTestState('confirm-submit')} className="order-3 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600 lg:order-1">
                             إنهاء {mode === 'bank' ? 'التصفح' : 'الاختبار'}
                         </button>
-                        <button onClick={toggleReview} className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-bold transition-colors ${markedForReview[currentQuestionIndex] ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-                            <Star size={16} className={markedForReview[currentQuestionIndex] ? 'fill-current' : ''} />
-                            {markedForReview[currentQuestionIndex] ? 'محدد للمراجعة' : 'إضافة للمفضلة'}
-                        </button>
-                    </div>
-                    
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-lg font-mono font-bold text-lg">
-                            <Clock size={20} />
-                            {formatTime(timeLeft)}
+                        <div className="order-1 flex flex-wrap items-center justify-center gap-3 lg:order-2">
+                            <div className={`flex items-center gap-2 rounded-xl px-4 py-2 font-mono text-lg font-black ${isNightMode ? 'bg-slate-800 text-amber-300' : 'bg-amber-50 text-amber-600'}`}>
+                                <Clock size={20} />
+                                {formatTime(timeLeft)}
+                            </div>
+                            <div className={`rounded-xl px-4 py-2 text-sm font-black ${isNightMode ? 'bg-indigo-500/15 text-indigo-200' : 'bg-indigo-50 text-indigo-700'}`}>
+                                السؤال {currentQuestionIndex + 1} من {mockQuestions.length}
+                            </div>
                         </div>
-                        <div className="font-bold text-gray-700">
-                            السؤال {currentQuestionIndex + 1} من {mockQuestions.length}
+                        <div className="order-2 flex flex-wrap items-center justify-center gap-2 lg:order-3">
+                            <button
+                                type="button"
+                                onClick={() => setIsNightMode((value) => !value)}
+                                className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-black transition-colors ${isNightMode ? 'bg-slate-800 text-amber-200 hover:bg-slate-700' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                            >
+                                {isNightMode ? <Sun size={15} /> : <Moon size={15} />}
+                                {isNightMode ? 'نهاري' : 'ليلي'}
+                            </button>
+                            <button
+                                onClick={toggleReview}
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition-colors ${
+                                    markedForReview[currentQuestionIndex]
+                                        ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-200/40'
+                                        : isNightMode
+                                            ? 'bg-slate-800 text-amber-200 hover:bg-slate-700'
+                                            : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100'
+                                }`}
+                            >
+                                <Star size={16} className={markedForReview[currentQuestionIndex] ? 'fill-current' : ''} />
+                                {markedForReview[currentQuestionIndex] ? 'محدد للمراجعة' : 'مراجعة لاحقًا'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -290,58 +302,83 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                 </div>
 
                 {/* Question Area */}
-                <Card className="p-8 mb-6 min-h-[400px] flex flex-col">
-                    <h3 className="text-xl font-bold text-gray-800 mb-8 leading-relaxed">
-                        {question.text}
-                    </h3>
-                    
-                    {/* Placeholder for Image if needed */}
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl h-48 mb-8 flex items-center justify-center text-gray-400">
-                        [صورة توضيحية للسؤال إن وجدت]
-                    </div>
+                <Card className={`mb-6 flex min-h-[430px] flex-col overflow-hidden border-0 p-0 shadow-sm ${isNightMode ? 'bg-slate-900 text-white' : 'bg-white'}`}>
+                    <div className="h-2 w-full bg-indigo-600" />
+                    <div className="flex-1 p-5 sm:p-8">
+                        <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <h3 className={`text-lg font-black leading-9 sm:text-xl ${isNightMode ? 'text-white' : 'text-gray-900'}`}>
+                                {question.text}
+                            </h3>
+                            <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${answeredThisQuestion ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                                {answeredThisQuestion ? 'تمت الإجابة' : 'لم تجب بعد'}
+                            </span>
+                        </div>
+                        
+                        {question.image ? (
+                            <div className={`mb-8 rounded-2xl border p-3 ${isNightMode ? 'border-slate-700 bg-black' : 'border-gray-200 bg-gray-50'}`}>
+                                <img src={question.image} alt="صورة السؤال" className="mx-auto max-h-[320px] w-full object-contain" referrerPolicy="no-referrer" />
+                            </div>
+                        ) : null}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-auto">
-                        {question.options.map((option, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => handleAnswer(option)}
-                                className={`w-full text-right p-4 rounded-xl border-2 transition-all font-bold text-base flex items-center gap-3 ${
-                                    answers[currentQuestionIndex] === option 
-                                    ? 'border-indigo-600 bg-indigo-50 text-indigo-700' 
-                                    : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50 text-gray-700'
-                                }`}
-                            >
-                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                                    answers[currentQuestionIndex] === option ? 'border-indigo-600' : 'border-gray-300'
-                                }`}>
-                                    {answers[currentQuestionIndex] === option && <div className="w-2.5 h-2.5 bg-indigo-600 rounded-full"></div>}
-                                </div>
-                                {option}
-                            </button>
-                        ))}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {question.options.map((option, idx) => {
+                                const isSelected = answers[currentQuestionIndex] === option;
+
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => handleAnswer(option)}
+                                        className={`min-h-[88px] w-full rounded-2xl border-2 px-4 py-3 text-right transition-all ${
+                                            isSelected
+                                                ? isNightMode
+                                                    ? 'border-indigo-400 bg-indigo-500/20 text-white'
+                                                    : 'border-indigo-600 bg-indigo-50 text-indigo-800 shadow-sm'
+                                                : isNightMode
+                                                    ? 'border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400'
+                                                    : 'border-gray-200 bg-white text-gray-800 hover:border-indigo-300 hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        <div className="flex h-full items-center justify-between gap-3">
+                                            <span className="min-w-0 flex-1 text-center text-sm font-black leading-7 sm:text-base">
+                                                {stripOptionLabel(option)}
+                                            </span>
+                                            <div className="flex shrink-0 items-center gap-3">
+                                                <span className={`text-2xl font-black ${isSelected ? 'text-indigo-600' : isNightMode ? 'text-white' : 'text-gray-900'}`}>
+                                                    {OPTION_LABELS_AR[idx] || idx + 1}
+                                                </span>
+                                                <span className={`flex h-9 w-9 items-center justify-center rounded-full border-2 ${isSelected ? 'border-indigo-600 bg-white' : isNightMode ? 'border-slate-500' : 'border-gray-300'}`}>
+                                                    <span className={`h-3.5 w-3.5 rounded-full ${isSelected ? 'bg-indigo-600' : 'bg-transparent'}`} />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </Card>
 
                 {/* Navigation */}
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <button 
                         onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
                         disabled={currentQuestionIndex === 0}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-6 py-3 font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${isNightMode ? 'border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'}`}
                     >
                         <ArrowRight size={20} /> السابق
                     </button>
                     
-                    <div className="flex gap-1 overflow-x-auto max-w-[50%] px-2">
+                    <div className="flex max-w-full gap-1 overflow-x-auto px-2 lg:max-w-[58%]">
                         {mockQuestions.map((_, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setCurrentQuestionIndex(idx)}
-                                className={`w-8 h-8 rounded-md shrink-0 text-xs font-bold flex items-center justify-center transition-colors ${
+                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xs font-black transition-colors ${
                                     currentQuestionIndex === idx ? 'bg-indigo-600 text-white' :
-                                    markedForReview[idx] ? 'bg-purple-100 text-purple-700 border border-purple-300' :
-                                    answers[idx] ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' :
-                                    'bg-white border border-gray-200 text-gray-500 hover:bg-gray-50'
+                                    markedForReview[idx] ? 'border border-amber-300 bg-amber-100 text-amber-800' :
+                                    answers[idx] ? 'border border-emerald-300 bg-emerald-100 text-emerald-700' :
+                                    isNightMode ? 'border border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800' :
+                                    'border border-gray-200 bg-white text-gray-500 hover:bg-gray-50'
                                 }`}
                             >
                                 {idx + 1}
@@ -357,7 +394,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                 setCurrentQuestionIndex(prev => Math.min(mockQuestions.length - 1, prev + 1));
                             }
                         }}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-md"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 font-bold text-white shadow-md transition-colors hover:bg-indigo-700"
                     >
                         {currentQuestionIndex === mockQuestions.length - 1 ? 'إنهاء' : 'التالي'} <ArrowLeft size={20} />
                     </button>
@@ -565,118 +602,52 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
         return (
             <div className="max-w-3xl mx-auto animate-fade-in">
-                <Card className="p-8 text-center mb-8 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500"></div>
-                    
-                    <div className="flex justify-between items-center mb-6">
-                        <div className="bg-indigo-50 text-indigo-700 px-4 py-1 rounded-full text-sm font-bold">
-                            ملخص الطالب وولي الأمر
-                        </div>
-                        <h2 className="text-2xl font-black text-gray-800">{mode === 'bank' ? 'نتيجة التصفح' : 'نتيجة الاختبار'}</h2>
+                <Card className="relative mb-8 overflow-hidden border-0 p-6 text-center shadow-sm sm:p-8">
+                    <div className={`absolute left-0 top-0 h-2 w-full ${score.percentage >= 80 ? 'bg-emerald-500' : score.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                        <CheckCircle size={38} />
                     </div>
-                    
-                    <p className="text-gray-500 mb-8">{targetLabel}</p>
+                    <div className="mb-2 inline-flex rounded-full bg-slate-100 px-4 py-1 text-xs font-black text-slate-700">
+                        {mode === 'bank' ? 'ملخص التدريب' : 'نتيجة الاختبار'}
+                    </div>
+                    <h2 className="text-2xl font-black text-gray-900">{resultTone.title}</h2>
+                    <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">{targetLabel}</p>
 
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
-                        <div className="relative">
-                            <svg className="w-40 h-40 transform -rotate-90">
-                                <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-gray-100" />
-                                <circle 
-                                    cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="12" fill="transparent" 
-                                    strokeDasharray={440} 
-                                    strokeDashoffset={440 - (440 * score.percentage) / 100}
-                                    className={`${score.percentage >= 80 ? 'text-emerald-500' : score.percentage >= 60 ? 'text-amber-500' : 'text-red-500'} transition-all duration-1000 ease-out`} 
-                                />
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-4xl font-black text-gray-800">{score.percentage}%</span>
-                            </div>
+                    <div className="my-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div className="rounded-2xl bg-indigo-50 p-4">
+                            <div className="text-xs font-bold text-indigo-600">النتيجة</div>
+                            <div className="mt-2 text-3xl font-black text-indigo-700">{score.percentage}%</div>
                         </div>
-
-                        <div className="grid grid-cols-2 gap-4 text-right">
-                            <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
-                                <div className="text-emerald-600 text-sm font-bold mb-1">إجابات صحيحة</div>
-                                <div className="text-2xl font-black text-emerald-700">{score.correct}</div>
-                            </div>
-                            <div className="bg-red-50 p-4 rounded-xl border border-red-100">
-                                <div className="text-red-600 text-sm font-bold mb-1">إجابات خاطئة</div>
-                                <div className="text-2xl font-black text-red-700">{score.incorrect}</div>
-                            </div>
-                            <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 col-span-2">
-                                <div className="text-indigo-600 text-sm font-bold mb-1">الوقت المستغرق</div>
-                                <div className="text-xl font-bold text-indigo-700">{formatTime(timeUsed)} من {selectedTest?.duration}</div>
-                            </div>
+                        <div className="rounded-2xl bg-emerald-50 p-4">
+                            <div className="text-xs font-bold text-emerald-600">صحيح</div>
+                            <div className="mt-2 text-3xl font-black text-emerald-700">{score.correct}</div>
+                        </div>
+                        <div className="rounded-2xl bg-rose-50 p-4">
+                            <div className="text-xs font-bold text-rose-600">خطأ</div>
+                            <div className="mt-2 text-3xl font-black text-rose-700">{score.incorrect}</div>
+                        </div>
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                            <div className="text-xs font-bold text-slate-500">الوقت</div>
+                            <div className="mt-2 text-lg font-black text-slate-800">{formatTime(timeUsed)}</div>
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-8 text-right">
-                        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-                            <h3 className="font-bold text-slate-800 mb-2">{resultTone.title}</h3>
-                            <p className="text-sm text-slate-600 leading-7">{resultTone.message}</p>
-                        </div>
-                        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-                            <h3 className="font-bold text-amber-800 mb-2">ماذا نفعل الآن؟</h3>
-                            <ul className="text-sm text-amber-700 space-y-2 leading-6">
-                                <li>1) راجع المهارة الأضعف المرتبطة بهذا الاختبار.</li>
-                                <li>2) حل تدريبًا قصيرًا أو اختبارًا محاكيًا قريبًا.</li>
-                                <li>3) أعد الاختبار بعد المراجعة لقياس التحسن.</li>
-                            </ul>
-                        </div>
+                    <div className="mx-auto mb-7 max-w-2xl rounded-2xl border border-slate-100 bg-slate-50 p-4 text-right">
+                        <div className="font-black text-gray-900">{resultTone.label}</div>
+                        <p className="mt-2 text-sm leading-7 text-gray-600">{resultTone.message}</p>
                     </div>
 
-                    <div className="flex flex-col gap-3 mb-8">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button 
-                                onClick={() => setResultViewMode('review')}
-                                className="bg-emerald-500 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-emerald-100"
-                            >
-                                <CheckCircle size={20} /> مراجعة الحلول
-                            </button>
-                            <button 
-                                onClick={() => setIsAnalysisOpen(true)}
-                                className="bg-indigo-600 text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 shadow-lg shadow-indigo-100"
-                            >
-                                <BarChart3 size={20} /> التحليل المفصل
-                            </button>
-                        </div>
-                        <button className="bg-white border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-indigo-50 transition-colors">
-                            <History size={20} /> المحاولات السابقة
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        <button 
+                            onClick={() => setResultViewMode('review')}
+                            className="rounded-xl bg-emerald-500 px-5 py-3 font-black text-white shadow-lg shadow-emerald-100 transition-colors hover:bg-emerald-600"
+                        >
+                            <CheckCircle size={20} className="ml-2 inline" /> مراجعة الحلول
                         </button>
-                    </div>
-
-                    <DetailedAnalysisModal 
-                        isOpen={isAnalysisOpen} 
-                        onClose={() => setIsAnalysisOpen(false)} 
-                        mode={mode}
-                    />
-
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white text-right relative overflow-hidden mb-8">
-                        <div className="relative z-10">
-                            <h3 className="text-xl font-bold mb-2">خطوتك التالية</h3>
-                            <p className="text-indigo-100 mb-4 text-sm">روابط مباشرة تساعدك على المراجعة بدون تعقيد.</p>
-                            <div className="flex flex-wrap gap-3">
-                                <Link to={selectedTestSkillsLink} className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors">
-                                    مراجعة المهارة المرتبطة
-                                </Link>
-                                <Link to={selectedTestBanksLink} className="bg-indigo-800 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-900 transition-colors">
-                                    حل تدريب أو بنك أسئلة
-                                </Link>
-                                <button
-                                    onClick={startTest}
-                                    className="bg-amber-400 text-slate-900 px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-300 transition-colors"
-                                >
-                                    أعد المحاولة الآن
-                                </button>
-                            </div>
-                        </div>
-                        <Lock className="absolute left-[-20px] top-[-20px] w-40 h-40 text-white opacity-10 transform -rotate-12" />
-                    </div>
-
-                    <div className="flex flex-wrap justify-center gap-4">
-                        <button onClick={startTest} className="bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors flex items-center gap-2">
-                            <PlayCircle size={18} /> أعد الاختبار
+                        <button onClick={startTest} className="rounded-xl border-2 border-gray-200 bg-white px-5 py-3 font-black text-gray-700 transition-colors hover:bg-gray-50">
+                            <PlayCircle size={18} className="ml-2 inline" /> أعد الاختبار
                         </button>
-                        <button onClick={() => setTestState('list')} className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">
+                        <button onClick={() => setTestState('list')} className="rounded-xl bg-gray-100 px-5 py-3 font-black text-gray-700 transition-colors hover:bg-gray-200">
                             العودة للقائمة
                         </button>
                     </div>
