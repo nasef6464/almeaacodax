@@ -4,7 +4,7 @@ import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
-import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
+import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -67,6 +67,29 @@ const getMeasuredSkillIds = (quiz: Quiz, questions: Question[]) => {
   });
 
   return [...new Set([...directSkillIds, ...questionSkillIds])];
+};
+
+const getPlacementPatch = (placement: NonNullable<Quiz['placement']>) => {
+  const showInTraining = placement === 'training' || placement === 'both';
+  const showInMock = placement === 'mock' || placement === 'both';
+
+  return {
+    placement,
+    showInTraining,
+    showInMock,
+    type: showInTraining && !showInMock ? 'bank' : 'quiz',
+  } satisfies Pick<Quiz, 'placement' | 'showInTraining' | 'showInMock' | 'type'>;
+};
+
+const hasPlacementDrift = (quiz: Quiz) => {
+  const normalized = normalizeQuizPlacement(quiz, quiz.type || 'quiz');
+
+  return (
+    quiz.type !== normalized.type ||
+    quiz.placement !== normalized.placement ||
+    quiz.showInTraining !== normalized.showInTraining ||
+    quiz.showInMock !== normalized.showInMock
+  );
 };
 
 const getQuizReadinessMeta = (quiz: Quiz, questions: Question[]) => {
@@ -240,6 +263,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         pending: quizzes.filter((quiz) => quiz.approvalStatus === 'pending_review').length,
         ready: readiness.filter((item) => item.issues.length === 0).length,
         needsReview: readiness.filter((item) => item.issues.length > 0).length,
+        placementDrift: quizzes.filter(hasPlacementDrift).length,
       };
     },
     [questions, quizzes],
@@ -370,6 +394,17 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const handleTogglePlatformVisibility = (quiz: Quiz) => {
     updateQuiz(quiz.id, {
       showOnPlatform: quiz.showOnPlatform === false,
+    });
+  };
+
+  const handleSetPlacement = (quiz: Quiz, placement: NonNullable<Quiz['placement']>) => {
+    updateQuiz(quiz.id, getPlacementPatch(placement));
+  };
+
+  const handleNormalizeVisiblePlacement = () => {
+    const targets = quizzes.filter(hasPlacementDrift);
+    targets.forEach((quiz) => {
+      updateQuiz(quiz.id, normalizeQuizPlacement(quiz, filterType || quiz.type || 'quiz'));
     });
   };
 
@@ -504,6 +539,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           <p className="text-xs text-red-500 mb-1">بلا أسئلة</p>
           <p className="text-2xl font-black text-red-600">{quizzesWithoutQuestions}</p>
         </div>
+        <div className="bg-white border border-indigo-100 rounded-xl p-4">
+          <p className="text-xs text-indigo-500 mb-1">تصنيف قديم يحتاج تثبيت</p>
+          <p className="text-2xl font-black text-indigo-700">{scopedCounts.placementDrift}</p>
+        </div>
         <div className="bg-white border border-emerald-100 rounded-xl p-4">
           <p className="text-xs text-emerald-600 mb-1">جاهز للنشر الآمن</p>
           <p className="text-2xl font-black text-emerald-700">{scopedCounts.ready}</p>
@@ -535,6 +574,25 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         <div className="text-xs text-gray-500 mb-1">عناصر بلا مهارات مقاسة</div>
         <div className="text-2xl font-black text-gray-900">{quizzesWithoutMeasuredSkills}</div>
       </div>
+
+      {scopedCounts.placementDrift > 0 && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h3 className="text-sm font-black text-indigo-900">يوجد اختبارات قديمة تحتاج تثبيت التصنيف</h3>
+              <p className="mt-1 text-xs leading-6 text-indigo-700">
+                هذا لا يحذف أي شيء. سيضيف حقول الظهور الحديثة حتى يعرف النظام هل الاختبار يظهر في التدريب أو المحاكي أو الاثنين.
+              </p>
+            </div>
+            <button
+              onClick={handleNormalizeVisiblePlacement}
+              className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
+            >
+              تثبيت تصنيف العناصر الحالية
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
         {!subjectId && (
@@ -690,6 +748,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     <td className="px-6 py-4">
                       <div className="space-y-1">
                         <span className="text-sm font-bold text-gray-700">{getQuizPlacementLabel(quiz)}</span>
+                        {hasPlacementDrift(quiz) ? (
+                          <div className="inline-flex w-fit rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-black text-indigo-700">
+                            يحتاج تثبيت
+                          </div>
+                        ) : null}
                         <div className="text-[11px] text-gray-400">من مركز الاختبارات</div>
                       </div>
                     </td>
@@ -800,6 +863,35 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                         >
                           {quiz.showOnPlatform === false ? <Lock size={18} /> : <LockOpen size={18} />}
                         </button>
+                        <div className="flex rounded-xl border border-gray-100 bg-gray-50 p-1">
+                          <button
+                            onClick={() => handleSetPlacement(quiz, 'training')}
+                            className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
+                              isTrainingQuiz(quiz) && !isMockQuiz(quiz) ? 'bg-emerald-600 text-white' : 'text-gray-500 hover:bg-white'
+                            }`}
+                            title="إظهاره في التدريب فقط"
+                          >
+                            تدريب
+                          </button>
+                          <button
+                            onClick={() => handleSetPlacement(quiz, 'mock')}
+                            className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
+                              isMockQuiz(quiz) && !isTrainingQuiz(quiz) ? 'bg-purple-600 text-white' : 'text-gray-500 hover:bg-white'
+                            }`}
+                            title="إظهاره في الاختبارات المحاكية فقط"
+                          >
+                            محاكي
+                          </button>
+                          <button
+                            onClick={() => handleSetPlacement(quiz, 'both')}
+                            className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
+                              isMockQuiz(quiz) && isTrainingQuiz(quiz) ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-white'
+                            }`}
+                            title="إظهاره في التدريب والمحاكي"
+                          >
+                            الاثنين
+                          </button>
+                        </div>
                         <button onClick={() => handleDelete(quiz.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف">
                           <Trash2 size={18} />
                         </button>
