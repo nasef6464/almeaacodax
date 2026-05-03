@@ -3,6 +3,9 @@ import { Calendar, Clock, BookOpen, Send, CheckCircle, ArrowRight } from 'lucide
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
 export const BookSession: React.FC = () => {
   const navigate = useNavigate();
@@ -16,9 +19,9 @@ export const BookSession: React.FC = () => {
   const [formError, setFormError] = useState('');
   const today = new Date().toISOString().slice(0, 10);
   const requestedSkillId = searchParams.get('skillId');
-  const requestedSkillName = searchParams.get('skillName');
-  const requestedSubjectName = searchParams.get('subjectName');
-  const requestedSectionName = searchParams.get('sectionName');
+  const requestedSkillName = displayText(searchParams.get('skillName'));
+  const requestedSubjectName = displayText(searchParams.get('subjectName'));
+  const requestedSectionName = displayText(searchParams.get('sectionName'));
 
   const sessionTargets = useMemo(() => {
     const primarySkillTargets = skills.map((skill) => {
@@ -30,7 +33,12 @@ export const BookSession: React.FC = () => {
         return null;
       }
 
-      const labelParts = [pathItem?.name, subjectItem?.name, sectionItem?.name, skill.name].filter(Boolean);
+      const labelParts = [
+        displayText(pathItem?.name),
+        displayText(subjectItem?.name),
+        displayText(sectionItem?.name),
+        displayText(skill.name),
+      ].filter(Boolean);
 
       return {
         value: `skill:${skill.id}`,
@@ -39,14 +47,14 @@ export const BookSession: React.FC = () => {
     }).filter((target): target is { value: string; label: string } => Boolean(target));
 
     const secondaryTargets = sections
-      .filter((section) => !primarySkillTargets.some((item) => item.label.includes(section.name)))
+      .filter((section) => !primarySkillTargets.some((item) => item.label.includes(displayText(section.name))))
       .map((section) => {
         const subjectItem = subjects.find((item) => item.id === section.subjectId);
         const pathItem = subjectItem ? paths.find((item) => item.id === subjectItem.pathId) : undefined;
         if (pathItem?.isActive === false) {
           return null;
         }
-        const labelParts = [pathItem?.name, subjectItem?.name, section.name].filter(Boolean);
+        const labelParts = [displayText(pathItem?.name), displayText(subjectItem?.name), displayText(section.name)].filter(Boolean);
 
         return {
           value: `section:${section.id}`,
@@ -132,7 +140,7 @@ export const BookSession: React.FC = () => {
             <CheckCircle size={40} />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 leading-tight">تم تأكيد الحجز بنجاح!</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 leading-tight">تم تأكيد الحجز بنجاح</h2>
             <p className="text-gray-500">تم إرسال طلبك للمدرس. سيتم التواصل معك قريبًا لتأكيد الموعد.</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-xl text-right text-sm text-gray-600 space-y-2">
@@ -149,12 +157,12 @@ export const BookSession: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-8 animate-fade-in pb-20">
       <header className="flex items-start gap-3 sm:gap-4">
-        <Link to="/dashboard" className="text-gray-500 hover:text-gray-700 transition-colors">
+        <Link to="/dashboard" className="text-gray-500 hover:text-gray-700 transition-colors" aria-label="العودة للوحة الطالب">
           <ArrowRight size={24} />
         </Link>
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">حجز حصة خاصة</h1>
-          <p className="text-gray-500 text-sm">احجز جلسة فردية مع أفضل المدرسين لشرح النقاط الصعبة</p>
+          <p className="text-gray-500 text-sm">احجز جلسة فردية مع المدرس للتركيز على النقاط الصعبة.</p>
         </div>
       </header>
 

@@ -99,7 +99,9 @@ const LiveSessions: React.FC = () => {
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8 animate-fade-in">
             <div className="text-right">
                 <h1 className="text-2xl sm:text-3xl font-black text-gray-900">الحصص المباشرة</h1>
-                <p className="text-gray-500 mt-2">تابع مواعيد الحصص القادمة وروابط Zoom وMeet وTeams والبث المباشر في صفحة واحدة منظمة.</p>
+                <p className="text-gray-500 mt-2">
+                    تابع مواعيد الحصص القادمة وروابط Zoom وMeet وTeams والبث المباشر في صفحة واحدة منظمة.
+                </p>
             </div>
 
             {copyMessage && (
@@ -141,7 +143,7 @@ const LiveSessions: React.FC = () => {
                                 </div>
 
                                 <div className="mt-5 space-y-3 text-sm text-gray-600">
-                                    <InfoRow label="المزوّد" value={providerLabelMap[lesson.type] || 'جلسة مباشرة'} />
+                                    <InfoRow label="المزود" value={providerLabelMap[lesson.type] || 'جلسة مباشرة'} />
                                     <InfoRow label="الموعد" value={formatMeetingDate(lesson.meetingDate)} />
                                     <InfoRow label="المدة" value={`${lesson.duration} دقيقة`} />
                                     {lesson.joinInstructions ? (

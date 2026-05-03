@@ -3,6 +3,7 @@ import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, Video
 import { useStore } from '../../store/useStore';
 import { Lesson, LessonType } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
+import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 
 const LIVE_TYPES: LessonType[] = ['live_youtube', 'zoom', 'google_meet', 'teams'];
 
@@ -11,12 +12,14 @@ const providerLabelMap: Record<LessonType, string> = {
     quiz: 'اختبار',
     file: 'ملف',
     assignment: 'واجب',
-    text: 'نصي',
+    text: 'نص',
     live_youtube: 'YouTube Live',
     zoom: 'Zoom',
     google_meet: 'Google Meet',
     teams: 'Microsoft Teams',
 };
+
+const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
 const downloadCsv = (fileName: string, rows: string[][]) => {
     const csv = rows
@@ -111,14 +114,14 @@ export const LiveSessionsManager: React.FC = () => {
             : 'غير محدد';
 
     const buildInviteText = (lesson: Lesson) => {
-        const pathName = paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار';
-        const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة';
+        const pathName = displayText(paths.find((path) => path.id === lesson.pathId)?.name) || 'بدون مسار';
+        const subjectName = displayText(subjects.find((subject) => subject.id === lesson.subjectId)?.name) || 'بدون مادة';
         return [
-            `حصة مباشرة: ${lesson.title}`,
+            `حصة مباشرة: ${displayText(lesson.title)}`,
             `المسار / المادة: ${pathName} - ${subjectName}`,
             `الموعد: ${formatMeetingDate(lesson.meetingDate)}`,
             lesson.meetingUrl ? `رابط الدخول: ${lesson.meetingUrl}` : 'رابط الدخول سيضاف لاحقًا.',
-            lesson.joinInstructions ? `تعليمات: ${lesson.joinInstructions}` : '',
+            lesson.joinInstructions ? `تعليمات: ${displayText(lesson.joinInstructions)}` : '',
         ].filter(Boolean).join('\n');
     };
 
@@ -126,7 +129,7 @@ export const LiveSessionsManager: React.FC = () => {
         const inviteText = buildInviteText(lesson);
         try {
             await navigator.clipboard.writeText(inviteText);
-            setCopyMessage(`تم نسخ دعوة: ${lesson.title}`);
+            setCopyMessage(`تم نسخ دعوة: ${displayText(lesson.title)}`);
         } catch {
             setCopyMessage('تعذر النسخ التلقائي، يمكنك فتح الحصة ونسخ الرابط يدويًا.');
         }
@@ -137,10 +140,10 @@ export const LiveSessionsManager: React.FC = () => {
         downloadCsv('live-sessions-schedule.csv', [
             ['الحصة', 'المزود', 'المسار', 'المادة', 'الموعد', 'المدة', 'الحالة', 'الإظهار', 'رابط الدخول', 'رابط التسجيل'],
             ...liveLessons.map((lesson) => [
-                lesson.title,
+                displayText(lesson.title),
                 providerLabelMap[lesson.type] || lesson.type,
-                paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار',
-                subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة',
+                displayText(paths.find((path) => path.id === lesson.pathId)?.name) || 'بدون مسار',
+                displayText(subjects.find((subject) => subject.id === lesson.subjectId)?.name) || 'بدون مادة',
                 formatMeetingDate(lesson.meetingDate),
                 `${lesson.duration} دقيقة`,
                 lesson.approvalStatus === 'approved' ? 'معتمد' : lesson.approvalStatus === 'pending_review' ? 'بانتظار المراجعة' : lesson.approvalStatus === 'rejected' ? 'مرفوض' : 'مسودة',
@@ -171,7 +174,9 @@ export const LiveSessionsManager: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-800">إدارة الحصص المباشرة</h2>
-                    <p className="text-gray-500 text-sm mt-1">نظّم جلسات Zoom وMeet وTeams والبث المباشر في مساحة مستقلة، ولا تظهر للطالب إلا عند الجاهزية.</p>
+                    <p className="text-gray-500 text-sm mt-1">
+                        نظم جلسات Zoom وMeet وTeams والبث المباشر في مساحة مستقلة، ولا تظهر للطالب إلا عند الجاهزية.
+                    </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <a
@@ -220,7 +225,7 @@ export const LiveSessionsManager: React.FC = () => {
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
                                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الحصة</th>
-                                <th className="px-6 py-4 text-sm font-bold text-gray-600">المزوّد</th>
+                                <th className="px-6 py-4 text-sm font-bold text-gray-600">المزود</th>
                                 <th className="px-6 py-4 text-sm font-bold text-gray-600">المسار / المادة</th>
                                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الموعد</th>
                                 <th className="px-6 py-4 text-sm font-bold text-gray-600">الحالة</th>
@@ -230,8 +235,8 @@ export const LiveSessionsManager: React.FC = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {liveLessons.map((lesson) => {
-                                const pathName = paths.find((path) => path.id === lesson.pathId)?.name || 'بدون مسار';
-                                const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'بدون مادة';
+                                const pathName = displayText(paths.find((path) => path.id === lesson.pathId)?.name) || 'بدون مسار';
+                                const subjectName = displayText(subjects.find((subject) => subject.id === lesson.subjectId)?.name) || 'بدون مادة';
                                 const meetingDateLabel = formatMeetingDate(lesson.meetingDate);
                                 const readinessNotes = [
                                     !lesson.meetingUrl ? 'ينقص الرابط' : '',
@@ -247,7 +252,7 @@ export const LiveSessionsManager: React.FC = () => {
                                                     <Video size={18} />
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-gray-800">{lesson.title}</div>
+                                                    <div className="font-bold text-gray-800">{displayText(lesson.title) || 'حصة بدون عنوان'}</div>
                                                     <div className="text-xs text-gray-500 mt-1">{lesson.duration} دقيقة</div>
                                                     {readinessNotes.length > 0 && (
                                                         <div className="mt-2 flex flex-wrap gap-1">
