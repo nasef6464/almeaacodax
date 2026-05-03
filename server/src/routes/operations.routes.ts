@@ -95,6 +95,7 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
     const visibleCourses = courses.filter((course: any) => isVisibleContent(course) && activePathIds.has(course.pathId || course.category));
     const visibleLibraryItems = libraryItems.filter((item: any) => isVisibleContent(item) && activePathIds.has(item.pathId));
 
+    const pathById = new Map(paths.map((path: any) => [idOf(path), path]));
     const visibleSubjectIds = new Set(visibleSubjects.map(idOf));
     const lessonIds = new Set(visibleLessons.map(idOf));
     const quizIds = new Set(visibleQuizzes.map(idOf));
@@ -103,24 +104,50 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
     const spaces = visibleSubjects.map((subject: any) => {
       const subjectId = idOf(subject);
       const pathId = subject.pathId;
-      const topicCount = visibleTopics.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
+      const spaceTopics = visibleTopics.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
+      const topicCount = spaceTopics.length;
       const lessonCount = visibleLessons.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
       const quizCount = visibleQuizzes.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
       const courseCount = visibleCourses.filter(
         (item: any) => (item.pathId || item.category) === pathId && (item.subjectId || item.subject) === subjectId,
       ).length;
       const libraryCount = visibleLibraryItems.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
+      const missingLessonRefs = spaceTopics.reduce(
+        (total: number, topic: any) => total + (topic.lessonIds || []).filter((lessonId: string) => !lessonIds.has(String(lessonId))).length,
+        0,
+      );
+      const missingQuizRefs = spaceTopics.reduce(
+        (total: number, topic: any) => total + (topic.quizIds || []).filter((quizId: string) => !quizIds.has(String(quizId))).length,
+        0,
+      );
+      const unplayableLinkedLessons = spaceTopics.reduce(
+        (total: number, topic: any) =>
+          total +
+          (topic.lessonIds || []).filter((lessonId: string) => {
+            const lesson = lessonById.get(String(lessonId));
+            return lesson && !hasPlayableLessonMedia(lesson);
+          }).length,
+        0,
+      );
+      const issueCount = missingLessonRefs + missingQuizRefs + unplayableLinkedLessons;
+      const total = topicCount + lessonCount + quizCount + courseCount + libraryCount;
 
       return {
         pathId,
+        pathName: pathById.get(pathId)?.name || pathId,
         subjectId,
         subjectName: subject.name,
-        total: topicCount + lessonCount + quizCount + courseCount + libraryCount,
+        total,
         topics: topicCount,
         lessons: lessonCount,
         quizzes: quizCount,
         courses: courseCount,
         library: libraryCount,
+        issueCount,
+        missingLessonRefs,
+        missingQuizRefs,
+        unplayableLinkedLessons,
+        status: total === 0 ? "empty" : issueCount > 0 ? "needs_attention" : "ready",
       };
     });
 
@@ -178,6 +205,8 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
         score: readinessScore,
         usableSpaces,
         emptySpaces,
+        readySpaces: spaces.filter((space) => space.status === "ready").length,
+        spacesNeedingAttention: spaces.filter((space) => space.status === "needs_attention").length,
         spaces: spaces.slice(0, 12),
       },
       issues: {

@@ -201,6 +201,7 @@ async function run() {
     homepageSettings,
     clientEvents,
     clientEventsResolveAllInfo,
+    operationStatus,
     deliveryReadiness,
     backupStatus,
     backupSnapshots,
@@ -273,6 +274,7 @@ async function run() {
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/operations/client-events/resolve-all", "POST", { severity: "info" }, admin.token),
+    request<any>("/operations/status", "GET", undefined, admin.token),
     request<any>("/operations/delivery-readiness", "GET", undefined, admin.token),
     request<any>("/backups/learning/status", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
@@ -433,6 +435,16 @@ async function run() {
       operationLessonRepairPreview?.applied === false &&
       typeof operationLessonRepairPreview?.affected === "number",
     `affected=${operationLessonRepairPreview?.affected ?? "unknown"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "learning space health details available",
+    Array.isArray(operationStatus?.learningReadiness?.spaces) &&
+      typeof operationStatus?.learningReadiness?.readySpaces === "number" &&
+      operationStatus.learningReadiness.spaces.every((space: any) => typeof space.status === "string" && typeof space.issueCount === "number"),
+    `spaces=${operationStatus?.learningReadiness?.spaces?.length || 0}, ready=${operationStatus?.learningReadiness?.readySpaces ?? "missing"}, attention=${operationStatus?.learningReadiness?.spacesNeedingAttention ?? "missing"}`,
   );
 
   pushResult(

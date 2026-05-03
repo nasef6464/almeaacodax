@@ -628,6 +628,7 @@ export const api = {
         emptySpaces: number;
         spaces: Array<{
           pathId: string;
+          pathName?: string;
           subjectId: string;
           subjectName: string;
           total: number;
@@ -636,7 +637,14 @@ export const api = {
           quizzes: number;
           courses: number;
           library: number;
+          issueCount?: number;
+          missingLessonRefs?: number;
+          missingQuizRefs?: number;
+          unplayableLinkedLessons?: number;
+          status?: "ready" | "needs_attention" | "empty";
         }>;
+        readySpaces?: number;
+        spacesNeedingAttention?: number;
       };
       issues: {
         missingTopicSubjects: number;

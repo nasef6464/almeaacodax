@@ -28,6 +28,7 @@ type OperationalStatus = {
         emptySpaces: number;
         spaces: Array<{
             pathId: string;
+            pathName?: string;
             subjectId: string;
             subjectName: string;
             total: number;
@@ -36,7 +37,14 @@ type OperationalStatus = {
             quizzes: number;
             courses: number;
             library: number;
+            issueCount?: number;
+            missingLessonRefs?: number;
+            missingQuizRefs?: number;
+            unplayableLinkedLessons?: number;
+            status?: 'ready' | 'needs_attention' | 'empty';
         }>;
+        readySpaces?: number;
+        spacesNeedingAttention?: number;
     };
     issues: Record<string, number>;
     deployment: {
@@ -564,6 +572,91 @@ export const OperationsCommandCenter: React.FC = () => {
                         </p>
                     </div>
                 ))}
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="p-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <Activity size={18} className="text-indigo-600" />
+                            صحة مساحات التعلم
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            فحص سريع لكل مادة ظاهرة للطلاب: هل فيها محتوى؟ وهل روابط الدروس والاختبارات داخل المواضيع سليمة؟
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                            سليمة: {formatNumber(status?.learningReadiness.readySpaces)}
+                        </span>
+                        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                            تحتاج انتباه: {formatNumber(status?.learningReadiness.spacesNeedingAttention)}
+                        </span>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                            فارغة: {formatNumber(status?.learningReadiness.emptySpaces)}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 p-5 xl:grid-cols-2">
+                    {(status?.learningReadiness.spaces || []).map((space) => {
+                        const spaceStatus = space.status || (space.total === 0 ? 'empty' : (space.issueCount || 0) > 0 ? 'needs_attention' : 'ready');
+                        const tone = spaceStatus === 'ready'
+                            ? 'border-emerald-100 bg-emerald-50/50 text-emerald-700'
+                            : spaceStatus === 'needs_attention'
+                                ? 'border-amber-100 bg-amber-50/60 text-amber-700'
+                                : 'border-slate-100 bg-slate-50 text-slate-600';
+
+                        return (
+                            <div key={`${space.pathId}-${space.subjectId}`} className="rounded-2xl border border-gray-100 bg-white p-4">
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold text-gray-400">{space.pathName || space.pathId}</div>
+                                        <h3 className="mt-1 truncate text-base font-black text-gray-900">{space.subjectName}</h3>
+                                    </div>
+                                    <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${tone}`}>
+                                        {spaceStatus === 'ready' ? 'جاهزة للطالب' : spaceStatus === 'needs_attention' ? 'تحتاج مراجعة' : 'فارغة'}
+                                    </span>
+                                </div>
+
+                                <div className="mt-4 grid grid-cols-5 gap-2 text-center">
+                                    {[
+                                        ['مواضيع', space.topics],
+                                        ['دروس', space.lessons],
+                                        ['اختبارات', space.quizzes],
+                                        ['دورات', space.courses],
+                                        ['ملفات', space.library],
+                                    ].map(([label, value]) => (
+                                        <div key={label} className="rounded-xl bg-gray-50 p-2">
+                                            <div className="text-[11px] font-bold text-gray-500">{label}</div>
+                                            <div className="mt-1 text-lg font-black text-gray-900">{formatNumber(Number(value))}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {(space.issueCount || 0) > 0 ? (
+                                    <div className="mt-4 rounded-xl bg-amber-50 p-3 text-xs font-bold leading-6 text-amber-800">
+                                        مراجع مكسورة: دروس {formatNumber(space.missingLessonRefs)}، اختبارات {formatNumber(space.missingQuizRefs)}، دروس بلا تشغيل {formatNumber(space.unplayableLinkedLessons)}.
+                                    </div>
+                                ) : space.total === 0 ? (
+                                    <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs font-bold leading-6 text-slate-600">
+                                        هذه المادة ظاهرة لكنها لا تحتوي محتوى طالب منشور حتى الآن.
+                                    </div>
+                                ) : (
+                                    <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-bold leading-6 text-emerald-700">
+                                        روابط هذه المساحة سليمة حسب آخر فحص.
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+
+                    {!loading && !(status?.learningReadiness.spaces || []).length && (
+                        <div className="rounded-2xl border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500 xl:col-span-2">
+                            لا توجد مساحات تعلم ظاهرة للطلاب حاليًا.
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
