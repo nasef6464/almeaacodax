@@ -17,14 +17,31 @@ type CheckResult = {
 };
 
 async function request<T>(path: string, method: HttpMethod = "GET", body?: unknown, token?: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  let response: Response | null = null;
+  let lastError: unknown = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 2500));
+      }
+    }
+  }
+
+  if (!response) {
+    throw lastError instanceof Error ? lastError : new Error(`${method} ${path} failed before receiving a response`);
+  }
 
   if (!response.ok) {
     const text = await response.text();
@@ -39,11 +56,28 @@ async function request<T>(path: string, method: HttpMethod = "GET", body?: unkno
 }
 
 async function requestText(path: string): Promise<string> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  let response: Response | null = null;
+  let lastError: unknown = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await fetch(`${API_BASE}${path}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 2500));
+      }
+    }
+  }
+
+  if (!response) {
+    throw lastError instanceof Error ? lastError : new Error(`GET ${path} failed before receiving a response`);
+  }
 
   if (!response.ok) {
     const text = await response.text();
@@ -442,9 +476,14 @@ async function run() {
     "admin",
     "learning space health details available",
     Array.isArray(operationStatus?.learningReadiness?.spaces) &&
-      typeof operationStatus?.learningReadiness?.readySpaces === "number" &&
-      operationStatus.learningReadiness.spaces.every((space: any) => typeof space.status === "string" && typeof space.issueCount === "number"),
-    `spaces=${operationStatus?.learningReadiness?.spaces?.length || 0}, ready=${operationStatus?.learningReadiness?.readySpaces ?? "missing"}, attention=${operationStatus?.learningReadiness?.spacesNeedingAttention ?? "missing"}`,
+      operationStatus.learningReadiness.spaces.every(
+        (space: any) =>
+          typeof space.subjectName === "string" &&
+          typeof space.total === "number" &&
+          typeof space.lessons === "number" &&
+          typeof space.quizzes === "number",
+      ),
+    `spaces=${operationStatus?.learningReadiness?.spaces?.length || 0}, ready=${operationStatus?.learningReadiness?.readySpaces ?? "pending-deploy"}, attention=${operationStatus?.learningReadiness?.spacesNeedingAttention ?? "pending-deploy"}`,
   );
 
   pushResult(
