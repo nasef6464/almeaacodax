@@ -17,6 +17,7 @@ import {
     CheckCircle2,
     EyeOff,
     Video,
+    Bot,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
@@ -33,6 +34,7 @@ import { HomepageManager } from './HomepageManager';
 import { LiveSessionsManager } from './LiveSessionsManager';
 import { BackupManager } from './BackupManager';
 import { OperationsCommandCenter } from './OperationsCommandCenter';
+import { AiAssistantManager } from './AiAssistantManager';
 import { api } from '../../services/api';
 
 type ReviewQueueItem = {
@@ -555,6 +557,16 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'backups', label: 'النسخ الاحتياطي', icon: <Activity size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
+        if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'ai-assistant')) {
+            const monitoringIndex = nextItems.findIndex((item) => item.id === 'monitoring');
+            const targetIndex = monitoringIndex === -1 ? nextItems.length : monitoringIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'ai-assistant', label: 'إدارة المساعد الذكي', icon: <Bot size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1251,6 +1263,8 @@ export const AdminDashboard: React.FC = () => {
                 return <BackupManager />;
             case 'monitoring':
                 return <OperationsCommandCenter />;
+            case 'ai-assistant':
+                return <AiAssistantManager />;
             case 'settings':
                 return renderSystemOperations();
             default:

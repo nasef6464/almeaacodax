@@ -484,12 +484,27 @@ export const api = {
     }),
   aiStatus: (token?: string | null) =>
     request<{
-      provider: "gemini" | "ollama" | "none";
+      provider: "gemini" | "ollama" | "lmstudio" | "none";
       ollamaConfigured: boolean;
+      lmStudioConfigured?: boolean;
       geminiConfigured: boolean;
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
+  aiAdminAssistant: (payload: { message: string }, token?: string | null) =>
+    request<{
+      text: string;
+      provider: "gemini" | "ollama" | "lmstudio" | "none";
+      audit: {
+        score: number;
+        totals: { checks: number; issues: number; critical: number; warnings: number; info: number };
+        priorities: unknown[];
+      };
+    }>("/ai/admin-assistant", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   getOperationalStatus: (token?: string | null) =>
     request<{
       checkedAt: string;

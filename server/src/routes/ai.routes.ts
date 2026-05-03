@@ -1,9 +1,15 @@
 import { Router } from "express";
 import { z } from "zod";
 import { env } from "../config/env.js";
+import { requireAuth, requireRole } from "../middleware/auth.js";
+import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const chatSchema = z.object({
+  message: z.string().min(1).max(2000),
+});
+
+const adminAssistantSchema = z.object({
   message: z.string().min(1).max(2000),
 });
 
@@ -219,6 +225,73 @@ ${message}
       return res.json({ text: answer || fallback });
     } catch {
       return res.json({ text: fallback });
+    }
+  }),
+);
+
+aiRouter.post(
+  "/admin-assistant",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const { message } = adminAssistantSchema.parse(req.body);
+    const audit = await createOperationsAudit();
+    const priorities = audit.priorities
+      .slice(0, 6)
+      .map((item) => `- ${item.title}: ${item.count} (${item.severity}) - ${item.action}`)
+      .join("\n");
+    const fallback = [
+      `حالة المنصة الآن: ${audit.score}/100.`,
+      audit.totals.critical > 0
+        ? `ابدأ بالمشكلات الحرجة وعددها ${audit.totals.critical}.`
+        : "لا توجد مشكلات حرجة حاليا.",
+      priorities ? `الأولويات:\n${priorities}` : "لا توجد أولويات تشغيلية ظاهرة الآن.",
+      "اقتراحي: عالج أول عنصر في القائمة، ثم اضغط فحص الآن من مركز مراقبة النظام.",
+    ].join("\n\n");
+
+    const prompt = `
+أنت مساعد مدير منصة تعليمية عربية اسمها منصة المئة.
+دورك مساعدة المدير غير البرمجي على فهم حالة الموقع واتخاذ قرار عملي واضح.
+اكتب بالعربية، اختصر، ولا تذكر أسرار أو مفاتيح API أو كلمات مرور.
+لا تنفذ أوامر بنفسك في الرد. أعط خطوات إدارة واضحة.
+
+بيانات الفحص الحالية:
+${JSON.stringify({
+  score: audit.score,
+  totals: audit.totals,
+  priorities: audit.priorities.slice(0, 6).map((item) => ({
+    title: item.title,
+    severity: item.severity,
+    count: item.count,
+    action: item.action,
+  })),
+})}
+
+سؤال المدير:
+${message}
+`;
+
+    try {
+      const answer = await callAi(prompt);
+      return res.json({
+        text: answer || fallback,
+        audit: {
+          score: audit.score,
+          totals: audit.totals,
+          priorities: audit.priorities.slice(0, 6),
+        },
+        provider: resolveProvider(),
+      });
+    } catch {
+      return res.json({
+        text: fallback,
+        audit: {
+          score: audit.score,
+          totals: audit.totals,
+          priorities: audit.priorities.slice(0, 6),
+        },
+        provider: "none",
+      });
     }
   }),
 );
