@@ -12,7 +12,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
+import { sanitizeVideoUrl } from '../utils/videoLinks';
 
 interface CustomVideoPlayerProps {
   url: string;
@@ -23,6 +23,7 @@ interface NormalizedVideoSource {
   playerUrl: string;
   externalUrl: string;
   iframeUrl?: string;
+  blockedProvider?: string;
 }
 
 const normalizeVideoUrl = (rawUrl: string) => {
@@ -35,26 +36,8 @@ const normalizeVideoUrl = (rawUrl: string) => {
     const parsedUrl = new URL(safeUrl);
     const host = parsedUrl.hostname.replace(/^www\./, '').toLowerCase();
 
-    if (host === 'youtu.be') {
-      const videoId = parsedUrl.pathname.split('/').filter(Boolean)[0];
-      if (videoId) {
-        const normalized = `https://www.youtube.com/watch?v=${videoId}`;
-        return {
-          playerUrl: normalized,
-          externalUrl: normalized,
-        };
-      }
-    }
-
-    if (host.includes('youtube.com')) {
-      const videoId = getYouTubeVideoId(safeUrl);
-      if (videoId) {
-        const normalized = `https://www.youtube.com/watch?v=${videoId}`;
-        return {
-          playerUrl: normalized,
-          externalUrl: normalized,
-        };
-      }
+    if (host === 'youtu.be' || host.includes('youtube.com')) {
+      return { playerUrl: '', externalUrl: safeUrl, blockedProvider: 'YouTube' };
     }
 
     if (host.includes('vimeo.com')) {
@@ -198,6 +181,17 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   };
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
+
+  if (!normalizedUrl && videoSource.blockedProvider) {
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-3xl bg-slate-950 px-6 text-center text-white" dir="rtl">
+        <p className="text-lg font-bold">هذا المصدر غير متاح داخل مشغل المنصة</p>
+        <p className="max-w-md text-sm leading-7 text-white/70">
+          استخدم ملف فيديو مباشر أو خدمة استضافة فيديو خاصة حتى يعمل الدرس داخل المشغل الداخلي بدون أي واجهة خارجية.
+        </p>
+      </div>
+    );
+  }
 
   if (!normalizedUrl) {
     return (

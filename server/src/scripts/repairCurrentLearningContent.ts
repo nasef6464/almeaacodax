@@ -42,6 +42,8 @@ const env = {
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 const slug = (value: string) => value.replace(/[^a-zA-Z0-9_]+/g, "_").replace(/^_+|_+$/g, "");
+const platformSampleVideoUrl =
+  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
 
 const subjectTemplate = (subjectName: string, pathName = "") => {
   const searchableName = `${subjectName} ${pathName}`;
@@ -123,7 +125,7 @@ async function run() {
           type: "video",
           duration: "12 دقيقة",
           content: "شرح تمهيدي منظم للطالب داخل رحلة التعلم.",
-          videoUrl: "https://www.youtube.com/watch?v=2BoPkKAm6uc",
+          videoUrl: platformSampleVideoUrl,
           fileUrl: "",
           showOnPlatform: true,
           approvalStatus: "approved",
