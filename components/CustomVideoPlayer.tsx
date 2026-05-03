@@ -201,6 +201,17 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
 
+  if (!normalizedUrl) {
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-3xl bg-slate-950 px-6 text-center text-white" dir="rtl">
+        <p className="text-lg font-bold">لا يوجد رابط فيديو صالح لهذا الدرس</p>
+        <p className="max-w-md text-sm leading-7 text-white/70">
+          أضف رابط يوتيوب أو ملف فيديو من الإدارة حتى يظهر الدرس للطلاب داخل المنصة.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}

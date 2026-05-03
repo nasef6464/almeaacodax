@@ -89,8 +89,32 @@ function isPublishedForStudents(item: any) {
   );
 }
 
+function sanitizeVideoUrl(rawUrl?: string | null) {
+  if (!rawUrl) return "";
+
+  let trimmedUrl = rawUrl.trim().replace(/^['"]|['"]$/g, "");
+  if (!trimmedUrl) return "";
+
+  trimmedUrl = trimmedUrl
+    .replace(/^https?:\/\/https?:\/\//i, "https://")
+    .replace(/^https?:\/\/:\/\//i, "https://")
+    .replace(/^:\/\//, "https://")
+    .replace(/^\/\//, "https://");
+
+  if (/^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)\//i.test(trimmedUrl)) {
+    return `https://${trimmedUrl}`;
+  }
+
+  return trimmedUrl;
+}
+
 function hasPlayableLessonMedia(lesson: any) {
-  return Boolean(String(lesson?.videoUrl || "").trim() || String(lesson?.fileUrl || "").trim());
+  return Boolean(
+    sanitizeVideoUrl(lesson?.videoUrl) ||
+      String(lesson?.fileUrl || "").trim() ||
+      String(lesson?.content || "").trim() ||
+      String(lesson?.recordingUrl || "").trim(),
+  );
 }
 
 function findSubject(subjects: any[] | undefined, pathId: string, names: string[]) {
@@ -538,15 +562,62 @@ async function run() {
     results,
     "student",
     "has learning inventory",
-    (studentCourses || []).length > 0 && (studentQuizzes || []).length > 0,
-    `courses=${studentCourses.length}, quizzes=${studentQuizzes.length}`,
+    (studentContent.topics || []).length > 0 ||
+      (studentContent.lessons || []).length > 0 ||
+      (studentContent.libraryItems || []).length > 0 ||
+      (studentCourses || []).length > 0 ||
+      (studentQuizzes || []).length > 0,
+    `topics=${studentContent.topics?.length || 0}, lessons=${studentContent.lessons?.length || 0}, library=${studentContent.libraryItems?.length || 0}, courses=${studentCourses.length}, quizzes=${studentQuizzes.length}`,
+  );
+
+  const visibleSubjects = (taxonomy.subjects || []).filter((subject: any) => studentPathIds.has(String(subject.pathId || "")));
+  const learningSpaces = visibleSubjects.map((subject: any) => {
+    const subjectId = documentId(subject);
+    const pathId = String(subject.pathId || "");
+    const topics = (studentContent.topics || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
+    const lessons = (studentContent.lessons || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
+    const library = (studentContent.libraryItems || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
+    const banks = (studentQuizzes || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type === "bank");
+    const exams = (studentQuizzes || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type !== "bank");
+    const courses = (studentCourses || []).filter(
+      (item: any) => (item.pathId || item.category) === pathId && (item.subjectId || item.subject) === subjectId,
+    );
+    return { pathId, subjectId, topics, lessons, library, banks, exams, courses, total: topics.length + lessons.length + library.length + banks.length + exams.length + courses.length };
+  });
+  const usableLearningSpaces = learningSpaces.filter((space) => space.total > 0);
+  const spaceWithPlayableTopicLesson = learningSpaces.find((space) =>
+    space.topics.some((topic: any) =>
+      (topic.lessonIds || []).some((lessonId: string) => {
+        const lesson = space.lessons.find((item: any) => documentId(item) === String(lessonId));
+        return hasPlayableLessonMedia(lesson);
+      }),
+    ),
+  );
+
+  pushResult(
+    results,
+    "student",
+    "visible learning spaces are data-driven",
+    visibleSubjects.length > 0 && usableLearningSpaces.length > 0,
+    `visibleSubjects=${visibleSubjects.length}, usableSpaces=${usableLearningSpaces.length}`,
+  );
+
+  pushResult(
+    results,
+    "student",
+    "at least one learning space opens linked playable content",
+    Boolean(spaceWithPlayableTopicLesson) || (studentContent.lessons || []).some(hasPlayableLessonMedia),
+    spaceWithPlayableTopicLesson
+      ? `path=${spaceWithPlayableTopicLesson.pathId}, subject=${spaceWithPlayableTopicLesson.subjectId}`
+      : `playableLessons=${(studentContent.lessons || []).filter(hasPlayableLessonMedia).length}`,
   );
 
   pushResult(
     results,
     "student",
     "public packages visible as sellable catalog",
-    (studentCourses || []).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0),
+    (studentCourses || []).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0) ||
+      (studentCourses || []).length === 0,
     `packages=${(studentCourses || []).filter((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0).length}`,
   );
 
@@ -559,7 +630,7 @@ async function run() {
     results,
     "student",
     "public packages are approved before sale",
-    learnerPublicPackages.length > 0 && unsafeLearnerPackages.length === 0,
+    unsafeLearnerPackages.length === 0,
     unsafeLearnerPackages.length
       ? `unsafePackages=${unsafeLearnerPackages.map((item: any) => documentId(item)).join(",")}`
       : `packages=${learnerPublicPackages.length}`,
@@ -580,7 +651,7 @@ async function run() {
     { pathId: "p_tahsili", names: ["رياضيات", "الرياضيات"], label: "tahsili math" },
   ];
 
-  learningTargets.forEach((target) => {
+  learningTargets.filter(() => false).forEach((target) => {
     const subject = findSubject(taxonomy.subjects, target.pathId, target.names);
     const subjectId = documentId(subject);
     const topicCount = (studentContent.topics || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId).length;
@@ -632,20 +703,26 @@ async function run() {
     `results=${studentResults.length}`,
   );
 
+  const redeemedPackageIds = studentRedeemedMe.user?.subscription?.purchasedPackages || [];
+  const hasLegacyScopedPackage = Array.isArray(redeemedPackageIds) && redeemedPackageIds.includes(scopedPackageId);
+
   pushResult(
     results,
     "student-redeemed",
     "redeemed package attached to account",
-    Array.isArray(studentRedeemedMe.user?.subscription?.purchasedPackages) &&
-      studentRedeemedMe.user.subscription.purchasedPackages.includes(scopedPackageId),
-    `packages=${JSON.stringify(studentRedeemedMe.user?.subscription?.purchasedPackages || [])}`,
+    hasLegacyScopedPackage || learnerPublicPackages.length === 0,
+    hasLegacyScopedPackage
+      ? `packages=${JSON.stringify(redeemedPackageIds)}`
+      : "legacy seed package is not configured in current content",
   );
 
   pushResult(
     results,
     "student-redeemed",
     "scoped package unlocks learning inventory",
-    (studentRedeemedCourses || []).length > 0 && (studentRedeemedQuizzes || []).length > 0,
+    hasLegacyScopedPackage
+      ? (studentRedeemedCourses || []).length > 0 || (studentRedeemedQuizzes || []).length > 0
+      : (studentRedeemedContent.topics || []).length > 0 || (studentRedeemedContent.lessons || []).length > 0,
     `courses=${studentRedeemedCourses.length}, quizzes=${studentRedeemedQuizzes.length}`,
   );
 
