@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
+import { reportClientEvent } from '../services/clientTelemetry';
 
 interface CustomVideoPlayerProps {
   url: string;
@@ -73,6 +74,18 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title })
     } as Plyr.Options);
 
     playerInstanceRef.current = player;
+    player.on('error', (event) => {
+      void reportClientEvent({
+        source: 'video-player',
+        severity: 'warning',
+        message: 'YouTube lesson player error',
+        metadata: {
+          title,
+          videoId,
+          eventType: event.type,
+        },
+      });
+    });
 
     return () => {
       playerInstanceRef.current?.destroy();
@@ -346,6 +359,17 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
           onError={() => {
             setPlaying(false);
             setHasPlaybackError(true);
+            void reportClientEvent({
+              source: 'video-player',
+              severity: 'warning',
+              message: 'Lesson video playback failed',
+              metadata: {
+                title,
+                url: normalizedUrl,
+                externalUrl: videoSource.externalUrl,
+                provider: videoSource.provider || (usesNativeIframe ? 'iframe' : 'file'),
+              },
+            });
           }}
           config={{
             file: {

@@ -10,6 +10,7 @@ import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { APP_VERSION } from './utils/appVersion';
+import { installGlobalClientTelemetry } from './services/clientTelemetry';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
 
@@ -70,6 +71,8 @@ const App: React.FC = () => {
     window.__ALMEAA_APP_VERSION__ = APP_VERSION;
     window.__ALMEAA_API_BASE_URL__ = api.baseUrl;
   }, []);
+
+  useEffect(() => installGlobalClientTelemetry(), []);
 
   useEffect(() => {
     const useRealApi = import.meta.env.VITE_USE_REAL_API !== 'false';

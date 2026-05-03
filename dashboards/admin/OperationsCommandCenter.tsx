@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
     Activity,
     AlertTriangle,
+    Bug,
     CheckCircle2,
+    Clock,
     Database,
     Download,
     RefreshCw,
@@ -75,6 +77,27 @@ type OperationsAudit = {
     priorities: AuditCheck[];
 };
 
+type ClientEvent = {
+    _id: string;
+    severity: 'info' | 'warning' | 'error';
+    source: string;
+    message: string;
+    path?: string;
+    userEmail?: string;
+    role?: string;
+    appVersion?: string;
+    metadata?: Record<string, unknown>;
+    createdAt: string;
+};
+
+type ClientEventsResponse = {
+    events: ClientEvent[];
+    summary: {
+        unresolvedCount: number;
+        last24hCount: number;
+    };
+};
+
 const areaLabels: Record<string, string> = {
     student_journey: 'رحلة الطالب',
     content: 'المحتوى',
@@ -125,6 +148,18 @@ const ownerLabels: Record<string, string> = {
 };
 
 const formatNumber = (value: number | undefined) => (value || 0).toLocaleString('ar-EG');
+const formatEventDate = (value: string) => {
+    try {
+        return new Date(value).toLocaleString('ar-SA', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: 'short',
+        });
+    } catch {
+        return value;
+    }
+};
 
 const SeverityIcon: React.FC<{ severity: AuditCheck['severity']; className?: string }> = ({ severity, className }) => {
     if (severity === 'critical') return <XCircle className={className} size={18} />;
@@ -136,6 +171,7 @@ const SeverityIcon: React.FC<{ severity: AuditCheck['severity']; className?: str
 export const OperationsCommandCenter: React.FC = () => {
     const [status, setStatus] = useState<OperationalStatus | null>(null);
     const [audit, setAudit] = useState<OperationsAudit | null>(null);
+    const [clientEvents, setClientEvents] = useState<ClientEventsResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
@@ -147,12 +183,14 @@ export const OperationsCommandCenter: React.FC = () => {
         setError(null);
 
         try {
-            const [nextStatus, nextAudit] = await Promise.all([
+            const [nextStatus, nextAudit, nextClientEvents] = await Promise.all([
                 api.getOperationalStatus(),
                 api.getOperationsAudit(),
+                api.getClientEvents(12),
             ]);
             setStatus(nextStatus as OperationalStatus);
             setAudit(nextAudit as OperationsAudit);
+            setClientEvents(nextClientEvents as ClientEventsResponse);
         } catch (loadError) {
             console.error('Failed to load operations command center', loadError);
             setError(loadError instanceof Error ? loadError.message : 'تعذر تحميل فحص النظام الآن.');
@@ -321,6 +359,77 @@ export const OperationsCommandCenter: React.FC = () => {
                         </p>
                     </div>
                 ))}
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="p-5 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <Bug size={18} className="text-rose-500" />
+                            سجل أخطاء الواجهة الحية
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            أي صفحة بيضاء، خطأ JavaScript، أو فشل في مشغل الفيديو يتم تسجيله هنا تلقائيا مع الرابط والحساب إن كان مسجلا.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700">
+                            آخر 24 ساعة: {formatNumber(clientEvents?.summary.last24hCount)}
+                        </span>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                            غير مغلقة: {formatNumber(clientEvents?.summary.unresolvedCount)}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="divide-y divide-gray-100">
+                    {loading && (
+                        <div className="p-5 text-sm text-gray-500">جاري تحميل سجل الأخطاء...</div>
+                    )}
+                    {!loading && (!clientEvents?.events.length) && (
+                        <div className="p-8 text-center">
+                            <CheckCircle2 className="mx-auto mb-3 text-emerald-500" size={34} />
+                            <p className="font-bold text-gray-900">لا توجد أخطاء واجهة مسجلة حاليا</p>
+                            <p className="mt-1 text-sm text-gray-500">هذا يعني أن الصفحات لم ترسل أخطاء جديدة للسيرفر في الفترة الأخيرة.</p>
+                        </div>
+                    )}
+                    {clientEvents?.events.map((event) => (
+                        <div key={event._id} className="p-5 hover:bg-gray-50/70">
+                            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                <div className="min-w-0">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${
+                                            event.severity === 'error'
+                                                ? 'bg-rose-50 text-rose-700'
+                                                : event.severity === 'warning'
+                                                    ? 'bg-amber-50 text-amber-700'
+                                                    : 'bg-blue-50 text-blue-700'
+                                        }`}>
+                                            {event.severity === 'error' ? 'خطأ' : event.severity === 'warning' ? 'تنبيه' : 'معلومة'}
+                                        </span>
+                                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
+                                            {event.source}
+                                        </span>
+                                        {event.role ? (
+                                            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-700">
+                                                {event.role}
+                                            </span>
+                                        ) : null}
+                                    </div>
+                                    <p className="mt-3 break-words text-sm font-bold text-gray-900">{event.message}</p>
+                                    <p className="mt-2 break-all text-xs text-gray-500">{event.path || 'بدون رابط'}</p>
+                                    {event.userEmail ? (
+                                        <p className="mt-1 text-xs text-gray-500">الحساب: {event.userEmail}</p>
+                                    ) : null}
+                                </div>
+                                <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                                    <Clock size={14} />
+                                    {formatEventDate(event.createdAt)}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

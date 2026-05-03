@@ -1,6 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { requireAuth, requireRole } from "../middleware/auth.js";
+import { z } from "zod";
+import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
+import { ClientEventModel } from "../models/ClientEvent.js";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
@@ -13,7 +15,22 @@ import { runOperationsRepair, type OperationsRepairAction } from "../services/op
 
 export const operationsRouter = Router();
 
+const clientEventSchema = z.object({
+  severity: z.enum(["info", "warning", "error"]).default("error"),
+  source: z
+    .enum(["app", "error-boundary", "unhandled-error", "unhandled-rejection", "video-player", "api", "manual"])
+    .default("app"),
+  message: z.string().min(1).max(800),
+  stack: z.string().max(3000).optional().default(""),
+  path: z.string().max(500).optional().default(""),
+  appVersion: z.string().max(120).optional().default(""),
+  userAgent: z.string().max(500).optional().default(""),
+  metadata: z.record(z.any()).optional().default({}),
+});
+
 const idOf = (item: any) => String(item?.id || item?._id || "");
+
+const safeString = (value: unknown, maxLength: number) => String(value || "").slice(0, maxLength);
 
 const isVisibleContent = (item: any) =>
   item?.showOnPlatform !== false &&
@@ -174,6 +191,54 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
 operationsRouter.get("/audit", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
     res.json(await createOperationsAudit());
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.post("/client-events", optionalAuth, async (req, res, next) => {
+  try {
+    const payload = clientEventSchema.parse(req.body || {});
+    const authUser = req.authUser;
+
+    await ClientEventModel.create({
+      severity: payload.severity,
+      source: payload.source,
+      message: safeString(payload.message, 800),
+      stack: safeString(payload.stack, 3000),
+      path: safeString(payload.path, 500),
+      appVersion: safeString(payload.appVersion, 120),
+      userAgent: safeString(payload.userAgent, 500),
+      userId: authUser?.id || "",
+      userEmail: authUser?.email || "",
+      role: authUser?.role || "",
+      metadata: payload.metadata,
+    });
+
+    res.status(201).json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.get("/client-events", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit || 25), 1), 100);
+    const severity = String(req.query.severity || "");
+    const filter = ["info", "warning", "error"].includes(severity) ? { severity } : {};
+    const events = await ClientEventModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
+    const unresolvedCount = await ClientEventModel.countDocuments({ resolved: false });
+    const last24hCount = await ClientEventModel.countDocuments({
+      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+
+    res.json({
+      events,
+      summary: {
+        unresolvedCount,
+        last24hCount,
+      },
+    });
   } catch (error) {
     next(error);
   }

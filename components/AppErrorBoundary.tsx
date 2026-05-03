@@ -1,4 +1,5 @@
 import React from 'react';
+import { reportClientEvent } from '../services/clientTelemetry';
 
 type Props = {
     children: React.ReactNode;
@@ -15,8 +16,18 @@ export class AppErrorBoundary extends React.Component<Props, State> {
         return { hasError: true };
     }
 
-    componentDidCatch(error: unknown) {
+    componentDidCatch(error: unknown, info: React.ErrorInfo) {
         console.error('App error boundary caught:', error);
+        const errorObject = error instanceof Error ? error : new Error(String(error || 'Unknown app error'));
+        void reportClientEvent({
+            source: 'error-boundary',
+            severity: 'error',
+            message: errorObject.message || 'App error boundary caught an error',
+            stack: errorObject.stack,
+            metadata: {
+                componentStack: info.componentStack,
+            },
+        });
     }
 
     private recoverToHome = () => {

@@ -613,6 +613,47 @@ export const api = {
       body: payload,
       token,
     }),
+  recordClientEvent: (
+    payload: {
+      severity?: "info" | "warning" | "error";
+      source?: "app" | "error-boundary" | "unhandled-error" | "unhandled-rejection" | "video-player" | "api" | "manual";
+      message: string;
+      stack?: string;
+      path?: string;
+      appVersion?: string;
+      userAgent?: string;
+      metadata?: Record<string, unknown>;
+    },
+    token?: string | null,
+  ) =>
+    request<{ ok: boolean }>("/operations/client-events", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  getClientEvents: (limit = 25, token?: string | null) =>
+    request<{
+      events: Array<{
+        _id: string;
+        severity: "info" | "warning" | "error";
+        source: string;
+        message: string;
+        stack?: string;
+        path?: string;
+        appVersion?: string;
+        userAgent?: string;
+        userId?: string;
+        userEmail?: string;
+        role?: string;
+        metadata?: Record<string, unknown>;
+        resolved?: boolean;
+        createdAt: string;
+      }>;
+      summary: {
+        unresolvedCount: number;
+        last24hCount: number;
+      };
+    }>(`/operations/client-events?limit=${limit}`, { token }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",
