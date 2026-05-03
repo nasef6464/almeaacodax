@@ -43,7 +43,7 @@ const env = {
 const idOf = (item: any) => String(item?.id || item?._id || "");
 const slug = (value: string) => value.replace(/[^a-zA-Z0-9_]+/g, "_").replace(/^_+|_+$/g, "");
 const platformSampleVideoUrl =
-  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+  "https://www.youtube.com/watch?v=2BoPkKAm6uc";
 
 const subjectTemplate = (subjectName: string, pathName = "") => {
   const searchableName = `${subjectName} ${pathName}`;

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
 import {
   Maximize,
   Pause,
@@ -12,7 +14,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { sanitizeVideoUrl } from '../utils/videoLinks';
+import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 
 interface CustomVideoPlayerProps {
   url: string;
@@ -24,7 +26,100 @@ interface NormalizedVideoSource {
   externalUrl: string;
   iframeUrl?: string;
   blockedProvider?: string;
+  provider?: 'youtube';
+  videoId?: string;
 }
+
+interface PlyrYouTubePlayerProps {
+  videoId: string;
+  title?: string;
+}
+
+const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title }) => {
+  const playerElementRef = useRef<HTMLDivElement>(null);
+  const playerInstanceRef = useRef<Plyr | null>(null);
+
+  useEffect(() => {
+    if (!playerElementRef.current) return undefined;
+
+    const player = new Plyr(playerElementRef.current, {
+      controls: [
+        'restart',
+        'rewind',
+        'play',
+        'fast-forward',
+        'progress',
+        'current-time',
+        'duration',
+        'mute',
+        'volume',
+        'settings',
+        'fullscreen',
+      ],
+      settings: ['speed'],
+      speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
+      seekTime: 10,
+      fullscreen: { enabled: true, fallback: true, iosNative: false },
+      youtube: {
+        noCookie: true,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        modestbranding: 1,
+        controls: 0,
+        disablekb: 1,
+        playsinline: 1,
+      },
+    } as Plyr.Options);
+
+    playerInstanceRef.current = player;
+
+    return () => {
+      playerInstanceRef.current?.destroy();
+      playerInstanceRef.current = null;
+    };
+  }, [videoId]);
+
+  return (
+    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-black group">
+      <div
+        ref={playerElementRef}
+        data-plyr-provider="youtube"
+        data-plyr-embed-id={videoId}
+        aria-label={title || 'مشغل فيديو منصة المئة'}
+      />
+      <div className="absolute left-0 right-0 top-0 z-[15] h-20 cursor-default bg-transparent" />
+      <div className="absolute bottom-12 right-0 z-[15] h-16 w-36 cursor-default bg-transparent" />
+      {title ? (
+        <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 rounded-2xl bg-black/35 px-4 py-2 text-right text-sm font-bold text-white backdrop-blur" dir="rtl">
+          {title}
+        </div>
+      ) : null}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .plyr,
+            .plyr__video-wrapper {
+              height: 100%;
+              border-radius: 1.5rem;
+            }
+            .plyr__video-embed iframe {
+              pointer-events: none;
+            }
+            .plyr--full-ui input[type='range'] {
+              color: #14b8a6;
+            }
+            .plyr__control--overlaid,
+            .plyr--video .plyr__control:hover,
+            .plyr--video .plyr__control[aria-expanded='true'] {
+              background: #14b8a6;
+            }
+          `,
+        }}
+      />
+    </div>
+  );
+};
 
 const normalizeVideoUrl = (rawUrl: string) => {
   const url = sanitizeVideoUrl(rawUrl);
@@ -37,6 +132,15 @@ const normalizeVideoUrl = (rawUrl: string) => {
     const host = parsedUrl.hostname.replace(/^www\./, '').toLowerCase();
 
     if (host === 'youtu.be' || host.includes('youtube.com')) {
+      const videoId = getYouTubeVideoId(safeUrl);
+      if (videoId) {
+        return {
+          playerUrl: `https://www.youtube-nocookie.com/embed/${videoId}`,
+          externalUrl: safeUrl,
+          provider: 'youtube',
+          videoId,
+        };
+      }
       return { playerUrl: '', externalUrl: safeUrl, blockedProvider: 'YouTube' };
     }
 
@@ -181,6 +285,10 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   };
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
+
+  if (videoSource.provider === 'youtube' && videoSource.videoId) {
+    return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} />;
+  }
 
   if (!normalizedUrl && videoSource.blockedProvider) {
     return (
