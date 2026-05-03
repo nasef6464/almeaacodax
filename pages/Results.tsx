@@ -506,6 +506,51 @@ const Results: React.FC = () => {
 
     return cards.slice(0, 4);
   }, [bookSessionLink, weakestSkill]);
+  const postResultJourney = React.useMemo(() => {
+    const lessonTitle = weakestSkill?.lessonTopicTitle || weakestSkill?.lessonTitle || weakestSkill?.skillName;
+    const quizTitle = weakestSkill?.quizTitle || 'تدريب قصير على نفس المهارة';
+
+    return [
+      {
+        id: 'review',
+        title: 'راجع موضع الخطأ',
+        body: questionReviewCount > 0 ? `${questionReviewCount} سؤال متاح للمراجعة.` : 'تفاصيل الحلول غير متاحة لهذه المحاولة.',
+        label: 'مراجعة الحلول',
+        Icon: Eye,
+        tone: 'emerald',
+        action: 'review' as const,
+        disabled: questionReviewCount === 0,
+      },
+      {
+        id: 'learn',
+        title: 'افهم المهارة',
+        body: weakestSkill ? `ابدأ بشرح ${lessonTitle}.` : 'افتح التقرير لتحديد المهارة التي تحتاج شرحًا.',
+        label: weakestSkill?.lessonLink ? 'فتح الشرح' : weakestSkill?.lessonVideoUrl ? 'تشغيل الشرح' : 'فتح التقرير',
+        Icon: PlayCircle,
+        tone: 'indigo',
+        to: weakestSkill?.lessonLink || (!weakestSkill?.lessonVideoUrl ? '/reports' : undefined),
+        videoUrl: weakestSkill?.lessonVideoUrl,
+      },
+      {
+        id: 'practice',
+        title: 'تدرب ثم قِس',
+        body: weakestSkill ? quizTitle : 'اختر تدريبًا قصيرًا ثم أعد القياس.',
+        label: weakestSkill?.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
+        Icon: Target,
+        tone: 'amber',
+        to: weakestSkill?.quizLink || '/quizzes',
+      },
+      {
+        id: 'track',
+        title: 'تابع الخطة',
+        body: 'ارجع للتقرير العام لترى هل تحسنت المهارة بعد المحاولة القادمة.',
+        label: 'فتح التقرير',
+        Icon: BarChart3,
+        tone: 'slate',
+        to: '/reports',
+      },
+    ];
+  }, [questionReviewCount, weakestSkill]);
   const copyGuardianSummary = async () => {
     try {
       await navigator.clipboard.writeText(guardianFollowUpSummary);
@@ -661,6 +706,71 @@ const Results: React.FC = () => {
               مستوى المهارة {weakestSkill.mastery}%
             </span>
           ) : null}
+        </div>
+
+        <div className="mt-4 rounded-3xl border border-slate-100 bg-slate-50/70 p-4">
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-black text-gray-900">مسار ما بعد الاختبار</div>
+              <p className="text-xs font-bold leading-6 text-gray-500">اتبعها بالترتيب حتى تتحول النتيجة إلى تحسين فعلي.</p>
+            </div>
+            <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-slate-700">
+              نتيجة ثم علاج ثم قياس
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
+            {postResultJourney.map((step, index) => {
+              const stepAction = (step as { action?: 'review' }).action;
+              const stepVideoUrl = (step as { videoUrl?: string }).videoUrl;
+              const toneClasses = {
+                emerald: 'border-emerald-100 bg-white text-emerald-800 hover:bg-emerald-50',
+                indigo: 'border-indigo-100 bg-white text-indigo-800 hover:bg-indigo-50',
+                amber: 'border-amber-100 bg-white text-amber-800 hover:bg-amber-50',
+                slate: 'border-slate-200 bg-white text-slate-800 hover:bg-slate-100',
+              }[step.tone];
+              const content = (
+                <>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-2 text-xs font-black">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-800">{index + 1}</span>
+                      <step.Icon size={15} />
+                    </span>
+                    <span className="text-[11px] font-black opacity-70">{step.label}</span>
+                  </div>
+                  <div className="mt-3 text-sm font-black text-gray-900">{step.title}</div>
+                  <p className="mt-1 text-xs font-bold leading-6 opacity-75">{step.body}</p>
+                </>
+              );
+
+              if (step.to) {
+                return (
+                  <Link key={step.id} to={step.to} className={`min-h-[128px] rounded-2xl border p-3 transition-colors ${toneClasses}`}>
+                    {content}
+                  </Link>
+                );
+              }
+
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  disabled={step.disabled}
+                  onClick={() => {
+                    if (stepAction === 'review') {
+                      setViewMode('review');
+                      return;
+                    }
+                    if (stepVideoUrl) {
+                      setVideoData({ url: stepVideoUrl, title: weakestSkill ? `شرح مهارة ${weakestSkill.skillName}` : 'شرح سريع' });
+                    }
+                  }}
+                  className={`min-h-[128px] rounded-2xl border p-3 text-right transition-colors disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400 ${toneClasses}`}
+                >
+                  {content}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
