@@ -200,6 +200,7 @@ async function run() {
     aiInteractions,
     homepageSettings,
     clientEvents,
+    clientEventsResolveAllInfo,
     deliveryReadiness,
     backupSnapshots,
     backupActivities,
@@ -270,6 +271,7 @@ async function run() {
     request<any>("/ai/interactions?limit=5", "GET", undefined, admin.token),
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
+    request<any>("/operations/client-events/resolve-all", "POST", { severity: "info" }, admin.token),
     request<any>("/operations/delivery-readiness", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
     request<any>("/backups/learning/activity", "GET", undefined, admin.token),
@@ -373,6 +375,16 @@ async function run() {
       typeof clientEvents?.summary?.unresolvedCount === "number" &&
       typeof clientEvents?.summary?.last24hCount === "number",
     `events=${clientEvents?.events?.length || 0}, last24h=${clientEvents?.summary?.last24hCount ?? "missing"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "client event resolution controls available",
+    clientEventsResolveAllInfo?.ok === true &&
+      typeof clientEventsResolveAllInfo?.matchedCount === "number" &&
+      typeof clientEventsResolveAllInfo?.modifiedCount === "number",
+    `matched=${clientEventsResolveAllInfo?.matchedCount ?? "missing"}, modified=${clientEventsResolveAllInfo?.modifiedCount ?? "missing"}`,
   );
 
   pushResult(

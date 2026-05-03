@@ -785,6 +785,8 @@ export const api = {
         role?: string;
         metadata?: Record<string, unknown>;
         resolved?: boolean;
+        resolvedAt?: string | null;
+        resolvedByEmail?: string;
         createdAt: string;
       }>;
       summary: {
@@ -792,6 +794,23 @@ export const api = {
         last24hCount: number;
       };
     }>(`/operations/client-events?limit=${limit}`, { token }),
+  resolveClientEvent: (id: string, token?: string | null) =>
+    request<{ ok: boolean; event: unknown }>(`/operations/client-events/${id}/resolve`, {
+      method: "PATCH",
+      token,
+    }),
+  resolveClientEvents: (
+    payload?: {
+      severity?: "info" | "warning" | "error";
+      source?: "app" | "error-boundary" | "unhandled-error" | "unhandled-rejection" | "video-player" | "api" | "manual";
+    },
+    token?: string | null,
+  ) =>
+    request<{ ok: boolean; matchedCount: number; modifiedCount: number }>("/operations/client-events/resolve-all", {
+      method: "POST",
+      body: payload || {},
+      token,
+    }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",

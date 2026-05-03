@@ -32,6 +32,13 @@ const clientEventSchema = z.object({
   metadata: z.record(z.any()).optional().default({}),
 });
 
+const resolveClientEventsSchema = z.object({
+  severity: z.enum(["info", "warning", "error"]).optional(),
+  source: z
+    .enum(["app", "error-boundary", "unhandled-error", "unhandled-rejection", "video-player", "api", "manual"])
+    .optional(),
+});
+
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
 const safeString = (value: unknown, maxLength: number) => String(value || "").slice(0, maxLength);
@@ -360,6 +367,67 @@ operationsRouter.get("/client-events", requireAuth, requireRole(["admin"]), asyn
         unresolvedCount,
         last24hCount,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.patch("/client-events/:id/resolve", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid client event id" });
+    }
+
+    const authUser = req.authUser;
+    const event = await ClientEventModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          resolved: true,
+          resolvedAt: new Date(),
+          resolvedBy: authUser?.id || "",
+          resolvedByEmail: authUser?.email || "",
+        },
+      },
+      { new: true },
+    ).lean();
+
+    if (!event) {
+      return res.status(404).json({ message: "Client event not found" });
+    }
+
+    res.json({ ok: true, event });
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.post("/client-events/resolve-all", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    const payload = resolveClientEventsSchema.parse(req.body || {});
+    const authUser = req.authUser;
+    const filter: Record<string, unknown> = { resolved: false };
+    if (payload.severity) {
+      filter.severity = payload.severity;
+    }
+    if (payload.source) {
+      filter.source = payload.source;
+    }
+
+    const result = await ClientEventModel.updateMany(filter, {
+      $set: {
+        resolved: true,
+        resolvedAt: new Date(),
+        resolvedBy: authUser?.id || "",
+        resolvedByEmail: authUser?.email || "",
+      },
+    });
+
+    res.json({
+      ok: true,
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
     });
   } catch (error) {
     next(error);

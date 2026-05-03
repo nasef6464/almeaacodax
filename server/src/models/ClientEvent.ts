@@ -24,6 +24,9 @@ const clientEventSchema = new Schema(
     role: { type: String, default: "", index: true },
     metadata: { type: Schema.Types.Mixed, default: {} },
     resolved: { type: Boolean, default: false, index: true },
+    resolvedAt: { type: Date, default: null },
+    resolvedBy: { type: String, default: "" },
+    resolvedByEmail: { type: String, default: "" },
   },
   {
     timestamps: true,

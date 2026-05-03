@@ -93,6 +93,9 @@ type ClientEvent = {
     role?: string;
     appVersion?: string;
     metadata?: Record<string, unknown>;
+    resolved?: boolean;
+    resolvedAt?: string | null;
+    resolvedByEmail?: string;
     createdAt: string;
 };
 
@@ -227,6 +230,8 @@ export const OperationsCommandCenter: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
     const [repairingAction, setRepairingAction] = useState<RepairAction | null>(null);
+    const [resolvingEventId, setResolvingEventId] = useState<string | null>(null);
+    const [resolvingAllEvents, setResolvingAllEvents] = useState(false);
     const [repairMessage, setRepairMessage] = useState<string | null>(null);
 
     const loadData = async () => {
@@ -332,6 +337,42 @@ export const OperationsCommandCenter: React.FC = () => {
             setRepairMessage(repairError instanceof Error ? repairError.message : 'تعذر تنفيذ الإصلاح الآن.');
         } finally {
             setRepairingAction(null);
+        }
+    };
+
+    const resolveClientEvent = async (eventId: string) => {
+        setResolvingEventId(eventId);
+        setRepairMessage(null);
+
+        try {
+            await api.resolveClientEvent(eventId);
+            setRepairMessage('تم إغلاق الخطأ في سجل المراقبة. سيظل محفوظا كأثر تاريخي للمراجعة.');
+            await loadData();
+        } catch (resolveError) {
+            console.error('Failed to resolve client event', resolveError);
+            setRepairMessage(resolveError instanceof Error ? resolveError.message : 'تعذر إغلاق الخطأ الآن.');
+        } finally {
+            setResolvingEventId(null);
+        }
+    };
+
+    const resolveAllClientErrors = async () => {
+        if (!window.confirm('سيتم وضع علامة تم الحل على كل أخطاء الواجهة غير المغلقة. استخدمها بعد التأكد أن السبب اتصلح. هل تريد المتابعة؟')) {
+            return;
+        }
+
+        setResolvingAllEvents(true);
+        setRepairMessage(null);
+
+        try {
+            const result = await api.resolveClientEvents({ severity: 'error' });
+            setRepairMessage(`تم إغلاق ${formatNumber(result.modifiedCount)} خطأ واجهة غير مغلق.`);
+            await loadData();
+        } catch (resolveError) {
+            console.error('Failed to resolve client events', resolveError);
+            setRepairMessage(resolveError instanceof Error ? resolveError.message : 'تعذر إغلاق الأخطاء الآن.');
+        } finally {
+            setResolvingAllEvents(false);
         }
     };
 
@@ -536,13 +577,24 @@ export const OperationsCommandCenter: React.FC = () => {
                             أي صفحة بيضاء، خطأ JavaScript، أو فشل في مشغل الفيديو يتم تسجيله هنا تلقائيا مع الرابط والحساب إن كان مسجلا.
                         </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700">
                             آخر 24 ساعة: {formatNumber(clientEvents?.summary.last24hCount)}
                         </span>
                         <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
                             غير مغلقة: {formatNumber(clientEvents?.summary.unresolvedCount)}
                         </span>
+                        {(clientEvents?.summary.unresolvedCount || 0) > 0 && (
+                            <button
+                                type="button"
+                                onClick={resolveAllClientErrors}
+                                disabled={resolvingAllEvents}
+                                className="inline-flex items-center gap-2 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-rose-700 disabled:opacity-60"
+                            >
+                                {resolvingAllEvents ? <RefreshCw size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
+                                إغلاق أخطاء الواجهة
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -579,16 +631,43 @@ export const OperationsCommandCenter: React.FC = () => {
                                                 {event.role}
                                             </span>
                                         ) : null}
+                                        {event.resolved ? (
+                                            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                                                تم الحل
+                                            </span>
+                                        ) : (
+                                            <span className="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-700">
+                                                مفتوح
+                                            </span>
+                                        )}
                                     </div>
                                     <p className="mt-3 break-words text-sm font-bold text-gray-900">{event.message}</p>
                                     <p className="mt-2 break-all text-xs text-gray-500">{event.path || 'بدون رابط'}</p>
                                     {event.userEmail ? (
                                         <p className="mt-1 text-xs text-gray-500">الحساب: {event.userEmail}</p>
                                     ) : null}
+                                    {event.resolvedAt ? (
+                                        <p className="mt-1 text-xs text-emerald-600">
+                                            أغلق بواسطة {event.resolvedByEmail || 'مشرف'} في {formatEventDate(event.resolvedAt)}
+                                        </p>
+                                    ) : null}
                                 </div>
-                                <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
-                                    <Clock size={14} />
-                                    {formatEventDate(event.createdAt)}
+                                <div className="flex shrink-0 flex-col items-start gap-3 lg:items-end">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                                        <Clock size={14} />
+                                        {formatEventDate(event.createdAt)}
+                                    </div>
+                                    {!event.resolved && (
+                                        <button
+                                            type="button"
+                                            onClick={() => resolveClientEvent(event._id)}
+                                            disabled={resolvingEventId === event._id}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 disabled:opacity-60"
+                                        >
+                                            {resolvingEventId === event._id ? <RefreshCw size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
+                                            تم الحل
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
