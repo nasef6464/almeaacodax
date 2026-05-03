@@ -114,6 +114,35 @@ export const api = {
     }),
   createLearningBackup: () =>
     request<unknown>("/backups/learning"),
+  createLearningBackupSnapshot: (payload?: { title?: string }, token?: string | null) =>
+    request<unknown>("/backups/learning/snapshots", {
+      method: "POST",
+      body: payload || {},
+      token,
+    }),
+  listLearningBackupSnapshots: (token?: string | null) =>
+    request<{ snapshots: unknown[] }>("/backups/learning/snapshots", {
+      token,
+    }),
+  getLearningBackupSnapshot: (id: string, token?: string | null) =>
+    request<{ snapshot: unknown; backup: unknown }>(`/backups/learning/snapshots/${id}`, {
+      token,
+    }),
+  restoreLearningBackupSnapshot: (
+    id: string,
+    payload: { apply?: boolean; replace?: boolean; confirmText?: string },
+    token?: string | null,
+  ) =>
+    request<unknown>(`/backups/learning/snapshots/${id}/restore`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  deleteLearningBackupSnapshot: (id: string, token?: string | null) =>
+    request<{ ok: boolean }>(`/backups/learning/snapshots/${id}`, {
+      method: "DELETE",
+      token,
+    }),
   restoreLearningBackup: (
     payload: { backup: unknown; apply?: boolean; replace?: boolean; confirmText?: string },
     token?: string | null,

@@ -183,6 +183,7 @@ async function run() {
     aiCourseSummary,
     homepageSettings,
     clientEvents,
+    backupSnapshots,
   ] = await Promise.all([
     request<any>("/auth/me", "GET", undefined, admin.token),
     request<any>("/auth/me", "GET", undefined, teacher.token),
@@ -244,6 +245,7 @@ async function run() {
     request<any>("/ai/course-summary", "POST", { courseTitle: "تأسيس القدرات الكمي" }, teacher.token),
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
+    request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
   ]);
 
   pushResult(results, "admin", "login", adminMe.user?.role === "admin", `role=${adminMe.user?.role}`);
@@ -324,6 +326,14 @@ async function run() {
       typeof clientEvents?.summary?.unresolvedCount === "number" &&
       typeof clientEvents?.summary?.last24hCount === "number",
     `events=${clientEvents?.events?.length || 0}, last24h=${clientEvents?.summary?.last24hCount ?? "missing"}`,
+  );
+
+  pushResult(
+    results,
+    "admin",
+    "server backup snapshots queryable",
+    Array.isArray(backupSnapshots?.snapshots),
+    `snapshots=${backupSnapshots?.snapshots?.length || 0}`,
   );
 
   pushResult(

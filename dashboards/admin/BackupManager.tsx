@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Download, FileJson, Loader2, RefreshCw, ShieldCheck, Upload } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, CheckCircle2, Download, FileJson, Loader2, RefreshCw, Save, ShieldCheck, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
 
 type BackupPayload = {
@@ -17,6 +17,16 @@ type RestoreResponse = {
     replaced?: boolean;
     summary?: Record<string, { backup: number; current: number; action: string }>;
     note?: string;
+};
+
+type BackupSnapshot = {
+    id: string;
+    title: string;
+    createdAt: string;
+    createdByEmail?: string;
+    database?: string;
+    summary?: Record<string, number>;
+    totalDocuments?: number;
 };
 
 const collectionLabels: Record<string, string> = {
@@ -68,6 +78,10 @@ export const BackupManager: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [replaceMode, setReplaceMode] = useState(false);
     const [confirmText, setConfirmText] = useState('');
+    const [snapshots, setSnapshots] = useState<BackupSnapshot[]>([]);
+    const [snapshotsLoading, setSnapshotsLoading] = useState(false);
+    const [snapshotTitle, setSnapshotTitle] = useState('');
+    const [selectedSnapshotId, setSelectedSnapshotId] = useState('');
 
     const backupSummaryRows = useMemo(() => {
         const summary = backupPayload?.summary || Object.fromEntries((backupPayload?.collections || []).map((item) => [item.name, item.documents.length]));
@@ -85,6 +99,24 @@ export const BackupManager: React.FC = () => {
 
     const backupTotals = useMemo(() => backupSummaryRows.reduce((sum, row) => sum + Number(row.count || 0), 0), [backupSummaryRows]);
     const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
+
+    const loadSnapshots = async () => {
+        setSnapshotsLoading(true);
+        setErrorMessage('');
+
+        try {
+            const response = await api.listLearningBackupSnapshots();
+            setSnapshots((response.snapshots || []) as BackupSnapshot[]);
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'تعذر تحميل النسخ المحفوظة على السيرفر.');
+        } finally {
+            setSnapshotsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        void loadSnapshots();
+    }, []);
 
     const createBackup = async () => {
         setIsCreating(true);
@@ -108,6 +140,82 @@ export const BackupManager: React.FC = () => {
             setErrorMessage(error instanceof Error ? error.message : 'تعذر إنشاء النسخة الاحتياطية الآن.');
         } finally {
             setIsCreating(false);
+        }
+    };
+
+    const createSnapshot = async () => {
+        setIsCreating(true);
+        setErrorMessage('');
+        setStatusMessage('');
+
+        try {
+            const response = await api.createLearningBackupSnapshot({
+                title: snapshotTitle.trim() || undefined,
+            }) as { snapshot?: BackupSnapshot };
+            setSnapshotTitle('');
+            setStatusMessage('تم حفظ نسخة احتياطية داخلية على السيرفر. يمكن تحميلها أو استرجاعها لاحقا من هذه اللوحة.');
+            await loadSnapshots();
+            if (response.snapshot?.id) {
+                setSelectedSnapshotId(response.snapshot.id);
+            }
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'تعذر حفظ النسخة على السيرفر الآن.');
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    const loadSnapshotBackup = async (snapshotId: string, shouldDownload = false) => {
+        if (!snapshotId) return;
+        setIsCreating(true);
+        setErrorMessage('');
+        setStatusMessage('');
+
+        try {
+            const response = await api.getLearningBackupSnapshot(snapshotId) as { snapshot?: BackupSnapshot; backup?: BackupPayload };
+            if (!isValidLearningBackup(response.backup || null)) {
+                throw new Error('النسخة المحفوظة على السيرفر غير صالحة.');
+            }
+
+            setBackupPayload(response.backup as BackupPayload);
+            setSelectedSnapshotId(snapshotId);
+            setSelectedFileName(response.snapshot?.title || 'نسخة محفوظة على السيرفر');
+            setRestorePreview(null);
+            setConfirmText('');
+
+            if (shouldDownload) {
+                const safeDate = (response.backup?.createdAt || new Date().toISOString()).replace(/[:.]/g, '-');
+                downloadJson(response.backup, `almeaa-server-snapshot-${safeDate}.json`);
+                setStatusMessage('تم تحميل النسخة المحفوظة من السيرفر.');
+            } else {
+                setStatusMessage('تم تحميل النسخة من السيرفر داخل اللوحة. افحصها قبل أي استرجاع.');
+            }
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'تعذر تحميل النسخة من السيرفر.');
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    const deleteSnapshot = async (snapshotId: string) => {
+        const confirmed = window.confirm('هل تريد حذف هذه النسخة المحفوظة من السيرفر؟ يفضل تحميلها على جهازك قبل الحذف.');
+        if (!confirmed) return;
+
+        setSnapshotsLoading(true);
+        setErrorMessage('');
+        setStatusMessage('');
+
+        try {
+            await api.deleteLearningBackupSnapshot(snapshotId);
+            if (selectedSnapshotId === snapshotId) {
+                setSelectedSnapshotId('');
+            }
+            setStatusMessage('تم حذف النسخة المحفوظة من السيرفر.');
+            await loadSnapshots();
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'تعذر حذف النسخة المحفوظة.');
+        } finally {
+            setSnapshotsLoading(false);
         }
     };
 
@@ -199,6 +307,110 @@ export const BackupManager: React.FC = () => {
                     {errorMessage}
                 </div>
             ) : null}
+
+            <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                    <div>
+                        <h3 className="flex items-center gap-2 text-lg font-black text-gray-900">
+                            <Save size={19} className="text-emerald-600" />
+                            خزنة النسخ المحفوظة على السيرفر
+                        </h3>
+                        <p className="mt-1 max-w-3xl text-sm leading-6 text-gray-500">
+                            هذه نسخ داخلية محفوظة داخل قاعدة البيانات لتسهيل الرجوع السريع. الأفضل دائما تحميل نسخة JSON خارجية أيضا والاحتفاظ بها على جهازك أو Google Drive.
+                        </p>
+                    </div>
+                    <div className="flex w-full flex-col gap-2 sm:flex-row xl:w-auto">
+                        <input
+                            type="text"
+                            value={snapshotTitle}
+                            onChange={(event) => setSnapshotTitle(event.target.value)}
+                            placeholder="اسم اختياري للنسخة"
+                            className="min-w-0 rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 sm:w-72"
+                        />
+                        <button
+                            type="button"
+                            onClick={createSnapshot}
+                            disabled={isCreating}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700 disabled:opacity-60"
+                        >
+                            {isCreating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                            حفظ Snapshot
+                        </button>
+                        <button
+                            type="button"
+                            onClick={loadSnapshots}
+                            disabled={snapshotsLoading}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-black text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                        >
+                            <RefreshCw size={18} className={snapshotsLoading ? 'animate-spin' : ''} />
+                            تحديث
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mt-5 overflow-hidden rounded-2xl border border-gray-100">
+                    {snapshotsLoading ? (
+                        <div className="p-5 text-sm text-gray-500">جاري تحميل النسخ المحفوظة...</div>
+                    ) : snapshots.length === 0 ? (
+                        <div className="p-8 text-center">
+                            <ShieldCheck className="mx-auto mb-3 text-emerald-500" size={34} />
+                            <p className="font-bold text-gray-900">لا توجد نسخ محفوظة على السيرفر بعد</p>
+                            <p className="mt-1 text-sm text-gray-500">اضغط حفظ Snapshot لإنشاء أول نسخة داخلية.</p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-gray-100">
+                            {snapshots.map((snapshot) => (
+                                <div
+                                    key={snapshot.id}
+                                    className={`flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between ${
+                                        selectedSnapshotId === snapshot.id ? 'bg-emerald-50/60' : 'bg-white'
+                                    }`}
+                                >
+                                    <div className="min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <h4 className="font-black text-gray-900">{snapshot.title}</h4>
+                                            {selectedSnapshotId === snapshot.id ? (
+                                                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700">محددة</span>
+                                            ) : null}
+                                        </div>
+                                        <p className="mt-1 text-xs leading-5 text-gray-500">
+                                            {new Date(snapshot.createdAt).toLocaleString('ar-SA')} · {snapshot.totalDocuments || 0} عنصر · {snapshot.database || 'قاعدة غير محددة'}
+                                        </p>
+                                        {snapshot.createdByEmail ? (
+                                            <p className="mt-1 text-xs text-gray-400">أنشأها: {snapshot.createdByEmail}</p>
+                                        ) : null}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => loadSnapshotBackup(snapshot.id)}
+                                            className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-black text-white hover:bg-slate-800"
+                                        >
+                                            تحميل داخل اللوحة
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => loadSnapshotBackup(snapshot.id, true)}
+                                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-black text-gray-700 hover:bg-gray-50"
+                                        >
+                                            <Download size={14} />
+                                            تنزيل JSON
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => deleteSnapshot(snapshot.id)}
+                                            className="inline-flex items-center gap-2 rounded-xl border border-rose-100 bg-rose-50 px-4 py-2 text-xs font-black text-rose-700 hover:bg-rose-100"
+                                        >
+                                            <Trash2 size={14} />
+                                            حذف
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
                 <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm xl:col-span-2">
