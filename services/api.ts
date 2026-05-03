@@ -526,6 +526,44 @@ export const api = {
         clientUrl: string;
       };
     }>("/operations/status", { token }),
+  getOperationsAudit: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      score: number;
+      totals: {
+        checks: number;
+        issues: number;
+        critical: number;
+        warnings: number;
+        info: number;
+      };
+      inventory: Record<string, number>;
+      areaSummary: Record<string, { total: number; issues: number; critical: number }>;
+      checks: Array<{
+        id: string;
+        area: string;
+        severity: "critical" | "warning" | "info" | "success";
+        title: string;
+        detail: string;
+        count: number;
+        action: string;
+        owner: string;
+        routeHint?: string;
+        samples?: string[];
+      }>;
+      priorities: Array<{
+        id: string;
+        area: string;
+        severity: "critical" | "warning" | "info" | "success";
+        title: string;
+        detail: string;
+        count: number;
+        action: string;
+        owner: string;
+        routeHint?: string;
+        samples?: string[];
+      }>;
+    }>("/operations/audit", { token }),
   aiStudyPlan: (payload: { weaknesses: string[] }, token?: string | null) =>
     request<{ steps: string[] }>("/ai/study-plan", {
       method: "POST",

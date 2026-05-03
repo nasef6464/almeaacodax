@@ -8,6 +8,7 @@ import { PathModel } from "../models/Path.js";
 import { QuizModel } from "../models/Quiz.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
+import { createOperationsAudit } from "../services/operationsAudit.js";
 
 export const operationsRouter = Router();
 
@@ -164,6 +165,14 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
         clientUrl: process.env.CLIENT_URL || "",
       },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.get("/audit", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
+  try {
+    res.json(await createOperationsAudit());
   } catch (error) {
     next(error);
   }

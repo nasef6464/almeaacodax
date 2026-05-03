@@ -32,6 +32,7 @@ import { FinancialManager } from './FinancialManager';
 import { HomepageManager } from './HomepageManager';
 import { LiveSessionsManager } from './LiveSessionsManager';
 import { BackupManager } from './BackupManager';
+import { OperationsCommandCenter } from './OperationsCommandCenter';
 import { api } from '../../services/api';
 
 type ReviewQueueItem = {
@@ -1249,6 +1250,7 @@ export const AdminDashboard: React.FC = () => {
             case 'backups':
                 return <BackupManager />;
             case 'monitoring':
+                return <OperationsCommandCenter />;
             case 'settings':
                 return renderSystemOperations();
             default:
