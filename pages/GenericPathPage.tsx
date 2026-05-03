@@ -39,6 +39,36 @@ const resolveThemeColor = (value?: string, fallback = '#4f46e5') => {
     return themeColorMap[value] || fallback;
 };
 
+const normalizeArabicLookup = (value?: string | null) =>
+    (value || '')
+        .replace(/[أإآ]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/\s+/g, '')
+        .trim()
+        .toLowerCase();
+
+const legacyPathNameAliases: Record<string, string[]> = {
+    p_qudrat: ['القدرات', 'قدرات'],
+    p_tahsili: ['التحصيلي', 'تحصيلي'],
+    p_nafes: ['نافس', 'اختبارات نافس', 'اختبارت نافس'],
+    p_step: ['ستيب', 'step'],
+};
+
+const legacySubjectNameAliases: Record<string, string[]> = {
+    sub_quant: ['الكمي', 'كمي'],
+    sub_verbal: ['اللفظي', 'لفظي'],
+    sub_math: ['الرياضيات', 'رياضيات'],
+    sub_physics: ['الفيزياء', 'فيزياء'],
+    sub_chemistry: ['الكيمياء', 'كيمياء'],
+    sub_biology: ['الأحياء', 'الاحياء', 'احياء'],
+};
+
+const hasNameAlias = (name: string | undefined, aliases: string[]) => {
+    const normalizedName = normalizeArabicLookup(name);
+    return aliases.map(normalizeArabicLookup).some((alias) => normalizedName === alias || normalizedName.includes(alias));
+};
+
 export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
@@ -56,10 +86,21 @@ export const GenericPathPage: React.FC = () => {
     const isAdminViewer = user?.role === 'admin';
     const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
     const canSeeHiddenPaths = isStaffViewer;
-    const path = paths.find(p => p.id === normalizedPathId);
+    const directPath = paths.find(p => p.id === normalizedPathId);
+    const aliasedPath = !directPath
+        ? paths.find((p) => hasNameAlias(p.name, legacyPathNameAliases[normalizedPathId] || []))
+        : null;
+    const path = directPath || aliasedPath;
+    const resolvedPathId = path?.id || normalizedPathId;
     const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
     const pathSubjects = subjects.filter(s => s.pathId === path?.id);
     const pathSubjectIds = new Set(pathSubjects.map((subject) => subject.id));
+    const resolveSubjectId = (subjectId: string | null) => {
+        if (!subjectId) return null;
+        if (pathSubjects.some((subject) => subject.id === subjectId)) return subjectId;
+        const aliases = legacySubjectNameAliases[subjectId] || [];
+        return pathSubjects.find((subject) => hasNameAlias(subject.name, aliases))?.id || null;
+    };
 
     // Sync state with URL changes
     useEffect(() => {
@@ -71,14 +112,14 @@ export const GenericPathPage: React.FC = () => {
         const params = new URLSearchParams();
         if (levelId) params.set('level', levelId);
         if (subjectId) params.set('subject', subjectId);
-        navigate(`/category/${normalizedPathId}?${params.toString()}`, { replace });
+        navigate(`/category/${resolvedPathId}?${params.toString()}`, { replace });
     };
 
     const buildSubjectUrl = (levelId: string | null, subjectId: string) => {
         const params = new URLSearchParams();
         if (levelId) params.set('level', levelId);
         params.set('subject', subjectId);
-        return `/category/${normalizedPathId}?${params.toString()}`;
+        return `/category/${resolvedPathId}?${params.toString()}`;
     };
 
     const handleLevelSelect = (levelId: string | null) => {
@@ -90,15 +131,20 @@ export const GenericPathPage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (pathId && normalizedPathId && pathId !== normalizedPathId) {
-            navigate(`/category/${normalizedPathId}${window.location.search || ''}`, { replace: true });
+        if (pathId && resolvedPathId && pathId !== resolvedPathId) {
+            navigate(`/category/${resolvedPathId}${window.location.search || ''}`, { replace: true });
         }
-    }, [navigate, normalizedPathId, pathId]);
+    }, [navigate, pathId, resolvedPathId]);
 
     useEffect(() => {
         if (pathLevels.length === 0) {
-            if (selectedSubjectId && !pathSubjects.some((subject) => subject.id === selectedSubjectId)) {
+            const resolvedSubjectId = resolveSubjectId(selectedSubjectId);
+            if (selectedSubjectId && !resolvedSubjectId) {
                 updateUrl(null, null, true);
+                return;
+            }
+            if (selectedSubjectId && resolvedSubjectId !== selectedSubjectId) {
+                updateUrl(null, resolvedSubjectId, true);
                 return;
             }
             if (selectedLevelId) {
