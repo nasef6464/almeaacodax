@@ -7,6 +7,8 @@ import {
     Clock,
     Database,
     Download,
+    ExternalLink,
+    Globe2,
     RefreshCw,
     ShieldCheck,
     Sparkles,
@@ -98,6 +100,19 @@ type ClientEventsResponse = {
     };
 };
 
+type SeoStatus = {
+    checkedAt: string;
+    siteUrl: string;
+    sitemapUrl: string;
+    robotsUrl: string;
+    manifestUrl: string;
+    indexableRoutes: number;
+    paths: number;
+    subjects: number;
+    warnings: string[];
+    sampleRoutes: Array<{ title: string; loc: string }>;
+};
+
 const areaLabels: Record<string, string> = {
     student_journey: 'رحلة الطالب',
     content: 'المحتوى',
@@ -172,6 +187,7 @@ export const OperationsCommandCenter: React.FC = () => {
     const [status, setStatus] = useState<OperationalStatus | null>(null);
     const [audit, setAudit] = useState<OperationsAudit | null>(null);
     const [clientEvents, setClientEvents] = useState<ClientEventsResponse | null>(null);
+    const [seoStatus, setSeoStatus] = useState<SeoStatus | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info' | 'success'>('all');
@@ -183,14 +199,16 @@ export const OperationsCommandCenter: React.FC = () => {
         setError(null);
 
         try {
-            const [nextStatus, nextAudit, nextClientEvents] = await Promise.all([
+            const [nextStatus, nextAudit, nextClientEvents, nextSeoStatus] = await Promise.all([
                 api.getOperationalStatus(),
                 api.getOperationsAudit(),
                 api.getClientEvents(12),
+                api.getSeoStatus(),
             ]);
             setStatus(nextStatus as OperationalStatus);
             setAudit(nextAudit as OperationsAudit);
             setClientEvents(nextClientEvents as ClientEventsResponse);
+            setSeoStatus(nextSeoStatus as SeoStatus);
         } catch (loadError) {
             console.error('Failed to load operations command center', loadError);
             setError(loadError instanceof Error ? loadError.message : 'تعذر تحميل فحص النظام الآن.');
@@ -554,6 +572,53 @@ export const OperationsCommandCenter: React.FC = () => {
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                        <h2 className="font-bold text-gray-900 flex items-center gap-2">
+                            <Globe2 size={18} className="text-indigo-600" />
+                            ظهور الموقع في البحث
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            فحص روابط الفهرسة التي يحتاجها Google ومحركات البحث.
+                        </p>
+                        <div className="mt-4 grid grid-cols-3 gap-2">
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">صفحات</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(seoStatus?.indexableRoutes)}</p>
+                            </div>
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">مسارات</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(seoStatus?.paths)}</p>
+                            </div>
+                            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                                <p className="text-xs text-gray-500">مواد</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{formatNumber(seoStatus?.subjects)}</p>
+                            </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                            {[
+                                ['Sitemap', seoStatus?.sitemapUrl],
+                                ['Robots', seoStatus?.robotsUrl],
+                                ['Manifest', seoStatus?.manifestUrl],
+                            ].map(([label, href]) => (
+                                <a
+                                    key={label}
+                                    href={href || '#'}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-50"
+                                >
+                                    <span>{label}</span>
+                                    <ExternalLink size={14} />
+                                </a>
+                            ))}
+                        </div>
+                        {!!seoStatus?.warnings.length && (
+                            <div className="mt-4 rounded-lg border border-amber-100 bg-amber-50 p-3 text-xs leading-6 text-amber-800">
+                                {seoStatus.warnings[0]}
+                            </div>
+                        )}
                     </div>
 
                     <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">

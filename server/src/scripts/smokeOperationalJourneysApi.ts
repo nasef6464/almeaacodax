@@ -38,6 +38,21 @@ async function request<T>(path: string, method: HttpMethod = "GET", body?: unkno
   return (await response.json()) as T;
 }
 
+async function requestText(path: string): Promise<string> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GET ${path} failed (${response.status}): ${text}`);
+  }
+
+  return response.text();
+}
+
 async function login(email: string, password: string): Promise<AuthSession> {
   return request<AuthSession>("/auth/login", "POST", { email, password });
 }
@@ -184,6 +199,9 @@ async function run() {
     homepageSettings,
     clientEvents,
     backupSnapshots,
+    seoStatus,
+    sitemapXml,
+    robotsTxt,
   ] = await Promise.all([
     request<any>("/auth/me", "GET", undefined, admin.token),
     request<any>("/auth/me", "GET", undefined, teacher.token),
@@ -246,6 +264,9 @@ async function run() {
     request<any>("/content/homepage-settings"),
     request<any>("/operations/client-events?limit=5", "GET", undefined, admin.token),
     request<any>("/backups/learning/snapshots", "GET", undefined, admin.token),
+    request<any>("/seo/status"),
+    requestText("/seo/sitemap.xml"),
+    requestText("/seo/robots.txt"),
   ]);
 
   pushResult(results, "admin", "login", adminMe.user?.role === "admin", `role=${adminMe.user?.role}`);
@@ -334,6 +355,32 @@ async function run() {
     "server backup snapshots queryable",
     Array.isArray(backupSnapshots?.snapshots),
     `snapshots=${backupSnapshots?.snapshots?.length || 0}`,
+  );
+
+  pushResult(
+    results,
+    "guest",
+    "seo status exposes current routes",
+    Number(seoStatus?.indexableRoutes || 0) > 0 &&
+      typeof seoStatus?.sitemapUrl === "string" &&
+      typeof seoStatus?.robotsUrl === "string",
+    `routes=${seoStatus?.indexableRoutes || 0}, paths=${seoStatus?.paths || 0}, subjects=${seoStatus?.subjects || 0}`,
+  );
+
+  pushResult(
+    results,
+    "guest",
+    "sitemap xml is available",
+    sitemapXml.includes("<urlset") && sitemapXml.includes("<loc>"),
+    `chars=${sitemapXml.length}`,
+  );
+
+  pushResult(
+    results,
+    "guest",
+    "robots txt points to sitemap",
+    robotsTxt.includes("User-agent: *") && robotsTxt.includes("Sitemap:"),
+    `chars=${robotsTxt.length}`,
   );
 
   pushResult(

@@ -627,6 +627,19 @@ export const api = {
         samples?: string[];
       }>;
     }>("/operations/audit", { token }),
+  getSeoStatus: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      siteUrl: string;
+      sitemapUrl: string;
+      robotsUrl: string;
+      manifestUrl: string;
+      indexableRoutes: number;
+      paths: number;
+      subjects: number;
+      warnings: string[];
+      sampleRoutes: Array<{ title: string; loc: string }>;
+    }>("/seo/status", { token }),
   runOperationsRepair: (
     payload: { action: "hide-empty-published-quizzes" | "hide-empty-active-paths" | "unlink-unavailable-topic-quizzes"; apply?: boolean },
     token?: string | null,

@@ -1,4 +1,18 @@
 {
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://almeaacodax-k2ux.onrender.com/api/seo/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://almeaacodax-k2ux.onrender.com/api/seo/robots.txt"
+    },
+    {
+      "source": "/site.webmanifest",
+      "destination": "https://almeaacodax-k2ux.onrender.com/api/seo/manifest.json"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
