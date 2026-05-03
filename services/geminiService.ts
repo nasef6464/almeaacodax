@@ -4,6 +4,57 @@ import { sanitizeArabicText } from "../utils/sanitizeMojibakeArabic";
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || "";
 
+const buildLocalStudentReply = (message: string): string => {
+  const normalized = message.trim().toLowerCase();
+  const isQuant = /كمي|رياض|معادل|كسور|نسبة|نسب|مسائل|حساب|جبر/.test(normalized);
+  const isVerbal = /لفظ|قراءة|نص|معنى|مرادف|استيعاب|سياق/.test(normalized);
+  const isStudy = /أذاكر|اذاكر|مذاكر|خطة|جدول|اليوم|ابدأ|ابدا/.test(normalized);
+
+  if (isStudy) {
+    return [
+      "خطة قصيرة لليوم:",
+      "1. راجع فكرة واحدة فقط لمدة 10 دقائق.",
+      "2. حل 5 أسئلة سهلة لتثبيت الفكرة.",
+      "3. حل 5 أسئلة متوسطة وسجل الأخطاء.",
+      "4. أعد سؤالين أخطأت فيهما بدون النظر للحل.",
+      isQuant ? "ابدأ في الكمي بالكسور والنسب أو المعادلات لأنها أكثر تكرارا." : "",
+      isVerbal ? "ابدأ في اللفظي بفهم الفكرة الرئيسة ومعاني الكلمات من السياق." : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  if (isQuant) {
+    return [
+      "خلينا نمسكها كمي خطوة بخطوة:",
+      "1. حدد المطلوب في السؤال قبل الحساب.",
+      "2. اكتب المعطيات كأرقام أو علاقة بسيطة.",
+      "3. جرّب طريقة مباشرة: تعويض، تبسيط كسر، أو تكوين معادلة.",
+      "4. بعد الحل راجع هل الإجابة منطقية مقارنة بالاختيارات.",
+      "اكتب لي نص السؤال أو فكرته، وسأرتبه لك كخطوات حل.",
+    ].join("\n");
+  }
+
+  if (isVerbal) {
+    return [
+      "في اللفظي ركز على الفكرة قبل الاختيارات:",
+      "1. اقرأ الجملة أو الفقرة مرة للفهم العام.",
+      "2. حدد الكلمة المفتاحية أو علاقة السبب والنتيجة.",
+      "3. احذف الاختيارات البعيدة عن السياق.",
+      "4. اختر الإجابة التي تخدم معنى الجملة بالكامل.",
+      "اكتب لي النص أو السؤال، وسأساعدك في تفكيكه.",
+    ].join("\n");
+  }
+
+  return [
+    "أنا معك. اكتب السؤال أو المهارة التي تريد فهمها، وسأقسمها لك إلى:",
+    "1. الفكرة الأساسية.",
+    "2. مثال سريع.",
+    "3. تدريب قصير.",
+    "4. طريقة تتأكد بها أنك أتقنتها.",
+  ].join("\n");
+};
+
 const sanitizeRecommendation = (item: LearningRecommendation): LearningRecommendation => ({
   ...item,
   title: displayText(item.title),
@@ -16,9 +67,10 @@ const sanitizeRecommendation = (item: LearningRecommendation): LearningRecommend
 export const getChatResponse = async (message: string): Promise<string> => {
   try {
     const response = await api.aiChat({ message });
-    return displayText(response.text) || "لم أفهم السؤال جيدًا. جرّب كتابته بطريقة أبسط وسأساعدك خطوة بخطوة.";
+    const text = displayText(response.text);
+    return text || buildLocalStudentReply(message);
   } catch {
-    return "أواجه ضغطًا بسيطًا الآن. اكتب سؤالك مرة أخرى بعد قليل، أو حدد المهارة التي تريد شرحها.";
+    return buildLocalStudentReply(message);
   }
 };
 
