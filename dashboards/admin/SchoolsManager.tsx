@@ -39,6 +39,27 @@ type ImportResponse = {
     credentials: Array<{ name: string; email: string; password: string; className?: string }>;
 };
 
+type RelationImportRow = {
+    studentEmail: string;
+    parentEmail?: string;
+    parentName?: string;
+    supervisorEmail?: string;
+    supervisorName?: string;
+    className?: string;
+};
+
+type RelationImportSummary = {
+    rows: number;
+    linkedParents: number;
+    linkedSupervisors: number;
+    assignedClasses: number;
+    missingStudents: number;
+    missingParents: number;
+    missingSupervisors: number;
+    missingClasses: number;
+    skippedRows: number;
+};
+
 type SchoolReport = {
     school: {
         id: string;
@@ -87,6 +108,15 @@ const STUDENT_IMPORT_HEADERS = {
     email: ['email', 'mail', 'البريد', 'البريد الإلكتروني', 'الايميل', 'الإيميل', 'بريد الطالب'],
     className: ['className', 'class', 'classroom', 'الفصل', 'اسم الفصل', 'الصف', 'المجموعة'],
     password: ['password', 'pass', 'كلمة المرور', 'كلمة السر', 'الرقم السري', 'passwordHint'],
+};
+
+const RELATION_IMPORT_HEADERS = {
+    studentEmail: ['studentEmail', 'student', 'بريد الطالب', 'ايميل الطالب', 'إيميل الطالب', 'البريد الإلكتروني للطالب'],
+    parentEmail: ['parentEmail', 'parent', 'ولي الأمر', 'بريد ولي الأمر', 'ايميل ولي الأمر', 'إيميل ولي الأمر'],
+    parentName: ['parentName', 'اسم ولي الأمر', 'ولي الامر', 'guardianName'],
+    supervisorEmail: ['supervisorEmail', 'teacherEmail', 'بريد المشرف', 'ايميل المشرف', 'إيميل المشرف', 'بريد المعلم'],
+    supervisorName: ['supervisorName', 'teacherName', 'اسم المشرف', 'اسم المعلم'],
+    className: ['className', 'class', 'الفصل', 'اسم الفصل', 'الصف', 'المجموعة'],
 };
 
 const createCsvDownload = (fileName: string, rows: string[][]) => {
@@ -208,6 +238,79 @@ const parseImportFile = async (file: File): Promise<ImportRow[]> => {
 */
 };
 
+const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
+    const normalizedRows = rows
+        .map((row) => row.map((cell) => String(cell ?? '').trim()))
+        .filter((row) => row.some(Boolean));
+
+    if (normalizedRows.length < 2) {
+        return [];
+    }
+
+    normalizedRows[0] = normalizedRows[0].map((header) => {
+        const normalizedHeader = normalizeHeader(header);
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.studentEmail)) return 'studentEmail';
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.parentEmail)) return 'parentEmail';
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.parentName)) return 'parentName';
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.supervisorEmail)) return 'supervisorEmail';
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.supervisorName)) return 'supervisorName';
+        if (headerMatches(normalizedHeader, RELATION_IMPORT_HEADERS.className)) return 'className';
+        return header;
+    });
+
+    const headers = normalizedRows[0].map(normalizeHeader);
+    const studentEmailIndex = headers.findIndex((header) => header === 'studentemail');
+    const parentEmailIndex = headers.findIndex((header) => header === 'parentemail');
+    const parentNameIndex = headers.findIndex((header) => header === 'parentname');
+    const supervisorEmailIndex = headers.findIndex((header) => header === 'supervisoremail');
+    const supervisorNameIndex = headers.findIndex((header) => header === 'supervisorname');
+    const classNameIndex = headers.findIndex((header) => header === 'classname');
+
+    if (studentEmailIndex === -1) {
+        throw new Error('ملف الربط يحتاج عمود بريد الطالب على الأقل.');
+    }
+
+    return normalizedRows
+        .slice(1)
+        .map((cells) => ({
+            studentEmail: (cells[studentEmailIndex] || '').trim(),
+            parentEmail: parentEmailIndex >= 0 ? (cells[parentEmailIndex] || '').trim() : undefined,
+            parentName: parentNameIndex >= 0 ? (cells[parentNameIndex] || '').trim() : undefined,
+            supervisorEmail: supervisorEmailIndex >= 0 ? (cells[supervisorEmailIndex] || '').trim() : undefined,
+            supervisorName: supervisorNameIndex >= 0 ? (cells[supervisorNameIndex] || '').trim() : undefined,
+            className: classNameIndex >= 0 ? (cells[classNameIndex] || '').trim() : undefined,
+        }))
+        .filter((row) => row.studentEmail || row.parentEmail || row.supervisorEmail || row.className);
+};
+
+const parseRelationFile = async (file: File): Promise<RelationImportRow[]> => {
+    if (/\.(xlsx|xls)$/i.test(file.name)) {
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        if (!firstSheetName) {
+            return [];
+        }
+
+        const worksheet = workbook.Sheets[firstSheetName];
+        return parseRelationRows(XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' }) as unknown[][]);
+    }
+
+    const raw = await file.text();
+    const content = raw.replace(/\r\n/g, '\n').trim();
+    if (!content) {
+        return [];
+    }
+
+    const lines = content.split('\n').filter(Boolean);
+    if (lines.length < 2) {
+        return [];
+    }
+
+    const delimiter = lines[0].includes('\t') ? '\t' : ',';
+    return parseRelationRows(lines.map((line) => line.split(delimiter)));
+};
+
 const getDuplicateImportEmails = (rows: ImportRow[]) => {
     const seen = new Set<string>();
     const duplicates = new Set<string>();
@@ -248,6 +351,7 @@ export const SchoolsManager: React.FC = () => {
         createGroup,
         updateGroup,
         deleteGroup,
+        updateUser,
         assignSupervisorToGroup,
         removeSupervisorFromGroup,
         assignCourseToGroup,
@@ -262,13 +366,16 @@ export const SchoolsManager: React.FC = () => {
     } = useStore();
 
     const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'import' | 'reports'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'relations' | 'import' | 'reports'>('overview');
     const [schoolSearch, setSchoolSearch] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [importRows, setImportRows] = useState<ImportRow[]>([]);
     const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
     const [importCredentials, setImportCredentials] = useState<ImportResponse['credentials']>([]);
     const [importError, setImportError] = useState<string | null>(null);
+    const [relationRows, setRelationRows] = useState<RelationImportRow[]>([]);
+    const [relationSummary, setRelationSummary] = useState<RelationImportSummary | null>(null);
+    const [relationError, setRelationError] = useState<string | null>(null);
     const [schoolReport, setSchoolReport] = useState<SchoolReport | null>(null);
     const [isLoadingReport, setIsLoadingReport] = useState(false);
     const [reportError, setReportError] = useState<string | null>(null);
@@ -288,6 +395,7 @@ export const SchoolsManager: React.FC = () => {
         () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
         [users],
     );
+    const parents = useMemo(() => users.filter((currentUser) => currentUser.role === Role.PARENT), [users]);
     const publishedCourses = useMemo(() => courses.filter((course) => course.isPublished !== false), [courses]);
     const importPreviewStats = useMemo(() => {
         const duplicateEmails = getDuplicateImportEmails(importRows);
@@ -444,6 +552,28 @@ export const SchoolsManager: React.FC = () => {
         ]);
     };
 
+    const downloadRelationsTemplate = () => {
+        createWorkbookDownload('school-relations-template.xlsx', [
+            {
+                name: 'relations',
+                rows: [
+                    ['بريد الطالب', 'بريد ولي الأمر', 'اسم ولي الأمر', 'بريد المشرف', 'اسم المشرف', 'اسم الفصل'],
+                    ['student1@example.com', 'parent1@example.com', 'ولي أمر تجريبي', 'supervisor1@example.com', 'مشرف تجريبي', 'فصل أ'],
+                    ['student2@example.com', 'parent1@example.com', 'ولي أمر تجريبي', '', '', 'فصل ب'],
+                ],
+            },
+            {
+                name: 'notes',
+                rows: [
+                    ['ملاحظة', 'القيمة'],
+                    ['الطلاب', 'يجب أن تكون حساباتهم موجودة داخل المدرسة قبل تنفيذ الربط.'],
+                    ['أولياء الأمور والمشرفون', 'هذه الدفعة تربط الحسابات الموجودة فقط، والحسابات الناقصة تظهر في التقرير.'],
+                    ['الفصل', 'اكتب اسم الفصل كما هو داخل المدرسة، واتركه فارغا إذا كان الطالب مرتبطا بالفعل.'],
+                ],
+            },
+        ]);
+    };
+
     const downloadCredentials = () => {
         if (!importCredentials.length) {
             return;
@@ -489,6 +619,24 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
+    const handleRelationFile = async (file: File) => {
+        setRelationError(null);
+        setRelationSummary(null);
+        try {
+            const rows = await parseRelationFile(file);
+            if (!rows.length) {
+                setRelationRows([]);
+                setRelationError('لم أجد صفوف ربط صالحة داخل الملف. تأكد من وجود عمود بريد الطالب.');
+                return;
+            }
+
+            setRelationRows(rows);
+        } catch (error) {
+            setRelationRows([]);
+            setRelationError(error instanceof Error ? error.message : 'تعذر قراءة ملف الربط. استخدم Excel أو CSV أو TSV.');
+        }
+    };
+
     const handleStartImport = async () => {
         if (!selectedSchool || !importRows.length) {
             return;
@@ -530,7 +678,25 @@ export const SchoolsManager: React.FC = () => {
         const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
         const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
         const schoolStudents = students.filter((currentUser) => currentUser.schoolId === selectedSchool.id);
-        const schoolSupervisors = supervisors.filter((currentUser) => currentUser.groupIds?.includes(selectedSchool.id));
+        const schoolGroupIds = new Set([selectedSchool.id, ...schoolClasses.map((classroom) => classroom.id)]);
+        const schoolSupervisors = supervisors.filter((currentUser) => (
+            selectedSchool.supervisorIds.includes(currentUser.id)
+            || schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
+            || (currentUser.groupIds || []).some((groupId) => schoolGroupIds.has(groupId))
+        ));
+        const schoolParentUsers = parents.filter((currentUser) => (
+            (currentUser.linkedStudentIds || []).some((studentId) => schoolStudents.some((student) => student.id === studentId))
+        ));
+        const studentsWithoutParent = schoolStudents.filter((student) => (
+            !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
+        ));
+        const studentsWithoutClass = schoolStudents.filter((student) => (
+            !(student.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
+        ));
+        const supervisorsWithoutClass = schoolSupervisors.filter((currentUser) => (
+            !(currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
+            && !schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
+        ));
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
         const activeSchoolCodes = schoolCodes.filter((code) => code.expiresAt > Date.now());
@@ -575,8 +741,11 @@ export const SchoolsManager: React.FC = () => {
             activeSchoolPackages.length === 0 ? 'فعّل باقة مدرسية حتى يحصل الطلاب على الوصول بدون شراء فردي.' : '',
             activeSchoolCodes.length === 0 ? 'ولّد كود دخول صالحًا إذا كانت المدرسة ستسجل الطلاب بالأكواد.' : '',
             totalSeats > 0 && usedSeats >= totalSeats ? 'تم استهلاك كل المقاعد المتاحة، راجع سعة الباقات.' : '',
-            schoolStudents.some((student) => !(student.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId)))
+            studentsWithoutClass.length > 0
                 ? 'يوجد طلاب بلا فصل، يفضل نقلهم لفصول قبل متابعة التقارير.'
+                : '',
+            studentsWithoutParent.length > 0
+                ? 'يوجد طلاب بلا ولي أمر مرتبط، راجع تبويب الربط والمتابعة قبل تسليم الحسابات.'
                 : '',
         ].filter(Boolean);
         const downloadSchoolHandover = () => {
@@ -721,6 +890,198 @@ export const SchoolsManager: React.FC = () => {
             ]);
         };
 
+        const downloadRelationsReport = () => {
+            createWorkbookDownload(`${selectedSchool.name}-relations-report.xlsx`, [
+                {
+                    name: 'summary',
+                    rows: [
+                        ['البند', 'القيمة'],
+                        ['اسم المدرسة', selectedSchool.name],
+                        ['إجمالي الطلاب', schoolStudents.length],
+                        ['أولياء الأمور المرتبطون', schoolParentUsers.length],
+                        ['المشرفون والمعلمون', schoolSupervisors.length],
+                        ['طلاب بلا ولي أمر', studentsWithoutParent.length],
+                        ['طلاب بلا فصل', studentsWithoutClass.length],
+                        ['مشرفون بلا فصل محدد', supervisorsWithoutClass.length],
+                    ],
+                },
+                {
+                    name: 'students',
+                    rows: [
+                        ['اسم الطالب', 'بريد الطالب', 'الفصل', 'أولياء الأمور', 'حالة الربط'],
+                        ...schoolStudents.map((student) => {
+                            const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
+                            const classroomName = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || 'بدون فصل';
+                            return [
+                                student.name,
+                                student.email || '',
+                                classroomName,
+                                studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
+                                studentParents.length > 0 ? 'مرتبط' : 'يحتاج ولي أمر',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'parents',
+                    rows: [
+                        ['اسم ولي الأمر', 'البريد', 'عدد الطلاب', 'الطلاب المرتبطون', 'بريد الطلاب'],
+                        ...schoolParentUsers.map((parent) => {
+                            const linkedStudents = schoolStudents.filter((student) => (parent.linkedStudentIds || []).includes(student.id));
+                            return [
+                                parent.name,
+                                parent.email || '',
+                                linkedStudents.length,
+                                linkedStudents.map((student) => student.name).join(' | '),
+                                linkedStudents.map((student) => student.email || '').join(' | '),
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'supervisors',
+                    rows: [
+                        ['اسم المشرف', 'البريد', 'الدور', 'النطاق'],
+                        ...schoolSupervisors.map((currentUser) => {
+                            const scopes = [
+                                selectedSchool.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(selectedSchool.id)
+                                    ? selectedSchool.name
+                                    : '',
+                                ...schoolClasses
+                                    .filter((classroom) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id))
+                                    .map((classroom) => classroom.name),
+                            ].filter(Boolean);
+                            return [
+                                currentUser.name,
+                                currentUser.email || '',
+                                currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
+                                scopes.join(' | ') || 'بدون نطاق واضح',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'missing',
+                    rows: [
+                        ['النوع', 'الاسم', 'البريد', 'ملاحظة'],
+                        ...studentsWithoutParent.map((student) => ['طالب بلا ولي أمر', student.name, student.email || '', 'اربط ولي أمر من تبويب الربط']),
+                        ...studentsWithoutClass.map((student) => ['طالب بلا فصل', student.name, student.email || '', 'حدد فصل الطالب من تبويب النظرة العامة أو ملف الربط']),
+                        ...supervisorsWithoutClass.map((currentUser) => ['مشرف بلا فصل', currentUser.name, currentUser.email || '', 'يمكن إبقاؤه على مستوى المدرسة أو ربطه بفصل محدد']),
+                    ],
+                },
+            ]);
+        };
+
+        const handleApplyRelationImport = () => {
+            if (!relationRows.length) {
+                setRelationError('ارفع ملف الربط أولا ثم راجع الصفوف قبل التنفيذ.');
+                return;
+            }
+
+            const nextSummary: RelationImportSummary = {
+                rows: relationRows.length,
+                linkedParents: 0,
+                linkedSupervisors: 0,
+                assignedClasses: 0,
+                missingStudents: 0,
+                missingParents: 0,
+                missingSupervisors: 0,
+                missingClasses: 0,
+                skippedRows: 0,
+            };
+            const parentLinks = new Map<string, Set<string>>();
+            const existingParentLinks = new Set<string>();
+            const existingSupervisorLinks = new Set<string>();
+            const existingClassLinks = new Set<string>();
+
+            parents.forEach((parent) => {
+                const links = new Set(parent.linkedStudentIds || []);
+                parentLinks.set(parent.id, links);
+                links.forEach((studentId) => existingParentLinks.add(`${parent.id}:${studentId}`));
+            });
+
+            relationRows.forEach((row) => {
+                const studentEmail = row.studentEmail.trim().toLowerCase();
+                if (!studentEmail) {
+                    nextSummary.skippedRows += 1;
+                    return;
+                }
+
+                const student = schoolStudents.find((item) => (item.email || '').trim().toLowerCase() === studentEmail);
+                if (!student) {
+                    nextSummary.missingStudents += 1;
+                    return;
+                }
+
+                const className = row.className?.trim();
+                const classroom = className
+                    ? schoolClasses.find((item) => item.name.trim().toLowerCase() === className.toLowerCase())
+                    : undefined;
+
+                if (className && !classroom) {
+                    nextSummary.missingClasses += 1;
+                }
+
+                if (classroom && !(student.groupIds || []).includes(classroom.id)) {
+                    const key = `${student.id}:${classroom.id}`;
+                    if (!existingClassLinks.has(key)) {
+                        assignStudentToGroup(student.id, classroom.id);
+                        existingClassLinks.add(key);
+                        nextSummary.assignedClasses += 1;
+                    }
+                }
+
+                const parentEmail = row.parentEmail?.trim().toLowerCase();
+                if (parentEmail) {
+                    const parent = parents.find((item) => (item.email || '').trim().toLowerCase() === parentEmail);
+                    if (!parent) {
+                        nextSummary.missingParents += 1;
+                    } else {
+                        const key = `${parent.id}:${student.id}`;
+                        if (!existingParentLinks.has(key)) {
+                            parentLinks.set(parent.id, parentLinks.get(parent.id) || new Set(parent.linkedStudentIds || []));
+                            parentLinks.get(parent.id)?.add(student.id);
+                            existingParentLinks.add(key);
+                            nextSummary.linkedParents += 1;
+                        }
+                    }
+                }
+
+                const supervisorEmail = row.supervisorEmail?.trim().toLowerCase();
+                if (supervisorEmail) {
+                    const supervisor = supervisors.find((item) => (item.email || '').trim().toLowerCase() === supervisorEmail);
+                    if (!supervisor) {
+                        nextSummary.missingSupervisors += 1;
+                    } else {
+                        const targetGroupId = classroom?.id || selectedSchool.id;
+                        const key = `${supervisor.id}:${targetGroupId}`;
+                        const alreadyLinked = (supervisor.groupIds || []).includes(targetGroupId)
+                            || (targetGroupId === selectedSchool.id && selectedSchool.supervisorIds.includes(supervisor.id))
+                            || schoolClasses.some((item) => item.id === targetGroupId && item.supervisorIds.includes(supervisor.id));
+                        if (!alreadyLinked && !existingSupervisorLinks.has(key)) {
+                            assignSupervisorToGroup(supervisor.id, targetGroupId);
+                            existingSupervisorLinks.add(key);
+                            nextSummary.linkedSupervisors += 1;
+                        }
+                    }
+                }
+            });
+
+            parentLinks.forEach((studentIds, parentId) => {
+                const original = parents.find((parent) => parent.id === parentId);
+                if (!original) return;
+                const nextStudentIds = Array.from(studentIds);
+                const changed = nextStudentIds.length !== (original.linkedStudentIds || []).length
+                    || nextStudentIds.some((studentId) => !(original.linkedStudentIds || []).includes(studentId));
+                if (changed) {
+                    updateUser(parentId, { linkedStudentIds: nextStudentIds });
+                }
+            });
+
+            setRelationSummary(nextSummary);
+            setRelationError(null);
+        };
+
         return (
             <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center gap-4">
@@ -757,6 +1118,7 @@ export const SchoolsManager: React.FC = () => {
                     {[
                         { id: 'overview', label: 'نظرة عامة والفصول' },
                         { id: 'packages', label: 'الباقات والأكواد' },
+                        { id: 'relations', label: 'ربط ومتابعة' },
                         { id: 'import', label: 'استيراد الطلاب (Excel)' },
                         { id: 'reports', label: 'تقارير الأداء' },
                     ].map((tab) => (
@@ -1702,6 +2064,183 @@ export const SchoolsManager: React.FC = () => {
                                             ))}
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'relations' && (
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                                    <p className="mb-1 text-xs font-black text-blue-700">أولياء أمور مرتبطون</p>
+                                    <p className="text-2xl font-black text-blue-800">{schoolParentUsers.length}</p>
+                                    <p className="mt-1 text-xs text-blue-700">لديهم طالب واحد على الأقل في المدرسة</p>
+                                </div>
+                                <div className={`rounded-2xl border p-4 ${studentsWithoutParent.length ? 'border-amber-100 bg-amber-50' : 'border-emerald-100 bg-emerald-50'}`}>
+                                    <p className={`mb-1 text-xs font-black ${studentsWithoutParent.length ? 'text-amber-700' : 'text-emerald-700'}`}>طلاب بلا ولي أمر</p>
+                                    <p className={`text-2xl font-black ${studentsWithoutParent.length ? 'text-amber-800' : 'text-emerald-800'}`}>{studentsWithoutParent.length}</p>
+                                    <p className={`mt-1 text-xs ${studentsWithoutParent.length ? 'text-amber-700' : 'text-emerald-700'}`}>يفضل ربطهم قبل تسليم الحسابات</p>
+                                </div>
+                                <div className={`rounded-2xl border p-4 ${studentsWithoutClass.length ? 'border-rose-100 bg-rose-50' : 'border-emerald-100 bg-emerald-50'}`}>
+                                    <p className={`mb-1 text-xs font-black ${studentsWithoutClass.length ? 'text-rose-700' : 'text-emerald-700'}`}>طلاب بلا فصل</p>
+                                    <p className={`text-2xl font-black ${studentsWithoutClass.length ? 'text-rose-800' : 'text-emerald-800'}`}>{studentsWithoutClass.length}</p>
+                                    <p className={`mt-1 text-xs ${studentsWithoutClass.length ? 'text-rose-700' : 'text-emerald-700'}`}>الفصل يحسن التقارير والمتابعة</p>
+                                </div>
+                                <div className="rounded-2xl border border-purple-100 bg-purple-50 p-4">
+                                    <p className="mb-1 text-xs font-black text-purple-700">مشرفون ومعلمون</p>
+                                    <p className="text-2xl font-black text-purple-800">{schoolSupervisors.length}</p>
+                                    <p className="mt-1 text-xs text-purple-700">على مستوى المدرسة أو الفصول</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                                    <div className="mb-5 flex items-start justify-between gap-4">
+                                        <div>
+                                            <h3 className="text-lg font-black text-gray-900">ربط جماعي للحسابات الموجودة</h3>
+                                            <p className="mt-1 text-sm leading-7 text-gray-500">
+                                                ارفع ملف Excel يربط الطالب بولي أمر ومشرف وفصل. النظام لا ينشئ حسابات جديدة هنا، بل يربط الموجود ويعرض النواقص بوضوح.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={downloadRelationsTemplate}
+                                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-50"
+                                        >
+                                            <Download size={16} /> النموذج
+                                        </button>
+                                    </div>
+
+                                    <div className={`relative overflow-hidden rounded-2xl border-2 border-dashed p-6 text-center transition-colors ${
+                                        relationRows.length ? 'border-blue-300 bg-blue-50' : 'border-gray-300 hover:border-blue-500 hover:bg-blue-50'
+                                    }`}>
+                                        <input
+                                            type="file"
+                                            accept=".xlsx,.xls,.csv,.tsv,.txt"
+                                            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                            onChange={(event) => {
+                                                const file = event.target.files?.[0];
+                                                if (file) {
+                                                    void handleRelationFile(file);
+                                                }
+                                            }}
+                                        />
+                                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                                            <Upload size={28} />
+                                        </div>
+                                        <h4 className="font-black text-gray-900">رفع ملف الربط</h4>
+                                        <p className="mt-2 text-sm text-gray-500">الأعمدة الأساسية: بريد الطالب، بريد ولي الأمر، بريد المشرف، اسم الفصل.</p>
+                                    </div>
+
+                                    {relationError && (
+                                        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                                            {relationError}
+                                        </div>
+                                    )}
+
+                                    {relationRows.length > 0 && (
+                                        <div className="mt-5 space-y-4">
+                                            <div className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 md:flex-row md:items-center md:justify-between">
+                                                <div>
+                                                    <p className="font-black text-blue-900">تم تجهيز {relationRows.length} صف للربط</p>
+                                                    <p className="mt-1 text-sm text-blue-700">راجع أول صفوف ثم نفذ الربط للحسابات الموجودة.</p>
+                                                </div>
+                                                <button
+                                                    onClick={handleApplyRelationImport}
+                                                    className="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-gray-800"
+                                                >
+                                                    تنفيذ الربط
+                                                </button>
+                                            </div>
+
+                                            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                                                <table className="w-full text-right text-sm">
+                                                    <thead className="bg-gray-50 text-gray-500">
+                                                        <tr>
+                                                            <th className="p-3 font-bold">بريد الطالب</th>
+                                                            <th className="p-3 font-bold">ولي الأمر</th>
+                                                            <th className="p-3 font-bold">المشرف</th>
+                                                            <th className="p-3 font-bold">الفصل</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-gray-100">
+                                                        {relationRows.slice(0, 6).map((row, index) => (
+                                                            <tr key={`${row.studentEmail}-${index}`}>
+                                                                <td className="p-3 text-gray-800">{row.studentEmail || '-'}</td>
+                                                                <td className="p-3 text-gray-500">{row.parentEmail || row.parentName || '-'}</td>
+                                                                <td className="p-3 text-gray-500">{row.supervisorEmail || row.supervisorName || '-'}</td>
+                                                                <td className="p-3 text-gray-500">{row.className || '-'}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {relationSummary && (
+                                        <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                                            {[
+                                                ['أولياء تم ربطهم', relationSummary.linkedParents, 'emerald'],
+                                                ['مشرفون تم ربطهم', relationSummary.linkedSupervisors, 'purple'],
+                                                ['طلاب نُقلوا لفصول', relationSummary.assignedClasses, 'blue'],
+                                                ['نواقص في الملف', relationSummary.missingStudents + relationSummary.missingParents + relationSummary.missingSupervisors + relationSummary.missingClasses, 'amber'],
+                                            ].map(([label, value, tone]) => (
+                                                <div key={String(label)} className={`rounded-xl border p-3 ${
+                                                    tone === 'emerald' ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
+                                                        : tone === 'purple' ? 'border-purple-100 bg-purple-50 text-purple-800'
+                                                            : tone === 'blue' ? 'border-blue-100 bg-blue-50 text-blue-800'
+                                                                : 'border-amber-100 bg-amber-50 text-amber-800'
+                                                }`}>
+                                                    <p className="text-xs font-black">{label}</p>
+                                                    <p className="mt-1 text-2xl font-black">{value}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                                    <div className="mb-5 flex items-start justify-between gap-4">
+                                        <div>
+                                            <h3 className="text-lg font-black text-gray-900">تقرير المتابعة المدرسية</h3>
+                                            <p className="mt-1 text-sm leading-7 text-gray-500">
+                                                ملف واضح للإدارة يضم الطلاب، أولياء الأمور، المشرفين، والنواقص التي تحتاج استكمال.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={downloadRelationsReport}
+                                            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-emerald-700"
+                                        >
+                                            <Download size={16} /> تصدير التقرير
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {studentsWithoutParent.slice(0, 5).map((student) => (
+                                            <div key={student.id} className="flex items-center justify-between gap-3 rounded-xl bg-white px-4 py-3">
+                                                <div>
+                                                    <p className="font-bold text-gray-900">{student.name}</p>
+                                                    <p className="text-xs text-gray-500">{student.email || 'بدون بريد'}</p>
+                                                </div>
+                                                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">بلا ولي أمر</span>
+                                            </div>
+                                        ))}
+                                        {studentsWithoutParent.length === 0 && studentsWithoutClass.length === 0 ? (
+                                            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-800">
+                                                وضع الربط الأساسي جيد: لا يوجد طلاب بلا ولي أمر أو بلا فصل.
+                                            </div>
+                                        ) : null}
+                                        {studentsWithoutClass.slice(0, 5).map((student) => (
+                                            <div key={`class-${student.id}`} className="flex items-center justify-between gap-3 rounded-xl bg-white px-4 py-3">
+                                                <div>
+                                                    <p className="font-bold text-gray-900">{student.name}</p>
+                                                    <p className="text-xs text-gray-500">{student.email || 'بدون بريد'}</p>
+                                                </div>
+                                                <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-black text-rose-700">بلا فصل</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
