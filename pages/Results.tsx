@@ -72,6 +72,17 @@ interface ResolvedAnalysisItem {
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
+const normalizeQuestionHtml = (value?: string | null) => {
+  const normalized = displayText(value);
+
+  return normalized
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
+    .trim();
+};
+
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
   allSkills: ReturnType<typeof useStore.getState>['skills'],
@@ -1522,7 +1533,10 @@ const ReviewSolutions = ({
           <button onClick={onBack} className="text-gray-500 hover:text-indigo-600 transition-colors">
             <ArrowRight />
           </button>
-          <h1 className="text-xl font-bold">مراجعة الحلول</h1>
+          <div>
+            <h1 className="text-xl font-bold">مراجعة الحلول</h1>
+            <p className="mt-1 text-sm text-gray-500">نفس السؤال، نفس الاختيارات، مع إمكانية إظهار الحل عند الحاجة.</p>
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="bg-amber-500 text-white px-4 py-1.5 rounded-xl text-sm font-bold">
@@ -1548,15 +1562,18 @@ const ReviewSolutions = ({
       <Card className="p-0 overflow-hidden border border-gray-100 shadow-sm">
         <div className="p-4 sm:p-8 bg-white">
           <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[250px]">
+            <div
+              className="mb-6 px-2 text-center text-lg font-bold leading-loose text-gray-800 sm:px-4 sm:text-xl"
+              dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
+            />
             {q.imageUrl ? (
-              <img src={q.imageUrl} alt="Question" className="max-h-64 object-contain mb-6" referrerPolicy="no-referrer" />
+              <img src={q.imageUrl} alt="صورة السؤال" className="max-h-64 object-contain" referrerPolicy="no-referrer" />
             ) : (
-              <div className="text-center mb-6">
+              <div className="text-center">
                 <FileText size={48} className="text-gray-200 mx-auto mb-2" />
                 <span className="text-sm text-gray-400 font-bold">[لا توجد صورة مرفقة لهذا السؤال]</span>
               </div>
             )}
-            <div className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-relaxed px-2 sm:px-4 break-words" dangerouslySetInnerHTML={{ __html: displayText(q.text) }} />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4 mb-8">
@@ -1588,13 +1605,13 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex items-center justify-between gap-3 rounded-2xl border p-4 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex min-h-[84px] items-center justify-between gap-3 rounded-2xl border-2 p-4 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
-                  <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
                     />
-                    <span className="text-sm font-bold leading-7 text-gray-700 break-words">
+                    <span className="flex-1 text-center text-sm font-bold leading-7 text-gray-700 break-words">
                       {displayText(option)}
                     </span>
                   </div>
@@ -1648,11 +1665,11 @@ const ReviewSolutions = ({
             })}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {q.videoUrl ? (
               <button
                 onClick={() => onShowVideo(q.videoUrl!, `شرح السؤال ${currentIdx + 1}`)}
-                className="bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
+                className="bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
               >
                 <PlayCircle size={20} />
                 شرح الفيديو
@@ -1660,21 +1677,18 @@ const ReviewSolutions = ({
             ) : null}
             <button
               onClick={() => setShowExplanation((value) => !value)}
-              className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-50 transition-all"
+              className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-50 transition-all"
             >
               <Eye size={20} />
               {showExplanation ? 'إخفاء الحل' : 'إظهار الحل'}
             </button>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <button
               onClick={() => {
                 setCurrentIdx((prev) => Math.max(0, prev - 1));
                 setShowExplanation(false);
               }}
               disabled={currentIdx === 0}
-              className="bg-gray-200 text-gray-600 px-6 py-2.5 rounded-xl font-bold disabled:opacity-50 transition-all"
+              className="bg-gray-100 text-gray-600 px-6 py-2.5 rounded-xl font-bold disabled:opacity-50 transition-all"
             >
               السابق
             </button>
@@ -1687,7 +1701,7 @@ const ReviewSolutions = ({
                   onBack();
                 }
               }}
-              className="bg-slate-700 text-white px-8 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800 transition-all"
+              className="bg-indigo-600 text-white px-8 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all"
             >
               {currentIdx === questions.length - 1 ? 'إنهاء المراجعة' : 'التالي'}
               <ChevronRightIcon size={20} className="transform rotate-180" />

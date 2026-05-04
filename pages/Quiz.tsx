@@ -881,34 +881,42 @@ const Quiz: React.FC = () => {
           <ProgressBar percentage={((currentQuestion + 1) / questions.length) * 100} showPercentage={false} color="secondary" />
         </div>
 
-        <div className="bg-amber-500 text-white py-2 px-4 rounded-t-lg flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center font-bold text-sm sm:text-base">
-          <span>وقف</span>
-          <span>السؤال {currentQuestion + 1} من {questions.length}</span>
+        <div className="rounded-t-2xl border border-b-0 border-indigo-100 bg-white px-4 py-3 shadow-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="inline-flex items-center gap-2 text-sm font-black text-indigo-700">
+              <span className="rounded-full bg-indigo-50 px-3 py-1">السؤال {currentQuestion + 1} من {questions.length}</span>
+              <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-700">{Object.keys(answers).length} محلولة</span>
+            </div>
+            <div className="inline-flex items-center gap-2 self-start rounded-full bg-slate-50 px-3 py-1 text-sm font-black text-slate-700 sm:self-auto">
+              <Clock size={16} />
+              {formatTime(timeLeft)}
+            </div>
+          </div>
         </div>
 
-        <Card className="rounded-t-none rounded-b-xl p-4 sm:p-6 min-h-[400px] flex flex-col">
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between mb-6">
-            <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+        <Card className="rounded-t-none rounded-b-2xl p-4 sm:p-6 min-h-[400px] flex flex-col">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
                 onClick={() => toggleFavorite(currentQuestion)}
-                className={`${storeFavorites.includes(questions[currentQuestion].id) ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-indigo-50 text-indigo-900 hover:bg-indigo-100'} w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
+                className={`${storeFavorites.includes(questions[currentQuestion].id) ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
               >
                 {storeFavorites.includes(questions[currentQuestion].id) ? <Trash2 size={18} /> : <Heart size={18} />}
-                {storeFavorites.includes(questions[currentQuestion].id) ? 'مسح من المفضلة' : 'إضافة إلى المفضلة'}
+                {storeFavorites.includes(questions[currentQuestion].id) ? 'في المفضلة' : 'المفضلة'}
               </button>
               <button
                 onClick={() => toggleReviewLater(currentQuestion)}
-                className={`${storeReviewLater.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'} w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
+                className={`${storeReviewLater.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
               >
                 <Star size={18} className={storeReviewLater.includes(questions[currentQuestion].id) ? 'fill-current' : ''} />
-                {storeReviewLater.includes(questions[currentQuestion].id) ? 'محدد للمراجعة' : 'مراجعة لاحقًا'}
+                {storeReviewLater.includes(questions[currentQuestion].id) ? 'للمراجعة' : 'راجع لاحقًا'}
               </button>
             </div>
 
             <button
               onClick={() => setShowVideo(true)}
               disabled={!questions[currentQuestion].videoUrl}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm ${
+              className={`w-full sm:w-auto px-4 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm ${
                 questions[currentQuestion].videoUrl
                   ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 cursor-pointer'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -1009,23 +1017,23 @@ const Quiz: React.FC = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mt-8 pt-6 border-t border-gray-100">
             <button
               onClick={handleSaveProgress}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-amber-100 text-amber-700 font-bold flex items-center justify-center gap-2 hover:bg-amber-200"
+              className="w-full sm:w-auto px-4 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 font-bold flex items-center justify-center gap-2 hover:bg-amber-100"
             >
               <Save size={18} />
-              <span className="hidden sm:inline">حفظ الإجابة</span>
+              حفظ مؤقت
             </button>
 
-            <div className="grid grid-cols-1 sm:flex gap-2 w-full sm:w-auto">
+            <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
               <button
                 onClick={handlePrev}
                 disabled={currentQuestion === 0}
-                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-gray-200 text-gray-600 font-bold disabled:opacity-50"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 text-gray-600 font-bold disabled:opacity-50"
               >
                 السابق
               </button>
               <button
                 onClick={handleNext}
-                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-indigo-900 text-white font-bold flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center gap-2 hover:bg-indigo-700"
               >
                 {currentQuestion === questions.length - 1 ? 'إنهاء الاختبار' : 'التالي'}
                 <ArrowLeft size={20} />
@@ -1075,33 +1083,37 @@ const Quiz: React.FC = () => {
 
       {showFinishDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
-          <Card className="max-w-xl w-full p-6 text-center space-y-5 shadow-2xl animate-scale-up border-2 border-cyan-950">
-            <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+          <Card className="max-w-lg w-full p-6 text-center space-y-5 shadow-2xl animate-scale-up border border-amber-100">
+            <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
               <AlertTriangle size={34} />
             </div>
             <div>
-              <h3 className="font-black text-xl text-gray-900 mb-3">هل تريد إنهاء الاختبار الآن؟</h3>
+              <h3 className="font-black text-xl text-gray-900 mb-3">إنهاء الاختبار؟</h3>
+              <div className="mx-auto mb-3 inline-flex rounded-full bg-slate-50 px-4 py-2 text-sm font-black text-slate-700">
+                {Object.keys(answers).length} محلولة من {questions.length}
+              </div>
               <p className="text-gray-600 text-sm leading-7 font-bold">
                 {questions.length - Object.keys(answers).length > 0
-                  ? `يوجد ${questions.length - Object.keys(answers).length} سؤال لم تتم الإجابة عنه بعد. إذا اخترت نعم سيتم حفظ نتيجتك فورًا ولن تتمكن من تعديل إجاباتك.`
-                  : 'تمت الإجابة عن كل الأسئلة. إذا اخترت نعم سيتم حفظ نتيجتك فورًا وعرض التقرير.'}
+                  ? `باقي ${questions.length - Object.keys(answers).length} سؤال بدون إجابة.`
+                  : 'كل الأسئلة تمت الإجابة عنها.'}
+                {' '}بعد الإنهاء ستظهر النتيجة مباشرة.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={() => setShowFinishDialog(false)}
-                className="bg-rose-500 text-white py-3 rounded-xl font-black hover:bg-rose-600 transition-colors"
+                className="bg-gray-100 text-gray-700 py-3 rounded-xl font-black hover:bg-gray-200 transition-colors"
               >
-                لا
+                أكمل الحل
               </button>
               <button
                 onClick={() => {
                   setShowFinishDialog(false);
                   handleFinish();
                 }}
-                className="bg-cyan-950 text-white py-3 rounded-xl font-black hover:bg-cyan-900 transition-colors"
+                className="bg-indigo-600 text-white py-3 rounded-xl font-black hover:bg-indigo-700 transition-colors"
               >
-                نعم
+                إنهاء وعرض النتيجة
               </button>
             </div>
           </Card>
