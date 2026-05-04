@@ -530,7 +530,7 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        const packages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id);
+        const packages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id && pkg.status === 'active');
         setSelectedPackageIdForCode((current) => (
             packages.some((pkg) => pkg.id === current)
                 ? current
@@ -795,7 +795,8 @@ export const SchoolsManager: React.FC = () => {
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
         const activeSchoolCodes = schoolCodes.filter((code) => code.expiresAt > Date.now());
-        const totalSeats = schoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
+        const selectedPackageForCode = schoolPackages.find((pkg) => pkg.id === selectedPackageIdForCode);
+        const totalSeats = activeSchoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
         const usedSeats = schoolCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
         const visibleSchoolStudents = schoolStudents.filter((student) => {
             const query = studentSearch.trim().toLowerCase();
@@ -980,6 +981,129 @@ export const SchoolsManager: React.FC = () => {
                             `${classroom.averageScore}%`,
                             classroom.averageScore < 50 ? 'متابعة قريبة وخطة علاجية' : classroom.averageScore < 70 ? 'تدريبات داعمة' : 'مستوى مطمئن',
                         ]),
+                    ],
+                },
+            ]);
+        };
+
+        const downloadClassReport = (classroom: Group) => {
+            const classStudents = schoolStudents.filter((student) => (
+                classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)
+            ));
+            const classSupervisors = supervisors.filter((currentUser) => (
+                classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)
+            ));
+            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
+            const classSummary = schoolReport?.classSummaries.find((item) => item.id === classroom.id || item.name === classroom.name);
+            const studentsWithoutLinkedParent = classStudents.filter((student) => (
+                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
+            ));
+
+            createWorkbookDownload(`${selectedSchool.name}-${classroom.name}-class-report.xlsx`, [
+                {
+                    name: 'summary',
+                    rows: [
+                        ['البند', 'القيمة'],
+                        ['المدرسة', selectedSchool.name],
+                        ['الفصل', classroom.name],
+                        ['عدد الطلاب', classStudents.length],
+                        ['عدد المشرفين', classSupervisors.length],
+                        ['عدد الدورات', classCourses.length],
+                        ['طلاب بلا ولي أمر', studentsWithoutLinkedParent.length],
+                        ['محاولات الاختبار', classSummary?.quizAttempts || 0],
+                        ['متوسط الأداء', classSummary ? `${classSummary.averageScore}%` : 'لا توجد بيانات كافية'],
+                        ['التوصية', !classSummary ? 'ابدأ بجمع نتائج من الطلاب' : classSummary.averageScore < 50 ? 'متابعة قريبة وخطة علاجية' : classSummary.averageScore < 70 ? 'تدريبات داعمة' : 'مستوى مطمئن'],
+                    ],
+                },
+                {
+                    name: 'students',
+                    rows: [
+                        ['اسم الطالب', 'البريد', 'الحالة', 'أولياء الأمور', 'ملاحظة'],
+                        ...classStudents.map((student) => {
+                            const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
+                            return [
+                                student.name,
+                                student.email || '',
+                                student.isActive === false ? 'موقوف' : 'نشط',
+                                studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
+                                studentParents.length ? 'جاهز للمتابعة' : 'يحتاج ربط ولي أمر',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'supervisors',
+                    rows: [
+                        ['الاسم', 'البريد', 'الدور'],
+                        ...classSupervisors.map((currentUser) => [
+                            currentUser.name,
+                            currentUser.email || '',
+                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
+                        ]),
+                    ],
+                },
+                {
+                    name: 'courses',
+                    rows: [
+                        ['الدورة', 'الحالة'],
+                        ...classCourses.map((course) => [course.title, course.isPublished === false ? 'غير منشورة' : 'منشورة']),
+                    ],
+                },
+            ]);
+        };
+
+        const downloadPackagesReport = () => {
+            createWorkbookDownload(`${selectedSchool.name}-packages-and-codes.xlsx`, [
+                {
+                    name: 'packages',
+                    rows: [
+                        ['اسم الباقة', 'الحالة', 'نوع الوصول', 'حد الطلاب', 'الدورات', 'أنواع المحتوى', 'المسارات', 'المواد', 'توصية'],
+                        ...schoolPackages.map((pkg) => {
+                            const packageCodes = schoolCodes.filter((code) => code.packageId === pkg.id);
+                            return [
+                                pkg.name,
+                                pkg.status === 'active' ? 'نشطة' : 'موقوفة',
+                                pkg.type === 'free_access' ? 'وصول مجاني' : `خصم ${pkg.discountPercentage || 0}%`,
+                                pkg.maxStudents || 0,
+                                pkg.courseIds.length,
+                                (pkg.contentTypes || []).join(' | ') || 'all',
+                                (pkg.pathIds || []).map((pathId) => paths.find((path) => path.id === pathId)?.name || pathId).join(' | ') || 'كل المسارات',
+                                (pkg.subjectIds || []).map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name || subjectId).join(' | ') || 'كل المواد',
+                                pkg.status !== 'active'
+                                    ? 'موقوفة ولا يفضل توليد أكواد جديدة عليها'
+                                    : packageCodes.length === 0
+                                        ? 'ولّد كود تفعيل قبل التسليم'
+                                        : 'جاهزة للتسليم',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'access-codes',
+                    rows: [
+                        ['الكود', 'الباقة', 'حالة الباقة', 'الاستخدام', 'أقصى استخدام', 'تاريخ الانتهاء', 'حالة الكود'],
+                        ...schoolCodes.map((code) => {
+                            const pkg = schoolPackages.find((item) => item.id === code.packageId);
+                            return [
+                                code.code,
+                                pkg?.name || code.packageId,
+                                pkg?.status === 'active' ? 'نشطة' : 'موقوفة/غير معروفة',
+                                code.currentUses || 0,
+                                code.maxUses || 0,
+                                new Date(code.expiresAt).toLocaleDateString('ar-SA'),
+                                code.expiresAt > Date.now() ? 'صالح' : 'منتهي',
+                            ];
+                        }),
+                    ],
+                },
+                {
+                    name: 'readiness',
+                    rows: [
+                        ['الفحص', 'القيمة', 'ملاحظة'],
+                        ['الباقات النشطة', activeSchoolPackages.length, activeSchoolPackages.length ? 'جيد' : 'فعّل باقة واحدة على الأقل'],
+                        ['الأكواد الصالحة', activeSchoolCodes.length, activeSchoolCodes.length ? 'جاهز للتوزيع' : 'ولّد كود تفعيل صالح'],
+                        ['المقاعد النشطة', totalSeats, totalSeats ? 'مرتبطة بالباقات النشطة فقط' : 'راجع سعة الباقات'],
+                        ['الاستخدام الحالي', usedSeats, usedSeats >= totalSeats && totalSeats > 0 ? 'راجع المقاعد المتبقية' : 'ضمن السعة'],
                     ],
                 },
             ]);
@@ -1554,33 +1678,35 @@ export const SchoolsManager: React.FC = () => {
                             <div>
                                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
                                     <h3 className="text-lg font-bold text-gray-900">الفصول الدراسية</h3>
-                                    <button
-                                        onClick={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
-                                        className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
-                                    >
-                                        <Download size={16} /> تصدير كشف الطلاب
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            createGroup({
-                                                id: `class_${Date.now()}`,
-                                                name: `فصل جديد - ${selectedSchool.name}`,
-                                                type: 'CLASS',
-                                                parentId: selectedSchool.id,
-                                                ownerId: user.id,
-                                                supervisorIds: [],
-                                                studentIds: [],
-                                                courseIds: [],
-                                                createdAt: Date.now(),
-                                                totalStudents: 0,
-                                                totalSupervisors: 0,
-                                                totalCourses: 0,
-                                            });
-                                        }}
-                                        className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center gap-2"
-                                    >
-                                        <Plus size={16} /> إضافة فصل
-                                    </button>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            onClick={() => downloadSchoolRoster(selectedSchool, schoolStudents, schoolClasses)}
+                                            className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
+                                        >
+                                            <Download size={16} /> تصدير كشف الطلاب
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                createGroup({
+                                                    id: `class_${Date.now()}`,
+                                                    name: `فصل جديد - ${selectedSchool.name}`,
+                                                    type: 'CLASS',
+                                                    parentId: selectedSchool.id,
+                                                    ownerId: user.id,
+                                                    supervisorIds: [],
+                                                    studentIds: [],
+                                                    courseIds: [],
+                                                    createdAt: Date.now(),
+                                                    totalStudents: 0,
+                                                    totalSupervisors: 0,
+                                                    totalCourses: 0,
+                                                });
+                                            }}
+                                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center gap-2"
+                                        >
+                                            <Plus size={16} /> إضافة فصل
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
@@ -1620,6 +1746,8 @@ export const SchoolsManager: React.FC = () => {
                                         {schoolClasses.map((classroom) => {
                                             const classSupervisors = supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id));
                                             const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
+                                            const classStudents = schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id));
+                                            const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
 
                                             return (
                                                 <div key={classroom.id} className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
@@ -1627,10 +1755,22 @@ export const SchoolsManager: React.FC = () => {
                                                         <div>
                                                             <h4 className="font-bold text-gray-900">{classroom.name}</h4>
                                                             <p className="text-sm text-gray-500">
-                                                                {classroom.studentIds.length} طالب • {classroom.supervisorIds.length} مشرف • {classroom.courseIds.length} دورة
+                                                                {classStudents.length} طالب • {classSupervisors.length} مشرف • {classCourses.length} دورة
                                                             </p>
+                                                            {classStudentsWithoutParent.length > 0 && (
+                                                                <p className="mt-1 text-xs font-bold text-amber-700">
+                                                                    {classStudentsWithoutParent.length} طالب بلا ولي أمر
+                                                                </p>
+                                                            )}
                                                         </div>
-                                                        <div className="flex gap-2">
+                                                        <div className="flex flex-wrap gap-2">
+                                                            <button
+                                                                onClick={() => downloadClassReport(classroom)}
+                                                                className="text-gray-400 hover:text-emerald-600 transition-colors"
+                                                                title="تصدير تقرير الفصل"
+                                                            >
+                                                                <Download size={18} />
+                                                            </button>
                                                             <button
                                                                 onClick={() => {
                                                                     const newName = window.prompt('أدخل اسم الفصل الجديد:', classroom.name);
@@ -1839,28 +1979,48 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                             </div>
                             <div>
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-lg font-bold text-gray-900">الباقات المخصصة</h3>
-                                    <button
-                                        onClick={() => {
-                                            createB2BPackage({
-                                                id: `pkg_${Date.now()}`,
-                                                schoolId: selectedSchool.id,
-                                                name: 'باقة جديدة',
-                                                courseIds: [],
-                                                contentTypes: ['all'],
-                                                pathIds: [],
-                                                subjectIds: [],
-                                                type: 'free_access',
-                                                maxStudents: 100,
-                                                status: 'active',
-                                                createdAt: Date.now(),
-                                            });
-                                        }}
-                                        className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition-colors flex items-center gap-2"
-                                    >
-                                        <Plus size={16} /> تخصيص باقة
-                                    </button>
+                                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">الباقات المخصصة</h3>
+                                        <p className="mt-1 text-sm text-gray-500">إيقاف الباقة يحفظ إعداداتها وأكوادها للمراجعة بدون حذف نهائي.</p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button
+                                            onClick={downloadPackagesReport}
+                                            className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
+                                        >
+                                            <Download size={16} /> تقرير الباقات
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                schoolPackages.forEach((pkg) => updateB2BPackage(pkg.id, { status: 'expired' }));
+                                            }}
+                                            disabled={activeSchoolPackages.length === 0}
+                                            className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                                        >
+                                            إيقاف الكل
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                createB2BPackage({
+                                                    id: `pkg_${Date.now()}`,
+                                                    schoolId: selectedSchool.id,
+                                                    name: 'باقة جديدة',
+                                                    courseIds: [],
+                                                    contentTypes: ['all'],
+                                                    pathIds: [],
+                                                    subjectIds: [],
+                                                    type: 'free_access',
+                                                    maxStudents: 100,
+                                                    status: 'active',
+                                                    createdAt: Date.now(),
+                                                });
+                                            }}
+                                            className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition-colors flex items-center gap-2"
+                                        >
+                                            <Plus size={16} /> تخصيص باقة
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {schoolPackages.map((pkg) => {
@@ -1905,11 +2065,12 @@ export const SchoolsManager: React.FC = () => {
                                                     </button>
                                                     <button
                                                         onClick={() => {
-                                                            if (window.confirm('هل تريد حذف هذه الباقة وكل الأكواد التابعة لها؟')) {
+                                                            if (window.confirm('الحذف النهائي مخصص للتنظيف فقط. الأفضل إيقاف الباقة إذا كانت مستخدمة. هل تريد الحذف نهائيًا؟')) {
                                                                 deleteB2BPackage(pkg.id);
                                                             }
                                                         }}
-                                                        className="text-gray-400 hover:text-red-600 transition-colors"
+                                                        className="text-gray-300 hover:text-red-600 transition-colors"
+                                                        title="حذف نهائي"
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -2169,8 +2330,8 @@ export const SchoolsManager: React.FC = () => {
                                             onChange={(event) => setSelectedPackageIdForCode(event.target.value)}
                                             className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 min-w-[220px]"
                                         >
-                                            <option value="">اختر الباقة المستهدفة</option>
-                                            {schoolPackages.map((pkg) => (
+                                            <option value="">اختر باقة نشطة</option>
+                                            {activeSchoolPackages.map((pkg) => (
                                                 <option key={pkg.id} value={pkg.id}>{pkg.name}</option>
                                             ))}
                                         </select>
@@ -2182,13 +2343,18 @@ export const SchoolsManager: React.FC = () => {
                                         <button
                             onClick={() => {
                                                 setManagementError(null);
-                                                if (schoolPackages.length === 0) {
-                                                    setManagementError('يجب إنشاء باقة أولًا قبل توليد كود تفعيل.');
+                                                if (activeSchoolPackages.length === 0) {
+                                                    setManagementError('يجب وجود باقة نشطة قبل توليد كود تفعيل.');
                                                     return;
                                                 }
 
                                                 if (!selectedPackageIdForCode) {
-                                                    setManagementError('اختر الباقة التي سيعمل عليها كود التفعيل أولًا.');
+                                                    setManagementError('اختر الباقة النشطة التي سيعمل عليها كود التفعيل أولًا.');
+                                                    return;
+                                                }
+
+                                                if (!selectedPackageForCode || selectedPackageForCode.status !== 'active') {
+                                                    setManagementError('لا يمكن توليد كود على باقة موقوفة. فعّل الباقة أو اختر باقة نشطة.');
                                                     return;
                                                 }
 
@@ -2203,7 +2369,8 @@ export const SchoolsManager: React.FC = () => {
                                                     createdAt: Date.now(),
                                                 });
                                             }}
-                                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors flex items-center gap-2"
+                                            disabled={activeSchoolPackages.length === 0}
+                                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                                         >
                                             <Key size={16} /> توليد كود جديد
                                         </button>
