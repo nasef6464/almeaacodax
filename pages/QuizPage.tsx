@@ -397,12 +397,16 @@ export const QuizPage: React.FC = () => {
       questionReview,
     };
 
+    let resultAttemptDate = result.date;
+
     try {
       const serverResult = await api.submitQuiz(quiz.id, {
         answers: selectedOptions,
         timeSpentSeconds: Math.max(0, timeSpentSeconds),
       });
-      hydrateExamResults([serverResult as QuizResult, ...examResults]);
+      const savedServerResult = serverResult as QuizResult;
+      resultAttemptDate = savedServerResult.date || result.date;
+      hydrateExamResults([savedServerResult, ...examResults]);
     } catch (error) {
       console.error('Unable to submit quiz on server, saving local result instead:', error);
       saveExamResult(result);
@@ -410,7 +414,7 @@ export const QuizPage: React.FC = () => {
       setIsSubmittingResult(false);
     }
 
-    navigate('/results');
+    navigate(`/results?attempt=${encodeURIComponent(resultAttemptDate)}`);
   };
 
   const handleRestartQuiz = () => {

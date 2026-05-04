@@ -1019,11 +1019,16 @@ const Results: React.FC = () => {
 
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <button
-                onClick={() => setViewMode('review')}
-                className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors"
+                onClick={() => {
+                  if (questionReviewCount > 0) {
+                    setViewMode('review');
+                  }
+                }}
+                disabled={questionReviewCount === 0}
+                className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
               >
                 <Eye size={18} />
-                مراجعة الحلول
+                {questionReviewCount > 0 ? 'مراجعة الحلول' : 'المراجعة غير متاحة'}
               </button>
               <Link
                 to={retryQuizLink}
@@ -1135,10 +1140,11 @@ const Results: React.FC = () => {
 
               <div className="print-hide mt-5 grid gap-2">
                 <button
-                  onClick={() => setViewMode('review')}
-                  className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                  onClick={() => questionReviewCount > 0 && setViewMode('review')}
+                  disabled={questionReviewCount === 0}
+                  className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
                 >
-                  مراجعة الحلول
+                  {questionReviewCount > 0 ? 'مراجعة الحلول' : 'المراجعة غير متاحة'}
                 </button>
                 {weakestSkill?.lessonVideoUrl ? (
                   <button

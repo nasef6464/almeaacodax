@@ -420,6 +420,8 @@ const Quiz: React.FC = () => {
       };
     });
 
+    const resultDate = new Date().toISOString();
+
     saveExamResult({
       quizId: `self-quiz-${Date.now()}`,
       quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${difficulty})`,
@@ -428,7 +430,7 @@ const Quiz: React.FC = () => {
       wrongAnswers: wrong,
       unanswered,
       timeSpent: formatTime(Math.max(0, timeLimitMinutes * 60 - timeLeft)),
-      date: new Date().toISOString(),
+      date: resultDate,
       skillsAnalysis,
       totalQuestions: questions.length,
       questionReview,
@@ -436,7 +438,7 @@ const Quiz: React.FC = () => {
 
     localStorage.removeItem(QUIZ_PROGRESS_KEY);
     clearSavedSnapshot();
-    navigate('/results');
+    navigate(`/results?attempt=${encodeURIComponent(resultDate)}`);
   };
 
   const handleNext = () => {
