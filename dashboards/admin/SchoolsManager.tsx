@@ -11,6 +11,7 @@ import {
     Key,
     MoreVertical,
     Plus,
+    Printer,
     Search,
     ShieldCheck,
     Trash2,
@@ -206,6 +207,145 @@ const createWorkbookDownload = (
         XLSX.utils.book_append_sheet(workbook, worksheet, sheet.name.slice(0, 31));
     });
     XLSX.writeFile(workbook, fileName);
+};
+
+const escapeHtml = (value: string | number | null | undefined) =>
+    String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+const renderPrintTable = (headers: string[], rows: Array<Array<string | number>>) => `
+    <table>
+        <thead>
+            <tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+            ${
+                rows.length
+                    ? rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')
+                    : `<tr><td colspan="${headers.length}">لا توجد بيانات مسجلة حاليا.</td></tr>`
+            }
+        </tbody>
+    </table>
+`;
+
+const openPrintWindow = (title: string, bodyHtml: string) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return false;
+
+    printWindow.document.write(`
+        <!doctype html>
+        <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <title>${escapeHtml(title)}</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        background: #f8fafc;
+                        color: #111827;
+                        font-family: Tahoma, Arial, sans-serif;
+                        line-height: 1.8;
+                    }
+                    main {
+                        width: min(1040px, calc(100% - 32px));
+                        margin: 24px auto;
+                        background: white;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 18px;
+                        padding: 28px;
+                    }
+                    .hero {
+                        border-radius: 16px;
+                        padding: 22px;
+                        background: linear-gradient(135deg, #4f46e5, #0f766e);
+                        color: white;
+                        margin-bottom: 20px;
+                    }
+                    .hero p, .hero h1 { margin: 0; }
+                    .hero h1 { font-size: 28px; margin-top: 6px; }
+                    .muted { color: #64748b; font-size: 13px; }
+                    .hero .muted { color: #e0f2fe; }
+                    .metrics {
+                        display: grid;
+                        grid-template-columns: repeat(4, minmax(0, 1fr));
+                        gap: 12px;
+                        margin: 18px 0;
+                    }
+                    .metric {
+                        border: 1px solid #e5e7eb;
+                        border-radius: 14px;
+                        padding: 14px;
+                        background: #f9fafb;
+                    }
+                    .metric strong {
+                        display: block;
+                        font-size: 24px;
+                        margin-top: 4px;
+                    }
+                    h2 {
+                        font-size: 18px;
+                        margin: 24px 0 10px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 14px;
+                        overflow: hidden;
+                        border-radius: 12px;
+                    }
+                    th, td {
+                        border: 1px solid #e5e7eb;
+                        padding: 10px 12px;
+                        text-align: right;
+                        vertical-align: top;
+                        font-size: 13px;
+                    }
+                    th {
+                        background: #f3f4f6;
+                        font-weight: 800;
+                    }
+                    .notice {
+                        margin-top: 20px;
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        background: #fff7ed;
+                        color: #9a3412;
+                        border: 1px solid #fed7aa;
+                        font-size: 13px;
+                        font-weight: 700;
+                    }
+                    @media print {
+                        body { background: white; }
+                        main { width: 100%; margin: 0; border: 0; border-radius: 0; }
+                        .no-print { display: none; }
+                    }
+                    @media (max-width: 760px) {
+                        .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                    }
+                </style>
+            </head>
+            <body>
+                <main>
+                    ${bodyHtml}
+                    <div class="notice">هذا التقرير للاستخدام التشغيلي الداخلي، ويعكس البيانات المتاحة وقت الطباعة.</div>
+                </main>
+                <script>
+                    window.setTimeout(function () {
+                        window.focus();
+                        window.print();
+                    }, 250);
+                </script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    return true;
 };
 
 const parseImportRows = (rows: unknown[][]): ImportRow[] => {
@@ -1052,6 +1192,124 @@ export const SchoolsManager: React.FC = () => {
             ]);
         };
 
+        const printSchoolReport = () => {
+            const warnings = operationalWarnings.length ? operationalWarnings : ['لا توجد ملاحظات تشغيلية حرجة.'];
+            const printedAt = new Date().toLocaleString('ar-SA');
+            const bodyHtml = `
+                <section class="hero">
+                    <p class="muted">تقرير جاهزية وتشغيل المدرسة</p>
+                    <h1>${escapeHtml(selectedSchool.name)}</h1>
+                    <p class="muted">تم إنشاء التقرير في ${escapeHtml(printedAt)}</p>
+                </section>
+                <section class="metrics">
+                    <div class="metric"><span>جاهزية التشغيل</span><strong>${readinessScore}/${readinessChecks.length}</strong></div>
+                    <div class="metric"><span>الطلاب</span><strong>${schoolStudents.length}</strong></div>
+                    <div class="metric"><span>الفصول</span><strong>${schoolClasses.length}</strong></div>
+                    <div class="metric"><span>الباقات النشطة</span><strong>${activeSchoolPackages.length}</strong></div>
+                    <div class="metric"><span>أكواد فعالة</span><strong>${activeSchoolCodes.length}</strong></div>
+                    <div class="metric"><span>المقاعد المتاحة</span><strong>${totalSeats}</strong></div>
+                    <div class="metric"><span>المقاعد المستخدمة</span><strong>${usedSeats}</strong></div>
+                    <div class="metric"><span>المشرفون</span><strong>${schoolSupervisors.length}</strong></div>
+                </section>
+                <h2>فحص الجاهزية</h2>
+                ${renderPrintTable(
+                    ['الفحص', 'الحالة', 'ملاحظة'],
+                    readinessChecks.map((check) => [check.label, check.isReady ? 'جاهز' : 'يحتاج استكمال', check.hint]),
+                )}
+                <h2>الفصول</h2>
+                ${renderPrintTable(
+                    ['الفصل', 'الطلاب', 'المشرفون', 'الدورات'],
+                    schoolClasses.map((classroom) => [
+                        classroom.name,
+                        schoolStudents.filter((student) => classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)).length,
+                        supervisors.filter((currentUser) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)).length,
+                        classroom.courseIds.length,
+                    ]),
+                )}
+                <h2>الباقات والأكواد</h2>
+                ${renderPrintTable(
+                    ['الباقة', 'الحالة', 'نوع الوصول', 'حد الطلاب', 'الأكواد'],
+                    schoolPackages.map((pkg) => [
+                        pkg.name,
+                        pkg.status === 'active' ? 'نشطة' : 'موقوفة',
+                        pkg.type === 'free_access' ? 'وصول مجاني' : `خصم ${pkg.discountPercentage || 0}%`,
+                        pkg.maxStudents || 0,
+                        schoolCodes.filter((code) => code.packageId === pkg.id).length,
+                    ]),
+                )}
+                <h2>ملاحظات تشغيلية</h2>
+                ${renderPrintTable(['الملاحظة'], warnings.map((warning) => [warning]))}
+            `;
+
+            if (!openPrintWindow(`${selectedSchool.name} - تقرير المدرسة`, bodyHtml)) {
+                setManagementError('تعذر فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.');
+            }
+        };
+
+        const printClassReport = (classroom: Group) => {
+            const classStudents = schoolStudents.filter((student) => (
+                classroom.studentIds.includes(student.id) || (student.groupIds || []).includes(classroom.id)
+            ));
+            const classSupervisors = supervisors.filter((currentUser) => (
+                classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id)
+            ));
+            const classCourses = publishedCourses.filter((course) => classroom.courseIds.includes(course.id));
+            const classSummary = schoolReport?.classSummaries.find((item) => item.id === classroom.id || item.name === classroom.name);
+            const studentsWithoutLinkedParent = classStudents.filter((student) => (
+                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
+            ));
+            const printedAt = new Date().toLocaleString('ar-SA');
+            const bodyHtml = `
+                <section class="hero">
+                    <p class="muted">تقرير فصل داخل المدرسة</p>
+                    <h1>${escapeHtml(classroom.name)}</h1>
+                    <p class="muted">${escapeHtml(selectedSchool.name)} - ${escapeHtml(printedAt)}</p>
+                </section>
+                <section class="metrics">
+                    <div class="metric"><span>الطلاب</span><strong>${classStudents.length}</strong></div>
+                    <div class="metric"><span>المشرفون</span><strong>${classSupervisors.length}</strong></div>
+                    <div class="metric"><span>الدورات</span><strong>${classCourses.length}</strong></div>
+                    <div class="metric"><span>طلاب بلا ولي أمر</span><strong>${studentsWithoutLinkedParent.length}</strong></div>
+                    <div class="metric"><span>محاولات الاختبار</span><strong>${classSummary?.quizAttempts || 0}</strong></div>
+                    <div class="metric"><span>متوسط الأداء</span><strong>${classSummary ? `${classSummary.averageScore}%` : '-'}</strong></div>
+                </section>
+                <h2>الطلاب</h2>
+                ${renderPrintTable(
+                    ['الطالب', 'البريد', 'الحالة', 'أولياء الأمور', 'ملاحظة'],
+                    classStudents.map((student) => {
+                        const studentParents = parents.filter((parent) => (parent.linkedStudentIds || []).includes(student.id));
+                        return [
+                            student.name,
+                            student.email || '',
+                            student.isActive === false ? 'موقوف' : 'نشط',
+                            studentParents.map((parent) => parent.name).join(' | ') || 'لا يوجد',
+                            studentParents.length ? 'جاهز للمتابعة' : 'يحتاج ربط ولي أمر',
+                        ];
+                    }),
+                )}
+                <h2>المشرفون والدورات</h2>
+                ${renderPrintTable(
+                    ['النوع', 'الاسم', 'تفصيل'],
+                    [
+                        ...classSupervisors.map((currentUser) => [
+                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
+                            currentUser.name,
+                            currentUser.email || '',
+                        ]),
+                        ...classCourses.map((course) => [
+                            'دورة',
+                            course.title,
+                            course.isPublished === false ? 'غير منشورة' : 'منشورة',
+                        ]),
+                    ],
+                )}
+            `;
+
+            if (!openPrintWindow(`${selectedSchool.name} - ${classroom.name}`, bodyHtml)) {
+                setManagementError('تعذر فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى.');
+            }
+        };
+
         const downloadPackagesReport = () => {
             createWorkbookDownload(`${selectedSchool.name}-packages-and-codes.xlsx`, [
                 {
@@ -1452,6 +1710,14 @@ export const SchoolsManager: React.FC = () => {
                         <Download size={16} />
                         ملف تسليم المدرسة
                     </button>
+                    <button
+                        onClick={printSchoolReport}
+                        className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
+                        title="طباعة تقرير جاهزية وتشغيل المدرسة"
+                    >
+                        <Printer size={16} />
+                        طباعة التقرير
+                    </button>
                 </div>
 
                 <div className="flex gap-2 border-b border-gray-200">
@@ -1770,6 +2036,13 @@ export const SchoolsManager: React.FC = () => {
                                                                 title="تصدير تقرير الفصل"
                                                             >
                                                                 <Download size={18} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => printClassReport(classroom)}
+                                                                className="text-gray-400 hover:text-indigo-600 transition-colors"
+                                                                title="طباعة تقرير الفصل"
+                                                            >
+                                                                <Printer size={18} />
                                                             </button>
                                                             <button
                                                                 onClick={() => {
