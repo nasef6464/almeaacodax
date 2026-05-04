@@ -32,6 +32,8 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
+import { flattenMockExamQuestionIds } from '../utils/mockExam';
+import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -70,19 +72,6 @@ interface ResolvedAnalysisItem {
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
-
-const normalizeQuestionHtml = (value?: string | null) => {
-  const normalized = displayText(value);
-
-  return normalized
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
-    .trim();
-};
-
-const hasInlineQuestionMedia = (value?: string | null) => /<(img|svg|table|iframe)\b/i.test(value || '');
 
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
@@ -1460,7 +1449,7 @@ const ReviewSolutions = ({
   const questions: QuizQuestionReview[] = React.useMemo(() => {
     const reviewById = new Map((result.questionReview || []).map((question) => [question.questionId, question]));
     const quiz = quizzes.find((item) => item.id === result.quizId);
-    const quizQuestionIds = quiz?.questionIds || [];
+    const quizQuestionIds = quiz ? flattenMockExamQuestionIds(quiz) : [];
 
     if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= quizQuestionIds.length) {
       return result.questionReview || [];

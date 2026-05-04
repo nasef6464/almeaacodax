@@ -5,22 +5,12 @@ import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
+import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
-
-const normalizeQuestionHtml = (value?: string | null) => {
-  const normalized = sanitizeArabicText(value) || '';
-
-  return normalized
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
-    .trim();
-};
 
 interface SavedQuizSnapshot {
   entryMode: 'prepared' | 'self';

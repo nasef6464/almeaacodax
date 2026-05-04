@@ -227,7 +227,6 @@ export const SubjectLearningPage: React.FC = () => {
   const buildTrainingQuizPath = (quizId: string) => {
     const params = new URLSearchParams();
     params.set('returnTo', buildTopicReturnPath('quizzes'));
-    params.set('returnOnFinish', '1');
     params.set('source', 'foundation');
     return `/quiz/${quizId}?${params.toString()}`;
   };

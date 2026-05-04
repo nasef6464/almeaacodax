@@ -913,11 +913,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                   <div className="mt-4 rounded-2xl border border-white bg-white p-4 shadow-sm">
                     <div className="mb-4 text-sm font-bold text-gray-800">مثال: ما أول خطوة صحيحة عند حل المسألة؟</div>
                     <div className={`grid ${previewOptionGridClass} gap-3`}>
-                      {['فهم المطلوب', 'تجاهل المعطيات', 'اختيار عشوائي', 'ترك السؤال'].map((label, index) => (
+                      {['فهم المطلوب', 'تجاهل المعطيات', 'اختيار عشوائي', 'ترك السؤال'].map((label) => (
                         <div key={label} className="flex min-h-[64px] items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
                           <span className="text-sm font-black text-gray-800">{label}</span>
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 bg-white text-lg font-black text-gray-700">
-                            {['أ', 'ب', 'ج', 'د'][index]}
                           </span>
                         </div>
                       ))}

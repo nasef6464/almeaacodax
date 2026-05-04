@@ -17,6 +17,7 @@ import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { VideoModal } from '../components/VideoModal';
 import { Question } from '../types';
+import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type ReviewTab = 'favorites' | 'reviewLater' | 'mistakes';
@@ -37,17 +38,6 @@ const tabMeta: Record<ReviewTab, { label: string; empty: string; icon: React.Rea
     empty: 'لا توجد أسئلة خاطئة محفوظة حتى الآن.',
     icon: <RotateCcw size={16} />,
   },
-};
-
-const normalizeQuestionHtml = (value?: string | null) => {
-  const normalized = sanitizeArabicText(value) || '';
-
-  return normalized
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
-    .trim();
 };
 
 const uniqueById = (items: Question[]) => {

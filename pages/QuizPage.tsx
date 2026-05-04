@@ -5,6 +5,7 @@ import { Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamTimeLimit } from '../utils/mockExam';
+import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 interface QuestionThreadItem {
   id: string;
@@ -577,7 +578,7 @@ export const QuizPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className={`text-base sm:text-lg mb-6 break-words ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`} dangerouslySetInnerHTML={{ __html: currentQuestion?.text || '' }} />
+              <div className={`text-base sm:text-lg mb-6 break-words ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`} dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }} />
               {currentQuestion?.imageUrl && (
                 <button
                   type="button"
@@ -605,7 +606,7 @@ export const QuizPage: React.FC = () => {
                     }`}
                   >
                     <span className={`flex-1 text-sm md:text-base font-bold leading-relaxed text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
-                      {option}
+                      <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
                       <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center text-lg font-black ${
@@ -778,7 +779,7 @@ export const QuizPage: React.FC = () => {
                           </div>
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-4">
-                              <div className="text-gray-800 font-medium" dangerouslySetInnerHTML={{ __html: question.text }} />
+                              <div className="text-gray-800 font-medium" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                               <button
                                 onClick={() => toggleFavorite(question.id)}
                                 className="text-gray-400 hover:text-amber-500 transition-colors p-2"
@@ -827,7 +828,7 @@ export const QuizPage: React.FC = () => {
                                       {(optionIndex === question.correctOptionIndex || optionIndex === userAnswer) && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                                     </div>
                                     <div className="min-w-0 flex-1 text-center">
-                                      <span className="block break-words text-sm font-bold leading-7">{option}</span>
+                                      <span className="block break-words text-sm font-bold leading-7" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                                       {helperLabel ? <span className="mt-1 inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-black">{helperLabel}</span> : null}
                                     </div>
                                   </div>
@@ -838,7 +839,7 @@ export const QuizPage: React.FC = () => {
                             {quiz.settings.showExplanations && question.explanation && (
                               <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
                                 <h4 className="font-bold text-indigo-900 mb-2 text-sm">شرح الإجابة:</h4>
-                                <div className="text-indigo-800 text-sm" dangerouslySetInnerHTML={{ __html: question.explanation }} />
+                                <div className="text-indigo-800 text-sm" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
                               </div>
                             )}
                           </div>
