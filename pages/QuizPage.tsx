@@ -60,6 +60,7 @@ export const QuizPage: React.FC = () => {
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
   const [isSubmittingResult, setIsSubmittingResult] = useState(false);
+  const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [qaDraft, setQaDraft] = useState('');
   const [qaThread, setQaThread] = useState<QuestionThreadItem[]>(INITIAL_QA_THREAD);
   const [isNightMode, setIsNightMode] = useState(() => {
@@ -83,6 +84,7 @@ export const QuizPage: React.FC = () => {
     setSelectedOptions({});
     setCurrentQuestionIndex(0);
     setIsFinished(false);
+    setShowFinishDialog(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
@@ -288,7 +290,7 @@ export const QuizPage: React.FC = () => {
       setCurrentQuestionIndex((prev) => prev + 1);
       return;
     }
-    handleFinish();
+    setShowFinishDialog(true);
   };
 
   const handlePrev = () => {
@@ -613,7 +615,7 @@ export const QuizPage: React.FC = () => {
 
               {currentQuestionIndex === quizQuestions.length - 1 ? (
                 <button
-                  onClick={handleFinish}
+                  onClick={() => setShowFinishDialog(true)}
                   disabled={isSubmittingResult}
                   className="w-full sm:w-auto bg-emerald-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -832,6 +834,42 @@ export const QuizPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {showFinishDialog && !isFinished ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" dir="rtl">
+          <div className="w-full max-w-xl rounded-3xl border-2 border-cyan-950 bg-white p-6 text-center shadow-2xl">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+              <AlertCircle size={30} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900">هل تريد إنهاء الاختبار الآن؟</h3>
+            <p className="mx-auto mt-3 max-w-md text-sm font-bold leading-7 text-slate-600">
+              {quizQuestions.length - answeredQuestionCount > 0
+                ? `يوجد ${quizQuestions.length - answeredQuestionCount} سؤال لم تتم الإجابة عنه بعد. إذا اخترت نعم سيتم حفظ نتيجتك فورًا ولن تتمكن من تعديل إجاباتك.`
+                : 'تمت الإجابة عن كل الأسئلة. إذا اخترت نعم سيتم حفظ نتيجتك فورًا وعرض التقرير.'}
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setShowFinishDialog(false)}
+                className="rounded-xl bg-rose-500 px-5 py-3 font-black text-white transition-colors hover:bg-rose-600"
+              >
+                لا
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFinishDialog(false);
+                  handleFinish();
+                }}
+                disabled={isSubmittingResult}
+                className="rounded-xl bg-cyan-950 px-5 py-3 font-black text-white transition-colors hover:bg-cyan-900 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSubmittingResult ? 'جاري الحفظ...' : 'نعم'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

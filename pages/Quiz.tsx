@@ -66,6 +66,7 @@ const Quiz: React.FC = () => {
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [showVideo, setShowVideo] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [savedSnapshot, setSavedSnapshot] = useState<SavedQuizSnapshot | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusTone, setStatusTone] = useState<'success' | 'error' | 'info'>('info');
@@ -446,7 +447,7 @@ const Quiz: React.FC = () => {
       setShowVideo(false);
       return;
     }
-    handleFinish();
+    setShowFinishDialog(true);
   };
 
   const handlePrev = () => {
@@ -991,6 +992,41 @@ const Quiz: React.FC = () => {
                 className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
               >
                 إلغاء
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {showFinishDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
+          <Card className="max-w-xl w-full p-6 text-center space-y-5 shadow-2xl animate-scale-up border-2 border-cyan-950">
+            <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+              <AlertTriangle size={34} />
+            </div>
+            <div>
+              <h3 className="font-black text-xl text-gray-900 mb-3">هل تريد إنهاء الاختبار الآن؟</h3>
+              <p className="text-gray-600 text-sm leading-7 font-bold">
+                {questions.length - Object.keys(answers).length > 0
+                  ? `يوجد ${questions.length - Object.keys(answers).length} سؤال لم تتم الإجابة عنه بعد. إذا اخترت نعم سيتم حفظ نتيجتك فورًا ولن تتمكن من تعديل إجاباتك.`
+                  : 'تمت الإجابة عن كل الأسئلة. إذا اخترت نعم سيتم حفظ نتيجتك فورًا وعرض التقرير.'}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                onClick={() => setShowFinishDialog(false)}
+                className="bg-rose-500 text-white py-3 rounded-xl font-black hover:bg-rose-600 transition-colors"
+              >
+                لا
+              </button>
+              <button
+                onClick={() => {
+                  setShowFinishDialog(false);
+                  handleFinish();
+                }}
+                className="bg-cyan-950 text-white py-3 rounded-xl font-black hover:bg-cyan-900 transition-colors"
+              >
+                نعم
               </button>
             </div>
           </Card>

@@ -302,6 +302,10 @@ const Results: React.FC = () => {
 
   const latestResult = examResults[0];
   const questionReviewCount = latestResult?.questionReview?.length || 0;
+  const retryQuizLink =
+    latestResult?.quizId && !latestResult.quizId.startsWith('self-quiz')
+      ? `/quiz/${latestResult.quizId}`
+      : '/quiz';
 
   const analysisItems: ResolvedAnalysisItem[] = React.useMemo(() => {
     if (!latestResult) return [];
@@ -652,7 +656,7 @@ const Results: React.FC = () => {
         </div>
       </header>
 
-      <Card className="p-4 sm:p-5 border border-slate-100 bg-white shadow-sm">
+      <Card className={`p-4 sm:p-5 border border-slate-100 bg-white shadow-sm ${isFullResult ? '' : 'hidden'}`}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
@@ -687,7 +691,7 @@ const Results: React.FC = () => {
         </div>
       </Card>
 
-      <Card className="p-4 sm:p-5 border-indigo-100 bg-white">
+      <Card className={`p-4 sm:p-5 border-indigo-100 bg-white ${isFullResult ? '' : 'hidden'}`}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
@@ -980,7 +984,7 @@ const Results: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <button
                 onClick={() => setViewMode('review')}
                 className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors"
@@ -988,20 +992,27 @@ const Results: React.FC = () => {
                 <Eye size={18} />
                 مراجعة الحلول
               </button>
+              <Link
+                to={retryQuizLink}
+                className="flex items-center justify-center gap-2 border border-emerald-200 bg-white text-emerald-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-50 transition-colors"
+              >
+                <RefreshCw size={18} />
+                إعادة الاختبار
+              </Link>
+              <Link
+                to="/quizzes"
+                className="flex items-center justify-center gap-2 border border-amber-200 bg-white text-amber-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-amber-50 transition-colors"
+              >
+                <PlusCircle size={18} />
+                اختبار إضافي
+              </Link>
               <button
                 onClick={() => setIsAnalysisOpen(true)}
                 className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100"
               >
                 <BarChart3 size={18} />
-                أين أبدأ؟
+                تقرير تفصيلي
               </button>
-              <Link
-                to="/plan"
-                className="flex items-center justify-center gap-2 border border-purple-200 text-purple-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-purple-50 transition-colors"
-              >
-                <CheckCircle2 size={18} />
-                خطة قصيرة
-              </Link>
             </div>
 
             {isFullResult ? (
@@ -1080,7 +1091,7 @@ const Results: React.FC = () => {
           </div>
         </Card>
 
-        <Card className="p-4 sm:p-6">
+        <Card className={`p-4 sm:p-6 ${isFullResult ? '' : 'hidden'}`}>
           <h3 className="text-lg font-bold text-gray-800">خطوتك التالية</h3>
           <p className="mt-2 text-sm leading-7 text-gray-500">
             اختر خطوة واحدة الآن. المنصة رتبتها لك من الأسهل للأهم حتى لا تتشتت بعد الاختبار.
