@@ -17,6 +17,7 @@ import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { VideoModal } from '../components/VideoModal';
 import { Question } from '../types';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type ReviewTab = 'favorites' | 'reviewLater' | 'mistakes';
 
@@ -38,6 +39,17 @@ const tabMeta: Record<ReviewTab, { label: string; empty: string; icon: React.Rea
     empty: 'لا توجد أسئلة خاطئة محفوظة حتى الآن.',
     icon: <RotateCcw size={16} />,
   },
+};
+
+const normalizeQuestionHtml = (value?: string | null) => {
+  const normalized = sanitizeArabicText(value) || '';
+
+  return normalized
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
+    .trim();
 };
 
 const uniqueById = (items: Question[]) => {
@@ -212,15 +224,17 @@ const Favorites: React.FC = () => {
                     referrerPolicy="no-referrer"
                   />
                   {currentQuestion.text ? (
-                    <div className="mt-4 text-center font-bold text-lg text-gray-800 leading-loose">
-                      {currentQuestion.text}
-                    </div>
+                    <div
+                      className="mt-4 text-center font-bold text-lg text-gray-800 leading-loose"
+                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion.text) }}
+                    />
                   ) : null}
                 </div>
               ) : (
-                <div className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-loose break-words">
-                  {currentQuestion.text}
-                </div>
+                <div
+                  className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-loose break-words"
+                  dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion.text) }}
+                />
               )}
             </div>
 
@@ -236,14 +250,11 @@ const Favorites: React.FC = () => {
                     <div key={`${currentQuestion.id}-${idx}`} className={`min-h-[76px] rounded-2xl border-2 px-4 py-3 shadow-sm ${statusColor}`}>
                       <div className="flex items-center justify-between gap-3">
                         <span className="flex-1 text-center text-sm sm:text-base font-bold leading-relaxed break-words">
-                          {option}
+                          {sanitizeArabicText(option)}
                         </span>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-2xl font-black text-gray-900">{OPTION_LABELS[idx] || idx + 1}</span>
-                          <span className={`flex h-9 w-9 items-center justify-center rounded-full border-2 ${showAnswer && isCorrect ? 'border-emerald-500' : 'border-gray-300'}`}>
-                            {showAnswer && isCorrect ? <CheckCircle size={18} className="text-emerald-600" /> : null}
-                          </span>
-                        </div>
+                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 ${showAnswer && isCorrect ? 'border-emerald-500' : 'border-gray-300'}`}>
+                          {showAnswer && isCorrect ? <CheckCircle size={18} className="text-emerald-600" /> : null}
+                        </span>
                       </div>
                     </div>
                   );

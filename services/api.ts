@@ -106,7 +106,7 @@ export const api = {
     }),
   getCurrentUser: () =>
     request<{ user: unknown }>("/auth/me"),
-  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[] }, token?: string | null) =>
+  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[] }, token?: string | null) =>
     request<{ user: unknown }>("/auth/me/preferences", {
       method: "PATCH",
       body: payload,

@@ -553,14 +553,30 @@ export const useStore = create<AppState>()(
 
             enrollPath: (pathId) => set((state) => {
                 if (state.enrolledPaths?.includes(pathId)) return state;
+                const nextEnrolledPaths = [...(state.enrolledPaths || []), pathId];
+                if (state.user?.email) {
+                    api.updateMyPreferences({
+                        favorites: state.favorites,
+                        reviewLater: state.reviewLater,
+                        enrolledPaths: nextEnrolledPaths,
+                    }).catch(console.error);
+                }
                 return {
-                    enrolledPaths: [...(state.enrolledPaths || []), pathId]
+                    enrolledPaths: nextEnrolledPaths
                 };
             }),
 
             unenrollPath: (pathId) => set((state) => {
+                const nextEnrolledPaths = (state.enrolledPaths || []).filter(id => id !== pathId);
+                if (state.user?.email) {
+                    api.updateMyPreferences({
+                        favorites: state.favorites,
+                        reviewLater: state.reviewLater,
+                        enrolledPaths: nextEnrolledPaths,
+                    }).catch(console.error);
+                }
                 return {
-                    enrolledPaths: (state.enrolledPaths || []).filter(id => id !== pathId)
+                    enrolledPaths: nextEnrolledPaths
                 };
             }),
 

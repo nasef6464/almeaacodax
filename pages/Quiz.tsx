@@ -5,10 +5,22 @@ import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
+import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
+
+const normalizeQuestionHtml = (value?: string | null) => {
+  const normalized = sanitizeArabicText(value) || '';
+
+  return normalized
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
+    .trim();
+};
 
 interface SavedQuizSnapshot {
   entryMode: 'prepared' | 'self';
@@ -908,9 +920,10 @@ const Quiz: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <p className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words">
-              ({currentQuestion + 1}) {questions[currentQuestion].text}
-            </p>
+            <div
+              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words"
+              dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
+            />
             {questions[currentQuestion].imageUrl && (
               <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
                 <img
@@ -936,7 +949,7 @@ const Quiz: React.FC = () => {
                     className={`min-h-[84px] px-3 sm:px-4 py-3 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm md:text-base font-bold text-gray-800 leading-relaxed text-center break-words">
-                      {option}
+                      {sanitizeArabicText(option)}
                     </span>
                     <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                       <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center text-lg font-black ${

@@ -49,6 +49,7 @@ const adminUpdateUserSchema = z.object({
 const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(),
   reviewLater: z.array(z.string()).optional(),
+  enrolledPaths: z.array(z.string()).optional(),
 });
 
 const purchaseSchema = z.object({
@@ -252,6 +253,10 @@ authRouter.patch(
 
     if (payload.reviewLater) {
       update.reviewLater = Array.from(new Set(payload.reviewLater));
+    }
+
+    if (payload.enrolledPaths) {
+      update.enrolledPaths = Array.from(new Set(payload.enrolledPaths));
     }
 
     const user = await UserModel.findByIdAndUpdate(

@@ -443,6 +443,7 @@ const Reports: React.FC = () => {
 
             return {
                 day: dayLabels[index],
+                skillId: skill.skillId,
                 skill: displayText(skill.skill),
                 subjectName: displayText(skill.subjectName),
                 sectionName: displayText(skill.sectionName),
@@ -468,8 +469,8 @@ const Reports: React.FC = () => {
             {
                 title: 'راجع الشرح',
                 body: studentTodayFocus.lessonTitle
-                    ? `ابدأ بشرح ${displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)}.`
-                    : 'افتح الشروحات واختر أقرب درس لهذه المهارة.',
+                    ? displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)
+                    : 'أقرب شرح لهذه المهارة.',
                 label: studentTodayFocus.lessonLink ? 'فتح الشرح' : 'استعراض الشروحات',
                 link: studentTodayFocus.lessonLink || '/courses',
                 Icon: Video,
@@ -478,18 +479,18 @@ const Reports: React.FC = () => {
             {
                 title: 'حل تدريب قصير',
                 body: studentTodayFocus.quizTitle
-                    ? `بعد الشرح حل ${displayText(studentTodayFocus.quizTitle)} بدون استعجال.`
-                    : 'حل تدريبًا قصيرًا من مركز الاختبارات على نفس المهارة.',
+                    ? displayText(studentTodayFocus.quizTitle)
+                    : 'تدريب موجه على نفس المهارة.',
                 label: studentTodayFocus.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
-                link: studentTodayFocus.quizLink || '/quizzes',
+                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/quizzes'),
                 Icon: FileText,
                 className: 'border-amber-100 bg-amber-50 text-amber-800',
             },
             {
                 title: 'أعد القياس',
-                body: 'بعد المراجعة والتدريب، كرر قياسًا قصيرًا حتى نعرف هل تحسنت المهارة أم تحتاج مراجعة ثانية.',
+                body: 'اختبار قصير بعد الشرح والتدريب.',
                 label: 'قياس التحسن',
-                link: studentTodayFocus.quizLink || '/quizzes',
+                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/quizzes'),
                 Icon: CheckCircle,
                 className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
             },
@@ -1536,28 +1537,28 @@ const Reports: React.FC = () => {
 
             {isStudentView && hasStudentAnalytics && (
             <>
-            <Card className="p-4 sm:p-6 border-0 shadow-sm bg-slate-900 text-white overflow-hidden">
+            <Card className="p-4 sm:p-6 border border-indigo-100 shadow-sm bg-white overflow-hidden">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
-                        <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
+                        <div className="mb-3 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
                             تقرير مبسط للطالب
                         </div>
-                        <h2 className="text-2xl font-black leading-tight">خطوة واحدة واضحة اليوم</h2>
-                        <p className="mt-3 max-w-3xl text-sm leading-7 text-indigo-100">
+                        <h2 className="text-2xl font-black leading-tight text-gray-900">خطوة واحدة واضحة اليوم</h2>
+                        <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">
                             {studentFollowUpSummary}
                         </p>
                     </div>
                     <div className="grid min-w-full gap-2 sm:min-w-[320px] sm:grid-cols-2 lg:min-w-[380px]">
                         <button
                             onClick={copyStudentSummary}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/20"
+                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50"
                         >
                             {copiedStudentSummary ? <CheckCircle size={16} /> : <Copy size={16} />}
                             {copiedStudentSummary ? 'تم النسخ' : 'نسخ الملخص'}
                         </button>
                         <button
                             onClick={shareStudentSummary}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-800 transition hover:bg-indigo-50"
+                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
                         >
                             {sharedStudentSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
                             {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
@@ -1596,7 +1597,7 @@ const Reports: React.FC = () => {
                         <div>
                             <h2 className="text-xl font-black text-gray-900">ابدأ من هذه المهارة فقط</h2>
                             <p className="mt-1 text-sm leading-7 text-gray-500">
-                                هنا نعرض للطالب أقل قدر من التفاصيل: مهارة واحدة، ثم ثلاث خطوات تنفيذ. باقي التحليل موجود في التقرير الكامل.
+                                مهارة واحدة واضحة، ومعها الشرح والتدريب وقياس التحسن.
                             </p>
                         </div>
                         <button
@@ -1610,7 +1611,6 @@ const Reports: React.FC = () => {
                     <div className="mt-5">
                         {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, 1).map((skill, index) => {
                             const tone = getReportMasteryTone(skill.mastery);
-                            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
 
                             return (
                                 <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 sm:p-5 ${tone.bg} ${tone.border}`}>
@@ -1633,7 +1633,7 @@ const Reports: React.FC = () => {
                                                 {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
                                             </div>
                                             <p className="mt-3 text-sm font-bold leading-7 text-gray-700">
-                                                {displayText(recommendation.actionText) || 'راجع شرحًا قصيرًا ثم حل تدريبًا بسيطًا.'}
+                                                ابدأ بالشرح، ثم حل التدريب المرتبط، وبعدها أعد القياس.
                                             </p>
                                         </div>
                                         <div className="grid gap-3 sm:grid-cols-3">
@@ -1660,24 +1660,6 @@ const Reports: React.FC = () => {
                         )}
                     </div>
 
-                    {showCompactStudentView ? (
-                        <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                <div>
-                                    <div className="text-sm font-black text-gray-900">لماذا التقرير قصير؟</div>
-                                    <p className="mt-1 text-sm leading-7 text-gray-500">
-                                        المقصود أن يعرف الطالب ماذا يذاكر الآن فقط. المدير وولي الأمر والتقرير الكامل يحتفظون بالتفاصيل والأرقام.
-                                    </p>
-                                </div>
-                                <button
-                                    onClick={() => setStudentReportDepth('full')}
-                                    className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700"
-                                >
-                                    فتح التفاصيل
-                                </button>
-                            </div>
-                        </div>
-                    ) : null}
                 </Card>
             ) : null}
 
