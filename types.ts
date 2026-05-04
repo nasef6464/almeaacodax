@@ -287,6 +287,8 @@ export interface QuizResult {
     userId?: string;
     quizId: string;
     quizTitle: string;
+    source?: 'foundation' | 'training' | 'tests' | 'mock-exam' | 'course' | 'self' | string;
+    returnTo?: string;
     score: number; // percentage
     totalQuestions: number;
     correctAnswers: number;

@@ -224,11 +224,28 @@ export const SubjectLearningPage: React.FC = () => {
     params.set('content', contentTab);
     return `/category/${pathId || ''}?${params.toString()}`;
   };
-  const buildTrainingQuizPath = (quizId: string) => {
+  const buildTopicReturnPathFor = (topic: Topic, contentTab: 'lessons' | 'quizzes' = 'quizzes') => {
     const params = new URLSearchParams();
-    params.set('returnTo', buildTopicReturnPath('quizzes'));
-    params.set('source', 'foundation');
+    if (subjectId) params.set('subject', subjectId);
+    params.set('tab', 'skills');
+    params.set('topic', topic.id);
+    params.set('content', contentTab);
+    return `/category/${pathId || ''}?${params.toString()}`;
+  };
+  const buildSubjectReturnPath = (tab: 'courses' | 'skills' | 'questions' | 'exams' | 'library' = activeTab) => {
+    const params = new URLSearchParams();
+    if (subjectId) params.set('subject', subjectId);
+    params.set('tab', tab);
+    return `/category/${pathId || ''}?${params.toString()}`;
+  };
+  const buildQuizPathWithReturn = (quizId: string, returnTo: string, source: string) => {
+    const params = new URLSearchParams();
+    params.set('returnTo', returnTo);
+    params.set('source', source);
     return `/quiz/${quizId}?${params.toString()}`;
+  };
+  const buildTrainingQuizPath = (quizId: string) => {
+    return buildQuizPathWithReturn(quizId, buildTopicReturnPath('quizzes'), 'foundation');
   };
   const activeTopicLessons = useMemo(
     () =>
@@ -498,7 +515,11 @@ export const SubjectLearningPage: React.FC = () => {
                     </div>
                     <button
                       className="w-full py-2 bg-gray-50 text-indigo-600 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors"
-                      onClick={() => (relatedBank ? navigate(`/quiz/${relatedBank.id}`) : handleOpenTopicModal(topic))}
+                      onClick={() =>
+                        relatedBank
+                          ? navigate(buildQuizPathWithReturn(relatedBank.id, buildTopicReturnPathFor(topic, 'quizzes'), 'foundation'))
+                          : handleOpenTopicModal(topic)
+                      }
                     >
                       تدرب على هذه المهارة
                     </button>
@@ -525,7 +546,10 @@ export const SubjectLearningPage: React.FC = () => {
                 <p className="text-gray-500 text-sm mb-6 line-clamp-2">{quiz.description}</p>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-sm font-bold text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
-                  <button onClick={() => navigate(`/quiz/${quiz.id}`)} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+                  <button
+                    onClick={() => navigate(buildQuizPathWithReturn(quiz.id, buildSubjectReturnPath('exams'), 'tests'))}
+                    className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors"
+                  >
                     ابدأ الاختبار
                   </button>
                 </div>

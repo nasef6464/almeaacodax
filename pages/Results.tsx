@@ -330,6 +330,16 @@ const Results: React.FC = () => {
     latestResult?.quizId && !latestResult.quizId.startsWith('self-quiz')
       ? `/quiz/${latestResult.quizId}`
       : '/quiz';
+  const safeResultReturnTo = React.useMemo(() => {
+    const target = latestResult?.returnTo || '';
+    return target.startsWith('/') && !target.startsWith('//') ? target : '';
+  }, [latestResult?.returnTo]);
+  const resultReturnLabel = React.useMemo(() => {
+    if (latestResult?.source === 'foundation') return 'العودة لموضوع التأسيس';
+    if (latestResult?.source === 'course') return 'العودة للدورة';
+    if (latestResult?.source === 'mock-exam') return 'العودة للاختبارات المحاكية';
+    return 'العودة للمكان السابق';
+  }, [latestResult?.source]);
 
   const analysisItems: ResolvedAnalysisItem[] = React.useMemo(() => {
     if (!latestResult) return [];
@@ -684,6 +694,15 @@ const Results: React.FC = () => {
           <h1 className="text-xl font-bold">نتيجة الاختبار</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {safeResultReturnTo ? (
+            <Link
+              to={safeResultReturnTo}
+              className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-100"
+            >
+              <ArrowRight size={16} />
+              {resultReturnLabel}
+            </Link>
+          ) : null}
           <button
             onClick={() => printElementAsPdf('quiz-result-print-area', 'نتيجة الاختبار')}
             className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50"

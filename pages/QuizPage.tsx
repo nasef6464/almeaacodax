@@ -84,11 +84,18 @@ export const QuizPage: React.FC = () => {
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
   });
   const returnToParam = searchParams.get('returnTo') || '';
+  const sourceParam = searchParams.get('source') || '';
   const safeReturnTo = useMemo(() => {
     if (!returnToParam) return '';
     if (returnToParam.startsWith('/') && !returnToParam.startsWith('//')) return returnToParam;
     return '';
   }, [returnToParam]);
+  const resultSource = useMemo(() => {
+    if (sourceParam) return sourceParam;
+    if (quiz?.mockExam?.enabled) return 'mock-exam';
+    if (quiz?.mode === 'saher') return 'self';
+    return undefined;
+  }, [quiz?.mockExam?.enabled, quiz?.mode, sourceParam]);
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
     (searchParams.get('returnOnFinish') === '1' ||
@@ -424,6 +431,8 @@ export const QuizPage: React.FC = () => {
     const result: QuizResult = {
       quizId: quiz.id,
       quizTitle: quiz.title,
+      source: resultSource,
+      returnTo: safeReturnTo || undefined,
       score: finalScore,
       totalQuestions: quizQuestions.length,
       correctAnswers: correctAnswersCount,
@@ -442,7 +451,12 @@ export const QuizPage: React.FC = () => {
         answers: selectedOptions,
         timeSpentSeconds: Math.max(0, timeSpentSeconds),
       });
-      const savedServerResult = serverResult as QuizResult;
+      const savedServerResult: QuizResult = {
+        ...result,
+        ...(serverResult as QuizResult),
+        source: result.source,
+        returnTo: result.returnTo,
+      };
       if ((savedServerResult.questionReview?.length || 0) < result.questionReview.length) {
         savedServerResult.questionReview = result.questionReview;
         savedServerResult.totalQuestions = result.totalQuestions;
