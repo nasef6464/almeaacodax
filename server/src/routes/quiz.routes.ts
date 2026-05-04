@@ -643,11 +643,42 @@ quizRouter.get(
   "/questions",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const baseFilter = isStaffRole(req.authUser?.role)
-      ? {}
-      : {
+    let baseFilter: Record<string, any> = {};
+
+    if (!isStaffRole(req.authUser?.role)) {
+      const visibleQuizFilter = await withLearnerVisiblePaths(
+        {
+          isPublished: true,
+          showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        };
+        },
+        req.authUser,
+      );
+      const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
+      const linkedQuestionIds = uniqueStrings(
+        visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
+      );
+      const linkedObjectIds = linkedQuestionIds
+        .filter((id) => mongoose.Types.ObjectId.isValid(id))
+        .map((id) => new mongoose.Types.ObjectId(id));
+      const linkedQuestionConditions: Record<string, any>[] = linkedQuestionIds.length > 0
+        ? [{ id: { $in: linkedQuestionIds } }]
+        : [];
+
+      if (linkedObjectIds.length > 0) {
+        linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
+      }
+
+      baseFilter = {
+        $or: [
+          { approvalStatus: "approved" },
+          { approvalStatus: { $exists: false } },
+          { approvalStatus: null },
+          ...linkedQuestionConditions,
+        ],
+      };
+    }
+
     const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
     const items = await QuestionModel.find(filter).sort({ createdAt: -1 });
     res.json(items);

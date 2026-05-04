@@ -119,6 +119,14 @@ function documentId(item: any) {
   return String(item?.id || item?._id || "");
 }
 
+function quizQuestionIds(item: any): string[] {
+  const sectionIds = Array.isArray(item?.mockExam?.sections)
+    ? item.mockExam.sections.flatMap((section: any) => Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [])
+    : [];
+  const regularIds = Array.isArray(item?.questionIds) ? item.questionIds.map(String) : [];
+  return Array.from(new Set((sectionIds.length > 0 ? sectionIds : regularIds).filter(Boolean)));
+}
+
 function contentPathId(item: any) {
   return String(item?.pathId || item?.category || "");
 }
@@ -208,6 +216,7 @@ async function run() {
     taxonomy,
     adminQuizzes,
     teacherQuizzes,
+    studentQuestions,
     studentCourses,
     studentQuizzes,
     studentRedeemedCourses,
@@ -261,6 +270,7 @@ async function run() {
     request<any>("/taxonomy/bootstrap", "GET", undefined, student.token),
     request<any[]>("/quizzes", "GET", undefined, admin.token),
     request<any[]>("/quizzes", "GET", undefined, teacher.token),
+    request<any[]>("/quizzes/questions", "GET", undefined, student.token),
     request<any[]>("/courses", "GET", undefined, student.token),
     request<any[]>("/quizzes", "GET", undefined, student.token),
     request<any[]>("/courses", "GET", undefined, studentRedeemed.token),
@@ -625,6 +635,7 @@ async function run() {
 
   const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
   const learnerQuizIds = new Set<string>((studentQuizzes || []).map((quiz: any) => documentId(quiz)));
+  const learnerQuestionIds = new Set<string>((studentQuestions || []).map((question: any) => documentId(question)));
   const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
     (topic.lessonIds || [])
@@ -672,6 +683,22 @@ async function run() {
     "published topic quiz links resolve for learners",
     missingLearnerQuizRefs.length === 0,
     missingLearnerQuizRefs.length ? `missing=${missingLearnerQuizRefs.slice(0, 5).join(",")}` : `linkedQuizzes=${learnerQuizIds.size}`,
+  );
+
+  const visibleQuizMissingQuestionRefs = (studentQuizzes || []).flatMap((quiz: any) =>
+    quizQuestionIds(quiz)
+      .filter((questionId) => questionId && !learnerQuestionIds.has(questionId))
+      .map((questionId) => `${documentId(quiz)}:${questionId}`),
+  );
+
+  pushResult(
+    results,
+    "student",
+    "visible quiz questions resolve for learners",
+    visibleQuizMissingQuestionRefs.length === 0,
+    visibleQuizMissingQuestionRefs.length
+      ? `missing=${visibleQuizMissingQuestionRefs.slice(0, 5).join(",")}`
+      : `questions=${learnerQuestionIds.size}`,
   );
 
   pushResult(
