@@ -757,6 +757,57 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
         XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
+    const downloadStudentSkillsWorkbook = () => {
+        if (!aggregatedSkills.length) return;
+
+        const workbook = XLSX.utils.book_new();
+        const rows = [
+            ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'شرح مقترح', 'تدريب مقترح'],
+            ...aggregatedSkills.map((skill) => {
+                const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
+                const tone = getReportMasteryTone(skill.mastery);
+
+                return [
+                    displayText(skill.subjectName) || '-',
+                    displayText(skill.sectionName) || '-',
+                    displayText(skill.skill) || '-',
+                    `${skill.mastery}%`,
+                    tone.label,
+                    displayText(recommendation.lessonTitle || recommendation.lessonTopicTitle) || '-',
+                    displayText(recommendation.quizTitle) || '-',
+                ];
+            }),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'my-skills');
+        XLSX.writeFile(workbook, `my-skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
+    const downloadStudentAttemptsWorkbook = () => {
+        if (!examResults.length) return;
+
+        const workbook = XLSX.utils.book_new();
+        const rows = [
+            ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ', 'أضعف مهارة'],
+            ...examResults.map((result) => {
+                const weakSkill = [...(result.skillsAnalysis || [])].sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))[0];
+
+                return [
+                    displayText(result.quizTitle) || '-',
+                    `${result.score}%`,
+                    result.totalQuestions,
+                    result.correctAnswers,
+                    result.wrongAnswers,
+                    result.unanswered,
+                    displayText(result.timeSpent) || '-',
+                    displayText(result.date) || '-',
+                    weakSkill ? `${displayText(weakSkill.skill)} ${Number(weakSkill.mastery || 0)}%` : '-',
+                ];
+            }),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'my-attempts');
+        XLSX.writeFile(workbook, `my-attempts-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
     const downloadPerformanceWorkbook = () => {
         const workbook = XLSX.utils.book_new();
         const now = new Date().toLocaleString('ar-SA');
@@ -1832,6 +1883,22 @@ const Reports: React.FC = () => {
                         >
                             {sharedStudentSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
                             {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
+                        </button>
+                        <button
+                            onClick={downloadStudentSkillsWorkbook}
+                            disabled={!aggregatedSkills.length}
+                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <FileText size={16} />
+                            تصدير مهاراتي
+                        </button>
+                        <button
+                            onClick={downloadStudentAttemptsWorkbook}
+                            disabled={!examResults.length}
+                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <Download size={16} />
+                            تصدير محاولاتي
                         </button>
                         <Link to="/plan" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-600 sm:col-span-2">
                             <Target size={16} />
