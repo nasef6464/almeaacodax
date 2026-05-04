@@ -323,6 +323,8 @@ export interface QuizHistoryItem {
 export interface QuizSettings {
     showExplanations: boolean;
     showAnswers: boolean;
+    showResultsReport?: boolean;
+    returnToSourceOnFinish?: boolean;
     maxAttempts: number;
     passingScore: number; // percentage
     timeLimit?: number; // in minutes

@@ -16,6 +16,8 @@ const quizSchema = new Schema(
     settings: {
       showExplanations: { type: Boolean, default: true },
       showAnswers: { type: Boolean, default: true },
+      showResultsReport: { type: Boolean, default: true },
+      returnToSourceOnFinish: { type: Boolean, default: false },
       maxAttempts: { type: Number, default: 3 },
       passingScore: { type: Number, default: 60 },
       timeLimit: { type: Number, default: 60 },

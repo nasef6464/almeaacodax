@@ -37,6 +37,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       settings: {
         showExplanations: true,
         showAnswers: true,
+        showResultsReport: initialType !== 'bank',
+        returnToSourceOnFinish: initialType === 'bank',
         maxAttempts: 3,
         passingScore: 60,
         timeLimit: 60,
@@ -302,6 +304,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       settings: {
         showExplanations: true,
         showAnswers: true,
+        showResultsReport: initialType !== 'bank',
+        returnToSourceOnFinish: initialType === 'bank',
         maxAttempts: 3,
         passingScore: 60,
         timeLimit: 60,
@@ -980,6 +984,30 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     <div>
                       <span className="block font-bold text-gray-800">إظهار الإجابات الصحيحة</span>
                       <span className="block text-xs text-gray-500">للطالب بعد انتهاء الاختبار</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.showResultsReport !== false}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, showResultsReport: e.target.checked } }))}
+                      className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">إظهار تقرير بعد الانتهاء</span>
+                      <span className="block text-xs text-gray-500">أغلقه للتدريبات القصيرة المرتبطة بموضوع التأسيس.</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentQuiz.settings?.returnToSourceOnFinish === true}
+                      onChange={(e) => setCurrentQuiz(prev => ({ ...prev, settings: { ...prev.settings!, returnToSourceOnFinish: e.target.checked } }))}
+                      className="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500"
+                    />
+                    <div>
+                      <span className="block font-bold text-gray-800">الرجوع لمكان الطالب بعد الحفظ</span>
+                      <span className="block text-xs text-gray-500">مفيد عندما يكون الاختبار مستخدمًا كتدريب داخل موضوع.</span>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">

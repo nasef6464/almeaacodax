@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Clock, FileText, Layers, Play, Target, Video, X } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Layers, Play, Target, Video, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Topic } from '../types';
@@ -22,6 +22,14 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
   const [lessonNotice, setLessonNotice] = useState('');
   const [openedInitialLessonId, setOpenedInitialLessonId] = useState<string | null>(null);
+  const [watchedLessonIds, setWatchedLessonIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      return JSON.parse(window.localStorage.getItem('almeaa-watched-foundation-lessons') || '[]');
+    } catch {
+      return [];
+    }
+  });
   const subTopicRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
@@ -163,16 +171,43 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   const firstPlayableLesson = learnerTopicLessons[0] || null;
   const firstTrainingQuiz = activeTopicQuizzes[0] || null;
   const firstSupportFile = relatedLibrarySuggestions[0] || null;
+  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' = topicModalTab) => {
+    const params = new URLSearchParams();
+    if (selectedTopic?.subjectId) params.set('subject', selectedTopic.subjectId);
+    params.set('tab', 'skills');
+    if (activeTopic?.id) params.set('topic', activeTopic.id);
+    params.set('content', contentTab);
+    return `/category/${selectedTopic?.pathId || ''}?${params.toString()}`;
+  };
+  const buildTrainingQuizPath = (quizId: string) => {
+    const params = new URLSearchParams();
+    params.set('returnTo', buildTopicReturnPath('quizzes'));
+    params.set('returnOnFinish', '1');
+    params.set('source', 'foundation');
+    return `/quiz/${quizId}?${params.toString()}`;
+  };
+  const markLessonWatched = (lessonId: string) => {
+    setWatchedLessonIds((current) => {
+      if (current.includes(lessonId)) return current;
+      const next = [...current, lessonId];
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('almeaa-watched-foundation-lessons', JSON.stringify(next));
+      }
+      return next;
+    });
+  };
 
   const openLessonVideo = (lesson: (typeof lessons)[number]) => {
     setLessonNotice('');
     const safeVideoUrl = sanitizeVideoUrl(lesson.videoUrl);
     if (safeVideoUrl) {
+      markLessonWatched(lesson.id);
       setVideoData({ url: safeVideoUrl, title: lesson.title });
       return;
     }
 
     if (lesson.fileUrl) {
+      markLessonWatched(lesson.id);
       openExternalUrl(lesson.fileUrl);
       return;
     }
@@ -296,7 +331,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
 
                     {firstTrainingQuiz ? (
                       <Link
-                        to={`/quiz/${firstTrainingQuiz.id}`}
+                        to={buildTrainingQuizPath(firstTrainingQuiz.id)}
                         className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-right transition hover:bg-amber-100"
                       >
                         <span className="flex items-center gap-2 text-xs font-black text-amber-700">
@@ -411,6 +446,14 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                               <span className="flex items-center gap-1">
                                 <Layers size={12} /> المادة العلمية
                               </span>
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-black ${
+                                watchedLessonIds.includes(lesson.id)
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : 'bg-slate-100 text-slate-500'
+                              }`}>
+                                {watchedLessonIds.includes(lesson.id) ? <CheckCircle2 size={12} /> : null}
+                                {watchedLessonIds.includes(lesson.id) ? 'شوهد' : 'لم يشاهد'}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -465,7 +508,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                           </div>
                         </div>
 
-                        <Link to={`/quiz/${quiz.id}`} className="px-6 py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shrink-0 text-center">
+                        <Link to={buildTrainingQuizPath(quiz.id)} className="px-6 py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shrink-0 text-center">
                           ابدأ التدريب
                         </Link>
                       </div>
@@ -479,7 +522,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                       {isStaffViewer ? (
                         <div className="grid gap-3">
                           {relatedQuizSuggestions.map((quiz) => (
-                            <Link key={quiz.id} to={`/quiz/${quiz.id}`} className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all">
+                            <Link key={quiz.id} to={buildTrainingQuizPath(quiz.id)} className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all">
                               <div className="flex items-center justify-between gap-3">
                                 <div>
                                   <h4 className="font-bold text-gray-800">{quiz.title}</h4>

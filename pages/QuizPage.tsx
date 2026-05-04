@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun } from 'lucide-react';
@@ -33,6 +33,7 @@ const INITIAL_QA_THREAD: QuestionThreadItem[] = [
 export const QuizPage: React.FC = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     quizzes,
     questions,
@@ -69,6 +70,24 @@ export const QuizPage: React.FC = () => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
   });
+  const returnToParam = searchParams.get('returnTo') || '';
+  const safeReturnTo = useMemo(() => {
+    if (!returnToParam) return '';
+    if (returnToParam.startsWith('/') && !returnToParam.startsWith('//')) return returnToParam;
+    return '';
+  }, [returnToParam]);
+  const shouldReturnToSourceAfterFinish =
+    Boolean(safeReturnTo) &&
+    (searchParams.get('returnOnFinish') === '1' ||
+      quiz?.settings?.returnToSourceOnFinish === true ||
+      quiz?.settings?.showResultsReport === false);
+  const handleReturnToPreviousPlace = () => {
+    if (safeReturnTo) {
+      navigate(safeReturnTo);
+      return;
+    }
+    navigate(-1);
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -427,6 +446,11 @@ export const QuizPage: React.FC = () => {
       setIsSubmittingResult(false);
     }
 
+    if (shouldReturnToSourceAfterFinish) {
+      navigate(safeReturnTo, { replace: true });
+      return;
+    }
+
     navigate(`/results?attempt=${encodeURIComponent(resultAttemptDate)}`);
   };
 
@@ -486,6 +510,14 @@ export const QuizPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-4 sm:p-6 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}>
           <div className="min-w-0">
+            <button
+              type="button"
+              onClick={handleReturnToPreviousPlace}
+              className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'} mb-3 inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-2 text-xs font-black`}
+            >
+              <ArrowRight size={16} />
+              الرجوع
+            </button>
             <h1 className={`text-xl sm:text-2xl font-bold break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
             {quiz.description && <p className={`${isNightMode ? 'text-slate-400' : 'text-gray-500'} mt-1 text-sm`}>{quiz.description}</p>}
             <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
