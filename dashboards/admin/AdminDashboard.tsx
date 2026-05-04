@@ -24,6 +24,7 @@ import { useStore } from '../../store/useStore';
 import { Role } from '../../types';
 import { UsersManager } from './UsersManager';
 import { SchoolsManager } from './SchoolsManager';
+import { SchoolPortalManager } from './SchoolPortalManager';
 import { PathsManager } from './PathsManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { LessonsManager } from './LessonsManager';
@@ -577,6 +578,16 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'live-sessions', label: 'الحصص المباشرة', icon: <Video size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
+        if (user.role === Role.SUPERVISOR && !nextItems.some((item) => item.id === 'school-portal')) {
+            const overviewIndex = nextItems.findIndex((item) => item.id === 'overview');
+            const targetIndex = overviewIndex === -1 ? 0 : overviewIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'school-portal', label: 'بوابة المدرسة', icon: <Building2 size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1253,6 +1264,8 @@ export const AdminDashboard: React.FC = () => {
                 return <UsersManager />;
             case 'groups':
                 return <SchoolsManager />;
+            case 'school-portal':
+                return <SchoolPortalManager />;
             case 'financial':
                 return <FinancialManager />;
             case 'homepage':
