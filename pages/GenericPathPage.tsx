@@ -7,7 +7,8 @@ import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isPathMockExam } from '../utils/mockExam';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -228,6 +229,23 @@ export const GenericPathPage: React.FC = () => {
             item.isPublished !== false &&
             (!item.approvalStatus || item.approvalStatus === 'approved')
         );
+    const getVisibleLearningSlotQuizzes = (slot: 'training' | 'tests', subjectScopeId?: string) => {
+        const subjectScopes = subjectScopeId ? [subjectScopeId] : pathSubjects.map((subject) => subject.id);
+        const fallback = slot === 'training' ? isTrainingQuiz : isMockQuiz;
+        const uniqueQuizzes = new Map<string, (typeof quizzes)[number]>();
+
+        subjectScopes.forEach((scopedSubjectId) => {
+            getLearningSlotQuizzes(
+                quizzes.filter(isMaterialQuizCandidate),
+                { pathId: path.id, subjectId: scopedSubjectId, slot },
+                canStudentSeeContent,
+                fallback,
+                true,
+            ).forEach((quiz) => uniqueQuizzes.set(quiz.id, quiz));
+        });
+
+        return Array.from(uniqueQuizzes.values());
+    };
     const isWithinPackageScope = (
         item: { pathId?: string; subjectId?: string; category?: string; subject?: string },
         packageSubjectId?: string,
@@ -263,13 +281,13 @@ export const GenericPathPage: React.FC = () => {
             {
                 label: 'تدريبات',
                 count: shouldCount('banks')
-                    ? quizzes.filter((quiz) => isTrainingQuiz(quiz) && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    ? getVisibleLearningSlotQuizzes('training', packageSubjectId).length
                     : 0,
             },
             {
                 label: 'اختبارات',
                 count: shouldCount('tests')
-                    ? quizzes.filter((quiz) => isMockQuiz(quiz) && canStudentSeeContent(quiz) && isWithinPackageScope(quiz, packageSubjectId)).length
+                    ? getVisibleLearningSlotQuizzes('tests', packageSubjectId).length
                     : 0,
             },
             {
@@ -301,8 +319,8 @@ export const GenericPathPage: React.FC = () => {
         const visibleCounts = {
             courses: courses.filter((course) => !course.isPackage && canStudentSeeContent(course) && matchesSubjectScope(course)).length,
             foundation: topics.filter((topic) => canStudentSeeContent(topic) && matchesSubjectScope(topic)).length,
-            banks: quizzes.filter((quiz) => isTrainingQuiz(quiz) && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
-            tests: quizzes.filter((quiz) => isMockQuiz(quiz) && canStudentSeeContent(quiz) && matchesSubjectScope(quiz)).length,
+            banks: getVisibleLearningSlotQuizzes('training', subjectId).length,
+            tests: getVisibleLearningSlotQuizzes('tests', subjectId).length,
             library: libraryItems.filter((item) => canStudentSeeContent(item) && matchesSubjectScope(item)).length,
         };
         const unlockedRows = contentAccessRows.filter(({ type }) => hasScopedPackageAccess(type, path.id, subjectId));

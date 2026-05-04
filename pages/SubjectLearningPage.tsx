@@ -24,6 +24,8 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { isMaterialQuizCandidate } from '../utils/mockExam';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -92,13 +94,27 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const subjectBanks = useMemo(
-    () => subjectQuizzes.filter((quiz) => isTrainingQuiz(quiz) && canSeeQuiz(quiz)),
-    [subjectQuizzes, isStaffViewer],
+    () =>
+      getLearningSlotQuizzes(
+        subjectQuizzes.filter(isMaterialQuizCandidate),
+        { pathId, subjectId, slot: 'training' },
+        canSeeQuiz,
+        isTrainingQuiz,
+        true,
+      ),
+    [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );
 
   const subjectExams = useMemo(
-    () => subjectQuizzes.filter((quiz) => isMockQuiz(quiz) && canSeeQuiz(quiz)),
-    [subjectQuizzes, isStaffViewer],
+    () =>
+      getLearningSlotQuizzes(
+        subjectQuizzes.filter(isMaterialQuizCandidate),
+        { pathId, subjectId, slot: 'tests' },
+        canSeeQuiz,
+        isMockQuiz,
+        true,
+      ),
+    [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );
 
   const subjectTopics = useMemo(
@@ -200,6 +216,21 @@ export const SubjectLearningPage: React.FC = () => {
   };
 
   const activeTopic = selectedSubTopic || selectedTopic;
+  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' = topicModalTab) => {
+    const params = new URLSearchParams();
+    if (subjectId) params.set('subject', subjectId);
+    params.set('tab', 'skills');
+    if (activeTopic?.id) params.set('topic', activeTopic.id);
+    params.set('content', contentTab);
+    return `/category/${pathId || ''}?${params.toString()}`;
+  };
+  const buildTrainingQuizPath = (quizId: string) => {
+    const params = new URLSearchParams();
+    params.set('returnTo', buildTopicReturnPath('quizzes'));
+    params.set('returnOnFinish', '1');
+    params.set('source', 'foundation');
+    return `/quiz/${quizId}?${params.toString()}`;
+  };
   const activeTopicLessons = useMemo(
     () =>
       activeTopic
@@ -731,7 +762,7 @@ export const SubjectLearningPage: React.FC = () => {
                                   {relatedQuizSuggestions.map((quiz) => (
                                     <Link
                                       key={quiz.id}
-                                      to={`/quiz/${quiz.id}`}
+                                      to={buildTrainingQuizPath(quiz.id)}
                                       className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all"
                                     >
                                       <div className="flex items-center justify-between gap-3">
@@ -793,7 +824,7 @@ export const SubjectLearningPage: React.FC = () => {
                             </div>
                           </div>
                           <Link
-                            to={`/quiz/${quiz.id}`}
+                            to={buildTrainingQuizPath(quiz.id)}
                             className="px-6 py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shrink-0 text-center"
                           >
                             ابدأ التدريب

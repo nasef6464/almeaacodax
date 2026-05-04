@@ -898,7 +898,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {canReview && quiz.approvalStatus !== 'approved' && (
+                        {!isLearningSpaceManager && canReview && quiz.approvalStatus !== 'approved' && (
                           <button
                             onClick={() => handleApprove(quiz)}
                             className="px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
@@ -906,7 +906,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             اعتماد
                           </button>
                         )}
-                        {canReview && quiz.approvalStatus !== 'rejected' && (
+                        {!isLearningSpaceManager && canReview && quiz.approvalStatus !== 'rejected' && (
                           <button
                             onClick={() => handleReject(quiz)}
                             className="px-3 py-1 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
@@ -914,7 +914,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             رفض
                           </button>
                         )}
-                        {readinessMeta.issues.length > 0 && (
+                        {!isLearningSpaceManager && readinessMeta.issues.length > 0 && (
                           <button
                             onClick={() => handlePrepareQuizForLearner(quiz)}
                             className="px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
@@ -934,46 +934,52 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             title="هذا الزر يتحكم في ظهوره داخل هذه المساحة فقط"
                           >
                             {isQuizVisibleInLearningSlot(quiz, { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot })
-                              ? 'ظاهر هنا'
-                              : 'إظهار هنا'}
+                              ? 'ظاهر للطالب هنا'
+                              : 'أظهر للطالب هنا'}
                           </button>
                         )}
-                        <button
-                          onClick={() => handleDuplicate(quiz)}
-                          className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                          title="نسخ"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                          </svg>
-                        </button>
+                        {!isLearningSpaceManager && (
+                          <button
+                            onClick={() => handleDuplicate(quiz)}
+                            className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="نسخ"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                          </button>
+                        )}
                         <button onClick={() => handleEdit(quiz.id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="تعديل">
                           <Edit2 size={18} />
                         </button>
                         <button onClick={() => handlePreviewQuiz(quiz)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="معاينة الاختبار قبل النشر">
                           <Eye size={18} />
                         </button>
-                        <button
-                          onClick={() => handleToggleRepositoryPublish(quiz)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            quiz.isPublished ? 'text-emerald-600 hover:bg-emerald-50' : 'text-amber-600 hover:bg-amber-50'
-                          }`}
-                          title={quiz.isPublished ? 'إلغاء النشر من المستودع' : 'نشر داخل المستودع'}
-                        >
-                          {quiz.isPublished ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
-                        </button>
-                        <button
-                          onClick={() => handleTogglePlatformVisibility(quiz)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            quiz.showOnPlatform === false
-                              ? 'text-gray-500 hover:bg-gray-100'
-                              : 'text-sky-600 hover:bg-sky-50'
-                          }`}
-                          title={quiz.showOnPlatform === false ? 'فتح العرض على المنصة' : 'إخفاء العرض عن المنصة'}
-                        >
-                          {quiz.showOnPlatform === false ? <Lock size={18} /> : <LockOpen size={18} />}
-                        </button>
+                        {!isLearningSpaceManager && (
+                          <>
+                            <button
+                              onClick={() => handleToggleRepositoryPublish(quiz)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                quiz.isPublished ? 'text-emerald-600 hover:bg-emerald-50' : 'text-amber-600 hover:bg-amber-50'
+                              }`}
+                              title={quiz.isPublished ? 'إلغاء النشر من المستودع' : 'نشر داخل المستودع'}
+                            >
+                              {quiz.isPublished ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
+                            </button>
+                            <button
+                              onClick={() => handleTogglePlatformVisibility(quiz)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                quiz.showOnPlatform === false
+                                  ? 'text-gray-500 hover:bg-gray-100'
+                                  : 'text-sky-600 hover:bg-sky-50'
+                              }`}
+                              title={quiz.showOnPlatform === false ? 'فتح العرض على المنصة' : 'إخفاء العرض عن المنصة'}
+                            >
+                              {quiz.showOnPlatform === false ? <Lock size={18} /> : <LockOpen size={18} />}
+                            </button>
+                          </>
+                        )}
                         {!filterType && <div className="flex rounded-xl border border-gray-100 bg-gray-50 p-1">
                           <button
                             onClick={() => handleSetPlacement(quiz, 'training')}
