@@ -4,6 +4,7 @@ import { useStore } from '../../store/useStore';
 import { MockExamSection, Question, Quiz } from '../../types';
 import { getMockExamQuestionCount, getMockExamSections, isPathMockExam } from '../../utils/mockExam';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { getDefaultQuizSettings } from '../../utils/quizSettings';
 
 type DraftSection = MockExamSection;
 
@@ -127,16 +128,9 @@ export const MockExamManager: React.FC = () => {
       showInMock: false,
       mode: 'saher',
       settings: {
-        showExplanations: true,
-        showAnswers: true,
-        maxAttempts: 3,
+        ...getDefaultQuizSettings({ mode: 'saher', mockExam: true }),
         passingScore,
         timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
-        randomizeQuestions: false,
-        showProgressBar: true,
-        requireAnswerBeforeNext: false,
-        allowQuestionReview: true,
-        optionLayout: 'auto',
       },
       access: { type: 'free', allowedGroupIds: [] },
       questionIds: allQuestionIds,

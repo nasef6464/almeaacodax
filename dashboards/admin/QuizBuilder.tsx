@@ -4,6 +4,7 @@ import { Quiz, Question } from '../../types';
 import { AlertTriangle, Plus, Search, Edit2, Trash2, Save, X, Settings, Link as LinkIcon, Users, FileQuestion, Filter, CheckCircle2, Lock, LockOpen } from 'lucide-react';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
+import { getDefaultQuizSettings } from '../../utils/quizSettings';
 
 interface QuizBuilderProps {
   onClose?: () => void;
@@ -34,20 +35,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       subjectId: initialSubjectId || '',
       ...getQuizPlacementDefaults(initialType),
       mode: 'regular',
-      settings: {
-        showExplanations: true,
-        showAnswers: true,
-        showResultsReport: initialType !== 'bank',
-        returnToSourceOnFinish: initialType === 'bank',
-        maxAttempts: 3,
-        passingScore: 60,
-        timeLimit: 60,
-        randomizeQuestions: true,
-        showProgressBar: true,
-        requireAnswerBeforeNext: false,
-        allowQuestionReview: true,
-        optionLayout: 'auto',
-      },
+      settings: getDefaultQuizSettings({ type: initialType }),
       access: {
         type: 'free',
         allowedGroupIds: [],
@@ -301,20 +289,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       subjectId: initialSubjectId || '',
       ...getQuizPlacementDefaults(initialType),
       mode: 'regular',
-      settings: {
-        showExplanations: true,
-        showAnswers: true,
-        showResultsReport: initialType !== 'bank',
-        returnToSourceOnFinish: initialType === 'bank',
-        maxAttempts: 3,
-        passingScore: 60,
-        timeLimit: 60,
-        randomizeQuestions: true,
-        showProgressBar: true,
-        requireAnswerBeforeNext: false,
-        allowQuestionReview: true,
-        optionLayout: 'auto',
-      },
+      settings: getDefaultQuizSettings({ type: initialType }),
       access: {
         type: 'free',
         allowedGroupIds: [],

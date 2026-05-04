@@ -7,6 +7,7 @@ import { QuizBuilder } from './QuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import { isQuizVisibleInLearningSlot, LearningPlacementSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
+import { getDefaultQuizSettings } from '../../utils/quizSettings';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -364,18 +365,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, isVisible: true, order: 0, createdAt }]
           : [],
       mode,
-      settings: {
-        showExplanations: true,
-        showAnswers: true,
-        maxAttempts: 3,
-        passingScore: 60,
-        timeLimit: 60,
-        randomizeQuestions: true,
-        showProgressBar: true,
-        requireAnswerBeforeNext: mode !== 'central',
-        allowQuestionReview: true,
-        optionLayout: mode === 'central' ? 'horizontal' : 'auto',
-      },
+      settings: getDefaultQuizSettings({
+        type: filterType || 'quiz',
+        mode,
+        learningSlot: activeLearningSlot,
+      }),
       access: mode === 'central' ? { type: 'private', allowedGroupIds: [] } : { type: 'free', allowedGroupIds: [] },
       questionIds: [],
       createdAt,
