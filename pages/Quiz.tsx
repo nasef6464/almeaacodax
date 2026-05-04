@@ -9,7 +9,6 @@ import { useStore } from '../store/useStore';
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
-const OPTION_LABELS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 
 interface SavedQuizSnapshot {
   entryMode: 'prepared' | 'self';
@@ -870,9 +869,6 @@ const Quiz: React.FC = () => {
                       {option}
                     </span>
                     <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <span className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900">
-                        {OPTION_LABELS[idx] || String(idx + 1)}
-                      </span>
                       <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>

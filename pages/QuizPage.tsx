@@ -12,7 +12,6 @@ interface QuestionThreadItem {
   message: string;
 }
 
-const OPTION_LABELS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
@@ -555,9 +554,6 @@ export const QuizPage: React.FC = () => {
                       {option}
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className={`text-2xl md:text-3xl font-black ${isNightMode ? 'text-white' : 'text-gray-900'}`}>
-                        {OPTION_LABELS[index] || String(index + 1)}
-                      </span>
                       <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         selectedOptions[currentQuestion.id] === index ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
                       }`}>
@@ -749,9 +745,6 @@ export const QuizPage: React.FC = () => {
 
                                 return (
                                   <div key={optionIndex} className={`min-h-[92px] p-3 rounded-xl border flex items-center justify-between gap-3 ${bgClass}`}>
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-white text-lg font-black">
-                                      {OPTION_LABELS[optionIndex] || optionIndex + 1}
-                                    </div>
                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                                       optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
                                       optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'

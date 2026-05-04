@@ -68,7 +68,6 @@ interface ResolvedAnalysisItem {
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
-const arabicOptionLabels = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
 
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
@@ -1478,7 +1477,6 @@ const ReviewSolutions = ({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4 mb-8">
             {q.options.map((option, i) => {
-              const label = arabicOptionLabels[i] || `${i + 1}`;
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
 
@@ -1504,16 +1502,14 @@ const ReviewSolutions = ({
 
               return (
                 <button
-                  key={`${label}-${i}`}
+                  key={`${q.questionId}-${i}`}
                   type="button"
                   className={`group flex items-center justify-between gap-3 rounded-2xl border p-4 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <div
-                      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 text-lg font-black transition-all ${borderClass} ${bgClass}`}
-                    >
-                      {label}
-                    </div>
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
+                    />
                     <span className="line-clamp-2 text-sm font-bold leading-7 text-gray-700">
                       {displayText(option)}
                     </span>

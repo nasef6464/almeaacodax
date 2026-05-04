@@ -24,8 +24,6 @@ interface SimulatedTestExperienceProps {
     onStartTest?: (test: Test) => void;
 }
 
-const OPTION_LABELS_AR = ['أ', 'ب', 'ج', 'د'];
-
 const stripOptionLabel = (value: string) =>
     value.replace(/^\s*[أابجدهـA-D]\s*[\)\-\.]\s*/i, '').trim();
 
@@ -343,9 +341,6 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                                 {stripOptionLabel(option)}
                                             </span>
                                             <div className="flex shrink-0 items-center gap-3">
-                                                <span className={`text-2xl font-black ${isSelected ? 'text-indigo-600' : isNightMode ? 'text-white' : 'text-gray-900'}`}>
-                                                    {OPTION_LABELS_AR[idx] || idx + 1}
-                                                </span>
                                                 <span className={`flex h-9 w-9 items-center justify-center rounded-full border-2 ${isSelected ? 'border-indigo-600 bg-white' : isNightMode ? 'border-slate-500' : 'border-gray-300'}`}>
                                                     <span className={`h-3.5 w-3.5 rounded-full ${isSelected ? 'bg-indigo-600' : 'bg-transparent'}`} />
                                                 </span>
@@ -518,9 +513,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
                                     return (
                                         <div key={i} className="flex flex-col items-center gap-2">
-                                            <div className={`w-16 h-16 rounded-full border-2 flex items-center justify-center text-xl font-black transition-all ${borderClass} ${bgClass}`}>
-                                                {label}
-                                            </div>
+                                            <div className={`w-10 h-10 rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
                                             <span className="text-xs font-bold text-gray-400">{q.options[i]}</span>
                                         </div>
                                     );
