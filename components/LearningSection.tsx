@@ -12,6 +12,7 @@ import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 
 interface LearningSectionProps {
     category: string;
@@ -196,8 +197,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         tests: {
             hasAccess: hasTestsAccess,
             contentType: 'tests',
-            title: 'الاختبارات المحاكية تحتاج باقة اختبارات',
-            description: 'باقة الاختبارات تفتح الاختبارات المحاكية والمركزية المنشورة داخل هذه المادة.',
+            title: 'الاختبارات تحتاج باقة مناسبة',
+            description: 'باقة الاختبارات تفتح الاختبارات المنشورة داخل هذه المادة.',
             action: 'فتح باقة الاختبارات',
         },
         library: {
@@ -428,7 +429,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
     }, [category, hasFoundationAccess, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
-    let banks = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && isTrainingQuiz(q)).map(q => ({
+    let banks = getLearningSlotQuizzes(
+        quizzes,
+        { pathId: category, subjectId: subject, slot: 'training' },
+        canStudentSeeQuiz,
+        isTrainingQuiz,
+    ).map(q => ({
         id: q.id,
         title: q.title,
         questions: q.questionIds?.length || 0,
@@ -439,7 +445,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         duration: 'غير محدد'
     }));
 
-    let tests = quizzes.filter(q => canStudentSeeQuiz(q) && matchesScopedContent(q.pathId, q.subjectId) && isMockQuiz(q)).map(q => ({
+    let tests = getLearningSlotQuizzes(
+        quizzes,
+        { pathId: category, subjectId: subject, slot: 'tests' },
+        canStudentSeeQuiz,
+        isMockQuiz,
+    ).map(q => ({
         id: q.id,
         title: q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
@@ -562,7 +573,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 {(settings.showCourses ?? true) && <TabButton active={activeTab === 'courses'} onClick={() => handleTabChange('courses')} icon={<MonitorPlay size={20} />} label="الدورات" colorTheme={colorTheme} />}
                 {(settings.showSkills ?? true) && <TabButton active={activeTab === 'skills'} onClick={() => handleTabChange('skills')} icon={<Video size={20} />} label="التأسيس" colorTheme={colorTheme} />}
                 {(settings.showBanks ?? true) && <TabButton active={activeTab === 'banks'} onClick={() => handleTabChange('banks')} icon={<BookOpen size={20} />} label="التدريب" colorTheme={colorTheme} />}
-                {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={20} />} label="الاختبارات المحاكية" colorTheme={colorTheme} />}
+                {(settings.showTests ?? true) && <TabButton active={activeTab === 'tests'} onClick={() => handleTabChange('tests')} icon={<FileText size={20} />} label="الاختبارات" colorTheme={colorTheme} />}
                 {(settings.showLibrary ?? true) && <TabButton active={activeTab === 'library'} onClick={() => handleTabChange('library')} icon={<Library size={20} />} label="المكتبة" colorTheme={colorTheme} />}
             </div>
             {showStaffInventory ? (

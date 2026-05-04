@@ -628,10 +628,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                     >
                       <option value="training">التدريب فقط</option>
-                      <option value="mock">الاختبارات المحاكية فقط</option>
-                      <option value="both">التدريب والمحاكي</option>
+                      <option value="mock">الاختبارات فقط</option>
+                      <option value="both">التدريب والاختبارات</option>
                     </select>
-                    <p className="mt-1 text-xs text-gray-500">هذا هو الفصل الحقيقي بين تبويب التدريب وتبويب الاختبارات المحاكية.</p>
+                    <p className="mt-1 text-xs text-gray-500">هذا هو الفصل الحقيقي بين تبويب التدريب وتبويب الاختبارات داخل صفحة المادة.</p>
                   </div>
                 </div>
 

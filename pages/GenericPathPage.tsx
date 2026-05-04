@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
-import { CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
+import { Award, CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
@@ -220,6 +220,7 @@ export const GenericPathPage: React.FC = () => {
         c => (c.pathId || c.category) === path.id && c.isPackage && (canSeeHiddenPaths || isPublicPackageVisible(c)),
     );
     const isPackagesTab = searchParams.get('tab') === 'packages';
+    const isMockExamsTab = searchParams.get('tab') === 'mock-exams';
     const canStudentSeeContent = (item: { showOnPlatform?: boolean; approvalStatus?: string; isPublished?: boolean }) =>
         canSeeHiddenPaths || (
             item.showOnPlatform !== false &&
@@ -285,6 +286,14 @@ export const GenericPathPage: React.FC = () => {
         { type: 'tests', label: 'الاختبارات' },
         { type: 'library', label: 'المكتبة' },
     ] as const;
+    const pathMockQuizzes = quizzes
+        .filter((quiz) => {
+            const isPathQuiz = quiz.pathId === path.id || (!quiz.pathId && pathSubjectIds.has(quiz.subjectId));
+            if (!isPathQuiz || !canStudentSeeContent(quiz)) return false;
+            const isExamLike = isMockQuiz(quiz) || (quiz.mode || 'regular') === 'central' || (quiz.mode || 'regular') === 'saher';
+            return isExamLike;
+        })
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     const getSubjectContentSummary = (subjectId: string) => {
         const matchesSubjectScope = (item: { pathId?: string; category?: string; subjectId?: string; subject?: string }) => {
             const itemPathId = item.pathId || item.category;
@@ -898,6 +907,72 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         );
     }
 
+    if (isMockExamsTab) {
+        return (
+            <div className="bg-gray-50 min-h-screen pb-20">
+                <header className="text-white py-16 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <div className="max-w-7xl mx-auto px-4 relative z-10">
+                        <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-6 transition-colors">
+                            <ChevronRight size={20} /> عودة للمسار
+                        </button>
+                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-white">
+                            <Award size={28} />
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 leading-tight break-words">الاختبارات المحاكية - {path.name}</h1>
+                        <p className="mx-auto max-w-2xl text-white/80 text-base sm:text-lg leading-8">
+                            تجربة كاملة على مستوى المسار، منفصلة عن اختبارات كل مادة.
+                        </p>
+                    </div>
+                </header>
+                <div className="max-w-5xl mx-auto px-4 py-8">
+                    {pathMockQuizzes.length > 0 ? (
+                        <div className="space-y-4">
+                            {pathMockQuizzes.map((quiz) => {
+                                const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
+                                return (
+                                    <Card key={quiz.id} className="p-5 border border-gray-100 shadow-sm">
+                                        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                                                    <Award size={24} />
+                                                </div>
+                                                <div>
+                                                    <h2 className="text-lg font-black text-gray-900">{quiz.title}</h2>
+                                                    <div className="mt-2 flex flex-wrap gap-2 text-xs font-bold text-gray-500">
+                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{quiz.questionIds?.length || 0} سؤال</span>
+                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{quiz.settings?.timeLimit || 60} دقيقة</span>
+                                                        {quizSubject ? <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{quizSubject.name}</span> : null}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => navigate(`/quiz/${quiz.id}`)}
+                                                className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
+                                            >
+                                                ابدأ الاختبار
+                                            </button>
+                                        </div>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <Card className="p-8 text-center border-dashed border-2 border-gray-200">
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                                <Award size={26} />
+                            </div>
+                            <h2 className="text-xl font-black text-gray-900">لا توجد اختبارات محاكية منشورة بعد</h2>
+                            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-gray-500">
+                                عند إنشاء مركز المحاكيات المنفصل سيتم عرض اختبارات المسار هنا مباشرة.
+                            </p>
+                        </Card>
+                    )}
+                    {renderPackages()}
+                </div>
+            </div>
+        );
+    }
+
     // Scene 1: Path without levels -> directly display subjects
     if (pathLevels.length === 0) {
         if (!selectedSubjectId) {
@@ -913,6 +988,26 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         {renderPathOverview()}
                         {pathSubjects.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <Link
+                                    to={`/category/${path.id}?tab=mock-exams`}
+                                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-indigo-600"
+                                >
+                                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
+                                        <Award size={34} />
+                                    </div>
+                                    <h3 className="text-3xl font-black mb-3">اختبارات محاكية</h3>
+                                    <div className="text-white/80 text-sm font-bold">تجربة كاملة للمسار</div>
+                                </Link>
+                                <Link
+                                    to={`/category/${path.id}?tab=packages`}
+                                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-emerald-600"
+                                >
+                                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
+                                        <CreditCard size={34} />
+                                    </div>
+                                    <h3 className="text-3xl font-black mb-3">عروض وباقات</h3>
+                                    <div className="text-white/80 text-sm font-bold">فتح محتوى المسار</div>
+                                </Link>
                                 {pathSubjects.map(s => renderSubjectCard(s, null))}
                             </div>
                         ) : (
@@ -960,6 +1055,22 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 <div className="max-w-5xl mx-auto px-4 py-12">
                     {renderPathOverview()}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Link
+                            to={`/category/${path.id}?tab=mock-exams`}
+                            className="block p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-indigo-600"
+                        >
+                            <Award size={34} className="mx-auto mb-4" />
+                            <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">اختبارات محاكية</h3>
+                            <p className="text-white/80 font-medium text-sm">تجربة كاملة للمسار</p>
+                        </Link>
+                        <Link
+                            to={`/category/${path.id}?tab=packages`}
+                            className="block p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-emerald-600"
+                        >
+                            <CreditCard size={34} className="mx-auto mb-4" />
+                            <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">عروض وباقات</h3>
+                            <p className="text-white/80 font-medium text-sm">فتح محتوى المسار</p>
+                        </Link>
                         {pathLevels.map(level => {
                             return (
                                 <div 

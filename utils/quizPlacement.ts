@@ -29,9 +29,9 @@ export const getQuizPlacementLabel = (quiz: QuizPlacementSource) => {
   const training = isTrainingQuiz(quiz);
   const mock = isMockQuiz(quiz);
 
-  if (training && mock) return 'تدريب ومحاكي';
+  if (training && mock) return 'تدريب واختبار';
   if (training) return 'تدريب';
-  if (mock) return 'اختبار محاكي';
+  if (mock) return 'اختبار';
   return 'مخزن فقط';
 };
 

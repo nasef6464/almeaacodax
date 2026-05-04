@@ -339,6 +339,16 @@ export interface QuizAccess {
     allowedGroupIds?: string[];
 }
 
+export interface QuizLearningPlacement {
+    pathId: string;
+    subjectId?: string;
+    slot: 'training' | 'tests' | 'foundation' | 'course';
+    isVisible?: boolean;
+    order?: number;
+    createdAt?: number;
+    updatedAt?: number;
+}
+
 export interface Quiz extends ContentWorkflow {
     id: string;
     title: string;
@@ -350,6 +360,7 @@ export interface Quiz extends ContentWorkflow {
     placement?: 'training' | 'mock' | 'both';
     showInTraining?: boolean;
     showInMock?: boolean;
+    learningPlacements?: QuizLearningPlacement[];
     mode?: 'regular' | 'saher' | 'central';
     settings: QuizSettings;
     access: QuizAccess;

@@ -82,6 +82,8 @@ const normalizeQuestionHtml = (value?: string | null) => {
     .trim();
 };
 
+const hasInlineQuestionMedia = (value?: string | null) => /<(img|svg|table|iframe)\b/i.test(value || '');
+
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
   allSkills: ReturnType<typeof useStore.getState>['skills'],
@@ -1460,7 +1462,7 @@ const ReviewSolutions = ({
     const quiz = quizzes.find((item) => item.id === result.quizId);
     const quizQuestionIds = quiz?.questionIds || [];
 
-    if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= Math.min(result.totalQuestions, quizQuestionIds.length)) {
+    if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= quizQuestionIds.length) {
       return result.questionReview || [];
     }
 
@@ -1487,6 +1489,7 @@ const ReviewSolutions = ({
       .filter((question): question is QuizQuestionReview => Boolean(question));
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
   const q = questions[currentIdx];
+  const questionHasInlineMedia = hasInlineQuestionMedia(q?.text);
 
   if (!q) {
     return (
@@ -1558,12 +1561,7 @@ const ReviewSolutions = ({
             />
             {q.imageUrl ? (
               <img src={q.imageUrl} alt="صورة السؤال" className="max-h-64 object-contain" referrerPolicy="no-referrer" />
-            ) : (
-              <div className="text-center">
-                <FileText size={48} className="text-gray-200 mx-auto mb-2" />
-                <span className="text-sm text-gray-400 font-bold">[لا توجد صورة مرفقة لهذا السؤال]</span>
-              </div>
-            )}
+            ) : !questionHasInlineMedia ? null : null}
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 sm:gap-4 mb-8">
@@ -1601,9 +1599,10 @@ const ReviewSolutions = ({
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
                     />
-                    <span className="flex-1 text-center text-sm font-bold leading-7 text-gray-700 break-words">
-                      {displayText(option)}
-                    </span>
+                    <span
+                      className="flex-1 text-center text-sm font-bold leading-7 text-gray-700 break-words"
+                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
+                    />
                   </div>
                   {helperLabel ? (
                     <span
@@ -1714,13 +1713,13 @@ const ReviewSolutions = ({
               </span>
               {typeof q.selectedOptionIndex === 'number' ? (
                 <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700">
-                  اختيارك: {displayText(q.options[q.selectedOptionIndex])}
+                  اختيارك: {displayText(q.options[q.selectedOptionIndex]).replace(/<[^>]*>/g, ' ')}
                 </span>
               ) : (
                 <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700">لم تُجب عن هذا السؤال</span>
               )}
               <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
-                الإجابة الصحيحة: {displayText(q.options[q.correctOptionIndex])}
+                الإجابة الصحيحة: {displayText(q.options[q.correctOptionIndex]).replace(/<[^>]*>/g, ' ')}
               </span>
             </div>
 
@@ -1730,7 +1729,7 @@ const ReviewSolutions = ({
                   <CheckCircle2 size={20} />
                   توضيح الحل الصحيح:
                 </h4>
-                <div className="text-gray-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: displayText(q.explanation) }} />
+                <div className="text-gray-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.explanation) }} />
               </div>
             ) : (
               <p className="text-gray-600 leading-relaxed">لا يوجد شرح نصي محفوظ لهذا السؤال، ويمكنك الاعتماد على الفيديو إذا كان متاحًا.</p>

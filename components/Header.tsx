@@ -30,6 +30,7 @@ const NavIcons: Record<string, React.ReactNode> = {
   book: <Book size={18} />,
   'layout-grid': <LayoutGrid size={18} />,
   gift: <Gift size={18} />,
+  award: <Award size={18} />,
 };
 
 const text = {
@@ -176,6 +177,13 @@ export const Header: React.FC = () => {
         }
 
         menuNode.children.push({
+          id: `${path.id}_mock_exams`,
+          label: `اختبارات محاكية ${path.name}`,
+          link: `/category/${path.id}?tab=mock-exams`,
+          iconName: 'award',
+        });
+
+        menuNode.children.push({
           id: `${path.id}_packages`,
           label: `${text.offersPrefix} ${path.name}`,
           link: `/category/${path.id}?tab=packages`,
@@ -187,6 +195,25 @@ export const Header: React.FC = () => {
 
       menu.push(menuNode);
     });
+
+    const mockExamPaths = topLevelPaths.filter((path) => {
+      const name = path.name || '';
+      return name.includes('قدرات') || name.includes('القدرات') || name.includes('تحصيلي') || name.includes('التحصيلي');
+    });
+
+    if (mockExamPaths.length > 0) {
+      menu.push({
+        id: 'mock-exams',
+        label: 'اختبارات محاكية',
+        link: '/mock-exams',
+        iconName: 'award',
+        children: mockExamPaths.map((path) => ({
+          id: `mock-${path.id}`,
+          label: path.name,
+          link: `/category/${path.id}?tab=mock-exams`,
+        })),
+      });
+    }
 
     menu.push({ id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' });
 

@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion,
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
+import { isQuizVisibleInLearningSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -178,6 +179,9 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     [allowedSubjects, selectedSubjectId, subjectId],
   );
   const activePathId = selectedPathId || activeSubject?.pathId || '';
+  const activeSubjectId = selectedSubjectId || subjectId || '';
+  const isLearningSpaceManager = Boolean(filterType && activePathId && activeSubjectId);
+  const activeLearningSlot = filterType === 'bank' ? 'training' : filterType === 'quiz' ? 'tests' : null;
 
   const availableSections = useMemo(
     () =>
@@ -206,8 +210,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           if (managedSubjectIds.length > 0 && !managedSubjectIds.includes(quiz.subjectId)) return false;
           if (managedPathIds.length > 0 && quiz.pathId && !managedPathIds.includes(quiz.pathId)) return false;
         }
-        if (filterType === 'bank' && !isTrainingQuiz(quiz)) return false;
-        if (filterType === 'quiz' && !isMockQuiz(quiz)) return false;
+        if (!isLearningSpaceManager && filterType === 'bank' && !isTrainingQuiz(quiz)) return false;
+        if (!isLearningSpaceManager && filterType === 'quiz' && !isMockQuiz(quiz)) return false;
         if (subjectId && quiz.subjectId !== subjectId) return false;
         if (selectedSubjectId && quiz.subjectId !== selectedSubjectId) return false;
         if (
@@ -227,6 +231,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     [
       filterType,
       globalQuizzes,
+      isLearningSpaceManager,
       managedPathIds,
       managedSubjectIds,
       modeFilter,
@@ -274,12 +279,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     [questions, quizzes],
   );
 
-  const managerTitle = filterType === 'bank' ? 'إدارة التدريب من مركز الاختبارات' : filterType === 'quiz' ? 'إدارة الاختبارات المحاكية من مركز الاختبارات' : 'مركز الاختبارات';
+  const managerTitle = filterType === 'bank' ? 'إدارة التدريب من مركز الاختبارات' : filterType === 'quiz' ? 'إدارة الاختبارات من مركز الاختبارات' : 'مركز الاختبارات';
   const managerDescription =
     filterType === 'bank'
       ? 'اختر هنا الاختبارات التي تظهر في تبويب التدريب فقط. أي اختبار جديد تضيفه هنا يبقى محفوظًا داخل مركز الاختبارات ومصنفًا على نفس المسار والمادة.'
       : filterType === 'quiz'
-        ? 'هذه القائمة تعرض الاختبارات المحاكية فقط، ولا تخلط معها تدريبات أو بنوك أسئلة. التحكم هنا يحدد ما يراه الطالب في تبويب الاختبارات المحاكية.'
+        ? 'اختر هنا الاختبارات التي تظهر في تبويب الاختبارات داخل هذه المادة فقط. الاختبار نفسه يبقى محفوظًا في مركز الاختبارات ويمكن استخدامه في أكثر من مساحة.'
         : 'هذا هو المصدر الرئيسي لكل التدريبات والاختبارات. من هنا تحدد مكان ظهور كل اختبار للطالب.';
 
   const quizzesWithoutQuestions = useMemo(
@@ -318,13 +323,18 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const handleCreateByMode = (mode: 'regular' | 'saher' | 'central') => {
     const draftSubjectId = selectedSubjectId || subjectId || '';
+    const createdAt = Date.now();
     const draftQuiz: Quiz = {
-      id: `quiz_${Date.now()}_${mode}`,
+      id: `quiz_${createdAt}_${mode}`,
       title: mode === 'saher' ? 'اختبار ساهر جديد' : mode === 'central' ? 'اختبار موجّه جديد' : 'اختبار جديد',
       description: '',
       pathId: activePathId,
       subjectId: draftSubjectId,
-      ...getQuizPlacementDefaults(filterType || 'quiz'),
+      ...getQuizPlacementDefaults('quiz'),
+      learningPlacements:
+        activeLearningSlot && activePathId && draftSubjectId
+          ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, isVisible: true, order: 0, createdAt }]
+          : [],
       mode,
       settings: {
         showExplanations: true,
@@ -340,7 +350,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       },
       access: mode === 'central' ? { type: 'private', allowedGroupIds: [] } : { type: 'free', allowedGroupIds: [] },
       questionIds: [],
-      createdAt: Date.now(),
+      createdAt,
       isPublished: false,
       showOnPlatform: false,
       targetGroupIds: [],
@@ -407,14 +417,50 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     updateQuiz(quiz.id, getPlacementPatch(placement));
   };
 
+  const handleToggleLearningSlotVisibility = (quiz: Quiz) => {
+    if (!activeLearningSlot || !activePathId || !activeSubjectId) return;
+
+    const isVisibleHere = isQuizVisibleInLearningSlot(quiz, {
+      pathId: activePathId,
+      subjectId: activeSubjectId,
+      slot: activeLearningSlot,
+    });
+
+    updateQuiz(quiz.id, {
+      pathId: quiz.pathId || activePathId,
+      subjectId: quiz.subjectId || activeSubjectId,
+      learningPlacements: setQuizLearningSlotVisibility(
+        quiz,
+        { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot },
+        !isVisibleHere,
+      ),
+      showOnPlatform: !isVisibleHere ? true : quiz.showOnPlatform,
+      isPublished: !isVisibleHere ? true : quiz.isPublished,
+      approvalStatus: !isVisibleHere ? 'approved' : quiz.approvalStatus,
+      approvedAt: !isVisibleHere ? quiz.approvedAt || Date.now() : quiz.approvedAt,
+    });
+  };
+
   const handlePrepareQuizForLearner = (quiz: Quiz) => {
     const normalizedPlacement = normalizeQuizPlacement(quiz, quiz.type || 'quiz').placement || 'mock';
     const targetPlacement = filterType === 'bank' ? 'training' : filterType === 'quiz' ? 'mock' : normalizedPlacement;
 
+    const learningPlacementPatch =
+      activeLearningSlot && activePathId && activeSubjectId
+        ? {
+            learningPlacements: setQuizLearningSlotVisibility(
+              quiz,
+              { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot },
+              true,
+            ),
+          }
+        : {};
+
     updateQuiz(quiz.id, {
       pathId: quiz.pathId || activePathId,
       subjectId: quiz.subjectId || selectedSubjectId || subjectId || '',
-      ...getPlacementPatch(targetPlacement),
+      ...(!activeLearningSlot ? getPlacementPatch(targetPlacement) : {}),
+      ...learningPlacementPatch,
       showOnPlatform: true,
       isPublished: true,
       approvalStatus: 'approved',
@@ -546,7 +592,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
               <h3 className="text-sm font-black text-indigo-900">الاستدعاء هنا من مركز الاختبارات نفسه</h3>
               <p className="mt-1 text-xs font-bold leading-6 text-indigo-700">
                 لا توجد نسخة منفصلة داخل مساحة التعلم. أي اختبار تعدله هنا هو نفس الاختبار الموجود في مركز الاختبارات، والفصل يتم فقط بتحديد مكان الظهور:
-                {filterType === 'bank' ? ' تدريب فقط أو الاثنين.' : ' محاكي فقط أو الاثنين.'}
+                {filterType === 'bank' ? ' تدريب هذه المادة.' : ' اختبارات هذه المادة.'}
               </p>
             </div>
             <div className="rounded-xl bg-white px-4 py-3 text-xs font-black text-slate-700">
@@ -874,6 +920,21 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             تجهيز العرض
                           </button>
                         )}
+                        {activeLearningSlot && activePathId && activeSubjectId && (
+                          <button
+                            onClick={() => handleToggleLearningSlotVisibility(quiz)}
+                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
+                              isQuizVisibleInLearningSlot(quiz, { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot })
+                                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                            title="هذا الزر يتحكم في ظهوره داخل هذه المساحة فقط"
+                          >
+                            {isQuizVisibleInLearningSlot(quiz, { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot })
+                              ? 'ظاهر هنا'
+                              : 'إظهار هنا'}
+                          </button>
+                        )}
                         <button
                           onClick={() => handleDuplicate(quiz)}
                           className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
@@ -910,7 +971,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                         >
                           {quiz.showOnPlatform === false ? <Lock size={18} /> : <LockOpen size={18} />}
                         </button>
-                        <div className="flex rounded-xl border border-gray-100 bg-gray-50 p-1">
+                        {!filterType && <div className="flex rounded-xl border border-gray-100 bg-gray-50 p-1">
                           <button
                             onClick={() => handleSetPlacement(quiz, 'training')}
                             className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
@@ -925,20 +986,20 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
                               isMockQuiz(quiz) && !isTrainingQuiz(quiz) ? 'bg-purple-600 text-white' : 'text-gray-500 hover:bg-white'
                             }`}
-                            title="إظهاره في الاختبارات المحاكية فقط"
+                            title="إظهاره في الاختبارات فقط"
                           >
-                            محاكي
+                            اختبار
                           </button>
                           <button
                             onClick={() => handleSetPlacement(quiz, 'both')}
                             className={`rounded-lg px-2 py-1 text-[11px] font-black transition ${
                               isMockQuiz(quiz) && isTrainingQuiz(quiz) ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-white'
                             }`}
-                            title="إظهاره في التدريب والمحاكي"
+                            title="إظهاره في التدريب والاختبارات"
                           >
                             الاثنين
                           </button>
-                        </div>
+                        </div>}
                         <button onClick={() => handleDelete(quiz.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف">
                           <Trash2 size={18} />
                         </button>

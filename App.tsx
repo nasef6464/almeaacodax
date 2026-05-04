@@ -20,6 +20,7 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const Quiz = React.lazy(() => import('./pages/Quiz'));
 const Results = React.lazy(() => import('./pages/Results'));
 const Quizzes = React.lazy(() => import('./pages/Quizzes'));
+const MockExams = React.lazy(() => import('./pages/MockExams'));
 const Reports = React.lazy(() => import('./pages/Reports'));
 const Favorites = React.lazy(() => import('./pages/Favorites'));
 const Plan = React.lazy(() => import('./pages/Plan'));
@@ -216,6 +217,7 @@ const App: React.FC = () => {
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/course/:courseId" element={<CourseView />} />
                   <Route path="/quizzes" element={<Quizzes />} />
+                  <Route path="/mock-exams" element={<MockExams />} />
                   <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/favorites" element={<Favorites />} />

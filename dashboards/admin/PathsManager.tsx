@@ -20,7 +20,7 @@ const publicPackageContentOptions: Array<{ value: PackageContentType; label: str
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
   { value: 'foundation', label: 'التأسيس', description: 'يفتح الموضوعات والدروس التأسيسية.' },
   { value: 'banks', label: 'التدريب', description: 'يفتح بنوك التدريب والأسئلة.' },
-  { value: 'tests', label: 'الاختبارات', description: 'يفتح الاختبارات المحاكية والمركزية.' },
+  { value: 'tests', label: 'الاختبارات', description: 'يفتح الاختبارات المنشورة داخل المادة.' },
   { value: 'library', label: 'المكتبة', description: 'يفتح ملفات ومراجع المكتبة.' },
 ];
 
@@ -241,7 +241,7 @@ export const PathsManager: React.FC = () => {
         ...(subjectScopedContent?.topics.length ? [] : ['لا توجد موضوعات تأسيس بعد']),
         ...(subjectScopedContent?.lessons.length ? [] : ['لا توجد دروس مرتبطة بهذه المادة']),
         ...(currentSubject.settings?.showBanks === false || subjectScopedContent?.training.length ? [] : ['تبويب التدريب مفتوح لكن لا توجد تدريبات']),
-        ...(currentSubject.settings?.showTests === false || subjectScopedContent?.tests.length ? [] : ['تبويب المحاكي مفتوح لكن لا توجد اختبارات محاكية']),
+        ...(currentSubject.settings?.showTests === false || subjectScopedContent?.tests.length ? [] : ['تبويب الاختبارات مفتوح لكن لا توجد اختبارات مختارة']),
         ...(subjectWorkspaceTotals.review > 0 ? [`${subjectWorkspaceTotals.review} عنصر يحتاج مراجعة قبل أن يكون واضحًا للطالب`] : []),
       ]
     : [];
@@ -1979,7 +1979,7 @@ export const PathsManager: React.FC = () => {
             }`}
           >
             <Award size={18} />
-            إدارة الاختبارات المحاكية
+            إدارة الاختبارات
           </button>
           <button
             onClick={() => setSubjectTab('library')}
@@ -2047,7 +2047,7 @@ export const PathsManager: React.FC = () => {
                 { key: 'lockSkillsForNonSubscribers', label: 'قفل التأسيس لغير المشتركين', desc: 'سيظهر المحتوى وعليه علامة 🔒 للطلاب غير المشتركين.', default: false },
                 { key: 'showBanks', label: 'تبويب "التدريب الحر"', desc: 'إظهار أو إخفاء تبويب التدريب بالكامل.', default: true },
                 { key: 'lockBanksForNonSubscribers', label: 'قفل التدريب لغير المشتركين', desc: 'سيظهر التدريب وعليها علامة 🔒 للطلاب غير المشتركين.', default: false },
-                { key: 'showTests', label: 'تبويب "الاختبارات المحاكية"', desc: 'إظهار أو إخفاء تبويب الاختبارات بالكامل.', default: true },
+                { key: 'showTests', label: 'تبويب "الاختبارات"', desc: 'إظهار أو إخفاء تبويب الاختبارات بالكامل.', default: true },
                 { key: 'lockTestsForNonSubscribers', label: 'قفل الاختبارات لغير المشتركين', desc: 'سيظهر الاختبار وعليه علامة 🔒 للطلاب غير المشتركين.', default: false },
                 { key: 'showLibrary', label: 'تبويب "المكتبة"', desc: 'إظهار أو إخفاء تبويب المكتبة بالكامل.', default: true },
                 { key: 'lockLibraryForNonSubscribers', label: 'قفل المكتبة لغير المشتركين', desc: 'سيظهر الملف وعليه علامة 🔒 للطلاب غير المشتركين.', default: false },
