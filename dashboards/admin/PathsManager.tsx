@@ -114,6 +114,14 @@ export const PathsManager: React.FC = () => {
     pkg.showOnPlatform !== false &&
     pkg.isPublished !== false &&
     (!pkg.approvalStatus || pkg.approvalStatus === 'approved');
+  const isApprovedForLearner = (item: any) => !item.approvalStatus || item.approvalStatus === 'approved';
+  const isVisibleForLearner = (item: any) => item.showOnPlatform !== false && isApprovedForLearner(item);
+  const isPublishedForLearner = (item: any) => isVisibleForLearner(item) && item.isPublished !== false;
+  const needsAdminReview = (item: any) =>
+    item.approvalStatus === 'pending_review' ||
+    item.approvalStatus === 'rejected' ||
+    (item.showOnPlatform !== false && !isApprovedForLearner(item)) ||
+    (typeof item.isPublished === 'boolean' && item.showOnPlatform !== false && item.isPublished === false);
   const pathScopedContent = {
     courses: courses.filter((course: any) => (course.pathId || course.category) === selectedPathId && !course.isPackage),
     packages: pathPackages,
@@ -169,6 +177,74 @@ export const PathsManager: React.FC = () => {
   const visibleItemsCount = publicationRows.reduce((sum, row) => sum + row.visible, 0);
   const hiddenItemsCount = publicationRows.reduce((sum, row) => sum + Math.max(row.total - row.visible, 0), 0);
   const lockedItemsCount = publicationRows.reduce((sum, row) => sum + row.locked, 0);
+  const subjectScopedContent = currentSubject
+    ? {
+        courses: courses.filter((course: any) => !course.isPackage && course.subjectId === currentSubject.id),
+        topics: topics.filter((topic: any) => topic.subjectId === currentSubject.id),
+        lessons: lessons.filter((lesson: any) => lesson.subjectId === currentSubject.id),
+        training: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isTrainingQuiz(quiz)),
+        tests: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMockQuiz(quiz)),
+        library: libraryItems.filter((item: any) => item.subjectId === currentSubject.id),
+      }
+    : null;
+  const subjectWorkspaceRows = subjectScopedContent
+    ? [
+        {
+          id: 'courses' as const,
+          title: 'الدورات',
+          tab: 'courses' as const,
+          total: subjectScopedContent.courses.length,
+          visible: subjectScopedContent.courses.filter(isPublishedForLearner).length,
+          review: subjectScopedContent.courses.filter(needsAdminReview).length,
+        },
+        {
+          id: 'skills' as const,
+          title: 'التأسيس',
+          tab: 'skills' as const,
+          total: subjectScopedContent.topics.length,
+          visible: subjectScopedContent.topics.filter((topic: any) => topic.showOnPlatform !== false).length,
+          review: subjectScopedContent.topics.filter((topic: any) => topic.showOnPlatform === false).length,
+        },
+        {
+          id: 'questions' as const,
+          title: 'التدريب',
+          tab: 'questions' as const,
+          total: subjectScopedContent.training.length,
+          visible: subjectScopedContent.training.filter(isPublishedForLearner).length,
+          review: subjectScopedContent.training.filter(needsAdminReview).length,
+        },
+        {
+          id: 'exams' as const,
+          title: 'المحاكي',
+          tab: 'exams' as const,
+          total: subjectScopedContent.tests.length,
+          visible: subjectScopedContent.tests.filter(isPublishedForLearner).length,
+          review: subjectScopedContent.tests.filter(needsAdminReview).length,
+        },
+        {
+          id: 'library' as const,
+          title: 'المكتبة',
+          tab: 'library' as const,
+          total: subjectScopedContent.library.length,
+          visible: subjectScopedContent.library.filter(isVisibleForLearner).length,
+          review: subjectScopedContent.library.filter(needsAdminReview).length,
+        },
+      ]
+    : [];
+  const subjectWorkspaceTotals = {
+    total: subjectWorkspaceRows.reduce((sum, row) => sum + row.total, 0),
+    visible: subjectWorkspaceRows.reduce((sum, row) => sum + row.visible, 0),
+    review: subjectWorkspaceRows.reduce((sum, row) => sum + row.review, 0),
+  };
+  const subjectWorkspaceWarnings = currentSubject
+    ? [
+        ...(subjectScopedContent?.topics.length ? [] : ['لا توجد موضوعات تأسيس بعد']),
+        ...(subjectScopedContent?.lessons.length ? [] : ['لا توجد دروس مرتبطة بهذه المادة']),
+        ...(currentSubject.settings?.showBanks === false || subjectScopedContent?.training.length ? [] : ['تبويب التدريب مفتوح لكن لا توجد تدريبات']),
+        ...(currentSubject.settings?.showTests === false || subjectScopedContent?.tests.length ? [] : ['تبويب المحاكي مفتوح لكن لا توجد اختبارات محاكية']),
+        ...(subjectWorkspaceTotals.review > 0 ? [`${subjectWorkspaceTotals.review} عنصر يحتاج مراجعة قبل أن يكون واضحًا للطالب`] : []),
+      ]
+    : [];
   const getPathReadinessSummary = (pathId: string) => {
     const scopedSubjects = subjects.filter((subject: any) => subject.pathId === pathId);
     const subjectIds = new Set(scopedSubjects.map((subject: any) => subject.id));
@@ -1774,6 +1850,97 @@ export const PathsManager: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {currentSubject && (
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_2fr]">
+          <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xs font-black text-indigo-500">جاهزية مساحة المادة للطالب</div>
+                <h3 className="mt-1 text-xl font-black text-gray-900">{currentSubject.name}</h3>
+                <p className="mt-2 text-sm font-bold leading-7 text-indigo-700">
+                  هذا الملخص يوضح للمدير ما الذي سيظهر للطالب الآن وما الذي يحتاج ضبطًا قبل النشر.
+                </p>
+              </div>
+              <div className={`rounded-2xl p-3 ${subjectWorkspaceWarnings.length === 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                {subjectWorkspaceWarnings.length === 0 ? <CheckCircle2 size={24} /> : <AlertTriangle size={24} />}
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-xl bg-white p-3">
+                <div className="text-2xl font-black text-gray-900">{subjectWorkspaceTotals.total}</div>
+                <div className="text-[11px] font-bold text-gray-500">إجمالي العناصر</div>
+              </div>
+              <div className="rounded-xl bg-white p-3">
+                <div className="text-2xl font-black text-emerald-700">{subjectWorkspaceTotals.visible}</div>
+                <div className="text-[11px] font-bold text-gray-500">ظاهر للطالب</div>
+              </div>
+              <div className="rounded-xl bg-white p-3">
+                <div className="text-2xl font-black text-amber-700">{subjectWorkspaceTotals.review}</div>
+                <div className="text-[11px] font-bold text-gray-500">يحتاج مراجعة</div>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              {subjectWorkspaceWarnings.length > 0 ? (
+                subjectWorkspaceWarnings.slice(0, 3).map((warning) => (
+                  <div key={warning} className="rounded-xl bg-white px-3 py-2 text-xs font-black leading-6 text-amber-700">
+                    {warning}
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-xl bg-white px-3 py-2 text-xs font-black leading-6 text-emerald-700">
+                  المساحة جاهزة مبدئيًا: يوجد محتوى ظاهر ولا توجد ملاحظات نشر عاجلة.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
+            {subjectWorkspaceRows.map((row) => {
+              const isTabDisabled =
+                (row.id === 'skills' && currentSubject.settings?.showSkills === false) ||
+                (row.id === 'questions' && currentSubject.settings?.showBanks === false) ||
+                (row.id === 'exams' && currentSubject.settings?.showTests === false) ||
+                (row.id === 'library' && currentSubject.settings?.showLibrary === false) ||
+                (row.id === 'courses' && currentSubject.settings?.showCourses === false);
+
+              return (
+                <button
+                  key={row.id}
+                  onClick={() => setSubjectTab(row.tab)}
+                  className={`rounded-2xl border p-4 text-right transition hover:-translate-y-0.5 hover:shadow-sm ${
+                    subjectTab === row.tab ? 'border-indigo-200 bg-indigo-50' : 'border-gray-100 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-black text-gray-900">{row.title}</span>
+                    <span className={`rounded-full px-2 py-1 text-[10px] font-black ${isTabDisabled ? 'bg-gray-100 text-gray-500' : 'bg-emerald-50 text-emerald-700'}`}>
+                      {isTabDisabled ? 'مخفي' : 'مفعل'}
+                    </span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-1 text-center">
+                    <div>
+                      <div className="text-lg font-black text-gray-900">{row.total}</div>
+                      <div className="text-[10px] font-bold text-gray-400">كلي</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-black text-emerald-700">{row.visible}</div>
+                      <div className="text-[10px] font-bold text-gray-400">ظاهر</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-black text-amber-700">{row.review}</div>
+                      <div className="text-[10px] font-bold text-gray-400">مراجعة</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 text-[11px] font-black text-indigo-600">فتح الإدارة</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Subject Workspace Tabs */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex-shrink-0">
