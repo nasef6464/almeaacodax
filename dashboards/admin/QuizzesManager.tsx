@@ -6,6 +6,7 @@ import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import { isQuizVisibleInLearningSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
+import { isMaterialQuizCandidate } from '../../utils/mockExam';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -206,6 +207,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const quizzes = useMemo(
     () =>
       globalQuizzes.filter((quiz) => {
+        if (!isMaterialQuizCandidate(quiz)) return false;
         if (user.role === 'teacher') {
           if (managedSubjectIds.length > 0 && !managedSubjectIds.includes(quiz.subjectId)) return false;
           if (managedPathIds.length > 0 && quiz.pathId && !managedPathIds.includes(quiz.pathId)) return false;
@@ -254,10 +256,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const counts = useMemo(
     () => ({
-      all: globalQuizzes.length,
-      saher: globalQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'saher').length,
-      central: globalQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'central').length,
-      hidden: globalQuizzes.filter((quiz) => quiz.showOnPlatform === false).length,
+      all: globalQuizzes.filter(isMaterialQuizCandidate).length,
+      saher: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.mode || 'regular') === 'saher').length,
+      central: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.mode || 'regular') === 'central').length,
+      hidden: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && quiz.showOnPlatform === false).length,
     }),
     [globalQuizzes],
   );
@@ -288,13 +290,14 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         : 'هذا هو المصدر الرئيسي لكل التدريبات والاختبارات. من هنا تحدد مكان ظهور كل اختبار للطالب.';
 
   const quizzesWithoutQuestions = useMemo(
-    () => globalQuizzes.filter((quiz) => (quiz.questionIds || []).length === 0).length,
+    () => globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.questionIds || []).length === 0).length,
     [globalQuizzes],
   );
 
   const quizzesWithoutMeasuredSkills = useMemo(
     () =>
       globalQuizzes.filter((quiz) => {
+        if (!isMaterialQuizCandidate(quiz)) return false;
         return getMeasuredSkillIds(quiz, questions).length === 0;
       }).length,
     [globalQuizzes, questions],
@@ -330,7 +333,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       description: '',
       pathId: activePathId,
       subjectId: draftSubjectId,
-      ...getQuizPlacementDefaults('quiz'),
+      ...getQuizPlacementDefaults(filterType || 'quiz'),
       learningPlacements:
         activeLearningSlot && activePathId && draftSubjectId
           ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, isVisible: true, order: 0, createdAt }]

@@ -7,6 +7,7 @@ import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
+import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isPathMockExam } from '../utils/mockExam';
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -288,10 +289,7 @@ export const GenericPathPage: React.FC = () => {
     ] as const;
     const pathMockQuizzes = quizzes
         .filter((quiz) => {
-            const isPathQuiz = quiz.pathId === path.id || (!quiz.pathId && pathSubjectIds.has(quiz.subjectId));
-            if (!isPathQuiz || !canStudentSeeContent(quiz)) return false;
-            const isExamLike = isMockQuiz(quiz) || (quiz.mode || 'regular') === 'central' || (quiz.mode || 'regular') === 'saher';
-            return isExamLike;
+            return isPathMockExam(quiz, path.id) && canStudentSeeContent(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     const getSubjectContentSummary = (subjectId: string) => {
@@ -929,6 +927,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         <div className="space-y-4">
                             {pathMockQuizzes.map((quiz) => {
                                 const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
+                                const sectionCount = getMockExamSections(quiz).length;
                                 return (
                                     <Card key={quiz.id} className="p-5 border border-gray-100 shadow-sm">
                                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -939,9 +938,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                 <div>
                                                     <h2 className="text-lg font-black text-gray-900">{quiz.title}</h2>
                                                     <div className="mt-2 flex flex-wrap gap-2 text-xs font-bold text-gray-500">
-                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{quiz.questionIds?.length || 0} سؤال</span>
-                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{quiz.settings?.timeLimit || 60} دقيقة</span>
-                                                        {quizSubject ? <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{quizSubject.name}</span> : null}
+                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamQuestionCount(quiz)} سؤال</span>
+                                                        <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamTimeLimit(quiz)} دقيقة</span>
+                                                        <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}</span>
                                                     </div>
                                                 </div>
                                             </div>

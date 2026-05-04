@@ -349,6 +349,21 @@ export interface QuizLearningPlacement {
     updatedAt?: number;
 }
 
+export interface MockExamSection {
+    id: string;
+    title: string;
+    subjectId?: string;
+    questionIds: string[];
+    timeLimit?: number;
+    order?: number;
+}
+
+export interface MockExamConfig {
+    enabled: boolean;
+    pathId: string;
+    sections: MockExamSection[];
+}
+
 export interface Quiz extends ContentWorkflow {
     id: string;
     title: string;
@@ -361,6 +376,7 @@ export interface Quiz extends ContentWorkflow {
     showInTraining?: boolean;
     showInMock?: boolean;
     learningPlacements?: QuizLearningPlacement[];
+    mockExam?: MockExamConfig;
     mode?: 'regular' | 'saher' | 'central';
     settings: QuizSettings;
     access: QuizAccess;

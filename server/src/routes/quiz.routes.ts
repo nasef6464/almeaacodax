@@ -67,6 +67,18 @@ const quizSchema = z.object({
   settings: z.record(z.any()),
   access: z.record(z.any()),
   questionIds: z.array(z.string()).default([]),
+  mockExam: z.object({
+    enabled: z.boolean().default(false),
+    pathId: z.string().default(""),
+    sections: z.array(z.object({
+      id: z.string().min(1),
+      title: z.string().min(1),
+      subjectId: z.string().optional().default(""),
+      questionIds: z.array(z.string()).default([]),
+      timeLimit: z.number().nullable().optional(),
+      order: z.number().optional(),
+    })).default([]),
+  }).optional(),
   skillIds: z.array(z.string()).optional(),
   targetGroupIds: z.array(z.string()).default([]),
   targetUserIds: z.array(z.string()).default([]),
@@ -182,6 +194,15 @@ const resolveQuizSkillIds = async (questionIds: string[]) => {
 
   const questions = await QuestionModel.find({ id: { $in: questionIds } }).select("skillIds");
   return [...new Set(questions.flatMap((question) => question.skillIds || []).filter(Boolean))];
+};
+
+const getQuizQuestionIds = (quiz: any) => {
+  const mockSections = Array.isArray(quiz?.mockExam?.sections) ? quiz.mockExam.sections : [];
+  const mockQuestionIds = quiz?.mockExam?.enabled === true
+    ? mockSections.flatMap((section: any) => Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [])
+    : [];
+  const regularQuestionIds = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String) : [];
+  return uniqueStrings((mockQuestionIds.length > 0 ? mockQuestionIds : regularQuestionIds).filter(Boolean));
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
@@ -1223,7 +1244,7 @@ quizRouter.post(
   asyncHandler(async (req, res) => {
     const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
     await assertTeacherManagedScope(req.authUser!, payload);
-    const resolvedSkillIds = await resolveQuizSkillIds(payload.questionIds);
+    const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await QuizModel.create({
       ...payload,
@@ -1260,7 +1281,7 @@ quizRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 
-    const questionIds = Array.isArray(quiz.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+    const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
     const questionById = new Map<string, any>();
     questions.forEach((question) => {
@@ -1388,8 +1409,8 @@ quizRouter.patch(
       ...existing.toObject(),
       ...payload,
     });
-    const resolvedSkillIds = payload.questionIds
-      ? await resolveQuizSkillIds(payload.questionIds)
+    const resolvedSkillIds = payload.questionIds || payload.mockExam
+      ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
       : undefined;
     const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
     const sanitizedPayload = sanitizeWorkflowUpdate(

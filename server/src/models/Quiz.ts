@@ -35,6 +35,23 @@ const quizSchema = new Schema(
       allowedGroupIds: { type: [String], default: [] },
     },
     questionIds: { type: [String], default: [] },
+    mockExam: {
+      enabled: { type: Boolean, default: false, index: true },
+      pathId: { type: String, default: "" },
+      sections: {
+        type: [
+          {
+            id: { type: String, required: true },
+            title: { type: String, required: true, trim: true },
+            subjectId: { type: String, default: "" },
+            questionIds: { type: [String], default: [] },
+            timeLimit: { type: Number, default: null },
+            order: { type: Number, default: 0 },
+          },
+        ],
+        default: [],
+      },
+    },
     skillIds: { type: [String], default: [] },
     targetGroupIds: { type: [String], default: [] },
     targetUserIds: { type: [String], default: [] },
@@ -58,6 +75,7 @@ const quizSchema = new Schema(
 
 quizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ pathId: 1, subjectId: 1, mode: 1, showOnPlatform: 1, isPublished: 1 });
+quizSchema.index({ pathId: 1, "mockExam.enabled": 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ targetGroupIds: 1, dueDate: 1 });
 quizSchema.index({ targetUserIds: 1, dueDate: 1 });
 quizSchema.index({ skillIds: 1, mode: 1 });

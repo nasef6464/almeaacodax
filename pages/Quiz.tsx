@@ -83,6 +83,7 @@ const Quiz: React.FC = () => {
   const [savedSnapshot, setSavedSnapshot] = useState<SavedQuizSnapshot | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusTone, setStatusTone] = useState<'success' | 'error' | 'info'>('info');
+  const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -933,14 +934,18 @@ const Quiz: React.FC = () => {
               dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
             />
             {questions[currentQuestion].imageUrl && (
-              <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+              <button
+                type="button"
+                onClick={() => setZoomedImageUrl(questions[currentQuestion].imageUrl || null)}
+                className="mb-8 block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-3 shadow-sm"
+              >
                 <img
                   src={questions[currentQuestion].imageUrl}
                   alt="صورة السؤال"
                   className="mx-auto max-h-[340px] w-full object-contain"
                   referrerPolicy="no-referrer"
                 />
-              </div>
+              </button>
             )}
 
             <div className={`grid ${currentOptionGridClass} gap-x-3 sm:gap-x-5 gap-y-4 dir-rtl`}>
@@ -954,16 +959,16 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[84px] px-3 sm:px-4 py-3 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
+                    className={`min-h-[58px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm md:text-base font-bold text-gray-800 leading-relaxed text-center break-words">
                       {sanitizeArabicText(option)}
                     </span>
                     <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
-                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${
+                        <div className={`h-3 w-3 rounded-full ${
                           isSelected ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
@@ -1117,6 +1122,28 @@ const Quiz: React.FC = () => {
               </button>
             </div>
           </Card>
+        </div>
+      )}
+
+      {zoomedImageUrl && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setZoomedImageUrl(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setZoomedImageUrl(null)}
+            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+          >
+            إغلاق
+          </button>
+          <img
+            src={zoomedImageUrl}
+            alt="تكبير صورة السؤال"
+            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            referrerPolicy="no-referrer"
+            onClick={(event) => event.stopPropagation()}
+          />
         </div>
       )}
     </div>

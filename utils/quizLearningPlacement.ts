@@ -54,6 +54,7 @@ export const getLearningSlotQuizzes = (
   scope: Scope,
   canSeeQuiz: (quiz: Quiz) => boolean,
   legacyFallback: (quiz: Quiz) => boolean,
+  requireExplicitPlacement = false,
 ) => {
   const scopedQuizzes = quizzes.filter((quiz) => {
     const pathMatches = !scope.pathId || quiz.pathId === scope.pathId;
@@ -65,7 +66,7 @@ export const getLearningSlotQuizzes = (
     hasAnyLearningPlacementInScope(quiz, { pathId: scope.pathId, subjectId: scope.subjectId }),
   );
 
-  const visibleQuizzes = hasExplicitPlacement
+  const visibleQuizzes = hasExplicitPlacement || requireExplicitPlacement
     ? scopedQuizzes.filter((quiz) => isQuizVisibleInLearningSlot(quiz, scope))
     : scopedQuizzes.filter(legacyFallback);
 

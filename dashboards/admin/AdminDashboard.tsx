@@ -36,6 +36,7 @@ import { LiveSessionsManager } from './LiveSessionsManager';
 import { BackupManager } from './BackupManager';
 import { OperationsCommandCenter } from './OperationsCommandCenter';
 import { AiAssistantManager } from './AiAssistantManager';
+import { MockExamManager } from './MockExamManager';
 import { api } from '../../services/api';
 
 type ReviewQueueItem = {
@@ -518,6 +519,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'paths', label: 'إدارة المسارات (مساحات العمل)', icon: <FolderOpen size={20} /> },
             { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
             { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
+            { id: 'mock-exams', label: 'مركز الاختبارات المحاكية', icon: <Award size={20} /> },
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
@@ -529,11 +531,11 @@ export const AdminDashboard: React.FC = () => {
         ];
 
         if (user.role === Role.TEACHER) {
-            return adminItems.filter((item) => ['overview', 'lessons', 'quizzes', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'lessons', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
         }
 
         if (user.role === Role.SUPERVISOR) {
-            return adminItems.filter((item) => ['overview', 'quizzes', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
         }
 
         return adminItems;
@@ -1256,6 +1258,8 @@ export const AdminDashboard: React.FC = () => {
                 return <LessonsManager />;
             case 'quizzes':
                 return <QuizzesManager />;
+            case 'mock-exams':
+                return <MockExamManager />;
             case 'questions':
                 return <QuestionBankManager />;
             case 'skills':

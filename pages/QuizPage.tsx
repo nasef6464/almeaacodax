@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun } from 'lucide-react';
 import { api } from '../services/api';
+import { flattenMockExamQuestionIds, getMockExamTimeLimit } from '../utils/mockExam';
 
 interface QuestionThreadItem {
   id: string;
@@ -63,6 +64,7 @@ export const QuizPage: React.FC = () => {
   const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [qaDraft, setQaDraft] = useState('');
   const [qaThread, setQaThread] = useState<QuestionThreadItem[]>(INITIAL_QA_THREAD);
+  const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
@@ -139,7 +141,8 @@ export const QuizPage: React.FC = () => {
       setHasAccess(false);
     }
 
-    const loadedQuestions = (foundQuiz.questionIds || [])
+    const sourceQuestionIds = flattenMockExamQuestionIds(foundQuiz);
+    const loadedQuestions = sourceQuestionIds
       .map((id) => questions.find((question) => question.id === id))
       .filter((question): question is Question => Boolean(question));
 
@@ -149,8 +152,9 @@ export const QuizPage: React.FC = () => {
         : shuffleQuestions(loadedQuestions)
     );
 
-    if (foundQuiz.settings?.timeLimit && foundQuiz.settings.timeLimit > 0) {
-      setTimeLeft(foundQuiz.settings.timeLimit * 60);
+    const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (foundQuiz.settings?.timeLimit || 0);
+    if (effectiveTimeLimit && effectiveTimeLimit > 0) {
+      setTimeLeft(effectiveTimeLimit * 60);
     } else {
       setTimeLeft(null);
     }
@@ -189,7 +193,7 @@ export const QuizPage: React.FC = () => {
 
   const finalScore = Math.round((correctAnswersCount / Math.max(quizQuestions.length, 1)) * 100);
   const passingScore = quiz?.settings?.passingScore ?? 50;
-  const quizTimeLimit = quiz?.settings?.timeLimit || 0;
+  const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
   const optionLayout = quiz?.settings?.optionLayout || 'auto';
   const getOptionGridClass = (question?: Question) => {
@@ -434,7 +438,8 @@ export const QuizPage: React.FC = () => {
     setIsFinished(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
-    setTimeLeft(quiz.settings?.timeLimit && quiz.settings.timeLimit > 0 ? quiz.settings.timeLimit * 60 : null);
+    const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0);
+    setTimeLeft(effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -542,14 +547,18 @@ export const QuizPage: React.FC = () => {
 
               <div className={`text-base sm:text-lg mb-6 break-words ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`} dangerouslySetInnerHTML={{ __html: currentQuestion?.text || '' }} />
               {currentQuestion?.imageUrl && (
-                <div className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-8 rounded-2xl border p-3 shadow-sm`}>
+                <button
+                  type="button"
+                  onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
+                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-8 block w-full cursor-zoom-in rounded-2xl border p-3 shadow-sm`}
+                >
                   <img
                     src={currentQuestion.imageUrl}
                     alt="صورة السؤال"
                     className="mx-auto max-h-[340px] w-full object-contain"
                     referrerPolicy="no-referrer"
                   />
-                </div>
+                </button>
               )}
 
               <div className={`grid ${optionGridClass} gap-x-4 sm:gap-x-6 gap-y-4`}>
@@ -557,7 +566,7 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`min-h-[84px] w-full px-4 py-3 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
+                    className={`min-h-[58px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -567,10 +576,10 @@ export const QuizPage: React.FC = () => {
                       {option}
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         selectedOptions[currentQuestion.id] === index ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
                       }`}>
-                        <div className={`w-4 h-4 rounded-full ${
+                        <div className={`h-3 w-3 rounded-full ${
                           selectedOptions[currentQuestion.id] === index ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
@@ -747,14 +756,18 @@ export const QuizPage: React.FC = () => {
                               </button>
                             </div>
                             {question.imageUrl && (
-                              <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                              <button
+                                type="button"
+                                onClick={() => setZoomedImageUrl(question.imageUrl || null)}
+                                className="mb-4 block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-3 shadow-sm"
+                              >
                                 <img
                                   src={question.imageUrl}
                                   alt="صورة السؤال"
                                   className="mx-auto max-h-64 w-full object-contain"
                                   referrerPolicy="no-referrer"
                                 />
-                              </div>
+                              </button>
                             )}
                             <div className={`grid ${getOptionGridClass(question)} gap-2`}>
                               {question.options.map((option, optionIndex) => {
@@ -774,7 +787,7 @@ export const QuizPage: React.FC = () => {
                                 }
 
                                 return (
-                                  <div key={optionIndex} className={`min-h-[92px] p-3 rounded-xl border flex items-center justify-between gap-3 ${bgClass}`}>
+                                  <div key={optionIndex} className={`min-h-[58px] p-2 rounded-xl border flex items-center justify-between gap-3 ${bgClass}`}>
                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                                       optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
                                       optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'
@@ -891,6 +904,28 @@ export const QuizPage: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
+      ) : null}
+
+      {zoomedImageUrl ? (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setZoomedImageUrl(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setZoomedImageUrl(null)}
+            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+          >
+            إغلاق
+          </button>
+          <img
+            src={zoomedImageUrl}
+            alt="تكبير صورة السؤال"
+            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            referrerPolicy="no-referrer"
+            onClick={(event) => event.stopPropagation()}
+          />
         </div>
       ) : null}
     </div>

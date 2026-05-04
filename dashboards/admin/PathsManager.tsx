@@ -15,6 +15,7 @@ import {
 import { useStore } from '../../store/useStore';
 import { Course, PackageContentType } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
+import { isMaterialQuizCandidate } from '../../utils/mockExam';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -182,8 +183,8 @@ export const PathsManager: React.FC = () => {
         courses: courses.filter((course: any) => !course.isPackage && course.subjectId === currentSubject.id),
         topics: topics.filter((topic: any) => topic.subjectId === currentSubject.id),
         lessons: lessons.filter((lesson: any) => lesson.subjectId === currentSubject.id),
-        training: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isTrainingQuiz(quiz)),
-        tests: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMockQuiz(quiz)),
+        training: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMaterialQuizCandidate(quiz) && isTrainingQuiz(quiz)),
+        tests: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMaterialQuizCandidate(quiz) && isMockQuiz(quiz)),
         library: libraryItems.filter((item: any) => item.subjectId === currentSubject.id),
       }
     : null;
@@ -664,8 +665,8 @@ export const PathsManager: React.FC = () => {
     const counts = {
       courses: courses.filter((course: any) => !course.isPackage && hasType('courses') && isInScope(course)).length,
       foundation: topics.filter((topic: any) => hasType('foundation') && isInScope(topic)).length,
-        banks: quizzes.filter((quiz: any) => hasType('banks') && isTrainingQuiz(quiz) && isInScope(quiz)).length,
-        tests: quizzes.filter((quiz: any) => hasType('tests') && isMockQuiz(quiz) && isInScope(quiz)).length,
+        banks: quizzes.filter((quiz: any) => hasType('banks') && isMaterialQuizCandidate(quiz) && isTrainingQuiz(quiz) && isInScope(quiz)).length,
+        tests: quizzes.filter((quiz: any) => hasType('tests') && isMaterialQuizCandidate(quiz) && isMockQuiz(quiz) && isInScope(quiz)).length,
       library: libraryItems.filter((item: any) => hasType('library') && isInScope(item)).length,
     };
     const total = counts.courses + counts.foundation + counts.banks + counts.tests + counts.library;

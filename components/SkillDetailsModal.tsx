@@ -7,6 +7,7 @@ import { VideoModal } from './VideoModal';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { matchesEntityId } from '../utils/entityIds';
+import { isMaterialQuizCandidate } from '../utils/mockExam';
 
 interface SkillDetailsModalProps {
   isOpen: boolean;
@@ -50,7 +51,9 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
         .sort((a, b) => a.order - b.order);
 
       setSelectedSubTopic(
-        skill.initialSubTopicId ? subTopics.find((topic) => matchesEntityId(topic, skill.initialSubTopicId)) || null : null,
+        skill.initialSubTopicId
+          ? subTopics.find((topic) => matchesEntityId(topic, skill.initialSubTopicId)) || subTopics[0] || null
+          : subTopics[0] || null,
       );
       setTopicModalTab(skill.initialContentTab === 'quizzes' ? 'quizzes' : 'lessons');
       setOpenedInitialLessonId(null);
@@ -77,23 +80,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       if (!activeTopic || !selectedTopic) return [];
 
       const explicitLessonIds = new Set(activeTopic.lessonIds || []);
-      const hasExplicitLessons = explicitLessonIds.size > 0;
       const initialLessonId = skill?.initialLessonId;
 
       return lessons
         .filter((lesson) => {
           if (!canStudentSeeLesson(lesson)) return false;
-
-          const matchesPath = selectedTopic.pathId ? lesson.pathId === selectedTopic.pathId : true;
-          const matchesSubject = lesson.subjectId === selectedTopic.subjectId;
-          const matchesSection = activeTopic.sectionId ? lesson.sectionId === activeTopic.sectionId : true;
-          const matchesScope = matchesPath && matchesSubject && matchesSection;
-
-          if (initialLessonId && matchesEntityId(lesson, initialLessonId) && matchesScope) return true;
-          if ([...explicitLessonIds].some((lessonId) => matchesEntityId(lesson, lessonId))) return true;
-          if (hasExplicitLessons) return false;
-
-          return matchesPath && matchesSubject && matchesSection;
+          if (initialLessonId && matchesEntityId(lesson, initialLessonId)) return true;
+          return [...explicitLessonIds].some((lessonId) => matchesEntityId(lesson, lessonId));
         })
         .sort((a, b) => (a.order || 0) - (b.order || 0));
     },
@@ -105,18 +98,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       if (!activeTopic || !selectedTopic) return [];
 
       const explicitQuizIds = new Set(activeTopic.quizIds || []);
-      const hasExplicitQuizzes = explicitQuizIds.size > 0;
 
       return quizzes
         .filter((quiz) => {
           if (!canStudentSeeQuiz(quiz)) return false;
+          if (!isMaterialQuizCandidate(quiz)) return false;
           if ([...explicitQuizIds].some((quizId) => matchesEntityId(quiz, quizId))) return true;
-          if (hasExplicitQuizzes) return false;
-
-          const matchesPath = selectedTopic.pathId ? quiz.pathId === selectedTopic.pathId : true;
-          const matchesSubject = quiz.subjectId === selectedTopic.subjectId;
-          const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
-          return matchesPath && matchesSubject && matchesSection;
+          return false;
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     },
@@ -148,7 +136,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           const matchesSubject = quiz.subjectId === selectedTopic.subjectId;
           const matchesSection = activeTopic.sectionId ? quiz.sectionId === activeTopic.sectionId : true;
           const notAttached = !(activeTopic.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
-          return matchesPath && matchesSubject && matchesSection && notAttached && canStudentSeeQuiz(quiz);
+          return matchesPath && matchesSubject && matchesSection && notAttached && canStudentSeeQuiz(quiz) && isMaterialQuizCandidate(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
         .slice(0, 3),
