@@ -849,7 +849,7 @@ const Results: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight break-words">{displayText(latestResult.quizTitle)}</h2>
-                <p className="mt-2 text-sm leading-7 text-gray-500">{summaryTone.message}</p>
+                {isFullResult ? <p className="mt-2 text-sm leading-7 text-gray-500">{summaryTone.message}</p> : null}
               </div>
               <div className="rounded-2xl bg-gray-50 px-4 py-3 text-center">
                 <div className="text-xs font-bold text-gray-500">آخر محاولة</div>
@@ -921,64 +921,77 @@ const Results: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-6 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-                <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                        ملخص بسيط جدًا
+              <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_250px]">
+                <div className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3 className="text-base font-black text-gray-900">إحصائيات الاختبار</h3>
+                    {latestResult.unanswered > 0 ? (
+                      <span className="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-black text-amber-700">
+                        {latestResult.unanswered} بدون إجابة
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="overflow-hidden rounded-2xl border border-emerald-200">
+                    <div className="grid grid-cols-2 bg-amber-400 px-4 py-3 text-sm font-black text-slate-900">
+                      <span>البند</span>
+                      <span className="text-center">القيمة</span>
+                    </div>
+                    <div className="divide-y divide-emerald-100 bg-white text-sm font-bold">
+                      <div className="grid grid-cols-2 px-4 py-3">
+                        <span>عدد الأسئلة</span>
+                        <span className="text-center">{latestResult.totalQuestions}</span>
                       </div>
-                      <h3 className="mt-3 text-xl font-black text-gray-900">هذا العرض مناسب للطالب وولي الأمر</h3>
-                      <p className="mt-2 text-sm leading-7 text-gray-500">
-                        نعرض النتيجة الأساسية فقط، ثم نحدد المهارة الأضعف والخطوة التالية بدون تفاصيل كثيرة.
-                      </p>
-                    </div>
-                    <div className="rounded-3xl bg-gray-50 px-4 py-3 text-center">
-                      <div className="text-xs font-bold text-gray-500">النسبة</div>
-                      <div className={`mt-1 text-4xl font-black ${scoreTone.text}`}>{latestResult.score}%</div>
+                      <div className="grid grid-cols-2 px-4 py-3">
+                        <span>الإجابات الصحيحة</span>
+                        <span className="text-center text-emerald-700">{latestResult.correctAnswers}</span>
+                      </div>
+                      <div className="grid grid-cols-2 px-4 py-3">
+                        <span>الأخطاء</span>
+                        <span className="text-center text-rose-600">{latestResult.wrongAnswers}</span>
+                      </div>
+                      <div className="grid grid-cols-2 px-4 py-3">
+                        <span>الوقت المستغرق</span>
+                        <span className="text-center">{latestResult.timeSpent}</span>
+                      </div>
+                      <div className="grid grid-cols-2 px-4 py-3">
+                        <span>النتيجة</span>
+                        <span className={`text-center ${scoreTone.text}`}>{latestResult.score}%</span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
-                    <SimpleResultStat label="الإجابات الصحيحة" value={latestResult.correctAnswers.toString()} tone="success" />
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                  <div className="mt-4 rounded-2xl bg-slate-50 px-4 py-3">
                     <div className="text-xs font-black text-slate-500">أول تركيز</div>
-                    <div className="mt-2 text-base font-black text-slate-900">
+                    <div className="mt-1 text-base font-black text-slate-900">
                       {weakestSkill ? weakestSkill.skillName : 'مراجعة الحلول ثم إعادة اختبار قصير'}
                     </div>
-                    <p className="mt-2 text-sm leading-7 text-slate-600">
-                      {weakestSkill
-                        ? 'ابدأ بالمهارة الأضعف فقط، ثم راجع شرحًا قصيرًا وبعدها حل تدريبًا قصيرًا.'
-                        : 'لا توجد مهارات مفصلة كافية، فالأفضل مراجعة الحلول ثم إعادة المحاولة.'}
-                    </p>
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-slate-100 bg-white/85 p-5 shadow-sm">
-                  <div className="mb-3 flex items-center justify-between gap-2">
-                    <div>
-                      <div className="text-sm font-black text-gray-900">ثلاث خطوات فقط</div>
-                      <div className="mt-1 text-xs font-bold text-gray-500">مختصرة وواضحة وسهلة المتابعة.</div>
+                <div className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm">
+                  <div className="relative mx-auto h-52 max-w-[220px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={donutData}
+                          innerRadius={62}
+                          outerRadius={82}
+                          paddingAngle={0}
+                          dataKey="value"
+                          startAngle={90}
+                          endAngle={-270}
+                        >
+                          {donutData.map((entry, index) => (
+                            <Cell key={`simple-cell-${index}`} fill={index === 0 ? scoreTone.ring : '#e5e7eb'} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`text-4xl font-black ${scoreTone.text}`}>{latestResult.score}%</span>
+                      <span className="mt-1 text-xs font-black text-gray-500">درجتك</span>
                     </div>
-                    <span className="rounded-full bg-gray-50 px-3 py-1 text-[11px] font-black text-gray-700">
-                      {studentFriendlyChecklist.length} بنود
-                    </span>
-                  </div>
-                  <div className="grid gap-2">
-                    {studentFriendlyChecklist.map((item, index) => (
-                      <div key={item.title} className="flex gap-3 rounded-2xl bg-slate-50 p-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-indigo-700 shadow-sm">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <div className="text-sm font-black text-gray-900">{item.title}</div>
-                          <div className="mt-1 text-xs font-bold leading-6 text-gray-500">{item.body}</div>
-                        </div>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -1064,30 +1077,7 @@ const Results: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ) : (
-              <details className="print-hide mt-5 rounded-2xl border border-slate-100 bg-white/80 p-4 text-sm text-slate-700">
-                <summary className="cursor-pointer select-none font-black text-slate-800">
-                  ملخص ولي الأمر عند الحاجة
-                </summary>
-                <p className="mt-3 leading-7 text-slate-600">{guardianFollowUpSummary}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    onClick={copyGuardianSummary}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-black text-indigo-700 hover:bg-indigo-100"
-                  >
-                    {copiedSummary ? <CheckCircle2 size={13} /> : <Copy size={13} />}
-                    {copiedSummary ? 'تم النسخ' : 'نسخ الملخص'}
-                  </button>
-                  <button
-                    onClick={shareGuardianSummary}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 hover:bg-emerald-100"
-                  >
-                    {sharedSummary ? <CheckCircle2 size={13} /> : <Share2 size={13} />}
-                    {sharedSummary ? 'تمت المشاركة' : 'مشاركة'}
-                  </button>
-                </div>
-              </details>
-            )}
+            ) : null}
           </div>
         </Card>
 
