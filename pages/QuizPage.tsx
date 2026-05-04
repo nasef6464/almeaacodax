@@ -13,6 +13,7 @@ interface QuestionThreadItem {
 }
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
+const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
     id: 'seed-student',
@@ -138,14 +139,15 @@ export const QuizPage: React.FC = () => {
       setHasAccess(false);
     }
 
-    const loadedQuestions = foundQuiz.questionIds
+    const loadedQuestions = (foundQuiz.questionIds || [])
       .map((id) => questions.find((question) => question.id === id))
-      .filter(Boolean) as Question[];
-    const preparedQuestions =
+      .filter((question): question is Question => Boolean(question));
+
+    setQuizQuestions(
       foundQuiz.settings?.randomizeQuestions === false
         ? loadedQuestions
-        : [...loadedQuestions].sort(() => 0.5 - Math.random());
-    setQuizQuestions(preparedQuestions);
+        : shuffleQuestions(loadedQuestions)
+    );
 
     if (foundQuiz.settings?.timeLimit && foundQuiz.settings.timeLimit > 0) {
       setTimeLeft(foundQuiz.settings.timeLimit * 60);
@@ -262,25 +264,25 @@ export const QuizPage: React.FC = () => {
 
     if (isCurrent) {
       return isNightMode
-        ? 'border-indigo-400 bg-indigo-500 text-white shadow-lg shadow-indigo-950/40'
-        : 'border-indigo-500 bg-indigo-600 text-white shadow-lg shadow-indigo-100';
+        ? 'border-amber-300 bg-amber-500 text-white shadow-md shadow-amber-950/30'
+        : 'border-amber-500 bg-amber-500 text-white shadow-md shadow-amber-100';
     }
 
     if (isMarkedForReview) {
       return isNightMode
-        ? 'border-amber-400 bg-amber-950 text-amber-200'
-        : 'border-amber-200 bg-amber-50 text-amber-700';
+        ? 'border-purple-400 bg-purple-950 text-purple-100'
+        : 'border-purple-300 bg-purple-50 text-purple-700';
     }
 
     if (isAnswered) {
       return isNightMode
-        ? 'border-emerald-500 bg-emerald-950 text-emerald-200'
-        : 'border-emerald-200 bg-emerald-50 text-emerald-700';
+        ? 'border-emerald-400 bg-emerald-950 text-emerald-100'
+        : 'border-emerald-400 bg-emerald-50 text-emerald-700';
     }
 
     return isNightMode
-      ? 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800'
-      : 'border-gray-200 bg-white text-gray-600 hover:border-indigo-200 hover:bg-indigo-50';
+      ? 'border-slate-700 bg-slate-950 text-slate-300 hover:border-amber-400 hover:bg-slate-900'
+      : 'border-gray-200 bg-white text-gray-700 hover:border-amber-300 hover:bg-amber-50';
   };
 
   const handleNext = () => {
@@ -578,34 +580,51 @@ export const QuizPage: React.FC = () => {
               </div>
 
               <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-6 rounded-2xl border p-3`}>
-                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div className={`text-xs font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
-                    خريطة الأسئلة: الأبيض لم يبدأ، الأخضر تم حله، الأصفر للمراجعة
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const firstMarkedIndex = quizQuestions.findIndex((question) => reviewLater.includes(question.id));
-                      if (firstMarkedIndex >= 0) setCurrentQuestionIndex(firstMarkedIndex);
-                    }}
-                    disabled={reviewQuestionCount === 0}
-                    className={`${isNightMode ? 'bg-amber-950 text-amber-200 disabled:text-slate-500' : 'bg-amber-50 text-amber-700 disabled:text-gray-400'} self-start rounded-xl px-3 py-2 text-xs font-black disabled:cursor-not-allowed disabled:opacity-60`}
-                  >
-                    الذهاب لأول سؤال مراجعة
-                  </button>
+                <div className={`mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                    السؤال الحالي
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    تمت الإجابة
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className={`h-2.5 w-2.5 rounded-full border ${isNightMode ? 'border-slate-500 bg-slate-950' : 'border-gray-300 bg-white'}`} />
+                    لم يجب
+                  </span>
+                  {shouldShowQuestionReview ? (
+                    <span className="inline-flex items-center gap-1">
+                      <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
+                      للمراجعة
+                    </span>
+                  ) : null}
                 </div>
-                <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
-                  {quizQuestions.map((question, index) => (
-                    <button
-                      key={question.id}
-                      type="button"
-                      onClick={() => setCurrentQuestionIndex(index)}
-                      className={`h-10 rounded-xl border text-sm font-black transition ${getQuestionNumberClass(question, index)}`}
-                      aria-label={`السؤال ${index + 1}`}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap justify-center gap-2">
+                  {quizQuestions.map((question, index) => {
+                    const isAnswered = selectedOptions[question.id] !== undefined;
+                    const isMarkedForReview = reviewLater.includes(question.id);
+                    const title = index === currentQuestionIndex
+                      ? `السؤال ${index + 1} الحالي`
+                      : isAnswered
+                        ? `السؤال ${index + 1} تمت الإجابة`
+                        : isMarkedForReview
+                          ? `السؤال ${index + 1} للمراجعة`
+                          : `السؤال ${index + 1} لم يجب`;
+
+                    return (
+                      <button
+                        key={question.id}
+                        type="button"
+                        onClick={() => setCurrentQuestionIndex(index)}
+                        className={`h-8 w-8 rounded-md border text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
+                        aria-label={title}
+                        title={title}
+                      >
+                        {index + 1}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

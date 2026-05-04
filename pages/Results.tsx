@@ -1667,7 +1667,11 @@ const ReviewSolutions = ({
             ) : null}
             <button
               onClick={() => setShowExplanation((value) => !value)}
-              className="bg-white border-2 border-indigo-100 text-indigo-600 px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-50 transition-all"
+              className={`px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm ${
+                showExplanation
+                  ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
+              }`}
             >
               <Eye size={20} />
               {showExplanation ? 'إخفاء الحل' : 'إظهار الحل'}
@@ -1678,8 +1682,9 @@ const ReviewSolutions = ({
                 setShowExplanation(false);
               }}
               disabled={currentIdx === 0}
-              className="bg-gray-100 text-gray-600 px-6 py-2.5 rounded-xl font-bold disabled:opacity-50 transition-all"
+              className="bg-sky-50 text-sky-700 border border-sky-200 px-6 py-2.5 rounded-xl font-bold disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 transition-all hover:bg-sky-100 flex items-center justify-center gap-2"
             >
+              <ArrowRight size={18} />
               السابق
             </button>
             <button
