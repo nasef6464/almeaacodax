@@ -137,6 +137,13 @@ const Quiz: React.FC = () => {
     () => sections.filter((section) => !selectedSubjectId || section.subjectId === selectedSubjectId),
     [sections, selectedSubjectId],
   );
+  const targetSkills = useMemo(
+    () => targetSkillIds
+      .map((skillId) => skills.find((skill) => skill.id === skillId))
+      .filter(Boolean)
+      .slice(0, 3),
+    [skills, targetSkillIds],
+  );
 
   const isQuizExpired = (dueDate?: string) => {
     if (!dueDate) return false;
@@ -281,6 +288,18 @@ const Quiz: React.FC = () => {
   };
 
   const startSelfQuiz = () => {
+    const requestedCount = Math.max(5, Math.min(questionCount, 60));
+    const byId = new Map<string, typeof globalQuestionBank[number]>();
+    const addQuestions = (pool: typeof globalQuestionBank) => {
+      [...pool]
+        .sort(() => 0.5 - Math.random())
+        .forEach((question) => {
+          if (byId.size < requestedCount) {
+            byId.set(question.id, question);
+          }
+        });
+    };
+
     const strictPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
@@ -306,6 +325,18 @@ const Quiz: React.FC = () => {
       const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
       return pathMatches && skillMatches && typeMatches;
     });
+    const contextFillPool = globalQuestionBank.filter((question) => {
+      const pathMatches = !selectedPathId || question.pathId === selectedPathId;
+      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
+      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
+      return pathMatches && subjectMatches && sectionMatches && typeMatches;
+    });
+    const broadFillPool = globalQuestionBank.filter((question) => {
+      const pathMatches = !selectedPathId || question.pathId === selectedPathId;
+      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
+      return pathMatches && typeMatches;
+    });
 
     const sourcePool = strictPool.length > 0 ? strictPool : relaxedPool.length > 0 ? relaxedPool : fallbackPool;
     if (sourcePool.length === 0) {
@@ -313,8 +344,13 @@ const Quiz: React.FC = () => {
       return;
     }
 
-    const shuffled = [...sourcePool].sort(() => 0.5 - Math.random());
-    const picked = shuffled.slice(0, Math.max(5, Math.min(questionCount, shuffled.length)));
+    addQuestions(strictPool);
+    addQuestions(relaxedPool);
+    addQuestions(fallbackPool);
+    addQuestions(contextFillPool);
+    addQuestions(broadFillPool);
+
+    const picked = Array.from(byId.values());
 
     setStatusMessage(null);
     setSessionQuestions(picked);
@@ -615,6 +651,21 @@ const Quiz: React.FC = () => {
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-gray-600">اضبط مواصفات اختبارك الذاتي:</p>
+              {targetSkills.length > 0 ? (
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3">
+                  <div className="text-sm font-black text-indigo-800">اختبار إضافي موجه حسب نتيجتك</div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {targetSkills.map((skill) => skill ? (
+                      <span key={skill.id} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-indigo-700 shadow-sm">
+                        {skill.name}
+                      </span>
+                    ) : null)}
+                  </div>
+                  <p className="mt-2 text-xs leading-6 text-indigo-700">
+                    سنبدأ بهذه المهارات، ولو عدد أسئلتها قليل سنكمل من نفس المادة أو المسار حتى تكون المحاولة مفيدة.
+                  </p>
+                </div>
+              ) : null}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-2">المسار</label>
