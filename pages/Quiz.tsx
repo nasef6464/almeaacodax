@@ -749,6 +749,15 @@ const Quiz: React.FC = () => {
     );
   }
 
+  const currentOptions = questions[currentQuestion]?.options || [];
+  const longestOptionLength = currentOptions.reduce((max, option) => Math.max(max, String(option).length), 0);
+  const currentOptionGridClass =
+    currentOptions.length <= 2
+      ? 'grid-cols-1 sm:grid-cols-2'
+      : longestOptionLength > 42
+        ? 'grid-cols-1 sm:grid-cols-2'
+        : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b p-3 sm:p-4 shadow-sm sticky top-0 z-20">
@@ -851,15 +860,12 @@ const Quiz: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-3 sm:gap-x-5 gap-y-4 dir-rtl">
+            <div className={`grid ${currentOptionGridClass} gap-x-3 sm:gap-x-5 gap-y-4 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
-                let borderClass = 'border-gray-200 hover:border-gray-300 bg-white';
-                if (isSelected) {
-                  borderClass = idx === questions[currentQuestion].correctOptionIndex
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                    : 'border-red-500 bg-red-50 text-red-700';
-                }
+                const borderClass = isSelected
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                  : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50 bg-white';
 
                 return (
                   <button
@@ -875,11 +881,7 @@ const Quiz: React.FC = () => {
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
                         <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${
-                          isSelected && idx === questions[currentQuestion].correctOptionIndex
-                            ? 'bg-emerald-500'
-                            : isSelected
-                              ? 'bg-red-500'
-                              : 'bg-transparent'
+                          isSelected ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
                     </div>

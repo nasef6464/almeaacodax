@@ -198,7 +198,7 @@ const getFriendlyResultMessage = (score: number) => {
   if (score >= 85) {
     return {
       title: 'ممتاز جدًا',
-      message: 'أحسنت. مستواك قوي جدًا، والآن نركز فقط على تثبيت المهارات حتى تستمر بنفس القوة.',
+      message: 'نتيجة قوية. راجع الأخطاء فقط ثم أكمل.',
       chipClassName: 'bg-emerald-50 text-emerald-700',
     };
   }
@@ -206,14 +206,14 @@ const getFriendlyResultMessage = (score: number) => {
   if (score >= 60) {
     return {
       title: 'أداء جيد',
-      message: 'أنت على الطريق الصحيح. يوجد بعض المهارات التي تحتاج مراجعة بسيطة حتى ترتفع نتيجتك أكثر.',
+      message: 'أداؤك جيد. ركز على أضعف مهارة ثم أعد التدريب.',
       chipClassName: 'bg-amber-50 text-amber-700',
     };
   }
 
   return {
-    title: 'نحتاج خطة أبسط وأذكى',
-    message: 'لا تقلق. سنبدأ بالمهارات الأسهل أولًا، ثم نراجع الشرح، وبعدها نرجع للتدريب خطوة بخطوة.',
+    title: 'يحتاج مراجعة',
+    message: 'ابدأ بأضعف مهارة، ثم حل تدريبًا قصيرًا.',
     chipClassName: 'bg-rose-50 text-rose-700',
   };
 };
@@ -260,9 +260,9 @@ const getStudentFriendlyChecklist = (score: number) => {
   }
 
   return [
-    { title: 'لا تقلق', body: 'سنبدأ بخطوة صغيرة جدًا حتى لا تتشتت.' },
-    { title: 'شرح أولًا', body: 'راجع شرح المهارة الأضعف قبل إعادة الحل.' },
-    { title: '5 أسئلة فقط', body: 'تدريب قصير يكفي كبداية، ثم نزيد بالتدريج.' },
+    { title: 'ابدأ من الأضعف', body: 'راجع مهارة واحدة فقط الآن.' },
+    { title: 'شرح قصير', body: 'افهم الفكرة قبل إعادة الحل.' },
+    { title: '5 أسئلة فقط', body: 'تدريب قصير يكفي كبداية.' },
   ];
 };
 
