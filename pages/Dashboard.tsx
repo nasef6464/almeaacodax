@@ -1007,25 +1007,54 @@ const ParentResultsTab = () => {
                 <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار.</p>
             </div>
             <div className="space-y-3">
-                {data.scopedResults.map((result, index) => (
-                    <Card key={result.id || `${result.quizId}-${index}`} className="p-4">
-                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <div className="text-lg font-black text-gray-900">{result.quizTitle}</div>
-                                <div className="mt-1 text-sm text-gray-500">{getStudentLabel(result)} - {formatParentDate(result)}</div>
+                {data.scopedResults.map((result, index) => {
+                    const weakSkills = [...(result.skillsAnalysis || [])]
+                        .filter((skill) => Number(skill.mastery ?? 100) < 75 || skill.status === 'weak')
+                        .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
+                        .slice(0, 2);
+
+                    return (
+                        <Card key={result.id || `${result.quizId}-${index}`} className="p-4">
+                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div className="text-lg font-black text-gray-900">{result.quizTitle}</div>
+                                    <div className="mt-1 text-sm text-gray-500">{getStudentLabel(result)} - {formatParentDate(result)}</div>
+                                </div>
+                                <div className={`self-start rounded-2xl border px-4 py-3 text-xl font-black md:self-auto ${scoreTone(Number(result.score) || 0)}`}>
+                                    {Math.round(Number(result.score) || 0)}%
+                                </div>
                             </div>
-                            <div className={`self-start rounded-2xl border px-4 py-3 text-xl font-black md:self-auto ${scoreTone(Number(result.score) || 0)}`}>
-                                {Math.round(Number(result.score) || 0)}%
+                            <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-gray-600 sm:grid-cols-4">
+                                <div className="rounded-xl bg-gray-50 p-3">الأسئلة: {result.totalQuestions || 0}</div>
+                                <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">صحيح: {result.correctAnswers || 0}</div>
+                                <div className="rounded-xl bg-rose-50 p-3 text-rose-700">خطأ: {result.wrongAnswers || 0}</div>
+                                <div className="rounded-xl bg-blue-50 p-3 text-blue-700">الوقت: {result.timeSpent || 'غير محدد'}</div>
                             </div>
-                        </div>
-                        <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-gray-600 sm:grid-cols-4">
-                            <div className="rounded-xl bg-gray-50 p-3">الأسئلة: {result.totalQuestions || 0}</div>
-                            <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">صحيح: {result.correctAnswers || 0}</div>
-                            <div className="rounded-xl bg-rose-50 p-3 text-rose-700">خطأ: {result.wrongAnswers || 0}</div>
-                            <div className="rounded-xl bg-blue-50 p-3 text-blue-700">الوقت: {result.timeSpent || 'غير محدد'}</div>
-                        </div>
-                    </Card>
-                ))}
+                            <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                                <div className="text-xs font-black text-slate-500">تحليل هذه المحاولة</div>
+                                {weakSkills.length ? (
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                        {weakSkills.map((skill) => (
+                                            <span key={`${result.id || result.quizId}-${skill.skillId || skill.skill}`} className="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-700">
+                                                {skill.skill}: {Math.round(Number(skill.mastery) || 0)}%
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="mt-2 text-sm font-bold text-emerald-700">لا توجد مهارة ضعيفة واضحة في هذه المحاولة.</div>
+                                )}
+                            </div>
+                            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                <Link to="/dashboard?tab=parent-skills" className="rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-black text-white hover:bg-indigo-700">
+                                    التحليل العام للمهارات
+                                </Link>
+                                <Link to="/reports" className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-center text-sm font-black text-emerald-700 hover:bg-emerald-100">
+                                    تقرير ولي الأمر
+                                </Link>
+                            </div>
+                        </Card>
+                    );
+                })}
             </div>
         </div>
     );

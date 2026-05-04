@@ -10,7 +10,6 @@ import {
   BookOpen,
   History,
   CheckCircle2,
-  ChevronLeft,
   Lightbulb,
   PlayCircle,
   Sparkles,
@@ -321,8 +320,8 @@ const Results: React.FC = () => {
 
     const decodedAttempt = decodeURIComponent(requestedAttempt);
     return (
-      examResults.find((result) => result.date === decodedAttempt) ||
-      examResults.find((result) => result.quizId === decodedAttempt) ||
+      examResults.find((result) => String(result.date) === decodedAttempt) ||
+      examResults.find((result) => String(result.quizId) === decodedAttempt) ||
       examResults[0]
     );
   }, [examResults, requestedAttempt]);
@@ -979,62 +978,15 @@ const Results: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_250px]">
-                <div className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <h3 className="text-base font-black text-gray-900">إحصائيات الاختبار</h3>
-                    {latestResult.unanswered > 0 ? (
-                      <span className="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-black text-amber-700">
-                        {latestResult.unanswered} بدون إجابة
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <div className="overflow-hidden rounded-2xl border border-emerald-200">
-                    <div className="grid grid-cols-2 bg-amber-400 px-4 py-3 text-sm font-black text-slate-900">
-                      <span>البند</span>
-                      <span className="text-center">القيمة</span>
-                    </div>
-                    <div className="divide-y divide-emerald-100 bg-white text-sm font-bold">
-                      <div className="grid grid-cols-2 px-4 py-3">
-                        <span>عدد الأسئلة</span>
-                        <span className="text-center">{latestResult.totalQuestions}</span>
-                      </div>
-                      <div className="grid grid-cols-2 px-4 py-3">
-                        <span>الإجابات الصحيحة</span>
-                        <span className="text-center text-emerald-700">{latestResult.correctAnswers}</span>
-                      </div>
-                      <div className="grid grid-cols-2 px-4 py-3">
-                        <span>الأخطاء</span>
-                        <span className="text-center text-rose-600">{latestResult.wrongAnswers}</span>
-                      </div>
-                      <div className="grid grid-cols-2 px-4 py-3">
-                        <span>الوقت المستغرق</span>
-                        <span className="text-center">{latestResult.timeSpent}</span>
-                      </div>
-                      <div className="grid grid-cols-2 px-4 py-3">
-                        <span>النتيجة</span>
-                        <span className={`text-center ${scoreTone.text}`}>{latestResult.score}%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-slate-50 px-4 py-3">
-                    <div className="text-xs font-black text-slate-500">أول تركيز</div>
-                    <div className="mt-1 text-base font-black text-slate-900">
-                      {weakestSkill ? weakestSkill.skillName : 'مراجعة الحلول ثم إعادة اختبار قصير'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-white bg-white/95 p-4 shadow-sm">
-                  <div className="relative mx-auto h-52 max-w-[220px]">
+              <div className="mt-6 grid gap-4 lg:grid-cols-[240px_1fr]">
+                <div className="rounded-3xl border border-white bg-white/95 p-5 text-center shadow-sm">
+                  <div className="relative mx-auto h-44 max-w-[190px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={donutData}
-                          innerRadius={62}
-                          outerRadius={82}
+                          innerRadius={56}
+                          outerRadius={74}
                           paddingAngle={0}
                           dataKey="value"
                           startAngle={90}
@@ -1050,6 +1002,44 @@ const Results: React.FC = () => {
                       <span className={`text-4xl font-black ${scoreTone.text}`}>{latestResult.score}%</span>
                       <span className="mt-1 text-xs font-black text-gray-500">درجتك</span>
                     </div>
+                  </div>
+                  <div className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-black ${summaryTone.chipClassName}`}>
+                    {summaryTone.title}
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-white bg-white/95 p-4 shadow-sm sm:p-5">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="text-lg font-black text-gray-900">ملخص النتيجة</h3>
+                      <p className="mt-1 text-sm font-bold leading-7 text-gray-500">
+                        ركز على الخطوة التالية فقط، والتفاصيل موجودة عند الحاجة.
+                      </p>
+                    </div>
+                    {latestResult.unanswered > 0 ? (
+                      <span className="self-start rounded-full bg-amber-50 px-3 py-1 text-[11px] font-black text-amber-700">
+                        {latestResult.unanswered} بدون إجابة
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <SimpleResultStat label="الأسئلة" value={latestResult.totalQuestions.toString()} />
+                    <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
+                    <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
+                    <SimpleResultStat label="الوقت" value={latestResult.timeSpent} />
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-4">
+                    <div className="text-xs font-black text-indigo-600">أول تركيز</div>
+                    <div className="mt-1 text-base font-black text-slate-900">
+                      {weakestSkill ? weakestSkill.skillName : 'مراجعة الحلول ثم اختبار قصير'}
+                    </div>
+                    <p className="mt-2 text-sm font-bold leading-7 text-slate-600">
+                      {weakestSkill
+                        ? 'افتح شرح المهارة، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.'
+                        : 'ابدأ بمراجعة الحلول حتى تعرف أين تحتاج تدريبًا.'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1852,28 +1842,51 @@ const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: 
       </header>
 
       <div className="space-y-4">
-        {attempts.map((attempt, index) => (
-          <Card key={`${attempt.quizId}-${attempt.date}-${index}`} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="flex items-center gap-4">
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${
-                  attempt.score >= 50 ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'
-                }`}
-              >
-                {attempt.score}%
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-800">{displayText(attempt.quizTitle)}</h3>
-                <div className="flex gap-3 text-xs text-gray-500">
-                  <span>{new Date(attempt.date).toLocaleDateString()}</span>
-                  <span>•</span>
-                  <span>{attempt.timeSpent}</span>
+        {attempts.map((attempt, index) => {
+          const weakSkill = [...(attempt.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
+          const attemptLink = `/results?attempt=${encodeURIComponent(String(attempt.date || attempt.quizId))}`;
+
+          return (
+            <Card key={`${attempt.quizId}-${attempt.date}-${index}`} className="p-4">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-black ${
+                      attempt.score >= 75 ? 'bg-emerald-100 text-emerald-700' : attempt.score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+                    }`}
+                  >
+                    {attempt.score}%
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-black leading-7 text-gray-900">{displayText(attempt.quizTitle)}</h3>
+                    <div className="mt-1 flex flex-wrap gap-2 text-xs font-bold text-gray-500">
+                      <span>{new Date(attempt.date).toLocaleDateString('ar-SA')}</span>
+                      <span>{attempt.timeSpent}</span>
+                      <span>{attempt.totalQuestions} سؤال</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-3 md:min-w-[360px]">
+                  <Link to={attemptLink} className="rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-black text-white hover:bg-indigo-700">
+                    تحليل المحاولة
+                  </Link>
+                  <Link to={`${attemptLink}&view=review`} className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-center text-sm font-black text-emerald-700 hover:bg-emerald-100">
+                    مراجعة الحلول
+                  </Link>
+                  <Link to="/reports" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-black text-slate-700 hover:bg-slate-50">
+                    التقرير العام
+                  </Link>
                 </div>
               </div>
-            </div>
-            <ChevronLeft className="text-gray-400" />
-          </Card>
-        ))}
+              <div className="mt-4 rounded-2xl bg-slate-50 px-4 py-3">
+                <div className="text-xs font-black text-slate-500">أضعف مهارة في هذه المحاولة</div>
+                <div className="mt-1 text-sm font-black text-slate-900">
+                  {weakSkill ? `${displayText(weakSkill.skill)} - ${weakSkill.mastery}%` : 'لا توجد مهارة ضعيفة واضحة'}
+                </div>
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

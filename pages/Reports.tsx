@@ -1,7 +1,7 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
-import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -821,11 +821,41 @@ const Reports: React.FC = () => {
             : 0;
         const weakSkill = scopedAnalytics?.weakestSkills?.[0] || null;
         const leadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
+        const parentWeakSkillRecommendation = getSkillRecommendation(weakSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
+        const parentSkillActions = [
+            parentWeakSkillRecommendation.lessonLink
+                ? {
+                    title: 'فتح الشرح',
+                    body: displayText(parentWeakSkillRecommendation.lessonTopicTitle || parentWeakSkillRecommendation.lessonTitle) || 'شرح المهارة الأضعف',
+                    link: parentWeakSkillRecommendation.lessonLink,
+                    Icon: BookOpen,
+                    className: 'border-indigo-100 bg-indigo-50 text-indigo-800 hover:bg-indigo-100',
+                }
+                : null,
+            parentWeakSkillRecommendation.quizLink
+                ? {
+                    title: 'بدء تدريب',
+                    body: displayText(parentWeakSkillRecommendation.quizTitle) || 'تدريب قصير على نفس المهارة',
+                    link: parentWeakSkillRecommendation.quizLink,
+                    Icon: FileText,
+                    className: 'border-amber-100 bg-amber-50 text-amber-800 hover:bg-amber-100',
+                }
+                : null,
+            weakSkill
+                ? {
+                    title: 'حصة علاجية',
+                    body: 'عند تكرار الضعف في نفس المهارة',
+                    link: buildSkillSessionLink({ skill: weakSkill.skill, skillId: weakSkill.skillId, sectionName: weakSkill.section }),
+                    Icon: Clock,
+                    className: 'border-emerald-100 bg-emerald-50 text-emerald-800 hover:bg-emerald-100',
+                }
+                : null,
+        ].filter(Boolean) as Array<{ title: string; body: string; link: string; Icon: LucideIcon; className: string }>;
         const parentBriefSummary = scopedFollowUpSummary || [
             `الأداء العام ${averageScore}%.`,
             weakSkill ? `ابدأ بمتابعة ${displayText(weakSkill.skill)}.` : null,
             leadStudent ? `أكثر طالب يحتاج متابعة الآن: ${displayText(leadStudent.name)}.` : null,
-            'الخطوة العملية: شرح قصير، 5 أسئلة، ثم إعادة قياس هادئة.',
+            'الخطوة العملية: شرح قصير، تدريب بسيط، ثم إعادة قياس هادئة.',
         ].filter(Boolean).join(' ');
         const parentActionItems = [
             {
@@ -959,6 +989,23 @@ const Reports: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
+                            {parentSkillActions.length > 0 ? (
+                                <div className="print-hide mt-4 grid gap-3 md:grid-cols-3">
+                                    {parentSkillActions.map(({ title, body, link, Icon, className }) => (
+                                        <Link
+                                            key={title}
+                                            to={link}
+                                            className={`flex min-h-[104px] flex-col justify-between rounded-2xl border p-4 transition ${className}`}
+                                        >
+                                            <div className="flex items-center gap-2 text-sm font-black">
+                                                <Icon size={17} />
+                                                {title}
+                                            </div>
+                                            <div className="mt-3 text-xs font-bold leading-6 opacity-80">{body}</div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : null}
                             <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm leading-7 text-slate-600">
                                 علامة تستدعي متابعة أقرب: تكرار نفس المهارة تحت 50% في أكثر من محاولة، أو ترك الاختبار بدون إجابات كثيرة.
                             </div>
@@ -1061,6 +1108,7 @@ const Reports: React.FC = () => {
                 ) : null}
             </header>
 
+            {!isStudentView ? (
             <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative">
                 <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
                 <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
@@ -1145,6 +1193,7 @@ const Reports: React.FC = () => {
                     </div>
                 </div>
             </Card>
+            ) : null}
 
             {!isStudentView && (
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
