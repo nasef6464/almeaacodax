@@ -2,11 +2,25 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useStore } from '../../store/useStore';
 import { LibraryItem } from '../../types';
-import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 interface LibraryManagerProps {
   subjectId: string;
 }
+
+const getLibraryReadinessMeta = (item: LibraryItem) => {
+  const issues: string[] = [];
+  if (!item.title?.trim()) issues.push('العنوان غير مكتمل');
+  if (!item.subjectId) issues.push('غير مربوط بمادة');
+  if (!item.sectionId) issues.push('غير مربوط بمهارة رئيسية');
+  if (!(item.skillIds || []).length) issues.push('غير مربوط بمهارة فرعية');
+  if (!item.url?.trim()) issues.push('لا يوجد رابط ملف');
+  if (item.showOnPlatform !== false && item.approvalStatus && item.approvalStatus !== 'approved') issues.push('ظاهر قبل الاعتماد');
+
+  return issues.length === 0
+    ? { label: 'جاهز للطالب', issues, className: 'bg-emerald-50 text-emerald-700 border-emerald-100', icon: 'ready' as const }
+    : { label: 'يحتاج ضبط', issues, className: 'bg-amber-50 text-amber-700 border-amber-100', icon: 'warn' as const };
+};
 
 export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => {
   const {
@@ -199,6 +213,14 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
 
   const handlePreviewLibraryItem = (item: LibraryItem) => {
     setPreviewItem(item);
+  };
+
+  const handlePrepareForLearner = (item: LibraryItem) => {
+    updateLibraryItem(item.id, {
+      approvalStatus: 'approved',
+      showOnPlatform: true,
+      approvedAt: item.approvedAt || Date.now(),
+    });
   };
 
   if (isEditing) {
@@ -409,7 +431,10 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {subjectItems.map((item) => (
+        {subjectItems.map((item) => {
+          const readinessMeta = getLibraryReadinessMeta(item);
+
+          return (
           <div key={item.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div className="w-12 h-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center">
@@ -458,6 +483,10 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                     ? 'مرفوض'
                     : 'مسودة'}
               </span>
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
+                {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+                {readinessMeta.label}
+              </span>
             </div>
 
             <div className="flex flex-wrap gap-2 mt-auto">
@@ -477,6 +506,15 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
               )}
             </div>
             <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+              {readinessMeta.issues.length > 0 && (
+                <button
+                  onClick={() => handlePrepareForLearner(item)}
+                  className="px-3 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                  title={readinessMeta.issues.join('، ')}
+                >
+                  تجهيز
+                </button>
+              )}
               {canReview && item.approvalStatus !== 'approved' && (
                 <button
                   onClick={() => handleApprove(item)}
@@ -516,7 +554,8 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
 
         {subjectItems.length === 0 && (
           <div className="col-span-full text-center py-12 text-gray-500">

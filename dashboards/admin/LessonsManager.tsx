@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Lesson, LessonType } from '../../types';
-import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 
@@ -102,6 +102,21 @@ const getAccessMeta = (lesson: Lesson) =>
   lesson.isLocked
     ? { label: 'مغلق على الطلاب', className: 'bg-amber-50 text-amber-700' }
     : { label: 'مفتوح للعرض', className: 'bg-emerald-50 text-emerald-700' };
+
+const getLessonReadinessMeta = (lesson: Lesson) => {
+  const issues: string[] = [];
+  if (!lesson.title?.trim()) issues.push('العنوان غير مكتمل');
+  if (!lesson.subjectId) issues.push('غير مربوط بمادة');
+  if (!lesson.sectionId) issues.push('غير مربوط بمهارة رئيسية');
+  if (!(lesson.skillIds || []).length) issues.push('غير مربوط بمهارة فرعية');
+  if (lesson.type === 'video' && !lesson.videoUrl) issues.push('درس فيديو بدون رابط');
+  if (lesson.type === 'file' && !lesson.fileUrl) issues.push('درس ملف بدون رابط');
+  if (lesson.showOnPlatform !== false && lesson.approvalStatus && lesson.approvalStatus !== 'approved') issues.push('ظاهر قبل الاعتماد');
+
+  return issues.length === 0
+    ? { label: 'جاهز للطالب', issues, className: 'bg-emerald-50 text-emerald-700 border-emerald-100', icon: 'ready' as const }
+    : { label: 'يحتاج ضبط', issues, className: 'bg-amber-50 text-amber-700 border-amber-100', icon: 'warn' as const };
+};
 
 export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => {
   const { user, lessons: globalLessons, addLesson, updateLesson, deleteLesson, paths, subjects, sections, skills, topics } = useStore();
@@ -245,6 +260,14 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   const handleToggleLessonLock = (lesson: Lesson) => {
     updateLesson(lesson.id, {
       isLocked: lesson.isLocked !== true,
+    });
+  };
+
+  const handlePrepareForLearner = (lesson: Lesson) => {
+    updateLesson(lesson.id, {
+      approvalStatus: 'approved',
+      showOnPlatform: true,
+      approvedAt: lesson.approvedAt || Date.now(),
     });
   };
 
@@ -885,6 +908,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
             <tbody className="divide-y divide-gray-100">
               {filteredLessons.map((lesson) => {
                 const statusMeta = getStatusMeta(lesson);
+                const readinessMeta = getLessonReadinessMeta(lesson);
                 return (
                   <tr key={lesson.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
@@ -934,10 +958,23 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${getAccessMeta(lesson).className}`}>
                           {getAccessMeta(lesson).label}
                         </span>
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
+                          {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+                          {readinessMeta.label}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 flex-wrap">
+                        {readinessMeta.issues.length > 0 && (
+                          <button
+                            onClick={() => handlePrepareForLearner(lesson)}
+                            className="px-3 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                            title={readinessMeta.issues.join('، ')}
+                          >
+                            تجهيز للطالب
+                          </button>
+                        )}
                         {canReview && lesson.approvalStatus !== 'approved' && (
                           <button onClick={() => handleApprove(lesson)} className="px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors">
                             اعتماد

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
-import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen, X, BookOpen, Target, ExternalLink, PlayCircle } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen, X, BookOpen, Target, ExternalLink, PlayCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 interface CoursesManagerProps {
   subjectId?: string;
@@ -42,6 +42,19 @@ const getCourseAccessMeta = (course: Course) =>
     : course.price > 0
       ? { label: 'مدفوعة / تحتاج اشتراك', className: 'bg-amber-50 text-amber-700' }
       : { label: 'مفتوحة أو مجانية', className: 'bg-emerald-50 text-emerald-700' };
+
+const getCourseReadinessMeta = (course: Course) => {
+  const issues: string[] = [];
+  if (!course.title?.trim()) issues.push('العنوان غير مكتمل');
+  if (!course.subjectId && !course.subject) issues.push('غير مربوط بمادة');
+  if (course.showOnPlatform !== false && course.isPublished === false) issues.push('ظاهر للطالب لكنه غير منشور');
+  if (course.showOnPlatform !== false && course.approvalStatus && course.approvalStatus !== 'approved') issues.push('ظاهر قبل الاعتماد');
+  if (course.isPackage && course.price > 0 && !course.packageContentTypes?.length) issues.push('الباقة تحتاج تحديد ما تفتحه');
+
+  return issues.length === 0
+    ? { label: 'جاهز للطالب', issues, className: 'bg-emerald-50 text-emerald-700 border-emerald-100', icon: 'ready' as const }
+    : { label: 'يحتاج ضبط', issues, className: 'bg-amber-50 text-amber-700 border-amber-100', icon: 'warn' as const };
+};
 
 export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => {
   const { courses, addCourse, updateCourse, deleteCourse, subjects } = useStore();
@@ -127,6 +140,15 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   const handleToggleRepositoryPublish = (course: Course) => {
     updateCourse(course.id, {
       isPublished: course.isPublished === false,
+    });
+  };
+
+  const handlePrepareForLearner = (course: Course) => {
+    updateCourse(course.id, {
+      approvalStatus: 'approved',
+      isPublished: true,
+      showOnPlatform: true,
+      approvedAt: course.approvedAt || Date.now(),
     });
   };
 
@@ -216,6 +238,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
               {filteredCourses.map((course) => {
                 const statusMeta = getCourseStatusMeta(course);
                 const visibilityMeta = getCourseVisibilityMeta(course);
+                const readinessMeta = getCourseReadinessMeta(course);
 
                 return (
                   <tr key={course.id} className="hover:bg-gray-50 transition-colors">
@@ -264,10 +287,23 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${getCourseAccessMeta(course).className}`}>{getCourseAccessMeta(course).label}</span>
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
+                          {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+                          {readinessMeta.label}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 flex-wrap">
+                        {readinessMeta.issues.length > 0 && (
+                          <button
+                            onClick={() => handlePrepareForLearner(course)}
+                            className="px-3 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+                            title={readinessMeta.issues.join('، ')}
+                          >
+                            تجهيز للطالب
+                          </button>
+                        )}
                         {course.approvalStatus !== 'approved' && (
                           <button
                             onClick={() => handleApprove(course)}
