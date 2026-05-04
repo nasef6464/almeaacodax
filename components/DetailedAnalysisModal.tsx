@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, TrendingUp, X } from 'lucide-react';
+import { TrendingUp, X } from 'lucide-react';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 interface Skill {
@@ -117,18 +117,19 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
           </button>
         </div>
 
-        <div className="max-h-[calc(90vh-96px)] space-y-6 overflow-y-auto p-4 sm:space-y-8 sm:p-8">
+        <div className="max-h-[calc(90vh-96px)] space-y-4 overflow-y-auto p-4 sm:p-6">
           {weakestSkill ? (
             <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
               <div className="text-xs font-black text-amber-700">ابدأ من هنا</div>
               <div className="mt-2 text-lg font-black text-gray-900">{weakestSkill.name}</div>
-              <p className="mt-2 text-sm leading-7 text-amber-800">
-                هذه هي المهارة الأضعف حاليًا. راجع شرحًا قصيرًا لها، ثم حل تدريبًا بسيطًا، وبعدها أعد القياس.
-              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs font-black">
+                <span className="rounded-full bg-white px-3 py-1 text-amber-700">الإتقان {weakestSkill.percentage}%</span>
+                <span className="rounded-full bg-white px-3 py-1 text-gray-700">شرح قصير ثم تدريب بسيط</span>
+              </div>
             </div>
           ) : null}
 
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {displaySkills.map((skill, idx) => {
               const levelMeta = getSimpleLevel(skill.percentage);
 
@@ -154,16 +155,6 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                       <h3 className="break-words text-base font-bold text-gray-800 sm:text-lg">
                         {skill.name}
                       </h3>
-                      {skill.recommendation ? (
-                        <div className="mt-3 rounded-xl bg-slate-50 px-3 py-3">
-                          <div className="mb-1 text-[11px] font-bold text-slate-500">
-                            الخطوة التالية
-                          </div>
-                          <p className="text-sm leading-7 text-gray-600">
-                            {skill.recommendation}
-                          </p>
-                        </div>
-                      ) : null}
                     </div>
 
                     <div className="shrink-0 rounded-2xl bg-gray-50 px-4 py-3 text-center">
@@ -183,20 +174,6 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                 </div>
               );
             })}
-          </div>
-
-          <div className="flex flex-col gap-4 rounded-2xl border border-purple-100 bg-purple-50 p-4 sm:flex-row sm:p-5">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
-              <Sparkles size={24} />
-            </div>
-            <div>
-              <h4 className="mb-1 text-sm font-bold text-purple-900 sm:text-base">
-                نصيحة سريعة
-              </h4>
-              <p className="text-sm leading-relaxed text-purple-700">
-                لا تراجع كل شيء دفعة واحدة. ابدأ بالمهارة الأضعف، ثم الشرح المختصر، ثم تدريب قصير، وبعدها أعد القياس.
-              </p>
-            </div>
           </div>
 
           <button

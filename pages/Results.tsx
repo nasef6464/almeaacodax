@@ -23,7 +23,7 @@ import {
   Share2,
   ChevronRight as ChevronRightIcon,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
@@ -292,6 +292,7 @@ const SimpleResultStat = ({
 
 const Results: React.FC = () => {
   const { examResults, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
+  const [searchParams] = useSearchParams();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
   const [videoData, setVideoData] = React.useState<{ url: string; title: string } | null>(null);
@@ -299,7 +300,27 @@ const Results: React.FC = () => {
   const [sharedSummary, setSharedSummary] = React.useState(false);
   const [resultDepth, setResultDepth] = React.useState<'simple' | 'full'>('simple');
 
-  const latestResult = examResults[0];
+  const requestedAttempt = searchParams.get('attempt');
+  const requestedView = searchParams.get('view');
+  const latestResult = React.useMemo(() => {
+    if (!requestedAttempt) return examResults[0];
+
+    const decodedAttempt = decodeURIComponent(requestedAttempt);
+    return (
+      examResults.find((result) => result.date === decodedAttempt) ||
+      examResults.find((result) => result.quizId === decodedAttempt) ||
+      examResults[0]
+    );
+  }, [examResults, requestedAttempt]);
+
+  React.useEffect(() => {
+    if (requestedView === 'review' || requestedView === 'history' || requestedView === 'analysis') {
+      setViewMode(requestedView);
+      return;
+    }
+
+    setViewMode('summary');
+  }, [requestedAttempt, requestedView]);
   const questionReviewCount = latestResult?.questionReview?.length || 0;
   const retryQuizLink =
     latestResult?.quizId && !latestResult.quizId.startsWith('self-quiz')
@@ -626,7 +647,7 @@ const Results: React.FC = () => {
   }
 
   return (
-    <div id="quiz-result-print-area" className="space-y-6 pb-20">
+    <div id="quiz-result-print-area" className="mx-auto max-w-5xl space-y-6 pb-20">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link to="/dashboard" className="text-gray-500">
@@ -841,7 +862,7 @@ const Results: React.FC = () => {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="grid grid-cols-1 gap-6">
         <Card className={`p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br ${scoreTone.soft}`}>
           <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -translate-y-1/2 translate-x-1/2 opacity-60" />
           <div className="relative z-10">
@@ -1432,7 +1453,7 @@ const ReviewSolutions = ({
   const isReviewLater = reviewLater.includes(q.questionId);
 
   return (
-    <div className="space-y-6 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-6xl space-y-6 pb-20 animate-fade-in">
       <header className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="flex items-center gap-4">
           <button onClick={onBack} className="text-gray-500 hover:text-indigo-600 transition-colors">
@@ -1522,9 +1543,7 @@ const ReviewSolutions = ({
                     >
                       {helperLabel}
                     </span>
-                  ) : (
-                    <span className="shrink-0 text-xs font-bold text-gray-300 group-hover:text-gray-400">●</span>
-                  )}
+                  ) : null}
                 </button>
               );
             })}

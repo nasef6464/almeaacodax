@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
-import { QuizDetailsModal } from '../components/QuizDetailsModal';
 import { useStore } from '../store/useStore';
 import { QuizResult } from '../types';
 
@@ -42,33 +41,10 @@ const formatCreatedDate = (date?: number) => {
   });
 };
 
-const toQuizHistoryItem = (result: QuizResult) => ({
-  id: result.quizId || result.date,
-  title: result.quizTitle,
-  questionCount: result.totalQuestions,
-  courseName: result.quizTitle,
-  passMark: 50,
-  difficulty: 'Medium' as const,
-  firstAttempt: {
-    score: result.score,
-    time: result.timeSpent,
-    date: result.date,
-  },
-  bestAttempt: {
-    score: result.score,
-    time: result.timeSpent,
-    date: result.date,
-  },
-  improvement: 0,
-  status: result.score >= 50 ? 'passed' as const : 'failed' as const,
-  skillsAnalysis: result.skillsAnalysis || [],
-});
-
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
-  const [selectedAttempt, setSelectedAttempt] = useState<(typeof examResults)[number] | null>(null);
   const isAttemptsView = view === 'attempts';
 
   const totalQuizzes = examResults.length;
@@ -296,6 +272,12 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       ? examResults
       : examResults.filter((quiz) => quiz.quizTitle.includes(activeFilter));
 
+  const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
+    const params = new URLSearchParams({ attempt: result.date });
+    if (viewMode) params.set('view', viewMode);
+    return `/results?${params.toString()}`;
+  };
+
   const latestAttempt = useMemo(() => {
     return [...examResults].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
   }, [examResults]);
@@ -420,7 +402,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                 <AttemptSummaryCard
                   key={`${quiz.quizId}-${quiz.date}-${index}-mobile`}
                   quiz={quiz}
-                  onDetails={setSelectedAttempt}
+                  detailsLink={getAttemptResultLink(quiz)}
+                  analysisLink={getAttemptResultLink(quiz, 'analysis')}
                 />
               ))}
             </div>
@@ -483,15 +466,15 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                         </td>
                         <td className="p-4">
                           <div className="flex flex-wrap justify-center gap-2">
-                            <button
-                              onClick={() => setSelectedAttempt(quiz)}
+                            <Link
+                              to={getAttemptResultLink(quiz)}
                               className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
                             >
                               <Eye size={14} />
                               تفاصيل
-                            </button>
+                            </Link>
                             <Link
-                              to="/dashboard?tab=reports"
+                              to={getAttemptResultLink(quiz, 'analysis')}
                               className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
                             >
                               <BarChart3 size={14} />
@@ -526,7 +509,6 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           )}
         </div>
 
-        {selectedAttempt ? <QuizDetailsModal quiz={toQuizHistoryItem(selectedAttempt)} onClose={() => setSelectedAttempt(null)} /> : null}
       </div>
     );
   }
@@ -912,10 +894,12 @@ const QuizSection = ({
 
 const AttemptSummaryCard = ({
   quiz,
-  onDetails,
+  detailsLink,
+  analysisLink,
 }: {
   quiz: QuizResult;
-  onDetails: (quiz: QuizResult) => void;
+  detailsLink: string;
+  analysisLink: string;
 }) => {
   const weakestSkill = [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
   const isPassed = quiz.score >= 50;
@@ -946,15 +930,15 @@ const AttemptSummaryCard = ({
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <button
-          onClick={() => onDetails(quiz)}
+        <Link
+          to={detailsLink}
           className="inline-flex items-center justify-center gap-1 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
         >
           <Eye size={14} />
           تفاصيل
-        </button>
+        </Link>
         <Link
-          to="/dashboard?tab=reports"
+          to={analysisLink}
           className="inline-flex items-center justify-center gap-1 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
         >
           <BarChart3 size={14} />
