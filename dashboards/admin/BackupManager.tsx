@@ -1,12 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, Download, FileJson, History, Loader2, RefreshCw, Save, ShieldCheck, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
+import { useStore } from '../../store/useStore';
 
 type BackupPayload = {
     schemaVersion?: number;
     kind?: string;
     createdAt?: string;
     database?: string;
+    scope?: {
+        type: 'full' | 'path';
+        pathId?: string;
+        pathName?: string;
+        note?: string;
+    };
     summary?: Record<string, number>;
     collections?: Array<{ name: string; documents: unknown[] }>;
 };
@@ -94,6 +101,19 @@ const downloadJson = (payload: unknown, fileName: string) => {
 };
 
 export const BackupManager: React.FC = () => {
+    const {
+        paths,
+        levels,
+        subjects,
+        sections,
+        skills,
+        topics,
+        lessons,
+        questions,
+        quizzes,
+        courses,
+        libraryItems,
+    } = useStore();
     const [isCreating, setIsCreating] = useState(false);
     const [isRestoring, setIsRestoring] = useState(false);
     const [backupPayload, setBackupPayload] = useState<BackupPayload | null>(null);
@@ -109,6 +129,7 @@ export const BackupManager: React.FC = () => {
     const [snapshotTitle, setSnapshotTitle] = useState('');
     const [selectedSnapshotId, setSelectedSnapshotId] = useState('');
     const [backupStatus, setBackupStatus] = useState<BackupStatus | null>(null);
+    const [selectedPathExportId, setSelectedPathExportId] = useState('');
 
     const backupSummaryRows = useMemo(() => {
         const summary = backupPayload?.summary || Object.fromEntries((backupPayload?.collections || []).map((item) => [item.name, item.documents.length]));
@@ -125,6 +146,84 @@ export const BackupManager: React.FC = () => {
     }, [backupPayload]);
 
     const backupTotals = useMemo(() => backupSummaryRows.reduce((sum, row) => sum + Number(row.count || 0), 0), [backupSummaryRows]);
+    const pathExportPreview = useMemo(() => {
+        if (!selectedPathExportId) return null;
+
+        const pathSubjects = subjects.filter((subject) => subject.pathId === selectedPathExportId);
+        const subjectIds = new Set(pathSubjects.map((subject) => subject.id));
+        const pathLevels = levels.filter((level) => level.pathId === selectedPathExportId);
+        const pathSections = sections.filter((section) => subjectIds.has(section.subjectId));
+        const sectionIds = new Set(pathSections.map((section) => section.id));
+        const pathSkills = skills.filter(
+            (skill) => skill.pathId === selectedPathExportId || subjectIds.has(skill.subjectId) || sectionIds.has(skill.sectionId),
+        );
+        const skillIds = new Set(pathSkills.map((skill) => skill.id));
+        const pathTopics = topics.filter((topic) => topic.pathId === selectedPathExportId || subjectIds.has(topic.subjectId));
+        const pathLessons = lessons.filter(
+            (lesson) =>
+                lesson.pathId === selectedPathExportId ||
+                (lesson.subjectId ? subjectIds.has(lesson.subjectId) : false) ||
+                (lesson.sectionId ? sectionIds.has(lesson.sectionId) : false) ||
+                (lesson.skillIds || []).some((skillId) => skillIds.has(skillId)),
+        );
+        const lessonIds = new Set(pathLessons.map((lesson) => lesson.id));
+        const pathQuestions = questions.filter(
+            (question) =>
+                question.pathId === selectedPathExportId ||
+                (question.sectionId ? sectionIds.has(question.sectionId) : false) ||
+                (question.skillIds || []).some((skillId) => skillIds.has(skillId)),
+        );
+        const questionIds = new Set(pathQuestions.map((question) => question.id));
+        const pathQuizzes = quizzes.filter(
+            (quiz) =>
+                quiz.pathId === selectedPathExportId ||
+                subjectIds.has(quiz.subjectId) ||
+                (quiz.sectionId ? sectionIds.has(quiz.sectionId) : false) ||
+                (quiz.skillIds || []).some((skillId) => skillIds.has(skillId)) ||
+                (quiz.questionIds || []).some((questionId) => questionIds.has(questionId)),
+        );
+        const pathCourses = courses.filter(
+            (course) =>
+                course.pathId === selectedPathExportId ||
+                (course.subjectId ? subjectIds.has(course.subjectId) : false) ||
+                (course.sectionId ? sectionIds.has(course.sectionId) : false) ||
+                (course.skills || []).some((skillId) => skillIds.has(skillId)) ||
+                (course.modules || []).some((module) => module.lessons.some((lesson) => lessonIds.has(lesson.id))),
+        );
+        const courseIds = new Set(pathCourses.map((course) => course.id));
+        const packageCourses = courses.filter((course) => (course.includedCourses || []).some((courseId) => courseIds.has(courseId)));
+        const pathLibraryItems = libraryItems.filter(
+            (item) =>
+                item.pathId === selectedPathExportId ||
+                subjectIds.has(item.subjectId) ||
+                (item.sectionId ? sectionIds.has(item.sectionId) : false) ||
+                (item.skillIds || []).some((skillId) => skillIds.has(skillId)),
+        );
+
+        return {
+            paths: paths.filter((path) => path.id === selectedPathExportId),
+            levels: pathLevels,
+            subjects: pathSubjects,
+            sections: pathSections,
+            skills: pathSkills,
+            topics: pathTopics,
+            lessons: pathLessons,
+            questions: pathQuestions,
+            quizzes: pathQuizzes,
+            courses: [...pathCourses, ...packageCourses.filter((course) => !courseIds.has(course.id))],
+            libraryItems: pathLibraryItems,
+        };
+    }, [courses, lessons, levels, libraryItems, paths, questions, quizzes, sections, selectedPathExportId, skills, subjects, topics]);
+    const pathExportRows = useMemo(() => {
+        if (!pathExportPreview) return [];
+
+        return Object.entries(pathExportPreview).map(([name, documents]) => ({
+            name,
+            label: collectionLabels[name] || name,
+            count: documents.length,
+        }));
+    }, [pathExportPreview]);
+    const selectedExportPath = paths.find((path) => path.id === selectedPathExportId);
     const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
 
     const latestSafetySnapshot = activities.find((activity) => activity.action === 'restore-safety-snapshot');
@@ -201,6 +300,42 @@ export const BackupManager: React.FC = () => {
         } finally {
             setIsCreating(false);
         }
+    };
+
+    const createPathBackup = () => {
+        if (!selectedPathExportId || !selectedExportPath || !pathExportPreview) {
+            setErrorMessage('اختر مسارًا أولًا قبل إنشاء نسخة مسار.');
+            return;
+        }
+
+        const collections = Object.entries(pathExportPreview).map(([name, documents]) => ({
+            name,
+            documents,
+        }));
+        const summary = Object.fromEntries(collections.map((collection) => [collection.name, collection.documents.length]));
+        const createdAt = new Date().toISOString();
+        const safePathName = selectedExportPath.name.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-');
+        const payload: BackupPayload = {
+            schemaVersion: 1,
+            kind: 'almeaa-learning-content-backup',
+            createdAt,
+            database: 'scoped-path-export',
+            scope: {
+                type: 'path',
+                pathId: selectedExportPath.id,
+                pathName: selectedExportPath.name,
+                note: 'نسخة مسار محدد فقط: تصلح للحفظ الخارجي أو الفحص قبل الاسترجاع.',
+            },
+            summary,
+            collections,
+        };
+
+        setBackupPayload(payload);
+        setSelectedFileName(`نسخة مسار: ${selectedExportPath.name}`);
+        setRestorePreview(null);
+        setConfirmText('');
+        downloadJson(payload, `almeaa-path-${safePathName}-${createdAt.replace(/[:.]/g, '-')}.json`);
+        setStatusMessage(`تم تحميل نسخة لمسار ${selectedExportPath.name}. احتفظ بها على جهازك أو Google Drive.`);
     };
 
     const createSnapshot = async () => {
@@ -418,6 +553,58 @@ export const BackupManager: React.FC = () => {
                         ))}
                     </div>
                 ) : null}
+            </section>
+
+            <section className="rounded-3xl border border-blue-100 bg-blue-50/60 p-5 shadow-sm">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                    <div>
+                        <h3 className="flex items-center gap-2 text-lg font-black text-blue-950">
+                            <Download size={19} className="text-blue-700" />
+                            نسخة احتياطية لمسار واحد
+                        </h3>
+                        <p className="mt-1 max-w-3xl text-sm font-bold leading-7 text-blue-800">
+                            استخدمها عندما تريد حفظ القدرات أو التحصيلي وحده: المسار، مواده، الأقسام، المهارات، الموضوعات، الدروس، الأسئلة، الاختبارات، الدورات والمكتبة.
+                        </p>
+                    </div>
+                    <div className="flex w-full flex-col gap-2 xl:w-[460px]">
+                        <select
+                            value={selectedPathExportId}
+                            onChange={(event) => setSelectedPathExportId(event.target.value)}
+                            className="rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">اختر المسار المطلوب نسخه</option>
+                            {paths.map((path) => (
+                                <option key={path.id} value={path.id}>
+                                    {path.name}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            onClick={createPathBackup}
+                            disabled={!selectedPathExportId}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white hover:bg-blue-800 disabled:opacity-60"
+                        >
+                            <Download size={18} />
+                            تحميل نسخة المسار
+                        </button>
+                    </div>
+                </div>
+
+                {pathExportRows.length ? (
+                    <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+                        {pathExportRows.map((row) => (
+                            <div key={row.name} className="rounded-2xl border border-blue-100 bg-white p-3">
+                                <div className="text-xs font-black text-blue-700">{row.label}</div>
+                                <div className="mt-2 text-xl font-black text-blue-950">{row.count}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-5 rounded-2xl border border-dashed border-blue-200 bg-white/70 p-5 text-center text-sm font-bold text-blue-700">
+                        اختر مسارًا لعرض ما سيتم حفظه قبل التحميل.
+                    </div>
+                )}
             </section>
 
             <section className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
