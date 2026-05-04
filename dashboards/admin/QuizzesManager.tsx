@@ -5,7 +5,7 @@ import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion,
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
-import { isQuizVisibleInLearningSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
+import { isQuizVisibleInLearningSlot, LearningPlacementSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 
 interface QuizzesManagerProps {
@@ -171,6 +171,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [modeFilter, setModeFilter] = useState<'all' | 'regular' | 'saher' | 'central'>('all');
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'shown' | 'hidden'>('all');
+  const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>('all');
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
@@ -182,7 +183,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const activePathId = selectedPathId || activeSubject?.pathId || '';
   const activeSubjectId = selectedSubjectId || subjectId || '';
   const isLearningSpaceManager = Boolean(filterType && activePathId && activeSubjectId);
-  const activeLearningSlot = filterType === 'bank' ? 'training' : filterType === 'quiz' ? 'tests' : null;
+  const activeLearningSlot: LearningPlacementSlot | null = filterType === 'bank' ? 'training' : filterType === 'quiz' ? 'tests' : null;
+  const activeLearningScope = activeLearningSlot && activePathId && activeSubjectId
+    ? { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot }
+    : null;
 
   const availableSections = useMemo(
     () =>
@@ -225,6 +229,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         }
         if (selectedPathId && !subjectId && !selectedSubjectId && quiz.pathId !== selectedPathId) return false;
         if (selectedSkillId && !getMeasuredSkillIds(quiz, questions).includes(selectedSkillId)) return false;
+        if (isLearningSpaceManager && activeLearningScope) {
+          const isVisibleHere = isQuizVisibleInLearningSlot(quiz, activeLearningScope);
+          if (learningSlotFilter === 'visible' && !isVisibleHere) return false;
+          if (learningSlotFilter === 'hidden' && isVisibleHere) return false;
+        }
         if (modeFilter !== 'all' && (quiz.mode || 'regular') !== modeFilter) return false;
         if (visibilityFilter === 'shown' && quiz.showOnPlatform === false) return false;
         if (visibilityFilter === 'hidden' && quiz.showOnPlatform !== false) return false;
@@ -232,8 +241,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       }),
     [
       filterType,
+      activeLearningScope,
       globalQuizzes,
       isLearningSpaceManager,
+      learningSlotFilter,
       managedPathIds,
       managedSubjectIds,
       modeFilter,
@@ -250,8 +261,16 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   );
 
   const filteredQuizzes = useMemo(
-    () => quizzes.filter((quiz) => quiz.title.toLowerCase().includes(searchTerm.toLowerCase())),
-    [quizzes, searchTerm],
+    () =>
+      quizzes
+        .filter((quiz) => quiz.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => {
+          if (!activeLearningScope) return (b.createdAt || 0) - (a.createdAt || 0);
+          const aVisible = isQuizVisibleInLearningSlot(a, activeLearningScope) ? 1 : 0;
+          const bVisible = isQuizVisibleInLearningSlot(b, activeLearningScope) ? 1 : 0;
+          return bVisible - aVisible || (b.createdAt || 0) - (a.createdAt || 0);
+        }),
+    [activeLearningScope, quizzes, searchTerm],
   );
 
   const counts = useMemo(
@@ -272,13 +291,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         total: quizzes.length,
         visible: quizzes.filter((quiz) => quiz.showOnPlatform !== false).length,
         hidden: quizzes.filter((quiz) => quiz.showOnPlatform === false).length,
+        visibleHere: activeLearningScope ? quizzes.filter((quiz) => isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
+        hiddenHere: activeLearningScope ? quizzes.filter((quiz) => !isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
         pending: quizzes.filter((quiz) => quiz.approvalStatus === 'pending_review').length,
         ready: readiness.filter((item) => item.issues.length === 0).length,
         needsReview: readiness.filter((item) => item.issues.length > 0).length,
         placementDrift: quizzes.filter(hasPlacementDrift).length,
       };
     },
-    [questions, quizzes],
+    [activeLearningScope, questions, quizzes],
   );
 
   const managerTitle = filterType === 'bank' ? 'إدارة التدريب من مركز الاختبارات' : filterType === 'quiz' ? 'إدارة الاختبارات من مركز الاختبارات' : 'مركز الاختبارات';
@@ -320,6 +341,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   const handleCreateNew = () => {
+    if (isLearningSpaceManager) {
+      handleCreateByMode('regular');
+      return;
+    }
     setEditingQuizId(null);
     setIsEditing(true);
   };
@@ -579,12 +604,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             <Plus size={18} />
             إنشاء اختبار جديد
           </button>
-          <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
+          {!filterType && <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
             + اختبار ساهر
-          </button>
-          <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
+          </button>}
+          {!filterType && <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
             + اختبار موجّه
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -605,7 +630,24 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {isLearningSpaceManager && (
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+            <p className="text-xs font-black text-emerald-700">ظاهر للطالب هنا</p>
+            <p className="mt-2 text-3xl font-black text-emerald-700">{scopedCounts.visibleHere}</p>
+          </div>
+          <div className="rounded-2xl border border-gray-100 bg-white p-4">
+            <p className="text-xs font-black text-gray-500">متاح في المستودع</p>
+            <p className="mt-2 text-3xl font-black text-gray-900">{scopedCounts.total}</p>
+          </div>
+          <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+            <p className="text-xs font-black text-amber-700">غير ظاهر هنا</p>
+            <p className="mt-2 text-3xl font-black text-amber-700">{scopedCounts.hiddenHere}</p>
+          </div>
+        </div>
+      )}
+
+      {!isLearningSpaceManager && <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <div className="bg-white border border-gray-100 rounded-xl p-4">
           <p className="text-xs text-gray-500 mb-1">إجمالي العناصر في هذا المستودع</p>
           <p className="text-2xl font-black text-gray-900">{scopedCounts.total}</p>
@@ -638,7 +680,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           <p className="text-xs text-rose-500 mb-1">يحتاج ضبط قبل العرض</p>
           <p className="text-2xl font-black text-rose-600">{scopedCounts.needsReview}</p>
         </div>
-      </div>
+      </div>}
 
       {!filterType && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -657,12 +699,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
+      {!isLearningSpaceManager && <div className="bg-white border border-gray-200 rounded-xl p-4">
         <div className="text-xs text-gray-500 mb-1">عناصر بلا مهارات مقاسة</div>
         <div className="text-2xl font-black text-gray-900">{quizzesWithoutMeasuredSkills}</div>
-      </div>
+      </div>}
 
-      {scopedCounts.placementDrift > 0 && (
+      {!isLearningSpaceManager && scopedCounts.placementDrift > 0 && (
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -765,6 +807,18 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             <option value="regular">اختبار عادي</option>
             <option value="saher">اختبار ساهر</option>
             <option value="central">اختبار موجّه</option>
+          </select>
+        )}
+
+        {isLearningSpaceManager && (
+          <select
+            value={learningSlotFilter}
+            onChange={(event) => setLearningSlotFilter(event.target.value as typeof learningSlotFilter)}
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="all">كل اختبارات المستودع</option>
+            <option value="visible">الظاهر هنا فقط</option>
+            <option value="hidden">غير الظاهر هنا</option>
           </select>
         )}
 
