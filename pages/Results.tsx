@@ -1445,6 +1445,7 @@ const ReviewSolutions = ({
   const { favorites, reviewLater, toggleFavorite, toggleReviewLater, questions: questionBank, quizzes } = useStore();
   const [currentIdx, setCurrentIdx] = React.useState(0);
   const [showExplanation, setShowExplanation] = React.useState(false);
+  const [zoomedImageUrl, setZoomedImageUrl] = React.useState<string | null>(null);
 
   const questions: QuizQuestionReview[] = React.useMemo(() => {
     const reviewById = new Map((result.questionReview || []).map((question) => [question.questionId, question]));
@@ -1543,13 +1544,19 @@ const ReviewSolutions = ({
 
       <Card className="p-0 overflow-hidden border border-gray-100 shadow-sm">
         <div className="p-4 sm:p-8 bg-white">
-          <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[250px]">
+          <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[220px]">
             <div
               className="mb-6 px-2 text-center text-lg font-bold leading-loose text-gray-800 sm:px-4 sm:text-xl"
               dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
             />
             {q.imageUrl ? (
-              <img src={q.imageUrl} alt="صورة السؤال" className="max-h-64 object-contain" referrerPolicy="no-referrer" />
+              <button
+                type="button"
+                onClick={() => setZoomedImageUrl(q.imageUrl || null)}
+                className="block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-3 shadow-sm"
+              >
+                <img src={q.imageUrl} alt="صورة السؤال" className="mx-auto max-h-64 w-full object-contain" referrerPolicy="no-referrer" />
+              </button>
             ) : !questionHasInlineMedia ? null : null}
           </div>
 
@@ -1582,14 +1589,14 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex min-h-[84px] items-center justify-between gap-3 rounded-2xl border-2 p-4 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex min-h-[58px] items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
                     />
                     <span
-                      className="flex-1 text-center text-sm font-bold leading-7 text-gray-700 break-words"
+                      className="flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
                       dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
                     />
                   </div>
@@ -1724,6 +1731,28 @@ const ReviewSolutions = ({
               <p className="text-gray-600 leading-relaxed">لا يوجد شرح نصي محفوظ لهذا السؤال، ويمكنك الاعتماد على الفيديو إذا كان متاحًا.</p>
             )}
           </Card>
+        </div>
+      ) : null}
+
+      {zoomedImageUrl ? (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setZoomedImageUrl(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setZoomedImageUrl(null)}
+            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+          >
+            إغلاق
+          </button>
+          <img
+            src={zoomedImageUrl}
+            alt="تكبير صورة السؤال"
+            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            referrerPolicy="no-referrer"
+            onClick={(event) => event.stopPropagation()}
+          />
         </div>
       ) : null}
     </div>

@@ -301,6 +301,21 @@ const normalizeQuestion = (question: any): Question => ({
   revenueSharePercentage: typeof question?.revenueSharePercentage === "number" ? question.revenueSharePercentage : undefined,
 });
 
+const normalizeQuizLearningPlacements = (placements: any): Quiz["learningPlacements"] =>
+  Array.isArray(placements)
+    ? placements
+        .map((placement: any) => ({
+          pathId: String(placement?.pathId || ""),
+          subjectId: placement?.subjectId ? String(placement.subjectId) : undefined,
+          slot: placement?.slot,
+          isVisible: placement?.isVisible !== false,
+          order: typeof placement?.order === "number" ? placement.order : 0,
+          createdAt: toTimestamp(placement?.createdAt, Date.now()),
+          updatedAt: toTimestamp(placement?.updatedAt, Date.now()),
+        }))
+        .filter((placement) => placement.pathId && ["training", "tests", "foundation", "course"].includes(String(placement.slot)))
+    : undefined;
+
 const normalizeQuiz = (quiz: any): Quiz => ({
   id: String(quiz?.id || quiz?._id || ""),
   title: String(quiz?.title || ""),
@@ -309,13 +324,40 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   subjectId: String(quiz?.subjectId || ""),
   sectionId: quiz?.sectionId || undefined,
   type: quiz?.type || "quiz",
+  placement: quiz?.placement,
+  showInTraining: typeof quiz?.showInTraining === "boolean" ? quiz.showInTraining : undefined,
+  showInMock: typeof quiz?.showInMock === "boolean" ? quiz.showInMock : undefined,
+  learningPlacements: normalizeQuizLearningPlacements(quiz?.learningPlacements),
+  mockExam: quiz?.mockExam
+    ? {
+        enabled: quiz.mockExam.enabled === true,
+        pathId: String(quiz.mockExam.pathId || ""),
+        sections: Array.isArray(quiz.mockExam.sections)
+          ? quiz.mockExam.sections.map((section: any) => ({
+              id: String(section?.id || ""),
+              title: String(section?.title || ""),
+              subjectId: section?.subjectId ? String(section.subjectId) : undefined,
+              questionIds: Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [],
+              timeLimit: typeof section?.timeLimit === "number" ? section.timeLimit : undefined,
+              order: typeof section?.order === "number" ? section.order : 0,
+            }))
+          : [],
+      }
+    : undefined,
   mode: quiz?.mode || "regular",
   settings: {
     showExplanations: Boolean(quiz?.settings?.showExplanations),
     showAnswers: Boolean(quiz?.settings?.showAnswers),
+    showResultsReport: quiz?.settings?.showResultsReport !== false,
+    returnToSourceOnFinish: quiz?.settings?.returnToSourceOnFinish === true,
     maxAttempts: Number(quiz?.settings?.maxAttempts ?? 1),
     passingScore: Number(quiz?.settings?.passingScore ?? 50),
     timeLimit: typeof quiz?.settings?.timeLimit === "number" ? quiz.settings.timeLimit : undefined,
+    randomizeQuestions: quiz?.settings?.randomizeQuestions !== false,
+    showProgressBar: quiz?.settings?.showProgressBar !== false,
+    requireAnswerBeforeNext: quiz?.settings?.requireAnswerBeforeNext === true,
+    allowQuestionReview: quiz?.settings?.allowQuestionReview !== false,
+    optionLayout: ["auto", "horizontal", "two_columns"].includes(quiz?.settings?.optionLayout) ? quiz.settings.optionLayout : "auto",
   },
   access: {
     type: quiz?.access?.type || "free",

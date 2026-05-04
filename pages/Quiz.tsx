@@ -949,16 +949,16 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[58px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
+                    className={`min-h-[50px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
                   >
-                    <span className="flex-1 text-xs sm:text-sm md:text-base font-bold text-gray-800 leading-relaxed text-center break-words">
+                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-relaxed text-center break-words">
                       {sanitizeArabicText(option)}
                     </span>
                     <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-7 w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
-                        <div className={`h-3 w-3 rounded-full ${
+                        <div className={`h-2.5 w-2.5 rounded-full ${
                           isSelected ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>

@@ -16,6 +16,18 @@ interface QuestionThreadItem {
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
+const resolveQuestionFromBank = (questionBank: Question[], questionId: string) => {
+  const normalizedId = String(questionId || '');
+  const exact = questionBank.find((question) => question.id === normalizedId);
+  if (exact) return exact;
+
+  const withoutCopySuffix = normalizedId.replace(/_copy(?:_\d+)?$/i, '');
+  if (withoutCopySuffix && withoutCopySuffix !== normalizedId) {
+    return questionBank.find((question) => question.id === withoutCopySuffix);
+  }
+
+  return undefined;
+};
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
     id: 'seed-student',
@@ -163,7 +175,7 @@ export const QuizPage: React.FC = () => {
 
     const sourceQuestionIds = flattenMockExamQuestionIds(foundQuiz);
     const loadedQuestions = sourceQuestionIds
-      .map((id) => questions.find((question) => question.id === id))
+      .map((id) => resolveQuestionFromBank(questions, id))
       .filter((question): question is Question => Boolean(question));
 
     setQuizQuestions(
@@ -599,20 +611,20 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`min-h-[58px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
+                    className={`min-h-[50px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
                     }`}
                   >
-                    <span className={`flex-1 text-sm md:text-base font-bold leading-relaxed text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
+                    <span className={`flex-1 text-sm font-bold leading-relaxed text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
                       <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-7 w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         selectedOptions[currentQuestion.id] === index ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
                       }`}>
-                        <div className={`h-3 w-3 rounded-full ${
+                        <div className={`h-2.5 w-2.5 rounded-full ${
                           selectedOptions[currentQuestion.id] === index ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
