@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Award, BookOpen, Target } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
+import { isPathMockExam } from '../utils/mockExam';
 
 const isMockExamPath = (name?: string) => {
   const value = name || '';
@@ -13,10 +14,18 @@ const getPathIcon = (name?: string) =>
   (name || '').includes('تحصيلي') ? <BookOpen size={28} /> : <Target size={28} />;
 
 export const MockExams: React.FC = () => {
-  const { paths, user } = useStore();
+  const { paths, quizzes, user } = useStore();
   const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+  const hasVisibleMockExam = (pathId: string) =>
+    quizzes.some(
+      (quiz) =>
+        isPathMockExam(quiz, pathId) &&
+        quiz.isPublished !== false &&
+        quiz.showOnPlatform !== false &&
+        (!quiz.approvalStatus || quiz.approvalStatus === 'approved'),
+    );
   const mockPaths = paths
-    .filter((path) => (canSeeHiddenPaths || path.isActive !== false) && path.showInNavbar !== false && isMockExamPath(path.name))
+    .filter((path) => (canSeeHiddenPaths || path.isActive !== false) && path.showInNavbar !== false && (isMockExamPath(path.name) || hasVisibleMockExam(path.id)))
     .sort((a, b) => a.name.localeCompare(b.name, 'ar'));
 
   return (
@@ -43,7 +52,9 @@ export const MockExams: React.FC = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-black text-gray-900">{path.name}</h2>
-                      <p className="mt-1 text-sm font-bold text-gray-500">محاكاة كاملة حسب المسار</p>
+                      <p className="mt-1 text-sm font-bold text-gray-500">
+                        {hasVisibleMockExam(path.id) ? 'محاكيات منشورة وجاهزة' : 'محاكاة كاملة حسب المسار'}
+                      </p>
                     </div>
                   </div>
                 </Card>

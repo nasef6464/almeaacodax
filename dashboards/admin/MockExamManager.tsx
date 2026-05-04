@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Award, Plus, Save, Trash2 } from 'lucide-react';
+import { Award, Filter, Plus, Save, Search, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { MockExamSection, Question, Quiz } from '../../types';
 import { getMockExamQuestionCount, getMockExamSections, isPathMockExam } from '../../utils/mockExam';
+import { normalizeQuestionHtml } from '../../utils/questionHtml';
 
 type DraftSection = MockExamSection;
 
@@ -16,15 +17,19 @@ const createSection = (title: string, subjectId = '', order = 0): DraftSection =
 });
 
 const unique = (items: string[]) => Array.from(new Set(items.filter(Boolean)));
+const plainQuestionText = (value?: string | null) => normalizeQuestionHtml(value).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 export const MockExamManager: React.FC = () => {
-  const { paths, subjects, questions, quizzes, addQuiz, updateQuiz, deleteQuiz } = useStore();
+  const { paths, subjects, questions, quizzes, skills, addQuiz, updateQuiz, deleteQuiz } = useStore();
   const [selectedPathId, setSelectedPathId] = useState(paths[0]?.id || '');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('اختبار محاكي جديد');
   const [description, setDescription] = useState('تجربة محاكية على مستوى المسار.');
   const [passingScore, setPassingScore] = useState(60);
   const [sections, setSections] = useState<DraftSection[]>([]);
+  const [questionSearchTerm, setQuestionSearchTerm] = useState('');
+  const [difficultyFilter, setDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
+  const [skillFilter, setSkillFilter] = useState('');
 
   useEffect(() => {
     if (!selectedPathId && paths[0]?.id) {
@@ -40,10 +45,25 @@ export const MockExamManager: React.FC = () => {
     () => questions.filter((question) => question.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === question.subject)),
     [pathSubjects, questions, selectedPathId],
   );
+  const pathSkills = useMemo(
+    () => skills.filter((skill) => skill.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === skill.subjectId)),
+    [pathSubjects, selectedPathId, skills],
+  );
   const mockExams = useMemo(
     () => quizzes.filter((quiz) => isPathMockExam(quiz, selectedPathId)).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [quizzes, selectedPathId],
   );
+  const filterQuestionsForSection = (section: DraftSection) => {
+    const search = questionSearchTerm.trim().toLowerCase();
+    return pathQuestions.filter((question) => {
+      const subjectMatches = !section.subjectId || question.subject === section.subjectId;
+      const difficultyMatches = difficultyFilter === 'all' || question.difficulty === difficultyFilter;
+      const skillMatches = !skillFilter || (question.skillIds || []).includes(skillFilter);
+      const text = `${plainQuestionText(question.text)} ${question.id}`.toLowerCase();
+      const searchMatches = !search || text.includes(search);
+      return subjectMatches && difficultyMatches && skillMatches && searchMatches;
+    });
+  };
 
   const resetDraft = () => {
     setEditingId(null);
@@ -257,13 +277,59 @@ export const MockExamManager: React.FC = () => {
 
         <div className="space-y-5">
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h3 className="mb-4 text-lg font-black text-gray-900">أسئلة مركز الأسئلة</h3>
+            <div className="mb-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-lg font-black text-gray-900">أسئلة مركز الأسئلة</h3>
+                <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                  {pathQuestions.length} سؤال في المسار
+                </span>
+              </div>
+              <div className="grid gap-2 md:grid-cols-[1.2fr_0.8fr_1fr]">
+                <label className="relative block">
+                  <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    value={questionSearchTerm}
+                    onChange={(event) => setQuestionSearchTerm(event.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-3 pr-9 text-sm font-bold outline-none focus:border-indigo-300 focus:bg-white"
+                    placeholder="ابحث في نص السؤال..."
+                  />
+                </label>
+                <label className="relative block">
+                  <Filter size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <select
+                    value={difficultyFilter}
+                    onChange={(event) => setDifficultyFilter(event.target.value as 'all' | Question['difficulty'])}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-3 pr-9 text-sm font-bold outline-none focus:border-indigo-300 focus:bg-white"
+                  >
+                    <option value="all">كل الصعوبات</option>
+                    <option value="Easy">سهل</option>
+                    <option value="Medium">متوسط</option>
+                    <option value="Hard">صعب</option>
+                  </select>
+                </label>
+                <select
+                  value={skillFilter}
+                  onChange={(event) => setSkillFilter(event.target.value)}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm font-bold outline-none focus:border-indigo-300 focus:bg-white"
+                >
+                  <option value="">كل المهارات</option>
+                  {pathSkills.map((skill) => (
+                    <option key={skill.id} value={skill.id}>{skill.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div className="max-h-[520px] space-y-4 overflow-y-auto pr-1">
               {sections.map((section) => {
-                const pool = pathQuestions.filter((question) => !section.subjectId || question.subject === section.subjectId);
+                const pool = filterQuestionsForSection(section);
                 return (
                   <div key={section.id} className="rounded-2xl border border-gray-100 p-4">
-                    <h4 className="mb-3 font-black text-indigo-700">{section.title}</h4>
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <h4 className="font-black text-indigo-700">{section.title}</h4>
+                      <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-black text-gray-600">
+                        ظاهر الآن: {pool.length}
+                      </span>
+                    </div>
                     <div className="space-y-2">
                       {pool.slice(0, 80).map((question: Question) => (
                         <label key={question.id} className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm hover:bg-white">
@@ -274,7 +340,10 @@ export const MockExamManager: React.FC = () => {
                             className="mt-1"
                           />
                           <span className="line-clamp-2 flex-1 font-bold text-gray-700">
-                            {question.text || question.imageUrl || question.id}
+                            {plainQuestionText(question.text) || question.imageUrl || question.id}
+                          </span>
+                          <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-500">
+                            {question.difficulty}
                           </span>
                         </label>
                       ))}

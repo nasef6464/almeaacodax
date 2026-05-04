@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../store/useStore';
+import { isPathMockExam } from '../utils/mockExam';
 
 const NavIcons: Record<string, React.ReactNode> = {
   home: <Home size={18} />,
@@ -75,7 +76,7 @@ export const Header: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels } = useStore();
+  const { paths, subjects, levels, quizzes } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null) => {
@@ -198,7 +199,14 @@ export const Header: React.FC = () => {
 
     const mockExamPaths = topLevelPaths.filter((path) => {
       const name = path.name || '';
-      return name.includes('قدرات') || name.includes('القدرات') || name.includes('تحصيلي') || name.includes('التحصيلي');
+      const hasVisibleMockExam = quizzes.some(
+        (quiz) =>
+          isPathMockExam(quiz, path.id) &&
+          quiz.isPublished !== false &&
+          quiz.showOnPlatform !== false &&
+          (!quiz.approvalStatus || quiz.approvalStatus === 'approved'),
+      );
+      return hasVisibleMockExam || name.includes('قدرات') || name.includes('القدرات') || name.includes('تحصيلي') || name.includes('التحصيلي');
     });
 
     if (mockExamPaths.length > 0) {

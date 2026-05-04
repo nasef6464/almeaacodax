@@ -945,7 +945,13 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         <div className="space-y-4">
                             {pathMockQuizzes.map((quiz) => {
                                 const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
-                                const sectionCount = getMockExamSections(quiz).length;
+                                const mockSections = getMockExamSections(quiz);
+                                const sectionCount = mockSections.length;
+                                const sectionSummary = mockSections
+                                    .map((section) => section.title || subjects.find((subject) => subject.id === section.subjectId)?.name)
+                                    .filter(Boolean)
+                                    .slice(0, 4)
+                                    .join('، ');
                                 return (
                                     <Card key={quiz.id} className="p-5 border border-gray-100 shadow-sm">
                                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -960,6 +966,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                         <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamTimeLimit(quiz)} دقيقة</span>
                                                         <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}</span>
                                                     </div>
+                                                    {sectionSummary ? (
+                                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-500">
+                                                            {sectionSummary}
+                                                        </p>
+                                                    ) : null}
                                                 </div>
                                             </div>
                                             <button
