@@ -50,6 +50,9 @@ interface SkillRecommendation {
 
 interface ResolvedAnalysisItem {
   skillId?: string;
+  pathId?: string;
+  subjectId?: string;
+  sectionId?: string;
   subjectName?: string;
   sectionName?: string;
   skillName: string;
@@ -351,6 +354,9 @@ const Results: React.FC = () => {
         if (!current) {
           aggregated.set(skillKey, {
             skillId: item.skillId,
+            pathId: item.pathId,
+            subjectId: item.subjectId,
+            sectionId: item.sectionId,
             subjectName,
             sectionName,
             skillName,
@@ -447,6 +453,27 @@ const Results: React.FC = () => {
 
     return `/book-session?${params.toString()}`;
   }, [weakestSkill]);
+  const additionalQuizLink = React.useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('mode', 'self');
+    params.set('questionCount', String(Math.max(5, Math.min(20, latestResult?.totalQuestions || 7))));
+    params.set('timeLimit', '20');
+
+    if (weakestSkill?.pathId) params.set('pathId', weakestSkill.pathId);
+    if (weakestSkill?.subjectId) params.set('subjectId', weakestSkill.subjectId);
+    if (weakestSkill?.sectionId) params.set('sectionId', weakestSkill.sectionId);
+
+    const skillIds = analysisItems
+      .filter((item) => item.skillId && (item.status === 'weak' || item.mastery < 70))
+      .slice(0, 3)
+      .map((item) => item.skillId as string);
+
+    if (skillIds.length > 0) {
+      params.set('skillIds', skillIds.join(','));
+    }
+
+    return `/quiz?${params.toString()}`;
+  }, [analysisItems, latestResult?.totalQuestions, weakestSkill]);
   const nextActionCards = React.useMemo(() => {
     if (!weakestSkill) {
       return [
@@ -1038,7 +1065,7 @@ const Results: React.FC = () => {
                 إعادة الاختبار
               </Link>
               <Link
-                to="/quizzes"
+                to={additionalQuizLink}
                 className="flex items-center justify-center gap-2 border border-amber-200 bg-white text-amber-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-amber-50 transition-colors"
               >
                 <PlusCircle size={18} />
@@ -1063,7 +1090,7 @@ const Results: React.FC = () => {
                   <RefreshCw size={13} className="inline ml-1" />
                   إعادة الاختبار
                 </Link>
-                <Link to="/quizzes" className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700 hover:bg-amber-100">
+                <Link to={additionalQuizLink} className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700 hover:bg-amber-100">
                   <PlusCircle size={13} className="inline ml-1" />
                   اختبار إضافي
                 </Link>
@@ -1423,11 +1450,41 @@ const ReviewSolutions = ({
   onBack: () => void;
   onShowVideo: (url: string, title: string) => void;
 }) => {
-  const { favorites, reviewLater, toggleFavorite, toggleReviewLater } = useStore();
+  const { favorites, reviewLater, toggleFavorite, toggleReviewLater, questions: questionBank, quizzes } = useStore();
   const [currentIdx, setCurrentIdx] = React.useState(0);
   const [showExplanation, setShowExplanation] = React.useState(false);
 
-  const questions: QuizQuestionReview[] = result.questionReview || [];
+  const questions: QuizQuestionReview[] = React.useMemo(() => {
+    const reviewById = new Map((result.questionReview || []).map((question) => [question.questionId, question]));
+    const quiz = quizzes.find((item) => item.id === result.quizId);
+    const quizQuestionIds = quiz?.questionIds || [];
+
+    if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= Math.min(result.totalQuestions, quizQuestionIds.length)) {
+      return result.questionReview || [];
+    }
+
+    return quizQuestionIds
+      .map((questionId) => {
+        const savedReview = reviewById.get(questionId);
+        if (savedReview) return savedReview;
+
+        const sourceQuestion = questionBank.find((question) => question.id === questionId);
+        if (!sourceQuestion) return null;
+
+        return {
+          questionId: sourceQuestion.id,
+          text: sourceQuestion.text,
+          options: sourceQuestion.options,
+          correctOptionIndex: sourceQuestion.correctOptionIndex,
+          selectedOptionIndex: undefined,
+          explanation: sourceQuestion.explanation,
+          videoUrl: sourceQuestion.videoUrl,
+          imageUrl: sourceQuestion.imageUrl,
+          isCorrect: false,
+        } satisfies QuizQuestionReview;
+      })
+      .filter((question): question is QuizQuestionReview => Boolean(question));
+  }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
   const q = questions[currentIdx];
 
   if (!q) {
@@ -1459,7 +1516,7 @@ const ReviewSolutions = ({
   const isReviewLater = reviewLater.includes(q.questionId);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-5xl space-y-5 pb-20 animate-fade-in">
       <header className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="flex items-center gap-4">
           <button onClick={onBack} className="text-gray-500 hover:text-indigo-600 transition-colors">
@@ -1488,7 +1545,7 @@ const ReviewSolutions = ({
         </div>
       </header>
 
-      <Card className="p-0 overflow-hidden border-2 border-gray-100 shadow-xl">
+      <Card className="p-0 overflow-hidden border border-gray-100 shadow-sm">
         <div className="p-4 sm:p-8 bg-white">
           <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[250px]">
             {q.imageUrl ? (
@@ -1537,7 +1594,7 @@ const ReviewSolutions = ({
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
                     />
-                    <span className="line-clamp-2 text-sm font-bold leading-7 text-gray-700">
+                    <span className="text-sm font-bold leading-7 text-gray-700 break-words">
                       {displayText(option)}
                     </span>
                   </div>
@@ -1557,6 +1614,40 @@ const ReviewSolutions = ({
         </div>
 
         <div className="bg-gray-50 p-4 border-t border-gray-100 flex flex-col gap-4">
+          <div className="grid grid-cols-5 gap-2 rounded-2xl bg-white p-3 sm:grid-cols-10">
+            {questions.map((question, index) => {
+              const isCurrent = index === currentIdx;
+              const wasAnswered = typeof question.selectedOptionIndex === 'number';
+              const wasCorrect = question.isCorrect;
+              const marked = reviewLater.includes(question.questionId);
+
+              return (
+                <button
+                  key={`${question.questionId}-${index}`}
+                  type="button"
+                  onClick={() => {
+                    setCurrentIdx(index);
+                    setShowExplanation(false);
+                  }}
+                  className={`h-10 rounded-xl border text-sm font-black transition ${
+                    isCurrent
+                      ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                      : marked
+                        ? 'border-purple-200 bg-purple-50 text-purple-700'
+                        : !wasAnswered
+                          ? 'border-amber-200 bg-amber-50 text-amber-700'
+                          : wasCorrect
+                            ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                            : 'border-rose-100 bg-rose-50 text-rose-700'
+                  }`}
+                  title={marked ? 'محدد للمراجعة' : !wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
+
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             {q.videoUrl ? (
               <button

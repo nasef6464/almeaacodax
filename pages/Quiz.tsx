@@ -19,6 +19,7 @@ interface SavedQuizSnapshot {
   questionTypeFilter: 'all' | 'mcq' | 'true_false';
   questionCount: number;
   timeLimitMinutes: number;
+  targetSkillIds: string[];
   currentQuestion: number;
   answers: { [key: number]: number };
   timeLeft: number;
@@ -54,6 +55,7 @@ const Quiz: React.FC = () => {
   const [questionTypeFilter, setQuestionTypeFilter] = useState<'all' | 'mcq' | 'true_false'>('all');
   const [questionCount, setQuestionCount] = useState(15);
   const [timeLimitMinutes, setTimeLimitMinutes] = useState(DEFAULT_TIME_MINUTES);
+  const [targetSkillIds, setTargetSkillIds] = useState<string[]>([]);
   const [activePreparedQuizId, setActivePreparedQuizId] = useState('');
 
   const [sessionQuestions, setSessionQuestions] = useState<typeof globalQuestionBank>([]);
@@ -81,6 +83,7 @@ const Quiz: React.FC = () => {
     const pathId = params.get('pathId');
     const subjectId = params.get('subjectId');
     const sectionId = params.get('sectionId');
+    const skillIds = params.get('skillIds');
     const level = params.get('difficulty');
     const nextQuestionCount = Number(params.get('questionCount') || '');
     const nextTimeLimit = Number(params.get('timeLimit') || '');
@@ -94,6 +97,9 @@ const Quiz: React.FC = () => {
     }
     if (sectionId !== null) {
       setSelectedSectionId(sectionId);
+    }
+    if (skillIds !== null) {
+      setTargetSkillIds(skillIds.split(',').map((id) => id.trim()).filter(Boolean));
     }
     if (level === 'Easy' || level === 'Medium' || level === 'Hard') {
       setDifficulty(level);
@@ -197,6 +203,7 @@ const Quiz: React.FC = () => {
     setQuestionTypeFilter(savedSnapshot.questionTypeFilter);
     setQuestionCount(savedSnapshot.questionCount);
     setTimeLimitMinutes(savedSnapshot.timeLimitMinutes);
+    setTargetSkillIds(savedSnapshot.targetSkillIds || []);
     setActivePreparedQuizId(savedSnapshot.activePreparedQuizId);
     setSessionQuestions(savedSnapshot.sessionQuestions);
     setCurrentQuestion(savedSnapshot.currentQuestion);
@@ -278,23 +285,26 @@ const Quiz: React.FC = () => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
+      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
       const difficultyMatches = !difficulty || question.difficulty === difficulty;
       const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && subjectMatches && sectionMatches && difficultyMatches && typeMatches;
+      return pathMatches && subjectMatches && sectionMatches && skillMatches && difficultyMatches && typeMatches;
     });
 
     const relaxedPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
+      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
       const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && subjectMatches && sectionMatches && typeMatches;
+      return pathMatches && subjectMatches && sectionMatches && skillMatches && typeMatches;
     });
 
     const fallbackPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
+      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
       const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && typeMatches;
+      return pathMatches && skillMatches && typeMatches;
     });
 
     const sourcePool = strictPool.length > 0 ? strictPool : relaxedPool.length > 0 ? relaxedPool : fallbackPool;
@@ -482,6 +492,7 @@ const Quiz: React.FC = () => {
       questionTypeFilter,
       questionCount,
       timeLimitMinutes,
+      targetSkillIds,
       currentQuestion,
       answers,
       timeLeft,

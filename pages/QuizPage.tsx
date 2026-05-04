@@ -405,6 +405,13 @@ export const QuizPage: React.FC = () => {
         timeSpentSeconds: Math.max(0, timeSpentSeconds),
       });
       const savedServerResult = serverResult as QuizResult;
+      if ((savedServerResult.questionReview?.length || 0) < result.questionReview.length) {
+        savedServerResult.questionReview = result.questionReview;
+        savedServerResult.totalQuestions = result.totalQuestions;
+        savedServerResult.correctAnswers = result.correctAnswers;
+        savedServerResult.wrongAnswers = result.wrongAnswers;
+        savedServerResult.unanswered = result.unanswered;
+      }
       resultAttemptDate = savedServerResult.date || result.date;
       hydrateExamResults([savedServerResult, ...examResults]);
     } catch (error) {
