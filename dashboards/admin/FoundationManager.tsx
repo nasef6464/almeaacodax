@@ -49,6 +49,66 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     ),
   };
 
+  const getTopicReadinessMeta = (topic: Topic, attachedLessons: Lesson[], attachedQuizzes: Quiz[], childCount: number) => {
+    const issues: string[] = [];
+
+    if (!topic.title.trim()) issues.push('العنوان غير مكتمل');
+    if (!topic.subjectId) issues.push('غير مربوط بمادة');
+    if (!topic.pathId && !currentSubject?.pathId) issues.push('غير مربوط بمسار');
+    if (topic.showOnPlatform === false) issues.push('مخفي عن المنصة');
+    if (topic.isLocked) issues.push('مغلق على الطلاب');
+    if (attachedLessons.length + attachedQuizzes.length + childCount === 0) issues.push('لا توجد دروس أو تدريبات مرتبطة');
+
+    attachedLessons.forEach((lesson) => {
+      if (lesson.type === 'video' && !lesson.videoUrl) issues.push(`الدرس "${lesson.title}" بدون رابط فيديو`);
+      if (lesson.showOnPlatform === false || (lesson.approvalStatus && lesson.approvalStatus !== 'approved')) {
+        issues.push(`الدرس "${lesson.title}" يحتاج نشرًا أو اعتمادًا`);
+      }
+    });
+
+    attachedQuizzes.forEach((quiz) => {
+      if ((quiz.questionIds || []).length === 0) issues.push(`التدريب "${quiz.title}" بدون أسئلة`);
+      if (!isTrainingQuiz(quiz)) issues.push(`التدريب "${quiz.title}" غير مصنف كتدريب`);
+      if (quiz.showOnPlatform === false || quiz.isPublished === false || (quiz.approvalStatus && quiz.approvalStatus !== 'approved')) {
+        issues.push(`التدريب "${quiz.title}" يحتاج نشرًا أو اعتمادًا`);
+      }
+    });
+
+    if (issues.length === 0) {
+      return {
+        label: 'جاهز للطالب',
+        issues,
+        className: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+        icon: 'ready' as const,
+      };
+    }
+
+    return {
+      label: 'يحتاج ضبط',
+      issues,
+      className: 'bg-amber-50 text-amber-700 border-amber-100',
+      icon: 'warn' as const,
+    };
+  };
+
+  const foundationReadinessOverview = subjectTopics.reduce(
+    (acc, topic) => {
+      const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
+      const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
+      const childCount = subjectTopics.filter((item) => item.parentId === topic.id).length;
+      const readiness = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, childCount);
+
+      if (readiness.issues.length === 0) {
+        acc.ready += 1;
+      } else {
+        acc.needsReview += 1;
+      }
+
+      return acc;
+    },
+    { ready: 0, needsReview: 0 },
+  );
+
   const toggleExpand = (topicId: string) => {
     const newExpanded = new Set(expandedTopics);
     if (newExpanded.has(topicId)) {
@@ -177,6 +237,46 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     updateTopic(topic.id, { isLocked: topic.isLocked !== true });
   };
 
+  const handlePrepareTopicForLearner = (topic: Topic) => {
+    const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
+    const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
+
+    updateTopic(topic.id, {
+      pathId: topic.pathId || currentSubject?.pathId,
+      subjectId: topic.subjectId || subjectId,
+      showOnPlatform: true,
+      isLocked: false,
+    });
+
+    attachedLessons.forEach((lesson) => {
+      updateLesson(lesson.id, {
+        pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
+        subjectId: lesson.subjectId || topic.subjectId || subjectId,
+        sectionId: lesson.sectionId || topic.sectionId,
+        showOnPlatform: true,
+        approvalStatus: 'approved',
+        approvedAt: lesson.approvedAt || Date.now(),
+        videoUrl: lesson.videoUrl ? sanitizeVideoUrl(lesson.videoUrl) : lesson.videoUrl,
+      });
+    });
+
+    attachedQuizzes.forEach((quiz) => {
+      updateQuiz(quiz.id, {
+        pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
+        subjectId: quiz.subjectId || topic.subjectId || subjectId,
+        sectionId: quiz.sectionId || topic.sectionId,
+        showOnPlatform: true,
+        isPublished: true,
+        type: 'bank',
+        placement: 'training',
+        showInTraining: true,
+        showInMock: false,
+        approvalStatus: 'approved',
+        approvedAt: quiz.approvedAt || Date.now(),
+      });
+    });
+  };
+
   const handlePreviewTopic = (topic: Topic) => {
     const pathId = topic.pathId || currentSubject?.pathId;
     const targetSubjectId = topic.subjectId || subjectId;
@@ -200,6 +300,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const attachedLessons = lessons.filter(l => topic.lessonIds?.includes(l.id));
     const attachedQuizzes = quizzes.filter(q => topic.quizIds?.includes(q.id));
     const totalAttachments = attachedLessons.length + attachedQuizzes.length;
+    const readinessMeta = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, subtopics.length);
 
     return (
       <div key={topic.id} className={`border border-gray-100 rounded-xl mb-3 bg-white overflow-hidden shadow-sm ${level > 0 ? 'mr-8 border-r-4 border-r-indigo-200' : ''}`}>
@@ -227,9 +328,25 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-bold">
               {totalAttachments} عنصر مربوط
             </span>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-bold ${readinessMeta.className}`}
+              title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}
+            >
+              {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+              {readinessMeta.label}
+            </span>
           </div>
           
           <div className="flex items-center gap-2">
+            {readinessMeta.issues.length > 0 && (
+              <button
+                onClick={() => handlePrepareTopicForLearner(topic)}
+                className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                title="فتح الموضوع وتجهيز الدروس والتدريبات المرتبطة للطالب"
+              >
+                تجهيز للطالب
+              </button>
+            )}
             <button
               onClick={() => handlePreviewTopic(topic)}
               className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -356,6 +473,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           { label: 'الظاهر على المنصة', value: foundationOverview.visible, tone: 'text-sky-800 bg-sky-50' },
           { label: 'المغلق على الطلاب', value: foundationOverview.locked, tone: 'text-amber-800 bg-amber-50' },
           { label: 'الموارد المربوطة', value: foundationOverview.linkedResources, tone: 'text-indigo-800 bg-indigo-50' },
+          { label: 'جاهز للطالب', value: foundationReadinessOverview.ready, tone: 'text-emerald-800 bg-emerald-50' },
+          { label: 'يحتاج ضبط', value: foundationReadinessOverview.needsReview, tone: 'text-rose-800 bg-rose-50' },
         ].map((item) => (
           <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
             <div className="text-sm font-bold text-gray-500">{item.label}</div>

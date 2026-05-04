@@ -407,6 +407,21 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     updateQuiz(quiz.id, getPlacementPatch(placement));
   };
 
+  const handlePrepareQuizForLearner = (quiz: Quiz) => {
+    const normalizedPlacement = normalizeQuizPlacement(quiz, quiz.type || 'quiz').placement || 'mock';
+    const targetPlacement = filterType === 'bank' ? 'training' : filterType === 'quiz' ? 'mock' : normalizedPlacement;
+
+    updateQuiz(quiz.id, {
+      pathId: quiz.pathId || activePathId,
+      subjectId: quiz.subjectId || selectedSubjectId || subjectId || '',
+      ...getPlacementPatch(targetPlacement),
+      showOnPlatform: true,
+      isPublished: true,
+      approvalStatus: 'approved',
+      approvedAt: quiz.approvedAt || Date.now(),
+    });
+  };
+
   const handleNormalizeVisiblePlacement = () => {
     const targets = quizzes.filter(hasPlacementDrift);
     targets.forEach((quiz) => {
@@ -848,6 +863,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             className="px-3 py-1 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
                           >
                             رفض
+                          </button>
+                        )}
+                        {readinessMeta.issues.length > 0 && (
+                          <button
+                            onClick={() => handlePrepareQuizForLearner(quiz)}
+                            className="px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+                            title="ضبط النشر والاعتماد ومكان الظهور حسب هذه المساحة"
+                          >
+                            تجهيز العرض
                           </button>
                         )}
                         <button
