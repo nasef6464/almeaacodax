@@ -21,8 +21,6 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type ReviewTab = 'favorites' | 'reviewLater' | 'mistakes';
 
-const OPTION_LABELS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
-
 const tabMeta: Record<ReviewTab, { label: string; empty: string; icon: React.ReactNode }> = {
   favorites: {
     label: 'المفضلة',

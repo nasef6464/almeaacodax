@@ -413,7 +413,6 @@ const Reports: React.FC = () => {
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
-    const showCompactStudentView = isStudentView && !isStudentReportFull;
     const skillReadinessSummary = useMemo(() => {
         const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
         const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
@@ -832,20 +831,20 @@ const Reports: React.FC = () => {
             {
                 title: 'اليوم',
                 body: weakSkill
-                    ? `اسأل الطالب عن ${displayText(weakSkill.skill)}، وشاهد معه شرحًا قصيرًا لا يزيد عن 15 دقيقة.`
-                    : 'اطلب من الطالب حل اختبار قصير حتى تظهر المهارة التي تحتاج متابعة.',
+                    ? `${displayText(weakSkill.skill)}: شرح قصير ثم سؤالان.`
+                    : 'ابدأ باختبار قصير لتظهر المهارة الأضعف.',
                 tone: 'bg-emerald-50 text-emerald-800 border-emerald-100',
             },
             {
                 title: 'بعد الشرح',
-                body: 'خليه يحل 5 أسئلة فقط على نفس الفكرة. الهدف الفهم، وليس كثرة الأسئلة.',
+                body: '5 أسئلة فقط على نفس الفكرة.',
                 tone: 'bg-indigo-50 text-indigo-800 border-indigo-100',
             },
             {
                 title: 'نهاية الأسبوع',
                 body: averageScore < 60
-                    ? 'أعد قياس نفس المهارة. إذا بقيت أقل من 60%، احجز حصة علاجية قصيرة.'
-                    : 'أعد قياسًا بسيطًا. إذا تحسنت النتيجة، انتقل لمهارة أخرى بهدوء.',
+                    ? 'أعد القياس، وإن بقي الضعف احجز حصة.'
+                    : 'أعد قياسًا بسيطًا ثم انتقل لمهارة أخرى.',
                 tone: 'bg-amber-50 text-amber-800 border-amber-100',
             },
         ];
@@ -903,12 +902,12 @@ const Reports: React.FC = () => {
                     </Card>
                 ) : (
                     <>
-                        <Card className="overflow-hidden border-0 bg-gradient-to-br from-emerald-600 to-slate-900 p-6 text-white shadow-sm">
+                        <Card className="overflow-hidden border border-emerald-100 bg-white p-6 shadow-sm">
                             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
-                                    <div className="mb-2 text-sm font-bold text-emerald-100">الملخص السريع</div>
-                                    <h2 className="text-2xl font-black">الأداء العام {averageScore}%</h2>
-                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-emerald-50">
+                                    <div className="mb-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-700">الملخص السريع</div>
+                                    <h2 className="text-2xl font-black text-gray-900">الأداء العام {averageScore}%</h2>
+                                    <p className="mt-2 max-w-2xl text-sm leading-7 text-gray-600">
                                         {averageScore >= 80
                                             ? 'الأداء مطمئن. استمر في متابعة تدريب قصير أسبوعيًا.'
                                             : averageScore >= 60
@@ -917,17 +916,17 @@ const Reports: React.FC = () => {
                                     </p>
                                 </div>
                                 <div className="grid grid-cols-3 gap-3 text-center">
-                                    <div className="rounded-2xl bg-white/10 p-4">
-                                        <div className="text-2xl font-black">{scopedAnalytics.scope.studentCount}</div>
-                                        <div className="mt-1 text-xs font-bold text-emerald-100">أبناء</div>
+                                    <div className="rounded-2xl bg-emerald-50 p-4">
+                                        <div className="text-2xl font-black text-emerald-700">{scopedAnalytics.scope.studentCount}</div>
+                                        <div className="mt-1 text-xs font-bold text-emerald-700">أبناء</div>
                                     </div>
-                                    <div className="rounded-2xl bg-white/10 p-4">
-                                        <div className="text-2xl font-black">{scopedAnalytics.scope.quizAttempts}</div>
-                                        <div className="mt-1 text-xs font-bold text-emerald-100">محاولات</div>
+                                    <div className="rounded-2xl bg-indigo-50 p-4">
+                                        <div className="text-2xl font-black text-indigo-700">{scopedAnalytics.scope.quizAttempts}</div>
+                                        <div className="mt-1 text-xs font-bold text-indigo-700">محاولات</div>
                                     </div>
-                                    <div className="rounded-2xl bg-white/10 p-4">
-                                        <div className="text-2xl font-black">{scopedAnalytics.weakestSkills.length}</div>
-                                        <div className="mt-1 text-xs font-bold text-emerald-100">مهارات</div>
+                                    <div className="rounded-2xl bg-amber-50 p-4">
+                                        <div className="text-2xl font-black text-amber-700">{scopedAnalytics.weakestSkills.length}</div>
+                                        <div className="mt-1 text-xs font-bold text-amber-700">مهارات</div>
                                     </div>
                                 </div>
                             </div>
