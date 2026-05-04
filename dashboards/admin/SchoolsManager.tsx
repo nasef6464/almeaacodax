@@ -50,6 +50,8 @@ type RelationImportRow = {
 
 type RelationImportSummary = {
     rows: number;
+    createdParents: number;
+    createdSupervisors: number;
     linkedParents: number;
     linkedSupervisors: number;
     assignedClasses: number;
@@ -58,6 +60,36 @@ type RelationImportSummary = {
     missingSupervisors: number;
     missingClasses: number;
     skippedRows: number;
+};
+
+type RelationCredential = {
+    role: Role.PARENT | Role.SUPERVISOR;
+    name: string;
+    email: string;
+    password: string;
+    linkedTo: string;
+};
+
+type AdminUserPayload = {
+    id?: string;
+    _id?: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    role: Role;
+    points?: number;
+    badges?: string[];
+    isActive?: boolean;
+    schoolId?: string | null;
+    groupIds?: string[];
+    linkedStudentIds?: string[];
+    managedPathIds?: string[];
+    managedSubjectIds?: string[];
+    subscription?: {
+        plan?: 'free' | 'premium';
+        purchasedCourses?: string[];
+        purchasedPackages?: string[];
+    };
 };
 
 type SchoolReport = {
@@ -90,6 +122,33 @@ type SchoolReport = {
         attempts: number;
         mastery: number;
     }>;
+};
+
+const buildStoreUser = (user: AdminUserPayload): User => ({
+    id: String(user.id || user._id || user.email),
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
+    role: user.role,
+    points: user.points ?? 0,
+    badges: user.badges ?? [],
+    isActive: user.isActive ?? true,
+    schoolId: user.schoolId ?? undefined,
+    groupIds: user.groupIds ?? [],
+    linkedStudentIds: user.linkedStudentIds ?? [],
+    managedPathIds: user.managedPathIds ?? [],
+    managedSubjectIds: user.managedSubjectIds ?? [],
+    subscription: {
+        plan: user.subscription?.plan ?? 'free',
+        purchasedCourses: user.subscription?.purchasedCourses ?? [],
+        purchasedPackages: user.subscription?.purchasedPackages ?? [],
+    },
+});
+
+const generateTemporaryPassword = () => {
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+    const random = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
+    return `Alm@${random}`;
 };
 
 const normalizeHeader = (value: string) =>
@@ -351,6 +410,7 @@ export const SchoolsManager: React.FC = () => {
         createGroup,
         updateGroup,
         deleteGroup,
+        addUser,
         updateUser,
         assignSupervisorToGroup,
         removeSupervisorFromGroup,
@@ -375,7 +435,10 @@ export const SchoolsManager: React.FC = () => {
     const [importError, setImportError] = useState<string | null>(null);
     const [relationRows, setRelationRows] = useState<RelationImportRow[]>([]);
     const [relationSummary, setRelationSummary] = useState<RelationImportSummary | null>(null);
+    const [relationCredentials, setRelationCredentials] = useState<RelationCredential[]>([]);
     const [relationError, setRelationError] = useState<string | null>(null);
+    const [isApplyingRelations, setIsApplyingRelations] = useState(false);
+    const [createMissingRelationUsers, setCreateMissingRelationUsers] = useState(true);
     const [schoolReport, setSchoolReport] = useState<SchoolReport | null>(null);
     const [isLoadingReport, setIsLoadingReport] = useState(false);
     const [reportError, setReportError] = useState<string | null>(null);
@@ -622,6 +685,7 @@ export const SchoolsManager: React.FC = () => {
     const handleRelationFile = async (file: File) => {
         setRelationError(null);
         setRelationSummary(null);
+        setRelationCredentials([]);
         try {
             const rows = await parseRelationFile(file);
             if (!rows.length) {
@@ -635,6 +699,37 @@ export const SchoolsManager: React.FC = () => {
             setRelationRows([]);
             setRelationError(error instanceof Error ? error.message : 'تعذر قراءة ملف الربط. استخدم Excel أو CSV أو TSV.');
         }
+    };
+
+    const downloadRelationCredentials = () => {
+        if (!relationCredentials.length) {
+            return;
+        }
+
+        createWorkbookDownload('school-created-accounts.xlsx', [
+            {
+                name: 'created-accounts',
+                rows: [
+                    ['الدور', 'الاسم', 'البريد الإلكتروني', 'كلمة المرور المؤقتة', 'مرتبط بـ'],
+                    ...relationCredentials.map((credential) => [
+                        credential.role === Role.PARENT ? 'ولي أمر' : 'مشرف',
+                        credential.name,
+                        credential.email,
+                        credential.password,
+                        credential.linkedTo,
+                    ]),
+                ],
+            },
+            {
+                name: 'handover-notes',
+                rows: [
+                    ['تعليمات التسليم', 'القيمة'],
+                    ['الملف حساس', 'لا ترسله في مجموعة عامة، وسلمه لمسؤول المدرسة فقط.'],
+                    ['كلمات المرور', 'اطلب من المستخدمين تغيير كلمة المرور بعد أول دخول عندما تتوفر هذه الخاصية.'],
+                    ['المتابعة', 'بعد التسليم راجع تقرير الربط للتأكد من عدم وجود حسابات ناقصة.'],
+                ],
+            },
+        ]);
     };
 
     const handleStartImport = async () => {
@@ -972,7 +1067,7 @@ export const SchoolsManager: React.FC = () => {
             ]);
         };
 
-        const handleApplyRelationImport = () => {
+        const handleApplyRelationImport = async () => {
             if (!relationRows.length) {
                 setRelationError('ارفع ملف الربط أولا ثم راجع الصفوف قبل التنفيذ.');
                 return;
@@ -980,6 +1075,8 @@ export const SchoolsManager: React.FC = () => {
 
             const nextSummary: RelationImportSummary = {
                 rows: relationRows.length,
+                createdParents: 0,
+                createdSupervisors: 0,
                 linkedParents: 0,
                 linkedSupervisors: 0,
                 assignedClasses: 0,
@@ -989,10 +1086,27 @@ export const SchoolsManager: React.FC = () => {
                 missingClasses: 0,
                 skippedRows: 0,
             };
+            const createdCredentials: RelationCredential[] = [];
             const parentLinks = new Map<string, Set<string>>();
             const existingParentLinks = new Set<string>();
             const existingSupervisorLinks = new Set<string>();
             const existingClassLinks = new Set<string>();
+            const allUsersByEmail = new Map<string, User>();
+            const parentByEmail = new Map<string, User>();
+            const supervisorByEmail = new Map<string, User>();
+
+            users.forEach((currentUser) => {
+                const email = (currentUser.email || '').trim().toLowerCase();
+                if (email) allUsersByEmail.set(email, currentUser);
+            });
+            parents.forEach((parent) => {
+                const email = (parent.email || '').trim().toLowerCase();
+                if (email) parentByEmail.set(email, parent);
+            });
+            supervisors.forEach((supervisor) => {
+                const email = (supervisor.email || '').trim().toLowerCase();
+                if (email) supervisorByEmail.set(email, supervisor);
+            });
 
             parents.forEach((parent) => {
                 const links = new Set(parent.linkedStudentIds || []);
@@ -1000,86 +1114,188 @@ export const SchoolsManager: React.FC = () => {
                 links.forEach((studentId) => existingParentLinks.add(`${parent.id}:${studentId}`));
             });
 
-            relationRows.forEach((row) => {
-                const studentEmail = row.studentEmail.trim().toLowerCase();
-                if (!studentEmail) {
-                    nextSummary.skippedRows += 1;
-                    return;
-                }
-
-                const student = schoolStudents.find((item) => (item.email || '').trim().toLowerCase() === studentEmail);
-                if (!student) {
-                    nextSummary.missingStudents += 1;
-                    return;
-                }
-
-                const className = row.className?.trim();
-                const classroom = className
-                    ? schoolClasses.find((item) => item.name.trim().toLowerCase() === className.toLowerCase())
-                    : undefined;
-
-                if (className && !classroom) {
-                    nextSummary.missingClasses += 1;
-                }
-
-                if (classroom && !(student.groupIds || []).includes(classroom.id)) {
-                    const key = `${student.id}:${classroom.id}`;
-                    if (!existingClassLinks.has(key)) {
-                        assignStudentToGroup(student.id, classroom.id);
-                        existingClassLinks.add(key);
-                        nextSummary.assignedClasses += 1;
-                    }
-                }
-
-                const parentEmail = row.parentEmail?.trim().toLowerCase();
-                if (parentEmail) {
-                    const parent = parents.find((item) => (item.email || '').trim().toLowerCase() === parentEmail);
-                    if (!parent) {
-                        nextSummary.missingParents += 1;
-                    } else {
-                        const key = `${parent.id}:${student.id}`;
-                        if (!existingParentLinks.has(key)) {
-                            parentLinks.set(parent.id, parentLinks.get(parent.id) || new Set(parent.linkedStudentIds || []));
-                            parentLinks.get(parent.id)?.add(student.id);
-                            existingParentLinks.add(key);
-                            nextSummary.linkedParents += 1;
-                        }
-                    }
-                }
-
-                const supervisorEmail = row.supervisorEmail?.trim().toLowerCase();
-                if (supervisorEmail) {
-                    const supervisor = supervisors.find((item) => (item.email || '').trim().toLowerCase() === supervisorEmail);
-                    if (!supervisor) {
-                        nextSummary.missingSupervisors += 1;
-                    } else {
-                        const targetGroupId = classroom?.id || selectedSchool.id;
-                        const key = `${supervisor.id}:${targetGroupId}`;
-                        const alreadyLinked = (supervisor.groupIds || []).includes(targetGroupId)
-                            || (targetGroupId === selectedSchool.id && selectedSchool.supervisorIds.includes(supervisor.id))
-                            || schoolClasses.some((item) => item.id === targetGroupId && item.supervisorIds.includes(supervisor.id));
-                        if (!alreadyLinked && !existingSupervisorLinks.has(key)) {
-                            assignSupervisorToGroup(supervisor.id, targetGroupId);
-                            existingSupervisorLinks.add(key);
-                            nextSummary.linkedSupervisors += 1;
-                        }
-                    }
-                }
-            });
-
-            parentLinks.forEach((studentIds, parentId) => {
-                const original = parents.find((parent) => parent.id === parentId);
-                if (!original) return;
-                const nextStudentIds = Array.from(studentIds);
-                const changed = nextStudentIds.length !== (original.linkedStudentIds || []).length
-                    || nextStudentIds.some((studentId) => !(original.linkedStudentIds || []).includes(studentId));
-                if (changed) {
-                    updateUser(parentId, { linkedStudentIds: nextStudentIds });
-                }
-            });
-
-            setRelationSummary(nextSummary);
+            setIsApplyingRelations(true);
             setRelationError(null);
+            setRelationCredentials([]);
+
+            try {
+                if (createMissingRelationUsers) {
+                    const parentCreateQueue = new Map<string, { name: string; student: User }>();
+                    const supervisorCreateQueue = new Map<string, { name: string; student: User; classroom?: Group }>();
+
+                    relationRows.forEach((row) => {
+                        const studentEmail = row.studentEmail.trim().toLowerCase();
+                        if (!studentEmail) return;
+                        const student = schoolStudents.find((item) => (item.email || '').trim().toLowerCase() === studentEmail);
+                        if (!student) return;
+
+                        const classroom = row.className?.trim()
+                            ? schoolClasses.find((item) => item.name.trim().toLowerCase() === row.className?.trim().toLowerCase())
+                            : undefined;
+                        const parentEmail = row.parentEmail?.trim().toLowerCase();
+                        const supervisorEmail = row.supervisorEmail?.trim().toLowerCase();
+
+                        if (parentEmail && !allUsersByEmail.has(parentEmail) && !parentCreateQueue.has(parentEmail)) {
+                            parentCreateQueue.set(parentEmail, {
+                                name: row.parentName?.trim() || `ولي أمر ${student.name}`,
+                                student,
+                            });
+                        }
+
+                        if (supervisorEmail && !allUsersByEmail.has(supervisorEmail) && !supervisorCreateQueue.has(supervisorEmail)) {
+                            supervisorCreateQueue.set(supervisorEmail, {
+                                name: row.supervisorName?.trim() || `مشرف ${selectedSchool.name}`,
+                                student,
+                                classroom,
+                            });
+                        }
+                    });
+
+                    for (const [email, queued] of parentCreateQueue) {
+                        const password = generateTemporaryPassword();
+                        const response = await api.createAdminUser({
+                            name: queued.name,
+                            email,
+                            password,
+                            role: Role.PARENT,
+                            schoolId: selectedSchool.id,
+                            linkedStudentIds: [],
+                        }) as { user?: AdminUserPayload };
+
+                        if (response.user) {
+                            const createdUser = buildStoreUser(response.user);
+                            addUser(createdUser);
+                            allUsersByEmail.set(email, createdUser);
+                            parentByEmail.set(email, createdUser);
+                            parentLinks.set(createdUser.id, new Set(createdUser.linkedStudentIds || []));
+                            nextSummary.createdParents += 1;
+                            createdCredentials.push({
+                                role: Role.PARENT,
+                                name: createdUser.name,
+                                email,
+                                password,
+                                linkedTo: queued.student.name,
+                            });
+                        }
+                    }
+
+                    for (const [email, queued] of supervisorCreateQueue) {
+                        const password = generateTemporaryPassword();
+                        const response = await api.createAdminUser({
+                            name: queued.name,
+                            email,
+                            password,
+                            role: Role.SUPERVISOR,
+                            schoolId: selectedSchool.id,
+                            groupIds: [],
+                        }) as { user?: AdminUserPayload };
+
+                        if (response.user) {
+                            const createdUser = buildStoreUser(response.user);
+                            addUser(createdUser);
+                            allUsersByEmail.set(email, createdUser);
+                            supervisorByEmail.set(email, createdUser);
+                            nextSummary.createdSupervisors += 1;
+                            createdCredentials.push({
+                                role: Role.SUPERVISOR,
+                                name: createdUser.name,
+                                email,
+                                password,
+                                linkedTo: queued.classroom?.name || selectedSchool.name,
+                            });
+                        }
+                    }
+                }
+
+                relationRows.forEach((row) => {
+                    const studentEmail = row.studentEmail.trim().toLowerCase();
+                    if (!studentEmail) {
+                        nextSummary.skippedRows += 1;
+                        return;
+                    }
+
+                    const student = schoolStudents.find((item) => (item.email || '').trim().toLowerCase() === studentEmail);
+                    if (!student) {
+                        nextSummary.missingStudents += 1;
+                        return;
+                    }
+
+                    const className = row.className?.trim();
+                    const classroom = className
+                        ? schoolClasses.find((item) => item.name.trim().toLowerCase() === className.toLowerCase())
+                        : undefined;
+
+                    if (className && !classroom) {
+                        nextSummary.missingClasses += 1;
+                    }
+
+                    if (classroom && !(student.groupIds || []).includes(classroom.id)) {
+                        const key = `${student.id}:${classroom.id}`;
+                        if (!existingClassLinks.has(key)) {
+                            assignStudentToGroup(student.id, classroom.id);
+                            existingClassLinks.add(key);
+                            nextSummary.assignedClasses += 1;
+                        }
+                    }
+
+                    const parentEmail = row.parentEmail?.trim().toLowerCase();
+                    if (parentEmail) {
+                        const parent = parentByEmail.get(parentEmail);
+                        if (!parent) {
+                            nextSummary.missingParents += 1;
+                        } else {
+                            const key = `${parent.id}:${student.id}`;
+                            if (!existingParentLinks.has(key)) {
+                                parentLinks.set(parent.id, parentLinks.get(parent.id) || new Set(parent.linkedStudentIds || []));
+                                parentLinks.get(parent.id)?.add(student.id);
+                                existingParentLinks.add(key);
+                                nextSummary.linkedParents += 1;
+                            }
+                        }
+                    }
+
+                    const supervisorEmail = row.supervisorEmail?.trim().toLowerCase();
+                    if (supervisorEmail) {
+                        const supervisor = supervisorByEmail.get(supervisorEmail);
+                        if (!supervisor) {
+                            nextSummary.missingSupervisors += 1;
+                        } else {
+                            const targetGroupId = classroom?.id || selectedSchool.id;
+                            const key = `${supervisor.id}:${targetGroupId}`;
+                            const alreadyLinked = (supervisor.groupIds || []).includes(targetGroupId)
+                                || (targetGroupId === selectedSchool.id && selectedSchool.supervisorIds.includes(supervisor.id))
+                                || schoolClasses.some((item) => item.id === targetGroupId && item.supervisorIds.includes(supervisor.id));
+                            if (!alreadyLinked && !existingSupervisorLinks.has(key)) {
+                                assignSupervisorToGroup(supervisor.id, targetGroupId);
+                                existingSupervisorLinks.add(key);
+                                nextSummary.linkedSupervisors += 1;
+                            }
+                        }
+                    }
+                });
+
+                parentLinks.forEach((studentIds, parentId) => {
+                    const original = [...parents, ...Array.from(parentByEmail.values())].find((parent) => parent.id === parentId);
+                    if (!original) return;
+                    const nextStudentIds = Array.from(studentIds);
+                    const changed = nextStudentIds.length !== (original.linkedStudentIds || []).length
+                        || nextStudentIds.some((studentId) => !(original.linkedStudentIds || []).includes(studentId));
+                    if (changed) {
+                        updateUser(parentId, { linkedStudentIds: nextStudentIds });
+                    }
+                });
+
+                setRelationSummary(nextSummary);
+                setRelationCredentials(createdCredentials);
+                setRelationError(null);
+            } catch (error) {
+                setRelationError(error instanceof Error ? error.message : 'تعذر تنفيذ الربط وإنشاء الحسابات الآن.');
+            } finally {
+                setIsApplyingRelations(false);
+                if (createdCredentials.length) {
+                    void refreshUsers();
+                }
+            }
         };
 
         return (
@@ -2100,7 +2316,7 @@ export const SchoolsManager: React.FC = () => {
                                         <div>
                                             <h3 className="text-lg font-black text-gray-900">ربط جماعي للحسابات الموجودة</h3>
                                             <p className="mt-1 text-sm leading-7 text-gray-500">
-                                                ارفع ملف Excel يربط الطالب بولي أمر ومشرف وفصل. النظام لا ينشئ حسابات جديدة هنا، بل يربط الموجود ويعرض النواقص بوضوح.
+                                                ارفع ملف Excel يربط الطالب بولي أمر ومشرف وفصل. يمكن إنشاء الحسابات الناقصة تلقائيا ثم تحميل ملف تسليم آمن.
                                             </p>
                                         </div>
                                         <button
@@ -2140,16 +2356,30 @@ export const SchoolsManager: React.FC = () => {
 
                                     {relationRows.length > 0 && (
                                         <div className="mt-5 space-y-4">
+                                            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm leading-7 text-amber-900">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={createMissingRelationUsers}
+                                                    onChange={(event) => setCreateMissingRelationUsers(event.target.checked)}
+                                                    className="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                                                />
+                                                <span>
+                                                    <strong>إنشاء الحسابات الناقصة من الملف</strong>
+                                                    <br />
+                                                    إذا كان بريد ولي الأمر أو المشرف غير موجود، ينشئ النظام حسابا مؤقتا ويربطه، ثم يظهر ملف تسليم بكلمات المرور.
+                                                </span>
+                                            </label>
                                             <div className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 md:flex-row md:items-center md:justify-between">
                                                 <div>
                                                     <p className="font-black text-blue-900">تم تجهيز {relationRows.length} صف للربط</p>
                                                     <p className="mt-1 text-sm text-blue-700">راجع أول صفوف ثم نفذ الربط للحسابات الموجودة.</p>
                                                 </div>
                                                 <button
-                                                    onClick={handleApplyRelationImport}
-                                                    className="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-gray-800"
+                                                    onClick={() => void handleApplyRelationImport()}
+                                                    disabled={isApplyingRelations}
+                                                    className="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                                                 >
-                                                    تنفيذ الربط
+                                                    {isApplyingRelations ? 'جارٍ التنفيذ...' : 'تنفيذ الربط'}
                                                 </button>
                                             </div>
 
@@ -2179,12 +2409,27 @@ export const SchoolsManager: React.FC = () => {
                                     )}
 
                                     {relationSummary && (
-                                        <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                                        <div className="mt-5 space-y-4">
+                                            {relationCredentials.length > 0 && (
+                                                <div className="flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 md:flex-row md:items-center md:justify-between">
+                                                    <div>
+                                                        <p className="font-black text-emerald-900">تم إنشاء {relationCredentials.length} حساب جديد</p>
+                                                        <p className="mt-1 text-sm text-emerald-700">حمّل ملف التسليم واحفظه في مكان آمن؛ لن تظهر كلمات المرور القديمة بعد تغييرها لاحقا.</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={downloadRelationCredentials}
+                                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-emerald-700"
+                                                    >
+                                                        <Download size={16} /> ملف تسليم الحسابات
+                                                    </button>
+                                                </div>
+                                            )}
+                                            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                                             {[
+                                                ['أولياء تم إنشاؤهم', relationSummary.createdParents, 'emerald'],
+                                                ['مشرفون تم إنشاؤهم', relationSummary.createdSupervisors, 'purple'],
                                                 ['أولياء تم ربطهم', relationSummary.linkedParents, 'emerald'],
                                                 ['مشرفون تم ربطهم', relationSummary.linkedSupervisors, 'purple'],
-                                                ['طلاب نُقلوا لفصول', relationSummary.assignedClasses, 'blue'],
-                                                ['نواقص في الملف', relationSummary.missingStudents + relationSummary.missingParents + relationSummary.missingSupervisors + relationSummary.missingClasses, 'amber'],
                                             ].map(([label, value, tone]) => (
                                                 <div key={String(label)} className={`rounded-xl border p-3 ${
                                                     tone === 'emerald' ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
@@ -2196,6 +2441,22 @@ export const SchoolsManager: React.FC = () => {
                                                     <p className="mt-1 text-2xl font-black">{value}</p>
                                                 </div>
                                             ))}
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                                {[
+                                                    ['طلاب نُقلوا لفصول', relationSummary.assignedClasses, 'blue'],
+                                                    ['طلاب غير موجودين', relationSummary.missingStudents, 'amber'],
+                                                    ['أولياء ناقصون', relationSummary.missingParents, 'amber'],
+                                                    ['مشرفون ناقصون', relationSummary.missingSupervisors, 'amber'],
+                                                ].map(([label, value, tone]) => (
+                                                    <div key={String(label)} className={`rounded-xl border p-3 ${
+                                                        tone === 'blue' ? 'border-blue-100 bg-blue-50 text-blue-800' : 'border-amber-100 bg-amber-50 text-amber-800'
+                                                    }`}>
+                                                        <p className="text-xs font-black">{label}</p>
+                                                        <p className="mt-1 text-2xl font-black">{value}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
