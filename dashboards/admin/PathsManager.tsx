@@ -1018,7 +1018,7 @@ export const PathsManager: React.FC = () => {
     return (
       <>
         {renderDeleteModal()}
-        <div className="space-y-6 animate-fade-in h-[calc(100vh-8rem)] flex flex-col">
+        <div className="space-y-6 animate-fade-in pb-12">
         {/* Path Header */}
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -1081,7 +1081,7 @@ export const PathsManager: React.FC = () => {
         </div>
 
         {/* Path Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="space-y-6 overflow-visible pb-8">
           {pathTab === 'levels' && (
             <div className="animate-fade-in space-y-6">
               <div className="flex justify-between items-center bg-blue-50/50 p-4 rounded-xl border border-blue-100">
@@ -1827,7 +1827,7 @@ export const PathsManager: React.FC = () => {
   // VIEW 3: Subject Workspace (Courses, Skills, Questions, etc.)
   // ---------------------------------------------------------------------------
   return (
-    <div className="space-y-6 animate-fade-in h-[calc(100vh-8rem)] flex flex-col">
+    <div className="space-y-6 animate-fade-in pb-12">
       {/* Subject Header (Breadcrumb style) */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -2003,7 +2003,7 @@ export const PathsManager: React.FC = () => {
       </div>
 
       {/* Subject Workspace Content Area */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="space-y-6 overflow-visible pb-8">
         {subjectTab === 'courses' && (
           <div className="animate-fade-in">
             <CoursesManager subjectId={currentSubject?.id || ''} />
