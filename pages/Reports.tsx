@@ -681,6 +681,82 @@ const Reports: React.FC = () => {
             displayText(scopedLeadStudent.recommendedAction) ? `الإجراء المقترح: ${displayText(scopedLeadStudent.recommendedAction)}.` : 'الإجراء المقترح: شرح قصير ثم تدريب علاجي ثم إعادة قياس.',
         ].filter(Boolean).join(' ');
     }, [scopedLeadStudent]);
+    const scopedSkillReportCards = useMemo(() => {
+        return (scopedAnalytics?.weakestSkills || []).slice(0, 4).map((skill) => {
+            const tone = skill.mastery < 50
+                ? {
+                    label: 'دعم عاجل',
+                    card: 'border-rose-100 bg-rose-50/70',
+                    text: 'text-rose-700',
+                    bar: 'bg-rose-500',
+                }
+                : {
+                    label: 'دعم قريب',
+                    card: 'border-amber-100 bg-amber-50/70',
+                    text: 'text-amber-700',
+                    bar: 'bg-amber-500',
+                };
+            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
+
+            return {
+                ...skill,
+                tone,
+                lessonLink: recommendation.lessonLink,
+                lessonTitle: recommendation.lessonTopicTitle || recommendation.lessonTitle,
+                quizLink: recommendation.quizLink,
+                quizTitle: recommendation.quizTitle,
+            };
+        });
+    }, [lessons, libraryItems, questions, quizzes, scopedAnalytics?.weakestSkills, skills, topics]);
+    const scopedStudentFocusCards = useMemo(() => {
+        return (scopedAnalytics?.weakestStudents || []).slice(0, 4).map((student) => ({
+            ...student,
+            topSkills: (student.weakestSkills || []).slice(0, 2),
+            tone: student.averageScore < 50
+                ? 'border-rose-100 bg-rose-50/70 text-rose-700'
+                : 'border-amber-100 bg-amber-50/70 text-amber-700',
+        }));
+    }, [scopedAnalytics?.weakestStudents]);
+    const downloadScopedSkillsWorkbook = () => {
+        if (!scopedAnalytics?.weakestSkills?.length) return;
+
+        const workbook = XLSX.utils.book_new();
+        const rows = [
+            ['المهارة', 'المحور', 'نسبة الإتقان', 'طلاب متأثرون', 'محاولات', 'الإجراء المقترح', 'شرح / دعم', 'اختبار موجه'],
+            ...scopedSkillReportCards.map((skill) => [
+                displayText(skill.skill) || '-',
+                displayText(skill.section) || '-',
+                `${skill.mastery}%`,
+                skill.affectedStudents,
+                skill.attempts,
+                displayText(skill.recommendedAction) || 'شرح قصير ثم تدريب علاجي ثم اختبار متابعة.',
+                displayText(skill.lessonTitle) || '-',
+                displayText(skill.quizTitle) || '-',
+            ]),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'skills-report');
+        XLSX.writeFile(workbook, `skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
+    const downloadScopedStudentsWorkbook = () => {
+        if (!scopedAnalytics?.weakestStudents?.length) return;
+
+        const workbook = XLSX.utils.book_new();
+        const rows = [
+            ['الطالب', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
+            ...scopedStudentFocusCards.map((student) => [
+                displayText(student.name) || '-',
+                `${student.averageScore}%`,
+                student.attempts,
+                student.weakSkillCount,
+                student.topSkills.length ? student.topSkills.map((skill) => `${displayText(skill.skill)} ${skill.mastery}%`).join('، ') : '-',
+                displayText(student.recommendedAction) || 'شرح قصير ثم تدريب موجه ثم قياس.',
+            ]),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
+        XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
     const downloadPerformanceWorkbook = () => {
         const workbook = XLSX.utils.book_new();
         const now = new Date().toLocaleString('ar-SA');
@@ -1230,6 +1306,152 @@ const Reports: React.FC = () => {
                                     <div className="text-xs text-purple-600 mb-1">إجابات مرصودة</div>
                                     <div className="text-2xl font-black text-purple-700">{scopedAnalytics.scope.questionAttempts || 0}</div>
                                     <div className="mt-1 text-[11px] font-bold text-purple-500">من كل سؤال يحله الطالب</div>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr]">
+                                <div className="rounded-3xl border border-indigo-100 bg-white p-4 sm:p-5">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                        <div>
+                                            <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                                                تقرير مهارات مجمع
+                                            </div>
+                                            <h3 className="mt-3 text-xl font-black text-gray-900">المهارات التي تحتاج دعمًا</h3>
+                                            <p className="mt-1 text-sm leading-7 text-gray-500">
+                                                {user.role === Role.ADMIN
+                                                    ? 'نظرة عامة على المنصة لتحديد أول مهارة تحتاج خطة دعم.'
+                                                    : 'نظرة على نطاقك الحالي: مجموعتك أو طلابك المرتبطون بك.'}
+                                            </p>
+                                        </div>
+                                        <div className="print-hide flex flex-wrap items-center gap-2">
+                                            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
+                                                {scopedSkillReportCards.length} أولويات
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={downloadScopedSkillsWorkbook}
+                                                disabled={!scopedSkillReportCards.length}
+                                                className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <Download size={13} />
+                                                تصدير المهارات
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 grid gap-3 md:grid-cols-2">
+                                        {scopedSkillReportCards.length > 0 ? scopedSkillReportCards.map((skill) => (
+                                            <div key={skill.skillId || skill.skill} className={`rounded-2xl border p-4 ${skill.tone.card}`}>
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="min-w-0">
+                                                        <span className={`rounded-full bg-white px-3 py-1 text-[11px] font-black ${skill.tone.text}`}>
+                                                            {skill.tone.label}
+                                                        </span>
+                                                        <div className="mt-3 text-base font-black leading-7 text-gray-900">{displayText(skill.skill)}</div>
+                                                        <div className="mt-1 text-xs font-bold text-gray-500">{displayText(skill.section) || 'مهارة عامة'}</div>
+                                                    </div>
+                                                    <div className={`text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
+                                                </div>
+                                                <div className="mt-4 h-2 overflow-hidden rounded-full bg-white">
+                                                    <div className={`h-full rounded-full ${skill.tone.bar}`} style={{ width: `${Math.max(0, Math.min(100, skill.mastery))}%` }} />
+                                                </div>
+                                                <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
+                                                    <div className="rounded-xl bg-white/80 px-3 py-2">طلاب: {skill.affectedStudents}</div>
+                                                    <div className="rounded-xl bg-white/80 px-3 py-2">محاولات: {skill.attempts}</div>
+                                                </div>
+                                                <div className="print-hide mt-3 grid gap-2 sm:grid-cols-2">
+                                                    <Link
+                                                        to={skill.quizLink || '/quiz'}
+                                                        className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50"
+                                                    >
+                                                        اختبار موجه
+                                                    </Link>
+                                                    <Link
+                                                        to={skill.lessonLink || buildSkillSessionLink({ skill: skill.skill, skillId: skill.skillId, sectionName: skill.section })}
+                                                        className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50"
+                                                    >
+                                                        شرح / دعم
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-2xl border border-dashed border-gray-200 bg-slate-50 p-5 text-sm font-bold leading-7 text-gray-500 md:col-span-2">
+                                                لا توجد مهارات ضعيفة مجمعة الآن.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-3xl border border-rose-100 bg-white p-4 sm:p-5">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <div className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700">
+                                                تقرير الطلاب
+                                            </div>
+                                            <h3 className="mt-3 text-xl font-black text-gray-900">طلاب يحتاجون متابعة</h3>
+                                            <p className="mt-1 text-sm leading-7 text-gray-500">
+                                                {user.role === Role.SUPERVISOR ? 'مجمعة من طلاب مجموعتك، مع إشارة لكل طالب.' : 'أولوية متابعة فردية بجانب التقرير المجمع.'}
+                                            </p>
+                                        </div>
+                                        <div className="print-hide flex flex-wrap items-center gap-2">
+                                            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
+                                                {scopedStudentFocusCards.length}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={downloadScopedStudentsWorkbook}
+                                                disabled={!scopedStudentFocusCards.length}
+                                                className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-3 py-1.5 text-xs font-black text-white shadow-sm hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <Download size={13} />
+                                                تصدير الطلاب
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 space-y-3">
+                                        {scopedStudentFocusCards.length > 0 ? scopedStudentFocusCards.map((student) => (
+                                            <div key={student.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div className="min-w-0">
+                                                        <div className="font-black leading-7 text-gray-900">{displayText(student.name)}</div>
+                                                        <div className="mt-1 text-xs font-bold text-gray-500">{student.attempts} محاولات - {student.weakSkillCount} مهارات تحتاج دعم</div>
+                                                    </div>
+                                                    <div className={`rounded-xl border px-3 py-2 text-base font-black ${student.tone}`}>
+                                                        {student.averageScore}%
+                                                    </div>
+                                                </div>
+                                                {student.topSkills.length > 0 ? (
+                                                    <div className="mt-3 flex flex-wrap gap-2">
+                                                        {student.topSkills.map((skill) => (
+                                                            <span key={`${student.id}-${skill.skill}`} className="rounded-full bg-white px-3 py-1 text-[11px] font-black text-rose-700">
+                                                                {displayText(skill.skill)} {skill.mastery}%
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                ) : null}
+                                                <div className="print-hide mt-3 flex flex-wrap gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => navigator.clipboard.writeText([
+                                                            `الطالب: ${displayText(student.name)}`,
+                                                            `المتوسط: ${student.averageScore}%`,
+                                                            student.topSkills.length ? `المهارات: ${student.topSkills.map((skill) => `${displayText(skill.skill)} ${skill.mastery}%`).join('، ')}` : '',
+                                                            'الخطوة: شرح قصير ثم تدريب موجه ثم قياس.'
+                                                        ].filter(Boolean).join('\n')).catch(() => undefined)}
+                                                        className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
+                                                    >
+                                                        نسخ متابعة
+                                                    </button>
+                                                    <Link to="/dashboard?tab=reports" className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
+                                                        فتح الطالب
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-2xl border border-dashed border-gray-200 bg-slate-50 p-5 text-sm font-bold leading-7 text-gray-500">
+                                                لا يوجد طالب يحتاج متابعة واضحة الآن.
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
