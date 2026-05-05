@@ -136,16 +136,55 @@ const Quiz: React.FC = () => {
       ),
     [subjects, selectedPathId, availablePathIds],
   );
+  const availableSubjectIds = useMemo(
+    () => new Set(availableSubjects.map((subject) => subject.id)),
+    [availableSubjects],
+  );
   const availableSections = useMemo(
-    () => sections.filter((section) => !selectedSubjectId || section.subjectId === selectedSubjectId),
-    [sections, selectedSubjectId],
+    () =>
+      sections.filter(
+        (section) =>
+          availableSubjectIds.has(section.subjectId) &&
+          (!selectedSubjectId || section.subjectId === selectedSubjectId),
+      ),
+    [availableSubjectIds, sections, selectedSubjectId],
+  );
+  const availableSkillOptions = useMemo(
+    () =>
+      skills
+        .filter((skill) => {
+          const pathMatches = !selectedPathId || skill.pathId === selectedPathId;
+          const subjectMatches = !selectedSubjectId || skill.subjectId === selectedSubjectId;
+          return pathMatches && subjectMatches;
+        })
+        .sort((a, b) => {
+          const sectionA = sections.find((section) => section.id === a.sectionId)?.name || '';
+          const sectionB = sections.find((section) => section.id === b.sectionId)?.name || '';
+          return sectionA.localeCompare(sectionB, 'ar') || a.name.localeCompare(b.name, 'ar');
+        }),
+    [sections, selectedPathId, selectedSubjectId, skills],
   );
   const targetSkills = useMemo(
     () => targetSkillIds
       .map((skillId) => skills.find((skill) => skill.id === skillId))
-      .filter(Boolean)
-      .slice(0, 3),
+      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill)),
     [skills, targetSkillIds],
+  );
+  const targetSkillIdSet = useMemo(() => new Set(targetSkillIds), [targetSkillIds]);
+  const visibleTargetSkills = targetSkills.slice(0, 6);
+  const skillSections = useMemo(
+    () =>
+      availableSections
+        .map((section) => {
+          const sectionSkills = availableSkillOptions.filter((skill) => skill.sectionId === section.id);
+          return {
+            section,
+            skills: sectionSkills,
+            selectedCount: sectionSkills.filter((skill) => targetSkillIdSet.has(skill.id)).length,
+          };
+        })
+        .filter((item) => item.skills.length > 0),
+    [availableSections, availableSkillOptions, targetSkillIdSet],
   );
 
   const isQuizExpired = (dueDate?: string) => {
@@ -195,6 +234,29 @@ const Quiz: React.FC = () => {
   const showStatus = (message: string, tone: 'success' | 'error' | 'info' = 'info') => {
     setStatusMessage(message);
     setStatusTone(tone);
+  };
+
+  const setSkillScope = (nextIds: string[]) => {
+    setTargetSkillIds(Array.from(new Set(nextIds)));
+    setSelectedSectionId('');
+  };
+
+  const toggleTargetSkill = (skillId: string) => {
+    const next = targetSkillIdSet.has(skillId)
+      ? targetSkillIds.filter((id) => id !== skillId)
+      : [...targetSkillIds, skillId];
+    setSkillScope(next);
+  };
+
+  const toggleSectionSkills = (sectionId: string) => {
+    const sectionSkillIds = availableSkillOptions.filter((skill) => skill.sectionId === sectionId).map((skill) => skill.id);
+    if (sectionSkillIds.length === 0) return;
+
+    const allSelected = sectionSkillIds.every((skillId) => targetSkillIdSet.has(skillId));
+    const next = allSelected
+      ? targetSkillIds.filter((skillId) => !sectionSkillIds.includes(skillId))
+      : [...targetSkillIds, ...sectionSkillIds];
+    setSkillScope(next);
   };
 
   const clearSavedSnapshot = () => {
@@ -341,7 +403,16 @@ const Quiz: React.FC = () => {
       return pathMatches && typeMatches;
     });
 
-    const sourcePool = strictPool.length > 0 ? strictPool : relaxedPool.length > 0 ? relaxedPool : fallbackPool;
+    const sourcePool =
+      strictPool.length > 0
+        ? strictPool
+        : relaxedPool.length > 0
+          ? relaxedPool
+          : fallbackPool.length > 0
+            ? fallbackPool
+            : contextFillPool.length > 0
+              ? contextFillPool
+              : broadFillPool;
     if (sourcePool.length === 0) {
       showStatus('لا توجد أسئلة مطابقة للخيارات الحالية. جرّب تغيير المسار أو المادة أو مستوى الصعوبة.', 'error');
       return;
@@ -658,11 +729,16 @@ const Quiz: React.FC = () => {
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3">
                   <div className="text-sm font-black text-indigo-800">اختبار إضافي موجه حسب نتيجتك</div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {targetSkills.map((skill) => skill ? (
+                    {visibleTargetSkills.map((skill) => (
                       <span key={skill.id} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-indigo-700 shadow-sm">
                         {skill.name}
                       </span>
-                    ) : null)}
+                    ))}
+                    {targetSkills.length > visibleTargetSkills.length ? (
+                      <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700">
+                        +{targetSkills.length - visibleTargetSkills.length}
+                      </span>
+                    ) : null}
                   </div>
                   <p className="mt-2 text-xs leading-6 text-indigo-700">
                     سنبدأ بهذه المهارات، ولو عدد أسئلتها قليل سنكمل من نفس المادة أو المسار حتى تكون المحاولة مفيدة.
@@ -678,6 +754,7 @@ const Quiz: React.FC = () => {
                       setSelectedPathId(e.target.value);
                       setSelectedSubjectId('');
                       setSelectedSectionId('');
+                      setTargetSkillIds([]);
                     }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   >
@@ -694,26 +771,13 @@ const Quiz: React.FC = () => {
                     onChange={(e) => {
                       setSelectedSubjectId(e.target.value);
                       setSelectedSectionId('');
+                      setTargetSkillIds([]);
                     }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">كل المواد</option>
                     {availableSubjects.map((subject) => (
                       <option key={subject.id} value={subject.id}>{subject.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2">المهارة الرئيسية</label>
-                  <select
-                    value={selectedSectionId}
-                    onChange={(e) => setSelectedSectionId(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    disabled={!selectedSubjectId}
-                  >
-                    <option value="">كل المهارات الرئيسية</option>
-                    {availableSections.map((section) => (
-                      <option key={section.id} value={section.id}>{section.name}</option>
                     ))}
                   </select>
                 </div>
@@ -752,6 +816,95 @@ const Quiz: React.FC = () => {
                   </select>
                 </div>
               </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h3 className="text-sm font-black text-gray-900">نطاق المهارات</h3>
+                    <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
+                      اختر مهارة واحدة أو أكثر، أو اتركها على كل المهارات.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTargetSkillIds([]);
+                      setSelectedSectionId('');
+                    }}
+                    className={`rounded-xl px-4 py-2 text-xs font-black transition-colors ${
+                      targetSkillIds.length === 0 && !selectedSectionId
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'border border-gray-200 bg-gray-50 text-gray-700 hover:bg-white'
+                    }`}
+                  >
+                    كل المهارات
+                  </button>
+                </div>
+
+                {skillSections.length > 0 ? (
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <div className="mb-2 text-xs font-black text-gray-700">المهارات الرئيسية</div>
+                      <div className="flex flex-wrap gap-2">
+                        {skillSections.map(({ section, skills: sectionSkills, selectedCount }) => {
+                          const allSelected = selectedSectionId === section.id || selectedCount === sectionSkills.length;
+                          const partiallySelected = selectedCount > 0 && !allSelected;
+                          return (
+                            <button
+                              key={section.id}
+                              type="button"
+                              onClick={() => toggleSectionSkills(section.id)}
+                              className={`rounded-full border px-3 py-2 text-xs font-black transition-colors ${
+                                allSelected
+                                  ? 'border-indigo-200 bg-indigo-600 text-white shadow-sm'
+                                  : partiallySelected
+                                    ? 'border-indigo-200 bg-indigo-50 text-indigo-700'
+                                    : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
+                              }`}
+                            >
+                              {section.name}
+                              <span className="mr-1 opacity-80">({selectedCount || sectionSkills.length})</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <span className="text-xs font-black text-gray-700">المهارات الفرعية</span>
+                        <span className="text-[11px] font-bold text-gray-400">{targetSkillIds.length || 'كل'} محدد</span>
+                      </div>
+                      <div className="max-h-44 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50/60 p-3">
+                        <div className="flex flex-wrap gap-2">
+                          {availableSkillOptions.map((skill) => {
+                            const selected = targetSkillIdSet.has(skill.id);
+                            return (
+                              <button
+                                key={skill.id}
+                                type="button"
+                                onClick={() => toggleTargetSkill(skill.id)}
+                                className={`rounded-full border px-3 py-2 text-xs font-black transition-colors ${
+                                  selected
+                                    ? 'border-emerald-200 bg-emerald-500 text-white shadow-sm'
+                                    : 'border-gray-200 bg-white text-gray-700 hover:border-emerald-200 hover:text-emerald-700'
+                                }`}
+                              >
+                                {skill.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4 rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm font-bold text-gray-500">
+                    اختر مسارًا أو مادة لعرض المهارات المتاحة، أو ابدأ الاختبار على كل المهارات.
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <button
                   onClick={() => setDifficulty('Easy')}
