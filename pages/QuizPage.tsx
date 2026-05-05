@@ -507,8 +507,8 @@ export const QuizPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">عذرًا، لا يمكنك الوصول</h2>
           <p className="text-gray-500 mb-6">{accessMessage}</p>
-          <button onClick={() => navigate('/')} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
-            العودة للرئيسية
+          <button onClick={handleReturnToPreviousPlace} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
+            {safeReturnTo ? 'العودة للمكان السابق' : 'العودة للرئيسية'}
           </button>
         </div>
       </div>
@@ -524,8 +524,8 @@ export const QuizPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">لا توجد أسئلة متاحة</h2>
           <p className="text-gray-500 mb-6">هذا الاختبار لا يحتوي على أسئلة صالحة حاليًا.</p>
-          <button onClick={() => navigate('/')} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
-            العودة للرئيسية
+          <button onClick={handleReturnToPreviousPlace} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
+            {safeReturnTo ? 'العودة للمكان السابق' : 'العودة للرئيسية'}
           </button>
         </div>
       </div>

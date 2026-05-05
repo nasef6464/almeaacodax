@@ -87,6 +87,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         params.set('tab', tab);
         return `/category/${category}?${params.toString()}`;
     };
+    const shouldTrainingReturnOnFinish = (quizId: string | number) => {
+        const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, String(quizId)));
+        return sourceQuiz?.settings?.returnToSourceOnFinish === true || sourceQuiz?.settings?.showResultsReport === false;
+    };
 
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
     const [viewingFile, setViewingFile] = useState<any>(null);
@@ -995,7 +999,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             level: 'متعدد',
                             isLocked: bank.isLocked
                         }))} 
-                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: buildSectionReturnPath('banks'), source: 'training' }))}
+                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), {
+                            returnTo: buildSectionReturnPath('banks'),
+                            source: 'training',
+                            returnOnFinish: shouldTrainingReturnOnFinish(test.id),
+                        }))}
                         onLockedClick={(test) => handleItemClick(test, 'bank')}
                     />
                     </>

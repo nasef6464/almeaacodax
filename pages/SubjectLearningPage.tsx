@@ -239,11 +239,17 @@ export const SubjectLearningPage: React.FC = () => {
     params.set('tab', tab);
     return `/category/${pathId || ''}?${params.toString()}`;
   };
-  const buildQuizPathWithReturn = (quizId: string, returnTo: string, source: string) => {
-    return buildQuizRouteWithContext(quizId, { returnTo, source });
+  const buildQuizPathWithReturn = (
+    quizId: string,
+    returnTo: string,
+    source: string,
+    returnOnFinish = false,
+  ) => {
+    return buildQuizRouteWithContext(quizId, { returnTo, source, returnOnFinish });
   };
-  const buildTrainingQuizPath = (quizId: string) => {
-    return buildQuizPathWithReturn(quizId, buildTopicReturnPath('quizzes'), 'foundation');
+  const buildTrainingQuizPath = (quiz: (typeof quizzes)[number]) => {
+    const returnOnFinish = quiz.settings?.returnToSourceOnFinish === true || quiz.settings?.showResultsReport === false;
+    return buildQuizPathWithReturn(quiz.id, buildTopicReturnPath('quizzes'), 'foundation', returnOnFinish);
   };
   const activeTopicLessons = useMemo(
     () =>
@@ -783,7 +789,7 @@ export const SubjectLearningPage: React.FC = () => {
                                   {relatedQuizSuggestions.map((quiz) => (
                                     <Link
                                       key={quiz.id}
-                                      to={buildTrainingQuizPath(quiz.id)}
+                                      to={buildTrainingQuizPath(quiz)}
                                       className="bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-amber-200 hover:shadow-sm transition-all"
                                     >
                                       <div className="flex items-center justify-between gap-3">
@@ -845,7 +851,7 @@ export const SubjectLearningPage: React.FC = () => {
                             </div>
                           </div>
                           <Link
-                            to={buildTrainingQuizPath(quiz.id)}
+                            to={buildTrainingQuizPath(quiz)}
                             className="px-6 py-2.5 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shrink-0 text-center"
                           >
                             ابدأ التدريب
