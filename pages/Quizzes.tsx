@@ -25,6 +25,7 @@ interface QuizzesProps {
 }
 
 type AttemptCategory = 'regular' | 'mock';
+type AttemptScoreFilter = 'all' | 'needs-review' | 'good';
 
 type QuizAttemptGroup = {
   key: string;
@@ -59,6 +60,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [activeAttemptCategory, setActiveAttemptCategory] = useState<AttemptCategory>('regular');
+  const [activeAttemptScoreFilter, setActiveAttemptScoreFilter] = useState<AttemptScoreFilter>('all');
   const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
   const isAttemptsView = view === 'attempts';
@@ -184,6 +186,21 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   );
 
   const activeAttemptGroups = attemptGroupsByCategory[activeAttemptCategory];
+  const activeAttemptSummary = useMemo(() => {
+    const totalAttempts = activeAttemptGroups.reduce((sum, group) => sum + group.attempts.length, 0);
+    const needsReview = activeAttemptGroups.filter((group) => group.latestAttempt.score < 75).length;
+    const good = activeAttemptGroups.filter((group) => group.latestAttempt.score >= 75).length;
+    const averageLatest = activeAttemptGroups.length
+      ? Math.round(activeAttemptGroups.reduce((sum, group) => sum + group.latestAttempt.score, 0) / activeAttemptGroups.length)
+      : 0;
+
+    return {
+      totalAttempts,
+      needsReview,
+      good,
+      averageLatest,
+    };
+  }, [activeAttemptGroups]);
 
   const attemptTitleFilters = useMemo(() => {
     const titles = Array.from(new Set(activeAttemptGroups.map((group) => group.quizTitle).filter(Boolean)));
@@ -195,9 +212,16 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       ? activeAttemptGroups
       : activeAttemptGroups.filter((group) => group.quizTitle.includes(activeFilter));
 
+  const visibleAttemptGroups = filteredAttemptGroups.filter((group) =>
+    activeAttemptScoreFilter === 'all' ||
+    (activeAttemptScoreFilter === 'needs-review' && group.latestAttempt.score < 75) ||
+    (activeAttemptScoreFilter === 'good' && group.latestAttempt.score >= 75)
+  );
+
   useEffect(() => {
     if (isAttemptsView) {
       setActiveFilter('all');
+      setActiveAttemptScoreFilter('all');
       setOpenAttemptGroupKey(null);
     }
   }, [activeAttemptCategory, isAttemptsView]);
@@ -487,11 +511,41 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                 ))}
               </div>
             ) : null}
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <AttemptScoreFilterButton
+                active={activeAttemptScoreFilter === 'all'}
+                label="كل النتائج"
+                value={activeAttemptGroups.length}
+                onClick={() => setActiveAttemptScoreFilter('all')}
+              />
+              <AttemptScoreFilterButton
+                active={activeAttemptScoreFilter === 'needs-review'}
+                label="يحتاج مراجعة"
+                value={activeAttemptSummary.needsReview}
+                tone="rose"
+                onClick={() => setActiveAttemptScoreFilter('needs-review')}
+              />
+              <AttemptScoreFilterButton
+                active={activeAttemptScoreFilter === 'good'}
+                label="مطمئن"
+                value={activeAttemptSummary.good}
+                tone="emerald"
+                onClick={() => setActiveAttemptScoreFilter('good')}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+              <MiniAttemptStat label="اختبارات" value={activeAttemptGroups.length} />
+              <MiniAttemptStat label="محاولات" value={activeAttemptSummary.totalAttempts} />
+              <MiniAttemptStat label="متوسط آخر حل" value={`${activeAttemptSummary.averageLatest}%`} />
+              <MiniAttemptStat label="ظاهر الآن" value={visibleAttemptGroups.length} />
+            </div>
           </div>
 
-          {filteredAttemptGroups.length > 0 ? (
+          {visibleAttemptGroups.length > 0 ? (
             <div className="space-y-3 p-4">
-              {filteredAttemptGroups.map((group) => (
+              {visibleAttemptGroups.map((group) => (
                 <AttemptGroupCard
                   key={group.key}
                   group={group}
@@ -929,6 +983,46 @@ const AttemptCategoryButton = ({
   </button>
 );
 
+const AttemptScoreFilterButton = ({
+  active,
+  label,
+  value,
+  tone = 'indigo',
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  value: number;
+  tone?: 'indigo' | 'rose' | 'emerald';
+  onClick: () => void;
+}) => {
+  const toneClass = {
+    indigo: active ? 'border-indigo-200 bg-indigo-600 text-white' : 'border-indigo-100 bg-white text-indigo-700 hover:bg-indigo-50',
+    rose: active ? 'border-rose-200 bg-rose-600 text-white' : 'border-rose-100 bg-white text-rose-700 hover:bg-rose-50',
+    emerald: active ? 'border-emerald-200 bg-emerald-600 text-white' : 'border-emerald-100 bg-white text-emerald-700 hover:bg-emerald-50',
+  }[tone];
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-black transition-all ${toneClass}`}
+    >
+      <span>{label}</span>
+      <span className={`rounded-full px-2.5 py-1 text-xs ${active ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-700'}`}>
+        {value}
+      </span>
+    </button>
+  );
+};
+
+const MiniAttemptStat = ({ label, value }: { label: string; value: string | number }) => (
+  <div className="rounded-2xl border border-gray-100 bg-white px-3 py-2">
+    <div className="text-[11px] font-bold text-gray-500">{label}</div>
+    <div className="mt-1 text-sm font-black text-gray-900">{value}</div>
+  </div>
+);
+
 const AttemptGroupCard = ({
   group,
   isOpen,
@@ -992,7 +1086,7 @@ const AttemptGroupCard = ({
             {weakestSkill ? <span className="rounded-full bg-white px-2 py-1 text-xs font-black text-amber-700">{weakestSkill.mastery}%</span> : null}
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <button
             type="button"
             onClick={onToggle}
@@ -1020,7 +1114,7 @@ const AttemptGroupCard = ({
 
       {isOpen ? (
         <div className="mt-4 overflow-hidden rounded-2xl border border-gray-100">
-          <div className="grid grid-cols-12 bg-gray-50 px-3 py-2 text-[11px] font-black text-gray-500">
+          <div className="hidden grid-cols-12 bg-gray-50 px-3 py-2 text-[11px] font-black text-gray-500 sm:grid">
             <div className="col-span-4">المحاولة</div>
             <div className="col-span-2 text-center">الدرجة</div>
             <div className="col-span-2 text-center">الوقت</div>
@@ -1028,21 +1122,23 @@ const AttemptGroupCard = ({
           </div>
           <div className="divide-y divide-gray-100">
             {group.attempts.map((attempt, index) => (
-              <div key={`${attempt.quizId}-${attempt.date}-${index}`} className="grid grid-cols-12 items-center gap-2 px-3 py-3 text-sm">
-                <div className="col-span-4">
+              <div key={`${attempt.quizId}-${attempt.date}-${index}`} className="grid grid-cols-1 items-center gap-3 px-3 py-3 text-sm sm:grid-cols-12 sm:gap-2">
+                <div className="sm:col-span-4">
                   <div className="font-black text-gray-900">محاولة {group.attempts.length - index}</div>
                   <div className="mt-1 text-[11px] font-bold text-gray-500">{new Date(attempt.date).toLocaleString('ar-SA')}</div>
                 </div>
-                <div className={`col-span-2 text-center font-black ${attempt.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{attempt.score}%</div>
-                <div className="col-span-2 text-center text-xs font-bold text-gray-500">{attempt.timeSpent}</div>
-                <div className="col-span-4 flex flex-wrap justify-center gap-2">
-                  <Link to={getAttemptResultLink(attempt)} className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100">
+                <div className="grid grid-cols-2 gap-2 sm:contents">
+                  <div className={`rounded-xl bg-gray-50 px-3 py-2 text-center font-black sm:col-span-2 sm:bg-transparent sm:p-0 ${attempt.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{attempt.score}%</div>
+                  <div className="rounded-xl bg-gray-50 px-3 py-2 text-center text-xs font-bold text-gray-500 sm:col-span-2 sm:bg-transparent sm:p-0">{attempt.timeSpent}</div>
+                </div>
+                <div className="flex flex-wrap justify-stretch gap-2 sm:col-span-4 sm:justify-center">
+                  <Link to={getAttemptResultLink(attempt)} className="flex-1 rounded-lg bg-indigo-50 px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-100 sm:flex-none">
                     تفاصيل
                   </Link>
-                  <Link to={getAttemptResultLink(attempt, 'review')} className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
+                  <Link to={getAttemptResultLink(attempt, 'review')} className="flex-1 rounded-lg bg-emerald-50 px-3 py-2 text-center text-xs font-black text-emerald-700 hover:bg-emerald-100 sm:flex-none">
                     مراجعة
                   </Link>
-                  <Link to={getAttemptResultLink(attempt, 'analysis')} className="rounded-lg bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 hover:bg-purple-100">
+                  <Link to={getAttemptResultLink(attempt, 'analysis')} className="flex-1 rounded-lg bg-purple-50 px-3 py-2 text-center text-xs font-black text-purple-700 hover:bg-purple-100 sm:flex-none">
                     تحليل
                   </Link>
                 </div>
