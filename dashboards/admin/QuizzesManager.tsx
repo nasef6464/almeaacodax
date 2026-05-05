@@ -791,7 +791,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         </div>
       )}
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
+      <div className="grid grid-cols-1 gap-3 rounded-xl border border-gray-100 bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-4">
         {!subjectId && (
           <>
             <select
@@ -802,7 +802,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 setSelectedSectionId('');
                 setSelectedSkillId('');
               }}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">كل المسارات</option>
               {allowedPaths.map((path) => (
@@ -819,7 +819,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 setSelectedSectionId('');
                 setSelectedSkillId('');
               }}
-              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               disabled={!selectedPathId}
             >
               <option value="">كل المواد</option>
@@ -840,7 +840,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             setSelectedSectionId(event.target.value);
             setSelectedSkillId('');
           }}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الرئيسية</option>
@@ -854,7 +854,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         <select
           value={selectedSkillId}
           onChange={(event) => setSelectedSkillId(event.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الفرعية</option>
@@ -869,7 +869,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           <select
             value={modeFilter}
             onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">كل الأنماط</option>
             <option value="regular">اختبار عادي</option>
@@ -882,7 +882,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           <select
             value={learningSlotFilter}
             onChange={(event) => setLearningSlotFilter(event.target.value as typeof learningSlotFilter)}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">كل اختبارات المستودع</option>
             <option value="visible">الظاهر هنا فقط</option>
@@ -893,14 +893,14 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         <select
           value={visibilityFilter}
           onChange={(event) => setVisibilityFilter(event.target.value as typeof visibilityFilter)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="all">كل حالات العرض</option>
           <option value="shown">المعروض فقط</option>
           <option value="hidden">المخفي فقط</option>
         </select>
 
-        <div className="relative flex-1">
+        <div className="relative md:col-span-2 xl:col-span-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
@@ -1013,22 +1013,35 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">
-                        {isLearningSpaceManager && (
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-bold ${
-                              isVisibleHereForRow ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
-                            }`}
-                          >
-                            {isVisibleHereForRow ? `ظاهر في ${activeLearningSlotLabel}` : 'غير ظاهر هنا'}
-                          </span>
+                        {isLearningSpaceManager ? (
+                          <>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black ${
+                                isVisibleHereForRow ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                              }`}
+                            >
+                              {isVisibleHereForRow ? <CheckCircle2 size={13} /> : <Eye size={13} />}
+                              {isVisibleHereForRow ? 'ظاهر هنا' : 'غير ظاهر هنا'}
+                            </span>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-black ${readinessMeta.className}`}
+                              title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}
+                            >
+                              {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+                              {readinessMeta.issues.length === 0 ? 'جاهز' : 'يحتاج ضبط'}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${getAccessMeta(quiz).className}`}>{getAccessMeta(quiz).label}</span>
+                            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
+                              {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
+                              {readinessMeta.label}
+                            </span>
+                          </>
                         )}
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${getAccessMeta(quiz).className}`}>{getAccessMeta(quiz).label}</span>
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border text-xs font-bold ${readinessMeta.className}`} title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}>
-                          {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
-                          {readinessMeta.label}
-                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -1049,13 +1062,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             رفض
                           </button>
                         )}
-                        {!isLearningSpaceManager && readinessMeta.issues.length > 0 && (
+                        {readinessMeta.issues.length > 0 && (
                           <button
                             onClick={() => handlePrepareQuizForLearner(quiz)}
                             className="px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
                             title="ضبط النشر والاعتماد ومكان الظهور حسب هذه المساحة"
                           >
-                            تجهيز العرض
+                            {isLearningSpaceManager ? 'تجهيز' : 'تجهيز العرض'}
                           </button>
                         )}
                         {activeLearningSlot && activePathId && activeSubjectId && (
@@ -1144,9 +1157,11 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                             الاثنين
                           </button>
                         </div>}
-                        <button onClick={() => handleDelete(quiz.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف">
-                          <Trash2 size={18} />
-                        </button>
+                        {!isLearningSpaceManager && (
+                          <button onClick={() => handleDelete(quiz.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف">
+                            <Trash2 size={18} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

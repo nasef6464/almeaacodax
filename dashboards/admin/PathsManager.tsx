@@ -1859,27 +1859,14 @@ export const PathsManager: React.FC = () => {
               <div>
                 <div className="text-xs font-black text-indigo-500">جاهزية مساحة المادة للطالب</div>
                 <h3 className="mt-1 text-xl font-black text-gray-900">{currentSubject.name}</h3>
-                <p className="mt-2 text-sm font-bold leading-7 text-indigo-700">
-                  هذا الملخص يوضح للمدير ما الذي سيظهر للطالب الآن وما الذي يحتاج ضبطًا قبل النشر.
-                </p>
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
+                  <span className="rounded-full bg-white px-3 py-1 text-gray-700">{subjectWorkspaceTotals.total} عنصر</span>
+                  <span className="rounded-full bg-white px-3 py-1 text-emerald-700">{subjectWorkspaceTotals.visible} ظاهر</span>
+                  <span className="rounded-full bg-white px-3 py-1 text-amber-700">{subjectWorkspaceTotals.review} مراجعة</span>
+                </div>
               </div>
               <div className={`rounded-2xl p-3 ${subjectWorkspaceWarnings.length === 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                 {subjectWorkspaceWarnings.length === 0 ? <CheckCircle2 size={24} /> : <AlertTriangle size={24} />}
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-xl bg-white p-3">
-                <div className="text-2xl font-black text-gray-900">{subjectWorkspaceTotals.total}</div>
-                <div className="text-[11px] font-bold text-gray-500">إجمالي العناصر</div>
-              </div>
-              <div className="rounded-xl bg-white p-3">
-                <div className="text-2xl font-black text-emerald-700">{subjectWorkspaceTotals.visible}</div>
-                <div className="text-[11px] font-bold text-gray-500">ظاهر للطالب</div>
-              </div>
-              <div className="rounded-xl bg-white p-3">
-                <div className="text-2xl font-black text-amber-700">{subjectWorkspaceTotals.review}</div>
-                <div className="text-[11px] font-bold text-gray-500">يحتاج مراجعة</div>
               </div>
             </div>
 
@@ -1935,7 +1922,6 @@ export const PathsManager: React.FC = () => {
                       <div className="text-[10px] font-bold text-gray-400">مراجعة</div>
                     </div>
                   </div>
-                  <div className="mt-3 text-[11px] font-black text-indigo-600">فتح الإدارة</div>
                 </button>
               );
             })}
