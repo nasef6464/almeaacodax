@@ -41,6 +41,8 @@ export const RoleSwitcher: React.FC = () => {
               <button
                 key={role.id}
                 onClick={() => handleRoleChange(role.id, role.path)}
+                data-testid={`dev-role-${role.id}`}
+                aria-label={`dev-role-${role.id}`}
                 className={`flex w-full items-center gap-3 border-r-4 px-4 py-3 text-right transition-colors ${
                   user.role === role.id
                     ? 'border-amber-500 bg-amber-50 font-bold text-amber-600'
@@ -58,6 +60,8 @@ export const RoleSwitcher: React.FC = () => {
       )}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        data-testid="dev-role-switcher"
+        aria-label="dev-role-switcher"
         className={`flex items-center gap-3 rounded-full px-5 py-3 shadow-lg transition-all ${
           isOpen ? 'bg-amber-500 text-white' : 'bg-gray-900 text-white hover:bg-gray-800'
         }`}
