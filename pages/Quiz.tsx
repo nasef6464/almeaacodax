@@ -979,8 +979,8 @@ const Quiz: React.FC = () => {
   }
 
   const currentOptions = questions[currentQuestion]?.options || [];
-  const currentOptionGridClass = getQuizOptionGridClass(currentOptions, 'auto');
-  const currentOptionHeightClass = getQuizOptionButtonHeightClass(currentOptions, 'auto');
+  const currentOptionGridClass = getQuizOptionGridClass(currentOptions, 'horizontal');
+  const currentOptionHeightClass = getQuizOptionButtonHeightClass(currentOptions, 'horizontal');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -1100,7 +1100,7 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`${currentOptionHeightClass} px-2.5 sm:px-3 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
+                    className={`${currentOptionHeightClass} px-2.5 sm:px-3 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-6 text-center break-words">
                       {sanitizeArabicText(option)}

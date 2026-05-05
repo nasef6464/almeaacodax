@@ -288,8 +288,9 @@ export const QuizPage: React.FC = () => {
       mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
     [currentQuestionIndex, mockExamSectionSummaries],
   );
-  const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], optionLayout);
-  const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], optionLayout);
+  const activeOptionLayout = optionLayout === 'two_columns' ? 'auto' : 'horizontal';
+  const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
+  const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
   const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
@@ -598,7 +599,7 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
-      <div className="max-w-3xl mx-auto px-3 sm:px-4">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4">
         <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-3 sm:p-4 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3`}>
           <div className="min-w-0">
             <button
@@ -742,7 +743,7 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`${optionButtonHeightClass} w-full px-2.5 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
+                    className={`${optionButtonHeightClass} w-full px-2.5 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -950,7 +951,7 @@ export const QuizPage: React.FC = () => {
                                 />
                               </button>
                             )}
-                            <div className={`grid ${getQuizOptionGridClass(question.options, optionLayout)} gap-2`}>
+                            <div className={`grid ${getQuizOptionGridClass(question.options, activeOptionLayout)} gap-2`}>
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';
@@ -968,7 +969,7 @@ export const QuizPage: React.FC = () => {
                                 }
 
                                 return (
-                                  <div key={optionIndex} className={`${getQuizOptionButtonHeightClass(question.options, optionLayout)} p-2 rounded-xl border flex items-center justify-between gap-2 ${bgClass}`}>
+                                  <div key={optionIndex} className={`${getQuizOptionButtonHeightClass(question.options, activeOptionLayout)} p-2 rounded-xl border flex items-center justify-between gap-2 ${bgClass}`}>
                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                                       optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
                                       optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'
