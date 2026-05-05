@@ -119,7 +119,7 @@ const Home: React.FC = () => {
               <span className="font-bold text-gray-800 text-sm">الاختبارات المحاكية</span>
             </Link>
 
-            <Link to="/quizzes" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
+            <Link to="/dashboard?tab=quizzes" className="min-h-[130px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-3 group">
               <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                 <FileText size={24} />
               </div>

@@ -218,7 +218,7 @@ const App: React.FC = () => {
                   <Route path="/course/:courseId" element={<CourseView />} />
                   <Route path="/quizzes" element={<Quizzes />} />
                   <Route path="/mock-exams" element={<MockExams />} />
-                  <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
+                  <Route path="/my-quizzes" element={<Navigate replace to="/dashboard?tab=quizzes" />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/favorites" element={<Favorites />} />
                   <Route path="/plan" element={<Plan />} />

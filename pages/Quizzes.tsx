@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
   BarChart3,
@@ -17,11 +17,25 @@ import {
 import { Link } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
 import { useStore } from '../store/useStore';
-import { QuizResult } from '../types';
+import { Quiz, QuizResult } from '../types';
+import { isStandaloneMockExam } from '../utils/mockExam';
 
 interface QuizzesProps {
   view?: 'catalog' | 'attempts';
 }
+
+type AttemptCategory = 'regular' | 'mock';
+
+type QuizAttemptGroup = {
+  key: string;
+  quizId: string;
+  quizTitle: string;
+  category: AttemptCategory;
+  quiz?: Quiz;
+  attempts: QuizResult[];
+  latestAttempt: QuizResult;
+  bestAttempt: QuizResult;
+};
 
 const formatQuizDate = (date?: string) => {
   if (!date) return 'متاح الآن';
@@ -44,6 +58,8 @@ const formatCreatedDate = (date?: number) => {
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [activeAttemptCategory, setActiveAttemptCategory] = useState<AttemptCategory>('regular');
+  const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
   const isAttemptsView = view === 'attempts';
 
@@ -118,6 +134,73 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [canAccessQuiz, quizzes],
   );
+
+  const quizLookup = useMemo(() => new Map(quizzes.map((quiz) => [quiz.id, quiz])), [quizzes]);
+
+  const attemptGroups = useMemo<QuizAttemptGroup[]>(() => {
+    const grouped = new Map<string, QuizAttemptGroup>();
+
+    examResults.forEach((result) => {
+      const quiz = quizLookup.get(result.quizId);
+      const category: AttemptCategory = result.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz)) ? 'mock' : 'regular';
+      const key = result.quizId || result.quizTitle || result.date;
+      const existing = grouped.get(key);
+
+      if (existing) {
+        existing.attempts.push(result);
+      } else {
+        grouped.set(key, {
+          key,
+          quizId: result.quizId,
+          quizTitle: result.quizTitle || quiz?.title || 'اختبار بدون عنوان',
+          category,
+          quiz,
+          attempts: [result],
+          latestAttempt: result,
+          bestAttempt: result,
+        });
+      }
+    });
+
+    return Array.from(grouped.values())
+      .map((group) => {
+        const attempts = [...group.attempts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return {
+          ...group,
+          attempts,
+          latestAttempt: attempts[0],
+          bestAttempt: attempts.reduce((best, attempt) => (attempt.score > best.score ? attempt : best), attempts[0]),
+        };
+      })
+      .sort((a, b) => new Date(b.latestAttempt.date).getTime() - new Date(a.latestAttempt.date).getTime());
+  }, [examResults, quizLookup]);
+
+  const attemptGroupsByCategory = useMemo(
+    () => ({
+      regular: attemptGroups.filter((group) => group.category === 'regular'),
+      mock: attemptGroups.filter((group) => group.category === 'mock'),
+    }),
+    [attemptGroups],
+  );
+
+  const activeAttemptGroups = attemptGroupsByCategory[activeAttemptCategory];
+
+  const attemptTitleFilters = useMemo(() => {
+    const titles = Array.from(new Set(activeAttemptGroups.map((group) => group.quizTitle).filter(Boolean)));
+    return ['الكل', ...titles];
+  }, [activeAttemptGroups]);
+
+  const filteredAttemptGroups =
+    activeFilter === 'all' || activeFilter === 'الكل'
+      ? activeAttemptGroups
+      : activeAttemptGroups.filter((group) => group.quizTitle.includes(activeFilter));
+
+  useEffect(() => {
+    if (isAttemptsView) {
+      setActiveFilter('all');
+      setOpenAttemptGroupKey(null);
+    }
+  }, [activeAttemptCategory, isAttemptsView]);
 
   const directedQuizzes = useMemo(
     () =>
@@ -262,16 +345,6 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       .slice(0, 3);
   }, [availablePreparedQuizzes, examResults, subjects, lessons, libraryItems]);
 
-  const courseFilters = useMemo(() => {
-    const titles = Array.from(new Set(examResults.map((result) => result.quizTitle).filter(Boolean)));
-    return ['الكل', ...titles];
-  }, [examResults]);
-
-  const filteredQuizzes =
-    activeFilter === 'all' || activeFilter === 'الكل'
-      ? examResults
-      : examResults.filter((quiz) => quiz.quizTitle.includes(activeFilter));
-
   const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
     const params = new URLSearchParams({ attempt: result.date });
     if (viewMode) params.set('view', viewMode);
@@ -376,129 +449,61 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           </div>
         ) : null}
 
-        <div className="flex flex-wrap gap-3 justify-center">
-          {courseFilters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter === 'الكل' ? 'all' : filter)}
-              className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                (activeFilter === 'all' && filter === 'الكل') || activeFilter === filter
-                  ? 'bg-secondary-500 text-white shadow-md'
-                  : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">سجل محاولاتي</div>
+          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">اختباراتي</div>
 
-          {filteredQuizzes.length > 0 ? (
-            <>
-            <div className="md:hidden divide-y divide-gray-100">
-              {filteredQuizzes.map((quiz, index) => (
-                <AttemptSummaryCard
-                  key={`${quiz.quizId}-${quiz.date}-${index}-mobile`}
-                  quiz={quiz}
-                  detailsLink={getAttemptResultLink(quiz)}
-                  analysisLink={getAttemptResultLink(quiz, 'analysis')}
+          <div className="border-b border-gray-100 bg-gray-50/70 p-4 space-y-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <AttemptCategoryButton
+                active={activeAttemptCategory === 'regular'}
+                label="اختبارات عادية"
+                description="اختبارات وتدريبات المواد"
+                count={attemptGroupsByCategory.regular.length}
+                onClick={() => setActiveAttemptCategory('regular')}
+              />
+              <AttemptCategoryButton
+                active={activeAttemptCategory === 'mock'}
+                label="اختبارات محاكية"
+                description="محاكيات كاملة حسب المسار"
+                count={attemptGroupsByCategory.mock.length}
+                onClick={() => setActiveAttemptCategory('mock')}
+              />
+            </div>
+
+            {attemptTitleFilters.length > 2 ? (
+              <div className="flex flex-wrap gap-2">
+                {attemptTitleFilters.map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter === 'الكل' ? 'all' : filter)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-black transition-all ${
+                      (activeFilter === 'all' && filter === 'الكل') || activeFilter === filter
+                        ? 'bg-gray-900 text-white shadow-sm'
+                        : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-200 hover:text-indigo-700'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {filteredAttemptGroups.length > 0 ? (
+            <div className="space-y-3 p-4">
+              {filteredAttemptGroups.map((group) => (
+                <AttemptGroupCard
+                  key={group.key}
+                  group={group}
+                  isOpen={openAttemptGroupKey === group.key}
+                  onToggle={() => setOpenAttemptGroupKey((current) => (current === group.key ? null : group.key))}
+                  getAttemptResultLink={getAttemptResultLink}
                 />
               ))}
             </div>
-
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full min-w-[980px]">
-                <thead className="bg-gray-50 text-gray-500 text-xs font-bold">
-                  <tr>
-                    <th className="p-4 text-right">اسم الاختبار وعدد الأسئلة</th>
-                    <th className="p-4 text-center">الدرجة</th>
-                    <th className="p-4 text-center">أضعف مهارة</th>
-                    <th className="p-4 text-center">الوقت والتاريخ</th>
-                    <th className="p-4 text-center">الحالة</th>
-                    <th className="p-4 text-center">الإجراءات</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredQuizzes.map((quiz, index) => {
-                    const weakestSkill = [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
-
-                    return (
-                      <tr key={`${quiz.quizId}-${quiz.date}-${index}`} className="hover:bg-gray-50 transition-colors group">
-                        <td className="p-4">
-                          <div className="flex flex-col gap-1">
-                            <div className="font-bold text-gray-800">{quiz.quizTitle}</div>
-                            <span className="text-xs text-gray-500">{quiz.totalQuestions} سؤال</span>
-                          </div>
-                        </td>
-                        <td className="p-4 text-center">
-                          <div className={`text-sm font-bold ${quiz.score < 50 ? 'text-red-500' : 'text-emerald-600'}`}>
-                            {quiz.score}%
-                          </div>
-                        </td>
-                        <td className="p-4 text-center">
-                          {weakestSkill ? (
-                            <div className="text-xs">
-                              <div className="font-bold text-gray-800">{weakestSkill.skill}</div>
-                              <div className={weakestSkill.mastery < 50 ? 'text-red-500' : 'text-amber-600'}>{weakestSkill.mastery}%</div>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400">لا يوجد تحليل</span>
-                          )}
-                        </td>
-                        <td className="p-4 text-center">
-                          <div className="text-[10px] text-gray-400" dir="ltr">
-                            {new Date(quiz.date).toLocaleDateString()}
-                          </div>
-                          <div className="text-[10px] text-gray-400" dir="ltr">
-                            {new Date(quiz.date).toLocaleTimeString()}
-                          </div>
-                        </td>
-                        <td className="p-4 text-center">
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                              quiz.score >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-                            }`}
-                          >
-                            {quiz.score >= 50 ? 'ناجح' : 'يحتاج إعادة'}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex flex-wrap justify-center gap-2">
-                            <Link
-                              to={getAttemptResultLink(quiz)}
-                              className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
-                            >
-                              <Eye size={14} />
-                              تفاصيل
-                            </Link>
-                            <Link
-                              to={getAttemptResultLink(quiz, 'analysis')}
-                              className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
-                            >
-                              <BarChart3 size={14} />
-                              التحليل
-                            </Link>
-                            <Link
-                              to={quiz.quizId ? `/quiz/${quiz.quizId}` : '/quiz'}
-                              className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white hover:bg-gray-800"
-                            >
-                              <RotateCcw size={14} />
-                              إعادة
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            </>
           ) : (
             <div className="p-10 text-center text-gray-500">
-              لا توجد محاولات بعد. ابدأ اختبارًا من صفحة ساهر أو من الاختبارات الموجهة، وبعد الإنهاء سيظهر السجل هنا.
+              لا توجد محاولات في هذا التصنيف بعد. ابدأ اختبارًا، وبعد الإنهاء سيظهر هنا كاختبار واحد وتحته محاولاته.
               <div className="mt-5">
                 <Link to="/dashboard?tab=saher" className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white hover:bg-amber-600">
                   <Zap size={16} />
@@ -522,7 +527,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         <div>
           <div className="flex flex-wrap items-center gap-2 text-xs font-black mb-2">
             <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">أنت الآن في: مركز الاختبارات</span>
-            <Link to="/my-quizzes" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
+            <Link to="/dashboard?tab=quizzes" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
               الانتقال إلى اختباراتي
             </Link>
           </div>
@@ -579,7 +584,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                 icon={<FileText size={24} />}
                 title="اختباراتي السابقة"
                 description="هنا فقط تراجع المحاولات التي حللتها بالفعل، وتشاهد التفاصيل وتحليل المهارات لكل اختبار."
-                to="/my-quizzes"
+                to="/dashboard?tab=quizzes"
                 buttonLabel="افتح سجل اختباراتي"
                 tone="purple"
               />
@@ -771,7 +776,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             </p>
           </div>
           <Link
-            to="/my-quizzes"
+            to="/dashboard?tab=quizzes"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3 text-sm font-bold text-white hover:bg-gray-800"
           >
             <FileText size={16} />
@@ -892,66 +897,160 @@ const QuizSection = ({
   </div>
 );
 
-const AttemptSummaryCard = ({
-  quiz,
-  detailsLink,
-  analysisLink,
+const AttemptCategoryButton = ({
+  active,
+  label,
+  description,
+  count,
+  onClick,
 }: {
-  quiz: QuizResult;
-  detailsLink: string;
-  analysisLink: string;
+  active: boolean;
+  label: string;
+  description: string;
+  count: number;
+  onClick: () => void;
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`flex items-center justify-between gap-4 rounded-2xl border p-4 text-right transition-all ${
+      active
+        ? 'border-indigo-200 bg-white text-indigo-700 shadow-sm ring-2 ring-indigo-50'
+        : 'border-gray-100 bg-white/70 text-gray-700 hover:border-gray-200 hover:bg-white'
+    }`}
+  >
+    <span>
+      <span className="block text-sm font-black">{label}</span>
+      <span className="mt-1 block text-xs font-bold text-gray-500">{description}</span>
+    </span>
+    <span className={`rounded-2xl px-3 py-2 text-lg font-black ${active ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-700'}`}>
+      {count}
+    </span>
+  </button>
+);
+
+const AttemptGroupCard = ({
+  group,
+  isOpen,
+  onToggle,
+  getAttemptResultLink,
+}: {
+  group: QuizAttemptGroup;
+  isOpen: boolean;
+  onToggle: () => void;
+  getAttemptResultLink: (result: QuizResult, viewMode?: 'review' | 'analysis') => string;
 }) => {
-  const weakestSkill = [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
-  const isPassed = quiz.score >= 50;
+  const latest = group.latestAttempt;
+  const best = group.bestAttempt;
+  const weakestSkill = [...(latest.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
+  const isPassed = best.score >= 50;
+  const categoryLabel = group.category === 'mock' ? 'محاكي' : 'عادي';
 
   return (
-    <article className="p-4 space-y-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="font-black text-gray-900 leading-7">{quiz.quizTitle}</h3>
-          <p className="mt-1 text-xs text-gray-500">{quiz.totalQuestions} سؤال - {new Date(quiz.date).toLocaleDateString('ar-SA')}</p>
-        </div>
-        <div className={`shrink-0 rounded-2xl px-4 py-3 text-center ${isPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
-          <div className="text-xl font-black">{quiz.score}%</div>
-          <div className="text-[10px] font-bold">{isPassed ? 'ممتاز' : 'نحتاج تدريب'}</div>
-        </div>
-      </div>
-
-      <div className="rounded-xl bg-gray-50 p-3">
-        <div className="text-[11px] font-bold text-gray-500 mb-1">أهم مهارة تحتاج متابعة</div>
-        {weakestSkill ? (
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-sm font-bold text-gray-900">{weakestSkill.skill}</span>
-            <span className={`text-sm font-black ${weakestSkill.mastery < 50 ? 'text-rose-600' : 'text-amber-600'}`}>{weakestSkill.mastery}%</span>
+    <article className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:border-indigo-100">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-black text-gray-600">{categoryLabel}</span>
+            <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${isPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+              أفضل نتيجة {best.score}%
+            </span>
           </div>
-        ) : (
-          <div className="text-sm text-gray-400">لا يوجد تحليل مهارات لهذا الاختبار.</div>
-        )}
+          <h3 className="mt-2 text-lg font-black leading-7 text-gray-900">{group.quizTitle}</h3>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-gray-500">
+            <span>{group.attempts.length} محاولة</span>
+            <span>{latest.totalQuestions} سؤال</span>
+            <span>آخر حل {new Date(latest.date).toLocaleDateString('ar-SA')}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[520px]">
+          <div className="rounded-2xl bg-gray-50 p-3 text-center">
+            <div className="text-[11px] font-bold text-gray-500">آخر درجة</div>
+            <div className={`mt-1 text-xl font-black ${latest.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{latest.score}%</div>
+          </div>
+          <div className="rounded-2xl bg-indigo-50 p-3 text-center">
+            <div className="text-[11px] font-bold text-indigo-500">أفضل درجة</div>
+            <div className="mt-1 text-xl font-black text-indigo-700">{best.score}%</div>
+          </div>
+          <div className="rounded-2xl bg-amber-50 p-3 text-center">
+            <div className="text-[11px] font-bold text-amber-600">المحاولات</div>
+            <div className="mt-1 text-xl font-black text-amber-700">{group.attempts.length}</div>
+          </div>
+          <div className="rounded-2xl bg-emerald-50 p-3 text-center">
+            <div className="text-[11px] font-bold text-emerald-600">الحالة</div>
+            <div className="mt-1 text-sm font-black text-emerald-700">{isPassed ? 'جيد' : 'يحتاج مراجعة'}</div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        <Link
-          to={detailsLink}
-          className="inline-flex items-center justify-center gap-1 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
-        >
-          <Eye size={14} />
-          تفاصيل
-        </Link>
-        <Link
-          to={analysisLink}
-          className="inline-flex items-center justify-center gap-1 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
-        >
-          <BarChart3 size={14} />
-          تقريري
-        </Link>
-        <Link
-          to={quiz.quizId ? `/quiz/${quiz.quizId}` : '/quiz'}
-          className="inline-flex items-center justify-center gap-1 rounded-xl bg-gray-900 px-3 py-2 text-xs font-bold text-white hover:bg-gray-800"
-        >
-          <RotateCcw size={14} />
-          إعادة
-        </Link>
+      <div className="mt-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+        <div className="rounded-2xl bg-gray-50 px-4 py-3">
+          <div className="text-[11px] font-bold text-gray-500">أهم مهارة تحتاج متابعة من آخر محاولة</div>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="text-sm font-black text-gray-900">{weakestSkill?.skill || 'لا يوجد تحليل مهارات لهذا الاختبار'}</span>
+            {weakestSkill ? <span className="rounded-full bg-white px-2 py-1 text-xs font-black text-amber-700">{weakestSkill.mastery}%</span> : null}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={onToggle}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm font-black text-indigo-700 hover:bg-indigo-100"
+          >
+            <FileText size={16} />
+            {isOpen ? 'إخفاء المحاولات' : 'فتح المحاولات'}
+          </button>
+          <Link
+            to={getAttemptResultLink(latest)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
+          >
+            <Eye size={16} />
+            آخر نتيجة
+          </Link>
+          <Link
+            to={group.quizId ? `/quiz/${group.quizId}` : '/quiz'}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-sm font-black text-emerald-700 hover:bg-emerald-100"
+          >
+            <RotateCcw size={16} />
+            إعادة
+          </Link>
+        </div>
       </div>
+
+      {isOpen ? (
+        <div className="mt-4 overflow-hidden rounded-2xl border border-gray-100">
+          <div className="grid grid-cols-12 bg-gray-50 px-3 py-2 text-[11px] font-black text-gray-500">
+            <div className="col-span-4">المحاولة</div>
+            <div className="col-span-2 text-center">الدرجة</div>
+            <div className="col-span-2 text-center">الوقت</div>
+            <div className="col-span-4 text-center">الإجراءات</div>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {group.attempts.map((attempt, index) => (
+              <div key={`${attempt.quizId}-${attempt.date}-${index}`} className="grid grid-cols-12 items-center gap-2 px-3 py-3 text-sm">
+                <div className="col-span-4">
+                  <div className="font-black text-gray-900">محاولة {group.attempts.length - index}</div>
+                  <div className="mt-1 text-[11px] font-bold text-gray-500">{new Date(attempt.date).toLocaleString('ar-SA')}</div>
+                </div>
+                <div className={`col-span-2 text-center font-black ${attempt.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{attempt.score}%</div>
+                <div className="col-span-2 text-center text-xs font-bold text-gray-500">{attempt.timeSpent}</div>
+                <div className="col-span-4 flex flex-wrap justify-center gap-2">
+                  <Link to={getAttemptResultLink(attempt)} className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100">
+                    تفاصيل
+                  </Link>
+                  <Link to={getAttemptResultLink(attempt, 'review')} className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
+                    مراجعة
+                  </Link>
+                  <Link to={getAttemptResultLink(attempt, 'analysis')} className="rounded-lg bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 hover:bg-purple-100">
+                    تحليل
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </article>
   );
 };
