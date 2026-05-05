@@ -101,6 +101,27 @@ export const QuizPage: React.FC = () => {
     (searchParams.get('returnOnFinish') === '1' ||
       quiz?.settings?.returnToSourceOnFinish === true ||
       quiz?.settings?.showResultsReport === false);
+  const returnLabel = useMemo(() => {
+    if (sourceParam === 'foundation') return 'العودة لموضوع التأسيس';
+    if (sourceParam === 'training') return 'العودة للتدريب';
+    if (sourceParam === 'tests') return 'العودة للاختبارات';
+    if (sourceParam === 'course') return 'العودة للدورة';
+    if (sourceParam === 'mock-exam') return 'العودة للاختبارات المحاكية';
+    return safeReturnTo ? 'العودة للمكان السابق' : 'الرجوع';
+  }, [safeReturnTo, sourceParam]);
+  const buildReturnToSourcePath = () => {
+    if (!safeReturnTo) return '';
+    const [path, query = ''] = safeReturnTo.split('?');
+    const nextParams = new URLSearchParams(query);
+
+    if (sourceParam === 'foundation') {
+      nextParams.set('trainingDone', '1');
+      nextParams.set('content', 'quizzes');
+    }
+
+    const nextQuery = nextParams.toString();
+    return `${path}${nextQuery ? `?${nextQuery}` : ''}`;
+  };
   const handleReturnToPreviousPlace = () => {
     if (safeReturnTo) {
       navigate(safeReturnTo);
@@ -474,7 +495,7 @@ export const QuizPage: React.FC = () => {
     }
 
     if (shouldReturnToSourceAfterFinish) {
-      navigate(safeReturnTo, { replace: true });
+      navigate(buildReturnToSourcePath() || safeReturnTo, { replace: true });
       return;
     }
 
@@ -543,7 +564,7 @@ export const QuizPage: React.FC = () => {
               className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'} mb-3 inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-2 text-xs font-black`}
             >
               <ArrowRight size={16} />
-              الرجوع
+              {returnLabel}
             </button>
             <h1 className={`text-xl sm:text-2xl font-bold break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
             {quiz.description && <p className={`${isNightMode ? 'text-slate-400' : 'text-gray-500'} mt-1 text-sm`}>{quiz.description}</p>}

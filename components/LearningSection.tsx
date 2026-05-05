@@ -128,6 +128,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, String(quizId)));
         return sourceQuiz?.settings?.returnToSourceOnFinish === true || sourceQuiz?.settings?.showResultsReport === false;
     };
+    const hasReturnedFromFoundationTraining = searchParams.get('trainingDone') === '1';
 
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
     const [viewingFile, setViewingFile] = useState<any>(null);
@@ -512,8 +513,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             initialSubTopicId: requestedTopic.parentId ? requestedTopic.id : null,
             initialContentTab: requestedContentTab,
             initialLessonId: requestedLessonId || null,
+            trainingDone: hasReturnedFromFoundationTraining,
         });
-    }, [category, hasFoundationAccess, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
+    }, [category, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
     let banks = getLearningSlotQuizzesWithLegacyFallback(
         quizzes.filter(isMaterialQuizCandidate),
@@ -648,7 +650,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 });
             }
         } else {
-            if (type === 'skill') setSelectedSkill(item);
+            if (type === 'skill') {
+                setSelectedSkill({
+                    ...item,
+                    trainingDone: hasReturnedFromFoundationTraining,
+                });
+            }
             // Tests and Banks are handled by SimulatedTestExperience directly
         }
     };

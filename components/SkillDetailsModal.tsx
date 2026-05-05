@@ -33,6 +33,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   });
   const subTopicRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const showTrainingSavedNotice = Boolean(skill?.trainingDone);
 
   const selectedTopic = skill?.originalTopic as Topic | undefined;
   const activeTopic = selectedSubTopic || selectedTopic;
@@ -421,6 +422,12 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              {showTrainingSavedNotice ? (
+                <div className="mb-4 flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
+                  <CheckCircle2 size={18} />
+                  تم حفظ التدريب. يمكنك إكمال الشرح أو فتح تدريب آخر من نفس الموضوع.
+                </div>
+              ) : null}
               {topicModalTab === 'lessons' ? (
                 <div className="space-y-4">
                   {lessonNotice ? (
