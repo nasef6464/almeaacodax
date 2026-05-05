@@ -122,6 +122,22 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     };
 
     if (testState === 'list') {
+        if (tests.length === 0) {
+            return (
+                <Card className="mx-auto max-w-3xl border border-dashed border-gray-200 bg-white p-8 text-center shadow-sm">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
+                        <FileText size={28} />
+                    </div>
+                    <h3 className="text-lg font-black text-gray-900">
+                        {mode === 'bank' ? 'لا توجد تدريبات منشورة الآن' : 'لا توجد اختبارات منشورة الآن'}
+                    </h3>
+                    <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-gray-500">
+                        سيظهر هنا ما يختاره المدير لهذه المادة فقط.
+                    </p>
+                </Card>
+            );
+        }
+
         return (
             <div className="space-y-4 max-w-4xl mx-auto">
                 {tests.map((test) => (
@@ -144,8 +160,8 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                 </div>
                             </div>
                         </div>
-                        <button className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isLocked ? 'bg-gray-100 text-gray-500 hover:bg-gray-200' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}>
-                            {test.isLocked ? 'مغلق' : mode === 'bank' ? 'تصفح الأسئلة' : 'ابدأ الاختبار'}
+                        <button className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}>
+                            {test.isLocked ? 'فتح الباقة' : mode === 'bank' ? 'تصفح الأسئلة' : 'ابدأ الاختبار'}
                             {!test.isLocked && <ChevronRight size={18} className="transform rotate-180" />}
                         </button>
                     </div>
