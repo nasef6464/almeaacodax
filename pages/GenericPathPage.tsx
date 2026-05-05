@@ -242,6 +242,7 @@ export const GenericPathPage: React.FC = () => {
                 canStudentSeeContent,
                 fallback,
             ).forEach((quiz) => {
+                if (!canSeeHiddenPaths && (quiz.questionIds?.length || 0) === 0) return;
                 if (!canSeeHiddenPaths && slot === 'tests') {
                     const mode = quiz.mode || 'regular';
                     const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;

@@ -48,7 +48,11 @@ export const SubjectLearningPage: React.FC = () => {
   const canSeeLesson = (lesson: (typeof lessons)[number]) =>
     isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
   const canSeeQuiz = (quiz: (typeof quizzes)[number]) =>
-    isStaffViewer || (quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+    isStaffViewer ||
+    ((quiz.questionIds?.length || 0) > 0 &&
+      quiz.showOnPlatform !== false &&
+      quiz.isPublished !== false &&
+      (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
   const canSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
     isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
   const canSeeCourse = (course: (typeof courses)[number]) =>
