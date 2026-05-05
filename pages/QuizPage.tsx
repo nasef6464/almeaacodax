@@ -307,25 +307,25 @@ export const QuizPage: React.FC = () => {
 
     if (isCurrent) {
       return isNightMode
-        ? 'border-amber-300 bg-amber-500 text-white shadow-md shadow-amber-950/30'
-        : 'border-amber-500 bg-amber-500 text-white shadow-md shadow-amber-100';
+        ? 'border-amber-300 bg-amber-500 text-white shadow-md shadow-amber-950/30 ring-2 ring-amber-300/40'
+        : 'border-amber-600 bg-amber-500 text-white shadow-md shadow-amber-100 ring-2 ring-amber-200';
     }
 
     if (isMarkedForReview) {
       return isNightMode
-        ? 'border-purple-400 bg-purple-950 text-purple-100'
-        : 'border-purple-300 bg-purple-50 text-purple-700';
+        ? 'border-purple-300 bg-purple-600 text-white shadow-sm shadow-purple-950/30'
+        : 'border-purple-600 bg-purple-500 text-white shadow-sm shadow-purple-100';
     }
 
     if (isAnswered) {
       return isNightMode
-        ? 'border-emerald-400 bg-emerald-950 text-emerald-100'
-        : 'border-emerald-400 bg-emerald-50 text-emerald-700';
+        ? 'border-emerald-300 bg-emerald-600 text-white shadow-sm shadow-emerald-950/30'
+        : 'border-emerald-600 bg-emerald-500 text-white shadow-sm shadow-emerald-100';
     }
 
     return isNightMode
-      ? 'border-slate-700 bg-slate-950 text-slate-300 hover:border-amber-400 hover:bg-slate-900'
-      : 'border-gray-200 bg-white text-gray-700 hover:border-amber-300 hover:bg-amber-50';
+      ? 'border-slate-600 bg-slate-950 text-slate-200 hover:border-amber-400 hover:bg-slate-900'
+      : 'border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50';
   };
 
   const handleNext = () => {
@@ -650,20 +650,20 @@ export const QuizPage: React.FC = () => {
               <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-6 rounded-2xl border p-3`}>
                 <div className={`mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
                   <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                    <span className="h-3 w-3 rounded-full bg-amber-500 ring-2 ring-amber-100" />
                     السؤال الحالي
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    <span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
                     تمت الإجابة
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <span className={`h-2.5 w-2.5 rounded-full border ${isNightMode ? 'border-slate-500 bg-slate-950' : 'border-gray-300 bg-white'}`} />
+                    <span className={`h-3 w-3 rounded-full border-2 ${isNightMode ? 'border-slate-500 bg-slate-950' : 'border-slate-300 bg-white'}`} />
                     لم يجب
                   </span>
                   {shouldShowQuestionReview ? (
                     <span className="inline-flex items-center gap-1">
-                      <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
+                      <span className="h-3 w-3 rounded-full bg-purple-500 ring-2 ring-purple-100" />
                       للمراجعة
                     </span>
                   ) : null}
@@ -685,7 +685,7 @@ export const QuizPage: React.FC = () => {
                         key={question.id}
                         type="button"
                         onClick={() => setCurrentQuestionIndex(index)}
-                        className={`h-8 w-8 rounded-md border text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
+                        className={`h-8 w-8 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
                         aria-label={title}
                         title={title}
                       >

@@ -990,14 +990,14 @@ const Quiz: React.FC = () => {
                       }}
                       className={`h-9 w-9 shrink-0 rounded-xl text-xs font-black transition-colors ${
                         isCurrent
-                          ? 'bg-amber-500 text-white shadow-sm'
+                          ? 'border-2 border-amber-600 bg-amber-500 text-white shadow-sm ring-2 ring-amber-200'
                           : isAnswered
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                            ? 'border-2 border-emerald-600 bg-emerald-500 text-white shadow-sm'
                             : isReviewLater
-                              ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                              ? 'border-2 border-purple-600 bg-purple-500 text-white shadow-sm'
                               : isFavorite
-                              ? 'bg-rose-50 text-rose-700 border border-rose-100'
-                              : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-100'
+                              ? 'border-2 border-rose-500 bg-rose-500 text-white shadow-sm'
+                              : 'border-2 border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50'
                       }`}
                       title={isReviewLater ? 'سؤال للمراجعة لاحقًا' : isFavorite ? 'سؤال في المفضلة' : isAnswered ? 'تمت الإجابة' : 'لم تتم الإجابة بعد'}
                     >

@@ -24,6 +24,32 @@ interface LearningSectionProps {
     colorTheme?: 'indigo' | 'amber' | 'emerald' | 'purple' | 'rose';
 }
 
+type LearningTab = 'courses' | 'skills' | 'banks' | 'tests' | 'library';
+
+const learningTabAliases: Record<string, LearningTab> = {
+    courses: 'courses',
+    course: 'courses',
+    skills: 'skills',
+    foundation: 'skills',
+    topics: 'skills',
+    banks: 'banks',
+    bank: 'banks',
+    training: 'banks',
+    trainings: 'banks',
+    tests: 'tests',
+    test: 'tests',
+    quizzes: 'tests',
+    quiz: 'tests',
+    library: 'library',
+    files: 'library',
+    support: 'library',
+};
+
+const normalizeLearningTab = (value?: string | null): LearningTab | null => {
+    if (!value) return null;
+    return learningTabAliases[value.toLowerCase()] || null;
+};
+
 const themePaletteMap: Record<string, { base: string; soft: string; border: string; text: string }> = {
     indigo: { base: '#4f46e5', soft: '#e0e7ff', border: '#c7d2fe', text: '#4338ca' },
     amber: { base: '#f59e0b', soft: '#fef3c7', border: '#fde68a', text: '#b45309' },
@@ -44,7 +70,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
-    const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'banks' | 'tests' | 'library'>('courses');
+    const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     const theme = resolveThemePalette(colorTheme);
     
@@ -58,16 +84,22 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         tests: settings.showTests ?? true,
         library: settings.showLibrary ?? true,
     };
-    const isTabEnabled = (tab: typeof activeTab) => enabledTabs[tab];
+    const isTabEnabled = (tab: LearningTab) => enabledTabs[tab];
     const firstEnabledTab = (Object.entries(enabledTabs).find(([, enabled]) => enabled)?.[0] || 'courses') as typeof activeTab;
 
     
     useEffect(() => {
-        const tab = searchParams.get('tab');
-        if (tab && ['courses', 'skills', 'banks', 'tests', 'library'].includes(tab)) {
-            setActiveTab(tab as any);
+        const rawTab = searchParams.get('tab');
+        const tab = normalizeLearningTab(rawTab);
+        if (tab) {
+            setActiveTab(tab);
+            if (rawTab !== tab) {
+                const nextParams = new URLSearchParams(searchParams);
+                nextParams.set('tab', tab);
+                setSearchParams(nextParams, { replace: true });
+            }
         }
-    }, [searchParams]);
+    }, [searchParams, setSearchParams]);
 
     useEffect(() => {
         if (!isTabEnabled(activeTab)) {
@@ -75,8 +107,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         }
     }, [activeTab, firstEnabledTab, settings.showBanks, settings.showCourses, settings.showLibrary, settings.showSkills, settings.showTests]);
 
-    const handleTabChange = (tab: string) => {
-        setActiveTab(tab as any);
+    const handleTabChange = (tab: LearningTab) => {
+        setActiveTab(tab);
         const nextParams = new URLSearchParams(searchParams);
         nextParams.set('tab', tab);
         if (tab !== 'skills') {
@@ -86,7 +118,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         }
         setSearchParams(nextParams);
     };
-    const buildSectionReturnPath = (tab: 'banks' | 'tests' | 'skills' | 'courses' | 'library' = activeTab) => {
+    const buildSectionReturnPath = (tab: LearningTab = activeTab) => {
         const params = new URLSearchParams();
         if (subject) params.set('subject', subject);
         params.set('tab', tab);
