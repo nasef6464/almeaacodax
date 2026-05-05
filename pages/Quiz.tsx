@@ -5,7 +5,7 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass } from '../utils/quizPresentation';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 const DEFAULT_TIME_MINUTES = 20;
@@ -1135,6 +1135,13 @@ const Quiz: React.FC = () => {
                   const isCurrent = idx === currentQuestion;
                   const isAnswered = answers[idx] !== undefined;
                   const isReviewLater = storeReviewLater.includes(question.id);
+                  const mapState = isCurrent
+                    ? 'current'
+                    : isReviewLater
+                      ? 'review'
+                      : isAnswered
+                        ? 'answered'
+                        : 'unanswered';
 
                   return (
                     <button
@@ -1143,15 +1150,7 @@ const Quiz: React.FC = () => {
                         setCurrentQuestion(idx);
                         setSelectedAnswer(answers[idx] ?? null);
                       }}
-                      className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-lg sm:rounded-xl text-xs font-black transition-colors ${
-                        isCurrent
-                          ? 'border-2 border-amber-600 bg-amber-500 text-white shadow-sm ring-2 ring-amber-200'
-                          : isReviewLater
-                            ? 'border-2 border-purple-600 bg-purple-500 text-white shadow-sm'
-                            : isAnswered
-                              ? 'border-2 border-emerald-600 bg-emerald-500 text-white shadow-sm'
-                              : 'border-2 border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50'
-                      }`}
+                      className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-lg sm:rounded-xl border-2 text-xs font-black transition-colors ${getQuizQuestionMapButtonClass(mapState)}`}
                       title={isReviewLater ? 'سؤال للمراجعة لاحقًا' : isAnswered ? 'تمت الإجابة' : 'لم تتم الإجابة بعد'}
                     >
                       {idx + 1}

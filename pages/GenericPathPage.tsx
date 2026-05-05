@@ -964,6 +964,10 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     }
 
     if (isMockExamsTab) {
+        const totalMockQuestions = pathMockQuizzes.reduce((sum, quiz) => sum + getMockExamQuestionCount(quiz), 0);
+        const totalMockMinutes = pathMockQuizzes.reduce((sum, quiz) => sum + getMockExamTimeLimit(quiz), 0);
+        const totalMockSections = pathMockQuizzes.reduce((sum, quiz) => sum + Math.max(getMockExamSections(quiz).length, 1), 0);
+
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
                 <header className="text-white py-16 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
@@ -983,6 +987,20 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 <div className="max-w-5xl mx-auto px-4 py-8">
                     {pathMockQuizzes.length > 0 ? (
                         <div className="space-y-4">
+                            <div className="grid gap-3 sm:grid-cols-3">
+                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
+                                    <div className="text-2xl font-black text-gray-900">{pathMockQuizzes.length}</div>
+                                    <div className="mt-1 text-xs font-bold text-gray-500">اختبار منشور</div>
+                                </Card>
+                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
+                                    <div className="text-2xl font-black text-indigo-600">{totalMockQuestions}</div>
+                                    <div className="mt-1 text-xs font-bold text-gray-500">سؤال داخل المحاكيات</div>
+                                </Card>
+                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
+                                    <div className="text-2xl font-black text-amber-600">{totalMockSections || totalMockMinutes}</div>
+                                    <div className="mt-1 text-xs font-bold text-gray-500">{totalMockSections ? 'قسم اختبار' : 'دقيقة تقريبًا'}</div>
+                                </Card>
+                            </div>
                             {pathMockQuizzes.map((quiz) => {
                                 const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
                                 const mockSections = getMockExamSections(quiz);
@@ -1007,9 +1025,13 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                         <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}</span>
                                                     </div>
                                                     {sectionSummary ? (
-                                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-500">
-                                                            {sectionSummary}
-                                                        </p>
+                                                        <div className="mt-2 flex flex-wrap gap-1.5">
+                                                            {sectionSummary.split('، ').map((sectionName) => (
+                                                                <span key={`${quiz.id}-${sectionName}`} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-gray-500 ring-1 ring-gray-100">
+                                                                    {sectionName}
+                                                                </span>
+                                                            ))}
+                                                        </div>
                                                     ) : null}
                                                 </div>
                                             </div>

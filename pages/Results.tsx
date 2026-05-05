@@ -34,7 +34,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -1528,6 +1528,7 @@ const ReviewSolutions = ({
 
   const isFavorite = favorites.includes(q.questionId);
   const isReviewLater = reviewLater.includes(q.questionId);
+  const reviewOptionLayout = 'horizontal' as const;
 
   return (
     <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5 pb-20 animate-fade-in">
@@ -1581,7 +1582,7 @@ const ReviewSolutions = ({
             ) : !questionHasInlineMedia ? null : null}
           </div>
 
-          <div className={`grid ${getQuizOptionGridClass(q.options, 'auto')} gap-2 sm:gap-3 mb-5 sm:mb-8`}>
+          <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 sm:gap-3 mb-5 sm:mb-8`}>
             {q.options.map((option, i) => {
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
@@ -1610,7 +1611,7 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex ${getQuizOptionButtonHeightClass(q.options, 'auto')} items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex ${getQuizOptionButtonHeightClass(q.options, reviewOptionLayout)} items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
@@ -1653,6 +1654,13 @@ const ReviewSolutions = ({
               const isCurrent = index === currentIdx;
               const wasAnswered = typeof question.selectedOptionIndex === 'number';
               const wasCorrect = question.isCorrect;
+              const mapState = isCurrent
+                ? 'current'
+                : !wasAnswered
+                  ? 'unanswered'
+                  : wasCorrect
+                    ? 'correct'
+                    : 'wrong';
 
               return (
                 <button
@@ -1662,15 +1670,7 @@ const ReviewSolutions = ({
                     setCurrentIdx(index);
                     setShowExplanation(false);
                   }}
-                  className={`h-8 sm:h-10 rounded-lg sm:rounded-xl border text-xs sm:text-sm font-black transition ${
-                    isCurrent
-                      ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                      : !wasAnswered
-                          ? 'border-amber-200 bg-amber-50 text-amber-700'
-                          : wasCorrect
-                            ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                            : 'border-rose-100 bg-rose-50 text-rose-700'
-                  }`}
+                  className={`h-8 sm:h-10 rounded-lg sm:rounded-xl border-2 text-xs sm:text-sm font-black transition ${getQuizQuestionMapButtonClass(mapState)}`}
                   title={!wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
                 >
                   {index + 1}

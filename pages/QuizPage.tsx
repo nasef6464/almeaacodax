@@ -6,7 +6,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 
 interface QuestionThreadItem {
   id: string;
@@ -244,7 +244,6 @@ export const QuizPage: React.FC = () => {
   const passingScore = quiz?.settings?.passingScore ?? 50;
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const optionLayout = quiz?.settings?.optionLayout || 'auto';
   const mockExamSections = useMemo(
     () => (quiz?.mockExam?.enabled ? getMockExamSections(quiz) : []),
     [quiz],
@@ -288,7 +287,7 @@ export const QuizPage: React.FC = () => {
       mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
     [currentQuestionIndex, mockExamSectionSummaries],
   );
-  const activeOptionLayout = optionLayout === 'two_columns' ? 'auto' : 'horizontal';
+  const activeOptionLayout = 'horizontal' as const;
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
@@ -357,26 +356,18 @@ export const QuizPage: React.FC = () => {
     const isMarkedForReview = reviewLater.includes(question.id);
 
     if (isCurrent) {
-      return isNightMode
-        ? 'border-amber-300 bg-amber-500 text-white shadow-md shadow-amber-950/30 ring-2 ring-amber-300/40'
-        : 'border-amber-600 bg-amber-500 text-white shadow-md shadow-amber-100 ring-2 ring-amber-200';
+      return getQuizQuestionMapButtonClass('current', isNightMode);
     }
 
     if (isMarkedForReview) {
-      return isNightMode
-        ? 'border-purple-300 bg-purple-600 text-white shadow-sm shadow-purple-950/30'
-        : 'border-purple-600 bg-purple-500 text-white shadow-sm shadow-purple-100';
+      return getQuizQuestionMapButtonClass('review', isNightMode);
     }
 
     if (isAnswered) {
-      return isNightMode
-        ? 'border-emerald-300 bg-emerald-600 text-white shadow-sm shadow-emerald-950/30'
-        : 'border-emerald-600 bg-emerald-500 text-white shadow-sm shadow-emerald-100';
+      return getQuizQuestionMapButtonClass('answered', isNightMode);
     }
 
-    return isNightMode
-      ? 'border-slate-600 bg-slate-950 text-slate-200 hover:border-amber-400 hover:bg-slate-900'
-      : 'border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50';
+    return getQuizQuestionMapButtonClass('unanswered', isNightMode);
   };
 
   const handleNext = () => {
