@@ -8,6 +8,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { matchesEntityId } from '../utils/entityIds';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 interface SkillDetailsModalProps {
   isOpen: boolean;
@@ -180,10 +181,16 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     return `/category/${selectedTopic?.pathId || ''}?${params.toString()}`;
   };
   const buildTrainingQuizPath = (quizId: string) => {
-    const params = new URLSearchParams();
-    params.set('returnTo', buildTopicReturnPath('quizzes'));
-    params.set('source', 'foundation');
-    return `/quiz/${quizId}?${params.toString()}`;
+    const sourceQuiz = quizzes.find((quiz) => matchesEntityId(quiz, quizId));
+    const returnOnFinish =
+      sourceQuiz?.settings?.returnToSourceOnFinish === true ||
+      sourceQuiz?.settings?.showResultsReport === false;
+
+    return buildQuizRouteWithContext(quizId, {
+      returnTo: buildTopicReturnPath('quizzes'),
+      source: 'foundation',
+      returnOnFinish,
+    });
   };
   const markLessonWatched = (lessonId: string) => {
     setWatchedLessonIds((current) => {
