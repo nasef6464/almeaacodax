@@ -1593,7 +1593,7 @@ const ReviewSolutions = ({
             ) : !questionHasInlineMedia ? null : null}
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 mb-5 sm:mb-8">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 mb-5 sm:mb-8">
             {q.options.map((option, i) => {
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
@@ -1622,10 +1622,10 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex min-h-[44px] sm:min-h-[50px] items-center justify-between gap-2 sm:gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex min-h-[38px] sm:min-h-[42px] items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
-                  <div className="flex min-w-0 flex-1 items-center gap-3">
-                    <div className={`flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
                     <span
                       className="flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
                       dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}

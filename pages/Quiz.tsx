@@ -980,11 +980,9 @@ const Quiz: React.FC = () => {
   const currentOptions = questions[currentQuestion]?.options || [];
   const longestOptionLength = currentOptions.reduce((max, option) => Math.max(max, String(option).length), 0);
   const currentOptionGridClass =
-    currentOptions.length <= 2
-      ? 'grid-cols-1 sm:grid-cols-2'
-      : longestOptionLength > 42
+    longestOptionLength > 72
         ? 'grid-cols-1 sm:grid-cols-2'
-        : 'grid-cols-2 md:grid-cols-4';
+        : 'grid-cols-2 sm:grid-cols-4';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -1093,7 +1091,7 @@ const Quiz: React.FC = () => {
               </button>
             )}
 
-            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-3 dir-rtl`}>
+            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-4 gap-y-2 sm:gap-y-3 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
                 const borderClass = isSelected
@@ -1104,16 +1102,16 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[42px] sm:min-h-[46px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
+                    className={`min-h-[38px] sm:min-h-[42px] px-2.5 sm:px-3 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
                   >
-                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-relaxed text-center break-words">
+                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-6 text-center break-words">
                       {sanitizeArabicText(option)}
                     </span>
-                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <div className={`h-7 w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                    <div className="flex items-center shrink-0">
+                      <div className={`h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
-                        <div className={`h-2.5 w-2.5 rounded-full ${
+                        <div className={`h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full ${
                           isSelected ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
