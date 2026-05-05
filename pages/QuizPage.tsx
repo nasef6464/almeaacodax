@@ -16,6 +16,17 @@ interface QuestionThreadItem {
 }
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
+const QUIZ_PAGE_PROGRESS_PREFIX = 'almeaa-quiz-progress:';
+
+interface SavedQuizPageProgress {
+  quizId: string;
+  questionIds: string[];
+  selectedOptions: Record<string, number>;
+  currentQuestionIndex: number;
+  timeLeft: number | null;
+  savedAt: string;
+}
+
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
@@ -68,6 +79,7 @@ export const QuizPage: React.FC = () => {
   const [qaDraft, setQaDraft] = useState('');
   const [qaThread, setQaThread] = useState<QuestionThreadItem[]>(INITIAL_QA_THREAD);
   const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
+  const [draftRestored, setDraftRestored] = useState(false);
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
@@ -195,19 +207,72 @@ export const QuizPage: React.FC = () => {
       .map((id) => resolveQuestionFromBank(questions, id))
       .filter((question): question is Question => Boolean(question));
 
-    setQuizQuestions(
-      foundQuiz.settings?.randomizeQuestions === false
-        ? loadedQuestions
-        : shuffleQuestions(loadedQuestions)
-    );
-
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (foundQuiz.settings?.timeLimit || 0);
-    if (effectiveTimeLimit && effectiveTimeLimit > 0) {
-      setTimeLeft(effectiveTimeLimit * 60);
+    const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
+    const progressKey = `${QUIZ_PAGE_PROGRESS_PREFIX}${foundQuiz.id}`;
+    let savedProgress: SavedQuizPageProgress | null = null;
+
+    if (typeof window !== 'undefined') {
+      try {
+        const rawProgress = window.localStorage.getItem(progressKey);
+        savedProgress = rawProgress ? (JSON.parse(rawProgress) as SavedQuizPageProgress) : null;
+      } catch (error) {
+        console.warn('Unable to restore quiz progress draft:', error);
+        window.localStorage.removeItem(progressKey);
+      }
+    }
+
+    const savedQuestionOrder =
+      savedProgress?.quizId === foundQuiz.id &&
+      savedProgress.questionIds.length === loadedQuestions.length
+        ? savedProgress.questionIds
+            .map((id) => resolveQuestionFromBank(loadedQuestions, id))
+            .filter((question): question is Question => Boolean(question))
+        : [];
+
+    const canRestoreProgress = savedQuestionOrder.length === loadedQuestions.length && loadedQuestions.length > 0;
+    const nextQuestions = canRestoreProgress
+      ? savedQuestionOrder
+      : foundQuiz.settings?.randomizeQuestions === false
+        ? loadedQuestions
+        : shuffleQuestions(loadedQuestions);
+
+    setQuizQuestions(nextQuestions);
+    setDraftRestored(canRestoreProgress);
+
+    if (canRestoreProgress && savedProgress) {
+      const allowedQuestionIds = new Set(nextQuestions.map((question) => question.id));
+      const safeSelectedOptions = Object.fromEntries(
+        Object.entries(savedProgress.selectedOptions || {}).filter(([questionId, optionIndex]) => {
+          const question = nextQuestions.find((item) => item.id === questionId);
+          return Boolean(question && allowedQuestionIds.has(questionId) && Number.isInteger(optionIndex) && optionIndex >= 0 && optionIndex < question.options.length);
+        }),
+      );
+      setSelectedOptions(safeSelectedOptions);
+      setCurrentQuestionIndex(Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
+      setTimeLeft(typeof savedProgress.timeLeft === 'number' ? Math.max(savedProgress.timeLeft, 0) : defaultTimeLeft);
     } else {
-      setTimeLeft(null);
+      setSelectedOptions({});
+      setCurrentQuestionIndex(0);
+      setTimeLeft(defaultTimeLeft);
     }
   }, [quizId, quizzes, questions, user, checkAccess, hasScopedPackageAccess]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!quiz || isFinished || isSubmittingResult || quizQuestions.length === 0) return;
+
+    const draft: SavedQuizPageProgress = {
+      quizId: quiz.id,
+      questionIds: quizQuestions.map((question) => question.id),
+      selectedOptions,
+      currentQuestionIndex,
+      timeLeft,
+      savedAt: new Date().toISOString(),
+    };
+
+    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
+  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !isFinished && !isSubmittingResult) {
@@ -529,6 +594,11 @@ export const QuizPage: React.FC = () => {
       setIsSubmittingResult(false);
     }
 
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+      setDraftRestored(false);
+    }
+
     if (shouldReturnToSourceAfterFinish) {
       navigate(buildReturnToSourcePath() || safeReturnTo, { replace: true });
       return;
@@ -540,9 +610,13 @@ export const QuizPage: React.FC = () => {
   const handleRestartQuiz = () => {
     if (!quiz) return;
 
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`);
+    }
     setSelectedOptions({});
     setCurrentQuestionIndex(0);
     setIsFinished(false);
+    setDraftRestored(false);
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
     const effectiveTimeLimit = quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0);
@@ -610,6 +684,11 @@ export const QuizPage: React.FC = () => {
               {shouldShowQuestionReview ? (
                 <span className={`${isNightMode ? 'bg-amber-950 text-amber-200' : 'bg-amber-50 text-amber-700'} rounded-full px-3 py-1`}>
                   للمراجعة {reviewQuestionCount}
+                </span>
+              ) : null}
+              {draftRestored ? (
+                <span className={`${isNightMode ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-50 text-emerald-700'} rounded-full px-3 py-1`}>
+                  تم استعادة تقدمك
                 </span>
               ) : null}
               {currentMockExamSection ? (
