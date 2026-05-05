@@ -50,6 +50,7 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<SessionUser>;
   signUpWithEmail: (email: string, password: string) => Promise<SessionUser>;
   logout: () => Promise<void>;
+  devSwitchRole?: (role: BackendRole) => void;
 }
 
 const AUTH_STORAGE_KEY = 'the-hundred-auth-session';
@@ -63,6 +64,39 @@ const roleMap: Record<BackendRole, Role> = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const DEV_TOKEN_PREFIX = 'dev-role-token:';
+
+const devRoleNames: Record<BackendRole, string> = {
+  admin: 'مدير النظام',
+  teacher: 'معلم تجريبي',
+  student: 'طالب تجريبي',
+  supervisor: 'مشرف تجريبي',
+  parent: 'ولي أمر تجريبي',
+};
+
+const buildDevBackendUser = (role: BackendRole): BackendAuthUser => ({
+  id: `dev-${role}`,
+  name: devRoleNames[role],
+  email: `dev-${role}@almeaa.local`,
+  role,
+  points: role === 'student' ? 120 : 0,
+  badges: [],
+  isActive: true,
+  linkedStudentIds: role === 'parent' ? ['69f5eee03ca434d37422ab69'] : [],
+  managedPathIds: role === 'teacher' || role === 'supervisor' ? ['p_1777779639431'] : [],
+  managedSubjectIds: role === 'teacher' ? ['sub_1777779748206'] : [],
+  favorites: [],
+  reviewLater: [],
+  enrolledCourses: [],
+  enrolledPaths: role === 'student' ? ['p_1777779639431'] : [],
+  completedLessons: [],
+  subscription: {
+    plan: role === 'student' ? 'premium' : 'free',
+    purchasedPackages: role === 'student' ? ['pkg_seed_school_quant_full'] : [],
+    purchasedCourses: [],
+  },
+});
 
 const toArray = (value?: string[] | string): string[] => {
   if (Array.isArray(value)) {
@@ -199,6 +233,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
+    if (user.token.startsWith(DEV_TOKEN_PREFIX)) {
+      syncStoreUser(user, buildDevBackendUser(user.role));
+      return;
+    }
+
     Promise.all([
       api.getCurrentUser(),
       api.getQuizResults(),
@@ -258,8 +297,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     resetStoreUser();
   };
 
+  const devSwitchRole = (role: BackendRole) => {
+    if (!import.meta.env.DEV) {
+      return;
+    }
+
+    const backendUser = buildDevBackendUser(role);
+    const sessionUser = buildSessionUser(backendUser, `${DEV_TOKEN_PREFIX}${role}`);
+    persistSession(sessionUser, backendUser);
+  };
+
   const value = useMemo(
-    () => ({ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout }),
+    () => ({ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, devSwitchRole }),
     [user, loading],
   );
 

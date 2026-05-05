@@ -303,15 +303,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           <div className="flex-1 h-2/3 md:h-full flex flex-col overflow-hidden bg-gray-50/50">
             <div className="flex-none p-4 sm:p-6 pb-0">
               <div className="mb-4 rounded-3xl border border-indigo-100 bg-white p-4 shadow-sm">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                  <div>
-                    <div className="text-xs font-black text-indigo-600">رحلتك داخل هذا الجزء</div>
-                    <h3 className="mt-1 text-lg font-black text-gray-900">شاهد، تدرب، ثم ثبّت المعلومة</h3>
-                    <p className="mt-1 text-sm leading-7 text-gray-500">
-                      هذه البطاقة تختصر المطلوب من الطالب داخل الموضوع بدل التنقل العشوائي بين الشروحات والتدريبات.
-                    </p>
-                  </div>
-                  <div className="grid w-full gap-2 sm:grid-cols-3 lg:w-auto lg:min-w-[560px]">
+                  <div className="grid w-full gap-2 sm:grid-cols-3">
                     <button
                       type="button"
                       onClick={() => firstPlayableLesson && openLessonVideo(firstPlayableLesson)}
@@ -367,7 +359,6 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                       <span className="text-xs font-bold text-emerald-700">{firstSupportFile ? 'فتح الملف' : 'اختياري'}</span>
                     </button>
                   </div>
-                </div>
               </div>
 
               <div className="flex border-b border-gray-200">
