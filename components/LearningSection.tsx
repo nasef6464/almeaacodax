@@ -14,6 +14,7 @@ import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 interface LearningSectionProps {
     category: string;
@@ -79,6 +80,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const nextParams = new URLSearchParams(searchParams);
         nextParams.set('tab', tab);
         setSearchParams(nextParams);
+    };
+    const buildSectionReturnPath = (tab: 'banks' | 'tests' | 'skills' | 'courses' | 'library' = activeTab) => {
+        const params = new URLSearchParams();
+        if (subject) params.set('subject', subject);
+        params.set('tab', tab);
+        return `/category/${category}?${params.toString()}`;
     };
 
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
@@ -988,7 +995,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             level: 'متعدد',
                             isLocked: bank.isLocked
                         }))} 
-                        onStartTest={(test) => navigate(`/quiz/${test.id}`)}
+                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: buildSectionReturnPath('banks'), source: 'training' }))}
                         onLockedClick={(test) => handleItemClick(test, 'bank')}
                     />
                     </>
@@ -1031,7 +1038,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                     )}
                     <SimulatedTestExperience 
                         tests={tests} 
-                        onStartTest={(test) => navigate(`/quiz/${test.id}`)}
+                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: buildSectionReturnPath('tests'), source: 'tests' }))}
                         onLockedClick={(test) => handleItemClick(test, 'test')}
                     />
                     </>

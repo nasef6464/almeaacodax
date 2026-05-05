@@ -26,6 +26,7 @@ import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -239,10 +240,7 @@ export const SubjectLearningPage: React.FC = () => {
     return `/category/${pathId || ''}?${params.toString()}`;
   };
   const buildQuizPathWithReturn = (quizId: string, returnTo: string, source: string) => {
-    const params = new URLSearchParams();
-    params.set('returnTo', returnTo);
-    params.set('source', source);
-    return `/quiz/${quizId}?${params.toString()}`;
+    return buildQuizRouteWithContext(quizId, { returnTo, source });
   };
   const buildTrainingQuizPath = (quizId: string) => {
     return buildQuizPathWithReturn(quizId, buildTopicReturnPath('quizzes'), 'foundation');

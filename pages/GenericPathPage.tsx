@@ -9,6 +9,7 @@ import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -974,7 +975,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                 </div>
                                             </div>
                                             <button
-                                                onClick={() => navigate(`/quiz/${quiz.id}`)}
+                                                onClick={() => navigate(buildQuizRouteWithContext(quiz.id, { returnTo: `/category/${path.id}?tab=mock-exams`, source: 'mock-exam' }))}
                                                 className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
                                             >
                                                 ابدأ الاختبار

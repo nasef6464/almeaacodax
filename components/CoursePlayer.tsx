@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CustomVideoPlayer } from './CustomVideoPlayer';
 import { useStore } from '../store/useStore';
 import { openExternalUrl } from '../utils/openExternalUrl';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 interface CoursePlayerProps {
   course: Course;
@@ -88,7 +89,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) =>
 
   const handleOpenLessonQuiz = () => {
     if (!activeLesson?.quizId) return;
-    navigate(`/quiz/${activeLesson.quizId}`);
+    navigate(buildQuizRouteWithContext(activeLesson.quizId, { returnTo: `/course/${course.id}`, source: 'course' }));
   };
 
   const handleOpenLessonFile = (mode: 'preview' | 'download') => {

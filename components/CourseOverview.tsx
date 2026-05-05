@@ -14,6 +14,7 @@ import { useStore } from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { isMockQuiz } from '../utils/quizPlacement';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
 interface CourseOverviewProps {
     course: Course;
@@ -29,6 +30,9 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, libraryItems, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
     const matchedCoursePackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
+    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const canShowQuizInCourse = (quiz: (typeof quizzes)[number]) =>
+        isStaffViewer || (quiz.isPublished !== false && quiz.showOnPlatform !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
 
     const isEnrolled =
         enrolledCourses.includes(course.id) ||
@@ -46,7 +50,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
         return quizzes
             .filter((quiz) => {
-                if (quiz.isPublished === false || !isMockQuiz(quiz)) {
+                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz)) {
                     return false;
                 }
 
@@ -67,13 +71,13 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 level: quiz.mode === 'central' ? 'مركزي' : quiz.mode === 'saher' ? 'ساهر' : 'تدريبي',
                 isLocked: !isEnrolled,
             }));
-    }, [course.pathId, course.skills, course.subjectId, isEnrolled, quizzes]);
+    }, [canShowQuizInCourse, course.pathId, course.skills, course.subjectId, isEnrolled, quizzes]);
     const fallbackTests = useMemo(() => {
         const relatedIds = new Set(relatedTests.map((test) => test.id));
 
         return quizzes
             .filter((quiz) => {
-                if (quiz.isPublished === false || !isMockQuiz(quiz) || relatedIds.has(quiz.id)) {
+                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz) || relatedIds.has(quiz.id)) {
                     return false;
                 }
 
@@ -93,7 +97,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 level: quiz.mode === 'central' ? 'مركزي' : quiz.mode === 'saher' ? 'ساهر' : 'تدريبي',
                 isLocked: !isEnrolled,
             }));
-    }, [course.pathId, course.subjectId, isEnrolled, quizzes, relatedTests]);
+    }, [canShowQuizInCourse, course.pathId, course.subjectId, isEnrolled, quizzes, relatedTests]);
     const relatedFiles = useMemo(() => {
         const courseSkillIds = new Set(course.skills || []);
 
@@ -194,7 +198,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                             <SimulatedTestExperience
                                 tests={relatedTests}
                                 onLockedClick={() => setShowPaymentModal(true)}
-                                onStartTest={(test) => navigate(`/quiz/${test.id}`)}
+                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
                             />
                         ) : (
                             <div className="bg-gray-50 rounded-3xl border border-dashed border-gray-200 overflow-hidden">
@@ -211,7 +215,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                         <SimulatedTestExperience
                                             tests={fallbackTests}
                                             onLockedClick={() => setShowPaymentModal(true)}
-                                            onStartTest={(test) => navigate(`/quiz/${test.id}`)}
+                                            onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
                                         />
                                     ) : (
                                         <div className="text-center py-8 text-sm text-gray-500">
