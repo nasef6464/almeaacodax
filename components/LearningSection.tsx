@@ -522,11 +522,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     }));
     banks = banks.filter((bank) => {
         const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, bank.id));
-        return !!sourceQuiz && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
+        return !!sourceQuiz && (sourceQuiz.questionIds?.length || 0) > 0 && sourceQuiz.pathId === category && (!subject || sourceQuiz.subjectId === subject);
     });
     tests = tests.filter((test) => {
         const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, test.id));
         if (!sourceQuiz) return false;
+        if ((sourceQuiz.questionIds?.length || 0) === 0) return false;
         if (sourceQuiz.pathId !== category || (subject && sourceQuiz.subjectId !== subject)) return false;
         if (!isStaffViewer) {
             const mode = sourceQuiz.mode || 'regular';
