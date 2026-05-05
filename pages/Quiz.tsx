@@ -79,8 +79,19 @@ const Quiz: React.FC = () => {
     const params = new URLSearchParams(location.search);
     const mode = params.get('mode');
     const nextEntryMode = mode === 'self' ? 'self' : mode === 'prepared' ? 'prepared' : null;
+    const hasSelfQuizConfig =
+      params.has('skillIds') ||
+      params.has('pathId') ||
+      params.has('subjectId') ||
+      params.has('sectionId') ||
+      params.has('questionCount') ||
+      params.has('timeLimit') ||
+      params.has('difficulty');
+
     if (nextEntryMode) {
       setEntryMode(nextEntryMode);
+    } else if (hasSelfQuizConfig) {
+      setEntryMode('self');
     }
 
     const pathId = params.get('pathId');

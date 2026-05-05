@@ -468,24 +468,33 @@ const Results: React.FC = () => {
   const additionalQuizLink = React.useMemo(() => {
     const params = new URLSearchParams();
     params.set('mode', 'self');
+    params.set('autostart', '1');
     params.set('questionCount', String(Math.max(5, Math.min(20, latestResult?.totalQuestions || 7))));
     params.set('timeLimit', '20');
-
-    if (weakestSkill?.pathId) params.set('pathId', weakestSkill.pathId);
-    if (weakestSkill?.subjectId) params.set('subjectId', weakestSkill.subjectId);
-    if (weakestSkill?.sectionId) params.set('sectionId', weakestSkill.sectionId);
 
     const skillIds = analysisItems
       .filter((item) => item.skillId && (item.status === 'weak' || item.mastery < 70))
       .slice(0, 3)
       .map((item) => item.skillId as string);
+    const scopedSkills = skillIds
+      .map((skillId) => skills.find((skill) => skill.id === skillId))
+      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill));
+    const pathIds = Array.from(new Set(scopedSkills.map((skill) => skill.pathId).filter(Boolean)));
+    const subjectIds = Array.from(new Set(scopedSkills.map((skill) => skill.subjectId).filter(Boolean)));
+    const sectionIds = Array.from(new Set(scopedSkills.map((skill) => skill.sectionId).filter(Boolean)));
+
+    if (pathIds.length === 1) params.set('pathId', pathIds[0]);
+    else if (weakestSkill?.pathId) params.set('pathId', weakestSkill.pathId);
+    if (subjectIds.length === 1) params.set('subjectId', subjectIds[0]);
+    else if (weakestSkill?.subjectId) params.set('subjectId', weakestSkill.subjectId);
+    if (sectionIds.length === 1) params.set('sectionId', sectionIds[0]);
 
     if (skillIds.length > 0) {
       params.set('skillIds', skillIds.join(','));
     }
 
     return `/quiz?${params.toString()}`;
-  }, [analysisItems, latestResult?.totalQuestions, weakestSkill]);
+  }, [analysisItems, latestResult?.totalQuestions, skills, weakestSkill]);
   const nextActionCards = React.useMemo(() => {
     if (!weakestSkill) {
       return [

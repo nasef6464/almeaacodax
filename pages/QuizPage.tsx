@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
-import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
@@ -381,6 +381,17 @@ export const QuizPage: React.FC = () => {
     () => weakSkillIds.map((skillId) => skills.find((skill) => skill.id === skillId)).find(Boolean),
     [skills, weakSkillIds]
   );
+  const weakSkillScope = useMemo(() => {
+    const resolvedSkills = weakSkillIds
+      .map((skillId) => skills.find((skill) => skill.id === skillId))
+      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill));
+    const sectionIds = Array.from(new Set(resolvedSkills.map((skill) => skill.sectionId).filter(Boolean)));
+
+    return {
+      skillIds: resolvedSkills.map((skill) => skill.id),
+      sharedSectionId: sectionIds.length === 1 ? sectionIds[0] : '',
+    };
+  }, [skills, weakSkillIds]);
 
   const buildSelfQuizLink = (focusWeakSkills = false) => {
     const params = new URLSearchParams();
@@ -392,7 +403,11 @@ export const QuizPage: React.FC = () => {
 
     if (quiz?.pathId) params.set('pathId', quiz.pathId);
     if (quiz?.subjectId) params.set('subjectId', quiz.subjectId);
-    if (focusWeakSkills && firstWeakSkill?.sectionId) params.set('sectionId', firstWeakSkill.sectionId);
+    if (focusWeakSkills && weakSkillScope.skillIds.length > 0) {
+      params.set('skillIds', weakSkillScope.skillIds.join(','));
+    }
+    if (focusWeakSkills && weakSkillScope.sharedSectionId) params.set('sectionId', weakSkillScope.sharedSectionId);
+    else if (focusWeakSkills && firstWeakSkill?.sectionId) params.set('sectionId', firstWeakSkill.sectionId);
     else if (quiz?.sectionId) params.set('sectionId', quiz.sectionId);
 
     return `/quiz?${params.toString()}`;
@@ -448,6 +463,30 @@ export const QuizPage: React.FC = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
+  };
+
+  const saveCurrentProgressDraft = () => {
+    if (typeof window === 'undefined' || !quiz || quizQuestions.length === 0) return false;
+
+    const draft: SavedQuizPageProgress = {
+      quizId: quiz.id,
+      questionIds: quizQuestions.map((question) => question.id),
+      selectedOptions,
+      currentQuestionIndex,
+      timeLeft,
+      savedAt: new Date().toISOString(),
+    };
+
+    window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
+    return true;
+  };
+
+  const handlePauseQuiz = () => {
+    const saved = saveCurrentProgressDraft();
+    if (!saved) return;
+
+    setDraftRestored(true);
+    navigate(safeReturnTo || '/dashboard?tab=quizzes');
   };
 
   const handleSubmitQuestion = () => {
@@ -893,6 +932,16 @@ export const QuizPage: React.FC = () => {
               >
                 <ArrowRight size={18} />
                 السابق
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePauseQuiz}
+                disabled={isSubmittingResult}
+                className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+              >
+                <PauseCircle size={18} />
+                إيقاف مؤقت
               </button>
 
               {currentQuestionIndex === quizQuestions.length - 1 ? (
