@@ -1608,7 +1608,7 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex min-h-[58px] items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex min-h-[50px] items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     <div
@@ -1622,7 +1622,13 @@ const ReviewSolutions = ({
                   {helperLabel ? (
                     <span
                       className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${
-                        isCorrect ? 'bg-emerald-100 text-emerald-700' : isUser ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'
+                        isCorrect
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : showExplanation && isUser
+                            ? 'bg-rose-100 text-rose-700'
+                            : isUser
+                              ? 'bg-indigo-100 text-indigo-700'
+                              : 'bg-gray-100 text-gray-600'
                       }`}
                     >
                       {helperLabel}
@@ -1635,12 +1641,18 @@ const ReviewSolutions = ({
         </div>
 
         <div className="bg-gray-50 p-4 border-t border-gray-100 flex flex-col gap-4">
-          <div className="grid grid-cols-5 gap-2 rounded-2xl bg-white p-3 sm:grid-cols-10">
+          <div className="rounded-2xl bg-white p-3">
+            <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black text-gray-600">
+              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-indigo-600 ring-2 ring-indigo-100" />السؤال الحالي</span>
+              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />إجابة صحيحة</span>
+              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-rose-500 ring-2 ring-rose-100" />إجابة خاطئة</span>
+              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-amber-100 ring-2 ring-amber-200" />لم يجب</span>
+            </div>
+            <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
             {questions.map((question, index) => {
               const isCurrent = index === currentIdx;
               const wasAnswered = typeof question.selectedOptionIndex === 'number';
               const wasCorrect = question.isCorrect;
-              const marked = reviewLater.includes(question.questionId);
 
               return (
                 <button
@@ -1653,20 +1665,19 @@ const ReviewSolutions = ({
                   className={`h-10 rounded-xl border text-sm font-black transition ${
                     isCurrent
                       ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                      : marked
-                        ? 'border-purple-200 bg-purple-50 text-purple-700'
-                        : !wasAnswered
+                      : !wasAnswered
                           ? 'border-amber-200 bg-amber-50 text-amber-700'
                           : wasCorrect
                             ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
                             : 'border-rose-100 bg-rose-50 text-rose-700'
                   }`}
-                  title={marked ? 'محدد للمراجعة' : !wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
+                  title={!wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
                 >
                   {index + 1}
                 </button>
               );
             })}
+            </div>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

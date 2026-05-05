@@ -1,8 +1,7 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, PlayCircle, FileQuestion, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, FileQuestion, Star } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
-import { VideoModal } from '../components/VideoModal';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
@@ -67,7 +66,6 @@ const Quiz: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME_MINUTES * 60);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
-  const [showVideo, setShowVideo] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [savedSnapshot, setSavedSnapshot] = useState<SavedQuizSnapshot | null>(null);
@@ -565,7 +563,6 @@ const Quiz: React.FC = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion((curr) => curr + 1);
       setSelectedAnswer(answers[currentQuestion + 1] ?? null);
-      setShowVideo(false);
       return;
     }
     setShowFinishDialog(true);
@@ -575,7 +572,6 @@ const Quiz: React.FC = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion((curr) => curr - 1);
       setSelectedAnswer(answers[currentQuestion - 1] ?? null);
-      setShowVideo(false);
     }
   };
 
@@ -1057,18 +1053,9 @@ const Quiz: React.FC = () => {
               </button>
             </div>
 
-            <button
-              onClick={() => setShowVideo(true)}
-              disabled={!questions[currentQuestion].videoUrl}
-              className={`w-full sm:w-auto px-4 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-colors shadow-sm ${
-                questions[currentQuestion].videoUrl
-                  ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 cursor-pointer'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
-            >
-              <PlayCircle size={18} />
-              {questions[currentQuestion].videoUrl ? 'شرح الفيديو' : 'لا يوجد شرح'}
-            </button>
+            <div className="hidden sm:block text-xs font-bold text-gray-400">
+              الشرح يظهر بعد الاختبار في مراجعة الحلول.
+            </div>
           </div>
 
           <div className="flex-1">
@@ -1102,7 +1089,7 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[50px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
+                    className={`min-h-[46px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-relaxed text-center break-words">
                       {sanitizeArabicText(option)}
@@ -1126,11 +1113,16 @@ const Quiz: React.FC = () => {
                 <span>خريطة الأسئلة</span>
                 <span>{Object.keys(answers).length} من {questions.length} محلولة</span>
               </div>
+              <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black text-gray-600">
+                <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-amber-500 ring-2 ring-amber-100" />السؤال الحالي</span>
+                <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />تمت الإجابة</span>
+                <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full border-2 border-slate-300 bg-white" />لم يجب</span>
+                <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-purple-500 ring-2 ring-purple-100" />للمراجعة</span>
+              </div>
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {questions.map((question, idx) => {
                   const isCurrent = idx === currentQuestion;
                   const isAnswered = answers[idx] !== undefined;
-                  const isFavorite = storeFavorites.includes(question.id);
                   const isReviewLater = storeReviewLater.includes(question.id);
 
                   return (
@@ -1139,20 +1131,17 @@ const Quiz: React.FC = () => {
                       onClick={() => {
                         setCurrentQuestion(idx);
                         setSelectedAnswer(answers[idx] ?? null);
-                        setShowVideo(false);
                       }}
                       className={`h-9 w-9 shrink-0 rounded-xl text-xs font-black transition-colors ${
                         isCurrent
                           ? 'border-2 border-amber-600 bg-amber-500 text-white shadow-sm ring-2 ring-amber-200'
-                          : isAnswered
-                            ? 'border-2 border-emerald-600 bg-emerald-500 text-white shadow-sm'
-                            : isReviewLater
-                              ? 'border-2 border-purple-600 bg-purple-500 text-white shadow-sm'
-                              : isFavorite
-                              ? 'border-2 border-rose-500 bg-rose-500 text-white shadow-sm'
+                          : isReviewLater
+                            ? 'border-2 border-purple-600 bg-purple-500 text-white shadow-sm'
+                            : isAnswered
+                              ? 'border-2 border-emerald-600 bg-emerald-500 text-white shadow-sm'
                               : 'border-2 border-slate-300 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50'
                       }`}
-                      title={isReviewLater ? 'سؤال للمراجعة لاحقًا' : isFavorite ? 'سؤال في المفضلة' : isAnswered ? 'تمت الإجابة' : 'لم تتم الإجابة بعد'}
+                      title={isReviewLater ? 'سؤال للمراجعة لاحقًا' : isAnswered ? 'تمت الإجابة' : 'لم تتم الإجابة بعد'}
                     >
                       {idx + 1}
                     </button>
@@ -1190,14 +1179,6 @@ const Quiz: React.FC = () => {
           </div>
         </Card>
       </main>
-
-      {showVideo && questions[currentQuestion].videoUrl && (
-        <VideoModal
-          videoUrl={questions[currentQuestion].videoUrl}
-          title="شرح السؤال بالفيديو"
-          onClose={() => setShowVideo(false)}
-        />
-      )}
 
       {showExitDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">

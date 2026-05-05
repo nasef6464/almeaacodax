@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun } from 'lucide-react';
 import { api } from '../services/api';
-import { flattenMockExamQuestionIds, getMockExamTimeLimit } from '../utils/mockExam';
+import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 interface QuestionThreadItem {
@@ -256,6 +256,49 @@ export const QuizPage: React.FC = () => {
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
   const optionLayout = quiz?.settings?.optionLayout || 'auto';
+  const mockExamSections = useMemo(
+    () => (quiz?.mockExam?.enabled ? getMockExamSections(quiz) : []),
+    [quiz],
+  );
+  const mockExamSectionSummaries = useMemo(
+    () =>
+      mockExamSections
+        .map((mockSection, sectionIndex) => {
+          const questionIndexes = (mockSection.questionIds || [])
+            .map((questionId) => {
+              const resolvedQuestion = resolveQuestionFromBank(quizQuestions, questionId);
+              return resolvedQuestion
+                ? quizQuestions.findIndex((question) => question.id === resolvedQuestion.id)
+                : -1;
+            })
+            .filter((index): index is number => index >= 0);
+          const uniqueIndexes = Array.from(new Set(questionIndexes));
+          const answered = uniqueIndexes.filter((index) => {
+            const questionId = quizQuestions[index]?.id;
+            return questionId ? selectedOptions[questionId] !== undefined : false;
+          }).length;
+          const subjectName = mockSection.subjectId
+            ? subjects.find((subject) => subject.id === mockSection.subjectId)?.name
+            : '';
+
+          return {
+            id: mockSection.id,
+            title: mockSection.title || subjectName || `القسم ${sectionIndex + 1}`,
+            questionIndexes: uniqueIndexes,
+            firstQuestionIndex: uniqueIndexes[0] ?? -1,
+            total: uniqueIndexes.length,
+            answered,
+            timeLimit: mockSection.timeLimit,
+          };
+        })
+        .filter((section) => section.total > 0),
+    [mockExamSections, quizQuestions, selectedOptions, subjects],
+  );
+  const currentMockExamSection = useMemo(
+    () =>
+      mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
+    [currentQuestionIndex, mockExamSectionSummaries],
+  );
   const getOptionGridClass = (question?: Question) => {
     if (optionLayout === 'two_columns') return 'grid-cols-1 sm:grid-cols-2';
     if (optionLayout === 'horizontal') return 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
@@ -577,6 +620,11 @@ export const QuizPage: React.FC = () => {
                   للمراجعة {reviewQuestionCount}
                 </span>
               ) : null}
+              {currentMockExamSection ? (
+                <span className={`${isNightMode ? 'bg-indigo-950 text-indigo-200' : 'bg-indigo-50 text-indigo-700'} rounded-full px-3 py-1`}>
+                  {currentMockExamSection.title}
+                </span>
+              ) : null}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -598,6 +646,43 @@ export const QuizPage: React.FC = () => {
         </div>
 
         {!isFinished ? (
+          <div className="space-y-4">
+          {mockExamSectionSummaries.length > 1 ? (
+            <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
+              <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {mockExamSectionSummaries.map((section) => {
+                  const isActive = currentMockExamSection?.id === section.id;
+                  return (
+                    <button
+                      key={section.id}
+                      type="button"
+                      onClick={() => {
+                        if (section.firstQuestionIndex >= 0) {
+                          setCurrentQuestionIndex(section.firstQuestionIndex);
+                        }
+                      }}
+                      className={`shrink-0 rounded-xl border px-4 py-2 text-xs font-black transition-colors ${
+                        isActive
+                          ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                          : isNightMode
+                            ? 'border-slate-700 bg-slate-950 text-slate-200 hover:border-indigo-500'
+                            : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
+                      }`}
+                    >
+                      <span>{section.title}</span>
+                      <span className={`mr-2 rounded-full px-2 py-0.5 ${
+                        isActive ? 'bg-white/15 text-white' : isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-white text-gray-500'
+                      }`}>
+                        {section.answered}/{section.total}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
           <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border overflow-hidden`}>
             {shouldShowProgressBar ? (
               <div className={`${isNightMode ? 'bg-slate-800' : 'bg-gray-100'} h-2 w-full`}>
@@ -610,7 +695,9 @@ export const QuizPage: React.FC = () => {
 
             <div className="p-4 sm:p-8">
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6">
-                <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>السؤال {currentQuestionIndex + 1} من {quizQuestions.length}</span>
+                <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>
+                  {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
+                </span>
                 <div className="flex flex-wrap items-center gap-2">
                   {shouldShowQuestionReview ? (
                     <button
@@ -646,7 +733,7 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`min-h-[50px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
+                    className={`min-h-[46px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -748,6 +835,7 @@ export const QuizPage: React.FC = () => {
                 </button>
               )}
             </div>
+          </div>
           </div>
         ) : (
           <div className="space-y-6 animate-fade-in">
