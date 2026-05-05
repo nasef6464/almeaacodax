@@ -28,6 +28,7 @@ import { SchoolPortalManager } from './SchoolPortalManager';
 import { PathsManager } from './PathsManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { LessonsManager } from './LessonsManager';
+import { LibraryManager } from './LibraryManager';
 import { QuizzesManager } from './QuizzesManager';
 import { SkillsTreeManager } from './SkillsTreeManager';
 import { FinancialManager } from './FinancialManager';
@@ -114,6 +115,8 @@ export const AdminDashboard: React.FC = () => {
         questions,
         lessons,
         libraryItems,
+        subjects,
+        paths,
         examResults,
         updateCourse,
         updateLesson,
@@ -122,6 +125,7 @@ export const AdminDashboard: React.FC = () => {
         updateLibraryItem,
     } = useStore();
     const [activeTab, setActiveTab] = useState(user.role === Role.ADMIN ? 'paths' : 'overview');
+    const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
     const [aiStatusError, setAiStatusError] = useState<string | null>(null);
@@ -156,6 +160,39 @@ export const AdminDashboard: React.FC = () => {
     useEffect(() => {
         loadAiStatus();
     }, [user.role]);
+
+    const librarySubjectOptions = useMemo(
+        () =>
+            subjects
+                .map((subject) => ({
+                    subject,
+                    path: paths.find((path) => path.id === subject.pathId),
+                    fileCount: libraryItems.filter((item) => item.subjectId === subject.id).length,
+                    readyCount: libraryItems.filter(
+                        (item) =>
+                            item.subjectId === subject.id &&
+                            item.showOnPlatform !== false &&
+                            item.approvalStatus === 'approved' &&
+                            Boolean(item.url?.trim()) &&
+                            Boolean(item.sectionId) &&
+                            Boolean((item.skillIds || []).length),
+                    ).length,
+                }))
+                .sort((a, b) => {
+                    const pathCompare = (a.path?.name || '').localeCompare(b.path?.name || '', 'ar');
+                    if (pathCompare !== 0) return pathCompare;
+                    return a.subject.name.localeCompare(b.subject.name, 'ar');
+                }),
+        [libraryItems, paths, subjects],
+    );
+
+    useEffect(() => {
+        if (selectedLibrarySubjectId && librarySubjectOptions.some((item) => item.subject.id === selectedLibrarySubjectId)) {
+            return;
+        }
+
+        setSelectedLibrarySubjectId(librarySubjectOptions[0]?.subject.id || '');
+    }, [librarySubjectOptions, selectedLibrarySubjectId]);
 
     const overviewStats = useMemo(() => {
         const pendingCourses = courses.filter((item) => item.approvalStatus === 'pending_review').length;
@@ -305,8 +342,8 @@ export const AdminDashboard: React.FC = () => {
                 title: 'ملفات مكتبة بلا مهارات',
                 description: 'ربط ملفات المراجعة بالمهارات يجعلها تظهر كتوصيات علاجية بعد الاختبار.',
                 count: platformReadiness.details.libraryWithoutSkills,
-                tab: 'lessons',
-                actionLabel: 'فتح مركز الدروس',
+                tab: 'library',
+                actionLabel: 'فتح مركز المكتبة',
                 color: 'purple',
             },
         ];
@@ -518,6 +555,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
             { id: 'paths', label: 'إدارة المسارات (مساحات العمل)', icon: <FolderOpen size={20} /> },
             { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
+            { id: 'library', label: 'مركز المكتبة وملفات الدعم', icon: <BookOpen size={20} /> },
             { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
             { id: 'mock-exams', label: 'مركز الاختبارات المحاكية', icon: <Award size={20} /> },
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
@@ -531,7 +569,7 @@ export const AdminDashboard: React.FC = () => {
         ];
 
         if (user.role === Role.TEACHER) {
-            return adminItems.filter((item) => ['overview', 'lessons', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'lessons', 'library', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
         }
 
         if (user.role === Role.SUPERVISOR) {
@@ -1020,6 +1058,105 @@ export const AdminDashboard: React.FC = () => {
         </div>
     );
 
+    const renderLibraryCenter = () => {
+        const selectedOption = librarySubjectOptions.find((item) => item.subject.id === selectedLibrarySubjectId);
+        const selectedSubject = selectedOption?.subject;
+        const selectedPathName = selectedOption?.path?.name || 'مسار غير محدد';
+        const visibleFiles = libraryItems.filter((item) => item.showOnPlatform !== false).length;
+        const readySupportFiles = libraryItems.filter(
+            (item) =>
+                item.showOnPlatform !== false &&
+                item.approvalStatus === 'approved' &&
+                Boolean(item.url?.trim()) &&
+                Boolean(item.sectionId) &&
+                Boolean((item.skillIds || []).length),
+        ).length;
+        const needsAttentionFiles = libraryItems.filter(
+            (item) =>
+                item.showOnPlatform === false ||
+                item.approvalStatus !== 'approved' ||
+                !item.url?.trim() ||
+                !item.sectionId ||
+                !(item.skillIds || []).length,
+        ).length;
+
+        return (
+            <div className="space-y-6 animate-fade-in">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">مركز المكتبة وملفات الدعم</h1>
+                        <p className="mt-1 text-sm text-gray-500">
+                            مكان واحد لإدارة الملفات والتلخيصات التي تظهر في مكتبة المادة وداخل موضوعات التأسيس.
+                        </p>
+                    </div>
+                    <div className="w-full lg:w-80">
+                        <label className="mb-2 block text-xs font-black text-gray-500">اختر المادة</label>
+                        <select
+                            value={selectedLibrarySubjectId}
+                            onChange={(event) => setSelectedLibrarySubjectId(event.target.value)}
+                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                        >
+                            {librarySubjectOptions.map((item) => (
+                                <option key={item.subject.id} value={item.subject.id}>
+                                    {(item.path?.name || 'مسار غير محدد')} / {item.subject.name} ({item.fileCount})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    {[
+                        { label: 'كل الملفات', value: libraryItems.length, className: 'bg-slate-50 text-slate-700 border-slate-100' },
+                        { label: 'ظاهر للطلاب', value: visibleFiles, className: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+                        { label: 'جاهز كملف دعم', value: readySupportFiles, className: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
+                        { label: 'يحتاج مراجعة', value: needsAttentionFiles, className: 'bg-amber-50 text-amber-700 border-amber-100' },
+                    ].map((item) => (
+                        <div key={item.label} className={`rounded-2xl border p-5 ${item.className}`}>
+                            <div className="text-xs font-black">{item.label}</div>
+                            <div className="mt-2 text-3xl font-black">{item.value.toLocaleString('ar-EG')}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {selectedSubject ? (
+                    <>
+                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div className="text-xs font-black text-indigo-600">المادة الحالية</div>
+                                    <h2 className="mt-1 text-xl font-black text-gray-900">{selectedSubject.name}</h2>
+                                    <p className="mt-1 text-sm text-gray-500">{selectedPathName}</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 text-center md:grid-cols-3">
+                                    <div className="rounded-xl bg-white px-4 py-3">
+                                        <div className="text-xs font-bold text-gray-500">ملفات المادة</div>
+                                        <div className="mt-1 text-lg font-black text-gray-900">{selectedOption?.fileCount || 0}</div>
+                                    </div>
+                                    <div className="rounded-xl bg-white px-4 py-3">
+                                        <div className="text-xs font-bold text-gray-500">جاهز للدعم</div>
+                                        <div className="mt-1 text-lg font-black text-emerald-700">{selectedOption?.readyCount || 0}</div>
+                                    </div>
+                                    <div className="rounded-xl bg-white px-4 py-3">
+                                        <div className="text-xs font-bold text-gray-500">المسار</div>
+                                        <div className="mt-1 text-sm font-black text-gray-900">{selectedPathName}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <LibraryManager subjectId={selectedSubject.id} />
+                    </>
+                ) : (
+                    <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
+                        <BookOpen className="mx-auto mb-4 text-gray-300" size={44} />
+                        <h2 className="text-xl font-black text-gray-900">لا توجد مواد لإدارة المكتبة</h2>
+                        <p className="mt-2 text-sm text-gray-500">أضف مسارا ومادة أولا، ثم ارجع لإدارة ملفات الدعم والتلخيصات من هنا.</p>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     const renderSystemOperations = () => (
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -1256,6 +1393,8 @@ export const AdminDashboard: React.FC = () => {
                 return <PathsManager />;
             case 'lessons':
                 return <LessonsManager />;
+            case 'library':
+                return renderLibraryCenter();
             case 'quizzes':
                 return <QuizzesManager />;
             case 'mock-exams':
