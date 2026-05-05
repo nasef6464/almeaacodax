@@ -39,6 +39,7 @@ const normalizePath = (path: any): CategoryPath => ({
   isActive: path?.isActive,
   parentPathId: path?.parentPathId || undefined,
   description: path?.description,
+  settings: path?.settings,
 });
 
 const normalizeLevel = (level: any): CategoryLevel => ({

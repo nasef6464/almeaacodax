@@ -224,6 +224,10 @@ export const GenericPathPage: React.FC = () => {
     );
     const isPackagesTab = searchParams.get('tab') === 'packages';
     const isMockExamsTab = searchParams.get('tab') === 'mock-exams';
+    const pathDisplaySettings = path.settings || {};
+    const showSubjectCards = pathDisplaySettings.showSubjectCards !== false;
+    const showMockExamCard = pathDisplaySettings.showMockExamCard !== false;
+    const showPackageCard = pathDisplaySettings.showPackageCard !== false;
     const canStudentSeeContent = (item: { showOnPlatform?: boolean; approvalStatus?: string; isPublished?: boolean }) =>
         canSeeHiddenPaths || (
             item.showOnPlatform !== false &&
@@ -517,6 +521,34 @@ export const GenericPathPage: React.FC = () => {
         icon: path.iconUrl ? <img src={path.iconUrl} className="w-10 h-10 object-contain mx-auto mb-2" alt={path.name}/> : (path.icon || '🎓'),
     };
 
+    const pathCardsGridClass = "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4";
+    const renderMockExamEntryCard = () => showMockExamCard ? (
+        <Link
+            key="mock-exams-card"
+            to={`/category/${path.id}?tab=mock-exams`}
+            className="block min-h-[148px] rounded-[1.7rem] bg-indigo-600 p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        >
+            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-sm backdrop-blur-sm">
+                <Award size={28} />
+            </div>
+            <h3 className="mb-2 text-2xl font-black leading-tight">اختبارات محاكية</h3>
+            <div className="text-sm font-bold text-white/80">تجربة كاملة للمسار</div>
+        </Link>
+    ) : null;
+    const renderPackageEntryCard = () => showPackageCard ? (
+        <Link
+            key="packages-card"
+            to={`/category/${path.id}?tab=packages`}
+            className="block min-h-[148px] rounded-[1.7rem] bg-emerald-600 p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        >
+            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 shadow-sm backdrop-blur-sm">
+                <CreditCard size={28} />
+            </div>
+            <h3 className="mb-2 text-2xl font-black leading-tight">عروض وباقات</h3>
+            <div className="text-sm font-bold text-white/80">فتح محتوى المسار</div>
+        </Link>
+    ) : null;
+
     const renderPackages = () => {
         if (pathPackages.length === 0) return null;
         if (!showPublicAdminDiagnostics) {
@@ -747,7 +779,7 @@ export const GenericPathPage: React.FC = () => {
 const renderSubjectCard = (s: any, levelId: string | null) => {
         const sColor = resolveThemeColor(s.color || style.color, style.color);
         const iconStyle = s.iconStyle || (path as any).iconStyle || 'default';
-        const icon = s.iconUrl ? <img src={s.iconUrl} className="w-12 h-12 object-contain mx-auto" alt={s.name} /> : <div className="text-4xl">{s.icon || '📚'}</div>;
+        const icon = s.iconUrl ? <img src={s.iconUrl} className="w-10 h-10 object-contain mx-auto" alt={s.name} /> : <div className="text-3xl">{s.icon || '📚'}</div>;
         const summary = getSubjectContentSummary(s.id);
         const topContentRows = showPublicAdminDiagnostics
             ? contentAccessRows
@@ -786,13 +818,13 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 <Link
                     key={s.id} 
                     to={buildSubjectUrl(levelId, s.id)}
-                    className="block p-8 bg-white border-2 border-gray-100 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-[2rem] shadow-sm group"
+                    className="block min-h-[148px] rounded-[1.7rem] border-2 border-gray-100 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
                     style={{ borderColor: sColor }}
                 >
-                    <div className="mb-4 inline-block p-4 rounded-2xl" style={{ backgroundColor: `${sColor}20` }}>
+                    <div className="mb-3 inline-block rounded-2xl p-3" style={{ backgroundColor: `${sColor}20` }}>
                         {icon}
                     </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-3">{s.name}</h3>
+                    <h3 className="mb-2 text-2xl font-black text-gray-900">{s.name}</h3>
                     <div className="text-gray-500 text-sm font-bold flex gap-2 justify-center">
                         <span>تأسيس</span> • <span>نماذج</span> • <span>تدريب</span>
                     </div>
@@ -806,12 +838,12 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 <Link
                     key={s.id} 
                     to={buildSubjectUrl(levelId, s.id)}
-                    className="block p-8 bg-gray-50 text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:bg-white rounded-2xl group border border-transparent hover:border-gray-200"
+                    className="block min-h-[148px] rounded-[1.7rem] border border-transparent bg-gray-50 p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:bg-white group"
                 >
                     <div className="mb-3" style={{ color: sColor }}>
                         {icon}
                     </div>
-                    <h3 className="text-2xl font-extrabold text-gray-800 mb-2">{s.name}</h3>
+                    <h3 className="mb-2 text-2xl font-extrabold text-gray-800">{s.name}</h3>
                     <div className="text-gray-400 text-xs flex gap-2 justify-center">
                         <span>تأسيس</span> • <span>نماذج</span>
                     </div>
@@ -825,14 +857,14 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 <Link
                     key={s.id} 
                     to={buildSubjectUrl(levelId, s.id)}
-                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-[12px_12px_0px_#00000030] shadow-[8px_8px_0px_#00000020] text-white rounded-[2rem] border-4 border-white relative overflow-hidden group"
+                    className="relative block min-h-[148px] overflow-hidden rounded-[1.7rem] border-4 border-white p-5 text-center text-white shadow-[6px_6px_0px_#00000018] transition-all duration-300 hover:-translate-y-1 hover:shadow-[10px_10px_0px_#00000025] group"
                     style={{ backgroundColor: sColor }}
                 >
-                    <div className="absolute top-2 right-2 text-white/30 transform rotate-12 text-5xl">✨</div>
-                    <div className="mb-4 bg-white text-gray-800 p-4 rounded-full shadow-md inline-block group-hover:rotate-12 transition-transform">
+                    <div className="absolute top-2 right-2 text-4xl text-white/25 transform rotate-12">✨</div>
+                    <div className="mb-3 inline-block rounded-full bg-white p-3 text-gray-800 shadow-md transition-transform group-hover:rotate-12">
                         {icon}
                     </div>
-                    <h3 className="text-3xl font-black mb-3">{s.name}</h3>
+                    <h3 className="mb-2 text-2xl font-black">{s.name}</h3>
                     {footer}
                 </Link>
             );
@@ -842,13 +874,13 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             <Link
                 key={s.id} 
                 to={buildSubjectUrl(levelId, s.id)}
-                className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
+                className="block min-h-[148px] rounded-[1.7rem] p-5 text-center text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 style={{ backgroundColor: sColor }}
             >
-                <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
+                <div className="mb-3 inline-block rounded-2xl bg-white/20 p-3 shadow-sm backdrop-blur-sm">
                     {icon}
                 </div>
-                <h3 className="text-3xl font-black mb-3">{s.name}</h3>
+                <h3 className="mb-2 text-2xl font-black">{s.name}</h3>
                 <div className="text-white/80 text-sm font-bold flex gap-2 justify-center">
                     <span>تأسيس</span> • <span>نماذج</span> • <span>تدريب</span>
                 </div>
@@ -1022,29 +1054,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     </header>
                     <div className="max-w-5xl mx-auto px-4 py-12">
                         {renderPathOverview()}
-                        {pathSubjects.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <Link
-                                    to={`/category/${path.id}?tab=mock-exams`}
-                                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-indigo-600"
-                                >
-                                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
-                                        <Award size={34} />
-                                    </div>
-                                    <h3 className="text-3xl font-black mb-3">اختبارات محاكية</h3>
-                                    <div className="text-white/80 text-sm font-bold">تجربة كاملة للمسار</div>
-                                </Link>
-                                <Link
-                                    to={`/category/${path.id}?tab=packages`}
-                                    className="block p-8 text-center cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-emerald-600"
-                                >
-                                    <div className="mb-4 bg-white/20 p-4 rounded-2xl backdrop-blur-sm inline-block shadow-sm">
-                                        <CreditCard size={34} />
-                                    </div>
-                                    <h3 className="text-3xl font-black mb-3">عروض وباقات</h3>
-                                    <div className="text-white/80 text-sm font-bold">فتح محتوى المسار</div>
-                                </Link>
-                                {pathSubjects.map(s => renderSubjectCard(s, null))}
+                        {(showSubjectCards && pathSubjects.length > 0) || showMockExamCard || showPackageCard ? (
+                            <div className={pathCardsGridClass} dir="rtl">
+                                {showSubjectCards ? pathSubjects.map(s => renderSubjectCard(s, null)) : null}
+                                {renderMockExamEntryCard()}
+                                {renderPackageEntryCard()}
                             </div>
                         ) : (
                             <div className="text-center py-12 text-gray-500">
@@ -1090,36 +1104,22 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 </header>
                 <div className="max-w-5xl mx-auto px-4 py-12">
                     {renderPathOverview()}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Link
-                            to={`/category/${path.id}?tab=mock-exams`}
-                            className="block p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-indigo-600"
-                        >
-                            <Award size={34} className="mx-auto mb-4" />
-                            <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">اختبارات محاكية</h3>
-                            <p className="text-white/80 font-medium text-sm">تجربة كاملة للمسار</p>
-                        </Link>
-                        <Link
-                            to={`/category/${path.id}?tab=packages`}
-                            className="block p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md bg-emerald-600"
-                        >
-                            <CreditCard size={34} className="mx-auto mb-4" />
-                            <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">عروض وباقات</h3>
-                            <p className="text-white/80 font-medium text-sm">فتح محتوى المسار</p>
-                        </Link>
+                    <div className={pathCardsGridClass} dir="rtl">
                         {pathLevels.map(level => {
                             return (
                                 <div 
                                     key={level.id} 
-                                    className="p-8 text-center cursor-pointer transition-all hover:-translate-y-2 hover:shadow-xl text-white rounded-[2rem] shadow-md"
+                                    className="min-h-[148px] rounded-[1.7rem] p-5 text-center cursor-pointer transition-all hover:-translate-y-1 hover:shadow-xl text-white shadow-md"
                                     style={{ backgroundColor: style.color }}
                                     onClick={() => handleLevelSelect(level.id)}
                                 >
-                                    <h3 className="text-2xl sm:text-3xl font-black mb-2 leading-tight break-words">{level.name}</h3>
+                                    <h3 className="mb-2 text-2xl font-black leading-tight break-words">{level.name}</h3>
                                     <p className="text-white/80 font-medium text-sm">مقررات وتأسيس المرحلة</p>
                                 </div>
                             )
                         })}
+                        {renderMockExamEntryCard()}
+                        {renderPackageEntryCard()}
                     </div>
                     {renderPackages()}
                 </div>
@@ -1145,8 +1145,8 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                 </header>
                 <div className="max-w-5xl mx-auto px-4 py-12">
                     {renderPathOverview()}
-                    {levelSubjects.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {showSubjectCards && levelSubjects.length > 0 ? (
+                        <div className={pathCardsGridClass} dir="rtl">
                             {levelSubjects.map(s => renderSubjectCard(s, selectedLevelId))}
                         </div>
                     ) : (

@@ -13,7 +13,7 @@ import {
   Eye, EyeOff, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { Course, PackageContentType } from '../../types';
+import { Course, PackageContentType, PathDisplaySettings } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 
@@ -48,6 +48,17 @@ const resolveColor = (value?: string) => {
   return colorMap[value] || colorMap.gray;
 };
 
+const defaultPathDisplaySettings: Required<PathDisplaySettings> = {
+  showSubjectCards: true,
+  showMockExamCard: true,
+  showPackageCard: true,
+};
+
+const resolvePathDisplaySettings = (path?: { settings?: PathDisplaySettings | null }): Required<PathDisplaySettings> => ({
+  ...defaultPathDisplaySettings,
+  ...(path?.settings || {}),
+});
+
 const getSubjectIcon = (subject: any) => {
   if (subject?.iconUrl) return <img src={subject.iconUrl} alt={subject.name} className="w-8 h-8 object-contain" />;
   return subject?.icon || '📖';
@@ -76,6 +87,9 @@ export const PathsManager: React.FC = () => {
   const [newPathParentId, setNewPathParentId] = useState('');
   const [newPathDesc, setNewPathDesc] = useState('');
   const [newPathShowInNavbar, setNewPathShowInNavbar] = useState(true);
+  const [newPathShowSubjectCards, setNewPathShowSubjectCards] = useState(true);
+  const [newPathShowMockExamCard, setNewPathShowMockExamCard] = useState(true);
+  const [newPathShowPackageCard, setNewPathShowPackageCard] = useState(true);
 
   const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<any>(null);
@@ -106,6 +120,7 @@ export const PathsManager: React.FC = () => {
   const [packageSubjectId, setPackageSubjectId] = useState('');
 
   const currentPath = paths.find(p => p.id === selectedPathId);
+  const currentPathDisplaySettings = resolvePathDisplaySettings(currentPath);
   const pathLevels = levels?.filter(l => l.pathId === selectedPathId) || [];
   const currentLevel = levels?.find(l => l.id === selectedLevelId);
   const pathSubjects = subjects.filter(s => s.pathId === selectedPathId && (selectedLevelId ? s.levelId === selectedLevelId : true));
@@ -322,7 +337,13 @@ export const PathsManager: React.FC = () => {
         description: newPathDesc,
         showInNavbar: newPathShowInNavbar,
         isActive: newPathIsActive,
-        parentPathId: newPathParentId || null
+        parentPathId: newPathParentId || null,
+        settings: {
+          ...(editingPath.settings || {}),
+          showSubjectCards: newPathShowSubjectCards,
+          showMockExamCard: newPathShowMockExamCard,
+          showPackageCard: newPathShowPackageCard,
+        },
       });
     } else {
       const pId = `p_${Date.now()}`;
@@ -336,7 +357,12 @@ export const PathsManager: React.FC = () => {
         description: newPathDesc,
         showInNavbar: newPathShowInNavbar,
         isActive: newPathIsActive,
-        parentPathId: newPathParentId || null
+        parentPathId: newPathParentId || null,
+        settings: {
+          showSubjectCards: newPathShowSubjectCards,
+          showMockExamCard: newPathShowMockExamCard,
+          showPackageCard: newPathShowPackageCard,
+        },
       };
       
       useStore.getState().addPath(newPath);
@@ -352,6 +378,9 @@ export const PathsManager: React.FC = () => {
     setNewPathDesc('');
     setNewPathShowInNavbar(false);
     setNewPathIsActive(false);
+    setNewPathShowSubjectCards(true);
+    setNewPathShowMockExamCard(true);
+    setNewPathShowPackageCard(true);
     setIsPathModalOpen(false);
   };
 
@@ -367,6 +396,10 @@ export const PathsManager: React.FC = () => {
     setNewPathShowInNavbar(path.showInNavbar !== false);
     setNewPathIsActive(path.isActive !== false);
     setNewPathParentId(path.parentPathId || '');
+    const displaySettings = resolvePathDisplaySettings(path);
+    setNewPathShowSubjectCards(displaySettings.showSubjectCards);
+    setNewPathShowMockExamCard(displaySettings.showMockExamCard);
+    setNewPathShowPackageCard(displaySettings.showPackageCard);
     setIsPathModalOpen(true);
   };
 
@@ -387,6 +420,16 @@ export const PathsManager: React.FC = () => {
     useStore.getState().updatePath(path.id, {
       isActive: shouldShowPath,
       ...(shouldShowPath ? { showInNavbar: true } : {}),
+    });
+  };
+
+  const handleTogglePathDisplaySetting = (key: keyof PathDisplaySettings, enabled: boolean) => {
+    if (!currentPath) return;
+    useStore.getState().updatePath(currentPath.id, {
+      settings: {
+        ...(currentPath.settings || {}),
+        [key]: enabled,
+      },
     });
   };
 
@@ -746,6 +789,9 @@ export const PathsManager: React.FC = () => {
               setNewPathDesc('');
               setNewPathShowInNavbar(false);
               setNewPathIsActive(false);
+              setNewPathShowSubjectCards(true);
+              setNewPathShowMockExamCard(true);
+              setNewPathShowPackageCard(true);
               setIsPathModalOpen(true);
             }}
             className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
@@ -994,6 +1040,38 @@ export const PathsManager: React.FC = () => {
                     />
                     <span className="font-medium text-gray-700">إظهار هذا المسار في القائمة العلوية الرئيسة</span>
                   </label>
+                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-3">
+                    <div className="mb-3 text-sm font-black text-indigo-800">بطاقات صفحة المسار</div>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-gray-700 shadow-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newPathShowSubjectCards}
+                          onChange={(e) => setNewPathShowSubjectCards(e.target.checked)}
+                          className="w-4 h-4 text-indigo-600 rounded"
+                        />
+                        المواد
+                      </label>
+                      <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-gray-700 shadow-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newPathShowMockExamCard}
+                          onChange={(e) => setNewPathShowMockExamCard(e.target.checked)}
+                          className="w-4 h-4 text-indigo-600 rounded"
+                        />
+                        الاختبارات المحاكية
+                      </label>
+                      <label className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-gray-700 shadow-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newPathShowPackageCard}
+                          onChange={(e) => setNewPathShowPackageCard(e.target.checked)}
+                          className="w-4 h-4 text-indigo-600 rounded"
+                        />
+                        العروض والباقات
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
@@ -1391,6 +1469,52 @@ export const PathsManager: React.FC = () => {
                       {currentPath?.isActive === false ? 'إظهار المسار' : 'إخفاء المسار مؤقتًا'}
                     </button>
                   </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h4 className="text-lg font-black text-gray-900">ترتيب وبطاقات واجهة المسار</h4>
+                    <p className="mt-1 text-sm text-gray-500">
+                      المواد تظهر أولًا، ثم الاختبارات المحاكية، ثم العروض والباقات. يمكنك إخفاء أي بطاقة لا تناسب هذا المسار.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => currentPath && window.open(`/#/category/${currentPath.id}`, '_blank', 'noopener,noreferrer')}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100"
+                  >
+                    <Eye size={16} />
+                    معاينة صفحة المسار
+                  </button>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                  {[
+                    { key: 'showSubjectCards' as const, title: 'بطاقات المواد', note: 'الكمي، اللفظي، أو مواد المسار.' },
+                    { key: 'showMockExamCard' as const, title: 'بطاقة الاختبارات المحاكية', note: 'تظهر فقط عند احتياج المسار لها.' },
+                    { key: 'showPackageCard' as const, title: 'بطاقة العروض والباقات', note: 'مدخل شراء أو فتح باقات المسار.' },
+                  ].map((item) => {
+                    const enabled = currentPathDisplaySettings[item.key] !== false;
+                    return (
+                      <label
+                        key={item.key}
+                        className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${
+                          enabled ? 'border-emerald-100 bg-emerald-50' : 'border-gray-200 bg-gray-50'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={enabled}
+                          onChange={(event) => handleTogglePathDisplaySetting(item.key, event.target.checked)}
+                          className="mt-1 h-5 w-5 rounded text-indigo-600"
+                        />
+                        <span>
+                          <span className={`block text-sm font-black ${enabled ? 'text-emerald-800' : 'text-gray-700'}`}>{item.title}</span>
+                          <span className="mt-1 block text-xs leading-6 text-gray-500">{item.note}</span>
+                        </span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 

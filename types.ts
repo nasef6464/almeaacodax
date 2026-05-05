@@ -143,6 +143,12 @@ export interface ScheduleItem {
     isLive?: boolean;
 }
 
+export interface PathDisplaySettings {
+    showSubjectCards?: boolean;
+    showMockExamCard?: boolean;
+    showPackageCard?: boolean;
+}
+
 export interface CategoryPath {
     id: string;
     name: string;
@@ -155,6 +161,7 @@ export interface CategoryPath {
     isActive?: boolean; // To hide/show paths completely
     parentPathId?: string; // To nest paths under other paths
     description?: string;
+    settings?: PathDisplaySettings;
 }
 
 export interface CategoryLevel {

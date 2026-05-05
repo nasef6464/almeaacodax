@@ -28,6 +28,7 @@ const pathSchema = z.object({
   isActive: z.boolean().optional(),
   parentPathId: z.string().nullable().optional(),
   description: z.string().optional(),
+  settings: z.record(z.any()).optional(),
 });
 
 const levelSchema = z.object({

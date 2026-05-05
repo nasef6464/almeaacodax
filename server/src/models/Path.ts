@@ -17,6 +17,7 @@ const pathSchema = new Schema(
     isActive: { type: Boolean, default: true },
     parentPathId: { type: String, default: null },
     description: { type: String, default: "" },
+    settings: { type: Schema.Types.Mixed, default: {} },
   },
   {
     timestamps: true,
