@@ -48,7 +48,7 @@ const getAccessMeta = (quiz: Quiz) => {
   }
 
   if (quiz.access.type === 'paid') {
-    return { label: 'مدفوع أو عبر باقة', className: 'bg-amber-50 text-amber-700' };
+    return { label: 'ضمن باقة / يحتاج تفعيل', className: 'bg-amber-50 text-amber-700' };
   }
 
   if (quiz.access.type === 'private') {

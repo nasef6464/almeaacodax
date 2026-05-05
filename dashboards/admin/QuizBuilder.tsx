@@ -13,6 +13,13 @@ interface QuizBuilderProps {
   initialType?: 'quiz' | 'bank';
 }
 
+const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
+  if (type === 'paid') return 'ضمن باقة / يحتاج تفعيل';
+  if (type === 'private') return 'خاص بمجموعات محددة';
+  if (type === 'course_only') return 'داخل الدورات فقط';
+  return 'مجاني';
+};
+
 export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz' }) => {
   const { quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
   const [isEditing, setIsEditing] = useState(false);
@@ -1044,15 +1051,29 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="free">مجاني للجميع</option>
-                    <option value="paid">مدفوع (شراء منفصل)</option>
+                    <option value="paid">ضمن باقة / يحتاج تفعيل</option>
                     <option value="private">مخصص لمجموعات محددة</option>
                     <option value="course_only">متاح فقط داخل الدورات</option>
                   </select>
+                  <div className="mt-3 grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-emerald-800">
+                      <span className="font-black">مجاني:</span> يظهر ويفتح مباشرة للطالب.
+                    </div>
+                    <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-amber-800">
+                      <span className="font-black">ضمن باقة:</span> يظهر مقفولًا حتى تفعيل باقة التدريب أو الاختبارات.
+                    </div>
+                    <div className="rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-rose-800">
+                      <span className="font-black">خاص:</span> لا يظهر إلا للمجموعات أو الطلاب المحددين.
+                    </div>
+                    <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-indigo-800">
+                      <span className="font-black">داخل الدورات:</span> يستخدم عند ربطه بمحتوى دورة فقط.
+                    </div>
+                  </div>
                 </div>
 
                 {currentQuiz.access?.type === 'paid' && (
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">سعر الاختبار (ريال)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">سعر اختياري للعرض الفردي لاحقًا (ريال)</label>
                     <input 
                       type="number" 
                       value={currentQuiz.access?.price || 0}
@@ -1060,6 +1081,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                       min="0"
                     />
+                    <p className="mt-2 text-xs leading-6 text-gray-500">
+                      في الوضع الحالي فتح هذا النوع يكون عبر الباقات المرتبطة بالمادة، والسعر هنا معلومة مستقبلية إذا أردت بيع الاختبار منفردًا.
+                    </p>
                   </div>
                 )}
 
@@ -1262,7 +1286,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     <td className="px-6 py-4">
                       <div className="font-bold text-gray-800">{quiz.title}</div>
                       <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
-                        <span>{quiz.access.type === 'free' ? 'مجاني' : quiz.access.type === 'paid' ? 'مدفوع' : 'مخصص'}</span>
+                        <span>{getAccessTypeLabel(quiz.access?.type)}</span>
                         <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                           {quiz.mode === 'saher' ? 'ساهر' : quiz.mode === 'central' ? 'مركزي' : 'عادي'}
                         </span>

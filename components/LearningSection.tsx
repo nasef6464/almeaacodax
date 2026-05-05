@@ -301,15 +301,45 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         isStaffViewer || (course.showOnPlatform !== false && course.isPublished !== false && (!course.approvalStatus || course.approvalStatus === 'approved'));
     const canStudentSeeLesson = (lesson: (typeof lessons)[number]) =>
         isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
+    const isQuizAudienceAllowed = (quiz: (typeof quizzes)[number]) => {
+        if (isStaffViewer) return true;
+
+        const targetUserIds = quiz.targetUserIds || [];
+        const targetGroupIds = [
+            ...(quiz.targetGroupIds || []),
+            ...(quiz.access?.allowedGroupIds || []),
+        ];
+        const hasExplicitAudience = targetUserIds.length > 0 || targetGroupIds.length > 0;
+
+        if ((quiz.access?.type || 'free') !== 'private' && !hasExplicitAudience) {
+            return true;
+        }
+
+        const userGroupIds = user.groupIds || [];
+        return targetUserIds.includes(user.id) || targetGroupIds.some(groupId => userGroupIds.includes(groupId));
+    };
     const canStudentSeeQuiz = (quiz: (typeof quizzes)[number]) =>
         isStaffViewer ||
         ((quiz.questionIds?.length || 0) > 0 &&
             quiz.showOnPlatform !== false &&
             quiz.isPublished !== false &&
-            (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+            (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
+            isQuizAudienceAllowed(quiz));
     const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
         isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
     const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
+    const isQuizLockedForStudent = (
+        quiz: (typeof quizzes)[number],
+        hasPackageAccess: boolean,
+    ) => {
+        if (isStaffViewer) return false;
+
+        const accessType = getQuizAccessType(quiz);
+        if (accessType === 'free') return false;
+        if (accessType === 'private') return !isQuizAudienceAllowed(quiz);
+
+        return !hasPackageAccess;
+    };
     const formatQuizUpdatedAt = (createdAt?: unknown) => {
         const date = createdAt ? new Date(createdAt as string | number | Date) : new Date();
         return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
@@ -497,7 +527,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         updated: formatQuizUpdatedAt(q.createdAt),
         type: 'bank',
         level: 'متعدد',
-        isLocked: (getQuizAccessType(q) !== 'free' && !hasBanksAccess) || isPremiumLocked(settings.lockBanksForNonSubscribers, hasBanksAccess),
+        isLocked: isQuizLockedForStudent(q, hasBanksAccess),
         duration: 'غير محدد'
     }));
 
@@ -513,7 +543,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         questions: q.questionIds?.length || 0,
         type: 'simulated',
         level: 'متوسط',
-        isLocked: (getQuizAccessType(q) !== 'free' && !hasTestsAccess) || isPremiumLocked(settings.lockTestsForNonSubscribers, hasTestsAccess)
+        isLocked: isQuizLockedForStudent(q, hasTestsAccess)
     }));
 
     let sectionLibraryItems = libraryItems.filter(item => canStudentSeeLibraryItem(item) && matchesScopedContent(item.pathId, item.subjectId)).map(item => ({
@@ -1006,7 +1036,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    {!hasBanksAccess && (
+                    {!hasBanksAccess && learningInventory.banks.locked > 0 && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
@@ -1062,7 +1092,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    {!hasTestsAccess && (
+                    {!hasTestsAccess && learningInventory.tests.locked > 0 && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
