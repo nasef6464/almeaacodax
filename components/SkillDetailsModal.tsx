@@ -19,7 +19,7 @@ interface SkillDetailsModalProps {
 export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill }) => {
   const { user, topics, lessons, quizzes, libraryItems, paths, subjects, skills } = useStore();
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
-  const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
+  const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
   const [lessonNotice, setLessonNotice] = useState('');
   const [openedInitialLessonId, setOpenedInitialLessonId] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           ? subTopics.find((topic) => matchesEntityId(topic, skill.initialSubTopicId)) || subTopics[0] || null
           : subTopics[0] || null,
       );
-      setTopicModalTab(skill.initialContentTab === 'quizzes' ? 'quizzes' : 'lessons');
+      setTopicModalTab(skill.initialContentTab === 'quizzes' ? 'quizzes' : skill.initialContentTab === 'support' ? 'support' : 'lessons');
       setOpenedInitialLessonId(null);
     }
   }, [isOpen, isStaffViewer, skill?.initialContentTab, skill?.initialSubTopicId, skill?.originalTopic?.id, topics]);
@@ -202,10 +202,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     ? activeTopicLessons
     : activeTopicLessons.filter((lesson) => hasPlayableLessonMedia(lesson));
   const hasHiddenUnplayableLessons = !isStaffViewer && activeTopicLessons.length > learnerTopicLessons.length;
-  const firstPlayableLesson = learnerTopicLessons[0] || null;
-  const firstTrainingQuiz = activeTopicQuizzes[0] || null;
-  const firstSupportFile = relatedLibrarySuggestions[0] || null;
-  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' = topicModalTab) => {
+  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' | 'support' = topicModalTab) => {
     const params = new URLSearchParams();
     if (selectedTopic?.subjectId) params.set('subject', selectedTopic.subjectId);
     params.set('tab', 'skills');
@@ -276,7 +273,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6" dir="rtl">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white rounded-3xl w-full max-w-5xl h-[85vh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-scale-in">
-        <div className="flex-none bg-gradient-to-l from-indigo-900 to-[#2e2b70] p-6 sm:p-8 text-white relative h-32 sm:h-40 flex flex-col justify-between">
+        <div className="flex-none bg-gradient-to-l from-indigo-900 to-[#2e2b70] p-5 sm:p-6 text-white relative h-28 sm:h-32 flex flex-col justify-between">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-bl-full" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-tr-full" />
 
@@ -285,9 +282,9 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           </button>
 
           <div>
-            <p className="mb-2 text-xs font-bold text-indigo-100">مساحة تعلم المهارة</p>
-            <h2 className="text-2xl sm:text-3xl font-black">{selectedTopic.title}</h2>
-            <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
+            <p className="mb-1 text-xs font-bold text-indigo-100">مساحة تعلم المهارة</p>
+            <h2 className="text-xl sm:text-2xl font-black">{selectedTopic.title}</h2>
+            <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
               {isStaffViewer ? (
                 <>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-white/90">المسار: {pathLabel}</span>
@@ -341,66 +338,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           </div>
 
           <div className="flex-1 h-2/3 md:h-full flex flex-col overflow-hidden bg-gray-50/50">
-            <div className="flex-none p-4 sm:p-6 pb-0">
-              <div className="mb-4 rounded-3xl border border-indigo-100 bg-white p-4 shadow-sm">
-                  <div className="grid w-full gap-2 sm:grid-cols-3">
-                    <button
-                      type="button"
-                      onClick={() => firstPlayableLesson && openLessonVideo(firstPlayableLesson)}
-                      disabled={!firstPlayableLesson}
-                      className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-right transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400"
-                    >
-                      <span className="flex items-center gap-2 text-xs font-black text-indigo-700">
-                        <Video size={15} />
-                        1. الشرح
-                      </span>
-                      <span className="line-clamp-2 text-sm font-black text-gray-900">
-                        {firstPlayableLesson ? firstPlayableLesson.title : 'ينتظر درسًا مباشرًا'}
-                      </span>
-                      <span className="text-xs font-bold text-indigo-600">{firstPlayableLesson ? getLessonActionLabel(firstPlayableLesson) : 'قيد التجهيز'}</span>
-                    </button>
-
-                    {firstTrainingQuiz ? (
-                      <Link
-                        to={buildTrainingQuizPath(firstTrainingQuiz.id)}
-                        className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-right transition hover:bg-amber-100"
-                      >
-                        <span className="flex items-center gap-2 text-xs font-black text-amber-700">
-                          <Target size={15} />
-                          2. التدريب
-                        </span>
-                        <span className="line-clamp-2 text-sm font-black text-gray-900">{firstTrainingQuiz.title}</span>
-                        <span className="text-xs font-bold text-amber-700">ابدأ التدريب</span>
-                      </Link>
-                    ) : (
-                      <div className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-right text-gray-400">
-                        <span className="flex items-center gap-2 text-xs font-black">
-                          <Target size={15} />
-                          2. التدريب
-                        </span>
-                        <span className="line-clamp-2 text-sm font-black">لا يوجد تدريب مباشر بعد</span>
-                        <span className="text-xs font-bold">قيد التجهيز</span>
-                      </div>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={() => firstSupportFile && openExternalUrl(firstSupportFile.url)}
-                      disabled={!firstSupportFile}
-                      className="flex min-h-[96px] flex-col items-start justify-between rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-right transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400"
-                    >
-                      <span className="flex items-center gap-2 text-xs font-black text-emerald-700">
-                        <FileText size={15} />
-                        3. ملف دعم
-                      </span>
-                      <span className="line-clamp-2 text-sm font-black text-gray-900">
-                        {firstSupportFile ? firstSupportFile.title : 'لا يوجد ملف مطلوب'}
-                      </span>
-                      <span className="text-xs font-bold text-emerald-700">{firstSupportFile ? 'فتح الملف' : 'اختياري'}</span>
-                    </button>
-                  </div>
-              </div>
-
+            <div className="flex-none p-4 sm:p-5 pb-0">
               <div className="flex border-b border-gray-200">
                 <button
                   onClick={() => setTopicModalTab('lessons')}
@@ -417,6 +355,14 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                   }`}
                 >
                   <Target size={18} /> التدريبات القصيرة
+                </button>
+                <button
+                  onClick={() => setTopicModalTab('support')}
+                  className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
+                    topicModalTab === 'support' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
+                  }`}
+                >
+                  <FileText size={18} /> ملف الدعم
                 </button>
               </div>
             </div>
@@ -522,7 +468,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                     </EmptyState>
                   )}
                 </div>
-              ) : (
+              ) : topicModalTab === 'quizzes' ? (
                 <div className="space-y-4">
                   {activeTopicQuizzes.length > 0 ? (
                     activeTopicQuizzes.map((quiz) => (
@@ -573,6 +519,40 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                         </div>
                       ) : null}
                     </EmptyState>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {relatedLibrarySuggestions.length > 0 ? (
+                    relatedLibrarySuggestions.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => openExternalUrl(item.url)}
+                        className="w-full rounded-2xl border border-emerald-100 bg-white p-5 text-right shadow-sm transition-all hover:border-emerald-200 hover:shadow-md"
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                              <FileText size={24} />
+                            </div>
+                            <div>
+                              <h4 className="font-black text-gray-900">{item.title}</h4>
+                              <p className="mt-1 text-xs font-bold text-gray-500">{item.size || 'ملف داعم'}</p>
+                            </div>
+                          </div>
+                          <span className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700">
+                            فتح الملف
+                          </span>
+                        </div>
+                      </button>
+                    ))
+                  ) : (
+                    <EmptyState
+                      icon={<FileText size={48} />}
+                      title="لا يوجد ملف دعم مرتبط بهذا الجزء"
+                      description={isStaffViewer ? 'اربط ملفًا من المكتبة بهذه المهارة أو نفس المادة ليظهر هنا.' : 'سيظهر الملف هنا عندما تضيف الإدارة ملخصًا أو ملفًا داعمًا لهذا الجزء.'}
+                    />
                   )}
                 </div>
               )}
