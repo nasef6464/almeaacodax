@@ -48,6 +48,14 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
     visible: subjectItems.filter((item) => item.showOnPlatform !== false).length,
     approved: subjectItems.filter((item) => item.approvalStatus === 'approved').length,
     locked: subjectItems.filter((item) => item.isLocked === true).length,
+    supportReady: subjectItems.filter(
+      (item) =>
+        item.showOnPlatform !== false &&
+        item.approvalStatus === 'approved' &&
+        Boolean(item.url?.trim()) &&
+        Boolean(item.sectionId) &&
+        Boolean((item.skillIds || []).length),
+    ).length,
   };
 
   const downloadLibraryExport = () => {
@@ -94,6 +102,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
       ['الظاهر على المنصة', libraryOverview.visible],
       ['المعتمد', libraryOverview.approved],
       ['المغلق على الطلاب', libraryOverview.locked],
+      ['ملفات دعم جاهزة', libraryOverview.supportReady],
       ['تاريخ التصدير', new Date().toLocaleString('ar-SA')],
     ];
 
@@ -317,26 +326,23 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                   availableSubSkills.map((skill) => {
                     const isSelected = editingItem?.skillIds?.includes(skill.id);
                     return (
-                      <div className="flex flex-wrap gap-2">
-          <button
-            onClick={downloadLibraryExport}
-            className="bg-white text-emerald-700 border border-emerald-100 px-6 py-2 rounded-xl font-bold hover:bg-emerald-50 transition-colors flex items-center gap-2"
-          >
-            <Download size={18} />
-            تصدير المكتبة
-          </button>
-          <button
-            onClick={() => {
-              setValidationError('');
-              setEditingItem({ sectionId: undefined, skillIds: [], showOnPlatform: false });
-              setIsEditing(true);
-            }}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
-          >
-            <Plus size={18} />
-            إضافة ملف جديد
-          </button>
-        </div>
+                      <button
+                        key={skill.id}
+                        type="button"
+                        onClick={() => toggleSkill(skill.id)}
+                        className={`flex items-center justify-between rounded-xl border px-3 py-2 text-right text-sm font-bold transition-colors ${
+                          isSelected
+                            ? 'border-indigo-200 bg-indigo-50 text-indigo-700'
+                            : 'border-gray-100 bg-white text-gray-700 hover:border-indigo-100 hover:bg-indigo-50'
+                        }`}
+                      >
+                        <span>{skill.name}</span>
+                        <span
+                          className={`h-5 w-5 rounded-full border ${
+                            isSelected ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300 bg-white'
+                          }`}
+                        />
+                      </button>
                     );
                   })
                 ) : (
@@ -353,6 +359,13 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
           <p className="text-xs text-gray-500">
             مصدر الربط هنا هو مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها، وليس مواضيع التأسيس.
           </p>
+
+          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-emerald-800">
+            <div className="font-black">مكان ظهور الملف</div>
+            <div className="mt-1 font-bold">
+              يظهر في مكتبة المادة، وإذا كان مرتبطًا بمهارة فرعية ومعتمدًا ومفتوحًا يظهر أيضًا كملف دعم داخل موضوع التأسيس المرتبط بنفس المهارة.
+            </div>
+          </div>
 
           <label className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl cursor-pointer">
             <input
@@ -398,30 +411,40 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h3 className="text-xl font-bold text-gray-800">إدارة المكتبة</h3>
           <p className="text-gray-500 mt-1">إدارة الملفات والمستندات الخاصة بهذه المادة</p>
         </div>
-        <button
-          onClick={() => {
-            setValidationError('');
-            setEditingItem({ sectionId: undefined, skillIds: [], showOnPlatform: false });
-            setIsEditing(true);
-          }}
-          className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
-        >
-          <Plus size={18} />
-          إضافة ملف جديد
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={downloadLibraryExport}
+            className="border border-emerald-200 bg-emerald-50 px-5 py-2 rounded-xl font-bold text-emerald-700 hover:bg-emerald-100 transition-colors flex items-center gap-2"
+          >
+            <Download size={18} />
+            تصدير المكتبة
+          </button>
+          <button
+            onClick={() => {
+              setValidationError('');
+              setEditingItem({ sectionId: undefined, skillIds: [], showOnPlatform: false });
+              setIsEditing(true);
+            }}
+            className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
+          >
+            <Plus size={18} />
+            إضافة ملف جديد
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
         {[
           { label: 'إجمالي عناصر المكتبة', value: libraryOverview.total, tone: 'text-slate-800 bg-slate-50' },
           { label: 'الظاهر على المنصة', value: libraryOverview.visible, tone: 'text-sky-800 bg-sky-50' },
           { label: 'الملفات المعتمدة', value: libraryOverview.approved, tone: 'text-emerald-800 bg-emerald-50' },
           { label: 'الملفات المغلقة', value: libraryOverview.locked, tone: 'text-amber-800 bg-amber-50' },
+          { label: 'ملفات دعم جاهزة', value: libraryOverview.supportReady, tone: 'text-violet-800 bg-violet-50' },
         ].map((item) => (
           <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
             <div className="text-sm font-bold text-gray-500">{item.label}</div>
@@ -487,6 +510,14 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                 {readinessMeta.icon === 'ready' ? <CheckCircle2 size={13} /> : <AlertTriangle size={13} />}
                 {readinessMeta.label}
               </span>
+              <span className="rounded-full bg-slate-50 px-2 py-1 text-xs font-bold text-slate-700">
+                مكتبة المادة
+              </span>
+              {(item.skillIds || []).length > 0 ? (
+                <span className="rounded-full bg-violet-50 px-2 py-1 text-xs font-bold text-violet-700">
+                  ملف دعم للتأسيس
+                </span>
+              ) : null}
             </div>
 
             <div className="flex flex-wrap gap-2 mt-auto">
@@ -588,7 +619,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
             <div className="mt-5 grid gap-3 md:grid-cols-4">
               <div className="rounded-2xl bg-slate-50 p-4">
                 <div className="text-xs font-black text-slate-500">المسار</div>
-                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewItem.pathId)?.name || currentSubject?.pathId ? 'مرتبط بالمادة الحالية' : 'غير محدد'}</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewItem.pathId)?.name || (currentSubject?.pathId ? 'مرتبط بالمادة الحالية' : 'غير محدد')}</div>
               </div>
               <div className="rounded-2xl bg-indigo-50 p-4">
                 <div className="text-xs font-black text-indigo-500">المادة</div>
