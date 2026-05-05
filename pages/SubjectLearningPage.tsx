@@ -24,7 +24,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -96,24 +96,22 @@ export const SubjectLearningPage: React.FC = () => {
 
   const subjectBanks = useMemo(
     () =>
-      getLearningSlotQuizzes(
+      getLearningSlotQuizzesWithLegacyFallback(
         subjectQuizzes.filter(isMaterialQuizCandidate),
         { pathId, subjectId, slot: 'training' },
         canSeeQuiz,
         isTrainingQuiz,
-        true,
       ),
     [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );
 
   const subjectExams = useMemo(
     () =>
-      getLearningSlotQuizzes(
+      getLearningSlotQuizzesWithLegacyFallback(
         subjectQuizzes.filter(isMaterialQuizCandidate),
         { pathId, subjectId, slot: 'tests' },
         canSeeQuiz,
         isMockQuiz,
-        true,
       ),
     [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );
@@ -341,6 +339,7 @@ export const SubjectLearningPage: React.FC = () => {
               tab: tab.id,
               topic: tab.id === 'skills' ? searchParams.get('topic') : null,
               content: tab.id === 'skills' ? searchParams.get('content') : null,
+              lesson: tab.id === 'skills' ? searchParams.get('lesson') : null,
             });
           }}
           className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all ${

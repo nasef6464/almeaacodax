@@ -7,7 +7,7 @@ import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -236,13 +236,19 @@ export const GenericPathPage: React.FC = () => {
         const uniqueQuizzes = new Map<string, (typeof quizzes)[number]>();
 
         subjectScopes.forEach((scopedSubjectId) => {
-            getLearningSlotQuizzes(
+            getLearningSlotQuizzesWithLegacyFallback(
                 quizzes.filter(isMaterialQuizCandidate),
                 { pathId: path.id, subjectId: scopedSubjectId, slot },
                 canStudentSeeContent,
                 fallback,
-                true,
-            ).forEach((quiz) => uniqueQuizzes.set(quiz.id, quiz));
+            ).forEach((quiz) => {
+                if (!canSeeHiddenPaths && slot === 'tests') {
+                    const mode = quiz.mode || 'regular';
+                    const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+                    if (mode === 'central' || mode === 'saher' || hasExplicitTargets) return;
+                }
+                uniqueQuizzes.set(quiz.id, quiz);
+            });
         });
 
         return Array.from(uniqueQuizzes.values());

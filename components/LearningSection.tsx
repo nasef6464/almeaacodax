@@ -12,7 +12,7 @@ import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -79,6 +79,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         setActiveTab(tab as any);
         const nextParams = new URLSearchParams(searchParams);
         nextParams.set('tab', tab);
+        if (tab !== 'skills') {
+            nextParams.delete('topic');
+            nextParams.delete('content');
+            nextParams.delete('lesson');
+        }
         setSearchParams(nextParams);
     };
     const buildSectionReturnPath = (tab: 'banks' | 'tests' | 'skills' | 'courses' | 'library' = activeTab) => {
@@ -370,6 +375,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
 
     useEffect(() => {
+        const requestedTab = searchParams.get('tab');
+        if (requestedTab && requestedTab !== 'skills') return;
+
         const previewTopicId = searchParams.get('topic');
         if (!previewTopicId) return;
 
@@ -441,12 +449,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
     }, [category, hasFoundationAccess, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
-    let banks = getLearningSlotQuizzes(
+    let banks = getLearningSlotQuizzesWithLegacyFallback(
         quizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'training' },
         canStudentSeeQuiz,
         isTrainingQuiz,
-        true,
     ).map(q => ({
         id: q.id,
         title: q.title,
@@ -458,12 +465,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         duration: 'غير محدد'
     }));
 
-    let tests = getLearningSlotQuizzes(
+    let tests = getLearningSlotQuizzesWithLegacyFallback(
         quizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'tests' },
         canStudentSeeQuiz,
         isMockQuiz,
-        true,
     ).map(q => ({
         id: q.id,
         title: q.title,

@@ -304,8 +304,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
 
     return (
       <div key={topic.id} className={`border border-gray-100 rounded-xl mb-3 bg-white overflow-hidden shadow-sm ${level > 0 ? 'mr-8 border-r-4 border-r-indigo-200' : ''}`}>
-        <div className="flex items-center justify-between p-4 bg-gray-50/50 hover:bg-gray-50 transition-colors">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 p-4 bg-gray-50/50 hover:bg-gray-50 transition-colors lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 lg:flex-1">
             {subtopics.length > 0 ? (
               <button onClick={() => toggleExpand(topic.id)} className="text-gray-500 hover:text-indigo-600">
                 {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
@@ -313,7 +313,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             ) : (
               <div className="w-5" /> // Spacer
             )}
-            <h3 className={`font-bold ${level === 0 ? 'text-lg text-gray-800' : 'text-md text-gray-700'}`}>
+            <h3 className={`min-w-[180px] font-bold ${level === 0 ? 'text-lg text-gray-800' : 'text-md text-gray-700'}`}>
               {topic.title}
             </h3>
             <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
@@ -337,11 +337,11 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             </span>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center justify-start gap-2 lg:w-auto lg:justify-end">
             {readinessMeta.issues.length > 0 && (
               <button
                 onClick={() => handlePrepareTopicForLearner(topic)}
-                className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
                 title="فتح الموضوع وتجهيز الدروس والتدريبات المرتبطة للطالب"
               >
                 تجهيز للطالب
@@ -349,56 +349,63 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             )}
             <button
               onClick={() => handlePreviewTopic(topic)}
-              className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-slate-600 border border-gray-100 hover:bg-slate-100 transition-colors"
               title="معاينة الموضوع كما سيظهر للطالب"
             >
               <Eye size={18} />
+              معاينة
             </button>
             <button 
               onClick={() => {
                 setAttachingToTopicId(topic.id);
                 setIsAttaching(true);
               }}
-              className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-100 transition-colors"
               title="ربط محتوى"
             >
               <LinkIcon size={18} />
+              ربط
             </button>
             <button 
               onClick={() => handleTogglePlatformVisibility(topic)}
-              className={`p-2 rounded-lg transition-colors ${topic.showOnPlatform === false ? 'text-gray-500 hover:bg-gray-100' : 'text-sky-600 hover:bg-sky-50'}`}
+              className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors ${topic.showOnPlatform === false ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-sky-50 text-sky-700 hover:bg-sky-100'}`}
               title={topic.showOnPlatform === false ? 'إظهار الموضوع على المنصة' : 'إخفاء الموضوع عن المنصة'}
             >
               {topic.showOnPlatform === false ? <Lock size={18} /> : <LockOpen size={18} />}
+              {topic.showOnPlatform === false ? 'إظهار' : 'إخفاء'}
             </button>
             <button
               onClick={() => handleToggleTopicLock(topic)}
-              className={`p-2 rounded-lg transition-colors ${topic.isLocked ? 'text-amber-600 hover:bg-amber-50' : 'text-emerald-600 hover:bg-emerald-50'}`}
+              className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors ${topic.isLocked ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
               title={topic.isLocked ? 'فتح الموضوع للطلاب' : 'قفل الموضوع على الطلاب'}
             >
               {topic.isLocked ? <Lock size={18} /> : <LockOpen size={18} />}
+              {topic.isLocked ? 'فتح' : 'قفل'}
             </button>
             <button 
               onClick={() => handleCreateNew(topic.id)}
-              className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-emerald-600 border border-emerald-100 hover:bg-emerald-50 transition-colors"
               title="إضافة موضوع فرعي"
             >
               <Plus size={18} />
+              فرعي
             </button>
             <button 
               onClick={() => {
                 setEditingTopic(topic);
                 setIsEditing(true);
               }}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-blue-600 border border-blue-100 hover:bg-blue-50 transition-colors"
             >
               <Edit2 size={18} />
+              تعديل
             </button>
             <button 
               onClick={() => handleDelete(topic.id)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs font-bold text-red-600 border border-red-100 hover:bg-red-50 transition-colors"
             >
               <Trash2 size={18} />
+              حذف
             </button>
           </div>
         </div>

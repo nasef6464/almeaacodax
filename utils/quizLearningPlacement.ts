@@ -76,3 +76,10 @@ export const getLearningSlotQuizzes = (
     return (aPlacement?.order ?? 9999) - (bPlacement?.order ?? 9999) || (b.createdAt || 0) - (a.createdAt || 0);
   });
 };
+
+export const getLearningSlotQuizzesWithLegacyFallback = (
+  quizzes: Quiz[],
+  scope: Scope,
+  canSeeQuiz: (quiz: Quiz) => boolean,
+  legacyFallback: (quiz: Quiz) => boolean,
+) => getLearningSlotQuizzes(quizzes, scope, canSeeQuiz, legacyFallback, false);
