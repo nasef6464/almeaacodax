@@ -188,6 +188,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const activeLearningScope = activeLearningSlot && activePathId && activeSubjectId
     ? { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot }
     : null;
+  const activeLearningSlotLabel = activeLearningSlot === 'training' ? 'التدريب' : activeLearningSlot === 'tests' ? 'الاختبارات' : 'هذه المساحة';
 
   const availableSections = useMemo(
     () =>
@@ -261,6 +262,47 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     ],
   );
 
+  const learningSpaceQuizzes = useMemo(
+    () => {
+      if (!isLearningSpaceManager || !activeLearningScope) return [];
+
+      return globalQuizzes.filter((quiz) => {
+        if (!isMaterialQuizCandidate(quiz)) return false;
+        if (user.role === 'teacher') {
+          if (managedSubjectIds.length > 0 && !managedSubjectIds.includes(quiz.subjectId)) return false;
+          if (managedPathIds.length > 0 && quiz.pathId && !managedPathIds.includes(quiz.pathId)) return false;
+        }
+        if (quiz.pathId !== activeLearningScope.pathId || quiz.subjectId !== activeLearningScope.subjectId) return false;
+        if (
+          selectedSectionId &&
+          quiz.sectionId !== selectedSectionId &&
+          !getMeasuredSkillIds(quiz, questions).some((skillId) => skills.find((skill) => skill.id === skillId)?.sectionId === selectedSectionId)
+        ) {
+          return false;
+        }
+        if (selectedSkillId && !getMeasuredSkillIds(quiz, questions).includes(selectedSkillId)) return false;
+        if (modeFilter !== 'all' && (quiz.mode || 'regular') !== modeFilter) return false;
+        if (visibilityFilter === 'shown' && quiz.showOnPlatform === false) return false;
+        if (visibilityFilter === 'hidden' && quiz.showOnPlatform !== false) return false;
+        return true;
+      });
+    },
+    [
+      activeLearningScope,
+      globalQuizzes,
+      isLearningSpaceManager,
+      managedPathIds,
+      managedSubjectIds,
+      modeFilter,
+      questions,
+      selectedSectionId,
+      selectedSkillId,
+      skills,
+      user.role,
+      visibilityFilter,
+    ],
+  );
+
   const filteredQuizzes = useMemo(
     () =>
       quizzes
@@ -286,21 +328,22 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const scopedCounts = useMemo(
     () => {
-      const readiness = quizzes.map((quiz) => getQuizReadinessMeta(quiz, questions));
+      const sourceQuizzes = activeLearningScope ? learningSpaceQuizzes : quizzes;
+      const readiness = sourceQuizzes.map((quiz) => getQuizReadinessMeta(quiz, questions));
 
       return {
-        total: quizzes.length,
-        visible: quizzes.filter((quiz) => quiz.showOnPlatform !== false).length,
-        hidden: quizzes.filter((quiz) => quiz.showOnPlatform === false).length,
-        visibleHere: activeLearningScope ? quizzes.filter((quiz) => isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
-        hiddenHere: activeLearningScope ? quizzes.filter((quiz) => !isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
-        pending: quizzes.filter((quiz) => quiz.approvalStatus === 'pending_review').length,
+        total: sourceQuizzes.length,
+        visible: sourceQuizzes.filter((quiz) => quiz.showOnPlatform !== false).length,
+        hidden: sourceQuizzes.filter((quiz) => quiz.showOnPlatform === false).length,
+        visibleHere: activeLearningScope ? sourceQuizzes.filter((quiz) => isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
+        hiddenHere: activeLearningScope ? sourceQuizzes.filter((quiz) => !isQuizVisibleInLearningSlot(quiz, activeLearningScope)).length : 0,
+        pending: sourceQuizzes.filter((quiz) => quiz.approvalStatus === 'pending_review').length,
         ready: readiness.filter((item) => item.issues.length === 0).length,
         needsReview: readiness.filter((item) => item.issues.length > 0).length,
-        placementDrift: quizzes.filter(hasPlacementDrift).length,
+        placementDrift: sourceQuizzes.filter(hasPlacementDrift).length,
       };
     },
-    [activeLearningScope, questions, quizzes],
+    [activeLearningScope, learningSpaceQuizzes, questions, quizzes],
   );
 
   const managerTitle = filterType === 'bank' ? 'إدارة التدريب من مركز الاختبارات' : filterType === 'quiz' ? 'إدارة الاختبارات من مركز الاختبارات' : 'مركز الاختبارات';
@@ -641,6 +684,37 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         </div>
       )}
 
+      {isLearningSpaceManager && (
+        <div className="rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="text-xs font-bold leading-6 text-slate-500">
+              الظاهر للطالب في {activeLearningSlotLabel} هو ما تم اختياره من هذه اللوحة فقط. الباقي محفوظ في مركز الاختبارات ويمكن استدعاؤه لاحقًا.
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { value: 'visible' as const, label: 'الظاهر للطالب', count: scopedCounts.visibleHere },
+                { value: 'hidden' as const, label: 'إضافة من المستودع', count: scopedCounts.hiddenHere },
+                { value: 'all' as const, label: 'عرض الكل', count: scopedCounts.total },
+              ].map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => setLearningSlotFilter(item.value)}
+                  className={`rounded-xl px-3 py-2 text-xs font-black transition ${
+                    learningSlotFilter === item.value
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-slate-50 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700'
+                  }`}
+                >
+                  {item.label}
+                  <span className="mr-2 rounded-full bg-white/70 px-2 py-0.5 text-[10px] text-slate-700">{item.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {!isLearningSpaceManager && <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <div className="bg-white border border-gray-100 rounded-xl p-4">
           <p className="text-xs text-gray-500 mb-1">إجمالي العناصر في هذا المستودع</p>
@@ -860,9 +934,13 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 const statusMeta = getStatusMeta(quiz);
                 const visibilityMeta = getVisibilityMeta(quiz);
                 const readinessMeta = getQuizReadinessMeta(quiz, questions);
+                const isVisibleHereForRow = activeLearningScope ? isQuizVisibleInLearningSlot(quiz, activeLearningScope) : false;
 
                 return (
-                  <tr key={quiz.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={quiz.id}
+                    className={`transition-colors hover:bg-gray-50 ${isVisibleHereForRow ? 'bg-emerald-50/35' : ''}`}
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center bg-indigo-50 text-indigo-500">
@@ -935,6 +1013,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">
+                        {isLearningSpaceManager && (
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              isVisibleHereForRow ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
+                            }`}
+                          >
+                            {isVisibleHereForRow ? `ظاهر في ${activeLearningSlotLabel}` : 'غير ظاهر هنا'}
+                          </span>
+                        )}
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${statusMeta.className}`}>{statusMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${visibilityMeta.className}`}>{visibilityMeta.label}</span>
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${getAccessMeta(quiz).className}`}>{getAccessMeta(quiz).label}</span>
