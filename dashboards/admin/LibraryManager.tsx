@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useStore } from '../../store/useStore';
 import { LibraryItem } from '../../types';
-import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, CheckCircle2, AlertTriangle, Search, SlidersHorizontal } from 'lucide-react';
 
 interface LibraryManagerProps {
   subjectId: string;
@@ -40,6 +40,8 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
   const [editingItem, setEditingItem] = useState<Partial<LibraryItem> | null>(null);
   const [validationError, setValidationError] = useState('');
   const [previewItem, setPreviewItem] = useState<LibraryItem | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [libraryFilter, setLibraryFilter] = useState<'all' | 'ready' | 'needs_attention' | 'visible' | 'hidden' | 'locked'>('all');
 
   const subjectItems = libraryItems.filter((item) => item.subjectId === subjectId);
   const currentSubject = subjects.find((item) => item.id === subjectId);
@@ -57,6 +59,30 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
         Boolean((item.skillIds || []).length),
     ).length,
   };
+  const filteredSubjectItems = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLocaleLowerCase('ar');
+
+    return subjectItems.filter((item) => {
+      const readinessMeta = getLibraryReadinessMeta(item);
+      const skillNames = (item.skillIds || [])
+        .map((skillId) => skills.find((skill) => skill.id === skillId)?.name || '')
+        .join(' ');
+      const haystack = [item.title, item.url, item.size, skillNames]
+        .filter(Boolean)
+        .join(' ')
+        .toLocaleLowerCase('ar');
+      const matchesSearch = !normalizedSearch || haystack.includes(normalizedSearch);
+      const matchesFilter =
+        libraryFilter === 'all' ||
+        (libraryFilter === 'ready' && readinessMeta.issues.length === 0) ||
+        (libraryFilter === 'needs_attention' && readinessMeta.issues.length > 0) ||
+        (libraryFilter === 'visible' && item.showOnPlatform !== false) ||
+        (libraryFilter === 'hidden' && item.showOnPlatform === false) ||
+        (libraryFilter === 'locked' && item.isLocked === true);
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [libraryFilter, searchTerm, skills, subjectItems]);
 
   const downloadLibraryExport = () => {
     const workbook = XLSX.utils.book_new();
@@ -75,7 +101,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
         'القفل/الفتح',
         'الرابط',
       ],
-      ...subjectItems.map((item) => {
+      ...filteredSubjectItems.map((item) => {
         const pathName = currentSubject?.pathId ? (paths.find((path) => path.id === currentSubject.pathId)?.name || '-') : '-';
         const sectionName = sections.find((section) => section.id === item.sectionId)?.name || '-';
         const skillNames = (item.skillIds || []).map((skillId) => skills.find((skill) => skill.id === skillId)?.name).filter(Boolean).join('، ');
@@ -99,6 +125,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
     const summary = [
       ['البند', 'القيمة'],
       ['إجمالي ملفات المكتبة', libraryOverview.total],
+      ['الظاهر في الفلتر الحالي', filteredSubjectItems.length],
       ['الظاهر على المنصة', libraryOverview.visible],
       ['المعتمد', libraryOverview.approved],
       ['المغلق على الطلاب', libraryOverview.locked],
@@ -453,9 +480,48 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
         ))}
       </div>
 
+      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-2 text-sm font-black text-gray-700">
+            <SlidersHorizontal size={18} className="text-indigo-500" />
+            تنظيم الملفات
+            <span className="rounded-full bg-gray-50 px-3 py-1 text-xs text-gray-500">
+              {filteredSubjectItems.length} من {subjectItems.length}
+            </span>
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-[1fr_220px] lg:w-auto lg:min-w-[560px]">
+            <label className="relative block">
+              <Search size={17} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="ابحث باسم الملف أو المهارة..."
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-3 pr-10 text-sm font-bold outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+              />
+            </label>
+            <select
+              value={libraryFilter}
+              onChange={(event) => setLibraryFilter(event.target.value as typeof libraryFilter)}
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm font-bold text-gray-700 outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+            >
+              <option value="all">كل الملفات</option>
+              <option value="ready">جاهزة للطالب</option>
+              <option value="needs_attention">تحتاج ضبط</option>
+              <option value="visible">ظاهرة على المنصة</option>
+              <option value="hidden">مخفية عن المنصة</option>
+              <option value="locked">مقفولة على الطلاب</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {subjectItems.map((item) => {
+        {filteredSubjectItems.map((item) => {
           const readinessMeta = getLibraryReadinessMeta(item);
+          const needsManualCompletion = readinessMeta.issues.some((issue) =>
+            issue.includes('غير مربوط') || issue.includes('لا يوجد') || issue.includes('العنوان')
+          );
 
           return (
           <div key={item.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
@@ -514,8 +580,10 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                 مكتبة المادة
               </span>
               {(item.skillIds || []).length > 0 ? (
-                <span className="rounded-full bg-violet-50 px-2 py-1 text-xs font-bold text-violet-700">
-                  ملف دعم للتأسيس
+                <span className={`rounded-full px-2 py-1 text-xs font-bold ${
+                  readinessMeta.issues.length === 0 ? 'bg-violet-50 text-violet-700' : 'bg-amber-50 text-amber-700'
+                }`}>
+                  {readinessMeta.issues.length === 0 ? 'ملف دعم جاهز' : 'ملف دعم يحتاج ضبط'}
                 </span>
               ) : null}
             </div>
@@ -539,11 +607,18 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
             <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
               {readinessMeta.issues.length > 0 && (
                 <button
-                  onClick={() => handlePrepareForLearner(item)}
+                  onClick={() => {
+                    if (needsManualCompletion) {
+                      setEditingItem(item);
+                      setIsEditing(true);
+                      return;
+                    }
+                    handlePrepareForLearner(item);
+                  }}
                   className="px-3 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
                   title={readinessMeta.issues.join('، ')}
                 >
-                  تجهيز
+                  {needsManualCompletion ? 'استكمال' : 'اعتماد وإظهار'}
                 </button>
               )}
               {canReview && item.approvalStatus !== 'approved' && (
@@ -591,6 +666,11 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
         {subjectItems.length === 0 && (
           <div className="col-span-full text-center py-12 text-gray-500">
             لا توجد ملفات في المكتبة حاليًا.
+          </div>
+        )}
+        {subjectItems.length > 0 && filteredSubjectItems.length === 0 && (
+          <div className="col-span-full rounded-3xl border border-dashed border-gray-200 bg-white py-12 text-center text-gray-500">
+            لا توجد ملفات مطابقة لهذا البحث أو الفلتر.
           </div>
         )}
       </div>
