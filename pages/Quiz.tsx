@@ -1012,7 +1012,7 @@ const Quiz: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 p-4 max-w-3xl mx-auto w-full flex flex-col justify-center">
+      <main className="flex-1 p-3 sm:p-4 max-w-3xl mx-auto w-full flex flex-col justify-center">
         {statusMessage && (
           <div
             className={`mb-4 rounded-xl border px-4 py-3 text-sm font-medium ${
@@ -1048,8 +1048,8 @@ const Quiz: React.FC = () => {
           </div>
         </div>
 
-        <Card className="rounded-t-none rounded-b-2xl p-4 sm:p-6 min-h-[400px] flex flex-col">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="rounded-t-none rounded-b-2xl p-3 sm:p-6 min-h-[360px] sm:min-h-[400px] flex flex-col">
+          <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
                 onClick={() => toggleFavorite(currentQuestion)}
@@ -1075,25 +1075,25 @@ const Quiz: React.FC = () => {
           <div className="flex-1">
             <div
               onClick={handleInlineQuestionImageClick}
-              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words [&_img]:cursor-zoom-in"
+              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-5 sm:mb-8 text-right break-words [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
             />
             {questions[currentQuestion].imageUrl && (
               <button
                 type="button"
                 onClick={() => setZoomedImageUrl(questions[currentQuestion].imageUrl || null)}
-                className="mb-8 block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-3 shadow-sm"
+                className="mb-5 sm:mb-8 block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-2 sm:p-3 shadow-sm"
               >
                 <img
                   src={questions[currentQuestion].imageUrl}
                   alt="صورة السؤال"
-                  className="mx-auto max-h-[340px] w-full object-contain"
+                  className="mx-auto max-h-[260px] sm:max-h-[340px] w-full object-contain"
                   referrerPolicy="no-referrer"
                 />
               </button>
             )}
 
-            <div className={`grid ${currentOptionGridClass} gap-x-3 sm:gap-x-5 gap-y-3 dir-rtl`}>
+            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-5 gap-y-2 sm:gap-y-3 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
                 const borderClass = isSelected
@@ -1104,7 +1104,7 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[46px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
+                    className={`min-h-[42px] sm:min-h-[46px] px-3 sm:px-4 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-relaxed text-center break-words">
                       {sanitizeArabicText(option)}
@@ -1123,12 +1123,12 @@ const Quiz: React.FC = () => {
               })}
             </div>
 
-            <div className="mt-6 rounded-2xl bg-gray-50 p-3">
+            <div className="mt-5 sm:mt-6 rounded-2xl bg-gray-50 p-2.5 sm:p-3">
               <div className="mb-2 flex items-center justify-between text-[11px] font-bold text-gray-500">
                 <span>خريطة الأسئلة</span>
                 <span>{Object.keys(answers).length} من {questions.length} محلولة</span>
               </div>
-              <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black text-gray-600">
+              <div className="mb-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] font-black text-gray-600">
                 <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-amber-500 ring-2 ring-amber-100" />السؤال الحالي</span>
                 <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />تمت الإجابة</span>
                 <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full border-2 border-slate-300 bg-white" />لم يجب</span>
@@ -1147,7 +1147,7 @@ const Quiz: React.FC = () => {
                         setCurrentQuestion(idx);
                         setSelectedAnswer(answers[idx] ?? null);
                       }}
-                      className={`h-9 w-9 shrink-0 rounded-xl text-xs font-black transition-colors ${
+                      className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-lg sm:rounded-xl text-xs font-black transition-colors ${
                         isCurrent
                           ? 'border-2 border-amber-600 bg-amber-500 text-white shadow-sm ring-2 ring-amber-200'
                           : isReviewLater
@@ -1166,7 +1166,7 @@ const Quiz: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mt-8 pt-6 border-t border-gray-100">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
             <button
               onClick={handleSaveProgress}
               className="w-full sm:w-auto px-4 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 font-bold flex items-center justify-center gap-2 hover:bg-amber-100"
@@ -1266,20 +1266,20 @@ const Quiz: React.FC = () => {
 
       {zoomedImageUrl && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 sm:p-4"
           onClick={() => setZoomedImageUrl(null)}
         >
           <button
             type="button"
             onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+            className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
           >
             إغلاق
           </button>
           <img
             src={zoomedImageUrl}
             alt="تكبير صورة السؤال"
-            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            className="max-h-[82vh] sm:max-h-[90vh] max-w-[96vw] rounded-2xl bg-white object-contain"
             referrerPolicy="no-referrer"
             onClick={(event) => event.stopPropagation()}
           />

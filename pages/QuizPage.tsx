@@ -708,8 +708,8 @@ export const QuizPage: React.FC = () => {
               </div>
             ) : null}
 
-            <div className="p-4 sm:p-8">
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="p-3 sm:p-8">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
                 <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>
                   {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
                 </span>
@@ -729,30 +729,30 @@ export const QuizPage: React.FC = () => {
 
               <div
                 onClick={handleInlineQuestionImageClick}
-                className={`text-base sm:text-lg mb-6 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
+                className={`text-base sm:text-lg mb-5 sm:mb-6 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
               />
               {currentQuestion?.imageUrl && (
                 <button
                   type="button"
                   onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
-                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-8 block w-full cursor-zoom-in rounded-2xl border p-3 shadow-sm`}
+                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-5 sm:mb-8 block w-full cursor-zoom-in rounded-2xl border p-2 sm:p-3 shadow-sm`}
                 >
                   <img
                     src={currentQuestion.imageUrl}
                     alt="صورة السؤال"
-                    className="mx-auto max-h-[340px] w-full object-contain"
+                    className="mx-auto max-h-[260px] sm:max-h-[340px] w-full object-contain"
                     referrerPolicy="no-referrer"
                   />
                 </button>
               )}
 
-              <div className={`grid ${optionGridClass} gap-x-4 sm:gap-x-6 gap-y-3`}>
+              <div className={`grid ${optionGridClass} gap-x-2 sm:gap-x-6 gap-y-2 sm:gap-y-3`}>
                 {currentQuestion?.options.map((option, index) => (
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`min-h-[46px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-sm ${
+                    className={`min-h-[42px] sm:min-h-[46px] w-full px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 sm:gap-3 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -774,8 +774,8 @@ export const QuizPage: React.FC = () => {
                 ))}
               </div>
 
-              <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-6 rounded-2xl border p-3`}>
-                <div className={`mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
+              <div className={`${isNightMode ? 'border-slate-800 bg-slate-950/70' : 'border-gray-100 bg-gray-50'} mt-5 sm:mt-6 rounded-2xl border p-2.5 sm:p-3`}>
+                <div className={`mb-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] font-black ${isNightMode ? 'text-slate-300' : 'text-gray-600'}`}>
                   <span className="inline-flex items-center gap-1">
                     <span className="h-3 w-3 rounded-full bg-amber-500 ring-2 ring-amber-100" />
                     السؤال الحالي
@@ -812,7 +812,7 @@ export const QuizPage: React.FC = () => {
                         key={question.id}
                         type="button"
                         onClick={() => setCurrentQuestionIndex(index)}
-                        className={`h-8 w-8 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
+                        className={`h-8 w-8 sm:h-9 sm:w-9 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
                         aria-label={title}
                         title={title}
                       >
@@ -1100,20 +1100,20 @@ export const QuizPage: React.FC = () => {
 
       {zoomedImageUrl ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 sm:p-4"
           onClick={() => setZoomedImageUrl(null)}
         >
           <button
             type="button"
             onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+            className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
           >
             إغلاق
           </button>
           <img
             src={zoomedImageUrl}
             alt="تكبير صورة السؤال"
-            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            className="max-h-[82vh] sm:max-h-[90vh] max-w-[96vw] rounded-2xl bg-white object-contain"
             referrerPolicy="no-referrer"
             onClick={(event) => event.stopPropagation()}
           />

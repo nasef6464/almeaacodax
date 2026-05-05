@@ -1542,7 +1542,7 @@ const ReviewSolutions = ({
   const isReviewLater = reviewLater.includes(q.questionId);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 pb-20 animate-fade-in">
+    <div className="mx-auto max-w-5xl space-y-4 sm:space-y-5 pb-20 animate-fade-in">
       <header className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="flex items-center gap-4">
           <button onClick={onBack} className="text-gray-500 hover:text-indigo-600 transition-colors">
@@ -1575,25 +1575,25 @@ const ReviewSolutions = ({
       </header>
 
       <Card className="p-0 overflow-hidden border border-gray-100 shadow-sm">
-        <div className="p-4 sm:p-8 bg-white">
-          <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[220px]">
+        <div className="p-3 sm:p-8 bg-white">
+          <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-5 sm:mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[180px] sm:min-h-[220px]">
             <div
               onClick={handleInlineQuestionImageClick}
-              className="mb-6 px-2 text-center text-lg font-bold leading-loose text-gray-800 sm:px-4 sm:text-xl [&_img]:cursor-zoom-in"
+              className="mb-5 sm:mb-6 px-2 text-center text-base sm:text-xl font-bold leading-loose text-gray-800 sm:px-4 [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
             />
             {q.imageUrl ? (
               <button
                 type="button"
                 onClick={() => setZoomedImageUrl(q.imageUrl || null)}
-                className="block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-3 shadow-sm"
+                className="block w-full cursor-zoom-in rounded-2xl border border-gray-200 bg-white p-2 sm:p-3 shadow-sm"
               >
-                <img src={q.imageUrl} alt="صورة السؤال" className="mx-auto max-h-64 w-full object-contain" referrerPolicy="no-referrer" />
+                <img src={q.imageUrl} alt="صورة السؤال" className="mx-auto max-h-56 sm:max-h-64 w-full object-contain" referrerPolicy="no-referrer" />
               </button>
             ) : !questionHasInlineMedia ? null : null}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 sm:gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 mb-5 sm:mb-8">
             {q.options.map((option, i) => {
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
@@ -1622,12 +1622,10 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex min-h-[50px] items-center justify-between gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex min-h-[44px] sm:min-h-[50px] items-center justify-between gap-2 sm:gap-3 rounded-xl border-2 px-3 py-2 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-3">
-                    <div
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`}
-                    />
+                    <div className={`flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
                     <span
                       className="flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
                       dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
@@ -1654,15 +1652,15 @@ const ReviewSolutions = ({
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 border-t border-gray-100 flex flex-col gap-4">
-          <div className="rounded-2xl bg-white p-3">
-            <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-black text-gray-600">
+        <div className="bg-gray-50 p-3 sm:p-4 border-t border-gray-100 flex flex-col gap-3 sm:gap-4">
+          <div className="rounded-2xl bg-white p-2.5 sm:p-3">
+            <div className="mb-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] sm:text-[11px] font-black text-gray-600">
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-indigo-600 ring-2 ring-indigo-100" />السؤال الحالي</span>
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />إجابة صحيحة</span>
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-rose-500 ring-2 ring-rose-100" />إجابة خاطئة</span>
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-amber-100 ring-2 ring-amber-200" />لم يجب</span>
             </div>
-            <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
+            <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-10 sm:gap-2">
             {questions.map((question, index) => {
               const isCurrent = index === currentIdx;
               const wasAnswered = typeof question.selectedOptionIndex === 'number';
@@ -1676,7 +1674,7 @@ const ReviewSolutions = ({
                     setCurrentIdx(index);
                     setShowExplanation(false);
                   }}
-                  className={`h-10 rounded-xl border text-sm font-black transition ${
+                  className={`h-8 sm:h-10 rounded-lg sm:rounded-xl border text-xs sm:text-sm font-black transition ${
                     isCurrent
                       ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
                       : !wasAnswered
@@ -1780,20 +1778,20 @@ const ReviewSolutions = ({
 
       {zoomedImageUrl ? (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 sm:p-4"
           onClick={() => setZoomedImageUrl(null)}
         >
           <button
             type="button"
             onClick={() => setZoomedImageUrl(null)}
-            className="absolute left-4 top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
+            className="absolute left-3 top-3 sm:left-4 sm:top-4 rounded-full bg-white px-4 py-2 text-sm font-black text-gray-800 shadow-lg"
           >
             إغلاق
           </button>
           <img
             src={zoomedImageUrl}
             alt="تكبير صورة السؤال"
-            className="max-h-[90vh] max-w-[95vw] rounded-2xl bg-white object-contain"
+            className="max-h-[82vh] sm:max-h-[90vh] max-w-[96vw] rounded-2xl bg-white object-contain"
             referrerPolicy="no-referrer"
             onClick={(event) => event.stopPropagation()}
           />
