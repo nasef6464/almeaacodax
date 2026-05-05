@@ -6,6 +6,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 
 interface QuestionThreadItem {
   id: string;
@@ -16,18 +17,6 @@ interface QuestionThreadItem {
 
 const QUIZ_THEME_STORAGE_KEY = 'almeaa-quiz-night-mode';
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
-const resolveQuestionFromBank = (questionBank: Question[], questionId: string) => {
-  const normalizedId = String(questionId || '');
-  const exact = questionBank.find((question) => question.id === normalizedId);
-  if (exact) return exact;
-
-  const withoutCopySuffix = normalizedId.replace(/_copy(?:_\d+)?$/i, '');
-  if (withoutCopySuffix && withoutCopySuffix !== normalizedId) {
-    return questionBank.find((question) => question.id === withoutCopySuffix);
-  }
-
-  return undefined;
-};
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
     id: 'seed-student',
@@ -299,16 +288,12 @@ export const QuizPage: React.FC = () => {
       mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
     [currentQuestionIndex, mockExamSectionSummaries],
   );
-  const getOptionGridClass = (question?: Question) => {
-    if (optionLayout === 'two_columns') return 'grid-cols-1 sm:grid-cols-2';
-    if (optionLayout === 'horizontal') return 'grid-cols-2 sm:grid-cols-4';
-    const longestOptionLength = (question?.options || []).reduce((max, option) => Math.max(max, String(option).length), 0);
-    return longestOptionLength > 72 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 sm:grid-cols-4';
-  };
-  const optionGridClass = getOptionGridClass(currentQuestion);
+  const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], optionLayout);
+  const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], optionLayout);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
   const shouldShowProgressBar = quiz?.settings?.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
+  const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
   const reviewQuestionCount = quizQuestions.filter((question) => reviewLater.includes(question.id)).length;
   const isNextBlocked =
     quiz?.settings?.requireAnswerBeforeNext === true &&
@@ -613,20 +598,20 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-4 sm:p-6 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}>
+      <div className="max-w-3xl mx-auto px-3 sm:px-4">
+        <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-3 sm:p-4 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3`}>
           <div className="min-w-0">
             <button
               type="button"
               onClick={handleReturnToPreviousPlace}
-              className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'} mb-3 inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-2 text-xs font-black`}
+              className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'} mb-2 inline-flex items-center gap-2 rounded-xl border ${isNightMode ? 'border-slate-700' : 'border-gray-200'} px-3 py-2 text-xs font-black`}
             >
               <ArrowRight size={16} />
               {returnLabel}
             </button>
-            <h1 className={`text-xl sm:text-2xl font-bold break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
+            <h1 className={`text-lg sm:text-xl font-black break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
             {quiz.description && <p className={`${isNightMode ? 'text-slate-400' : 'text-gray-500'} mt-1 text-sm`}>{quiz.description}</p>}
-            <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-black">
+            <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
               <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'} rounded-full px-3 py-1`}>
                 تم حل {answeredQuestionCount} من {quizQuestions.length}
               </span>
@@ -662,6 +647,20 @@ export const QuizPage: React.FC = () => {
 
         {!isFinished ? (
           <div className="space-y-4">
+          {shouldShowProgressBar ? (
+            <div className="px-1">
+              <div className={`mb-1 flex items-center justify-between text-xs font-black ${isNightMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                <span>التقدم</span>
+                <span>{activeProgressPercentage}%</span>
+              </div>
+              <div className={`${isNightMode ? 'bg-slate-800' : 'bg-gray-100'} h-2 w-full overflow-hidden rounded-full`}>
+                <div
+                  className="h-full rounded-full bg-amber-500 transition-all duration-300"
+                  style={{ width: `${activeProgressPercentage}%` }}
+                />
+              </div>
+            </div>
+          ) : null}
           {mockExamSectionSummaries.length > 1 ? (
             <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl border p-3 shadow-sm`}>
               <div className="mb-2 text-xs font-black text-gray-500">أقسام الاختبار المحاكي</div>
@@ -699,16 +698,7 @@ export const QuizPage: React.FC = () => {
           ) : null}
 
           <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border overflow-hidden`}>
-            {shouldShowProgressBar ? (
-              <div className={`${isNightMode ? 'bg-slate-800' : 'bg-gray-100'} h-2 w-full`}>
-                <div
-                  className="h-full bg-indigo-600 transition-all duration-300"
-                  style={{ width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%` }}
-                />
-              </div>
-            ) : null}
-
-            <div className="p-3 sm:p-8">
+            <div className="p-3 sm:p-6">
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
                 <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>
                   {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
@@ -752,7 +742,7 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`min-h-[38px] sm:min-h-[42px] w-full px-2.5 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
+                    className={`${optionButtonHeightClass} w-full px-2.5 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -960,7 +950,7 @@ export const QuizPage: React.FC = () => {
                                 />
                               </button>
                             )}
-                            <div className={`grid ${getOptionGridClass(question)} gap-2`}>
+                            <div className={`grid ${getQuizOptionGridClass(question.options, optionLayout)} gap-2`}>
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';
@@ -978,7 +968,7 @@ export const QuizPage: React.FC = () => {
                                 }
 
                                 return (
-                                  <div key={optionIndex} className={`min-h-[40px] p-2 rounded-xl border flex items-center justify-between gap-2 ${bgClass}`}>
+                                  <div key={optionIndex} className={`${getQuizOptionButtonHeightClass(question.options, optionLayout)} p-2 rounded-xl border flex items-center justify-between gap-2 ${bgClass}`}>
                                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                                       optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
                                       optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'

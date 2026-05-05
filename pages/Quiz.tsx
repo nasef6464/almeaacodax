@@ -5,6 +5,7 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 const DEFAULT_TIME_MINUTES = 20;
@@ -978,11 +979,8 @@ const Quiz: React.FC = () => {
   }
 
   const currentOptions = questions[currentQuestion]?.options || [];
-  const longestOptionLength = currentOptions.reduce((max, option) => Math.max(max, String(option).length), 0);
-  const currentOptionGridClass =
-    longestOptionLength > 72
-        ? 'grid-cols-1 sm:grid-cols-2'
-        : 'grid-cols-2 sm:grid-cols-4';
+  const currentOptionGridClass = getQuizOptionGridClass(currentOptions, 'auto');
+  const currentOptionHeightClass = getQuizOptionButtonHeightClass(currentOptions, 'auto');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -1102,7 +1100,7 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`min-h-[38px] sm:min-h-[42px] px-2.5 sm:px-3 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
+                    className={`${currentOptionHeightClass} px-2.5 sm:px-3 py-1.5 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
                   >
                     <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-6 text-center break-words">
                       {sanitizeArabicText(option)}

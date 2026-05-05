@@ -34,6 +34,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -1478,22 +1479,9 @@ const ReviewSolutions = ({
     return quizQuestionIds
       .map((questionId) => {
         const savedReview = reviewById.get(questionId);
-        if (savedReview) return savedReview;
-
-        const sourceQuestion = questionBank.find((question) => question.id === questionId);
-        if (!sourceQuestion) return null;
-
-        return {
-          questionId: sourceQuestion.id,
-          text: sourceQuestion.text,
-          options: sourceQuestion.options,
-          correctOptionIndex: sourceQuestion.correctOptionIndex,
-          selectedOptionIndex: undefined,
-          explanation: sourceQuestion.explanation,
-          videoUrl: sourceQuestion.videoUrl,
-          imageUrl: sourceQuestion.imageUrl,
-          isCorrect: false,
-        } satisfies QuizQuestionReview;
+        const sourceQuestion = resolveQuestionFromBank(questionBank, questionId);
+        if (!sourceQuestion) return savedReview || null;
+        return toQuestionReviewFromBank(sourceQuestion, savedReview);
       })
       .filter((question): question is QuizQuestionReview => Boolean(question));
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
@@ -1593,7 +1581,7 @@ const ReviewSolutions = ({
             ) : !questionHasInlineMedia ? null : null}
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 mb-5 sm:mb-8">
+          <div className={`grid ${getQuizOptionGridClass(q.options, 'auto')} gap-2 sm:gap-3 mb-5 sm:mb-8`}>
             {q.options.map((option, i) => {
               const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
@@ -1622,7 +1610,7 @@ const ReviewSolutions = ({
                 <button
                   key={`${q.questionId}-${i}`}
                   type="button"
-                  className={`group flex min-h-[38px] sm:min-h-[42px] items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
+                  className={`group flex ${getQuizOptionButtonHeightClass(q.options, 'auto')} items-center justify-between gap-2 rounded-xl border-2 px-2.5 py-1.5 text-right transition-all ${borderClass} ${bgClass} hover:shadow-sm`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
