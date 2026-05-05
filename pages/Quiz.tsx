@@ -5,8 +5,9 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass } from '../utils/quizPresentation';
+import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { flattenMockExamQuestionIds, isStandaloneMockExam } from '../utils/mockExam';
 
 const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
@@ -195,6 +196,8 @@ const Quiz: React.FC = () => {
 
   const canUserAccessPreparedQuiz = (quiz: (typeof quizzes)[number]) => {
     if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
+    if (isStandaloneMockExam(quiz)) return false;
+    if ((quiz.mode || 'regular') !== 'saher') return false;
     if (isQuizExpired(quiz.dueDate)) return false;
 
     if ((quiz.mode || 'regular') === 'central') {
@@ -207,12 +210,36 @@ const Quiz: React.FC = () => {
     return true;
   };
 
-  const preparedQuizzes = useMemo(
+  const getResolvedQuestionCount = (quiz: (typeof quizzes)[number]) =>
+    flattenMockExamQuestionIds(quiz)
+      .map((questionId) => resolveQuestionFromBank(globalQuestionBank, questionId))
+      .filter(Boolean).length;
+
+  const preparedQuizCards = useMemo(
     () =>
       quizzes
         .filter((quiz) => canUserAccessPreparedQuiz(quiz))
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
-    [quizzes, user.id, user.groupIds],
+        .map((quiz) => ({
+          quiz,
+          questionCount: getResolvedQuestionCount(quiz),
+        }))
+        .filter((item) => item.questionCount > 0)
+        .sort((a, b) => (b.quiz.createdAt || 0) - (a.quiz.createdAt || 0)),
+    [quizzes, user.id, user.groupIds, globalQuestionBank],
+  );
+
+  const hiddenReadyQuizCount = useMemo(
+    () =>
+      quizzes.filter((quiz) => {
+        if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
+        if (isQuizExpired(quiz.dueDate)) return false;
+        return isStandaloneMockExam(quiz) || (quiz.mode || 'regular') !== 'saher' || getResolvedQuestionCount(quiz) === 0;
+      }).length,
+    [quizzes, globalQuestionBank],
+  );
+  const activePreparedQuizCard = useMemo(
+    () => preparedQuizCards.find((item) => item.quiz.id === activePreparedQuizId),
+    [activePreparedQuizId, preparedQuizCards],
   );
 
   const selectedSubjectLabel = useMemo(
@@ -437,12 +464,12 @@ const Quiz: React.FC = () => {
 
   const handleStart = () => {
     if (entryMode === 'prepared') {
-      if (!activePreparedQuizId) {
+      if (!activePreparedQuizCard) {
         showStatus('اختر اختبارًا من الاختبارات الجاهزة أولًا.', 'error');
         return;
       }
       setStatusMessage(null);
-      navigate(`/quiz/${activePreparedQuizId}`);
+      navigate(`/quiz/${activePreparedQuizCard.quiz.id}`);
       return;
     }
     startSelfQuiz();
@@ -692,9 +719,9 @@ const Quiz: React.FC = () => {
           {entryMode === 'prepared' ? (
             <div className="space-y-4">
               <p className="text-sm text-gray-600">اختر اختبارًا منشورًا من الإدارة:</p>
-              {preparedQuizzes.length > 0 ? (
+              {preparedQuizCards.length > 0 ? (
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                  {preparedQuizzes.map((quiz) => (
+                  {preparedQuizCards.map(({ quiz, questionCount }) => (
                     <button
                       key={quiz.id}
                       onClick={() => setActivePreparedQuizId(quiz.id)}
@@ -708,7 +735,7 @@ const Quiz: React.FC = () => {
                         <div>
                           <h3 className="font-bold text-gray-800">{quiz.title}</h3>
                           <p className="text-xs text-gray-500 mt-1">
-                            {subjects.find((s) => s.id === quiz.subjectId)?.name || 'بدون مادة'} • {(quiz.questionIds || []).length} سؤال
+                            {subjects.find((s) => s.id === quiz.subjectId)?.name || 'بدون مادة'} • {questionCount} سؤال
                           </p>
                           {quiz.dueDate ? (
                             <p className="text-[11px] text-amber-600 mt-1">
@@ -732,6 +759,11 @@ const Quiz: React.FC = () => {
                   <p className="text-gray-500 text-sm">لا توجد اختبارات جاهزة متاحة حاليًا.</p>
                 </div>
               )}
+              {hiddenReadyQuizCount > 0 ? (
+                <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold leading-6 text-amber-700">
+                  تم إخفاء الاختبارات العادية والمحاكيات أو الاختبارات التي لا تحتوي على أسئلة من هذه القائمة. هذه الصفحة لساهر فقط، وباقي الاختبارات مكانها داخل المادة أو تبويب المحاكيات.
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="space-y-4">
@@ -950,7 +982,8 @@ const Quiz: React.FC = () => {
 
           <button
             onClick={handleStart}
-            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-2"
+            disabled={entryMode === 'prepared' && !activePreparedQuizCard}
+            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:shadow-none"
           >
             {entryMode === 'prepared' ? 'الدخول إلى الاختبار المختار' : 'ابدأ الاختبار الذاتي الآن'}
             <ChevronRight size={24} className={document.dir === 'rtl' ? 'rotate-180' : ''} />
