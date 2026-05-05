@@ -970,7 +970,7 @@ const Quiz: React.FC = () => {
       ? 'grid-cols-1 sm:grid-cols-2'
       : longestOptionLength > 42
         ? 'grid-cols-1 sm:grid-cols-2'
-        : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+        : 'grid-cols-2 md:grid-cols-4';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -1078,7 +1078,7 @@ const Quiz: React.FC = () => {
               </button>
             )}
 
-            <div className={`grid ${currentOptionGridClass} gap-x-3 sm:gap-x-5 gap-y-4 dir-rtl`}>
+            <div className={`grid ${currentOptionGridClass} gap-x-3 sm:gap-x-5 gap-y-3 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
                 const borderClass = isSelected

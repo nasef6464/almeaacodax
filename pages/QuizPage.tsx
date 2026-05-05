@@ -301,8 +301,9 @@ export const QuizPage: React.FC = () => {
   );
   const getOptionGridClass = (question?: Question) => {
     if (optionLayout === 'two_columns') return 'grid-cols-1 sm:grid-cols-2';
-    if (optionLayout === 'horizontal') return 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
-    return (question?.options?.length || 0) <= 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4';
+    if (optionLayout === 'horizontal') return 'grid-cols-2 md:grid-cols-4';
+    const longestOptionLength = (question?.options || []).reduce((max, option) => Math.max(max, String(option).length), 0);
+    return (question?.options?.length || 0) <= 2 || longestOptionLength > 42 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 md:grid-cols-4';
   };
   const optionGridClass = getOptionGridClass(currentQuestion);
   const shouldShowQuestionReview = quiz?.settings?.allowQuestionReview !== false;
@@ -728,7 +729,7 @@ export const QuizPage: React.FC = () => {
                 </button>
               )}
 
-              <div className={`grid ${optionGridClass} gap-x-4 sm:gap-x-6 gap-y-4`}>
+              <div className={`grid ${optionGridClass} gap-x-4 sm:gap-x-6 gap-y-3`}>
                 {currentQuestion?.options.map((option, index) => (
                   <button
                     key={index}
