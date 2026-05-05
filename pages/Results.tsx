@@ -1499,6 +1499,19 @@ const ReviewSolutions = ({
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
   const q = questions[currentIdx];
   const questionHasInlineMedia = hasInlineQuestionMedia(q?.text);
+  const handleInlineQuestionImageClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as Element | null;
+    const image =
+      target instanceof HTMLImageElement
+        ? target
+        : target?.closest('img') instanceof HTMLImageElement
+          ? target.closest('img')
+          : null;
+
+    if (!image?.src) return;
+    event.preventDefault();
+    setZoomedImageUrl(image.src);
+  };
 
   if (!q) {
     return (
@@ -1565,7 +1578,8 @@ const ReviewSolutions = ({
         <div className="p-4 sm:p-8 bg-white">
           <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[220px]">
             <div
-              className="mb-6 px-2 text-center text-lg font-bold leading-loose text-gray-800 sm:px-4 sm:text-xl"
+              onClick={handleInlineQuestionImageClick}
+              className="mb-6 px-2 text-center text-lg font-bold leading-loose text-gray-800 sm:px-4 sm:text-xl [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
             />
             {q.imageUrl ? (

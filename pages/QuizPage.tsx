@@ -428,6 +428,20 @@ export const QuizPage: React.FC = () => {
     setQaDraft('');
   };
 
+  const handleInlineQuestionImageClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as Element | null;
+    const image =
+      target instanceof HTMLImageElement
+        ? target
+        : target?.closest('img') instanceof HTMLImageElement
+          ? target.closest('img')
+          : null;
+
+    if (!image?.src) return;
+    event.preventDefault();
+    setZoomedImageUrl(image.src);
+  };
+
   const handleFinish = async () => {
     if (isSubmittingResult) return;
 
@@ -713,7 +727,11 @@ export const QuizPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className={`text-base sm:text-lg mb-6 break-words ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`} dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }} />
+              <div
+                onClick={handleInlineQuestionImageClick}
+                className={`text-base sm:text-lg mb-6 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
+                dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
+              />
               {currentQuestion?.imageUrl && (
                 <button
                   type="button"
@@ -915,7 +933,11 @@ export const QuizPage: React.FC = () => {
                           </div>
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-4">
-                              <div className="text-gray-800 font-medium" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                              <div
+                                onClick={handleInlineQuestionImageClick}
+                                className="text-gray-800 font-medium [&_img]:cursor-zoom-in"
+                                dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }}
+                              />
                               <button
                                 onClick={() => toggleFavorite(question.id)}
                                 className="text-gray-400 hover:text-amber-500 transition-colors p-2"

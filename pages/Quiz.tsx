@@ -611,6 +611,20 @@ const Quiz: React.FC = () => {
     showStatus('تم حفظ تقدمك ويمكنك استعادته لاحقًا من نفس الصفحة.', 'success');
   };
 
+  const handleInlineQuestionImageClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as Element | null;
+    const image =
+      target instanceof HTMLImageElement
+        ? target
+        : target?.closest('img') instanceof HTMLImageElement
+          ? target.closest('img')
+          : null;
+
+    if (!image?.src) return;
+    event.preventDefault();
+    setZoomedImageUrl(image.src);
+  };
+
   if (!quizStarted) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -1060,7 +1074,8 @@ const Quiz: React.FC = () => {
 
           <div className="flex-1">
             <div
-              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words"
+              onClick={handleInlineQuestionImageClick}
+              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-8 text-right break-words [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
             />
             {questions[currentQuestion].imageUrl && (
