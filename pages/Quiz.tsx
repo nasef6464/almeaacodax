@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, FileQuestion, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -464,6 +464,9 @@ const Quiz: React.FC = () => {
     const picked = Array.from(byId.values());
 
     setStatusMessage(null);
+    localStorage.removeItem(QUIZ_PROGRESS_KEY);
+    localStorage.removeItem(QUIZ_PROGRESS_SNAPSHOT_KEY);
+    setSavedSnapshot(null);
     setSessionQuestions(picked);
     setTimeLeft(Math.max(5, timeLimitMinutes) * 60);
     setCurrentQuestion(0);
@@ -622,13 +625,12 @@ const Quiz: React.FC = () => {
     setShowExitDialog(true);
   };
 
-  const handleSaveProgress = () => {
+  const buildSavedSnapshot = (): SavedQuizSnapshot | null => {
     if (!quizStarted || questions.length === 0) {
-      showStatus('ابدأ الاختبار أولًا حتى يمكن حفظ تقدمك.', 'error');
-      return;
+      return null;
     }
 
-    const snapshot: SavedQuizSnapshot = {
+    return {
       entryMode,
       difficulty,
       selectedPathId,
@@ -644,10 +646,53 @@ const Quiz: React.FC = () => {
       activePreparedQuizId,
       sessionQuestions: questions,
     };
+  };
 
+  const persistSavedSnapshot = (snapshot: SavedQuizSnapshot) => {
     localStorage.setItem(QUIZ_PROGRESS_SNAPSHOT_KEY, JSON.stringify(snapshot));
     setSavedSnapshot(snapshot);
-    showStatus('تم حفظ تقدمك ويمكنك استعادته لاحقًا من نفس الصفحة.', 'success');
+  };
+
+  const handleSaveProgress = () => {
+    if (!quizStarted || questions.length === 0) {
+      showStatus('ابدأ الاختبار أولًا حتى يمكن حفظ تقدمك.', 'error');
+      return;
+    }
+
+    const snapshot = buildSavedSnapshot();
+    if (!snapshot) return;
+
+    persistSavedSnapshot(snapshot);
+    showStatus('تم حفظ تقدمك. يمكنك الاستكمال لاحقًا من نفس الصفحة.', 'success');
+  };
+
+  const handlePauseAndSave = () => {
+    const snapshot = buildSavedSnapshot();
+    if (!snapshot) {
+      showStatus('ابدأ الاختبار أولًا حتى يمكن إيقافه مؤقتًا.', 'error');
+      return;
+    }
+
+    persistSavedSnapshot(snapshot);
+    setQuizStarted(false);
+    setStatusTone('success');
+    setStatusMessage('تم إيقاف الاختبار وحفظ تقدمك. اضغط استعادة التقدم للاستكمال.');
+    navigate('/quiz', { replace: true });
+  };
+
+  const handleExitAfterSaving = () => {
+    const snapshot = buildSavedSnapshot();
+    if (snapshot) {
+      persistSavedSnapshot(snapshot);
+    }
+    setShowExitDialog(false);
+    navigate('/dashboard?tab=quizzes');
+  };
+
+  const handleExitWithoutSaving = () => {
+    localStorage.removeItem(QUIZ_PROGRESS_KEY);
+    setShowExitDialog(false);
+    navigate('/dashboard?tab=quizzes');
   };
 
   const handleInlineQuestionImageClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -1045,9 +1090,19 @@ const Quiz: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="self-start sm:self-auto flex items-center gap-2 bg-secondary-50 text-secondary-700 px-3 py-1 rounded-lg font-mono font-bold">
-            <Clock size={18} />
-            <span>{formatTime(timeLeft)}</span>
+          <div className="self-start sm:self-auto flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handlePauseAndSave}
+              className="inline-flex items-center gap-2 rounded-lg border border-amber-100 bg-amber-50 px-3 py-1.5 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+            >
+              <PauseCircle size={16} />
+              إيقاف مؤقت
+            </button>
+            <div className="flex items-center gap-2 bg-secondary-50 text-secondary-700 px-3 py-1 rounded-lg font-mono font-bold">
+              <Clock size={18} />
+              <span>{formatTime(timeLeft)}</span>
+            </div>
           </div>
         </div>
       </header>
@@ -1211,7 +1266,7 @@ const Quiz: React.FC = () => {
               className="w-full sm:w-auto px-4 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 font-bold flex items-center justify-center gap-2 hover:bg-amber-100"
             >
               <Save size={18} />
-              حفظ مؤقت
+              حفظ التقدم
             </button>
 
             <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
@@ -1243,22 +1298,30 @@ const Quiz: React.FC = () => {
             <div>
               <h3 className="font-bold text-xl text-gray-800 mb-2">هل تريد الخروج؟</h3>
               <p className="text-gray-500 text-sm leading-relaxed">
-                الاختبار لا يزال سارياً. الخروج الآن قد يؤدي إلى فقدان تقدمك الحالي.
+                الاختبار لا يزال جاريًا. الأفضل حفظ التقدم حتى تستطيع الاستكمال لاحقًا.
               </p>
             </div>
-            <div className="flex gap-3 mt-6">
+            <div className="grid gap-3 mt-6">
               <button
-                onClick={() => navigate('/dashboard')}
-                className="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold hover:bg-red-600 transition-colors shadow-lg shadow-red-100"
+                onClick={handleExitAfterSaving}
+                className="bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-100"
               >
-                خروج وإنهاء
+                حفظ وخروج
               </button>
-              <button
-                onClick={() => setShowExitDialog(false)}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
-              >
-                إلغاء
-              </button>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={handleExitWithoutSaving}
+                  className="bg-red-50 text-red-600 py-3 rounded-xl font-bold hover:bg-red-100 transition-colors"
+                >
+                  خروج بدون حفظ
+                </button>
+                <button
+                  onClick={() => setShowExitDialog(false)}
+                  className="bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+                >
+                  إلغاء
+                </button>
+              </div>
             </div>
           </Card>
         </div>
