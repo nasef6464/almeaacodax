@@ -34,6 +34,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
+import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
 
 interface SkillRecommendation {
@@ -327,14 +328,18 @@ const Results: React.FC = () => {
     setViewMode('summary');
   }, [requestedAttempt, requestedView]);
   const questionReviewCount = latestResult?.questionReview?.length || 0;
-  const retryQuizLink =
-    latestResult?.quizId && !latestResult.quizId.startsWith('self-quiz')
-      ? `/quiz/${latestResult.quizId}`
-      : '/quiz';
   const safeResultReturnTo = React.useMemo(() => {
     const target = latestResult?.returnTo || '';
     return target.startsWith('/') && !target.startsWith('//') ? target : '';
   }, [latestResult?.returnTo]);
+  const retryQuizLink = React.useMemo(() => {
+    if (!latestResult?.quizId || latestResult.quizId.startsWith('self-quiz')) return '/quiz';
+
+    return buildQuizRouteWithContext(latestResult.quizId, {
+      returnTo: safeResultReturnTo || undefined,
+      source: latestResult.source,
+    });
+  }, [latestResult?.quizId, latestResult?.source, safeResultReturnTo]);
   const resultReturnLabel = React.useMemo(() => {
     if (latestResult?.source === 'foundation') return 'العودة لموضوع التأسيس';
     if (latestResult?.source === 'course') return 'العودة للدورة';

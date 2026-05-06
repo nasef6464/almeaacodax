@@ -254,6 +254,72 @@ const getUserSchoolIds = (groups: Group[], userGroupIds: string[] = []) => {
     return ids;
 };
 
+const getQuizResultIdentity = (result: Partial<QuizResult> | null | undefined) => {
+    if (!result) return '';
+
+    const date = String(result.date || '');
+    const quizId = String(result.quizId || '');
+    const userId = String(result.userId || '');
+    if (date) {
+        return [userId, quizId, date].filter(Boolean).join(':');
+    }
+
+    return [userId, quizId, result.quizTitle, result.score, result.timeSpent]
+        .filter((item) => item !== undefined && item !== null && String(item) !== '')
+        .map(String)
+        .join(':');
+};
+
+const normalizeQuizResultForStore = (result: QuizResult): QuizResult => ({
+    ...result,
+    userId: result.userId ? String(result.userId) : result.userId,
+    quizId: String(result.quizId || ''),
+    quizTitle: String(result.quizTitle || 'اختبار'),
+    date: String(result.date || new Date().toISOString()),
+    source: result.source ? String(result.source) : result.source,
+    returnTo: result.returnTo ? String(result.returnTo) : result.returnTo,
+    score: Number(result.score || 0),
+    totalQuestions: Number(result.totalQuestions || 0),
+    correctAnswers: Number(result.correctAnswers || 0),
+    wrongAnswers: Number(result.wrongAnswers || 0),
+    unansweredQuestions: Number(result.unansweredQuestions || 0),
+    timeSpent: String(result.timeSpent || '0 دقيقة'),
+});
+
+const mergeQuizResultsForStore = (
+    existingResults: QuizResult[],
+    incomingResults: QuizResult[],
+    currentUserId?: string,
+) => {
+    const merged = new Map<string, QuizResult>();
+
+    [...incomingResults, ...existingResults]
+        .filter(Boolean)
+        .map(normalizeQuizResultForStore)
+        .filter((result) => result.quizId && result.date)
+        .forEach((result) => {
+            const belongsToCurrentUser =
+                !currentUserId ||
+                currentUserId === 'guest' ||
+                currentUserId.startsWith('dev-') ||
+                !result.userId ||
+                result.userId === currentUserId;
+
+            if (!belongsToCurrentUser) {
+                return;
+            }
+
+            const identity = getQuizResultIdentity(result);
+            if (identity && !merged.has(identity)) {
+                merged.set(identity, result);
+            }
+        });
+
+    return Array.from(merged.values())
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 250);
+};
+
 export const useStore = create<AppState>()(
     persist(
         (set, get) => ({
@@ -448,8 +514,12 @@ export const useStore = create<AppState>()(
                   : state.studyPlans,
             })),
 
-            hydrateExamResults: (results) => set(() => ({
-                examResults: results
+            hydrateExamResults: (results) => set((state) => ({
+                examResults: mergeQuizResultsForStore(
+                    state.examResults,
+                    Array.isArray(results) ? results : [],
+                    state.user?.id,
+                ),
             })),
 
             hydrateQuestionAttempts: (attempts) => set(() => ({
@@ -627,7 +697,7 @@ export const useStore = create<AppState>()(
                 }
 
                 set((state) => ({
-                    examResults: [result, ...state.examResults],
+                    examResults: mergeQuizResultsForStore(state.examResults, [result], state.user?.id),
                     recentActivity: [newActivity, ...state.recentActivity].slice(0, 10)
                 }));
             },
