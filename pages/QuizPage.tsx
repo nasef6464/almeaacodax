@@ -7,6 +7,7 @@ import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { isDevSessionUser } from '../utils/devSession';
 
 interface QuestionThreadItem {
   id: string;
@@ -625,25 +626,29 @@ export const QuizPage: React.FC = () => {
     let resultAttemptDate = result.date;
 
     try {
-      const serverResult = await api.submitQuiz(quiz.id, {
-        answers: selectedOptions,
-        timeSpentSeconds: Math.max(0, timeSpentSeconds),
-      });
-      const savedServerResult: QuizResult = {
-        ...result,
-        ...(serverResult as QuizResult),
-        source: result.source,
-        returnTo: result.returnTo,
-      };
-      if ((savedServerResult.questionReview?.length || 0) < result.questionReview.length) {
-        savedServerResult.questionReview = result.questionReview;
-        savedServerResult.totalQuestions = result.totalQuestions;
-        savedServerResult.correctAnswers = result.correctAnswers;
-        savedServerResult.wrongAnswers = result.wrongAnswers;
-        savedServerResult.unanswered = result.unanswered;
+      if (isDevSessionUser(user)) {
+        saveExamResult(result);
+      } else {
+        const serverResult = await api.submitQuiz(quiz.id, {
+          answers: selectedOptions,
+          timeSpentSeconds: Math.max(0, timeSpentSeconds),
+        });
+        const savedServerResult: QuizResult = {
+          ...result,
+          ...(serverResult as QuizResult),
+          source: result.source,
+          returnTo: result.returnTo,
+        };
+        if ((savedServerResult.questionReview?.length || 0) < result.questionReview.length) {
+          savedServerResult.questionReview = result.questionReview;
+          savedServerResult.totalQuestions = result.totalQuestions;
+          savedServerResult.correctAnswers = result.correctAnswers;
+          savedServerResult.wrongAnswers = result.wrongAnswers;
+          savedServerResult.unanswered = result.unanswered;
+        }
+        resultAttemptDate = savedServerResult.date || result.date;
+        hydrateExamResults([savedServerResult, ...examResults]);
       }
-      resultAttemptDate = savedServerResult.date || result.date;
-      hydrateExamResults([savedServerResult, ...examResults]);
     } catch (error) {
       console.error('Unable to submit quiz on server, saving local result instead:', error);
       saveExamResult(result);

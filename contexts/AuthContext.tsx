@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { api } from '../services/api';
 import { Role, User as StoreUser } from '../types';
 import { useStore } from '../store/useStore';
+import { DEV_TOKEN_PREFIX } from '../utils/devSession';
 
 type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'parent';
 
@@ -64,8 +65,6 @@ const roleMap: Record<BackendRole, Role> = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const DEV_TOKEN_PREFIX = 'dev-role-token:';
 
 const devRoleNames: Record<BackendRole, string> = {
   admin: 'مدير النظام',

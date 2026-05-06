@@ -3,10 +3,13 @@ import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
 import { normalizeIdList } from '../utils/entityIds';
+import { isDevSessionUser } from '../utils/devSession';
 import { normalizeQuizPlacement } from '../utils/quizPlacement';
 
 const USE_REAL_API =
     (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+
+const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API && user?.email && !isDevSessionUser(user));
 
 const writeLegacyFirebaseDoc = async (
     collectionName: string,
@@ -490,7 +493,7 @@ export const useStore = create<AppState>()(
                     },
                 }));
 
-                if (state.user?.email) {
+                if (shouldSyncUserToApi(state.user)) {
                     api.completePurchase({ courseId }).catch(console.error);
                 }
             },
@@ -554,7 +557,7 @@ export const useStore = create<AppState>()(
             enrollPath: (pathId) => set((state) => {
                 if (state.enrolledPaths?.includes(pathId)) return state;
                 const nextEnrolledPaths = [...(state.enrolledPaths || []), pathId];
-                if (state.user?.email) {
+                if (shouldSyncUserToApi(state.user)) {
                     api.updateMyPreferences({
                         favorites: state.favorites,
                         reviewLater: state.reviewLater,
@@ -568,7 +571,7 @@ export const useStore = create<AppState>()(
 
             unenrollPath: (pathId) => set((state) => {
                 const nextEnrolledPaths = (state.enrolledPaths || []).filter(id => id !== pathId);
-                if (state.user?.email) {
+                if (shouldSyncUserToApi(state.user)) {
                     api.updateMyPreferences({
                         favorites: state.favorites,
                         reviewLater: state.reviewLater,
@@ -610,6 +613,7 @@ export const useStore = create<AppState>()(
             },
 
             saveExamResult: (result) => {
+                const state = get();
                 const newActivity: Activity = {
                     id: Date.now().toString(),
                     type: 'quiz_complete',
@@ -618,7 +622,9 @@ export const useStore = create<AppState>()(
                     link: `/results`
                 };
 
-                api.createQuizResult(result).catch(console.error);
+                if (shouldSyncUserToApi(state.user)) {
+                    api.createQuizResult(result).catch(console.error);
+                }
 
                 set((state) => ({
                     examResults: [result, ...state.examResults],
@@ -632,7 +638,7 @@ export const useStore = create<AppState>()(
                 if (!USE_REAL_API && state.user?.id) {
                     writeLegacyFirebaseDoc('questionAttempts', attemptId, { ...attempt, userId: state.user.id });
                 }
-                if (USE_REAL_API && state.user?.email) {
+                if (shouldSyncUserToApi(state.user)) {
                     api.createQuestionAttempt(attempt).catch(console.error);
                 }
                 set((state) => ({
@@ -646,7 +652,7 @@ export const useStore = create<AppState>()(
                         ? state.favorites.filter(id => id !== questionId)
                         : [...state.favorites, questionId];
 
-                    if (state.user?.email) {
+                    if (shouldSyncUserToApi(state.user)) {
                         api.updateMyPreferences({
                             favorites: nextFavorites,
                             reviewLater: state.reviewLater,
@@ -663,7 +669,7 @@ export const useStore = create<AppState>()(
                         ? state.reviewLater.filter(id => id !== questionId)
                         : [...state.reviewLater, questionId];
 
-                    if (state.user?.email) {
+                    if (shouldSyncUserToApi(state.user)) {
                         api.updateMyPreferences({
                             favorites: state.favorites,
                             reviewLater: nextReviewLater,
