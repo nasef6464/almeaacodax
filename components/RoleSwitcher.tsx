@@ -30,9 +30,9 @@ export const RoleSwitcher: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-8 left-8 z-[100]" dir="rtl">
+    <div className="fixed left-4 top-24 z-[100]" dir="rtl">
       {isOpen && (
-        <div className="absolute bottom-16 left-0 mb-2 w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-2xl transition-all">
+        <div className="absolute left-0 top-12 mt-2 w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-2xl transition-all">
           <div className="flex items-center justify-between border-b border-amber-100 bg-amber-50 px-4 py-3">
             <span className="text-xs font-bold text-amber-800">محاكي الأدوار (للتطوير)</span>
           </div>
@@ -62,13 +62,13 @@ export const RoleSwitcher: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         data-testid="dev-role-switcher"
         aria-label="dev-role-switcher"
-        className={`flex items-center gap-3 rounded-full px-5 py-3 shadow-lg transition-all ${
+        className={`flex items-center gap-2 rounded-full px-3 py-2 text-xs shadow-lg transition-all ${
           isOpen ? 'bg-amber-500 text-white' : 'bg-gray-900 text-white hover:bg-gray-800'
         }`}
       >
-        <Shield size={20} />
+        <Shield size={16} />
         <span className="text-sm font-medium">تغيير الدور</span>
-        <ChevronUp size={16} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronUp size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
     </div>
   );

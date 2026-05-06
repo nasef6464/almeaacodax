@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
@@ -83,6 +83,7 @@ export const QuizPage: React.FC = () => {
   const [draftRestored, setDraftRestored] = useState(false);
   const [quizStatusMessage, setQuizStatusMessage] = useState<string | null>(null);
   const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
+  const activeQuizLoadKeyRef = useRef('');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
@@ -142,17 +143,12 @@ export const QuizPage: React.FC = () => {
   useEffect(() => {
     const foundQuiz = quizzes.find((item) => item.id === quizId);
     if (!foundQuiz) {
+      activeQuizLoadKeyRef.current = '';
       setHasAccess(false);
       return;
     }
 
     setQuiz(foundQuiz);
-    setSelectedOptions({});
-    setCurrentQuestionIndex(0);
-    setIsFinished(false);
-    setShowFinishDialog(false);
-    setQaDraft('');
-    setQaThread(INITIAL_QA_THREAD);
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
     setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -210,6 +206,25 @@ export const QuizPage: React.FC = () => {
     const loadedQuestions = sourceQuestionIds
       .map((id) => resolveQuestionFromBank(questions, id))
       .filter((question): question is Question => Boolean(question));
+    const quizLoadKey = [
+      foundQuiz.id,
+      user.id,
+      user.role,
+      sourceQuestionIds.join(','),
+      loadedQuestions.map((question) => question.id).join(','),
+    ].join('|');
+
+    if (activeQuizLoadKeyRef.current === quizLoadKey) {
+      return;
+    }
+
+    activeQuizLoadKeyRef.current = quizLoadKey;
+    setSelectedOptions({});
+    setCurrentQuestionIndex(0);
+    setIsFinished(false);
+    setShowFinishDialog(false);
+    setQaDraft('');
+    setQaThread(INITIAL_QA_THREAD);
 
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (foundQuiz.settings?.timeLimit || 0);
     const defaultTimeLeft = effectiveTimeLimit && effectiveTimeLimit > 0 ? effectiveTimeLimit * 60 : null;
@@ -993,6 +1008,7 @@ export const QuizPage: React.FC = () => {
 
               {currentQuestionIndex === quizQuestions.length - 1 ? (
                 <button
+                  type="button"
                   onClick={() => setShowFinishDialog(true)}
                   disabled={isSubmittingResult}
                   className="inline-flex min-w-[86px] items-center justify-center rounded-xl bg-emerald-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
@@ -1001,6 +1017,7 @@ export const QuizPage: React.FC = () => {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={handleNext}
                   disabled={Boolean(isNextBlocked)}
                   title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}

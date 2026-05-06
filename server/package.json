@@ -20,6 +20,7 @@
     "diagnose:cloud": "tsx src/scripts/diagnoseCloudAccess.ts",
     "audit:learning": "tsx src/scripts/auditLearningContent.ts",
     "repair:learning": "tsx src/scripts/repairCurrentLearningContent.ts",
+    "backfill:learning-placements": "tsx src/scripts/backfillLearningPlacementsApi.ts",
     "backup:learning": "tsx src/scripts/backupLearningContent.ts",
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts"
   },
