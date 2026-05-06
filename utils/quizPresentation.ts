@@ -36,7 +36,7 @@ export const getQuizOptionGridClass = (
 
   if (optionLayout === 'two_columns' && longestOptionLength > 72) return 'grid-cols-1 sm:grid-cols-2';
   if (optionLayout === 'horizontal') {
-    if (options.length <= 4 && longestOptionLength <= 42) return 'grid-cols-4';
+    if (options.length <= 4 && longestOptionLength <= 42) return 'grid-cols-2 sm:grid-cols-4';
     if (longestOptionLength > 72) return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
     return 'grid-cols-2 sm:grid-cols-4';
   }
@@ -58,10 +58,10 @@ export const getQuizOptionButtonHeightClass = (
   }
 
   if (optionLayout === 'horizontal' && longestOptionLength <= 42) {
-    return 'min-h-[28px] sm:min-h-[32px]';
+    return 'min-h-[26px] sm:min-h-[30px]';
   }
 
-  return 'min-h-[30px] sm:min-h-[34px]';
+  return 'min-h-[28px] sm:min-h-[32px]';
 };
 
 export const getQuizQuestionMapButtonClass = (
