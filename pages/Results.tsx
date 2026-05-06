@@ -288,9 +288,9 @@ const SimpleResultStat = ({
   };
 
   return (
-    <div className={`rounded-xl px-3 py-2.5 ${toneClasses[tone]}`}>
+    <div className={`rounded-xl px-3 py-2 ${toneClasses[tone]}`}>
       <div className="text-[11px] font-bold opacity-80">{label}</div>
-      <div className="mt-1 text-lg font-black">{value}</div>
+      <div className="mt-1 text-base font-black">{value}</div>
     </div>
   );
 };
@@ -1178,31 +1178,31 @@ const Results: React.FC = () => {
                 </div>
               ) : null}
 
-              <div className="print-hide mt-5 grid gap-2">
+              <div className="print-hide mt-5 flex flex-wrap gap-2">
                 <button
                   onClick={() => questionReviewCount > 0 && setViewMode('review')}
                   disabled={questionReviewCount === 0}
-                  className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+                  className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 sm:text-sm"
                 >
-                  {questionReviewCount > 0 ? 'مراجعة الحلول' : 'المراجعة غير متاحة'}
+                  {questionReviewCount > 0 ? 'مراجعة' : 'لا توجد مراجعة'}
                 </button>
                 {weakestSkill?.lessonVideoUrl ? (
                   <button
                     onClick={() => setVideoData({ url: weakestSkill.lessonVideoUrl!, title: `شرح مهارة ${weakestSkill.skillName}` })}
-                    className="rounded-2xl bg-white px-4 py-3 text-sm font-black text-emerald-700 shadow-sm hover:bg-emerald-50"
+                    className="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50 sm:text-sm"
                   >
-                    شاهد شرحًا قصيرًا
+                    فيديو
                   </button>
                 ) : weakestSkill?.lessonLink ? (
-                  <Link to={weakestSkill.lessonLink} className="rounded-2xl bg-white px-4 py-3 text-center text-sm font-black text-indigo-700 shadow-sm hover:bg-indigo-50">
-                    افتح درس المهارة
+                  <Link to={weakestSkill.lessonLink} className="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 shadow-sm hover:bg-indigo-50 sm:text-sm">
+                    درس
                   </Link>
                 ) : null}
                 <button
                   onClick={() => setResultDepth('full')}
-                  className="rounded-2xl border border-indigo-100 bg-white px-4 py-3 text-sm font-black text-indigo-700 hover:bg-indigo-50"
+                  className="inline-flex items-center justify-center rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-50 sm:text-sm"
                 >
-                  عرض التقرير الكامل عند الحاجة
+                  تفاصيل
                 </button>
               </div>
             </div>
@@ -1266,37 +1266,37 @@ const Results: React.FC = () => {
                   </div>
                   <p className="mt-3 text-sm leading-7 text-emerald-900">{simplestNextStep}</p>
                   <div className="mt-3 grid gap-2 text-xs font-bold text-emerald-700 sm:grid-cols-3">
-                    <span className="rounded-xl bg-white px-3 py-2">1. شرح</span>
-                    <span className="rounded-xl bg-white px-3 py-2">2. تدريب</span>
-                    <span className="rounded-xl bg-white px-3 py-2">3. إعادة قياس</span>
+                    <span className="rounded-xl bg-white px-3 py-2">شرح</span>
+                    <span className="rounded-xl bg-white px-3 py-2">تدريب</span>
+                    <span className="rounded-xl bg-white px-3 py-2">قياس</span>
                   </div>
                 </div>
                 {weakestSkill.lessonLink ? (
-                  <Link to={weakestSkill.lessonLink} className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors">
-                    راجع الشرح المرتبط
+                  <Link to={weakestSkill.lessonLink} className="inline-flex w-fit rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 transition-colors sm:text-sm">
+                    الشرح
                   </Link>
                 ) : null}
                 {weakestSkill.lessonVideoUrl ? (
                   <button
                     onClick={() => setVideoData({ url: weakestSkill.lessonVideoUrl!, title: `شرح مهارة ${weakestSkill.skillName}` })}
-                    className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-colors text-right"
+                    className="inline-flex w-fit rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-right text-xs font-black text-emerald-700 hover:bg-emerald-100 transition-colors sm:text-sm"
                   >
-                    شاهد فيديو الشرح
+                    فيديو
                   </button>
                 ) : null}
                 {weakestSkill.quizLink ? (
-                  <Link to={weakestSkill.quizLink} className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-700 hover:bg-amber-100 transition-colors">
-                    ابدأ تدريبًا على نفس المهارة
+                  <Link to={weakestSkill.quizLink} className="inline-flex w-fit rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 transition-colors sm:text-sm">
+                    تدريب
                   </Link>
                 ) : null}
                 {weakestSkill.resourceUrl ? (
-                  <a href={weakestSkill.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100 transition-colors">
-                    افتح الملف الداعم
+                  <a href={weakestSkill.resourceUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-100 transition-colors sm:text-sm">
+                    ملف
                   </a>
                 ) : null}
                 {weakestSkill.mastery < 75 ? (
-                  <Link to={bookSessionLink} className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition-colors">
-                    حجز حصة علاجية لهذه المهارة
+                  <Link to={bookSessionLink} className="inline-flex w-fit rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs font-black text-rose-700 hover:bg-rose-100 transition-colors sm:text-sm">
+                    حصة
                   </Link>
                 ) : null}
                 {isFullResult ? (
@@ -1884,25 +1884,25 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
 
 const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: QuizResult[] }) => {
   return (
-    <div className="space-y-6 pb-20">
-      <header className="flex items-center gap-3 sm:gap-4 mb-6">
+    <div className="space-y-4 pb-16">
+      <header className="mb-4 flex items-center gap-3 sm:gap-4">
         <button onClick={onBack} className="text-gray-500">
           <ArrowRight />
         </button>
-        <h1 className="text-xl font-bold">محاولاتك السابقة</h1>
+        <h1 className="text-lg font-black">محاولاتك السابقة</h1>
       </header>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {attempts.map((attempt, index) => {
           const weakSkill = [...(attempt.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
           const attemptLink = `/results?attempt=${encodeURIComponent(String(attempt.date || attempt.quizId))}`;
 
           return (
-            <Card key={`${attempt.quizId}-${attempt.date}-${index}`} className="p-4">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-4">
+            <Card key={`${attempt.quizId}-${attempt.date}-${index}`} className="p-3 sm:p-4">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-center gap-3">
                   <div
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-black ${
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-black ${
                       attempt.score >= 75 ? 'bg-emerald-100 text-emerald-700' : attempt.score >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
                     }`}
                   >
@@ -1917,20 +1917,20 @@ const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: 
                     </div>
                   </div>
                 </div>
-                <div className="grid gap-2 sm:grid-cols-3 md:min-w-[360px]">
-                  <Link to={attemptLink} className="rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-black text-white hover:bg-indigo-700">
-                    تحليل المحاولة
+                <div className="flex flex-wrap gap-2">
+                  <Link to={attemptLink} className="rounded-xl bg-indigo-600 px-3 py-1.5 text-center text-xs font-black text-white hover:bg-indigo-700 sm:text-sm">
+                    تحليل
                   </Link>
-                  <Link to={`${attemptLink}&view=review`} className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-center text-sm font-black text-emerald-700 hover:bg-emerald-100">
-                    مراجعة الحلول
+                  <Link to={`${attemptLink}&view=review`} className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-center text-xs font-black text-emerald-700 hover:bg-emerald-100 sm:text-sm">
+                    مراجعة
                   </Link>
-                  <Link to="/reports" className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-black text-slate-700 hover:bg-slate-50">
-                    التقرير العام
+                  <Link to="/reports" className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-center text-xs font-black text-slate-700 hover:bg-slate-50 sm:text-sm">
+                    تقرير
                   </Link>
                 </div>
               </div>
-              <div className="mt-4 rounded-2xl bg-slate-50 px-4 py-3">
-                <div className="text-xs font-black text-slate-500">أضعف مهارة في هذه المحاولة</div>
+              <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2">
+                <div className="text-[11px] font-black text-slate-500">أضعف مهارة</div>
                 <div className="mt-1 text-sm font-black text-slate-900">
                   {weakSkill ? `${displayText(weakSkill.skill)} - ${weakSkill.mastery}%` : 'لا توجد مهارة ضعيفة واضحة'}
                 </div>
