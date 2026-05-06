@@ -650,24 +650,45 @@ const Results: React.FC = () => {
 
   if (!latestResult) {
     return (
-      <div className="space-y-6 pb-20">
-        <header className="flex items-center gap-3 sm:gap-4 mb-6">
-          <Link to="/dashboard" className="text-gray-500 hover:text-gray-700">
+      <div className="mx-auto max-w-4xl space-y-4 pb-16">
+        <header className="mb-4 flex items-center gap-3 sm:gap-4">
+          <Link to="/dashboard" className="text-gray-500 hover:text-indigo-600 transition-colors">
             <ArrowRight />
           </Link>
-          <h1 className="text-xl font-bold">نتيجة الاختبار</h1>
+          <h1 className="text-lg font-black">نتيجة الاختبار</h1>
         </header>
 
-        <Card className="p-10 text-center border-dashed border-2 border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 leading-tight">لا توجد نتيجة محفوظة بعد</h2>
-          <p className="text-gray-500 mb-6">ابدأ أول اختبار، وبعدها ستظهر هنا النتيجة والتحليل وسجل المحاولات.</p>
-          <Link
-            to="/quiz"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors"
-          >
-            <PlayCircle size={18} />
-            ابدأ اختبارًا الآن
-          </Link>
+        <Card className="border-2 border-dashed border-gray-200 p-5 text-center sm:p-6">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+            <BarChart3 size={22} />
+          </div>
+          <h2 className="mt-4 text-lg font-black leading-tight text-gray-900 sm:text-xl">لا توجد نتيجة محفوظة هنا</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm font-bold leading-7 text-gray-500">
+            ابدأ اختبارًا أو افتح محاولاتك من لوحة الطالب.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <Link
+              to="/quiz"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-indigo-700 sm:text-sm"
+            >
+              <PlayCircle size={15} />
+              ابدأ اختبار
+            </Link>
+            <Link
+              to="/dashboard?tab=quizzes"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm"
+            >
+              <History size={15} />
+              اختباراتي
+            </Link>
+            <Link
+              to="/reports"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition-colors hover:bg-slate-50 sm:text-sm"
+            >
+              <BarChart3 size={15} />
+              تقريري
+            </Link>
+          </div>
         </Card>
       </div>
     );
@@ -1891,6 +1912,28 @@ const PreviousAttempts = ({ onBack, attempts }: { onBack: () => void; attempts: 
         </button>
         <h1 className="text-lg font-black">محاولاتك السابقة</h1>
       </header>
+
+      {attempts.length === 0 ? (
+        <Card className="border-2 border-dashed border-gray-200 p-5 text-center sm:p-6">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <History size={22} />
+          </div>
+          <h2 className="mt-4 text-lg font-black text-gray-900">لا توجد محاولات بعد</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm font-bold leading-7 text-gray-500">
+            بعد أول اختبار ستظهر محاولاتك هنا بشكل مرتب.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <Link to="/quiz" className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700 sm:text-sm">
+              <PlayCircle size={15} />
+              ابدأ اختبار
+            </Link>
+            <Link to="/dashboard?tab=saher" className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50 sm:text-sm">
+              <ArrowRight size={15} />
+              مركز الاختبارات
+            </Link>
+          </div>
+        </Card>
+      ) : null}
 
       <div className="space-y-3">
         {attempts.map((attempt, index) => {
