@@ -50,6 +50,43 @@ const questionIds = new Set(
     return id ? [id, stripCopySuffix(id)] : [];
   }),
 );
+const questionById = new Map(
+  questions.flatMap((question) => {
+    const id = String(question?.id || question?._id || '').trim();
+    return id ? [[id, question], [stripCopySuffix(id), question]] : [];
+  }),
+);
+
+function resolveQuestionRef(questionId) {
+  const normalizedId = String(questionId || '').trim();
+  return questionById.get(normalizedId) || questionById.get(stripCopySuffix(normalizedId));
+}
+
+function getQuizQuestionRefs(quiz) {
+  const directRefs = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+  if (directRefs.length > 0) return directRefs;
+
+  const sections = Array.isArray(quiz?.sections) ? quiz.sections : [];
+  return sections.flatMap((section) =>
+    Array.isArray(section?.questionIds) ? section.questionIds.map(String).filter(Boolean) : [],
+  );
+}
+
+function assertReviewCoverage(quizId) {
+  const quiz = quizzes.find((item) => String(item?.id || item?._id) === quizId);
+  if (!quiz) return `${quizId} is not present on this environment`;
+
+  const refs = getQuizQuestionRefs(quiz);
+  if (refs.length < 2) throw new Error(`expected ${quizId} to have multiple questions, found ${refs.length}`);
+
+  const resolved = refs.map(resolveQuestionRef).filter(Boolean);
+  if (resolved.length !== refs.length) {
+    const missing = refs.filter((id) => !resolveQuestionRef(id));
+    throw new Error(`review cannot reconstruct ${missing.length} question(s): ${missing.join(', ')}`);
+  }
+
+  return `${quiz.title || quizId}: ${resolved.length}/${refs.length} review questions`;
+}
 
 await check('learning training quiz is published in the selected material', async () => {
   const quiz = quizzes.find((item) => String(item?.id || item?._id) === TARGET_QUIZ_ID);
@@ -98,6 +135,14 @@ await check('copied training quiz keeps all copied question refs resolvable', as
   const missing = refs.filter((id) => !questionIds.has(id) && !questionIds.has(stripCopySuffix(id)));
   if (missing.length) throw new Error(`unresolved copied question refs: ${missing.join(', ')}`);
   return `${quiz.title || TARGET_COPY_QUIZ_ID}: ${refs.length} resolved copied refs`;
+});
+
+await check('training result review can rebuild every quiz question', async () => {
+  return assertReviewCoverage(TARGET_QUIZ_ID);
+});
+
+await check('copied training result review can rebuild every copied question', async () => {
+  return assertReviewCoverage(TARGET_COPY_QUIZ_ID);
 });
 
 await check('training retry route keeps material context', async () => {
