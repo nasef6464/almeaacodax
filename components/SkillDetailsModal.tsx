@@ -449,13 +449,13 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                   ) : (
                     <EmptyState
                       icon={<Video size={48} />}
-                      title={hasHiddenUnplayableLessons ? 'المحتوى المرتبط بهذا الجزء قيد التجهيز' : 'لا توجد شروحات مرتبطة مباشرة بهذا الجزء'}
+                      title={hasHiddenUnplayableLessons ? 'الشرح قيد التجهيز' : 'لا يوجد شرح هنا بعد'}
                       description={
                         hasHiddenUnplayableLessons
-                          ? 'تم ربط درس بهذا الموضوع من الإدارة، لكنه يحتاج رابط فيديو أو ملف قبل ظهوره للطالب.'
+                          ? 'أضف رابط فيديو أو ملفًا ليظهر للطالب.'
                           : isStaffViewer
-                            ? 'اختر من الشروحات أو الملفات القريبة من نفس المادة حتى تضيف الإدارة درسًا مباشرًا لهذه المهارة.'
-                            : 'سيظهر الشرح هنا فور إضافة درس مباشر لهذا الجزء من الإدارة.'
+                            ? 'اربط درسًا مباشرًا من الإدارة.'
+                            : 'سيظهر هنا عند إضافة الدرس.'
                       }
                     >
                       {isStaffViewer ? (
@@ -498,8 +498,8 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                   ) : (
                     <EmptyState
                       icon={<Target size={48} />}
-                      title="لا توجد تدريبات قصيرة مرتبطة مباشرة بهذا الجزء"
-                      description={isStaffViewer ? 'يمكنك البدء من أقرب اختبار في نفس المادة أو الرجوع لملف مراجعة سريع.' : 'ستظهر التدريبات هنا فور ربط اختبار مباشر بهذا الجزء من الإدارة.'}
+                      title="لا يوجد تدريب هنا بعد"
+                      description={isStaffViewer ? 'اربط تدريبًا من مركز الاختبارات.' : 'سيظهر هنا عند ربط التدريب.'}
                     >
                       {isStaffViewer ? (
                         <div className="grid gap-3">
@@ -550,8 +550,8 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                   ) : (
                     <EmptyState
                       icon={<FileText size={48} />}
-                      title="لا يوجد ملف دعم مرتبط بهذا الجزء"
-                      description={isStaffViewer ? 'اربط ملفًا من المكتبة بهذه المهارة أو نفس المادة ليظهر هنا.' : 'سيظهر الملف هنا عندما تضيف الإدارة ملخصًا أو ملفًا داعمًا لهذا الجزء.'}
+                      title="لا يوجد ملف دعم بعد"
+                      description={isStaffViewer ? 'اربط ملفًا من المكتبة.' : 'سيظهر هنا عند إضافة الملف.'}
                     />
                   )}
                 </div>

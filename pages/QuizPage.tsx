@@ -887,7 +887,7 @@ export const QuizPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`${optionButtonHeightClass} w-full px-2 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
+                    className={`${optionButtonHeightClass} w-full px-2 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
@@ -897,10 +897,10 @@ export const QuizPage: React.FC = () => {
                       <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                     </span>
                     <div className="flex items-center shrink-0">
-                      <div className={`h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         selectedOptions[currentQuestion.id] === index ? 'border-indigo-600 text-indigo-600 bg-white' : (isNightMode ? 'border-slate-600 text-slate-400' : 'border-gray-300 text-gray-500')
                       }`}>
-                        <div className={`h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full ${
+                        <div className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full ${
                           selectedOptions[currentQuestion.id] === index ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>

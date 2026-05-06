@@ -734,17 +734,14 @@ const Results: React.FC = () => {
       </header>
 
       <Card className={`p-4 sm:p-5 border border-slate-100 bg-white shadow-sm ${isFullResult ? '' : 'hidden'}`}>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-              ملخص 10 ثوانٍ
+              ملخص سريع
             </div>
-            <h2 className="mt-3 text-lg sm:text-xl font-black text-gray-900">هذا هو المختصر الذي يهم الطالب وولي الأمر</h2>
-            <p className="mt-1 text-sm leading-7 text-gray-500">
-              بدل التفاصيل الكثيرة، نعرض لك النتيجة الأساسية ثم نحدد المهارة الأضعف والخطوة التالية مباشرة.
-            </p>
+            <h2 className="mt-3 text-lg sm:text-xl font-black text-gray-900">النتيجة والخطوة التالية</h2>
           </div>
-          <div className="text-xs font-bold text-gray-400">مناسب للجوال والتابلت واللاب توب</div>
+          <div className="text-xs font-bold text-gray-400">مختصر وواضح</div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -778,9 +775,6 @@ const Results: React.FC = () => {
             <h2 className="mt-3 text-lg font-black text-gray-900">
               {weakestSkill ? `خطة بسيطة لمهارة: ${weakestSkill.skillName}` : 'خطة بسيطة بعد الاختبار'}
             </h2>
-            <p className="mt-1 text-sm leading-7 text-gray-500">
-              اختصرنا الطريق إلى خطوات عملية. افتح أول خطوة، ثم ارجع للتدريب والقياس.
-            </p>
           </div>
           {weakestSkill ? (
             <span className="self-start rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
@@ -793,10 +787,10 @@ const Results: React.FC = () => {
           <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="text-sm font-black text-gray-900">مسار ما بعد الاختبار</div>
-              <p className="text-xs font-bold leading-6 text-gray-500">اتبعها بالترتيب حتى تتحول النتيجة إلى تحسين فعلي.</p>
+              <p className="text-xs font-bold leading-6 text-gray-500">ثلاث خطوات فقط.</p>
             </div>
             <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-slate-700">
-              نتيجة ثم علاج ثم قياس
+              شرح ثم تدريب ثم قياس
             </span>
           </div>
           <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
@@ -819,13 +813,13 @@ const Results: React.FC = () => {
                     <span className="text-[11px] font-black opacity-70">{step.label}</span>
                   </div>
                   <div className="mt-3 text-sm font-black text-gray-900">{step.title}</div>
-                  <p className="mt-1 text-xs font-bold leading-6 opacity-75">{step.body}</p>
+                  <p className="mt-1 text-xs font-bold leading-5 opacity-75">{step.body}</p>
                 </>
               );
 
               if (step.to) {
                 return (
-                  <Link key={step.id} to={step.to} className={`min-h-[128px] rounded-2xl border p-3 transition-colors ${toneClasses}`}>
+                  <Link key={step.id} to={step.to} className={`min-h-[104px] rounded-2xl border p-3 transition-colors ${toneClasses}`}>
                     {content}
                   </Link>
                 );
@@ -845,7 +839,7 @@ const Results: React.FC = () => {
                       setVideoData({ url: stepVideoUrl, title: weakestSkill ? `شرح مهارة ${weakestSkill.skillName}` : 'شرح سريع' });
                     }
                   }}
-                  className={`min-h-[128px] rounded-2xl border p-3 text-right transition-colors disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400 ${toneClasses}`}
+                  className={`min-h-[104px] rounded-2xl border p-3 text-right transition-colors disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400 ${toneClasses}`}
                 >
                   {content}
                 </button>
@@ -880,7 +874,7 @@ const Results: React.FC = () => {
                   <span className="text-xs font-black opacity-75">{card.label}</span>
                 </div>
                 <div className="mt-4 text-sm font-black">{card.title}</div>
-                <p className="mt-2 text-xs font-bold leading-6 opacity-75">{card.body}</p>
+                <p className="mt-2 text-xs font-bold leading-5 opacity-75">{card.body}</p>
               </>
             );
 
@@ -1170,7 +1164,7 @@ const Results: React.FC = () => {
               </h4>
               <p className="mt-3 text-sm font-bold leading-7 text-gray-600">
                 {weakestSkill
-                  ? 'لا تحتاج قراءة تقرير طويل الآن. راجع شرح هذه المهارة، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.'
+                  ? 'راجع شرح المهارة، ثم حل تدريبًا قصيرًا.'
                   : 'افتح مراجعة الحلول أولًا، ثم اختر اختبارًا قصيرًا لاحقًا.'}
               </p>
 
@@ -1329,8 +1323,7 @@ const Results: React.FC = () => {
       <Card className="p-4 sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-bold text-gray-800">تفصيل بسيط للمهارات</h3>
-            <p className="text-sm leading-7 text-gray-500">المادة ثم المهارة الرئيسة ثم المهارة الفرعية، مع خطوة سهلة وواضحة بعدها.</p>
+            <h3 className="text-lg font-bold text-gray-800">المهارات التي تحتاج متابعة</h3>
           </div>
           <div className="text-sm font-bold text-gray-500">عدد أسئلة المراجعة المتاحة: {questionReviewCount}</div>
         </div>

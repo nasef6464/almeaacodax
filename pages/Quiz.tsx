@@ -1162,9 +1162,7 @@ const Quiz: React.FC = () => {
               </button>
             </div>
 
-            <div className="hidden sm:block text-xs font-bold text-gray-400">
-              الشرح يظهر بعد الاختبار في مراجعة الحلول.
-            </div>
+            <div className="hidden sm:block text-xs font-bold text-gray-300" aria-hidden="true" />
           </div>
 
           <div className="flex-1">
@@ -1188,7 +1186,7 @@ const Quiz: React.FC = () => {
               </button>
             )}
 
-            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-4 gap-y-2 sm:gap-y-3 dir-rtl`}>
+            <div className={`grid ${currentOptionGridClass} gap-x-2 sm:gap-x-3 gap-y-2 dir-rtl`}>
               {questions[currentQuestion].options.map((option, idx) => {
                 const isSelected = selectedAnswer === idx || answers[currentQuestion] === idx;
                 const borderClass = isSelected
@@ -1199,16 +1197,16 @@ const Quiz: React.FC = () => {
                   <button
                     key={idx}
                     onClick={() => handleAnswerSelect(idx)}
-                    className={`${currentOptionHeightClass} px-2.5 sm:px-3 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${borderClass}`}
+                    className={`${currentOptionHeightClass} px-2 sm:px-2.5 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-1.5 shadow-sm ${borderClass}`}
                   >
-                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-6 text-center break-words">
+                    <span className="flex-1 text-xs sm:text-sm font-bold text-gray-800 leading-5 text-center break-words">
                       {sanitizeArabicText(option)}
                     </span>
                     <div className="flex items-center shrink-0">
-                      <div className={`h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 flex items-center justify-center text-lg font-black ${
+                      <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
                         isSelected ? 'border-current' : 'border-gray-300'
                       }`}>
-                        <div className={`h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full ${
+                        <div className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full ${
                           isSelected ? 'bg-indigo-600' : 'bg-transparent'
                         }`} />
                       </div>
@@ -1263,9 +1261,9 @@ const Quiz: React.FC = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
             <button
               onClick={handleSaveProgress}
-              className="w-full sm:w-auto px-4 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 font-bold flex items-center justify-center gap-2 hover:bg-amber-100"
+              className="w-full sm:w-auto px-3 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-amber-100"
             >
-              <Save size={18} />
+              <Save size={15} />
               حفظ التقدم
             </button>
 
@@ -1273,16 +1271,16 @@ const Quiz: React.FC = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentQuestion === 0}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 text-gray-600 font-bold disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold disabled:opacity-50"
               >
                 السابق
               </button>
               <button
                 onClick={handleNext}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center gap-2 hover:bg-indigo-700"
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-indigo-700"
               >
                 {currentQuestion === questions.length - 1 ? 'إنهاء الاختبار' : 'التالي'}
-                <ArrowLeft size={20} />
+                <ArrowLeft size={16} />
               </button>
             </div>
           </div>

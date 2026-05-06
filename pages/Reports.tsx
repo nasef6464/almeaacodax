@@ -1093,18 +1093,18 @@ const Reports: React.FC = () => {
                             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                 <div>
                                     <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-                                        مناسب لولي الأمر
+                                        ملخص ولي الأمر
                                     </div>
-                                    <h2 className="mt-3 text-xl font-black text-gray-900">ماذا أفعل الآن؟</h2>
+                                    <h2 className="mt-3 text-xl font-black text-gray-900">المتابعة اليوم</h2>
                                     <p className="mt-2 max-w-3xl text-sm leading-7 text-gray-600">
                                         {parentBriefSummary}
                                     </p>
                                 </div>
                                 <Link
                                     to="/book-session"
-                                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                                    className="print-hide inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-sm font-black text-white hover:bg-emerald-700"
                                 >
-                                    <Clock size={16} />
+                                    <Clock size={15} />
                                     حصة علاجية عند الحاجة
                                 </Link>
                             </div>
@@ -1122,19 +1122,19 @@ const Reports: React.FC = () => {
                                         <Link
                                             key={title}
                                             to={link}
-                                            className={`flex min-h-[104px] flex-col justify-between rounded-2xl border p-4 transition ${className}`}
+                                            className={`flex min-h-[88px] flex-col justify-between rounded-2xl border p-3 transition ${className}`}
                                         >
                                             <div className="flex items-center gap-2 text-sm font-black">
                                                 <Icon size={17} />
                                                 {title}
                                             </div>
-                                            <div className="mt-3 text-xs font-bold leading-6 opacity-80">{body}</div>
+                                            <div className="mt-2 text-xs font-bold leading-5 opacity-80">{body}</div>
                                         </Link>
                                     ))}
                                 </div>
                             ) : null}
-                            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm leading-7 text-slate-600">
-                                علامة تستدعي متابعة أقرب: تكرار نفس المهارة تحت 50% في أكثر من محاولة، أو ترك الاختبار بدون إجابات كثيرة.
+                            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm font-bold leading-6 text-slate-600">
+                                راقب تكرار نفس المهارة تحت 50%.
                             </div>
                         </Card>
 
@@ -1161,9 +1161,7 @@ const Reports: React.FC = () => {
                             <Card className="p-5">
                                 <div className="text-xs font-bold text-gray-500">المتابعة المقترحة</div>
                                 <div className="mt-3 text-xl font-black text-gray-900">{displayText(leadStudent?.name) || 'كل الأبناء'}</div>
-                                <p className="mt-3 text-sm leading-7 text-gray-600">
-                                    راجع معه المهارة الأضعف لمدة 15 دقيقة، ثم اطلب منه حل تدريب قصير. ركز على التشجيع وليس اللوم.
-                                </p>
+                                <p className="mt-3 text-sm leading-7 text-gray-600">شرح قصير ثم تدريب بسيط.</p>
                             </Card>
                         </div>
 
