@@ -3,6 +3,7 @@ const TARGET_QUIZ_ID = process.env.SMOKE_LEARNING_QUIZ_ID || 'quiz_smoke_math_tr
 const TARGET_PATH_ID = process.env.SMOKE_LEARNING_PATH_ID || 'p_1777779653351';
 const TARGET_SUBJECT_ID = process.env.SMOKE_LEARNING_SUBJECT_ID || 'sub_1777784609152';
 const TARGET_COPY_QUIZ_ID = process.env.SMOKE_LEARNING_COPY_QUIZ_ID || 'quiz_1777887901798_copy';
+const TARGET_RETURN_TO = `/category/${TARGET_PATH_ID}?subject=${TARGET_SUBJECT_ID}&tab=banks`;
 
 const checks = [];
 
@@ -32,6 +33,14 @@ async function fetchJson(path) {
 }
 
 const stripCopySuffix = (value) => String(value || '').replace(/_copy(?:_\d+)?$/i, '');
+const isSafeInternalRoute = (target) => Boolean(target && target.startsWith('/') && !target.startsWith('//'));
+
+function buildQuizRouteWithContext(quizId, context = {}) {
+  const params = new URLSearchParams();
+  if (isSafeInternalRoute(context.returnTo)) params.set('returnTo', context.returnTo);
+  if (context.source) params.set('source', context.source);
+  return `/quiz/${quizId}${params.toString() ? `?${params.toString()}` : ''}`;
+}
 
 const quizzes = await fetchJson('/quizzes');
 const questions = await fetchJson('/quizzes/questions');
@@ -89,6 +98,24 @@ await check('copied training quiz keeps all copied question refs resolvable', as
   const missing = refs.filter((id) => !questionIds.has(id) && !questionIds.has(stripCopySuffix(id)));
   if (missing.length) throw new Error(`unresolved copied question refs: ${missing.join(', ')}`);
   return `${quiz.title || TARGET_COPY_QUIZ_ID}: ${refs.length} resolved copied refs`;
+});
+
+await check('training retry route keeps material context', async () => {
+  const retryRoute = buildQuizRouteWithContext(TARGET_QUIZ_ID, {
+    returnTo: TARGET_RETURN_TO,
+    source: 'training',
+  });
+
+  const parsed = new URL(`https://smoke.local${retryRoute}`);
+  if (parsed.pathname !== `/quiz/${TARGET_QUIZ_ID}`) throw new Error(`wrong retry pathname: ${parsed.pathname}`);
+  if (parsed.searchParams.get('returnTo') !== TARGET_RETURN_TO) {
+    throw new Error(`wrong returnTo: ${parsed.searchParams.get('returnTo')}`);
+  }
+  if (parsed.searchParams.get('source') !== 'training') {
+    throw new Error(`wrong source: ${parsed.searchParams.get('source')}`);
+  }
+
+  return retryRoute;
 });
 
 for (const item of checks) {
