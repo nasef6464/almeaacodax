@@ -226,7 +226,7 @@ export const Header: React.FC = () => {
     menu.push({ id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' });
 
     return menu;
-  }, [levels, paths, subjects, user?.role]);
+  }, [levels, paths, quizzes, subjects, user?.role]);
 
   const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor';
 

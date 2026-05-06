@@ -14,6 +14,7 @@ const STRICT_VERSION = process.env.SMOKE_STRICT_VERSION === '1';
 const baseRoutes = [
   '/',
   '/#/quizzes',
+  '/#/mock-exams',
   '/#/reports',
   '/#/login',
 ];
@@ -114,6 +115,7 @@ await check('learning taxonomy exposes current student routes', async () => {
     const pathId = pathIdOf(path);
     if (!pathId) continue;
     routes.push(`/#/category/${pathId}`);
+    routes.push(`/#/category/${pathId}?tab=mock-exams`);
     routes.push(`/#/category/${pathId}?subject=__missing_subject_smoke__`);
     const pathSubjects = subjects.filter((subject) => pathIds.has(String(subject?.pathId || '')) && String(subject?.pathId || '') === pathId);
     for (const subject of pathSubjects.slice(0, 3)) {
