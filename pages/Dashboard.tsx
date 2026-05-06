@@ -822,21 +822,19 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
     };
 
     return (
-        <div className="space-y-8 animate-fade-in pb-20">
-            <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-slate-900 p-6 text-white shadow-lg">
-                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-slate-900 p-5 text-white shadow-lg">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <div className="mb-2 text-sm font-bold text-emerald-100">لوحة ولي الأمر</div>
-                        <h2 className="text-2xl font-black md:text-3xl">متابعة واضحة لأداء الأبناء</h2>
-                        <p className="mt-2 max-w-2xl text-sm leading-7 text-emerald-50">
-                            هنا ترى آخر درجات الأبناء، المهارات التي تحتاج متابعة، وهل الأداء يتحسن أم يحتاج تدخل هادئ.
-                        </p>
+                        <div className="mb-2 text-xs font-black text-emerald-100">لوحة ولي الأمر</div>
+                        <h2 className="text-xl font-black md:text-2xl">متابعة الأبناء ببساطة</h2>
+                        <p className="mt-1 max-w-2xl text-sm leading-6 text-emerald-50">درجة، مهارة تحتاج متابعة، وخطوة واحدة واضحة.</p>
                     </div>
                     <button
                         onClick={() => setActiveTab('reports')}
-                        className="rounded-xl bg-white px-5 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                        className="self-start rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
                     >
-                        فتح التقرير المبسط
+                        التقرير
                     </button>
                 </div>
             </div>
@@ -848,41 +846,41 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                     <ParentEmptyState />
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            <Card className="p-5">
+                        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                            <Card className="p-4">
                                 <div className="text-xs font-bold text-gray-500">الأبناء المرتبطون</div>
-                                <div className="mt-2 text-3xl font-black text-gray-900">{data.childrenCount}</div>
+                                <div className="mt-2 text-2xl font-black text-gray-900">{data.childrenCount}</div>
                             </Card>
-                            <Card className="p-5">
+                            <Card className="p-4">
                                 <div className="text-xs font-bold text-gray-500">اختبارات مرصودة</div>
-                                <div className="mt-2 text-3xl font-black text-blue-700">{data.scopedResults.length}</div>
+                                <div className="mt-2 text-2xl font-black text-blue-700">{data.scopedResults.length}</div>
                             </Card>
-                            <Card className="p-5">
+                            <Card className="p-4">
                                 <div className="text-xs font-bold text-gray-500">متوسط الأداء</div>
-                                <div className="mt-2 text-3xl font-black text-emerald-700">{data.averageScore}%</div>
+                                <div className="mt-2 text-2xl font-black text-emerald-700">{data.averageScore}%</div>
                             </Card>
-                            <Card className="p-5">
+                            <Card className="p-4">
                                 <div className="text-xs font-bold text-gray-500">اتجاه آخر المحاولات</div>
-                                <div className={`mt-2 text-3xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                                <div className={`mt-2 text-2xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
                                     {trend > 0 ? '+' : ''}{trend}%
                                 </div>
                             </Card>
                         </div>
 
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                            <Card className="p-5">
-                                <div className="mb-4 flex items-center justify-between">
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
                                     <h3 className="text-lg font-black text-gray-900">الأبناء</h3>
-                                    <button onClick={() => setActiveTab('parent-results')} className="text-sm font-bold text-emerald-700 hover:underline">
+                                    <button onClick={() => setActiveTab('parent-results')} className="text-xs font-black text-emerald-700 hover:underline">
                                         كل النتائج
                                     </button>
                                 </div>
                                 <div className="space-y-3">
                                     {data.childCards.map((child) => (
-                                        <div key={child.id} className="rounded-2xl border border-gray-100 p-4">
+                                        <div key={child.id} className="rounded-2xl border border-gray-100 p-3">
                                             <div className="flex items-center justify-between gap-4">
                                                 <div className="flex min-w-0 items-center gap-3">
-                                                    <img src={child.avatar} alt={child.name} className="h-11 w-11 rounded-full object-cover" />
+                                                    <img src={child.avatar} alt={child.name} className="h-10 w-10 rounded-full object-cover" />
                                                     <div className="min-w-0">
                                                         <div className="truncate font-black text-gray-900">{child.name}</div>
                                                         <div className="text-xs text-gray-500">{child.results} محاولة مرصودة</div>
@@ -893,25 +891,25 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                                 </div>
                                             </div>
                                             <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
-                                                <div className="rounded-xl bg-gray-50 p-3 text-gray-600">آخر اختبار: {child.latestResult?.quizTitle || 'لا يوجد'}</div>
-                                                <div className="rounded-xl bg-amber-50 p-3 text-amber-700">مهارات تحتاج متابعة: {child.weakCount}</div>
+                                                <div className="truncate rounded-xl bg-gray-50 px-3 py-2 text-gray-600">{child.latestResult?.quizTitle || 'لا يوجد'}</div>
+                                                <div className="rounded-xl bg-amber-50 px-3 py-2 text-amber-700">متابعة: {child.weakCount}</div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             </Card>
 
-                            <Card className="p-5">
-                                <div className="mb-4 flex items-center justify-between">
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
                                     <h3 className="text-lg font-black text-gray-900">أولويات هذا الأسبوع</h3>
-                                    <button onClick={() => setActiveTab('parent-skills')} className="text-sm font-bold text-emerald-700 hover:underline">
+                                    <button onClick={() => setActiveTab('parent-skills')} className="text-xs font-black text-emerald-700 hover:underline">
                                         كل المهارات
                                     </button>
                                 </div>
                                 {data.priorityWeakSkills.length > 0 ? (
                                     <div className="space-y-3">
                                         {data.priorityWeakSkills.map((skill) => (
-                                            <div key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="rounded-2xl bg-amber-50 p-4">
+                                            <div key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="rounded-2xl bg-amber-50 p-3">
                                                 <div className="flex items-center justify-between gap-4">
                                                     <div className="min-w-0">
                                                         <div className="truncate font-black text-gray-900">{skill.skill}</div>
@@ -919,7 +917,7 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                                     </div>
                                                     <div className="font-black text-amber-700">{Math.round(skill.mastery)}%</div>
                                                 </div>
-                                                <div className="mt-2 text-xs font-bold text-amber-700">تابعها بمراجعة قصيرة ثم تدريب خفيف، بدون ضغط زائد.</div>
+                                                <div className="mt-2 text-xs font-bold text-amber-700">شرح قصير ثم تدريب خفيف.</div>
                                             </div>
                                         ))}
                                     </div>
@@ -930,30 +928,30 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                 )}
                             </Card>
 
-                            <Card className="p-5">
-                                <div className="mb-4 flex items-center justify-between">
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
                                     <h3 className="text-lg font-black text-gray-900">رسالة ولي الأمر</h3>
                                     <MessageCircle size={18} className="text-emerald-600" />
                                 </div>
-                                <div className="rounded-2xl bg-emerald-50 p-4 text-sm font-bold leading-7 text-emerald-900">
+                                <div className="rounded-2xl bg-emerald-50 p-3 text-sm font-bold leading-6 text-emerald-900">
                                     {data.coachMessage}
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => void copyCoachMessage()}
-                                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                    className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-white px-3 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
                                 >
-                                    <Copy size={16} />
+                                    <Copy size={15} />
                                     {copiedCoachMessage ? 'تم النسخ' : 'نسخ الرسالة'}
                                 </button>
                             </Card>
                         </div>
 
-                        <Card className="p-5">
+                        <Card className="p-4">
                             <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                 <div>
                                     <h3 className="text-lg font-black text-gray-900">متابعة اليوم</h3>
-                                    <p className="mt-1 text-sm text-gray-500">ما يحتاجه ولي الأمر الآن في سطر واضح وخطوة واحدة.</p>
+                                    <p className="mt-1 text-sm text-gray-500">خطوة واحدة تكفي.</p>
                                 </div>
                                 <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
                                     مبسط لولي الأمر
@@ -964,9 +962,7 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                     <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:col-span-2">
                                         <div className="text-xs font-black text-amber-700">الأولوية الأقرب</div>
                                         <div className="mt-2 text-lg font-black leading-7 text-gray-900">{data.priorityWeakSkills[0].skill}</div>
-                                        <p className="mt-2 text-sm leading-7 text-gray-600">
-                                            راجعها مع {data.priorityWeakSkills[0].studentName} لمدة 10 دقائق، ثم اطلب منه حل سؤالين فقط وشرح طريقة التفكير بصوته.
-                                        </p>
+                                        <p className="mt-2 text-sm leading-6 text-gray-600">10 دقائق مع {data.priorityWeakSkills[0].studentName}، ثم سؤالان فقط.</p>
                                     </div>
                                     <div className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
                                         <div className="text-xs font-black text-gray-500">درجة الإتقان</div>

@@ -1208,29 +1208,31 @@ const Reports: React.FC = () => {
                         <p className="text-sm text-gray-500">تحليل ذكي لمستواك بناءً على نتائج اختباراتك</p>
                     </div>
                 </div>
-                <button
-                    onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
-                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50"
-                >
-                    <Download size={16} />
-                    تحميل PDF
-                </button>
-                <button
-                    onClick={downloadPerformanceWorkbook}
-                    className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
-                >
-                    <FileText size={16} />
-                    تصدير Excel
-                </button>
-                {isStudentView && hasStudentAnalytics ? (
+                <div className="print-hide flex flex-wrap gap-2">
+                    <button
+                        onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-black text-indigo-700 shadow-sm hover:bg-indigo-50 sm:text-sm"
+                    >
+                        <Download size={15} />
+                        PDF
+                    </button>
+                    <button
+                        onClick={downloadPerformanceWorkbook}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50 sm:text-sm"
+                    >
+                        <FileText size={15} />
+                        Excel
+                    </button>
+                    {isStudentView && hasStudentAnalytics ? (
                     <button
                         onClick={() => setStudentReportDepth((current) => (current === 'simple' ? 'full' : 'simple'))}
-                        className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50 sm:text-sm"
                     >
-                        <Sparkles size={16} />
-                        {isStudentReportFull ? 'العودة للملخص السريع' : 'عرض التقرير الكامل'}
+                        <Sparkles size={15} />
+                        {isStudentReportFull ? 'ملخص' : 'تفاصيل'}
                     </button>
-                ) : null}
+                    ) : null}
+                </div>
             </header>
 
             {!isStudentView ? (
@@ -1867,40 +1869,40 @@ const Reports: React.FC = () => {
                             {studentFollowUpSummary}
                         </p>
                     </div>
-                    <div className="grid min-w-full gap-2 sm:min-w-[320px] sm:grid-cols-2 lg:min-w-[380px]">
+                    <div className="print-hide flex min-w-full flex-wrap gap-2 lg:min-w-[360px] lg:justify-end">
                         <button
                             onClick={copyStudentSummary}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
                         >
-                            {copiedStudentSummary ? <CheckCircle size={16} /> : <Copy size={16} />}
-                            {copiedStudentSummary ? 'تم النسخ' : 'نسخ الملخص'}
+                            {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
+                            {copiedStudentSummary ? 'تم' : 'نسخ'}
                         </button>
                         <button
                             onClick={shareStudentSummary}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
                         >
-                            {sharedStudentSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
+                            {sharedStudentSummary ? <CheckCircle size={15} /> : <Share2 size={15} />}
                             {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
                         </button>
                         <button
                             onClick={downloadStudentSkillsWorkbook}
                             disabled={!aggregatedSkills.length}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                         >
-                            <FileText size={16} />
-                            تصدير مهاراتي
+                            <FileText size={15} />
+                            المهارات
                         </button>
                         <button
                             onClick={downloadStudentAttemptsWorkbook}
                             disabled={!examResults.length}
-                            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                         >
-                            <Download size={16} />
-                            تصدير محاولاتي
+                            <Download size={15} />
+                            المحاولات
                         </button>
-                        <Link to="/plan" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-600 sm:col-span-2">
-                            <Target size={16} />
-                            افتح الخطة الذكية
+                        <Link to="/plan" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black text-white transition hover:bg-emerald-600 sm:text-sm">
+                            <Target size={15} />
+                            الخطة
                         </Link>
                         {isStudentReportFull ? (
                             <button
@@ -1908,18 +1910,18 @@ const Reports: React.FC = () => {
                                     void buildSmartRemediation();
                                 }}
                                 disabled={smartRemediationLoading || focusedReportSkills.length === 0}
-                                className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
                             >
-                                {smartRemediationLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-                                {smartRemediationLoading ? 'جارٍ تجهيز الخطة...' : 'اقتراح علاجي ذكي'}
+                                {smartRemediationLoading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+                                {smartRemediationLoading ? 'تجهيز' : 'اقتراح'}
                             </button>
                         ) : (
                             <button
                                 onClick={() => setStudentReportDepth('full')}
-                                className="print-hide inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-slate-900 transition hover:bg-amber-300 sm:col-span-2"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 sm:text-sm"
                             >
-                                <Sparkles size={16} />
-                                عرض التقرير الكامل
+                                <Sparkles size={15} />
+                                تفاصيل
                             </button>
                         )}
                     </div>
@@ -1972,14 +1974,13 @@ const Reports: React.FC = () => {
                                             </p>
                                         </div>
                                         <div className="grid gap-3 sm:grid-cols-3">
-                                            {studentQuickActions.map(({ title, body, label, link, Icon, className }) => (
-                                                <Link key={title} to={link} className={`print-hide flex min-h-[154px] flex-col justify-between rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
+                                            {studentQuickActions.map(({ title, label, link, Icon, className }) => (
+                                                <Link key={title} to={link} className={`print-hide flex min-h-[112px] flex-col justify-between rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
                                                     <div>
-                                                        <Icon size={20} />
-                                                        <div className="mt-3 text-sm font-black">{title}</div>
-                                                        <p className="mt-2 text-xs font-bold leading-6 opacity-80">{body}</p>
+                                                        <Icon size={18} />
+                                                        <div className="mt-2 text-sm font-black">{title}</div>
                                                     </div>
-                                                    <span className="mt-4 inline-flex justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-800">
+                                                    <span className="mt-3 inline-flex justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-800">
                                                         {label}
                                                     </span>
                                                 </Link>
