@@ -406,6 +406,49 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     [availablePreparedQuizzes, directedQuizzes, saherQuizzes, subjects],
   );
 
+  if (isAttemptsView && totalQuizzes === 0) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-4 pb-16">
+        <header className="flex flex-col gap-2 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-black">
+            <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700">اختباراتي</span>
+            <Link to="/dashboard?tab=saher" className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50">
+              مركز الاختبارات
+            </Link>
+          </div>
+          <h1 className="text-xl font-black leading-tight text-gray-900">لا توجد محاولات بعد</h1>
+          <p className="text-sm font-bold leading-7 text-gray-500">
+            بعد أول اختبار ستظهر هنا محاولاتك ومراجعة الحلول والتقرير المختصر.
+          </p>
+        </header>
+
+        <div className="rounded-3xl border-2 border-dashed border-gray-200 bg-white p-5 text-center sm:p-6">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+            <FileText size={22} />
+          </div>
+          <h2 className="mt-4 text-lg font-black text-gray-900">ابدأ من اختبار واحد</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm font-bold leading-7 text-gray-500">
+            اختَر اختبارًا جاهزًا أو أنشئ اختبار ساهر، وبعد الحل ارجع هنا للمراجعة.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <Link to="/dashboard?tab=saher" className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700 sm:text-sm">
+              <Zap size={15} />
+              مركز الاختبارات
+            </Link>
+            <Link to="/quiz" className="inline-flex items-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 sm:text-sm">
+              <Target size={15} />
+              اختبار ساهر
+            </Link>
+            <Link to="/reports" className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50 sm:text-sm">
+              <TrendingUp size={15} />
+              تقريري
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isAttemptsView) {
     return (
       <div className="space-y-5 pb-20">
