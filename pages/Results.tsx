@@ -615,7 +615,7 @@ const Results: React.FC = () => {
         label: weakestSkill?.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
         Icon: Target,
         tone: 'amber',
-        to: weakestSkill?.quizLink || '/quizzes',
+        to: weakestSkill?.quizLink || '/dashboard?tab=saher',
       },
       {
         id: 'track',
@@ -1881,7 +1881,7 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
                 </Link>
               ) : null}
               {s.quizTitle ? (
-                <Link to={s.quizLink || '/quizzes'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
+                <Link to={s.quizLink || '/dashboard?tab=saher'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
                   تدريب قصير
                 </Link>
               ) : null}

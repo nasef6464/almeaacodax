@@ -481,7 +481,7 @@ const Reports: React.FC = () => {
                     ? displayText(studentTodayFocus.quizTitle)
                     : 'تدريب موجه على نفس المهارة.',
                 label: studentTodayFocus.quizLink ? 'بدء التدريب' : 'اختيار تدريب',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/quizzes'),
+                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
                 Icon: FileText,
                 className: 'border-amber-100 bg-amber-50 text-amber-800',
             },
@@ -489,7 +489,7 @@ const Reports: React.FC = () => {
                 title: 'أعد القياس',
                 body: 'اختبار قصير بعد الشرح والتدريب.',
                 label: 'قياس التحسن',
-                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/quizzes'),
+                link: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
                 Icon: CheckCircle,
                 className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
             },
@@ -1717,7 +1717,7 @@ const Reports: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className={`text-lg font-black ${subject.mastery < 50 ? 'text-rose-600' : 'text-amber-600'}`}>{subject.mastery}%</div>
-                                                <Link to="/quizzes" className="print-hide rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
+                                                <Link to="/dashboard?tab=saher" className="print-hide rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
                                                     اختبارات
                                                 </Link>
                                             </div>
@@ -1952,7 +1952,7 @@ const Reports: React.FC = () => {
                             نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار، ثم نقترح لك خطوة علاجية مناسبة.
                         </p>
                     </div>
-                    <Link to="/quizzes" className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
+                    <Link to="/dashboard?tab=saher" className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
                         اختبر مهارة جديدة
                     </Link>
                 </div>
@@ -2004,7 +2004,7 @@ const Reports: React.FC = () => {
                                         ابدأ بالتدريب
                                     </Link>
                                 ) : (
-                                    <Link to="/quizzes" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                    <Link to="/dashboard?tab=saher" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
                                         <FileText size={16} />
                                         ابحث عن تدريب
                                     </Link>
@@ -2110,7 +2110,7 @@ const Reports: React.FC = () => {
                                         اختبار علاجي
                                     </Link>
                                 ) : (
-                                    <Link to="/quizzes" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
+                                    <Link to="/dashboard?tab=saher" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-2">
                                         <FileText size={16} />
                                         ابحث عن اختبار
                                     </Link>

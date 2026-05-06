@@ -480,7 +480,7 @@ const Plan: React.FC = () => {
         body: latestResult
           ? `ابدأ من نتيجة ${displayText(latestResult.quizTitle, 'آخر اختبار')} وحدد موضع الخطأ.`
           : 'حل اختبارًا تشخيصيًا أولًا حتى تظهر لك نقطة البداية.',
-        to: latestResult ? '/results' : '/quizzes',
+        to: latestResult ? '/results' : '/dashboard?tab=saher',
         tone: 'border-emerald-100 bg-emerald-50 text-emerald-800',
       },
       {
@@ -498,7 +498,7 @@ const Plan: React.FC = () => {
         body: primarySmartSkill?.quiz
           ? `حل ${primarySmartSkill.quiz.title} ثم راجع الأخطاء.`
           : 'حل تدريبًا قصيرًا ثم أعد القياس على نفس المهارة.',
-        to: primarySmartSkill?.quiz?.link || '/quizzes',
+        to: primarySmartSkill?.quiz?.link || '/dashboard?tab=saher',
         tone: 'border-amber-100 bg-amber-50 text-amber-800',
       },
       {
@@ -1180,7 +1180,7 @@ const Plan: React.FC = () => {
                     {item.lesson ? `درس: ${item.lesson.title}` : 'درس مقترح لاحقًا'}
                   </Link>
                   <Link
-                    to={item.quiz?.link || '/quizzes'}
+                    to={item.quiz?.link || '/dashboard?tab=saher'}
                     className="rounded-xl bg-white px-3 py-3 text-sm font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-50"
                   >
                     {item.quiz ? `اختبار: ${item.quiz.title}` : 'اختبار قصير'}
