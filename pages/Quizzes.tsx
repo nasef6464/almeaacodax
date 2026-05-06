@@ -18,6 +18,7 @@ import { PaymentModal } from '../components/PaymentModal';
 import { useStore } from '../store/useStore';
 import { Quiz, QuizResult } from '../types';
 import { isStandaloneMockExam } from '../utils/mockExam';
+import { buildQuizRouteWithContext, isSafeInternalRoute } from '../utils/quizLinks';
 
 interface QuizzesProps {
   view?: 'catalog' | 'attempts';
@@ -374,6 +375,15 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return `/results?${params.toString()}`;
   };
 
+  const getAttemptRetryLink = (result: QuizResult) => {
+    if (!result.quizId || result.quizId.startsWith('self-quiz')) return '/quiz';
+
+    return buildQuizRouteWithContext(result.quizId, {
+      returnTo: isSafeInternalRoute(result.returnTo) ? result.returnTo : undefined,
+      source: result.source,
+    });
+  };
+
   const weakestTrackedSkill = useMemo(() => {
     const allSkills = examResults.flatMap((result) =>
       (result.skillsAnalysis || []).map((skill) => ({
@@ -562,6 +572,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                   isOpen={openAttemptGroupKey === group.key}
                   onToggle={() => setOpenAttemptGroupKey((current) => (current === group.key ? null : group.key))}
                   getAttemptResultLink={getAttemptResultLink}
+                  getAttemptRetryLink={getAttemptRetryLink}
                 />
               ))}
             </div>
@@ -995,11 +1006,13 @@ const AttemptGroupCard = ({
   isOpen,
   onToggle,
   getAttemptResultLink,
+  getAttemptRetryLink,
 }: {
   group: QuizAttemptGroup;
   isOpen: boolean;
   onToggle: () => void;
   getAttemptResultLink: (result: QuizResult, viewMode?: 'review' | 'analysis') => string;
+  getAttemptRetryLink: (result: QuizResult) => string;
 }) => {
   const latest = group.latestAttempt;
   const best = group.bestAttempt;
@@ -1057,21 +1070,21 @@ const AttemptGroupCard = ({
           <button
             type="button"
             onClick={onToggle}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2.5 text-sm font-black text-indigo-700 hover:bg-indigo-100"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 sm:text-sm"
           >
             <FileText size={16} />
             {isOpen ? 'إخفاء المحاولات' : 'فتح المحاولات'}
           </button>
           <Link
             to={getAttemptResultLink(latest)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white hover:bg-gray-800 sm:text-sm"
           >
             <Eye size={16} />
             آخر نتيجة
           </Link>
           <Link
-            to={group.quizId ? `/quiz/${group.quizId}` : '/quiz'}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-sm font-black text-emerald-700 hover:bg-emerald-100"
+            to={getAttemptRetryLink(latest)}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100 sm:text-sm"
           >
             <RotateCcw size={16} />
             إعادة
