@@ -1278,42 +1278,42 @@ const Reports: React.FC = () => {
                                         disabled={!scopedFollowUpSummary}
                                         className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-900 hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {copiedScopedSummary ? <CheckCircle size={16} /> : <Copy size={16} />}
-                                        {copiedScopedSummary ? 'تم النسخ' : 'نسخ ملخص المتابعة'}
+                                        {copiedScopedSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
+                                        {copiedScopedSummary ? 'تم' : 'نسخ'}
                                     </button>
                                     <button
                                         onClick={shareScopedSummary}
                                         disabled={!scopedFollowUpSummary}
                                         className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-black text-white hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {sharedScopedSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
-                                        {sharedScopedSummary ? 'تمت المشاركة' : 'مشاركة الملخص'}
+                                        {sharedScopedSummary ? <CheckCircle size={15} /> : <Share2 size={15} />}
+                                        {sharedScopedSummary ? 'تم' : 'مشاركة'}
                                     </button>
                                 </>
                             )}
                         </div>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
                             <div className="text-xs font-bold text-indigo-100">أهم مؤشر</div>
-                            <div className="mt-2 text-2xl font-black">
+                            <div className="mt-2 text-xl font-black">
                                 {isStudentView ? `${stats?.averageScore ?? 0}%` : `${scopedAnalytics?.scope.studentCount ?? 0} طالب`}
                             </div>
                             <div className="mt-1 text-xs font-bold text-indigo-100">
                                 {isStudentView ? 'متوسط الأداء' : 'داخل نطاق المتابعة'}
                             </div>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
                             <div className="text-xs font-bold text-indigo-100">أولوية الآن</div>
-                            <div className="mt-2 text-base font-black leading-7">
+                            <div className="mt-2 text-sm font-black leading-6">
                                 {isStudentView
                                     ? displayText(weakestSkill?.skill) || 'ابدأ باختبار قصير'
                                     : displayText(scopedAnalytics?.weakestSkills?.[0]?.skill) || 'بانتظار بيانات المهارات'}
                             </div>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
                             <div className="text-xs font-bold text-indigo-100">الخطوة التالية</div>
-                            <div className="mt-2 text-sm font-bold leading-7">
+                            <div className="mt-2 text-sm font-bold leading-6">
                                 {isStudentView ? 'شرح قصير + تدريب + إعادة قياس' : 'تدخل موجه + اختبار متابعة'}
                             </div>
                         </div>
@@ -1323,13 +1323,11 @@ const Reports: React.FC = () => {
             ) : null}
 
             {!isStudentView && (
-                <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-5">
+                <Card className="p-4 border-0 shadow-sm bg-white">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
                         <div>
-                            <h2 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight">لوحة المتابعة حسب الدور</h2>
-                            <p className="text-sm text-gray-500 mt-1">
-                                {roleScopeTitle[user.role] || 'نطاقك الحالي'} - لمتابعة الطلاب الضعاف والمهارات الأضعف وخطط التدخل.
-                            </p>
+                            <h2 className="text-lg font-black text-gray-900 leading-tight">تقارير الدور</h2>
+                            <p className="text-sm text-gray-500 mt-1">{roleScopeTitle[user.role] || 'نطاقك الحالي'}</p>
                         </div>
                         <div className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-bold">
                             {user.role === Role.ADMIN ? 'مدير' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
@@ -1339,40 +1337,34 @@ const Reports: React.FC = () => {
                     {scopedAnalyticsLoading ? (
                         <div className="text-sm text-gray-500">جارٍ تحميل التقارير المجمعة...</div>
                     ) : scopedAnalytics ? (
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div className="rounded-2xl bg-gray-50 p-4">
+                        <div className="space-y-5">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                <div className="rounded-2xl bg-gray-50 p-3">
                                     <div className="text-xs text-gray-500 mb-1">الطلاب داخل النطاق</div>
-                                    <div className="text-2xl font-black text-gray-900">{scopedAnalytics.scope.studentCount}</div>
+                                    <div className="text-xl font-black text-gray-900">{scopedAnalytics.scope.studentCount}</div>
                                 </div>
-                                <div className="rounded-2xl bg-amber-50 p-4">
-                                    <div className="text-xs text-amber-600 mb-1">محاولات الاختبار</div>
-                                    <div className="text-2xl font-black text-amber-700">{scopedAnalytics.scope.quizAttempts}</div>
+                                <div className="rounded-2xl bg-amber-50 p-3">
+                                    <div className="text-xs text-amber-600 mb-1">المحاولات</div>
+                                    <div className="text-xl font-black text-amber-700">{scopedAnalytics.scope.quizAttempts}</div>
                                 </div>
-                                <div className="rounded-2xl bg-rose-50 p-4">
-                                    <div className="text-xs text-rose-600 mb-1">الطلاب الأضعف</div>
-                                    <div className="text-2xl font-black text-rose-700">{scopedAnalytics.weakestStudents.length}</div>
+                                <div className="rounded-2xl bg-rose-50 p-3">
+                                    <div className="text-xs text-rose-600 mb-1">بحاجة متابعة</div>
+                                    <div className="text-xl font-black text-rose-700">{scopedAnalytics.weakestStudents.length}</div>
                                 </div>
-                                <div className="rounded-2xl bg-purple-50 p-4">
-                                    <div className="text-xs text-purple-600 mb-1">إجابات مرصودة</div>
-                                    <div className="text-2xl font-black text-purple-700">{scopedAnalytics.scope.questionAttempts || 0}</div>
-                                    <div className="mt-1 text-[11px] font-bold text-purple-500">من كل سؤال يحله الطالب</div>
+                                <div className="rounded-2xl bg-purple-50 p-3">
+                                    <div className="text-xs text-purple-600 mb-1">إجابات</div>
+                                    <div className="text-xl font-black text-purple-700">{scopedAnalytics.scope.questionAttempts || 0}</div>
                                 </div>
                             </div>
 
                             <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr]">
-                                <div className="rounded-3xl border border-indigo-100 bg-white p-4 sm:p-5">
+                                <div className="rounded-3xl border border-indigo-100 bg-white p-4">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
                                             <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
                                                 تقرير مهارات مجمع
                                             </div>
-                                            <h3 className="mt-3 text-xl font-black text-gray-900">المهارات التي تحتاج دعمًا</h3>
-                                            <p className="mt-1 text-sm leading-7 text-gray-500">
-                                                {user.role === Role.ADMIN
-                                                    ? 'نظرة عامة على المنصة لتحديد أول مهارة تحتاج خطة دعم.'
-                                                    : 'نظرة على نطاقك الحالي: مجموعتك أو طلابك المرتبطون بك.'}
-                                            </p>
+                                            <h3 className="mt-2 text-lg font-black text-gray-900">مهارات تحتاج دعم</h3>
                                         </div>
                                         <div className="print-hide flex flex-wrap items-center gap-2">
                                             <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
@@ -1385,42 +1377,42 @@ const Reports: React.FC = () => {
                                                 className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                                             >
                                                 <Download size={13} />
-                                                تصدير المهارات
+                                                Excel
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="mt-5 grid gap-3 md:grid-cols-2">
+                                    <div className="mt-4 grid gap-3 md:grid-cols-2">
                                         {scopedSkillReportCards.length > 0 ? scopedSkillReportCards.map((skill) => (
-                                            <div key={skill.skillId || skill.skill} className={`rounded-2xl border p-4 ${skill.tone.card}`}>
+                                            <div key={skill.skillId || skill.skill} className={`rounded-2xl border p-3 ${skill.tone.card}`}>
                                                 <div className="flex items-start justify-between gap-3">
                                                     <div className="min-w-0">
                                                         <span className={`rounded-full bg-white px-3 py-1 text-[11px] font-black ${skill.tone.text}`}>
                                                             {skill.tone.label}
                                                         </span>
-                                                        <div className="mt-3 text-base font-black leading-7 text-gray-900">{displayText(skill.skill)}</div>
+                                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">{displayText(skill.skill)}</div>
                                                         <div className="mt-1 text-xs font-bold text-gray-500">{displayText(skill.section) || 'مهارة عامة'}</div>
                                                     </div>
-                                                    <div className={`text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
+                                                    <div className={`text-xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
                                                 </div>
-                                                <div className="mt-4 h-2 overflow-hidden rounded-full bg-white">
+                                                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
                                                     <div className={`h-full rounded-full ${skill.tone.bar}`} style={{ width: `${Math.max(0, Math.min(100, skill.mastery))}%` }} />
                                                 </div>
-                                                <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
-                                                    <div className="rounded-xl bg-white/80 px-3 py-2">طلاب: {skill.affectedStudents}</div>
-                                                    <div className="rounded-xl bg-white/80 px-3 py-2">محاولات: {skill.attempts}</div>
+                                                <div className="mt-2 grid grid-cols-2 gap-2 text-xs font-bold">
+                                                    <div className="rounded-xl bg-white/80 px-3 py-1.5">طلاب: {skill.affectedStudents}</div>
+                                                    <div className="rounded-xl bg-white/80 px-3 py-1.5">محاولات: {skill.attempts}</div>
                                                 </div>
-                                                <div className="print-hide mt-3 grid gap-2 sm:grid-cols-2">
+                                                <div className="print-hide mt-2 grid gap-2 sm:grid-cols-2">
                                                     <Link
                                                         to={skill.quizLink || '/quiz'}
                                                         className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-amber-700 hover:bg-amber-50"
                                                     >
-                                                        اختبار موجه
+                                                        اختبار
                                                     </Link>
                                                     <Link
                                                         to={skill.lessonLink || buildSkillSessionLink({ skill: skill.skill, skillId: skill.skillId, sectionName: skill.section })}
                                                         className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-indigo-700 hover:bg-indigo-50"
                                                     >
-                                                        شرح / دعم
+                                                        شرح
                                                     </Link>
                                                 </div>
                                             </div>
@@ -1432,16 +1424,13 @@ const Reports: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="rounded-3xl border border-rose-100 bg-white p-4 sm:p-5">
+                                <div className="rounded-3xl border border-rose-100 bg-white p-4">
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <div className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700">
                                                 تقرير الطلاب
                                             </div>
-                                            <h3 className="mt-3 text-xl font-black text-gray-900">طلاب يحتاجون متابعة</h3>
-                                            <p className="mt-1 text-sm leading-7 text-gray-500">
-                                                {user.role === Role.SUPERVISOR ? 'مجمعة من طلاب مجموعتك، مع إشارة لكل طالب.' : 'أولوية متابعة فردية بجانب التقرير المجمع.'}
-                                            </p>
+                                            <h3 className="mt-2 text-lg font-black text-gray-900">طلاب للمتابعة</h3>
                                         </div>
                                         <div className="print-hide flex flex-wrap items-center gap-2">
                                             <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
@@ -1454,19 +1443,19 @@ const Reports: React.FC = () => {
                                                 className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-3 py-1.5 text-xs font-black text-white shadow-sm hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
                                             >
                                                 <Download size={13} />
-                                                تصدير الطلاب
+                                                Excel
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="mt-5 space-y-3">
+                                    <div className="mt-4 space-y-3">
                                         {scopedStudentFocusCards.length > 0 ? scopedStudentFocusCards.map((student) => (
-                                            <div key={student.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                            <div key={student.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-3">
                                                 <div className="flex items-center justify-between gap-3">
                                                     <div className="min-w-0">
                                                         <div className="font-black leading-7 text-gray-900">{displayText(student.name)}</div>
-                                                        <div className="mt-1 text-xs font-bold text-gray-500">{student.attempts} محاولات - {student.weakSkillCount} مهارات تحتاج دعم</div>
+                                                        <div className="mt-1 text-xs font-bold text-gray-500">{student.attempts} محاولات - {student.weakSkillCount} مهارات</div>
                                                     </div>
-                                                    <div className={`rounded-xl border px-3 py-2 text-base font-black ${student.tone}`}>
+                                                    <div className={`rounded-xl border px-3 py-1.5 text-base font-black ${student.tone}`}>
                                                         {student.averageScore}%
                                                     </div>
                                                 </div>
@@ -1479,7 +1468,7 @@ const Reports: React.FC = () => {
                                                         ))}
                                                     </div>
                                                 ) : null}
-                                                <div className="print-hide mt-3 flex flex-wrap gap-2">
+                                                <div className="print-hide mt-2 flex flex-wrap gap-2">
                                                     <button
                                                         type="button"
                                                         onClick={() => navigator.clipboard.writeText([
@@ -1490,10 +1479,10 @@ const Reports: React.FC = () => {
                                                         ].filter(Boolean).join('\n')).catch(() => undefined)}
                                                         className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
                                                     >
-                                                        نسخ متابعة
+                                                        نسخ
                                                     </button>
                                                     <Link to="/dashboard?tab=reports" className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                        فتح الطالب
+                                                        تقرير
                                                     </Link>
                                                 </div>
                                             </div>
@@ -1506,13 +1495,11 @@ const Reports: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="rounded-3xl border border-gray-100 bg-slate-50/70 p-4 sm:p-5">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-4">
+                            <div className="rounded-3xl border border-gray-100 bg-slate-50/70 p-4">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-3">
                                     <div>
-                                        <div className="text-lg font-black text-gray-900">خطة تدخل سريعة لهذا النطاق</div>
-                                        <p className="text-sm leading-7 text-gray-500">
-                                            ثلاث خطوات عملية تصلح للمدير أو المعلم أو المشرف أو ولي الأمر، وتظهر في ملف PDF للمتابعة.
-                                        </p>
+                                        <div className="text-lg font-black text-gray-900">خطة تدخل مختصرة</div>
+                                        <p className="text-sm leading-6 text-gray-500">تشخيص، تدخل، ثم قياس.</p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         <button
@@ -1520,14 +1507,14 @@ const Reports: React.FC = () => {
                                             className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 hover:bg-indigo-50"
                                         >
                                             {copiedScopedSummary ? <CheckCircle size={13} /> : <Copy size={13} />}
-                                            {copiedScopedSummary ? 'تم النسخ' : 'نسخ ملخص المتابعة'}
+                                            {copiedScopedSummary ? 'تم' : 'نسخ'}
                                         </button>
                                         <button
                                             onClick={shareScopedSummary}
                                             className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700 hover:bg-emerald-50"
                                         >
                                             {sharedScopedSummary ? <CheckCircle size={13} /> : <Share2 size={13} />}
-                                            {sharedScopedSummary ? 'تمت المشاركة' : 'مشاركة'}
+                                            {sharedScopedSummary ? 'تم' : 'مشاركة'}
                                         </button>
                                         <button
                                             onClick={buildScopedSmartRemediation}
@@ -1535,85 +1522,84 @@ const Reports: React.FC = () => {
                                             className="print-hide inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800 hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-60"
                                         >
                                             {scopedSmartRemediationLoading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
-                                            {scopedSmartRemediationLoading ? 'جارٍ التجهيز' : 'تدخل ذكي'}
+                                            {scopedSmartRemediationLoading ? 'تجهيز' : 'اقتراح'}
                                         </button>
-                                        <span className="self-start rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">تشخيص - علاج - قياس</span>
                                     </div>
                                 </div>
                                 {scopedFollowUpSummary ? (
-                                    <div className="mb-4 rounded-2xl border border-white bg-white/70 p-3 text-sm leading-7 text-slate-600">
+                                    <div className="mb-3 rounded-2xl border border-white bg-white/70 p-3 text-xs font-bold leading-6 text-slate-600">
                                         {scopedFollowUpSummary}
                                     </div>
                                 ) : null}
-                                <div className="mb-4 grid gap-3 lg:grid-cols-3">
-                                    <div className="rounded-2xl border border-rose-100 bg-white p-4">
+                                <div className="mb-3 grid gap-3 lg:grid-cols-3">
+                                    <div className="rounded-2xl border border-rose-100 bg-white p-3">
                                         <div className="text-xs font-black text-rose-600">أولوية الطالب</div>
-                                        <div className="mt-2 text-base font-black leading-7 text-gray-900">
+                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
                                             {displayText(scopedLeadStudent?.name) || 'بانتظار ظهور طالب يحتاج متابعة'}
                                         </div>
-                                        <p className="mt-2 text-sm leading-7 text-gray-600">
+                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
                                             {scopedLeadStudent
-                                                ? `${scopedLeadStudent.averageScore}% متوسط الأداء - ${scopedLeadStudent.weakSkillCount} مهارات تحتاج دعمًا.`
-                                                : 'عند ظهور بيانات كافية سيظهر هنا أول طالب تحتاج أن تبدأ به.'}
+                                                ? `${scopedLeadStudent.averageScore}% - ${scopedLeadStudent.weakSkillCount} مهارات`
+                                                : 'تظهر بعد توفر بيانات كافية.'}
                                         </p>
                                         {scopedLeadStudent ? (
-                                            <div className="print-hide mt-3 flex flex-wrap gap-2">
+                                            <div className="print-hide mt-2 flex flex-wrap gap-2">
                                                 <button
                                                     onClick={() => navigator.clipboard.writeText(scopedLeadStudentSummary).catch(() => undefined)}
                                                     className="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-700 hover:bg-rose-100"
                                                 >
-                                                    نسخ خطة المتابعة
+                                                    نسخ
                                                 </button>
                                                 <Link to="/dashboard?tab=reports" className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-200">
-                                                    فتح التقارير
+                                                    تقرير
                                                 </Link>
                                             </div>
                                         ) : null}
                                     </div>
-                                    <div className="rounded-2xl border border-amber-100 bg-white p-4">
-                                        <div className="text-xs font-black text-amber-600">أولوية المهارة الجماعية</div>
-                                        <div className="mt-2 text-base font-black leading-7 text-gray-900">
+                                    <div className="rounded-2xl border border-amber-100 bg-white p-3">
+                                        <div className="text-xs font-black text-amber-600">أولوية المهارة</div>
+                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
                                             {displayText(scopedLeadSkill?.skill) || 'بانتظار بيانات المهارات'}
                                         </div>
-                                        <p className="mt-2 text-sm leading-7 text-gray-600">
+                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
                                             {scopedLeadSkill
-                                                ? `${scopedLeadSkill.affectedStudents} طلاب متأثرون - ${scopedLeadSkill.mastery}% إتقان حالي.`
-                                                : 'عند تراكم النتائج سيظهر هنا أول محور يحتاج تدخلاً جماعيًا.'}
+                                                ? `${scopedLeadSkill.affectedStudents} طلاب - ${scopedLeadSkill.mastery}%`
+                                                : 'تظهر بعد تراكم النتائج.'}
                                         </p>
                                         {scopedLeadSkill ? (
-                                            <div className="print-hide mt-3 flex flex-wrap gap-2">
+                                            <div className="print-hide mt-2 flex flex-wrap gap-2">
                                                 <Link to="/quiz" className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 hover:bg-amber-100">
-                                                    اختبار متابعة
+                                                    اختبار
                                                 </Link>
                                                 <Link to={buildSkillSessionLink({ skill: scopedLeadSkill.skill, skillId: scopedLeadSkill.skillId, sectionName: scopedLeadSkill.section })} className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-200">
-                                                    حجز شرح
+                                                    شرح
                                                 </Link>
                                             </div>
                                         ) : null}
                                     </div>
-                                    <div className="rounded-2xl border border-indigo-100 bg-white p-4">
+                                    <div className="rounded-2xl border border-indigo-100 bg-white p-3">
                                         <div className="text-xs font-black text-indigo-600">أولوية المادة</div>
-                                        <div className="mt-2 text-base font-black leading-7 text-gray-900">
+                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
                                             {displayText(scopedLeadSubject?.subjectName) || 'بانتظار توزيع المواد'}
                                         </div>
-                                        <p className="mt-2 text-sm leading-7 text-gray-600">
+                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
                                             {scopedLeadSubject
-                                                ? `${scopedLeadSubject.weakStudents} طلاب يحتاجون دعمًا - ${scopedLeadSubject.mastery}% مستوى المادة حاليًا.`
-                                                : 'عند ظهور فروق واضحة بين المواد سيقترح لك التقرير المادة التي تبدأ بها.'}
+                                                ? `${scopedLeadSubject.weakStudents} طلاب - ${scopedLeadSubject.mastery}%`
+                                                : 'تظهر عند وجود فرق واضح.'}
                                         </p>
                                         {scopedLeadSubject ? (
-                                            <div className="mt-3 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-700">
-                                                الإجراء المقترح: تدريب قصير في هذه المادة ثم قياس تحسن الطلاب الضعاف خلال نفس الأسبوع.
+                                            <div className="mt-2 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-700">
+                                                تدريب قصير ثم قياس.
                                             </div>
                                         ) : null}
                                     </div>
                                 </div>
                                 <div className="grid gap-3 lg:grid-cols-3">
                                     {scopedInterventionPlan.map((item) => (
-                                        <div key={item.title} className={`rounded-2xl border p-4 ${item.className}`}>
+                                        <div key={item.title} className={`rounded-2xl border p-3 ${item.className}`}>
                                             <div className="text-xs font-black opacity-70">{item.title}</div>
-                                            <div className="mt-2 text-base font-black leading-7">{item.label}</div>
-                                            <p className="mt-2 text-sm leading-7">{item.body}</p>
+                                            <div className="mt-2 text-sm font-black leading-6">{item.label}</div>
+                                            <p className="mt-1 text-xs font-bold leading-6">{item.body}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -1625,45 +1611,42 @@ const Reports: React.FC = () => {
                                                     <Sparkles size={14} />
                                                     خطة ذكية قابلة للتنفيذ
                                                 </div>
-                                                <div className="text-lg font-black text-gray-900">{displayText(scopedSmartRemediation.title) || 'خطة تدخل للنطاق الحالي'}</div>
-                                                <p className="mt-2 text-sm leading-7 text-gray-600">
+                                                <div className="text-base font-black text-gray-900">{displayText(scopedSmartRemediation.title) || 'خطة تدخل للنطاق الحالي'}</div>
+                                                <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
                                                     {displayText(scopedSmartRemediation.summary) || 'ابدأ بالمهارة الأكثر ضعفًا، ثم أنشئ متابعة قصيرة وقابلة للقياس.'}
                                                 </p>
                                             </div>
-                                            <Link to="/quiz" className="self-start rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800">
-                                                إنشاء اختبار متابعة
+                                            <Link to="/quiz" className="self-start rounded-xl bg-slate-900 px-3 py-2 text-xs font-black text-white hover:bg-slate-800">
+                                                اختبار متابعة
                                             </Link>
                                         </div>
-                                        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                                        <div className="mt-3 grid gap-3 lg:grid-cols-3">
                                             {(scopedSmartRemediation.steps || []).slice(0, 3).map((step, index) => (
-                                                <div key={`${step.day || index}-${step.skill || index}`} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                                <div key={`${step.day || index}-${step.skill || index}`} className="rounded-2xl border border-gray-100 bg-slate-50 p-3">
                                                     <div className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 inline-flex">
                                                         {displayText(step.day) || `خطوة ${index + 1}`}
                                                     </div>
-                                                    <div className="mt-3 font-black leading-7 text-gray-900">{displayText(step.skill) || 'مهارة تحتاج متابعة'}</div>
-                                                    <p className="mt-2 text-sm leading-7 text-gray-600">{displayText(step.action) || 'وجّه نشاطًا علاجيًا قصيرًا.'}</p>
-                                                    <div className="mt-3 text-xs font-bold leading-6 text-gray-500">
-                                                        قياس التحسن: {displayText(step.check) || 'اختبار قصير بعد التدخل.'}
+                                                    <div className="mt-2 font-black leading-6 text-gray-900">{displayText(step.skill) || 'مهارة تحتاج متابعة'}</div>
+                                                    <p className="mt-1 text-xs font-bold leading-6 text-gray-600">{displayText(step.action) || 'وجّه نشاطًا علاجيًا قصيرًا.'}</p>
+                                                    <div className="mt-2 text-xs font-bold leading-6 text-gray-500">
+                                                        قياس: {displayText(step.check) || 'اختبار قصير.'}
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
                                         {scopedSmartRemediation.parentNote ? (
-                                            <div className="mt-4 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-bold leading-7 text-emerald-800">
-                                                توجيه متابعة: {displayText(scopedSmartRemediation.parentNote)}
+                                            <div className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-bold leading-6 text-emerald-800">
+                                                متابعة: {displayText(scopedSmartRemediation.parentNote)}
                                             </div>
                                         ) : null}
                                     </div>
                                 ) : null}
                             </div>
 
-                            <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-5">
-                                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="rounded-3xl border border-gray-100 bg-white p-4">
+                                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                     <div>
-                                        <div className="text-lg font-black text-gray-900">آخر محاولات داخل النطاق</div>
-                                        <p className="text-sm leading-7 text-gray-500">
-                                            هذه القائمة تربط المشرف وولي الأمر بنتائج الطلاب الفعلية، وليست أرقامًا عامة فقط.
-                                        </p>
+                                        <div className="text-lg font-black text-gray-900">محاولات حديثة</div>
                                     </div>
                                     <span className="self-start rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
                                         {scopedLatestResults.length} محاولة حديثة
@@ -1679,32 +1662,32 @@ const Reports: React.FC = () => {
                                             const resultDate = result.date || result.createdAt;
 
                                             return (
-                                                <div key={resultId} className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                                <div key={resultId} className="rounded-2xl border border-gray-100 bg-slate-50 p-3">
                                                     <div className="flex items-start justify-between gap-3">
                                                         <div className="min-w-0">
                                                             <div className="text-xs font-bold text-gray-500">{displayText(result.studentName) || 'طالب'}</div>
-                                                            <div className="mt-1 font-black leading-7 text-gray-900">{displayText(result.quizTitle) || 'اختبار'}</div>
+                                                            <div className="mt-1 font-black leading-6 text-gray-900">{displayText(result.quizTitle) || 'اختبار'}</div>
                                                         </div>
                                                         <div className={`rounded-full px-3 py-1 text-sm font-black ${Number(result.score || 0) >= 75 ? 'bg-emerald-50 text-emerald-700' : Number(result.score || 0) >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
                                                             {Number(result.score || 0)}%
                                                         </div>
                                                     </div>
-                                                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                                                        <div className="rounded-xl bg-white px-3 py-2">
+                                                    <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                                                        <div className="rounded-xl bg-white px-3 py-1.5">
                                                             <div className="font-bold text-gray-500">صحيح</div>
                                                             <div className="mt-1 font-black text-gray-900">{Number(result.correctAnswers || 0)}</div>
                                                         </div>
-                                                        <div className="rounded-xl bg-white px-3 py-2">
+                                                        <div className="rounded-xl bg-white px-3 py-1.5">
                                                             <div className="font-bold text-gray-500">الأسئلة</div>
                                                             <div className="mt-1 font-black text-gray-900">{Number(result.totalQuestions || 0)}</div>
                                                         </div>
                                                     </div>
                                                     {weakSkills.length ? (
-                                                        <div className="mt-3 text-xs font-bold leading-6 text-rose-700">
-                                                            أولوية متابعة: {weakSkills.map((skill) => `${displayText(skill.skill) || 'مهارة'} (${Number(skill.mastery || 0)}%)`).join('، ')}
+                                                        <div className="mt-2 text-xs font-bold leading-6 text-rose-700">
+                                                            متابعة: {weakSkills.map((skill) => `${displayText(skill.skill) || 'مهارة'} (${Number(skill.mastery || 0)}%)`).join('، ')}
                                                         </div>
                                                     ) : (
-                                                        <div className="mt-3 text-xs font-bold leading-6 text-emerald-700">لا توجد مهارات ضعيفة واضحة في هذه المحاولة.</div>
+                                                        <div className="mt-2 text-xs font-bold leading-6 text-emerald-700">لا توجد أولوية واضحة.</div>
                                                     )}
                                                     {resultDate ? (
                                                         <div className="mt-2 text-[11px] font-bold text-gray-400">
@@ -1722,103 +1705,20 @@ const Reports: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div className="space-y-3">
-                                    <div className="font-bold text-gray-900">الطلاب الأضعف حاليًا</div>
-                                    {scopedAnalytics.weakestStudents.length > 0 ? scopedAnalytics.weakestStudents.slice(0, 5).map((student) => (
-                                        <div key={student.id} className="border border-gray-100 rounded-xl p-4 bg-gray-50/60">
-                                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
-                                                <div>
-                                                    <div className="font-bold text-gray-900">{displayText(student.name)}</div>
-                                                    <div className="text-xs text-gray-500">
-                                                        {displayText(student.schoolName) || 'بدون مدرسة'}
-                                                        {student.groupNames?.length ? ` - ${student.groupNames.map(displayText).join('، ')}` : ''}
-                                                    </div>
-                                                </div>
-                                                <div className={`text-lg font-black ${student.averageScore < 50 ? 'text-rose-600' : 'text-amber-600'}`}>
-                                                    {student.averageScore}%
-                                                </div>
-                                            </div>
-                                            <div className="text-xs text-gray-600 space-y-1">
-                                                <div>عدد المحاولات: <span className="font-bold">{student.attempts}</span></div>
-                                                <div>المهارات الضعيفة: <span className="font-bold">{student.weakSkillCount}</span></div>
-                                                {student.weakestSkills?.length ? (
-                                                    <div>
-                                                        أبرز نقاط الضعف:
-                                                        <span className="font-bold"> {student.weakestSkills.map((skill) => `${displayText(skill.skill)} (${skill.mastery}%)`).join(' - ')}</span>
-                                                    </div>
-                                                ) : null}
-                                                {student.recommendedAction ? <div className="text-indigo-700">الإجراء المقترح: <span className="font-bold">{displayText(student.recommendedAction)}</span></div> : null}
-                                            </div>
-                                            <div className="print-hide mt-3 flex flex-wrap gap-2">
-                                                <button
-                                                    onClick={() => navigator.clipboard.writeText([
-                                                        `الطالب: ${displayText(student.name)}`,
-                                                        `المتوسط الحالي: ${student.averageScore}%`,
-                                                        student.weakestSkills?.length ? `أبرز المهارات: ${student.weakestSkills.map((skill) => `${displayText(skill.skill)} (${skill.mastery}%)`).join('، ')}` : '',
-                                                        displayText(student.recommendedAction) ? `الإجراء المقترح: ${displayText(student.recommendedAction)}` : 'الإجراء المقترح: شرح قصير ثم تدريب علاجي.'
-                                                    ].filter(Boolean).join('\n')).catch(() => undefined)}
-                                                    className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
-                                                >
-                                                    نسخ المتابعة
-                                                </button>
-                                                <Link to="/dashboard?tab=reports" className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                    فتح تقارير الطالب
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )) : (
-                                        <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">لا توجد بيانات طلاب مرتبطة بهذا النطاق بعد.</div>
-                                    )}
-                                </div>
-
-                                <div className="space-y-3">
-                                    <div className="font-bold text-gray-900">المهارات الأضعف على مستوى النطاق</div>
-                                    {scopedAnalytics.weakestSkills.length > 0 ? scopedAnalytics.weakestSkills.slice(0, 6).map((skill) => (
-                                        <div key={`${skill.skillId || skill.skill}`} className="border border-gray-100 rounded-xl p-4 bg-white">
-                                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
-                                                <div>
-                                                    <div className="font-bold text-gray-900">{displayText(skill.skill)}</div>
-                                                    <div className="text-xs text-gray-500">{displayText(skill.section) || 'مهارة فرعية'}</div>
-                                                </div>
-                                                <div className={`text-lg font-black ${skill.mastery < 50 ? 'text-rose-600' : 'text-amber-600'}`}>{skill.mastery}%</div>
-                                            </div>
-                                            <div className="text-xs text-gray-600 space-y-1">
-                                                <div>طلاب متأثرون: <span className="font-bold">{skill.affectedStudents}</span></div>
-                                                <div>محاولات مرتبطة: <span className="font-bold">{skill.attempts}</span></div>
-                                                {skill.recommendedAction ? <div className="text-indigo-700">التدخل المقترح: <span className="font-bold">{displayText(skill.recommendedAction)}</span></div> : null}
-                                            </div>
-                                            <div className="print-hide mt-3 flex flex-wrap gap-2">
-                                                <Link to="/quiz" className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 hover:bg-amber-100">
-                                                    اختبار موجه
-                                                </Link>
-                                                <Link to={buildSkillSessionLink({ skill: skill.skill, skillId: skill.skillId, sectionName: skill.section })} className="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-100">
-                                                    شرح أو حصة
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )) : (
-                                        <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">لا توجد مهارات ضعيفة مجمعة حتى الآن.</div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div className="space-y-3">
-                                    <div className="font-bold text-gray-900">المواد التي تحتاج تدخلًا</div>
+                                    <div className="font-black text-gray-900">مواد تحتاج تدخل</div>
                                     {scopedAnalytics.subjectSummaries.length > 0 ? scopedAnalytics.subjectSummaries.slice(0, 6).map((subject) => (
-                                        <div key={subject.subjectId || subject.subjectName} className="border border-gray-100 rounded-xl p-4 bg-gray-50/50 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <div key={subject.subjectId || subject.subjectName} className="border border-gray-100 rounded-xl p-3 bg-gray-50/50 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                             <div>
                                                 <div className="font-bold text-gray-900">{displayText(subject.subjectName)}</div>
                                                 <div className="text-xs text-gray-500">طلاب ضعفاء: {subject.weakStudents}</div>
-                                                <div className="mt-2 text-xs font-bold text-indigo-600">
-                                                    التدخل المقترح: تدريب قصير في المادة ثم قياس خلال نفس الأسبوع.
-                                                </div>
+                                                <div className="mt-1 text-xs font-bold text-indigo-600">تدريب قصير ثم قياس.</div>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className={`text-lg font-black ${subject.mastery < 50 ? 'text-rose-600' : 'text-amber-600'}`}>{subject.mastery}%</div>
                                                 <Link to="/quizzes" className="print-hide rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                    اختبارات المادة
+                                                    اختبارات
                                                 </Link>
                                             </div>
                                         </div>
@@ -1828,9 +1728,9 @@ const Reports: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <div className="font-bold text-gray-900">اختبارات المتابعة الموجهة</div>
+                                    <div className="font-black text-gray-900">اختبارات موجهة</div>
                                     {scopedAnalytics.assignedFollowUps.length > 0 ? scopedAnalytics.assignedFollowUps.slice(0, 5).map((quiz) => (
-                                        <div key={quiz.id} className="border border-gray-100 rounded-xl p-4 bg-white flex items-center justify-between gap-3">
+                                        <div key={quiz.id} className="border border-gray-100 rounded-xl p-3 bg-white flex items-center justify-between gap-3">
                                             <div>
                                                 <div className="font-bold text-gray-900">{displayText(quiz.title)}</div>
                                                 <div className="text-xs text-gray-500">
@@ -1838,7 +1738,7 @@ const Reports: React.FC = () => {
                                                     {quiz.dueDate ? ` - حتى ${new Date(quiz.dueDate).toLocaleDateString('ar-SA')}` : ''}
                                                 </div>
                                             </div>
-                                            <Link to={`/quiz/${quiz.id}`} className="px-3 py-2 rounded-lg bg-gray-900 text-white text-sm font-bold hover:bg-gray-800">
+                                            <Link to={`/quiz/${quiz.id}`} className="px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-black hover:bg-gray-800">
                                                 فتح
                                             </Link>
                                         </div>
