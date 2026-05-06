@@ -810,6 +810,7 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
     const data = useParentScopedResults();
     const trend = data.lastThreeAverage - data.olderThreeAverage;
     const [copiedCoachMessage, setCopiedCoachMessage] = useState(false);
+    const [showParentDetails, setShowParentDetails] = useState(false);
 
     const copyCoachMessage = async () => {
         try {
@@ -846,6 +847,48 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                     <ParentEmptyState />
                 ) : (
                     <>
+                        <Card className="p-4">
+                            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h3 className="text-lg font-black text-gray-900">متابعة اليوم</h3>
+                                    <p className="mt-1 text-sm text-gray-500">خطوة واحدة تكفي.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowParentDetails((current) => !current)}
+                                    className="self-start rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+                                >
+                                    {showParentDetails ? 'إخفاء التفاصيل' : 'استعراض أكثر'}
+                                </button>
+                            </div>
+                            {data.priorityWeakSkills.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:col-span-2">
+                                        <div className="text-xs font-black text-amber-700">الأولوية الأقرب</div>
+                                        <div className="mt-2 text-lg font-black leading-7 text-gray-900">{data.priorityWeakSkills[0].skill}</div>
+                                        <p className="mt-2 text-sm leading-6 text-gray-600">10 دقائق مع {data.priorityWeakSkills[0].studentName}، ثم سؤالان فقط.</p>
+                                    </div>
+                                    <div className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                        <div className="text-xs font-black text-gray-500">درجة الإتقان</div>
+                                        <div className="mt-2 text-3xl font-black text-amber-700">{Math.round(data.priorityWeakSkills[0].mastery)}%</div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveTab('parent-skills')}
+                                            className="mt-4 w-full rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                        >
+                                            عرض المهارات
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                    الأداء الحالي مطمئن. يكفي سؤال قصير بعد المذاكرة.
+                                </div>
+                            )}
+                        </Card>
+
+                        {showParentDetails ? (
+                        <>
                         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
                             <Card className="p-4">
                                 <div className="text-xs font-bold text-gray-500">الأبناء المرتبطون</div>
@@ -946,42 +989,8 @@ const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: Dashboa
                                 </button>
                             </Card>
                         </div>
-
-                        <Card className="p-4">
-                            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <h3 className="text-lg font-black text-gray-900">متابعة اليوم</h3>
-                                    <p className="mt-1 text-sm text-gray-500">خطوة واحدة تكفي.</p>
-                                </div>
-                                <span className="self-start rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-                                    مبسط لولي الأمر
-                                </span>
-                            </div>
-                            {data.priorityWeakSkills.length > 0 ? (
-                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:col-span-2">
-                                        <div className="text-xs font-black text-amber-700">الأولوية الأقرب</div>
-                                        <div className="mt-2 text-lg font-black leading-7 text-gray-900">{data.priorityWeakSkills[0].skill}</div>
-                                        <p className="mt-2 text-sm leading-6 text-gray-600">10 دقائق مع {data.priorityWeakSkills[0].studentName}، ثم سؤالان فقط.</p>
-                                    </div>
-                                    <div className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
-                                        <div className="text-xs font-black text-gray-500">درجة الإتقان</div>
-                                        <div className="mt-2 text-3xl font-black text-amber-700">{Math.round(data.priorityWeakSkills[0].mastery)}%</div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setActiveTab('parent-skills')}
-                                            className="mt-4 w-full rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
-                                        >
-                                            عرض المهارات
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
-                                    الأداء الحالي لا يحتاج خطة متابعة. يكفي سؤال قصير بعد المذاكرة: ما أسهل فكرة اليوم وما أصعب فكرة؟
-                                </div>
-                            )}
-                        </Card>
+                        </>
+                        ) : null}
                     </>
                 )
             ) : null}
