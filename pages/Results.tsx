@@ -1065,7 +1065,7 @@ const Results: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4">
               <button
                 onClick={() => {
                   if (questionReviewCount > 0) {
@@ -1073,30 +1073,30 @@ const Results: React.FC = () => {
                   }
                 }}
                 disabled={questionReviewCount === 0}
-                className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                className="flex items-center justify-center gap-1.5 bg-emerald-600 text-white px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
               >
-                <Eye size={18} />
+                <Eye size={15} />
                 {questionReviewCount > 0 ? 'مراجعة الحلول' : 'المراجعة غير متاحة'}
               </button>
               <Link
                 to={retryQuizLink}
-                className="flex items-center justify-center gap-2 border border-emerald-200 bg-white text-emerald-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-50 transition-colors"
+                className="flex items-center justify-center gap-1.5 border border-emerald-200 bg-white text-emerald-700 px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-emerald-50 transition-colors"
               >
-                <RefreshCw size={18} />
+                <RefreshCw size={15} />
                 إعادة الاختبار
               </Link>
               <Link
                 to={additionalQuizLink}
-                className="flex items-center justify-center gap-2 border border-amber-200 bg-white text-amber-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-amber-50 transition-colors"
+                className="flex items-center justify-center gap-1.5 border border-amber-200 bg-white text-amber-700 px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-amber-50 transition-colors"
               >
-                <PlusCircle size={18} />
+                <PlusCircle size={15} />
                 اختبار إضافي
               </Link>
               <button
                 onClick={() => setIsAnalysisOpen(true)}
-                className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100"
+                className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100"
               >
-                <BarChart3 size={18} />
+                <BarChart3 size={15} />
                 تقرير تفصيلي
               </button>
             </div>
@@ -1481,8 +1481,19 @@ const ReviewSolutions = ({
     const quiz = quizzes.find((item) => item.id === result.quizId);
     const quizQuestionIds = quiz ? flattenMockExamQuestionIds(quiz) : [];
 
+    const normalizeSavedReview = (question: QuizQuestionReview): QuizQuestionReview => {
+      if (typeof question.selectedOptionIndex !== 'number' || typeof question.correctOptionIndex !== 'number') {
+        return question;
+      }
+
+      return {
+        ...question,
+        isCorrect: question.selectedOptionIndex === question.correctOptionIndex,
+      };
+    };
+
     if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= quizQuestionIds.length) {
-      return result.questionReview || [];
+      return (result.questionReview || []).map(normalizeSavedReview);
     }
 
     return quizQuestionIds
@@ -1490,7 +1501,7 @@ const ReviewSolutions = ({
         const savedReview = reviewById.get(questionId);
         const sourceQuestion = resolveQuestionFromBank(questionBank, questionId);
         if (!sourceQuestion) return savedReview || null;
-        return toQuestionReviewFromBank(sourceQuestion, savedReview);
+        return normalizeSavedReview(toQuestionReviewFromBank(sourceQuestion, savedReview));
       })
       .filter((question): question is QuizQuestionReview => Boolean(question));
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
@@ -1548,7 +1559,7 @@ const ReviewSolutions = ({
           </button>
           <div>
             <h1 className="text-xl font-bold">مراجعة الحلول</h1>
-            <p className="mt-1 text-sm text-gray-500">نفس السؤال، نفس الاختيارات، مع إمكانية إظهار الحل عند الحاجة.</p>
+            <p className="mt-1 text-sm text-gray-500">راجع السؤال، ثم أظهر الحل عند الحاجة.</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -1656,7 +1667,7 @@ const ReviewSolutions = ({
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-indigo-600 ring-2 ring-indigo-100" />السؤال الحالي</span>
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />إجابة صحيحة</span>
               <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-rose-500 ring-2 ring-rose-100" />إجابة خاطئة</span>
-              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-amber-100 ring-2 ring-amber-200" />لم يجب</span>
+              <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-full bg-white ring-2 ring-slate-300" />لم يجب</span>
             </div>
             <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-10 sm:gap-2">
             {questions.map((question, index) => {
@@ -1701,13 +1712,13 @@ const ReviewSolutions = ({
             ) : null}
             <button
               onClick={() => setShowExplanation((value) => !value)}
-              className={`px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm ${
+              className={`px-4 py-2 rounded-xl text-sm font-black flex items-center justify-center gap-1.5 transition-all shadow-sm ${
                 showExplanation
                   ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
                   : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
               }`}
             >
-              <Eye size={20} />
+              <Eye size={16} />
               {showExplanation ? 'إخفاء الحل' : 'إظهار الحل'}
             </button>
             <button
@@ -1716,9 +1727,9 @@ const ReviewSolutions = ({
                 setShowExplanation(false);
               }}
               disabled={currentIdx === 0}
-              className="bg-sky-50 text-sky-700 border border-sky-200 px-6 py-2.5 rounded-xl font-bold disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 transition-all hover:bg-sky-100 flex items-center justify-center gap-2"
+              className="bg-sky-50 text-sky-700 border border-sky-200 px-4 py-2 rounded-xl text-sm font-black disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 transition-all hover:bg-sky-100 flex items-center justify-center gap-1.5"
             >
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
               السابق
             </button>
             <button
@@ -1730,10 +1741,10 @@ const ReviewSolutions = ({
                   onBack();
                 }
               }}
-              className="bg-indigo-600 text-white px-8 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all"
+              className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-black flex items-center justify-center gap-1.5 hover:bg-indigo-700 transition-all"
             >
               {currentIdx === questions.length - 1 ? 'إنهاء المراجعة' : 'التالي'}
-              <ChevronRightIcon size={20} className="transform rotate-180" />
+              <ChevronRightIcon size={16} className="transform rotate-180" />
             </button>
           </div>
         </div>
@@ -1762,12 +1773,12 @@ const ReviewSolutions = ({
               <div>
                 <h4 className="font-bold text-emerald-800 mb-3 flex items-center gap-2">
                   <CheckCircle2 size={20} />
-                  توضيح الحل الصحيح:
+                  توضيح الحل
                 </h4>
                 <div className="text-gray-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.explanation) }} />
               </div>
             ) : (
-              <p className="text-gray-600 leading-relaxed">لا يوجد شرح نصي محفوظ لهذا السؤال، ويمكنك الاعتماد على الفيديو إذا كان متاحًا.</p>
+              <p className="text-gray-600 leading-relaxed">لا يوجد شرح نصي محفوظ لهذا السؤال.</p>
             )}
           </Card>
         </div>

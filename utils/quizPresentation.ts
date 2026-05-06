@@ -75,7 +75,7 @@ export const getQuizQuestionMapButtonClass = (
   if (state === 'wrong') {
     return isNightMode
       ? 'border-rose-300 bg-rose-500 text-white shadow-sm'
-      : 'border-rose-500 bg-rose-50 text-rose-700 shadow-sm';
+      : 'border-rose-600 bg-rose-500 text-white shadow-sm';
   }
 
   return isNightMode
@@ -102,17 +102,30 @@ export const resolveQuestionFromBank = <T extends QuestionLike>(
 export const toQuestionReviewFromBank = (
   sourceQuestion: Question,
   savedReview?: QuizQuestionReview,
-): QuizQuestionReview => ({
-  questionId: savedReview?.questionId || sourceQuestion.id,
-  text: savedReview?.text || sourceQuestion.text,
-  options: savedReview?.options?.length ? savedReview.options : sourceQuestion.options,
-  correctOptionIndex:
+): QuizQuestionReview => {
+  const correctOptionIndex =
     typeof savedReview?.correctOptionIndex === 'number'
       ? savedReview.correctOptionIndex
-      : sourceQuestion.correctOptionIndex,
-  selectedOptionIndex: savedReview?.selectedOptionIndex,
-  explanation: savedReview?.explanation || sourceQuestion.explanation,
-  videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
-  imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
-  isCorrect: savedReview?.isCorrect === true,
-});
+      : sourceQuestion.correctOptionIndex;
+  const selectedOptionIndex = savedReview?.selectedOptionIndex;
+
+  const computedIsCorrect =
+    typeof selectedOptionIndex === 'number' && selectedOptionIndex === correctOptionIndex;
+
+  return {
+    questionId: savedReview?.questionId || sourceQuestion.id,
+    text: savedReview?.text || sourceQuestion.text,
+    options: savedReview?.options?.length ? savedReview.options : sourceQuestion.options,
+    correctOptionIndex,
+    selectedOptionIndex,
+    explanation: savedReview?.explanation || sourceQuestion.explanation,
+    videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
+    imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
+    isCorrect:
+      typeof selectedOptionIndex === 'number'
+        ? computedIsCorrect
+        : typeof savedReview?.isCorrect === 'boolean'
+          ? savedReview.isCorrect
+          : false,
+  };
+};

@@ -963,29 +963,29 @@ export const QuizPage: React.FC = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentQuestionIndex === 0}
-                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} w-full sm:w-auto px-6 py-2 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} w-full sm:w-auto px-4 py-2 rounded-xl text-sm font-black disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5`}
               >
                 <ArrowRight size={18} />
                 السابق
               </button>
 
-              <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex">
+                <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex">
                 <button
                   type="button"
                   onClick={handleSaveQuizProgress}
                   disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
                 >
-                  <Save size={18} />
+                  <Save size={15} />
                   حفظ التقدم
                 </button>
                 <button
                   type="button"
                   onClick={handlePauseQuiz}
                   disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
                 >
-                  <PauseCircle size={18} />
+                  <PauseCircle size={15} />
                   إيقاف مؤقت
                 </button>
               </div>
@@ -994,7 +994,7 @@ export const QuizPage: React.FC = () => {
                 <button
                   onClick={() => setShowFinishDialog(true)}
                   disabled={isSubmittingResult}
-                  className="w-full sm:w-auto bg-emerald-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full sm:w-auto bg-emerald-600 text-white px-5 py-2 rounded-xl text-sm font-black hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmittingResult ? 'جاري حفظ النتيجة...' : 'إنهاء الاختبار'}
                 </button>
@@ -1003,7 +1003,7 @@ export const QuizPage: React.FC = () => {
                   onClick={handleNext}
                   disabled={Boolean(isNextBlocked)}
                   title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}
-                  className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full sm:w-auto bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-black hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1.5 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   التالي
                   <ArrowLeft size={18} />
