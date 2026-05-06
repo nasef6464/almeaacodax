@@ -288,9 +288,9 @@ const SimpleResultStat = ({
   };
 
   return (
-    <div className={`rounded-2xl p-4 ${toneClasses[tone]}`}>
-      <div className="text-xs font-bold opacity-80">{label}</div>
-      <div className="mt-2 text-xl font-black">{value}</div>
+    <div className={`rounded-xl px-3 py-2.5 ${toneClasses[tone]}`}>
+      <div className="text-[11px] font-bold opacity-80">{label}</div>
+      <div className="mt-1 text-lg font-black">{value}</div>
     </div>
   );
 };
@@ -707,27 +707,27 @@ const Results: React.FC = () => {
           {safeResultReturnTo ? (
             <Link
               to={safeResultReturnTo}
-              className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-100"
+              className="print-hide inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-100"
             >
-              <ArrowRight size={16} />
+              <ArrowRight size={14} />
               {resultReturnLabel}
             </Link>
           ) : null}
           <button
             onClick={() => printElementAsPdf('quiz-result-print-area', 'نتيجة الاختبار')}
-            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50"
+            className="print-hide inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-white px-3 py-1.5 text-xs font-black text-indigo-700 shadow-sm hover:bg-indigo-50"
           >
-            <Download size={16} />
+            <Download size={14} />
             تحميل PDF
           </button>
           <button
             onClick={() => setResultDepth((current) => (current === 'simple' ? 'full' : 'simple'))}
-            className="print-hide inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+            className="print-hide inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
           >
-            {isFullResult ? <Sparkles size={16} /> : <FileText size={16} />}
+            {isFullResult ? <Sparkles size={14} /> : <FileText size={14} />}
             {isFullResult ? 'العودة للملخص البسيط' : 'عرض التقرير الكامل'}
           </button>
-          <div className={`self-start px-4 py-1 rounded-full text-sm font-bold ${summaryTone.chipClassName}`}>
+          <div className={`self-start rounded-full px-3 py-1 text-xs font-black ${summaryTone.chipClassName}`}>
             {summaryTone.title}
           </div>
         </div>
@@ -993,8 +993,8 @@ const Results: React.FC = () => {
               </div>
             ) : (
               <div className="mt-6 grid gap-4 lg:grid-cols-[240px_1fr]">
-                <div className="rounded-3xl border border-white bg-white/95 p-5 text-center shadow-sm">
-                  <div className="relative mx-auto h-44 max-w-[190px]">
+                <div className="rounded-3xl border border-white bg-white/95 p-4 text-center shadow-sm">
+                  <div className="relative mx-auto h-40 max-w-[175px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -1025,10 +1025,8 @@ const Results: React.FC = () => {
                 <div className="rounded-3xl border border-white bg-white/95 p-4 shadow-sm sm:p-5">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="text-lg font-black text-gray-900">ملخص النتيجة</h3>
-                      <p className="mt-1 text-sm font-bold leading-7 text-gray-500">
-                        ركز على الخطوة التالية فقط، والتفاصيل موجودة عند الحاجة.
-                      </p>
+                      <h3 className="text-lg font-black text-gray-900">ملخص سريع</h3>
+                      <p className="mt-1 text-xs font-bold text-gray-500">الدرجة والخطوة التالية فقط.</p>
                     </div>
                     {latestResult.unanswered > 0 ? (
                       <span className="self-start rounded-full bg-amber-50 px-3 py-1 text-[11px] font-black text-amber-700">
@@ -1044,22 +1042,22 @@ const Results: React.FC = () => {
                     <SimpleResultStat label="الوقت" value={latestResult.timeSpent} />
                   </div>
 
-                  <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-4">
+                  <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-3">
                     <div className="text-xs font-black text-indigo-600">أول تركيز</div>
                     <div className="mt-1 text-base font-black text-slate-900">
                       {weakestSkill ? weakestSkill.skillName : 'مراجعة الحلول ثم اختبار قصير'}
                     </div>
-                    <p className="mt-2 text-sm font-bold leading-7 text-slate-600">
+                    <p className="mt-1 text-xs font-bold leading-6 text-slate-600">
                       {weakestSkill
-                        ? 'افتح شرح المهارة، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.'
-                        : 'ابدأ بمراجعة الحلول حتى تعرف أين تحتاج تدريبًا.'}
+                        ? 'شرح قصير ثم تدريب، وبعدها أعد القياس.'
+                        : 'ابدأ بالمراجعة ثم تدريب قصير.'}
                     </p>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4">
+            <div className="mt-5 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => {
                   if (questionReviewCount > 0) {
@@ -1067,28 +1065,28 @@ const Results: React.FC = () => {
                   }
                 }}
                 disabled={questionReviewCount === 0}
-                className="flex items-center justify-center gap-1.5 bg-emerald-600 text-white px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-emerald-700 transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 sm:text-sm"
               >
                 <Eye size={15} />
                 {questionReviewCount > 0 ? 'مراجعة الحلول' : 'المراجعة غير متاحة'}
               </button>
               <Link
                 to={retryQuizLink}
-                className="flex items-center justify-center gap-1.5 border border-emerald-200 bg-white text-emerald-700 px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-emerald-50 transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-white px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-50 sm:text-sm"
               >
                 <RefreshCw size={15} />
                 إعادة الاختبار
               </Link>
               <Link
                 to={additionalQuizLink}
-                className="flex items-center justify-center gap-1.5 border border-amber-200 bg-white text-amber-700 px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-amber-50 transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-white px-3 py-1.5 text-xs font-black text-amber-700 transition-colors hover:bg-amber-50 sm:text-sm"
               >
                 <PlusCircle size={15} />
                 اختبار إضافي
               </Link>
               <button
                 onClick={() => setIsAnalysisOpen(true)}
-                className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white px-3 py-2 rounded-xl font-black text-xs sm:text-sm hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-black text-white shadow-md shadow-indigo-100 transition-colors hover:bg-indigo-700 sm:text-sm"
               >
                 <BarChart3 size={15} />
                 تقرير تفصيلي
