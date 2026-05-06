@@ -1700,19 +1700,19 @@ const ReviewSolutions = ({
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-between">
             {q.videoUrl ? (
               <button
                 onClick={() => onShowVideo(q.videoUrl!, `شرح السؤال ${currentIdx + 1}`)}
-                className="bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
+                className="inline-flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-black text-white shadow-sm shadow-emerald-100 transition-all hover:bg-emerald-600"
               >
-                <PlayCircle size={20} />
+                <PlayCircle size={16} />
                 شرح الفيديو
               </button>
             ) : null}
             <button
               onClick={() => setShowExplanation((value) => !value)}
-              className={`px-4 py-2 rounded-xl text-sm font-black flex items-center justify-center gap-1.5 transition-all shadow-sm ${
+              className={`inline-flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all shadow-sm ${
                 showExplanation
                   ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
                   : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
@@ -1727,7 +1727,7 @@ const ReviewSolutions = ({
                 setShowExplanation(false);
               }}
               disabled={currentIdx === 0}
-              className="bg-sky-50 text-sky-700 border border-sky-200 px-4 py-2 rounded-xl text-sm font-black disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 transition-all hover:bg-sky-100 flex items-center justify-center gap-1.5"
+              className="inline-flex min-w-[104px] items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-black text-sky-700 transition-all hover:bg-sky-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400"
             >
               <ArrowRight size={16} />
               السابق
@@ -1741,7 +1741,7 @@ const ReviewSolutions = ({
                   onBack();
                 }
               }}
-              className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-black flex items-center justify-center gap-1.5 hover:bg-indigo-700 transition-all"
+              className="inline-flex min-w-[112px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-all hover:bg-indigo-700"
             >
               {currentIdx === questions.length - 1 ? 'إنهاء المراجعة' : 'التالي'}
               <ChevronRightIcon size={16} className="transform rotate-180" />

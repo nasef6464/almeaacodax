@@ -894,7 +894,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className="text-white py-10 sm:py-12 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(levelId, null, true)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-5 transition-colors">
                             <ChevronRight size={20} /> عودة لصفحة المسار
@@ -945,7 +945,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     if (isPackagesTab) {
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className="text-white py-10 sm:py-12 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة للمسار
@@ -970,7 +970,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                <header className="text-white py-10 sm:py-12 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 justify-center mx-auto text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة للمسار
@@ -1068,7 +1068,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         if (!selectedSubjectId) {
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-10 sm:py-12 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                         <div className="max-w-7xl mx-auto px-4 relative z-10">
                             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 leading-tight break-words">{path.name}</h1>
                             <p className="text-white/80 text-lg">تأسيس شامل، تدريب مكثف، واختبارات محاكية</p>
@@ -1095,7 +1095,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
             const currentSubject = selectedSubject;
             return (
                 <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-8 sm:py-10 relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <header className="text-white py-5 sm:py-6 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                         <div className="max-w-7xl mx-auto px-4 relative z-10">
                             <button onClick={() => handleSubjectSelect(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                                 <ChevronRight size={20} /> عودة لصفحة المسار
@@ -1118,7 +1118,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     if (!selectedLevelId) {
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-10 sm:py-12 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <header className="text-white py-7 sm:py-9 text-center relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 leading-tight break-words">{path.name}</h1>
                         <p className="text-white/80 text-lg">اختر المرحلة الدراسية للبدء</p>
@@ -1156,7 +1156,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
         
         return (
             <div className="bg-gray-50 min-h-screen pb-20">
-                    <header className="text-white py-8 sm:py-10 relative overflow-hidden" style={{ backgroundColor: style.color }}>
+                    <header className="text-white py-5 sm:py-6 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                     <div className="max-w-7xl mx-auto px-4 relative z-10">
                         <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                             <ChevronRight size={20} /> عودة لصفحة المسار
@@ -1187,7 +1187,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
     
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
-            <header className="text-white py-8 sm:py-10 relative overflow-hidden" style={{ backgroundColor: style.color }}>
+            <header className="text-white py-5 sm:py-6 relative overflow-hidden" style={{ backgroundColor: style.color }}>
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <button onClick={() => updateUrl(null, null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
                         <ChevronRight size={20} /> عودة لصفحة المسار

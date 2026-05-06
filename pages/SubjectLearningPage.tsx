@@ -36,7 +36,7 @@ export const SubjectLearningPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
-  const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes'>('lessons');
+  const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
 
   const matchedPath = paths.find((item) => item.id === pathId);
@@ -145,7 +145,7 @@ export const SubjectLearningPage: React.FC = () => {
     const topicId = searchParams.get('topic');
     const content = searchParams.get('content');
 
-    if (content === 'lessons' || content === 'quizzes') {
+    if (content === 'lessons' || content === 'quizzes' || content === 'support') {
       setTopicModalTab(content);
     }
 
@@ -219,7 +219,7 @@ export const SubjectLearningPage: React.FC = () => {
   };
 
   const activeTopic = selectedSubTopic || selectedTopic;
-  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' = topicModalTab) => {
+  const buildTopicReturnPath = (contentTab: 'lessons' | 'quizzes' | 'support' = topicModalTab) => {
     const params = new URLSearchParams();
     if (subjectId) params.set('subject', subjectId);
     params.set('tab', 'skills');
@@ -227,7 +227,7 @@ export const SubjectLearningPage: React.FC = () => {
     params.set('content', contentTab);
     return `/category/${pathId || ''}?${params.toString()}`;
   };
-  const buildTopicReturnPathFor = (topic: Topic, contentTab: 'lessons' | 'quizzes' = 'quizzes') => {
+  const buildTopicReturnPathFor = (topic: Topic, contentTab: 'lessons' | 'quizzes' | 'support' = 'quizzes') => {
     const params = new URLSearchParams();
     if (subjectId) params.set('subject', subjectId);
     params.set('tab', 'skills');
@@ -361,10 +361,10 @@ export const SubjectLearningPage: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20 font-sans" dir="rtl">
-      <div className="bg-[#2e2b70] py-12 sm:py-16 relative overflow-hidden">
+      <div className="bg-[#2e2b70] py-7 sm:py-9 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
           <h1 className="text-2xl sm:text-4xl font-black text-white mb-4 leading-tight">{currentPathName} ({currentSubjectName})</h1>
-          <p className="text-indigo-200 max-w-2xl mx-auto text-base sm:text-lg">تأسيس شامل، تدريب مكثف، واختبارات محاكية</p>
+          <p className="text-indigo-200 max-w-2xl mx-auto text-sm sm:text-base">تأسيس، تدريب، واختبارات في مكان واحد</p>
         </div>
       </div>
 
@@ -574,7 +574,7 @@ export const SubjectLearningPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" dir="rtl">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => updateSubjectQuery({ topic: null, content: null })}></div>
           <div className="relative bg-white rounded-3xl w-full max-w-5xl h-[85vh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-scale-in">
-            <div className="flex-none bg-gradient-to-l from-indigo-900 to-[#2e2b70] p-6 sm:p-8 text-white relative h-32 sm:h-40 flex flex-col justify-between">
+            <div className="flex-none bg-gradient-to-l from-indigo-900 to-[#2e2b70] p-5 sm:p-6 text-white relative h-24 sm:h-28 flex flex-col justify-between">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-bl-full"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-400 opacity-10 rounded-tr-full"></div>
 
@@ -648,6 +648,14 @@ export const SubjectLearningPage: React.FC = () => {
                       }`}
                     >
                       <Target size={18} /> التدريبات القصيرة
+                    </button>
+                    <button
+                      onClick={() => updateSubjectQuery({ topic: selectedSubTopic?.id || selectedTopic.id, content: 'support' })}
+                      className={`px-6 py-4 font-bold text-sm flex items-center gap-2 border-b-2 transition-colors ${
+                        topicModalTab === 'support' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-800'
+                      }`}
+                    >
+                      <FileText size={18} /> ملف الدعم
                     </button>
                   </div>
                 </div>
@@ -861,6 +869,39 @@ export const SubjectLearningPage: React.FC = () => {
                           </Link>
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {topicModalTab === 'support' && (
+                    <div className="space-y-4">
+                      {relatedLibrarySuggestions.length > 0 ? (
+                        relatedLibrarySuggestions.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => openExternalUrl(item.url)}
+                            className="w-full rounded-2xl border border-emerald-100 bg-white p-5 text-right shadow-sm transition-all hover:border-emerald-200 hover:shadow-md"
+                          >
+                            <div className="flex items-center justify-between gap-4">
+                              <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                                  <FileText size={24} />
+                                </div>
+                                <div>
+                                  <h4 className="font-black text-gray-900">{item.title}</h4>
+                                  <p className="mt-1 text-xs font-bold text-gray-500">{item.size || 'ملف دعم'}</p>
+                                </div>
+                              </div>
+                              <span className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700">
+                                فتح الملف
+                              </span>
+                            </div>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-gray-500">
+                          لا يوجد ملف دعم لهذا الجزء بعد.
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
