@@ -16,6 +16,7 @@
     "smoke:frontend": "node scripts/smoke-frontend-routes.mjs",
     "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs",
     "smoke:learning-quiz": "node scripts/smoke-learning-quiz-journey.mjs",
+    "smoke:results": "node scripts/smoke-results-contract.mjs",
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
