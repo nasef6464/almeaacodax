@@ -12,7 +12,7 @@ import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -517,11 +517,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
     }, [category, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
 
-    let banks = getLearningSlotQuizzesWithLegacyFallback(
+    let banks = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'training' },
         canStudentSeeQuiz,
         isTrainingQuiz,
+        true,
     ).map(q => ({
         id: q.id,
         title: q.title,
@@ -533,11 +534,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         duration: 'غير محدد'
     }));
 
-    let tests = getLearningSlotQuizzesWithLegacyFallback(
+    let tests = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'tests' },
         canStudentSeeQuiz,
         isMockQuiz,
+        true,
     ).map(q => ({
         id: q.id,
         title: q.title,

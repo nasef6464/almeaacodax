@@ -12,6 +12,20 @@ const quizSchema = new Schema(
     placement: { type: String, enum: ["training", "mock", "both"], default: undefined },
     showInTraining: { type: Boolean, default: undefined },
     showInMock: { type: Boolean, default: undefined },
+    learningPlacements: {
+      type: [
+        {
+          pathId: { type: String, required: true },
+          subjectId: { type: String, default: "" },
+          slot: { type: String, enum: ["training", "tests", "foundation", "course"], required: true },
+          isVisible: { type: Boolean, default: true },
+          order: { type: Number, default: 0 },
+          createdAt: { type: Number, default: Date.now },
+          updatedAt: { type: Number, default: Date.now },
+        },
+      ],
+      default: [],
+    },
     mode: { type: String, enum: ["regular", "saher", "central"], default: "regular" },
     settings: {
       showExplanations: { type: Boolean, default: true },
@@ -77,6 +91,7 @@ const quizSchema = new Schema(
 
 quizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ pathId: 1, subjectId: 1, mode: 1, showOnPlatform: 1, isPublished: 1 });
+quizSchema.index({ pathId: 1, subjectId: 1, "learningPlacements.slot": 1, "learningPlacements.isVisible": 1 });
 quizSchema.index({ pathId: 1, "mockExam.enabled": 1, showOnPlatform: 1, isPublished: 1 });
 quizSchema.index({ targetGroupIds: 1, dueDate: 1 });
 quizSchema.index({ targetUserIds: 1, dueDate: 1 });

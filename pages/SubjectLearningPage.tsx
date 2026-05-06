@@ -24,7 +24,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -100,22 +100,24 @@ export const SubjectLearningPage: React.FC = () => {
 
   const subjectBanks = useMemo(
     () =>
-      getLearningSlotQuizzesWithLegacyFallback(
+      getLearningSlotQuizzes(
         subjectQuizzes.filter(isMaterialQuizCandidate),
         { pathId, subjectId, slot: 'training' },
         canSeeQuiz,
         isTrainingQuiz,
+        true,
       ),
     [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );
 
   const subjectExams = useMemo(
     () =>
-      getLearningSlotQuizzesWithLegacyFallback(
+      getLearningSlotQuizzes(
         subjectQuizzes.filter(isMaterialQuizCandidate),
         { pathId, subjectId, slot: 'tests' },
         canSeeQuiz,
         isMockQuiz,
+        true,
       ),
     [pathId, subjectId, subjectQuizzes, isStaffViewer],
   );

@@ -7,7 +7,7 @@ import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
 import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzesWithLegacyFallback } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -240,11 +240,12 @@ export const GenericPathPage: React.FC = () => {
         const uniqueQuizzes = new Map<string, (typeof quizzes)[number]>();
 
         subjectScopes.forEach((scopedSubjectId) => {
-            getLearningSlotQuizzesWithLegacyFallback(
+            getLearningSlotQuizzes(
                 quizzes.filter(isMaterialQuizCandidate),
                 { pathId: path.id, subjectId: scopedSubjectId, slot },
                 canStudentSeeContent,
                 fallback,
+                true,
             ).forEach((quiz) => {
                 if (!canSeeHiddenPaths && (quiz.questionIds?.length || 0) === 0) return;
                 if (!canSeeHiddenPaths && slot === 'tests') {
