@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Question, Quiz, QuizResult } from '../types';
-import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
@@ -489,6 +489,13 @@ export const QuizPage: React.FC = () => {
     navigate(safeReturnTo || '/dashboard?tab=quizzes');
   };
 
+  const handleSaveQuizProgress = () => {
+    const saved = saveCurrentProgressDraft();
+    if (!saved) return;
+
+    setDraftRestored(true);
+  };
+
   const handleSubmitQuestion = () => {
     const message = qaDraft.trim();
     if (!message) return;
@@ -727,7 +734,7 @@ export const QuizPage: React.FC = () => {
               ) : null}
               {draftRestored ? (
                 <span className={`${isNightMode ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-50 text-emerald-700'} rounded-full px-3 py-1`}>
-                  تم استعادة تقدمك
+                  تقدم محفوظ
                 </span>
               ) : null}
               {currentMockExamSection ? (
@@ -934,15 +941,26 @@ export const QuizPage: React.FC = () => {
                 السابق
               </button>
 
-              <button
-                type="button"
-                onClick={handlePauseQuiz}
-                disabled={isSubmittingResult}
-                className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                <PauseCircle size={18} />
-                إيقاف مؤقت
-              </button>
+              <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex">
+                <button
+                  type="button"
+                  onClick={handleSaveQuizProgress}
+                  disabled={isSubmittingResult}
+                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                >
+                  <Save size={18} />
+                  حفظ التقدم
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePauseQuiz}
+                  disabled={isSubmittingResult}
+                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                >
+                  <PauseCircle size={18} />
+                  إيقاف مؤقت
+                </button>
+              </div>
 
               {currentQuestionIndex === quizQuestions.length - 1 ? (
                 <button

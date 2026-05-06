@@ -21,8 +21,8 @@ export const getQuizOptionGridClass = (
 
   if (optionLayout === 'two_columns' && longestOptionLength > 72) return 'grid-cols-1 sm:grid-cols-2';
   if (optionLayout === 'horizontal') {
-    if (longestOptionLength > 36) return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
-    return 'grid-cols-4';
+    if (longestOptionLength > 72) return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+    return 'grid-cols-2 sm:grid-cols-4';
   }
 
   return longestOptionLength > 72 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 sm:grid-cols-4';

@@ -607,6 +607,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         open: Math.max(activeInventory.total - activeInventory.locked, 0),
         label: activeInventory.label,
     };
+    const shouldShowActiveTabAccessNotice = Boolean(showActiveTabAccessNotice && activeTabSummary.locked > 0);
     const showStaffInventory = showPublicAdminDiagnostics;
     const getScopedPackageCoverage = (pkg: any) => {
         const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
@@ -717,37 +718,28 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                         </div>
                     </div>
                 ) : null}
-                {showActiveTabAccessNotice && activeTabPackage && (
-                    <div className="mb-6 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-4 shadow-sm">
+                {shouldShowActiveTabAccessNotice && activeTabPackage && activeTabAccess && (
+                    <div className="mb-6 rounded-3xl border border-amber-100 bg-white p-4 shadow-sm">
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                            <div className="flex items-start gap-4">
-                                <div className="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
-                                    <Lock size={22} />
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-700">
+                                    <Lock size={20} />
                                 </div>
                                 <div>
-                                    <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">
-                                        محتوى مقفول
-                                    </div>
-                                    <h3 className="mt-2 text-lg font-black text-gray-900">{activeTabAccess.title}</h3>
-                                    <p className="mt-1 max-w-2xl text-sm leading-7 text-gray-600">{activeTabAccess.description}</p>
-                                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold">
-                                        <span className="rounded-full bg-white px-3 py-1 text-gray-600">المسار الحالي</span>
-                                        <span className="rounded-full bg-white px-3 py-1 text-indigo-700">{currentSubjectData?.name || 'المادة الحالية'}</span>
-                                        <span className="rounded-full bg-white px-3 py-1 text-emerald-700">يفتح تلقائيًا بعد اعتماد الدفع أو الكود</span>
-                                        {showPublicAdminDiagnostics && getLockedContentMessage(activeTabAccess.contentType).coverageSummary ? (
-                                            <span className="rounded-full bg-white px-3 py-1 text-amber-700">
-                                                {getLockedContentMessage(activeTabAccess.contentType).coverageSummary}
-                                            </span>
-                                        ) : null}
+                                    <div className="text-sm font-black text-gray-900">هذا القسم فيه محتوى يحتاج باقة</div>
+                                    <div className="mt-1 flex flex-wrap gap-2 text-xs font-bold">
+                                        <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">مفتوح {activeTabSummary.open}</span>
+                                        <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">يحتاج تفعيل {activeTabSummary.locked}</span>
+                                        <span className="rounded-full bg-gray-50 px-3 py-1.5 text-gray-600">{currentSubjectData?.name || 'المادة الحالية'}</span>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 onClick={() => openScopedPackageForType(activeTabAccess.contentType, activeTabPackage, 'package')}
-                                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-100 transition hover:bg-amber-600"
+                                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-amber-600"
                             >
                                 <Package size={18} />
-                                {activeTabAccess.action}
+                                فتح الباقة
                             </button>
                         </div>
                     </div>
@@ -1043,7 +1035,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    {!hasBanksAccess && learningInventory.banks.locked > 0 && (
+                    {showPublicAdminDiagnostics && !hasBanksAccess && learningInventory.banks.locked > 0 && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
@@ -1099,7 +1091,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    {!hasTestsAccess && learningInventory.tests.locked > 0 && (
+                    {showPublicAdminDiagnostics && !hasTestsAccess && learningInventory.tests.locked > 0 && (
                         <div className="mb-4 rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
                             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
@@ -1172,7 +1164,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             {item.isLocked ? 'مغلقة حتى التفعيل' : 'متاحة للعرض والتحميل'}
                                         </span>
                                     </div>
-                                    {item.isLocked && lockedLibraryMessage && (
+                                    {showPublicAdminDiagnostics && item.isLocked && lockedLibraryMessage && (
                                         <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50 p-3 text-right">
                                             <div className="text-xs font-black text-amber-700">سبب الإغلاق</div>
                                             <div className="mt-1 text-sm font-bold text-gray-900">{lockedLibraryMessage.title}</div>
