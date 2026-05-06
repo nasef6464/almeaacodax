@@ -183,7 +183,16 @@ const buildOwnedDocumentQuery = (
 };
 
 const buildDocumentsByIdsQuery = (values: string[]) => {
-  const ids = uniqueStrings(values.map((value) => String(value || "").trim()).filter(Boolean));
+  const ids = uniqueStrings(
+    values
+      .flatMap((value) => {
+        const id = String(value || "").trim();
+        if (!id) return [];
+        const withoutCopySuffix = id.replace(/_copy(?:_\d+)?$/i, "");
+        return withoutCopySuffix && withoutCopySuffix !== id ? [id, withoutCopySuffix] : [id];
+      })
+      .filter(Boolean),
+  );
   const objectIds = ids
     .filter((id) => mongoose.Types.ObjectId.isValid(id))
     .map((id) => new mongoose.Types.ObjectId(id));
@@ -1325,11 +1334,19 @@ quizRouter.post(
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
     const questionById = new Map<string, any>();
     questions.forEach((question) => {
-      questionById.set(String(question.id || question._id), question);
+      const canonicalId = String(question.id || question._id);
+      questionById.set(canonicalId, question);
+      const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
+      if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
+        questionById.set(withoutCopySuffix, question);
+      }
     });
 
     const orderedQuestions = questionIds
-      .map((questionId) => questionById.get(questionId))
+      .map((questionId) => {
+        const id = String(questionId);
+        return questionById.get(id) || questionById.get(id.replace(/_copy(?:_\d+)?$/i, ""));
+      })
       .filter(Boolean);
 
     if (orderedQuestions.length === 0) {

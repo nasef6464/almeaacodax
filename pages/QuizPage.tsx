@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { Question, Quiz, QuizResult } from '../types';
+import { PackageContentType, Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
@@ -29,6 +29,13 @@ interface SavedQuizPageProgress {
 }
 
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
+const resolveQuizPackageContentType = (quiz: Quiz, source?: string): PackageContentType => {
+  if (source === 'training' || source === 'foundation') return 'banks';
+  if (source === 'course') return 'courses';
+  if (quiz.type === 'bank' || quiz.placement === 'training' || quiz.showInTraining) return 'banks';
+  if ((quiz.learningPlacements || []).some((placement) => placement.slot === 'training')) return 'banks';
+  return 'tests';
+};
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
     id: 'seed-student',
@@ -197,7 +204,7 @@ export const QuizPage: React.FC = () => {
     } else if (access.type === 'free') {
       setHasAccess(true);
     } else if (access.type === 'paid') {
-      setHasAccess(checkAccess(foundQuiz.id, true) || hasScopedPackageAccess('tests', foundQuiz.pathId, foundQuiz.subjectId));
+      setHasAccess(checkAccess(foundQuiz.id, true) || hasScopedPackageAccess(resolveQuizPackageContentType(foundQuiz, sourceParam), foundQuiz.pathId, foundQuiz.subjectId));
     } else if (access.type === 'private') {
       const userGroups = user.groupIds || [];
       const allowed = (access.allowedGroupIds || []).length === 0 || access.allowedGroupIds?.some((id) => userGroups.includes(id));

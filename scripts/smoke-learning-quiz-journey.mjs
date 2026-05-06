@@ -1,0 +1,104 @@
+const API_URL = (process.env.SMOKE_API_URL || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
+const TARGET_QUIZ_ID = process.env.SMOKE_LEARNING_QUIZ_ID || 'quiz_smoke_math_training_learning';
+const TARGET_PATH_ID = process.env.SMOKE_LEARNING_PATH_ID || 'p_1777779653351';
+const TARGET_SUBJECT_ID = process.env.SMOKE_LEARNING_SUBJECT_ID || 'sub_1777784609152';
+const TARGET_COPY_QUIZ_ID = process.env.SMOKE_LEARNING_COPY_QUIZ_ID || 'quiz_1777887901798_copy';
+
+const checks = [];
+
+async function check(name, fn) {
+  try {
+    const details = await fn();
+    checks.push({ name, status: 'PASS', details });
+  } catch (error) {
+    checks.push({ name, status: 'FAIL', details: error instanceof Error ? error.message : String(error) });
+  }
+}
+
+async function fetchJson(path) {
+  const response = await fetch(`${API_URL}${path}`, {
+    headers: {
+      accept: 'application/json',
+      'cache-control': 'no-cache',
+      pragma: 'no-cache',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`${path} returned ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+const stripCopySuffix = (value) => String(value || '').replace(/_copy(?:_\d+)?$/i, '');
+
+const quizzes = await fetchJson('/quizzes');
+const questions = await fetchJson('/quizzes/questions');
+const questionIds = new Set(
+  questions.flatMap((question) => {
+    const id = String(question?.id || question?._id || '').trim();
+    return id ? [id, stripCopySuffix(id)] : [];
+  }),
+);
+
+await check('learning training quiz is published in the selected material', async () => {
+  const quiz = quizzes.find((item) => String(item?.id || item?._id) === TARGET_QUIZ_ID);
+  if (!quiz) throw new Error(`quiz ${TARGET_QUIZ_ID} was not found`);
+  if (quiz.pathId !== TARGET_PATH_ID) throw new Error(`wrong pathId: ${quiz.pathId}`);
+  if (quiz.subjectId !== TARGET_SUBJECT_ID) throw new Error(`wrong subjectId: ${quiz.subjectId}`);
+  if (quiz.isPublished !== true || quiz.showOnPlatform === false) throw new Error('quiz is not visible to learners');
+  return `${quiz.title} (${quiz.questionIds?.length || 0} question refs)`;
+});
+
+await check('learning placement exposes quiz in training tab only', async () => {
+  const quiz = quizzes.find((item) => String(item?.id || item?._id) === TARGET_QUIZ_ID);
+  const placements = Array.isArray(quiz?.learningPlacements) ? quiz.learningPlacements : [];
+  const trainingPlacement = placements.find((placement) =>
+    placement.pathId === TARGET_PATH_ID &&
+    placement.subjectId === TARGET_SUBJECT_ID &&
+    placement.slot === 'training' &&
+    placement.isVisible !== false
+  );
+
+  if (!trainingPlacement) throw new Error('missing visible training learningPlacement');
+  const wrongVisiblePlacement = placements.find((placement) =>
+    placement.pathId === TARGET_PATH_ID &&
+    placement.subjectId === TARGET_SUBJECT_ID &&
+    placement.slot !== 'training' &&
+    placement.isVisible !== false
+  );
+  if (wrongVisiblePlacement) throw new Error(`unexpected visible placement in ${wrongVisiblePlacement.slot}`);
+  return `slot=${trainingPlacement.slot}, order=${trainingPlacement.order ?? 0}`;
+});
+
+await check('all quiz question refs resolve from the question bank', async () => {
+  const quiz = quizzes.find((item) => String(item?.id || item?._id) === TARGET_QUIZ_ID);
+  const refs = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+  if (refs.length < 2) throw new Error(`expected at least 2 questions, found ${refs.length}`);
+  const missing = refs.filter((id) => !questionIds.has(id) && !questionIds.has(stripCopySuffix(id)));
+  if (missing.length) throw new Error(`unresolved question refs: ${missing.join(', ')}`);
+  return `${refs.length} resolved questions`;
+});
+
+await check('copied training quiz keeps all copied question refs resolvable', async () => {
+  const quiz = quizzes.find((item) => String(item?.id || item?._id) === TARGET_COPY_QUIZ_ID);
+  if (!quiz) return `${TARGET_COPY_QUIZ_ID} is not present on this environment`;
+  const refs = Array.isArray(quiz?.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+  if (refs.length < 2) throw new Error(`expected copied quiz to have multiple questions, found ${refs.length}`);
+  const missing = refs.filter((id) => !questionIds.has(id) && !questionIds.has(stripCopySuffix(id)));
+  if (missing.length) throw new Error(`unresolved copied question refs: ${missing.join(', ')}`);
+  return `${quiz.title || TARGET_COPY_QUIZ_ID}: ${refs.length} resolved copied refs`;
+});
+
+for (const item of checks) {
+  console.log(`${item.status} ${item.name} - ${item.details}`);
+}
+
+const failed = checks.filter((item) => item.status === 'FAIL');
+if (failed.length > 0) {
+  console.error(`\n${failed.length} learning quiz smoke check(s) failed.`);
+  process.exit(1);
+}
+
+console.log(`\nAll ${checks.length} learning quiz smoke checks passed.`);

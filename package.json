@@ -15,6 +15,7 @@
     "smoke:operational": "npm --prefix server run smoke:operational:api",
     "smoke:frontend": "node scripts/smoke-frontend-routes.mjs",
     "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs",
+    "smoke:learning-quiz": "node scripts/smoke-learning-quiz-journey.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
   },
