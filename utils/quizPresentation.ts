@@ -3,6 +3,21 @@ import { normalizeQuestionHtml } from './questionHtml';
 
 type QuestionLike = Pick<Question, 'id'>;
 export type QuizQuestionMapState = 'current' | 'answered' | 'review' | 'unanswered' | 'correct' | 'wrong';
+export type QuizDifficulty = 'Easy' | 'Medium' | 'Hard' | string | undefined | null;
+
+export const getQuizDifficultyLabel = (difficulty: QuizDifficulty) => {
+  if (difficulty === 'Easy') return 'سهل';
+  if (difficulty === 'Medium') return 'متوسط';
+  if (difficulty === 'Hard') return 'صعب';
+  return difficulty || 'عام';
+};
+
+export const getQuizDifficultyBadgeClass = (difficulty: QuizDifficulty) => {
+  if (difficulty === 'Easy') return 'bg-emerald-100 text-emerald-700';
+  if (difficulty === 'Medium') return 'bg-amber-100 text-amber-700';
+  if (difficulty === 'Hard') return 'bg-red-100 text-red-700';
+  return 'bg-slate-100 text-slate-600';
+};
 
 export const stripQuestionHtml = (value?: string | null) =>
   normalizeQuestionHtml(value)

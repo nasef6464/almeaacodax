@@ -5,7 +5,7 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { flattenMockExamQuestionIds, isStandaloneMockExam } from '../utils/mockExam';
 
@@ -584,7 +584,7 @@ const Quiz: React.FC = () => {
 
     saveExamResult({
       quizId: `self-quiz-${Date.now()}`,
-      quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${difficulty})`,
+      quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
       score,
       correctAnswers: correct,
       wrongAnswers: wrong,
@@ -712,10 +712,9 @@ const Quiz: React.FC = () => {
   if (!quizStarted) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <Card className="max-w-3xl w-full p-8 space-y-6">
+        <Card className="max-w-3xl w-full p-5 sm:p-7 space-y-5">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">اختبار ساهر</h2>
-            <p className="text-gray-500">اختر نوع البداية: اختبار جاهز من الإدارة أو اختبار ذاتي بمواصفاتك.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">اختبار ساهر</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-100 rounded-xl p-1">
@@ -750,10 +749,8 @@ const Quiz: React.FC = () => {
           {savedSnapshot && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h3 className="font-bold text-amber-900">يوجد تقدم محفوظ لاختبار سابق</h3>
-                <p className="text-sm text-amber-700 mt-1">
-                  يمكنك استكمال آخر جلسة محفوظة بنفس الأسئلة والإجابات والوقت المتبقي.
-                </p>
+                <h3 className="font-bold text-amber-900">يوجد تقدم محفوظ</h3>
+                <p className="text-sm text-amber-700 mt-1">استكمل من نفس السؤال والوقت.</p>
               </div>
               <div className="grid grid-cols-1 sm:flex gap-3">
                 <button
@@ -774,7 +771,7 @@ const Quiz: React.FC = () => {
 
           {entryMode === 'prepared' ? (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">اختر اختبارًا منشورًا من الإدارة:</p>
+              <p className="text-sm font-bold text-gray-600">اختبار جاهز من الإدارة</p>
               {preparedQuizCards.length > 0 ? (
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                   {preparedQuizCards.map(({ quiz, questionCount }) => (
@@ -817,13 +814,13 @@ const Quiz: React.FC = () => {
               )}
               {hiddenReadyQuizCount > 0 ? (
                 <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold leading-6 text-amber-700">
-                  تم إخفاء الاختبارات العادية والمحاكيات أو الاختبارات التي لا تحتوي على أسئلة من هذه القائمة. هذه الصفحة لساهر فقط، وباقي الاختبارات مكانها داخل المادة أو تبويب المحاكيات.
+                  تعرض هذه القائمة اختبارات ساهر الجاهزة فقط.
                 </div>
               ) : null}
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">اضبط مواصفات اختبارك الذاتي:</p>
+              <p className="text-sm font-bold text-gray-600">اختبار ذاتي بمواصفاتك</p>
               {targetSkills.length > 0 ? (
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3">
                   <div className="text-sm font-black text-indigo-800">اختبار إضافي موجه حسب نتيجتك</div>
@@ -920,9 +917,7 @@ const Quiz: React.FC = () => {
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
                     <h3 className="text-sm font-black text-gray-900">نطاق المهارات</h3>
-                    <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
-                      اختر مهارة واحدة أو أكثر، أو اتركها على كل المهارات.
-                    </p>
+                  <p className="mt-1 text-xs font-bold leading-6 text-gray-500">اختر أكثر من مهارة أو اتركها للجميع.</p>
                   </div>
                   <button
                     type="button"
@@ -1081,12 +1076,8 @@ const Quiz: React.FC = () => {
             </button>
             <div className="min-w-0">
               <h1 className="font-bold text-base sm:text-lg leading-tight break-words">اختبار ذاتي - {selectedSubjectLabel}</h1>
-              <span className={`mt-1 inline-flex text-xs px-2 py-0.5 rounded ${
-                difficulty === 'Easy' ? 'bg-emerald-100 text-emerald-700' :
-                difficulty === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                'bg-red-100 text-red-700'
-              }`}>
-                المستوى: {difficulty === 'Easy' ? 'سهل' : difficulty === 'Medium' ? 'متوسط' : 'صعب'}
+              <span className={`mt-1 inline-flex text-xs px-2 py-0.5 rounded ${getQuizDifficultyBadgeClass(difficulty)}`}>
+                {getQuizDifficultyLabel(difficulty)}
               </span>
             </div>
           </div>
@@ -1148,16 +1139,16 @@ const Quiz: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <button
                 onClick={() => toggleFavorite(currentQuestion)}
-                className={`${storeFavorites.includes(questions[currentQuestion].id) ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
+                className={`${storeFavorites.includes(questions[currentQuestion].id) ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-3 py-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors`}
               >
-                {storeFavorites.includes(questions[currentQuestion].id) ? <Trash2 size={18} /> : <Heart size={18} />}
+                {storeFavorites.includes(questions[currentQuestion].id) ? <Trash2 size={15} /> : <Heart size={15} />}
                 {storeFavorites.includes(questions[currentQuestion].id) ? 'في المفضلة' : 'المفضلة'}
               </button>
               <button
                 onClick={() => toggleReviewLater(currentQuestion)}
-                className={`${storeReviewLater.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold flex items-center justify-center gap-2 transition-colors`}
+                className={`${storeReviewLater.includes(questions[currentQuestion].id) ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-white text-slate-700 hover:bg-slate-50'} w-full sm:w-auto px-3 py-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors`}
               >
-                <Star size={18} className={storeReviewLater.includes(questions[currentQuestion].id) ? 'fill-current' : ''} />
+                <Star size={15} className={storeReviewLater.includes(questions[currentQuestion].id) ? 'fill-current' : ''} />
                 {storeReviewLater.includes(questions[currentQuestion].id) ? 'للمراجعة' : 'راجع لاحقًا'}
               </button>
             </div>

@@ -6,7 +6,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 
 interface QuestionThreadItem {
@@ -738,7 +738,6 @@ export const QuizPage: React.FC = () => {
               {returnLabel}
             </button>
             <h1 className={`text-lg sm:text-xl font-black break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
-            {quiz.description && <p className={`${isNightMode ? 'text-slate-400' : 'text-gray-500'} mt-1 text-sm`}>{quiz.description}</p>}
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
               <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'} rounded-full px-3 py-1`}>
                 تم حل {answeredQuestionCount} من {quizQuestions.length}
@@ -852,13 +851,15 @@ export const QuizPage: React.FC = () => {
                   {shouldShowQuestionReview ? (
                     <button
                       onClick={handleToggleCurrentReviewLater}
-                      className={`${reviewLater.includes(currentQuestion.id) ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-100 text-purple-700 ring-1 ring-purple-200') : (isNightMode ? 'bg-amber-950 text-amber-200 ring-1 ring-amber-900' : 'bg-amber-50 text-amber-700 ring-1 ring-amber-100')} inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition hover:opacity-90`}
+                      className={`${reviewLater.includes(currentQuestion.id) ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-100 text-purple-700 ring-1 ring-purple-200') : (isNightMode ? 'bg-amber-950 text-amber-200 ring-1 ring-amber-900' : 'bg-amber-50 text-amber-700 ring-1 ring-amber-100')} inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black transition hover:opacity-90`}
                     >
                       <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current' : ''} />
-                      {reviewLater.includes(currentQuestion.id) ? 'تم وضعه للمراجعة' : 'ضع السؤال للمراجعة'}
+                      {reviewLater.includes(currentQuestion.id) ? 'للمراجعة' : 'راجع لاحقًا'}
                     </button>
                   ) : null}
-                  <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-600'} text-xs px-2 py-1 rounded font-bold`}>{currentQuestion?.difficulty}</span>
+                  <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : getQuizDifficultyBadgeClass(currentQuestion?.difficulty)} text-xs px-2 py-1 rounded font-bold`}>
+                    {getQuizDifficultyLabel(currentQuestion?.difficulty)}
+                  </span>
                 </div>
               </div>
 
@@ -959,34 +960,34 @@ export const QuizPage: React.FC = () => {
               </div>
             </div>
 
-            <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50'} flex flex-wrap items-center justify-center gap-2 border-t p-4 sm:justify-between`}>
+            <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50'} flex flex-wrap items-center justify-center gap-2 border-t p-3 sm:justify-between`}>
               <button
                 onClick={handlePrev}
                 disabled={currentQuestionIndex === 0}
-                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} inline-flex min-w-[104px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50`}
+                className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50`}
               >
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
                 السابق
               </button>
 
-                <div className="flex flex-wrap items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <button
                   type="button"
                   onClick={handleSaveQuizProgress}
                   disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex min-w-[118px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                  className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
                 >
                   <Save size={15} />
-                  حفظ التقدم
+                  حفظ
                 </button>
                 <button
                   type="button"
                   onClick={handlePauseQuiz}
                   disabled={isSubmittingResult}
-                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex min-w-[104px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                  className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
                 >
                   <PauseCircle size={15} />
-                  إيقاف مؤقت
+                  إيقاف
                 </button>
               </div>
 
@@ -994,19 +995,19 @@ export const QuizPage: React.FC = () => {
                 <button
                   onClick={() => setShowFinishDialog(true)}
                   disabled={isSubmittingResult}
-                  className="inline-flex min-w-[126px] items-center justify-center rounded-xl bg-emerald-600 px-5 py-2 text-sm font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSubmittingResult ? 'جاري حفظ النتيجة...' : 'إنهاء الاختبار'}
+                  {isSubmittingResult ? 'جارٍ الحفظ...' : 'إنهاء'}
                 </button>
               ) : (
                 <button
                   onClick={handleNext}
                   disabled={Boolean(isNextBlocked)}
                   title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}
-                  className="inline-flex min-w-[104px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   التالي
-                  <ArrowLeft size={18} />
+                  <ArrowLeft size={16} />
                 </button>
               )}
             </div>
