@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
-  BarChart3,
   CheckCircle,
   Clock,
   Eye,
@@ -375,10 +374,6 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return `/results?${params.toString()}`;
   };
 
-  const latestAttempt = useMemo(() => {
-    return [...examResults].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
-  }, [examResults]);
-
   const weakestTrackedSkill = useMemo(() => {
     const allSkills = examResults.flatMap((result) =>
       (result.skillsAnalysis || []).map((skill) => ({
@@ -413,18 +408,29 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
   if (isAttemptsView) {
     return (
-      <div className="space-y-8 pb-20">
-        <header className="flex flex-col gap-2">
+      <div className="space-y-5 pb-20">
+        <header className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2 text-xs font-black">
             <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700">أنت الآن في: اختباراتي</span>
             <Link to="/dashboard?tab=saher" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
               الانتقال إلى مركز الاختبارات
             </Link>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
-          <p className="text-sm text-gray-500">
-            هنا فقط ترى المحاولات التي أنهيتها بالفعل: الدرجة، أضعف مهارة، تفاصيل النتيجة، وروابط التحليل وإعادة المحاولة.
-          </p>
+          <div className="flex flex-col gap-3 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
+              <p className="mt-1 text-sm text-gray-500">كل اختبار يظهر مرة واحدة، والمحاولات داخله عند الحاجة.</p>
+            </div>
+            {weakestTrackedSkill ? (
+              <Link
+                to="/dashboard?tab=reports"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 hover:bg-amber-100"
+              >
+                <Target size={16} />
+                أولوية المراجعة: {weakestTrackedSkill.skill}
+              </Link>
+            ) : null}
+          </div>
         </header>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -434,47 +440,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <StatCard icon={<FileText size={24} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
         </div>
 
-        {latestAttempt || weakestTrackedSkill ? (
-          <div className="rounded-3xl border border-indigo-100 bg-gradient-to-l from-indigo-50 via-white to-emerald-50 p-5 shadow-sm">
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 shadow-sm">
-                  <Sparkles size={14} />
-                  ملخص ذكي بعد آخر اختبار
-                </div>
-                <h2 className="mt-3 text-lg font-black text-gray-900">
-                  {weakestTrackedSkill ? `ركز الآن على: ${weakestTrackedSkill.skill}` : 'ابدأ أول اختبار لتحصل على تحليل مهاراتك'}
-                </h2>
-                <p className="mt-2 text-sm leading-7 text-gray-600">
-                  {weakestTrackedSkill
-                    ? `النظام يتابع أداءك من كل اختبار، وآخر نقطة تحتاج دعمًا ظهرت في ${weakestTrackedSkill.quizTitle}. افتح التقرير أو أعد اختبارًا قصيرًا لنفس المهارة.`
-                    : 'بعد أول محاولة سيظهر هنا أضعف مهارة، الدرجة، وخطوة المراجعة التالية بشكل مبسط.'}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <Link
-                  to="/dashboard?tab=reports"
-                  className="rounded-2xl bg-white p-4 text-center shadow-sm border border-white hover:border-emerald-200"
-                >
-                  <BarChart3 className="mx-auto text-emerald-600" size={22} />
-                  <div className="mt-2 text-sm font-black text-gray-900">تقريري</div>
-                  <div className="mt-1 text-xs text-gray-500">تحليل مهارات</div>
-                </Link>
-                <Link
-                  to={weakestTrackedSkill?.quizId ? `/quiz/${weakestTrackedSkill.quizId}` : '/quiz'}
-                  className="rounded-2xl bg-gray-900 p-4 text-center text-white shadow-sm hover:bg-gray-800"
-                >
-                  <RotateCcw className="mx-auto" size={22} />
-                  <div className="mt-2 text-sm font-black">تدريب سريع</div>
-                  <div className="mt-1 text-xs text-gray-300">اختبار علاج</div>
-                </Link>
-              </div>
-            </div>
-          </div>
-        ) : null}
-
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">اختباراتي</div>
+          <div className="bg-secondary-500 text-white p-3 text-center font-bold text-base">اختباراتي</div>
 
           <div className="border-b border-gray-100 bg-gray-50/70 p-4 space-y-4">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -557,7 +524,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             </div>
           ) : (
             <div className="p-10 text-center text-gray-500">
-              لا توجد محاولات في هذا التصنيف بعد. ابدأ اختبارًا، وبعد الإنهاء سيظهر هنا كاختبار واحد وتحته محاولاته.
+              لا توجد محاولات هنا بعد.
               <div className="mt-5">
                 <Link to="/dashboard?tab=saher" className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white hover:bg-amber-600">
                   <Zap size={16} />
@@ -573,7 +540,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   }
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-6 pb-20">
       <header className="flex items-center gap-4">
         <Link to="/" className="text-gray-500 hover:text-gray-700">
           <ArrowRight />
@@ -586,7 +553,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             </Link>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">مركز الاختبارات</h1>
-          <p className="mt-1 text-sm text-gray-500">هنا تبدأ اختبارًا جديدًا أو تفتح اختبارًا موجهًا أو جاهزًا. أما المحاولات التي أنهيتها فتجدها مجمعة داخل صفحة اختباراتي.</p>
+          <p className="mt-1 text-sm text-gray-500">ابدأ اختبارًا جديدًا، أو افتح اختبارًا موجهًا، والنتائج تجدها في اختباراتي.</p>
         </div>
       </header>
 
@@ -599,23 +566,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="bg-secondary-500 text-white p-4 text-center font-bold text-lg">مركز الاختبارات</div>
+          <div className="bg-secondary-500 text-white p-3 text-center font-bold text-base">مركز الاختبارات</div>
           <div className="p-6 space-y-5">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4">
-                <div className="text-sm font-black text-gray-900">ماذا أفعل من هنا؟</div>
-                <p className="mt-2 text-sm leading-7 text-gray-600">
-                  استخدم هذه الصفحة عندما تريد بدء اختبار جديد، أو دخول اختبار موجه لك من الإدارة أو المدرسة أو المشرف.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4">
-                <div className="text-sm font-black text-gray-900">ومتى أذهب إلى اختباراتي؟</div>
-                <p className="mt-2 text-sm leading-7 text-gray-600">
-                  بعد إنهاء الاختبار ستجد الدرجة والتقرير والتحليل ومراجعة المحاولة كلها داخل صفحة اختباراتي.
-                </p>
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               <ActionCard
                 icon={<Zap size={24} />}
@@ -644,37 +596,9 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               />
             </div>
 
-            <div className="rounded-2xl border border-purple-100 bg-purple-50/50 p-5">
-              <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h3 className="font-black text-gray-900">دليل سريع لاختيار نوع الاختبار</h3>
-                  <p className="mt-1 text-sm leading-7 text-gray-600">
-                    ساهر الذاتي للطالب، والموجه لما ترسله الإدارة أو المدرسة أو المشرف، والنتائج كلها ترجع إلى اختباراتي بعد الحل.
-                  </p>
-                </div>
-                <Link
-                  to="/quiz"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-4 py-2 text-sm font-black text-white hover:bg-purple-700"
-                >
-                  <Zap size={16} />
-                  أنشئ اختبار ساهر
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
-                <QuizRouteHint title="ساهر ذاتي" value="اختيار حر" description="الطالب يختار المسار والمادة وعدد الأسئلة والصعوبة." tone="purple" />
-                <QuizRouteHint title="موجه لك" value={directedQuizzes.length} description="اختبار من الإدارة أو المدرسة أو المشرف لحسابك أو مجموعتك." tone="amber" />
-                <QuizRouteHint title="ساهر جاهز" value={saherQuizzes.length} description="اختبارات منشورة مسبقًا ويمكن البدء بها مباشرة." tone="blue" />
-                <QuizRouteHint title="يحتاج باقة" value={lockedPaidQuizzes.length} description="اختبارات تظهر للشراء أو الفتح حسب باقة المسار." tone="emerald" />
-              </div>
-            </div>
-
             {subjectQuizReadiness.length > 0 ? (
-              <div className="rounded-2xl border border-gray-100 bg-white p-5">
-                <div className="mb-4">
-                  <h3 className="font-black text-gray-900">جاهزية الاختبارات حسب المادة</h3>
-                  <p className="mt-1 text-sm text-gray-500">نظرة سريعة تساعد الطالب يعرف أين يبدأ، وتساعد الإدارة تلاحظ المواد التي تحتاج اختبارات أكثر.</p>
-                </div>
+              <div className="rounded-2xl border border-gray-100 bg-white p-4">
+                <h3 className="mb-3 font-black text-gray-900">اختبارات حسب المادة</h3>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {subjectQuizReadiness.map((item) => (
                     <div key={item.subject.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
@@ -1185,35 +1109,6 @@ const ActionCard = ({
           {buttonLabel}
         </Link>
       )}
-    </div>
-  );
-};
-
-const QuizRouteHint = ({
-  title,
-  value,
-  description,
-  tone,
-}: {
-  title: string;
-  value: string | number;
-  description: string;
-  tone: 'purple' | 'amber' | 'blue' | 'emerald';
-}) => {
-  const toneClasses = {
-    purple: 'bg-purple-100 text-purple-700',
-    amber: 'bg-amber-100 text-amber-700',
-    blue: 'bg-blue-100 text-blue-700',
-    emerald: 'bg-emerald-100 text-emerald-700',
-  }[tone];
-
-  return (
-    <div className="rounded-2xl border border-white/80 bg-white p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <div className="font-black text-gray-900">{title}</div>
-        <span className={`rounded-full px-3 py-1 text-xs font-black ${toneClasses}`}>{value}</span>
-      </div>
-      <p className="mt-3 text-xs font-bold leading-6 text-gray-500">{description}</p>
     </div>
   );
 };
