@@ -1552,7 +1552,7 @@ const ReviewSolutions = ({
           </button>
           <div>
             <h1 className="text-xl font-bold">مراجعة الحلول</h1>
-            <p className="mt-1 text-sm text-gray-500">راجع السؤال، ثم أظهر الحل عند الحاجة.</p>
+            <p className="mt-1 text-sm text-gray-500">راجع السؤال عند الحاجة.</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -1561,17 +1561,17 @@ const ReviewSolutions = ({
           </span>
           <button
             onClick={() => toggleFavorite(q.questionId)}
-            className={`${isFavorite ? 'bg-rose-500 hover:bg-rose-600' : 'bg-indigo-500 hover:bg-indigo-600'} text-white px-4 py-1.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors`}
+            className={`${isFavorite ? 'bg-rose-500 hover:bg-rose-600' : 'bg-indigo-500 hover:bg-indigo-600'} text-white px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-colors`}
           >
-            {isFavorite ? <Trash2 size={16} /> : <Star size={16} />}
-            {isFavorite ? 'مسح من المفضلة' : 'إضافة للمفضلة'}
+            {isFavorite ? <Trash2 size={15} /> : <Star size={15} />}
+            {isFavorite ? 'في المفضلة' : 'المفضلة'}
           </button>
           <button
             onClick={() => toggleReviewLater(q.questionId)}
-            className={`${isReviewLater ? 'bg-purple-600 hover:bg-purple-700' : 'bg-amber-500 hover:bg-amber-600'} text-white px-4 py-1.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors`}
+            className={`${isReviewLater ? 'bg-purple-600 hover:bg-purple-700' : 'bg-amber-500 hover:bg-amber-600'} text-white px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-colors`}
           >
-            <Star size={16} className={isReviewLater ? 'fill-current' : ''} />
-            {isReviewLater ? 'محدد للمراجعة' : 'مراجعة لاحقًا'}
+            <Star size={15} className={isReviewLater ? 'fill-current' : ''} />
+            {isReviewLater ? 'للمراجعة' : 'راجع لاحقًا'}
           </button>
         </div>
       </header>
@@ -1697,21 +1697,21 @@ const ReviewSolutions = ({
             {q.videoUrl ? (
               <button
                 onClick={() => onShowVideo(q.videoUrl!, `شرح السؤال ${currentIdx + 1}`)}
-                className="inline-flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-black text-white shadow-sm shadow-emerald-100 transition-all hover:bg-emerald-600"
+                className="inline-flex min-w-[96px] items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-1.5 text-xs sm:text-sm font-black text-white shadow-sm shadow-emerald-100 transition-all hover:bg-emerald-600"
               >
-                <PlayCircle size={16} />
+                <PlayCircle size={15} />
                 شرح الفيديو
               </button>
             ) : null}
             <button
               onClick={() => setShowExplanation((value) => !value)}
-              className={`inline-flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all shadow-sm ${
+              className={`inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black transition-all shadow-sm ${
                 showExplanation
                   ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100'
                   : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
               }`}
             >
-              <Eye size={16} />
+              <Eye size={15} />
               {showExplanation ? 'إخفاء الحل' : 'إظهار الحل'}
             </button>
             <button
@@ -1720,9 +1720,9 @@ const ReviewSolutions = ({
                 setShowExplanation(false);
               }}
               disabled={currentIdx === 0}
-              className="inline-flex min-w-[104px] items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-black text-sky-700 transition-all hover:bg-sky-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400"
+              className="inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs sm:text-sm font-black text-sky-700 transition-all hover:bg-sky-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400"
             >
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
               السابق
             </button>
             <button
@@ -1734,10 +1734,10 @@ const ReviewSolutions = ({
                   onBack();
                 }
               }}
-              className="inline-flex min-w-[112px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-all hover:bg-indigo-700"
+              className="inline-flex min-w-[86px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-all hover:bg-indigo-700"
             >
               {currentIdx === questions.length - 1 ? 'إنهاء المراجعة' : 'التالي'}
-              <ChevronRightIcon size={16} className="transform rotate-180" />
+              <ChevronRightIcon size={15} className="transform rotate-180" />
             </button>
           </div>
         </div>

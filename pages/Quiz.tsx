@@ -1085,10 +1085,10 @@ const Quiz: React.FC = () => {
             <button
               type="button"
               onClick={handlePauseAndSave}
-              className="inline-flex items-center gap-2 rounded-lg border border-amber-100 bg-amber-50 px-3 py-1.5 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-100 bg-amber-50 px-2.5 py-1.5 text-xs sm:text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
             >
-              <PauseCircle size={16} />
-              إيقاف مؤقت
+              <PauseCircle size={15} />
+              إيقاف
             </button>
             <div className="flex items-center gap-2 bg-secondary-50 text-secondary-700 px-3 py-1 rounded-lg font-mono font-bold">
               <Clock size={18} />
@@ -1249,29 +1249,29 @@ const Quiz: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
             <button
               onClick={handleSaveProgress}
-              className="w-full sm:w-auto px-3 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-700 text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-amber-100"
+              className="inline-flex min-w-[92px] items-center justify-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs sm:text-sm font-bold text-amber-700 hover:bg-amber-100"
             >
               <Save size={15} />
-              حفظ التقدم
+              حفظ
             </button>
 
-            <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <button
                 onClick={handlePrev}
                 disabled={currentQuestion === 0}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold disabled:opacity-50"
+                className="inline-flex min-w-[82px] items-center justify-center rounded-xl bg-gray-100 px-3 py-1.5 text-xs sm:text-sm font-bold text-gray-600 disabled:opacity-50"
               >
                 السابق
               </button>
               <button
                 onClick={handleNext}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-indigo-700"
+                className="inline-flex min-w-[86px] items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs sm:text-sm font-bold text-white hover:bg-indigo-700"
               >
                 {currentQuestion === questions.length - 1 ? 'إنهاء الاختبار' : 'التالي'}
-                <ArrowLeft size={16} />
+                <ArrowLeft size={15} />
               </button>
             </div>
           </div>
