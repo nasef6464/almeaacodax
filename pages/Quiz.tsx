@@ -1249,7 +1249,7 @@ const Quiz: React.FC = () => {
                         setCurrentQuestion(idx);
                         setSelectedAnswer(answers[idx] ?? null);
                       }}
-                      className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-lg sm:rounded-xl border-2 text-xs font-black transition-colors ${getQuizQuestionMapButtonClass(mapState)}`}
+                      className={`h-7 w-7 sm:h-8 sm:w-8 shrink-0 rounded-lg border-2 text-xs font-black transition-colors ${getQuizQuestionMapButtonClass(mapState)}`}
                       title={isReviewLater ? 'سؤال للمراجعة لاحقًا' : isAnswered ? 'تمت الإجابة' : 'لم تتم الإجابة بعد'}
                     >
                       {idx + 1}

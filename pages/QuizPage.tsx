@@ -80,6 +80,8 @@ export const QuizPage: React.FC = () => {
   const [qaThread, setQaThread] = useState<QuestionThreadItem[]>(INITIAL_QA_THREAD);
   const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null);
   const [draftRestored, setDraftRestored] = useState(false);
+  const [quizStatusMessage, setQuizStatusMessage] = useState<string | null>(null);
+  const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
@@ -151,6 +153,7 @@ export const QuizPage: React.FC = () => {
     setQaDraft('');
     setQaThread(INITIAL_QA_THREAD);
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
+    setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
     if (
@@ -481,11 +484,18 @@ export const QuizPage: React.FC = () => {
     return true;
   };
 
+  const showQuizStatus = (message: string, tone: 'success' | 'info' = 'success') => {
+    setQuizStatusMessage(message);
+    setQuizStatusTone(tone);
+    window.setTimeout(() => setQuizStatusMessage(null), 2200);
+  };
+
   const handlePauseQuiz = () => {
     const saved = saveCurrentProgressDraft();
     if (!saved) return;
 
     setDraftRestored(true);
+    showQuizStatus('تم حفظ التقدم، ويمكنك الاستكمال لاحقًا.', 'success');
     navigate(safeReturnTo || '/dashboard?tab=quizzes');
   };
 
@@ -494,6 +504,7 @@ export const QuizPage: React.FC = () => {
     if (!saved) return;
 
     setDraftRestored(true);
+    showQuizStatus('تم حفظ التقدم.', 'success');
   };
 
   const handleSubmitQuestion = () => {
@@ -710,7 +721,7 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
-      <div className="max-w-4xl mx-auto px-3 sm:px-4">
+      <div className="max-w-3xl mx-auto px-3 sm:px-4">
         <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border p-3 sm:p-4 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3`}>
           <div className="min-w-0">
             <button
@@ -761,6 +772,18 @@ export const QuizPage: React.FC = () => {
             )}
           </div>
         </div>
+
+        {quizStatusMessage ? (
+          <div
+            className={`mb-4 rounded-xl border px-4 py-3 text-sm font-black ${
+              quizStatusTone === 'success'
+                ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                : 'border-indigo-100 bg-indigo-50 text-indigo-700'
+            }`}
+          >
+            {quizStatusMessage}
+          </div>
+        ) : null}
 
         {!isFinished ? (
           <div className="space-y-4">
@@ -815,8 +838,8 @@ export const QuizPage: React.FC = () => {
           ) : null}
 
           <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border overflow-hidden`}>
-            <div className="p-3 sm:p-6">
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
+            <div className="p-3 sm:p-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
                 <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>
                   {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
                 </span>
@@ -836,14 +859,14 @@ export const QuizPage: React.FC = () => {
 
               <div
                 onClick={handleInlineQuestionImageClick}
-                className={`text-base sm:text-lg mb-5 sm:mb-6 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
+                className={`text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
               />
               {currentQuestion?.imageUrl && (
                 <button
                   type="button"
                   onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
-                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-5 sm:mb-8 block w-full cursor-zoom-in rounded-2xl border p-2 sm:p-3 shadow-sm`}
+                  className={`${isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-white'} mb-4 block w-full cursor-zoom-in rounded-2xl border p-2 shadow-sm`}
                 >
                   <img
                     src={currentQuestion.imageUrl}
@@ -854,18 +877,18 @@ export const QuizPage: React.FC = () => {
                 </button>
               )}
 
-              <div className={`grid ${optionGridClass} gap-x-2 sm:gap-x-4 gap-y-2 sm:gap-y-3`}>
+              <div className={`grid ${optionGridClass} gap-2`}>
                 {currentQuestion?.options.map((option, index) => (
                   <button
                     key={index}
                     onClick={() => handleOptionSelect(index)}
-                    className={`${optionButtonHeightClass} w-full px-2.5 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
+                    className={`${optionButtonHeightClass} w-full px-2 py-1 rounded-xl border-2 transition-all flex items-center justify-between text-right gap-2 shadow-sm ${
                       selectedOptions[currentQuestion.id] === index
                         ? (isNightMode ? 'border-indigo-400 bg-indigo-950' : 'border-indigo-600 bg-indigo-50')
                         : (isNightMode ? 'border-slate-700 bg-slate-950 hover:border-indigo-700 hover:bg-slate-800' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50')
                     }`}
                   >
-                    <span className={`flex-1 text-sm font-bold leading-6 text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
+                    <span className={`flex-1 text-xs sm:text-sm font-bold leading-5 text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
                       <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                     </span>
                     <div className="flex items-center shrink-0">
@@ -919,7 +942,7 @@ export const QuizPage: React.FC = () => {
                         key={question.id}
                         type="button"
                         onClick={() => setCurrentQuestionIndex(index)}
-                        className={`h-8 w-8 sm:h-9 sm:w-9 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
+                        className={`h-7 w-7 sm:h-8 sm:w-8 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
                         aria-label={title}
                         title={title}
                       >

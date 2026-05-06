@@ -1679,7 +1679,7 @@ const ReviewSolutions = ({
                     setCurrentIdx(index);
                     setShowExplanation(false);
                   }}
-                  className={`h-8 sm:h-10 rounded-lg sm:rounded-xl border-2 text-xs sm:text-sm font-black transition ${getQuizQuestionMapButtonClass(mapState)}`}
+                  className={`h-7 sm:h-8 rounded-lg border-2 text-xs font-black transition ${getQuizQuestionMapButtonClass(mapState)}`}
                   title={!wasAnswered ? 'لم تتم الإجابة' : wasCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
                 >
                   {index + 1}
