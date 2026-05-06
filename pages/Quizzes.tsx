@@ -476,7 +476,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           </div>
         </header>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="hidden">
           <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
           <StatCard icon={<TrendingUp size={24} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
           <StatCard icon={<CheckCircle size={24} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
@@ -545,7 +545,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+            <div className="hidden">
               <MiniAttemptStat label="اختبارات" value={activeAttemptGroups.length} />
               <MiniAttemptStat label="محاولات" value={activeAttemptSummary.totalAttempts} />
               <MiniAttemptStat label="متوسط آخر حل" value={`${activeAttemptSummary.averageLatest}%`} />
@@ -600,15 +600,15 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="hidden">
         <StatCard icon={<Zap size={24} />} value={saherQuizzes.length} label="ساهر جاهز" color="purple" />
         <StatCard icon={<Target size={24} />} value={directedQuizzes.length} label="اختبارات موجهة" color="amber" />
         <StatCard icon={<CheckCircle size={24} />} value={availablePreparedQuizzes.length} label="متاح الآن" color="blue" />
         <StatCard icon={<FileText size={24} />} value={lockedPaidQuizzes.length} label="يتطلب باقة" color="emerald" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="bg-secondary-500 text-white p-3 text-center font-bold text-base">مركز الاختبارات</div>
           <div className="p-6 space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -775,7 +775,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="hidden">
           <div className="bg-gray-900 text-white p-4 text-center font-bold text-lg">ملخص سريع</div>
           <div className="p-6 space-y-4">
             <SummaryRow label="اختبارات جاهزة متاحة" value={availablePreparedQuizzes.length} />
@@ -788,7 +788,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 shadow-sm">
+      <div className="hidden">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h3 className="text-lg font-black text-gray-900">سجل المحاولات في مكان واحد</h3>
@@ -942,7 +942,7 @@ const AttemptCategoryButton = ({
   >
     <span>
       <span className="block text-sm font-black">{label}</span>
-      <span className="mt-1 block text-xs font-bold text-gray-500">{description}</span>
+      <span className="sr-only">{description}</span>
     </span>
     <span className={`rounded-2xl px-3 py-2 text-lg font-black ${active ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-700'}`}>
       {count}
@@ -1144,7 +1144,7 @@ const ActionCard = ({
     <div className={`rounded-2xl border p-5 ${toneClasses}`}>
       <div className="w-12 h-12 rounded-xl bg-white/70 flex items-center justify-center mb-4">{icon}</div>
       <h3 className="font-bold text-lg mb-2">{title}</h3>
-      <p className="text-sm leading-6 mb-5">{description}</p>
+      <p className="sr-only">{description}</p>
       {disabled ? (
         <div className="bg-white/70 text-gray-500 py-2 rounded-lg font-bold text-center text-sm">لا يوجد الآن</div>
       ) : (
