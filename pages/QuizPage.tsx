@@ -119,9 +119,15 @@ export const QuizPage: React.FC = () => {
     const [path, query = ''] = safeReturnTo.split('?');
     const nextParams = new URLSearchParams(query);
 
-    if (sourceParam === 'foundation') {
+    if (sourceParam === 'foundation' || sourceParam === 'training') {
       nextParams.set('trainingDone', '1');
-      nextParams.set('content', 'quizzes');
+      if (sourceParam === 'foundation') {
+        nextParams.set('content', 'quizzes');
+      }
+    }
+
+    if (sourceParam === 'tests') {
+      nextParams.set('testDone', '1');
     }
 
     const nextQuery = nextParams.toString();
@@ -752,9 +758,17 @@ export const QuizPage: React.FC = () => {
               <ArrowRight size={16} />
               {returnLabel}
             </button>
-            <h1 className={`text-lg sm:text-xl font-black break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}>{quiz.title}</h1>
+            <h1
+              data-testid="quiz-title"
+              className={`text-lg sm:text-xl font-black break-words ${isNightMode ? 'text-white' : 'text-gray-800'}`}
+            >
+              {quiz.title}
+            </h1>
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
-              <span className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'} rounded-full px-3 py-1`}>
+              <span
+                data-testid="quiz-answered-count"
+                className={`${isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'} rounded-full px-3 py-1`}
+              >
                 تم حل {answeredQuestionCount} من {quizQuestions.length}
               </span>
               {shouldShowQuestionReview ? (
@@ -859,7 +873,10 @@ export const QuizPage: React.FC = () => {
           <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-2xl shadow-sm border overflow-hidden`}>
             <div className="p-3 sm:p-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
-                <span className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}>
+                <span
+                  data-testid="quiz-question-counter"
+                  className={`text-sm font-bold ${isNightMode ? 'text-slate-300' : 'text-gray-500'}`}
+                >
                   {currentMockExamSection ? `${currentMockExamSection.title} • ` : ''}السؤال {currentQuestionIndex + 1} من {quizQuestions.length}
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
@@ -962,6 +979,7 @@ export const QuizPage: React.FC = () => {
                       <button
                         key={question.id}
                         type="button"
+                        data-testid={`quiz-question-map-${index + 1}`}
                         onClick={() => setCurrentQuestionIndex(index)}
                         className={`h-7 w-7 sm:h-8 sm:w-8 rounded-md border-2 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${getQuestionNumberClass(question, index)}`}
                         aria-label={title}
@@ -977,6 +995,8 @@ export const QuizPage: React.FC = () => {
 
             <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50'} flex flex-wrap items-center justify-center gap-2 border-t p-3 sm:justify-between`}>
               <button
+                type="button"
+                data-testid="quiz-prev-button"
                 onClick={handlePrev}
                 disabled={currentQuestionIndex === 0}
                 className={`${isNightMode ? 'text-slate-300 hover:bg-slate-800' : 'text-gray-600 hover:bg-gray-200'} inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-black disabled:cursor-not-allowed disabled:opacity-50`}
@@ -988,6 +1008,7 @@ export const QuizPage: React.FC = () => {
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <button
                   type="button"
+                  data-testid="quiz-save-progress-button"
                   onClick={handleSaveQuizProgress}
                   disabled={isSubmittingResult}
                   className={`${isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-100 hover:bg-emerald-900' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'} inline-flex min-w-[74px] items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
@@ -997,6 +1018,7 @@ export const QuizPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  data-testid="quiz-pause-button"
                   onClick={handlePauseQuiz}
                   disabled={isSubmittingResult}
                   className={`${isNightMode ? 'border-amber-800 bg-amber-950/60 text-amber-100 hover:bg-amber-900' : 'border-amber-100 bg-amber-50 text-amber-700 hover:bg-amber-100'} inline-flex min-w-[74px] items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
@@ -1009,6 +1031,7 @@ export const QuizPage: React.FC = () => {
               {currentQuestionIndex === quizQuestions.length - 1 ? (
                 <button
                   type="button"
+                  data-testid="quiz-finish-button"
                   onClick={() => setShowFinishDialog(true)}
                   disabled={isSubmittingResult}
                   className="inline-flex min-w-[86px] items-center justify-center rounded-xl bg-emerald-600 px-3 py-1.5 text-xs sm:text-sm font-black text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
@@ -1018,6 +1041,7 @@ export const QuizPage: React.FC = () => {
               ) : (
                 <button
                   type="button"
+                  data-testid="quiz-next-button"
                   onClick={handleNext}
                   disabled={Boolean(isNextBlocked)}
                   title={isNextBlocked ? 'اختر إجابة قبل الانتقال للسؤال التالي' : undefined}

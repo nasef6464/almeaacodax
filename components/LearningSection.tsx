@@ -104,8 +104,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     useEffect(() => {
         if (!isTabEnabled(activeTab)) {
             setActiveTab(firstEnabledTab);
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.set('tab', firstEnabledTab);
+            nextParams.delete('topic');
+            nextParams.delete('content');
+            nextParams.delete('lesson');
+            setSearchParams(nextParams, { replace: true });
         }
-    }, [activeTab, firstEnabledTab, settings.showBanks, settings.showCourses, settings.showLibrary, settings.showSkills, settings.showTests]);
+    }, [activeTab, firstEnabledTab, searchParams, setSearchParams, settings.showBanks, settings.showCourses, settings.showLibrary, settings.showSkills, settings.showTests]);
 
     const handleTabChange = (tab: LearningTab) => {
         setActiveTab(tab);
@@ -129,6 +135,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         return sourceQuiz?.settings?.returnToSourceOnFinish === true || sourceQuiz?.settings?.showResultsReport === false;
     };
     const hasReturnedFromFoundationTraining = searchParams.get('trainingDone') === '1';
+    const hasReturnedFromLearningTest = searchParams.get('testDone') === '1';
+    const handleDismissJourneyNotice = () => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('trainingDone');
+        nextParams.delete('testDone');
+        setSearchParams(nextParams, { replace: true });
+    };
 
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
     const [viewingFile, setViewingFile] = useState<any>(null);
@@ -1029,6 +1042,21 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'banks' && enabledTabs.banks && (
                     <>
+                    {hasReturnedFromFoundationTraining && (
+                        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-right shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <div className="text-sm font-black text-emerald-800">تم حفظ التدريب</div>
+                                <p className="mt-1 text-xs font-bold text-emerald-700">تقدر تكمل من نفس المكان أو تبدأ تدريبًا آخر.</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleDismissJourneyNotice}
+                                className="inline-flex w-fit items-center justify-center rounded-xl bg-white px-3 py-1.5 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 transition hover:bg-emerald-100"
+                            >
+                                تم
+                            </button>
+                        </div>
+                    )}
                     {showPublicAdminDiagnostics && (
                         <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
                             <div className="flex flex-wrap items-center gap-2 text-sm font-black">
@@ -1085,6 +1113,21 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'tests' && enabledTabs.tests && (
                     <>
+                    {hasReturnedFromLearningTest && (
+                        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-right shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <div className="text-sm font-black text-indigo-800">تم حفظ نتيجة الاختبار</div>
+                                <p className="mt-1 text-xs font-bold text-indigo-700">يمكنك مراجعة المحاولة من اختباراتي أو بدء اختبار آخر.</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleDismissJourneyNotice}
+                                className="inline-flex w-fit items-center justify-center rounded-xl bg-white px-3 py-1.5 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 transition hover:bg-indigo-100"
+                            >
+                                تم
+                            </button>
+                        </div>
+                    )}
                     {showPublicAdminDiagnostics && (
                         <div className="mb-4 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
                             <div className="flex flex-wrap items-center gap-2 text-sm font-black">
