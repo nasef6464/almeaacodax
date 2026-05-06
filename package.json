@@ -17,6 +17,7 @@
     "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs",
     "smoke:learning-quiz": "node scripts/smoke-learning-quiz-journey.mjs",
     "smoke:library-support": "node scripts/smoke-library-support-contract.mjs",
+    "smoke:quiz-access": "node scripts/smoke-quiz-access-contract.mjs",
     "smoke:results": "node scripts/smoke-results-contract.mjs",
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
