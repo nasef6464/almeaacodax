@@ -1,7 +1,11 @@
+import { readFile } from 'node:fs/promises';
+
 const API_URL = (process.env.SMOKE_API_URL || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
 const TARGET_PATH_ID = process.env.SMOKE_SAHER_PATH_ID || 'p_1777779639431';
 const TARGET_SUBJECT_ID = process.env.SMOKE_SAHER_SUBJECT_ID || 'sub_1777779748206';
 const REQUESTED_COUNT = Number(process.env.SMOKE_SAHER_QUESTION_COUNT || 6);
+const quizSource = await readFile(new URL('../pages/Quiz.tsx', import.meta.url), 'utf8');
+const resultsSource = await readFile(new URL('../pages/Results.tsx', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -88,6 +92,42 @@ await check('saher has at least two selectable skills in target subject', async 
     throw new Error(`expected at least 2 skills, found ${selectedSkillIds.length}`);
   }
   return selectedSkillIds.join(', ');
+});
+
+await check('saher UI supports all skills, main skill groups, and multiple sub-skills', async () => {
+  const requiredFragments = [
+    'كل المهارات',
+    'المهارات الرئيسية',
+    'المهارات الفرعية',
+    'toggleSectionSkills',
+    'toggleTargetSkill',
+    'setSkillScope(next)',
+    "const [targetSkillIds, setTargetSkillIds] = useState<string[]>([])",
+  ];
+
+  const missing = requiredFragments.filter((fragment) => !quizSource.includes(fragment));
+  if (missing.length > 0) {
+    throw new Error(`missing multi-skill UI fragments: ${missing.join(', ')}`);
+  }
+
+  return 'all skills + section groups + sub-skill chips';
+});
+
+await check('saher extra quiz links carry multiple weak skill ids from results', async () => {
+  const requiredFragments = [
+    "params.set('mode', 'self')",
+    "params.set('autostart', '1')",
+    "params.set('skillIds', skillIds.join(','))",
+    '.slice(0, 3)',
+    "return `/quiz?${params.toString()}`",
+  ];
+
+  const missing = requiredFragments.filter((fragment) => !resultsSource.includes(fragment));
+  if (missing.length > 0) {
+    throw new Error(`missing extra quiz link fragments: ${missing.join(', ')}`);
+  }
+
+  return 'result extra quiz keeps up to three weak skills';
 });
 
 await check('saher multi-skill scope can fill a student quiz', async () => {
