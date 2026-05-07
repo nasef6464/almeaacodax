@@ -15,11 +15,12 @@ import {
   Layers,
   Clock,
   Award,
+  ShoppingBag,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
-import { Topic } from '../types';
+import { PackageContentType, Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
@@ -32,7 +33,7 @@ export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons, user } = useStore();
+  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons, user, hasScopedPackageAccess } = useStore();
   const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
@@ -44,6 +45,10 @@ export const SubjectLearningPage: React.FC = () => {
   const currentPathName = matchedPath?.name || pathId || 'المسار';
   const currentSubjectName = matchedSubject?.name || subjectId || 'المادة';
   const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const hasCoursePackageAccess = isStaffViewer || hasScopedPackageAccess('courses', pathId, subjectId);
+  const hasFoundationAccess = isStaffViewer || hasScopedPackageAccess('foundation', pathId, subjectId);
+  const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', pathId, subjectId);
+  const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', pathId, subjectId);
   const canSeeTopic = (topic: Topic) => isStaffViewer || topic.showOnPlatform !== false;
   const canSeeLesson = (lesson: (typeof lessons)[number]) =>
     isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
@@ -57,6 +62,42 @@ export const SubjectLearningPage: React.FC = () => {
     isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
   const canSeeCourse = (course: (typeof courses)[number]) =>
     isStaffViewer || (course.showOnPlatform !== false && course.isPublished !== false && (!course.approvalStatus || course.approvalStatus === 'approved'));
+  const buildPackagePath = (contentType: PackageContentType) => {
+    const params = new URLSearchParams();
+    if (subjectId) params.set('subject', subjectId);
+    params.set('tab', 'packages');
+    params.set('content', contentType);
+    return `/category/${pathId || ''}?${params.toString()}`;
+  };
+  const openPackageTab = (contentType: PackageContentType) => navigate(buildPackagePath(contentType));
+  const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
+  const isQuizLockedForStudent = (quiz: (typeof quizzes)[number], contentType: 'banks' | 'tests') => {
+    if (isStaffViewer) return false;
+    const accessType = getQuizAccessType(quiz);
+    if (accessType === 'free') return false;
+    if (accessType === 'private') return true;
+    return !hasScopedPackageAccess(contentType, quiz.pathId || pathId, quiz.subjectId || subjectId);
+  };
+  const isTopicLockedForStudent = (topic: Topic | null | undefined) =>
+    Boolean(topic?.isLocked && !hasFoundationAccess && !isStaffViewer);
+  const isLibraryItemLockedForStudent = (item: (typeof libraryItems)[number]) =>
+    Boolean(item.isLocked && !hasLibraryAccess && !isStaffViewer);
+
+  const renderLockedAccessPanel = (contentType: PackageContentType, title: string, description: string) => (
+    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-center">
+      <Lock className="mx-auto mb-3 text-amber-600" size={34} />
+      <h3 className="text-lg font-black text-gray-900">{title}</h3>
+      <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-600">{description}</p>
+      <button
+        type="button"
+        onClick={() => openPackageTab(contentType)}
+        className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-black text-white transition-colors hover:bg-amber-600"
+      >
+        <ShoppingBag size={18} />
+        عرض الباقات المناسبة
+      </button>
+    </div>
+  );
 
   const subjectCourses = useMemo(
     () =>
@@ -206,6 +247,11 @@ export const SubjectLearningPage: React.FC = () => {
   };
 
   const handleOpenTopicModal = (mainTopic: Topic) => {
+    if (isTopicLockedForStudent(mainTopic)) {
+      openPackageTab('foundation');
+      return;
+    }
+
     setSelectedTopic(mainTopic);
     const subTopics = subjectTopics.filter((item) => item.parentId === mainTopic.id).sort((a, b) => a.order - b.order);
 
@@ -380,8 +426,9 @@ export const SubjectLearningPage: React.FC = () => {
                 <div className="relative h-48 bg-gray-100 group overflow-hidden">
                   <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
-                  <div className="absolute top-3 right-3 bg-black/50 backdrop-blur p-2 rounded-lg text-white">
-                    <Lock size={16} />
+                  <div className="absolute top-3 right-3 bg-black/50 backdrop-blur px-3 py-2 rounded-lg text-white text-xs font-black flex items-center gap-1">
+                    {hasCoursePackageAccess ? <ShoppingBag size={16} /> : <Lock size={16} />}
+                    {hasCoursePackageAccess ? 'ضمن باقتك' : `${course.price || 0} ${course.currency || 'ر.س'}`}
                   </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
@@ -397,7 +444,7 @@ export const SubjectLearningPage: React.FC = () => {
                       className="w-full py-3 rounded-xl font-bold text-sm transition-all bg-[#f59e0b] text-white hover:bg-amber-600"
                       onClick={() => navigate(`/course/${course.id}`)}
                     >
-                      {course.progress > 0 ? 'مواصلة التعلم' : 'اشترك الآن'}
+                      {course.progress > 0 ? 'مواصلة التعلم' : hasCoursePackageAccess ? 'ابدأ من الباقة' : 'عرض الدورة والاشتراك'}
                     </button>
                   </div>
                 </div>
@@ -415,6 +462,7 @@ export const SubjectLearningPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mainTopics.length > 0 ? mainTopics.map((topic) => {
                 const subTopics = subjectTopics.filter((item) => item.parentId === topic.id);
+                const isLocked = isTopicLockedForStudent(topic);
                 let totalLessons = topic.lessonIds?.length || 0;
                 let totalQuizzes = topic.quizIds?.length || 0;
                 subTopics.forEach((subTopic) => {
@@ -426,7 +474,9 @@ export const SubjectLearningPage: React.FC = () => {
                   <div
                     key={topic.id}
                     onClick={() => handleOpenTopicModal(topic)}
-                    className="bg-white p-6 rounded-2xl border border-gray-200 hover:border-indigo-400 hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group"
+                    className={`bg-white p-6 rounded-2xl border hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group ${
+                      isLocked ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
+                    }`}
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
@@ -436,6 +486,12 @@ export const SubjectLearningPage: React.FC = () => {
                         <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
                           {subTopics.length} موضوعات فرعية
                         </span>
+                        {isLocked && (
+                          <span className="mt-2 flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-lg">
+                            <Lock size={13} />
+                            ضمن باقة
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div>
@@ -473,16 +529,24 @@ export const SubjectLearningPage: React.FC = () => {
                 </div>
                 <div className="mt-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
-                    className="bg-emerald-50 text-emerald-600 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-100 transition-colors flex items-center justify-center gap-2"
-                    onClick={() => openExternalUrl(item.url)}
+                    className={`py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
+                      isLibraryItemLockedForStudent(item)
+                        ? 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                        : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                    }`}
+                    onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
                   >
-                    <Eye size={16} /> عرض
+                    {isLibraryItemLockedForStudent(item) ? <Lock size={16} /> : <Eye size={16} />} {isLibraryItemLockedForStudent(item) ? 'فتح بالباقة' : 'عرض'}
                   </button>
                   <button
-                    className="bg-indigo-50 text-indigo-600 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2"
-                    onClick={() => openExternalUrl(item.url)}
+                    className={`py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
+                      isLibraryItemLockedForStudent(item)
+                        ? 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                        : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                    }`}
+                    onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
                   >
-                    <Download size={16} /> تحميل
+                    <Download size={16} /> {isLibraryItemLockedForStudent(item) ? 'اشترك للتحميل' : 'تحميل'}
                   </button>
                 </div>
               </div>
@@ -501,15 +565,26 @@ export const SubjectLearningPage: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-800">بنك الأسئلة الشامل</h3>
                 <p className="text-gray-500 mt-1">تدرب على {subjectQuestions.length} سؤال في مختلف المهارات</p>
               </div>
-              <button onClick={() => navigate('/quiz')} className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
-                ابدأ التدريب العشوائي
+              <button
+                onClick={() => hasBanksAccess ? navigate('/quiz') : openPackageTab('banks')}
+                className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-colors ${
+                  hasBanksAccess ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-amber-500 text-white hover:bg-amber-600'
+                }`}
+              >
+                {hasBanksAccess ? 'ابدأ التدريب العشوائي' : 'فتح باقة التدريبات'}
               </button>
             </div>
+            {!hasBanksAccess && renderLockedAccessPanel(
+              'banks',
+              'التدريبات المتقدمة ضمن باقة المادة',
+              'يمكن ترك بعض التدريبات مفتوحة من إعداد الاختبار، أما التدريبات المدفوعة فتفتح بعد شراء باقة التدريب أو الباقة الشاملة لهذه المادة.',
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mainTopics.map((topic) => {
                 const questionCount = getTopicQuestionCount(topic);
                 const relatedBank = getTopicAttachedBank(topic);
+                const isBankLocked = relatedBank ? isQuizLockedForStudent(relatedBank, 'banks') : !hasBanksAccess;
 
                 return (
                   <div key={topic.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -523,14 +598,18 @@ export const SubjectLearningPage: React.FC = () => {
                       </div>
                     </div>
                     <button
-                      className="w-full py-2 bg-gray-50 text-indigo-600 rounded-lg font-bold text-sm hover:bg-indigo-50 transition-colors"
+                      className={`w-full py-2 rounded-lg font-bold text-sm transition-colors ${
+                        isBankLocked ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-gray-50 text-indigo-600 hover:bg-indigo-50'
+                      }`}
                       onClick={() =>
-                        relatedBank
+                        isBankLocked
+                          ? openPackageTab('banks')
+                          : relatedBank
                           ? navigate(buildQuizPathWithReturn(relatedBank.id, buildTopicReturnPathFor(topic, 'quizzes'), 'foundation'))
                           : handleOpenTopicModal(topic)
                       }
                     >
-                      تدرب على هذه المهارة
+                      {isBankLocked ? 'فتح باقة التدريب' : 'تدرب على هذه المهارة'}
                     </button>
                   </div>
                 );
@@ -556,10 +635,12 @@ export const SubjectLearningPage: React.FC = () => {
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-sm font-bold text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
                   <button
-                    onClick={() => navigate(buildQuizPathWithReturn(quiz.id, buildSubjectReturnPath('exams'), 'tests'))}
-                    className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors"
+                    onClick={() => isQuizLockedForStudent(quiz, 'tests') ? openPackageTab('tests') : navigate(buildQuizPathWithReturn(quiz.id, buildSubjectReturnPath('exams'), 'tests'))}
+                    className={`px-6 py-2 rounded-xl font-bold transition-colors ${
+                      isQuizLockedForStudent(quiz, 'tests') ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    }`}
                   >
-                    ابدأ الاختبار
+                    {isQuizLockedForStudent(quiz, 'tests') ? 'فتح باقة الاختبارات' : 'ابدأ الاختبار'}
                   </button>
                 </div>
               </div>
@@ -617,7 +698,7 @@ export const SubjectLearningPage: React.FC = () => {
                   {subjectTopics.filter((topic) => topic.parentId === selectedTopic.id).sort((a, b) => a.order - b.order).map((subTopic) => (
                     <button
                       key={subTopic.id}
-                      onClick={() => updateSubjectQuery({ topic: subTopic.id, content: topicModalTab })}
+                      onClick={() => isTopicLockedForStudent(subTopic) ? openPackageTab('foundation') : updateSubjectQuery({ topic: subTopic.id, content: topicModalTab })}
                       className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
                         selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border border-transparent'
                       }`}
@@ -627,6 +708,7 @@ export const SubjectLearningPage: React.FC = () => {
                           {subTopic.title}
                         </h4>
                       </div>
+                      {isTopicLockedForStudent(subTopic) && <Lock size={16} className="text-amber-600" />}
                     </button>
                   ))}
                 </div>
@@ -663,6 +745,14 @@ export const SubjectLearningPage: React.FC = () => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                  {isTopicLockedForStudent(activeTopic) ? (
+                    renderLockedAccessPanel(
+                      'foundation',
+                      'هذا الموضوع ضمن باقة التأسيس',
+                      'يمكن للمدير ترك موضوعات تأسيسية مفتوحة وقفل موضوعات أخرى. الموضوع المقفول يفتح بعد شراء باقة التأسيس أو الباقة الشاملة لهذه المادة.',
+                    )
+                  ) : (
+                    <>
                   {topicModalTab === 'lessons' && (
                     <div className="space-y-4">
                       {activeTopicLessons.length === 0 ? (
@@ -905,6 +995,8 @@ export const SubjectLearningPage: React.FC = () => {
                         </div>
                       )}
                     </div>
+                  )}
+                    </>
                   )}
                 </div>
               </div>

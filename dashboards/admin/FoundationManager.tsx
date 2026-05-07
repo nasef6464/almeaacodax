@@ -56,7 +56,6 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     if (!topic.subjectId) issues.push('غير مربوط بمادة');
     if (!topic.pathId && !currentSubject?.pathId) issues.push('غير مربوط بمسار');
     if (topic.showOnPlatform === false) issues.push('مخفي عن المنصة');
-    if (topic.isLocked) issues.push('مغلق على الطلاب');
     if (attachedLessons.length + attachedQuizzes.length + childCount === 0) issues.push('لا توجد دروس أو تدريبات مرتبطة');
 
     attachedLessons.forEach((lesson) => {
@@ -245,7 +244,6 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       pathId: topic.pathId || currentSubject?.pathId,
       subjectId: topic.subjectId || subjectId,
       showOnPlatform: true,
-      isLocked: false,
     });
 
     attachedLessons.forEach((lesson) => {
@@ -323,7 +321,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               {topic.showOnPlatform === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
             </span>
             <span className={`text-xs px-2 py-1 rounded-full font-bold ${topic.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-              {topic.isLocked ? 'مغلق على الطلاب' : 'مفتوح للعرض'}
+              {topic.isLocked ? 'ضمن باقة التأسيس' : 'مفتوح مجاني'}
             </span>
             <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full font-bold">
               {totalAttachments} عنصر مربوط
@@ -377,10 +375,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             <button
               onClick={() => handleToggleTopicLock(topic)}
               className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors ${topic.isLocked ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
-              title={topic.isLocked ? 'فتح الموضوع للطلاب' : 'قفل الموضوع على الطلاب'}
+              title={topic.isLocked ? 'جعله مجانيًا للطلاب' : 'جعله ضمن باقة التأسيس'}
             >
               {topic.isLocked ? <Lock size={18} /> : <LockOpen size={18} />}
-              {topic.isLocked ? 'فتح' : 'قفل'}
+              {topic.isLocked ? 'مجاني' : 'ضمن باقة'}
             </button>
             <button 
               onClick={() => handleCreateNew(topic.id)}
@@ -478,7 +476,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         {[
           { label: 'إجمالي الموضوعات', value: foundationOverview.total, tone: 'text-slate-800 bg-slate-50' },
           { label: 'الظاهر على المنصة', value: foundationOverview.visible, tone: 'text-sky-800 bg-sky-50' },
-          { label: 'المغلق على الطلاب', value: foundationOverview.locked, tone: 'text-amber-800 bg-amber-50' },
+          { label: 'ضمن باقة التأسيس', value: foundationOverview.locked, tone: 'text-amber-800 bg-amber-50' },
           { label: 'الموارد المربوطة', value: foundationOverview.linkedResources, tone: 'text-indigo-800 bg-indigo-50' },
           { label: 'جاهز للطالب', value: foundationReadinessOverview.ready, tone: 'text-emerald-800 bg-emerald-50' },
           { label: 'يحتاج ضبط', value: foundationReadinessOverview.needsReview, tone: 'text-rose-800 bg-rose-50' },
@@ -545,7 +543,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                   onChange={(e) => setEditingTopic({ ...editingTopic, isLocked: e.target.checked })}
                   className="w-5 h-5 text-amber-600 rounded"
                 />
-                <span className="font-medium text-gray-700">قفل هذا الموضوع على الطلاب حتى يتم تفعيله</span>
+                <span className="font-medium text-gray-700">جعل هذا الموضوع ضمن باقة التأسيس بدل الفتح المجاني</span>
               </label>
             </div>
             <div className="flex gap-3 mt-6">

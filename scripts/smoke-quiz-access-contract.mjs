@@ -6,6 +6,8 @@ const genericPathSource = await readFile(new URL('../pages/GenericPathPage.tsx',
 const pathsManagerSource = await readFile(new URL('../dashboards/admin/PathsManager.tsx', import.meta.url), 'utf8');
 const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8');
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
+const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
+const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -148,6 +150,26 @@ check('path cards route to the same mock exam and package destinations used by n
   assertIncludes(genericPathSource, 'to={`/category/${path.id}?tab=packages`}');
   assertIncludes(genericPathSource, "searchParams.get('tab') === 'mock-exams'");
   assertIncludes(genericPathSource, "searchParams.get('tab') === 'packages'");
+});
+
+check('subject learning page gates paid foundation, banks, tests, and library through scoped packages', () => {
+  assertIncludes(subjectLearningSource, "hasScopedPackageAccess('foundation', pathId, subjectId)");
+  assertIncludes(subjectLearningSource, "hasScopedPackageAccess('banks', pathId, subjectId)");
+  assertIncludes(subjectLearningSource, "hasScopedPackageAccess('library', pathId, subjectId)");
+  assertIncludes(subjectLearningSource, "isQuizLockedForStudent(quiz, 'tests')");
+  assertIncludes(subjectLearningSource, "params.set('tab', 'packages')");
+  assertIncludes(subjectLearningSource, "isTopicLockedForStudent(mainTopic)");
+  assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item)");
+});
+
+check('foundation admin treats topic lock as package access instead of readiness cleanup', () => {
+  assertIncludes(foundationManagerSource, 'ضمن باقة التأسيس');
+  assertIncludes(foundationManagerSource, 'مفتوح مجاني');
+  assertIncludes(foundationManagerSource, 'جعل هذا الموضوع ضمن باقة التأسيس بدل الفتح المجاني');
+  assertIncludes(foundationManagerSource, "updateTopic(topic.id, { isLocked: topic.isLocked !== true })");
+  if (/handlePrepareTopicForLearner[\s\S]*isLocked:\s*false/.test(foundationManagerSource)) {
+    throw new Error('Prepare-for-learner must not silently remove paid/package topic access');
+  }
 });
 
 for (const item of checks) {
