@@ -369,7 +369,7 @@ export const Header: React.FC = () => {
 
                       <UserMenuItem to={getDashboardPathForRole(user.role)} icon={<LayoutGrid size={18} />} label={text.dashboard} />
                       <UserMenuItem to="/courses" icon={<BookOpen size={18} />} label={text.courses} />
-                      <UserMenuItem to="/dashboard?tab=quizzes" icon={<FileText size={18} />} label={text.quizzes} />
+                      <UserMenuItem to="/my-quizzes" icon={<FileText size={18} />} label={text.quizzes} />
                       <UserMenuItem to="/achievements" icon={<Award size={18} />} label={text.achievements} />
                       <UserMenuItem to="/profile" icon={<User size={18} />} label={text.profile} />
 

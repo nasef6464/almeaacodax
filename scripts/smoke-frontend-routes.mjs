@@ -14,6 +14,7 @@ const STRICT_VERSION = process.env.SMOKE_STRICT_VERSION === '1';
 const baseRoutes = [
   '/',
   '/#/quizzes',
+  '/#/my-quizzes',
   '/#/mock-exams',
   '/#/reports',
   '/#/login',

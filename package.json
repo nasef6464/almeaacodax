@@ -18,6 +18,7 @@
     "smoke:learning-quiz": "node scripts/smoke-learning-quiz-journey.mjs",
     "smoke:library-support": "node scripts/smoke-library-support-contract.mjs",
     "smoke:mock-exams": "node scripts/smoke-mock-exam-contract.mjs",
+    "smoke:my-quizzes": "node scripts/smoke-my-quizzes-contract.mjs",
     "smoke:quiz-access": "node scripts/smoke-quiz-access-contract.mjs",
     "smoke:results": "node scripts/smoke-results-contract.mjs",
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
