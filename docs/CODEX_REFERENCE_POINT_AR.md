@@ -8,8 +8,9 @@
 
 1. اقرأ هذا الملف.
 2. اقرأ `docs/AGENT_HANDOFF_AR.md`.
-3. شغّل `git status --short --branch`.
-4. لا ترجع أي تعديل قبل فهمه.
+3. اقرأ `docs/USER_NOTES_BATCH_AR.md` إذا كانت هناك ملاحظات جديدة من المستخدم.
+4. شغّل `git status --short --branch`.
+5. لا ترجع أي تعديل قبل فهمه.
 
 ## حالة التشغيل المحلية
 
@@ -67,6 +68,7 @@
 - `scripts/smoke-quiz-access-contract.mjs`: إضافة حراسة ظهور بطاقات المسار.
 - `docs/AGENT_HANDOFF_AR.md`: تسليم كامل للحسابات القادمة.
 - `docs/CODEX_REFERENCE_POINT_AR.md`: هذه النقطة المختصرة.
+- `docs/USER_NOTES_BATCH_AR.md`: مكان تجميع ملاحظات الدفعة الجديدة قبل التنفيذ.
 
 ## نهج التطوير
 
