@@ -20,6 +20,7 @@
     "smoke:mock-exams": "node scripts/smoke-mock-exam-contract.mjs",
     "smoke:my-quizzes": "node scripts/smoke-my-quizzes-contract.mjs",
     "smoke:quiz-access": "node scripts/smoke-quiz-access-contract.mjs",
+    "smoke:reports-role": "node scripts/smoke-reports-role-contract.mjs",
     "smoke:results": "node scripts/smoke-results-contract.mjs",
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
