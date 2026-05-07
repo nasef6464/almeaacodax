@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 
 const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
 const learningSectionSource = await readFile(new URL('../components/LearningSection.tsx', import.meta.url), 'utf8');
+const genericPathSource = await readFile(new URL('../pages/GenericPathPage.tsx', import.meta.url), 'utf8');
+const pathsManagerSource = await readFile(new URL('../dashboards/admin/PathsManager.tsx', import.meta.url), 'utf8');
 const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilder.tsx', import.meta.url), 'utf8');
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
 
@@ -102,6 +104,50 @@ check('admin labels paid, private, course-only, central, and free access clearly
   assertIncludes(quizzesManagerSource, "quiz.access.type === 'course_only'");
   assertIncludes(quizzesManagerSource, "(quiz.mode || 'regular') === 'central'");
   assertIncludes(quizzesManagerSource, "return { label: 'مفتوح للعرض'");
+});
+
+check('path model supports separate subject, mock exam, and package cards', () => {
+  assertIncludes(typeSource, 'export interface PathDisplaySettings');
+  assertIncludes(typeSource, 'showSubjectCards?: boolean');
+  assertIncludes(typeSource, 'showMockExamCard?: boolean');
+  assertIncludes(typeSource, 'showPackageCard?: boolean');
+  assertIncludes(typeSource, 'settings?: PathDisplaySettings');
+});
+
+check('admin can choose which path cards appear to students', () => {
+  assertIncludes(pathsManagerSource, 'showSubjectCards: true');
+  assertIncludes(pathsManagerSource, 'showMockExamCard: true');
+  assertIncludes(pathsManagerSource, 'showPackageCard: true');
+  assertIncludes(pathsManagerSource, 'newPathShowSubjectCards');
+  assertIncludes(pathsManagerSource, 'newPathShowMockExamCard');
+  assertIncludes(pathsManagerSource, 'newPathShowPackageCard');
+  assertIncludes(pathsManagerSource, 'setNewPathShowSubjectCards');
+  assertIncludes(pathsManagerSource, 'setNewPathShowMockExamCard');
+  assertIncludes(pathsManagerSource, 'setNewPathShowPackageCard');
+  assertIncludes(pathsManagerSource, 'showSubjectCards: newPathShowSubjectCards');
+  assertIncludes(pathsManagerSource, 'showMockExamCard: newPathShowMockExamCard');
+  assertIncludes(pathsManagerSource, 'showPackageCard: newPathShowPackageCard');
+});
+
+check('student path page respects card visibility switches', () => {
+  assertIncludes(genericPathSource, 'const showSubjectCards = pathDisplaySettings.showSubjectCards !== false');
+  assertIncludes(genericPathSource, 'const showMockExamCard = pathDisplaySettings.showMockExamCard !== false');
+  assertIncludes(genericPathSource, 'const showPackageCard = pathDisplaySettings.showPackageCard !== false');
+  assertIncludes(genericPathSource, 'showSubjectCards ? pathSubjects.map');
+  assertIncludes(genericPathSource, 'const renderMockExamEntryCard = () => showMockExamCard ?');
+  assertIncludes(genericPathSource, 'const renderPackageEntryCard = () => showPackageCard ?');
+  assertPattern(
+    genericPathSource,
+    /showSubjectCards \? pathSubjects\.map[\s\S]*renderMockExamEntryCard\(\)[\s\S]*renderPackageEntryCard\(\)/,
+    'path landing cards must keep the agreed order: subjects, mock exams, packages',
+  );
+});
+
+check('path cards route to the same mock exam and package destinations used by navigation', () => {
+  assertIncludes(genericPathSource, 'to={`/category/${path.id}?tab=mock-exams`}');
+  assertIncludes(genericPathSource, 'to={`/category/${path.id}?tab=packages`}');
+  assertIncludes(genericPathSource, "searchParams.get('tab') === 'mock-exams'");
+  assertIncludes(genericPathSource, "searchParams.get('tab') === 'packages'");
 });
 
 for (const item of checks) {

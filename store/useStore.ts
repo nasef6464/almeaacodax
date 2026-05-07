@@ -282,7 +282,7 @@ const normalizeQuizResultForStore = (result: QuizResult): QuizResult => ({
     totalQuestions: Number(result.totalQuestions || 0),
     correctAnswers: Number(result.correctAnswers || 0),
     wrongAnswers: Number(result.wrongAnswers || 0),
-    unansweredQuestions: Number(result.unansweredQuestions || 0),
+    unanswered: Number(result.unanswered || 0),
     timeSpent: String(result.timeSpent || '0 دقيقة'),
 });
 
