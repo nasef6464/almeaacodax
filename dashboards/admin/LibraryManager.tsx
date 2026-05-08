@@ -410,7 +410,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
               onChange={(event) => setEditingItem((prev) => ({ ...prev, isLocked: event.target.checked }))}
               className="w-5 h-5 text-amber-600 rounded"
             />
-            <span className="font-medium text-gray-700">قفل الملف حتى يتم تفعيله للطلاب</span>
+            <span className="font-medium text-gray-700">جعل هذا الملف ضمن باقة المكتبة بدل الفتح المجاني</span>
           </label>
 
           <div className="flex gap-3 pt-4">
@@ -557,7 +557,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                 {item.showOnPlatform === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
               </span>
               <span className={`px-2 py-1 rounded-full text-xs font-bold ${item.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                {item.isLocked ? 'مغلق على الطلاب' : 'مفتوح للعرض'}
+                {item.isLocked ? 'ضمن باقة المكتبة' : 'مفتوح مجاني'}
               </span>
               <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                 item.approvalStatus === 'approved'
@@ -654,7 +654,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
               <button
                 onClick={() => handleToggleLock(item)}
                 className={`p-2 rounded-lg transition-colors ${item.isLocked ? 'text-amber-600 hover:bg-amber-50' : 'text-emerald-600 hover:bg-emerald-50'}`}
-                title={item.isLocked ? 'فتح الملف للطلاب' : 'قفل الملف على الطلاب'}
+                title={item.isLocked ? 'جعله مجانيًا في مكتبة المادة' : 'جعله ضمن باقة المكتبة'}
               >
                 {item.isLocked ? <Lock size={18} /> : <LockOpen size={18} />}
               </button>

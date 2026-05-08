@@ -29,6 +29,7 @@ const topicSchema = z.object({
   isLocked: z.boolean().default(false),
   lessonIds: z.array(z.string()).default([]),
   quizIds: z.array(z.string()).default([]),
+  libraryItemIds: z.array(z.string()).default([]),
 });
 
 const lessonSchema = z.object({
@@ -763,6 +764,9 @@ contentRouter.delete(
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Library item not found" });
     }
+
+    const deletedIds = [deleted.id, deleted._id, req.params.id].map((value) => String(value || "")).filter(Boolean);
+    await TopicModel.updateMany({ libraryItemIds: { $in: deletedIds } }, { $pull: { libraryItemIds: { $in: deletedIds } } });
 
     return res.json({ success: true });
   }),

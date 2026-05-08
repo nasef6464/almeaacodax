@@ -13,6 +13,7 @@ const topicSchema = new Schema(
     isLocked: { type: Boolean, default: false },
     lessonIds: { type: [String], default: [] },
     quizIds: { type: [String], default: [] },
+    libraryItemIds: { type: [String], default: [] },
   },
   {
     timestamps: true,

@@ -354,10 +354,11 @@ export const SubjectLearningPage: React.FC = () => {
       activeTopic
         ? subjectLibrary
             .filter((item) => {
-              const matchesSection = activeTopic.sectionId ? item.sectionId === activeTopic.sectionId : true;
-              return matchesSection && Boolean(item.url) && canSeeLibraryItem(item);
+              const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || []);
+              const isAttached = [...explicitLibraryItemIds].some((itemId) => matchesEntityId(item, itemId));
+              return isAttached && Boolean(item.url) && canSeeLibraryItem(item);
             })
-            .slice(0, 2)
+            .slice(0, 3)
         : [],
     [activeTopic, isStaffViewer, subjectLibrary],
   );

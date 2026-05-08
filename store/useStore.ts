@@ -357,7 +357,13 @@ export const useStore = create<AppState>()(
             deleteLibraryItem: (id) => {
                 api.deleteLibraryItem(id).catch(console.error);
                 set((state) => ({
-                    libraryItems: state.libraryItems.filter(i => i.id !== id)
+                    libraryItems: state.libraryItems.filter(i => i.id !== id),
+                    topics: state.topics.map((topic) => {
+                        if (!topic.libraryItemIds?.includes(id)) return topic;
+                        const nextLibraryItemIds = topic.libraryItemIds.filter((itemId) => itemId !== id);
+                        api.updateTopic(topic.id, { libraryItemIds: nextLibraryItemIds }).catch(console.error);
+                        return { ...topic, libraryItemIds: nextLibraryItemIds };
+                    })
                 }));
             },
             enrolledCourses: [],
@@ -447,6 +453,7 @@ export const useStore = create<AppState>()(
                         id: String(topic?.id || topic?._id || ''),
                         lessonIds: normalizeIdList(topic?.lessonIds),
                         quizIds: normalizeIdList(topic?.quizIds),
+                        libraryItemIds: normalizeIdList(topic?.libraryItemIds),
                       }))
                       .filter((topic: any) => topic.id && topic.subjectId && topic.title)
                   : state.topics,

@@ -17,7 +17,7 @@ interface SkillDetailsModalProps {
 }
 
 export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill }) => {
-  const { user, topics, lessons, quizzes, libraryItems, paths, subjects, skills } = useStore();
+  const { user, topics, lessons, quizzes, libraryItems, paths, subjects } = useStore();
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
@@ -153,50 +153,22 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
     [activeTopic, quizzes, selectedTopic?.pathId, selectedTopic?.subjectId],
   );
 
-  const activeTopicSkillIds = useMemo(() => {
-    if (!activeTopic || !selectedTopic) return new Set<string>();
-
-    const normalizeLabel = (value?: string) =>
-      (value || '')
-        .trim()
-        .replace(/\s+/g, ' ')
-        .toLocaleLowerCase('ar');
-
-    const topicLabel = normalizeLabel(activeTopic.title);
-
-    return new Set(
-      skills
-        .filter((item) => {
-          if (item.subjectId !== selectedTopic.subjectId) return false;
-          if (activeTopic.sectionId && item.sectionId !== activeTopic.sectionId) return false;
-          if (matchesEntityId(item, activeTopic.id)) return true;
-
-          const skillLabel = normalizeLabel(item.name);
-          return Boolean(skillLabel) && skillLabel === topicLabel;
-        })
-        .map((item) => item.id),
-    );
-  }, [activeTopic?.id, activeTopic?.sectionId, activeTopic?.title, selectedTopic?.subjectId, skills]);
-
   const relatedLibrarySuggestions = useMemo(
     () => {
-      const scopedItems = libraryItems
+      if (!selectedTopic || !activeTopic) return [];
+      const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || []);
+      if (explicitLibraryItemIds.size === 0) return [];
+
+      return libraryItems
         .filter((item) => {
-          if (!selectedTopic || !activeTopic) return false;
           const matchesPath = selectedTopic.pathId ? item.pathId === selectedTopic.pathId : true;
           const matchesSubject = item.subjectId === selectedTopic.subjectId;
-          const matchesSection = activeTopic.sectionId ? item.sectionId === activeTopic.sectionId : true;
-          return matchesPath && matchesSubject && matchesSection && Boolean(item.url) && canStudentSeeLibraryItem(item);
-        });
-
-      const exactSkillItems =
-        activeTopicSkillIds.size > 0
-          ? scopedItems.filter((item) => (item.skillIds || []).some((skillId) => activeTopicSkillIds.has(skillId)))
-          : [];
-
-      return (exactSkillItems.length > 0 ? exactSkillItems : scopedItems).slice(0, 2);
+          const isAttached = [...explicitLibraryItemIds].some((itemId) => matchesEntityId(item, itemId));
+          return matchesPath && matchesSubject && isAttached && Boolean(item.url) && canStudentSeeLibraryItem(item);
+        })
+        .slice(0, 3);
     },
-    [activeTopic?.sectionId, activeTopicSkillIds, libraryItems, selectedTopic?.pathId, selectedTopic?.subjectId],
+    [activeTopic, libraryItems, selectedTopic?.pathId, selectedTopic?.subjectId],
   );
   const learnerTopicLessons = isStaffViewer
     ? activeTopicLessons

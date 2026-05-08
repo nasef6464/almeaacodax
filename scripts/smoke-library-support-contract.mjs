@@ -1,8 +1,11 @@
 import { readFile } from 'node:fs/promises';
 
 const libraryManagerSource = await readFile(new URL('../dashboards/admin/LibraryManager.tsx', import.meta.url), 'utf8');
+const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
 const learningSectionSource = await readFile(new URL('../components/LearningSection.tsx', import.meta.url), 'utf8');
 const skillModalSource = await readFile(new URL('../components/SkillDetailsModal.tsx', import.meta.url), 'utf8');
+const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
+const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -68,10 +71,20 @@ check('foundation topic modal has support as a third action, not a noisy summary
   assertIncludes(skillModalSource, 'relatedLibrarySuggestions');
 });
 
-check('support file suggestions prefer the exact skill before broader section files', () => {
-  assertIncludes(skillModalSource, 'const exactSkillItems =');
-  assertIncludes(skillModalSource, '(item.skillIds || []).some((skillId) => activeTopicSkillIds.has(skillId))');
-  assertIncludes(skillModalSource, 'exactSkillItems.length > 0 ? exactSkillItems : scopedItems');
+check('foundation admin links support files directly to topics like lessons and training', () => {
+  assertIncludes(typeSource, 'libraryItemIds?: string[]');
+  assertIncludes(foundationManagerSource, "useState<'lesson' | 'quiz' | 'support'>('lesson')");
+  assertIncludes(foundationManagerSource, 'availableLibraryItems');
+  assertIncludes(foundationManagerSource, "setAttachType('support')");
+  assertIncludes(foundationManagerSource, 'libraryItemIds: [...currentLibraryItemIds, itemId]');
+  assertIncludes(foundationManagerSource, "handleRemoveAttachment(topic.id, item.id, 'support')");
+});
+
+check('support files shown inside foundation topics come from explicit topic links', () => {
+  assertIncludes(skillModalSource, 'const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || [])');
+  assertIncludes(skillModalSource, 'const isAttached = [...explicitLibraryItemIds].some((itemId) => matchesEntityId(item, itemId))');
+  assertIncludes(subjectLearningSource, 'const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || [])');
+  assertIncludes(subjectLearningSource, 'return isAttached && Boolean(item.url) && canSeeLibraryItem(item)');
 });
 
 for (const item of checks) {

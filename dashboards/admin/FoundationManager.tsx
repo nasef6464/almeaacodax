@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { Topic, Lesson, Quiz } from '../../types';
-import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, Link as LinkIcon, X, Lock, LockOpen, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Topic, Lesson, Quiz, LibraryItem } from '../../types';
+import { Plus, Edit2, Trash2, ChevronDown, ChevronRight, BookOpen, FileQuestion, FileText, Link as LinkIcon, X, Lock, LockOpen, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { sanitizeVideoUrl } from '../../utils/videoLinks';
 import { isTrainingQuiz } from '../../utils/quizPlacement';
 
@@ -10,7 +10,7 @@ interface FoundationManagerProps {
 }
 
 export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId }) => {
-  const { topics, addTopic, updateTopic, deleteTopic, lessons, updateLesson, quizzes, updateQuiz, subjects } = useStore();
+  const { topics, addTopic, updateTopic, deleteTopic, lessons, updateLesson, quizzes, updateQuiz, libraryItems, updateLibraryItem, subjects } = useStore();
   const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   
   // Editing state
@@ -20,7 +20,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   // Attachment state
   const [isAttaching, setIsAttaching] = useState(false);
   const [attachingToTopicId, setAttachingToTopicId] = useState<string | null>(null);
-  const [attachType, setAttachType] = useState<'lesson' | 'quiz'>('lesson');
+  const [attachType, setAttachType] = useState<'lesson' | 'quiz' | 'support'>('lesson');
 
   const currentSubject = subjects.find(item => item.id === subjectId);
   const subjectTopics = topics.filter(t => t.subjectId === subjectId).sort((a, b) => a.order - b.order);
@@ -39,24 +39,31 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       return matchesSubject && matchesPath && isTrainingQuiz(quiz);
     })
     .sort((a, b) => a.title.localeCompare(b.title, 'ar'));
+  const availableLibraryItems = libraryItems
+    .filter((item) => {
+      const matchesSubject = item.subjectId === subjectId;
+      const matchesPath = currentSubject?.pathId ? item.pathId === currentSubject.pathId : true;
+      return matchesSubject && matchesPath && Boolean(item.url);
+    })
+    .sort((a, b) => a.title.localeCompare(b.title, 'ar'));
   const foundationOverview = {
     total: subjectTopics.length,
     visible: subjectTopics.filter((topic) => topic.showOnPlatform !== false).length,
     locked: subjectTopics.filter((topic) => topic.isLocked === true).length,
     linkedResources: subjectTopics.reduce(
-      (sum, topic) => sum + (topic.lessonIds?.length || 0) + (topic.quizIds?.length || 0),
+      (sum, topic) => sum + (topic.lessonIds?.length || 0) + (topic.quizIds?.length || 0) + (topic.libraryItemIds?.length || 0),
       0,
     ),
   };
 
-  const getTopicReadinessMeta = (topic: Topic, attachedLessons: Lesson[], attachedQuizzes: Quiz[], childCount: number) => {
+  const getTopicReadinessMeta = (topic: Topic, attachedLessons: Lesson[], attachedQuizzes: Quiz[], attachedLibraryItems: LibraryItem[], childCount: number) => {
     const issues: string[] = [];
 
     if (!topic.title.trim()) issues.push('العنوان غير مكتمل');
     if (!topic.subjectId) issues.push('غير مربوط بمادة');
     if (!topic.pathId && !currentSubject?.pathId) issues.push('غير مربوط بمسار');
     if (topic.showOnPlatform === false) issues.push('مخفي عن المنصة');
-    if (attachedLessons.length + attachedQuizzes.length + childCount === 0) issues.push('لا توجد دروس أو تدريبات مرتبطة');
+    if (attachedLessons.length + attachedQuizzes.length + attachedLibraryItems.length + childCount === 0) issues.push('لا توجد دروس أو تدريبات أو ملفات دعم مرتبطة');
 
     attachedLessons.forEach((lesson) => {
       if (lesson.type === 'video' && !lesson.videoUrl) issues.push(`الدرس "${lesson.title}" بدون رابط فيديو`);
@@ -70,6 +77,13 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       if (!isTrainingQuiz(quiz)) issues.push(`التدريب "${quiz.title}" غير مصنف كتدريب`);
       if (quiz.showOnPlatform === false || quiz.isPublished === false || (quiz.approvalStatus && quiz.approvalStatus !== 'approved')) {
         issues.push(`التدريب "${quiz.title}" يحتاج نشرًا أو اعتمادًا`);
+      }
+    });
+
+    attachedLibraryItems.forEach((item) => {
+      if (!item.url) issues.push(`ملف الدعم "${item.title}" بدون رابط`);
+      if (item.showOnPlatform === false || (item.approvalStatus && item.approvalStatus !== 'approved')) {
+        issues.push(`ملف الدعم "${item.title}" يحتاج نشرًا أو اعتمادًا`);
       }
     });
 
@@ -94,8 +108,9 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     (acc, topic) => {
       const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
       const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
+      const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
       const childCount = subjectTopics.filter((item) => item.parentId === topic.id).length;
-      const readiness = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, childCount);
+      const readiness = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, attachedLibraryItems, childCount);
 
       if (readiness.issues.length === 0) {
         acc.ready += 1;
@@ -127,7 +142,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       order: subjectTopics.filter(t => t.parentId === parentId).length,
       showOnPlatform: false,
       lessonIds: [],
-      quizIds: []
+      quizIds: [],
+      libraryItemIds: []
     });
     setIsEditing(true);
   };
@@ -188,7 +204,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           videoUrl: lesson.videoUrl ? sanitizeVideoUrl(lesson.videoUrl) : lesson.videoUrl,
         });
       }
-    } else {
+    } else if (attachType === 'quiz') {
       if (!topic.quizIds.includes(itemId)) {
         updateTopic(topic.id, { quizIds: [...topic.quizIds, itemId] });
       }
@@ -208,6 +224,22 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           approvedAt: quiz.approvedAt || Date.now(),
         });
       }
+    } else {
+      const currentLibraryItemIds = topic.libraryItemIds || [];
+      if (!currentLibraryItemIds.includes(itemId)) {
+        updateTopic(topic.id, { libraryItemIds: [...currentLibraryItemIds, itemId] });
+      }
+      const libraryItem = libraryItems.find((item) => item.id === itemId);
+      if (libraryItem && topic.showOnPlatform !== false) {
+        updateLibraryItem(itemId, {
+          pathId: libraryItem.pathId || topic.pathId || currentSubject?.pathId,
+          subjectId: libraryItem.subjectId || topic.subjectId,
+          sectionId: libraryItem.sectionId || topic.sectionId,
+          showOnPlatform: true,
+          approvalStatus: 'approved',
+          approvedAt: libraryItem.approvedAt || Date.now(),
+        });
+      }
     }
     setIsAttaching(false);
   };
@@ -217,14 +249,16 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   const isQuizReadyForLearner = (quiz: Quiz) =>
     quiz.showOnPlatform !== false && quiz.isPublished !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved');
 
-  const handleRemoveAttachment = (topicId: string, itemId: string, type: 'lesson' | 'quiz') => {
+  const handleRemoveAttachment = (topicId: string, itemId: string, type: 'lesson' | 'quiz' | 'support') => {
     const topic = topics.find(t => t.id === topicId);
     if (!topic) return;
 
     if (type === 'lesson') {
       updateTopic(topicId, { lessonIds: topic.lessonIds.filter(id => id !== itemId) });
-    } else {
+    } else if (type === 'quiz') {
       updateTopic(topicId, { quizIds: topic.quizIds.filter(id => id !== itemId) });
+    } else {
+      updateTopic(topicId, { libraryItemIds: (topic.libraryItemIds || []).filter(id => id !== itemId) });
     }
   };
 
@@ -239,6 +273,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   const handlePrepareTopicForLearner = (topic: Topic) => {
     const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
     const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
+    const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
 
     updateTopic(topic.id, {
       pathId: topic.pathId || currentSubject?.pathId,
@@ -273,6 +308,17 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         approvedAt: quiz.approvedAt || Date.now(),
       });
     });
+
+    attachedLibraryItems.forEach((item) => {
+      updateLibraryItem(item.id, {
+        pathId: item.pathId || topic.pathId || currentSubject?.pathId,
+        subjectId: item.subjectId || topic.subjectId || subjectId,
+        sectionId: item.sectionId || topic.sectionId,
+        showOnPlatform: true,
+        approvalStatus: 'approved',
+        approvedAt: item.approvedAt || Date.now(),
+      });
+    });
   };
 
   const handlePreviewTopic = (topic: Topic) => {
@@ -283,12 +329,14 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handlePreviewAttachment = (topic: Topic, item: Lesson | Quiz, type: 'lesson' | 'quiz') => {
+  const handlePreviewAttachment = (topic: Topic, item: Lesson | Quiz | LibraryItem, type: 'lesson' | 'quiz' | 'support') => {
     const pathId = item.pathId || topic.pathId || currentSubject?.pathId || '';
     const targetSubjectId = item.subjectId || topic.subjectId || subjectId;
     const url = type === 'lesson'
       ? `/#/category/${pathId}?subject=${targetSubjectId}&tab=skills&topic=${topic.id}&content=lessons&lesson=${item.id}`
-      : `/#/quiz/${item.id}`;
+      : type === 'quiz'
+        ? `/#/quiz/${item.id}`
+        : `/#/category/${pathId}?subject=${targetSubjectId}&tab=skills&topic=${topic.id}&content=support`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -297,8 +345,9 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const isExpanded = expandedTopics.has(topic.id);
     const attachedLessons = lessons.filter(l => topic.lessonIds?.includes(l.id));
     const attachedQuizzes = quizzes.filter(q => topic.quizIds?.includes(q.id));
-    const totalAttachments = attachedLessons.length + attachedQuizzes.length;
-    const readinessMeta = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, subtopics.length);
+    const attachedLibraryItems = libraryItems.filter(item => topic.libraryItemIds?.includes(item.id));
+    const totalAttachments = attachedLessons.length + attachedQuizzes.length + attachedLibraryItems.length;
+    const readinessMeta = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, attachedLibraryItems, subtopics.length);
 
     return (
       <div key={topic.id} className={`border border-gray-100 rounded-xl mb-3 bg-white overflow-hidden shadow-sm ${level > 0 ? 'mr-8 border-r-4 border-r-indigo-200' : ''}`}>
@@ -409,7 +458,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         </div>
 
         {/* Attachments */}
-        {(attachedLessons.length > 0 || attachedQuizzes.length > 0) && (
+        {(attachedLessons.length > 0 || attachedQuizzes.length > 0 || attachedLibraryItems.length > 0) && (
           <div className="px-12 py-3 bg-white border-t border-gray-50 flex flex-wrap gap-2">
             {attachedLessons.map(lesson => (
               <div key={lesson.id} className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm border border-blue-100">
@@ -439,6 +488,22 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                   <Eye size={14} />
                 </button>
                 <button onClick={() => handleRemoveAttachment(topic.id, quiz.id, 'quiz')} className="text-amber-400 hover:text-amber-600">
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+            {attachedLibraryItems.map(item => (
+              <div key={item.id} className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-sm border border-emerald-100">
+                <FileText size={14} />
+                <span className="truncate max-w-[150px]">{item.title}</span>
+                <button
+                  onClick={() => handlePreviewAttachment(topic, item, 'support')}
+                  className="text-emerald-400 hover:text-emerald-700"
+                  title="معاينة ملف الدعم"
+                >
+                  <Eye size={14} />
+                </button>
+                <button onClick={() => handleRemoveAttachment(topic.id, item.id, 'support')} className="text-emerald-400 hover:text-emerald-600">
                   <X size={14} />
                 </button>
               </div>
@@ -583,6 +648,12 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               >
                 ربط تدريب (من مركز الاختبارات)
               </button>
+              <button
+                onClick={() => setAttachType('support')}
+                className={`flex-1 py-2 rounded-lg font-bold text-sm transition-colors ${attachType === 'support' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+              >
+                ربط ملف دعم (من المكتبة)
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto border border-gray-100 rounded-xl p-2">
@@ -629,7 +700,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                     ))
                   )}
                 </div>
-              ) : (
+              ) : attachType === 'quiz' ? (
                   <div className="space-y-2">
                   {availableQuizzes.length === 0 ? (
                     <p className="text-center text-gray-500 py-4">لا توجد اختبارات في المركز المركزي.</p>
@@ -662,6 +733,47 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                         </div>
                         <button 
                           onClick={() => handleAttach(quiz.id)}
+                          className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-bold hover:bg-indigo-100"
+                        >
+                          اختيار
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                  <div className="space-y-2">
+                  {availableLibraryItems.length === 0 ? (
+                    <p className="text-center text-gray-500 py-4">لا توجد ملفات دعم في المكتبة لهذه المادة.</p>
+                  ) : (
+                    availableLibraryItems
+                      .filter((item) => !topics.find((topic) => topic.id === attachingToTopicId)?.libraryItemIds?.includes(item.id))
+                      .map(item => (
+                      <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg border border-gray-100">
+                        <div className="flex items-center gap-3">
+                          <FileText size={18} className="text-emerald-500" />
+                          <div>
+                            <span className="font-medium text-gray-800">{item.title}</span>
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+                              {item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved') ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">
+                                  <CheckCircle2 size={12} />
+                                  جاهز للطالب
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-700">
+                                  <AlertTriangle size={12} />
+                                  سيتم نشره عند الربط
+                                </span>
+                              )}
+                              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600">
+                                {item.size || 'ملف دعم'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleAttach(item.id)}
                           className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-bold hover:bg-indigo-100"
                         >
                           اختيار

@@ -223,6 +223,7 @@ export interface Topic {
     isLocked?: boolean;
     lessonIds: string[]; // attached lessons from library
     quizIds: string[]; // attached quizzes from quiz center
+    libraryItemIds?: string[]; // attached support files from library
 }
 
 export interface NestedSkill {
