@@ -8,6 +8,7 @@ const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilde
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
 const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
 const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
+const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -170,6 +171,17 @@ check('foundation admin treats topic lock as package access instead of readiness
   if (/handlePrepareTopicForLearner[\s\S]*isLocked:\s*false/.test(foundationManagerSource)) {
     throw new Error('Prepare-for-learner must not silently remove paid/package topic access');
   }
+});
+
+check('server paid quiz submission respects training and test package scopes separately', () => {
+  assertIncludes(quizRoutesSource, 'const getPaidQuizPackageContentTypes = (quiz: any) =>');
+  assertIncludes(quizRoutesSource, 'visibleSlots.has("training")');
+  assertIncludes(quizRoutesSource, 'visibleSlots.has("tests")');
+  assertIncludes(quizRoutesSource, 'if (hasTrainingSlot) contentTypes.push("banks")');
+  assertIncludes(quizRoutesSource, 'if (hasTestSlot) contentTypes.push("tests")');
+  assertIncludes(quizRoutesSource, 'const packageContentTypes = getPaidQuizPackageContentTypes(quiz)');
+  assertIncludes(quizRoutesSource, 'for (const contentType of packageContentTypes)');
+  assertIncludes(quizRoutesSource, 'hasPurchasedPackageAccess(purchasedPackageIds, contentType, pathId, subjectId)');
 });
 
 for (const item of checks) {

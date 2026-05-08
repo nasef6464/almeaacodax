@@ -435,6 +435,32 @@ const hasSchoolPackageAccess = async (
   );
 };
 
+const getPaidQuizPackageContentTypes = (quiz: any) => {
+  const visibleSlots = new Set(
+    (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : [])
+      .filter((placement: any) => placement?.isVisible !== false)
+      .map((placement: any) => String(placement?.slot || ""))
+      .filter(Boolean),
+  );
+  const hasTrainingSlot =
+    visibleSlots.has("training") ||
+    quiz.showInTraining === true ||
+    quiz.placement === "training" ||
+    quiz.placement === "both" ||
+    quiz.type === "bank";
+  const hasTestSlot =
+    visibleSlots.has("tests") ||
+    quiz.showInMock === true ||
+    quiz.placement === "mock" ||
+    quiz.placement === "both" ||
+    !hasTrainingSlot;
+
+  const contentTypes = [];
+  if (hasTrainingSlot) contentTypes.push("banks");
+  if (hasTestSlot) contentTypes.push("tests");
+  return contentTypes.length ? contentTypes : ["tests"];
+};
+
 const canSubmitQuiz = async (quiz: any, user: any) => {
   if (isStaffRole(user.role)) {
     return true;
@@ -493,10 +519,17 @@ const canSubmitQuiz = async (quiz: any, user: any) => {
     );
   }
 
-  return (
-    (await hasPurchasedPackageAccess(purchasedPackageIds, "tests", pathId, subjectId)) ||
-    (await hasSchoolPackageAccess(user, "tests", pathId, subjectId))
-  );
+  const packageContentTypes = getPaidQuizPackageContentTypes(quiz);
+  for (const contentType of packageContentTypes) {
+    if (
+      (await hasPurchasedPackageAccess(purchasedPackageIds, contentType, pathId, subjectId)) ||
+      (await hasSchoolPackageAccess(user, contentType, pathId, subjectId))
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 const updateSkillProgressFromResult = async (result: any, userId: string) => {
