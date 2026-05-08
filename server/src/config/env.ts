@@ -28,7 +28,11 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().default("Platform Admin"),
   ADMIN_EMAIL: z.string().email().default("admin@example.com"),
   ADMIN_PASSWORD: z.string().min(6).default("change-me"),
-  AI_PROVIDER: z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"]).optional(),
+  AI_PROVIDER: z.preprocess((value) => {
+    // Render/CI UIs sometimes save an empty string; treat it as "unset".
+    if (typeof value === "string" && value.trim() === "") return undefined;
+    return value;
+  }, z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"]).optional()),
   AI_PROVIDER_ORDER: z.string().default(""),
   AI_REQUEST_TIMEOUT_MS: z.coerce.number().default(15000),
   GEMINI_API_KEY: z.string().optional(),
