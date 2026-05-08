@@ -33,6 +33,7 @@
 
 ## فحوص الدفعة
 
+- `npm run smoke:student-journey`
 - `npm run smoke:quiz-access`
 - `npm run smoke:mock-exams`
 - `npm run smoke:my-quizzes`
@@ -53,8 +54,15 @@
 آخر فحص تشغيلي بعد إصلاح بيانات الإنتاج:
 
 - `npm run smoke:operational`: 71/71
+- `npm run smoke:student-journey`: 6/6
 - `npm run smoke:learning-quiz`: 7/7
 - `npm run smoke:quiz-access`: 15/15
+
+## الدفعة المغلقة الآن
+
+تثبيت رحلة الطالب داخل المادة من التأسيس إلى التدريب ثم العودة.
+
+تمت إضافة حارس `smoke:student-journey` ليثبت أن رحلة الطالب داخل مادة فعلية تبدأ من مسار ومادة نشطين، ثم موضوع تأسيس ظاهر، ثم درس قابل للتشغيل، ثم تدريب بأسئلة قابلة لإعادة بناء المراجعة، ثم ملفات دعم مرتبطة، مع بقاء رابط الاختبار والرجوع داخل نفس الموضوع والمادة.
 
 ## الدفعة التالية المغلقة بحارس
 

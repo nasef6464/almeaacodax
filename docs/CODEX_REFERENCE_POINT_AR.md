@@ -29,6 +29,7 @@
 ## آخر فحوص ناجحة
 
 - `npm run smoke:operational` نجح في 2026-05-08 بنتيجة 71/71 بعد إصلاح مرجع سؤال مكسور في اختبار ظاهر للطالب.
+- `npm run smoke:student-journey` نجح بنتيجة 6/6.
 - `npm run smoke:learning-quiz` نجح بنتيجة 7/7.
 - `npm run smoke:quiz-access` نجح بنتيجة 15/15.
 - `npm --prefix server run build`
@@ -77,7 +78,7 @@
 ## الملفات المفتوحة الآن
 
 - لا توجد تعديلات كود مفتوحة بعد commit `8d06331 Gate subject learning content by packages`.
-- يوجد تحديث توثيق لهذه النقطة بسبب إصلاح بيانات الإنتاج وفحص الأدوار.
+- تمت إضافة حارس `scripts/smoke-student-learning-journey.mjs` وربطه بأمر `npm run smoke:student-journey`.
 
 ## نهج التطوير
 

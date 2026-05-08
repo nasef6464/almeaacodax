@@ -34,6 +34,7 @@
 الفحوص التي نجحت في هذه الجلسة:
 
 - `npm run smoke:operational` في 2026-05-08: نجح 71/71.
+- `npm run smoke:student-journey`: نجح 6/6.
 - `npm run smoke:learning-quiz`: نجح 7/7.
 - `npm run smoke:quiz-access`: نجح 15/15.
 - `npm --prefix server run build`
@@ -95,6 +96,7 @@
 - نتائج الاختبار ومراجعة الحلول: `npm run smoke:results`
 - مركز المكتبة وملفات الدعم: `npm run smoke:library-support`
 - صلاحيات الاختبارات والباقات: `npm run smoke:quiz-access`
+- رحلة الطالب داخل المادة: `npm run smoke:student-journey`
 - مركز الاختبارات المحاكية المستقل: `npm run smoke:mock-exams`
 - صفحة اختباراتي: `npm run smoke:my-quizzes`
 - تقارير الأدوار: `npm run smoke:reports-role`
