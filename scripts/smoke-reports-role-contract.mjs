@@ -54,6 +54,27 @@ check('student report links weak skills to lesson, quiz, plan, and exports', () 
   assertIncludes(reportsSource, 'to="/plan"');
 });
 
+check('student therapeutic report keeps a short weekly loop with direct actions', () => {
+  assertIncludes(reportsSource, 'const studentWeeklyPlan = useMemo');
+  assertIncludes(reportsSource, 'const studentTodayFocus = studentWeeklyPlan[0] || null');
+  assertIncludes(reportsSource, 'const studentQuickActions = useMemo');
+  assertIncludes(reportsSource, 'راجع الشرح');
+  assertIncludes(reportsSource, 'حل تدريب قصير');
+  assertIncludes(reportsSource, 'أعد القياس');
+  assertIncludes(reportsSource, 'studentFollowUpSummary');
+  assertIncludes(reportsSource, 'copyStudentSummary');
+  assertIncludes(reportsSource, 'shareStudentSummary');
+});
+
+check('student smart remediation uses AI with a local fallback plan', () => {
+  assertIncludes(reportsSource, 'const buildSmartRemediation = async () =>');
+  assertIncludes(reportsSource, 'api.aiRemediationPlan');
+  assertIncludes(reportsSource, 'skills: focusedReportSkills.slice(0, 5)');
+  assertIncludes(reportsSource, 'setSmartRemediation({');
+  assertIncludes(reportsSource, 'خطة علاجية قصيرة');
+  assertIncludes(reportsSource, 'parentNote');
+});
+
 check('parent report stays brief with copied/shared/PDF summary and practical actions', () => {
   assertIncludes(reportsSource, 'if (user.role === Role.PARENT)');
   assertIncludes(reportsSource, 'parentBriefSummary');
@@ -64,6 +85,14 @@ check('parent report stays brief with copied/shared/PDF summary and practical ac
   assertIncludes(reportsSource, 'shareScopedSummary');
 });
 
+check('parent report links the weakest skill to lesson, training, and measurement', () => {
+  assertIncludes(reportsSource, 'const parentWeakSkillRecommendation = getSkillRecommendation');
+  assertIncludes(reportsSource, 'فتح الشرح');
+  assertIncludes(reportsSource, 'بدء تدريب');
+  assertIncludes(reportsSource, 'حصة علاجية');
+  assertIncludes(reportsSource, 'الخطوة العملية: شرح قصير، تدريب بسيط، ثم إعادة قياس هادئة.');
+});
+
 check('admin, supervisor, and teacher reports expose separate skills and students reports with export', () => {
   assertIncludes(reportsSource, '!isStudentView && (');
   assertIncludes(reportsSource, 'scopedSkillReportCards');
@@ -71,6 +100,17 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'downloadScopedSkillsWorkbook');
   assertIncludes(reportsSource, 'downloadScopedStudentsWorkbook');
   assertIncludes(reportsSource, 'scopedInterventionPlan');
+});
+
+check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {
+  assertIncludes(reportsSource, 'const scopedInterventionPlan = useMemo');
+  assertIncludes(reportsSource, 'ابدأ بالمهارة الأكثر احتياجًا');
+  assertIncludes(reportsSource, 'تابع الطالب الأكثر احتياجًا');
+  assertIncludes(reportsSource, 'حوّلها لخطة متابعة');
+  assertIncludes(reportsSource, 'const scopedFollowUpSummary = useMemo');
+  assertIncludes(reportsSource, 'const buildScopedSmartRemediation = async () =>');
+  assertIncludes(reportsSource, 'const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5)');
+  assertIncludes(reportsSource, 'خطة تدخل للنطاق الحالي');
 });
 
 check('server analytics scopes reports by role before returning weak skills and students', () => {
