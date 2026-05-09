@@ -5,7 +5,13 @@ import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion,
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
-import { isQuizVisibleInLearningSlot, LearningPlacementSlot, setQuizLearningSlotVisibility } from '../../utils/quizLearningPlacement';
+import {
+  getQuizLearningPlacementAccessType,
+  isQuizVisibleInLearningSlot,
+  LearningPlacementSlot,
+  setQuizLearningSlotAccess,
+  setQuizLearningSlotVisibility,
+} from '../../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
 
@@ -405,7 +411,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       ...getQuizPlacementDefaults(filterType || 'quiz'),
       learningPlacements:
         activeLearningSlot && activePathId && draftSubjectId
-          ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, isVisible: true, order: 0, createdAt }]
+          ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, accessType: 'free', isVisible: true, order: 0, createdAt }]
           : [],
       mode,
       settings: getDefaultQuizSettings({
@@ -503,6 +509,23 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       isPublished: !isVisibleHere ? true : quiz.isPublished,
       approvalStatus: !isVisibleHere ? 'approved' : quiz.approvalStatus,
       approvedAt: !isVisibleHere ? quiz.approvedAt || Date.now() : quiz.approvedAt,
+    });
+  };
+
+  const handleToggleLearningSlotAccess = (quiz: Quiz) => {
+    if (!activeLearningScope) return;
+
+    const currentAccess = getQuizLearningPlacementAccessType(quiz, activeLearningScope);
+    const nextAccess = currentAccess === 'paid' ? 'free' : 'paid';
+
+    updateQuiz(quiz.id, {
+      pathId: quiz.pathId || activePathId,
+      subjectId: quiz.subjectId || activeSubjectId,
+      learningPlacements: setQuizLearningSlotAccess(quiz, activeLearningScope, nextAccess),
+      showOnPlatform: true,
+      isPublished: true,
+      approvalStatus: 'approved',
+      approvedAt: quiz.approvedAt || Date.now(),
     });
   };
 
@@ -935,6 +958,14 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 const visibilityMeta = getVisibilityMeta(quiz);
                 const readinessMeta = getQuizReadinessMeta(quiz, questions);
                 const isVisibleHereForRow = activeLearningScope ? isQuizVisibleInLearningSlot(quiz, activeLearningScope) : false;
+                const accessHereForRow = activeLearningScope ? getQuizLearningPlacementAccessType(quiz, activeLearningScope) : 'inherit';
+                const accessHereLabel = accessHereForRow === 'paid' ? 'ضمن باقة هنا' : accessHereForRow === 'free' ? 'مجاني هنا' : 'حسب الأصل';
+                const accessHereClassName =
+                  accessHereForRow === 'paid'
+                    ? 'bg-amber-100 text-amber-700'
+                    : accessHereForRow === 'free'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'bg-slate-100 text-slate-600';
 
                 return (
                   <tr
@@ -1023,6 +1054,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                               {isVisibleHereForRow ? <CheckCircle2 size={13} /> : <Eye size={13} />}
                               {isVisibleHereForRow ? 'ظاهر هنا' : 'غير ظاهر هنا'}
                             </span>
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black ${accessHereClassName}`}>
+                              {accessHereForRow === 'paid' ? <Lock size={13} /> : <LockOpen size={13} />}
+                              {accessHereLabel}
+                            </span>
                             <span
                               className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-black ${readinessMeta.className}`}
                               title={readinessMeta.issues.join('، ') || 'لا توجد ملاحظات'}
@@ -1072,6 +1107,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                           </button>
                         )}
                         {activeLearningSlot && activePathId && activeSubjectId && (
+                          <>
                           <button
                             onClick={() => handleToggleLearningSlotVisibility(quiz)}
                             className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
@@ -1085,6 +1121,18 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                               ? 'ظاهر للطالب هنا'
                               : 'أظهر للطالب هنا'}
                           </button>
+                          <button
+                            onClick={() => handleToggleLearningSlotAccess(quiz)}
+                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
+                              accessHereForRow === 'paid'
+                                ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                                : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                            }`}
+                            title="هذا الضبط خاص بمكان العرض الحالي فقط ولا يغير أصل الاختبار في المستودع"
+                          >
+                            {accessHereForRow === 'paid' ? 'ضمن باقة هنا' : 'مجاني هنا'}
+                          </button>
+                          </>
                         )}
                         {!isLearningSpaceManager && (
                           <button

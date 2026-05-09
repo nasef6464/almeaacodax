@@ -9,6 +9,8 @@ const quizzesManagerSource = await readFile(new URL('../dashboards/admin/Quizzes
 const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
 const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
+const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -61,15 +63,26 @@ check('quiz builder keeps publish and platform visibility separate', () => {
 check('student learning area resolves bank and test package access independently', () => {
   assertIncludes(learningSectionSource, "hasScopedPackageAccess('banks', category, subject)");
   assertIncludes(learningSectionSource, "hasScopedPackageAccess('tests', category, subject)");
-  assertIncludes(learningSectionSource, 'isQuizLockedForStudent(q, hasBanksAccess)');
-  assertIncludes(learningSectionSource, 'isQuizLockedForStudent(q, hasTestsAccess)');
+  assertIncludes(learningSectionSource, "isQuizLockedForStudent(q, hasBanksAccess, 'training')");
+  assertIncludes(learningSectionSource, "isQuizLockedForStudent(q, hasTestsAccess, 'tests')");
 });
 
-check('student quiz locking keeps free open, private audience-only, and paid/package gated', () => {
-  assertIncludes(learningSectionSource, "const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free'");
+check('student quiz locking keeps placement-free open, private audience-only, and paid/package gated', () => {
+  assertIncludes(learningSectionSource, 'resolveQuizLearningAccessType(quiz, slot ? { pathId: category, subjectId: subject, slot } : undefined)');
   assertIncludes(learningSectionSource, "if (accessType === 'free') return false");
   assertIncludes(learningSectionSource, "if (accessType === 'private') return !isQuizAudienceAllowed(quiz)");
   assertIncludes(learningSectionSource, 'return !hasPackageAccess');
+});
+
+check('learning placement access can override the reusable quiz without duplicating it', () => {
+  assertIncludes(typeSource, "accessType?: 'inherit' | 'free' | 'paid'");
+  assertIncludes(quizPlacementSource, 'export type LearningPlacementAccessType');
+  assertIncludes(quizPlacementSource, 'getQuizLearningPlacementAccessType');
+  assertIncludes(quizPlacementSource, 'resolveQuizLearningAccessType');
+  assertIncludes(quizPlacementSource, 'setQuizLearningSlotAccess');
+  assertIncludes(quizzesManagerSource, 'handleToggleLearningSlotAccess');
+  assertIncludes(quizzesManagerSource, 'ضمن باقة هنا');
+  assertIncludes(quizzesManagerSource, 'مجاني هنا');
 });
 
 check('locked learning quizzes open the matching package flow for bank and test slots', () => {
@@ -106,7 +119,7 @@ check('admin labels paid, private, course-only, central, and free access clearly
   assertIncludes(quizzesManagerSource, "quiz.access.type === 'private'");
   assertIncludes(quizzesManagerSource, "quiz.access.type === 'course_only'");
   assertIncludes(quizzesManagerSource, "(quiz.mode || 'regular') === 'central'");
-  assertIncludes(quizzesManagerSource, "return { label: 'مفتوح للعرض'");
+  assertPattern(quizzesManagerSource, /return \{ label: '(مفتوح للعرض|Ù…ÙØªÙˆØ­ Ù„Ù„Ø¹Ø±Ø¶)'/);
 });
 
 check('path model supports separate subject, mock exam, and package cards', () => {
@@ -157,7 +170,7 @@ check('subject learning page gates paid foundation, banks, tests, and library th
   assertIncludes(subjectLearningSource, "hasScopedPackageAccess('foundation', pathId, subjectId)");
   assertIncludes(subjectLearningSource, "hasScopedPackageAccess('banks', pathId, subjectId)");
   assertIncludes(subjectLearningSource, "hasScopedPackageAccess('library', pathId, subjectId)");
-  assertIncludes(subjectLearningSource, "isQuizLockedForStudent(quiz, 'tests')");
+  assertIncludes(subjectLearningSource, "isQuizLockedForStudent(quiz, 'tests', 'tests')");
   assertIncludes(subjectLearningSource, "params.set('tab', 'packages')");
   assertIncludes(subjectLearningSource, "isTopicLockedForStudent(mainTopic)");
   assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item)");
@@ -174,14 +187,18 @@ check('foundation admin treats topic lock as package access instead of readiness
 });
 
 check('server paid quiz submission respects training and test package scopes separately', () => {
-  assertIncludes(quizRoutesSource, 'const getPaidQuizPackageContentTypes = (quiz: any) =>');
+  assertIncludes(quizRoutesSource, 'const getPaidQuizPackageContentTypes = (quiz: any, source?: string) =>');
+  assertIncludes(quizRoutesSource, 'const getPackageContentTypeForQuizSource = (source?: string) =>');
+  assertIncludes(quizRoutesSource, 'const getQuizPlacementAccessType = (quiz: any, source?: string) =>');
   assertIncludes(quizRoutesSource, 'visibleSlots.has("training")');
   assertIncludes(quizRoutesSource, 'visibleSlots.has("tests")');
   assertIncludes(quizRoutesSource, 'if (hasTrainingSlot) contentTypes.push("banks")');
   assertIncludes(quizRoutesSource, 'if (hasTestSlot) contentTypes.push("tests")');
-  assertIncludes(quizRoutesSource, 'const packageContentTypes = getPaidQuizPackageContentTypes(quiz)');
+  assertIncludes(quizRoutesSource, 'const packageContentTypes = getPaidQuizPackageContentTypes(quiz, source)');
   assertIncludes(quizRoutesSource, 'for (const contentType of packageContentTypes)');
   assertIncludes(quizRoutesSource, 'hasPurchasedPackageAccess(purchasedPackageIds, contentType, pathId, subjectId)');
+  assertIncludes(quizRoutesSource, 'if (!(await canSubmitQuiz(quiz, authUser, payload.source)))');
+  assertIncludes(quizPageSource, 'source: result.source');
 });
 
 for (const item of checks) {

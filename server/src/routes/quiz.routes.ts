@@ -67,6 +67,7 @@ const quizSchema = z.object({
     pathId: z.string().min(1),
     subjectId: z.string().optional().default(""),
     slot: z.enum(["training", "tests", "foundation", "course"]),
+    accessType: z.enum(["inherit", "free", "paid"]).optional().default("inherit"),
     isVisible: z.boolean().optional().default(true),
     order: z.number().optional().default(0),
     createdAt: z.number().optional(),
@@ -149,6 +150,7 @@ const questionAttemptSchema = z.object({
 const quizSubmitSchema = z.object({
   answers: z.record(z.coerce.number()).default({}),
   timeSpentSeconds: z.number().min(0).default(0),
+  source: z.string().optional(),
 });
 
 const buildDocumentQuery = (value: string) => {
@@ -435,10 +437,43 @@ const hasSchoolPackageAccess = async (
   );
 };
 
-const getPaidQuizPackageContentTypes = (quiz: any) => {
+const getPackageContentTypeForQuizSource = (source?: string) => {
+  if (source === "training") return "banks";
+  if (source === "tests") return "tests";
+  if (source === "foundation") return "foundation";
+  if (source === "course") return "courses";
+  return "";
+};
+
+const getLearningSlotForQuizSource = (source?: string) => {
+  if (source === "training") return "training";
+  if (source === "tests") return "tests";
+  if (source === "foundation") return "foundation";
+  if (source === "course") return "course";
+  return "";
+};
+
+const getQuizPlacementAccessType = (quiz: any, source?: string) => {
+  const slot = getLearningSlotForQuizSource(source);
+  if (!slot) return "inherit";
+
+  const placement = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).find(
+    (item: any) => item?.slot === slot && item?.isVisible !== false,
+  );
+
+  return placement?.accessType || "inherit";
+};
+
+const getPaidQuizPackageContentTypes = (quiz: any, source?: string) => {
+  const sourceContentType = getPackageContentTypeForQuizSource(source);
+  if (sourceContentType) {
+    return [sourceContentType];
+  }
+
   const visibleSlots = new Set(
     (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : [])
       .filter((placement: any) => placement?.isVisible !== false)
+      .filter((placement: any) => !placement?.accessType || placement.accessType === "inherit" || placement.accessType === "paid")
       .map((placement: any) => String(placement?.slot || ""))
       .filter(Boolean),
   );
@@ -461,7 +496,7 @@ const getPaidQuizPackageContentTypes = (quiz: any) => {
   return contentTypes.length ? contentTypes : ["tests"];
 };
 
-const canSubmitQuiz = async (quiz: any, user: any) => {
+const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) {
     return true;
   }
@@ -493,7 +528,8 @@ const canSubmitQuiz = async (quiz: any, user: any) => {
     return false;
   }
 
-  const accessType = quiz.access?.type || "free";
+  const placementAccessType = getQuizPlacementAccessType(quiz, source);
+  const accessType = placementAccessType !== "inherit" ? placementAccessType : quiz.access?.type || "free";
   if (accessType === "free") {
     return true;
   }
@@ -519,7 +555,7 @@ const canSubmitQuiz = async (quiz: any, user: any) => {
     );
   }
 
-  const packageContentTypes = getPaidQuizPackageContentTypes(quiz);
+  const packageContentTypes = getPaidQuizPackageContentTypes(quiz, source);
   for (const contentType of packageContentTypes) {
     if (
       (await hasPurchasedPackageAccess(purchasedPackageIds, contentType, pathId, subjectId)) ||
@@ -1359,7 +1395,7 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    if (!(await canSubmitQuiz(quiz, authUser))) {
+    if (!(await canSubmitQuiz(quiz, authUser, payload.source))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 

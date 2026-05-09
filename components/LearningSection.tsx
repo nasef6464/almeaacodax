@@ -12,7 +12,7 @@ import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -341,14 +341,16 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             isQuizAudienceAllowed(quiz));
     const canStudentSeeLibraryItem = (item: (typeof libraryItems)[number]) =>
         isStaffViewer || (item.showOnPlatform !== false && (!item.approvalStatus || item.approvalStatus === 'approved'));
-    const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
+    const getQuizAccessType = (quiz: (typeof quizzes)[number], slot?: 'training' | 'tests') =>
+        resolveQuizLearningAccessType(quiz, slot ? { pathId: category, subjectId: subject, slot } : undefined);
     const isQuizLockedForStudent = (
         quiz: (typeof quizzes)[number],
         hasPackageAccess: boolean,
+        slot?: 'training' | 'tests',
     ) => {
         if (isStaffViewer) return false;
 
-        const accessType = getQuizAccessType(quiz);
+        const accessType = getQuizAccessType(quiz, slot);
         if (accessType === 'free') return false;
         if (accessType === 'private') return !isQuizAudienceAllowed(quiz);
 
@@ -543,7 +545,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         updated: formatQuizUpdatedAt(q.createdAt),
         type: 'bank',
         level: 'متعدد',
-        isLocked: isQuizLockedForStudent(q, hasBanksAccess),
+        isLocked: isQuizLockedForStudent(q, hasBanksAccess, 'training'),
         duration: 'غير محدد'
     }));
 
@@ -560,7 +562,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         questions: q.questionIds?.length || 0,
         type: 'simulated',
         level: 'متوسط',
-        isLocked: isQuizLockedForStudent(q, hasTestsAccess)
+        isLocked: isQuizLockedForStudent(q, hasTestsAccess, 'tests')
     }));
 
     let sectionLibraryItems = libraryItems.filter(item => canStudentSeeLibraryItem(item) && matchesScopedContent(item.pathId, item.subjectId)).map(item => ({

@@ -99,7 +99,13 @@ check('support files shown inside foundation topics come from explicit topic lin
   assertIncludes(subjectLearningSource, 'return isAttached && Boolean(item.url) && canSeeLibraryItem(item)');
 });
 
-check('paid support files in foundation open the package flow for students', () => {
+check('support files inside foundation follow the topic package state', () => {
+  assertIncludes(subjectLearningSource, 'const isTopicSupportLockedForStudent = (topic: Topic | null | undefined) => isTopicLockedForStudent(topic)');
+  assertIncludes(subjectLearningSource, "isTopicSupportLockedForStudent(activeTopic) ? openPackageTab('foundation') : openExternalUrl(item.url)");
+  assertIncludes(subjectLearningSource, 'getTopicSupportAccessLabel(activeTopic)');
+});
+
+check('library tab keeps its own package access separate from foundation topics', () => {
   assertIncludes(subjectLearningSource, 'const isLibraryItemLockedForStudent');
   assertIncludes(subjectLearningSource, "hasScopedPackageAccess('library', pathId, subjectId)");
   assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)");

@@ -496,6 +496,9 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               <div key={item.id} className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-sm border border-emerald-100">
                 <FileText size={14} />
                 <span className="truncate max-w-[150px]">{item.title}</span>
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${topic.isLocked ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                  {topic.isLocked ? 'يتبع باقة الموضوع' : 'يتبع مجانية الموضوع'}
+                </span>
                 <button
                   onClick={() => handlePreviewAttachment(topic, item, 'support')}
                   className="text-emerald-400 hover:text-emerald-700"

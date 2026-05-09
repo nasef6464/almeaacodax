@@ -355,6 +355,7 @@ export interface QuizLearningPlacement {
     pathId: string;
     subjectId?: string;
     slot: 'training' | 'tests' | 'foundation' | 'course';
+    accessType?: 'inherit' | 'free' | 'paid';
     isVisible?: boolean;
     order?: number;
     createdAt?: number;

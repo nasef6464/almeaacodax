@@ -493,7 +493,7 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  submitQuiz: (id: string, payload: { answers: Record<string, number>; timeSpentSeconds?: number }, token?: string | null) =>
+  submitQuiz: (id: string, payload: { answers: Record<string, number>; timeSpentSeconds?: number; source?: string }, token?: string | null) =>
     request<unknown>(`/quizzes/${id}/submit`, {
       method: "POST",
       body: payload,

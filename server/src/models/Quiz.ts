@@ -18,6 +18,7 @@ const quizSchema = new Schema(
           pathId: { type: String, required: true },
           subjectId: { type: String, default: "" },
           slot: { type: String, enum: ["training", "tests", "foundation", "course"], required: true },
+          accessType: { type: String, enum: ["inherit", "free", "paid"], default: "inherit" },
           isVisible: { type: Boolean, default: true },
           order: { type: Number, default: 0 },
           createdAt: { type: Number, default: Date.now },

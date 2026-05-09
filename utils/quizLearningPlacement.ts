@@ -1,6 +1,7 @@
 import { Quiz, QuizLearningPlacement } from '../types';
 
 export type LearningPlacementSlot = QuizLearningPlacement['slot'];
+export type LearningPlacementAccessType = NonNullable<QuizLearningPlacement['accessType']>;
 
 type Scope = {
   pathId?: string;
@@ -29,6 +30,18 @@ export const isQuizVisibleInLearningSlot = (quiz: Quiz, scope: Scope) => {
   return placement ? placement.isVisible !== false : false;
 };
 
+export const getQuizLearningPlacementAccessType = (quiz: Quiz, scope: Scope): LearningPlacementAccessType =>
+  getQuizLearningPlacement(quiz, scope)?.accessType || 'inherit';
+
+export const resolveQuizLearningAccessType = (quiz: Quiz, scope?: Scope) => {
+  if (scope) {
+    const placementAccessType = getQuizLearningPlacementAccessType(quiz, scope);
+    if (placementAccessType !== 'inherit') return placementAccessType;
+  }
+
+  return quiz.access?.type || 'free';
+};
+
 export const setQuizLearningSlotVisibility = (quiz: Quiz, scope: Scope, isVisible: boolean) => {
   const now = Date.now();
   const placements = getPlacements(quiz);
@@ -37,7 +50,29 @@ export const setQuizLearningSlotVisibility = (quiz: Quiz, scope: Scope, isVisibl
     pathId: scope.pathId || quiz.pathId,
     subjectId: scope.subjectId || quiz.subjectId,
     slot: scope.slot,
+    accessType: previous?.accessType || 'inherit',
     isVisible,
+    order: previous?.order ?? placements.length,
+    createdAt: previous?.createdAt || now,
+    updatedAt: now,
+  };
+
+  return [
+    ...placements.filter((placement) => !(placement.slot === scope.slot && sameScope(placement, scope))),
+    nextPlacement,
+  ];
+};
+
+export const setQuizLearningSlotAccess = (quiz: Quiz, scope: Scope, accessType: LearningPlacementAccessType) => {
+  const now = Date.now();
+  const placements = getPlacements(quiz);
+  const previous = getQuizLearningPlacement(quiz, scope);
+  const nextPlacement: QuizLearningPlacement = {
+    pathId: scope.pathId || quiz.pathId,
+    subjectId: scope.subjectId || quiz.subjectId,
+    slot: scope.slot,
+    accessType,
+    isVisible: previous?.isVisible ?? true,
     order: previous?.order ?? placements.length,
     createdAt: previous?.createdAt || now,
     updatedAt: now,

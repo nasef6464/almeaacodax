@@ -8,6 +8,7 @@ import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit }
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
+import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 
 interface QuestionThreadItem {
   id: string;
@@ -35,6 +36,13 @@ const resolveQuizPackageContentType = (quiz: Quiz, source?: string): PackageCont
   if (quiz.type === 'bank' || quiz.placement === 'training' || quiz.showInTraining) return 'banks';
   if ((quiz.learningPlacements || []).some((placement) => placement.slot === 'training')) return 'banks';
   return 'tests';
+};
+const resolveQuizLearningSlot = (source?: string): 'training' | 'tests' | 'foundation' | 'course' | undefined => {
+  if (source === 'training') return 'training';
+  if (source === 'tests') return 'tests';
+  if (source === 'foundation') return 'foundation';
+  if (source === 'course') return 'course';
+  return undefined;
 };
 const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   {
@@ -198,7 +206,12 @@ export const QuizPage: React.FC = () => {
       }
     }
 
-    const access = foundQuiz.access || { type: 'free' as const };
+    const sourceSlot = resolveQuizLearningSlot(sourceParam);
+    const accessType = resolveQuizLearningAccessType(
+      foundQuiz,
+      sourceSlot ? { pathId: foundQuiz.pathId, subjectId: foundQuiz.subjectId, slot: sourceSlot } : undefined,
+    );
+    const access = { ...(foundQuiz.access || { type: 'free' as const }), type: accessType };
     if (isStaffViewer) {
       setHasAccess(true);
     } else if (access.type === 'free') {
@@ -660,6 +673,7 @@ export const QuizPage: React.FC = () => {
         const serverResult = await api.submitQuiz(quiz.id, {
           answers: selectedOptions,
           timeSpentSeconds: Math.max(0, timeSpentSeconds),
+          source: result.source,
         });
         const savedServerResult: QuizResult = {
           ...result,

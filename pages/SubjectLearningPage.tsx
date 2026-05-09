@@ -25,7 +25,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
-import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
+import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 
@@ -70,10 +70,11 @@ export const SubjectLearningPage: React.FC = () => {
     return `/category/${pathId || ''}?${params.toString()}`;
   };
   const openPackageTab = (contentType: PackageContentType) => navigate(buildPackagePath(contentType));
-  const getQuizAccessType = (quiz: (typeof quizzes)[number]) => quiz.access?.type || 'free';
-  const isQuizLockedForStudent = (quiz: (typeof quizzes)[number], contentType: 'banks' | 'tests') => {
+  const getQuizAccessType = (quiz: (typeof quizzes)[number], slot?: 'training' | 'tests') =>
+    resolveQuizLearningAccessType(quiz, slot && pathId && subjectId ? { pathId, subjectId, slot } : undefined);
+  const isQuizLockedForStudent = (quiz: (typeof quizzes)[number], contentType: 'banks' | 'tests', slot?: 'training' | 'tests') => {
     if (isStaffViewer) return false;
-    const accessType = getQuizAccessType(quiz);
+    const accessType = getQuizAccessType(quiz, slot);
     if (accessType === 'free') return false;
     if (accessType === 'private') return true;
     return !hasScopedPackageAccess(contentType, quiz.pathId || pathId, quiz.subjectId || subjectId);
@@ -82,6 +83,9 @@ export const SubjectLearningPage: React.FC = () => {
     Boolean(topic?.isLocked && !hasFoundationAccess && !isStaffViewer);
   const isLibraryItemLockedForStudent = (item: (typeof libraryItems)[number]) =>
     Boolean(item.isLocked && !hasLibraryAccess && !isStaffViewer);
+  const isTopicSupportLockedForStudent = (topic: Topic | null | undefined) => isTopicLockedForStudent(topic);
+  const getTopicSupportAccessLabel = (topic: Topic | null | undefined) =>
+    isTopicLockedForStudent(topic) ? 'ضمن باقة' : 'مجاني';
 
   const renderLockedAccessPanel = (contentType: PackageContentType, title: string, description: string) => (
     <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-center">
@@ -487,12 +491,12 @@ export const SubjectLearningPage: React.FC = () => {
                         <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
                           {subTopics.length} موضوعات فرعية
                         </span>
-                        {isLocked && (
-                          <span className="mt-2 flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-lg">
-                            <Lock size={13} />
-                            ضمن باقة
-                          </span>
-                        )}
+                        <span className={`mt-2 flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg ${
+                          isLocked ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50'
+                        }`}>
+                          {isLocked ? <Lock size={13} /> : <Eye size={13} />}
+                          {isLocked ? 'ضمن باقة' : 'مجاني'}
+                        </span>
                       </div>
                     </div>
                     <div>
@@ -519,7 +523,14 @@ export const SubjectLearningPage: React.FC = () => {
             {subjectLibrary.length > 0 ? subjectLibrary.map((item) => (
               <div key={item.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col h-full">
                 <div className="flex justify-between items-start mb-6">
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold">{item.size}</span>
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-bold">{item.size}</span>
+                    <span className={`rounded-lg px-3 py-1 text-xs font-bold ${
+                      isLibraryItemLockedForStudent(item) ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'
+                    }`}>
+                      {isLibraryItemLockedForStudent(item) ? '\u0636\u0645\u0646 \u0628\u0627\u0642\u0629' : '\u0645\u062c\u0627\u0646\u064a'}
+                    </span>
+                  </div>
                   <div className="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center">
                     <FileText size={24} />
                   </div>
@@ -537,7 +548,7 @@ export const SubjectLearningPage: React.FC = () => {
                     }`}
                     onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
                   >
-                    {isLibraryItemLockedForStudent(item) ? <Lock size={16} /> : <Eye size={16} />} {isLibraryItemLockedForStudent(item) ? 'فتح بالباقة' : 'عرض'}
+                    {isLibraryItemLockedForStudent(item) ? <Lock size={16} /> : <Eye size={16} />} {isLibraryItemLockedForStudent(item) ? '\u0639\u0631\u0636 \u0627\u0644\u0628\u0627\u0642\u0627\u062a' : '\u0645\u0639\u0627\u064a\u0646\u0629'}
                   </button>
                   <button
                     className={`py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${
@@ -547,7 +558,7 @@ export const SubjectLearningPage: React.FC = () => {
                     }`}
                     onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
                   >
-                    <Download size={16} /> {isLibraryItemLockedForStudent(item) ? 'اشترك للتحميل' : 'تحميل'}
+                    <Download size={16} /> {isLibraryItemLockedForStudent(item) ? '\u0636\u0645\u0646 \u0628\u0627\u0642\u0629' : '\u062a\u062d\u0645\u064a\u0644'}
                   </button>
                 </div>
               </div>
@@ -585,7 +596,7 @@ export const SubjectLearningPage: React.FC = () => {
               {mainTopics.map((topic) => {
                 const questionCount = getTopicQuestionCount(topic);
                 const relatedBank = getTopicAttachedBank(topic);
-                const isBankLocked = relatedBank ? isQuizLockedForStudent(relatedBank, 'banks') : !hasBanksAccess;
+                const isBankLocked = relatedBank ? isQuizLockedForStudent(relatedBank, 'banks', 'training') : !hasBanksAccess;
 
                 return (
                   <div key={topic.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -636,12 +647,12 @@ export const SubjectLearningPage: React.FC = () => {
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-sm font-bold text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>
                   <button
-                    onClick={() => isQuizLockedForStudent(quiz, 'tests') ? openPackageTab('tests') : navigate(buildQuizPathWithReturn(quiz.id, buildSubjectReturnPath('exams'), 'tests'))}
+                    onClick={() => isQuizLockedForStudent(quiz, 'tests', 'tests') ? openPackageTab('tests') : navigate(buildQuizPathWithReturn(quiz.id, buildSubjectReturnPath('exams'), 'tests'))}
                     className={`px-6 py-2 rounded-xl font-bold transition-colors ${
-                      isQuizLockedForStudent(quiz, 'tests') ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      isQuizLockedForStudent(quiz, 'tests', 'tests') ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-indigo-600 text-white hover:bg-indigo-700'
                     }`}
                   >
-                    {isQuizLockedForStudent(quiz, 'tests') ? 'فتح باقة الاختبارات' : 'ابدأ الاختبار'}
+                    {isQuizLockedForStudent(quiz, 'tests', 'tests') ? 'فتح باقة الاختبارات' : 'ابدأ الاختبار'}
                   </button>
                 </div>
               </div>
@@ -971,9 +982,9 @@ export const SubjectLearningPage: React.FC = () => {
                         relatedLibrarySuggestions.map((item) => (
                           <button
                             key={item.id}
-                            onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
+                            onClick={() => isTopicSupportLockedForStudent(activeTopic) ? openPackageTab('foundation') : openExternalUrl(item.url)}
                             className={`w-full rounded-2xl border bg-white p-5 text-right shadow-sm transition-all hover:shadow-md ${
-                              isLibraryItemLockedForStudent(item)
+                              isTopicSupportLockedForStudent(activeTopic)
                                 ? 'border-amber-100 hover:border-amber-200'
                                 : 'border-emerald-100 hover:border-emerald-200'
                             }`}
@@ -981,17 +992,19 @@ export const SubjectLearningPage: React.FC = () => {
                             <div className="flex items-center justify-between gap-4">
                               <div className="flex items-center gap-4">
                                 <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                                  isLibraryItemLockedForStudent(item) ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                                  isTopicSupportLockedForStudent(activeTopic) ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
                                 }`}>
-                                  {isLibraryItemLockedForStudent(item) ? <Lock size={22} /> : <FileText size={24} />}
+                                  {isTopicSupportLockedForStudent(activeTopic) ? <Lock size={22} /> : <FileText size={24} />}
                                 </div>
                                 <div>
                                   <h4 className="font-black text-gray-900">{item.title}</h4>
                                   <p className="mt-1 text-xs font-bold text-gray-500">{item.size || 'ملف دعم'}</p>
                                 </div>
                               </div>
-                              <span className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700">
-                                فتح الملف
+                              <span className={`rounded-xl px-4 py-2 text-xs font-black ${
+                                isTopicSupportLockedForStudent(activeTopic) ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'
+                              }`}>
+                                {getTopicSupportAccessLabel(activeTopic)}
                               </span>
                             </div>
                           </button>
