@@ -106,6 +106,22 @@ const App: React.FC = () => {
 
     const bootstrapAppData = async () => {
       try {
+        // If the backend is unreachable, avoid hydrating with empty arrays
+        // (adapter falls back to empty on network errors) which would make
+        // locally persisted admin edits "disappear" after refresh.
+        const useRealApi = import.meta.env.VITE_USE_REAL_API !== 'false';
+        if (useRealApi) {
+          try {
+            await api.health();
+          } catch (error) {
+            console.warn('API health check failed; skipping remote hydration to preserve local state.', error);
+            if (mounted) {
+              setBootstrapReady(true);
+            }
+            return;
+          }
+        }
+
         const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
           adapter.getQuestions(),
