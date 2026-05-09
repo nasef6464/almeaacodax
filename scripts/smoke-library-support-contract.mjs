@@ -6,6 +6,10 @@ const learningSectionSource = await readFile(new URL('../components/LearningSect
 const skillModalSource = await readFile(new URL('../components/SkillDetailsModal.tsx', import.meta.url), 'utf8');
 const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
 const typeSource = await readFile(new URL('../types.ts', import.meta.url), 'utf8');
+const adapterSource = await readFile(new URL('../services/adapter.ts', import.meta.url), 'utf8');
+const storeSource = await readFile(new URL('../store/useStore.ts', import.meta.url), 'utf8');
+const serverTopicModelSource = await readFile(new URL('../server/src/models/Topic.ts', import.meta.url), 'utf8');
+const serverContentRoutesSource = await readFile(new URL('../server/src/routes/content.routes.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -80,11 +84,25 @@ check('foundation admin links support files directly to topics like lessons and 
   assertIncludes(foundationManagerSource, "handleRemoveAttachment(topic.id, item.id, 'support')");
 });
 
+check('foundation support links persist through server, adapter, and store reload', () => {
+  assertIncludes(serverTopicModelSource, 'libraryItemIds: { type: [String], default: [] }');
+  assertIncludes(serverContentRoutesSource, 'libraryItemIds: z.array(z.string()).default([])');
+  assertIncludes(adapterSource, 'libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : []');
+  assertIncludes(storeSource, 'libraryItemIds: normalizeIdList(topic?.libraryItemIds)');
+  assertIncludes(storeSource, 'api.updateTopic(topicId, data)');
+});
+
 check('support files shown inside foundation topics come from explicit topic links', () => {
   assertIncludes(skillModalSource, 'const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || [])');
   assertIncludes(skillModalSource, 'const isAttached = [...explicitLibraryItemIds].some((itemId) => matchesEntityId(item, itemId))');
   assertIncludes(subjectLearningSource, 'const explicitLibraryItemIds = new Set(activeTopic.libraryItemIds || [])');
   assertIncludes(subjectLearningSource, 'return isAttached && Boolean(item.url) && canSeeLibraryItem(item)');
+});
+
+check('paid support files in foundation open the package flow for students', () => {
+  assertIncludes(subjectLearningSource, 'const isLibraryItemLockedForStudent');
+  assertIncludes(subjectLearningSource, "hasScopedPackageAccess('library', pathId, subjectId)");
+  assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)");
 });
 
 for (const item of checks) {

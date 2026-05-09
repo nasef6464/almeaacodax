@@ -971,13 +971,19 @@ export const SubjectLearningPage: React.FC = () => {
                         relatedLibrarySuggestions.map((item) => (
                           <button
                             key={item.id}
-                            onClick={() => openExternalUrl(item.url)}
-                            className="w-full rounded-2xl border border-emerald-100 bg-white p-5 text-right shadow-sm transition-all hover:border-emerald-200 hover:shadow-md"
+                            onClick={() => isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)}
+                            className={`w-full rounded-2xl border bg-white p-5 text-right shadow-sm transition-all hover:shadow-md ${
+                              isLibraryItemLockedForStudent(item)
+                                ? 'border-amber-100 hover:border-amber-200'
+                                : 'border-emerald-100 hover:border-emerald-200'
+                            }`}
                           >
                             <div className="flex items-center justify-between gap-4">
                               <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                                  <FileText size={24} />
+                                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
+                                  isLibraryItemLockedForStudent(item) ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                                }`}>
+                                  {isLibraryItemLockedForStudent(item) ? <Lock size={22} /> : <FileText size={24} />}
                                 </div>
                                 <div>
                                   <h4 className="font-black text-gray-900">{item.title}</h4>

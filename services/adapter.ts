@@ -148,6 +148,7 @@ const normalizeTopic = (topic: any): Topic => ({
   isLocked: topic?.isLocked === true,
   lessonIds: Array.isArray(topic?.lessonIds) ? topic.lessonIds.map(String) : [],
   quizIds: Array.isArray(topic?.quizIds) ? topic.quizIds.map(String) : [],
+  libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : [],
 });
 
 const normalizeLibraryItem = (item: any): LibraryItem => ({
