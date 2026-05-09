@@ -28,6 +28,8 @@ export const MockExamManager: React.FC = () => {
   const [title, setTitle] = useState('اختبار محاكي جديد');
   const [description, setDescription] = useState('تجربة محاكية على مستوى المسار.');
   const [passingScore, setPassingScore] = useState(60);
+  const [accessType, setAccessType] = useState<Quiz['access']['type']>('free');
+  const [accessPrice, setAccessPrice] = useState(99);
   const [sections, setSections] = useState<DraftSection[]>([]);
   const [questionSearchTerm, setQuestionSearchTerm] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
@@ -72,6 +74,8 @@ export const MockExamManager: React.FC = () => {
     setTitle('اختبار محاكي جديد');
     setDescription('تجربة محاكية على مستوى المسار.');
     setPassingScore(60);
+    setAccessType('free');
+    setAccessPrice(99);
     setSections(pathSubjects.slice(0, 2).map((subject, index) => createSection(subject.name, subject.id, index)));
   };
 
@@ -81,6 +85,8 @@ export const MockExamManager: React.FC = () => {
     setTitle(quiz.title);
     setDescription(quiz.description || '');
     setPassingScore(quiz.settings?.passingScore || 60);
+    setAccessType(quiz.access?.type || 'free');
+    setAccessPrice(quiz.access?.price || 99);
     setSections(getMockExamSections(quiz));
   };
 
@@ -133,7 +139,11 @@ export const MockExamManager: React.FC = () => {
         passingScore,
         timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
       },
-      access: { type: 'free', allowedGroupIds: [] },
+      access: {
+        type: accessType,
+        price: accessType === 'paid' ? accessPrice : undefined,
+        allowedGroupIds: [],
+      },
       questionIds: allQuestionIds,
       mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections },
       createdAt: now,
@@ -203,6 +213,32 @@ export const MockExamManager: React.FC = () => {
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-20 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" placeholder="وصف مختصر" />
             <label className="block text-xs font-black text-gray-500">نسبة النجاح</label>
             <input type="number" min={0} max={100} value={passingScore} onChange={(e) => setPassingScore(Number(e.target.value) || 0)} className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold" />
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-xs font-black text-gray-500">نوع الوصول</label>
+                <select
+                  value={accessType}
+                  onChange={(e) => setAccessType(e.target.value as Quiz['access']['type'])}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold"
+                >
+                  <option value="free">مجاني للجميع</option>
+                  <option value="paid">ضمن باقة الاختبارات</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-xs font-black text-gray-500">سعر فردي اختياري</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={accessPrice}
+                  onChange={(e) => setAccessPrice(Number(e.target.value) || 0)}
+                  disabled={accessType !== 'paid'}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-100"
+                  placeholder="99"
+                />
+              </div>
+            </div>
 
             <div className="flex items-center justify-between">
               <h4 className="font-black text-gray-900">الأقسام</h4>
@@ -374,6 +410,9 @@ export const MockExamManager: React.FC = () => {
                       <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamSections(quiz).length} قسم</span>
                       <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamQuestionCount(quiz)} سؤال</span>
                       <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">من مركز الأسئلة</span>
+                      <span className={`rounded-full px-3 py-1 ${quiz.access?.type === 'paid' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                        {quiz.access?.type === 'paid' ? `ضمن باقة الاختبارات${quiz.access?.price ? ` • ${quiz.access.price} ر.س` : ''}` : 'مفتوح مجاني'}
+                      </span>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -454,6 +493,9 @@ export const MockExamManager: React.FC = () => {
                   </span>
                   <span className="rounded-full bg-white px-3 py-2 text-slate-700">
                     الاعتماد: {previewQuiz.approvalStatus === 'approved' ? 'معتمد' : previewQuiz.approvalStatus === 'rejected' ? 'مرفوض' : 'مسودة'}
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-2 text-slate-700">
+                    الوصول: {previewQuiz.access?.type === 'paid' ? `ضمن باقة الاختبارات${previewQuiz.access?.price ? ` • ${previewQuiz.access.price} ر.س` : ''}` : 'مجاني'}
                   </span>
                   <span className="rounded-full bg-white px-3 py-2 text-slate-700">
                     المصدر: من بنك الأسئلة

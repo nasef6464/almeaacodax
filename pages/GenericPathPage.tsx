@@ -77,7 +77,7 @@ export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hasScopedPackageAccess } = useStore();
+    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hasScopedPackageAccess, checkAccess } = useStore();
 
     const initialLevelId = searchParams.get('level') || null;
     const initialSubjectId = searchParams.get('subject') || null;
@@ -85,6 +85,7 @@ export const GenericPathPage: React.FC = () => {
     const [selectedLevelId, setSelectedLevelId] = useState<string | null>(initialLevelId);
     const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialSubjectId);
     const [selectedPackageForPayment, setSelectedPackageForPayment] = useState<any | null>(null);
+    const [selectedMockExamPaymentTarget, setSelectedMockExamPaymentTarget] = useState<any | null>(null);
     const normalizedPathId = normalizePathId(pathId);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     const isAdminViewer = user?.role === 'admin';
@@ -415,6 +416,51 @@ export const GenericPathPage: React.FC = () => {
             type="package"
         />
     );
+    const renderMockExamPaymentModal = () => (
+        <PaymentModal
+            isOpen={!!selectedMockExamPaymentTarget}
+            onClose={() => setSelectedMockExamPaymentTarget(null)}
+            item={selectedMockExamPaymentTarget || {}}
+            type={selectedMockExamPaymentTarget?.paymentType || 'test'}
+        />
+    );
+
+    const canAccessMockExam = (quiz: any) => {
+        if (isStaffViewer) return true;
+        const access = quiz.access || { type: 'free' as const };
+        if (access.type === 'free') return true;
+        if (access.type === 'paid') {
+            return checkAccess(quiz.id, true) || hasScopedPackageAccess('tests', quiz.pathId, quiz.subjectId);
+        }
+        if (access.type === 'private') {
+            const userGroups = user.groupIds || [];
+            return (access.allowedGroupIds || []).length === 0 || !!access.allowedGroupIds?.some((groupId: string) => userGroups.includes(groupId));
+        }
+        if (access.type === 'course_only') {
+            return hasScopedPackageAccess('courses', quiz.pathId, quiz.subjectId);
+        }
+        return false;
+    };
+
+    const openMockExamPayment = (quiz: any) => {
+        const matchedPackage = getSuggestedPackageForSubject(quiz.subjectId, ['tests']);
+        if (matchedPackage) {
+            setSelectedMockExamPaymentTarget({
+                ...buildPaymentPackage(matchedPackage, resolvePackageContentTypes(matchedPackage)),
+                paymentType: 'package',
+            });
+            return;
+        }
+
+        setSelectedMockExamPaymentTarget({
+            id: quiz.id,
+            title: quiz.title,
+            price: quiz.access?.price || 99,
+            currency: 'SAR',
+            accessContext: `هذا الاختبار المحاكي مدفوع داخل مسار ${path.name}. يمكنك إرسال طلب شراء مباشر له إذا لم توجد باقة اختبارات مناسبة حتى الآن.`,
+            paymentType: 'test',
+        });
+    };
     const renderSubjectAccessGuide = (subjectId: string) => {
         if (isStaffViewer || showPublicAdminDiagnostics) return null;
         const summary = getSubjectContentSummary(subjectId);
@@ -1006,6 +1052,8 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                 const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
                                 const mockSections = getMockExamSections(quiz);
                                 const sectionCount = mockSections.length;
+                                const hasAccessToMockExam = canAccessMockExam(quiz);
+                                const isPaidMockExam = quiz.access?.type === 'paid';
                                 const sectionSummary = mockSections
                                     .map((section) => section.title || subjects.find((subject) => subject.id === section.subjectId)?.name)
                                     .filter(Boolean)
@@ -1024,6 +1072,9 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                         <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamQuestionCount(quiz)} سؤال</span>
                                                         <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamTimeLimit(quiz)} دقيقة</span>
                                                         <span className="rounded-full bg-indigo-50 px-3 py-1 text-indigo-700">{sectionCount > 1 ? `${sectionCount} أقسام` : (quizSubject?.name || 'مسار كامل')}</span>
+                                                        <span className={`rounded-full px-3 py-1 ${isPaidMockExam ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                                                            {isPaidMockExam ? `ضمن باقة الاختبارات${quiz.access?.price ? ` • ${quiz.access.price} ر.س` : ''}` : 'مفتوح مجاني'}
+                                                        </span>
                                                     </div>
                                                     {sectionSummary ? (
                                                         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -1036,12 +1087,21 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                     ) : null}
                                                 </div>
                                             </div>
-                                            <button
-                                                onClick={() => navigate(buildQuizRouteWithContext(quiz.id, { returnTo: `/category/${path.id}?tab=mock-exams`, source: 'mock-exam' }))}
-                                                className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
-                                            >
-                                                ابدأ الاختبار
-                                            </button>
+                                            {hasAccessToMockExam ? (
+                                                <button
+                                                    onClick={() => navigate(buildQuizRouteWithContext(quiz.id, { returnTo: `/category/${path.id}?tab=mock-exams`, source: 'mock-exam' }))}
+                                                    className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:bg-indigo-700"
+                                                >
+                                                    ابدأ الاختبار
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => openMockExamPayment(quiz)}
+                                                    className="rounded-xl bg-amber-500 px-5 py-3 text-sm font-black text-white transition hover:bg-amber-600"
+                                                >
+                                                    فتح بالباقة
+                                                </button>
+                                            )}
                                         </div>
                                     </Card>
                                 );
@@ -1059,6 +1119,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         </Card>
                     )}
                     {renderPackages()}
+                    {renderMockExamPaymentModal()}
                 </div>
             </div>
         );
