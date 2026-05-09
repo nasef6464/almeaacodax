@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Award, Filter, Plus, Save, Search, Trash2 } from 'lucide-react';
+import { Award, Eye, ExternalLink, Filter, Plus, Save, Search, Trash2, X } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { MockExamSection, Question, Quiz } from '../../types';
 import { getMockExamQuestionCount, getMockExamSections, isPathMockExam } from '../../utils/mockExam';
@@ -24,6 +24,7 @@ export const MockExamManager: React.FC = () => {
   const { paths, subjects, questions, quizzes, skills, addQuiz, updateQuiz, deleteQuiz } = useStore();
   const [selectedPathId, setSelectedPathId] = useState(paths[0]?.id || '');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const [title, setTitle] = useState('اختبار محاكي جديد');
   const [description, setDescription] = useState('تجربة محاكية على مستوى المسار.');
   const [passingScore, setPassingScore] = useState(60);
@@ -149,6 +150,15 @@ export const MockExamManager: React.FC = () => {
     }
     resetDraft();
   };
+
+  const handlePreviewQuiz = (quiz: Quiz) => {
+    setPreviewQuiz(quiz);
+  };
+
+  const getPreviewSubjectNames = (quiz: Quiz) =>
+    getMockExamSections(quiz)
+      .map((section) => subjects.find((subject) => subject.id === section.subjectId)?.name || '')
+      .filter(Boolean);
 
   return (
     <div className="space-y-6">
@@ -367,6 +377,9 @@ export const MockExamManager: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
+                    <button onClick={() => handlePreviewQuiz(quiz)} className="rounded-xl bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
+                      معاينة
+                    </button>
                     <button onClick={() => loadExam(quiz)} className="rounded-xl bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700">
                       تعديل
                     </button>
@@ -388,6 +401,150 @@ export const MockExamManager: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {previewQuiz ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 px-4 py-6" onClick={() => setPreviewQuiz(null)}>
+          <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-[32px] bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-start justify-between border-b border-slate-100 px-6 py-5">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">
+                  <Eye size={14} />
+                  معاينة الاختبار المحاكي
+                </div>
+                <h3 className="mt-3 text-2xl font-black text-gray-900">{previewQuiz.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-gray-500">
+                  هذه المعاينة تعرض شكل الاختبار المحاكي قبل فتحه للطلاب، وتوضح الأقسام والمواد وعدد الأسئلة والوقت بصورة سريعة وواضحة.
+                </p>
+              </div>
+              <button
+                onClick={() => setPreviewQuiz(null)}
+                className="rounded-full bg-slate-100 p-2 text-slate-500 transition hover:bg-slate-200"
+                aria-label="إغلاق المعاينة"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="grid gap-4 px-6 py-5 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-2xl bg-slate-50 px-4 py-4">
+                <div className="text-xs font-black text-slate-500">المسار</div>
+                <div className="mt-2 text-sm font-black text-slate-900">{paths.find((path) => path.id === previewQuiz.pathId)?.name || 'غير محدد'}</div>
+              </div>
+              <div className="rounded-2xl bg-indigo-50 px-4 py-4">
+                <div className="text-xs font-black text-indigo-500">عدد الأقسام</div>
+                <div className="mt-2 text-sm font-black text-indigo-900">{getMockExamSections(previewQuiz).length} قسم</div>
+              </div>
+              <div className="rounded-2xl bg-emerald-50 px-4 py-4">
+                <div className="text-xs font-black text-emerald-500">عدد الأسئلة</div>
+                <div className="mt-2 text-sm font-black text-emerald-900">{getMockExamQuestionCount(previewQuiz)} سؤال</div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 px-4 py-4">
+                <div className="text-xs font-black text-amber-500">الوقت الكلي</div>
+                <div className="mt-2 text-sm font-black text-amber-900">
+                  {getMockExamSections(previewQuiz).reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || previewQuiz.settings?.timeLimit || 60} دقيقة
+                </div>
+              </div>
+            </div>
+
+            <div className="px-6 pb-6">
+              <div className="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+                <div className="flex flex-wrap gap-3 text-xs font-black">
+                  <span className="rounded-full bg-white px-3 py-2 text-slate-700">
+                    الظهور: {previewQuiz.showOnPlatform === false ? 'مخفي عن المنصة' : 'ظاهر على المنصة'}
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-2 text-slate-700">
+                    الاعتماد: {previewQuiz.approvalStatus === 'approved' ? 'معتمد' : previewQuiz.approvalStatus === 'rejected' ? 'مرفوض' : 'مسودة'}
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-2 text-slate-700">
+                    المصدر: من بنك الأسئلة
+                  </span>
+                </div>
+
+                {previewQuiz.description ? (
+                  <p className="mt-4 text-sm leading-7 text-slate-600">{previewQuiz.description}</p>
+                ) : null}
+
+                <div className="mt-5">
+                  <div className="text-sm font-black text-slate-900">المواد الداخلة في المحاكاة</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {Array.from(new Set(getPreviewSubjectNames(previewQuiz))).length > 0 ? (
+                      Array.from(new Set(getPreviewSubjectNames(previewQuiz))).map((name) => (
+                        <span key={name} className="rounded-full bg-white px-3 py-2 text-xs font-black text-indigo-700 shadow-sm">
+                          {name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="rounded-full bg-white px-3 py-2 text-xs font-black text-slate-500 shadow-sm">لم يتم ربط مواد بعد</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 xl:grid-cols-2">
+                {getMockExamSections(previewQuiz).map((section, index) => {
+                  const linkedSubject = subjects.find((subject) => subject.id === section.subjectId);
+                  const sectionQuestions = (section.questionIds || [])
+                    .map((questionId) => questions.find((question) => question.id === questionId))
+                    .filter(Boolean) as Question[];
+                  return (
+                    <div key={section.id} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-xs font-black text-slate-400">القسم {index + 1}</div>
+                          <h4 className="mt-1 text-lg font-black text-slate-900">{section.title}</h4>
+                          <p className="mt-2 text-xs font-black text-slate-500">
+                            {linkedSubject?.name || 'كل مواد المسار'} • {sectionQuestions.length} سؤال • {Number(section.timeLimit) || 0} دقيقة
+                          </p>
+                        </div>
+                        <span className="rounded-full bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
+                          محاكاة
+                        </span>
+                      </div>
+
+                      <div className="mt-4 space-y-2">
+                        {sectionQuestions.slice(0, 4).map((question, questionIndex) => (
+                          <div key={question.id} className="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div className="text-[11px] font-black text-slate-400">سؤال {questionIndex + 1}</div>
+                            <div className="mt-1 line-clamp-2 text-sm font-bold leading-7 text-slate-700">
+                              {plainQuestionText(question.text) || question.imageUrl || question.id}
+                            </div>
+                          </div>
+                        ))}
+                        {sectionQuestions.length === 0 ? (
+                          <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-center text-xs font-black text-slate-400">
+                            هذا القسم ما زال بدون أسئلة فعلية.
+                          </div>
+                        ) : null}
+                        {sectionQuestions.length > 4 ? (
+                          <div className="text-xs font-black text-slate-400">
+                            + {sectionQuestions.length - 4} سؤال إضافي داخل هذا القسم
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => window.open(`${window.location.origin}/#/quiz/${previewQuiz.id}`, '_blank', 'noopener,noreferrer')}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-black text-white"
+                >
+                  <ExternalLink size={16} />
+                  فتح نسخة الطالب
+                </button>
+                <button
+                  onClick={() => setPreviewQuiz(null)}
+                  className="rounded-2xl bg-slate-100 px-5 py-3 text-sm font-black text-slate-700"
+                >
+                  إغلاق
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
