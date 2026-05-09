@@ -1,7 +1,7 @@
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
 const defaultApiBaseUrl =
   runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
-    ? "https://almeaacodax-k2ux.onrender.com/api"
+    ? "/api"
     : "http://localhost:4000/api";
 
 const API_BASE_URL =
