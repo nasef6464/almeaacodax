@@ -1172,7 +1172,7 @@ const Results: React.FC = () => {
           </div>
         </Card>
 
-        <Card className={`p-4 sm:p-6 ${isFullResult ? '' : 'hidden'}`}>
+        <Card className="p-4 sm:p-6">
           <h3 className="text-lg font-bold text-gray-800">خطوتك التالية</h3>
           <p className="mt-2 text-sm leading-7 text-gray-500">
             اختر خطوة واحدة الآن. المنصة رتبتها لك من الأسهل للأهم حتى لا تتشتت بعد الاختبار.
