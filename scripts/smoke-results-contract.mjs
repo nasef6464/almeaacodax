@@ -36,6 +36,14 @@ check('result page keeps review behind saved questionReview', () => {
   );
 });
 
+check('review can supplement missing saved questions from the question bank', () => {
+  assertIncludes(resultsSource, 'supplementMissingReviewQuestions');
+  assertIncludes(resultsSource, 'getQuestionContextScore');
+  assertIncludes(resultsSource, 'rebuiltQuestions');
+  assertIncludes(resultsSource, 'quizQuestionIds.length');
+  assertIncludes(resultsSource, 'toQuestionReviewFromBank(question)');
+});
+
 check('retry result action preserves quiz context', () => {
   assertIncludes(resultsSource, 'buildQuizRouteWithContext(latestResult.quizId');
   assertIncludes(resultsSource, 'returnTo: safeResultReturnTo || undefined');

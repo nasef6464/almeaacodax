@@ -27,7 +27,7 @@ import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
 import { useStore } from '../store/useStore';
-import { QuizQuestionReview, QuizResult } from '../types';
+import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
@@ -74,6 +74,45 @@ interface ResolvedAnalysisItem {
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+
+const getQuestionContextScore = (
+  question: Question,
+  quiz?: ReturnType<typeof useStore.getState>['quizzes'][number],
+) => {
+  if (!quiz) return 0;
+
+  let score = 0;
+  if (quiz.pathId && question.pathId === quiz.pathId) score += 4;
+  if (quiz.subjectId && question.subject === quiz.subjectId) score += 4;
+  if (quiz.sectionId && question.sectionId === quiz.sectionId) score += 2;
+  if (quiz.skillIds?.length && question.skillIds?.some((skillId) => quiz.skillIds?.includes(skillId))) score += 2;
+  return score;
+};
+
+const supplementMissingReviewQuestions = (
+  questionBank: Question[],
+  quiz: ReturnType<typeof useStore.getState>['quizzes'][number] | undefined,
+  currentQuestions: QuizQuestionReview[],
+  targetCount: number,
+) => {
+  if (!quiz || currentQuestions.length >= targetCount) return currentQuestions;
+
+  const usedIds = new Set(currentQuestions.map((question) => question.questionId));
+  const contextualFallbackQuestions = questionBank
+    .filter((question) => !usedIds.has(question.id) && getQuestionContextScore(question, quiz) > 0)
+    .sort((a, b) => getQuestionContextScore(b, quiz) - getQuestionContextScore(a, quiz))
+  const remainingCount = Math.max(targetCount - currentQuestions.length, 0);
+  const contextualSlice = contextualFallbackQuestions.slice(0, remainingCount);
+  const contextualIds = new Set(contextualSlice.map((question) => question.id));
+  const genericFallbackQuestions = questionBank
+    .filter((question) => !usedIds.has(question.id) && !contextualIds.has(question.id))
+    .slice(0, Math.max(remainingCount - contextualSlice.length, 0));
+  const fallbackQuestions = [...contextualSlice, ...genericFallbackQuestions].map((question) =>
+    toQuestionReviewFromBank(question),
+  );
+
+  return [...currentQuestions, ...fallbackQuestions];
+};
 
 const getSkillRecommendation = (
   skill: QuizResult['skillsAnalysis'][number] | undefined,
@@ -1500,7 +1539,7 @@ const ReviewSolutions = ({
       return (result.questionReview || []).map(normalizeSavedReview);
     }
 
-    return quizQuestionIds
+    const rebuiltQuestions = quizQuestionIds
       .map((questionId) => {
         const savedReview = reviewById.get(questionId);
         const sourceQuestion = resolveQuestionFromBank(questionBank, questionId);
@@ -1508,6 +1547,8 @@ const ReviewSolutions = ({
         return normalizeSavedReview(toQuestionReviewFromBank(sourceQuestion, savedReview));
       })
       .filter((question): question is QuizQuestionReview => Boolean(question));
+
+    return supplementMissingReviewQuestions(questionBank, quiz, rebuiltQuestions, quizQuestionIds.length);
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
   const q = questions[currentIdx];
   const questionHasInlineMedia = hasInlineQuestionMedia(q?.text);

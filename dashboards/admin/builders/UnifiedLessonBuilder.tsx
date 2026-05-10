@@ -35,15 +35,31 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     [skills, lesson.subjectId, lesson.sectionId]
   );
 
+  const questionMatchesLessonContext = (question: Question) => {
+    const pathMatches = !lesson.pathId || !question.pathId || question.pathId === lesson.pathId;
+    const subjectMatches = !lesson.subjectId || !question.subject || question.subject === lesson.subjectId;
+    const sectionMatches = !lesson.sectionId || !question.sectionId || question.sectionId === lesson.sectionId;
+    const skillMatches =
+      !lesson.skillIds?.length ||
+      !question.skillIds?.length ||
+      question.skillIds.some((skillId) => lesson.skillIds.includes(skillId));
+
+    return pathMatches && subjectMatches && sectionMatches && skillMatches;
+  };
+
+  const relevantVideoQuestions = useMemo(
+    () => questions.filter(questionMatchesLessonContext),
+    [questions, lesson.pathId, lesson.subjectId, lesson.sectionId, lesson.skillIds],
+  );
+
+  const otherVideoQuestions = useMemo(
+    () => questions.filter((question) => !relevantVideoQuestions.some((item) => item.id === question.id)),
+    [questions, relevantVideoQuestions],
+  );
+
   const availableVideoQuestions = useMemo(
-    () =>
-      questions.filter((question) => {
-        if (lesson.pathId && question.pathId && question.pathId !== lesson.pathId) return false;
-        if (lesson.subjectId && question.subject && question.subject !== lesson.subjectId) return false;
-        if (lesson.sectionId && question.sectionId && question.sectionId !== lesson.sectionId) return false;
-        return true;
-      }),
-    [questions, lesson.pathId, lesson.subjectId, lesson.sectionId],
+    () => [...relevantVideoQuestions, ...otherVideoQuestions],
+    [relevantVideoQuestions, otherVideoQuestions],
   );
 
   useEffect(() => {
@@ -384,7 +400,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     <button
                       type="button"
                       onClick={() => addInteractiveQuestion('bank')}
-                      disabled={availableVideoQuestions.length === 0}
+                      disabled={questions.length === 0}
                       className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
                     >
                       <Plus size={14} /> سحب سؤال من مركز الأسئلة
@@ -401,7 +417,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
 
                 {(lesson.interactiveQuestions || []).length === 0 ? (
                   <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
-                    لا توجد أسئلة داخل هذا الفيديو. ابدأ بسحب سؤال من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
+                      لا توجد أسئلة داخل هذا الفيديو. اسحب سؤالًا محفوظًا من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -484,12 +500,34 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                               >
                                 <option value="">سؤال سريع جديد داخل الفيديو</option>
-                                {availableVideoQuestions.map((bankQuestion) => (
-                                  <option key={bankQuestion.id} value={bankQuestion.id}>
-                                    {bankQuestion.text.replace(/<[^>]*>/g, '').slice(0, 90)}
-                                  </option>
-                                ))}
+                                {relevantVideoQuestions.length > 0 ? (
+                                  <optgroup label="أسئلة مناسبة للدرس">
+                                    {relevantVideoQuestions.map((bankQuestion) => (
+                                      <option key={bankQuestion.id} value={bankQuestion.id}>
+                                        {bankQuestion.text.replace(/<[^>]*>/g, '').slice(0, 90)}
+                                      </option>
+                                    ))}
+                                  </optgroup>
+                                ) : null}
+                                {otherVideoQuestions.length > 0 ? (
+                                  <optgroup label="باقي مركز الأسئلة">
+                                    {otherVideoQuestions.map((bankQuestion) => (
+                                      <option key={bankQuestion.id} value={bankQuestion.id}>
+                                        {bankQuestion.text.replace(/<[^>]*>/g, '').slice(0, 90)}
+                                      </option>
+                                    ))}
+                                  </optgroup>
+                                ) : null}
                               </select>
+                              {question.questionId ? (
+                                <p className="mt-1 text-[11px] font-bold text-emerald-700">
+                                  مرتبط بسؤال محفوظ من مركز الأسئلة، وأي تعديل على السؤال يكون من البنك.
+                                </p>
+                              ) : questions.length === 0 ? (
+                                <p className="mt-1 text-[11px] font-bold text-amber-700">
+                                  لا توجد أسئلة في مركز الأسئلة حتى الآن. أنشئ سؤالًا في البنك أولًا أو استخدم سؤالًا سريعًا مؤقتًا.
+                                </p>
+                              ) : null}
                             </div>
                             <button
                               type="button"

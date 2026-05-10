@@ -35,6 +35,15 @@ const checks = [
       source.subjectPage.includes("interactiveQuestions={videoData.interactiveQuestions"),
   ],
   [
+    "lesson builder pulls from the full question center with relevant questions first",
+    source.lessonBuilder.includes("relevantVideoQuestions") &&
+      source.lessonBuilder.includes("otherVideoQuestions") &&
+      source.lessonBuilder.includes("availableVideoQuestions") &&
+      source.lessonBuilder.includes("<optgroup") &&
+      source.lessonBuilder.includes("questionId: firstBankQuestion?.id") &&
+      source.lessonBuilder.includes("disabled={questions.length === 0}"),
+  ],
+  [
     "course player uses the same lesson video questions",
     source.coursePlayer.includes("interactiveQuestions={activeLesson.interactiveQuestions || []}"),
   ],
