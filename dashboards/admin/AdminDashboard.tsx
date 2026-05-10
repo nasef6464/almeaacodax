@@ -18,6 +18,7 @@ import {
     EyeOff,
     Video,
     Bot,
+    Megaphone,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
@@ -38,6 +39,7 @@ import { BackupManager } from './BackupManager';
 import { OperationsCommandCenter } from './OperationsCommandCenter';
 import { AiAssistantManager } from './AiAssistantManager';
 import { MockExamManager } from './MockExamManager';
+import { AnnouncementAdsManager } from './AnnouncementAdsManager';
 import { api } from '../../services/api';
 
 type ReviewQueueItem = {
@@ -589,6 +591,16 @@ export const AdminDashboard: React.FC = () => {
                 ...nextItems.slice(0, insertIndex),
                 { id: 'homepage', label: 'إدارة الصفحة الرئيسية', icon: <BookOpen size={20} /> },
                 ...nextItems.slice(insertIndex),
+            ];
+        }
+
+        if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'announcement-ads')) {
+            const homepageIndex = nextItems.findIndex((item) => item.id === 'homepage');
+            const targetIndex = homepageIndex === -1 ? insertIndex : homepageIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'announcement-ads', label: 'إدارة الإعلانات', icon: <Megaphone size={20} /> },
+                ...nextItems.slice(targetIndex),
             ];
         }
 
@@ -1413,6 +1425,8 @@ export const AdminDashboard: React.FC = () => {
                 return <FinancialManager />;
             case 'homepage':
                 return <HomepageManager />;
+            case 'announcement-ads':
+                return <AnnouncementAdsManager />;
             case 'live-sessions':
                 return <LiveSessionsManager />;
             case 'backups':

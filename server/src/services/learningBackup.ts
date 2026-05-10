@@ -16,6 +16,7 @@ import { SkillModel } from "../models/Skill.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
+import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 
 export type LearningBackupCollection = {
   name: string;
@@ -50,6 +51,7 @@ const learningCollections: Array<{ name: string; model: Model<any> }> = [
   { name: "accessCodes", model: AccessCodeModel },
   { name: "studyPlans", model: StudyPlanModel },
   { name: "homepageSettings", model: HomepageSettingsModel },
+  { name: "announcementAds", model: AnnouncementAdModel },
   { name: "paymentSettings", model: PaymentSettingsModel },
 ];
 

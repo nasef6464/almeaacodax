@@ -296,6 +296,7 @@ export const api = {
       groups: unknown[];
       b2bPackages: unknown[];
       accessCodes: unknown[];
+      announcementAds: unknown[];
       studyPlans: unknown[];
     }>("/content/bootstrap"),
   getHomepageSettings: (token?: string | null) =>
@@ -390,6 +391,23 @@ export const api = {
     }),
   deleteB2BPackage: (id: string, token?: string | null) =>
     request<{ success: boolean }>(`/content/b2b-packages/${id}`, {
+      method: "DELETE",
+      token,
+    }),
+  createAnnouncementAd: (payload: unknown, token?: string | null) =>
+    request<unknown>("/content/announcement-ads", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateAnnouncementAd: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/content/announcement-ads/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  deleteAnnouncementAd: (id: string, token?: string | null) =>
+    request<{ success: boolean }>(`/content/announcement-ads/${id}`, {
       method: "DELETE",
       token,
     }),

@@ -15,6 +15,7 @@ import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
+import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
 const topicSchema = z.object({
@@ -120,6 +121,22 @@ const buildDocumentQuery = (value: string) => {
   return { id: value };
 };
 
+const announcementAdSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1),
+  body: z.string().optional().default(""),
+  imageUrl: z.string().optional().default(""),
+  ctaLabel: z.string().optional().default(""),
+  ctaUrl: z.string().optional().default(""),
+  audience: z.enum(["all", "guest", "student", "parent", "staff"]).default("all"),
+  isActive: z.boolean().default(true),
+  priority: z.number().default(0),
+  startsAt: z.number().nullable().optional(),
+  endsAt: z.number().nullable().optional(),
+  createdAt: z.number().optional(),
+  updatedAt: z.number().optional(),
+});
+
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
@@ -162,22 +179,25 @@ const buildOwnedDocumentQuery = (
 
 const getScopedOperationalData = async (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (authUser?.role === "admin") {
-    const [groups, b2bPackages, accessCodes] = await Promise.all([
+    const [groups, b2bPackages, accessCodes, announcementAds] = await Promise.all([
       GroupModel.find().sort({ createdAt: -1 }),
       B2BPackageModel.find().sort({ createdAt: -1 }),
       AccessCodeModel.find().sort({ createdAt: -1 }),
+      AnnouncementAdModel.find().sort({ priority: 1, createdAt: -1 }),
     ]);
 
-    return { groups, b2bPackages, accessCodes };
+    return { groups, b2bPackages, accessCodes, announcementAds };
   }
 
   if (!authUser) {
-    return { groups: [], b2bPackages: [], accessCodes: [] };
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
   const user = await UserModel.findById(authUser.id).select("schoolId groupIds linkedStudentIds role");
   if (!user) {
-    return { groups: [], b2bPackages: [], accessCodes: [] };
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
   const managedGroups =
@@ -204,7 +224,8 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   ]);
 
   if (seedGroupIds.length === 0) {
-    return { groups: [], b2bPackages: [], accessCodes: [] };
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
   const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(seedGroupIds)).sort({ createdAt: -1 });
@@ -220,14 +241,15 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   const groups = visibleGroupIds.length
     ? await GroupModel.find(buildDocumentsByIdsQuery(visibleGroupIds)).sort({ createdAt: -1 })
     : [];
-  const [b2bPackages, accessCodes] = await Promise.all([
+  const [b2bPackages, accessCodes, announcementAds] = await Promise.all([
     schoolIds.length ? B2BPackageModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 }) : Promise.resolve([]),
     user.role === "supervisor" && schoolIds.length
       ? AccessCodeModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 })
       : Promise.resolve([]),
+    AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 }),
   ]);
 
-  return { groups, b2bPackages, accessCodes };
+  return { groups, b2bPackages, accessCodes, announcementAds };
 };
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
@@ -571,8 +593,8 @@ contentRouter.get(
       req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }) : Promise.resolve([]),
     ]);
 
-    const { groups, b2bPackages, accessCodes } = operationalData;
-    res.json({ topics, lessons, libraryItems, groups, b2bPackages, accessCodes, studyPlans });
+    const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
+    res.json({ topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans });
   }),
 );
 
@@ -879,6 +901,56 @@ contentRouter.delete(
     }
 
     await AccessCodeModel.deleteMany({ packageId: deleted.id || String(deleted._id) });
+    return res.json({ success: true });
+  }),
+);
+
+contentRouter.post(
+  "/announcement-ads",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = announcementAdSchema.parse(req.body);
+    const created = await AnnouncementAdModel.create({
+      ...payload,
+      createdAt: payload.createdAt ?? Date.now(),
+      updatedAt: Date.now(),
+    });
+    res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+contentRouter.patch(
+  "/announcement-ads/:id",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = announcementAdSchema.partial().parse(req.body);
+    const updated = await AnnouncementAdModel.findOneAndUpdate(
+      buildDocumentQuery(req.params.id),
+      { ...payload, updatedAt: Date.now() },
+      { new: true },
+    );
+
+    if (!updated) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Announcement ad not found" });
+    }
+
+    return res.json(updated);
+  }),
+);
+
+contentRouter.delete(
+  "/announcement-ads/:id",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const deleted = await AnnouncementAdModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+
+    if (!deleted) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Announcement ad not found" });
+    }
+
     return res.json({ success: true });
   }),
 );

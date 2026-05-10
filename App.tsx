@@ -9,6 +9,7 @@ import { useStore } from './store/useStore';
 import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
+import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
 import { APP_VERSION } from './utils/appVersion';
 import { installGlobalClientTelemetry } from './services/clientTelemetry';
 
@@ -165,6 +166,7 @@ const App: React.FC = () => {
             groups: contentResult.value.groups as any[],
             b2bPackages: contentResult.value.b2bPackages as any[],
             accessCodes: contentResult.value.accessCodes as any[],
+            announcementAds: contentResult.value.announcementAds as any[],
             studyPlans: contentResult.value.studyPlans as any[],
           });
         }
@@ -259,6 +261,7 @@ const App: React.FC = () => {
           } />
         </Routes>
         </AppErrorBoundary>
+        <AnnouncementAdsOverlay />
         {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
       </Suspense>
     </Router>

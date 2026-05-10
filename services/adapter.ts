@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { AccessCode, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
+import { AccessCode, AnnouncementAd, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
 
 const USE_REAL_API =
   (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== "false";
@@ -197,6 +197,8 @@ const normalizeB2BPackage = (pkg: any): B2BPackage => ({
   id: String(pkg?.id || pkg?._id || ""),
   schoolId: String(pkg?.schoolId || ""),
   name: String(pkg?.name || ""),
+  assignedTeacherId: pkg?.assignedTeacherId || undefined,
+  revenueSharePercentage: typeof pkg?.revenueSharePercentage === "number" ? pkg.revenueSharePercentage : undefined,
   courseIds: Array.isArray(pkg?.courseIds) ? pkg.courseIds.map(String) : [],
   contentTypes: Array.isArray(pkg?.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes : ["all"],
   pathIds: Array.isArray(pkg?.pathIds) ? pkg.pathIds.map(String) : [],
@@ -217,6 +219,22 @@ const normalizeAccessCode = (code: any): AccessCode => ({
   currentUses: Number(code?.currentUses ?? 0),
   expiresAt: Number(code?.expiresAt ?? Date.now()),
   createdAt: toTimestamp(code?.createdAt),
+});
+
+const normalizeAnnouncementAd = (ad: any): AnnouncementAd => ({
+  id: String(ad?.id || ad?._id || ""),
+  title: String(ad?.title || ""),
+  body: ad?.body || "",
+  imageUrl: ad?.imageUrl || "",
+  ctaLabel: ad?.ctaLabel || "",
+  ctaUrl: ad?.ctaUrl || "",
+  audience: ["all", "guest", "student", "parent", "staff"].includes(ad?.audience) ? ad.audience : "all",
+  isActive: ad?.isActive !== false,
+  priority: Number(ad?.priority ?? 0),
+  startsAt: typeof ad?.startsAt === "number" ? ad.startsAt : undefined,
+  endsAt: typeof ad?.endsAt === "number" ? ad.endsAt : undefined,
+  createdAt: toTimestamp(ad?.createdAt),
+  updatedAt: typeof ad?.updatedAt === "number" ? ad.updatedAt : undefined,
 });
 
 const normalizeModule = (module: any, moduleIndex: number): Module => ({
@@ -469,6 +487,7 @@ export const adapter = {
         groups: [],
         b2bPackages: [],
         accessCodes: [],
+        announcementAds: [],
         studyPlans: [],
       };
     }
@@ -482,6 +501,7 @@ export const adapter = {
         groups: Array.isArray(data?.groups) ? data.groups.map(normalizeGroup).filter((group) => group.id && group.name) : [],
         b2bPackages: Array.isArray(data?.b2bPackages) ? data.b2bPackages.map(normalizeB2BPackage).filter((pkg) => pkg.id && pkg.schoolId && pkg.name) : [],
         accessCodes: Array.isArray(data?.accessCodes) ? data.accessCodes.map(normalizeAccessCode).filter((code) => code.id && code.schoolId && code.packageId && code.code) : [],
+        announcementAds: Array.isArray(data?.announcementAds) ? data.announcementAds.map(normalizeAnnouncementAd).filter((ad) => ad.id && ad.title) : [],
         studyPlans: Array.isArray(data?.studyPlans) ? data.studyPlans.map(normalizeStudyPlan).filter((plan) => plan.id && plan.userId && plan.name && plan.pathId) : [],
       };
     } catch (error) {
@@ -493,6 +513,7 @@ export const adapter = {
         groups: [],
         b2bPackages: [],
         accessCodes: [],
+        announcementAds: [],
         studyPlans: [],
       };
     }

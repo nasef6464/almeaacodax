@@ -1,7 +1,7 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
-import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
+import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, AnnouncementAd, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
 import { normalizeIdList } from '../utils/entityIds';
 import { isDevSessionUser } from '../utils/devSession';
 import { normalizeQuizPlacement } from '../utils/quizPlacement';
@@ -36,6 +36,7 @@ interface AppState {
     groups: Group[];
     b2bPackages: B2BPackage[];
     accessCodes: AccessCode[];
+    announcementAds: AnnouncementAd[];
     
     // Core Content
     courses: Course[];
@@ -86,6 +87,7 @@ interface AppState {
         groups?: Group[];
         b2bPackages?: B2BPackage[];
         accessCodes?: AccessCode[];
+        announcementAds?: AnnouncementAd[];
         studyPlans?: StudyPlan[];
     }) => void;
     hydrateExamResults: (results: QuizResult[]) => void;
@@ -156,6 +158,9 @@ interface AppState {
     createB2BPackage: (pkg: B2BPackage) => void;
     updateB2BPackage: (id: string, data: Partial<B2BPackage>) => void;
     deleteB2BPackage: (id: string) => void;
+    createAnnouncementAd: (ad: AnnouncementAd) => void;
+    updateAnnouncementAd: (id: string, data: Partial<AnnouncementAd>) => void;
+    deleteAnnouncementAd: (id: string) => void;
     createAccessCode: (code: AccessCode) => void;
     deleteAccessCode: (id: string) => void;
 
@@ -328,6 +333,7 @@ export const useStore = create<AppState>()(
             groups: [],
             b2bPackages: [],
             accessCodes: [],
+            announcementAds: [],
             courses: [],
             questions: [],
             quizzes: [],
@@ -508,6 +514,19 @@ export const useStore = create<AppState>()(
                       }))
                       .filter((code: any) => code.id && code.schoolId && code.packageId && code.code)
                   : state.accessCodes,
+                announcementAds: payload.announcementAds !== undefined
+                  ? payload.announcementAds
+                      .map((ad: any) => ({
+                        ...ad,
+                        id: String(ad?.id || ad?._id || ''),
+                        title: String(ad?.title || ''),
+                        audience: ['all', 'guest', 'student', 'parent', 'staff'].includes(ad?.audience) ? ad.audience : 'all',
+                        isActive: ad?.isActive !== false,
+                        priority: Number(ad?.priority ?? 0),
+                        createdAt: typeof ad?.createdAt === 'number' ? ad.createdAt : Date.now(),
+                      }))
+                      .filter((ad: any) => ad.id && ad.title)
+                  : state.announcementAds,
                 studyPlans: payload.studyPlans !== undefined
                   ? payload.studyPlans
                       .map((plan: any) => ({
@@ -1377,6 +1396,39 @@ export const useStore = create<AppState>()(
                     accessCodes: state.accessCodes.filter(code => code.packageId !== id)
                 };
             }),
+            createAnnouncementAd: (ad) => set((state) => {
+                const normalizedAd: AnnouncementAd = {
+                    ...ad,
+                    audience: ad.audience || 'all',
+                    isActive: ad.isActive !== false,
+                    priority: Number(ad.priority ?? 0),
+                    createdAt: ad.createdAt || Date.now(),
+                    updatedAt: Date.now(),
+                };
+                api.createAnnouncementAd(normalizedAd).catch(console.error);
+                return {
+                    announcementAds: [...state.announcementAds, normalizedAd].sort((a, b) => a.priority - b.priority),
+                };
+            }),
+            updateAnnouncementAd: (id, data) => set((state) => {
+                const normalizedData: Partial<AnnouncementAd> = {
+                    ...data,
+                    ...(data.priority !== undefined ? { priority: Number(data.priority) } : {}),
+                    updatedAt: Date.now(),
+                };
+                api.updateAnnouncementAd(id, normalizedData).catch(console.error);
+                return {
+                    announcementAds: state.announcementAds
+                        .map((ad) => (ad.id === id ? { ...ad, ...normalizedData } : ad))
+                        .sort((a, b) => a.priority - b.priority),
+                };
+            }),
+            deleteAnnouncementAd: (id) => set((state) => {
+                api.deleteAnnouncementAd(id).catch(console.error);
+                return {
+                    announcementAds: state.announcementAds.filter((ad) => ad.id !== id),
+                };
+            }),
             createAccessCode: (code) => set((state) => {
                 api.createAccessCode(code).catch(console.error);
                 return {
@@ -1566,7 +1618,7 @@ export const useStore = create<AppState>()(
             name: 'learning-platform-storage', // unique name
             version: 3,
             partialize: (state) => Object.fromEntries(
-                Object.entries(state).filter(([key]) => !['paths', 'levels', 'subjects', 'sections', 'skills', 'nestedSkills', 'libraryItems', 'questions', 'users', 'courses', 'topics', 'lessons', 'quizzes', 'groups', 'b2bPackages', 'accessCodes', 'skillProgress'].includes(key))
+                Object.entries(state).filter(([key]) => !['paths', 'levels', 'subjects', 'sections', 'skills', 'nestedSkills', 'libraryItems', 'questions', 'users', 'courses', 'topics', 'lessons', 'quizzes', 'groups', 'b2bPackages', 'accessCodes', 'announcementAds', 'skillProgress'].includes(key))
             ),
             migrate: (persistedState: any) => {
                 if (!persistedState || typeof persistedState !== 'object') {
@@ -1583,6 +1635,7 @@ export const useStore = create<AppState>()(
                     groups: [],
                     b2bPackages: [],
                     accessCodes: [],
+                    announcementAds: [],
                     paths: [],
                     levels: [],
                     subjects: [],

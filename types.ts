@@ -587,6 +587,24 @@ export interface B2BPackage {
     createdAt: number;
 }
 
+export type AnnouncementAudience = 'all' | 'guest' | 'student' | 'parent' | 'staff';
+
+export interface AnnouncementAd {
+    id: string;
+    title: string;
+    body?: string;
+    imageUrl?: string;
+    ctaLabel?: string;
+    ctaUrl?: string;
+    audience: AnnouncementAudience;
+    isActive: boolean;
+    priority: number;
+    startsAt?: number;
+    endsAt?: number;
+    createdAt: number;
+    updatedAt?: number;
+}
+
 export interface AccessCode {
     id: string;
     code: string;
