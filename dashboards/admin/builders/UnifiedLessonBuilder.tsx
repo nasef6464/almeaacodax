@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Lesson, LessonType, Question } from '../../../types';
-import { Plus, Save, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
+import { Plus, Save, Search, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
 import { QuizBuilder } from '../QuizBuilder';
 import { UnifiedQuestionBuilder } from './UnifiedQuestionBuilder';
 import { useStore } from '../../../store/useStore';
@@ -23,6 +23,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
   const [showQuizBuilder, setShowQuizBuilder] = useState(false);
   const [showQuestionBuilder, setShowQuestionBuilder] = useState<{ videoQuestionId: string } | null>(null);
   const [validationError, setValidationError] = useState('');
+  const [videoQuestionSearch, setVideoQuestionSearch] = useState('');
   const { quizzes, questions, paths, subjects, sections, skills, addQuestion } = useStore();
 
   const availableMainSkills = useMemo(
@@ -144,11 +145,35 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     };
   };
 
-  const getQuestionOptionLabel = (question: Question) => {
+  const videoQuestionSearchTerm = videoQuestionSearch.trim().toLowerCase();
+
+  const questionMatchesVideoSearch = (question: Question) => {
+    if (!videoQuestionSearchTerm) return true;
     const meta = getQuestionMeta(question);
-    const preview = cleanQuestionText(question.text).slice(0, 80) || 'سؤال بدون نص';
-    return `${meta.subjectName} - ${meta.sectionName} - ${meta.skillNames} | ${preview}`;
+    const haystack = [
+      meta.subjectName,
+      meta.sectionName,
+      meta.skillNames,
+      cleanQuestionText(question.text),
+      ...(question.options || []).map((option) => cleanQuestionText(option)),
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return haystack.includes(videoQuestionSearchTerm);
   };
+
+  const filteredRelevantVideoQuestions = useMemo(
+    () => relevantVideoQuestions.filter(questionMatchesVideoSearch),
+    [relevantVideoQuestions, videoQuestionSearchTerm, subjects, sections, skills],
+  );
+
+  const filteredOtherVideoQuestions = useMemo(
+    () => otherVideoQuestions.filter(questionMatchesVideoSearch),
+    [otherVideoQuestions, videoQuestionSearchTerm, subjects, sections, skills],
+  );
+
+  const filteredVideoQuestionsCount = filteredRelevantVideoQuestions.length + filteredOtherVideoQuestions.length;
 
   const renderBankQuestionPreview = (bankQuestion: Question, selected: boolean, onPick: () => void) => {
     const meta = getQuestionMeta(bankQuestion);
@@ -567,38 +592,22 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
 
                           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
                             <div>
-                              <label className="mb-1 block text-xs font-bold text-gray-600">اختيار من بنك الأسئلة</label>
-                              <select
-                                value={question.questionId || ''}
-                                onChange={(event) =>
-                                  updateInteractiveQuestion(question.id, (current) => ({
-                                    ...current,
-                                    questionId: event.target.value || undefined,
-                                    inlineQuestion: event.target.value ? undefined : current.inlineQuestion || inlineQuestion,
-                                  }))
-                                }
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-                              >
-                                <option value="">سؤال سريع جديد داخل الفيديو</option>
-                                {relevantVideoQuestions.length > 0 ? (
-                                  <optgroup label="أسئلة مناسبة للدرس">
-                                    {relevantVideoQuestions.map((bankQuestion) => (
-                                      <option key={bankQuestion.id} value={bankQuestion.id}>
-                                        {getQuestionOptionLabel(bankQuestion)}
-                                      </option>
-                                    ))}
-                                  </optgroup>
-                                ) : null}
-                                {otherVideoQuestions.length > 0 ? (
-                                  <optgroup label="باقي مركز الأسئلة">
-                                    {otherVideoQuestions.map((bankQuestion) => (
-                                      <option key={bankQuestion.id} value={bankQuestion.id}>
-                                        {getQuestionOptionLabel(bankQuestion)}
-                                      </option>
-                                    ))}
-                                  </optgroup>
-                                ) : null}
-                              </select>
+                              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                                <label className="block text-xs font-bold text-gray-600">اختيار من مركز الأسئلة</label>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateInteractiveQuestion(question.id, (current) => ({
+                                      ...current,
+                                      questionId: undefined,
+                                      inlineQuestion: current.inlineQuestion || inlineQuestion,
+                                    }))
+                                  }
+                                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-bold text-gray-600 hover:bg-gray-50"
+                                >
+                                  سؤال سريع بدل البنك
+                                </button>
+                              </div>
                               {question.questionId ? (
                                 <p className="mt-1 text-[11px] font-bold text-emerald-700">
                                   مرتبط بسؤال محفوظ من مركز الأسئلة، وأي تعديل على السؤال يكون من البنك.
@@ -633,14 +642,24 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                   <div className="text-[11px] font-bold text-gray-500">تظهر المادة والمهارة ونص السؤال والاختيارات قبل ربطه بالفيديو.</div>
                                 </div>
                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
-                                  {availableVideoQuestions.length} سؤال
+                                  {filteredVideoQuestionsCount} / {availableVideoQuestions.length} سؤال
                                 </span>
                               </div>
+                              <div className="relative mb-2">
+                                <Search size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input
+                                  type="search"
+                                  value={videoQuestionSearch}
+                                  onChange={(event) => setVideoQuestionSearch(event.target.value)}
+                                  placeholder="ابحث بالمادة أو المهارة أو نص السؤال..."
+                                  className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-3 pr-9 text-sm font-bold text-gray-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"
+                                />
+                              </div>
                               <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
-                                {relevantVideoQuestions.length > 0 ? (
+                                {filteredRelevantVideoQuestions.length > 0 ? (
                                   <div className="space-y-2">
                                     <div className="text-[11px] font-black text-indigo-700">أسئلة مناسبة للدرس</div>
-                                    {relevantVideoQuestions.map((bankQuestion) =>
+                                    {filteredRelevantVideoQuestions.map((bankQuestion) =>
                                       renderBankQuestionPreview(
                                         bankQuestion,
                                         question.questionId === bankQuestion.id,
@@ -654,10 +673,10 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                     )}
                                   </div>
                                 ) : null}
-                                {otherVideoQuestions.length > 0 ? (
+                                {filteredOtherVideoQuestions.length > 0 ? (
                                   <div className="space-y-2">
                                     <div className="text-[11px] font-black text-gray-600">باقي مركز الأسئلة</div>
-                                    {otherVideoQuestions.map((bankQuestion) =>
+                                    {filteredOtherVideoQuestions.map((bankQuestion) =>
                                       renderBankQuestionPreview(
                                         bankQuestion,
                                         question.questionId === bankQuestion.id,
@@ -669,6 +688,11 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                           })),
                                       ),
                                     )}
+                                  </div>
+                                ) : null}
+                                {filteredVideoQuestionsCount === 0 ? (
+                                  <div className="rounded-xl border border-dashed border-gray-200 bg-white px-3 py-4 text-center text-xs font-bold text-gray-500">
+                                    لا توجد أسئلة مطابقة للبحث الحالي.
                                   </div>
                                 ) : null}
                               </div>

@@ -24,7 +24,7 @@ const checks = [
   [
     "lesson builder can author timed video questions",
     source.lessonBuilder.includes("أسئلة داخل الفيديو") &&
-      source.lessonBuilder.includes("اختيار من بنك الأسئلة") &&
+      source.lessonBuilder.includes("اختيار من مركز الأسئلة") &&
       source.lessonBuilder.includes("saveVideoQuestionToBank") &&
       source.lessonBuilder.includes("timestamp") &&
       source.lessonBuilder.includes("correctOptionIndex"),
@@ -39,14 +39,16 @@ const checks = [
     source.lessonBuilder.includes("relevantVideoQuestions") &&
       source.lessonBuilder.includes("otherVideoQuestions") &&
       source.lessonBuilder.includes("availableVideoQuestions") &&
-      source.lessonBuilder.includes("<optgroup") &&
+      source.lessonBuilder.includes("filteredRelevantVideoQuestions") &&
+      source.lessonBuilder.includes("filteredOtherVideoQuestions") &&
+      source.lessonBuilder.includes("placeholder=\"ابحث بالمادة أو المهارة أو نص السؤال...\"") &&
       source.lessonBuilder.includes("questionId: firstBankQuestion?.id") &&
       source.lessonBuilder.includes("disabled={questions.length === 0}"),
   ],
   [
     "lesson builder previews bank questions with taxonomy before linking",
     source.lessonBuilder.includes("cleanQuestionText") &&
-      source.lessonBuilder.includes("getQuestionOptionLabel") &&
+      source.lessonBuilder.includes("questionMatchesVideoSearch") &&
       source.lessonBuilder.includes("renderBankQuestionPreview") &&
       source.lessonBuilder.includes("معاينة السؤال المرتبط الآن") &&
       source.lessonBuilder.includes("استعرض السؤال قبل السحب"),
