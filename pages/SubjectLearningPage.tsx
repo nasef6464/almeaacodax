@@ -216,7 +216,6 @@ export const SubjectLearningPage: React.FC = () => {
       setSelectedSubTopic(null);
     }
 
-    setActiveTab('skills');
   }, [searchParams, subjectTopics]);
 
   const updateSubjectQuery = (updates: Record<string, string | null>) => {
