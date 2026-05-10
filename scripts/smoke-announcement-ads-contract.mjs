@@ -12,7 +12,16 @@ const assert = (condition, message) => {
 const checks = [
   ['types.ts', ['AnnouncementAd', 'AnnouncementAudience', 'ctaUrl', 'audience']],
   ['server/src/models/AnnouncementAd.ts', ['AnnouncementAdModel', 'imageUrl', 'ctaLabel', 'priority']],
-  ['server/src/routes/content.routes.ts', ['announcementAdSchema', 'announcement-ads', 'announcementAds']],
+  [
+    'server/src/routes/content.routes.ts',
+    [
+      'announcementAdSchema',
+      'announcementAdUpdateSchema',
+      'const payload = announcementAdUpdateSchema.parse(req.body)',
+      'announcement-ads',
+      'announcementAds',
+    ],
+  ],
   ['services/api.ts', ['createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'announcementAds']],
   ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds']],
   ['store/useStore.ts', ['announcementAds', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd']],

@@ -87,9 +87,19 @@ check('foundation admin links support files directly to topics like lessons and 
 check('foundation support links persist through server, adapter, and store reload', () => {
   assertIncludes(serverTopicModelSource, 'libraryItemIds: { type: [String], default: [] }');
   assertIncludes(serverContentRoutesSource, 'libraryItemIds: z.array(z.string()).default([])');
+  assertIncludes(serverContentRoutesSource, 'const topicUpdateSchema = z.object({');
+  assertIncludes(serverContentRoutesSource, 'libraryItemIds: z.array(z.string()).optional()');
+  assertIncludes(serverContentRoutesSource, 'const payload = topicUpdateSchema.parse(req.body)');
   assertIncludes(adapterSource, 'libraryItemIds: Array.isArray(topic?.libraryItemIds) ? topic.libraryItemIds.map(String) : []');
   assertIncludes(storeSource, 'libraryItemIds: normalizeIdList(topic?.libraryItemIds)');
   assertIncludes(storeSource, 'api.updateTopic(topicId, data)');
+});
+
+check('library paid/free and visibility updates do not reset missing file fields', () => {
+  assertIncludes(serverContentRoutesSource, 'const libraryUpdateSchema = z.object({');
+  assertIncludes(serverContentRoutesSource, 'showOnPlatform: z.boolean().optional()');
+  assertIncludes(serverContentRoutesSource, 'isLocked: z.boolean().optional()');
+  assertIncludes(serverContentRoutesSource, 'const payload = libraryUpdateSchema.parse(req.body)');
 });
 
 check('support files shown inside foundation topics come from explicit topic links', () => {

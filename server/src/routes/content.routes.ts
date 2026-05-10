@@ -33,6 +33,21 @@ const topicSchema = z.object({
   libraryItemIds: z.array(z.string()).default([]),
 });
 
+const topicUpdateSchema = z.object({
+  id: z.string().optional(),
+  pathId: z.string().min(1).optional(),
+  subjectId: z.string().min(1).optional(),
+  sectionId: z.string().nullable().optional(),
+  title: z.string().min(1).optional(),
+  parentId: z.string().nullable().optional(),
+  order: z.number().optional(),
+  showOnPlatform: z.boolean().optional(),
+  isLocked: z.boolean().optional(),
+  lessonIds: z.array(z.string()).optional(),
+  quizIds: z.array(z.string()).optional(),
+  libraryItemIds: z.array(z.string()).optional(),
+});
+
 const lessonSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
@@ -131,6 +146,22 @@ const announcementAdSchema = z.object({
   audience: z.enum(["all", "guest", "student", "parent", "staff"]).default("all"),
   isActive: z.boolean().default(true),
   priority: z.number().default(0),
+  startsAt: z.number().nullable().optional(),
+  endsAt: z.number().nullable().optional(),
+  createdAt: z.number().optional(),
+  updatedAt: z.number().optional(),
+});
+
+const announcementAdUpdateSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1).optional(),
+  body: z.string().optional(),
+  imageUrl: z.string().optional(),
+  ctaLabel: z.string().optional(),
+  ctaUrl: z.string().optional(),
+  audience: z.enum(["all", "guest", "student", "parent", "staff"]).optional(),
+  isActive: z.boolean().optional(),
+  priority: z.number().optional(),
   startsAt: z.number().nullable().optional(),
   endsAt: z.number().nullable().optional(),
   createdAt: z.number().optional(),
@@ -333,6 +364,30 @@ const librarySchema = z.object({
   url: z.string().optional(),
   showOnPlatform: z.boolean().default(true),
   isLocked: z.boolean().default(false),
+  ownerType: z.enum(["platform", "teacher", "school"]).optional(),
+  ownerId: z.string().optional(),
+  createdBy: z.string().optional(),
+  assignedTeacherId: z.string().optional(),
+  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
+  approvedBy: z.string().optional(),
+  approvedAt: z.number().nullable().optional(),
+  reviewerNotes: z.string().optional(),
+  revenueSharePercentage: z.number().nullable().optional(),
+});
+
+const libraryUpdateSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1).optional(),
+  size: z.string().optional(),
+  downloads: z.number().optional(),
+  type: z.enum(["pdf", "doc", "video"]).optional(),
+  pathId: z.string().min(1).optional(),
+  subjectId: z.string().min(1).optional(),
+  sectionId: z.string().nullable().optional(),
+  skillIds: z.array(z.string()).min(1).optional(),
+  url: z.string().optional(),
+  showOnPlatform: z.boolean().optional(),
+  isLocked: z.boolean().optional(),
   ownerType: z.enum(["platform", "teacher", "school"]).optional(),
   ownerId: z.string().optional(),
   createdBy: z.string().optional(),
@@ -672,7 +727,7 @@ contentRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = topicSchema.partial().parse(req.body);
+    const payload = topicUpdateSchema.parse(req.body);
     const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
       new: true,
     });
@@ -780,7 +835,7 @@ contentRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = librarySchema.partial().parse(req.body);
+    const payload = libraryUpdateSchema.parse(req.body);
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await LibraryItemModel.findOneAndUpdate(
       buildOwnedDocumentQuery(req.params.id, req.authUser!),
@@ -925,7 +980,7 @@ contentRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = announcementAdSchema.partial().parse(req.body);
+    const payload = announcementAdUpdateSchema.parse(req.body);
     const updated = await AnnouncementAdModel.findOneAndUpdate(
       buildDocumentQuery(req.params.id),
       { ...payload, updatedAt: Date.now() },
