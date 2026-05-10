@@ -20,7 +20,7 @@ import {
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
-import { PackageContentType, Topic } from '../types';
+import { Lesson, PackageContentType, Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { findByEntityId, matchesEntityId } from '../utils/entityIds';
@@ -38,7 +38,7 @@ export const SubjectLearningPage: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
-  const [videoData, setVideoData] = useState<{ url: string; title: string } | null>(null);
+  const [videoData, setVideoData] = useState<{ url: string; title: string; interactiveQuestions?: Lesson['interactiveQuestions'] } | null>(null);
 
   const matchedPath = paths.find((item) => item.id === pathId);
   const matchedSubject = subjects.find((item) => item.id === subjectId);
@@ -369,7 +369,7 @@ export const SubjectLearningPage: React.FC = () => {
   const openLessonContent = (lesson: (typeof lessons)[number]) => {
     const safeVideoUrl = sanitizeVideoUrl(lesson.videoUrl);
     if (safeVideoUrl) {
-      setVideoData({ url: safeVideoUrl, title: lesson.title });
+      setVideoData({ url: safeVideoUrl, title: lesson.title, interactiveQuestions: lesson.interactiveQuestions || [] });
       return;
     }
 
@@ -1028,6 +1028,8 @@ export const SubjectLearningPage: React.FC = () => {
         <VideoModal
           videoUrl={videoData.url}
           title={videoData.title}
+          interactiveQuestions={videoData.interactiveQuestions || []}
+          questionBank={questions}
           onClose={() => setVideoData(null)}
         />
       )}

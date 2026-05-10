@@ -43,6 +43,26 @@ const lessonSchema = z.object({
   duration: z.string().default(""),
   content: z.string().optional(),
   videoUrl: z.string().optional(),
+  videoSource: z.enum(["upload", "youtube", "vimeo"]).optional(),
+  interactiveQuestions: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        timestamp: z.number().min(0),
+        questionId: z.string().optional(),
+        inlineQuestion: z
+          .object({
+            text: z.string().min(1),
+            options: z.array(z.string()).min(2),
+            correctOptionIndex: z.number().min(0),
+          })
+          .optional(),
+        mustPass: z.boolean().default(false),
+        actionOnFail: z.enum(["rewatch", "continue"]).default("continue"),
+        rewatchTimestamp: z.number().min(0).optional(),
+      }),
+    )
+    .default([]),
   fileUrl: z.string().optional(),
   meetingUrl: z.string().optional(),
   meetingDate: z.string().optional(),

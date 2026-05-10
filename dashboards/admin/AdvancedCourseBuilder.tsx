@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Course, Module, Lesson, LessonType, InteractiveQuestion } from '../../types';
+import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { QuizBuilder } from './QuizBuilder';
@@ -20,7 +20,7 @@ interface AdvancedCourseBuilderProps {
 }
 
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { subjects, sections, skills } = useStore();
+  const { subjects, sections, skills, lessons, quizzes, users } = useStore();
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
   const [settingsTab, setSettingsTab] = useState<'basic' | 'pricing' | 'advanced'>('basic');
   
@@ -42,6 +42,17 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     features: [],
     qa: [],
     files: []
+  });
+  const instructorUsers = users.filter((item) => item.role === Role.TEACHER || item.role === Role.ADMIN);
+  const scopedLessons = lessons.filter((lesson) => {
+    const matchesPath = !courseData.pathId || !lesson.pathId || lesson.pathId === courseData.pathId;
+    const matchesSubject = !courseData.subjectId || !lesson.subjectId || lesson.subjectId === courseData.subjectId;
+    return matchesPath && matchesSubject && lesson.showOnPlatform !== false;
+  });
+  const scopedQuizzes = quizzes.filter((quiz) => {
+    const matchesPath = !courseData.pathId || !quiz.pathId || quiz.pathId === courseData.pathId;
+    const matchesSubject = !courseData.subjectId || !quiz.subjectId || quiz.subjectId === courseData.subjectId;
+    return matchesPath && matchesSubject && quiz.showOnPlatform !== false;
   });
 
   // --- Curriculum Management ---
@@ -102,6 +113,58 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       ...prev,
       modules: prev.modules?.map(m => 
         m.id === moduleId ? { ...m, lessons: [...m.lessons, newLesson] } : m
+      )
+    }));
+  };
+
+  const attachExistingLesson = (moduleId: string, lessonId: string) => {
+    if (!lessonId) return;
+    const module = courseData.modules?.find(m => m.id === moduleId);
+    const existingLesson = lessons.find((lesson) => lesson.id === lessonId);
+    if (!module || !existingLesson) return;
+
+    const importedLesson: Lesson = {
+      ...existingLesson,
+      id: `course_lesson_${existingLesson.id}_${Date.now()}`,
+      order: module.lessons.length + 1,
+      isCompleted: false,
+      accessControl: existingLesson.accessControl || 'enrolled',
+    };
+
+    setCourseData(prev => ({
+      ...prev,
+      modules: prev.modules?.map(m =>
+        m.id === moduleId ? { ...m, lessons: [...m.lessons, importedLesson] } : m
+      )
+    }));
+  };
+
+  const attachExistingQuiz = (moduleId: string, quizId: string) => {
+    if (!quizId) return;
+    const module = courseData.modules?.find(m => m.id === moduleId);
+    const existingQuiz = quizzes.find((quiz) => quiz.id === quizId);
+    if (!module || !existingQuiz) return;
+
+    const importedQuizLesson: Lesson = {
+      id: `course_quiz_${existingQuiz.id}_${Date.now()}`,
+      title: existingQuiz.title,
+      description: existingQuiz.description,
+      type: 'quiz',
+      duration: `${existingQuiz.settings?.timeLimit || 0} دقيقة`,
+      isCompleted: false,
+      order: module.lessons.length + 1,
+      skillIds: existingQuiz.skillIds || [],
+      quizId: existingQuiz.id,
+      pathId: existingQuiz.pathId,
+      subjectId: existingQuiz.subjectId,
+      sectionId: existingQuiz.sectionId,
+      accessControl: 'enrolled',
+    };
+
+    setCourseData(prev => ({
+      ...prev,
+      modules: prev.modules?.map(m =>
+        m.id === moduleId ? { ...m, lessons: [...m.lessons, importedQuizLesson] } : m
       )
     }));
   };
@@ -325,6 +388,32 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                     
                                     {/* Add Lesson Buttons */}
                                     <div className="pt-4 mt-2 border-t border-gray-100 flex gap-2 flex-wrap">
+                                      <select
+                                        defaultValue=""
+                                        onChange={(event) => {
+                                          attachExistingLesson(module.id, event.target.value);
+                                          event.target.value = '';
+                                        }}
+                                        className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 outline-none"
+                                      >
+                                        <option value="">استدعاء درس موجود</option>
+                                        {scopedLessons.map((lesson) => (
+                                          <option key={lesson.id} value={lesson.id}>{lesson.title}</option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        defaultValue=""
+                                        onChange={(event) => {
+                                          attachExistingQuiz(module.id, event.target.value);
+                                          event.target.value = '';
+                                        }}
+                                        className="rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-sm font-bold text-purple-700 outline-none"
+                                      >
+                                        <option value="">استدعاء اختبار موجود</option>
+                                        {scopedQuizzes.map((quiz) => (
+                                          <option key={quiz.id} value={quiz.id}>{quiz.title}</option>
+                                        ))}
+                                      </select>
                                       <button onClick={() => addLesson(module.id, 'video')} className="text-sm font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
                                         <Video size={16} /> درس فيديو
                                       </button>
@@ -422,6 +511,43 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         value={courseData.description || ''} 
                         onChange={(val) => setCourseData({...courseData, description: val})} 
                       />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المدرب / المعلم</label>
+                        <select
+                          value={courseData.assignedTeacherId || ''}
+                          onChange={(e) => {
+                            const selected = instructorUsers.find((item) => item.id === e.target.value);
+                            setCourseData({
+                              ...courseData,
+                              assignedTeacherId: e.target.value,
+                              ownerType: e.target.value ? 'teacher' : courseData.ownerType,
+                              ownerId: e.target.value || courseData.ownerId,
+                              instructor: selected?.name || courseData.instructor || '',
+                            });
+                          }}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="">فريق المنصة</option>
+                          {instructorUsers.map((teacher) => (
+                            <option key={teacher.id} value={teacher.id}>{teacher.name} - {teacher.email}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">نسبة المدرب من دخل الدورة %</label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={courseData.revenueSharePercentage ?? ''}
+                          onChange={(e) => setCourseData({...courseData, revenueSharePercentage: e.target.value === '' ? undefined : Number(e.target.value)})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="مثال: 35"
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

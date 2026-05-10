@@ -16,6 +16,8 @@ const lessonSchema = new Schema(
     duration: { type: String, default: "" },
     content: { type: String, default: "" },
     videoUrl: { type: String, default: "" },
+    videoSource: { type: String, enum: ["upload", "youtube", "vimeo"], default: "upload" },
+    interactiveQuestions: { type: [Schema.Types.Mixed], default: [] },
     fileUrl: { type: String, default: "" },
     meetingUrl: { type: String, default: "" },
     meetingDate: { type: String, default: "" },

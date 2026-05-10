@@ -1,14 +1,17 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { CustomVideoPlayer } from './CustomVideoPlayer';
+import { InteractiveQuestion, Question } from '../types';
 
 interface VideoModalProps {
     videoUrl: string;
     title: string;
+    interactiveQuestions?: InteractiveQuestion[];
+    questionBank?: Question[];
     onClose: () => void;
 }
 
-export const VideoModal: React.FC<VideoModalProps> = ({ videoUrl, title, onClose }) => {
+export const VideoModal: React.FC<VideoModalProps> = ({ videoUrl, title, interactiveQuestions = [], questionBank = [], onClose }) => {
     const handleClose = () => {
         if (document.fullscreenElement) {
             document.exitFullscreen().catch((err) => console.error('Error exiting fullscreen:', err));
@@ -29,7 +32,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ videoUrl, title, onClose
 
                 <div className="relative w-full pt-[56.25%] bg-black">
                     <div className="absolute top-0 left-0 w-full h-full">
-                        <CustomVideoPlayer url={videoUrl} title={title} />
+                        <CustomVideoPlayer url={videoUrl} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} />
                     </div>
                 </div>
 

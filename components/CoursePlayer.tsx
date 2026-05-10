@@ -37,7 +37,7 @@ interface CoursePlayerProps {
 
 export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) => {
   const navigate = useNavigate();
-  const { completedLessons, markLessonComplete } = useStore();
+    const { completedLessons, markLessonComplete, questions } = useStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
@@ -173,7 +173,13 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) =>
               >
                 <div className={`aspect-video rounded-3xl overflow-hidden shadow-2xl relative group ${isDarkMode ? 'bg-black' : 'bg-gray-900'}`}>
                   {activeLesson.type === 'video' ? (
-                    <CustomVideoPlayer key={activeLesson.id} url={activeLesson.videoUrl || ''} title={activeLesson.title} />
+                    <CustomVideoPlayer
+                        key={activeLesson.id}
+                        url={activeLesson.videoUrl || ''}
+                        title={activeLesson.title}
+                        interactiveQuestions={activeLesson.interactiveQuestions || []}
+                        questionBank={questions}
+                    />
                   ) : activeLesson.type === 'quiz' ? (
                     <div className="w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gradient-to-br from-indigo-600 to-purple-700 text-white">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-3xl flex items-center justify-center mb-6">

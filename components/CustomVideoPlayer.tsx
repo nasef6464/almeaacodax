@@ -16,10 +16,13 @@ import {
 import { AnimatePresence, motion } from 'motion/react';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { reportClientEvent } from '../services/clientTelemetry';
+import { InteractiveQuestion, Question } from '../types';
 
 interface CustomVideoPlayerProps {
   url: string;
   title?: string;
+  interactiveQuestions?: InteractiveQuestion[];
+  questionBank?: Question[];
 }
 
 interface NormalizedVideoSource {
@@ -34,11 +37,71 @@ interface NormalizedVideoSource {
 interface PlyrYouTubePlayerProps {
   videoId: string;
   title?: string;
+  interactiveQuestions?: InteractiveQuestion[];
+  questionBank?: Question[];
 }
 
-const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title }) => {
+interface VideoQuestionOverlayProps {
+  question: InteractiveQuestion;
+  bankQuestion?: Question;
+  onAnswer: (isCorrect: boolean) => void;
+  onSkip: () => void;
+}
+
+const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, bankQuestion, onAnswer, onSkip }) => {
+  const inlineQuestion = question.inlineQuestion || (bankQuestion
+    ? {
+        text: bankQuestion.text,
+        options: bankQuestion.options,
+        correctOptionIndex: bankQuestion.correctOptionIndex,
+      }
+    : undefined);
+  if (!inlineQuestion) return null;
+
+  return (
+    <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/75 p-4" dir="rtl">
+      <div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
+        <div className="mb-3 text-xs font-bold text-indigo-600">سؤال سريع داخل الدرس</div>
+        <h3 className="mb-4 text-lg font-bold leading-8 text-gray-900">{inlineQuestion.text}</h3>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {inlineQuestion.options.map((option, index) => (
+            <button
+              key={`${question.id}-${index}`}
+              onClick={() => onAnswer(index === inlineQuestion.correctOptionIndex)}
+              className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-bold text-gray-800 transition hover:border-indigo-400 hover:bg-indigo-50"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        {!question.mustPass ? (
+          <button onClick={onSkip} className="mt-4 text-xs font-bold text-gray-500 hover:text-gray-800">
+            متابعة بدون إجابة الآن
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const getDueVideoQuestion = (
+  questions: InteractiveQuestion[],
+  questionBank: Question[],
+  answeredQuestionIds: Set<string>,
+  currentTime: number,
+) =>
+  questions
+    .filter((question) => {
+      const hasRenderableQuestion = Boolean(question.inlineQuestion || questionBank.some((item) => item.id === question.questionId));
+      return hasRenderableQuestion && !answeredQuestionIds.has(question.id) && currentTime >= question.timestamp;
+    })
+    .sort((first, second) => first.timestamp - second.timestamp)[0] || null;
+
+const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title, interactiveQuestions = [], questionBank = [] }) => {
   const playerElementRef = useRef<HTMLDivElement>(null);
   const playerInstanceRef = useRef<Plyr | null>(null);
+  const [activeQuestion, setActiveQuestion] = useState<InteractiveQuestion | null>(null);
+  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     if (!playerElementRef.current) return undefined;
@@ -74,6 +137,15 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title })
     } as Plyr.Options);
 
     playerInstanceRef.current = player;
+    player.on('timeupdate', () => {
+      if (activeQuestion) return;
+      const currentTime = Number(player.currentTime || 0);
+      const dueQuestion = getDueVideoQuestion(interactiveQuestions, questionBank, answeredQuestionIds, currentTime);
+      if (dueQuestion) {
+        player.pause();
+        setActiveQuestion(dueQuestion);
+      }
+    });
     player.on('error', (event) => {
       void reportClientEvent({
         source: 'video-player',
@@ -91,7 +163,20 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title })
       playerInstanceRef.current?.destroy();
       playerInstanceRef.current = null;
     };
-  }, [videoId]);
+  }, [videoId, interactiveQuestions, questionBank, answeredQuestionIds, activeQuestion]);
+
+  const resolveQuestion = (isCorrect: boolean) => {
+    if (!activeQuestion) return;
+    setAnsweredQuestionIds((previous) => new Set(previous).add(activeQuestion.id));
+    if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
+      const player = playerInstanceRef.current;
+      if (player) {
+        player.currentTime = Math.max(0, activeQuestion.rewatchTimestamp ?? (player.currentTime || 0) - 15);
+      }
+    }
+    setActiveQuestion(null);
+    playerInstanceRef.current?.play();
+  };
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-3xl bg-black group">
@@ -107,6 +192,14 @@ const PlyrYouTubePlayer: React.FC<PlyrYouTubePlayerProps> = ({ videoId, title })
         <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 rounded-2xl bg-black/35 px-4 py-2 text-right text-sm font-bold text-white backdrop-blur" dir="rtl">
           {title}
         </div>
+      ) : null}
+      {activeQuestion ? (
+        <VideoQuestionOverlay
+          question={activeQuestion}
+          bankQuestion={questionBank.find((question) => question.id === activeQuestion.questionId)}
+          onAnswer={resolveQuestion}
+          onSkip={() => resolveQuestion(true)}
+        />
       ) : null}
       <style
         dangerouslySetInnerHTML={{
@@ -190,7 +283,7 @@ const normalizeVideoUrl = (rawUrl: string) => {
   return { playerUrl: safeUrl, externalUrl: safeUrl };
 };
 
-export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title }) => {
+export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title, interactiveQuestions = [], questionBank = [] }) => {
   const Player = ReactPlayer as any;
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -206,12 +299,16 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasPlaybackError, setHasPlaybackError] = useState(false);
+  const [activeQuestion, setActiveQuestion] = useState<InteractiveQuestion | null>(null);
+  const [answeredQuestionIds, setAnsweredQuestionIds] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     setPlaying(false);
     setPlayed(0);
     setDuration(0);
     setHasPlaybackError(false);
+    setActiveQuestion(null);
+    setAnsweredQuestionIds(new Set());
   }, [normalizedUrl]);
 
   useEffect(() => {
@@ -251,10 +348,29 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     setMuted(nextVolume === 0);
   };
 
-  const handleProgress = (state: { played: number }) => {
+  const handleProgress = (state: { played: number; playedSeconds?: number }) => {
     if (!seeking) {
       setPlayed(state.played);
     }
+    if (!activeQuestion) {
+      const dueQuestion = getDueVideoQuestion(interactiveQuestions, questionBank, answeredQuestionIds, state.playedSeconds || 0);
+      if (dueQuestion) {
+        setPlaying(false);
+        setActiveQuestion(dueQuestion);
+      }
+    }
+  };
+
+  const resolveQuestion = (isCorrect: boolean) => {
+    if (!activeQuestion) return;
+    setAnsweredQuestionIds((previous) => new Set(previous).add(activeQuestion.id));
+    if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
+      const currentTime = playerRef.current?.getCurrentTime?.() || 0;
+      const targetTime = Math.max(0, activeQuestion.rewatchTimestamp ?? currentTime - 15);
+      playerRef.current?.seekTo(targetTime, 'seconds');
+    }
+    setActiveQuestion(null);
+    setPlaying(true);
   };
 
   const handleSeekMouseUp = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
@@ -300,7 +416,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
 
   if (videoSource.provider === 'youtube' && videoSource.videoId) {
-    return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} />;
+    return <PlyrYouTubePlayer videoId={videoSource.videoId} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} />;
   }
 
   if (!normalizedUrl && videoSource.blockedProvider) {
@@ -436,6 +552,15 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
         <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 rounded-2xl bg-black/35 px-4 py-2 text-right text-sm font-bold text-white backdrop-blur" dir="rtl">
           {title}
         </div>
+      ) : null}
+
+      {activeQuestion ? (
+        <VideoQuestionOverlay
+          question={activeQuestion}
+          bankQuestion={questionBank.find((question) => question.id === activeQuestion.questionId)}
+          onAnswer={resolveQuestion}
+          onSkip={() => resolveQuestion(true)}
+        />
       ) : null}
 
       {!usesNativeIframe && (
