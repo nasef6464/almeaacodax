@@ -52,14 +52,6 @@ const preferencesSchema = z.object({
   enrolledPaths: z.array(z.string()).optional(),
 });
 
-const purchaseSchema = z.object({
-  courseId: z.string().min(1).optional(),
-  packageId: z.string().min(1).optional(),
-  includedCourseIds: z.array(z.string()).optional(),
-}).refine((payload) => payload.courseId || payload.packageId, {
-  message: "Purchase payload is incomplete",
-});
-
 const redeemAccessCodeSchema = z.object({
   code: z.string().min(4),
 });
@@ -281,17 +273,8 @@ authRouter.post(
   "/me/purchase",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const payload = purchaseSchema.parse(req.body);
-    const user = await applyPurchaseToUser(req.authUser?.id || "", payload);
-
-    if (!user) {
-      return res.status(StatusCodes.NOT_FOUND).json({
-        message: "User not found",
-      });
-    }
-
-    return res.json({
-      user: serializeUser(user),
+    return res.status(StatusCodes.GONE).json({
+      message: "Direct purchase unlock is disabled. Use payment requests, admin approval, verified webhooks, or access-code redemption.",
     });
   }),
 );
@@ -310,8 +293,9 @@ authRouter.post(
       });
     }
 
+    const codeLookup = { $regex: new RegExp(`^${escapeRegExp(normalizedCode)}$`, "i") };
     const accessCode = await AccessCodeModel.findOne({
-      code: { $regex: new RegExp(`^${escapeRegExp(normalizedCode)}$`, "i") },
+      code: codeLookup,
     });
 
     if (!accessCode) {
@@ -332,7 +316,7 @@ authRouter.post(
       });
     }
 
-      const linkedPackage = await B2BPackageModel.findOne(buildDocumentQuery(accessCode.packageId));
+    const linkedPackage = await B2BPackageModel.findOne(buildDocumentQuery(accessCode.packageId));
 
     if (!linkedPackage || linkedPackage.status !== "active") {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -346,17 +330,30 @@ authRouter.post(
       });
     }
 
+    const reservedAccessCode = await AccessCodeModel.findOneAndUpdate(
+      {
+        code: codeLookup,
+        expiresAt: { $gt: Date.now() },
+        $expr: { $lt: ["$currentUses", "$maxUses"] },
+      },
+      { $inc: { currentUses: 1 } },
+      { new: true },
+    );
+
+    if (!reservedAccessCode) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Activation code has no remaining uses",
+      });
+    }
+
     const updatedUser = await applyPurchaseToUser(String(user._id), {
       packageId: String(linkedPackage.id || linkedPackage._id),
       includedCourseIds: Array.isArray(linkedPackage.courseIds) ? linkedPackage.courseIds.map(String) : [],
     });
 
-    accessCode.currentUses = (accessCode.currentUses || 0) + 1;
-    await accessCode.save();
-
     return res.json({
       user: serializeUser(updatedUser),
-      accessCode,
+      accessCode: reservedAccessCode,
       package: linkedPackage,
     });
   }),

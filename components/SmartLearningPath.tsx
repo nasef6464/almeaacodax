@@ -94,9 +94,12 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
                                 </p>
                             </div>
 
-                            <button className="w-full bg-gray-50 hover:bg-purple-600 hover:text-white text-gray-700 py-2 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 group-hover:border-transparent">
-                                {item.actionLabel}
-                                <ArrowLeft size={16} />
+                            <button className="w-full rounded-xl bg-gradient-to-l from-indigo-600 to-purple-600 px-4 py-2.5 text-sm font-black text-white shadow-sm shadow-indigo-100 transition-all hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                                <span className="inline-flex items-center justify-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
+                                    {item.actionLabel}
+                                    <ArrowLeft size={16} />
+                                </span>
                             </button>
                         </div>
                     </div>

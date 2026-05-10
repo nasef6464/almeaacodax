@@ -5,6 +5,7 @@ const headerSource = await readFile(new URL('../components/Header.tsx', import.m
 const indexSource = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizzesSource = await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8');
+const smartLearningPathSource = await readFile(new URL('../components/SmartLearningPath.tsx', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -72,6 +73,14 @@ check('student quiz actions have clear compact visual cues', () => {
   assertIncludes(quizzesSource, 'bg-gradient-to-br from-indigo-600 to-violet-600');
   assertIncludes(quizzesSource, 'bg-gradient-to-br from-amber-400 to-orange-500');
   assertIncludes(quizzesSource, 'px-4 py-2.5 text-sm font-black');
+});
+
+check('smart learning action buttons stay prominent but compact', () => {
+  assertIncludes(dashboardSource, 'hover:-translate-y-0.5 hover:shadow-md');
+  assertIncludes(dashboardSource, 'h-2 w-2 rounded-full bg-white/80 animate-pulse');
+  assertIncludes(smartLearningPathSource, 'bg-gradient-to-l from-indigo-600 to-purple-600');
+  assertIncludes(smartLearningPathSource, 'hover:-translate-y-0.5 hover:shadow-md');
+  assertIncludes(smartLearningPathSource, 'h-2 w-2 rounded-full bg-white/80 animate-pulse');
 });
 
 for (const item of checks) {

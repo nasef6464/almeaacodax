@@ -142,7 +142,6 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
 const questionAttemptSchema = z.object({
   questionId: z.string().min(1),
   selectedOptionIndex: z.number().default(-1),
-  isCorrect: z.boolean().default(false),
   timeSpentSeconds: z.number().default(0),
   date: z.string().optional(),
 });
@@ -1325,9 +1324,21 @@ quizRouter.post(
   requireAuth,
   asyncHandler(async (req, res) => {
     const payload = questionAttemptSchema.parse(req.body);
-    const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select("id pathId subject sectionId skillIds");
+    const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
+      "id pathId subject sectionId skillIds correctOptionIndex",
+    );
+
+    if (!question) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
+    }
+
+    const selectedOptionIndex = Number(payload.selectedOptionIndex);
+    const isCorrect =
+      selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
     const created = await QuestionAttemptModel.create({
       ...payload,
+      selectedOptionIndex,
+      isCorrect,
       userId: req.authUser!.id,
       date: payload.date || new Date().toISOString(),
       pathId: String(question?.pathId || ""),
@@ -1574,11 +1585,8 @@ quizRouter.post(
   "/results",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const created = await QuizResultModel.create({
-      ...req.body,
-      userId: req.authUser!.id,
+    return res.status(StatusCodes.GONE).json({
+      message: "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.",
     });
-    await updateSkillProgressFromResult(created, req.authUser!.id);
-    res.status(StatusCodes.CREATED).json(created);
   }),
 );

@@ -944,26 +944,29 @@ const AttemptCategoryButton = ({
 }) => {
   const isMock = label.includes('محاكية');
   const activeClass = isMock
-    ? 'border-amber-200 bg-amber-50 text-amber-800 shadow-sm ring-2 ring-amber-100'
-    : 'border-indigo-200 bg-indigo-50 text-indigo-800 shadow-sm ring-2 ring-indigo-100';
+    ? 'border-amber-300 bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg shadow-amber-100 ring-2 ring-amber-100'
+    : 'border-indigo-300 bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-100 ring-2 ring-indigo-100';
   const idleClass = isMock
-    ? 'border-amber-100 bg-white text-amber-800 hover:border-amber-200 hover:bg-amber-50/70'
-    : 'border-indigo-100 bg-white text-indigo-800 hover:border-indigo-200 hover:bg-indigo-50/70';
+    ? 'border-amber-100 bg-amber-50/60 text-amber-800 hover:border-amber-200 hover:bg-amber-100'
+    : 'border-indigo-100 bg-indigo-50/70 text-indigo-800 hover:border-indigo-200 hover:bg-indigo-100';
   const countClass = isMock
-    ? active ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-800'
-    : active ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-800';
+    ? active ? 'bg-white/20 text-white ring-1 ring-white/40' : 'bg-white text-amber-800'
+    : active ? 'bg-white/20 text-white ring-1 ring-white/40' : 'bg-white text-indigo-800';
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-right transition-all ${
+      className={`relative flex items-center justify-between gap-4 overflow-hidden rounded-2xl border px-4 py-3 text-right transition-all hover:-translate-y-0.5 hover:shadow-md ${
         active ? activeClass : idleClass
       }`}
     >
+      {count > 0 && !active ? (
+        <span className={`absolute left-3 top-3 h-2 w-2 rounded-full ${isMock ? 'bg-amber-500' : 'bg-indigo-500'} animate-pulse`} />
+      ) : null}
       <span>
         <span className="block text-sm font-black">{label}</span>
-        <span className="sr-only">{description}</span>
+        <span className={`mt-1 block text-[11px] font-bold ${active ? 'text-white/80' : 'text-gray-500'}`}>{description}</span>
       </span>
       <span className={`rounded-2xl px-3 py-1.5 text-base font-black ${countClass}`}>
         {count}

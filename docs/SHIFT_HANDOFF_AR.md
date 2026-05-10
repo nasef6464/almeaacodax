@@ -74,3 +74,11 @@
 - ما تم: زر التدريب يظهر كـ "ابدأ التدريب"، وزر الاختبار يظهر كـ "ابدأ الاختبار"، والاختبار/التدريب المغلق يفتح مسار الباقة.
 - فحص الحماية المضاف: `smoke:quiz-access` يتحقق الآن من أن `mode="bank"` للتدريب، وأن مصادر `training` و`tests` منفصلة، وأن النصوص البصرية لا تدمج القسمين.
 - المتبقي المباشر: استكمال تحسين تجربة الباقات/الإعلانات/تقارير الطالب وولي الأمر بنفس قاعدة البساطة وعدم نقل تفاصيل الإدارة للطالب.
+## Production Hardening Sprint - 2026-05-10
+- Closed critical direct-unlock route: `POST /api/auth/me/purchase` now returns `410 Gone`; paid access must come from payment review/webhook or access-code redemption.
+- Closed direct quiz-result injection: `POST /api/quizzes/results` now returns `410 Gone`; real quiz results must come from `/api/quizzes/:id/submit`.
+- Question attempts no longer trust client `isCorrect`; the server compares the selected option with the stored correct answer.
+- Access-code redemption now reserves usage with MongoDB atomic `$inc` and `$expr` guard.
+- Added baseline backend hardening: Helmet, compression, global rate limit, stricter auth/payment/AI/quiz-submit limits, and smaller JSON payload limit.
+- Added docs: `PRODUCTION_READINESS_REPORT.md`, `SECURITY_CHECKLIST.md`, `LOAD_TEST_REPORT.md`, `BACKUP_RESTORE_GUIDE.md`.
+- Added guard: `npm run smoke:production-hardening`.

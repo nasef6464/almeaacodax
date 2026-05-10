@@ -1472,8 +1472,9 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                             </div>
                             <Link 
                                 to={smartAction.link || '#'}
-                                className={`${smartAction.btnBg} w-full md:w-auto text-center text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm`}
+                                className={`${smartAction.btnBg} inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-center text-sm font-black text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md md:w-auto`}
                             >
+                                <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
                                 {smartAction.buttonText}
                             </Link>
                         </div>
