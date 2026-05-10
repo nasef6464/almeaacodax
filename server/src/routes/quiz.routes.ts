@@ -18,6 +18,7 @@ import { TopicModel } from "../models/Topic.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
+import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 
 const questionBaseSchema = z.object({
   id: z.string().optional(),
@@ -1585,6 +1586,13 @@ quizRouter.post(
   "/results",
   requireAuth,
   asyncHandler(async (req, res) => {
+    await recordAdminAuditLog(req, {
+      action: "quiz.direct_result.blocked",
+      resourceType: "quiz-result",
+      status: "blocked",
+      metadata: { bodyKeys: Object.keys(req.body || {}) },
+    });
+
     return res.status(StatusCodes.GONE).json({
       message: "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.",
     });

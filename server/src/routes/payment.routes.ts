@@ -8,6 +8,7 @@ import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { UserModel } from "../models/User.js";
 import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
+import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 
 const paymentMethodSettingsSchema = z.object({
   enabled: z.boolean().optional(),
@@ -177,6 +178,12 @@ paymentRouter.patch(
     const settings = await getOrCreateSettings();
     Object.assign(settings, payload);
     await settings.save();
+    await recordAdminAuditLog(req, {
+      action: "payment.settings.update",
+      resourceType: "payment-settings",
+      resourceId: "default",
+      metadata: { changedKeys: Object.keys(payload) },
+    });
     return res.json(settings);
   }),
 );
@@ -275,6 +282,18 @@ paymentRouter.patch(
         includedCourseIds: Array.isArray(requestDoc.includedCourseIds) ? requestDoc.includedCourseIds : [],
       });
     }
+
+    await recordAdminAuditLog(req, {
+      action: "payment.request.review",
+      resourceType: "payment-request",
+      resourceId: String(requestDoc.id || requestDoc._id),
+      metadata: {
+        status: payload.status,
+        itemType: requestDoc.itemType,
+        itemId: requestDoc.itemId,
+        userId: requestDoc.userId,
+      },
+    });
 
     return res.json({
       request: requestDoc,

@@ -82,3 +82,11 @@
 - Added baseline backend hardening: Helmet, compression, global rate limit, stricter auth/payment/AI/quiz-submit limits, and smaller JSON payload limit.
 - Added docs: `PRODUCTION_READINESS_REPORT.md`, `SECURITY_CHECKLIST.md`, `LOAD_TEST_REPORT.md`, `BACKUP_RESTORE_GUIDE.md`.
 - Added guard: `npm run smoke:production-hardening`.
+
+## Production Audit + Paid/Free Foundation Sprint - 2026-05-10
+- Added `AdminAuditLog` storage and `/api/operations/admin-audit-logs` for admin-only review of sensitive actions.
+- Logged sensitive events: payment settings updates, payment request reviews, admin user upserts/updates, blocked direct purchase attempts, and blocked direct quiz result attempts.
+- Changed `server/.env.example` so `DEV_LOCAL_ADMIN_BYPASS=false` is the safe default.
+- Foundation topics now respect the topic itself for paid/free status. If a foundation topic is not locked, the student sees it as free and can open it directly. Locked topics still open the matching package/payment path.
+- Added guard: `npm run smoke:production-audit`.
+- Next direct work: complete package choice UX for public discount codes, memberships, and package variants (foundation only, tests only, full subject, full path, full membership) without merging training and tests.

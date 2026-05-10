@@ -10,6 +10,7 @@ import { B2BPackageModel } from "../models/B2BPackage.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
+import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -171,6 +172,16 @@ authRouter.post(
       },
     );
 
+    await recordAdminAuditLog(req, {
+      action: "auth.admin_user.upsert",
+      resourceType: "user",
+      resourceId: String(user.id || user._id),
+      metadata: {
+        targetEmail: user.email,
+        targetRole: user.role,
+      },
+    });
+
     return res.status(StatusCodes.CREATED).json({
       user: serializeUser(user),
     });
@@ -207,6 +218,17 @@ authRouter.patch(
         message: "User not found",
       });
     }
+
+    await recordAdminAuditLog(req, {
+      action: "auth.admin_user.update",
+      resourceType: "user",
+      resourceId: String(updated.id || updated._id),
+      metadata: {
+        changedKeys: Object.keys(payload),
+        targetEmail: updated.email,
+        targetRole: updated.role,
+      },
+    });
 
     return res.json({
       user: serializeUser(updated),
@@ -273,6 +295,13 @@ authRouter.post(
   "/me/purchase",
   requireAuth,
   asyncHandler(async (req, res) => {
+    await recordAdminAuditLog(req, {
+      action: "auth.direct_purchase.blocked",
+      resourceType: "purchase",
+      status: "blocked",
+      metadata: { bodyKeys: Object.keys(req.body || {}) },
+    });
+
     return res.status(StatusCodes.GONE).json({
       message: "Direct purchase unlock is disabled. Use payment requests, admin approval, verified webhooks, or access-code redemption.",
     });

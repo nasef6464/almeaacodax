@@ -450,7 +450,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 totalLessons: totalLessons || 1,
                 completed: Math.floor((progress / 100) * (totalLessons || 1)),
                 totalQuizzes: totalQuizzes,
-                isLocked: isPremiumLocked(settings.lockSkillsForNonSubscribers, hasFoundationAccess) || (!isStaffViewer && topic.isLocked === true && !hasFoundationAccess),
+                isLocked: !isStaffViewer && topic.isLocked === true && !hasFoundationAccess,
                 progress: progress,
                 originalTopic: topic // Keep a reference to the real topic
             };
@@ -474,7 +474,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const topicIsLocked =
             !isStaffViewer &&
             !hasFoundationAccess &&
-            (settings.lockSkillsForNonSubscribers === true || parentTopic.isLocked === true || requestedTopic.isLocked === true);
+            (parentTopic.isLocked === true || requestedTopic.isLocked === true);
         if (topicIsLocked) {
             const packageItem = buildScopedPackageItem(
                 'foundation',
@@ -530,7 +530,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             initialLessonId: requestedLessonId || null,
             trainingDone: hasReturnedFromFoundationTraining,
         });
-    }, [category, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, settings.lockSkillsForNonSubscribers, subject, topicList]);
+    }, [category, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
 
     let banks = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),
@@ -1012,7 +1012,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     </div>
                                     <div className="mb-4 flex flex-wrap gap-2">
                                         <span className={`rounded-full px-3 py-1 text-[11px] font-black ${skill.isLocked ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                                            {skill.isLocked ? 'مغلق حتى التفعيل' : 'جاهز للتعلّم الآن'}
+                                            {skill.isLocked ? 'مدفوع / ضمن باقة' : 'مجاني ومفتوح الآن'}
                                         </span>
                                     </div>
                                     {skill.isLocked && lockedFoundationMessage && (

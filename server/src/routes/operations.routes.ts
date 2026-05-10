@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { AiInteractionModel } from "../models/AiInteraction.js";
+import { AdminAuditLogModel } from "../models/AdminAuditLog.js";
 import { BackupSnapshotModel } from "../models/BackupSnapshot.js";
 import { ClientEventModel } from "../models/ClientEvent.js";
 import { CourseModel } from "../models/Course.js";
@@ -395,6 +396,39 @@ operationsRouter.get("/client-events", requireAuth, requireRole(["admin"]), asyn
       summary: {
         unresolvedCount,
         last24hCount,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.get("/admin-audit-logs", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit || 50), 1), 200);
+    const action = safeString(req.query.action, 160);
+    const status = safeString(req.query.status, 30);
+    const filter: Record<string, unknown> = {};
+
+    if (action) {
+      filter.action = action;
+    }
+    if (["success", "blocked", "failed"].includes(status)) {
+      filter.status = status;
+    }
+
+    const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [logs, blockedCount24h, failedCount24h] = await Promise.all([
+      AdminAuditLogModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean(),
+      AdminAuditLogModel.countDocuments({ status: "blocked", createdAt: { $gte: since24h } }),
+      AdminAuditLogModel.countDocuments({ status: "failed", createdAt: { $gte: since24h } }),
+    ]);
+
+    res.json({
+      logs,
+      summary: {
+        blockedCount24h,
+        failedCount24h,
       },
     });
   } catch (error) {

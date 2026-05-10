@@ -753,6 +753,25 @@ export const api = {
         routeHint?: string;
       }>;
     }>("/operations/delivery-readiness", { token }),
+  getAdminAuditLogs: (limit = 50, token?: string | null) =>
+    request<{
+      logs: Array<{
+        _id: string;
+        actorId?: string;
+        actorEmail?: string;
+        actorRole?: string;
+        action: string;
+        resourceType?: string;
+        resourceId?: string;
+        status: "success" | "blocked" | "failed";
+        metadata?: Record<string, unknown>;
+        createdAt: string;
+      }>;
+      summary: {
+        blockedCount24h: number;
+        failedCount24h: number;
+      };
+    }>(`/operations/admin-audit-logs?limit=${limit}`, { token }),
   getSeoStatus: (token?: string | null) =>
     request<{
       checkedAt: string;
