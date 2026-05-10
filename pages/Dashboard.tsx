@@ -1714,7 +1714,7 @@ const SaherTab = () => {
                     
                     <Link 
                         to="/quiz" 
-                        className="inline-flex w-full sm:w-auto justify-center bg-white text-[#a855f7] px-6 sm:px-8 py-3 rounded-xl font-bold text-base sm:text-lg hover:bg-gray-50 transition-transform hover:-translate-y-1 shadow-md"
+                        className="cta-attention inline-flex w-full justify-center rounded-xl bg-white px-6 py-2.5 text-base font-black text-[#7c3aed] shadow-md transition-transform hover:-translate-y-1 hover:bg-gray-50 sm:w-auto"
                     >
                         ابدأ اختبار ساهر
                     </Link>
@@ -1754,7 +1754,7 @@ const SaherTab = () => {
                                     <div className="space-y-2">
                                         <Link
                                             to={item.relatedQuiz ? `/quiz/${item.relatedQuiz.id}` : '/quiz'}
-                                            className="inline-block w-full text-center bg-amber-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors"
+                                            className="cta-attention inline-block w-full rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-black text-white transition-colors hover:bg-amber-600"
                                         >
                                             {item.relatedQuiz ? 'ابدأ الاختبار المقترح' : 'أنشئ اختبار ساهر'}
                                         </Link>
@@ -1765,7 +1765,7 @@ const SaherTab = () => {
                                                         ? `/category/${item.recommendedLesson.pathId || item.pathId}?subject=${item.subjectId}&tab=skills`
                                                         : '/courses'
                                                 }
-                                                className="inline-block w-full text-center bg-white border border-gray-200 text-gray-800 px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors"
+                                                className="inline-block w-full rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-center text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
                                             >
                                                 راجع الشرح أولًا
                                             </Link>

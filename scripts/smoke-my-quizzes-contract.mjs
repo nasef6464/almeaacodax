@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 const appSource = await readFile(new URL('../App.tsx', import.meta.url), 'utf8');
 const headerSource = await readFile(new URL('../components/Header.tsx', import.meta.url), 'utf8');
+const indexSource = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizzesSource = await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8');
 
@@ -63,6 +64,14 @@ check('each attempt keeps result, review, analysis, and retry actions', () => {
   assertIncludes(quizzesSource, "getAttemptResultLink(attempt, 'analysis')");
   assertIncludes(quizzesSource, 'getAttemptRetryLink(latest)');
   assertIncludes(quizzesSource, 'buildQuizRouteWithContext(result.quizId');
+});
+
+check('student quiz actions have clear compact visual cues', () => {
+  assertIncludes(indexSource, '.cta-attention');
+  assertIncludes(quizzesSource, "label.includes('محاكية')");
+  assertIncludes(quizzesSource, 'bg-gradient-to-br from-indigo-600 to-violet-600');
+  assertIncludes(quizzesSource, 'bg-gradient-to-br from-amber-400 to-orange-500');
+  assertIncludes(quizzesSource, 'px-4 py-2.5 text-sm font-black');
 });
 
 for (const item of checks) {

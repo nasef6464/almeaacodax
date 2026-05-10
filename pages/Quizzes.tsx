@@ -941,25 +941,36 @@ const AttemptCategoryButton = ({
   description: string;
   count: number;
   onClick: () => void;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`flex items-center justify-between gap-4 rounded-2xl border p-4 text-right transition-all ${
-      active
-        ? 'border-indigo-200 bg-white text-indigo-700 shadow-sm ring-2 ring-indigo-50'
-        : 'border-gray-100 bg-white/70 text-gray-700 hover:border-gray-200 hover:bg-white'
-    }`}
-  >
-    <span>
-      <span className="block text-sm font-black">{label}</span>
-      <span className="sr-only">{description}</span>
-    </span>
-    <span className={`rounded-2xl px-3 py-2 text-lg font-black ${active ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-700'}`}>
-      {count}
-    </span>
-  </button>
-);
+}) => {
+  const isMock = label.includes('محاكية');
+  const activeClass = isMock
+    ? 'border-amber-200 bg-amber-50 text-amber-800 shadow-sm ring-2 ring-amber-100'
+    : 'border-indigo-200 bg-indigo-50 text-indigo-800 shadow-sm ring-2 ring-indigo-100';
+  const idleClass = isMock
+    ? 'border-amber-100 bg-white text-amber-800 hover:border-amber-200 hover:bg-amber-50/70'
+    : 'border-indigo-100 bg-white text-indigo-800 hover:border-indigo-200 hover:bg-indigo-50/70';
+  const countClass = isMock
+    ? active ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-800'
+    : active ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-800';
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-right transition-all ${
+        active ? activeClass : idleClass
+      }`}
+    >
+      <span>
+        <span className="block text-sm font-black">{label}</span>
+        <span className="sr-only">{description}</span>
+      </span>
+      <span className={`rounded-2xl px-3 py-1.5 text-base font-black ${countClass}`}>
+        {count}
+      </span>
+    </button>
+  );
+};
 
 const AttemptScoreFilterButton = ({
   active,
@@ -984,7 +995,7 @@ const AttemptScoreFilterButton = ({
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-black transition-all ${toneClass}`}
+      className={`flex items-center justify-between rounded-2xl border px-4 py-2.5 text-sm font-black transition-all ${toneClass}`}
     >
       <span>{label}</span>
       <span className={`rounded-full px-2.5 py-1 text-xs ${active ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-700'}`}>
@@ -1150,18 +1161,19 @@ const ActionCard = ({
 }) => {
   const toneClasses =
     tone === 'purple'
-      ? 'bg-purple-50 text-purple-700 border-purple-100'
-      : 'bg-amber-50 text-amber-700 border-amber-100';
+      ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white border-indigo-200'
+      : 'bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-200';
+  const iconClass = tone === 'purple' ? 'text-indigo-700' : 'text-amber-700';
 
   return (
-    <div className={`rounded-2xl border p-5 ${toneClasses}`}>
-      <div className="w-12 h-12 rounded-xl bg-white/70 flex items-center justify-center mb-4">{icon}</div>
-      <h3 className="font-bold text-lg mb-2">{title}</h3>
+    <div className={`rounded-2xl border p-4 shadow-sm ${toneClasses}`}>
+      <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 ${iconClass}`}>{icon}</div>
+      <h3 className="mb-3 text-lg font-black">{title}</h3>
       <p className="sr-only">{description}</p>
       {disabled ? (
-        <div className="bg-white/70 text-gray-500 py-2 rounded-lg font-bold text-center text-sm">لا يوجد الآن</div>
+        <div className="rounded-lg bg-white/60 py-2 text-center text-sm font-bold text-gray-500">لا يوجد الآن</div>
       ) : (
-        <Link to={to} className="bg-white text-gray-900 py-2 rounded-lg font-bold text-center block text-sm hover:bg-gray-50">
+        <Link to={to} className="cta-attention block rounded-lg bg-white px-4 py-2 text-center text-sm font-black text-gray-900 hover:bg-gray-50">
           {buttonLabel}
         </Link>
       )}

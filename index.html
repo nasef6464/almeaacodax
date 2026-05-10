@@ -63,6 +63,27 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
+      @keyframes cta-soft-pulse {
+        0%, 100% {
+          transform: translateY(0);
+          box-shadow: 0 8px 18px rgba(79, 70, 229, 0.12);
+        }
+        50% {
+          transform: translateY(-1px);
+          box-shadow: 0 14px 28px rgba(79, 70, 229, 0.18);
+        }
+      }
+      .cta-attention {
+        animation: cta-soft-pulse 2.8s ease-in-out infinite;
+      }
+      .cta-attention:hover {
+        animation-play-state: paused;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cta-attention {
+          animation: none;
+        }
+      }
     </style>
   <script type="importmap">
 {

@@ -1175,13 +1175,13 @@ const Plan: React.FC = () => {
                 <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
                   <Link
                     to={item.lesson?.link || '/reports'}
-                    className="rounded-xl bg-white px-3 py-3 text-sm font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50"
+                    className="cta-attention rounded-xl bg-emerald-500 px-3 py-2.5 text-center text-sm font-black text-white shadow-sm transition hover:bg-emerald-600"
                   >
                     {item.lesson ? `درس: ${item.lesson.title}` : 'درس مقترح لاحقًا'}
                   </Link>
                   <Link
                     to={item.quiz?.link || '/dashboard?tab=saher'}
-                    className="rounded-xl bg-white px-3 py-3 text-sm font-bold text-indigo-700 shadow-sm transition hover:bg-indigo-50"
+                    className="cta-attention rounded-xl bg-indigo-600 px-3 py-2.5 text-center text-sm font-black text-white shadow-sm transition hover:bg-indigo-700"
                   >
                     {item.quiz ? `اختبار: ${item.quiz.title}` : 'اختبار قصير'}
                   </Link>
