@@ -131,7 +131,9 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     onSave(moduleId, lesson);
   };
 
-  const addInteractiveQuestion = () => {
+  const addInteractiveQuestion = (source: 'inline' | 'bank' = 'inline') => {
+    const firstBankQuestion = source === 'bank' ? availableVideoQuestions[0] : undefined;
+
     setLesson((previous) => ({
       ...previous,
       interactiveQuestions: [
@@ -139,11 +141,14 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
         {
           id: `video_question_${Date.now()}`,
           timestamp: 0,
-          inlineQuestion: {
-            text: '',
-            options: ['', ''],
-            correctOptionIndex: 0,
-          },
+          questionId: firstBankQuestion?.id,
+          inlineQuestion: firstBankQuestion
+            ? undefined
+            : {
+                text: '',
+                options: ['', ''],
+                correctOptionIndex: 0,
+              },
           mustPass: false,
           actionOnFail: 'continue',
         },
@@ -375,18 +380,28 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                     <h5 className="font-bold text-gray-800">أسئلة داخل الفيديو</h5>
                     <p className="text-xs text-gray-500">تظهر للطالب عند توقيت محدد داخل مشغل الدرس، وتعمل في التأسيس والدورات.</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={addInteractiveQuestion}
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700"
-                  >
-                    <Plus size={14} /> إضافة سؤال
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => addInteractiveQuestion('bank')}
+                      disabled={availableVideoQuestions.length === 0}
+                      className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+                    >
+                      <Plus size={14} /> سحب سؤال من مركز الأسئلة
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => addInteractiveQuestion('inline')}
+                      className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-50"
+                    >
+                      <Plus size={14} /> سؤال سريع
+                    </button>
+                  </div>
                 </div>
 
                 {(lesson.interactiveQuestions || []).length === 0 ? (
                   <div className="rounded-xl border border-dashed border-indigo-200 bg-white px-4 py-5 text-center text-sm font-medium text-gray-500">
-                    لا توجد أسئلة داخل هذا الفيديو.
+                    لا توجد أسئلة داخل هذا الفيديو. ابدأ بسحب سؤال من مركز الأسئلة أو أنشئ سؤالًا سريعًا.
                   </div>
                 ) : (
                   <div className="space-y-3">

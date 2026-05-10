@@ -25,8 +25,8 @@ const checks = [
   ['services/api.ts', ['createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'announcementAds']],
   ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds']],
   ['store/useStore.ts', ['announcementAds', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd']],
-  ['components/AnnouncementAdsOverlay.tsx', ['إغلاق الإعلان', 'DISMISSED_KEY', 'goToTarget', 'visibleAds']],
-  ['dashboards/admin/AnnouncementAdsManager.tsx', ['إدارة الإعلانات', 'إعلان جديد', 'handleImageUpload', 'audienceLabels']],
+  ['components/AnnouncementAdsOverlay.tsx', ['DISMISSED_KEY', 'goToTarget', 'visibleAds', 'matchesAudience']],
+  ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'audienceLabels', 'createAnnouncementAd']],
   ['dashboards/admin/AdminDashboard.tsx', ['AnnouncementAdsManager', 'announcement-ads', 'Megaphone']],
   ['App.tsx', ['AnnouncementAdsOverlay', 'announcementAds: contentResult.value.announcementAds']],
   ['server/src/services/learningBackup.ts', ['announcementAds', 'AnnouncementAdModel']],
@@ -43,9 +43,12 @@ const videoPlayer = read('components/CustomVideoPlayer.tsx');
 assert(videoPlayer.includes('questionBank.find'), 'Video player must resolve timed questions from the question bank');
 
 const lessonManager = read('dashboards/admin/builders/UnifiedLessonBuilder.tsx');
-assert(
-  lessonManager.includes('اختيار من بنك الأسئلة') && lessonManager.includes('questionId') && lessonManager.includes('interactiveQuestions'),
-  'Lesson manager must keep question-bank references for interactive video questions',
-);
+assert(lessonManager.includes('availableVideoQuestions'), 'Lesson manager must list question-bank candidates');
+assert(lessonManager.includes("addInteractiveQuestion('bank')"), 'Lesson manager must provide a direct pull-from-bank action');
+assert(lessonManager.includes('questionId') && lessonManager.includes('interactiveQuestions'), 'Video questions must keep question-bank references');
 
-console.log('announcement ads and video question-bank contract ok');
+const header = read('components/Header.tsx');
+assert(header.includes('/dashboard?tab=my-courses'), 'User menu courses shortcut must open the dashboard courses tab');
+assert(header.includes('/dashboard?tab=quizzes'), 'User menu quizzes shortcut must open the dashboard quiz attempts tab');
+
+console.log('announcement ads, video question-bank, and dashboard shortcut contract ok');
