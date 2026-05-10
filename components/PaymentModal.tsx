@@ -11,6 +11,23 @@ interface PaymentModalProps {
     type?: 'course' | 'package' | 'skill' | 'test' | 'bank';
 }
 
+type PaymentPackageOption = {
+    id: string;
+    title: string;
+    price?: number;
+    currency?: string;
+    description?: string;
+    packageId?: string;
+    purchaseType?: string;
+    contentTypes?: string[];
+    packageContentTypes?: string[];
+    pathIds?: string[];
+    subjectIds?: string[];
+    includedCourseIds?: string[];
+    courseIds?: string[];
+    accessContext?: string;
+};
+
 const fallbackSettings: PaymentSettings = {
     key: 'default',
     currency: 'SAR',
@@ -66,7 +83,19 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const [walletNumber, setWalletNumber] = useState('');
     const [receiptUrl, setReceiptUrl] = useState('');
     const [notes, setNotes] = useState('');
+    const [discountCode, setDiscountCode] = useState('');
+    const [selectedPackageId, setSelectedPackageId] = useState('');
     const { redeemAccessCode } = useStore();
+
+    const packageOptions = useMemo<PaymentPackageOption[]>(() => {
+        if (!Array.isArray(item?.packageOptions)) return [];
+        return item.packageOptions.filter((option: PaymentPackageOption) => option?.id);
+    }, [item]);
+
+    const purchaseItem = useMemo(() => {
+        if (!packageOptions.length) return item;
+        return packageOptions.find((option) => option.id === selectedPackageId) || packageOptions[0] || item;
+    }, [item, packageOptions, selectedPackageId]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -83,6 +112,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         setWalletNumber('');
         setReceiptUrl('');
         setNotes('');
+        setDiscountCode('');
+        setSelectedPackageId(Array.isArray(item?.packageOptions) && item.packageOptions[0]?.id ? item.packageOptions[0].id : '');
     }, [isOpen, item?.id, type]);
 
     useEffect(() => {
@@ -122,8 +153,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     const shouldPurchaseAsPackage =
         type === 'package' ||
-        item?.purchaseType === 'package' ||
-        ((type === 'skill' || type === 'test' || type === 'bank') && (item?.packageId || item?.includedCourseIds?.length));
+        purchaseItem?.purchaseType === 'package' ||
+        ((type === 'skill' || type === 'test' || type === 'bank') && (purchaseItem?.packageId || purchaseItem?.includedCourseIds?.length));
 
     const getTitle = () => {
         if (type === 'package') return 'الاشتراك في الباقة';
@@ -133,43 +164,44 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         return 'الاشتراك في الدورة';
     };
 
-    const getItemName = () => item.title || item.name || 'العنصر المحدد';
-    const getPrice = () => item.price || 0;
-    const getCurrency = () => item.currency || settings.currency || 'SAR';
-    const itemContentTypes = Array.isArray(item?.contentTypes) && item.contentTypes.length
-        ? item.contentTypes
-        : Array.isArray(item?.packageContentTypes) && item.packageContentTypes.length
-            ? item.packageContentTypes
+    const getItemName = () => purchaseItem.title || purchaseItem.name || 'العنصر المحدد';
+    const getPrice = () => purchaseItem.price || 0;
+    const getCurrency = () => purchaseItem.currency || settings.currency || 'SAR';
+    const itemContentTypes = Array.isArray(purchaseItem?.contentTypes) && purchaseItem.contentTypes.length
+        ? purchaseItem.contentTypes
+        : Array.isArray(purchaseItem?.packageContentTypes) && purchaseItem.packageContentTypes.length
+            ? purchaseItem.packageContentTypes
             : shouldPurchaseAsPackage
                 ? ['all']
                 : [];
     const itemCoverageSummary = [
-        item?.includedCourseIds?.length || item?.courseIds?.length ? { label: 'دورات مرفقة', value: item?.includedCourseIds?.length || item?.courseIds?.length } : null,
-        item?.pathIds?.length ? { label: 'مسارات مستهدفة', value: item.pathIds.length } : null,
-        item?.subjectIds?.length ? { label: 'مواد مستهدفة', value: item.subjectIds.length } : null,
+        purchaseItem?.includedCourseIds?.length || purchaseItem?.courseIds?.length ? { label: 'دورات مرفقة', value: purchaseItem?.includedCourseIds?.length || purchaseItem?.courseIds?.length } : null,
+        purchaseItem?.pathIds?.length ? { label: 'مسارات مستهدفة', value: purchaseItem.pathIds.length } : null,
+        purchaseItem?.subjectIds?.length ? { label: 'مواد مستهدفة', value: purchaseItem.subjectIds.length } : null,
     ].filter(Boolean) as { label: string; value: number }[];
-    const scopeLabel = item?.subjectIds?.length
+    const scopeLabel = purchaseItem?.subjectIds?.length
         ? 'محتوى مادة محددة'
-        : item?.pathIds?.length
+        : purchaseItem?.pathIds?.length
             ? 'محتوى مسار كامل'
             : shouldPurchaseAsPackage
                 ? 'باقة عامة'
                 : 'عنصر منفرد';
     const audienceLabel = shouldPurchaseAsPackage ? 'عرض شراء فردي' : 'تفعيل مباشر لهذا العنصر';
-    const accessContext = typeof item?.accessContext === 'string' ? item.accessContext : '';
+    const accessContext = typeof purchaseItem?.accessContext === 'string' ? purchaseItem.accessContext : '';
 
     const buildPaymentRequestPayload = () => {
-        const packageId = item.packageId || (shouldPurchaseAsPackage ? item.id : undefined);
-        const includedCourseIds = item.includedCourseIds || item.includedCourses || item.courseIds || [];
+        const packageId = purchaseItem.packageId || (shouldPurchaseAsPackage ? purchaseItem.id : undefined);
+        const includedCourseIds = purchaseItem.includedCourseIds || purchaseItem.includedCourses || purchaseItem.courseIds || [];
         const extraNotes = [
             notes.trim(),
+            discountCode.trim() ? `كود الخصم: ${discountCode.trim().toUpperCase()}` : '',
             method === 'card' && cardHolderName.trim() ? `اسم حامل البطاقة: ${cardHolderName.trim()}` : '',
             method === 'card' && cardLast4.trim() ? `آخر 4 أرقام: ${cardLast4.trim()}` : '',
         ].filter(Boolean).join(' | ');
 
         return {
             itemType: shouldPurchaseAsPackage ? 'package' : type === 'bank' ? 'test' : type,
-            itemId: item.id,
+            itemId: purchaseItem.id,
             itemName: getItemName(),
             packageId,
             includedCourseIds,
@@ -179,6 +211,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             transferReference: method === 'transfer' ? transferReference.trim() : '',
             walletNumber: method === 'wallet' ? walletNumber.trim() : '',
             receiptUrl: receiptUrl.trim(),
+            discountCode: discountCode.trim().toUpperCase(),
             notes: extraNotes,
         };
     };
@@ -301,6 +334,40 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 ) : null}
             </div>
 
+            {packageOptions.length > 1 ? (
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-right">
+                    <div className="mb-3 text-sm font-black text-gray-900">اختر الباقة المناسبة</div>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {packageOptions.map((option) => {
+                            const isSelected = option.id === (selectedPackageId || packageOptions[0]?.id);
+                            const contentTypes = option.contentTypes?.length ? option.contentTypes : option.packageContentTypes || [];
+                            const label = contentTypes.includes('all')
+                                ? 'شاملة'
+                                : contentTypes.map((contentType) => packageContentLabels[contentType] || contentType).join(' + ');
+
+                            return (
+                                <button
+                                    key={option.id}
+                                    type="button"
+                                    onClick={() => setSelectedPackageId(option.id)}
+                                    className={`rounded-2xl border px-4 py-3 text-right transition-all ${
+                                        isSelected
+                                            ? 'border-indigo-500 bg-white shadow-sm ring-2 ring-indigo-100'
+                                            : 'border-white bg-white/70 hover:border-indigo-200'
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between gap-3">
+                                        <span className="text-sm font-black text-gray-900">{option.title}</span>
+                                        <span className="rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-700">{label}</span>
+                                    </div>
+                                    <div className="mt-2 text-xs font-bold text-gray-500">{option.price || 0} {option.currency || getCurrency()}</div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            ) : null}
+
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
                 <div>
                     <p className="font-bold text-amber-900">لديك كود تفعيل؟</p>
@@ -389,6 +456,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 </div>
             )}
 
+            <input
+                value={discountCode}
+                onChange={(event) => setDiscountCode(event.target.value.toUpperCase().replace(/\s+/g, '').slice(0, 40))}
+                placeholder="كود خصم (اختياري)"
+                className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none font-mono"
+            />
             <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} placeholder="ملاحظات إضافية للإدارة (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none resize-none" />
 
             <div className="pt-2">

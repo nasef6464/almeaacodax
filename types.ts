@@ -488,6 +488,7 @@ export interface PaymentRequest {
     transferReference?: string;
     walletNumber?: string;
     receiptUrl?: string;
+    discountCode?: string;
     notes?: string;
     reviewedBy?: string;
     reviewedAt?: number | null;

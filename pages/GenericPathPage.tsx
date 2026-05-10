@@ -220,9 +220,11 @@ export const GenericPathPage: React.FC = () => {
         pkg.showOnPlatform !== false &&
         pkg.isPublished !== false &&
         (!pkg.approvalStatus || pkg.approvalStatus === 'approved');
-    const pathPackages = courses.filter(
-        c => (c.pathId || c.category) === path.id && c.isPackage && (canSeeHiddenPaths || isPublicPackageVisible(c)),
-    );
+    const pathPackages = courses.filter((c) => {
+        if (!c.isPackage || (!canSeeHiddenPaths && !isPublicPackageVisible(c))) return false;
+        const packagePathId = c.pathId || c.category;
+        return !packagePathId || packagePathId === path.id;
+    });
     const isPackagesTab = searchParams.get('tab') === 'packages';
     const isMockExamsTab = searchParams.get('tab') === 'mock-exams';
     const pathDisplaySettings = path.settings || {};

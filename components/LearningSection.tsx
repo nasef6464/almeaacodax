@@ -166,7 +166,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         course.showOnPlatform !== false &&
         course.isPublished !== false &&
         (!course.approvalStatus || course.approvalStatus === 'approved');
-    const getPublicPackageForScope = (contentType: PackageContentType) =>
+    const getPublicPackagesForScope = (contentType: PackageContentType) =>
         courses
             .filter((course) => {
                 if (!isPublicPackageAvailable(course)) return false;
@@ -191,10 +191,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                     );
                 };
                 return scorePackage(b) - scorePackage(a);
-            })[0];
+            });
     const buildScopedPackageItem = (contentType: PackageContentType, fallbackTitle: string, fallbackDescription: string) => {
         const matchedPackage = getMatchingPackage(contentType, category, subject);
-        const publicPackage = matchedPackage ? null : getPublicPackageForScope(contentType);
+        const publicPackageOptions = matchedPackage ? [] : getPublicPackagesForScope(contentType);
+        const publicPackage = matchedPackage ? null : publicPackageOptions[0];
         if (!matchedPackage && !publicPackage) {
             return null;
         }
@@ -224,6 +225,24 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             courseIds: matchedPackage?.courseIds || publicPackage?.includedCourses || [],
             thumbnail: publicPackage?.thumbnail,
             features: publicPackage?.features,
+            packageOptions: matchedPackage
+                ? []
+                : publicPackageOptions.slice(0, 8).map((option) => ({
+                    id: option.id,
+                    packageId: option.id,
+                    purchaseType: 'package',
+                    title: option.title,
+                    price: option.price || 0,
+                    currency: option.currency || 'ر.س',
+                    description: option.description,
+                    contentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['all'],
+                    packageContentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['all'],
+                    pathIds: [option.pathId || option.category || category].filter(Boolean),
+                    subjectIds: [option.subjectId || option.subject || subject].filter(Boolean),
+                    includedCourseIds: option.includedCourses || [],
+                    courseIds: option.includedCourses || [],
+                    accessContext: 'اختر هذه الباقة إذا كانت تناسب الجزء الذي تريد فتحه، وسيتم تفعيل الوصول بعد اعتماد الدفع من الإدارة.',
+                })),
             accessContext: matchedPackage
                 ? 'قد يكون هذا النطاق متاحًا لك عبر المدرسة أو عبر تفعيل إداري سابق. إذا كان ما زال مغلقًا على حسابك، فهذه هي الباقة المرتبطة بهذه المادة.'
                 : 'هذه باقة عامة مخصصة للطالب المستقل داخل المنصة، وتفتح هذا الجزء من المادة عند اعتماد الدفع.',

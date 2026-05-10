@@ -90,3 +90,10 @@
 - Foundation topics now respect the topic itself for paid/free status. If a foundation topic is not locked, the student sees it as free and can open it directly. Locked topics still open the matching package/payment path.
 - Added guard: `npm run smoke:production-audit`.
 - Next direct work: complete package choice UX for public discount codes, memberships, and package variants (foundation only, tests only, full subject, full path, full membership) without merging training and tests.
+
+## Payment Packages Sprint - 2026-05-10
+- Closed the first package-choice pass: locked content can now pass several suitable public packages to the payment modal, so the student sees choices such as foundation-only, tests-only, subject/path package, or full package when those packages exist.
+- Added optional `discountCode` to payment requests and the payment modal. This records the code for admin review only; real automated discounts still need a dedicated discount-code rules screen.
+- Path package tabs now include global membership-style packages with no path binding, so a future "membership opens everything" package can be visible from path package pages.
+- Guard added: `npm run smoke:payment-package`.
+- Next direct work: build the real discount-code/ membership management UI and final package entitlement rules, while keeping training and tests as separate sections.

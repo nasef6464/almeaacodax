@@ -18,6 +18,7 @@ const paymentRequestSchema = new Schema(
     transferReference: { type: String, default: "" },
     walletNumber: { type: String, default: "" },
     receiptUrl: { type: String, default: "" },
+    discountCode: { type: String, default: "" },
     notes: { type: String, default: "" },
     reviewedBy: { type: String, default: "" },
     reviewedAt: { type: Number, default: null },

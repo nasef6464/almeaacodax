@@ -44,6 +44,7 @@ const paymentRequestCreateSchema = z.object({
   transferReference: z.string().optional(),
   walletNumber: z.string().optional(),
   receiptUrl: z.string().optional(),
+  discountCode: z.string().max(80).optional(),
   notes: z.string().optional(),
 });
 
@@ -242,6 +243,7 @@ paymentRouter.post(
       ...payload,
       packageId: payload.packageId || "",
       includedCourseIds: payload.includedCourseIds || [],
+      discountCode: payload.discountCode?.trim().toUpperCase() || "",
       status: "pending",
     });
 
