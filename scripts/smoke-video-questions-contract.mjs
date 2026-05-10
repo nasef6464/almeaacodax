@@ -62,6 +62,13 @@ const checks = [
       source.videoPlayer.includes("questionBank") &&
       source.videoPlayer.includes("setActiveQuestion(dueQuestion)"),
   ],
+  [
+    "video question overlay renders clean bank question content",
+    source.videoPlayer.includes("normalizeQuestionHtml") &&
+      source.videoPlayer.includes("bankQuestion?.imageUrl") &&
+      source.videoPlayer.includes("dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(inlineQuestion.text) }}") &&
+      source.videoPlayer.includes("dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}"),
+  ],
 ];
 
 let failed = false;

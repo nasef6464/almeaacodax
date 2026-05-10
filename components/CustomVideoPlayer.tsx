@@ -17,6 +17,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { reportClientEvent } from '../services/clientTelemetry';
 import { InteractiveQuestion, Question } from '../types';
+import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 interface CustomVideoPlayerProps {
   url: string;
@@ -60,18 +61,27 @@ const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, b
 
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/75 p-4" dir="rtl">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
+      <div className="w-full max-w-2xl rounded-2xl bg-white p-4 shadow-2xl sm:p-5">
         <div className="mb-3 text-xs font-bold text-indigo-600">سؤال سريع داخل الدرس</div>
-        <h3 className="mb-4 text-lg font-bold leading-8 text-gray-900">{inlineQuestion.text}</h3>
+        {bankQuestion?.imageUrl ? (
+          <img
+            src={bankQuestion.imageUrl}
+            alt="صورة السؤال"
+            className="mb-3 max-h-56 w-full rounded-xl border border-gray-100 object-contain"
+          />
+        ) : null}
+        <div
+          className="mb-4 text-base font-bold leading-8 text-gray-900 sm:text-lg"
+          dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(inlineQuestion.text) }}
+        />
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {inlineQuestion.options.map((option, index) => (
             <button
               key={`${question.id}-${index}`}
               onClick={() => onAnswer(index === inlineQuestion.correctOptionIndex)}
-              className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-bold text-gray-800 transition hover:border-indigo-400 hover:bg-indigo-50"
-            >
-              {option}
-            </button>
+              className="min-h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-bold text-gray-800 transition hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-800"
+              dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
+            />
           ))}
         </div>
         {!question.mustPass ? (
