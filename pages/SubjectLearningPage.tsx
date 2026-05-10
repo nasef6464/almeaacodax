@@ -413,9 +413,9 @@ export const SubjectLearningPage: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20 font-sans" dir="rtl">
-      <div className="bg-[#2e2b70] py-7 sm:py-9 relative overflow-hidden">
+      <div className="bg-[#2e2b70] py-5 sm:py-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <h1 className="text-2xl sm:text-4xl font-black text-white mb-4 leading-tight">{currentPathName} ({currentSubjectName})</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 leading-tight">{currentPathName} ({currentSubjectName})</h1>
           <p className="text-indigo-200 max-w-2xl mx-auto text-sm sm:text-base">تأسيس، تدريب، واختبارات في مكان واحد</p>
         </div>
       </div>
@@ -459,10 +459,6 @@ export const SubjectLearningPage: React.FC = () => {
 
         {activeTab === 'skills' && (
           <div className="animate-fade-in">
-            <div className="mb-8 text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">تعلم الموضوعات التأسيسية</h2>
-              <p className="text-gray-500">هذه المساحة خاصة بموضوعات التأسيس ومسارات التعلم، وليست مصدر مهارات التقييم والتحليل.</p>
-            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mainTopics.length > 0 ? mainTopics.map((topic) => {
                 const subTopics = subjectTopics.filter((item) => item.parentId === topic.id);

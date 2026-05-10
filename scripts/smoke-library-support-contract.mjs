@@ -121,6 +121,14 @@ check('library tab keeps its own package access separate from foundation topics'
   assertIncludes(subjectLearningSource, "isLibraryItemLockedForStudent(item) ? openPackageTab('library') : openExternalUrl(item.url)");
 });
 
+check('subject learning page keeps the learner view compact', () => {
+  assertIncludes(subjectLearningSource, 'py-5 sm:py-6 relative overflow-hidden');
+  assertIncludes(subjectLearningSource, 'text-2xl sm:text-3xl font-black text-white mb-2');
+  if (subjectLearningSource.includes('هذه المساحة خاصة بموضوعات التأسيس')) {
+    throw new Error('learner foundation tab should not show the long internal explanation');
+  }
+});
+
 for (const item of checks) {
   console.log(`${item.status} ${item.name}${item.details ? ` - ${item.details}` : ''}`);
 }
