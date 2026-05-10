@@ -44,6 +44,14 @@ const checks = [
       source.lessonBuilder.includes("disabled={questions.length === 0}"),
   ],
   [
+    "lesson builder previews bank questions with taxonomy before linking",
+    source.lessonBuilder.includes("cleanQuestionText") &&
+      source.lessonBuilder.includes("getQuestionOptionLabel") &&
+      source.lessonBuilder.includes("renderBankQuestionPreview") &&
+      source.lessonBuilder.includes("معاينة السؤال المرتبط الآن") &&
+      source.lessonBuilder.includes("استعرض السؤال قبل السحب"),
+  ],
+  [
     "course player uses the same lesson video questions",
     source.coursePlayer.includes("interactiveQuestions={activeLesson.interactiveQuestions || []}"),
   ],

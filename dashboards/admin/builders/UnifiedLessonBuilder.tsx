@@ -116,6 +116,83 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     }
   };
 
+  const cleanQuestionText = (value?: string) =>
+    String(value || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const getQuestionMeta = (question: Question) => {
+    const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || 'بدون مادة';
+    const sectionName = sections.find((section) => section.id === question.sectionId)?.name || 'بدون مهارة رئيسية';
+    const skillNames = (question.skillIds || [])
+      .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join('، ');
+
+    return {
+      subjectName,
+      sectionName,
+      skillNames: skillNames || 'غير محدد',
+    };
+  };
+
+  const getQuestionOptionLabel = (question: Question) => {
+    const meta = getQuestionMeta(question);
+    const preview = cleanQuestionText(question.text).slice(0, 80) || 'سؤال بدون نص';
+    return `${meta.subjectName} - ${meta.sectionName} - ${meta.skillNames} | ${preview}`;
+  };
+
+  const renderBankQuestionPreview = (bankQuestion: Question, selected: boolean, onPick: () => void) => {
+    const meta = getQuestionMeta(bankQuestion);
+    const preview = cleanQuestionText(bankQuestion.text) || 'سؤال بدون نص';
+    const optionsPreview = (bankQuestion.options || []).filter(Boolean).slice(0, 4);
+
+    return (
+      <button
+        key={bankQuestion.id}
+        type="button"
+        onClick={onPick}
+        className={`w-full rounded-xl border p-3 text-right transition ${
+          selected
+            ? 'border-indigo-300 bg-indigo-50 shadow-sm ring-2 ring-indigo-100'
+            : 'border-gray-100 bg-white hover:border-indigo-200 hover:bg-indigo-50/50'
+        }`}
+      >
+        <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
+          <span className="rounded-full bg-blue-50 px-2 py-1 text-blue-700">{meta.subjectName}</span>
+          <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">{meta.sectionName}</span>
+          <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">{meta.skillNames}</span>
+          {selected ? <span className="rounded-full bg-indigo-600 px-2 py-1 text-white">محدد الآن</span> : null}
+        </div>
+        <div className="line-clamp-2 text-sm font-black leading-6 text-gray-900">{preview}</div>
+        {optionsPreview.length > 0 ? (
+          <div className="mt-2 grid grid-cols-2 gap-1.5">
+            {optionsPreview.map((option, optionIndex) => (
+              <span
+                key={`${bankQuestion.id}-preview-option-${optionIndex}`}
+                className={`rounded-lg px-2 py-1 text-xs font-bold ${
+                  optionIndex === bankQuestion.correctOptionIndex
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'bg-gray-50 text-gray-600'
+                }`}
+              >
+                {cleanQuestionText(option) || `اختيار ${optionIndex + 1}`}
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </button>
+    );
+  };
+
   const handleSave = () => {
     handleValidatedSave();
     return;
@@ -423,6 +500,9 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                   <div className="space-y-3">
                     {(lesson.interactiveQuestions || []).map((question, index) => {
                       const inlineQuestion = question.inlineQuestion || { text: '', options: ['', ''], correctOptionIndex: 0 };
+                      const selectedBankQuestion = question.questionId
+                        ? questions.find((bankQuestion) => bankQuestion.id === question.questionId)
+                        : undefined;
                       return (
                         <div key={question.id} className="rounded-xl border border-gray-200 bg-white p-3">
                           <div className="mb-3 flex items-center justify-between gap-3">
@@ -504,7 +584,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                   <optgroup label="أسئلة مناسبة للدرس">
                                     {relevantVideoQuestions.map((bankQuestion) => (
                                       <option key={bankQuestion.id} value={bankQuestion.id}>
-                                        {bankQuestion.text.replace(/<[^>]*>/g, '').slice(0, 90)}
+                                        {getQuestionOptionLabel(bankQuestion)}
                                       </option>
                                     ))}
                                   </optgroup>
@@ -513,7 +593,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                                   <optgroup label="باقي مركز الأسئلة">
                                     {otherVideoQuestions.map((bankQuestion) => (
                                       <option key={bankQuestion.id} value={bankQuestion.id}>
-                                        {bankQuestion.text.replace(/<[^>]*>/g, '').slice(0, 90)}
+                                        {getQuestionOptionLabel(bankQuestion)}
                                       </option>
                                     ))}
                                   </optgroup>
@@ -537,6 +617,63 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                               إنشاء سؤال في البنك
                             </button>
                           </div>
+
+                          {selectedBankQuestion ? (
+                            <div className="mt-3 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-3">
+                              <div className="mb-2 text-xs font-black text-emerald-700">معاينة السؤال المرتبط الآن</div>
+                              {renderBankQuestionPreview(selectedBankQuestion, true, () => undefined)}
+                            </div>
+                          ) : null}
+
+                          {availableVideoQuestions.length > 0 ? (
+                            <div className="mt-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                              <div className="mb-2 flex items-center justify-between gap-2">
+                                <div>
+                                  <div className="text-xs font-black text-gray-800">استعرض السؤال قبل السحب</div>
+                                  <div className="text-[11px] font-bold text-gray-500">تظهر المادة والمهارة ونص السؤال والاختيارات قبل ربطه بالفيديو.</div>
+                                </div>
+                                <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
+                                  {availableVideoQuestions.length} سؤال
+                                </span>
+                              </div>
+                              <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
+                                {relevantVideoQuestions.length > 0 ? (
+                                  <div className="space-y-2">
+                                    <div className="text-[11px] font-black text-indigo-700">أسئلة مناسبة للدرس</div>
+                                    {relevantVideoQuestions.map((bankQuestion) =>
+                                      renderBankQuestionPreview(
+                                        bankQuestion,
+                                        question.questionId === bankQuestion.id,
+                                        () =>
+                                          updateInteractiveQuestion(question.id, (current) => ({
+                                            ...current,
+                                            questionId: bankQuestion.id,
+                                            inlineQuestion: undefined,
+                                          })),
+                                      ),
+                                    )}
+                                  </div>
+                                ) : null}
+                                {otherVideoQuestions.length > 0 ? (
+                                  <div className="space-y-2">
+                                    <div className="text-[11px] font-black text-gray-600">باقي مركز الأسئلة</div>
+                                    {otherVideoQuestions.map((bankQuestion) =>
+                                      renderBankQuestionPreview(
+                                        bankQuestion,
+                                        question.questionId === bankQuestion.id,
+                                        () =>
+                                          updateInteractiveQuestion(question.id, (current) => ({
+                                            ...current,
+                                            questionId: bankQuestion.id,
+                                            inlineQuestion: undefined,
+                                          })),
+                                      ),
+                                    )}
+                                  </div>
+                                ) : null}
+                              </div>
+                            </div>
+                          ) : null}
 
                           {!question.questionId ? (
                             <>
