@@ -11,6 +11,7 @@ const foundationManagerSource = await readFile(new URL('../dashboards/admin/Foun
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 const quizPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
+const simulatedTestExperienceSource = await readFile(new URL('../components/SimulatedTestExperience.tsx', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -65,6 +66,16 @@ check('student learning area resolves bank and test package access independently
   assertIncludes(learningSectionSource, "hasScopedPackageAccess('tests', category, subject)");
   assertIncludes(learningSectionSource, "isQuizLockedForStudent(q, hasBanksAccess, 'training')");
   assertIncludes(learningSectionSource, "isQuizLockedForStudent(q, hasTestsAccess, 'tests')");
+});
+
+check('student learning keeps training and tests visually separate while reusing the quiz engine', () => {
+  assertIncludes(learningSectionSource, 'mode="bank"');
+  assertIncludes(learningSectionSource, "source: 'training'");
+  assertIncludes(learningSectionSource, "source: 'tests'");
+  assertIncludes(simulatedTestExperienceSource, "const listTitle = mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة'");
+  assertIncludes(simulatedTestExperienceSource, "const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار'");
+  assertIncludes(simulatedTestExperienceSource, 'openTestsCount');
+  assertIncludes(simulatedTestExperienceSource, 'lockedTestsCount');
 });
 
 check('student quiz locking keeps placement-free open, private audience-only, and paid/package gated', () => {

@@ -41,6 +41,10 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [favorites, setFavorites] = useState<Record<number, boolean>>({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isNightMode, setIsNightMode] = useState(false);
+    const openTestsCount = tests.filter((test) => !test.isLocked).length;
+    const lockedTestsCount = tests.length - openTestsCount;
+    const listTitle = mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة';
+    const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار';
 
     const toggleFavorite = (idx: number) => {
         setFavorites(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -140,6 +144,20 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
         return (
             <div className="space-y-4 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-right">
+                        <div className="text-xs font-black text-indigo-600">{listTitle}</div>
+                        <div className="mt-2 text-2xl font-black text-indigo-900">{tests.length}</div>
+                    </div>
+                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-right">
+                        <div className="text-xs font-black text-emerald-600">مفتوح الآن</div>
+                        <div className="mt-2 text-2xl font-black text-emerald-800">{openTestsCount}</div>
+                    </div>
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-right">
+                        <div className="text-xs font-black text-amber-600">ضمن باقة</div>
+                        <div className="mt-2 text-2xl font-black text-amber-800">{lockedTestsCount}</div>
+                    </div>
+                </div>
                 {tests.map((test) => (
                     <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group">
                         <div className="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto">
@@ -149,6 +167,9 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                     <h3 className="font-bold text-lg text-gray-800 group-hover:text-indigo-600 transition-colors">{test.title}</h3>
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-100' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'}`}>
+                                        {test.isLocked ? 'ضمن باقة' : 'مفتوح الآن'}
+                                    </span>
                                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.type === 'trial' ? 'bg-green-100 text-green-700' : test.type === 'comprehensive' ? 'bg-purple-100 text-purple-700' : test.type === 'bank' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
                                         {test.type === 'trial' ? 'تجريبي' : test.type === 'comprehensive' ? 'شامل' : test.type === 'bank' ? 'بنك أسئلة' : 'محاكي'}
                                     </span>
@@ -161,8 +182,8 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                             </div>
                         </div>
                         <button className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}>
-                            {test.isLocked ? 'فتح الباقة' : mode === 'bank' ? 'تصفح الأسئلة' : 'ابدأ الاختبار'}
-                            {!test.isLocked && <ChevronRight size={18} className="transform rotate-180" />}
+                            {test.isLocked ? 'فتح الباقة' : listAction}
+                            <ChevronRight size={18} className="transform rotate-180" />
                         </button>
                     </div>
                 ))}
