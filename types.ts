@@ -481,6 +481,9 @@ export interface PaymentRequest {
     itemName: string;
     packageId?: string;
     includedCourseIds?: string[];
+    originalAmount?: number | null;
+    discountAmount?: number;
+    discountCodeId?: string;
     amount: number;
     currency: string;
     paymentMethod: PaymentMethodKey;
@@ -493,6 +496,27 @@ export interface PaymentRequest {
     reviewedBy?: string;
     reviewedAt?: number | null;
     reviewerNotes?: string;
+    createdAt?: string | number;
+    updatedAt?: string | number;
+}
+
+export interface DiscountCode {
+    id?: string;
+    _id?: string;
+    code: string;
+    label?: string;
+    type: 'percentage' | 'fixed';
+    value: number;
+    status: 'active' | 'paused' | 'expired';
+    minAmount?: number;
+    maxRedemptions?: number;
+    currentRedemptions?: number;
+    startsAt?: number | null;
+    expiresAt?: number | null;
+    packageIds?: string[];
+    pathIds?: string[];
+    subjectIds?: string[];
+    contentTypes?: PackageContentType[];
     createdAt?: string | number;
     updatedAt?: string | number;
 }

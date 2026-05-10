@@ -201,6 +201,22 @@ export const api = {
       body: payload,
       token,
     }),
+  getDiscountCodes: (token?: string | null) =>
+    request<{ codes: unknown[] }>("/payments/discount-codes", {
+      token,
+    }),
+  createDiscountCode: (payload: unknown, token?: string | null) =>
+    request<{ code: unknown }>("/payments/discount-codes", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateDiscountCode: (code: string, payload: unknown, token?: string | null) =>
+    request<{ code: unknown }>(`/payments/discount-codes/${encodeURIComponent(code)}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   getTaxonomyBootstrap: () =>
     request<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>("/taxonomy/bootstrap"),
   createPath: (payload: unknown, token?: string | null) =>

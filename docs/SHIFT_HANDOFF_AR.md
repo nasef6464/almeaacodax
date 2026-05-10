@@ -97,3 +97,11 @@
 - Path package tabs now include global membership-style packages with no path binding, so a future "membership opens everything" package can be visible from path package pages.
 - Guard added: `npm run smoke:payment-package`.
 - Next direct work: build the real discount-code/ membership management UI and final package entitlement rules, while keeping training and tests as separate sections.
+
+## Discount Codes Sprint - 2026-05-11
+- Added a real MongoDB `DiscountCode` model and included discount codes in learning backups.
+- Added admin payment APIs to list, create/update, pause, and reactivate discount codes.
+- Payment requests now validate discount codes on the server, calculate original amount, discount amount, and final amount without trusting the browser, and increment redemption counts only when the admin approves the request.
+- Added the admin financial UI for discount-code creation, package targeting, usage review, pause/reactivate, and CSV export.
+- Updated `npm run smoke:payment-package` so it guards discount persistence, server-side calculation, admin management, and backup coverage.
+- Next direct work: membership/bundle administration, then payment gateway or verified manual approval workflow. Keep the student/parent screens simple; put dense financial detail in admin only.

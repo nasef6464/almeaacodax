@@ -15,13 +15,13 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Updated the production env template so `DEV_LOCAL_ADMIN_BYPASS=false` by default.
 - Tightened the learning-space paid/free foundation rule: foundation topics now use the topic's own paid/free flag, so explicitly free topics stay open for students even when other content is paid.
 - Improved locked-content package choice: when a student opens paid content, the payment flow can now show multiple suitable package choices instead of a single generic package.
-- Payment requests now preserve an optional `discountCode` for admin review, so discount-code management can build on a persisted field without trusting client-side discounts.
+- Added server-side discount-code management: admins can create, pause, and review codes, payment requests calculate discounts on the server, store original/final amounts, and count redemptions only after admin approval.
 - Path package pages now include global membership-style packages that are not bound to one path.
 
 ## Still Required Before Large Launch
 
 - Payment gateway/webhook verification or manual admin approval only.
-- Full discount-code rules and membership management UI.
+- Membership management UI and payment-gateway/webhook integration.
 - Cookie-based session hardening or safer refresh-token strategy.
 - Email verification, forgot password, and optional Google/OTP providers.
 - Queue-backed notifications for bulk delivery.

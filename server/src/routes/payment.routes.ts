@@ -4,6 +4,8 @@ import { Types } from "mongoose";
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
+import { CourseModel } from "../models/Course.js";
+import { DiscountCodeModel } from "../models/DiscountCode.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { UserModel } from "../models/User.js";
@@ -51,6 +53,22 @@ const paymentRequestCreateSchema = z.object({
 const paymentRequestReviewSchema = z.object({
   status: z.enum(["approved", "rejected", "cancelled"]),
   reviewerNotes: z.string().optional(),
+});
+
+const discountCodePayloadSchema = z.object({
+  code: z.string().min(2).max(40),
+  label: z.string().max(120).optional(),
+  type: z.enum(["percentage", "fixed"]).default("percentage"),
+  value: z.number().min(0),
+  status: z.enum(["active", "paused", "expired"]).default("active"),
+  minAmount: z.number().min(0).optional(),
+  maxRedemptions: z.number().min(0).optional(),
+  startsAt: z.number().nullable().optional(),
+  expiresAt: z.number().nullable().optional(),
+  packageIds: z.array(z.string()).optional(),
+  pathIds: z.array(z.string()).optional(),
+  subjectIds: z.array(z.string()).optional(),
+  contentTypes: z.array(z.string()).optional(),
 });
 
 const defaultSettings = {
@@ -154,6 +172,41 @@ const buildPaymentRequestLookup = (id: string) => ({
   ],
 });
 
+const normalizeDiscountCode = (code?: string) => String(code || "").trim().toUpperCase().replace(/\s+/g, "");
+
+const isDiscountCodeActive = (discountCode: any, now = Date.now()) => {
+  if (!discountCode || discountCode.status !== "active") return false;
+  if (discountCode.startsAt && discountCode.startsAt > now) return false;
+  if (discountCode.expiresAt && discountCode.expiresAt < now) return false;
+  if (discountCode.maxRedemptions > 0 && discountCode.currentRedemptions >= discountCode.maxRedemptions) return false;
+  return true;
+};
+
+const discountAppliesToPayload = (
+  discountCode: any,
+  payload: z.infer<typeof paymentRequestCreateSchema>,
+  purchasableItem: any,
+) => {
+  const packageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
+  const pathId = purchasableItem?.pathId || purchasableItem?.category || "";
+  const subjectId = purchasableItem?.subjectId || purchasableItem?.subject || "";
+  const contentTypes = purchasableItem?.packageContentTypes?.length ? purchasableItem.packageContentTypes : [];
+
+  if (discountCode.minAmount > 0 && payload.amount < discountCode.minAmount) return false;
+  if (discountCode.packageIds?.length && !discountCode.packageIds.includes(packageId || payload.itemId)) return false;
+  if (discountCode.pathIds?.length && (!pathId || !discountCode.pathIds.includes(pathId))) return false;
+  if (discountCode.subjectIds?.length && (!subjectId || !discountCode.subjectIds.includes(subjectId))) return false;
+  if (discountCode.contentTypes?.length && contentTypes.length && !contentTypes.some((type: string) => discountCode.contentTypes.includes(type))) return false;
+  return true;
+};
+
+const calculateDiscountAmount = (discountCode: any, amount: number) => {
+  if (discountCode.type === "fixed") {
+    return Math.min(amount, Math.max(0, discountCode.value));
+  }
+  return Math.min(amount, Math.round((amount * Math.min(Math.max(discountCode.value, 0), 100)) / 100));
+};
+
 export const paymentRouter = Router();
 
 paymentRouter.get(
@@ -199,6 +252,77 @@ paymentRouter.get(
   }),
 );
 
+paymentRouter.get(
+  "/discount-codes",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const codes = await DiscountCodeModel.find().sort({ createdAt: -1 });
+    return res.json({ codes });
+  }),
+);
+
+paymentRouter.post(
+  "/discount-codes",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = discountCodePayloadSchema.parse(req.body);
+    const code = normalizeDiscountCode(payload.code);
+    const created = await DiscountCodeModel.findOneAndUpdate(
+      { code },
+      {
+        ...payload,
+        code,
+        label: payload.label || code,
+        minAmount: payload.minAmount || 0,
+        maxRedemptions: payload.maxRedemptions || 0,
+        packageIds: payload.packageIds || [],
+        pathIds: payload.pathIds || [],
+        subjectIds: payload.subjectIds || [],
+        contentTypes: payload.contentTypes || [],
+        createdBy: req.authUser?.id || "",
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
+    );
+    await recordAdminAuditLog(req, {
+      action: "payment.discount-code.upsert",
+      resourceType: "discount-code",
+      resourceId: code,
+      metadata: { status: created.status, type: created.type, value: created.value },
+    });
+    return res.status(StatusCodes.CREATED).json({ code: created });
+  }),
+);
+
+paymentRouter.patch(
+  "/discount-codes/:code",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = discountCodePayloadSchema.partial().parse(req.body);
+    const code = normalizeDiscountCode(req.params.code);
+    const updated = await DiscountCodeModel.findOneAndUpdate(
+      { code },
+      {
+        ...payload,
+        ...(payload.code ? { code: normalizeDiscountCode(payload.code) } : {}),
+      },
+      { new: true },
+    );
+    if (!updated) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Discount code not found" });
+    }
+    await recordAdminAuditLog(req, {
+      action: "payment.discount-code.update",
+      resourceType: "discount-code",
+      resourceId: code,
+      metadata: { changedKeys: Object.keys(payload) },
+    });
+    return res.json({ code: updated });
+  }),
+);
+
 paymentRouter.post(
   "/requests",
   requireAuth,
@@ -235,6 +359,24 @@ paymentRouter.post(
       });
     }
 
+    const targetItemId = payload.packageId || payload.itemId;
+    const purchasableItem = await CourseModel.findById(targetItemId).lean();
+    const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
+    let finalAmount = originalAmount;
+    let discountAmount = 0;
+    let discountCodeId = "";
+    const normalizedDiscountCode = normalizeDiscountCode(payload.discountCode);
+
+    if (normalizedDiscountCode) {
+      const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
+      if (!discountCode || !isDiscountCodeActive(discountCode) || !discountAppliesToPayload(discountCode, payload, purchasableItem)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير صالح لهذا الطلب" });
+      }
+      discountAmount = calculateDiscountAmount(discountCode, originalAmount);
+      finalAmount = Math.max(0, originalAmount - discountAmount);
+      discountCodeId = String(discountCode._id);
+    }
+
     const created = await PaymentRequestModel.create({
       id: `payreq_${Date.now()}`,
       userId: String(user._id),
@@ -243,7 +385,11 @@ paymentRouter.post(
       ...payload,
       packageId: payload.packageId || "",
       includedCourseIds: payload.includedCourseIds || [],
-      discountCode: payload.discountCode?.trim().toUpperCase() || "",
+      originalAmount,
+      discountAmount,
+      discountCodeId,
+      amount: finalAmount,
+      discountCode: normalizedDiscountCode,
       status: "pending",
     });
 
@@ -278,6 +424,20 @@ paymentRouter.patch(
 
     let updatedUser = null;
     if (payload.status === "approved") {
+      if (requestDoc.discountCode && requestDoc.discountCodeId) {
+        const redemption = await DiscountCodeModel.findOneAndUpdate(
+          {
+            _id: requestDoc.discountCodeId,
+            status: "active",
+            $or: [{ maxRedemptions: 0 }, { $expr: { $lt: ["$currentRedemptions", "$maxRedemptions"] } }],
+          },
+          { $inc: { currentRedemptions: 1 } },
+          { new: true },
+        );
+        if (!redemption) {
+          return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+        }
+      }
       updatedUser = await applyPurchaseToUser(requestDoc.userId, {
         courseId: requestDoc.itemType === "course" ? requestDoc.itemId : undefined,
         packageId: requestDoc.packageId || (requestDoc.itemType === "package" ? requestDoc.itemId : undefined),

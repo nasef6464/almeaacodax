@@ -2,7 +2,7 @@
 import { AlertTriangle, ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, Search, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
-import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings, Role } from '../../types';
+import { DiscountCode, PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings, Role } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 
 type TransactionRow = {
@@ -59,13 +59,27 @@ const downloadCsv = (fileName: string, rows: Array<Array<string | number>>) => {
 
 export const FinancialManager: React.FC = () => {
     const { users, groups, b2bPackages, accessCodes, courses, paths, subjects, lessons, quizzes, libraryItems, updateCourse, updateB2BPackage } = useStore();
-    const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'settings' | 'b2b' | 'b2c' | 'transactions'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'settings' | 'discounts' | 'b2b' | 'b2c' | 'transactions'>('overview');
     const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+    const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
     const [settings, setSettings] = useState<PaymentSettings>(defaultSettings);
     const [loading, setLoading] = useState(false);
     const [requestActionLoading, setRequestActionLoading] = useState<string | null>(null);
     const [requestStatusFilter, setRequestStatusFilter] = useState<PaymentRequestStatus | 'all'>('pending');
     const [requestSearchTerm, setRequestSearchTerm] = useState('');
+    const [discountForm, setDiscountForm] = useState<DiscountCode>({
+        code: '',
+        label: '',
+        type: 'percentage',
+        value: 10,
+        status: 'active',
+        minAmount: 0,
+        maxRedemptions: 0,
+        packageIds: [],
+        pathIds: [],
+        subjectIds: [],
+        contentTypes: [],
+    });
     const [feedback, setFeedback] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -75,9 +89,10 @@ export const FinancialManager: React.FC = () => {
             setLoading(true);
             setError(null);
             try {
-                const [settingsResponse, requestsResponse] = await Promise.all([
+                const [settingsResponse, requestsResponse, discountCodesResponse] = await Promise.all([
                     api.getPaymentSettings(),
                     api.getPaymentRequests(),
+                    api.getDiscountCodes(),
                 ]);
 
                 if (cancelled) return;
@@ -86,6 +101,10 @@ export const FinancialManager: React.FC = () => {
                     ...request,
                     id: String(request.id),
                     userId: String(request.userId),
+                })));
+                setDiscountCodes(((discountCodesResponse as { codes?: DiscountCode[] })?.codes || []).map((code) => ({
+                    ...code,
+                    code: String(code.code || '').toUpperCase(),
                 })));
             } catch (loadError) {
                 if (!cancelled) {
@@ -496,7 +515,7 @@ export const FinancialManager: React.FC = () => {
 
     const exportPaymentRequests = () => {
         downloadCsv('payment-requests.csv', [
-            ['رقم الطلب', 'الطالب', 'البريد', 'العنصر', 'نوع العنصر', 'طريقة الدفع', 'المبلغ', 'العملة', 'الحالة', 'مرجع التحويل', 'رقم المحفظة', 'الإيصال', 'ملاحظات', 'تاريخ الإنشاء'],
+            ['رقم الطلب', 'الطالب', 'البريد', 'العنصر', 'نوع العنصر', 'طريقة الدفع', 'المبلغ قبل الخصم', 'الخصم', 'المبلغ النهائي', 'العملة', 'كود الخصم', 'الحالة', 'مرجع التحويل', 'رقم المحفظة', 'الإيصال', 'ملاحظات', 'تاريخ الإنشاء'],
             ...paymentRequests.map((request) => [
                 request.id,
                 request.userName || 'طالب',
@@ -504,8 +523,11 @@ export const FinancialManager: React.FC = () => {
                 request.itemName || '',
                 request.itemType || '',
                 request.paymentMethod || '',
+                request.originalAmount ?? request.amount ?? 0,
+                request.discountAmount || 0,
                 request.amount || 0,
                 request.currency || settings.currency,
+                request.discountCode || '',
                 requestStatusLabel(request.status),
                 request.transferReference || '',
                 request.walletNumber || '',
@@ -696,6 +718,44 @@ export const FinancialManager: React.FC = () => {
         }));
     }, [b2cPremiumUsers, publicPackageIds]);
 
+    const discountSummary = useMemo(() => ({
+        total: discountCodes.length,
+        active: discountCodes.filter((code) => code.status === 'active').length,
+        used: discountCodes.reduce((sum, code) => sum + (code.currentRedemptions || 0), 0),
+        requestCount: paymentRequests.filter((request) => request.discountCode).length,
+        savedAmount: paymentRequests.reduce((sum, request) => sum + (request.discountAmount || 0), 0),
+    }), [discountCodes, paymentRequests]);
+
+    const discountCodeRows = useMemo(() => {
+        return discountCodes.map((code) => {
+            const requests = paymentRequests.filter((request) => request.discountCode === code.code);
+            const relatedPackages = publicPackages.filter((pkg) => code.packageIds?.includes(pkg.id));
+            return {
+                ...code,
+                requests: requests.length,
+                approvedRequests: requests.filter((request) => request.status === 'approved').length,
+                totalDiscount: requests.reduce((sum, request) => sum + (request.discountAmount || 0), 0),
+                packagesLabel: relatedPackages.length ? relatedPackages.map((pkg) => pkg.title).join('، ') : 'كل الباقات المطابقة للنطاق',
+            };
+        }).sort((a, b) => Number(b.status === 'active') - Number(a.status === 'active') || (b.currentRedemptions || 0) - (a.currentRedemptions || 0));
+    }, [discountCodes, paymentRequests, publicPackages]);
+
+    const resetDiscountForm = () => {
+        setDiscountForm({
+            code: '',
+            label: '',
+            type: 'percentage',
+            value: 10,
+            status: 'active',
+            minAmount: 0,
+            maxRedemptions: 0,
+            packageIds: [],
+            pathIds: [],
+            subjectIds: [],
+            contentTypes: [],
+        });
+    };
+
     const saveSettings = async () => {
         setLoading(true);
         setError(null);
@@ -709,6 +769,92 @@ export const FinancialManager: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const saveDiscountCode = async () => {
+        const normalizedCode = discountForm.code.trim().toUpperCase().replace(/\s+/g, '');
+        if (!normalizedCode) {
+            setError('اكتب كود الخصم أولًا.');
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        setFeedback(null);
+        try {
+            const payload = {
+                ...discountForm,
+                code: normalizedCode,
+                label: discountForm.label || normalizedCode,
+                value: Number(discountForm.value) || 0,
+                minAmount: Number(discountForm.minAmount) || 0,
+                maxRedemptions: Number(discountForm.maxRedemptions) || 0,
+            };
+            const response = await api.createDiscountCode(payload);
+            const saved = (response as { code?: DiscountCode }).code;
+            if (saved) {
+                setDiscountCodes((current) => {
+                    const withoutOld = current.filter((item) => item.code !== saved.code);
+                    return [{ ...saved, code: saved.code.toUpperCase() }, ...withoutOld];
+                });
+            }
+            resetDiscountForm();
+            setFeedback('تم حفظ كود الخصم وربطه بآلية الدفع.');
+        } catch (saveError) {
+            setError(saveError instanceof Error ? saveError.message : 'تعذر حفظ كود الخصم.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleDiscountStatus = async (code: DiscountCode) => {
+        const nextStatus = code.status === 'active' ? 'paused' : 'active';
+        setLoading(true);
+        setError(null);
+        setFeedback(null);
+        try {
+            const response = await api.updateDiscountCode(code.code, { status: nextStatus });
+            const updated = (response as { code?: DiscountCode }).code;
+            if (updated) {
+                setDiscountCodes((current) => current.map((item) => item.code === code.code ? { ...item, ...updated } : item));
+            }
+            setFeedback(nextStatus === 'active' ? 'تم تفعيل كود الخصم.' : 'تم إيقاف كود الخصم مؤقتًا.');
+        } catch (statusError) {
+            setError(statusError instanceof Error ? statusError.message : 'تعذر تحديث حالة كود الخصم.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleDiscountPackage = (packageId: string) => {
+        setDiscountForm((current) => {
+            const currentIds = current.packageIds || [];
+            return {
+                ...current,
+                packageIds: currentIds.includes(packageId)
+                    ? currentIds.filter((id) => id !== packageId)
+                    : [...currentIds, packageId],
+            };
+        });
+    };
+
+    const exportDiscountCodes = () => {
+        downloadCsv('discount-codes.csv', [
+            ['الكود', 'الاسم', 'النوع', 'القيمة', 'الحالة', 'حد أدنى', 'استخدام', 'حد الاستخدام', 'طلبات', 'إجمالي الخصم', 'باقات مرتبطة'],
+            ...discountCodeRows.map((code) => [
+                code.code,
+                code.label || '',
+                code.type === 'percentage' ? 'نسبة' : 'قيمة ثابتة',
+                code.value,
+                code.status,
+                code.minAmount || 0,
+                code.currentRedemptions || 0,
+                code.maxRedemptions || 0,
+                code.requests,
+                code.totalDiscount,
+                code.packagesLabel,
+            ]),
+        ]);
     };
 
     const reviewRequest = async (requestId: string, status: PaymentRequestStatus) => {
@@ -783,7 +929,8 @@ export const FinancialManager: React.FC = () => {
                 {[
                     { id: 'overview', label: 'نظرة عامة' },
                     { id: 'requests', label: 'طلبات الدفع' },
-                    { id: 'settings', label: 'إعدادات الدفع' },
+            { id: 'settings', label: 'إعدادات الدفع' },
+                    { id: 'discounts', label: 'أكواد الخصم' },
                     { id: 'b2c', label: 'اشتراكات الأفراد' },
                     { id: 'b2b', label: 'باقات المدارس' },
                     { id: 'transactions', label: 'سجل العمليات' },
@@ -1021,7 +1168,14 @@ export const FinancialManager: React.FC = () => {
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="p-4 font-bold text-indigo-600">{request.currency} {request.amount.toLocaleString('en-US')}</td>
+                                        <td className="p-4">
+                                            <div className="font-bold text-indigo-600">{request.currency} {request.amount.toLocaleString('en-US')}</div>
+                                            {request.discountAmount ? (
+                                                <div className="mt-1 text-[11px] font-bold text-emerald-700">
+                                                    خصم {request.discountCode}: {request.currency} {request.discountAmount.toLocaleString('en-US')}
+                                                </div>
+                                            ) : null}
+                                        </td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${requestStatusClasses(request.status)}`}>
                                                 {requestStatusLabel(request.status)}
@@ -1233,6 +1387,177 @@ export const FinancialManager: React.FC = () => {
                         <div className="rounded-2xl bg-gray-50 p-4">
                             <p className="text-sm text-gray-500">وضع المراجعة</p>
                             <p className="text-lg font-bold text-gray-900">{settings.manualReviewRequired ? 'مراجعة يدوية مفعلة' : 'مراجعة يدوية معطلة'}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {activeTab === 'discounts' && (
+                <div className="space-y-6">
+                    <div className="grid gap-4 md:grid-cols-4">
+                        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                            <div className="text-xs font-bold text-gray-500">أكواد الخصم</div>
+                            <div className="mt-2 text-2xl font-black text-gray-900">{discountSummary.total}</div>
+                        </div>
+                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                            <div className="text-xs font-bold text-emerald-700">نشطة الآن</div>
+                            <div className="mt-2 text-2xl font-black text-emerald-800">{discountSummary.active}</div>
+                        </div>
+                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+                            <div className="text-xs font-bold text-indigo-700">طلبات استخدمت كود</div>
+                            <div className="mt-2 text-2xl font-black text-indigo-800">{discountSummary.requestCount}</div>
+                        </div>
+                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+                            <div className="text-xs font-bold text-amber-700">إجمالي الخصم</div>
+                            <div className="mt-2 text-2xl font-black text-amber-800">{settings.currency} {discountSummary.savedAmount.toLocaleString('en-US')}</div>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+                        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
+                            <div>
+                                <h2 className="text-lg font-bold text-gray-900">إضافة كود خصم</h2>
+                                <p className="mt-1 text-xs text-gray-500">السيرفر يحسب الخصم ويمنع أي كود غير صالح قبل إنشاء طلب الدفع.</p>
+                            </div>
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">الكود</label>
+                                    <input
+                                        value={discountForm.code}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, code: event.target.value.toUpperCase().replace(/\s+/g, '') }))}
+                                        placeholder="ALMEAA20"
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 font-mono outline-none focus:ring-2 focus:ring-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">اسم داخلي</label>
+                                    <input
+                                        value={discountForm.label || ''}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, label: event.target.value }))}
+                                        placeholder="عرض بداية التسجيل"
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">النوع</label>
+                                    <select
+                                        value={discountForm.type}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, type: event.target.value as DiscountCode['type'] }))}
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    >
+                                        <option value="percentage">نسبة مئوية</option>
+                                        <option value="fixed">قيمة ثابتة</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">القيمة</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        value={discountForm.value}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, value: Number(event.target.value) }))}
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">حد أدنى للطلب</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        value={discountForm.minAmount || 0}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, minAmount: Number(event.target.value) }))}
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-600">حد الاستخدام</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        value={discountForm.maxRedemptions || 0}
+                                        onChange={(event) => setDiscountForm((current) => ({ ...current, maxRedemptions: Number(event.target.value) }))}
+                                        className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="mb-2 text-xs font-bold text-gray-600">تقييد الكود بباقات محددة</div>
+                                <div className="flex max-h-44 flex-wrap gap-2 overflow-auto rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                                    {publicPackages.map((pkg) => {
+                                        const selected = discountForm.packageIds?.includes(pkg.id);
+                                        return (
+                                            <button
+                                                key={pkg.id}
+                                                type="button"
+                                                onClick={() => toggleDiscountPackage(pkg.id)}
+                                                className={`rounded-full px-3 py-2 text-xs font-bold transition ${selected ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
+                                            >
+                                                {pkg.title}
+                                            </button>
+                                        );
+                                    })}
+                                    {publicPackages.length === 0 && <span className="text-xs text-gray-500">لا توجد باقات عامة بعد.</span>}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => void saveDiscountCode()}
+                                disabled={loading}
+                                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 disabled:opacity-50"
+                            >
+                                <Save size={16} />
+                                حفظ كود الخصم
+                            </button>
+                        </div>
+
+                        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                            <div className="mb-4 flex items-center justify-between gap-3">
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">الأكواد الحالية</h2>
+                                    <p className="text-xs text-gray-500">إدارة مختصرة: تفعيل/إيقاف ومتابعة الاستخدام.</p>
+                                </div>
+                                <button
+                                    onClick={exportDiscountCodes}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                                >
+                                    <Download size={14} />
+                                    تصدير
+                                </button>
+                            </div>
+                            <div className="grid gap-3">
+                                {discountCodeRows.map((code) => (
+                                    <div key={code.code} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                                        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                            <div>
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <span className="font-mono text-base font-black text-gray-900">{code.code}</span>
+                                                    <span className={`rounded-full px-2 py-1 text-[11px] font-bold ${code.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                        {code.status === 'active' ? 'نشط' : 'موقوف'}
+                                                    </span>
+                                                    <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-indigo-700">
+                                                        {code.type === 'percentage' ? `${code.value}%` : `${settings.currency} ${code.value}`}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-2 text-xs text-gray-500">{code.label || 'بدون اسم'} · {code.packagesLabel}</div>
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <span className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-gray-600">{code.currentRedemptions || 0}/{code.maxRedemptions || '∞'} استخدام</span>
+                                                <span className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-amber-700">{settings.currency} {code.totalDiscount.toLocaleString('en-US')} خصم</span>
+                                                <button
+                                                    onClick={() => void toggleDiscountStatus(code)}
+                                                    className={`rounded-xl px-3 py-2 text-xs font-black ${code.status === 'active' ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
+                                                >
+                                                    {code.status === 'active' ? 'إيقاف' : 'تفعيل'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {discountCodeRows.length === 0 && (
+                                    <div className="rounded-2xl border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">
+                                        لا توجد أكواد خصم بعد.
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

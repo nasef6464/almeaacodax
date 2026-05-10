@@ -2,6 +2,7 @@ import { Model } from "mongoose";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { CourseModel } from "../models/Course.js";
+import { DiscountCodeModel } from "../models/DiscountCode.js";
 import { GroupModel } from "../models/Group.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { LessonModel } from "../models/Lesson.js";
@@ -53,6 +54,7 @@ const learningCollections: Array<{ name: string; model: Model<any> }> = [
   { name: "homepageSettings", model: HomepageSettingsModel },
   { name: "announcementAds", model: AnnouncementAdModel },
   { name: "paymentSettings", model: PaymentSettingsModel },
+  { name: "discountCodes", model: DiscountCodeModel },
 ];
 
 export async function createLearningBackup(databaseName?: string): Promise<LearningBackupPayload> {
