@@ -195,6 +195,12 @@ export const api = {
       body: payload,
       token,
     }),
+  previewDiscountCode: (payload: unknown, token?: string | null) =>
+    request<{ valid: boolean; code?: string; label?: string; originalAmount: number; discountAmount: number; finalAmount: number; message?: string }>("/payments/discount-codes/preview", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   reviewPaymentRequest: (id: string, payload: unknown, token?: string | null) =>
     request<{ request: unknown; user?: unknown }>(`/payments/requests/${id}/review`, {
       method: "PATCH",

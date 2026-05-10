@@ -102,6 +102,8 @@
 - Added a real MongoDB `DiscountCode` model and included discount codes in learning backups.
 - Added admin payment APIs to list, create/update, pause, and reactivate discount codes.
 - Payment requests now validate discount codes on the server, calculate original amount, discount amount, and final amount without trusting the browser, and increment redemption counts only when the admin approves the request.
+- Approval is guarded: the server checks that the buyer still exists and reserves the discount-code usage before saving the request as approved, so a failed/expired code cannot leave a falsely approved request.
+- The student payment modal now previews valid/invalid discount codes and shows the discounted total before submission; this is only UX, and the server recalculates again at request creation.
 - Added the admin financial UI for discount-code creation, package targeting, usage review, pause/reactivate, and CSV export.
 - Updated `npm run smoke:payment-package` so it guards discount persistence, server-side calculation, admin management, and backup coverage.
 - Next direct work: membership/bundle administration, then payment gateway or verified manual approval workflow. Keep the student/parent screens simple; put dense financial detail in admin only.

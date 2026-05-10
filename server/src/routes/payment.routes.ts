@@ -71,6 +71,14 @@ const discountCodePayloadSchema = z.object({
   contentTypes: z.array(z.string()).optional(),
 });
 
+const discountCodePreviewSchema = z.object({
+  itemType: z.enum(["course", "package", "skill", "test"]).optional(),
+  itemId: z.string().min(1),
+  packageId: z.string().optional(),
+  amount: z.number().min(0),
+  discountCode: z.string().max(80),
+});
+
 const defaultSettings = {
   currency: "SAR",
   manualReviewRequired: true,
@@ -263,6 +271,43 @@ paymentRouter.get(
 );
 
 paymentRouter.post(
+  "/discount-codes/preview",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = discountCodePreviewSchema.parse(req.body);
+    const normalizedDiscountCode = normalizeDiscountCode(payload.discountCode);
+    const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
+    const targetItemId = payload.packageId || payload.itemId;
+    const purchasableItem = await CourseModel.findById(targetItemId).lean();
+
+    if (!normalizedDiscountCode) {
+      return res.json({ valid: false, originalAmount, discountAmount: 0, finalAmount: originalAmount });
+    }
+
+    const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
+    if (!discountCode || !isDiscountCodeActive(discountCode) || !discountAppliesToPayload(discountCode, payload as any, purchasableItem)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        valid: false,
+        message: "كود الخصم غير صالح لهذا الطلب",
+        originalAmount,
+        discountAmount: 0,
+        finalAmount: originalAmount,
+      });
+    }
+
+    const discountAmount = calculateDiscountAmount(discountCode, originalAmount);
+    return res.json({
+      valid: true,
+      code: normalizedDiscountCode,
+      label: discountCode.label || normalizedDiscountCode,
+      originalAmount,
+      discountAmount,
+      finalAmount: Math.max(0, originalAmount - discountAmount),
+    });
+  }),
+);
+
+paymentRouter.post(
   "/discount-codes",
   requireAuth,
   requireRole(["admin"]),
@@ -416,14 +461,12 @@ paymentRouter.patch(
       });
     }
 
-    requestDoc.status = payload.status;
-    requestDoc.reviewerNotes = payload.reviewerNotes || "";
-    requestDoc.reviewedBy = req.authUser?.id || "";
-    requestDoc.reviewedAt = Date.now();
-    await requestDoc.save();
-
-    let updatedUser = null;
     if (payload.status === "approved") {
+      const purchaseUser = await UserModel.findById(requestDoc.userId).select("_id");
+      if (!purchaseUser) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: "لا يمكن اعتماد طلب دفع لمستخدم غير موجود" });
+      }
+
       if (requestDoc.discountCode && requestDoc.discountCodeId) {
         const redemption = await DiscountCodeModel.findOneAndUpdate(
           {
@@ -438,6 +481,16 @@ paymentRouter.patch(
           return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
         }
       }
+    }
+
+    requestDoc.status = payload.status;
+    requestDoc.reviewerNotes = payload.reviewerNotes || "";
+    requestDoc.reviewedBy = req.authUser?.id || "";
+    requestDoc.reviewedAt = Date.now();
+    await requestDoc.save();
+
+    let updatedUser = null;
+    if (payload.status === "approved") {
       updatedUser = await applyPurchaseToUser(requestDoc.userId, {
         courseId: requestDoc.itemType === "course" ? requestDoc.itemId : undefined,
         packageId: requestDoc.packageId || (requestDoc.itemType === "package" ? requestDoc.itemId : undefined),
@@ -454,6 +507,8 @@ paymentRouter.patch(
         itemType: requestDoc.itemType,
         itemId: requestDoc.itemId,
         userId: requestDoc.userId,
+        discountCode: requestDoc.discountCode || "",
+        discountAmount: requestDoc.discountAmount || 0,
       },
     });
 

@@ -28,6 +28,16 @@ type PaymentPackageOption = {
     accessContext?: string;
 };
 
+type DiscountPreview = {
+    valid: boolean;
+    code?: string;
+    label?: string;
+    originalAmount: number;
+    discountAmount: number;
+    finalAmount: number;
+    message?: string;
+};
+
 const fallbackSettings: PaymentSettings = {
     key: 'default',
     currency: 'SAR',
@@ -84,6 +94,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const [receiptUrl, setReceiptUrl] = useState('');
     const [notes, setNotes] = useState('');
     const [discountCode, setDiscountCode] = useState('');
+    const [discountPreview, setDiscountPreview] = useState<DiscountPreview | null>(null);
+    const [discountPreviewLoading, setDiscountPreviewLoading] = useState(false);
     const [selectedPackageId, setSelectedPackageId] = useState('');
     const { redeemAccessCode } = useStore();
 
@@ -113,6 +125,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         setReceiptUrl('');
         setNotes('');
         setDiscountCode('');
+        setDiscountPreview(null);
+        setDiscountPreviewLoading(false);
         setSelectedPackageId(Array.isArray(item?.packageOptions) && item.packageOptions[0]?.id ? item.packageOptions[0].id : '');
     }, [isOpen, item?.id, type]);
 
@@ -143,6 +157,54 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             cancelled = true;
         };
     }, [isOpen]);
+
+    useEffect(() => {
+        if (!isOpen || !purchaseItem) return;
+        const code = discountCode.trim().toUpperCase();
+        if (!code) {
+            setDiscountPreview(null);
+            setDiscountPreviewLoading(false);
+            return;
+        }
+
+        let cancelled = false;
+        const timer = window.setTimeout(async () => {
+            setDiscountPreviewLoading(true);
+            try {
+                const packageId = purchaseItem.packageId || (purchaseItem.purchaseType === 'package' || type === 'package' ? purchaseItem.id : undefined);
+                const response = await api.previewDiscountCode({
+                    itemType: purchaseItem.purchaseType === 'package' || type === 'package' ? 'package' : type === 'bank' ? 'test' : type,
+                    itemId: purchaseItem.id,
+                    packageId,
+                    amount: purchaseItem.price || 0,
+                    discountCode: code,
+                });
+                if (!cancelled) {
+                    setDiscountPreview(response);
+                    setActionError(null);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    setDiscountPreview({
+                        valid: false,
+                        originalAmount: purchaseItem.price || 0,
+                        discountAmount: 0,
+                        finalAmount: purchaseItem.price || 0,
+                        message: error instanceof Error ? error.message : 'كود الخصم غير صالح لهذا الطلب',
+                    });
+                }
+            } finally {
+                if (!cancelled) {
+                    setDiscountPreviewLoading(false);
+                }
+            }
+        }, 450);
+
+        return () => {
+            cancelled = true;
+            window.clearTimeout(timer);
+        };
+    }, [discountCode, isOpen, purchaseItem, type]);
 
     const enabledMethods = useMemo(
         () => (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter((key) => settings[key]?.enabled),
@@ -462,12 +524,32 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 placeholder="كود خصم (اختياري)"
                 className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none font-mono"
             />
+            {discountCode.trim() && (
+                <div className={`rounded-xl border px-4 py-3 text-sm font-bold ${
+                    discountPreview?.valid
+                        ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                        : 'border-amber-100 bg-amber-50 text-amber-700'
+                }`}>
+                    {discountPreviewLoading
+                        ? 'جاري فحص كود الخصم...'
+                        : discountPreview?.valid
+                            ? `تم تطبيق الخصم: ${discountPreview.discountAmount} ${getCurrency()}`
+                            : discountPreview?.message || 'كود الخصم سيتم فحصه قبل إرسال الطلب'}
+                </div>
+            )}
             <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} placeholder="ملاحظات إضافية للإدارة (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none resize-none" />
 
             <div className="pt-2">
                 <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6 bg-gray-50 p-4 rounded-xl">
                     <span className="text-gray-500 font-bold">إجمالي المبلغ:</span>
-                    <span className="text-xl sm:text-2xl font-black text-indigo-600">{getPrice()} {getCurrency()}</span>
+                    <span className="text-xl sm:text-2xl font-black text-indigo-600">
+                        {discountPreview?.valid ? discountPreview.finalAmount : getPrice()} {getCurrency()}
+                    </span>
+                    {discountPreview?.valid && (
+                        <span className="text-xs font-bold text-gray-500 line-through">
+                            {discountPreview.originalAmount} {getCurrency()}
+                        </span>
+                    )}
                 </div>
 
                 <button onClick={() => void handlePayment()} disabled={loading} className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50">

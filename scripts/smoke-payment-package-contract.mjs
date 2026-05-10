@@ -32,7 +32,21 @@ check('payment requests preserve discount data and calculate final amount server
   assertIncludes(paymentRoutesSource, 'normalizeDiscountCode(payload.discountCode)');
   assertIncludes(paymentRoutesSource, 'calculateDiscountAmount');
   assertIncludes(paymentRoutesSource, 'amount: finalAmount');
+  assertIncludes(paymentRoutesSource, '"/discount-codes/preview"');
+  assertIncludes(paymentRoutesSource, 'لا يمكن اعتماد طلب دفع لمستخدم غير موجود');
+  assertIncludes(paymentRoutesSource, 'كود الخصم لم يعد متاحًا للاعتماد');
+  assertIncludes(paymentRoutesSource, 'await requestDoc.save();');
   assertIncludes(paymentModalSource, 'discountCode: discountCode.trim().toUpperCase()');
+  assertIncludes(paymentModalSource, 'api.previewDiscountCode');
+  assertIncludes(apiSource, 'previewDiscountCode');
+});
+
+check('discount approval reserves usage before approving payment request', () => {
+  const redemptionIndex = paymentRoutesSource.indexOf('const redemption = await DiscountCodeModel.findOneAndUpdate');
+  const statusSaveIndex = paymentRoutesSource.indexOf('await requestDoc.save();', redemptionIndex);
+  if (redemptionIndex === -1 || statusSaveIndex === -1 || redemptionIndex > statusSaveIndex) {
+    throw new Error('Discount redemption must be reserved before saving the payment request review.');
+  }
 });
 
 check('discount codes are admin-managed and included in backups', () => {

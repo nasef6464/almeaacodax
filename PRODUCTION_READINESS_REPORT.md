@@ -16,6 +16,8 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Tightened the learning-space paid/free foundation rule: foundation topics now use the topic's own paid/free flag, so explicitly free topics stay open for students even when other content is paid.
 - Improved locked-content package choice: when a student opens paid content, the payment flow can now show multiple suitable package choices instead of a single generic package.
 - Added server-side discount-code management: admins can create, pause, and review codes, payment requests calculate discounts on the server, store original/final amounts, and count redemptions only after admin approval.
+- Hardened discount approval order: the server now verifies the buyer still exists and reserves the discount-code redemption before marking the payment request as approved.
+- Students can preview discount-code validity and final amount from the payment modal before sending the payment request; the server still recalculates it when the request is created.
 - Path package pages now include global membership-style packages that are not bound to one path.
 
 ## Still Required Before Large Launch
