@@ -59,6 +59,6 @@ assert(
 
 const header = read('components/Header.tsx');
 assert(header.includes('/dashboard?tab=my-courses'), 'User menu courses shortcut must open the dashboard courses tab');
-assert(header.includes('/dashboard?tab=quizzes'), 'User menu quizzes shortcut must open the dashboard quiz attempts tab');
+assert(header.includes('/my-quizzes'), 'User menu quizzes shortcut must open the simple quiz attempts page');
 
 console.log('announcement ads, video question-bank, and dashboard shortcut contract ok');
