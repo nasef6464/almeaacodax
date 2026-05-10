@@ -12,7 +12,11 @@ const audienceLabels: Record<AnnouncementAudience, string> = {
 };
 
 const toDateInput = (value?: number) => (value ? new Date(value).toISOString().slice(0, 10) : '');
-const fromDateInput = (value: string) => (value ? new Date(`${value}T00:00:00`).getTime() : undefined);
+const fromDateInput = (value: string, boundary: 'start' | 'end' = 'start') => {
+  if (!value) return undefined;
+  const suffix = boundary === 'end' ? 'T23:59:59.999' : 'T00:00:00.000';
+  return new Date(`${value}${suffix}`).getTime();
+};
 
 const createDefaultAd = (): AnnouncementAd => ({
   id: `ad_${Date.now()}`,
@@ -166,7 +170,7 @@ export const AnnouncementAdsManager: React.FC = () => {
                   <input
                     type="date"
                     value={toDateInput(selectedAd.startsAt)}
-                    onChange={(event) => updateSelected({ startsAt: fromDateInput(event.target.value) })}
+                    onChange={(event) => updateSelected({ startsAt: fromDateInput(event.target.value, 'start') })}
                     className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
                   />
                 </label>
@@ -176,7 +180,7 @@ export const AnnouncementAdsManager: React.FC = () => {
                   <input
                     type="date"
                     value={toDateInput(selectedAd.endsAt)}
-                    onChange={(event) => updateSelected({ endsAt: fromDateInput(event.target.value) })}
+                    onChange={(event) => updateSelected({ endsAt: fromDateInput(event.target.value, 'end') })}
                     className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
                   />
                 </label>

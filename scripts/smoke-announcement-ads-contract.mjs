@@ -26,7 +26,7 @@ const checks = [
   ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds']],
   ['store/useStore.ts', ['announcementAds', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd']],
   ['components/AnnouncementAdsOverlay.tsx', ['DISMISSED_KEY', 'goToTarget', 'visibleAds', 'matchesAudience']],
-  ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'audienceLabels', 'createAnnouncementAd']],
+  ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'audienceLabels', 'createAnnouncementAd', "boundary: 'start' | 'end' = 'start'", 'T23:59:59.999']],
   ['dashboards/admin/AdminDashboard.tsx', ['AnnouncementAdsManager', 'announcement-ads', 'Megaphone']],
   ['App.tsx', ['AnnouncementAdsOverlay', 'announcementAds: contentResult.value.announcementAds']],
   ['server/src/services/learningBackup.ts', ['announcementAds', 'AnnouncementAdModel']],
@@ -46,6 +46,16 @@ const lessonManager = read('dashboards/admin/builders/UnifiedLessonBuilder.tsx')
 assert(lessonManager.includes('availableVideoQuestions'), 'Lesson manager must list question-bank candidates');
 assert(lessonManager.includes("addInteractiveQuestion('bank')"), 'Lesson manager must provide a direct pull-from-bank action');
 assert(lessonManager.includes('questionId') && lessonManager.includes('interactiveQuestions'), 'Video questions must keep question-bank references');
+
+const adsManager = read('dashboards/admin/AnnouncementAdsManager.tsx');
+assert(
+  adsManager.includes("startsAt: fromDateInput(event.target.value, 'start')"),
+  'Announcement ad start date must use a start-of-day boundary',
+);
+assert(
+  adsManager.includes("endsAt: fromDateInput(event.target.value, 'end')"),
+  'Announcement ad end date must stay active through the selected day',
+);
 
 const header = read('components/Header.tsx');
 assert(header.includes('/dashboard?tab=my-courses'), 'User menu courses shortcut must open the dashboard courses tab');
