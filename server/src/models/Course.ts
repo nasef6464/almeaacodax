@@ -33,7 +33,7 @@ const courseSchema = new Schema(
     isPublished: { type: Boolean, default: false },
     showOnPlatform: { type: Boolean, default: true },
     isPackage: { type: Boolean, default: false },
-    packageType: { type: String, enum: ["courses", "videos", "tests"], default: "courses" },
+    packageType: { type: String, enum: ["courses", "videos", "tests", "membership"], default: "courses" },
     packageContentTypes: {
       type: [String],
       enum: ["courses", "foundation", "banks", "tests", "library", "all"],

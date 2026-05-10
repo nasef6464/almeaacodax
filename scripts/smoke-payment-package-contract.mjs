@@ -9,7 +9,10 @@ const learningSectionSource = read('components/LearningSection.tsx');
 const pathPageSource = read('pages/GenericPathPage.tsx');
 const paymentModelSource = read('server/src/models/PaymentRequest.ts');
 const paymentRoutesSource = read('server/src/routes/payment.routes.ts');
+const courseModelSource = read('server/src/models/Course.ts');
+const courseRoutesSource = read('server/src/routes/course.routes.ts');
 const typesSource = read('types.ts');
+const pathsManagerSource = read('dashboards/admin/PathsManager.tsx');
 const financialManagerSource = read('dashboards/admin/FinancialManager.tsx');
 const apiSource = read('services/api.ts');
 const discountModelSource = read('server/src/models/DiscountCode.ts');
@@ -72,6 +75,17 @@ check('locked learning sections can offer multiple matching public packages', ()
 check('path package tab includes global memberships without path binding', () => {
   assertIncludes(pathPageSource, 'const packagePathId = c.pathId || c.category;');
   assertIncludes(pathPageSource, 'return !packagePathId || packagePathId === path.id;');
+});
+
+check('admin can create global memberships that unlock the whole platform', () => {
+  assertIncludes(typesSource, "'membership'");
+  assertIncludes(courseModelSource, '"membership"');
+  assertIncludes(courseRoutesSource, '"membership"');
+  assertIncludes(pathsManagerSource, 'setPackageAppliesGlobally');
+  assertIncludes(pathsManagerSource, "packageType: packageAppliesGlobally ? 'membership' : 'courses'");
+  assertIncludes(pathsManagerSource, "packageContentTypes: packageAppliesGlobally ? ['all'] : normalizedContentTypes");
+  assertIncludes(pathsManagerSource, 'const isGlobalMembership = !packagePathId');
+  assertIncludes(pathsManagerSource, 'عضوية عامة تفتح كل المنصة');
 });
 
 let failed = 0;

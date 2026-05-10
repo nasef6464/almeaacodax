@@ -118,6 +118,7 @@ export const PathsManager: React.FC = () => {
   const [packagePublished, setPackagePublished] = useState(true);
   const [packageContentTypes, setPackageContentTypes] = useState<PackageContentType[]>(['all']);
   const [packageSubjectId, setPackageSubjectId] = useState('');
+  const [packageAppliesGlobally, setPackageAppliesGlobally] = useState(false);
 
   const currentPath = paths.find(p => p.id === selectedPathId);
   const currentPathDisplaySettings = resolvePathDisplaySettings(currentPath);
@@ -125,7 +126,13 @@ export const PathsManager: React.FC = () => {
   const currentLevel = levels?.find(l => l.id === selectedLevelId);
   const pathSubjects = subjects.filter(s => s.pathId === selectedPathId && (selectedLevelId ? s.levelId === selectedLevelId : true));
   const currentSubject = subjects.find(s => s.id === selectedSubjectId);
-  const pathPackages = courses.filter((course: any) => (course.pathId || course.category) === selectedPathId && course.isPackage);
+  const pathPackages = courses.filter((course: any) => {
+    if (!course.isPackage) return false;
+    const packagePathId = course.pathId || course.category;
+    const contentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
+    const isGlobalMembership = !packagePathId && (course.packageType === 'membership' || contentTypes.includes('all'));
+    return packagePathId === selectedPathId || isGlobalMembership;
+  });
   const isPublicPackageVisible = (pkg: Course) =>
     pkg.showOnPlatform !== false &&
     pkg.isPublished !== false &&
@@ -556,6 +563,7 @@ export const PathsManager: React.FC = () => {
     setPackagePublished(true);
     setPackageContentTypes(['all']);
     setPackageSubjectId('');
+    setPackageAppliesGlobally(false);
   };
 
   const openPackageModal = (pkg?: Course) => {
@@ -571,6 +579,7 @@ export const PathsManager: React.FC = () => {
       setPackagePublished(pkg.isPublished !== false);
       setPackageContentTypes(pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all']);
       setPackageSubjectId(pkg.subjectId || pkg.subject || '');
+      setPackageAppliesGlobally(!(pkg.pathId || pkg.category) && (pkg.packageType === 'membership' || (pkg.packageContentTypes || []).includes('all')));
     } else {
       resetPackageForm();
     }
@@ -588,7 +597,8 @@ export const PathsManager: React.FC = () => {
       .map((item) => item.trim())
       .filter(Boolean);
     const normalizedContentTypes = packageContentTypes.length ? packageContentTypes : ['all' as PackageContentType];
-    const scopedSubjectId = packageSubjectId.trim();
+    const scopedSubjectId = packageAppliesGlobally ? '' : packageSubjectId.trim();
+    const scopedPathId = packageAppliesGlobally ? '' : selectedPathId;
 
     const packageData: Partial<Course> = {
       title: packageTitle.trim(),
@@ -601,18 +611,18 @@ export const PathsManager: React.FC = () => {
       level: 'Beginner',
       rating: 5,
       progress: 0,
-      category: selectedPathId,
-      pathId: selectedPathId,
+      category: scopedPathId,
+      pathId: scopedPathId,
       subject: scopedSubjectId || undefined,
       subjectId: scopedSubjectId || undefined,
       features: features.length ? features : ['وصول منظم لمحتوى المسار', 'متابعة التقدم داخل المنصة'],
       isPackage: true,
-      packageType: 'courses',
-      packageContentTypes: normalizedContentTypes,
+      packageType: packageAppliesGlobally ? 'membership' : 'courses',
+      packageContentTypes: packageAppliesGlobally ? ['all'] : normalizedContentTypes,
       originalPrice,
       includedCourses: courses
         .filter((course) => (
-          (course.pathId || course.category) === selectedPathId &&
+          (packageAppliesGlobally || (course.pathId || course.category) === selectedPathId) &&
           (!scopedSubjectId || course.subjectId === scopedSubjectId || course.subject === scopedSubjectId) &&
           !course.isPackage
         ))
@@ -674,6 +684,10 @@ export const PathsManager: React.FC = () => {
   };
 
   const getPackageScopeLabel = (pkg: Course) => {
+    if (pkg.packageType === 'membership' && !(pkg.pathId || pkg.category)) {
+      return 'عضوية شاملة';
+    }
+
     const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all'];
     if (contentTypes.includes('all')) {
       return 'شاملة';
@@ -686,6 +700,10 @@ export const PathsManager: React.FC = () => {
   };
 
   const getPathPackageSubjectLabel = (pkg: Course) => {
+    if (pkg.packageType === 'membership' && !(pkg.pathId || pkg.category)) {
+      return 'كل المنصة';
+    }
+
     const scopedSubjectId = pkg.subjectId || pkg.subject;
     if (!scopedSubjectId) return 'كل مواد المسار';
     return pathSubjects.find((subject) => subject.id === scopedSubjectId)?.name || 'مادة محددة';
@@ -1796,6 +1814,7 @@ export const PathsManager: React.FC = () => {
                   <select
                     value={packageSubjectId}
                     onChange={(e) => setPackageSubjectId(e.target.value)}
+                    disabled={packageAppliesGlobally}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                   >
                     <option value="">كل مواد المسار</option>
@@ -1807,6 +1826,26 @@ export const PathsManager: React.FC = () => {
                     استخدمها لو أردت باقة للكمي فقط أو اللفظي فقط مثلًا. لو تركتها على كل المواد ستكون باقة عامة للمسار كله.
                   </p>
                 </div>
+                <label className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={packageAppliesGlobally}
+                    onChange={(e) => {
+                      setPackageAppliesGlobally(e.target.checked);
+                      if (e.target.checked) {
+                        setPackageSubjectId('');
+                        setPackageContentTypes(['all']);
+                      }
+                    }}
+                    className="mt-1 h-5 w-5 rounded text-emerald-600"
+                  />
+                  <span>
+                    <span className="block text-sm font-black text-emerald-900">عضوية عامة تفتح كل المنصة</span>
+                    <span className="text-xs leading-6 text-emerald-700">
+                      تظهر كخيار شراء شامل في كل المسارات، وتفتح الدورات والتأسيس والتدريب والاختبارات والمكتبة عند اعتماد الدفع.
+                    </span>
+                  </span>
+                </label>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">مزايا الباقة</label>
                   <textarea
@@ -1825,6 +1864,7 @@ export const PathsManager: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => togglePackageContentType('all')}
+                      disabled={packageAppliesGlobally}
                       className={`rounded-xl px-3 py-2 text-xs font-black ${
                         packageContentTypes.includes('all')
                           ? 'bg-indigo-600 text-white'
@@ -1850,6 +1890,7 @@ export const PathsManager: React.FC = () => {
                             type="checkbox"
                             checked={checked}
                             onChange={() => togglePackageContentType(option.value)}
+                            disabled={packageAppliesGlobally}
                             className="mt-1 h-5 w-5 rounded text-indigo-600"
                           />
                           <span>

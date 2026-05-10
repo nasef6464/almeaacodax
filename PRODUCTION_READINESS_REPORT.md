@@ -19,11 +19,12 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Hardened discount approval order: the server now verifies the buyer still exists and reserves the discount-code redemption before marking the payment request as approved.
 - Students can preview discount-code validity and final amount from the payment modal before sending the payment request; the server still recalculates it when the request is created.
 - Path package pages now include global membership-style packages that are not bound to one path.
+- Admins can now create a global membership package from path package management. It is saved as `packageType=membership`, scoped to all content types, appears as a platform-wide purchase option, and unlocks content through the existing scoped package-access rules after approval.
 
 ## Still Required Before Large Launch
 
 - Payment gateway/webhook verification or manual admin approval only.
-- Membership management UI and payment-gateway/webhook integration.
+- Payment-gateway/webhook integration for package and membership approvals.
 - Cookie-based session hardening or safer refresh-token strategy.
 - Email verification, forgot password, and optional Google/OTP providers.
 - Queue-backed notifications for bulk delivery.

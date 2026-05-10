@@ -107,3 +107,10 @@
 - Added the admin financial UI for discount-code creation, package targeting, usage review, pause/reactivate, and CSV export.
 - Updated `npm run smoke:payment-package` so it guards discount persistence, server-side calculation, admin management, and backup coverage.
 - Next direct work: membership/bundle administration, then payment gateway or verified manual approval workflow. Keep the student/parent screens simple; put dense financial detail in admin only.
+
+## Global Membership Sprint - 2026-05-11
+- Closed the first global-membership administration pass: admins can create a package as "membership" from path package management, with no path binding and `packageContentTypes=['all']`.
+- Global memberships appear inside each path package tab as a platform-wide option, but still use the same approval/payment request flow. Students do not unlock anything by calling an API directly.
+- Existing entitlement logic already treats a purchased public package with no path binding as matching any path, so approved membership payment opens courses, foundation, training, tests, and library without duplicating rules.
+- Guard added to `npm run smoke:payment-package` for membership enums, admin global toggle, and global package tab visibility.
+- Next direct work: payment gateway/webhook integration or stricter manual approval evidence, then focused UX polish for student package selection.
