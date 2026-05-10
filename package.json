@@ -26,6 +26,7 @@
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
     "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
     "smoke:video-questions": "node scripts/smoke-video-questions-contract.mjs",
+    "smoke:package-revenue": "node scripts/smoke-package-revenue-contract.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
   },

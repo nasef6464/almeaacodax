@@ -340,6 +340,8 @@ const b2bPackageSchema = z.object({
   id: z.string().optional(),
   schoolId: z.string().min(1),
   name: z.string().min(1),
+  assignedTeacherId: z.string().optional(),
+  revenueSharePercentage: z.number().nullable().optional(),
   courseIds: z.array(z.string()).default([]),
   contentTypes: z.array(z.enum(["courses", "foundation", "banks", "tests", "library", "all"])).default(["all"]),
   pathIds: z.array(z.string()).default([]),

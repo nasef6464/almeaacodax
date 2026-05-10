@@ -574,6 +574,8 @@ export interface B2BPackage {
     id: string;
     schoolId: string;
     name: string;
+    assignedTeacherId?: string;
+    revenueSharePercentage?: number;
     courseIds: string[];
     contentTypes: PackageContentType[];
     pathIds: string[];

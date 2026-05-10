@@ -5,6 +5,8 @@ const b2bPackageSchema = new Schema(
     id: { type: String, index: true, sparse: true },
     schoolId: { type: String, required: true, index: true },
     name: { type: String, required: true, trim: true },
+    assignedTeacherId: { type: String, default: "" },
+    revenueSharePercentage: { type: Number, default: null },
     courseIds: { type: [String], default: [] },
     contentTypes: {
       type: [String],

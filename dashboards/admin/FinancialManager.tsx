@@ -2,7 +2,7 @@
 import { AlertTriangle, ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, Search, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
-import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings } from '../../types';
+import { PackageContentType, PaymentRequest, PaymentRequestStatus, PaymentSettings, Role } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 
 type TransactionRow = {
@@ -105,6 +105,7 @@ export const FinancialManager: React.FC = () => {
     }, []);
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
+    const teachers = useMemo(() => users.filter((currentUser) => currentUser.role === Role.TEACHER), [users]);
     const schoolPackageIds = useMemo(() => new Set(b2bPackages.map((pkg) => pkg.id)), [b2bPackages]);
     const publicPackages = useMemo(() => courses.filter((course) => course.isPackage), [courses]);
     const publicPackageIds = useMemo(() => new Set(publicPackages.map((pkg) => pkg.id)), [publicPackages]);
@@ -576,6 +577,7 @@ export const FinancialManager: React.FC = () => {
             const activePackageCodes = packageCodes.filter((code) => code.expiresAt > Date.now());
             const usedSeats = packageCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
             const seatRate = pkg.maxStudents > 0 ? Math.min(Math.round((usedSeats / pkg.maxStudents) * 100), 100) : 0;
+            const teacher = teachers.find((currentTeacher) => currentTeacher.id === pkg.assignedTeacherId);
             const pathNames = (pkg.pathIds || [])
                 .map((pathId) => paths.find((path) => path.id === pathId)?.name)
                 .filter(Boolean);
@@ -583,6 +585,10 @@ export const FinancialManager: React.FC = () => {
                 .map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name)
                 .filter(Boolean);
             const totalItems = scopedCourses.length + scopedLessons.length + scopedTraining.length + scopedTests.length + scopedLibrary.length;
+            const packageValue = scopedCourses.reduce((sum, course) => sum + (course.price || 0), 0) * Math.max(pkg.maxStudents || 0, 0);
+            const teacherShare = pkg.revenueSharePercentage != null
+                ? Math.round((packageValue * Math.max(0, Math.min(pkg.revenueSharePercentage, 100))) / 100)
+                : 0;
             const scopeMode =
                 packageCourseIds.size > 0
                     ? 'باقة مخصصة بمحتوى محدد'
@@ -605,6 +611,9 @@ export const FinancialManager: React.FC = () => {
                 type: pkg.type,
                 discountPercentage: pkg.discountPercentage,
                 maxStudents: pkg.maxStudents,
+                assignedTeacherName: teacher?.name || '',
+                revenueSharePercentage: pkg.revenueSharePercentage,
+                teacherShare,
                 isActive: pkg.status === 'active',
                 isPaused: pkg.status !== 'active',
                 usedSeats,
@@ -625,7 +634,7 @@ export const FinancialManager: React.FC = () => {
                 },
             };
         }).sort((a, b) => Number(b.status === 'active') - Number(a.status === 'active') || b.usedSeats - a.usedSeats);
-    }, [accessCodes, b2bPackages, courses, groups, lessons, libraryItems, paths, quizzes, subjects]);
+    }, [accessCodes, b2bPackages, courses, groups, lessons, libraryItems, paths, quizzes, subjects, teachers]);
 
     const schoolPackagesSummary = useMemo(() => ({
         total: packageCoverageRows.length,
@@ -634,6 +643,7 @@ export const FinancialManager: React.FC = () => {
         activeCodes: packageCoverageRows.reduce((sum, pkg) => sum + pkg.activeCodes, 0),
         usedSeats: packageCoverageRows.reduce((sum, pkg) => sum + pkg.usedSeats, 0),
         totalSeats: packageCoverageRows.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0),
+        teacherShares: packageCoverageRows.reduce((sum, pkg) => sum + (pkg.teacherShare || 0), 0),
     }), [packageCoverageRows]);
 
     const publicPackagesSummary = useMemo(() => ({
@@ -734,11 +744,14 @@ export const FinancialManager: React.FC = () => {
 
     const exportSchoolPackages = () => {
         downloadCsv('school-packages-coverage.csv', [
-            ['اسم الباقة', 'المدرسة', 'الحالة', 'النطاق', 'المسارات', 'المواد', 'المقاعد المستخدمة', 'إجمالي المقاعد', 'أكواد نشطة', 'إجمالي المحتوى', 'ملاحظات'],
+            ['اسم الباقة', 'المدرسة', 'الحالة', 'المعلم/المدرب', 'نسبة المعلم', 'حصة المعلم التقديرية', 'النطاق', 'المسارات', 'المواد', 'المقاعد المستخدمة', 'إجمالي المقاعد', 'أكواد نشطة', 'إجمالي المحتوى', 'ملاحظات'],
             ...packageCoverageRows.map((pkg) => [
                 pkg.name,
                 pkg.schoolName,
                 pkg.isActive ? 'نشطة' : 'موقوفة مؤقتًا',
+                pkg.assignedTeacherName || 'غير محدد',
+                pkg.revenueSharePercentage != null ? `${pkg.revenueSharePercentage}%` : 'غير محددة',
+                pkg.teacherShare,
                 pkg.scopeMode,
                 pkg.pathNames.join(' | ') || 'كل المسارات حسب الإعداد',
                 pkg.subjectNames.join(' | ') || 'كل المواد داخل النطاق',
@@ -1244,9 +1257,9 @@ export const FinancialManager: React.FC = () => {
                             <div className="mt-2 text-xs font-bold text-gray-500">من أصل {schoolPackagesSummary.totalSeats || 0} مقعد</div>
                         </div>
                         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                            <div className="text-xs font-bold text-gray-500">تنبيه مهم</div>
-                            <div className="mt-2 text-sm font-black text-gray-900">هذه الباقات منفصلة عن عروض الطلاب</div>
-                            <div className="mt-2 text-xs leading-6 text-gray-500">الطالب التابع للمدرسة لا يحتاج شراء الباقة العامة إذا كان وصوله مفعلًا من المدرسة أو المشرف.</div>
+                            <div className="text-xs font-bold text-gray-500">حصة المعلمين التقديرية</div>
+                            <div className="mt-2 text-2xl font-black text-emerald-700">{settings.currency} {schoolPackagesSummary.teacherShares.toLocaleString('en-US')}</div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">حسب الباقات التي لها معلم ونسبة</div>
                         </div>
                     </div>
 
@@ -1329,6 +1342,11 @@ export const FinancialManager: React.FC = () => {
                                                 <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">
                                                     {pkg.type === 'free_access' ? 'فتح وصول' : `خصم ${pkg.discountPercentage || 0}%`}
                                                 </span>
+                                                {pkg.assignedTeacherName && (
+                                                    <span className="rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-bold text-emerald-700">
+                                                        {pkg.assignedTeacherName} · {pkg.revenueSharePercentage ?? 0}%
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {pkg.contentTypes.map((type) => (

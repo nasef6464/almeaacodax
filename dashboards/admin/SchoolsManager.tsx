@@ -598,6 +598,7 @@ export const SchoolsManager: React.FC = () => {
         () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
         [users],
     );
+    const teachers = useMemo(() => users.filter((currentUser) => currentUser.role === Role.TEACHER), [users]);
     const parents = useMemo(() => users.filter((currentUser) => currentUser.role === Role.PARENT), [users]);
     const publishedCourses = useMemo(() => courses.filter((course) => course.isPublished !== false), [courses]);
     const importPreviewStats = useMemo(() => {
@@ -1315,13 +1316,16 @@ export const SchoolsManager: React.FC = () => {
                 {
                     name: 'packages',
                     rows: [
-                        ['اسم الباقة', 'الحالة', 'نوع الوصول', 'حد الطلاب', 'الدورات', 'أنواع المحتوى', 'المسارات', 'المواد', 'توصية'],
+                        ['اسم الباقة', 'الحالة', 'نوع الوصول', 'المعلم/المدرب', 'نسبة المعلم', 'حد الطلاب', 'الدورات', 'أنواع المحتوى', 'المسارات', 'المواد', 'توصية'],
                         ...schoolPackages.map((pkg) => {
                             const packageCodes = schoolCodes.filter((code) => code.packageId === pkg.id);
+                            const packageTeacher = teachers.find((teacher) => teacher.id === pkg.assignedTeacherId);
                             return [
                                 pkg.name,
                                 pkg.status === 'active' ? 'نشطة' : 'موقوفة',
                                 pkg.type === 'free_access' ? 'وصول مجاني' : `خصم ${pkg.discountPercentage || 0}%`,
+                                packageTeacher?.name || 'غير محدد',
+                                pkg.revenueSharePercentage != null ? `${pkg.revenueSharePercentage}%` : 'غير محددة',
                                 pkg.maxStudents || 0,
                                 pkg.courseIds.length,
                                 (pkg.contentTypes || []).join(' | ') || 'all',
@@ -2279,6 +2283,8 @@ export const SchoolsManager: React.FC = () => {
                                                     id: `pkg_${Date.now()}`,
                                                     schoolId: selectedSchool.id,
                                                     name: 'باقة جديدة',
+                                                    assignedTeacherId: '',
+                                                    revenueSharePercentage: undefined,
                                                     courseIds: [],
                                                     contentTypes: ['all'],
                                                     pathIds: [],
@@ -2300,6 +2306,7 @@ export const SchoolsManager: React.FC = () => {
                                         const packageCourses = publishedCourses.filter((course) => pkg.courseIds.includes(course.id));
                                         const packagePaths = paths.filter((path) => (pkg.pathIds || []).includes(path.id));
                                         const packageSubjects = subjects.filter((currentSubject) => (pkg.subjectIds || []).includes(currentSubject.id));
+                                        const packageTeacher = teachers.find((teacher) => teacher.id === pkg.assignedTeacherId);
 
                                         return (
                                         <div key={pkg.id} className="border border-gray-200 p-5 rounded-xl space-y-4">
@@ -2320,6 +2327,11 @@ export const SchoolsManager: React.FC = () => {
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
+                                                    {packageTeacher && (
+                                                        <span className="text-xs font-bold px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">
+                                                            {packageTeacher.name}
+                                                        </span>
+                                                    )}
                                                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${pkg.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                                         {pkg.status === 'active' ? 'نشطة' : 'منتهية'}
                                                     </span>
@@ -2375,6 +2387,38 @@ export const SchoolsManager: React.FC = () => {
                                                         <option value="active">نشطة</option>
                                                         <option value="expired">منتهية</option>
                                                     </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-600 mb-2">المعلم/المدرب المرتبط</label>
+                                                    <select
+                                                        value={pkg.assignedTeacherId || ''}
+                                                        onChange={(event) => updateB2BPackage(pkg.id, {
+                                                            assignedTeacherId: event.target.value,
+                                                        })}
+                                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                                    >
+                                                        <option value="">بدون معلم محدد</option>
+                                                        {teachers.map((teacher) => (
+                                                            <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-600 mb-2">نسبة المعلم من دخل الباقة %</label>
+                                                    <input
+                                                        type="number"
+                                                        min={0}
+                                                        max={100}
+                                                        value={pkg.revenueSharePercentage ?? ''}
+                                                        onChange={(event) => {
+                                                            const value = event.target.value === '' ? undefined : Number(event.target.value);
+                                                            if (value === undefined || (Number.isFinite(value) && value >= 0 && value <= 100)) {
+                                                                updateB2BPackage(pkg.id, { revenueSharePercentage: value });
+                                                            }
+                                                        }}
+                                                        placeholder="مثال: 30"
+                                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                                    />
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-bold text-gray-600 mb-2">الحد الأقصى للطلاب</label>
