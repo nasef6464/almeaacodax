@@ -493,6 +493,7 @@ export interface PaymentRequest {
     receiptUrl?: string;
     discountCode?: string;
     notes?: string;
+    approvalEvidence?: string;
     reviewedBy?: string;
     reviewedAt?: number | null;
     reviewerNotes?: string;

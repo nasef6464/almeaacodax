@@ -52,6 +52,16 @@ check('discount approval reserves usage before approving payment request', () =>
   }
 });
 
+check('manual payment approval requires review evidence before unlocking access', () => {
+  assertIncludes(typesSource, 'approvalEvidence?: string;');
+  assertIncludes(paymentModelSource, 'approvalEvidence: { type: String, default: "" }');
+  assertIncludes(paymentRoutesSource, 'hasManualPaymentEvidence(payload)');
+  assertIncludes(paymentRoutesSource, 'hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)');
+  assertIncludes(paymentRoutesSource, 'buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence)');
+  assertIncludes(financialManagerSource, 'buildApprovalEvidence(request)');
+  assertIncludes(financialManagerSource, "const canApprove = request.status === 'pending' && riskNotes.length === 0;");
+});
+
 check('discount codes are admin-managed and included in backups', () => {
   assertIncludes(discountModelSource, 'DiscountCodeModel');
   assertIncludes(paymentRoutesSource, '"/discount-codes"');

@@ -20,6 +20,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Students can preview discount-code validity and final amount from the payment modal before sending the payment request; the server still recalculates it when the request is created.
 - Path package pages now include global membership-style packages that are not bound to one path.
 - Admins can now create a global membership package from path package management. It is saved as `packageType=membership`, scoped to all content types, appears as a platform-wide purchase option, and unlocks content through the existing scoped package-access rules after approval.
+- Manual payment requests now require review evidence before approval can unlock access. The server rejects approval without a transfer reference, wallet number, receipt, card note, or explicit admin evidence, and the admin UI disables risky approvals.
 
 ## Still Required Before Large Launch
 

@@ -23,6 +23,7 @@ const paymentRequestSchema = new Schema(
     receiptUrl: { type: String, default: "" },
     discountCode: { type: String, default: "" },
     notes: { type: String, default: "" },
+    approvalEvidence: { type: String, default: "" },
     reviewedBy: { type: String, default: "" },
     reviewedAt: { type: Number, default: null },
     reviewerNotes: { type: String, default: "" },

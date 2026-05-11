@@ -53,6 +53,7 @@ const paymentRequestCreateSchema = z.object({
 const paymentRequestReviewSchema = z.object({
   status: z.enum(["approved", "rejected", "cancelled"]),
   reviewerNotes: z.string().optional(),
+  approvalEvidence: z.string().max(500).optional(),
 });
 
 const discountCodePayloadSchema = z.object({
@@ -146,6 +147,39 @@ const getOrCreateSettings = async () => {
 
 const isPaymentMethodEnabled = (settings: any, method: "card" | "transfer" | "wallet") =>
   Boolean(settings?.[method]?.enabled);
+
+const hasManualPaymentEvidence = (request: {
+  paymentMethod?: string;
+  transferReference?: string;
+  walletNumber?: string;
+  receiptUrl?: string;
+  notes?: string;
+}, approvalEvidence = "") => {
+  const hasReceipt = Boolean(String(request.receiptUrl || "").trim());
+  const hasTransferReference = Boolean(String(request.transferReference || "").trim());
+  const hasWalletNumber = Boolean(String(request.walletNumber || "").trim());
+  const hasCardEvidence = String(request.notes || "").trim().length >= 4;
+  const hasAdminEvidence = String(approvalEvidence || "").trim().length >= 6;
+
+  if (request.paymentMethod === "transfer") return hasReceipt || hasTransferReference || hasAdminEvidence;
+  if (request.paymentMethod === "wallet") return hasReceipt || hasWalletNumber || hasAdminEvidence;
+  if (request.paymentMethod === "card") return hasReceipt || hasCardEvidence || hasAdminEvidence;
+  return hasReceipt || hasTransferReference || hasWalletNumber || hasAdminEvidence;
+};
+
+const buildPaymentEvidenceSummary = (request: {
+  paymentMethod?: string;
+  transferReference?: string;
+  walletNumber?: string;
+  receiptUrl?: string;
+  notes?: string;
+}, approvalEvidence = "") => [
+  request.paymentMethod ? `method:${request.paymentMethod}` : "",
+  request.transferReference ? `transfer:${request.transferReference}` : "",
+  request.walletNumber ? `wallet:${request.walletNumber}` : "",
+  request.receiptUrl ? `receipt:${request.receiptUrl}` : "",
+  approvalEvidence ? `admin:${approvalEvidence}` : "",
+].filter(Boolean).join(" | ");
 
 const userAlreadyOwnsPurchase = (
   user: any,
@@ -384,6 +418,12 @@ paymentRouter.post(
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة حاليًا" });
     }
 
+    if (!hasManualPaymentEvidence(payload)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "أرسل مرجع دفع أو إيصالًا واضحًا حتى يمكن مراجعة الطلب يدويًا",
+      });
+    }
+
     if (userAlreadyOwnsPurchase(user, payload)) {
       return res.status(StatusCodes.CONFLICT).json({
         message: "هذا المحتوى مفعل بالفعل على حسابك",
@@ -467,6 +507,12 @@ paymentRouter.patch(
         return res.status(StatusCodes.NOT_FOUND).json({ message: "لا يمكن اعتماد طلب دفع لمستخدم غير موجود" });
       }
 
+      if (!hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "لا يمكن اعتماد طلب دفع بدون مرجع أو إيصال أو دليل مراجعة واضح",
+        });
+      }
+
       if (requestDoc.discountCode && requestDoc.discountCodeId) {
         const redemption = await DiscountCodeModel.findOneAndUpdate(
           {
@@ -485,6 +531,9 @@ paymentRouter.patch(
 
     requestDoc.status = payload.status;
     requestDoc.reviewerNotes = payload.reviewerNotes || "";
+    requestDoc.approvalEvidence = payload.status === "approved"
+      ? buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence)
+      : "";
     requestDoc.reviewedBy = req.authUser?.id || "";
     requestDoc.reviewedAt = Date.now();
     await requestDoc.save();
@@ -509,6 +558,7 @@ paymentRouter.patch(
         userId: requestDoc.userId,
         discountCode: requestDoc.discountCode || "",
         discountAmount: requestDoc.discountAmount || 0,
+        approvalEvidence: requestDoc.approvalEvidence || "",
       },
     });
 

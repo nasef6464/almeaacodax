@@ -114,3 +114,10 @@
 - Existing entitlement logic already treats a purchased public package with no path binding as matching any path, so approved membership payment opens courses, foundation, training, tests, and library without duplicating rules.
 - Guard added to `npm run smoke:payment-package` for membership enums, admin global toggle, and global package tab visibility.
 - Next direct work: payment gateway/webhook integration or stricter manual approval evidence, then focused UX polish for student package selection.
+
+## Manual Payment Evidence Sprint - 2026-05-11
+- Closed a payment-hardening pass: creating or approving a manual payment now requires clear evidence (transfer reference, wallet number, receipt link, card note, or explicit admin evidence).
+- Admin financial review disables approval for pending requests with missing evidence, while rejection stays available.
+- Approved requests store `approvalEvidence` for audit and future handoff.
+- Guard extended in `npm run smoke:payment-package` so direct access cannot be unlocked from a weak payment approval path.
+- Next direct work: payment gateway/webhook integration, then final student-facing package selection polish.

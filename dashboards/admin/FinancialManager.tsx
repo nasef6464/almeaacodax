@@ -255,11 +255,19 @@ export const FinancialManager: React.FC = () => {
     );
 
     const requestRiskNotes = (request: PaymentRequest) => [
-        request.status === 'pending' && request.paymentMethod === 'transfer' && !request.transferReference ? 'لا يوجد مرجع تحويل' : '',
-        request.status === 'pending' && request.paymentMethod === 'wallet' && !request.walletNumber ? 'لا يوجد رقم محفظة' : '',
-        request.status === 'pending' && request.paymentMethod !== 'card' && !request.receiptUrl ? 'لا يوجد رابط إيصال' : '',
+        request.status === 'pending' && request.paymentMethod === 'transfer' && !request.transferReference && !request.receiptUrl ? 'لا يوجد مرجع تحويل أو إيصال' : '',
+        request.status === 'pending' && request.paymentMethod === 'wallet' && !request.walletNumber && !request.receiptUrl ? 'لا يوجد رقم محفظة أو إيصال' : '',
+        request.status === 'pending' && request.paymentMethod === 'card' && !request.notes && !request.receiptUrl ? 'لا يوجد دليل مراجعة للبطاقة' : '',
         request.amount <= 0 ? 'المبلغ غير محدد' : '',
     ].filter(Boolean);
+
+    const buildApprovalEvidence = (request: PaymentRequest) => [
+        request.paymentMethod ? `method:${request.paymentMethod}` : '',
+        request.transferReference ? `transfer:${request.transferReference}` : '',
+        request.walletNumber ? `wallet:${request.walletNumber}` : '',
+        request.receiptUrl ? `receipt:${request.receiptUrl}` : '',
+        request.notes ? `notes:${request.notes}` : '',
+    ].filter(Boolean).join(' | ');
 
     const paymentRequestStatusCounts = useMemo(() => ({
         all: paymentRequests.length,
@@ -857,14 +865,15 @@ export const FinancialManager: React.FC = () => {
         ]);
     };
 
-    const reviewRequest = async (requestId: string, status: PaymentRequestStatus) => {
-        setRequestActionLoading(requestId);
+    const reviewRequest = async (request: PaymentRequest, status: PaymentRequestStatus) => {
+        setRequestActionLoading(request.id);
         setError(null);
         setFeedback(null);
         try {
-            const response = await api.reviewPaymentRequest(requestId, {
+            const response = await api.reviewPaymentRequest(request.id, {
                 status,
                 reviewerNotes: status === 'approved' ? 'تمت المراجعة والاعتماد من الإدارة.' : 'تمت مراجعة الطلب من الإدارة.',
+                approvalEvidence: status === 'approved' ? buildApprovalEvidence(request) : '',
             });
             const updatedRequest = (response as { request?: PaymentRequest }).request;
             if (updatedRequest) {
@@ -1144,6 +1153,7 @@ export const FinancialManager: React.FC = () => {
                             <tbody className="divide-y divide-gray-100">
                                 {visiblePaymentRequests.map((request) => {
                                     const riskNotes = requestRiskNotes(request);
+                                    const canApprove = request.status === 'pending' && riskNotes.length === 0;
                                     return (
                                     <tr key={request.id} className="hover:bg-gray-50 transition-colors align-top">
                                         <td className="p-4">
@@ -1193,6 +1203,7 @@ export const FinancialManager: React.FC = () => {
                                                 </a>
                                             )}
                                             {request.notes && <div>{request.notes}</div>}
+                                            {request.approvalEvidence && <div className="text-emerald-700">دليل الاعتماد محفوظ</div>}
                                             {request.reviewerNotes && <div className="text-gray-400">ملاحظة الإدارة: {request.reviewerNotes}</div>}
                                             {riskNotes.length > 0 && (
                                                 <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 font-bold leading-5 text-amber-800">
@@ -1203,14 +1214,15 @@ export const FinancialManager: React.FC = () => {
                                         <td className="p-4">
                                             <div className="flex flex-col gap-2 min-w-[140px]">
                                                 <button
-                                                    onClick={() => void reviewRequest(request.id, 'approved')}
-                                                    disabled={requestActionLoading === request.id || request.status !== 'pending'}
+                                                    onClick={() => void reviewRequest(request, 'approved')}
+                                                    disabled={requestActionLoading === request.id || !canApprove}
+                                                    title={!canApprove && request.status === 'pending' ? 'يحتاج الطلب إلى مرجع أو إيصال قبل الاعتماد' : undefined}
                                                     className="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 disabled:opacity-50"
                                                 >
                                                     اعتماد
                                                 </button>
                                                 <button
-                                                    onClick={() => void reviewRequest(request.id, 'rejected')}
+                                                    onClick={() => void reviewRequest(request, 'rejected')}
                                                     disabled={requestActionLoading === request.id || request.status !== 'pending'}
                                                     className="px-3 py-2 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50"
                                                 >
