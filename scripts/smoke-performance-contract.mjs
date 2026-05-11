@@ -36,7 +36,17 @@ for (const file of videoEntrypoints) {
 }
 
 assertIncludes('index.html', 'window.tailwind = window.tailwind || {};');
-assertIncludes('index.html', 'window.tailwind.config = {');
+assertIncludes('index.html', 'var tailwind = window.tailwind;');
+assertIncludes('index.html', 'tailwind.config = {');
 assertIncludes('index.html', '<script src="https://cdn.tailwindcss.com"></script>');
 
-console.log('Performance contract passed: heavy video player is lazy-loaded from student-facing entrypoints.');
+assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
+assertNotIncludes('pages/Reports.tsx', "import * as XLSX from 'xlsx';");
+
+assertIncludes('dashboards/admin/AdminDashboard.tsx', "const lazyNamed = <TProps extends object>(");
+assertIncludes('dashboards/admin/AdminDashboard.tsx', '<React.Suspense fallback={<AdminTabLoading />}>');
+assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { UsersManager } from './UsersManager';");
+assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankManager } from './QuestionBankManager';");
+assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
+
+console.log('Performance contract passed: video, reports, and admin-heavy modules are lazy-loaded.');

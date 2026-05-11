@@ -23,24 +23,34 @@ import {
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
 import { Role } from '../../types';
-import { UsersManager } from './UsersManager';
-import { SchoolsManager } from './SchoolsManager';
-import { SchoolPortalManager } from './SchoolPortalManager';
-import { PathsManager } from './PathsManager';
-import { QuestionBankManager } from './QuestionBankManager';
-import { LessonsManager } from './LessonsManager';
-import { LibraryManager } from './LibraryManager';
-import { QuizzesManager } from './QuizzesManager';
-import { SkillsTreeManager } from './SkillsTreeManager';
-import { FinancialManager } from './FinancialManager';
-import { HomepageManager } from './HomepageManager';
-import { LiveSessionsManager } from './LiveSessionsManager';
-import { BackupManager } from './BackupManager';
-import { OperationsCommandCenter } from './OperationsCommandCenter';
-import { AiAssistantManager } from './AiAssistantManager';
-import { MockExamManager } from './MockExamManager';
-import { AnnouncementAdsManager } from './AnnouncementAdsManager';
 import { api } from '../../services/api';
+
+const lazyNamed = <TProps extends object>(
+    loader: () => Promise<Record<string, React.ComponentType<TProps>>>,
+    exportName: string,
+) =>
+    React.lazy(async () => {
+        const module = await loader();
+        return { default: module[exportName] };
+    });
+
+const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');
+const SchoolsManager = lazyNamed(() => import('./SchoolsManager'), 'SchoolsManager');
+const SchoolPortalManager = lazyNamed(() => import('./SchoolPortalManager'), 'SchoolPortalManager');
+const PathsManager = lazyNamed(() => import('./PathsManager'), 'PathsManager');
+const QuestionBankManager = lazyNamed(() => import('./QuestionBankManager'), 'QuestionBankManager');
+const LessonsManager = lazyNamed(() => import('./LessonsManager'), 'LessonsManager');
+const LibraryManager = lazyNamed<{ subjectId: string }>(() => import('./LibraryManager'), 'LibraryManager');
+const QuizzesManager = lazyNamed(() => import('./QuizzesManager'), 'QuizzesManager');
+const SkillsTreeManager = lazyNamed(() => import('./SkillsTreeManager'), 'SkillsTreeManager');
+const FinancialManager = lazyNamed(() => import('./FinancialManager'), 'FinancialManager');
+const HomepageManager = lazyNamed(() => import('./HomepageManager'), 'HomepageManager');
+const LiveSessionsManager = lazyNamed(() => import('./LiveSessionsManager'), 'LiveSessionsManager');
+const BackupManager = lazyNamed(() => import('./BackupManager'), 'BackupManager');
+const OperationsCommandCenter = lazyNamed(() => import('./OperationsCommandCenter'), 'OperationsCommandCenter');
+const AiAssistantManager = lazyNamed(() => import('./AiAssistantManager'), 'AiAssistantManager');
+const MockExamManager = lazyNamed(() => import('./MockExamManager'), 'MockExamManager');
+const AnnouncementAdsManager = lazyNamed(() => import('./AnnouncementAdsManager'), 'AnnouncementAdsManager');
 
 type ReviewQueueItem = {
     id: string;
@@ -106,6 +116,14 @@ type OperationalStatus = {
         clientUrl: string;
     };
 };
+
+const AdminTabLoading = () => (
+    <div className="rounded-3xl border border-gray-100 bg-white p-10 text-center shadow-sm">
+        <div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-2xl bg-indigo-50" />
+        <div className="text-sm font-black text-gray-700">جاري تجهيز القسم...</div>
+        <div className="mt-2 text-xs text-gray-400">يتم تحميل أدوات الإدارة المطلوبة فقط.</div>
+    </div>
+);
 
 export const AdminDashboard: React.FC = () => {
     const {
@@ -1444,7 +1462,9 @@ export const AdminDashboard: React.FC = () => {
 
     return (
         <DashboardLayout sidebar={renderSidebar()}>
-            {renderContent()}
+            <React.Suspense fallback={<AdminTabLoading />}>
+                {renderContent()}
+            </React.Suspense>
         </DashboardLayout>
     );
 };

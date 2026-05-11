@@ -157,3 +157,14 @@
 - Added guard: `npm run smoke:performance`.
 - Expected effect: normal student pages and result/learning pages avoid pulling ReactPlayer/HLS/DASH until a lesson preview or video modal is opened.
 - Remaining direct performance work: split admin/dashboard/report chunks, then run measured load tests before any 10k-user readiness claim.
+
+## Reports Export Performance Sprint - 2026-05-12
+- Closed the reports export split: `pages/Reports.tsx` now lazy-loads `xlsx` only when exporting Excel.
+- This keeps student/parent report browsing lighter while preserving the same export buttons and behavior.
+- `npm run smoke:performance` now verifies the reports page does not reintroduce a static spreadsheet import.
+
+## Admin Dashboard Performance Sprint - 2026-05-12
+- Closed the first admin split: `dashboards/admin/AdminDashboard.tsx` lazy-loads each heavy manager tab.
+- Production build result: the admin dashboard shell is now about 51 kB before gzip instead of loading the previous large admin bundle up front.
+- Important: this did not merge training/tests or change the student journey; it only changes when admin code downloads.
+- Guard: `npm run smoke:performance` checks that heavy admin managers are not statically reintroduced.

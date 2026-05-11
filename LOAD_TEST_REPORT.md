@@ -69,3 +69,28 @@ Remaining performance work before a 10k-user claim:
 - Continue splitting admin-only dashboards and spreadsheet/reporting code.
 - Measure real Vercel first-load and Render API timing after deployment.
 - Run k6/autocannon against staging or production with the backend on a non-free Render instance.
+
+## Reports Export Split - 2026-05-12
+
+Closed the first reports-specific performance pass:
+
+- `pages/Reports.tsx` no longer imports `xlsx` during normal report viewing.
+- Excel generation now loads the spreadsheet library only when the user clicks an export button.
+- `npm run smoke:performance` now guards both the video-player lazy-load contract and the reports Excel lazy-load contract.
+
+Expected effect:
+
+- Student and parent report pages keep the simple visual report experience without downloading the spreadsheet stack unless export is actually used.
+
+## Admin Dashboard Split - 2026-05-12
+
+Closed the first admin dashboard performance pass:
+
+- `dashboards/admin/AdminDashboard.tsx` now lazy-loads heavy tab managers only when their tab is opened.
+- The admin shell chunk dropped from roughly 868 kB to roughly 51 kB before gzip in the production build.
+- Individual admin areas now compile into separate chunks such as `PathsManager`, `LessonsManager`, `QuestionBankManager`, `SchoolsManager`, and `FinancialManager`.
+
+Expected effect:
+
+- Opening the admin dashboard no longer downloads every admin tool at once.
+- Teachers/supervisors/admins still get the same tabs and behavior, but inactive sections wait until selected.

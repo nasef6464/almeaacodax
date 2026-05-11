@@ -1,6 +1,5 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -11,6 +10,10 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
+
+type XlsxModule = typeof import('xlsx');
+
+const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');
 
 interface ScopedAnalyticsOverview {
     scope: {
@@ -717,9 +720,10 @@ const Reports: React.FC = () => {
                 : 'border-amber-100 bg-amber-50/70 text-amber-700',
         }));
     }, [scopedAnalytics?.weakestStudents]);
-    const downloadScopedSkillsWorkbook = () => {
+    const downloadScopedSkillsWorkbook = async () => {
         if (!scopedAnalytics?.weakestSkills?.length) return;
 
+        const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
             ['المهارة', 'المحور', 'نسبة الإتقان', 'طلاب متأثرون', 'محاولات', 'الإجراء المقترح', 'شرح / دعم', 'اختبار موجه'],
@@ -738,9 +742,10 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'skills-report');
         XLSX.writeFile(workbook, `skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
-    const downloadScopedStudentsWorkbook = () => {
+    const downloadScopedStudentsWorkbook = async () => {
         if (!scopedAnalytics?.weakestStudents?.length) return;
 
+        const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
             ['الطالب', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
@@ -757,9 +762,10 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
         XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
-    const downloadStudentSkillsWorkbook = () => {
+    const downloadStudentSkillsWorkbook = async () => {
         if (!aggregatedSkills.length) return;
 
+        const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
             ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'شرح مقترح', 'تدريب مقترح'],
@@ -782,9 +788,10 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'my-skills');
         XLSX.writeFile(workbook, `my-skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
-    const downloadStudentAttemptsWorkbook = () => {
+    const downloadStudentAttemptsWorkbook = async () => {
         if (!examResults.length) return;
 
+        const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
             ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ', 'أضعف مهارة'],
@@ -808,7 +815,8 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'my-attempts');
         XLSX.writeFile(workbook, `my-attempts-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
-    const downloadPerformanceWorkbook = () => {
+    const downloadPerformanceWorkbook = async () => {
+        const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const now = new Date().toLocaleString('ar-SA');
         const summaryRows = isStudentView
