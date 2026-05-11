@@ -55,3 +55,17 @@ The platform should not be described as ready for 10k concurrent users until all
 - p95 response time stays acceptable under staged tests: 100, 500, 1000, then higher traffic.
 - Bulk notifications and heavy admin work run through a queue instead of normal web requests.
 - Frontend chunks are reviewed and admin-only/video-heavy code is not pulled into the first student load.
+
+## Frontend First-Load Split - 2026-05-12
+
+Closed the first code-level performance pass for video-heavy pages:
+
+- `VideoModal`, `CoursePlayer`, and `CourseLanding` now lazy-load `CustomVideoPlayer` only when a video is actually opened or rendered.
+- This prevents pages that merely import video-capable components from eagerly pulling the `react-player`, HLS, and DASH player stack into the first student route.
+- Added `npm run smoke:performance` to guard this contract.
+
+Remaining performance work before a 10k-user claim:
+
+- Continue splitting admin-only dashboards and spreadsheet/reporting code.
+- Measure real Vercel first-load and Render API timing after deployment.
+- Run k6/autocannon against staging or production with the backend on a non-free Render instance.

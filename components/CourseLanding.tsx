@@ -9,8 +9,11 @@ import {
 } from 'lucide-react';
 import { PaymentModal } from './PaymentModal';
 import { motion, AnimatePresence } from 'motion/react';
-import { CustomVideoPlayer } from './CustomVideoPlayer';
 import { useStore } from '../store/useStore';
+
+const CustomVideoPlayer = React.lazy(() =>
+    import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
+);
 
 interface CourseLandingProps {
     course: Course;
@@ -258,10 +261,18 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                             >
                                 <X size={24} />
                             </button>
-                            <CustomVideoPlayer 
-                                url={course.previewVideoUrl || 'https://www.youtube.com/watch?v=M5QGkOGZubQ'} 
-                                title={course.title}
-                            />
+                            <React.Suspense
+                                fallback={
+                                    <div className="flex h-full w-full items-center justify-center bg-black text-sm font-bold text-white">
+                                        جاري تجهيز المشغل...
+                                    </div>
+                                }
+                            >
+                                <CustomVideoPlayer 
+                                    url={course.previewVideoUrl || 'https://www.youtube.com/watch?v=M5QGkOGZubQ'} 
+                                    title={course.title}
+                                />
+                            </React.Suspense>
                         </motion.div>
                     </motion.div>
                 )}

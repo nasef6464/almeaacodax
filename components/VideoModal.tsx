@@ -1,7 +1,10 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { CustomVideoPlayer } from './CustomVideoPlayer';
 import { InteractiveQuestion, Question } from '../types';
+
+const CustomVideoPlayer = React.lazy(() =>
+    import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
+);
 
 interface VideoModalProps {
     videoUrl: string;
@@ -32,7 +35,15 @@ export const VideoModal: React.FC<VideoModalProps> = ({ videoUrl, title, interac
 
                 <div className="relative w-full pt-[56.25%] bg-black">
                     <div className="absolute top-0 left-0 w-full h-full">
-                        <CustomVideoPlayer url={videoUrl} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} />
+                        <React.Suspense
+                            fallback={
+                                <div className="flex h-full w-full items-center justify-center bg-black text-sm font-bold text-white">
+                                    جاري تجهيز المشغل...
+                                </div>
+                            }
+                        >
+                            <CustomVideoPlayer url={videoUrl} title={title} interactiveQuestions={interactiveQuestions} questionBank={questionBank} />
+                        </React.Suspense>
                     </div>
                 </div>
 

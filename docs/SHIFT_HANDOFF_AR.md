@@ -150,3 +150,10 @@
 - Added a guard to `npm run smoke:payment-package` so the package landing page keeps the colored package-tone contract and visible subscribe call-to-action.
 - Updated `LOAD_TEST_REPORT.md` with the immediate causes of Vercel slowness: large frontend chunks, Render cold start on the free instance, and missing measured load-test gates for 10k+ users.
 - Next direct work: performance hardening in code, starting with chunk splitting and first-load cleanup, then measured k6/autocannon load tests before claiming large-scale readiness.
+
+## Frontend First-Load Performance Sprint - 2026-05-12
+- Closed the first performance pass: student-facing video entrypoints now lazy-load `CustomVideoPlayer` instead of importing the heavy video stack immediately.
+- Touched entrypoints: `VideoModal`, `CoursePlayer`, and `CourseLanding`.
+- Added guard: `npm run smoke:performance`.
+- Expected effect: normal student pages and result/learning pages avoid pulling ReactPlayer/HLS/DASH until a lesson preview or video modal is opened.
+- Remaining direct performance work: split admin/dashboard/report chunks, then run measured load tests before any 10k-user readiness claim.
