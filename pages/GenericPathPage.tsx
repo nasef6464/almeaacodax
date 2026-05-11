@@ -387,6 +387,52 @@ export const GenericPathPage: React.FC = () => {
             accessContext: getPackageStudentAccessNote(pkg, contentTypes),
         };
     };
+    const getPackageKindLabel = (contentTypes: string[]) =>
+        contentTypes.includes('all')
+            ? 'باقة شاملة'
+            : contentTypes.map((type) => packageContentLabels[type]?.label || type).join(' + ');
+    const getPackageTone = (contentTypes: string[]) => {
+        const primaryType = contentTypes.includes('all') ? 'all' : contentTypes[0] || 'courses';
+        const tones: Record<string, { header: string; badge: string; panel: string; action: string }> = {
+            all: {
+                header: 'bg-gradient-to-br from-indigo-600 to-violet-600',
+                badge: 'bg-white/20 text-white',
+                panel: 'border-indigo-100 bg-indigo-50',
+                action: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100',
+            },
+            foundation: {
+                header: 'bg-gradient-to-br from-blue-600 to-indigo-600',
+                badge: 'bg-white/20 text-white',
+                panel: 'border-blue-100 bg-blue-50',
+                action: 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-100',
+            },
+            banks: {
+                header: 'bg-gradient-to-br from-emerald-600 to-teal-600',
+                badge: 'bg-white/20 text-white',
+                panel: 'border-emerald-100 bg-emerald-50',
+                action: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100',
+            },
+            tests: {
+                header: 'bg-gradient-to-br from-amber-500 to-orange-500',
+                badge: 'bg-white/25 text-white',
+                panel: 'border-amber-100 bg-amber-50',
+                action: 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-100',
+            },
+            library: {
+                header: 'bg-gradient-to-br from-slate-700 to-slate-900',
+                badge: 'bg-white/20 text-white',
+                panel: 'border-slate-100 bg-slate-50',
+                action: 'bg-slate-900 text-white hover:bg-black shadow-slate-100',
+            },
+            courses: {
+                header: 'bg-gradient-to-br from-sky-600 to-blue-600',
+                badge: 'bg-white/20 text-white',
+                panel: 'border-sky-100 bg-sky-50',
+                action: 'bg-sky-600 text-white hover:bg-sky-700 shadow-sky-100',
+            },
+        };
+        return tones[primaryType] || tones.courses;
+    };
     const getSuggestedPackageForSubject = (subjectId: string, wantedTypes: readonly string[]) => {
         return pathPackages
             .filter((pkg) => canSeeHiddenPaths || isPublicPackageVisible(pkg))
@@ -610,27 +656,26 @@ export const GenericPathPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {pathPackages.map(pkg => {
                             const contentTypes = resolvePackageContentTypes(pkg);
+                            const tone = getPackageTone(contentTypes);
                             const packageIsActive = isPackageActiveForCurrentUser(pkg);
                             const packageSubjectId = pkg.subjectId || pkg.subject;
                             const packageAccessNote = getPackageStudentAccessNote(pkg, contentTypes);
-                            const scopeLabel = contentTypes.includes('all')
-                                ? 'باقة شاملة'
-                                : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
+                            const scopeLabel = getPackageKindLabel(contentTypes);
 
                             return (
-                                <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all cursor-pointer flex flex-col">
-                                    <div className="bg-amber-500 text-white p-5 sm:p-6 text-center">
+                                <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-indigo-400 hover:shadow-xl transition-all cursor-pointer flex flex-col">
+                                    <div className={`${tone.header} text-white p-5 sm:p-6 text-center`}>
                                         <h3 className="text-xl sm:text-2xl font-black mb-2 leading-tight break-words">{pkg.title}</h3>
                                         <div className="text-2xl sm:text-3xl font-bold">{pkg.price} {pkg.currency}</div>
                                         <div className="mt-3 flex flex-wrap justify-center gap-2">
-                                            <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-black text-white">{scopeLabel}</span>
+                                            <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${tone.badge}`}>{scopeLabel}</span>
                                             {packageIsActive ? (
                                                 <span className="inline-flex rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-black text-white">مفعلة لديك</span>
                                             ) : null}
                                         </div>
                                     </div>
                                     <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                                        <p className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-600">
+                                        <p className={`mb-4 rounded-2xl border px-4 py-3 text-sm leading-7 text-slate-700 ${tone.panel}`}>
                                             {packageIsActive
                                                 ? 'هذه الباقة مفعلة لديك ويمكنك فتح محتواها مباشرة.'
                                                 : packageAccessNote}
@@ -652,7 +697,7 @@ export const GenericPathPage: React.FC = () => {
                                                 }
                                                 navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
                                             }}
-                                            className="mb-3 w-full rounded-xl border border-amber-200 bg-amber-50 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                            className="mb-3 w-full rounded-xl border border-slate-200 bg-white py-3 text-sm font-black text-slate-700 transition-colors hover:bg-slate-50"
                                         >
                                             معاينة الباقة
                                         </button>
@@ -678,8 +723,8 @@ export const GenericPathPage: React.FC = () => {
                                                 }
                                                 navigate(`/course/${pkg.id}`);
                                             }}
-                                            className={`w-full rounded-xl py-3 font-bold transition-colors ${
-                                                packageIsActive ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-900 text-white hover:bg-black'
+                                            className={`w-full rounded-xl py-3 font-bold transition-all ${
+                                                packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`
                                             }`}
                                         >
                                             {packageIsActive ? 'افتح محتوى الباقة' : 'اشترك الآن'}
@@ -702,13 +747,12 @@ export const GenericPathPage: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {pathPackages.map(pkg => {
                         const contentTypes = resolvePackageContentTypes(pkg);
+                        const tone = getPackageTone(contentTypes);
                         const packageCoverage = getPackageCoverage(pkg, contentTypes);
                         const packageIsActive = isPackageActiveForCurrentUser(pkg);
                         const packageSubjectId = pkg.subjectId || pkg.subject;
                         const packageAccessNote = getPackageStudentAccessNote(pkg, contentTypes);
-                        const scopeLabel = contentTypes.includes('all')
-                            ? 'باقة شاملة'
-                            : `تشمل: ${contentTypes.map((type) => packageContentLabels[type]?.label).filter(Boolean).join(' + ')}`;
+                        const scopeLabel = getPackageKindLabel(contentTypes);
 
                         const paymentPackage = {
                             ...pkg,
@@ -723,12 +767,12 @@ export const GenericPathPage: React.FC = () => {
                         };
 
                         return (
-                         <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all cursor-pointer flex flex-col">
-                             <div className="bg-amber-500 text-white p-5 sm:p-6 text-center">
+                         <Card key={pkg.id} className="overflow-hidden border-2 border-transparent hover:border-indigo-400 hover:shadow-xl transition-all cursor-pointer flex flex-col">
+                             <div className={`${tone.header} text-white p-5 sm:p-6 text-center`}>
                                  <h3 className="text-xl sm:text-2xl font-black mb-2 leading-tight break-words">{pkg.title}</h3>
                                  <div className="text-2xl sm:text-3xl font-bold">{pkg.price} {pkg.currency}</div>
                                  <div className="mt-3 flex flex-wrap justify-center gap-2">
-                                     <span className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-black text-white">{scopeLabel}</span>
+                                     <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${tone.badge}`}>{scopeLabel}</span>
                                      {packageIsActive ? (
                                          <span className="inline-flex rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-black text-white">مفعلة لديك</span>
                                      ) : null}
@@ -738,10 +782,10 @@ export const GenericPathPage: React.FC = () => {
                                  </div>
                              </div>
                               <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                                  <div className={`mb-5 rounded-2xl border px-4 py-3 text-xs font-bold leading-6 ${
-                                      packageIsActive
+                                 <div className={`mb-5 rounded-2xl border px-4 py-3 text-xs font-bold leading-6 ${
+                                     packageIsActive
                                           ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                                          : 'border-slate-100 bg-slate-50 text-slate-600'
+                                          : `${tone.panel} text-slate-700`
                                   }`}>
                                       {packageIsActive
                                           ? 'الوصول مفعل لهذا الحساب. يمكنك فتح محتوى الباقة مباشرة.'
@@ -788,7 +832,7 @@ export const GenericPathPage: React.FC = () => {
                                          }
                                          navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
                                      }}
-                                     className="mb-3 w-full rounded-xl border border-amber-200 bg-amber-50 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                     className="mb-3 w-full rounded-xl border border-slate-200 bg-white py-3 text-sm font-black text-slate-700 transition-colors hover:bg-slate-50"
                                  >
                                      معاينة الباقة
                                  </button>
@@ -804,8 +848,8 @@ export const GenericPathPage: React.FC = () => {
                                          }
                                          navigate(`/course/${pkg.id}`);
                                      }}
-                                     className={`w-full rounded-xl py-3 font-bold transition-colors ${
-                                         packageIsActive ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-900 text-white hover:bg-black'
+                                     className={`w-full rounded-xl py-3 font-bold transition-all ${
+                                         packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`
                                      }`}
                                  >
                                      {packageIsActive ? 'افتح محتوى الباقة' : 'اشترك الآن'}

@@ -112,6 +112,12 @@ check('locked learning sections can offer multiple matching public packages', ()
 check('path package tab includes global memberships without path binding', () => {
   assertIncludes(pathPageSource, 'const packagePathId = c.pathId || c.category;');
   assertIncludes(pathPageSource, 'return !packagePathId || packagePathId === path.id;');
+  assertIncludes(pathPageSource, 'const getPackageKindLabel = (contentTypes: string[])');
+  assertIncludes(pathPageSource, 'const getPackageTone = (contentTypes: string[])');
+  assertIncludes(pathPageSource, 'getPackageKindLabel(contentTypes)');
+  assertIncludes(pathPageSource, 'motion-safe:animate-pulse');
+  assertIncludes(pathPageSource, '${tone.header} text-white');
+  assertIncludes(pathPageSource, '${tone.action} shadow-lg');
 });
 
 check('admin can create global memberships that unlock the whole platform', () => {

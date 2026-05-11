@@ -143,3 +143,10 @@
 - Guard extended in `npm run smoke:payment-package` for the intro step, copy, and wider layout.
 - Verified: `npm run smoke:payment-package`, `npm run typecheck`, `npm run build`, `npm --prefix server run build`, and local browser load with zero console errors.
 - Next direct work: polish the package landing page and package cards so the student can compare foundation-only, tests-only, subject/path, and membership packages with the same simple style.
+
+## Student Package Landing Sprint - 2026-05-12
+- Closed the package-card polish pass: package cards now use clear visual tones by package scope/content type, with a stronger subscribe action for students and the same locked/payment flow underneath.
+- The UI remains simple for students: package type, price, activation state, package preview, and subscribe/open action. Dense payment and coverage details stay on admin screens.
+- Added a guard to `npm run smoke:payment-package` so the package landing page keeps the colored package-tone contract and visible subscribe call-to-action.
+- Updated `LOAD_TEST_REPORT.md` with the immediate causes of Vercel slowness: large frontend chunks, Render cold start on the free instance, and missing measured load-test gates for 10k+ users.
+- Next direct work: performance hardening in code, starting with chunk splitting and first-load cleanup, then measured k6/autocannon load tests before claiming large-scale readiness.
