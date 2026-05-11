@@ -136,3 +136,10 @@
 - Guard extended in `npm run smoke:payment-package` to verify the wider multi-package modal contract.
 - Verified: `npm run smoke:payment-package`, `npm run typecheck`, `npm run build`, `npm --prefix server run build`, and local browser load of the learning page with zero console errors.
 - Next direct work: a smaller pre-payment message step ("this part is paid / view suitable packages") before showing payment methods, while keeping dense package/payment details in admin screens only.
+
+## Student Paid-Content Intro Sprint - 2026-05-11
+- Added a lightweight first step inside `PaymentModal`: students now see a short paid-content message, the selected item/package price, suitable package choices, and one clear button to continue to payment methods.
+- Payment methods, discount codes, access codes, and review evidence still run through the same hardened request flow; this is UX simplification only, not a new unlock path.
+- Guard extended in `npm run smoke:payment-package` for the intro step, copy, and wider layout.
+- Verified: `npm run smoke:payment-package`, `npm run typecheck`, `npm run build`, `npm --prefix server run build`, and local browser load with zero console errors.
+- Next direct work: polish the package landing page and package cards so the student can compare foundation-only, tests-only, subject/path, and membership packages with the same simple style.

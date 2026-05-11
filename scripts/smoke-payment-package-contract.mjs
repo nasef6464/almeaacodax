@@ -101,7 +101,10 @@ check('locked learning sections can offer multiple matching public packages', ()
   assertIncludes(learningSectionSource, 'packageOptions: matchedPackage');
   assertIncludes(paymentModalSource, 'packageOptions.length > 1');
   assertIncludes(paymentModalSource, 'const hasPackageChoices = packageOptions.length > 1;');
-  assertIncludes(paymentModalSource, "hasPackageChoices && step === 'method' ? 'max-w-4xl' : 'max-w-xl'");
+  assertIncludes(paymentModalSource, "hasPackageChoices && (step === 'intro' || step === 'method') ? 'max-w-4xl' : 'max-w-xl'");
+  assertIncludes(paymentModalSource, "useState<'intro' | 'method' | 'details' | 'success'>('intro')");
+  assertIncludes(paymentModalSource, 'عرض طرق الدفع والتفعيل');
+  assertIncludes(paymentModalSource, 'هذا الجزء يحتاج باقة');
   assertIncludes(paymentModalSource, 'sm:grid-cols-2 lg:grid-cols-3');
   assertIncludes(paymentModalSource, 'min-h-[108px]');
 });

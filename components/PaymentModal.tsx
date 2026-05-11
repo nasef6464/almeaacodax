@@ -78,7 +78,7 @@ const packageContentLabels: Record<string, string> = {
 };
 
 export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, item, type = 'course' }) => {
-    const [step, setStep] = useState<'method' | 'details' | 'success'>('method');
+    const [step, setStep] = useState<'intro' | 'method' | 'details' | 'success'>('intro');
     const [method, setMethod] = useState<PaymentMethodKey | null>(null);
     const [loading, setLoading] = useState(false);
     const [settingsLoading, setSettingsLoading] = useState(false);
@@ -111,7 +111,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     useEffect(() => {
         if (!isOpen) return;
-        setStep('method');
+        setStep('intro');
         setMethod(null);
         setLoading(false);
         setAccessCode('');
@@ -363,6 +363,79 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         </button>
     );
 
+    const renderPackageChoices = (compact = false) => (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-right">
+            <div className="mb-3 text-sm font-black text-gray-900">اختر الباقة المناسبة</div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {packageOptions.map((option) => {
+                    const isSelected = option.id === (selectedPackageId || packageOptions[0]?.id);
+                    const contentTypes = option.contentTypes?.length ? option.contentTypes : option.packageContentTypes || [];
+                    const label = contentTypes.includes('all')
+                        ? 'شاملة'
+                        : contentTypes.map((contentType) => packageContentLabels[contentType] || contentType).join(' + ');
+
+                    return (
+                        <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setSelectedPackageId(option.id)}
+                            className={`${compact ? 'min-h-[92px]' : 'min-h-[108px]'} rounded-2xl border px-4 py-3 text-right transition-all ${
+                                isSelected
+                                    ? 'border-indigo-500 bg-white shadow-sm ring-2 ring-indigo-100'
+                                    : 'border-white bg-white/70 hover:border-indigo-200 hover:bg-white'
+                            }`}
+                        >
+                            <div className="flex items-center justify-between gap-3">
+                                <span className="text-sm font-black text-gray-900">{option.title}</span>
+                                <span className="rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-700">{label}</span>
+                            </div>
+                            <div className="mt-2 text-xs font-bold text-gray-500">{option.price || 0} {option.currency || getCurrency()}</div>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+
+    const renderIntro = () => (
+        <div className="space-y-4 animate-fade-in text-right">
+            <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div className="text-xs font-black text-amber-700">محتوى مدفوع</div>
+                        <h3 className="mt-2 text-2xl font-black text-gray-900">{getItemName()}</h3>
+                        <p className="mt-2 text-sm font-bold leading-6 text-gray-600">
+                            هذا الجزء يحتاج باقة. اختر الباقة المناسبة أو فعّل كودك إن كان لديك كود.
+                        </p>
+                    </div>
+                    <div className="rounded-2xl bg-white px-5 py-4 text-center shadow-sm">
+                        <div className="text-xs font-bold text-gray-500">السعر المختار</div>
+                        <div className="mt-1 text-xl font-black text-indigo-600">{getPrice()} {getCurrency()}</div>
+                    </div>
+                </div>
+            </div>
+
+            {hasPackageChoices ? renderPackageChoices(true) : null}
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                    type="button"
+                    onClick={() => setStep('method')}
+                    className="flex-1 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
+                >
+                    عرض طرق الدفع والتفعيل
+                </button>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="rounded-2xl border border-gray-200 px-5 py-3 text-sm font-black text-gray-600 transition-all hover:bg-gray-50"
+                >
+                    ليس الآن
+                </button>
+            </div>
+        </div>
+    );
+
     const renderMethodSelector = () => (
         <div className="space-y-4 animate-fade-in">
             <h3 className="text-xl font-black text-gray-800 mb-6 text-right">{getTitle()}</h3>
@@ -397,39 +470,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 ) : null}
             </div>
 
-            {hasPackageChoices ? (
-                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-right">
-                    <div className="mb-3 text-sm font-black text-gray-900">اختر الباقة المناسبة</div>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {packageOptions.map((option) => {
-                            const isSelected = option.id === (selectedPackageId || packageOptions[0]?.id);
-                            const contentTypes = option.contentTypes?.length ? option.contentTypes : option.packageContentTypes || [];
-                            const label = contentTypes.includes('all')
-                                ? 'شاملة'
-                                : contentTypes.map((contentType) => packageContentLabels[contentType] || contentType).join(' + ');
-
-                            return (
-                                <button
-                                    key={option.id}
-                                    type="button"
-                                    onClick={() => setSelectedPackageId(option.id)}
-                                    className={`min-h-[108px] rounded-2xl border px-4 py-3 text-right transition-all ${
-                                        isSelected
-                                            ? 'border-indigo-500 bg-white shadow-sm ring-2 ring-indigo-100'
-                                            : 'border-white bg-white/70 hover:border-indigo-200 hover:bg-white'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between gap-3">
-                                        <span className="text-sm font-black text-gray-900">{option.title}</span>
-                                        <span className="rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-700">{label}</span>
-                                    </div>
-                                    <div className="mt-2 text-xs font-bold text-gray-500">{option.price || 0} {option.currency || getCurrency()}</div>
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-            ) : null}
+            {hasPackageChoices ? renderPackageChoices() : null}
 
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
                 <div>
@@ -588,11 +629,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
-            <div className={`bg-white w-full ${hasPackageChoices && step === 'method' ? 'max-w-4xl' : 'max-w-xl'} max-h-[92vh] overflow-y-auto rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl relative animate-scale-up`}>
+            <div className={`bg-white w-full ${hasPackageChoices && (step === 'intro' || step === 'method') ? 'max-w-4xl' : 'max-w-xl'} max-h-[92vh] overflow-y-auto rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl relative animate-scale-up`}>
                 <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10" aria-label="إغلاق">
                     <X size={20} />
                 </button>
                 <div className="p-5 sm:p-8 md:p-12">
+                    {step === 'intro' && renderIntro()}
                     {step === 'method' && renderMethodSelector()}
                     {step === 'details' && renderDetails()}
                     {step === 'success' && renderSuccess()}
