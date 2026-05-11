@@ -22,6 +22,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Admins can now create a global membership package from path package management. It is saved as `packageType=membership`, scoped to all content types, appears as a platform-wide purchase option, and unlocks content through the existing scoped package-access rules after approval.
 - Manual payment requests now require review evidence before approval can unlock access. The server rejects approval without a transfer reference, wallet number, receipt, card note, or explicit admin evidence, and the admin UI disables risky approvals.
 - Added a verified payment webhook foundation at `POST /api/payments/webhooks/payment`: it requires an HMAC signature, rejects mismatched amount/currency, stores gateway event/transaction data, prevents duplicate approval, and unlocks access only after the trusted gateway event is accepted.
+- Polished the locked-content package choice flow: when several packages can unlock the same item, the student sees a wider comparison-style package picker instead of a cramped vertical list.
 
 ## Still Required Before Large Launch
 

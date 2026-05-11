@@ -129,3 +129,10 @@
 - Manual approval and gateway approval now share the same server-side purchase application helper and discount-redemption reservation path.
 - Guard extended in `npm run smoke:payment-package`.
 - Next direct work: polish the student locked-content package UX into a lighter "this is paid / view suitable packages" step, then connect the webhook contract to the chosen live payment provider.
+
+## Student Package Choice UX Sprint - 2026-05-11
+- Closed the first visual polish pass for locked paid content: when more than one suitable package is available, `PaymentModal` expands to a wider comparison layout and shows package choices in up to three columns.
+- This keeps the student flow simple: locked content still opens the same secure payment/request path, but the available packages are easier to compare instead of appearing as a narrow vertical stack.
+- Guard extended in `npm run smoke:payment-package` to verify the wider multi-package modal contract.
+- Verified: `npm run smoke:payment-package`, `npm run typecheck`, `npm run build`, `npm --prefix server run build`, and local browser load of the learning page with zero console errors.
+- Next direct work: a smaller pre-payment message step ("this part is paid / view suitable packages") before showing payment methods, while keeping dense package/payment details in admin screens only.

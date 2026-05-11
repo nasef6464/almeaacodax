@@ -250,6 +250,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 : 'عنصر منفرد';
     const audienceLabel = shouldPurchaseAsPackage ? 'عرض شراء فردي' : 'تفعيل مباشر لهذا العنصر';
     const accessContext = typeof purchaseItem?.accessContext === 'string' ? purchaseItem.accessContext : '';
+    const hasPackageChoices = packageOptions.length > 1;
 
     const buildPaymentRequestPayload = () => {
         const packageId = purchaseItem.packageId || (shouldPurchaseAsPackage ? purchaseItem.id : undefined);
@@ -396,10 +397,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 ) : null}
             </div>
 
-            {packageOptions.length > 1 ? (
+            {hasPackageChoices ? (
                 <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-right">
                     <div className="mb-3 text-sm font-black text-gray-900">اختر الباقة المناسبة</div>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         {packageOptions.map((option) => {
                             const isSelected = option.id === (selectedPackageId || packageOptions[0]?.id);
                             const contentTypes = option.contentTypes?.length ? option.contentTypes : option.packageContentTypes || [];
@@ -412,10 +413,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                                     key={option.id}
                                     type="button"
                                     onClick={() => setSelectedPackageId(option.id)}
-                                    className={`rounded-2xl border px-4 py-3 text-right transition-all ${
+                                    className={`min-h-[108px] rounded-2xl border px-4 py-3 text-right transition-all ${
                                         isSelected
                                             ? 'border-indigo-500 bg-white shadow-sm ring-2 ring-indigo-100'
-                                            : 'border-white bg-white/70 hover:border-indigo-200'
+                                            : 'border-white bg-white/70 hover:border-indigo-200 hover:bg-white'
                                     }`}
                                 >
                                     <div className="flex items-center justify-between gap-3">
@@ -587,7 +588,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
-            <div className="bg-white w-full max-w-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-scale-up">
+            <div className={`bg-white w-full ${hasPackageChoices && step === 'method' ? 'max-w-4xl' : 'max-w-xl'} max-h-[92vh] overflow-y-auto rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl relative animate-scale-up`}>
                 <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10" aria-label="إغلاق">
                     <X size={20} />
                 </button>

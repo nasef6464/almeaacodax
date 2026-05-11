@@ -100,6 +100,10 @@ check('locked learning sections can offer multiple matching public packages', ()
   assertIncludes(learningSectionSource, 'publicPackageOptions.slice(0, 8).map');
   assertIncludes(learningSectionSource, 'packageOptions: matchedPackage');
   assertIncludes(paymentModalSource, 'packageOptions.length > 1');
+  assertIncludes(paymentModalSource, 'const hasPackageChoices = packageOptions.length > 1;');
+  assertIncludes(paymentModalSource, "hasPackageChoices && step === 'method' ? 'max-w-4xl' : 'max-w-xl'");
+  assertIncludes(paymentModalSource, 'sm:grid-cols-2 lg:grid-cols-3');
+  assertIncludes(paymentModalSource, 'min-h-[108px]');
 });
 
 check('path package tab includes global memberships without path binding', () => {
