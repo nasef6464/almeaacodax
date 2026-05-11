@@ -21,6 +21,8 @@ const paymentSettingsSchema = new Schema(
     key: { type: String, required: true, unique: true, default: "default" },
     currency: { type: String, default: "SAR" },
     manualReviewRequired: { type: Boolean, default: true },
+    webhookEnabled: { type: Boolean, default: false },
+    webhookSecret: { type: String, default: "" },
     card: { type: paymentMethodSettingsSchema, default: () => ({ enabled: false, label: "بطاقة بنكية" }) },
     transfer: { type: paymentMethodSettingsSchema, default: () => ({ enabled: true, label: "تحويل بنكي" }) },
     wallet: { type: paymentMethodSettingsSchema, default: () => ({ enabled: true, label: "محفظة إلكترونية" }) },

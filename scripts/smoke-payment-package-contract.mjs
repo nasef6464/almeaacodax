@@ -62,6 +62,26 @@ check('manual payment approval requires review evidence before unlocking access'
   assertIncludes(financialManagerSource, "const canApprove = request.status === 'pending' && riskNotes.length === 0;");
 });
 
+check('verified payment webhook can approve requests without trusting the browser', () => {
+  assertIncludes(typesSource, 'webhookEnabled?: boolean;');
+  assertIncludes(typesSource, 'gatewayEventId?: string;');
+  assertIncludes(paymentModelSource, 'gatewayEventId: { type: String, default: "" }');
+  assertIncludes(paymentModelSource, 'gatewayTransactionId: { type: String, default: "" }');
+  assertIncludes(paymentRoutesSource, 'paymentWebhookSchema');
+  assertIncludes(paymentRoutesSource, '"/webhooks/payment"');
+  assertIncludes(paymentRoutesSource, 'x-payment-signature');
+  assertIncludes(paymentRoutesSource, 'crypto.timingSafeEqual');
+  assertIncludes(paymentRoutesSource, 'PAYMENT_WEBHOOK_SECRET');
+  assertIncludes(paymentRoutesSource, 'requestDoc.gatewayEventId === payload.eventId');
+  assertIncludes(paymentRoutesSource, 'duplicateGatewayEvent');
+  assertIncludes(paymentRoutesSource, 'Payment gateway event was already used');
+  assertIncludes(paymentRoutesSource, 'Payment request is not pending');
+  assertIncludes(paymentRoutesSource, 'Payment currency mismatch');
+  assertIncludes(paymentRoutesSource, 'Paid amount is lower than request amount');
+  assertIncludes(paymentRoutesSource, 'reviewedBy: `webhook:${payload.provider}`');
+  assertIncludes(paymentRoutesSource, 'payment.webhook.approved');
+});
+
 check('discount codes are admin-managed and included in backups', () => {
   assertIncludes(discountModelSource, 'DiscountCodeModel');
   assertIncludes(paymentRoutesSource, '"/discount-codes"');

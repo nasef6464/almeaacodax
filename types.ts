@@ -463,6 +463,8 @@ export interface PaymentSettings {
     key: string;
     currency: string;
     manualReviewRequired: boolean;
+    webhookEnabled?: boolean;
+    webhookSecret?: string;
     card: PaymentMethodSettings;
     transfer: PaymentMethodSettings;
     wallet: PaymentMethodSettings;
@@ -494,6 +496,10 @@ export interface PaymentRequest {
     discountCode?: string;
     notes?: string;
     approvalEvidence?: string;
+    gatewayProvider?: string;
+    gatewayTransactionId?: string;
+    gatewayEventId?: string;
+    gatewayPaidAt?: number | null;
     reviewedBy?: string;
     reviewedAt?: number | null;
     reviewerNotes?: string;

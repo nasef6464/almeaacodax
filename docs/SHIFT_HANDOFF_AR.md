@@ -121,3 +121,11 @@
 - Approved requests store `approvalEvidence` for audit and future handoff.
 - Guard extended in `npm run smoke:payment-package` so direct access cannot be unlocked from a weak payment approval path.
 - Next direct work: payment gateway/webhook integration, then final student-facing package selection polish.
+
+## Verified Payment Webhook Sprint - 2026-05-11
+- Closed the first gateway-safe payment pass: `POST /api/payments/webhooks/payment` now accepts signed payment events only.
+- The webhook requires `x-payment-signature` HMAC verification using `PAYMENT_WEBHOOK_SECRET` or the admin payment setting secret.
+- The server rejects mismatched currency/amount, stores gateway event and transaction ids, treats repeated events as idempotent duplicates, and unlocks content only after the trusted paid event is accepted.
+- Manual approval and gateway approval now share the same server-side purchase application helper and discount-redemption reservation path.
+- Guard extended in `npm run smoke:payment-package`.
+- Next direct work: polish the student locked-content package UX into a lighter "this is paid / view suitable packages" step, then connect the webhook contract to the chosen live payment provider.

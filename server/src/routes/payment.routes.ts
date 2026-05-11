@@ -1,4 +1,5 @@
 ﻿import { Router } from "express";
+import crypto from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { z } from "zod";
@@ -28,6 +29,8 @@ const paymentMethodSettingsSchema = z.object({
 const paymentSettingsUpdateSchema = z.object({
   currency: z.string().optional(),
   manualReviewRequired: z.boolean().optional(),
+  webhookEnabled: z.boolean().optional(),
+  webhookSecret: z.string().max(240).optional(),
   card: paymentMethodSettingsSchema.optional(),
   transfer: paymentMethodSettingsSchema.optional(),
   wallet: paymentMethodSettingsSchema.optional(),
@@ -54,6 +57,17 @@ const paymentRequestReviewSchema = z.object({
   status: z.enum(["approved", "rejected", "cancelled"]),
   reviewerNotes: z.string().optional(),
   approvalEvidence: z.string().max(500).optional(),
+});
+
+const paymentWebhookSchema = z.object({
+  provider: z.string().min(1).max(40).default("gateway"),
+  eventId: z.string().min(1).max(160),
+  paymentRequestId: z.string().min(1).max(160),
+  status: z.enum(["paid", "failed", "cancelled"]),
+  paidAmount: z.number().min(0).optional(),
+  currency: z.string().max(10).optional(),
+  transactionId: z.string().max(180).optional(),
+  occurredAt: z.number().optional(),
 });
 
 const discountCodePayloadSchema = z.object({
@@ -83,6 +97,8 @@ const discountCodePreviewSchema = z.object({
 const defaultSettings = {
   currency: "SAR",
   manualReviewRequired: true,
+  webhookEnabled: false,
+  webhookSecret: "",
   card: {
     enabled: false,
     label: "بطاقة بنكية",
@@ -137,6 +153,9 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   notes: settings.notes || "",
 });
 
+const getPaymentWebhookSecret = (settings: any) =>
+  String(process.env.PAYMENT_WEBHOOK_SECRET || settings.webhookSecret || "").trim();
+
 const getOrCreateSettings = async () => {
   let settings = await PaymentSettingsModel.findOne({ key: "default" });
   if (!settings) {
@@ -180,6 +199,20 @@ const buildPaymentEvidenceSummary = (request: {
   request.receiptUrl ? `receipt:${request.receiptUrl}` : "",
   approvalEvidence ? `admin:${approvalEvidence}` : "",
 ].filter(Boolean).join(" | ");
+
+const verifyPaymentWebhookSignature = (secret: string, payload: unknown, signature?: string | string[]) => {
+  const provided = String(Array.isArray(signature) ? signature[0] : signature || "").replace(/^sha256=/, "").trim();
+  if (!secret || !provided) return false;
+
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(JSON.stringify(payload))
+    .digest("hex");
+  const expectedBuffer = Buffer.from(expected);
+  const providedBuffer = Buffer.from(provided);
+
+  return expectedBuffer.length === providedBuffer.length && crypto.timingSafeEqual(expectedBuffer, providedBuffer);
+};
 
 const userAlreadyOwnsPurchase = (
   user: any,
@@ -247,6 +280,52 @@ const calculateDiscountAmount = (discountCode: any, amount: number) => {
     return Math.min(amount, Math.max(0, discountCode.value));
   }
   return Math.min(amount, Math.round((amount * Math.min(Math.max(discountCode.value, 0), 100)) / 100));
+};
+
+const reserveDiscountRedemptionForRequest = async (requestDoc: any) => {
+  if (!requestDoc.discountCode || !requestDoc.discountCodeId) return true;
+
+  const redemption = await DiscountCodeModel.findOneAndUpdate(
+    {
+      _id: requestDoc.discountCodeId,
+      status: "active",
+      $or: [{ maxRedemptions: 0 }, { $expr: { $lt: ["$currentRedemptions", "$maxRedemptions"] } }],
+    },
+    { $inc: { currentRedemptions: 1 } },
+    { new: true },
+  );
+
+  return Boolean(redemption);
+};
+
+const completeApprovedPaymentRequest = async (
+  requestDoc: any,
+  review: {
+    reviewedBy: string;
+    reviewerNotes?: string;
+    approvalEvidence: string;
+    gatewayProvider?: string;
+    gatewayTransactionId?: string;
+    gatewayEventId?: string;
+    gatewayPaidAt?: number;
+  },
+) => {
+  requestDoc.status = "approved";
+  requestDoc.reviewerNotes = review.reviewerNotes || "";
+  requestDoc.approvalEvidence = review.approvalEvidence;
+  requestDoc.reviewedBy = review.reviewedBy;
+  requestDoc.reviewedAt = Date.now();
+  requestDoc.gatewayProvider = review.gatewayProvider || requestDoc.gatewayProvider || "";
+  requestDoc.gatewayTransactionId = review.gatewayTransactionId || requestDoc.gatewayTransactionId || "";
+  requestDoc.gatewayEventId = review.gatewayEventId || requestDoc.gatewayEventId || "";
+  requestDoc.gatewayPaidAt = review.gatewayPaidAt || requestDoc.gatewayPaidAt || null;
+  await requestDoc.save();
+
+  return applyPurchaseToUser(requestDoc.userId, {
+    courseId: requestDoc.itemType === "course" ? requestDoc.itemId : undefined,
+    packageId: requestDoc.packageId || (requestDoc.itemType === "package" ? requestDoc.itemId : undefined),
+    includedCourseIds: Array.isArray(requestDoc.includedCourseIds) ? requestDoc.includedCourseIds : [],
+  });
 };
 
 export const paymentRouter = Router();
@@ -482,6 +561,102 @@ paymentRouter.post(
   }),
 );
 
+paymentRouter.post(
+  "/webhooks/payment",
+  asyncHandler(async (req, res) => {
+    const payload = paymentWebhookSchema.parse(req.body);
+    const settings = await getOrCreateSettings();
+    const webhookSecret = getPaymentWebhookSecret(settings);
+
+    if (!settings.webhookEnabled && !process.env.PAYMENT_WEBHOOK_SECRET) {
+      return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ message: "Payment webhook is disabled" });
+    }
+
+    if (!verifyPaymentWebhookSignature(webhookSecret, req.body, req.headers["x-payment-signature"])) {
+      await recordAdminAuditLog(req, {
+        action: "payment.webhook.rejected",
+        resourceType: "payment-request",
+        resourceId: payload.paymentRequestId,
+        status: "blocked",
+        metadata: { provider: payload.provider, eventId: payload.eventId, reason: "invalid-signature" },
+      });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid payment webhook signature" });
+    }
+
+    const requestDoc = await PaymentRequestModel.findOne(buildPaymentRequestLookup(payload.paymentRequestId));
+    if (!requestDoc) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    }
+
+    if (requestDoc.gatewayEventId === payload.eventId || requestDoc.status === "approved") {
+      return res.json({ ok: true, duplicate: true, request: requestDoc });
+    }
+
+    const duplicateGatewayEvent = await PaymentRequestModel.findOne({
+      gatewayEventId: payload.eventId,
+      _id: { $ne: requestDoc._id },
+    });
+
+    if (duplicateGatewayEvent) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "Payment gateway event was already used" });
+    }
+
+    if (requestDoc.status !== "pending") {
+      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
+    }
+
+    if (payload.status !== "paid") {
+      requestDoc.status = payload.status === "cancelled" ? "cancelled" : "rejected";
+      requestDoc.reviewerNotes = `بوابة الدفع: ${payload.status}`;
+      requestDoc.reviewedBy = `webhook:${payload.provider}`;
+      requestDoc.reviewedAt = Date.now();
+      requestDoc.gatewayProvider = payload.provider;
+      requestDoc.gatewayTransactionId = payload.transactionId || "";
+      requestDoc.gatewayEventId = payload.eventId;
+      await requestDoc.save();
+      return res.json({ ok: true, request: requestDoc });
+    }
+
+    if (payload.currency && payload.currency !== requestDoc.currency) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment currency mismatch" });
+    }
+
+    if (typeof payload.paidAmount === "number" && payload.paidAmount < requestDoc.amount) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Paid amount is lower than request amount" });
+    }
+
+    const discountReserved = await reserveDiscountRedemptionForRequest(requestDoc);
+    if (!discountReserved) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+    }
+
+    const updatedUser = await completeApprovedPaymentRequest(requestDoc, {
+      reviewedBy: `webhook:${payload.provider}`,
+      reviewerNotes: "تم الاعتماد آليًا من بوابة الدفع",
+      approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
+      gatewayProvider: payload.provider,
+      gatewayTransactionId: payload.transactionId || "",
+      gatewayEventId: payload.eventId,
+      gatewayPaidAt: payload.occurredAt || Date.now(),
+    });
+
+    await recordAdminAuditLog(req, {
+      action: "payment.webhook.approved",
+      resourceType: "payment-request",
+      resourceId: String(requestDoc.id || requestDoc._id),
+      metadata: {
+        provider: payload.provider,
+        eventId: payload.eventId,
+        transactionId: payload.transactionId || "",
+        amount: payload.paidAmount ?? requestDoc.amount,
+        userId: requestDoc.userId,
+      },
+    });
+
+    return res.json({ ok: true, request: requestDoc, user: updatedUser });
+  }),
+);
+
 paymentRouter.patch(
   "/requests/:id/review",
   requireAuth,
@@ -513,38 +688,26 @@ paymentRouter.patch(
         });
       }
 
-      if (requestDoc.discountCode && requestDoc.discountCodeId) {
-        const redemption = await DiscountCodeModel.findOneAndUpdate(
-          {
-            _id: requestDoc.discountCodeId,
-            status: "active",
-            $or: [{ maxRedemptions: 0 }, { $expr: { $lt: ["$currentRedemptions", "$maxRedemptions"] } }],
-          },
-          { $inc: { currentRedemptions: 1 } },
-          { new: true },
-        );
-        if (!redemption) {
-          return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
-        }
+      const discountReserved = await reserveDiscountRedemptionForRequest(requestDoc);
+      if (!discountReserved) {
+        return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
       }
     }
 
-    requestDoc.status = payload.status;
-    requestDoc.reviewerNotes = payload.reviewerNotes || "";
-    requestDoc.approvalEvidence = payload.status === "approved"
-      ? buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence)
-      : "";
-    requestDoc.reviewedBy = req.authUser?.id || "";
-    requestDoc.reviewedAt = Date.now();
-    await requestDoc.save();
-
     let updatedUser = null;
     if (payload.status === "approved") {
-      updatedUser = await applyPurchaseToUser(requestDoc.userId, {
-        courseId: requestDoc.itemType === "course" ? requestDoc.itemId : undefined,
-        packageId: requestDoc.packageId || (requestDoc.itemType === "package" ? requestDoc.itemId : undefined),
-        includedCourseIds: Array.isArray(requestDoc.includedCourseIds) ? requestDoc.includedCourseIds : [],
+      updatedUser = await completeApprovedPaymentRequest(requestDoc, {
+        reviewedBy: req.authUser?.id || "",
+        reviewerNotes: payload.reviewerNotes || "",
+        approvalEvidence: buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence),
       });
+    } else {
+      requestDoc.status = payload.status;
+      requestDoc.reviewerNotes = payload.reviewerNotes || "";
+      requestDoc.approvalEvidence = "";
+      requestDoc.reviewedBy = req.authUser?.id || "";
+      requestDoc.reviewedAt = Date.now();
+      await requestDoc.save();
     }
 
     await recordAdminAuditLog(req, {
