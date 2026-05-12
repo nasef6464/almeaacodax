@@ -188,6 +188,7 @@
 - Added lightweight performance telemetry for slow API calls when `?perf=1` is present or in development.
 - Verified locally: `npm run typecheck`, `npm run build`, `npm --prefix server run build`, `npm run smoke:performance`, `npm run smoke:route-loading`, `npm run smoke:runtime-source`, plus in-app browser checks for `/`, `/#/admin-dashboard`, `/#/dashboard`, and `/#/category/p_1777779639431`.
 - Remaining direct performance work: measure the deployed Vercel build after push, then handle any slow backend endpoint separately with concrete timing.
+- 2026-05-13 follow-up: fixed a regression from the non-blocking bootstrap. `GenericPathPage` must not remove `?subject=...` while taxonomy/subjects are still loading lazily, otherwise topic/lesson/question data looks missing even though it exists in production. Guarded by `npm run smoke:route-loading`.
 
 ## Dashboard Bootstrap Performance Sprint - 2026-05-12
 - Production probe found the direct current bottleneck: `/api/quizzes/questions` returned about 726KB and took about 3.1s, while the Vercel shell and taxonomy/content bootstrap were much lighter.

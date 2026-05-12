@@ -143,6 +143,15 @@ export const GenericPathPage: React.FC = () => {
     }, [navigate, pathId, resolvedPathId]);
 
     useEffect(() => {
+        if (!path?.id) {
+            return;
+        }
+
+        const pathSubjectsLoaded = pathSubjects.length > 0;
+        if (selectedSubjectId && !pathSubjectsLoaded) {
+            return;
+        }
+
         if (pathLevels.length === 0) {
             const resolvedSubjectId = resolveSubjectId(selectedSubjectId);
             if (selectedSubjectId && !resolvedSubjectId) {
@@ -180,7 +189,7 @@ export const GenericPathPage: React.FC = () => {
                 updateUrl(selectedLevelId, null, true);
             }
         }
-    }, [path?.id, pathLevels, selectedLevelId, selectedSubjectId, subjects]);
+    }, [path?.id, pathLevels, pathSubjects.length, selectedLevelId, selectedSubjectId, subjects]);
     
     if (!path || (!canSeeHiddenPaths && path.isActive === false)) {
         const visiblePathSuggestions = paths

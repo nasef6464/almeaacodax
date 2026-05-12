@@ -2,9 +2,10 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [appSource, headerSource] = await Promise.all([
+const [appSource, headerSource, genericPathSource] = await Promise.all([
   read("App.tsx"),
   read("components/Header.tsx"),
+  read("pages/GenericPathPage.tsx"),
 ]);
 
 const checks = [];
@@ -62,6 +63,13 @@ check("header avoids showing incomplete navigation as final UI", () => {
   assertIncludes(headerSource, "paths.length === 0");
   assertIncludes(headerSource, "navigationMenu.length <= 2");
   assertIncludes(headerSource, "nav-loading");
+});
+
+check("subject query is not removed before lazy taxonomy arrives", () => {
+  assertIncludes(genericPathSource, "const pathSubjectsLoaded = pathSubjects.length > 0");
+  assertIncludes(genericPathSource, "if (selectedSubjectId && !pathSubjectsLoaded)");
+  assertIncludes(genericPathSource, "return;");
+  assertIncludes(genericPathSource, "pathSubjects.length");
 });
 
 let failures = 0;
