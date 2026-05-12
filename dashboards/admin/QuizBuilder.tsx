@@ -5,6 +5,7 @@ import { AlertTriangle, Plus, Search, Edit2, Trash2, Save, X, Settings, Link as 
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
+import { normalizeQuestionHtml } from '../../utils/questionHtml';
 
 interface QuizBuilderProps {
   onClose?: () => void;
@@ -808,7 +809,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                               {isSelected && <CheckCircle2 size={14} />}
                             </div>
                             <div className="flex-1">
-                              <div className="text-sm text-gray-800 line-clamp-2 mb-2" dangerouslySetInnerHTML={{ __html: q.text }} />
+                              <div className="text-sm text-gray-800 line-clamp-2 mb-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.text) }} />
                               <div className="flex gap-2 text-xs">
                                 <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded">
                                   {q.difficulty === 'Easy' ? 'سهل' : q.difficulty === 'Medium' ? 'متوسط' : 'صعب'}

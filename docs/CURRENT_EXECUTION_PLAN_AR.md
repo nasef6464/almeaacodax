@@ -143,3 +143,4 @@
 
 - 2026-05-12: Closed direct-unlock cleanup batch. Removed stale frontend api.completePurchase, stopped enrollCourse from writing fake purchasedCourses, changed operational API seed purchases to payment request + admin review, changed seed quiz results to /api/quizzes/:id/submit, and added npm run smoke:direct-unlock-cleanup.
 - 2026-05-12: Closed quiz client security cleanup. Removed the frontend direct quiz-result POST helper, stopped store saveExamResult from syncing direct results, stripped client-calculated isCorrect before question-attempt API sync, and added npm run smoke:quiz-client-security.
+- 2026-05-12: Closed question HTML security cleanup. Strengthened normalizeQuestionHtml against script/style/object/embed/link/meta/base tags, inline event/srcdoc attributes, unsafe javascript/data/vbscript URLs, and unsafe style expressions. Admin question previews now use the shared sanitizer, guarded by npm run smoke:question-html-security.

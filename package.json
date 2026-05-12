@@ -40,6 +40,7 @@
     "smoke:auth-frontend": "node scripts/smoke-auth-frontend-contract.mjs",
     "smoke:auth-login-security": "node scripts/smoke-auth-login-security-contract.mjs",
     "smoke:api-security": "node scripts/smoke-api-security-contract.mjs",
+    "smoke:question-html-security": "node scripts/smoke-question-html-security-contract.mjs",
     "smoke:runtime-source": "node scripts/smoke-runtime-source-contract.mjs",
     "smoke:nosql-sanitizer": "node scripts/smoke-nosql-sanitizer-contract.mjs",
     "smoke:homepage-hero": "node scripts/smoke-homepage-hero-contract.mjs",

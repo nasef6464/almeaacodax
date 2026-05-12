@@ -4,6 +4,7 @@ import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
+import { normalizeQuestionHtml } from '../../utils/questionHtml';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -1085,7 +1086,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     <td className="px-6 py-4">
                       <div>
                         {question.text ? (
-                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: question.text }} />
+                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                         ) : question.imageUrl ? (
                           <div className="text-sm font-bold text-indigo-600">سؤال بصورة مرفقة</div>
                         ) : (
@@ -1260,7 +1261,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     </div>
                   ) : null}
                   {previewQuestion.text ? (
-                    <div className="text-lg font-black leading-10 text-gray-900" dangerouslySetInnerHTML={{ __html: previewQuestion.text }} />
+                    <div className="text-lg font-black leading-10 text-gray-900" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(previewQuestion.text) }} />
                   ) : null}
                   <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {(previewQuestion.type === 'essay' ? ['إجابة كتابية'] : previewQuestion.options || []).map((option, index) => {

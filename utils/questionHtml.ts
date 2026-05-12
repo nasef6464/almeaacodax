@@ -21,9 +21,12 @@ export const normalizeQuestionHtml = (value?: string | null) => {
   return normalized
     .replace(/&nbsp;/gi, ' ')
     .replace(/\u00a0/g, ' ')
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '')
+    .replace(/<\s*(script|style|object|embed|link|meta|base)[\s\S]*?>[\s\S]*?<\s*\/\s*\1\s*>/gi, '')
+    .replace(/<\s*(script|style|object|embed|link|meta|base)\b[^>]*\/?\s*>/gi, '')
+    .replace(/\s(?:on[a-z]+|srcdoc)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/\s(?:href|src|xlink:href)\s*=\s*(["'])\s*(?:javascript:|data:text\/html|vbscript:)[\s\S]*?\1/gi, '')
+    .replace(/\s(?:href|src|xlink:href)\s*=\s*(?:javascript:|data:text\/html|vbscript:)[^\s>]*/gi, '')
+    .replace(/\sstyle\s*=\s*(["'])[\s\S]*?(?:expression\s*\(|javascript:|vbscript:|data:text\/html)[\s\S]*?\1/gi, '')
     .trim();
 };
 
