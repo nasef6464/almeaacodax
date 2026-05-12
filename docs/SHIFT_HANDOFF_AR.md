@@ -440,3 +440,8 @@
 - Recent attempt cards now expose an "اختبار متابعة" action when the attempt has weak skills.
 - The action opens a central directed quiz scoped to the first weak skill and the attempt student when available.
 - This turns recent-result monitoring into a direct intervention flow for admins, supervisors, teachers, and parents.
+
+## Reports-Assigned-Follow-Up Context Sprint - 2026-05-12
+- Assigned follow-up quizzes in reports now show whether they target students, groups, or the current scope.
+- This keeps school/admin readers from opening directed tests blindly without knowing who the test is for.
+- The change is display-only and uses the existing `targetUserIds` and `targetGroupIds` returned by scoped analytics.

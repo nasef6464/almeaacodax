@@ -77,6 +77,7 @@ assertIncludes('pages/Reports.tsx', 'targetGroupId: student.groupIds?.[0]');
 assertIncludes('pages/Reports.tsx', 'to={student.followUpLink}');
 assertIncludes('pages/Reports.tsx', 'subjectId: subject.subjectId');
 assertIncludes('pages/Reports.tsx', 'const attemptFollowUpLink = buildDirectedQuizManagerLink');
+assertIncludes('pages/Reports.tsx', 'const targetUserCount = quiz.targetUserIds?.length || 0');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetUserId ? [initialTargetUserId] : []');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 

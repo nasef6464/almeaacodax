@@ -54,6 +54,8 @@ interface ScopedAnalyticsOverview {
         id: string;
         title: string;
         mode: 'regular' | 'saher' | 'central';
+        targetGroupIds?: string[];
+        targetUserIds?: string[];
         dueDate?: string;
     }>;
 }
@@ -2005,20 +2007,31 @@ const Reports: React.FC = () => {
 
                                 <div className="space-y-3">
                                     <div className="font-black text-gray-900">اختبارات موجهة</div>
-                                    {scopedAnalytics.assignedFollowUps.length > 0 ? scopedAnalytics.assignedFollowUps.slice(0, 5).map((quiz) => (
-                                        <div key={quiz.id} className="border border-gray-100 rounded-xl p-3 bg-white flex items-center justify-between gap-3">
-                                            <div>
-                                                <div className="font-bold text-gray-900">{displayText(quiz.title)}</div>
-                                                <div className="text-xs text-gray-500">
-                                                    {quiz.mode === 'central' ? 'اختبار مركزي موجه' : 'اختبار ساهر جاهز'}
-                                                    {quiz.dueDate ? ` - حتى ${new Date(quiz.dueDate).toLocaleDateString('ar-SA')}` : ''}
+                                    {scopedAnalytics.assignedFollowUps.length > 0 ? scopedAnalytics.assignedFollowUps.slice(0, 5).map((quiz) => {
+                                        const targetUserCount = quiz.targetUserIds?.length || 0;
+                                        const targetGroupCount = quiz.targetGroupIds?.length || 0;
+                                        const targetLabel = targetUserCount > 0 || targetGroupCount > 0
+                                            ? `${targetUserCount ? `${targetUserCount} طالب` : ''}${targetUserCount && targetGroupCount ? ' - ' : ''}${targetGroupCount ? `${targetGroupCount} مجموعة` : ''}`
+                                            : 'النطاق الحالي';
+
+                                        return (
+                                            <div key={quiz.id} className="border border-gray-100 rounded-xl p-3 bg-white flex items-center justify-between gap-3">
+                                                <div>
+                                                    <div className="font-bold text-gray-900">{displayText(quiz.title)}</div>
+                                                    <div className="text-xs text-gray-500">
+                                                        {quiz.mode === 'central' ? 'اختبار مركزي موجه' : 'اختبار ساهر جاهز'}
+                                                        {quiz.dueDate ? ` - حتى ${new Date(quiz.dueDate).toLocaleDateString('ar-SA')}` : ''}
+                                                    </div>
+                                                    <div className="mt-1 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">
+                                                        موجه إلى: {targetLabel}
+                                                    </div>
                                                 </div>
+                                                <Link to={`/quiz/${quiz.id}`} className="px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-black hover:bg-gray-800">
+                                                    فتح
+                                                </Link>
                                             </div>
-                                            <Link to={`/quiz/${quiz.id}`} className="px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-black hover:bg-gray-800">
-                                                فتح
-                                            </Link>
-                                        </div>
-                                    )) : (
+                                        );
+                                    }) : (
                                         <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">لا توجد اختبارات متابعة موجهة داخل هذا النطاق حاليًا.</div>
                                     )}
                                 </div>
