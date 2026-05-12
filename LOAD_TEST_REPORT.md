@@ -140,6 +140,20 @@ Student report planning note:
 - Weak skills should be calculated from enough attempts/questions per skill, not from one isolated question.
 - Detailed analytics remain available for admin, parent, supervisor, and teacher views, with export/download when needed.
 
+## Student Reports Evidence - 2026-05-12
+
+Closed the first student-report simplification logic pass:
+
+- Student weak-skill ranking now distinguishes reliable evidence from a first signal.
+- At least two linked attempts/questions are required before the simple report presents a skill as the primary starting point.
+- If only one linked answer exists for a skill, the report labels it as an initial reading and asks for another attempt before treating it as a stable weakness.
+- The simple report header actions were reduced to summary copy, PDF/download, and detailed report. Export-heavy Excel actions remain in detailed mode only.
+
+Expected effect:
+
+- Student and parent-facing interpretation is more realistic: the platform does not overreact to one wrong answer.
+- The report remains useful after a single attempt, but clearly says when the evidence is still early.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

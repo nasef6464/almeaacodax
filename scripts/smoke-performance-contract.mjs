@@ -55,6 +55,10 @@ assertIncludes('pages/Results.tsx', "import('../components/results/ResultDonutCh
 assertIncludes('pages/Results.tsx', '<React.Suspense fallback={<ResultChartFallback />}>');
 assertNotIncludes('pages/Results.tsx', "from 'recharts';");
 assertIncludes('components/results/ResultDonutChart.tsx', "from 'recharts';");
+assertIncludes('pages/Reports.tsx', 'const MIN_SKILL_EVIDENCE_COUNT = 2;');
+assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');
+assertIncludes('pages/Reports.tsx', "skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'");
+assertIncludes('pages/Reports.tsx', 'القياس: {skill.totalEvidence} سؤال عبر المحاولات');
 
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 for (const file of [

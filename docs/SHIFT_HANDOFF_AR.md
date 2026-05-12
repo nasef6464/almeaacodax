@@ -377,3 +377,10 @@
 - Track context matters: when a student is enrolled in a track such as `نافس`, the dashboard should prioritize that track's tests/reports and show progress in the registered track.
 - If a student tries to buy/access track-related content without being registered in the right track, show a simple message and route them to track registration/selection first.
 - Keep the public site generally available; track-specific dashboards and pushed tests should be scoped by the student's registered track.
+
+## Student Reports Evidence Sprint - 2026-05-12
+- Default student report now treats weak-skill evidence as a collection of solved questions across one quiz or multiple quizzes.
+- A skill with fewer than 2 linked attempts/questions is shown as an initial reading, not a final weak-skill judgment.
+- Student summary cards show the evidence count and correct answers, e.g. `x من y`, so the student/parent understands why a skill is flagged.
+- The simple student view keeps only summary, download, and detailed-report actions; Excel/extra suggestions stay behind the detailed report.
+- Scope: student reports logic/UX only. Admin/teacher/parent reports, quiz scoring, package/payment access, homepage, typography, and route loading were not changed.

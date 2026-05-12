@@ -73,6 +73,19 @@ interface ScopedQuizResult {
     skillsAnalysis?: Array<{ skill?: string; mastery?: number; status?: string }>;
 }
 
+interface StudentAggregatedSkill {
+    skill: string;
+    skillId?: string;
+    subjectName?: string;
+    sectionName?: string;
+    mastery: number;
+    attempts: number;
+    correctAttempts: number;
+    totalEvidence: number;
+    isReliable: boolean;
+    status: 'weak' | 'average' | 'strong';
+}
+
 const roleScopeTitle: Record<string, string> = {
     admin: 'نطاق المنصة بالكامل',
     supervisor: 'نطاق المجموعات والمدرسة التابعة لك',
@@ -82,6 +95,7 @@ const roleScopeTitle: Record<string, string> = {
 };
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
+const MIN_SKILL_EVIDENCE_COUNT = 2;
 
 const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
 
@@ -386,7 +400,7 @@ const Reports: React.FC = () => {
             });
         }
 
-        return Object.entries(skillsMap).map(([skill, data]) => {
+        return Object.entries(skillsMap).map(([skill, data]): StudentAggregatedSkill => {
             const mastery = Math.round(data.totalMastery / data.count);
             const resolvedSkill = data.skillId
                 ? skills.find((item) => item.id === data.skillId)
@@ -404,14 +418,20 @@ const Reports: React.FC = () => {
                 subjectName,
                 sectionName,
                 mastery,
+                attempts: data.count,
+                correctAttempts: Math.round((mastery / 100) * data.count),
+                totalEvidence: data.count,
+                isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT,
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
             };
         }).sort((a, b) => a.mastery - b.mastery); // Sort by weakest first
     }, [examResults, questionAttempts, questions, sections, skills, subjects]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
-    const focusedReportSkills = aggregatedSkills.slice(0, 6);
-    const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || weakestSkill;
+    const reliableAggregatedSkills = aggregatedSkills.filter((skill) => skill.isReliable);
+    const focusedReportSkills = (reliableAggregatedSkills.length > 0 ? reliableAggregatedSkills : aggregatedSkills).slice(0, 6);
+    const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
+    const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
@@ -427,6 +447,8 @@ const Reports: React.FC = () => {
             average,
             strong,
             total,
+            reliable: reliableAggregatedSkills.length,
+            minEvidence: MIN_SKILL_EVIDENCE_COUNT,
             message:
                 weak > 0
                     ? `ابدأ بـ ${weak} مهارة تحتاج دعمًا واضحًا.`
@@ -436,7 +458,7 @@ const Reports: React.FC = () => {
                             ? 'مؤشراتك مطمئنة. حافظ على التدريب القصير.'
                             : 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.',
         };
-    }, [aggregatedSkills]);
+    }, [aggregatedSkills, reliableAggregatedSkills.length]);
     const studentWeeklyPlan = useMemo(() => {
         const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
 
@@ -450,6 +472,8 @@ const Reports: React.FC = () => {
                 subjectName: displayText(skill.subjectName),
                 sectionName: displayText(skill.sectionName),
                 mastery: skill.mastery,
+                attempts: skill.attempts,
+                isReliable: skill.isReliable,
                 lessonTitle: recommendation.lessonTitle,
                 lessonLink: recommendation.lessonLink,
                 lessonTopicTitle: recommendation.lessonTopicTitle,
@@ -506,8 +530,9 @@ const Reports: React.FC = () => {
         const parts = [
             `متوسطك الحالي ${stats?.averageScore || 0}%.`,
             weakest ? `ابدأ بمهارة ${displayText(weakest.skill)} (${weakest.mastery}%).` : null,
-            nextTwo.length ? `أمامك هذا الأسبوع: ${nextTwo.join('، ')}.` : null,
-            'الخطوة التالية: شرح قصير ثم تدريب بسيط ثم إعادة قياس.',
+            weakest ? `ظهرت في ${weakest.attempts} محاولة/سؤال${weakest.isReliable ? '' : '؛ اعتبرها قراءة أولية حتى تتكرر'}.` : null,
+            nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
+            'الخطوة: شرح قصير، تدريب بسيط، ثم إعادة قياس.',
         ].filter(Boolean);
 
         return parts.join(' ');
@@ -1778,59 +1803,77 @@ const Reports: React.FC = () => {
                         </p>
                     </div>
                     <div className="print-hide flex min-w-full flex-wrap gap-2 lg:min-w-[360px] lg:justify-end">
-                        <button
-                            onClick={copyStudentSummary}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
-                        >
-                            {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
-                            {copiedStudentSummary ? 'تم' : 'نسخ'}
-                        </button>
-                        <button
-                            onClick={shareStudentSummary}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
-                        >
-                            {sharedStudentSummary ? <CheckCircle size={15} /> : <Share2 size={15} />}
-                            {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
-                        </button>
-                        <button
-                            onClick={downloadStudentSkillsWorkbook}
-                            disabled={!aggregatedSkills.length}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                        >
-                            <FileText size={15} />
-                            المهارات
-                        </button>
-                        <button
-                            onClick={downloadStudentAttemptsWorkbook}
-                            disabled={!examResults.length}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                        >
-                            <Download size={15} />
-                            المحاولات
-                        </button>
-                        <Link to="/plan" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black text-white transition hover:bg-emerald-600 sm:text-sm">
-                            <Target size={15} />
-                            الخطة
-                        </Link>
-                        {isStudentReportFull ? (
-                            <button
-                                onClick={() => {
-                                    void buildSmartRemediation();
-                                }}
-                                disabled={smartRemediationLoading || focusedReportSkills.length === 0}
-                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
-                            >
-                                {smartRemediationLoading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-                                {smartRemediationLoading ? 'تجهيز' : 'اقتراح'}
-                            </button>
+                        {!isStudentReportFull ? (
+                            <>
+                                <button
+                                    onClick={copyStudentSummary}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+                                >
+                                    {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
+                                    {copiedStudentSummary ? 'تم' : 'نسخ ملخص'}
+                                </button>
+                                <button
+                                    onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-50 sm:text-sm"
+                                >
+                                    <Download size={15} />
+                                    تحميل
+                                </button>
+                                <button
+                                    onClick={() => setStudentReportDepth('full')}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
+                                >
+                                    <FileText size={15} />
+                                    تقرير تفصيلي
+                                </button>
+                            </>
                         ) : (
-                            <button
-                                onClick={() => setStudentReportDepth('full')}
-                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 sm:text-sm"
-                            >
-                                <Sparkles size={15} />
-                                تفاصيل
-                            </button>
+                            <>
+                                <button
+                                    onClick={copyStudentSummary}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+                                >
+                                    {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
+                                    {copiedStudentSummary ? 'تم' : 'نسخ'}
+                                </button>
+                                <button
+                                    onClick={shareStudentSummary}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
+                                >
+                                    {sharedStudentSummary ? <CheckCircle size={15} /> : <Share2 size={15} />}
+                                    {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
+                                </button>
+                                <button
+                                    onClick={downloadStudentSkillsWorkbook}
+                                    disabled={!aggregatedSkills.length}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                                >
+                                    <FileText size={15} />
+                                    المهارات
+                                </button>
+                                <button
+                                    onClick={downloadStudentAttemptsWorkbook}
+                                    disabled={!examResults.length}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+                                >
+                                    <Download size={15} />
+                                    المحاولات
+                                </button>
+                                <Link to="/plan" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black text-white transition hover:bg-emerald-600 sm:text-sm">
+                                    <Target size={15} />
+                                    الخطة
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        void buildSmartRemediation();
+                                    }}
+                                    disabled={smartRemediationLoading || focusedReportSkills.length === 0}
+                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
+                                >
+                                    {smartRemediationLoading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+                                    {smartRemediationLoading ? 'تجهيز' : 'اقتراح'}
+                                </button>
+                            </>
                         )}
                     </div>
                 </div>
@@ -1840,9 +1883,9 @@ const Reports: React.FC = () => {
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">ابدأ من هذه المهارة فقط</h2>
-                            <p className="mt-1 text-sm leading-7 text-gray-500">
-                                مهارة واحدة واضحة، ومعها الشرح والتدريب وقياس التحسن.
+                            <h2 className="text-xl font-black text-gray-900">أضعف مهارة الآن</h2>
+                            <p className="mt-1 text-sm leading-6 text-gray-500">
+                                ملخص سريع: المهارة، السبب المختصر، والخطوة التالية.
                             </p>
                         </div>
                         <button
@@ -1858,13 +1901,13 @@ const Reports: React.FC = () => {
                             const tone = getReportMasteryTone(skill.mastery);
 
                             return (
-                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 sm:p-5 ${tone.bg} ${tone.border}`}>
+                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 ${tone.bg} ${tone.border}`}>
                                     <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_1.4fr]">
                                         <div>
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="min-w-0">
                                                     <span className={`inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-black ${tone.text}`}>
-                                                        ابدأ هنا
+                                                        {skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'}
                                                     </span>
                                                     <div className="mt-3 text-lg font-black leading-8 text-gray-900 break-words">{displayText(skill.skill)}</div>
                                                 </div>
@@ -1873,22 +1916,30 @@ const Reports: React.FC = () => {
                                             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
                                                 <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
                                             </div>
-                                            <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
-                                                {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
-                                                {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
-                                            </div>
-                                            <p className="mt-3 text-sm font-bold leading-7 text-gray-700">
-                                                ابدأ بالشرح، ثم حل التدريب المرتبط، وبعدها أعد القياس.
+                            <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
+                                {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
+                                {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
+                                <span className="rounded-xl bg-white/80 px-3 py-2">
+                                    القياس: {skill.totalEvidence} سؤال عبر المحاولات
+                                </span>
+                                <span className="rounded-xl bg-white/80 px-3 py-2">
+                                    الصحيح: {skill.correctAttempts} من {skill.totalEvidence}
+                                </span>
+                            </div>
+                                            <p className="mt-3 text-sm font-bold leading-6 text-gray-700">
+                                                {skill.isReliable
+                                                    ? 'ابدأ بالشرح، ثم تدريب قصير، وبعدها أعد القياس.'
+                                                    : `هذه إشارة أولية. ثبّتها بعد ${Math.max(MIN_SKILL_EVIDENCE_COUNT - skill.attempts, 1)} محاولة إضافية.`}
                                             </p>
                                         </div>
                                         <div className="grid gap-3 sm:grid-cols-3">
                                             {studentQuickActions.map(({ title, label, link, Icon, className }) => (
-                                                <Link key={title} to={link} className={`print-hide flex min-h-[112px] flex-col justify-between rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
+                                                <Link key={title} to={link} className={`print-hide flex min-h-[84px] flex-col justify-between rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
                                                     <div>
                                                         <Icon size={18} />
                                                         <div className="mt-2 text-sm font-black">{title}</div>
                                                     </div>
-                                                    <span className="mt-3 inline-flex justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-800">
+                                                    <span className="mt-2 inline-flex justify-center rounded-xl bg-white px-3 py-1.5 text-xs font-black text-slate-800">
                                                         {label}
                                                     </span>
                                                 </Link>
