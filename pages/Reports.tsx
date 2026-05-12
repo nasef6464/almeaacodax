@@ -1905,6 +1905,21 @@ const Reports: React.FC = () => {
                                             const weakSkills = (result.skillsAnalysis || [])
                                                 .filter((skill) => Number(skill.mastery ?? 100) < 75)
                                                 .slice(0, 2);
+                                            const primaryWeakSkill = weakSkills[0];
+                                            const resolvedAttemptSkill = primaryWeakSkill?.skill
+                                                ? skills.find((skill) => displayText(skill.name) === displayText(primaryWeakSkill.skill))
+                                                : undefined;
+                                            const attemptStudent = result.userId
+                                                ? scopedAnalytics.weakestStudents.find((student) => student.id === result.userId)
+                                                : undefined;
+                                            const attemptFollowUpLink = buildDirectedQuizManagerLink({
+                                                pathId: resolvedAttemptSkill?.pathId,
+                                                subjectId: resolvedAttemptSkill?.subjectId,
+                                                sectionId: resolvedAttemptSkill?.sectionId,
+                                                skillId: resolvedAttemptSkill?.id,
+                                                targetUserId: result.userId || attemptStudent?.id,
+                                                targetGroupId: attemptStudent?.groupIds?.[0],
+                                            });
                                             const resultDate = result.date || result.createdAt;
 
                                             return (
@@ -1929,9 +1944,17 @@ const Reports: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     {weakSkills.length ? (
-                                                        <div className="mt-2 text-xs font-bold leading-6 text-rose-700">
-                                                            متابعة: {weakSkills.map((skill) => `${displayText(skill.skill) || 'مهارة'} (${Number(skill.mastery || 0)}%)`).join('، ')}
-                                                        </div>
+                                                        <>
+                                                            <div className="mt-2 text-xs font-bold leading-6 text-rose-700">
+                                                                متابعة: {weakSkills.map((skill) => `${displayText(skill.skill) || 'مهارة'} (${Number(skill.mastery || 0)}%)`).join('، ')}
+                                                            </div>
+                                                            <Link
+                                                                to={attemptFollowUpLink}
+                                                                className="print-hide mt-2 inline-flex rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white hover:bg-indigo-700"
+                                                            >
+                                                                اختبار متابعة
+                                                            </Link>
+                                                        </>
                                                     ) : (
                                                         <div className="mt-2 text-xs font-bold leading-6 text-emerald-700">لا توجد أولوية واضحة.</div>
                                                     )}

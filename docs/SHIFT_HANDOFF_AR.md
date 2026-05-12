@@ -435,3 +435,8 @@
 - The "مواد تحتاج تدخل" section now opens a central directed quiz for the selected subject instead of sending staff to a generic student quiz tab.
 - When a lead student exists, the subject action carries the student's `targetUserId` and first `targetGroupId` too.
 - This keeps subject-level intervention, student focus, and group context in one report-to-quiz flow.
+
+## Reports-Recent-Attempt Follow-Up Sprint - 2026-05-12
+- Recent attempt cards now expose an "اختبار متابعة" action when the attempt has weak skills.
+- The action opens a central directed quiz scoped to the first weak skill and the attempt student when available.
+- This turns recent-result monitoring into a direct intervention flow for admins, supervisors, teachers, and parents.
