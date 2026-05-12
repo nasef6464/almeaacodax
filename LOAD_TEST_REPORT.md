@@ -183,6 +183,12 @@ Closed first institutional command pass:
 - It surfaces one next action from the scoped analytics, with buttons for follow-up test routing, alert copy, scope management, and student export.
 - This improves school/admin usability without increasing the default student report detail.
 
+Closed report-to-quiz context pass:
+
+- The report follow-up action now opens the quiz center as a central directed-test workflow.
+- Weak-skill context is passed through the URL when available, so the quiz center can preselect the relevant path, subject, section, and skill.
+- Creating a central follow-up from that context seeds the draft with the selected skill id, reducing manual setup for schools.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

@@ -67,6 +67,10 @@ assertIncludes('pages/Reports.tsx', 'مسار مسجل');
 assertIncludes('pages/Reports.tsx', 'مركز متابعة مؤسسي');
 assertIncludes('pages/Reports.tsx', 'توجيه اختبار');
 assertIncludes('pages/Reports.tsx', 'نسخ تنبيه');
+assertIncludes('pages/Reports.tsx', 'buildDirectedQuizManagerLink');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'openedFromReports');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'source') ;
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'skillIds: selectedSkillId ? [selectedSkillId] : []');
 
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 for (const file of [

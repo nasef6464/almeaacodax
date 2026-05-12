@@ -408,3 +408,9 @@
 - Quick actions now include: direct follow-up test route, copy alert text, open the relevant management scope, and export focused student rows.
 - Admin routes to users/quizzes/notifications, supervisors route to groups/quizzes, teachers route to quizzes, and parents stay in their linked-student report scope.
 - Student reports remain unchanged and simple.
+
+## Reports-To-Directed-Quiz Context Sprint - 2026-05-12
+- The institutional `توجيه اختبار` action now opens the quiz center with `source=reports` and `mode=central`.
+- When the report has a weak skill id, the link also carries `pathId`, `subjectId`, `sectionId`, and `skillId`.
+- `QuizzesManager` reads those parameters, preselects filters, shows a small "opened from report" banner, and creates a central follow-up draft with the selected skill id.
+- This keeps reports, directed tests, and school follow-up workflow connected without duplicating quiz management screens.

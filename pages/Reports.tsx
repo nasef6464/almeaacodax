@@ -113,6 +113,26 @@ const buildSkillSessionLink = (skill?: { skill?: string; skillId?: string; subje
     return `/book-session?${params.toString()}`;
 };
 
+const buildDirectedQuizManagerLink = (context?: {
+    pathId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    skillId?: string;
+}) => {
+    const params = new URLSearchParams({
+        tab: 'quizzes',
+        source: 'reports',
+        mode: 'central',
+    });
+
+    if (context?.pathId) params.set('pathId', context.pathId);
+    if (context?.subjectId) params.set('subjectId', context.subjectId);
+    if (context?.sectionId) params.set('sectionId', context.sectionId);
+    if (context?.skillId) params.set('skillId', context.skillId);
+
+    return `/admin-dashboard?${params.toString()}`;
+};
+
 const getReportMasteryTone = (mastery: number) => {
     if (mastery < 50) {
         return {
@@ -762,7 +782,15 @@ const Reports: React.FC = () => {
             : scopedLeadSkill
                 ? `${scopedLeadSkill.affectedStudents} طلاب متأثرون بمهارة ${displayText(scopedLeadSkill.skill)}.`
                 : `${scopedAnalytics.scope.studentCount} طالب داخل النطاق.`;
-        const followUpLink = user.role === Role.PARENT ? '/dashboard?tab=reports' : '/admin-dashboard?tab=quizzes';
+        const resolvedSkill = scopedLeadSkill?.skillId ? skills.find((skill) => skill.id === scopedLeadSkill.skillId) : undefined;
+        const followUpLink = user.role === Role.PARENT
+            ? '/dashboard?tab=reports'
+            : buildDirectedQuizManagerLink({
+                pathId: resolvedSkill?.pathId,
+                subjectId: resolvedSkill?.subjectId,
+                sectionId: resolvedSkill?.sectionId,
+                skillId: scopedLeadSkill?.skillId,
+            });
         const studentsLink =
             user.role === Role.ADMIN
                 ? '/admin-dashboard?tab=users'
@@ -789,7 +817,7 @@ const Reports: React.FC = () => {
             alertLink,
             alertText,
         };
-    }, [scopedAnalytics, scopedLeadSkill, scopedLeadStudent, scopedLeadSubject, user.role]);
+    }, [scopedAnalytics, scopedLeadSkill, scopedLeadStudent, scopedLeadSubject, skills, user.role]);
     const copyInstitutionalAlert = async () => {
         if (!institutionalReportHub?.alertText) return;
 
@@ -1953,7 +1981,7 @@ const Reports: React.FC = () => {
                                     </div>
                                     <div className="print-hide grid gap-2 sm:grid-cols-2 xl:min-w-[520px]">
                                         <Link
-                                            to="/admin-dashboard?tab=quizzes"
+                                            to={buildDirectedQuizManagerLink()}
                                             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700"
                                         >
                                             <Target size={14} />

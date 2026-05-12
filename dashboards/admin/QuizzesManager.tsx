@@ -20,6 +20,11 @@ interface QuizzesManagerProps {
   filterType?: 'quiz' | 'bank';
 }
 
+const getQuizManagerParams = () => {
+  const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
+  return new URLSearchParams(hashQuery || window.location.search);
+};
+
 const getStatusMeta = (quiz: Quiz) => {
   if (quiz.approvalStatus === 'rejected') {
     return { label: 'مرفوض', className: 'bg-red-50 text-red-600' };
@@ -172,11 +177,15 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
         })
       : subjects;
 
-  const [selectedPathId, setSelectedPathId] = useState('');
-  const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || '');
-  const [selectedSectionId, setSelectedSectionId] = useState('');
-  const [selectedSkillId, setSelectedSkillId] = useState('');
-  const [modeFilter, setModeFilter] = useState<'all' | 'regular' | 'saher' | 'central'>('all');
+  const initialManagerParams = useMemo(() => getQuizManagerParams(), []);
+  const openedFromReports = initialManagerParams.get('source') === 'reports';
+  const [selectedPathId, setSelectedPathId] = useState(initialManagerParams.get('pathId') || '');
+  const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || initialManagerParams.get('subjectId') || '');
+  const [selectedSectionId, setSelectedSectionId] = useState(initialManagerParams.get('sectionId') || '');
+  const [selectedSkillId, setSelectedSkillId] = useState(initialManagerParams.get('skillId') || '');
+  const [modeFilter, setModeFilter] = useState<'all' | 'regular' | 'saher' | 'central'>(
+    initialManagerParams.get('mode') === 'central' ? 'central' : initialManagerParams.get('mode') === 'saher' ? 'saher' : initialManagerParams.get('mode') === 'regular' ? 'regular' : 'all',
+  );
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'shown' | 'hidden'>('all');
   const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>('all');
   const [isEditing, setIsEditing] = useState(false);
@@ -195,6 +204,9 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     ? { pathId: activePathId, subjectId: activeSubjectId, slot: activeLearningSlot }
     : null;
   const activeLearningSlotLabel = activeLearningSlot === 'training' ? 'التدريب' : activeLearningSlot === 'tests' ? 'الاختبارات' : 'هذه المساحة';
+
+  const reportContextSkill = selectedSkillId ? skills.find((skill) => skill.id === selectedSkillId) : undefined;
+  const reportContextSubject = selectedSubjectId ? subjects.find((subject) => subject.id === selectedSubjectId) : undefined;
 
   const availableSections = useMemo(
     () =>
@@ -421,6 +433,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       }),
       access: mode === 'central' ? { type: 'private', allowedGroupIds: [] } : { type: 'free', allowedGroupIds: [] },
       questionIds: [],
+      skillIds: selectedSkillId ? [selectedSkillId] : [],
       createdAt,
       isPublished: false,
       showOnPlatform: false,
@@ -673,6 +686,28 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </button>}
         </div>
       </div>
+
+      {openedFromReports && (
+        <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h3 className="text-sm font-black text-amber-900">فتح من تقرير الأداء</h3>
+              <p className="mt-1 text-xs font-bold leading-6 text-amber-800">
+                تم ضبط مركز الاختبارات على الاختبارات الموجهة
+                {reportContextSkill ? ` ومهارة ${reportContextSkill.name}` : ''}
+                {reportContextSubject ? ` في ${reportContextSubject.name}` : ''}.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCreateByMode('central')}
+              className="self-start rounded-xl bg-amber-500 px-4 py-2 text-xs font-black text-white shadow-sm hover:bg-amber-600"
+            >
+              إنشاء اختبار متابعة الآن
+            </button>
+          </div>
+        </div>
+      )}
 
       {filterType && (
         <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4">
