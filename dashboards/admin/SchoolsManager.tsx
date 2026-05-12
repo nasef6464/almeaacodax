@@ -702,7 +702,7 @@ export const SchoolsManager: React.FC = () => {
     const handleCreateBulkClasses = () => {
         if (!selectedSchool) return;
 
-        const classNames = Array.from(new Set(
+        const classNames = Array.from(new Set<string>(
             bulkClassNames
                 .split(/\r?\n|،|,/)
                 .map((name) => name.trim())
@@ -1495,7 +1495,7 @@ export const SchoolsManager: React.FC = () => {
             });
 
             parents.forEach((parent) => {
-                const links = new Set(parent.linkedStudentIds || []);
+                const links = new Set<string>(parent.linkedStudentIds || []);
                 parentLinks.set(parent.id, links);
                 links.forEach((studentId) => existingParentLinks.add(`${parent.id}:${studentId}`));
             });

@@ -870,7 +870,7 @@ export const OperationsCommandCenter: React.FC = () => {
                         <h2 className="font-bold text-gray-900">خريطة الجاهزية</h2>
                         <p className="text-sm text-gray-500 mt-1">ملخص سريع لكل منطقة في المنصة.</p>
                         <div className="mt-4 space-y-3">
-                            {Object.entries(audit?.areaSummary || {}).map(([area, summary]) => (
+                            {Object.entries((audit?.areaSummary || {}) as NonNullable<typeof audit>['areaSummary']).map(([area, summary]) => (
                                 <div key={area} className="flex items-center justify-between gap-3">
                                     <div>
                                         <p className="text-sm font-bold text-gray-800">{areaLabels[area] || area}</p>

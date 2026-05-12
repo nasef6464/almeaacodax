@@ -146,7 +146,7 @@ export const BackupManager: React.FC = () => {
     }, [backupPayload]);
 
     const backupTotals = useMemo(() => backupSummaryRows.reduce((sum, row) => sum + Number(row.count || 0), 0), [backupSummaryRows]);
-    const pathExportPreview = useMemo(() => {
+    const pathExportPreview = useMemo<Record<string, unknown[]> | null>(() => {
         if (!selectedPathExportId) return null;
 
         const pathSubjects = subjects.filter((subject) => subject.pathId === selectedPathExportId);
@@ -917,7 +917,7 @@ export const BackupManager: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {Object.entries(restorePreview.summary).map(([name, row]) => (
+                                {Object.entries(restorePreview.summary as NonNullable<RestoreResponse['summary']>).map(([name, row]) => (
                                     <tr key={name} className="border-b border-gray-50">
                                         <td className="p-3 font-bold text-gray-900">{collectionLabels[name] || name}</td>
                                         <td className="p-3">{row.backup}</td>

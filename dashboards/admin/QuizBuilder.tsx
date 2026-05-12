@@ -30,6 +30,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const [questionSkillFilter, setQuestionSkillFilter] = useState('');
   const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'settings' | 'access'>('info');
   const initialSubject = initialSubjectId ? useStore.getState().subjects.find(subject => subject.id === initialSubjectId) : undefined;
+  const builderType: 'quiz' | 'bank' = initialType === 'bank' ? 'bank' : 'quiz';
   
   const [currentQuiz, setCurrentQuiz] = useState<Partial<Quiz>>(() => {
     if (initialQuizId) {
@@ -41,9 +42,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       description: '',
       pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
-      ...getQuizPlacementDefaults(initialType),
+      ...getQuizPlacementDefaults(builderType),
       mode: 'regular',
-      settings: getDefaultQuizSettings({ type: initialType }),
+      settings: getDefaultQuizSettings({ type: builderType }),
       access: {
         type: 'free',
         allowedGroupIds: [],
@@ -295,9 +296,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       description: '',
       pathId: initialSubject?.pathId || '',
       subjectId: initialSubjectId || '',
-      ...getQuizPlacementDefaults(initialType),
+      ...getQuizPlacementDefaults(builderType),
       mode: 'regular',
-      settings: getDefaultQuizSettings({ type: initialType }),
+      settings: getDefaultQuizSettings({ type: builderType }),
       access: {
         type: 'free',
         allowedGroupIds: [],
@@ -345,7 +346,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     setOperationError('');
     setOperationMessage('');
 
-    const quizPayload = normalizeQuizPlacement({ ...currentQuiz }, initialType);
+    const quizPayload = normalizeQuizPlacement({ ...currentQuiz }, builderType);
     delete (quizPayload as any).skillIds;
 
     if (currentQuiz.id) {
@@ -394,7 +395,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     const skillQuestionCounts = new Map<string, number>();
 
     selectedQuestions.forEach(question => {
-      const uniqueSkillIds = [...new Set(question.skillIds || [])];
+      const uniqueSkillIds = Array.from(new Set((question.skillIds || []) as string[]));
       uniqueSkillIds.forEach(skillId => {
         skillQuestionCounts.set(skillId, (skillQuestionCounts.get(skillId) || 0) + 1);
       });
@@ -653,7 +654,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                         multiple
                         value={currentQuiz.targetGroupIds || []}
                         onChange={(e) => {
-                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          const values = Array.from(e.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value);
                           setCurrentQuiz(prev => ({ ...prev, targetGroupIds: values }));
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
@@ -669,7 +670,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                         multiple
                         value={currentQuiz.targetUserIds || []}
                         onChange={(e) => {
-                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          const values = Array.from(e.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value);
                           setCurrentQuiz(prev => ({ ...prev, targetUserIds: values }));
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
@@ -1095,7 +1096,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       multiple
                       value={currentQuiz.access?.allowedGroupIds || []}
                       onChange={(e) => {
-                        const values = Array.from(e.target.selectedOptions, option => option.value);
+                        const values = Array.from(e.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value);
                         setCurrentQuiz(prev => ({ ...prev, access: { ...prev.access!, allowedGroupIds: values } }));
                       }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-32"

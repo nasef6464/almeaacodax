@@ -1015,18 +1015,20 @@ const MiniAttemptStat = ({ label, value }: { label: string; value: string | numb
   </div>
 );
 
-const AttemptGroupCard = ({
-  group,
-  isOpen,
-  onToggle,
-  getAttemptResultLink,
-  getAttemptRetryLink,
-}: {
+type AttemptGroupCardProps = {
   group: QuizAttemptGroup;
   isOpen: boolean;
   onToggle: () => void;
   getAttemptResultLink: (result: QuizResult, viewMode?: 'review' | 'analysis') => string;
   getAttemptRetryLink: (result: QuizResult) => string;
+};
+
+const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
+  group,
+  isOpen,
+  onToggle,
+  getAttemptResultLink,
+  getAttemptRetryLink,
 }) => {
   const latest = group.latestAttempt;
   const best = group.bestAttempt;

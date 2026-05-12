@@ -665,17 +665,17 @@ const Plan: React.FC = () => {
       weakSubjectFocus.map((item, index) => [item.subjectId, index]),
     );
 
-    const rankedSubjectIds = [
-      ...new Set(
+    const rankedSubjectIds = Array.from(
+      new Set<string>(
         currentPlan.subjectIds
-          .slice()
+          .map(String)
           .sort(
             (a, b) =>
               (subjectPriority.get(a) ?? Number.MAX_SAFE_INTEGER) -
               (subjectPriority.get(b) ?? Number.MAX_SAFE_INTEGER),
           ),
       ),
-    ];
+    );
 
     const taskPools = new Map<
       string,
@@ -704,7 +704,7 @@ const Plan: React.FC = () => {
         taskPools.get(subjectKey)![task.type].push(task);
       });
 
-    const subjectOrder = [
+    const subjectOrder: string[] = [
       ...rankedSubjectIds,
       ...Array.from(taskPools.keys()).filter((key) => key === '__general__' || !rankedSubjectIds.includes(key)),
     ];

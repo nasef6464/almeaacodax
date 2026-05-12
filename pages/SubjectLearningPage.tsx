@@ -202,13 +202,13 @@ export const SubjectLearningPage: React.FC = () => {
       return;
     }
 
-    const directTopic = findByEntityId(subjectTopics, topicId);
+    const directTopic = findByEntityId(subjectTopics as Topic[], topicId);
     if (!directTopic) {
       return;
     }
 
     if (directTopic.parentId) {
-      const parentTopic = findByEntityId(subjectTopics, directTopic.parentId);
+      const parentTopic = findByEntityId(subjectTopics as Topic[], directTopic.parentId);
       setSelectedTopic(parentTopic || directTopic);
       setSelectedSubTopic(parentTopic ? directTopic : null);
     } else {
@@ -243,7 +243,7 @@ export const SubjectLearningPage: React.FC = () => {
       }
 
       return descendantIds.some((descendantId) => {
-        const descendantTopic = findByEntityId(subjectTopics, descendantId);
+        const descendantTopic = findByEntityId(subjectTopics as Topic[], descendantId);
         return (descendantTopic?.quizIds || []).some((quizId) => matchesEntityId(quiz, quizId));
       });
     });

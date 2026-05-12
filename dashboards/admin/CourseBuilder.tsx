@@ -6,6 +6,8 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { useStore } from '../../store/useStore';
 import { Plus, GripVertical, Trash2, Edit2, Video, FileText, HelpCircle, File, Settings, BookOpen, Info, Save, X } from 'lucide-react';
 
+const SortableDraggable = Draggable as any;
+
 interface CourseBuilderProps {
   initialCourse?: Course;
   onSave: (course: Partial<Course>) => void;
@@ -123,7 +125,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
       newModules.splice(destination.index, 0, reorderedItem);
       
       // Update order property
-      const updatedModules = newModules.map((m, index) => ({ ...m, order: index + 1 }));
+      const updatedModules = newModules.map((m, index) => ({ ...(m as Module), order: index + 1 }));
       setCourseData(prev => ({ ...prev, modules: updatedModules }));
       return;
     }
@@ -140,7 +142,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
       newLessons.splice(destination.index, 0, reorderedItem);
 
       // Update order property
-      const updatedLessons = newLessons.map((l, index) => ({ ...l, order: index + 1 }));
+      const updatedLessons = newLessons.map((l, index) => ({ ...(l as Lesson), order: index + 1 }));
       newModules[moduleIndex] = { ...newModules[moduleIndex], lessons: updatedLessons };
 
       setCourseData(prev => ({ ...prev, modules: newModules }));
@@ -271,7 +273,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                       multiple
                       value={courseData.skills || []}
                       onChange={(e) => {
-                        const values = Array.from(e.target.selectedOptions, option => option.value);
+                        const values = Array.from(e.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value);
                         handleBasicChange('skills', values);
                       }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"
@@ -369,7 +371,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                       {courseData.modules?.map((module, index) => (
-                        <Draggable key={module.id} draggableId={module.id} index={index}>
+                        <SortableDraggable key={module.id} draggableId={module.id} index={index}>
                           {(provided) => (
                             <div 
                               ref={provided.innerRef} 
@@ -401,7 +403,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                                 {(provided) => (
                                   <div {...provided.droppableProps} ref={provided.innerRef} className="p-4 space-y-2 min-h-[50px]">
                                     {module.lessons.map((lesson, lessonIndex) => (
-                                      <Draggable key={lesson.id} draggableId={lesson.id} index={lessonIndex}>
+                                      <SortableDraggable key={lesson.id} draggableId={lesson.id} index={lessonIndex}>
                                         {(provided) => (
                                           <div 
                                             ref={provided.innerRef}
@@ -427,7 +429,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                                             </div>
                                           </div>
                                         )}
-                                      </Draggable>
+                                      </SortableDraggable>
                                     ))}
                                     {provided.placeholder}
                                     
@@ -451,7 +453,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                               </Droppable>
                             </div>
                           )}
-                        </Draggable>
+                        </SortableDraggable>
                       ))}
                       {provided.placeholder}
                     </div>

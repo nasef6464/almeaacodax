@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { reportClientEvent } from '../services/clientTelemetry';
 
 type Props = {

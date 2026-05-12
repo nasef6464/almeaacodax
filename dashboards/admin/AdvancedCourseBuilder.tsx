@@ -13,6 +13,8 @@ import {
   Link as LinkIcon, Lock, Unlock, Globe, ChevronDown, ChevronUp
 } from 'lucide-react';
 
+const SortableDraggable = Draggable as any;
+
 interface AdvancedCourseBuilderProps {
   initialCourse?: Course;
   onSave: (course: Partial<Course>) => void;
@@ -190,7 +192,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       const newModules = Array.from(courseData.modules || []);
       const [reorderedItem] = newModules.splice(source.index, 1);
       newModules.splice(destination.index, 0, reorderedItem);
-      const updatedModules = newModules.map((m, index) => ({ ...m, order: index + 1 }));
+      const updatedModules = newModules.map((m, index) => ({ ...(m as Module), order: index + 1 }));
       setCourseData(prev => ({ ...prev, modules: updatedModules }));
       return;
     }
@@ -205,7 +207,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       const [reorderedItem] = newLessons.splice(source.index, 1);
       newLessons.splice(destination.index, 0, reorderedItem);
 
-      const updatedLessons = newLessons.map((l, index) => ({ ...l, order: index + 1 }));
+      const updatedLessons = newLessons.map((l, index) => ({ ...(l as Lesson), order: index + 1 }));
       newModules[moduleIndex] = { ...newModules[moduleIndex], lessons: updatedLessons };
 
       setCourseData(prev => ({ ...prev, modules: newModules }));
@@ -309,7 +311,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-6">
                       {courseData.modules?.map((module, index) => (
-                        <Draggable key={module.id} draggableId={module.id} index={index}>
+                        <SortableDraggable key={module.id} draggableId={module.id} index={index}>
                           {(provided) => (
                             <div 
                               ref={provided.innerRef} 
@@ -342,7 +344,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                 {(provided) => (
                                   <div {...provided.droppableProps} ref={provided.innerRef} className="p-4 space-y-3 min-h-[50px]">
                                     {module.lessons.map((lesson, lessonIndex) => (
-                                      <Draggable key={lesson.id} draggableId={lesson.id} index={lessonIndex}>
+                                      <SortableDraggable key={lesson.id} draggableId={lesson.id} index={lessonIndex}>
                                         {(provided) => (
                                           <div 
                                             ref={provided.innerRef}
@@ -382,7 +384,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                             </div>
                                           </div>
                                         )}
-                                      </Draggable>
+                                      </SortableDraggable>
                                     ))}
                                     {provided.placeholder}
                                     
@@ -441,7 +443,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                               </Droppable>
                             </div>
                           )}
-                        </Draggable>
+                        </SortableDraggable>
                       ))}
                       {provided.placeholder}
                     </div>
@@ -583,7 +585,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         multiple
                         value={courseData.skills || []}
                         onChange={(e) => {
-                          const values = Array.from(e.target.selectedOptions, option => option.value);
+                          const values = Array.from(e.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value);
                           setCourseData({...courseData, skills: values});
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"

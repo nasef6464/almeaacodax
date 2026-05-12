@@ -246,11 +246,12 @@ const useParentScopedResults = () => {
                     (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
                     0
                 );
+                const studentName = String(name);
                 return {
-                    id: name,
-                    name,
+                    id: studentName,
+                    name: studentName,
                     email: '',
-                    avatar: `https://i.pravatar.cc/100?u=${encodeURIComponent(name)}`,
+                    avatar: `https://i.pravatar.cc/100?u=${encodeURIComponent(studentName)}`,
                     results: studentResults.length,
                     average,
                     weakCount,

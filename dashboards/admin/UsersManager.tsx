@@ -78,7 +78,7 @@ const MultiSelectField: React.FC<{
     <select
         multiple
         value={value}
-        onChange={(event) => onChange(Array.from(event.target.selectedOptions).map((option) => option.value))}
+        onChange={(event) => onChange(Array.from(event.currentTarget.selectedOptions as HTMLCollectionOf<HTMLOptionElement>).map((option) => option.value))}
         className={`w-full border border-gray-300 rounded-lg px-3 ${
             size === 'sm' ? 'py-2 h-28 text-sm' : 'py-2.5 h-32 text-sm'
         } focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white`}
