@@ -10,9 +10,11 @@ function assertIncludes(needle) {
   }
 }
 
-assertIncludes("sans: ['Tajawal', 'ui-sans-serif', 'system-ui']");
-assertIncludes("tajawal: ['Tajawal', 'ui-sans-serif', 'system-ui']");
+assertIncludes("sans: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']");
+assertIncludes("tajawal: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui']");
 assertIncludes('family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-assertIncludes("html,\n      body,\n      #root {\n        font-family: 'Tajawal', sans-serif;");
+assertIncludes("--platform-font-body: 'Tajawal';");
+assertIncludes("--platform-font-heading: 'Tajawal';");
+assertIncludes("font-family: var(--platform-font-body), 'Tajawal', sans-serif;");
 
 console.log('Typography contract passed: Tajawal font and full hero weight range are preserved.');

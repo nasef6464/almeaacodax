@@ -594,6 +594,31 @@ export interface HomepageSettings {
     featuredArticleLessonIds?: string[];
 }
 
+export type PlatformFontFamily =
+    | 'tajawal'
+    | 'cairo'
+    | 'ibm-plex-sans-arabic'
+    | 'noto-kufi-arabic'
+    | 'system'
+    | 'custom';
+
+export interface PlatformFontUpload {
+    name?: string;
+    dataUrl?: string;
+    fileName?: string;
+    mimeType?: string;
+    size?: number;
+}
+
+export interface PlatformFontSettings {
+    key: string;
+    bodyFont: PlatformFontFamily;
+    headingFont: PlatformFontFamily;
+    bodyCustomFont?: PlatformFontUpload;
+    headingCustomFont?: PlatformFontUpload;
+    updatedAt?: string | number;
+}
+
 export interface User {
     id: string;
     name: string;

@@ -10,6 +10,7 @@ import { RequireRole } from './components/auth/RequireRole';
 import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
+import { PlatformFontBootstrap } from './components/PlatformFontBootstrap';
 import { APP_VERSION } from './utils/appVersion';
 import { installGlobalClientTelemetry } from './services/clientTelemetry';
 
@@ -400,6 +401,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <PlatformFontBootstrap />
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
         <SeoRouteMeta />

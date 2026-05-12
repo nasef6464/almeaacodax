@@ -359,6 +359,17 @@ export const api = {
       body: payload,
       token,
     }),
+  getPlatformFontSettings: (token?: string | null) =>
+    request<unknown>("/content/platform-font-settings", {
+      token,
+      cache: "no-store",
+    }),
+  updatePlatformFontSettings: (payload: unknown, token?: string | null) =>
+    request<unknown>("/content/platform-font-settings", {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   createTopic: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/topics", {
       method: "POST",

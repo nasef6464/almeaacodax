@@ -14,6 +14,7 @@ import { AccessCodeModel } from "../models/AccessCode.js";
 import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
+import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
@@ -166,6 +167,26 @@ const announcementAdUpdateSchema = z.object({
   endsAt: z.number().nullable().optional(),
   createdAt: z.number().optional(),
   updatedAt: z.number().optional(),
+});
+
+const platformFontUploadSchema = z.object({
+  name: z.string().max(80).optional().default(""),
+  dataUrl: z
+    .string()
+    .max(700_000)
+    .regex(/^data:font\/(woff2?|ttf|otf);base64,[A-Za-z0-9+/=]+$/)
+    .optional()
+    .or(z.literal("")),
+  fileName: z.string().max(160).optional().default(""),
+  mimeType: z.string().max(80).optional().default(""),
+  size: z.number().min(0).max(500_000).optional().default(0),
+});
+
+const platformFontSettingsSchema = z.object({
+  bodyFont: z.enum(["tajawal", "cairo", "ibm-plex-sans-arabic", "noto-kufi-arabic", "system", "custom"]).default("tajawal"),
+  headingFont: z.enum(["tajawal", "cairo", "ibm-plex-sans-arabic", "noto-kufi-arabic", "system", "custom"]).default("tajawal"),
+  bodyCustomFont: platformFontUploadSchema.optional(),
+  headingCustomFont: platformFontUploadSchema.optional(),
 });
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
@@ -601,6 +622,14 @@ const defaultHomepageSettings = {
   featuredArticleLessonIds: [],
 };
 
+const defaultPlatformFontSettings = {
+  key: "default",
+  bodyFont: "tajawal",
+  headingFont: "tajawal",
+  bodyCustomFont: {},
+  headingCustomFont: {},
+};
+
 export const contentRouter = Router();
 
 contentRouter.get(
@@ -623,6 +652,35 @@ contentRouter.patch(
   asyncHandler(async (req, res) => {
     const payload = homepageSettingsSchema.parse(req.body);
     const settings = await HomepageSettingsModel.findOneAndUpdate(
+      { key: "default" },
+      { $set: payload, $setOnInsert: { key: "default" } },
+      { new: true, upsert: true },
+    );
+
+    return res.json(settings);
+  }),
+);
+
+contentRouter.get(
+  "/platform-font-settings",
+  optionalAuth,
+  asyncHandler(async (_req, res) => {
+    let settings = await PlatformFontSettingsModel.findOne({ key: "default" });
+    if (!settings) {
+      settings = await PlatformFontSettingsModel.create(defaultPlatformFontSettings);
+    }
+
+    return res.json(settings);
+  }),
+);
+
+contentRouter.patch(
+  "/platform-font-settings",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = platformFontSettingsSchema.parse(req.body);
+    const settings = await PlatformFontSettingsModel.findOneAndUpdate(
       { key: "default" },
       { $set: payload, $setOnInsert: { key: "default" } },
       { new: true, upsert: true },

@@ -25,8 +25,8 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Tajawal', 'ui-sans-serif', 'system-ui'],
-              tajawal: ['Tajawal', 'ui-sans-serif', 'system-ui'],
+              sans: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui'],
+              tajawal: ['var(--platform-font-body)', 'Tajawal', 'ui-sans-serif', 'system-ui'],
             },
             colors: {
               primary: {
@@ -56,7 +56,15 @@
       html,
       body,
       #root {
-        font-family: 'Tajawal', sans-serif;
+        --platform-font-body: 'Tajawal';
+        --platform-font-heading: 'Tajawal';
+        font-family: var(--platform-font-body), 'Tajawal', sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      .platform-heading-font {
+        font-family: var(--platform-font-heading), var(--platform-font-body), 'Tajawal', sans-serif;
       }
       body {
         background-color: #f9fafb;

@@ -19,6 +19,7 @@ import {
     Video,
     Bot,
     Megaphone,
+    Type,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
@@ -45,6 +46,7 @@ const QuizzesManager = lazyNamed(() => import('./QuizzesManager'), 'QuizzesManag
 const SkillsTreeManager = lazyNamed(() => import('./SkillsTreeManager'), 'SkillsTreeManager');
 const FinancialManager = lazyNamed(() => import('./FinancialManager'), 'FinancialManager');
 const HomepageManager = lazyNamed(() => import('./HomepageManager'), 'HomepageManager');
+const PlatformFontsManager = lazyNamed(() => import('./PlatformFontsManager'), 'PlatformFontsManager');
 const LiveSessionsManager = lazyNamed(() => import('./LiveSessionsManager'), 'LiveSessionsManager');
 const BackupManager = lazyNamed(() => import('./BackupManager'), 'BackupManager');
 const OperationsCommandCenter = lazyNamed(() => import('./OperationsCommandCenter'), 'OperationsCommandCenter');
@@ -623,6 +625,16 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'announcement-ads', label: 'إدارة الإعلانات', icon: <Megaphone size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
+        if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'platform-fonts')) {
+            const adsIndex = nextItems.findIndex((item) => item.id === 'announcement-ads');
+            const targetIndex = adsIndex === -1 ? insertIndex : adsIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'platform-fonts', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø®Ø·ÙˆØ· Ø§Ù„Ù…Ù†ØµØ©', icon: <Type size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1450,6 +1462,8 @@ export const AdminDashboard: React.FC = () => {
                 return <HomepageManager />;
             case 'announcement-ads':
                 return <AnnouncementAdsManager />;
+            case 'platform-fonts':
+                return <PlatformFontsManager />;
             case 'live-sessions':
                 return <LiveSessionsManager />;
             case 'backups':

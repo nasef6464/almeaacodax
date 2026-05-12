@@ -304,3 +304,13 @@
 - Added guard `npm run smoke:health-readiness` and updated `DEPLOYMENT_GUIDE.md`.
 - Chrome visual/function check completed on `http://127.0.0.1:5174/#/admin-dashboard`: opened homepage manager as a dev admin, clicked `حفظ التعديلات`, and confirmed `تم حفظ إعدادات الصفحة الرئيسية بنجاح` with no raw `Authentication required`.
 - Completion rule reinforced: any admin feature is not considered closed unless the save path and the public/user-facing effect are both checked.
+
+## Platform Fonts Management Sprint - 2026-05-12
+- User explicitly asked to add platform-wide font management after asking to restore the old typography. Default remains Tajawal; no visual font change happens unless an admin saves a new setting.
+- Added backend model and API: `GET/PATCH /api/content/platform-font-settings`; public read, admin-only write.
+- Added admin tab `platform-fonts` under the admin dashboard with body font, heading font, recommended Arabic fonts, live preview, reset to default, and WOFF/WOFF2/TTF/OTF upload capped at 500KB.
+- Added runtime font bootstrap so public/student/admin pages apply saved font settings through CSS variables: `--platform-font-body` and `--platform-font-heading`.
+- Added guards: `npm run smoke:platform-fonts` and updated `npm run smoke:typography`.
+- Verified: `npm run smoke:platform-fonts`, `npm run smoke:typography`, `npm run typecheck`, `npm run server:build`, `npm run build`.
+- Chrome visual/function check: opened `http://127.0.0.1:5174/#/admin-dashboard?tab=platform-fonts`, confirmed the manager renders with upload controls and Tajawal defaults, clicked save, and confirmed no raw `Authentication required`.
+- Scope: global typography controls only. No homepage content, payment/access, quiz/training separation, package logic, layout spacing, or colors changed.
