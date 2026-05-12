@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { api } from '../services/api';
-import { Role, User as StoreUser } from '../types';
+import { Role } from '../types';
 import { useStore } from '../store/useStore';
 import { DEV_TOKEN_PREFIX } from '../utils/devSession';
 
@@ -123,28 +123,6 @@ const buildSessionUser = (user: BackendAuthUser, token: string): SessionUser => 
   token,
 });
 
-const normalizeStoreUser = (user: BackendAuthUser): StoreUser => ({
-  id: String(user.id || user._id || user.email),
-  name: user.name,
-  email: user.email,
-  avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
-  role: roleMap[user.role],
-  points: user.points ?? 0,
-  badges: user.badges ?? [],
-  isActive: user.isActive ?? true,
-  schoolId: user.schoolId ?? undefined,
-  groupIds: user.groupIds ?? [],
-  linkedStudentIds: user.linkedStudentIds ?? [],
-  managedPathIds: user.managedPathIds ?? [],
-  managedSubjectIds: user.managedSubjectIds ?? [],
-  subscription: {
-    plan: user.subscription?.plan ?? 'free',
-    expiresAt: user.subscription?.expiresAt,
-    purchasedCourses: toArray(user.subscription?.purchasedCourses),
-    purchasedPackages: toArray(user.subscription?.purchasedPackages),
-  },
-});
-
 const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAuthUser | null) => {
   if (!sessionUser) {
     return;
@@ -247,19 +225,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    Promise.all([
-      api.getCurrentUser(),
-      api.getQuizResults(),
-      api.getQuestionAttempts(),
-      user.role === 'admin' ? api.getAdminUsers() : Promise.resolve({ users: [] }),
-    ])
-      .then(([currentUserResponse, results, questionAttempts, usersResponse]) => {
+    let cancelled = false;
+    let idleHandle: number | undefined;
+    let timer: number | undefined;
+
+    const hydrateNonCriticalSessionData = () => {
+      Promise.all([
+        api.getQuizResults(),
+        api.getQuestionAttempts(),
+      ])
+        .then(([results, questionAttempts]) => {
+          if (cancelled) {
+            return;
+          }
+
+          useStore.getState().hydrateExamResults(results as any[]);
+          useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
+        })
+        .catch((error) => {
+          console.warn('Failed to hydrate non-critical session data:', error);
+        });
+    };
+
+    api.getCurrentUser()
+      .then((currentUserResponse) => {
+        if (cancelled) {
+          return;
+        }
+
         syncStoreUser(user, (currentUserResponse as { user?: BackendAuthUser })?.user || null);
-        useStore.getState().hydrateExamResults(results as any[]);
-        useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
-        if (user.role === 'admin') {
-          const normalizedUsers = ((usersResponse as { users?: BackendAuthUser[] })?.users || []).map(normalizeStoreUser);
-          useStore.getState().hydrateUsers(normalizedUsers);
+
+        const requestIdle = window.requestIdleCallback?.bind(window);
+        if (requestIdle) {
+          idleHandle = requestIdle(hydrateNonCriticalSessionData, { timeout: 2500 });
+        } else {
+          timer = window.setTimeout(hydrateNonCriticalSessionData, 900);
         }
       })
       .catch((error) => {
@@ -270,6 +270,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           resetStoreUser();
         }
       });
+
+    return () => {
+      cancelled = true;
+      if (idleHandle !== undefined) {
+        window.cancelIdleCallback?.(idleHandle);
+      }
+      if (timer !== undefined) {
+        window.clearTimeout(timer);
+      }
+    };
   }, [user]);
 
   const persistSession = (sessionUser: SessionUser, backendUser: BackendAuthUser) => {

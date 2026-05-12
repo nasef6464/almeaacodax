@@ -185,8 +185,23 @@ export const AdminDashboard: React.FC = () => {
     };
 
     useEffect(() => {
-        loadAiStatus();
-    }, [user.role]);
+        if (activeTab !== 'settings' || user.role !== Role.ADMIN) {
+            return;
+        }
+
+        const requestIdle = window.requestIdleCallback?.bind(window);
+        if (requestIdle) {
+            const handle = requestIdle(() => {
+                void loadAiStatus();
+            }, { timeout: 1800 });
+            return () => window.cancelIdleCallback?.(handle);
+        }
+
+        const timer = window.setTimeout(() => {
+            void loadAiStatus();
+        }, 600);
+        return () => window.clearTimeout(timer);
+    }, [activeTab, user.role]);
 
     const librarySubjectOptions = useMemo(
         () =>

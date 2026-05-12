@@ -62,6 +62,11 @@ const prefetchCommonRouteModules = (role?: string | null) => {
 };
 
 const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
+  '/quiz',
+  '/results',
+];
+
+const DATA_BOOTSTRAP_START_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
@@ -98,6 +103,14 @@ const shouldBlockInitialBootstrap = () => {
 
 const isDataBootstrapBlockingPath = (path: string) =>
   DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
+const shouldStartInitialBootstrap = () => {
+  const path = getInitialRouterPath();
+  return DATA_BOOTSTRAP_START_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+};
+
+const shouldStartBootstrapForPath = (path: string) =>
+  DATA_BOOTSTRAP_START_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
 const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [
   '/dashboard',
@@ -292,6 +305,8 @@ const App: React.FC = () => {
   useEffect(() => {
     window.__ALMEAA_APP_VERSION__ = APP_VERSION;
     window.__ALMEAA_API_BASE_URL__ = api.baseUrl;
+    window.__ALMEAA_PERF_DEBUG__ = new URLSearchParams(window.location.search).get('perf') === '1';
+    window.__ALMEAA_APP_STARTED_AT__ = performance.now();
   }, []);
 
   useEffect(() => installGlobalClientTelemetry(), []);
@@ -477,17 +492,18 @@ const App: React.FC = () => {
         void loadAdminDashboardModule();
       }
 
-      if (shouldBlockInitialBootstrap()) {
-        cancelDeferredBootstrap();
+      if (shouldStartBootstrapForPath(path)) {
+        if (isDataBootstrapBlockingPath(path)) {
+          cancelDeferredBootstrap();
+        }
         startBootstrap();
       }
     };
 
     const requestIdle = window.requestIdleCallback?.bind(window);
 
-    if (shouldBlockInitialBootstrap()) {
+    if (shouldStartInitialBootstrap()) {
       startIfRouteNeedsData();
-      startBootstrap();
     } else if (requestIdle) {
       publicAdsTimer = globalThis.setTimeout(() => {
         void loadPublicNavigationBootstrap();

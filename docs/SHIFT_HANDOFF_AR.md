@@ -179,6 +179,15 @@
 - Do not restore the old global `no-store`; it made repeat visits redownload built assets and was one cause of Vercel slowness.
 - Hashed assets now use one-year immutable caching, while the SPA HTML shell uses revalidation so new deployments still appear.
 
+## Frontend Bootstrap Performance Sprint - 2026-05-12
+- Closed the Tailwind production-build pass: `cdn.tailwindcss.com` and the old importmap were removed from `index.html`; Tailwind now builds through PostCSS from `styles/main.css`.
+- First render is no longer blocked by the full data bootstrap on public, dashboard, admin, and category pages. Only quiz/result routes remain blocking because they need real data before interaction.
+- `AuthContext` now treats `/auth/me` as the critical auth request and defers quiz results/question attempts; admin users load only inside the users tab.
+- Admin dashboard shell appears first; AI/operations status and users are loaded by the relevant tab instead of delaying the whole page.
+- Added lightweight performance telemetry for slow API calls when `?perf=1` is present or in development.
+- Verified locally: `npm run typecheck`, `npm run build`, `npm --prefix server run build`, `npm run smoke:performance`, `npm run smoke:route-loading`, `npm run smoke:runtime-source`, plus in-app browser checks for `/`, `/#/admin-dashboard`, `/#/dashboard`, and `/#/category/p_1777779639431`.
+- Remaining direct performance work: measure the deployed Vercel build after push, then handle any slow backend endpoint separately with concrete timing.
+
 ## Dashboard Bootstrap Performance Sprint - 2026-05-12
 - Production probe found the direct current bottleneck: `/api/quizzes/questions` returned about 726KB and took about 3.1s, while the Vercel shell and taxonomy/content bootstrap were much lighter.
 - Dashboards and reports now defer the general question-bank bootstrap instead of blocking the whole route on it.

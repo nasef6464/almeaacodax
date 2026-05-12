@@ -36,6 +36,7 @@ const getStoredSessionToken = (): string | null => {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const resolvedToken = options.token === undefined ? getStoredSessionToken() : options.token;
+  const startedAt = performance.now();
 
   let response: Response;
   try {
@@ -52,6 +53,15 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   } catch (error) {
     console.warn(`API network error for ${path}:`, error);
     throw new Error("تعذر الاتصال بالخادم الآن. تحقق من الإنترنت أو جرّب مرة أخرى.");
+  }
+
+  const durationMs = Math.round(performance.now() - startedAt);
+  const shouldLogPerf =
+    durationMs > 1000 &&
+    ((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ||
+      (globalThis as { __ALMEAA_PERF_DEBUG__?: boolean }).__ALMEAA_PERF_DEBUG__);
+  if (shouldLogPerf) {
+    console.info(`[almeaa:api] ${path} ${response.status} ${durationMs}ms`);
   }
 
   if (!response.ok) {

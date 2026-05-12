@@ -31,11 +31,30 @@ export const PlatformFontBootstrap = () => {
         };
 
         window.addEventListener(PLATFORM_FONT_SETTINGS_UPDATED, handleUpdate);
-        void loadFonts();
+
+        const requestIdle = window.requestIdleCallback?.bind(window);
+        let idleHandle: number | undefined;
+        let timer: number | undefined;
+
+        if (requestIdle) {
+            idleHandle = requestIdle(() => {
+                void loadFonts();
+            }, { timeout: 2500 });
+        } else {
+            timer = window.setTimeout(() => {
+                void loadFonts();
+            }, 1200);
+        }
 
         return () => {
             cancelled = true;
             window.removeEventListener(PLATFORM_FONT_SETTINGS_UPDATED, handleUpdate);
+            if (idleHandle !== undefined) {
+                window.cancelIdleCallback?.(idleHandle);
+            }
+            if (timer !== undefined) {
+                window.clearTimeout(timer);
+            }
         };
     }, []);
 

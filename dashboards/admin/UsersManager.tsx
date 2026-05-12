@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Download, Edit2, Filter, MoreVertical, Plus, Search, UserCheck, UserX, X } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { CategoryPath, CategorySubject, Role, User } from '../../types';
@@ -112,6 +112,7 @@ export const UsersManager: React.FC = () => {
         groups,
         paths,
         subjects,
+        hydrateUsers,
         addUser,
         updateUser,
         toggleUserStatus,
@@ -127,6 +128,8 @@ export const UsersManager: React.FC = () => {
     const [nameDrafts, setNameDrafts] = useState<Record<string, string>>({});
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUsersLoading, setIsUsersLoading] = useState(false);
+    const [usersLoadError, setUsersLoadError] = useState('');
     const [createError, setCreateError] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
@@ -181,6 +184,36 @@ export const UsersManager: React.FC = () => {
         () => manageableFilteredUsers.filter((user) => user.isActive === false).length,
         [manageableFilteredUsers],
     );
+
+    useEffect(() => {
+        if (users.length > 0 || isUsersLoading) {
+            return;
+        }
+
+        let isMounted = true;
+        setIsUsersLoading(true);
+        setUsersLoadError('');
+
+        api.getAdminUsers()
+            .then((response) => {
+                if (!isMounted) return;
+                hydrateUsers((response.users || []).map(buildStoreUser));
+            })
+            .catch((error) => {
+                if (!isMounted) return;
+                console.error('Failed to load admin users:', error);
+                setUsersLoadError('تعذر تحميل المستخدمين الآن. حاول تحديث التبويب بعد لحظات.');
+            })
+            .finally(() => {
+                if (isMounted) {
+                    setIsUsersLoading(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [hydrateUsers, isUsersLoading, users.length]);
 
     const handleRoleChange = (userId: string, newRole: Role) => {
         updateUser(userId, { role: newRole });
@@ -518,6 +551,12 @@ export const UsersManager: React.FC = () => {
                 </button>
                 </div>
             </div>
+
+            {(isUsersLoading || usersLoadError) && (
+                <div className={`rounded-xl border px-4 py-3 text-sm ${usersLoadError ? 'border-red-100 bg-red-50 text-red-700' : 'border-amber-100 bg-amber-50 text-amber-700'}`}>
+                    {usersLoadError || 'جاري تحميل المستخدمين داخل هذا التبويب فقط...'}
+                </div>
+            )}
 
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">

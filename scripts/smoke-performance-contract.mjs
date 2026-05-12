@@ -44,9 +44,12 @@ assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'vimeo'");
 assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'drive'");
 assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'file'");
 
-assertIncludes('index.html', 'window.tailwind = window.tailwind || {};');
-assertIncludes('index.html', 'window.tailwind.config = {');
-assertIncludes('index.html', '<script src="https://cdn.tailwindcss.com"></script>');
+assertNotIncludes('index.html', 'cdn.tailwindcss.com');
+assertNotIncludes('index.html', '<script type="importmap">');
+assertIncludes('index.tsx', "import './styles/main.css';");
+assertIncludes('styles/main.css', '@tailwind base;');
+assertIncludes('tailwind.config.cjs', './components/**/*.{ts,tsx}');
+assertIncludes('postcss.config.cjs', 'tailwindcss');
 
 assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 assertNotIncludes('pages/Reports.tsx', "import * as XLSX from 'xlsx';");
@@ -103,10 +106,12 @@ assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankM
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
 
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [');
+assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_START_PREFIXES = [');
 assertIncludes('App.tsx', 'const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [');
 assertIncludes('App.tsx', 'const shouldDeferQuestionBootstrap = (path: string) =>');
 assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
+assertIncludes('App.tsx', 'shouldStartBootstrapForPath(path)');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
 assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });');
 assertIncludes('services/api.ts', 'ids?: string;');
@@ -130,6 +135,9 @@ assertIncludes('server/src/routes/content.routes.ts', 'scopeFilterToActivePaths'
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
+assertIncludes('App.tsx', 'window.__ALMEAA_PERF_DEBUG__');
+assertIncludes('services/api.ts', '[almeaa:api]');
+assertIncludes('components/PlatformFontBootstrap.tsx', 'requestIdle(() =>');
 assertIncludes('App.tsx', 'const loadPublicAnnouncementAds = async () => {');
 assertIncludes('App.tsx', 'api.getPublicAnnouncementAds()');
 assertIncludes('App.tsx', 'publicAdsIdleHandle = requestIdle(() => {');
