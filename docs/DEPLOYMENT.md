@@ -75,7 +75,23 @@ Run this before deployment if cache headers are edited:
 
 ```bash
 npm run smoke:deployment-cache
+npm run smoke:load-tests
 ```
+
+### Load Testing
+
+The repeatable load-test entrypoint is `load-tests/k6-platform-journey.js`.
+
+Run it only against staging or production-like infrastructure:
+
+```bash
+k6 run load-tests/k6-platform-journey.js \
+  -e API_BASE=https://YOUR_RENDER_SERVICE.onrender.com/api \
+  -e STUDENT_EMAIL=student@example.com \
+  -e STUDENT_PASSWORD=StrongPassword123
+```
+
+Record results in `LOAD_TEST_REPORT.md` before increasing student rollout size.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

@@ -175,3 +175,10 @@
 - Hashed assets now use one-year immutable caching, while the SPA HTML shell uses revalidation so new deployments still appear.
 - Guard: `npm run smoke:deployment-cache`.
 - Scope: deployment/performance only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.
+
+## Load Testing Sprint - 2026-05-12
+- Added `load-tests/k6-platform-journey.js` for staged 100/500/1000 user checks.
+- Added `load-tests/README.md` and `npm run smoke:load-tests`.
+- This is the official measurement path before claiming large student capacity.
+- Do not claim 10k-user readiness until real runs are recorded with upgraded Render and MongoDB metrics.
+- Scope: test/readiness tooling only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.

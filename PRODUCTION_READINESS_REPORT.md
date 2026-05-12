@@ -26,6 +26,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Added a lightweight paid-content intro before payment methods so students first see a clear locked-content message and suitable package choices, then continue to payment details only if they choose.
 - Fixed Vercel cache policy: hashed production assets now use long immutable caching, while the HTML shell only revalidates. This removes the previous `no-store` rule that forced browsers to redownload every JavaScript/CSS asset on every visit.
 - Added `smoke:deployment-cache` so production cache headers cannot silently regress to a slow no-store configuration.
+- Added a k6 load-test journey and `smoke:load-tests` contract so traffic readiness is measured instead of guessed.
 
 ## Still Required Before Large Launch
 
@@ -35,7 +36,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Queue-backed notifications for bulk delivery.
 - Full RBAC and tenant-scope audit.
 - Monitoring, structured logs, uptime checks, and a richer audit-log UI.
-- Load testing at 100, 500, and 1000 concurrent students.
+- Real load-test execution at 100, 500, and 1000 concurrent students with Render/MongoDB metrics recorded.
 - Automated offsite backup and tested restore workflow.
 
 ## Launch Recommendation

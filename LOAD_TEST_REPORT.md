@@ -109,3 +109,29 @@ Expected effect:
 
 - First visit still depends on remaining large chunks and Render API wake-up.
 - Repeat visits should be faster because Vercel/browser caching can finally reuse immutable assets.
+
+## Load Test Scripts - 2026-05-12
+
+Closed the first measurable load-testing gate:
+
+- Added `load-tests/k6-platform-journey.js` with staged 100, 500, and 1000 virtual-user gates.
+- The journey covers health, content bootstrap, taxonomy bootstrap, login, current user, student results, and optional quiz submission.
+- Added `load-tests/README.md` with the exact environment variables needed to run against Render/staging.
+- Added `npm run smoke:load-tests` to guard the test plan files.
+
+How to run a real staging test:
+
+```bash
+k6 run load-tests/k6-platform-journey.js \
+  -e API_BASE=https://YOUR_RENDER_SERVICE.onrender.com/api \
+  -e STUDENT_EMAIL=student@example.com \
+  -e STUDENT_PASSWORD=StrongPassword123 \
+  -e QUIZ_ID=quiz_id_optional \
+  -e QUIZ_SOURCE=training
+```
+
+Important production note:
+
+- This does not prove 10k-user readiness by itself.
+- It creates the repeatable measurement path needed before launch.
+- Real 10k readiness still needs upgraded Render, MongoDB Atlas sizing, Redis/queue-backed notifications, and multiple staged runs with p95/p99 latency recorded.

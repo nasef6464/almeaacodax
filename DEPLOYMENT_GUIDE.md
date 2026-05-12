@@ -15,6 +15,7 @@ Run these before pushing a release intended for students:
 
 ```bash
 npm run smoke:deployment-cache
+npm run smoke:load-tests
 npm run smoke:performance
 npm run typecheck
 npm run build
@@ -29,6 +30,19 @@ Do not use `Cache-Control: no-store` for all files. Vite builds hashed asset nam
 - HTML shell: `no-cache, max-age=0, must-revalidate`
 
 This keeps repeat visits fast while still allowing new deployments to be discovered.
+
+## Load Test Gate
+
+Use `load-tests/k6-platform-journey.js` against staging or production-like infrastructure before claiming high traffic readiness.
+
+```bash
+k6 run load-tests/k6-platform-journey.js \
+  -e API_BASE=https://YOUR_RENDER_SERVICE.onrender.com/api \
+  -e STUDENT_EMAIL=student@example.com \
+  -e STUDENT_PASSWORD=StrongPassword123
+```
+
+For quiz-submit pressure, add `QUIZ_ID` and `QUIZ_SOURCE`.
 
 ## Still Needed For Large Launch
 
