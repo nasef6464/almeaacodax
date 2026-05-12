@@ -18,6 +18,7 @@ npm run smoke:deployment-cache
 npm run smoke:load-tests
 npm run smoke:monitoring
 npm run smoke:database
+npm run smoke:notifications
 npm run smoke:performance
 npm run typecheck
 npm run build
@@ -54,6 +55,15 @@ Set these in Render:
 - `SLOW_REQUEST_LOG_MS=1000`
 
 Use `REQUEST_LOG_LEVEL=debug` only briefly when investigating a specific issue. Backend logs now emit structured `http_request` lines for failed and slow API requests without logging request bodies or secrets.
+
+## Notification Provider Setup
+
+For staging-only provider simulation:
+
+- `EMAIL_PROVIDER=console`
+- `WHATSAPP_PROVIDER=console`
+
+For production, keep these unset until a real provider adapter and credentials are configured. Notification records will still be created and visible in delivery logs.
 
 ## Still Needed For Large Launch
 

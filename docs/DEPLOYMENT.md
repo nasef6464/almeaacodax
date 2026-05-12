@@ -34,6 +34,8 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
     - `AI_PROVIDER`: one of `gemini`, `openrouter`, `qwen`, `deepseek`, `openai`, `ollama`, `lmstudio`, or `none` (optional)
     - `REQUEST_LOG_LEVEL`: `normal` in production, `debug` only during short investigations
     - `SLOW_REQUEST_LOG_MS`: `1000` default threshold for slow API request logs
+    - `EMAIL_PROVIDER`: leave empty in production until a provider is configured; use `console` only in staging
+    - `WHATSAPP_PROVIDER`: leave empty in production until a provider is configured; use `console` only in staging
     - `AI_PROVIDER_ORDER`: recommended production order such as `gemini,openrouter,qwen,deepseek,openai`
     - `AI_REQUEST_TIMEOUT_MS`: defaults to `15000`
     - `GEMINI_API_KEY`: (Google AI Key)
@@ -80,6 +82,7 @@ npm run smoke:deployment-cache
 npm run smoke:load-tests
 npm run smoke:monitoring
 npm run smoke:database
+npm run smoke:notifications
 ```
 
 ### Load Testing
@@ -108,6 +111,10 @@ Render logs now include structured `http_request` JSON lines for failed and slow
 ### MongoDB Index Deployment
 
 This repo now defines production indexes in the Mongoose models for learning reads, payments, audit logs, users, groups, packages, and announcements. Deploy index changes during lower traffic where possible, then watch MongoDB Atlas index build and slow-query metrics.
+
+### Notification Providers
+
+The backend now creates notification delivery records and in-app notifications. External email/WhatsApp sending should stay disabled until provider credentials are ready. Use `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` only in staging smoke tests.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

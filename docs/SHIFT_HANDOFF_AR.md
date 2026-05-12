@@ -194,3 +194,10 @@
 - Added first-pass MongoDB indexes for high-traffic reads: learning bootstrap, topics, lessons, library, courses/packages, users, groups, payment requests, discount codes, access codes, audit logs, AI metrics, and announcement ads.
 - Added `DATABASE_REVIEW.md` and guard `npm run smoke:database`.
 - Scope: database performance/readiness only. No student, parent, admin, quiz, package, payment, training, or foundation behavior changed.
+
+## Notification Foundation Sprint - 2026-05-12
+- Added backend notification foundation: templates, delivery logs, in-app notifications, pending email/WhatsApp records, and admin APIs.
+- Added provider-safe console mode through `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` for staging only.
+- Added docs: `NOTIFICATION_SYSTEM_GUIDE.md` and `WHATSAPP_INTEGRATION_GUIDE.md`.
+- Added guard: `npm run smoke:notifications`.
+- Scope: backend messaging foundation only. No existing student learning/payment/quiz behavior changed.

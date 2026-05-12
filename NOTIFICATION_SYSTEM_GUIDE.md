@@ -1,0 +1,90 @@
+# Notification System Guide
+
+## Current Status
+
+This sprint adds the backend foundation for production-safe notifications.
+
+Implemented:
+
+- Notification templates with variables.
+- Notification delivery logs.
+- In-app notifications for students, parents, teachers, supervisors, and admins.
+- Email and WhatsApp delivery records as `pending` until a provider is configured.
+- Admin-only APIs for templates, delivery review, campaign creation, and processing pending messages.
+- A hard per-request recipient cap of 500 so bulk messages are batched instead of sent in one huge HTTP request.
+
+## API Summary
+
+Student/user:
+
+- `GET /api/notifications/me`
+- `PATCH /api/notifications/:id/read`
+
+Admin:
+
+- `GET /api/notifications/admin/templates`
+- `POST /api/notifications/admin/templates`
+- `GET /api/notifications/admin/deliveries`
+- `POST /api/notifications/admin/send`
+- `POST /api/notifications/admin/process-pending`
+
+## Delivery States
+
+- `pending`: waiting for external provider processing.
+- `sent`: delivered internally or through a configured provider.
+- `retrying`: attempted but not ready; will retry later.
+- `failed`: exhausted retries or failed permanently.
+
+## Provider Configuration
+
+Current safe provider mode:
+
+```text
+EMAIL_PROVIDER=console
+WHATSAPP_PROVIDER=console
+```
+
+`console` is for testing only. It writes a safe delivery log and marks messages as sent without calling a real provider.
+
+Production providers still need credentials and final adapters:
+
+- Email: Resend, SendGrid, Mailgun, or Amazon SES.
+- WhatsApp: WhatsApp Business Cloud API or Twilio.
+
+## Bulk Sending Rule
+
+Do not send thousands of external messages directly inside a normal web request.
+
+Use this flow:
+
+1. Admin creates a campaign with `POST /api/notifications/admin/send`.
+2. In-app records become visible immediately.
+3. Email/WhatsApp records stay `pending`.
+4. A worker or scheduled job calls `POST /api/notifications/admin/process-pending` in small batches.
+5. Later production work can replace the manual processor with BullMQ/Redis.
+
+## Template Variables
+
+Templates support simple variables:
+
+```text
+مرحبًا {{name}}، تم تفعيل باقتك {{packageName}}.
+```
+
+Variables are provided in the send request as:
+
+```json
+{
+  "variables": {
+    "name": "سلمان",
+    "packageName": "الباقة الشاملة"
+  }
+}
+```
+
+## Remaining Production Work
+
+- Add real provider adapters after credentials are available.
+- Add BullMQ/Redis worker for automated retries.
+- Add admin UI for message center if the current admin screen needs visual controls.
+- Add unsubscribe/preferences rules for non-essential marketing messages.

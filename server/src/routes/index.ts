@@ -10,6 +10,7 @@ import { aiRouter } from "./ai.routes.js";
 import { operationsRouter } from "./operations.routes.js";
 import { backupRouter } from "./backup.routes.js";
 import { seoRouter } from "./seo.routes.js";
+import { notificationRouter } from "./notification.routes.js";
 
 export const apiRouter = Router();
 
@@ -24,3 +25,4 @@ apiRouter.use("/ai", aiRouter);
 apiRouter.use("/operations", operationsRouter);
 apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);
+apiRouter.use("/notifications", notificationRouter);
