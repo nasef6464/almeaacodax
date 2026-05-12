@@ -26,4 +26,8 @@ announcementAdSchema.pre("findOneAndUpdate", function updateTimestamp(next) {
   next();
 });
 
+announcementAdSchema.index({ isActive: 1, priority: 1, createdAt: -1 });
+announcementAdSchema.index({ audience: 1, isActive: 1, priority: 1 });
+announcementAdSchema.index({ startsAt: 1, endsAt: 1, isActive: 1 });
+
 export const AnnouncementAdModel = mongoose.model("AnnouncementAd", announcementAdSchema);

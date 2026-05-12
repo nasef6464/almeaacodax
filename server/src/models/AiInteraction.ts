@@ -40,5 +40,10 @@ const aiInteractionSchema = new Schema(
 );
 
 aiInteractionSchema.index({ createdAt: -1 });
+aiInteractionSchema.index({ endpoint: 1, audience: 1, createdAt: -1 });
+aiInteractionSchema.index({ status: 1, createdAt: -1 });
+aiInteractionSchema.index({ usedFallback: 1, createdAt: -1 });
+aiInteractionSchema.index({ personalized: 1, createdAt: -1 });
+aiInteractionSchema.index({ userId: 1, createdAt: -1 });
 
 export const AiInteractionModel = mongoose.model("AiInteraction", aiInteractionSchema);

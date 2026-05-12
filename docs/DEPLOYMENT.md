@@ -79,6 +79,7 @@ Run this before deployment if cache headers are edited:
 npm run smoke:deployment-cache
 npm run smoke:load-tests
 npm run smoke:monitoring
+npm run smoke:database
 ```
 
 ### Load Testing
@@ -103,6 +104,10 @@ Render logs now include structured `http_request` JSON lines for failed and slow
 - If a slow API log appears, optimize that endpoint or its MongoDB query.
 - If no slow API log appears, investigate frontend bundles, Vercel/browser cache, network, or Render cold start.
 - Do not leave `REQUEST_LOG_LEVEL=debug` enabled after the investigation.
+
+### MongoDB Index Deployment
+
+This repo now defines production indexes in the Mongoose models for learning reads, payments, audit logs, users, groups, packages, and announcements. Deploy index changes during lower traffic where possible, then watch MongoDB Atlas index build and slow-query metrics.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

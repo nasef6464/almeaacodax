@@ -20,4 +20,9 @@ const groupSchema = new Schema(
   },
 );
 
+groupSchema.index({ type: 1, parentId: 1, createdAt: -1 });
+groupSchema.index({ ownerId: 1, type: 1, createdAt: -1 });
+groupSchema.index({ supervisorIds: 1, type: 1 });
+groupSchema.index({ studentIds: 1, type: 1 });
+
 export const GroupModel = mongoose.model("Group", groupSchema);

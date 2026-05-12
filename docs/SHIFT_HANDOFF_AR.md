@@ -189,3 +189,8 @@
 - Added Render env switches: `REQUEST_LOG_LEVEL=normal` and `SLOW_REQUEST_LOG_MS=1000`.
 - Added `MONITORING_AND_LOGGING_GUIDE.md` and guard `npm run smoke:monitoring`.
 - Scope: observability/readiness only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.
+
+## Database Index Sprint - 2026-05-12
+- Added first-pass MongoDB indexes for high-traffic reads: learning bootstrap, topics, lessons, library, courses/packages, users, groups, payment requests, discount codes, access codes, audit logs, AI metrics, and announcement ads.
+- Added `DATABASE_REVIEW.md` and guard `npm run smoke:database`.
+- Scope: database performance/readiness only. No student, parent, admin, quiz, package, payment, training, or foundation behavior changed.

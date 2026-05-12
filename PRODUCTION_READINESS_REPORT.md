@@ -28,6 +28,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Added `smoke:deployment-cache` so production cache headers cannot silently regress to a slow no-store configuration.
 - Added a k6 load-test journey and `smoke:load-tests` contract so traffic readiness is measured instead of guessed.
 - Monitoring Diagnostics Sprint - 2026-05-12: added structured backend request diagnostics for failed and slow API requests, configurable `SLOW_REQUEST_LOG_MS`, `REQUEST_LOG_LEVEL`, `MONITORING_AND_LOGGING_GUIDE.md`, and `smoke:monitoring`.
+- Database Index Sprint - 2026-05-12: added MongoDB indexes for learning bootstrap, package discovery, payment review, discount codes, audit logs, AI metrics, groups, users, and announcement ads; documented the review in `DATABASE_REVIEW.md`; added `smoke:database`.
 
 ## Still Required Before Large Launch
 

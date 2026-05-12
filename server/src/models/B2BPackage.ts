@@ -26,4 +26,10 @@ const b2bPackageSchema = new Schema(
   },
 );
 
+b2bPackageSchema.index({ schoolId: 1, status: 1, createdAt: -1 });
+b2bPackageSchema.index({ assignedTeacherId: 1, status: 1 });
+b2bPackageSchema.index({ pathIds: 1, status: 1 });
+b2bPackageSchema.index({ subjectIds: 1, status: 1 });
+b2bPackageSchema.index({ contentTypes: 1, status: 1 });
+
 export const B2BPackageModel = mongoose.model("B2BPackage", b2bPackageSchema);

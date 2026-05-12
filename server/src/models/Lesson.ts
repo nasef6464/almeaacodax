@@ -44,4 +44,9 @@ const lessonSchema = new Schema(
   },
 );
 
+lessonSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 });
+lessonSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1, createdAt: -1 });
+lessonSchema.index({ assignedTeacherId: 1, approvalStatus: 1, createdAt: -1 });
+lessonSchema.index({ skillIds: 1, createdAt: -1 });
+
 export const LessonModel = mongoose.model("Lesson", lessonSchema);

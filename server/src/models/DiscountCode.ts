@@ -21,4 +21,10 @@ const discountCodeSchema = new Schema(
   { timestamps: true },
 );
 
+discountCodeSchema.index({ status: 1, expiresAt: 1 });
+discountCodeSchema.index({ packageIds: 1, status: 1 });
+discountCodeSchema.index({ pathIds: 1, status: 1 });
+discountCodeSchema.index({ subjectIds: 1, status: 1 });
+discountCodeSchema.index({ contentTypes: 1, status: 1 });
+
 export const DiscountCodeModel = mongoose.model("DiscountCode", discountCodeSchema);

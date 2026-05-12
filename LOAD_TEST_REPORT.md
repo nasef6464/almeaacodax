@@ -150,3 +150,17 @@ How this helps load testing:
 - During k6/autocannon runs, Render logs will now show which API path is slow and how long it took.
 - If Vercel feels slow but Render logs show no slow API request, focus on frontend bundle/cache/cold-start behavior.
 - If Render logs show slow API paths, optimize that endpoint and review the related MongoDB query/index.
+
+## Database Index Sprint - 2026-05-12
+
+Closed the first MongoDB index pass for the routes used in load tests:
+
+- Learning bootstrap and subject pages now have supporting indexes for topics, lessons, library items, courses, and active announcements.
+- Payment/package flows now have supporting indexes for payment requests, discount codes, packages, access codes, and user purchases.
+- Admin/operations pages now have supporting indexes for audit logs, AI metrics, users, and groups.
+- Added `DATABASE_REVIEW.md` and `npm run smoke:database`.
+
+What this means for load tests:
+
+- The app is better prepared for 100/500/1000-user measurement.
+- This still does not certify 10k users; it removes obvious first-pass index gaps before real pressure testing.

@@ -16,4 +16,8 @@ const accessCodeSchema = new Schema(
   },
 );
 
+accessCodeSchema.index({ schoolId: 1, packageId: 1, expiresAt: 1 });
+accessCodeSchema.index({ packageId: 1, expiresAt: 1 });
+accessCodeSchema.index({ expiresAt: 1 });
+
 export const AccessCodeModel = mongoose.model("AccessCode", accessCodeSchema);

@@ -42,4 +42,13 @@ userSchema.set("toJSON", {
   },
 });
 
+userSchema.index({ role: 1, createdAt: -1 });
+userSchema.index({ schoolId: 1, role: 1, createdAt: -1 });
+userSchema.index({ groupIds: 1, role: 1 });
+userSchema.index({ linkedStudentIds: 1 });
+userSchema.index({ managedPathIds: 1 });
+userSchema.index({ managedSubjectIds: 1 });
+userSchema.index({ "subscription.purchasedPackages": 1 });
+userSchema.index({ "subscription.purchasedCourses": 1 });
+
 export const UserModel = mongoose.model("User", userSchema);

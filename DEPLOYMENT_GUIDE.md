@@ -17,6 +17,7 @@ Run these before pushing a release intended for students:
 npm run smoke:deployment-cache
 npm run smoke:load-tests
 npm run smoke:monitoring
+npm run smoke:database
 npm run smoke:performance
 npm run typecheck
 npm run build

@@ -45,4 +45,11 @@ paymentRequestSchema.set("toJSON", {
   },
 });
 
+paymentRequestSchema.index({ status: 1, createdAt: -1 });
+paymentRequestSchema.index({ userId: 1, status: 1, createdAt: -1 });
+paymentRequestSchema.index({ packageId: 1, status: 1, createdAt: -1 });
+paymentRequestSchema.index({ discountCodeId: 1, status: 1, createdAt: -1 });
+paymentRequestSchema.index({ gatewayEventId: 1 });
+paymentRequestSchema.index({ gatewayTransactionId: 1 });
+
 export const PaymentRequestModel = mongoose.model("PaymentRequest", paymentRequestSchema);

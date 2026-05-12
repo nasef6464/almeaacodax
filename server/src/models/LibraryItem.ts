@@ -29,4 +29,9 @@ const libraryItemSchema = new Schema(
   },
 );
 
+libraryItemSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 });
+libraryItemSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1, createdAt: -1 });
+libraryItemSchema.index({ assignedTeacherId: 1, approvalStatus: 1, createdAt: -1 });
+libraryItemSchema.index({ skillIds: 1, createdAt: -1 });
+
 export const LibraryItemModel = mongoose.model("LibraryItem", libraryItemSchema);
