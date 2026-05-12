@@ -99,6 +99,18 @@ const [taxonomy, content, quizzes, questions] = await Promise.all([
 
 const path = (taxonomy.paths || []).find((item) => idOf(item) === TARGET_PATH_ID);
 const subject = (taxonomy.subjects || []).find((item) => idOf(item) === TARGET_SUBJECT_ID);
+const subjectSections = (taxonomy.sections || []).filter((item) => item.subjectId === TARGET_SUBJECT_ID);
+const subjectSkills = (taxonomy.skills || []).filter((item) => item.subjectId === TARGET_SUBJECT_ID);
+const subjectSkillIds = new Set(subjectSkills.map(idOf).filter(Boolean));
+const subjectQuestions = (questions || []).filter((question) => {
+  const questionSkillIds = Array.isArray(question.skillIds) ? question.skillIds.map(String) : [];
+  return (
+    question.pathId === TARGET_PATH_ID ||
+    question.subject === TARGET_SUBJECT_ID ||
+    question.subjectId === TARGET_SUBJECT_ID ||
+    questionSkillIds.some((skillId) => subjectSkillIds.has(skillId))
+  );
+});
 const questionById = new Map(
   (questions || []).flatMap((question) => {
     const questionId = idOf(question);
@@ -180,6 +192,13 @@ await check('journey starts from an active path and subject', async () => {
   if (!path || path.isActive === false) throw new Error(`path is missing or inactive: ${TARGET_PATH_ID}`);
   if (!subject || subject.pathId !== TARGET_PATH_ID) throw new Error(`subject is missing or outside path: ${TARGET_SUBJECT_ID}`);
   return `${path.name || TARGET_PATH_ID} / ${subject.name || TARGET_SUBJECT_ID}`;
+});
+
+await check('selected subject keeps its skill map and question bank visible', async () => {
+  if (subjectSections.length === 0) throw new Error(`no sections found for subject ${TARGET_SUBJECT_ID}`);
+  if (subjectSkills.length === 0) throw new Error(`no skills found for subject ${TARGET_SUBJECT_ID}`);
+  if (subjectQuestions.length === 0) throw new Error(`no questions found for subject ${TARGET_SUBJECT_ID}`);
+  return `sections=${subjectSections.length}, skills=${subjectSkills.length}, questions=${subjectQuestions.length}`;
 });
 
 await check('foundation topic is visible and scoped to the selected subject', async () => {
