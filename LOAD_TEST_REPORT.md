@@ -154,6 +154,29 @@ Expected effect:
 - Student and parent-facing interpretation is more realistic: the platform does not overreact to one wrong answer.
 - The report remains useful after a single attempt, but clearly says when the evidence is still early.
 
+## Student Track-Aware Reports - 2026-05-12
+
+Closed the first track-scoping pass for student reports:
+
+- Student reports now use `enrolledPaths` to understand the student's registered learning paths.
+- When a student is registered in one or more paths, weak-skill priorities prefer skills from those paths when the skill metadata includes `pathId`.
+- If the student has no registered path, the report shows a short prompt and sends the student to `مساراتي` before depending on track-specific reports/tests.
+
+Expected effect:
+
+- A student registered in `نافس` sees report priorities that align better with that track instead of a generic mixed list.
+- This is a report-prioritization step only; purchase gates and package access remain handled by the existing access system.
+
+Additional note:
+
+- Internal path ids are not shown to students; the UI uses the path name when available or a generic registered-path label.
+
+Planned institutional reporting pass:
+
+- Add a role-aware reports hub for admin, supervisor, teacher, and parent.
+- Reuse the same skill aggregation rules, but expose grouped student summaries, individual reports, directed-test reports, exports, student import/add actions, and messaging/alerts according to role scope.
+- Admin manages all, supervisors see their groups/schools, teachers see assigned content/students, and parents see linked students only.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

@@ -384,3 +384,20 @@
 - Student summary cards show the evidence count and correct answers, e.g. `x من y`, so the student/parent understands why a skill is flagged.
 - The simple student view keeps only summary, download, and detailed-report actions; Excel/extra suggestions stay behind the detailed report.
 - Scope: student reports logic/UX only. Admin/teacher/parent reports, quiz scoring, package/payment access, homepage, typography, and route loading were not changed.
+
+## Student Track-Aware Reports Sprint - 2026-05-12
+- Student reports now read `enrolledPaths` from the store.
+- If the student has registered paths, the simple report prioritizes weak skills from those paths when skill path data is available.
+- The report shows a short track banner: either the active registered paths or a prompt to choose a path first.
+- Internal path ids are not exposed to students; the report shows the path name when available or a generic registered-path label.
+- Students without a registered path are directed to `/dashboard?tab=paths` before relying on track-specific tests/reports.
+- Scope: student report prioritization only. It does not change package/payment gates, public content visibility, quiz scoring, or admin reports.
+
+## Planned Institutional Reports Sprint
+- Build a role-aware reporting hub for admin, supervisor, teacher, and parent without duplicating the student report logic.
+- Admin sees all students, paths, directed tests, weak-skill summaries, exports, and message actions.
+- Supervisor sees only assigned school/group/path scope.
+- Teacher sees owned or assigned students/content and can send follow-up tests for enrolled path students.
+- Parent sees linked student progress, weak skills, and simple downloadable reports.
+- Needed actions: grouped reports, individual student report, skill report, directed-test report, export, import/add students, message/alert students.
+- Keep the student-facing report simple; put deep detail and bulk actions in role dashboards.

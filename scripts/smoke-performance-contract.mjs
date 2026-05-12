@@ -59,6 +59,11 @@ assertIncludes('pages/Reports.tsx', 'const MIN_SKILL_EVIDENCE_COUNT = 2;');
 assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');
 assertIncludes('pages/Reports.tsx', "skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'");
 assertIncludes('pages/Reports.tsx', 'القياس: {skill.totalEvidence} سؤال عبر المحاولات');
+assertIncludes('pages/Reports.tsx', 'studentEnrolledPathIds');
+assertIncludes('pages/Reports.tsx', 'studentPathScopedSkills');
+assertIncludes('pages/Reports.tsx', 'تقاريرك مرتبة حسب مسارك');
+assertIncludes('pages/Reports.tsx', 'اختر مسارك أولًا');
+assertIncludes('pages/Reports.tsx', 'مسار مسجل');
 
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 for (const file of [

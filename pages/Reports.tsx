@@ -76,6 +76,7 @@ interface ScopedQuizResult {
 interface StudentAggregatedSkill {
     skill: string;
     skillId?: string;
+    pathId?: string;
     subjectName?: string;
     sectionName?: string;
     mastery: number;
@@ -259,7 +260,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, enrolledPaths, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -358,19 +359,31 @@ const Reports: React.FC = () => {
 
     // Aggregate Skill Analysis
     const aggregatedSkills = useMemo(() => {
-        const skillsMap: Record<string, { totalMastery: number, count: number, skillId?: string }> = {};
+        const skillsMap: Record<string, { totalMastery: number, count: number, skillName: string; skillId?: string; pathId?: string; subjectId?: string; sectionId?: string }> = {};
         
         examResults.forEach(result => {
             if (result.skillsAnalysis) {
                 result.skillsAnalysis.forEach(skill => {
-                    if (!skillsMap[skill.skill]) {
-                        skillsMap[skill.skill] = { totalMastery: 0, count: 0, skillId: skill.skillId };
+                    const skillKey = skill.skillId || skill.skill;
+                    if (!skillsMap[skillKey]) {
+                        skillsMap[skillKey] = {
+                        totalMastery: 0,
+                        count: 0,
+                        skillName: skill.skill,
+                        skillId: skill.skillId,
+                            pathId: skill.pathId,
+                            subjectId: skill.subjectId,
+                            sectionId: skill.sectionId,
+                        };
                     }
-                    skillsMap[skill.skill].totalMastery += skill.mastery;
-                    skillsMap[skill.skill].count += 1;
-                    if (!skillsMap[skill.skill].skillId && skill.skillId) {
-                        skillsMap[skill.skill].skillId = skill.skillId;
+                    skillsMap[skillKey].totalMastery += skill.mastery;
+                    skillsMap[skillKey].count += 1;
+                    if (!skillsMap[skillKey].skillId && skill.skillId) {
+                        skillsMap[skillKey].skillId = skill.skillId;
                     }
+                    if (!skillsMap[skillKey].pathId && skill.pathId) skillsMap[skillKey].pathId = skill.pathId;
+                    if (!skillsMap[skillKey].subjectId && skill.subjectId) skillsMap[skillKey].subjectId = skill.subjectId;
+                    if (!skillsMap[skillKey].sectionId && skill.sectionId) skillsMap[skillKey].sectionId = skill.sectionId;
                 });
             }
         });
@@ -391,7 +404,7 @@ const Reports: React.FC = () => {
                     if (!skillName) return;
 
                     if (!skillsMap[skillName]) {
-                        skillsMap[skillName] = { totalMastery: 0, count: 0, skillId: resolvedSkill.id };
+                        skillsMap[skillName] = { totalMastery: 0, count: 0, skillName, skillId: resolvedSkill.id, pathId: resolvedSkill.pathId, subjectId: resolvedSkill.subjectId, sectionId: resolvedSkill.sectionId };
                     }
 
                     skillsMap[skillName].totalMastery += attempt.isCorrect ? 100 : 0;
@@ -405,6 +418,7 @@ const Reports: React.FC = () => {
             const resolvedSkill = data.skillId
                 ? skills.find((item) => item.id === data.skillId)
                 : skills.find((item) => displayText(item.name) === displayText(skill));
+            const pathId = data.pathId || resolvedSkill?.pathId;
             const subjectName = resolvedSkill?.subjectId
                 ? displayText(subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name)
                 : undefined;
@@ -413,8 +427,9 @@ const Reports: React.FC = () => {
                 : undefined;
 
             return {
-                skill: displayText(skill),
+                skill: displayText(data.skillName || skill),
                 skillId: data.skillId,
+                pathId,
                 subjectName,
                 sectionName,
                 mastery,
@@ -428,14 +443,29 @@ const Reports: React.FC = () => {
     }, [examResults, questionAttempts, questions, sections, skills, subjects]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
-    const reliableAggregatedSkills = aggregatedSkills.filter((skill) => skill.isReliable);
-    const focusedReportSkills = (reliableAggregatedSkills.length > 0 ? reliableAggregatedSkills : aggregatedSkills).slice(0, 6);
+    const studentEnrolledPathIds = useMemo(() => Array.from(new Set(enrolledPaths || [])).filter(Boolean), [enrolledPaths]);
+    const studentEnrolledPathLabels = useMemo(
+        () => studentEnrolledPathIds.map((pathId, index) => displayText(paths.find((path) => path.id === pathId)?.name) || `مسار مسجل ${index + 1}`),
+        [paths, studentEnrolledPathIds],
+    );
+    const studentPathScopedSkills = useMemo(
+        () =>
+            studentEnrolledPathIds.length > 0
+                ? aggregatedSkills.filter((skill) => skill.pathId && studentEnrolledPathIds.includes(skill.pathId))
+                : aggregatedSkills,
+        [aggregatedSkills, studentEnrolledPathIds],
+    );
+    const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
+    const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
+    const focusedReportSkills = (reliableAggregatedSkills.length > 0 ? reliableAggregatedSkills : reportBaseSkills).slice(0, 6);
     const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
     const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
+    const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
+    const hasStudentTrackScope = studentEnrolledPathIds.length > 0;
     const skillReadinessSummary = useMemo(() => {
         const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
         const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
@@ -529,6 +559,7 @@ const Reports: React.FC = () => {
         const nextTwo = focusedReportSkills.slice(0, 2).map((skill) => displayText(skill.skill)).filter(Boolean);
         const parts = [
             `متوسطك الحالي ${stats?.averageScore || 0}%.`,
+            studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
             weakest ? `ابدأ بمهارة ${displayText(weakest.skill)} (${weakest.mastery}%).` : null,
             weakest ? `ظهرت في ${weakest.attempts} محاولة/سؤال${weakest.isReliable ? '' : '؛ اعتبرها قراءة أولية حتى تتكرر'}.` : null,
             nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
@@ -536,7 +567,7 @@ const Reports: React.FC = () => {
         ].filter(Boolean);
 
         return parts.join(' ');
-    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore]);
+    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentTrackLabel]);
     const copyStudentSummary = async () => {
         if (!studentFollowUpSummary) return;
 
@@ -1876,6 +1907,27 @@ const Reports: React.FC = () => {
                             </>
                         )}
                     </div>
+                </div>
+            </Card>
+
+            <Card className={`p-3 sm:p-4 border shadow-sm ${hasStudentTrackScope ? 'border-emerald-100 bg-emerald-50/70' : 'border-amber-100 bg-amber-50/80'}`}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div className={`text-xs font-black ${hasStudentTrackScope ? 'text-emerald-700' : 'text-amber-700'}`}>
+                            {hasStudentTrackScope ? 'تقاريرك مرتبة حسب مسارك' : 'اختر مسارك أولًا'}
+                        </div>
+                        <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
+                            {hasStudentTrackScope
+                                ? `نركز الآن على: ${studentTrackLabel}.`
+                                : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
+                        </p>
+                    </div>
+                    <Link
+                        to="/dashboard?tab=paths"
+                        className={`print-hide inline-flex items-center justify-center rounded-xl px-3 py-2 text-xs font-black sm:text-sm ${hasStudentTrackScope ? 'bg-white text-emerald-700 hover:bg-emerald-100' : 'bg-amber-500 text-white hover:bg-amber-600'}`}
+                    >
+                        {hasStudentTrackScope ? 'إدارة المسارات' : 'اختيار المسار'}
+                    </Link>
                 </div>
             </Card>
 
