@@ -135,3 +135,18 @@ Important production note:
 - This does not prove 10k-user readiness by itself.
 - It creates the repeatable measurement path needed before launch.
 - Real 10k readiness still needs upgraded Render, MongoDB Atlas sizing, Redis/queue-backed notifications, and multiple staged runs with p95/p99 latency recorded.
+
+## Monitoring Diagnostics - 2026-05-12
+
+Closed the first backend observability gate:
+
+- Added structured JSON request diagnostics for slow requests and failed requests.
+- Added `SLOW_REQUEST_LOG_MS` so staging load tests can lower or raise the slow-request threshold without code changes.
+- Added `REQUEST_LOG_LEVEL=debug` for short investigations when a page feels slow but no endpoint is obviously failing.
+- Added `npm run smoke:monitoring` to guard that request bodies, passwords, tokens, cookies, and authorization headers are not logged.
+
+How this helps load testing:
+
+- During k6/autocannon runs, Render logs will now show which API path is slow and how long it took.
+- If Vercel feels slow but Render logs show no slow API request, focus on frontend bundle/cache/cold-start behavior.
+- If Render logs show slow API paths, optimize that endpoint and review the related MongoDB query/index.

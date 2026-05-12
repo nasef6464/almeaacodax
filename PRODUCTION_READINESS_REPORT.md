@@ -27,6 +27,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Fixed Vercel cache policy: hashed production assets now use long immutable caching, while the HTML shell only revalidates. This removes the previous `no-store` rule that forced browsers to redownload every JavaScript/CSS asset on every visit.
 - Added `smoke:deployment-cache` so production cache headers cannot silently regress to a slow no-store configuration.
 - Added a k6 load-test journey and `smoke:load-tests` contract so traffic readiness is measured instead of guessed.
+- Monitoring Diagnostics Sprint - 2026-05-12: added structured backend request diagnostics for failed and slow API requests, configurable `SLOW_REQUEST_LOG_MS`, `REQUEST_LOG_LEVEL`, `MONITORING_AND_LOGGING_GUIDE.md`, and `smoke:monitoring`.
 
 ## Still Required Before Large Launch
 
@@ -35,7 +36,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Email verification, forgot password, and optional Google/OTP providers.
 - Queue-backed notifications for bulk delivery.
 - Full RBAC and tenant-scope audit.
-- Monitoring, structured logs, uptime checks, and a richer audit-log UI.
+- External monitoring/Sentry, uptime checks, MongoDB slow-query dashboards, and a richer audit-log UI.
 - Real load-test execution at 100, 500, and 1000 concurrent students with Render/MongoDB metrics recorded.
 - Automated offsite backup and tested restore workflow.
 

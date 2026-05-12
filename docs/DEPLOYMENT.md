@@ -32,6 +32,8 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
     - `ADMIN_PASSWORD`: production admin password, kept only in Render
     - `DEV_LOCAL_ADMIN_BYPASS`: `false`
     - `AI_PROVIDER`: one of `gemini`, `openrouter`, `qwen`, `deepseek`, `openai`, `ollama`, `lmstudio`, or `none` (optional)
+    - `REQUEST_LOG_LEVEL`: `normal` in production, `debug` only during short investigations
+    - `SLOW_REQUEST_LOG_MS`: `1000` default threshold for slow API request logs
     - `AI_PROVIDER_ORDER`: recommended production order such as `gemini,openrouter,qwen,deepseek,openai`
     - `AI_REQUEST_TIMEOUT_MS`: defaults to `15000`
     - `GEMINI_API_KEY`: (Google AI Key)
@@ -76,6 +78,7 @@ Run this before deployment if cache headers are edited:
 ```bash
 npm run smoke:deployment-cache
 npm run smoke:load-tests
+npm run smoke:monitoring
 ```
 
 ### Load Testing
@@ -92,6 +95,14 @@ k6 run load-tests/k6-platform-journey.js \
 ```
 
 Record results in `LOAD_TEST_REPORT.md` before increasing student rollout size.
+
+### Backend Request Diagnostics
+
+Render logs now include structured `http_request` JSON lines for failed and slow backend requests. This is the first place to inspect when the Vercel site feels slow:
+
+- If a slow API log appears, optimize that endpoint or its MongoDB query.
+- If no slow API log appears, investigate frontend bundles, Vercel/browser cache, network, or Render cold start.
+- Do not leave `REQUEST_LOG_LEVEL=debug` enabled after the investigation.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

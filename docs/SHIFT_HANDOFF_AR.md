@@ -182,3 +182,10 @@
 - This is the official measurement path before claiming large student capacity.
 - Do not claim 10k-user readiness until real runs are recorded with upgraded Render and MongoDB metrics.
 - Scope: test/readiness tooling only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.
+
+## Monitoring Diagnostics Sprint - 2026-05-12
+- Added backend structured request diagnostics in `server/src/middleware/requestLogger.ts`.
+- Slow and failed API requests now write safe JSON logs with path, status, duration, user id/role when available, and no request body or secrets.
+- Added Render env switches: `REQUEST_LOG_LEVEL=normal` and `SLOW_REQUEST_LOG_MS=1000`.
+- Added `MONITORING_AND_LOGGING_GUIDE.md` and guard `npm run smoke:monitoring`.
+- Scope: observability/readiness only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.

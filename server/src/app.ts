@@ -7,6 +7,7 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { apiRouter } from "./routes/index.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
 
 export function createApp() {
   const app = express();
@@ -36,6 +37,7 @@ export function createApp() {
   );
   app.use(helmet());
   app.use(compression());
+  app.use(requestLogger);
   app.use(
     rateLimit({
       windowMs: 60 * 1000,
