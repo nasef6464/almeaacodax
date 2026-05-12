@@ -17,7 +17,7 @@ import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
-import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
+import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -223,6 +223,41 @@ const platformFontSettingsSchema = z.object({
   headingCustomFont: platformFontUploadSchema.optional(),
 });
 
+const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 45 * 1000;
+let publicContentBootstrapCache:
+  | {
+      expiresAt: number;
+      payload: {
+        topics: unknown[];
+        lessons: unknown[];
+        libraryItems: unknown[];
+        groups: unknown[];
+        b2bPackages: unknown[];
+        accessCodes: unknown[];
+        announcementAds: unknown[];
+        studyPlans: unknown[];
+      };
+    }
+  | null = null;
+
+const clearContentBootstrapCache = () => {
+  publicContentBootstrapCache = null;
+};
+
+const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
+  $and: [
+    baseFilter,
+    {
+      $or: [
+        { [pathField]: { $in: activePathIds } },
+        { [pathField]: { $exists: false } },
+        { [pathField]: "" },
+        { [pathField]: null },
+      ],
+    },
+  ],
+});
+
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
@@ -276,7 +311,7 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   }
 
   if (!authUser) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 }).lean();
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
@@ -680,6 +715,13 @@ const defaultPlatformFontSettings = {
 
 export const contentRouter = Router();
 
+contentRouter.use((req, _res, next) => {
+  if (req.method !== "GET") {
+    clearContentBootstrapCache();
+  }
+  next();
+});
+
 contentRouter.get(
   "/homepage-settings",
   optionalAuth,
@@ -742,6 +784,14 @@ contentRouter.get(
   "/bootstrap",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    const canUsePublicCache = !req.authUser;
+    if (canUsePublicCache && publicContentBootstrapCache && publicContentBootstrapCache.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("X-Content-Cache", "hit");
+      return res.json(publicContentBootstrapCache.payload);
+    }
+
+    const canSeeAllContent = isStaffRole(req.authUser?.role);
     const lessonFilter = isStaffRole(req.authUser?.role)
       ? {}
       : {
@@ -755,22 +805,30 @@ contentRouter.get(
           showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
-    const [scopedTopicFilter, scopedLessonFilter, scopedLibraryFilter] = await Promise.all([
-      withLearnerVisiblePaths(topicFilter, req.authUser),
-      withLearnerVisiblePaths(lessonFilter, req.authUser),
-      withLearnerVisiblePaths(libraryFilter, req.authUser),
-    ]);
+    const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
+    const finalTopicFilter = canSeeAllContent ? topicFilter : scopeFilterToActivePaths(topicFilter, activePathIds);
+    const finalLessonFilter = canSeeAllContent ? lessonFilter : scopeFilterToActivePaths(lessonFilter, activePathIds);
+    const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
 
     const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-      TopicModel.find(scopedTopicFilter).sort({ subjectId: 1, order: 1 }),
-      LessonModel.find(scopedLessonFilter).sort({ createdAt: -1 }),
-      LibraryItemModel.find(scopedLibraryFilter).sort({ createdAt: -1 }),
+      TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
+      LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
+      LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
       getScopedOperationalData(req.authUser),
-      req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }) : Promise.resolve([]),
+      req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean() : Promise.resolve([]),
     ]);
 
     const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
-    res.json({ topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans });
+    const payload = { topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans };
+    if (canUsePublicCache) {
+      publicContentBootstrapCache = {
+        expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
+        payload,
+      };
+      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("X-Content-Cache", "miss");
+    }
+    res.json(payload);
   }),
 );
 

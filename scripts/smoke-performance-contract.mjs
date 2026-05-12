@@ -120,6 +120,9 @@ assertIncludes('server/src/routes/quiz.routes.ts', 'query.noTotal ? Promise.reso
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'TAXONOMY_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'X-Taxonomy-Cache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearTaxonomyBootstrapCache');
+assertIncludes('server/src/routes/content.routes.ts', 'CONTENT_BOOTSTRAP_CACHE_TTL_MS');
+assertIncludes('server/src/routes/content.routes.ts', 'X-Content-Cache');
+assertIncludes('server/src/routes/content.routes.ts', 'scopeFilterToActivePaths');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');

@@ -186,6 +186,7 @@
 - It also supports `summary=true`; app bootstrap requests only the first bounded summary page with short text previews, while admin/search flows should continue moving toward scoped fetches instead of full-bank reads.
 - Summary bootstrap can pass `noTotal=true` to avoid a full question-bank count on dashboard open; exact totals remain available for detailed admin/search requests.
 - Public/learner taxonomy bootstrap now has a short server-side cache with automatic invalidation on taxonomy edits; staff views still get fresh admin-visible taxonomy.
+- Public content bootstrap now has a short guest cache and uses one active-path lookup for topics/lessons/library items; authenticated/student-specific data remains fresh.
 - Affected non-blocking routes: student dashboard, admin/teacher/supervisor dashboards, parent dashboard, and reports.
 - Question-dependent widgets hydrate when the question bank arrives in the background; quiz/category routes keep the stricter bootstrap gate.
 - Guard extended in `npm run smoke:performance`.
