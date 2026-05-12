@@ -241,3 +241,9 @@
 - Legacy Firebase sync is limited to local development only.
 - Server local-admin bypass now refuses to run when `NODE_ENV=production`, even if `DEV_LOCAL_ADMIN_BYPASS=true` is accidentally set.
 - Added guard: `npm run smoke:runtime-source`.
+
+## NoSQL Injection Guard Sprint - 2026-05-12
+- Added backend sanitizer before API routes to reject Mongo operator keys like `$ne` and dotted keys in request bodies/query strings.
+- Rejected unsafe requests return `400` with the active `requestId` for support/debugging.
+- Added guard: `npm run smoke:nosql-sanitizer`.
+- Visual check rule: after each completed batch, open or refresh the app in the in-app browser/Chrome and record whether the page renders normally. For this batch, the landing page rendered correctly; local console showed existing API connection warnings because the local backend was not running.

@@ -36,6 +36,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Auth Login Security Sprint - 2026-05-12: added password-strength enforcement, failed-login counters, temporary account lock after repeated failed attempts, reset-on-success behavior, frontend guidance, and `smoke:auth-login-security`.
 - API Surface Hardening Sprint - 2026-05-12: tightened production CORS configuration, added request IDs to responses/logs/errors, added route-scoped body limits, hid production 5xx details, and added `smoke:api-security`.
 - Runtime Source-Of-Truth Sprint - 2026-05-12: forced production frontend/runtime paths to use the real Mongo-backed API, limited legacy Firebase sync to local development only, blocked local admin bypass in production, and added `smoke:runtime-source`.
+- NoSQL Injection Guard Sprint - 2026-05-12: added a backend request sanitizer that rejects Mongo operator keys and dotted keys in request bodies/query strings before route handlers, keeps rejected requests traceable with `requestId`, and added `smoke:nosql-sanitizer`.
 
 ## Still Required Before Large Launch
 

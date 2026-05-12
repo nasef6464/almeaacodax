@@ -39,6 +39,7 @@
     "smoke:auth-login-security": "node scripts/smoke-auth-login-security-contract.mjs",
     "smoke:api-security": "node scripts/smoke-api-security-contract.mjs",
     "smoke:runtime-source": "node scripts/smoke-runtime-source-contract.mjs",
+    "smoke:nosql-sanitizer": "node scripts/smoke-nosql-sanitizer-contract.mjs",
     "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
     "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",

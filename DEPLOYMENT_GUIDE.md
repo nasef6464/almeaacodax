@@ -24,6 +24,7 @@ npm run smoke:auth-frontend
 npm run smoke:auth-login-security
 npm run smoke:api-security
 npm run smoke:runtime-source
+npm run smoke:nosql-sanitizer
 npm run smoke:performance
 npm run typecheck
 npm run build
