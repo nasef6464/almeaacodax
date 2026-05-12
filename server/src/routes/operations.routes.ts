@@ -17,6 +17,7 @@ import { SubjectModel } from "../models/Subject.js";
 import { TopicModel } from "../models/Topic.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { runOperationsRepair, type OperationsRepairAction } from "../services/operationsRepair.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
 export const operationsRouter = Router();
 
@@ -382,17 +383,21 @@ operationsRouter.post("/client-events", optionalAuth, async (req, res, next) => 
 
 operationsRouter.get("/client-events", requireAuth, requireRole(["admin"]), async (req, res, next) => {
   try {
-    const limit = Math.min(Math.max(Number(req.query.limit || 25), 1), 100);
+    const pagination = resolvePagination(req.query, { limit: 25 });
     const severity = String(req.query.severity || "");
     const filter = ["info", "warning", "error"].includes(severity) ? { severity } : {};
-    const events = await ClientEventModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
-    const unresolvedCount = await ClientEventModel.countDocuments({ resolved: false });
-    const last24hCount = await ClientEventModel.countDocuments({
-      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    });
+    const [events, total, unresolvedCount, last24hCount] = await Promise.all([
+      ClientEventModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      ClientEventModel.countDocuments(filter),
+      ClientEventModel.countDocuments({ resolved: false }),
+      ClientEventModel.countDocuments({
+        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      }),
+    ]);
 
     res.json({
       events,
+      pagination: buildPaginatedResponse([], pagination, total),
       summary: {
         unresolvedCount,
         last24hCount,
@@ -405,7 +410,7 @@ operationsRouter.get("/client-events", requireAuth, requireRole(["admin"]), asyn
 
 operationsRouter.get("/admin-audit-logs", requireAuth, requireRole(["admin"]), async (req, res, next) => {
   try {
-    const limit = Math.min(Math.max(Number(req.query.limit || 50), 1), 200);
+    const pagination = resolvePagination(req.query, { limit: 50 });
     const action = safeString(req.query.action, 160);
     const status = safeString(req.query.status, 30);
     const filter: Record<string, unknown> = {};
@@ -418,14 +423,16 @@ operationsRouter.get("/admin-audit-logs", requireAuth, requireRole(["admin"]), a
     }
 
     const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const [logs, blockedCount24h, failedCount24h] = await Promise.all([
-      AdminAuditLogModel.find(filter).sort({ createdAt: -1 }).limit(limit).lean(),
+    const [logs, total, blockedCount24h, failedCount24h] = await Promise.all([
+      AdminAuditLogModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      AdminAuditLogModel.countDocuments(filter),
       AdminAuditLogModel.countDocuments({ status: "blocked", createdAt: { $gte: since24h } }),
       AdminAuditLogModel.countDocuments({ status: "failed", createdAt: { $gte: since24h } }),
     ]);
 
     res.json({
       logs,
+      pagination: buildPaginatedResponse([], pagination, total),
       summary: {
         blockedCount24h,
         failedCount24h,

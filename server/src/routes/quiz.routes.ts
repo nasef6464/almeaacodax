@@ -17,6 +17,7 @@ import { SectionModel } from "../models/Section.js";
 import { TopicModel } from "../models/Topic.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 
@@ -75,7 +76,7 @@ const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
 let publicQuizListCache:
   | {
       expiresAt: number;
-      payload: unknown[];
+      payload: unknown;
     }
   | null = null;
 let publicQuestionSummaryCache = new Map<
@@ -1007,16 +1008,24 @@ quizRouter.get(
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
     const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
-    const items = await QuizModel.find(filter).sort({ createdAt: -1 }).lean();
+    const pagination = resolvePagination(req.query, { limit: 200 });
+    const [items, total] = await Promise.all([
+      QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      QuizModel.countDocuments(filter),
+    ]);
+    const payload = {
+      quizzes: items,
+      pagination: buildPaginatedResponse([], pagination, total),
+    };
     if (canUsePublicCache) {
       publicQuizListCache = {
         expiresAt: Date.now() + PUBLIC_QUIZ_LIST_CACHE_TTL_MS,
-        payload: items,
+        payload,
       };
       res.setHeader("Cache-Control", "private, max-age=30");
       res.setHeader("X-Quiz-List-Cache", "miss");
     }
-    res.json(items);
+    res.json(payload);
   }),
 );
 
@@ -1428,8 +1437,16 @@ quizRouter.get(
   "/results",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const items = await QuizResultModel.find({ userId: req.authUser!.id }).sort({ createdAt: -1 });
-    res.json(items);
+    const filter = { userId: req.authUser!.id };
+    const pagination = resolvePagination(req.query, { limit: 50 });
+    const [items, total] = await Promise.all([
+      QuizResultModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      QuizResultModel.countDocuments(filter),
+    ]);
+    res.json({
+      results: items,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 
@@ -1446,11 +1463,12 @@ quizRouter.get(
     const { students, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser);
     const studentIds = students.map((student) => String(student.id));
     const studentById = new Map(students.map((student) => [String(student.id), student]));
-    const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+    const pagination = resolvePagination(req.query, { limit: 50 });
 
     let results = studentIds.length
-      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).limit(limit)
+      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit)
       : [];
+    const total = studentIds.length ? await QuizResultModel.countDocuments({ userId: { $in: studentIds } }) : 0;
     results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
 
     return res.json({
@@ -1459,6 +1477,7 @@ quizRouter.get(
         studentCount: students.length,
         resultCount: results.length,
       },
+      pagination: buildPaginatedResponse([], pagination, total),
       results: results.map((result) => {
         const student = studentById.get(String(result.userId || ""));
         return {
@@ -1477,8 +1496,16 @@ quizRouter.get(
   "/skill-progress",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const items = await SkillProgressModel.find({ userId: req.authUser!.id }).sort({ mastery: 1, lastAttemptAt: -1 });
-    res.json(items);
+    const filter = { userId: req.authUser!.id };
+    const pagination = resolvePagination(req.query, { limit: 80 });
+    const [items, total] = await Promise.all([
+      SkillProgressModel.find(filter).sort({ mastery: 1, lastAttemptAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      SkillProgressModel.countDocuments(filter),
+    ]);
+    res.json({
+      skillProgress: items,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 
@@ -1486,8 +1513,16 @@ quizRouter.get(
   "/question-attempts",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const items = await QuestionAttemptModel.find({ userId: req.authUser!.id }).sort({ createdAt: -1 }).limit(500);
-    res.json(items);
+    const filter = { userId: req.authUser!.id };
+    const pagination = resolvePagination(req.query, { limit: 100 });
+    const [items, total] = await Promise.all([
+      QuestionAttemptModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      QuestionAttemptModel.countDocuments(filter),
+    ]);
+    res.json({
+      questionAttempts: items,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 

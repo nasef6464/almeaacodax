@@ -4,6 +4,7 @@ import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
 const courseSchema = z.object({
@@ -164,8 +165,15 @@ courseRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const filter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
-    const items = await CourseModel.find(filter).sort({ createdAt: -1 });
-    res.json(items);
+    const pagination = resolvePagination(req.query, { limit: 200 });
+    const [items, total] = await Promise.all([
+      CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      CourseModel.countDocuments(filter),
+    ]);
+    res.json({
+      courses: items,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 

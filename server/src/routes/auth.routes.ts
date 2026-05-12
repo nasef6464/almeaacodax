@@ -11,9 +11,10 @@ import { B2BPackageModel } from "../models/B2BPackage.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
-import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
+import { grantAccessToUser } from "../services/accessGrantService.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -414,11 +415,16 @@ authRouter.get(
   "/admin/users",
   requireAuth,
   requireRole(["admin"]),
-  asyncHandler(async (_req, res) => {
-    const users = await UserModel.find().sort({ createdAt: -1 });
+  asyncHandler(async (req, res) => {
+    const pagination = resolvePagination(req.query, { limit: 50 });
+    const [users, total] = await Promise.all([
+      UserModel.find().sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      UserModel.countDocuments(),
+    ]);
 
     return res.json({
       users: users.map(serializeUser),
+      pagination: buildPaginatedResponse([], pagination, total),
     });
   }),
 );
@@ -597,15 +603,37 @@ authRouter.post(
       });
     }
 
-    const updatedUser = await applyPurchaseToUser(String(user._id), {
-      packageId: String(linkedPackage.id || linkedPackage._id),
-      includedCourseIds: Array.isArray(linkedPackage.courseIds) ? linkedPackage.courseIds.map(String) : [],
+    const packageId = String(linkedPackage.id || linkedPackage._id);
+    const courseIds = Array.isArray(linkedPackage.courseIds) ? linkedPackage.courseIds.map(String) : [];
+    const grantResult = await grantAccessToUser({
+      userId: String(user._id),
+      sourceType: "access_code",
+      sourceId: `${String(accessCode._id)}:${String(user._id)}`,
+      packageId,
+      courseIds,
+      contentTypes: Array.isArray(linkedPackage.contentTypes) ? linkedPackage.contentTypes.map(String) : ["all"],
+      pathIds: Array.isArray(linkedPackage.pathIds) ? linkedPackage.pathIds.map(String) : [],
+      subjectIds: Array.isArray(linkedPackage.subjectIds) ? linkedPackage.subjectIds.map(String) : [],
+      grantedBy: "access-code",
+      idempotencyKey: `access_code:${String(accessCode._id)}:${String(user._id)}`,
+      metadata: {
+        accessCodeId: String(accessCode._id),
+        accessCode: reservedAccessCode.code,
+        packageName: linkedPackage.name,
+      },
     });
 
+    if (!grantResult.created) {
+      await AccessCodeModel.findByIdAndUpdate(reservedAccessCode._id, {
+        $inc: { currentUses: -1 },
+      });
+    }
+
     return res.json({
-      user: serializeUser(updatedUser),
+      user: serializeUser(grantResult.user),
       accessCode: reservedAccessCode,
       package: linkedPackage,
+      accessGrant: grantResult.grant,
     });
   }),
 );

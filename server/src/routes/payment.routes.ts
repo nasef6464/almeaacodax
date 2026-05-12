@@ -10,8 +10,9 @@ import { DiscountCodeModel } from "../models/DiscountCode.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { UserModel } from "../models/User.js";
-import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
+import { grantAccessToUser } from "../services/accessGrantService.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
 const paymentMethodSettingsSchema = z.object({
   enabled: z.boolean().optional(),
@@ -310,22 +311,75 @@ const completeApprovedPaymentRequest = async (
     gatewayPaidAt?: number;
   },
 ) => {
-  requestDoc.status = "approved";
-  requestDoc.reviewerNotes = review.reviewerNotes || "";
-  requestDoc.approvalEvidence = review.approvalEvidence;
-  requestDoc.reviewedBy = review.reviewedBy;
-  requestDoc.reviewedAt = Date.now();
-  requestDoc.gatewayProvider = review.gatewayProvider || requestDoc.gatewayProvider || "";
-  requestDoc.gatewayTransactionId = review.gatewayTransactionId || requestDoc.gatewayTransactionId || "";
-  requestDoc.gatewayEventId = review.gatewayEventId || requestDoc.gatewayEventId || "";
-  requestDoc.gatewayPaidAt = review.gatewayPaidAt || requestDoc.gatewayPaidAt || null;
-  await requestDoc.save();
+  const updatedRequest = await PaymentRequestModel.findOneAndUpdate(
+    { _id: requestDoc._id, status: "pending" },
+    {
+      $set: {
+        status: "approved",
+        reviewerNotes: review.reviewerNotes || "",
+        approvalEvidence: review.approvalEvidence,
+        reviewedBy: review.reviewedBy,
+        reviewedAt: Date.now(),
+        gatewayProvider: review.gatewayProvider || requestDoc.gatewayProvider || "",
+        gatewayTransactionId: review.gatewayTransactionId || requestDoc.gatewayTransactionId || "",
+        gatewayEventId: review.gatewayEventId || requestDoc.gatewayEventId || "",
+        gatewayPaidAt: review.gatewayPaidAt || requestDoc.gatewayPaidAt || null,
+      },
+    },
+    { new: true },
+  );
 
-  return applyPurchaseToUser(requestDoc.userId, {
-    courseId: requestDoc.itemType === "course" ? requestDoc.itemId : undefined,
-    packageId: requestDoc.packageId || (requestDoc.itemType === "package" ? requestDoc.itemId : undefined),
-    includedCourseIds: Array.isArray(requestDoc.includedCourseIds) ? requestDoc.includedCourseIds : [],
+  if (!updatedRequest) {
+    return {
+      request: null,
+      duplicate: true,
+    };
+  }
+
+  return {
+    request: updatedRequest,
+    duplicate: false,
+  };
+};
+
+const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
+  reviewedBy: string;
+  gatewayEventId?: string;
+  gatewayProvider?: string;
+  gatewayTransactionId?: string;
+}) => {
+  const packageId = updatedRequest.packageId || (updatedRequest.itemType === "package" ? updatedRequest.itemId : undefined);
+  const courseIds = [
+    ...(updatedRequest.itemType === "course" ? [updatedRequest.itemId] : []),
+    ...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : []),
+  ];
+  const grantResult = await grantAccessToUser({
+    userId: updatedRequest.userId,
+    sourceType: review.gatewayEventId ? "payment_webhook" : "payment_request",
+    sourceId: review.gatewayEventId
+      ? `${String(updatedRequest.id || updatedRequest._id)}:${review.gatewayEventId}`
+      : String(updatedRequest.id || updatedRequest._id),
+    packageId,
+    courseIds,
+    grantedBy: review.reviewedBy,
+    idempotencyKey: review.gatewayEventId
+      ? `payment_webhook:${String(updatedRequest.id || updatedRequest._id)}:${review.gatewayEventId}`
+      : `payment_request:${String(updatedRequest.id || updatedRequest._id)}`,
+    metadata: {
+      paymentRequestId: String(updatedRequest.id || updatedRequest._id),
+      itemType: updatedRequest.itemType,
+      itemId: updatedRequest.itemId,
+      amount: updatedRequest.amount,
+      currency: updatedRequest.currency,
+      gatewayProvider: review.gatewayProvider || "",
+      gatewayTransactionId: review.gatewayTransactionId || "",
+    },
   });
+
+  return {
+    user: grantResult.user,
+    grant: grantResult.grant,
+  };
 };
 
 export const paymentRouter = Router();
@@ -368,8 +422,15 @@ paymentRouter.get(
   requireAuth,
   asyncHandler(async (req, res) => {
     const filter = req.authUser?.role === "admin" ? {} : { userId: req.authUser?.id };
-    const requests = await PaymentRequestModel.find(filter).sort({ createdAt: -1 });
-    return res.json({ requests });
+    const pagination = resolvePagination(req.query, { limit: 50 });
+    const [requests, total] = await Promise.all([
+      PaymentRequestModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      PaymentRequestModel.countDocuments(filter),
+    ]);
+    return res.json({
+      requests,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 
@@ -377,9 +438,16 @@ paymentRouter.get(
   "/discount-codes",
   requireAuth,
   requireRole(["admin"]),
-  asyncHandler(async (_req, res) => {
-    const codes = await DiscountCodeModel.find().sort({ createdAt: -1 });
-    return res.json({ codes });
+  asyncHandler(async (req, res) => {
+    const pagination = resolvePagination(req.query, { limit: 50 });
+    const [codes, total] = await Promise.all([
+      DiscountCodeModel.find().sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      DiscountCodeModel.countDocuments(),
+    ]);
+    return res.json({
+      codes,
+      pagination: buildPaginatedResponse([], pagination, total),
+    });
   }),
 );
 
@@ -606,15 +674,22 @@ paymentRouter.post(
     }
 
     if (payload.status !== "paid") {
-      requestDoc.status = payload.status === "cancelled" ? "cancelled" : "rejected";
-      requestDoc.reviewerNotes = `بوابة الدفع: ${payload.status}`;
-      requestDoc.reviewedBy = `webhook:${payload.provider}`;
-      requestDoc.reviewedAt = Date.now();
-      requestDoc.gatewayProvider = payload.provider;
-      requestDoc.gatewayTransactionId = payload.transactionId || "";
-      requestDoc.gatewayEventId = payload.eventId;
-      await requestDoc.save();
-      return res.json({ ok: true, request: requestDoc });
+      const rejectedRequest = await PaymentRequestModel.findOneAndUpdate(
+        { _id: requestDoc._id, status: "pending" },
+        {
+          $set: {
+            status: payload.status === "cancelled" ? "cancelled" : "rejected",
+            reviewerNotes: `بوابة الدفع: ${payload.status}`,
+            reviewedBy: `webhook:${payload.provider}`,
+            reviewedAt: Date.now(),
+            gatewayProvider: payload.provider,
+            gatewayTransactionId: payload.transactionId || "",
+            gatewayEventId: payload.eventId,
+          },
+        },
+        { new: true },
+      );
+      return res.json({ ok: true, request: rejectedRequest || requestDoc });
     }
 
     if (payload.currency && payload.currency !== requestDoc.currency) {
@@ -625,12 +700,7 @@ paymentRouter.post(
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Paid amount is lower than request amount" });
     }
 
-    const discountReserved = await reserveDiscountRedemptionForRequest(requestDoc);
-    if (!discountReserved) {
-      return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
-    }
-
-    const updatedUser = await completeApprovedPaymentRequest(requestDoc, {
+    const approved = await completeApprovedPaymentRequest(requestDoc, {
       reviewedBy: `webhook:${payload.provider}`,
       reviewerNotes: "تم الاعتماد آليًا من بوابة الدفع",
       approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
@@ -640,20 +710,44 @@ paymentRouter.post(
       gatewayPaidAt: payload.occurredAt || Date.now(),
     });
 
+    if (approved.duplicate || !approved.request) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
+    }
+
+    const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
+    if (!discountReserved) {
+      await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
+        $set: {
+          status: "pending",
+          reviewerNotes: "تعذر اعتماد كود الخصم أثناء معالجة الدفع",
+          reviewedBy: "",
+          reviewedAt: null,
+        },
+      });
+      return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+    }
+
+    const access = await grantApprovedPaymentAccess(approved.request, {
+      reviewedBy: `webhook:${payload.provider}`,
+      gatewayProvider: payload.provider,
+      gatewayTransactionId: payload.transactionId || "",
+      gatewayEventId: payload.eventId,
+    });
+
     await recordAdminAuditLog(req, {
       action: "payment.webhook.approved",
       resourceType: "payment-request",
-      resourceId: String(requestDoc.id || requestDoc._id),
+      resourceId: String(approved.request.id || approved.request._id),
       metadata: {
         provider: payload.provider,
         eventId: payload.eventId,
         transactionId: payload.transactionId || "",
-        amount: payload.paidAmount ?? requestDoc.amount,
-        userId: requestDoc.userId,
+        amount: payload.paidAmount ?? approved.request.amount,
+        userId: approved.request.userId,
       },
     });
 
-    return res.json({ ok: true, request: requestDoc, user: updatedUser });
+    return res.json({ ok: true, request: approved.request, user: access.user, accessGrant: access.grant });
   }),
 );
 
@@ -688,26 +782,56 @@ paymentRouter.patch(
         });
       }
 
-      const discountReserved = await reserveDiscountRedemptionForRequest(requestDoc);
-      if (!discountReserved) {
-        return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
-      }
     }
 
-    let updatedUser = null;
+    let approved: Awaited<ReturnType<typeof completeApprovedPaymentRequest>> | null = null;
     if (payload.status === "approved") {
-      updatedUser = await completeApprovedPaymentRequest(requestDoc, {
+      approved = await completeApprovedPaymentRequest(requestDoc, {
         reviewedBy: req.authUser?.id || "",
         reviewerNotes: payload.reviewerNotes || "",
         approvalEvidence: buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence),
       });
+
+      if (approved.duplicate || !approved.request) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "طلب الدفع لم يعد قيد المراجعة",
+          request: await PaymentRequestModel.findById(requestDoc._id),
+        });
+      }
+
+      const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
+      if (!discountReserved) {
+        await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
+          $set: {
+            status: "pending",
+            reviewerNotes: "تعذر اعتماد كود الخصم أثناء المراجعة",
+            approvalEvidence: "",
+            reviewedBy: "",
+            reviewedAt: null,
+          },
+        });
+        return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+      }
+
+      const access = await grantApprovedPaymentAccess(approved.request, {
+        reviewedBy: req.authUser?.id || "",
+      });
+      (approved as any).user = access.user;
+      (approved as any).grant = access.grant;
     } else {
-      requestDoc.status = payload.status;
-      requestDoc.reviewerNotes = payload.reviewerNotes || "";
-      requestDoc.approvalEvidence = "";
-      requestDoc.reviewedBy = req.authUser?.id || "";
-      requestDoc.reviewedAt = Date.now();
-      await requestDoc.save();
+      await PaymentRequestModel.findOneAndUpdate(
+        { _id: requestDoc._id, status: { $ne: "approved" } },
+        {
+          $set: {
+            status: payload.status,
+            reviewerNotes: payload.reviewerNotes || "",
+            approvalEvidence: "",
+            reviewedBy: req.authUser?.id || "",
+            reviewedAt: Date.now(),
+          },
+        },
+        { new: true },
+      );
     }
 
     await recordAdminAuditLog(req, {
@@ -726,8 +850,9 @@ paymentRouter.patch(
     });
 
     return res.json({
-      request: requestDoc,
-      user: updatedUser,
+      request: approved?.request || (await PaymentRequestModel.findById(requestDoc._id)),
+      user: (approved as any)?.user || null,
+      accessGrant: (approved as any)?.grant || null,
     });
   }),
 );

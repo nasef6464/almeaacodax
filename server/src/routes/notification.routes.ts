@@ -10,6 +10,7 @@ import {
   getNotificationBatchLimit,
   processPendingNotifications,
 } from "../services/notificationService.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
 export const notificationRouter = Router();
 
@@ -44,21 +45,26 @@ const processPendingSchema = z.object({
 const adminListSchema = z.object({
   status: z.enum(["pending", "sent", "failed", "retrying"]).optional(),
   channel: channelSchema.optional(),
-  limit: z.coerce.number().int().min(1).max(100).optional().default(50),
 });
 
 notificationRouter.get("/me", requireAuth, async (req, res, next) => {
   try {
-    const items = await NotificationDeliveryModel.find({
+    const pagination = resolvePagination(req.query, { limit: 50 });
+    const filter = {
       recipientUserId: req.authUser!.id,
       channel: "in_app",
       status: "sent",
-    })
-      .sort({ createdAt: -1 })
-      .limit(50)
-      .lean();
+    };
+    const [items, total] = await Promise.all([
+      NotificationDeliveryModel.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(pagination.skip)
+        .limit(pagination.limit)
+        .lean(),
+      NotificationDeliveryModel.countDocuments(filter),
+    ]);
 
-    res.json({ notifications: items });
+    res.json({ notifications: items, pagination: buildPaginatedResponse([], pagination, total) });
   } catch (error) {
     next(error);
   }
@@ -84,8 +90,12 @@ notificationRouter.patch("/:id/read", requireAuth, async (req, res, next) => {
 
 notificationRouter.get("/admin/templates", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
-    const templates = await NotificationTemplateModel.find().sort({ updatedAt: -1 }).lean();
-    res.json({ templates });
+    const pagination = resolvePagination(_req.query, { limit: 50 });
+    const [templates, total] = await Promise.all([
+      NotificationTemplateModel.find().sort({ updatedAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      NotificationTemplateModel.countDocuments(),
+    ]);
+    res.json({ templates, pagination: buildPaginatedResponse([], pagination, total) });
   } catch (error) {
     next(error);
   }
@@ -117,17 +127,19 @@ notificationRouter.post("/admin/templates", requireAuth, requireRole(["admin"]),
 notificationRouter.get("/admin/deliveries", requireAuth, requireRole(["admin"]), async (req, res, next) => {
   try {
     const query = adminListSchema.parse(req.query);
+    const pagination = resolvePagination(req.query, { limit: 50 });
     const filter: Record<string, unknown> = {};
     if (query.status) filter.status = query.status;
     if (query.channel) filter.channel = query.channel;
 
-    const [deliveries, pendingCount, failedCount] = await Promise.all([
-      NotificationDeliveryModel.find(filter).sort({ createdAt: -1 }).limit(query.limit).lean(),
+    const [deliveries, total, pendingCount, failedCount] = await Promise.all([
+      NotificationDeliveryModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      NotificationDeliveryModel.countDocuments(filter),
       NotificationDeliveryModel.countDocuments({ status: { $in: ["pending", "retrying"] } }),
       NotificationDeliveryModel.countDocuments({ status: "failed" }),
     ]);
 
-    res.json({ deliveries, summary: { pendingCount, failedCount } });
+    res.json({ deliveries, pagination: buildPaginatedResponse([], pagination, total), summary: { pendingCount, failedCount } });
   } catch (error) {
     next(error);
   }

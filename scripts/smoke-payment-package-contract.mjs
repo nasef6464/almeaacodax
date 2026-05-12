@@ -38,18 +38,21 @@ check('payment requests preserve discount data and calculate final amount server
   assertIncludes(paymentRoutesSource, '"/discount-codes/preview"');
   assertIncludes(paymentRoutesSource, 'لا يمكن اعتماد طلب دفع لمستخدم غير موجود');
   assertIncludes(paymentRoutesSource, 'كود الخصم لم يعد متاحًا للاعتماد');
-  assertIncludes(paymentRoutesSource, 'await requestDoc.save();');
+  assertIncludes(paymentRoutesSource, 'PaymentRequestModel.findOneAndUpdate');
+  assertIncludes(paymentRoutesSource, 'grantApprovedPaymentAccess');
   assertIncludes(paymentModalSource, 'discountCode: discountCode.trim().toUpperCase()');
   assertIncludes(paymentModalSource, 'api.previewDiscountCode');
   assertIncludes(apiSource, 'previewDiscountCode');
 });
 
-check('discount approval reserves usage before approving payment request', () => {
+check('discount approval is guarded before access is granted', () => {
   const redemptionIndex = paymentRoutesSource.indexOf('const redemption = await DiscountCodeModel.findOneAndUpdate');
-  const statusSaveIndex = paymentRoutesSource.indexOf('await requestDoc.save();', redemptionIndex);
-  if (redemptionIndex === -1 || statusSaveIndex === -1 || redemptionIndex > statusSaveIndex) {
-    throw new Error('Discount redemption must be reserved before saving the payment request review.');
+  const grantIndex = paymentRoutesSource.indexOf('grantApprovedPaymentAccess', redemptionIndex);
+  if (redemptionIndex === -1 || grantIndex === -1 || redemptionIndex > grantIndex) {
+    throw new Error('Discount redemption must be reserved before granting access.');
   }
+  assertIncludes(paymentRoutesSource, 'status: "pending"');
+  assertIncludes(paymentRoutesSource, 'تعذر اعتماد كود الخصم أثناء المراجعة');
 });
 
 check('manual payment approval requires review evidence before unlocking access', () => {

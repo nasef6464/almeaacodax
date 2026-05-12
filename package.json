@@ -53,6 +53,7 @@
     "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
     "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",
+    "smoke:api-phase4": "node scripts/smoke-api-phase4-contract.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
   },

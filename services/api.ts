@@ -90,6 +90,19 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   return JSON.parse(raw) as T;
 }
 
+const extractList = <T = unknown>(payload: unknown, key: string): T[] => {
+  if (Array.isArray(payload)) {
+    return payload as T[];
+  }
+
+  if (payload && typeof payload === "object") {
+    const value = (payload as Record<string, unknown>)[key];
+    return Array.isArray(value) ? (value as T[]) : [];
+  }
+
+  return [];
+};
+
 export const api = {
   baseUrl: API_BASE_URL,
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
@@ -135,8 +148,10 @@ export const api = {
       body: payload,
       token,
     }),
-  getAdminUsers: () =>
-    request<{ users: unknown[] }>("/auth/admin/users"),
+  getAdminUsers: async () => {
+    const payload = await request<{ users: unknown[] }>("/auth/admin/users?limit=200");
+    return { ...payload, users: extractList(payload, "users") };
+  },
   updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
     request<{ user: unknown }>(`/auth/admin/users/${id}`, {
       method: "PATCH",
@@ -215,10 +230,12 @@ export const api = {
       body: payload,
       token,
     }),
-  getPaymentRequests: (token?: string | null) =>
-    request<{ requests: unknown[] }>("/payments/requests", {
+  getPaymentRequests: async (token?: string | null) => {
+    const payload = await request<{ requests: unknown[] }>("/payments/requests?limit=200", {
       token,
-    }),
+    });
+    return { ...payload, requests: extractList(payload, "requests") };
+  },
   createPaymentRequest: (payload: unknown, token?: string | null) =>
     request<{ request: unknown }>("/payments/requests", {
       method: "POST",
@@ -237,10 +254,12 @@ export const api = {
       body: payload,
       token,
     }),
-  getDiscountCodes: (token?: string | null) =>
-    request<{ codes: unknown[] }>("/payments/discount-codes", {
+  getDiscountCodes: async (token?: string | null) => {
+    const payload = await request<{ codes: unknown[] }>("/payments/discount-codes?limit=200", {
       token,
-    }),
+    });
+    return { ...payload, codes: extractList(payload, "codes") };
+  },
   createDiscountCode: (payload: unknown, token?: string | null) =>
     request<{ code: unknown }>("/payments/discount-codes", {
       method: "POST",
@@ -523,7 +542,7 @@ export const api = {
       body: payload,
       token,
     }),
-  getCourses: () => request<unknown[]>("/courses"),
+  getCourses: async () => extractList(await request<unknown>("/courses?limit=200"), "courses"),
   getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
   createCourse: (payload: unknown, token?: string | null) =>
     request<unknown>("/courses", {
@@ -569,7 +588,7 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  getQuizzes: () => request<unknown[]>("/quizzes"),
+  getQuizzes: async () => extractList(await request<unknown>("/quizzes?limit=200"), "quizzes"),
   getQuizAnalyticsOverview: () => request<unknown>("/quizzes/analytics/overview"),
   createQuiz: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes", {
@@ -594,11 +613,11 @@ export const api = {
       body: payload,
       token,
     }),
-  getQuizResults: () => request<unknown[]>("/quizzes/results"),
+  getQuizResults: async () => extractList(await request<unknown>("/quizzes/results?limit=200"), "results"),
   getScopedQuizResults: () => request<unknown>("/quizzes/results/scoped"),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
-  getSkillProgress: () => request<unknown[]>("/quizzes/skill-progress"),
-  getQuestionAttempts: () => request<unknown[]>("/quizzes/question-attempts"),
+  getSkillProgress: async () => extractList(await request<unknown>("/quizzes/skill-progress?limit=200"), "skillProgress"),
+  getQuestionAttempts: async () => extractList(await request<unknown>("/quizzes/question-attempts?limit=200"), "questionAttempts"),
   createQuestionAttempt: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/question-attempts", {
       method: "POST",
