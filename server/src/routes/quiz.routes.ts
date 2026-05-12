@@ -63,6 +63,7 @@ const questionListQuerySchema = z.object({
   skillId: z.string().trim().optional(),
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   search: z.string().trim().max(120).optional(),
+  summary: z.coerce.boolean().default(false),
 });
 
 const quizSchema = z.object({
@@ -806,8 +807,17 @@ quizRouter.get(
     const filterParts = [baseFilter, scopeFilter].filter((item) => Object.keys(item).length > 0);
     const filter = await withLearnerVisiblePaths(filterParts.length > 0 ? { $and: filterParts } : {}, req.authUser);
     const skip = (query.page - 1) * query.limit;
+    const queryBuilder = QuestionModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(query.limit)
+      .lean();
+    if (query.summary) {
+      queryBuilder.select("id text skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+    }
+
     const [items, total] = await Promise.all([
-      QuestionModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(query.limit).lean(),
+      queryBuilder,
       QuestionModel.countDocuments(filter),
     ]);
     res.setHeader("X-Total-Count", String(total));

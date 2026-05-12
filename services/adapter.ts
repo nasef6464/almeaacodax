@@ -520,13 +520,13 @@ export const adapter = {
     }
   },
 
-  async getQuestions(params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string }): Promise<Question[]> {
+  async getQuestions(params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string; summary?: boolean }): Promise<Question[]> {
     if (!USE_REAL_API) {
       return [];
     }
 
     try {
-      const data = await api.getQuestions(params || { page: 1, limit: 120 });
+      const data = await api.getQuestions(params || { page: 1, limit: 20, summary: true });
       return Array.isArray(data) ? data.map(normalizeQuestion).filter((question) => question.id && question.text) : [];
     } catch (error) {
       console.warn("Falling back to existing in-memory questions:", error);

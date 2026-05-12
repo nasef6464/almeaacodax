@@ -108,10 +108,12 @@ assertIncludes('App.tsx', 'const shouldDeferQuestionBootstrap = (path: string) =
 assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
-assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });');
+assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 20, summary: true });');
 assertIncludes('services/api.ts', 'ids?: string;');
+assertIncludes('services/api.ts', 'summary?: boolean');
 assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(200).default(80)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'res.setHeader("X-Total-Count", String(total));');
+assertIncludes('server/src/routes/quiz.routes.ts', 'if (query.summary) {');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');

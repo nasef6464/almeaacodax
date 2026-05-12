@@ -532,7 +532,7 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  getQuestions: (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string }) => {
+  getQuestions: (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string; summary?: boolean }) => {
     const searchParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params || {})) {
       if (value !== undefined && value !== null && String(value).trim()) {
