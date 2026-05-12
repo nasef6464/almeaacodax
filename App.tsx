@@ -343,7 +343,7 @@ const App: React.FC = () => {
           }
         }
 
-        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 20, summary: true });
+        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
         const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
           questionsPromise ?? Promise.resolve(null),

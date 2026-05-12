@@ -66,6 +66,20 @@ const questionListQuerySchema = z.object({
   summary: z.coerce.boolean().default(false),
 });
 
+const QUESTION_SUMMARY_TEXT_LIMIT = 280;
+const toQuestionSummaryText = (value: unknown) => {
+  const raw = typeof value === "string" ? value : "";
+  const plain = raw
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return plain.length > QUESTION_SUMMARY_TEXT_LIMIT
+    ? `${plain.slice(0, QUESTION_SUMMARY_TEXT_LIMIT).trim()}...`
+    : plain;
+};
+
 const quizSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
@@ -816,10 +830,13 @@ quizRouter.get(
       queryBuilder.select("id text skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
-    const [items, total] = await Promise.all([
+    const [rawItems, total] = await Promise.all([
       queryBuilder,
       QuestionModel.countDocuments(filter),
     ]);
+    const items = query.summary
+      ? rawItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+      : rawItems;
     res.setHeader("X-Total-Count", String(total));
     res.setHeader("X-Page", String(query.page));
     res.setHeader("X-Limit", String(query.limit));
