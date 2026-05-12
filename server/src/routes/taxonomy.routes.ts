@@ -68,20 +68,75 @@ const skillSchema = z.object({
 
 export const taxonomyRouter = Router();
 
+const TAXONOMY_BOOTSTRAP_CACHE_TTL_MS = 60 * 1000;
+const TAXONOMY_SEED_CHECK_TTL_MS = 5 * 60 * 1000;
+
+let publicTaxonomyBootstrapCache:
+  | {
+      expiresAt: number;
+      payload: {
+        paths: unknown[];
+        levels: unknown[];
+        subjects: unknown[];
+        sections: unknown[];
+        skills: unknown[];
+      };
+    }
+  | null = null;
+let skillTaxonomySeedCheckedAt = 0;
+let skillTaxonomySeedPromise: Promise<unknown> | null = null;
+
+const clearTaxonomyBootstrapCache = () => {
+  publicTaxonomyBootstrapCache = null;
+  skillTaxonomySeedCheckedAt = 0;
+};
+
+const ensureSkillTaxonomyIfStale = async () => {
+  const now = Date.now();
+  if (skillTaxonomySeedPromise) {
+    await skillTaxonomySeedPromise;
+    return;
+  }
+
+  if (now - skillTaxonomySeedCheckedAt < TAXONOMY_SEED_CHECK_TTL_MS) {
+    return;
+  }
+
+  skillTaxonomySeedPromise = ensureSkillTaxonomy()
+    .finally(() => {
+      skillTaxonomySeedCheckedAt = Date.now();
+      skillTaxonomySeedPromise = null;
+    });
+  await skillTaxonomySeedPromise;
+};
+
+taxonomyRouter.use((req, _res, next) => {
+  if (req.method !== "GET") {
+    clearTaxonomyBootstrapCache();
+  }
+  next();
+});
+
 taxonomyRouter.get(
   "/bootstrap",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    await ensureSkillTaxonomy();
-
     const canSeeInactiveTaxonomy = ["admin", "teacher", "supervisor"].includes(req.authUser?.role || "");
+    await ensureSkillTaxonomyIfStale();
+
+    if (!canSeeInactiveTaxonomy && publicTaxonomyBootstrapCache && publicTaxonomyBootstrapCache.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "private, max-age=60");
+      res.setHeader("X-Taxonomy-Cache", "hit");
+      return res.json(publicTaxonomyBootstrapCache.payload);
+    }
+
     const pathFilter = canSeeInactiveTaxonomy ? {} : { isActive: { $ne: false } };
     const [paths, levels, subjects, sections, skills] = await Promise.all([
-      PathModel.find(pathFilter).sort({ createdAt: 1 }),
-      LevelModel.find().sort({ createdAt: 1 }),
-      SubjectModel.find().sort({ createdAt: 1 }),
-      SectionModel.find().sort({ createdAt: 1 }),
-      SkillModel.find().sort({ createdAt: 1 }),
+      PathModel.find(pathFilter).sort({ createdAt: 1 }).lean(),
+      LevelModel.find().sort({ createdAt: 1 }).lean(),
+      SubjectModel.find().sort({ createdAt: 1 }).lean(),
+      SectionModel.find().sort({ createdAt: 1 }).lean(),
+      SkillModel.find().sort({ createdAt: 1 }).lean(),
     ]);
 
     if (canSeeInactiveTaxonomy) {
@@ -94,7 +149,7 @@ taxonomyRouter.get(
     const visibleSections = sections.filter((section) => visibleSubjectIds.has(String(section.subjectId)));
     const visibleSectionIds = new Set(visibleSections.map((section) => String(section._id)));
 
-    return res.json({
+    const payload = {
       paths,
       levels: levels.filter((level) => visiblePathIds.has(String(level.pathId))),
       subjects: visibleSubjects,
@@ -105,7 +160,15 @@ taxonomyRouter.get(
           visibleSubjectIds.has(String(skill.subjectId)) &&
           visibleSectionIds.has(String(skill.sectionId)),
       ),
-    });
+    };
+
+    publicTaxonomyBootstrapCache = {
+      expiresAt: Date.now() + TAXONOMY_BOOTSTRAP_CACHE_TTL_MS,
+      payload,
+    };
+    res.setHeader("Cache-Control", "private, max-age=60");
+    res.setHeader("X-Taxonomy-Cache", "miss");
+    return res.json(payload);
   }),
 );
 

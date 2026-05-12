@@ -117,6 +117,9 @@ assertIncludes('server/src/routes/quiz.routes.ts', 'res.setHeader("X-Total-Count
 assertIncludes('server/src/routes/quiz.routes.ts', 'if (query.summary) {');
 assertIncludes('server/src/routes/quiz.routes.ts', 'toQuestionSummaryText(item.text)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter)');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'TAXONOMY_BOOTSTRAP_CACHE_TTL_MS');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'X-Taxonomy-Cache');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearTaxonomyBootstrapCache');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');

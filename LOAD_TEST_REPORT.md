@@ -109,6 +109,7 @@ Code fix applied:
 - The question-bank API also supports `summary=true` so dashboards can load lightweight question metadata and a short text preview without full answers/explanations/media.
 - Dashboard summary loads can pass `noTotal=true` to skip a full `countDocuments` query on first open; detailed admin/search pages can still request totals.
 - The bootstrap asks for a bounded summary first page instead of treating the question bank as an unbounded full-detail payload.
+- Public/learner taxonomy bootstrap now uses short in-process caching, lean MongoDB reads, and automatic cache invalidation on taxonomy mutations so repeated student opens do not re-scan taxonomy collections.
 - Quiz/category routes that need stricter data readiness remain protected by the existing bootstrap gate.
 - Guard extended in `npm run smoke:performance`.
 
