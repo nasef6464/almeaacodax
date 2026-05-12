@@ -677,10 +677,6 @@ export const useStore = create<AppState>()(
                     link: `/results`
                 };
 
-                if (shouldSyncUserToApi(state.user)) {
-                    api.createQuizResult(result).catch(console.error);
-                }
-
                 set((state) => ({
                     examResults: mergeQuizResultsForStore(state.examResults, [result], state.user?.id),
                     recentActivity: [newActivity, ...state.recentActivity].slice(0, 10)
@@ -694,7 +690,8 @@ export const useStore = create<AppState>()(
                     writeLegacyFirebaseDoc('questionAttempts', attemptId, { ...attempt, userId: state.user.id });
                 }
                 if (shouldSyncUserToApi(state.user)) {
-                    api.createQuestionAttempt(attempt).catch(console.error);
+                    const { isCorrect: _localOnly, ...serverAttempt } = attempt;
+                    api.createQuestionAttempt(serverAttempt).catch(console.error);
                 }
                 set((state) => ({
                     questionAttempts: [...state.questionAttempts, attempt]

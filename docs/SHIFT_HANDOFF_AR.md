@@ -84,6 +84,7 @@
 - Added docs: `PRODUCTION_READINESS_REPORT.md`, `SECURITY_CHECKLIST.md`, `LOAD_TEST_REPORT.md`, `BACKUP_RESTORE_GUIDE.md`.
 - Added guard: `npm run smoke:production-hardening`.
 - 2026-05-12 follow-up: removed stale frontend `api.completePurchase`, removed the store-side fake `purchasedCourses` mutation from `enrollCourse`, moved operational API seed purchases to payment request + admin review, and moved seed quiz results to `/api/quizzes/:id/submit`.
+- 2026-05-12 follow-up: removed the stale frontend `api.createQuizResult` helper and stopped `saveExamResult` from posting direct results. The quiz page still uses `/api/quizzes/:id/submit`, and question-attempt sync strips client-calculated `isCorrect` before sending to the server.
 - Added guard: `npm run smoke:direct-unlock-cleanup`.
 
 ## Production Audit + Paid/Free Foundation Sprint - 2026-05-10

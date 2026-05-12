@@ -29,6 +29,7 @@
     "smoke:package-revenue": "node scripts/smoke-package-revenue-contract.mjs",
     "smoke:payment-package": "node scripts/smoke-payment-package-contract.mjs",
     "smoke:direct-unlock-cleanup": "node scripts/smoke-direct-unlock-cleanup-contract.mjs",
+    "smoke:quiz-client-security": "node scripts/smoke-quiz-client-security-contract.mjs",
     "smoke:performance": "node scripts/smoke-performance-contract.mjs",
     "smoke:deployment-cache": "node scripts/smoke-deployment-cache-contract.mjs",
     "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",

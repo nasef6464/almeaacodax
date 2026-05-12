@@ -580,12 +580,6 @@ export const api = {
       body: payload,
       token,
     }),
-  createQuizResult: (payload: unknown, token?: string | null) =>
-    request<unknown>("/quizzes/results", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
   aiChat: (payload: { message: string }, token?: string | null) =>
     request<{
       text: string;
