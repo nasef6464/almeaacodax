@@ -28,6 +28,19 @@
       ]
     },
     {
+      "source": "/(dashboard|admin-dashboard|instructor-dashboard|supervisor-dashboard|parent-dashboard|quiz|results|reports|profile|favorites|my-quizzes|reset-password|verify-email)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {

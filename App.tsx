@@ -85,6 +85,95 @@ const shouldBlockInitialBootstrap = () => {
 const isDataBootstrapBlockingPath = (path: string) =>
   DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
+const SEO_BASE_URL = 'https://almeaacodax.vercel.app';
+
+const SEO_PRIVATE_PREFIXES = [
+  '/dashboard',
+  '/admin-dashboard',
+  '/instructor-dashboard',
+  '/supervisor-dashboard',
+  '/parent-dashboard',
+  '/quiz',
+  '/results',
+  '/my-quizzes',
+  '/reports',
+  '/favorites',
+  '/plan',
+  '/qa',
+  '/book-session',
+  '/live-sessions',
+  '/profile',
+  '/admin',
+  '/forgot-password',
+  '/reset-password',
+  '/verify-email',
+];
+
+const upsertMeta = (selector: string, attribute: 'name' | 'property', name: string, content: string) => {
+  let tag = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attribute, name);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+};
+
+const SeoRouteMeta: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname || '/';
+    const isPrivate = SEO_PRIVATE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+    const isCategory = path.startsWith('/category/');
+    const isBlog = path === '/blog';
+    const isCourses = path === '/courses' || path.startsWith('/course/');
+
+    const title = isPrivate
+      ? 'منصة المئة | مساحة الطالب'
+      : isCategory
+        ? 'مسارات القدرات والتحصيلي | منصة المئة'
+        : isBlog
+          ? 'مدونة منصة المئة'
+          : isCourses
+            ? 'دورات القدرات والتحصيلي | منصة المئة'
+            : 'منصة المئة | قدرات وتحصيلي';
+
+    const description = isPrivate
+      ? 'مساحة خاصة داخل منصة المئة للطالب أو الإدارة.'
+      : isCategory
+        ? 'استكشف مسارات القدرات والتحصيلي والتأسيس والتدريب والاختبارات داخل منصة المئة.'
+        : isBlog
+          ? 'مقالات وإرشادات تعليمية من منصة المئة لطلاب القدرات والتحصيلي.'
+          : isCourses
+            ? 'دورات تعليمية منظمة للقدرات والتحصيلي داخل منصة المئة.'
+            : 'منصة تعليمية عربية للقدرات والتحصيلي، تجمع المسارات التعليمية والدروس والاختبارات والتحليل الذكي في مكان واحد.';
+
+    const canonicalPath = isPrivate ? '/' : path;
+    const canonicalUrl = `${SEO_BASE_URL}${canonicalPath === '/' ? '/' : canonicalPath}`;
+    const robots = isPrivate ? 'noindex, nofollow' : 'index, follow';
+
+    document.title = title;
+    upsertMeta('meta[name="description"]', 'name', 'description', description);
+    upsertMeta('meta[name="robots"]', 'name', 'robots', robots);
+    upsertMeta('meta[property="og:title"]', 'property', 'og:title', title);
+    upsertMeta('meta[property="og:description"]', 'property', 'og:description', description);
+    upsertMeta('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
+    upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
+    upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', canonicalUrl);
+  }, [location.pathname]);
+
+  return null;
+};
+
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 text-amber-500">
     <Loader2 className="w-10 h-10 animate-spin" />
@@ -295,6 +384,7 @@ const App: React.FC = () => {
     <Router>
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
+        <SeoRouteMeta />
         <BootstrapRouteGate bootstrapReady={bootstrapReady}>
         <Routes>
           {/* Routes without Main Layout (Full Screen) */}

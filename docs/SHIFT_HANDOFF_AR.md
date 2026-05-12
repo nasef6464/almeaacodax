@@ -279,3 +279,13 @@
 - Timed in-video question behavior remains covered by `npm run smoke:video-questions`.
 - `npm run build` still emits `video-dash` as an async fallback chunk because `react-player` supports DASH, but normal public/YouTube paths no longer pull it immediately.
 - Scope: performance/load splitting only. No video question authoring, lesson layout, student payment/access, quiz, package, or admin permissions changed.
+
+## SEO Privacy Sprint - 2026-05-12
+- Closed the first SEO/privacy metadata pass without changing UI layout or typography.
+- Added `SeoRouteMeta` in `App.tsx` so public pages keep `index, follow`, while dashboards, quiz, results, reports, profile, auth-token pages, and admin/staff pages switch to `noindex, nofollow`.
+- Runtime metadata now updates title, description, canonical URL, Open Graph, and Twitter metadata per route.
+- Strengthened `public/robots.txt` with private-route disallow rules and absolute sitemap URL.
+- Added `lastmod` to `public/sitemap.xml` and Vercel `X-Robots-Tag` noindex headers for future clean private paths.
+- Added `SEO_READINESS_REPORT.md` and guard `npm run smoke:seo`.
+- Important: the app still uses `HashRouter`. Do not migrate to `BrowserRouter` casually; it needs a separate sprint with Vercel rewrites, old hash return URLs, payment redirects, quiz return links, and visual checks.
+- Visual check: local Chrome headless loaded `http://127.0.0.1:5174/#/` and confirmed the landing page hero renders with `robots=index, follow`; it then loaded `/#/results?attempt=seo-smoke` and confirmed private metadata changes to `robots=noindex, nofollow`.
