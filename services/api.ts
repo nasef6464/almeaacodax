@@ -90,6 +90,27 @@ export const api = {
       method: "POST",
       body: { name, email, password },
     }),
+  forgotPassword: (email: string) =>
+    request<{ message: string }>("/auth/forgot-password", {
+      method: "POST",
+      body: { email },
+    }),
+  resetPassword: (token: string, password: string) =>
+    request<{ message: string }>("/auth/reset-password", {
+      method: "POST",
+      body: { token, password },
+    }),
+  verifyEmail: (token: string) =>
+    request<{ user: unknown; message: string }>("/auth/email/verify", {
+      method: "POST",
+      body: { token },
+    }),
+  resendEmailVerification: (token?: string | null) =>
+    request<{ message: string; user?: unknown }>("/auth/email/resend-verification", {
+      method: "POST",
+      body: {},
+      token,
+    }),
   createAdminUser: (payload: unknown, token?: string | null) =>
     request<{ user: unknown }>("/auth/admin/users", {
       method: "POST",

@@ -17,6 +17,13 @@ const userSchema = new Schema(
       purchasedPackages: { type: [String], default: [] },
     },
     isActive: { type: Boolean, default: true },
+    emailVerified: { type: Boolean, default: false, index: true },
+    emailVerifiedAt: { type: Number, default: null },
+    emailVerificationTokenHash: { type: String, default: "", index: true },
+    emailVerificationExpiresAt: { type: Number, default: null },
+    passwordResetTokenHash: { type: String, default: "", index: true },
+    passwordResetExpiresAt: { type: Number, default: null },
+    passwordResetUsedAt: { type: Number, default: null },
     schoolId: { type: String, default: null },
     groupIds: { type: [String], default: [] },
     linkedStudentIds: { type: [String], default: [] },
@@ -37,6 +44,8 @@ userSchema.set("toJSON", {
   transform: (_doc, ret) => {
     const safeRet = ret as Record<string, unknown>;
     delete safeRet.passwordHash;
+    delete safeRet.emailVerificationTokenHash;
+    delete safeRet.passwordResetTokenHash;
     delete safeRet.__v;
     return safeRet;
   },
@@ -50,5 +59,7 @@ userSchema.index({ managedPathIds: 1 });
 userSchema.index({ managedSubjectIds: 1 });
 userSchema.index({ "subscription.purchasedPackages": 1 });
 userSchema.index({ "subscription.purchasedCourses": 1 });
+userSchema.index({ emailVerificationTokenHash: 1, emailVerificationExpiresAt: 1 });
+userSchema.index({ passwordResetTokenHash: 1, passwordResetExpiresAt: 1 });
 
 export const UserModel = mongoose.model("User", userSchema);

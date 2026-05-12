@@ -83,6 +83,7 @@ npm run smoke:load-tests
 npm run smoke:monitoring
 npm run smoke:database
 npm run smoke:notifications
+npm run smoke:auth-account
 ```
 
 ### Load Testing
@@ -115,6 +116,10 @@ This repo now defines production indexes in the Mongoose models for learning rea
 ### Notification Providers
 
 The backend now creates notification delivery records and in-app notifications. External email/WhatsApp sending should stay disabled until provider credentials are ready. Use `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` only in staging smoke tests.
+
+### Account Recovery
+
+Forgot-password and email-verification flows now create hashed tokens and queue notification delivery records. Production still needs a real email provider adapter before students can receive recovery emails outside staging.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

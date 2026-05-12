@@ -1,5 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
+import { createHash, randomBytes } from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { z } from "zod";
@@ -11,6 +12,7 @@ import { requireAuth, requireRole } from "../middleware/auth.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
+import { createNotificationDeliveries } from "../services/notificationService.js";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -57,15 +59,48 @@ const redeemAccessCodeSchema = z.object({
   code: z.string().min(4),
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(32).max(160),
+  password: z.string().min(8).max(160),
+});
+
+const verifyEmailSchema = z.object({
+  token: z.string().min(32).max(160),
+});
+
 const serializeUser = (user: any) => {
   const plain = typeof user?.toJSON === "function" ? user.toJSON() : user?.toObject?.() || user;
-  const { passwordHash, __v, ...safeUser } = plain;
+  const { passwordHash, emailVerificationTokenHash, passwordResetTokenHash, __v, ...safeUser } = plain;
   return safeUser;
 };
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const buildDocumentQuery = (value: string) =>
   mongoose.Types.ObjectId.isValid(value) ? { $or: [{ id: value }, { _id: value }] } : { id: value };
+const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
+const createSecureToken = () => randomBytes(32).toString("hex");
+const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
+
+async function queueEmailVerification(user: any) {
+  const token = createSecureToken();
+  user.emailVerificationTokenHash = hashToken(token);
+  user.emailVerificationExpiresAt = Date.now() + EMAIL_VERIFICATION_TTL_MS;
+  await user.save();
+
+  await createNotificationDeliveries({
+    channels: ["email"],
+    userIds: [String(user.id || user._id)],
+    title: "Verify your email",
+    subject: "Verify your email",
+    body: `Use this verification token to verify your account: ${token}`,
+    createdBy: "system",
+  });
+}
 
 export const authRouter = Router();
 
@@ -88,6 +123,8 @@ authRouter.post(
       passwordHash,
       role: "student",
     });
+
+    await queueEmailVerification(user);
 
     const token = signAccessToken({
       id: user.id,
@@ -138,6 +175,126 @@ authRouter.post(
     return res.json({
       token,
       user: serializeUser(user),
+    });
+  }),
+);
+
+authRouter.post(
+  "/forgot-password",
+  asyncHandler(async (req, res) => {
+    const payload = forgotPasswordSchema.parse(req.body);
+    const user = await UserModel.findOne({ email: payload.email.toLowerCase() });
+
+    if (user && user.isActive !== false) {
+      const token = createSecureToken();
+      user.passwordResetTokenHash = hashToken(token);
+      user.passwordResetExpiresAt = Date.now() + PASSWORD_RESET_TTL_MS;
+      user.passwordResetUsedAt = null;
+      await user.save();
+
+      await createNotificationDeliveries({
+        channels: ["email"],
+        userIds: [String(user.id || user._id)],
+        title: "Reset your password",
+        subject: "Reset your password",
+        body: `Use this password reset token within 60 minutes: ${token}`,
+        createdBy: "system",
+      });
+    }
+
+    return res.json({
+      message: "If this email exists, password reset instructions will be sent.",
+    });
+  }),
+);
+
+authRouter.post(
+  "/reset-password",
+  asyncHandler(async (req, res) => {
+    const payload = resetPasswordSchema.parse(req.body);
+    const tokenHash = hashToken(payload.token);
+    const user = await UserModel.findOne({
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpiresAt: { $gt: Date.now() },
+      passwordResetUsedAt: null,
+    });
+
+    if (!user) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Invalid or expired reset token",
+      });
+    }
+
+    user.passwordHash = await bcrypt.hash(payload.password, 10);
+    user.passwordResetUsedAt = Date.now();
+    user.passwordResetTokenHash = "";
+    user.passwordResetExpiresAt = null;
+    await user.save();
+
+    await recordAdminAuditLog(req, {
+      action: "auth.password_reset.completed",
+      resourceType: "user",
+      resourceId: String(user.id || user._id),
+      metadata: { targetEmail: user.email },
+    });
+
+    return res.json({
+      message: "Password has been reset.",
+    });
+  }),
+);
+
+authRouter.post(
+  "/email/verify",
+  asyncHandler(async (req, res) => {
+    const payload = verifyEmailSchema.parse(req.body);
+    const user = await UserModel.findOne({
+      emailVerificationTokenHash: hashToken(payload.token),
+      emailVerificationExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Invalid or expired verification token",
+      });
+    }
+
+    user.emailVerified = true;
+    user.emailVerifiedAt = Date.now();
+    user.emailVerificationTokenHash = "";
+    user.emailVerificationExpiresAt = null;
+    await user.save();
+
+    return res.json({
+      user: serializeUser(user),
+      message: "Email has been verified.",
+    });
+  }),
+);
+
+authRouter.post(
+  "/email/resend-verification",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const user = await UserModel.findById(req.authUser?.id);
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    if (user.emailVerified) {
+      return res.json({
+        user: serializeUser(user),
+        message: "Email is already verified.",
+      });
+    }
+
+    await queueEmailVerification(user);
+
+    return res.json({
+      message: "Verification email has been queued.",
     });
   }),
 );

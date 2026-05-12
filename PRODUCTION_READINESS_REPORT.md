@@ -30,12 +30,13 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Monitoring Diagnostics Sprint - 2026-05-12: added structured backend request diagnostics for failed and slow API requests, configurable `SLOW_REQUEST_LOG_MS`, `REQUEST_LOG_LEVEL`, `MONITORING_AND_LOGGING_GUIDE.md`, and `smoke:monitoring`.
 - Database Index Sprint - 2026-05-12: added MongoDB indexes for learning bootstrap, package discovery, payment review, discount codes, audit logs, AI metrics, groups, users, and announcement ads; documented the review in `DATABASE_REVIEW.md`; added `smoke:database`.
 - Notification Foundation Sprint - 2026-05-12: added backend notification templates, delivery logs, in-app notifications, pending email/WhatsApp delivery records, admin APIs, provider-safe console mode, `NOTIFICATION_SYSTEM_GUIDE.md`, `WHATSAPP_INTEGRATION_GUIDE.md`, and `smoke:notifications`.
+- Auth Recovery Sprint - 2026-05-12: added hashed email verification tokens, hashed password reset tokens, generic forgot-password responses, reset/verify/resend endpoints, notification-queued recovery messages, `AUTH_ACCOUNT_SECURITY.md`, and `smoke:auth-account`.
 
 ## Still Required Before Large Launch
 
 - Connect the webhook foundation to the final payment provider contract and live provider dashboard.
 - Cookie-based session hardening or safer refresh-token strategy.
-- Email verification, forgot password, and optional Google/OTP providers.
+- Real email provider adapter, frontend recovery screens, optional Google/OTP providers.
 - Real email/WhatsApp provider adapters and Redis/BullMQ automation for bulk delivery retries.
 - Full RBAC and tenant-scope audit.
 - External monitoring/Sentry, uptime checks, MongoDB slow-query dashboards, and a richer audit-log UI.

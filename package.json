@@ -34,6 +34,7 @@
     "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
     "smoke:database": "node scripts/smoke-database-index-contract.mjs",
     "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
+    "smoke:auth-account": "node scripts/smoke-auth-account-contract.mjs",
     "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
     "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",

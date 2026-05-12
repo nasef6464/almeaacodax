@@ -201,3 +201,11 @@
 - Added docs: `NOTIFICATION_SYSTEM_GUIDE.md` and `WHATSAPP_INTEGRATION_GUIDE.md`.
 - Added guard: `npm run smoke:notifications`.
 - Scope: backend messaging foundation only. No existing student learning/payment/quiz behavior changed.
+
+## Auth Recovery Sprint - 2026-05-12
+- Added email verification and password reset backend foundation with SHA-256 hashed tokens.
+- Added generic forgot-password response to reduce account enumeration.
+- Reset/verification messages are queued through the notification delivery foundation; real delivery still needs an email provider adapter.
+- Added docs: `AUTH_ACCOUNT_SECURITY.md`.
+- Added guard: `npm run smoke:auth-account`.
+- Scope: auth/account recovery only. No student learning/payment/quiz behavior changed.
