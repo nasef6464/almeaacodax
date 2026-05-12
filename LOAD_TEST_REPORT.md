@@ -177,6 +177,12 @@ Planned institutional reporting pass:
 - Reuse the same skill aggregation rules, but expose grouped student summaries, individual reports, directed-test reports, exports, student import/add actions, and messaging/alerts according to role scope.
 - Admin manages all, supervisors see their groups/schools, teachers see assigned content/students, and parents see linked students only.
 
+Closed first institutional command pass:
+
+- Non-student report views now show a compact `مركز متابعة مؤسسي` section.
+- It surfaces one next action from the scoped analytics, with buttons for follow-up test routing, alert copy, scope management, and student export.
+- This improves school/admin usability without increasing the default student report detail.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

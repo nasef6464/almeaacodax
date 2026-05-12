@@ -266,6 +266,7 @@ const Reports: React.FC = () => {
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
     const [copiedScopedSummary, setCopiedScopedSummary] = useState(false);
+    const [copiedInstitutionalAlert, setCopiedInstitutionalAlert] = useState(false);
     const [sharedScopedSummary, setSharedScopedSummary] = useState(false);
     const [copiedStudentSummary, setCopiedStudentSummary] = useState(false);
     const [sharedStudentSummary, setSharedStudentSummary] = useState(false);
@@ -740,6 +741,66 @@ const Reports: React.FC = () => {
             displayText(scopedLeadStudent.recommendedAction) ? `الإجراء المقترح: ${displayText(scopedLeadStudent.recommendedAction)}.` : 'الإجراء المقترح: شرح قصير ثم تدريب علاجي ثم إعادة قياس.',
         ].filter(Boolean).join(' ');
     }, [scopedLeadStudent]);
+    const institutionalReportHub = useMemo(() => {
+        if (user.role === Role.STUDENT || !scopedAnalytics) return null;
+
+        const roleLabel =
+            user.role === Role.ADMIN
+                ? 'مدير المنصة'
+                : user.role === Role.SUPERVISOR
+                    ? 'مشرف'
+                    : user.role === Role.TEACHER
+                        ? 'معلم'
+                        : 'ولي أمر';
+        const nextAction = scopedLeadSkill
+            ? `وجّه اختبار متابعة على ${displayText(scopedLeadSkill.skill)} للطلاب المتأثرين.`
+            : scopedLeadStudent
+                ? `ابدأ برسالة متابعة إلى ${displayText(scopedLeadStudent.name)}.`
+                : 'انتظر نتائج أكثر أو وجّه اختبارًا تشخيصيًا قصيرًا.';
+        const targetLine = scopedLeadStudent
+            ? `${displayText(scopedLeadStudent.name)} يحتاج متابعة بمتوسط ${scopedLeadStudent.averageScore}%.`
+            : scopedLeadSkill
+                ? `${scopedLeadSkill.affectedStudents} طلاب متأثرون بمهارة ${displayText(scopedLeadSkill.skill)}.`
+                : `${scopedAnalytics.scope.studentCount} طالب داخل النطاق.`;
+        const followUpLink = user.role === Role.PARENT ? '/dashboard?tab=reports' : '/admin-dashboard?tab=quizzes';
+        const studentsLink =
+            user.role === Role.ADMIN
+                ? '/admin-dashboard?tab=users'
+                : user.role === Role.SUPERVISOR
+                    ? '/admin-dashboard?tab=groups'
+                    : user.role === Role.TEACHER
+                        ? '/admin-dashboard?tab=quizzes'
+                        : '/dashboard?tab=reports';
+        const alertLink = user.role === Role.ADMIN ? '/admin-dashboard?tab=notifications' : '/reports';
+        const alertText = [
+            `تنبيه متابعة من منصة المئة - ${roleLabel}`,
+            targetLine,
+            scopedLeadSkill ? `أولوية المهارة: ${displayText(scopedLeadSkill.skill)} (${scopedLeadSkill.mastery}%).` : null,
+            scopedLeadSubject ? `المادة: ${displayText(scopedLeadSubject.subjectName)}.` : null,
+            'المطلوب: شرح قصير، تدريب علاجي، ثم اختبار قياس قصير.',
+        ].filter(Boolean).join('\n');
+
+        return {
+            roleLabel,
+            nextAction,
+            targetLine,
+            followUpLink,
+            studentsLink,
+            alertLink,
+            alertText,
+        };
+    }, [scopedAnalytics, scopedLeadSkill, scopedLeadStudent, scopedLeadSubject, user.role]);
+    const copyInstitutionalAlert = async () => {
+        if (!institutionalReportHub?.alertText) return;
+
+        try {
+            await navigator.clipboard.writeText(institutionalReportHub.alertText);
+            setCopiedInstitutionalAlert(true);
+            window.setTimeout(() => setCopiedInstitutionalAlert(false), 1800);
+        } catch {
+            setCopiedInstitutionalAlert(false);
+        }
+    };
     const scopedSkillReportCards = useMemo(() => {
         return (scopedAnalytics?.weakestSkills || []).slice(0, 4).map((skill) => {
             const tone = skill.mastery < 50
@@ -1421,6 +1482,71 @@ const Reports: React.FC = () => {
                                 </div>
                             </div>
 
+                            {institutionalReportHub ? (
+                                <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
+                                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                                        <div className="min-w-0">
+                                            <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
+                                                مركز متابعة مؤسسي
+                                            </div>
+                                            <h3 className="mt-2 text-lg font-black leading-7 text-gray-900">
+                                                {institutionalReportHub.roleLabel}: خطوة تشغيل واضحة
+                                            </h3>
+                                            <p className="mt-1 text-sm font-bold leading-7 text-gray-600">
+                                                {institutionalReportHub.nextAction}
+                                            </p>
+                                        </div>
+                                        <div className="print-hide grid gap-2 sm:grid-cols-2 xl:min-w-[520px]">
+                                            <Link
+                                                to={institutionalReportHub.followUpLink}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700"
+                                            >
+                                                <Target size={14} />
+                                                توجيه اختبار
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={copyInstitutionalAlert}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50"
+                                            >
+                                                {copiedInstitutionalAlert ? <CheckCircle size={14} /> : <Copy size={14} />}
+                                                {copiedInstitutionalAlert ? 'تم النسخ' : 'نسخ تنبيه'}
+                                            </button>
+                                            <Link
+                                                to={institutionalReportHub.studentsLink}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
+                                            >
+                                                <FileText size={14} />
+                                                إدارة النطاق
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={downloadScopedStudentsWorkbook}
+                                                disabled={!scopedStudentFocusCards.length}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-rose-700 shadow-sm hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <Download size={14} />
+                                                تصدير الطلاب
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 grid gap-2 md:grid-cols-3">
+                                        <div className="rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
+                                            النطاق: {roleScopeTitle[user.role] || 'النطاق الحالي'}
+                                        </div>
+                                        <div className="rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
+                                            الهدف: {institutionalReportHub.targetLine}
+                                        </div>
+                                        <Link
+                                            to={institutionalReportHub.alertLink}
+                                            className="print-hide rounded-2xl bg-white/80 px-3 py-2 text-xs font-black leading-6 text-indigo-700 hover:bg-white"
+                                        >
+                                            فتح مركز التنبيهات
+                                        </Link>
+                                    </div>
+                                </div>
+                            ) : null}
+
                             <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr]">
                                 <div className="rounded-3xl border border-indigo-100 bg-white p-4">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -1813,8 +1939,54 @@ const Reports: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">
-                            لا توجد بيانات مجمعة كافية لهذا الدور حتى الآن. إن كان الدور ولي أمر، اربطه أولًا بالطلاب من إدارة المستخدمين.
+                        <div className="space-y-4">
+                            <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
+                                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                                    <div>
+                                        <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
+                                            مركز متابعة مؤسسي
+                                        </div>
+                                        <h3 className="mt-2 text-lg font-black leading-7 text-gray-900">ابدأ بقياس تشخيصي قصير</h3>
+                                        <p className="mt-1 text-sm font-bold leading-7 text-gray-600">
+                                            لا توجد بيانات مجمعة كافية بعد. وجّه اختبارًا قصيرًا للمسار أو المجموعة، ثم ستظهر تقارير الطلاب والمهارات تلقائيًا.
+                                        </p>
+                                    </div>
+                                    <div className="print-hide grid gap-2 sm:grid-cols-2 xl:min-w-[520px]">
+                                        <Link
+                                            to="/admin-dashboard?tab=quizzes"
+                                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700"
+                                        >
+                                            <Target size={14} />
+                                            توجيه اختبار
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            onClick={() => navigator.clipboard.writeText('تنبيه متابعة من منصة المئة: نرجو حل الاختبار التشخيصي القصير حتى يظهر تقرير المهارات وخطة المتابعة.').catch(() => undefined)}
+                                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50"
+                                        >
+                                            <Copy size={14} />
+                                            نسخ تنبيه
+                                        </button>
+                                        <Link
+                                            to={user.role === Role.ADMIN ? '/admin-dashboard?tab=users' : user.role === Role.SUPERVISOR ? '/admin-dashboard?tab=groups' : '/admin-dashboard?tab=quizzes'}
+                                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
+                                        >
+                                            <FileText size={14} />
+                                            إدارة النطاق
+                                        </Link>
+                                        <Link
+                                            to={user.role === Role.ADMIN ? '/admin-dashboard?tab=notifications' : '/reports'}
+                                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 shadow-sm hover:bg-amber-50"
+                                        >
+                                            <Share2 size={14} />
+                                            فتح التنبيهات
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">
+                                لا توجد بيانات مجمعة كافية لهذا الدور حتى الآن. إن كان الدور ولي أمر، اربطه أولًا بالطلاب من إدارة المستخدمين.
+                            </div>
                         </div>
                     )}
                 </Card>

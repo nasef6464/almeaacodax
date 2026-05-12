@@ -401,3 +401,10 @@
 - Parent sees linked student progress, weak skills, and simple downloadable reports.
 - Needed actions: grouped reports, individual student report, skill report, directed-test report, export, import/add students, message/alert students.
 - Keep the student-facing report simple; put deep detail and bulk actions in role dashboards.
+
+## Institutional Reports Command Hub Sprint - 2026-05-12
+- Added a compact `مركز متابعة مؤسسي` section for non-student report views.
+- The hub gives each role one operational next step, not a long explanation.
+- Quick actions now include: direct follow-up test route, copy alert text, open the relevant management scope, and export focused student rows.
+- Admin routes to users/quizzes/notifications, supervisors route to groups/quizzes, teachers route to quizzes, and parents stay in their linked-student report scope.
+- Student reports remain unchanged and simple.
