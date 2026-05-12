@@ -111,6 +111,20 @@ Expected effect:
 
 - Student and parent report pages keep the simple visual report experience without downloading the spreadsheet stack unless export is actually used.
 
+## Admin Excel Lazy Loading - 2026-05-12
+
+Closed the admin spreadsheet follow-up:
+
+- Admin managers no longer statically import `xlsx` when their tabs open.
+- A shared `utils/xlsxLoader.ts` loads the spreadsheet library only when an admin exports a workbook, downloads an import template, or imports an Excel file.
+- Covered managers: users, groups, school portal, schools, lessons, library, quizzes, and question bank.
+- `npm run smoke:performance` now guards that these managers do not reintroduce static spreadsheet imports.
+
+Expected effect:
+
+- Opening admin tabs stays lighter because the spreadsheet stack waits until the admin actually uses Excel.
+- The production build still emits `assets/spreadsheet-*.js` as an async chunk, which is expected and correct for export/import actions.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

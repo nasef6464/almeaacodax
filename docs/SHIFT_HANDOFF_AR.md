@@ -353,3 +353,11 @@
 - Timed in-video questions remain supported for YouTube/Plyr and native direct-file playback, with `npm run smoke:video-questions` guarding the overlay contract.
 - `npm run build` no longer emits `assets/video-dash-*.js` or `assets/video-hls-*.js`; the largest remaining production bundle targets are now spreadsheet/charts/editor/math/admin paths.
 - Scope: video bundle/performance only. No visual redesign, homepage, packages, payments, quiz/training split, or admin permissions changed.
+
+## Admin Excel Lazy Loading Sprint - 2026-05-12
+- Closed the spreadsheet follow-up from the performance plan: admin managers no longer import `xlsx` statically when the tab opens.
+- Added shared `utils/xlsxLoader.ts`; Excel is now loaded only on explicit export/import/template actions.
+- Covered users, groups, school portal, schools, lessons, library, quizzes, and question-bank managers.
+- Guard extended: `npm run smoke:performance` verifies the lazy spreadsheet contract.
+- Verified: `npm run typecheck`, `npm run smoke:performance`, `npm run build`, and `npm --prefix server run build`.
+- Scope: performance only. No visual design, typography, homepage, payment/package, quiz scoring, training/test separation, or permissions changed.

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import * as XLSX from 'xlsx';
 import { useStore } from '../../store/useStore';
 import { Group, GroupType, Role } from '../../types';
 import { Building2, Users, BookOpen, Plus, Search, MoreVertical, Edit2, Trash2, UserCheck, UserMinus, Shield, Download, FileSpreadsheet } from 'lucide-react';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
-const createWorkbookDownload = (
+const createWorkbookDownload = async (
     fileName: string,
     sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
 ) => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     sheets.forEach((sheet) => {
         const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows);

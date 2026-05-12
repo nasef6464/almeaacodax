@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { useStore } from '../../store/useStore';
 import { LibraryItem } from '../../types';
 import { Plus, Edit2, Trash2, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, CheckCircle2, AlertTriangle, Search, SlidersHorizontal } from 'lucide-react';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 interface LibraryManagerProps {
   subjectId: string;
@@ -84,7 +84,8 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
     });
   }, [libraryFilter, searchTerm, skills, subjectItems]);
 
-  const downloadLibraryExport = () => {
+  const downloadLibraryExport = async () => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     const rows = [
       [

@@ -1,10 +1,10 @@
 import React, { useMemo, useRef, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target } from 'lucide-react';
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -327,7 +327,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setPreviewQuestion(question);
   };
 
-  const downloadQuestionsExport = () => {
+  const downloadQuestionsExport = async () => {
+    const XLSX = await loadXlsx();
     const questionRows = filteredQuestions.map((question) => {
       const pathName = paths.find((path) => path.id === question.pathId)?.name || '';
       const subjectName = subjects.find((subject) => subject.id === question.subject)?.name || '';
@@ -391,7 +392,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsEditing(false);
   };
 
-  const downloadImportTemplate = () => {
+  const downloadImportTemplate = async () => {
+    const XLSX = await loadXlsx();
     const samplePath = allowedPaths[0];
     const sampleSubject = allowedSubjects.find((subject) => subject.pathId === samplePath?.id) || allowedSubjects[0];
     const sampleMainSkill = sections.find((section) => section.subjectId === sampleSubject?.id) || sections[0];
@@ -721,6 +723,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setPendingImportBatch(null);
 
     try {
+      const XLSX = await loadXlsx();
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];

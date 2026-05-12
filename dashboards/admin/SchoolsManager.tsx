@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import {
     BookOpen,
     Building2,
@@ -21,6 +20,7 @@ import {
 import { useStore } from '../../store/useStore';
 import { Group, Role, User, PackageContentType } from '../../types';
 import { api } from '../../services/api';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 type ImportRow = {
     name: string;
@@ -190,17 +190,19 @@ const createCsvDownload = (fileName: string, rows: string[][]) => {
     URL.revokeObjectURL(url);
 };
 
-const createXlsxDownload = (fileName: string, rows: string[][]) => {
+const createXlsxDownload = async (fileName: string, rows: string[][]) => {
+    const XLSX = await loadXlsx();
     const worksheet = XLSX.utils.aoa_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'students');
     XLSX.writeFile(workbook, fileName);
 };
 
-const createWorkbookDownload = (
+const createWorkbookDownload = async (
     fileName: string,
     sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
 ) => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     sheets.forEach((sheet) => {
         const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows);
@@ -389,6 +391,7 @@ const parseImportRows = (rows: unknown[][]): ImportRow[] => {
 
 const parseImportFile = async (file: File): Promise<ImportRow[]> => {
     if (/\.(xlsx|xls)$/i.test(file.name)) {
+        const XLSX = await loadXlsx();
         const buffer = await file.arrayBuffer();
         const workbook = XLSX.read(buffer, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
@@ -484,6 +487,7 @@ const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
 
 const parseRelationFile = async (file: File): Promise<RelationImportRow[]> => {
     if (/\.(xlsx|xls)$/i.test(file.name)) {
+        const XLSX = await loadXlsx();
         const buffer = await file.arrayBuffer();
         const workbook = XLSX.read(buffer, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];

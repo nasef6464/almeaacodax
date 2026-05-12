@@ -1,9 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { Lesson, LessonType } from '../../types';
 import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 interface LessonsManagerProps {
   subjectId?: string;
@@ -472,7 +472,8 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     };
   };
 
-  const downloadImportTemplate = () => {
+  const downloadImportTemplate = async () => {
+    const XLSX = await loadXlsx();
     const samplePath = allowedPaths[0];
     const sampleSubject = allowedSubjects.find((subject) => subject.pathId === samplePath?.id) || allowedSubjects[0];
     const sampleMainSkill = sections.find((section) => section.subjectId === sampleSubject?.id) || sections[0];
@@ -563,6 +564,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     setPendingImportBatch(null);
 
     try {
+      const XLSX = await loadXlsx();
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];
@@ -590,7 +592,8 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     locked: filteredLessons.filter((lesson) => lesson.isLocked === true).length,
   };
 
-  const downloadLessonsExport = () => {
+  const downloadLessonsExport = async () => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     const lessonRows = [
       [

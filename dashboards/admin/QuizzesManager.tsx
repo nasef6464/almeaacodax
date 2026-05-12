@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { Question, Quiz } from '../../types';
 import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -14,6 +13,7 @@ import {
 } from '../../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 interface QuizzesManagerProps {
   subjectId?: string;
@@ -567,7 +567,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     setPreviewQuiz(quiz);
   };
 
-  const downloadQuizzesReadinessExport = () => {
+  const downloadQuizzesReadinessExport = async () => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     const quizRows = [
       [

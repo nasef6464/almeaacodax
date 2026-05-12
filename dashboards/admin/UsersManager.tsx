@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { Download, Edit2, Filter, MoreVertical, Plus, Search, UserCheck, UserX, X } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { CategoryPath, CategorySubject, Role, User } from '../../types';
 import { api } from '../../services/api';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
 type AdminUserPayload = {
     id?: string;
@@ -56,10 +56,11 @@ const roleLabels: Record<Role, string> = {
     [Role.STUDENT]: 'طالب',
 };
 
-const createWorkbookDownload = (
+const createWorkbookDownload = async (
     fileName: string,
     sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
 ) => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     sheets.forEach((sheet) => {
         const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows);

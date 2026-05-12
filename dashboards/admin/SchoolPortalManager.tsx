@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import * as XLSX from 'xlsx';
 import {
     AlertTriangle,
     BookOpen,
@@ -13,11 +12,13 @@ import {
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Group, QuizResult, Role, User } from '../../types';
+import { loadXlsx } from '../../utils/xlsxLoader';
 
-const createWorkbookDownload = (
+const createWorkbookDownload = async (
     fileName: string,
     sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
 ) => {
+    const XLSX = await loadXlsx();
     const workbook = XLSX.utils.book_new();
     sheets.forEach((sheet) => {
         const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows);

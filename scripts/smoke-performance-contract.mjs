@@ -51,6 +51,21 @@ assertIncludes('index.html', '<script src="https://cdn.tailwindcss.com"></script
 assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 assertNotIncludes('pages/Reports.tsx', "import * as XLSX from 'xlsx';");
 
+assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
+for (const file of [
+  'dashboards/admin/UsersManager.tsx',
+  'dashboards/admin/SchoolsManager.tsx',
+  'dashboards/admin/SchoolPortalManager.tsx',
+  'dashboards/admin/QuizzesManager.tsx',
+  'dashboards/admin/QuestionBankManager.tsx',
+  'dashboards/admin/LibraryManager.tsx',
+  'dashboards/admin/LessonsManager.tsx',
+  'dashboards/admin/GroupsManager.tsx',
+]) {
+  assertIncludes(file, "import { loadXlsx } from '../../utils/xlsxLoader';");
+  assertNotIncludes(file, "import * as XLSX from 'xlsx';");
+}
+
 assertIncludes('dashboards/admin/AdminDashboard.tsx', "const lazyNamed = <TProps extends object>(");
 assertIncludes('dashboards/admin/AdminDashboard.tsx', '<React.Suspense fallback={<AdminTabLoading />}>');
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { UsersManager } from './UsersManager';");
