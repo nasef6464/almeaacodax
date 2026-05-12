@@ -323,17 +323,31 @@ const App: React.FC = () => {
       }
     };
 
+    const loadPublicAnnouncementAds = async () => {
+      try {
+        const response = await api.getPublicAnnouncementAds();
+
+        if (mounted) {
+          hydrateContentBootstrap({
+            announcementAds: response.announcementAds as any[],
+          });
+        }
+      } catch (error) {
+        console.warn('Public announcement ads unavailable:', error);
+      }
+    };
+
     let bootstrapStarted = false;
-    let delayTimer: ReturnType<typeof setTimeout> | undefined;
-    let idleHandle: number | undefined;
+    let publicAdsTimer: ReturnType<typeof setTimeout> | undefined;
+    let publicAdsIdleHandle: number | undefined;
 
     const cancelDeferredBootstrap = () => {
-      if (delayTimer !== undefined) {
-        window.clearTimeout(delayTimer);
+      if (publicAdsTimer !== undefined) {
+        window.clearTimeout(publicAdsTimer);
       }
 
-      if (idleHandle !== undefined && 'cancelIdleCallback' in window) {
-        window.cancelIdleCallback(idleHandle);
+      if (publicAdsIdleHandle !== undefined && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(publicAdsIdleHandle);
       }
     };
 
@@ -358,9 +372,13 @@ const App: React.FC = () => {
     if (shouldBlockInitialBootstrap()) {
       startBootstrap();
     } else if (requestIdle) {
-      idleHandle = requestIdle(startBootstrap, { timeout: 1200 });
+      publicAdsIdleHandle = requestIdle(() => {
+        void loadPublicAnnouncementAds();
+      }, { timeout: 1000 });
     } else {
-      delayTimer = globalThis.setTimeout(startBootstrap, 450);
+      publicAdsTimer = globalThis.setTimeout(() => {
+        void loadPublicAnnouncementAds();
+      }, 350);
     }
 
     window.addEventListener('hashchange', startIfRouteNeedsData);

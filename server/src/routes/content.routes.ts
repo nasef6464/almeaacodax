@@ -521,6 +521,13 @@ const homepageSettingsSchema = z.object({
       testimonialsSubtitle: z.string().optional(),
     })
     .optional(),
+  typography: z
+    .object({
+      headingFont: z.enum(["tajawal", "system", "serif"]).optional(),
+      bodyFont: z.enum(["tajawal", "system", "serif"]).optional(),
+      headingWeight: z.enum(["bold", "black"]).optional(),
+    })
+    .optional(),
   featuredPathIds: z.array(z.string()).optional(),
   featuredCourseIds: z.array(z.string()).optional(),
   featuredArticleLessonIds: z.array(z.string()).optional(),
@@ -584,6 +591,11 @@ const defaultHomepageSettings = {
       image: "https://i.pravatar.cc/100?img=9",
     },
   ],
+  typography: {
+    headingFont: "tajawal",
+    bodyFont: "tajawal",
+    headingWeight: "black",
+  },
   featuredPathIds: [],
   featuredCourseIds: [],
   featuredArticleLessonIds: [],
@@ -960,6 +972,26 @@ contentRouter.delete(
 
     await AccessCodeModel.deleteMany({ packageId: deleted.id || String(deleted._id) });
     return res.json({ success: true });
+  }),
+);
+
+contentRouter.get(
+  "/announcement-ads",
+  optionalAuth,
+  asyncHandler(async (_req, res) => {
+    const now = Date.now();
+    const announcementAds = await AnnouncementAdModel.find({
+      isActive: { $ne: false },
+      $and: [
+        { $or: [{ startsAt: { $exists: false } }, { startsAt: null }, { startsAt: { $lte: now } }] },
+        { $or: [{ endsAt: { $exists: false } }, { endsAt: null }, { endsAt: { $gte: now } }] },
+      ],
+    })
+      .select("title body imageUrl ctaLabel ctaUrl audience isActive startsAt endsAt priority createdAt updatedAt")
+      .sort({ priority: 1, createdAt: -1 })
+      .limit(8);
+
+    return res.json({ announcementAds });
   }),
 );
 

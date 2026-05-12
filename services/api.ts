@@ -349,6 +349,10 @@ export const api = {
       token,
       cache: "no-store",
     }),
+  getPublicAnnouncementAds: () =>
+    request<{ announcementAds: unknown[] }>("/content/announcement-ads", {
+      cache: "no-store",
+    }),
   updateHomepageSettings: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/homepage-settings", {
       method: "PATCH",

@@ -573,12 +573,22 @@ export interface HomepageSections {
     testimonialsSubtitle?: string;
 }
 
+export type HomepageFontFamily = 'tajawal' | 'system' | 'serif';
+export type HomepageHeadingWeight = 'bold' | 'black';
+
+export interface HomepageTypography {
+    headingFont?: HomepageFontFamily;
+    bodyFont?: HomepageFontFamily;
+    headingWeight?: HomepageHeadingWeight;
+}
+
 export interface HomepageSettings {
     key: string;
     hero: HomepageHeroSettings;
     stats: HomepageStat[];
     testimonials: HomepageTestimonial[];
     sections: HomepageSections;
+    typography?: HomepageTypography;
     featuredPathIds: string[];
     featuredCourseIds: string[];
     featuredArticleLessonIds?: string[];

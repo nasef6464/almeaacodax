@@ -66,6 +66,11 @@ const roleMap: Record<BackendRole, Role> = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const isAuthSessionError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /Authentication required|Invalid token|Token expired|jwt expired|jwt malformed|unauthorized/i.test(message);
+};
+
 const devRoleNames: Record<BackendRole, string> = {
   admin: 'مدير النظام',
   teacher: 'معلم تجريبي',
@@ -213,6 +218,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const raw = localStorage.getItem(AUTH_STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as SessionUser;
+        if (!import.meta.env.DEV && parsed.token?.startsWith(DEV_TOKEN_PREFIX)) {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          resetStoreUser();
+          return;
+        }
         setUser(parsed);
         syncStoreUser(parsed);
       }
@@ -254,6 +264,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
       .catch((error) => {
         console.warn('Failed to hydrate session data:', error);
+        if (isAuthSessionError(error)) {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          setUser(null);
+          resetStoreUser();
+        }
       });
   }, [user]);
 

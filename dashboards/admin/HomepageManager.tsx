@@ -44,6 +44,11 @@ const defaultHomepageSettings: HomepageSettings = {
         testimonialsTitle: 'قصص نجاح نعتز بها',
         testimonialsSubtitle: 'انضم لآلاف الطلاب الذين حققوا أحلامهم معنا',
     },
+    typography: {
+        headingFont: 'tajawal',
+        bodyFont: 'tajawal',
+        headingWeight: 'black',
+    },
     testimonials: [
         { id: 't1', name: 'سارة العتيبي', degree: '98% قدرات', text: 'المنصة غيرت طريقة مذاكرتي تمامًا.', image: 'https://i.pravatar.cc/100?img=5' },
         { id: 't2', name: 'فهد الشمري', degree: '96% تحصيلي', text: 'الشروحات والتدريبات كانت مرتبة جدًا.', image: 'https://i.pravatar.cc/100?img=11' },
@@ -52,6 +57,22 @@ const defaultHomepageSettings: HomepageSettings = {
     featuredPathIds: [],
     featuredCourseIds: [],
     featuredArticleLessonIds: [],
+};
+
+const mergeHomepageSettings = (settings: HomepageSettings): HomepageSettings => {
+    const sanitized = sanitizeHomepageSettings(settings);
+    return {
+        ...defaultHomepageSettings,
+        ...sanitized,
+        hero: { ...defaultHomepageSettings.hero, ...sanitized.hero },
+        sections: { ...defaultHomepageSettings.sections, ...sanitized.sections },
+        typography: { ...defaultHomepageSettings.typography, ...sanitized.typography },
+        stats: sanitized.stats?.length ? sanitized.stats : defaultHomepageSettings.stats,
+        testimonials: sanitized.testimonials?.length ? sanitized.testimonials : defaultHomepageSettings.testimonials,
+        featuredPathIds: sanitized.featuredPathIds || [],
+        featuredCourseIds: sanitized.featuredCourseIds || [],
+        featuredArticleLessonIds: sanitized.featuredArticleLessonIds || [],
+    };
 };
 
 const createEmptyStat = (): HomepageStat => ({
@@ -71,7 +92,7 @@ const createEmptyTestimonial = (): HomepageTestimonial => ({
 });
 
 export const HomepageManager: React.FC = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const { paths, courses, lessons, subjects } = useStore();
     const [settings, setSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +107,7 @@ export const HomepageManager: React.FC = () => {
             try {
                 const response = await api.getHomepageSettings();
                 if (!cancelled && response) {
-                    setSettings(sanitizeHomepageSettings(response as HomepageSettings));
+                    setSettings(mergeHomepageSettings(response as HomepageSettings));
                 }
             } catch (loadError) {
                 if (!cancelled) {
@@ -193,6 +214,17 @@ export const HomepageManager: React.FC = () => {
         }));
     };
 
+    const updateTypographyField = (field: keyof NonNullable<HomepageSettings['typography']>, value: string) => {
+        setSettings((prev) => ({
+            ...prev,
+            typography: {
+                ...defaultHomepageSettings.typography,
+                ...prev.typography,
+                [field]: value,
+            },
+        }));
+    };
+
     const updateStat = (index: number, updates: Partial<HomepageStat>) => {
         setSettings((prev) => ({
             ...prev,
@@ -205,6 +237,31 @@ export const HomepageManager: React.FC = () => {
             ...prev,
             testimonials: prev.testimonials.map((item, itemIndex) => (itemIndex === index ? { ...item, ...updates } : item)),
         }));
+    };
+
+    const handleTestimonialImageUpload = (index: number, file?: File | null) => {
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            setError('اختر ملف صورة فقط.');
+            return;
+        }
+
+        if (file.size > 500 * 1024) {
+            setError('حجم صورة رأي الطالب كبير. الأفضل ضغطها إلى أقل من 500KB قبل الرفع.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            updateTestimonial(index, { image: String(reader.result || '') });
+            setError(null);
+            setSuccess('تم تحميل صورة رأي الطالب داخل الإعدادات. اضغط حفظ التعديلات لنشرها.');
+        };
+        reader.onerror = () => setError('تعذر قراءة الصورة. جرّب صورة أخرى.');
+        reader.readAsDataURL(file);
     };
 
     const toggleId = (collection: string[], id: string) =>
@@ -225,20 +282,23 @@ export const HomepageManager: React.FC = () => {
                 ...settings,
                 hero: { ...settings.hero },
                 sections: { ...settings.sections },
+                typography: { ...defaultHomepageSettings.typography, ...settings.typography },
                 stats: settings.stats.filter((item) => item.label.trim().length > 0),
                 testimonials: settings.testimonials.filter((item) => item.name.trim().length > 0 && item.text.trim().length > 0),
             };
 
             const response = await api.updateHomepageSettings(payload, user.token);
-            setSettings(sanitizeHomepageSettings(response as HomepageSettings));
+            setSettings(mergeHomepageSettings(response as HomepageSettings));
             setSuccess('تم حفظ إعدادات الصفحة الرئيسية بنجاح.');
         } catch (saveError) {
             const message = saveError instanceof Error ? saveError.message : 'تعذر حفظ إعدادات الصفحة الرئيسية.';
-            setError(
-                message === 'Authentication required'
-                    ? 'انتهت جلسة الإدارة أو لم تصل صلاحية الحفظ للخادم. سجّل الدخول كمدير ثم أعد المحاولة.'
-                    : message,
-            );
+            if (/Authentication required|Invalid token|Token expired|jwt expired|jwt malformed|unauthorized/i.test(message)) {
+                await logout();
+                setError('انتهت جلسة الإدارة أو لم تصل صلاحية الحفظ للخادم. تم تسجيل الخروج لحمايتك، سجّل الدخول كمدير ثم أعد الحفظ.');
+                return;
+            }
+
+            setError(message);
         } finally {
             setIsSaving(false);
         }
@@ -429,7 +489,25 @@ export const HomepageManager: React.FC = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                         <TextField label="اسم الطالب" value={testimonial.name} onChange={(value) => updateTestimonial(index, { name: value })} />
                                         <TextField label="النتيجة/الشارة" value={testimonial.degree || ''} onChange={(value) => updateTestimonial(index, { degree: value })} />
-                                        <TextField label="الصورة" value={testimonial.image || ''} onChange={(value) => updateTestimonial(index, { image: value })} />
+                                        <div className="space-y-2">
+                                            <TextField label="الصورة" value={testimonial.image || ''} onChange={(value) => updateTestimonial(index, { image: value })} />
+                                            <div className="flex items-center gap-2">
+                                                <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-bold text-blue-700 border border-blue-100 hover:bg-blue-50">
+                                                    <Upload size={14} />
+                                                    رفع صورة
+                                                    <input
+                                                        type="file"
+                                                        accept="image/png,image/jpeg,image/webp"
+                                                        className="hidden"
+                                                        onChange={(event) => handleTestimonialImageUpload(index, event.target.files?.[0])}
+                                                    />
+                                                </label>
+                                                {testimonial.image ? (
+                                                    <img src={testimonial.image} alt="" className="h-9 w-9 rounded-full border border-white object-cover shadow-sm" />
+                                                ) : null}
+                                            </div>
+                                            <p className="text-[11px] text-gray-400">الأفضل صورة مربعة أقل من 500KB.</p>
+                                        </div>
                                     </div>
                                     <TextAreaField label="النص" value={testimonial.text} onChange={(value) => updateTestimonial(index, { text: value })} rows={3} />
                                     <div className="flex justify-end">
@@ -460,6 +538,40 @@ export const HomepageManager: React.FC = () => {
                         <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-sm leading-7 text-gray-600">
                             ما تضبطه هنا يظهر للزائر فقط إذا كان المحتوى نفسه معتمدًا ومفتوحًا على المنصة. هذا يمنع ظهور عناصر ما زالت تحت التجهيز.
                         </div>
+                    </section>
+
+                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+                        <h2 className="font-bold text-gray-900">خطوط الصفحة الرئيسية</h2>
+                        <p className="text-sm text-gray-500">الافتراضي هو خط المنصة الحالي. غيّرها فقط لو أردت تجربة خط آخر في الصفحة الرئيسية.</p>
+                        <SelectField
+                            label="خط العناوين"
+                            value={settings.typography?.headingFont || 'tajawal'}
+                            onChange={(value) => updateTypographyField('headingFont', value)}
+                            options={[
+                                { value: 'tajawal', label: 'Tajawal - خط المنصة' },
+                                { value: 'system', label: 'خط النظام' },
+                                { value: 'serif', label: 'خط رسمي' },
+                            ]}
+                        />
+                        <SelectField
+                            label="خط النصوص"
+                            value={settings.typography?.bodyFont || 'tajawal'}
+                            onChange={(value) => updateTypographyField('bodyFont', value)}
+                            options={[
+                                { value: 'tajawal', label: 'Tajawal - خط المنصة' },
+                                { value: 'system', label: 'خط النظام' },
+                                { value: 'serif', label: 'خط رسمي' },
+                            ]}
+                        />
+                        <SelectField
+                            label="ثقل العنوان الرئيسي"
+                            value={settings.typography?.headingWeight || 'black'}
+                            onChange={(value) => updateTypographyField('headingWeight', value)}
+                            options={[
+                                { value: 'black', label: 'قوي مثل الحالي' },
+                                { value: 'bold', label: 'أخف قليلًا' },
+                            ]}
+                        />
                     </section>
 
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">

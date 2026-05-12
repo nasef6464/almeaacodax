@@ -40,6 +40,7 @@
 - ممنوع إعادة تصميم جزء مستقر إلا لو ظهر خلل واضح.
 - أي طلب جديد لا يلغي ما قبله إلا إذا كان "تعديل صريح".
 - الأولوية: رحلة الطالب + البساطة + ثبات السلوك.
+- طلب جديد مثبت للخطة: إدارة خطوط المنصة تكون دفعة مستقلة تشمل اختيار الخط العام، رفع ملفات خطوط، قائمة خطوط عربية مناسبة، معاينة قبل التفعيل، وتطبيق موحد على كل الصفحات. لا تغير الخطوط ضمن أي دفعة أخرى إلا إذا كان هذا هو نطاق الدفعة صراحة.
 
 ## سجل التسليم السريع
 ### 2026-05-10
@@ -250,7 +251,9 @@
 
 ## Public Shell Performance Sprint - 2026-05-12
 - Fixed one direct cause of Vercel first-load slowness: the public landing/auth shell no longer waits for the full content bootstrap before rendering.
-- Public pages now delay heavy bootstrap until browser idle; if the user moves quickly into a data-heavy route, the idle delay is cancelled and bootstrap starts immediately.
+- Public pages no longer start the heavy bootstrap automatically during idle. This prevents first-open public pages from pulling courses, questions, quizzes, taxonomy, content bootstrap, and skill progress before the user needs them.
+- Public pages now load only a small active announcement-ad endpoint so the announcement overlay can still appear without the full data load.
+- If the user moves quickly into a data-heavy route, the full bootstrap starts immediately and the route remains gated until data is ready.
 - Data-heavy routes still block until bootstrap is ready: dashboard, category, quiz, results, admin/staff dashboards, reports, courses, and student learning pages.
 - Added guard coverage to `npm run smoke:performance`.
 - Visual check: opened `http://127.0.0.1:5174/#/` in the in-app browser; the landing page rendered immediately with brand, hero content, and CTAs visible, with no blocking loading spinner.

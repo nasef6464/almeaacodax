@@ -57,6 +57,15 @@ const homepageSectionsSchema = new Schema(
   { _id: false },
 );
 
+const homepageTypographySchema = new Schema(
+  {
+    headingFont: { type: String, enum: ["tajawal", "system", "serif"], default: "tajawal" },
+    bodyFont: { type: String, enum: ["tajawal", "system", "serif"], default: "tajawal" },
+    headingWeight: { type: String, enum: ["bold", "black"], default: "black" },
+  },
+  { _id: false },
+);
+
 const homepageSettingsSchema = new Schema(
   {
     key: { type: String, required: true, unique: true, default: "default" },
@@ -64,6 +73,7 @@ const homepageSettingsSchema = new Schema(
     stats: { type: [homepageStatSchema], default: [] },
     testimonials: { type: [homepageTestimonialSchema], default: [] },
     sections: { type: homepageSectionsSchema, default: () => ({}) },
+    typography: { type: homepageTypographySchema, default: () => ({}) },
     featuredPathIds: { type: [String], default: [] },
     featuredCourseIds: { type: [String], default: [] },
     featuredArticleLessonIds: { type: [String], default: [] },

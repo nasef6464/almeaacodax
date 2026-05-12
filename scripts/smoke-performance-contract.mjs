@@ -60,11 +60,19 @@ assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: 
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
-assertIncludes('App.tsx', 'idleHandle = requestIdle(startBootstrap, { timeout: 1200 });');
+assertIncludes('App.tsx', 'const loadPublicAnnouncementAds = async () => {');
+assertIncludes('App.tsx', 'api.getPublicAnnouncementAds()');
+assertIncludes('App.tsx', 'publicAdsIdleHandle = requestIdle(() => {');
+assertIncludes('App.tsx', 'void loadPublicAnnouncementAds();');
+assertIncludes('App.tsx', 'publicAdsTimer = globalThis.setTimeout(() => {');
+assertNotIncludes('App.tsx', 'requestIdle(startBootstrap, { timeout: 1200 });');
 assertIncludes('App.tsx', "window.addEventListener('hashchange', startIfRouteNeedsData);");
 assertIncludes('App.tsx', "'/dashboard'");
 assertIncludes('App.tsx', "'/category'");
 assertIncludes('App.tsx', "'/quiz'");
 assertIncludes('App.tsx', "'/results'");
+assertIncludes('services/api.ts', 'getPublicAnnouncementAds: () =>');
+assertIncludes('server/src/routes/content.routes.ts', '"/announcement-ads"');
+assertIncludes('server/src/routes/content.routes.ts', '.limit(8)');
 
 console.log('Performance contract passed: public shell, video, reports, and admin-heavy modules are lazy-loaded.');

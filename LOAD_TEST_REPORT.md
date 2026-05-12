@@ -75,15 +75,16 @@ Remaining performance work before a 10k-user claim:
 Closed a direct first-open bottleneck:
 
 - The public landing/auth shell now renders immediately instead of waiting for the full app bootstrap to finish.
-- The heavy bootstrap is delayed until browser idle on public pages so it does not compete with the first visible render.
-- If the user moves quickly from a public page into a data-heavy route, the app cancels the idle delay and starts bootstrap immediately.
+- The heavy bootstrap no longer starts automatically on public landing/auth pages. This avoids pulling courses, questions, quizzes, taxonomy, content bootstrap, and skill-progress data for a visitor who has not entered the learning app yet.
+- Public pages now fetch only the lightweight active announcement-ad list so the opening announcement feature still works without a full data load.
+- If the user moves from a public page into a data-heavy route, the app starts the full bootstrap immediately and keeps the route protected by the loading gate.
 - Data-heavy routes still block until bootstrap is ready: dashboards, category pages, quizzes, results, reports, courses, and admin/staff screens.
 - `npm run smoke:performance` now guards this split so the root page cannot silently return to blocking on the full content bootstrap.
 
 Expected effect:
 
 - First paint on Vercel root/auth pages should improve because students do not wait for course/question/quiz/taxonomy/content/skill-progress calls before seeing the page.
-- If the backend is cold on Render, the public page can still appear while the backend wakes up, and private/data pages remain protected by the bootstrap gate.
+- If the backend is cold on Render, the public page avoids the previous multi-endpoint bootstrap burst. The only public follow-up request is the small announcement list, and private/data pages remain protected by the bootstrap gate.
 
 ## Video Fallback Split - 2026-05-12
 

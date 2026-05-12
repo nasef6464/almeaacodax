@@ -44,6 +44,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - SEO Privacy Sprint - 2026-05-12: added runtime route metadata, canonical/OG/Twitter updates, private-route `noindex` handling, strengthened `robots.txt`, added sitemap lastmod, added future clean-path `X-Robots-Tag` headers, documented `SEO_READINESS_REPORT.md`, and added `smoke:seo`.
 - Health Readiness Sprint - 2026-05-12: upgraded `/api/health` with live/ready probes, version/commit/uptime metadata, MongoDB readiness status, routine health-log suppression, deployment docs, and `smoke:health-readiness`.
 - Homepage Manager Save Fix - 2026-05-12: fixed the admin homepage save path to explicitly pass the authenticated admin token, added a clear Arabic expired-session message, and extended `smoke:homepage-hero` so this regression cannot return silently.
+- Public Bootstrap Load Reduction - 2026-05-12: stopped public landing/auth pages from starting the full courses/questions/quizzes/taxonomy/content/skill-progress bootstrap during idle; public pages now fetch only a lightweight active announcement-ad list, while data-heavy routes still start and block on the full bootstrap when entered. Guarded by `smoke:performance`.
 
 ## Still Required Before Large Launch
 

@@ -125,6 +125,11 @@ const AdminTabLoading = () => (
     </div>
 );
 
+const getRequestedAdminTab = () => {
+    const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
+    return new URLSearchParams(hashQuery || window.location.search).get('tab');
+};
+
 export const AdminDashboard: React.FC = () => {
     const {
         user,
@@ -144,7 +149,7 @@ export const AdminDashboard: React.FC = () => {
         updateQuiz,
         updateLibraryItem,
     } = useStore();
-    const [activeTab, setActiveTab] = useState(user.role === Role.ADMIN ? 'paths' : 'overview');
+    const [activeTab, setActiveTab] = useState(() => getRequestedAdminTab() || (user.role === Role.ADMIN ? 'paths' : 'overview'));
     const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);

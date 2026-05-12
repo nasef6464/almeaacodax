@@ -68,6 +68,11 @@ const defaultHomepageSettings: HomepageSettings = {
         testimonialsTitle: 'قصص نجاح نعتز بها',
         testimonialsSubtitle: 'انضم لآلاف الطلاب الذين حققوا أحلامهم معنا',
     },
+    typography: {
+        headingFont: 'tajawal',
+        bodyFont: 'tajawal',
+        headingWeight: 'black',
+    },
     testimonials: [
         {
             id: 't1',
@@ -281,9 +286,21 @@ export const Landing: React.FC = () => {
     };
 
     const testimonials = homepageSettings.testimonials?.length ? homepageSettings.testimonials : defaultHomepageSettings.testimonials;
+    const homepageTypography = {
+        ...defaultHomepageSettings.typography,
+        ...homepageSettings.typography,
+    };
+    const fontClassByChoice = {
+        tajawal: 'font-tajawal',
+        system: 'font-sans',
+        serif: 'font-serif',
+    } as const;
+    const headingFontClass = fontClassByChoice[homepageTypography.headingFont || 'tajawal'];
+    const bodyFontClass = fontClassByChoice[homepageTypography.bodyFont || 'tajawal'];
+    const headingWeightClass = homepageTypography.headingWeight === 'bold' ? 'font-bold' : 'font-black';
 
     return (
-        <div className="bg-white font-tajawal">
+        <div className={`bg-white ${bodyFontClass}`}>
             <section className="relative bg-gradient-to-b from-indigo-50 via-white to-white pt-16 pb-24 overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
                     <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
@@ -302,7 +319,7 @@ export const Landing: React.FC = () => {
                                 {homepageSettings.hero.badgeText || defaultHomepageSettings.hero.badgeText}
                             </div>
 
-                            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-gray-900 leading-tight mb-6">
+                            <h1 className={`text-4xl sm:text-5xl lg:text-7xl ${headingWeightClass} ${headingFontClass} text-gray-900 leading-tight mb-6`}>
                                 {homepageSettings.hero.titlePrefix || defaultHomepageSettings.hero.titlePrefix}{' '}
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                                     {homepageSettings.hero.titleHighlight || defaultHomepageSettings.hero.titleHighlight}
