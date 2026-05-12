@@ -7,9 +7,13 @@ const files = {
   course: await readFile(new URL("../server/src/models/Course.ts", import.meta.url), "utf8"),
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
   payment: await readFile(new URL("../server/src/models/PaymentRequest.ts", import.meta.url), "utf8"),
+  accessGrant: await readFile(new URL("../server/src/models/AccessGrant.ts", import.meta.url), "utf8"),
   discount: await readFile(new URL("../server/src/models/DiscountCode.ts", import.meta.url), "utf8"),
   audit: await readFile(new URL("../server/src/models/AdminAuditLog.ts", import.meta.url), "utf8"),
   ai: await readFile(new URL("../server/src/models/AiInteraction.ts", import.meta.url), "utf8"),
+  db: await readFile(new URL("../server/src/config/db.ts", import.meta.url), "utf8"),
+  env: await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8"),
+  pagination: await readFile(new URL("../server/src/utils/pagination.ts", import.meta.url), "utf8"),
   guide: await readFile(new URL("../DATABASE_REVIEW.md", import.meta.url), "utf8"),
   readiness: await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8"),
 };
@@ -52,6 +56,32 @@ check("payment and discount models have admin review indexes", () => {
 check("operations models have observability indexes", () => {
   assertIncludes(files.audit, "adminAuditLogSchema.index({ action: 1, status: 1, createdAt: -1 })");
   assertIncludes(files.ai, "aiInteractionSchema.index({ endpoint: 1, audience: 1, createdAt: -1 })");
+});
+
+check("access grants have atomic ledger indexes for future purchase hardening", () => {
+  assertIncludes(files.accessGrant, "export const AccessGrantModel");
+  assertIncludes(files.accessGrant, 'idempotencyKey: { type: String, required: true, unique: true, index: true }');
+  assertIncludes(files.accessGrant, 'accessGrantSchema.index({ sourceType: 1, sourceId: 1 }, { unique: true })');
+  assertIncludes(files.accessGrant, "accessGrantSchema.index({ userId: 1, status: 1, grantedAt: -1 })");
+  assertIncludes(files.accessGrant, "accessGrantSchema.index({ userId: 1, packageId: 1, status: 1 })");
+});
+
+check("mongodb connection has explicit production pooling controls", () => {
+  assertIncludes(files.env, "MONGODB_MAX_POOL_SIZE");
+  assertIncludes(files.env, "MONGODB_MIN_POOL_SIZE");
+  assertIncludes(files.env, "MONGODB_SERVER_SELECTION_TIMEOUT_MS");
+  assertIncludes(files.env, "MONGODB_SOCKET_TIMEOUT_MS");
+  assertIncludes(files.env, "MONGODB_MAX_IDLE_TIME_MS");
+  assertIncludes(files.db, "maxPoolSize: env.MONGODB_MAX_POOL_SIZE");
+  assertIncludes(files.db, 'mongoose.connection.on("connected"');
+  assertIncludes(files.db, 'mongoose.connection.on("error"');
+});
+
+check("pagination utility defines the standard future list contract", () => {
+  assertIncludes(files.pagination, "paginationQuerySchema");
+  assertIncludes(files.pagination, "resolvePagination");
+  assertIncludes(files.pagination, "buildPaginatedResponse");
+  assertIncludes(files.pagination, "totalPages");
 });
 
 check("database review documents index scope and scaling limits", () => {

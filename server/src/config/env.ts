@@ -17,6 +17,11 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default("http://localhost:3000"),
   CORS_ALLOWED_ORIGINS: z.string().default(""),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
+  MONGODB_MAX_POOL_SIZE: z.coerce.number().int().min(1).max(200).default(30),
+  MONGODB_MIN_POOL_SIZE: z.coerce.number().int().min(0).max(50).default(2),
+  MONGODB_SERVER_SELECTION_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60000).default(5000),
+  MONGODB_SOCKET_TIMEOUT_MS: z.coerce.number().int().min(5000).max(120000).default(45000),
+  MONGODB_MAX_IDLE_TIME_MS: z.coerce.number().int().min(10000).max(300000).default(60000),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   DEV_LOCAL_ADMIN_BYPASS: z
