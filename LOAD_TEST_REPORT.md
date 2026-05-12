@@ -105,6 +105,8 @@ Code fix applied:
 
 - Dashboards and reports now defer the general question-bank bootstrap.
 - Core data still loads first, the page opens, then the question bank hydrates in the background.
+- The question-bank API now supports scoped pagination with `page`, `limit`, `pathId`, `subject`, `sectionId`, `skillId`, `ids`, and `search`.
+- The bootstrap asks for a bounded first page instead of treating the question bank as an unbounded payload.
 - Quiz/category routes that need stricter data readiness remain protected by the existing bootstrap gate.
 - Guard extended in `npm run smoke:performance`.
 

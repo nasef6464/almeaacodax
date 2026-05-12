@@ -343,7 +343,7 @@ const App: React.FC = () => {
           }
         }
 
-        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions();
+        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
         const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
           questionsPromise ?? Promise.resolve(null),
@@ -397,7 +397,7 @@ const App: React.FC = () => {
         }
 
         if (options.deferQuestions) {
-          void adapter.getQuestions()
+          void adapter.getQuestions({ page: 1, limit: 120 })
             .then((questions) => {
               if (mounted) {
                 hydrateQuestions(questions);

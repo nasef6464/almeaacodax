@@ -182,6 +182,8 @@
 ## Dashboard Bootstrap Performance Sprint - 2026-05-12
 - Production probe found the direct current bottleneck: `/api/quizzes/questions` returned about 726KB and took about 3.1s, while the Vercel shell and taxonomy/content bootstrap were much lighter.
 - Dashboards and reports now defer the general question-bank bootstrap instead of blocking the whole route on it.
+- The question-bank API now has bounded scoped pagination (`page`, `limit`, `pathId`, `subject`, `sectionId`, `skillId`, `ids`, `search`) so future growth does not require downloading the entire bank.
+- App bootstrap requests only the first bounded question page; admin/search flows should continue moving toward scoped fetches instead of full-bank reads.
 - Affected non-blocking routes: student dashboard, admin/teacher/supervisor dashboards, parent dashboard, and reports.
 - Question-dependent widgets hydrate when the question bank arrives in the background; quiz/category routes keep the stricter bootstrap gate.
 - Guard extended in `npm run smoke:performance`.

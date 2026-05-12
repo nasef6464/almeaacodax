@@ -53,6 +53,18 @@ const questionSchema = questionBaseSchema.refine(
   },
 );
 
+const questionListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(200).default(80),
+  ids: z.string().trim().optional(),
+  pathId: z.string().trim().optional(),
+  subject: z.string().trim().optional(),
+  sectionId: z.string().trim().optional(),
+  skillId: z.string().trim().optional(),
+  approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
+  search: z.string().trim().max(120).optional(),
+});
+
 const quizSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
@@ -730,6 +742,7 @@ quizRouter.get(
   "/questions",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    const query = questionListQuerySchema.parse(req.query);
     let baseFilter: Record<string, any> = {};
 
     if (!isStaffRole(req.authUser?.role)) {
@@ -766,8 +779,40 @@ quizRouter.get(
       };
     }
 
-    const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
-    const items = await QuestionModel.find(filter).sort({ createdAt: -1 });
+    const scopeFilter: Record<string, any> = {};
+    if (query.pathId) scopeFilter.pathId = query.pathId;
+    if (query.ids) {
+      const ids = uniqueStrings(query.ids.split(",").map((item) => item.trim()).filter(Boolean)).slice(0, 200);
+      const objectIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id)).map((id) => new mongoose.Types.ObjectId(id));
+      scopeFilter.$or = [
+        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
+        { id: { $in: ids } },
+        ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+      ];
+    }
+    if (query.subject) scopeFilter.subject = query.subject;
+    if (query.sectionId) scopeFilter.sectionId = query.sectionId;
+    if (query.skillId) scopeFilter.skillIds = query.skillId;
+    if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
+    if (query.search) {
+      scopeFilter.$or = [
+        ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
+        { text: { $regex: query.search, $options: "i" } },
+        { explanation: { $regex: query.search, $options: "i" } },
+        { id: { $regex: query.search, $options: "i" } },
+      ];
+    }
+
+    const filterParts = [baseFilter, scopeFilter].filter((item) => Object.keys(item).length > 0);
+    const filter = await withLearnerVisiblePaths(filterParts.length > 0 ? { $and: filterParts } : {}, req.authUser);
+    const skip = (query.page - 1) * query.limit;
+    const [items, total] = await Promise.all([
+      QuestionModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(query.limit).lean(),
+      QuestionModel.countDocuments(filter),
+    ]);
+    res.setHeader("X-Total-Count", String(total));
+    res.setHeader("X-Page", String(query.page));
+    res.setHeader("X-Limit", String(query.limit));
     res.json(items);
   }),
 );

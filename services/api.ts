@@ -532,7 +532,16 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  getQuestions: () => request<unknown[]>("/quizzes/questions"),
+  getQuestions: (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string }) => {
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params || {})) {
+      if (value !== undefined && value !== null && String(value).trim()) {
+        searchParams.set(key, String(value));
+      }
+    }
+    const query = searchParams.toString();
+    return request<unknown[]>(`/quizzes/questions${query ? `?${query}` : ""}`);
+  },
   createQuestion: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/questions", {
       method: "POST",
