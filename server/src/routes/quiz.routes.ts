@@ -64,6 +64,7 @@ const questionListQuerySchema = z.object({
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
+  noTotal: z.coerce.boolean().default(false),
 });
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
@@ -824,7 +825,7 @@ quizRouter.get(
     const queryBuilder = QuestionModel.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(query.limit)
+      .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
       queryBuilder.select("id text skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
@@ -832,12 +833,17 @@ quizRouter.get(
 
     const [rawItems, total] = await Promise.all([
       queryBuilder,
-      QuestionModel.countDocuments(filter),
+      query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter),
     ]);
+    const hasMore = query.noTotal && rawItems.length > query.limit;
+    const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
     const items = query.summary
-      ? rawItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-      : rawItems;
-    res.setHeader("X-Total-Count", String(total));
+      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+      : limitedItems;
+    if (total !== null) {
+      res.setHeader("X-Total-Count", String(total));
+    }
+    res.setHeader("X-Has-More", String(hasMore));
     res.setHeader("X-Page", String(query.page));
     res.setHeader("X-Limit", String(query.limit));
     res.json(items);

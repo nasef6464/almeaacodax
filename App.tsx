@@ -397,7 +397,7 @@ const App: React.FC = () => {
         }
 
         if (options.deferQuestions) {
-          void adapter.getQuestions({ page: 1, limit: 20, summary: true })
+          void adapter.getQuestions({ page: 1, limit: 20, summary: true, noTotal: true })
             .then((questions) => {
               if (mounted) {
                 hydrateQuestions(questions);

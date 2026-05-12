@@ -111,10 +111,12 @@ assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(
 assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });');
 assertIncludes('services/api.ts', 'ids?: string;');
 assertIncludes('services/api.ts', 'summary?: boolean');
+assertIncludes('services/api.ts', 'noTotal?: boolean');
 assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(200).default(80)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'res.setHeader("X-Total-Count", String(total));');
 assertIncludes('server/src/routes/quiz.routes.ts', 'if (query.summary) {');
 assertIncludes('server/src/routes/quiz.routes.ts', 'toQuestionSummaryText(item.text)');
+assertIncludes('server/src/routes/quiz.routes.ts', 'query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter)');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
