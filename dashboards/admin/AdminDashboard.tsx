@@ -634,7 +634,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = adsIndex === -1 ? insertIndex : adsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'platform-fonts', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø®Ø·ÙˆØ· Ø§Ù„Ù…Ù†ØµØ©', icon: <Type size={20} /> },
+                { id: 'platform-fonts', label: 'إدارة خطوط المنصة', icon: <Type size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }

@@ -317,6 +317,16 @@
 - Added guards: `npm run smoke:platform-fonts` and updated `npm run smoke:typography`.
 - Verified: `npm run smoke:platform-fonts`, `npm run smoke:typography`, `npm run typecheck`, `npm run server:build`, `npm run build`.
 - Chrome visual/function check: opened `http://127.0.0.1:5174/#/admin-dashboard?tab=platform-fonts`, confirmed the manager renders with upload controls and Tajawal defaults, clicked save, and confirmed no raw `Authentication required`.
+
+## 2026-05-12 - Advanced Platform Fonts Sprint
+
+- Expanded the platform font manager from a basic body/heading picker into a full typography control panel.
+- Admin can now manage separate typography targets: body text, headings, navigation, and buttons.
+- Each target supports stored/recommended Arabic fonts, optional size, optional weight, optional color, and live preview.
+- Added more suitable Arabic font presets: Almarai, Readex Pro, and Noto Naskh Arabic while preserving Tajawal as the default.
+- Empty size/weight/color values intentionally keep the current platform design untouched; custom overrides apply only after admin saves them.
+- Backend model and validation now persist the advanced font settings safely, so admin choices do not fail on save.
+- Updated the smoke contract to cover advanced controls and the new CSS variables.
 - Scope: global typography controls only. No homepage content, payment/access, quiz/training separation, package logic, layout spacing, or colors changed.
 
 ## Route Loading and Auth Cookie Sprint - 2026-05-12

@@ -182,9 +182,43 @@ const platformFontUploadSchema = z.object({
   size: z.number().min(0).max(500_000).optional().default(0),
 });
 
+const platformFontFamilySchema = z
+  .enum([
+    "tajawal",
+    "cairo",
+    "almarai",
+    "readex-pro",
+    "ibm-plex-sans-arabic",
+    "noto-naskh-arabic",
+    "noto-kufi-arabic",
+    "system",
+    "custom",
+  ])
+  .default("tajawal");
+const platformFontSizeSchema = z.string().regex(/^\d{1,2}(\.\d)?(px|rem)$/).optional().or(z.literal(""));
+const platformFontWeightSchema = z
+  .enum(["300", "400", "500", "600", "700", "800", "900", "normal", "bold"])
+  .optional()
+  .or(z.literal(""));
+const platformFontColorSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/).optional().or(z.literal(""));
+
 const platformFontSettingsSchema = z.object({
-  bodyFont: z.enum(["tajawal", "cairo", "ibm-plex-sans-arabic", "noto-kufi-arabic", "system", "custom"]).default("tajawal"),
-  headingFont: z.enum(["tajawal", "cairo", "ibm-plex-sans-arabic", "noto-kufi-arabic", "system", "custom"]).default("tajawal"),
+  bodyFont: platformFontFamilySchema,
+  headingFont: platformFontFamilySchema,
+  navigationFont: platformFontFamilySchema,
+  buttonFont: platformFontFamilySchema,
+  bodySize: platformFontSizeSchema,
+  headingSize: platformFontSizeSchema,
+  navigationSize: platformFontSizeSchema,
+  buttonSize: platformFontSizeSchema,
+  bodyWeight: platformFontWeightSchema,
+  headingWeight: platformFontWeightSchema,
+  navigationWeight: platformFontWeightSchema,
+  buttonWeight: platformFontWeightSchema,
+  bodyColor: platformFontColorSchema,
+  headingColor: platformFontColorSchema,
+  navigationColor: platformFontColorSchema,
+  buttonColor: platformFontColorSchema,
   bodyCustomFont: platformFontUploadSchema.optional(),
   headingCustomFont: platformFontUploadSchema.optional(),
 });
@@ -626,6 +660,20 @@ const defaultPlatformFontSettings = {
   key: "default",
   bodyFont: "tajawal",
   headingFont: "tajawal",
+  navigationFont: "tajawal",
+  buttonFont: "tajawal",
+  bodySize: "",
+  headingSize: "",
+  navigationSize: "",
+  buttonSize: "",
+  bodyWeight: "",
+  headingWeight: "",
+  navigationWeight: "",
+  buttonWeight: "",
+  bodyColor: "",
+  headingColor: "",
+  navigationColor: "",
+  buttonColor: "",
   bodyCustomFont: {},
   headingCustomFont: {},
 };
