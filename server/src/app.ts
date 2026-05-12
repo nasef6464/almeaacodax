@@ -4,24 +4,45 @@ import cors from "cors";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import { randomUUID } from "node:crypto";
 import { env } from "./config/env.js";
 import { apiRouter } from "./routes/index.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 
-export function createApp() {
-  const app = express();
-  app.set("trust proxy", 1);
-  const allowedOrigins = new Set([
-    env.CLIENT_URL,
+function parseAllowedOrigins() {
+  const configuredOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const productionOrigins = [env.CLIENT_URL, "https://almeaacodax.vercel.app", ...configuredOrigins];
+  const developmentOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
-    "https://almeaacodax.vercel.app",
-  ]);
+  ];
 
+  return new Set(env.NODE_ENV === "production" ? productionOrigins : [...productionOrigins, ...developmentOrigins]);
+}
+
+function createCorsError() {
+  const error = new Error("Origin is not allowed by CORS") as Error & { statusCode?: number };
+  error.statusCode = 403;
+  return error;
+}
+
+export function createApp() {
+  const app = express();
+  app.set("trust proxy", 1);
+  const allowedOrigins = parseAllowedOrigins();
+
+  app.use((req, res, next) => {
+    const requestId = req.header("x-request-id") || randomUUID();
+    req.requestId = requestId;
+    res.setHeader("x-request-id", requestId);
+    next();
+  });
   app.use(
     cors({
       origin(origin, callback) {
@@ -30,12 +51,17 @@ export function createApp() {
           return;
         }
 
-        callback(new Error("Origin is not allowed by CORS"));
+        callback(createCorsError());
       },
       credentials: true,
     }),
   );
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      referrerPolicy: { policy: "no-referrer" },
+    }),
+  );
   app.use(compression());
   app.use(requestLogger);
   app.use(
@@ -67,7 +93,9 @@ export function createApp() {
       message: { message: "Too many requests, please slow down" },
     }),
   );
-  app.use(express.json({ limit: "10mb" }));
+  app.use("/api/auth", express.json({ limit: "100kb" }));
+  app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));
+  app.use(express.json({ limit: "5mb" }));
   app.use(cookieParser());
 
   app.get("/", (_req, res) => {

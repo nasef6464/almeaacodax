@@ -15,9 +15,12 @@
 - Helmet enabled.
 - Compression enabled.
 - CORS restricted to configured frontend/local development origins.
+- Production CORS can be restricted with `CORS_ALLOWED_ORIGINS`; local dev origins are only added outside `NODE_ENV=production`.
+- Request IDs are returned and logged for tracing support tickets and Render logs.
 - Global rate limiting enabled.
 - Auth, payment, AI, access-code, and quiz-submit routes have stricter limits.
-- JSON payload limit reduced from 20mb to 10mb.
+- JSON payload limits are route scoped: auth 100kb, quiz/payment/AI 1mb, and general API 5mb.
+- Production 5xx responses return a safe generic message with a request ID.
 
 ## Remaining Hardening
 

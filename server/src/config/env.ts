@@ -12,8 +12,10 @@ dotenv.config({
 });
 
 const envSchema = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().default(4000),
   CLIENT_URL: z.string().default("http://localhost:3000"),
+  CORS_ALLOWED_ORIGINS: z.string().default(""),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),

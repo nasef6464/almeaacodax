@@ -56,13 +56,15 @@ check('question attempts calculate correctness on the server', () => {
 });
 
 check('server has baseline production security middleware', () => {
-  assertIncludes(appSource, 'helmet()');
+  assertIncludes(appSource, 'helmet({');
   assertIncludes(appSource, 'compression()');
   assertIncludes(appSource, 'app.set("trust proxy", 1)');
   assertIncludes(appSource, 'rateLimit({');
   assertIncludes(appSource, '"/api/auth/login"');
   assertIncludes(appSource, '"/api/quizzes/*/submit"');
-  assertIncludes(appSource, 'express.json({ limit: "10mb" })');
+  assertIncludes(appSource, 'express.json({ limit: "100kb" })');
+  assertIncludes(appSource, 'express.json({ limit: "1mb" })');
+  assertIncludes(appSource, 'express.json({ limit: "5mb" })');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

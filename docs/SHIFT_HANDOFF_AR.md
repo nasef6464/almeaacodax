@@ -228,3 +228,10 @@
 - Successful login and password reset clear failed-login state.
 - Added frontend password guidance in signup/reset screens.
 - Added guard: `npm run smoke:auth-login-security`.
+
+## API Surface Hardening Sprint - 2026-05-12
+- Production CORS now uses `CLIENT_URL` plus optional `CORS_ALLOWED_ORIGINS`; local dev origins stay development-only.
+- Added `x-request-id` to API responses, error JSON, and structured request logs.
+- Added route-scoped body limits: auth 100kb, quiz/payment/AI 1mb, general API 5mb.
+- Production 5xx errors now return a safe generic message with a request ID.
+- Added guard: `npm run smoke:api-security`.

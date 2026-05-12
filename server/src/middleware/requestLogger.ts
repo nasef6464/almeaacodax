@@ -46,6 +46,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
       statusCode,
       durationMs: Number(durationMs.toFixed(2)),
       slowThresholdMs,
+      requestId: req.requestId,
       userId: authUser?.id,
       role: authUser?.role,
       ip: req.ip,

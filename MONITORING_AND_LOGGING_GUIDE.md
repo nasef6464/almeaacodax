@@ -11,6 +11,7 @@ Implemented:
 - Slow request threshold is configurable with `SLOW_REQUEST_LOG_MS`.
 - Routine health checks are not logged unless they fail, become slow, or `REQUEST_LOG_LEVEL=debug`.
 - Request bodies, passwords, tokens, cookies, and authorization headers are not logged.
+- Every API response includes an `x-request-id` header. The same request ID appears in slow/error logs and JSON error responses.
 
 ## Environment Variables
 
@@ -19,6 +20,8 @@ Set these in Render:
 ```text
 REQUEST_LOG_LEVEL=normal
 SLOW_REQUEST_LOG_MS=1000
+NODE_ENV=production
+CORS_ALLOWED_ORIGINS=https://almeaacodax.vercel.app
 ```
 
 Use `REQUEST_LOG_LEVEL=debug` only during short investigations because it logs successful non-slow requests too.
@@ -36,6 +39,7 @@ Example slow request log:
   "statusCode": 200,
   "durationMs": 1350.25,
   "slowThresholdMs": 1000,
+  "requestId": "request-id",
   "userId": "student-id",
   "role": "student",
   "ip": "client-ip"

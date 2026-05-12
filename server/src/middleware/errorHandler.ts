@@ -2,7 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 
 export function notFoundHandler(req: Request, res: Response) {
   res.status(404).json({
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    message: "Route not found",
+    requestId: req.requestId,
   });
 }
 
@@ -12,10 +13,12 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  const message = error.message || "Internal server error";
+  const isProduction = process.env.NODE_ENV === "production";
   const statusCode = error.statusCode || error.status || 500;
+  const message = statusCode >= 500 && isProduction ? "Internal server error" : error.message || "Internal server error";
 
   res.status(statusCode).json({
     message,
+    requestId: _req.requestId,
   });
 }
