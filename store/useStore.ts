@@ -94,7 +94,6 @@ interface AppState {
     hydrateSkillProgress: (items: SkillProgress[]) => void;
     hydrateQuestionAttempts: (attempts: QuestionAttempt[]) => void;
     enrollCourse: (courseId: string) => void;
-    completePurchase: (payload: { courseId?: string; packageId?: string; includedCourseIds?: string[] }) => Promise<void>;
     redeemAccessCode: (code: string) => Promise<void>;
     enrollPath: (pathId: string) => void;
     unenrollPath: (pathId: string) => void;
@@ -575,50 +574,10 @@ export const useStore = create<AppState>()(
             })),
 
             enrollCourse: (courseId) => {
-                const state = get();
-                if (state.enrolledCourses.includes(courseId)) return;
+                if (get().enrolledCourses.includes(courseId)) return;
 
                 set((current) => ({
                     enrolledCourses: [...current.enrolledCourses, courseId],
-                    user: {
-                        ...current.user,
-                        subscription: {
-                            ...current.user.subscription!,
-                            purchasedCourses: Array.from(new Set([...(current.user.subscription?.purchasedCourses || []), courseId])),
-                        },
-                    },
-                }));
-
-                if (shouldSyncUserToApi(state.user)) {
-                    api.completePurchase({ courseId }).catch(console.error);
-                }
-            },
-
-            completePurchase: async (payload) => {
-                const response = await api.completePurchase(payload) as { user?: any };
-                const backendUser = response?.user;
-                if (!backendUser) {
-                    return;
-                }
-
-                set((state) => ({
-                    user: {
-                        ...state.user,
-                        subscription: {
-                            ...state.user.subscription,
-                            plan: backendUser?.subscription?.plan ?? state.user.subscription?.plan ?? 'free',
-                            expiresAt: backendUser?.subscription?.expiresAt ?? state.user.subscription?.expiresAt,
-                            purchasedCourses: Array.isArray(backendUser?.subscription?.purchasedCourses)
-                                ? backendUser.subscription.purchasedCourses.map(String)
-                                : state.user.subscription?.purchasedCourses || [],
-                            purchasedPackages: Array.isArray(backendUser?.subscription?.purchasedPackages)
-                                ? backendUser.subscription.purchasedPackages.map(String)
-                                : state.user.subscription?.purchasedPackages || [],
-                        },
-                    },
-                    enrolledCourses: Array.isArray(backendUser?.enrolledCourses)
-                        ? backendUser.enrolledCourses.map(String)
-                        : state.enrolledCourses,
                 }));
             },
 

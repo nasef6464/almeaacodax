@@ -1392,39 +1392,75 @@ async function upsertPackagesAndCodes(adminToken: string, schoolId: string) {
   }
 }
 
-async function seedStudentStateAndResults() {
+async function seedStudentStateAndResults(adminToken: string) {
   const studentALogin = await login("student.a@almeaa.local", "Student@123");
   const studentBLogin = await login("student.b@almeaa.local", "Student@123");
   const studentCLogin = await login("student.c@almeaa.local", "Student@123");
   const studentDLogin = await login("student.d@almeaa.local", "Student@123");
 
-  const ensurePurchase = async (session: AuthSession, payload: any) => {
+  const ensureApprovedPayment = async (session: AuthSession, payload: any) => {
     const me = await request<any>("/auth/me", "GET", undefined, session.token);
     const purchasedCourses = me.user?.subscription?.purchasedCourses || [];
     const purchasedPackages = me.user?.subscription?.purchasedPackages || [];
     const shouldPurchaseCourse = payload.courseId && !purchasedCourses.includes(payload.courseId);
     const shouldPurchasePackage = payload.packageId && !purchasedPackages.includes(payload.packageId);
-    if (shouldPurchaseCourse || shouldPurchasePackage) {
-      await request("/auth/me/purchase", "POST", payload, session.token);
+    if (!shouldPurchaseCourse && !shouldPurchasePackage) {
+      return;
+    }
+
+    const itemType = payload.packageId ? "package" : "course";
+    const itemId = payload.packageId || payload.courseId;
+    const allRequests = await request<any>("/payments/requests", "GET", undefined, adminToken);
+    let paymentRequest = (allRequests.requests || []).find((item: any) =>
+      String(item.userEmail || "").toLowerCase() === String(session.user?.email || "").toLowerCase() &&
+      String(item.itemId || "") === String(itemId) &&
+      ["pending", "approved"].includes(String(item.status || "")),
+    );
+
+    if (!paymentRequest) {
+      const created = await request<any>("/payments/requests", "POST", {
+        itemType,
+        itemId,
+        itemName: payload.itemName || itemId,
+        packageId: payload.packageId || "",
+        includedCourseIds: itemType === "course" ? payload.includedCourseIds || [] : [],
+        amount: 0,
+        currency: "SAR",
+        paymentMethod: "transfer",
+        transferReference: `seed-${String(session.user?.email || "student")}-${itemId}`,
+        notes: "Operational scenario seed payment request",
+      }, session.token);
+      paymentRequest = created.request;
+    }
+
+    if (String(paymentRequest.status || "") !== "approved") {
+      await request(`/payments/requests/${paymentRequest.id || paymentRequest._id}/review`, "PATCH", {
+        status: "approved",
+        reviewerNotes: "Seeded through admin payment approval instead of direct purchase unlock.",
+        approvalEvidence: `seed-approved-${itemId}`,
+      }, adminToken);
     }
   };
 
-  await ensurePurchase(studentALogin, {
+  await ensureApprovedPayment(studentALogin, {
     courseId: "course_seed_quant_mastery",
     packageId: "pkg_seed_school_quant_full",
     includedCourseIds: ["course_seed_quant_mastery"],
+    itemName: "Seed quant full package",
   });
 
-  await ensurePurchase(studentBLogin, {
+  await ensureApprovedPayment(studentBLogin, {
     courseId: "course_seed_quant_mastery",
     packageId: "pkg_seed_school_quant_full",
     includedCourseIds: ["course_seed_quant_mastery"],
+    itemName: "Seed quant full package",
   });
 
-  await ensurePurchase(studentCLogin, {
+  await ensureApprovedPayment(studentCLogin, {
     courseId: "course_seed_math_mastery",
     packageId: "pkg_seed_school_math_tests",
     includedCourseIds: ["course_seed_math_mastery"],
+    itemName: "Seed math tests package",
   });
 
   const studentDMe = await request<any>("/auth/me", "GET", undefined, studentDLogin.token);
@@ -1438,118 +1474,47 @@ async function seedStudentStateAndResults() {
     reviewLater: ["q_seed_quant_05"],
   }, studentALogin.token);
 
-  const seedResultIfMissing = async (session: AuthSession, quizTitle: string, payload: any) => {
+  const submitResultIfMissing = async (
+    session: AuthSession,
+    quizTitle: string,
+    quizId: string,
+    answers: Record<string, number>,
+    timeSpentSeconds: number,
+  ) => {
     const existing = await request<any[]>("/quizzes/results", "GET", undefined, session.token);
     if (existing.some((item) => String(item.quizTitle || "") === quizTitle)) {
       return;
     }
-    await request("/quizzes/results", "POST", payload, session.token);
+    await request(`/quizzes/${quizId}/submit`, "POST", {
+      answers,
+      timeSpentSeconds,
+      source: "seed-operational-scenario",
+    }, session.token);
   };
 
-  await seedResultIfMissing(studentALogin, "اختبار مركزي - القدرات الكمي (تشغيلي)", {
-    quizId: "quiz_seed_quant_central",
-    quizTitle: "اختبار مركزي - القدرات الكمي (تشغيلي)",
-    score: 58,
-    totalQuestions: 4,
-    correctAnswers: 2,
-    wrongAnswers: 2,
-    unanswered: 0,
-    timeSpent: "00:18:20",
-    date: new Date().toISOString(),
-    skillsAnalysis: [
-      {
-        skillId: "skill_quant_fractions",
-        pathId: "p_qudrat",
-        subjectId: "sub_quant",
-        subjectName: "الكمي",
-        sectionId: "sec_quant_ops",
-        sectionName: "العمليات الحسابية",
-        skill: "الكسور والنسب",
-        mastery: 42,
-        status: "weak",
-        recommendation: "ينصح بإعادة شرح الكسور ثم حل تدريب علاجي.",
-      },
-      {
-        skillId: "skill_quant_equations",
-        pathId: "p_qudrat",
-        subjectId: "sub_quant",
-        subjectName: "الكمي",
-        sectionId: "sec_quant_alg",
-        sectionName: "الجبر والمعادلات",
-        skill: "حل المعادلات",
-        mastery: 61,
-        status: "average",
-        recommendation: "يحتاج إلى اختبار متابعة قصير.",
-      },
-    ],
-    questionReview: [],
-  });
+  await submitResultIfMissing(
+    studentALogin,
+    "اختبار مركزي - القدرات الكمي (تشغيلي)",
+    "quiz_seed_quant_central",
+    { q_seed_quant_01: 0, q_seed_quant_02: 0, q_seed_quant_03: 2, q_seed_quant_04: 0 },
+    1100,
+  );
 
-  await seedResultIfMissing(studentBLogin, "ساهر علاجي - الكسور والمعادلات", {
-    quizId: "quiz_seed_quant_saher_followup",
-    quizTitle: "ساهر علاجي - الكسور والمعادلات",
-    score: 71,
-    totalQuestions: 3,
-    correctAnswers: 2,
-    wrongAnswers: 1,
-    unanswered: 0,
-    timeSpent: "00:12:11",
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    skillsAnalysis: [
-      {
-        skillId: "skill_quant_fractions",
-        pathId: "p_qudrat",
-        subjectId: "sub_quant",
-        subjectName: "الكمي",
-        sectionId: "sec_quant_ops",
-        sectionName: "العمليات الحسابية",
-        skill: "الكسور والنسب",
-        mastery: 74,
-        status: "average",
-        recommendation: "يحتاج إلى تدريب إضافي قبل الانتقال.",
-      },
-      {
-        skillId: "skill_quant_equations",
-        pathId: "p_qudrat",
-        subjectId: "sub_quant",
-        subjectName: "الكمي",
-        sectionId: "sec_quant_alg",
-        sectionName: "الجبر والمعادلات",
-        skill: "حل المعادلات",
-        mastery: 78,
-        status: "strong",
-        recommendation: "يمكنه الانتقال إلى مهارات أعلى.",
-      },
-    ],
-    questionReview: [],
-  });
+  await submitResultIfMissing(
+    studentBLogin,
+    "ساهر علاجي - الكسور والمعادلات",
+    "quiz_seed_quant_saher_followup",
+    { q_seed_quant_02: 2, q_seed_quant_03: 2, q_seed_quant_04: 0 },
+    731,
+  );
 
-  await seedResultIfMissing(studentCLogin, "اختبار مركزي - التحصيلي رياضيات (تشغيلي)", {
-    quizId: "quiz_seed_math_central",
-    quizTitle: "اختبار مركزي - التحصيلي رياضيات (تشغيلي)",
-    score: 67,
-    totalQuestions: 1,
-    correctAnswers: 0,
-    wrongAnswers: 1,
-    unanswered: 0,
-    timeSpent: "00:09:05",
-    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    skillsAnalysis: [
-      {
-        skillId: "skill_math_functions",
-        pathId: "p_tahsili",
-        subjectId: "sub_math",
-        subjectName: "الرياضيات",
-        sectionId: "sec_math_functions",
-        sectionName: "الدوال والتمثيل البياني",
-        skill: "تحليل الدوال",
-        mastery: 67,
-        status: "average",
-        recommendation: "أعد مشاهدة درس الدوال ثم نفذ اختبار متابعة جديد.",
-      },
-    ],
-    questionReview: [],
-  });
+  await submitResultIfMissing(
+    studentCLogin,
+    "اختبار مركزي - التحصيلي رياضيات (تشغيلي)",
+    "quiz_seed_math_central",
+    { q_seed_math_01: 0 },
+    545,
+  );
 }
 
 async function runSmokeChecks(schoolId: string) {
@@ -1595,7 +1560,7 @@ async function main() {
   await upsertLessonsQuestionsEtc(admin.token, teacherQuantLogin.token, teacherMathLogin.token, usersByEmail);
   const groups = await upsertGroupsAndAssignments(admin.token, usersByEmail);
   await upsertPackagesAndCodes(admin.token, groups.schoolId);
-  await seedStudentStateAndResults();
+  await seedStudentStateAndResults(admin.token);
 
   const smoke = await runSmokeChecks(groups.schoolId);
   const snapshots = await fetchSnapshots(admin.token);

@@ -140,3 +140,5 @@
 - 2026-05-06: تم إغلاق بقايا روابط `/quizzes` القديمة داخل الخطة والتقارير ونتيجة الاختبار؛ أي مدخل عام للاختبارات يذهب الآن إلى مركز الاختبارات داخل لوحة الطالب `dashboard?tab=saher` حتى تبقى القائمة الجانبية والسياق واضحين.
 
 - 2026-05-12: تم إغلاق دفعة إدارة خطوط المنصة: إضافة إعداد عام للخطوط في لوحة الإدارة، اختيار خط النصوص وخط العناوين، رفع خط مخصص بحد 500KB، تطبيق الإعدادات على كل الواجهة عبر CSS variables، مع بقاء Tajawal هو الافتراضي وعدم تغيير التصميم إلا عند حفظ الإدارة. الفحوص: `npm run smoke:platform-fonts`، `npm run smoke:typography`، `npm run typecheck`، `npm run server:build`، `npm run build`.
+
+- 2026-05-12: Closed direct-unlock cleanup batch. Removed stale frontend api.completePurchase, stopped enrollCourse from writing fake purchasedCourses, changed operational API seed purchases to payment request + admin review, changed seed quiz results to /api/quizzes/:id/submit, and added npm run smoke:direct-unlock-cleanup.

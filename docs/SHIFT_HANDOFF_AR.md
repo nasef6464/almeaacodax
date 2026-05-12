@@ -83,6 +83,8 @@
 - Added baseline backend hardening: Helmet, compression, global rate limit, stricter auth/payment/AI/quiz-submit limits, and smaller JSON payload limit.
 - Added docs: `PRODUCTION_READINESS_REPORT.md`, `SECURITY_CHECKLIST.md`, `LOAD_TEST_REPORT.md`, `BACKUP_RESTORE_GUIDE.md`.
 - Added guard: `npm run smoke:production-hardening`.
+- 2026-05-12 follow-up: removed stale frontend `api.completePurchase`, removed the store-side fake `purchasedCourses` mutation from `enrollCourse`, moved operational API seed purchases to payment request + admin review, and moved seed quiz results to `/api/quizzes/:id/submit`.
+- Added guard: `npm run smoke:direct-unlock-cleanup`.
 
 ## Production Audit + Paid/Free Foundation Sprint - 2026-05-10
 - Added `AdminAuditLog` storage and `/api/operations/admin-audit-logs` for admin-only review of sensitive actions.

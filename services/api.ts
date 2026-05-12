@@ -183,15 +183,6 @@ export const api = {
       body: payload,
       token,
     }),
-  completePurchase: (
-    payload: { courseId?: string; packageId?: string; includedCourseIds?: string[] },
-    token?: string | null,
-  ) =>
-    request<{ user: unknown }>("/auth/me/purchase", {
-      method: "POST",
-      body: payload,
-      token,
-    }),
   redeemAccessCode: (payload: { code: string }, token?: string | null) =>
     request<{ user: unknown; accessCode: unknown; package: unknown }>("/auth/me/redeem-access-code", {
       method: "POST",
