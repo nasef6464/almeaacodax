@@ -6,8 +6,10 @@ import { normalizeIdList } from '../utils/entityIds';
 import { isDevSessionUser } from '../utils/devSession';
 import { normalizeQuizPlacement } from '../utils/quizPlacement';
 
-const USE_REAL_API =
-    (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
+const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
+const ALLOW_LEGACY_FIREBASE_FALLBACK =
+    runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false';
 
 const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API && user?.email && !isDevSessionUser(user));
 
@@ -17,7 +19,7 @@ const writeLegacyFirebaseDoc = async (
     data: Record<string, unknown>,
     options?: { merge?: boolean },
 ) => {
-    if (USE_REAL_API) return;
+    if (!ALLOW_LEGACY_FIREBASE_FALLBACK) return;
 
     try {
         const [{ doc, setDoc }, { db }] = await Promise.all([

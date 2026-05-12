@@ -42,8 +42,7 @@ assertIncludes('components/CustomVideoPlayer.tsx', '<React.Suspense');
 assertIncludes('components/CustomVideoPlayer.tsx', '<ReactPlayerFallback');
 
 assertIncludes('index.html', 'window.tailwind = window.tailwind || {};');
-assertIncludes('index.html', 'var tailwind = window.tailwind;');
-assertIncludes('index.html', 'tailwind.config = {');
+assertIncludes('index.html', 'window.tailwind.config = {');
 assertIncludes('index.html', '<script src="https://cdn.tailwindcss.com"></script>');
 
 assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
@@ -74,5 +73,9 @@ assertIncludes('App.tsx', "'/results'");
 assertIncludes('services/api.ts', 'getPublicAnnouncementAds: () =>');
 assertIncludes('server/src/routes/content.routes.ts', '"/announcement-ads"');
 assertIncludes('server/src/routes/content.routes.ts', '.limit(8)');
+
+assertIncludes('store/useStore.ts', "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
+assertIncludes('store/useStore.ts', "runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false'");
+assertNotIncludes('vite.config.ts', "return 'firebase';");
 
 console.log('Performance contract passed: public shell, video, reports, and admin-heavy modules are lazy-loaded.');

@@ -338,3 +338,10 @@
 - Started the safer session migration: login/register now also set an HttpOnly auth cookie, auth middleware accepts either Bearer token or cookie, frontend sends credentials, and logout clears the server cookie.
 - Remaining performance note: production build still reports very large lazy chunks, especially `video-dash` (~993KB), Firebase (~603KB), and some media/data libraries. The current sprint improves perceived loading and prefetching; a later performance sprint should split or defer these heavy providers further.
 - Added guards: `npm run smoke:route-loading` and `npm run smoke:auth-cookie`.
+
+## Legacy Firebase Production Chunk Cleanup - 2026-05-12
+- Closed one direct Vercel slowness source from the production bundle: legacy Firebase fallback writes are now guarded by `import.meta.env.DEV && VITE_USE_REAL_API === 'false'`, and the store also forces the real API path whenever `import.meta.env.PROD` is true.
+- Removed the stale Firebase `manualChunks` rule from `vite.config.ts`; the production build no longer emits the previous heavy Firebase chunk. The latest build only had an empty placeholder before this cleanup, then the placeholder rule was removed.
+- Updated `smoke:runtime-source` and `smoke:performance` so future changes cannot accidentally make production use the Firebase fallback again.
+- Scope: performance/source-of-truth only. No UI, typography, homepage content, routes, package logic, or student/admin workflows were changed.
+- Remaining performance note: `video-dash`, `video-hls`, spreadsheet/export, and some page chunks are still the next measurable bundle targets. Firebase is no longer the active production bundle concern.

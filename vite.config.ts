@@ -66,10 +66,6 @@ export default defineConfig(() => {
                 return 'charts';
               }
 
-              if (id.includes('firebase')) {
-                return 'firebase';
-              }
-
               if (id.includes('lucide-react')) {
                 return 'icons';
               }
