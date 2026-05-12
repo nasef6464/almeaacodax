@@ -36,10 +36,13 @@ for (const file of videoEntrypoints) {
 }
 
 assertNotIncludes('components/CustomVideoPlayer.tsx', "import ReactPlayer from 'react-player';");
-assertIncludes('components/CustomVideoPlayer.tsx', "const ReactPlayerFallback = React.lazy(async () => {");
-assertIncludes('components/CustomVideoPlayer.tsx', "const module = await import('react-player');");
-assertIncludes('components/CustomVideoPlayer.tsx', '<React.Suspense');
-assertIncludes('components/CustomVideoPlayer.tsx', '<ReactPlayerFallback');
+assertNotIncludes('components/CustomVideoPlayer.tsx', "import('react-player')");
+assertNotIncludes('components/CustomVideoPlayer.tsx', '<ReactPlayerFallback');
+assertIncludes('components/CustomVideoPlayer.tsx', '<video');
+assertIncludes('components/CustomVideoPlayer.tsx', 'onTimeUpdate={(event) =>');
+assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'vimeo'");
+assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'drive'");
+assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'file'");
 
 assertIncludes('index.html', 'window.tailwind = window.tailwind || {};');
 assertIncludes('index.html', 'window.tailwind.config = {');
@@ -77,5 +80,8 @@ assertIncludes('server/src/routes/content.routes.ts', '.limit(8)');
 assertIncludes('store/useStore.ts', "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
 assertIncludes('store/useStore.ts', "runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false'");
 assertNotIncludes('vite.config.ts', "return 'firebase';");
+assertNotIncludes('vite.config.ts', "return 'video-dash';");
+assertNotIncludes('vite.config.ts', "return 'video-hls';");
+assertNotIncludes('package.json', '"react-player"');
 
 console.log('Performance contract passed: public shell, video, reports, and admin-heavy modules are lazy-loaded.');

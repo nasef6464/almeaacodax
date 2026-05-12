@@ -30,7 +30,7 @@ interface NormalizedVideoSource {
   externalUrl: string;
   iframeUrl?: string;
   blockedProvider?: string;
-  provider?: 'youtube';
+  provider?: 'youtube' | 'vimeo' | 'drive' | 'file';
   videoId?: string;
 }
 
@@ -47,11 +47,6 @@ interface VideoQuestionOverlayProps {
   onAnswer: (isCorrect: boolean) => void;
   onSkip: () => void;
 }
-
-const ReactPlayerFallback = React.lazy(async () => {
-  const module = await import('react-player');
-  return { default: module.default as React.ComponentType<any> };
-});
 
 const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, bankQuestion, onAnswer, onSkip }) => {
   const inlineQuestion = question.inlineQuestion || (bankQuestion
@@ -268,7 +263,12 @@ const normalizeVideoUrl = (rawUrl: string) => {
       const videoId = parsedUrl.pathname.split('/').filter(Boolean).find((part) => /^\d+$/.test(part));
       if (videoId) {
         const normalized = `https://vimeo.com/${videoId}`;
-        return { playerUrl: normalized, externalUrl: normalized };
+        return {
+          playerUrl: `https://player.vimeo.com/video/${videoId}`,
+          iframeUrl: `https://player.vimeo.com/video/${videoId}`,
+          externalUrl: normalized,
+          provider: 'vimeo',
+        };
       }
     }
 
@@ -281,6 +281,7 @@ const normalizeVideoUrl = (rawUrl: string) => {
           playerUrl: `https://drive.google.com/file/d/${fileId}/preview`,
           iframeUrl: `https://drive.google.com/file/d/${fileId}/preview`,
           externalUrl: `https://drive.google.com/file/d/${fileId}/view`,
+          provider: 'drive',
         };
       }
     }
@@ -294,11 +295,11 @@ const normalizeVideoUrl = (rawUrl: string) => {
     return { playerUrl: url, externalUrl: url };
   }
 
-  return { playerUrl: safeUrl, externalUrl: safeUrl };
+  return { playerUrl: safeUrl, externalUrl: safeUrl, provider: 'file' };
 };
 
 export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title, interactiveQuestions = [], questionBank = [] }) => {
-  const playerRef = useRef<any>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoSource = normalizeVideoUrl(url);
   const normalizedUrl = videoSource.playerUrl;
@@ -327,12 +328,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   useEffect(() => {
     return () => {
       try {
-        const internalPlayer = playerRef.current?.getInternalPlayer?.();
-        if (internalPlayer && typeof internalPlayer.pauseVideo === 'function') {
-          internalPlayer.pauseVideo();
-        } else if (internalPlayer && typeof internalPlayer.pause === 'function') {
-          internalPlayer.pause();
-        }
+        videoRef.current?.pause();
       } catch {
         // Ignore player cleanup errors when closing modals or switching routes.
       }
@@ -353,7 +349,28 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     };
   }, [playing, seeking, showControls]);
 
-  const handlePlayPause = () => setPlaying((value) => !value);
+  const handlePlayPause = () => {
+    const video = videoRef.current;
+    if (!video) {
+      setPlaying((value) => !value);
+      return;
+    }
+
+    if (video.paused) {
+      void video.play().catch(() => {
+        setPlaying(false);
+      });
+    } else {
+      video.pause();
+    }
+  };
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.volume = volume;
+    video.muted = muted;
+  }, [volume, muted, normalizedUrl]);
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextVolume = parseFloat(event.target.value);
@@ -368,6 +385,7 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     if (!activeQuestion) {
       const dueQuestion = getDueVideoQuestion(interactiveQuestions, questionBank, answeredQuestionIds, state.playedSeconds || 0);
       if (dueQuestion) {
+        videoRef.current?.pause();
         setPlaying(false);
         setActiveQuestion(dueQuestion);
       }
@@ -378,23 +396,27 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
     if (!activeQuestion) return;
     setAnsweredQuestionIds((previous) => new Set(previous).add(activeQuestion.id));
     if (!isCorrect && activeQuestion.actionOnFail === 'rewatch') {
-      const currentTime = playerRef.current?.getCurrentTime?.() || 0;
+      const currentTime = videoRef.current?.currentTime || 0;
       const targetTime = Math.max(0, activeQuestion.rewatchTimestamp ?? currentTime - 15);
-      playerRef.current?.seekTo(targetTime, 'seconds');
+      if (videoRef.current) {
+        videoRef.current.currentTime = targetTime;
+      }
     }
     setActiveQuestion(null);
-    setPlaying(true);
+    void videoRef.current?.play().catch(() => setPlaying(false));
   };
 
   const handleSeekMouseUp = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
     const nextValue = parseFloat((event.target as HTMLInputElement).value);
     setSeeking(false);
-    playerRef.current?.seekTo(nextValue);
+    if (videoRef.current && duration > 0) {
+      videoRef.current.currentTime = nextValue * duration;
+    }
   };
 
   const handleReady = () => {
     setHasPlaybackError(false);
-    const playerDuration = playerRef.current?.getDuration?.();
+    const playerDuration = videoRef.current?.duration || 0;
     if (playerDuration > 0) setDuration(playerDuration);
   };
 
@@ -422,8 +444,9 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
   };
 
   const seekBySeconds = (seconds: number) => {
-    const currentTime = playerRef.current?.getCurrentTime?.() || 0;
-    playerRef.current?.seekTo(Math.max(0, currentTime + seconds));
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + seconds));
   };
 
   const usesNativeIframe = Boolean(videoSource.iframeUrl);
@@ -471,66 +494,44 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
           allowFullScreen
         />
       ) : (
-        <React.Suspense
-          fallback={
-            <div className="flex h-full w-full items-center justify-center bg-slate-950 text-sm font-bold text-white" dir="rtl">
-              جاري تجهيز الفيديو...
-            </div>
-          }
-        >
-          <ReactPlayerFallback
-            ref={playerRef}
-            url={normalizedUrl}
-            width="100%"
-            height="100%"
-            playing={playing}
-            playsInline
-            volume={volume}
-            muted={muted}
-            onProgress={handleProgress as any}
-            onDuration={(nextDuration: number) => {
-              if (nextDuration > 0) setDuration(nextDuration);
-            }}
-            onReady={handleReady}
-            onError={() => {
-              setPlaying(false);
-              setHasPlaybackError(true);
-              void reportClientEvent({
-                source: 'video-player',
-                severity: 'warning',
-                message: 'Lesson video playback failed',
-                metadata: {
-                  title,
-                  url: normalizedUrl,
-                  externalUrl: videoSource.externalUrl,
-                  provider: videoSource.provider || (usesNativeIframe ? 'iframe' : 'file'),
-                },
-              });
-            }}
-            config={{
-              file: {
-                attributes: {
-                  controlsList: 'nodownload',
-                  preload: 'metadata',
-                },
+        <video
+          ref={videoRef}
+          src={normalizedUrl}
+          className="h-full w-full bg-black object-contain"
+          playsInline
+          preload="metadata"
+          controls={false}
+          controlsList="nodownload"
+          onLoadedMetadata={handleReady}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onTimeUpdate={(event) => {
+            const video = event.currentTarget;
+            const nextDuration = Number(video.duration || duration || 0);
+            if (nextDuration > 0 && nextDuration !== duration) {
+              setDuration(nextDuration);
+            }
+            handleProgress({
+              played: nextDuration > 0 ? video.currentTime / nextDuration : 0,
+              playedSeconds: video.currentTime,
+            });
+          }}
+          onError={() => {
+            setPlaying(false);
+            setHasPlaybackError(true);
+            void reportClientEvent({
+              source: 'video-player',
+              severity: 'warning',
+              message: 'Lesson video playback failed',
+              metadata: {
+                title,
+                url: normalizedUrl,
+                externalUrl: videoSource.externalUrl,
+                provider: videoSource.provider || (usesNativeIframe ? 'iframe' : 'file'),
               },
-              youtube: {
-                playerVars: {
-                  autoplay: 0,
-                  controls: 0,
-                  disablekb: 1,
-                  fs: 0,
-                  modestbranding: 1,
-                  rel: 0,
-                  showinfo: 0,
-                  iv_load_policy: 3,
-                  origin: window.location.origin,
-                },
-              },
-            } as any}
-            style={{ pointerEvents: 'none' }}
-          />
-        </React.Suspense>
+            });
+          }}
+        />
       )}
 
       {hasPlaybackError && (

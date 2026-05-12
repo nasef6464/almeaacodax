@@ -286,6 +286,7 @@
 - Timed in-video question behavior remains covered by `npm run smoke:video-questions`.
 - `npm run build` still emits `video-dash` as an async fallback chunk because `react-player` supports DASH, but normal public/YouTube paths no longer pull it immediately.
 - Scope: performance/load splitting only. No video question authoring, lesson layout, student payment/access, quiz, package, or admin permissions changed.
+- Superseded later the same day by `Native Video Bundle Cleanup`, which removed `react-player`, `video-dash`, and `video-hls` from production entirely.
 
 ## SEO Privacy Sprint - 2026-05-12
 - Closed the first SEO/privacy metadata pass without changing UI layout or typography.
@@ -336,7 +337,7 @@
 - Added common route prefetch for all users (dashboard, learning space, quizzes, mock exams, courses), with an extra admin-dashboard prefetch only for privileged roles.
 - Added header navigation skeleton placeholders when the saved paths have not arrived yet, with a short timeout fallback so the skeleton never stays as final UI if the API is slow/unavailable.
 - Started the safer session migration: login/register now also set an HttpOnly auth cookie, auth middleware accepts either Bearer token or cookie, frontend sends credentials, and logout clears the server cookie.
-- Remaining performance note: production build still reports very large lazy chunks, especially `video-dash` (~993KB), Firebase (~603KB), and some media/data libraries. The current sprint improves perceived loading and prefetching; a later performance sprint should split or defer these heavy providers further.
+- Remaining performance note: production build still reports large lazy chunks in spreadsheet/charts/editor/math/admin paths. Firebase and video DASH/HLS have since been removed from production.
 - Added guards: `npm run smoke:route-loading` and `npm run smoke:auth-cookie`.
 
 ## Legacy Firebase Production Chunk Cleanup - 2026-05-12
@@ -344,4 +345,11 @@
 - Removed the stale Firebase `manualChunks` rule from `vite.config.ts`; the production build no longer emits the previous heavy Firebase chunk. The latest build only had an empty placeholder before this cleanup, then the placeholder rule was removed.
 - Updated `smoke:runtime-source` and `smoke:performance` so future changes cannot accidentally make production use the Firebase fallback again.
 - Scope: performance/source-of-truth only. No UI, typography, homepage content, routes, package logic, or student/admin workflows were changed.
-- Remaining performance note: `video-dash`, `video-hls`, spreadsheet/export, and some page chunks are still the next measurable bundle targets. Firebase is no longer the active production bundle concern.
+- Remaining performance note: spreadsheet/export, charts, editor, math rendering, and some page chunks are still the next measurable bundle targets. Firebase and video DASH/HLS are no longer active production bundle concerns.
+
+## Native Video Bundle Cleanup - 2026-05-12
+- Closed the next direct Vercel bundle target: removed `react-player` from dependencies and removed stale `video-player`, `video-hls`, and `video-dash` manual chunk rules.
+- `CustomVideoPlayer` now uses the existing light paths: YouTube stays on Plyr, Vimeo/Drive use iframe embeds, and direct video files use native HTML5 `<video>`.
+- Timed in-video questions remain supported for YouTube/Plyr and native direct-file playback, with `npm run smoke:video-questions` guarding the overlay contract.
+- `npm run build` no longer emits `assets/video-dash-*.js` or `assets/video-hls-*.js`; the largest remaining production bundle targets are now spreadsheet/charts/editor/math/admin paths.
+- Scope: video bundle/performance only. No visual redesign, homepage, packages, payments, quiz/training split, or admin permissions changed.

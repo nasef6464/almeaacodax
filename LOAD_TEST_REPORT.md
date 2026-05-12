@@ -37,14 +37,12 @@ The current Vercel slowness is expected from three main sources, and they need t
 - Backend cold start: the Render free instance can spin down, so the first API request after inactivity may wait around 50 seconds before the server wakes.
 - Runtime load readiness: 10k users needs measured capacity, not an assumption. The app needs repeatable load tests, upgraded Render capacity, MongoDB Atlas sizing, and queued background work for bulk notifications.
 
-Latest local production build warnings after the 2026-05-12 Firebase cleanup:
+Latest local production build warnings after the 2026-05-12 Firebase and video fallback cleanup:
 
-- `assets/video-dash-*.js`: about 992.84 kB, gzip about 306.64 kB.
-- `assets/video-hls-*.js`: about 522.87 kB, gzip about 161.72 kB.
-- `assets/index-*.js`: about 527.10 kB, gzip about 136.98 kB.
 - `assets/spreadsheet-*.js`: about 429.53 kB, gzip about 143.08 kB.
 - `assets/charts-*.js`: about 304.05 kB, gzip about 94.55 kB.
 - The previous heavy `assets/firebase-*.js` chunk is removed from production. Legacy Firebase remains local-development-only.
+- The previous heavy `assets/video-dash-*.js` and `assets/video-hls-*.js` chunks are removed from production. Direct files use native HTML5 video, Vimeo/Drive use iframe embeds, and YouTube stays on the lighter Plyr path.
 
 ## 10k User Readiness Gate
 
@@ -62,7 +60,7 @@ The platform should not be described as ready for 10k concurrent users until all
 Closed the first code-level performance pass for video-heavy pages:
 
 - `VideoModal`, `CoursePlayer`, and `CourseLanding` now lazy-load `CustomVideoPlayer` only when a video is actually opened or rendered.
-- This prevents pages that merely import video-capable components from eagerly pulling the `react-player`, HLS, and DASH player stack into the first student route.
+- This prevents pages that merely import video-capable components from eagerly pulling video player code into the first student route.
 - Added `npm run smoke:performance` to guard this contract.
 
 Remaining performance work before a 10k-user claim:
@@ -87,19 +85,19 @@ Expected effect:
 - First paint on Vercel root/auth pages should improve because students do not wait for course/question/quiz/taxonomy/content/skill-progress calls before seeing the page.
 - If the backend is cold on Render, the public page avoids the previous multi-endpoint bootstrap burst. The only public follow-up request is the small announcement list, and private/data pages remain protected by the bootstrap gate.
 
-## Video Fallback Split - 2026-05-12
+## Video Fallback Native Split - 2026-05-12
 
 Closed the second video performance pass:
 
-- `CustomVideoPlayer` no longer imports `react-player` at module load.
+- `CustomVideoPlayer` no longer depends on `react-player`.
 - YouTube lessons continue to use the lighter Plyr/YouTube path first.
-- `react-player` now loads only inside a React lazy fallback for non-YouTube/non-Drive sources that need the generic player stack.
+- Direct video files now use native HTML5 `<video>`, Vimeo/Drive use iframe embeds, and timed in-video questions remain on the native/direct-file path.
 - Timed in-video questions remain wired through the same overlay and were covered by `npm run smoke:video-questions`.
 
 Build note:
 
-- Vite still emits `assets/video-dash-*.js` as a separate async fallback chunk because `react-player` can support DASH sources.
-- The key improvement is that this chunk is no longer pulled just by opening the normal public shell or YouTube lesson path; it is deferred until a fallback video source actually needs it.
+- Vite no longer emits `assets/video-dash-*.js` or `assets/video-hls-*.js` in the production build.
+- This is a real bundle removal, not just a lazy-load delay.
 
 ## Reports Export Split - 2026-05-12
 

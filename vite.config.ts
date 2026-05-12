@@ -50,18 +50,6 @@ export default defineConfig(() => {
                 return 'editor';
               }
 
-              if (id.includes('react-player')) {
-                return 'video-player';
-              }
-
-              if (id.includes('hls.js')) {
-                return 'video-hls';
-              }
-
-              if (id.includes('dashjs')) {
-                return 'video-dash';
-              }
-
               if (id.includes('recharts')) {
                 return 'charts';
               }
