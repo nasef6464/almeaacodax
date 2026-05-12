@@ -205,7 +205,13 @@
 ## Auth Recovery Sprint - 2026-05-12
 - Added email verification and password reset backend foundation with SHA-256 hashed tokens.
 - Added generic forgot-password response to reduce account enumeration.
-- Reset/verification messages are queued through the notification delivery foundation; real delivery still needs an email provider adapter.
+- Reset/verification messages are queued through the notification delivery foundation.
 - Added docs: `AUTH_ACCOUNT_SECURITY.md`.
 - Added guard: `npm run smoke:auth-account`.
 - Scope: auth/account recovery only. No student learning/payment/quiz behavior changed.
+
+## External Notification Providers Sprint - 2026-05-12
+- Added provider adapters for Resend email and generic email HTTP webhooks.
+- Added provider adapters for WhatsApp Cloud API and generic WhatsApp HTTP webhooks.
+- `console` mode remains staging-only; empty providers fail/retry instead of pretending to send.
+- Updated deployment docs and notification guides with required env variables.

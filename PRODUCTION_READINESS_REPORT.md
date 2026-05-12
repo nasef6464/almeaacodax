@@ -31,13 +31,13 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Database Index Sprint - 2026-05-12: added MongoDB indexes for learning bootstrap, package discovery, payment review, discount codes, audit logs, AI metrics, groups, users, and announcement ads; documented the review in `DATABASE_REVIEW.md`; added `smoke:database`.
 - Notification Foundation Sprint - 2026-05-12: added backend notification templates, delivery logs, in-app notifications, pending email/WhatsApp delivery records, admin APIs, provider-safe console mode, `NOTIFICATION_SYSTEM_GUIDE.md`, `WHATSAPP_INTEGRATION_GUIDE.md`, and `smoke:notifications`.
 - Auth Recovery Sprint - 2026-05-12: added hashed email verification tokens, hashed password reset tokens, generic forgot-password responses, reset/verify/resend endpoints, notification-queued recovery messages, `AUTH_ACCOUNT_SECURITY.md`, and `smoke:auth-account`.
+- External Notification Providers Sprint - 2026-05-12: added provider adapters for Resend email, generic email webhooks, WhatsApp Cloud API, generic WhatsApp webhooks, safe console staging mode, env documentation, and smoke coverage.
 
 ## Still Required Before Large Launch
 
 - Connect the webhook foundation to the final payment provider contract and live provider dashboard.
 - Cookie-based session hardening or safer refresh-token strategy.
-- Real email provider adapter, frontend recovery screens, optional Google/OTP providers.
-- Real email/WhatsApp provider adapters and Redis/BullMQ automation for bulk delivery retries.
+- Frontend recovery screens, optional Google/OTP providers, and Redis/BullMQ automation for bulk delivery retries.
 - Full RBAC and tenant-scope audit.
 - External monitoring/Sentry, uptime checks, MongoDB slow-query dashboards, and a richer audit-log UI.
 - Real load-test execution at 100, 500, and 1000 concurrent students with Render/MongoDB metrics recorded.

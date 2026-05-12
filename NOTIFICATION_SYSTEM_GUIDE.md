@@ -10,6 +10,7 @@ Implemented:
 - Notification delivery logs.
 - In-app notifications for students, parents, teachers, supervisors, and admins.
 - Email and WhatsApp delivery records as `pending` until a provider is configured.
+- Provider adapter for `console`, Resend email, generic email webhook, WhatsApp Cloud API, and generic WhatsApp webhook.
 - Admin-only APIs for templates, delivery review, campaign creation, and processing pending messages.
 - A hard per-request recipient cap of 500 so bulk messages are batched instead of sent in one huge HTTP request.
 
@@ -46,10 +47,39 @@ WHATSAPP_PROVIDER=console
 
 `console` is for testing only. It writes a safe delivery log and marks messages as sent without calling a real provider.
 
-Production providers still need credentials and final adapters:
+Production email options:
 
-- Email: Resend, SendGrid, Mailgun, or Amazon SES.
-- WhatsApp: WhatsApp Business Cloud API or Twilio.
+```text
+EMAIL_PROVIDER=resend
+EMAIL_FROM=Platform <noreply@example.com>
+RESEND_API_KEY=...
+```
+
+Or use a trusted provider through a webhook adapter:
+
+```text
+EMAIL_PROVIDER=http
+EMAIL_WEBHOOK_URL=https://provider.example/send-email
+EMAIL_WEBHOOK_TOKEN=...
+```
+
+Production WhatsApp options:
+
+```text
+WHATSAPP_PROVIDER=whatsapp_cloud
+WHATSAPP_ACCESS_TOKEN=...
+WHATSAPP_PHONE_NUMBER_ID=...
+```
+
+Or:
+
+```text
+WHATSAPP_PROVIDER=http
+WHATSAPP_WEBHOOK_URL=https://provider.example/send-whatsapp
+WHATSAPP_WEBHOOK_TOKEN=...
+```
+
+Leave providers empty in production until credentials are ready. Empty providers keep deliveries in retry/failed state instead of pretending they were sent.
 
 ## Bulk Sending Rule
 
@@ -61,7 +91,8 @@ Use this flow:
 2. In-app records become visible immediately.
 3. Email/WhatsApp records stay `pending`.
 4. A worker or scheduled job calls `POST /api/notifications/admin/process-pending` in small batches.
-5. Later production work can replace the manual processor with BullMQ/Redis.
+5. The processor sends through the configured provider adapter in small batches.
+6. Later production work can replace the manual processor with BullMQ/Redis.
 
 ## Template Variables
 
@@ -84,7 +115,6 @@ Variables are provided in the send request as:
 
 ## Remaining Production Work
 
-- Add real provider adapters after credentials are available.
 - Add BullMQ/Redis worker for automated retries.
 - Add admin UI for message center if the current admin screen needs visual controls.
 - Add unsubscribe/preferences rules for non-essential marketing messages.

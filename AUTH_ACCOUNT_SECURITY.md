@@ -32,11 +32,24 @@ For staging-only testing:
 EMAIL_PROVIDER=console
 ```
 
-For production, connect Resend, SendGrid, Mailgun, Amazon SES, or another provider before relying on email delivery.
+For production, configure one of the delivery providers:
+
+```text
+EMAIL_PROVIDER=resend
+EMAIL_FROM=Platform <noreply@example.com>
+RESEND_API_KEY=...
+```
+
+Or:
+
+```text
+EMAIL_PROVIDER=http
+EMAIL_WEBHOOK_URL=https://provider.example/send-email
+EMAIL_WEBHOOK_TOKEN=...
+```
 
 ## Remaining Work
 
-- Add real email provider adapter.
 - Add frontend screens for forgot/reset/verify flows if not already present in design.
 - Add optional Google OAuth after provider credentials are ready.
 - Move sessions to HttpOnly Secure SameSite cookies in a later auth-hardening sprint.

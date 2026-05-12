@@ -34,8 +34,10 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
     - `AI_PROVIDER`: one of `gemini`, `openrouter`, `qwen`, `deepseek`, `openai`, `ollama`, `lmstudio`, or `none` (optional)
     - `REQUEST_LOG_LEVEL`: `normal` in production, `debug` only during short investigations
     - `SLOW_REQUEST_LOG_MS`: `1000` default threshold for slow API request logs
-    - `EMAIL_PROVIDER`: leave empty in production until a provider is configured; use `console` only in staging
-    - `WHATSAPP_PROVIDER`: leave empty in production until a provider is configured; use `console` only in staging
+    - `EMAIL_PROVIDER`: `resend`, `http`, or empty until ready; use `console` only in staging
+    - `EMAIL_FROM`, `RESEND_API_KEY`, `EMAIL_WEBHOOK_URL`, `EMAIL_WEBHOOK_TOKEN`: required according to selected email provider
+    - `WHATSAPP_PROVIDER`: `whatsapp_cloud`, `http`, or empty until ready; use `console` only in staging
+    - `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_WEBHOOK_URL`, `WHATSAPP_WEBHOOK_TOKEN`: required according to selected WhatsApp provider
     - `AI_PROVIDER_ORDER`: recommended production order such as `gemini,openrouter,qwen,deepseek,openai`
     - `AI_REQUEST_TIMEOUT_MS`: defaults to `15000`
     - `GEMINI_API_KEY`: (Google AI Key)
@@ -115,11 +117,11 @@ This repo now defines production indexes in the Mongoose models for learning rea
 
 ### Notification Providers
 
-The backend now creates notification delivery records and in-app notifications. External email/WhatsApp sending should stay disabled until provider credentials are ready. Use `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` only in staging smoke tests.
+The backend now creates notification delivery records and in-app notifications. External email/WhatsApp sending supports Resend, generic HTTP providers, WhatsApp Cloud API, and console staging mode. Use `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` only in staging smoke tests.
 
 ### Account Recovery
 
-Forgot-password and email-verification flows now create hashed tokens and queue notification delivery records. Production still needs a real email provider adapter before students can receive recovery emails outside staging.
+Forgot-password and email-verification flows now create hashed tokens and queue notification delivery records. Configure `EMAIL_PROVIDER=resend` or `EMAIL_PROVIDER=http` before students rely on recovery emails outside staging.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

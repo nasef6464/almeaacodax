@@ -2,7 +2,7 @@
 
 ## Current Status
 
-The platform now stores WhatsApp notification delivery records, but it does not call a real WhatsApp provider until credentials and provider choice are configured.
+The platform stores WhatsApp notification delivery records and has a provider adapter for test mode, WhatsApp Cloud API, and a generic HTTP webhook. It does not send real WhatsApp messages until credentials and provider choice are configured.
 
 ## Recommended Providers
 
@@ -15,20 +15,19 @@ The platform now stores WhatsApp notification delivery records, but it does not 
 Typical WhatsApp Cloud API values:
 
 ```text
-WHATSAPP_PROVIDER=meta
+WHATSAPP_PROVIDER=whatsapp_cloud
 WHATSAPP_ACCESS_TOKEN=...
 WHATSAPP_PHONE_NUMBER_ID=...
 WHATSAPP_BUSINESS_ACCOUNT_ID=...
 WHATSAPP_WEBHOOK_VERIFY_TOKEN=...
 ```
 
-Twilio-style values:
+Generic provider/webhook values:
 
 ```text
-WHATSAPP_PROVIDER=twilio
-TWILIO_ACCOUNT_SID=...
-TWILIO_AUTH_TOKEN=...
-TWILIO_WHATSAPP_FROM=whatsapp:+...
+WHATSAPP_PROVIDER=http
+WHATSAPP_WEBHOOK_URL=https://provider.example/send-whatsapp
+WHATSAPP_WEBHOOK_TOKEN=...
 ```
 
 Do not commit these values to Git.

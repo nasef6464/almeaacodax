@@ -4,6 +4,7 @@ const files = {
   template: await readFile(new URL("../server/src/models/NotificationTemplate.ts", import.meta.url), "utf8"),
   delivery: await readFile(new URL("../server/src/models/NotificationDelivery.ts", import.meta.url), "utf8"),
   service: await readFile(new URL("../server/src/services/notificationService.ts", import.meta.url), "utf8"),
+  providers: await readFile(new URL("../server/src/services/notificationProviders.ts", import.meta.url), "utf8"),
   route: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   index: await readFile(new URL("../server/src/routes/index.ts", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/.env.example", import.meta.url), "utf8"),
@@ -48,6 +49,14 @@ check("notification service creates delivery records without bulk provider calls
   assertNotIncludes(files.service, "fetch(");
 });
 
+check("external provider adapter supports production delivery modes", () => {
+  assertIncludes(files.providers, "sendExternalNotification");
+  assertIncludes(files.providers, "sendResendEmail");
+  assertIncludes(files.providers, "sendHttpEmail");
+  assertIncludes(files.providers, "sendWhatsAppCloud");
+  assertIncludes(files.providers, "provider_http_");
+});
+
 check("notification routes protect admin actions", () => {
   assertIncludes(files.route, 'requireRole(["admin"])');
   assertIncludes(files.route, '"/admin/send"');
@@ -57,9 +66,13 @@ check("notification routes protect admin actions", () => {
 
 check("notification env and docs exist", () => {
   assertIncludes(files.env, "EMAIL_PROVIDER=");
+  assertIncludes(files.env, "RESEND_API_KEY=");
+  assertIncludes(files.env, "EMAIL_WEBHOOK_URL=");
   assertIncludes(files.env, "WHATSAPP_PROVIDER=");
-  assertIncludes(files.guide, "Bulk Sending Rule");
-  assertIncludes(files.whatsapp, "WHATSAPP_PROVIDER=console");
+  assertIncludes(files.env, "WHATSAPP_PHONE_NUMBER_ID=");
+  assertIncludes(files.guide, "EMAIL_PROVIDER=resend");
+  assertIncludes(files.guide, "EMAIL_PROVIDER=http");
+  assertIncludes(files.whatsapp, "WHATSAPP_PROVIDER=whatsapp_cloud");
 });
 
 check("readiness report records notification sprint", () => {

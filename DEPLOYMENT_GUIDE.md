@@ -61,8 +61,9 @@ Use `REQUEST_LOG_LEVEL=debug` only briefly when investigating a specific issue. 
 
 For staging-only provider simulation:
 
-- `EMAIL_PROVIDER=console`
-- `WHATSAPP_PROVIDER=console`
+- `EMAIL_PROVIDER=resend` with `EMAIL_FROM` and `RESEND_API_KEY`, or `EMAIL_PROVIDER=http` with `EMAIL_WEBHOOK_URL`
+- `WHATSAPP_PROVIDER=whatsapp_cloud` with `WHATSAPP_ACCESS_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID`, or `WHATSAPP_PROVIDER=http` with `WHATSAPP_WEBHOOK_URL`
+- `EMAIL_PROVIDER=console` and `WHATSAPP_PROVIDER=console` are staging-only smoke modes.
 
 For production, keep these unset until a real provider adapter and credentials are configured. Notification records will still be created and visible in delivery logs.
 

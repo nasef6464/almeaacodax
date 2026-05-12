@@ -3,6 +3,7 @@ import type { AppRole } from "../constants/roles.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
 import { UserModel } from "../models/User.js";
+import { sendExternalNotification } from "./notificationProviders.js";
 
 export type NotificationChannel = "in_app" | "email" | "whatsapp";
 
@@ -127,16 +128,6 @@ export async function createNotificationDeliveries(input: CreateNotificationInpu
   return { campaignId, created: docs.length, recipients: recipients.length };
 }
 
-function isConsoleProviderEnabled(channel: NotificationChannel) {
-  if (channel === "email") {
-    return process.env.EMAIL_PROVIDER === "console";
-  }
-  if (channel === "whatsapp") {
-    return process.env.WHATSAPP_PROVIDER === "console";
-  }
-  return channel === "in_app";
-}
-
 export async function processPendingNotifications(limit = 25) {
   const safeLimit = Math.max(1, Math.min(limit, 50));
   const pending = await NotificationDeliveryModel.find({
@@ -152,18 +143,20 @@ export async function processPendingNotifications(limit = 25) {
   let failed = 0;
 
   for (const item of pending) {
-    if (isConsoleProviderEnabled(item.channel as NotificationChannel)) {
-      console.info(
-        JSON.stringify({
-          event: "notification_delivery",
-          provider: "console",
-          channel: item.channel,
-          recipientUserId: item.recipientUserId,
-          title: item.title,
-        }),
-      );
+    const result = await sendExternalNotification({
+      channel: item.channel as NotificationChannel,
+      id: item.id,
+      recipientEmail: item.recipientEmail,
+      recipientPhone: item.recipientPhone,
+      subject: item.subject,
+      title: item.title,
+      body: item.body,
+    });
+
+    if (result.ok) {
       item.status = "sent";
-      item.provider = "console";
+      item.provider = result.provider;
+      item.providerMessageId = result.providerMessageId || item.providerMessageId || "";
       item.sentAt = Date.now();
       item.failureReason = "";
       sent += 1;
@@ -172,7 +165,8 @@ export async function processPendingNotifications(limit = 25) {
     }
 
     item.status = item.retryCount >= 3 ? "failed" : "retrying";
-    item.failureReason = `${item.channel}_provider_not_configured`;
+    item.provider = result.provider;
+    item.failureReason = result.failureReason || `${item.channel}_provider_failed`;
     item.retryCount += 1;
     item.nextAttemptAt = Date.now() + 15 * 60 * 1000;
     if (item.status === "failed") {
