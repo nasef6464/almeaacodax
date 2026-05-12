@@ -102,6 +102,8 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'scopedInterventionPlan');
   assertIncludes(reportsSource, 'followUpLink: buildDirectedQuizManagerLink');
   assertIncludes(reportsSource, 'targetUserId: student.id');
+  assertIncludes(reportsSource, 'targetGroupId: student.groupIds?.[0]');
+  assertIncludes(reportsSource, 'student.groupNames?.length');
   assertIncludes(reportsSource, 'to={student.followUpLink}');
 });
 

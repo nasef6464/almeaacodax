@@ -30,6 +30,7 @@ interface ScopedAnalyticsOverview {
         attempts: number;
         weakSkillCount: number;
         schoolName?: string;
+        groupIds?: string[];
         groupNames?: string[];
         weakestSkills?: Array<{ skill: string; mastery: number }>;
         recommendedAction?: string;
@@ -878,6 +879,7 @@ const Reports: React.FC = () => {
                     sectionId: resolvedSkill?.sectionId,
                     skillId: resolvedSkill?.id,
                     targetUserId: student.id,
+                    targetGroupId: student.groupIds?.[0],
                 }),
                 tone: student.averageScore < 50
                     ? 'border-rose-100 bg-rose-50/70 text-rose-700'
@@ -913,9 +915,10 @@ const Reports: React.FC = () => {
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
-            ['الطالب', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
+            ['الطالب', 'المجموعات', 'متوسط الأداء', 'عدد المحاولات', 'مهارات تحتاج دعم', 'أبرز المهارات', 'الإجراء المقترح'],
             ...scopedStudentFocusCards.map((student) => [
                 displayText(student.name) || '-',
+                student.groupNames?.length ? student.groupNames.map((name) => displayText(name)).join('، ') : '-',
                 `${student.averageScore}%`,
                 student.attempts,
                 student.weakSkillCount,
@@ -1692,6 +1695,11 @@ const Reports: React.FC = () => {
                                                     <div className="min-w-0">
                                                         <div className="font-black leading-7 text-gray-900">{displayText(student.name)}</div>
                                                         <div className="mt-1 text-xs font-bold text-gray-500">{student.attempts} محاولات - {student.weakSkillCount} مهارات</div>
+                                                        {student.groupNames?.length ? (
+                                                            <div className="mt-1 text-[11px] font-black text-indigo-600">
+                                                                {student.groupNames.slice(0, 2).map((name) => displayText(name)).join('، ')}
+                                                            </div>
+                                                        ) : null}
                                                     </div>
                                                     <div className={`rounded-xl border px-3 py-1.5 text-base font-black ${student.tone}`}>
                                                         {student.averageScore}%

@@ -425,3 +425,8 @@
 - Each student card inside institutional reports now has a direct "توجيه اختبار" action.
 - The action opens the central quiz manager with `targetUserId` for that exact student and the first resolved weak skill when available.
 - This keeps admin, supervisor, and teacher follow-up reports operational without sending staff to a generic student report screen.
+
+## Reports-Student-Group Context Sprint - 2026-05-12
+- Student follow-up cards now keep the student's first `groupId` in the directed quiz link when available.
+- Student cards show up to two group names, so staff know the school/class context before sending follow-up work.
+- Student follow-up Excel exports now include the group names column for school handover.
