@@ -42,6 +42,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     response = await fetch(`${API_BASE_URL}${path}`, {
       method: options.method || "GET",
       cache: options.cache,
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         ...(resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : {}),
@@ -91,6 +92,11 @@ export const api = {
     request<{ token: string; user: unknown }>("/auth/register", {
       method: "POST",
       body: { name, email, password },
+    }),
+  logout: () =>
+    request<void>("/auth/logout", {
+      method: "POST",
+      token: null,
     }),
   forgotPassword: (email: string) =>
     request<{ message: string }>("/auth/forgot-password", {

@@ -46,7 +46,20 @@ const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ d
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 
 // Dashboards
-const AdminDashboard = React.lazy(() => import('./dashboards/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
+const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
+const AdminDashboard = React.lazy(() => loadAdminDashboardModule().then(module => ({ default: module.AdminDashboard })));
+
+const prefetchCommonRouteModules = (role?: string | null) => {
+  void import('./pages/Dashboard');
+  void import('./pages/GenericPathPage');
+  void import('./pages/Quizzes');
+  void import('./pages/MockExams');
+  void import('./pages/Courses');
+
+  if (role === 'admin' || role === 'teacher' || role === 'supervisor') {
+    void loadAdminDashboardModule();
+  }
+};
 
 const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
   '/dashboard',
@@ -175,11 +188,64 @@ const SeoRouteMeta: React.FC = () => {
   return null;
 };
 
-const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50 text-amber-500">
-    <Loader2 className="w-10 h-10 animate-spin" />
-  </div>
-);
+const LoadingFallback = () => {
+  const path = getInitialRouterPath();
+  const isDashboardRoute = path.includes('dashboard');
+
+  return (
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900" dir="rtl">
+      <div className="border-b border-gray-100 bg-white shadow-sm">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 animate-pulse rounded-full bg-gray-100" />
+            <div className="space-y-2">
+              <div className="h-3 w-20 animate-pulse rounded-full bg-gray-100" />
+              <div className="h-3 w-28 animate-pulse rounded-full bg-gray-100" />
+            </div>
+          </div>
+          <div className="hidden items-center gap-4 md:flex">
+            <div className="h-4 w-20 animate-pulse rounded-full bg-gray-100" />
+            <div className="h-4 w-24 animate-pulse rounded-full bg-gray-100" />
+            <div className="h-4 w-24 animate-pulse rounded-full bg-gray-100" />
+            <div className="h-4 w-16 animate-pulse rounded-full bg-gray-100" />
+          </div>
+          <div className="flex items-baseline font-black">
+            <span className="text-blue-900">منصة</span>
+            <span className="mx-1 text-amber-500">المئة</span>
+          </div>
+        </div>
+      </div>
+
+      <div className={`mx-auto grid max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:px-8 ${isDashboardRoute ? 'md:grid-cols-[16rem_1fr]' : ''}`}>
+        {isDashboardRoute ? (
+          <aside className="hidden rounded-3xl border border-gray-100 bg-white p-5 shadow-sm md:block">
+            <div className="mb-6 h-12 animate-pulse rounded-2xl bg-gray-50" />
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div key={`loading-side-${index}`} className="mb-3 h-10 animate-pulse rounded-2xl bg-gray-50" />
+            ))}
+          </aside>
+        ) : null}
+
+        <main className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="space-y-3">
+              <div className="h-4 w-36 animate-pulse rounded-full bg-amber-100" />
+              <div className="h-8 w-64 max-w-full animate-pulse rounded-2xl bg-gray-100" />
+            </div>
+            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={`loading-card-${index}`} className="h-32 animate-pulse rounded-3xl bg-gray-50" />
+            ))}
+          </div>
+          <div className="mt-5 h-56 animate-pulse rounded-3xl bg-gray-50" />
+        </main>
+      </div>
+    </div>
+  );
+};
 
 const LegacySubjectRouteRedirect: React.FC = () => {
   const { pathId = '', subjectId = '' } = useParams<{ pathId: string; subjectId: string }>();
@@ -209,6 +275,7 @@ const App: React.FC = () => {
   const hydrateTaxonomy = useStore((state) => state.hydrateTaxonomy);
   const hydrateContentBootstrap = useStore((state) => state.hydrateContentBootstrap);
   const hydrateSkillProgress = useStore((state) => state.hydrateSkillProgress);
+  const user = useStore((state) => state.user);
 
   useEffect(() => {
     window.__ALMEAA_APP_VERSION__ = APP_VERSION;
@@ -338,6 +405,24 @@ const App: React.FC = () => {
       }
     };
 
+    const loadPublicNavigationBootstrap = async () => {
+      try {
+        const taxonomyResult = await adapter.getTaxonomyBootstrap();
+
+        if (mounted) {
+          hydrateTaxonomy({
+            paths: taxonomyResult.paths as any[],
+            levels: taxonomyResult.levels as any[],
+            subjects: taxonomyResult.subjects as any[],
+            sections: taxonomyResult.sections as any[],
+            skills: taxonomyResult.skills as any[],
+          });
+        }
+      } catch (error) {
+        console.warn('Public navigation bootstrap unavailable:', error);
+      }
+    };
+
     let bootstrapStarted = false;
     let publicAdsTimer: ReturnType<typeof setTimeout> | undefined;
     let publicAdsIdleHandle: number | undefined;
@@ -362,6 +447,11 @@ const App: React.FC = () => {
     };
 
     const startIfRouteNeedsData = () => {
+      const path = getInitialRouterPath();
+      if (path === '/admin-dashboard' || path === '/instructor-dashboard' || path === '/supervisor-dashboard') {
+        void loadAdminDashboardModule();
+      }
+
       if (shouldBlockInitialBootstrap()) {
         cancelDeferredBootstrap();
         startBootstrap();
@@ -371,12 +461,19 @@ const App: React.FC = () => {
     const requestIdle = window.requestIdleCallback?.bind(window);
 
     if (shouldBlockInitialBootstrap()) {
+      startIfRouteNeedsData();
       startBootstrap();
     } else if (requestIdle) {
+      publicAdsTimer = globalThis.setTimeout(() => {
+        void loadPublicNavigationBootstrap();
+      }, 50);
       publicAdsIdleHandle = requestIdle(() => {
+        prefetchCommonRouteModules();
         void loadPublicAnnouncementAds();
       }, { timeout: 1000 });
     } else {
+      void loadPublicNavigationBootstrap();
+      prefetchCommonRouteModules();
       publicAdsTimer = globalThis.setTimeout(() => {
         void loadPublicAnnouncementAds();
       }, 350);
@@ -390,6 +487,24 @@ const App: React.FC = () => {
       window.removeEventListener('hashchange', startIfRouteNeedsData);
     };
   }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateSkillProgress, hydrateTaxonomy]);
+
+  useEffect(() => {
+    if (user) {
+      const requestIdle = window.requestIdleCallback?.bind(window);
+
+      if (requestIdle) {
+        const handle = requestIdle(() => {
+          prefetchCommonRouteModules(user.role);
+        }, { timeout: 1200 });
+        return () => window.cancelIdleCallback?.(handle);
+      }
+
+      const timer = window.setTimeout(() => {
+        prefetchCommonRouteModules(user.role);
+      }, 300);
+      return () => window.clearTimeout(timer);
+    }
+  }, [user?.role]);
 
   const staffDashboard = (
     <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>

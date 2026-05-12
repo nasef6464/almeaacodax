@@ -10,6 +10,7 @@ import { AccessCodeModel } from "../models/AccessCode.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { signAccessToken } from "../utils/jwt.js";
+import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
 import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
@@ -174,6 +175,7 @@ authRouter.post(
       role: user.role,
       name: user.name,
     });
+    setAuthCookie(res, token);
 
     return res.status(StatusCodes.CREATED).json({
       token,
@@ -222,11 +224,20 @@ authRouter.post(
       role: user.role,
       name: user.name,
     });
+    setAuthCookie(res, token);
 
     return res.json({
       token,
       user: serializeUser(user),
     });
+  }),
+);
+
+authRouter.post(
+  "/logout",
+  asyncHandler(async (_req, res) => {
+    clearAuthCookie(res);
+    return res.status(StatusCodes.NO_CONTENT).send();
   }),
 );
 

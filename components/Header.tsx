@@ -74,6 +74,7 @@ export const Header: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -230,7 +231,21 @@ export const Header: React.FC = () => {
   }, [levels, paths, quizzes, subjects, user?.role]);
 
   const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor';
+  const showNavigationLoading = Boolean(user) && paths.length === 0 && navigationMenu.length <= 2 && !navigationLoadingExpired;
   const isStrongPassword = (value: string) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
+
+  useEffect(() => {
+    if (!user || paths.length > 0) {
+      setNavigationLoadingExpired(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setNavigationLoadingExpired(true);
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [paths.length, user]);
 
   const handleEmailAuth = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -284,7 +299,16 @@ export const Header: React.FC = () => {
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
-            {navigationMenu.map((item, index) => {
+            {showNavigationLoading ? (
+              <div className="flex items-center gap-3 px-3 py-2" aria-label="جارٍ تجهيز قائمة المنصة">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <span
+                    key={`nav-loading-${index}`}
+                    className={`h-4 animate-pulse rounded-full bg-gray-100 ${index === 0 ? 'w-16' : index === 1 ? 'w-24' : 'w-20'}`}
+                  />
+                ))}
+              </div>
+            ) : navigationMenu.map((item, index) => {
               const icon = item.iconName ? NavIcons[item.iconName] : null;
 
               return (

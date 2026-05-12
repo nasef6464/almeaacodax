@@ -306,6 +306,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
+    try {
+      await api.logout();
+    } catch (error) {
+      console.warn('Failed to clear server session cookie:', error);
+    }
     localStorage.removeItem(AUTH_STORAGE_KEY);
     setUser(null);
     resetStoreUser();

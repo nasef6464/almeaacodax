@@ -318,3 +318,13 @@
 - Verified: `npm run smoke:platform-fonts`, `npm run smoke:typography`, `npm run typecheck`, `npm run server:build`, `npm run build`.
 - Chrome visual/function check: opened `http://127.0.0.1:5174/#/admin-dashboard?tab=platform-fonts`, confirmed the manager renders with upload controls and Tajawal defaults, clicked save, and confirmed no raw `Authentication required`.
 - Scope: global typography controls only. No homepage content, payment/access, quiz/training separation, package logic, layout spacing, or colors changed.
+
+## Route Loading and Auth Cookie Sprint - 2026-05-12
+- User reported that Vercel opens the landing page quickly but with an incomplete top navigation, then admin navigation can stay on a blank spinner before the dashboard appears.
+- Fixed the route fallback UX: `LoadingFallback` now renders a full branded page shell with header/sidebar/card skeletons instead of a small spinner on an empty white page.
+- Added early public navigation bootstrap from taxonomy data so the header menu does not look broken while the rest of the app hydrates.
+- Added common route prefetch for all users (dashboard, learning space, quizzes, mock exams, courses), with an extra admin-dashboard prefetch only for privileged roles.
+- Added header navigation skeleton placeholders when the saved paths have not arrived yet, with a short timeout fallback so the skeleton never stays as final UI if the API is slow/unavailable.
+- Started the safer session migration: login/register now also set an HttpOnly auth cookie, auth middleware accepts either Bearer token or cookie, frontend sends credentials, and logout clears the server cookie.
+- Remaining performance note: production build still reports very large lazy chunks, especially `video-dash` (~993KB), Firebase (~603KB), and some media/data libraries. The current sprint improves perceived loading and prefetching; a later performance sprint should split or defer these heavy providers further.
+- Added guards: `npm run smoke:route-loading` and `npm run smoke:auth-cookie`.

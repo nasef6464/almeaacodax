@@ -2,16 +2,18 @@ import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { env } from "../config/env.js";
 import { verifyAccessToken } from "../utils/jwt.js";
+import { AUTH_COOKIE_NAME } from "../utils/authCookie.js";
 import type { AppRole } from "../constants/roles.js";
 
 function resolveAuthUser(req: Request) {
   const raw = req.headers.authorization;
-  if (!raw?.startsWith("Bearer ")) {
-    return null;
-  }
+  const bearerToken = raw?.startsWith("Bearer ") ? raw.replace("Bearer ", "") : "";
+  const cookieToken =
+    typeof req.cookies?.[AUTH_COOKIE_NAME] === "string" ? String(req.cookies[AUTH_COOKIE_NAME]) : "";
+  const token = bearerToken || cookieToken;
 
+  if (!token) return null;
   try {
-    const token = raw.replace("Bearer ", "");
     return verifyAccessToken(token);
   } catch {
     return null;
