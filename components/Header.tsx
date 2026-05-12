@@ -230,10 +230,16 @@ export const Header: React.FC = () => {
   }, [levels, paths, quizzes, subjects, user?.role]);
 
   const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor';
+  const isStrongPassword = (value: string) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
 
   const handleEmailAuth = async (event: React.FormEvent) => {
     event.preventDefault();
     setAuthError('');
+
+    if (isSignUp && !isStrongPassword(password)) {
+      setAuthError('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.');
+      return;
+    }
 
     try {
       const sessionUser = isSignUp
@@ -499,12 +505,16 @@ export const Header: React.FC = () => {
                   <input
                     type="password"
                     required
+                    minLength={isSignUp ? 8 : undefined}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-left"
                     dir="ltr"
                     placeholder="********"
                   />
+                  {isSignUp ? (
+                    <p className="mt-1 text-xs text-gray-400">8 أحرف على الأقل، مع حرف ورقم.</p>
+                  ) : null}
                 </div>
                 <button
                   type="submit"

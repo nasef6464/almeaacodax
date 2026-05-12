@@ -6,6 +6,9 @@ const userSchema = new Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lastFailedLoginAt: { type: Number, default: null },
+    loginLockedUntil: { type: Number, default: null, index: true },
     avatar: { type: String, default: "" },
     role: { type: String, enum: roles, default: "student" },
     points: { type: Number, default: 0 },
@@ -44,6 +47,9 @@ userSchema.set("toJSON", {
   transform: (_doc, ret) => {
     const safeRet = ret as Record<string, unknown>;
     delete safeRet.passwordHash;
+    delete safeRet.failedLoginAttempts;
+    delete safeRet.lastFailedLoginAt;
+    delete safeRet.loginLockedUntil;
     delete safeRet.emailVerificationTokenHash;
     delete safeRet.passwordResetTokenHash;
     delete safeRet.__v;

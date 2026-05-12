@@ -21,6 +21,7 @@ npm run smoke:database
 npm run smoke:notifications
 npm run smoke:auth-account
 npm run smoke:auth-frontend
+npm run smoke:auth-login-security
 npm run smoke:performance
 npm run typecheck
 npm run build

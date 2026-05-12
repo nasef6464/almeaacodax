@@ -17,8 +17,8 @@ const ResetPassword: React.FC = () => {
     setError('');
     setMessage('');
 
-    if (password.length < 8) {
-      setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل.');
+    if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+      setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.');
       return;
     }
 
@@ -79,6 +79,7 @@ const ResetPassword: React.FC = () => {
               dir="ltr"
               placeholder="********"
             />
+            <p className="mt-1 text-xs text-gray-400">8 أحرف على الأقل، مع حرف ورقم.</p>
           </div>
 
           <button

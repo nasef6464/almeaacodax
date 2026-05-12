@@ -221,3 +221,10 @@
 - Linked password recovery from the login modal.
 - Pages accept tokens from URL query strings and manual paste fields.
 - Added guard: `npm run smoke:auth-frontend`.
+
+## Auth Login Security Sprint - 2026-05-12
+- Added backend password-strength enforcement for registration, reset password, and admin-created users.
+- Added failed-login counters and temporary account lock after 5 failed attempts.
+- Successful login and password reset clear failed-login state.
+- Added frontend password guidance in signup/reset screens.
+- Added guard: `npm run smoke:auth-login-security`.

@@ -13,6 +13,9 @@ Implemented:
 - Reset tokens expire after 60 minutes and are cleared after use.
 - Email verification tokens expire after 24 hours.
 - Verification and reset messages are queued through the notification delivery system.
+- Registration, admin-created users, and password reset now require at least 8 characters with one letter and one number.
+- Repeated failed login attempts are counted on the user record and lock login temporarily after 5 failures.
+- Successful login and password reset clear failed login attempts and lock state.
 - No email provider secret is committed to Git.
 
 ## API Endpoints

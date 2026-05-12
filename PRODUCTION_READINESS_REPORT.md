@@ -33,6 +33,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Auth Recovery Sprint - 2026-05-12: added hashed email verification tokens, hashed password reset tokens, generic forgot-password responses, reset/verify/resend endpoints, notification-queued recovery messages, `AUTH_ACCOUNT_SECURITY.md`, and `smoke:auth-account`.
 - External Notification Providers Sprint - 2026-05-12: added provider adapters for Resend email, generic email webhooks, WhatsApp Cloud API, generic WhatsApp webhooks, safe console staging mode, env documentation, and smoke coverage.
 - Auth Frontend Recovery Sprint - 2026-05-12: added student-facing forgot-password, reset-password, and verify-email screens, linked password recovery from the login modal, and added `smoke:auth-frontend`.
+- Auth Login Security Sprint - 2026-05-12: added password-strength enforcement, failed-login counters, temporary account lock after repeated failed attempts, reset-on-success behavior, frontend guidance, and `smoke:auth-login-security`.
 
 ## Still Required Before Large Launch
 

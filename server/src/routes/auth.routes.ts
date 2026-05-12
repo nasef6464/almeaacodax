@@ -14,21 +14,29 @@ import { applyPurchaseToUser } from "../services/applyPurchaseToUser.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 
+const passwordStrengthSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .max(160, "Password is too long")
+  .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), {
+    message: "Password must include at least one letter and one number",
+  });
+
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1).max(160),
 });
 
 const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  password: z.string().min(6),
+  password: passwordStrengthSchema,
 });
 
 const adminCreateUserSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
-  password: z.string().min(6),
+  password: passwordStrengthSchema,
   role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]),
   schoolId: z.string().nullable().optional(),
   groupIds: z.array(z.string()).optional(),
@@ -65,7 +73,7 @@ const forgotPasswordSchema = z.object({
 
 const resetPasswordSchema = z.object({
   token: z.string().min(32).max(160),
-  password: z.string().min(8).max(160),
+  password: passwordStrengthSchema,
 });
 
 const verifyEmailSchema = z.object({
@@ -74,7 +82,16 @@ const verifyEmailSchema = z.object({
 
 const serializeUser = (user: any) => {
   const plain = typeof user?.toJSON === "function" ? user.toJSON() : user?.toObject?.() || user;
-  const { passwordHash, emailVerificationTokenHash, passwordResetTokenHash, __v, ...safeUser } = plain;
+  const {
+    passwordHash,
+    failedLoginAttempts,
+    lastFailedLoginAt,
+    loginLockedUntil,
+    emailVerificationTokenHash,
+    passwordResetTokenHash,
+    __v,
+    ...safeUser
+  } = plain;
   return safeUser;
 };
 
@@ -85,6 +102,31 @@ const hashToken = (token: string) => createHash("sha256").update(token).digest("
 const createSecureToken = () => randomBytes(32).toString("hex");
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
+const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+const LOGIN_LOCK_MS = 15 * 60 * 1000;
+
+function isLoginLocked(user: any) {
+  return typeof user.loginLockedUntil === "number" && user.loginLockedUntil > Date.now();
+}
+
+async function recordFailedLogin(user: any) {
+  const attempts = Number(user.failedLoginAttempts || 0) + 1;
+  user.failedLoginAttempts = attempts;
+  user.lastFailedLoginAt = Date.now();
+  if (attempts >= MAX_FAILED_LOGIN_ATTEMPTS) {
+    user.loginLockedUntil = Date.now() + LOGIN_LOCK_MS;
+  }
+  await user.save();
+}
+
+async function clearFailedLoginState(user: any) {
+  if (user.failedLoginAttempts || user.loginLockedUntil || user.lastFailedLoginAt) {
+    user.failedLoginAttempts = 0;
+    user.lastFailedLoginAt = null;
+    user.loginLockedUntil = null;
+    await user.save();
+  }
+}
 
 async function queueEmailVerification(user: any) {
   const token = createSecureToken();
@@ -152,8 +194,15 @@ authRouter.post(
       });
     }
 
+    if (isLoginLocked(user)) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
+        message: "Too many login attempts. Try again later.",
+      });
+    }
+
     const valid = await bcrypt.compare(payload.password, user.passwordHash);
     if (!valid) {
+      await recordFailedLogin(user);
       return res.status(StatusCodes.UNAUTHORIZED).json({
         message: "Invalid email or password",
       });
@@ -164,6 +213,8 @@ authRouter.post(
         message: "Account is disabled",
       });
     }
+
+    await clearFailedLoginState(user);
 
     const token = signAccessToken({
       id: user.id,
@@ -229,6 +280,9 @@ authRouter.post(
     user.passwordResetUsedAt = Date.now();
     user.passwordResetTokenHash = "";
     user.passwordResetExpiresAt = null;
+    user.failedLoginAttempts = 0;
+    user.lastFailedLoginAt = null;
+    user.loginLockedUntil = null;
     await user.save();
 
     await recordAdminAuditLog(req, {
