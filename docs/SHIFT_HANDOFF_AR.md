@@ -178,6 +178,7 @@
 - Closed the production cache-header fix in `vercel.json`.
 - Do not restore the old global `no-store`; it made repeat visits redownload built assets and was one cause of Vercel slowness.
 - Hashed assets now use one-year immutable caching, while the SPA HTML shell uses revalidation so new deployments still appear.
+- 2026-05-12 follow-up: do not use a catch-all `Cache-Control` source in `vercel.json`; Vercel can apply it after `/assets/(.*)` and override immutable asset caching. The shell header is now scoped to `/` only.
 
 ## Frontend Bootstrap Performance Sprint - 2026-05-12
 - Closed the Tailwind production-build pass: `cdn.tailwindcss.com` and the old importmap were removed from `index.html`; Tailwind now builds through PostCSS from `styles/main.css`.

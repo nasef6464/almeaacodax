@@ -21,12 +21,13 @@ function assert(condition, message) {
 
 const assetCache = findHeader('/assets/(.*)', 'Cache-Control');
 const hashedFileCache = findHeader('/(.*).(js|css|woff|woff2|ttf|png|jpg|jpeg|webp|svg|ico)', 'Cache-Control');
-const shellCache = findHeader('/(.*)', 'Cache-Control');
+const shellCache = findHeader('/', 'Cache-Control');
 
 assert(assetCache.includes('max-age=31536000'), 'Vercel assets must be cached for one year');
 assert(assetCache.includes('immutable'), 'Vercel assets must be immutable');
 assert(hashedFileCache.includes('max-age=31536000'), 'Hashed JS/CSS/font/image files must be cached');
 assert(shellCache.includes('no-cache'), 'SPA shell should revalidate instead of being permanently cached');
 assert(!shellCache.includes('no-store'), 'SPA shell must not force no-store for every production request');
+assert(!findHeader('/(.*)', 'Cache-Control'), 'Do not add a catch-all Cache-Control header that overrides immutable assets');
 
 console.log('Deployment cache contract passed: hashed assets are immutable and HTML shell revalidates.');
