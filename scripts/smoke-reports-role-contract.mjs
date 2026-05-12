@@ -100,6 +100,9 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'downloadScopedSkillsWorkbook');
   assertIncludes(reportsSource, 'downloadScopedStudentsWorkbook');
   assertIncludes(reportsSource, 'scopedInterventionPlan');
+  assertIncludes(reportsSource, 'followUpLink: buildDirectedQuizManagerLink');
+  assertIncludes(reportsSource, 'targetUserId: student.id');
+  assertIncludes(reportsSource, 'to={student.followUpLink}');
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {

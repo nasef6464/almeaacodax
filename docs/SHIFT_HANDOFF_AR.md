@@ -420,3 +420,8 @@
 - `QuizzesManager` reads `targetUserId` and seeds newly-created central follow-up quizzes with that student in `targetUserIds`.
 - Optional `targetGroupId` support was added to the same link flow for future group-level report actions.
 - The report-origin banner now names the targeted student or group when available.
+
+## Reports-Student-Focus Actions Sprint - 2026-05-12
+- Each student card inside institutional reports now has a direct "توجيه اختبار" action.
+- The action opens the central quiz manager with `targetUserId` for that exact student and the first resolved weak skill when available.
+- This keeps admin, supervisor, and teacher follow-up reports operational without sending staff to a generic student report screen.

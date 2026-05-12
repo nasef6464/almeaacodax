@@ -72,6 +72,8 @@ assertIncludes('dashboards/admin/QuizzesManager.tsx', 'openedFromReports');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'source') ;
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'skillIds: selectedSkillId ? [selectedSkillId] : []');
 assertIncludes('pages/Reports.tsx', 'targetUserId: scopedLeadStudent?.id');
+assertIncludes('pages/Reports.tsx', 'targetUserId: student.id');
+assertIncludes('pages/Reports.tsx', 'to={student.followUpLink}');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetUserId ? [initialTargetUserId] : []');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 

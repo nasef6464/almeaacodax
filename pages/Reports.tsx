@@ -862,14 +862,29 @@ const Reports: React.FC = () => {
         });
     }, [lessons, libraryItems, questions, quizzes, scopedAnalytics?.weakestSkills, skills, topics]);
     const scopedStudentFocusCards = useMemo(() => {
-        return (scopedAnalytics?.weakestStudents || []).slice(0, 4).map((student) => ({
-            ...student,
-            topSkills: (student.weakestSkills || []).slice(0, 2),
-            tone: student.averageScore < 50
-                ? 'border-rose-100 bg-rose-50/70 text-rose-700'
-                : 'border-amber-100 bg-amber-50/70 text-amber-700',
-        }));
-    }, [scopedAnalytics?.weakestStudents]);
+        return (scopedAnalytics?.weakestStudents || []).slice(0, 4).map((student) => {
+            const topSkills = (student.weakestSkills || []).slice(0, 2);
+            const primarySkillName = topSkills[0]?.skill;
+            const resolvedSkill = primarySkillName
+                ? skills.find((skill) => displayText(skill.name) === displayText(primarySkillName))
+                : undefined;
+
+            return {
+                ...student,
+                topSkills,
+                followUpLink: buildDirectedQuizManagerLink({
+                    pathId: resolvedSkill?.pathId,
+                    subjectId: resolvedSkill?.subjectId,
+                    sectionId: resolvedSkill?.sectionId,
+                    skillId: resolvedSkill?.id,
+                    targetUserId: student.id,
+                }),
+                tone: student.averageScore < 50
+                    ? 'border-rose-100 bg-rose-50/70 text-rose-700'
+                    : 'border-amber-100 bg-amber-50/70 text-amber-700',
+            };
+        });
+    }, [scopedAnalytics?.weakestStudents, skills]);
     const downloadScopedSkillsWorkbook = async () => {
         if (!scopedAnalytics?.weakestSkills?.length) return;
 
@@ -1704,8 +1719,8 @@ const Reports: React.FC = () => {
                                                     >
                                                         نسخ
                                                     </button>
-                                                    <Link to="/dashboard?tab=reports" className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                        تقرير
+                                                    <Link to={student.followUpLink} className="rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white hover:bg-indigo-700">
+                                                        توجيه اختبار
                                                     </Link>
                                                 </div>
                                             </div>
