@@ -32,12 +32,13 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Notification Foundation Sprint - 2026-05-12: added backend notification templates, delivery logs, in-app notifications, pending email/WhatsApp delivery records, admin APIs, provider-safe console mode, `NOTIFICATION_SYSTEM_GUIDE.md`, `WHATSAPP_INTEGRATION_GUIDE.md`, and `smoke:notifications`.
 - Auth Recovery Sprint - 2026-05-12: added hashed email verification tokens, hashed password reset tokens, generic forgot-password responses, reset/verify/resend endpoints, notification-queued recovery messages, `AUTH_ACCOUNT_SECURITY.md`, and `smoke:auth-account`.
 - External Notification Providers Sprint - 2026-05-12: added provider adapters for Resend email, generic email webhooks, WhatsApp Cloud API, generic WhatsApp webhooks, safe console staging mode, env documentation, and smoke coverage.
+- Auth Frontend Recovery Sprint - 2026-05-12: added student-facing forgot-password, reset-password, and verify-email screens, linked password recovery from the login modal, and added `smoke:auth-frontend`.
 
 ## Still Required Before Large Launch
 
 - Connect the webhook foundation to the final payment provider contract and live provider dashboard.
 - Cookie-based session hardening or safer refresh-token strategy.
-- Frontend recovery screens, optional Google/OTP providers, and Redis/BullMQ automation for bulk delivery retries.
+- Optional Google/OTP providers and Redis/BullMQ automation for bulk delivery retries.
 - Full RBAC and tenant-scope audit.
 - External monitoring/Sentry, uptime checks, MongoDB slow-query dashboards, and a richer audit-log UI.
 - Real load-test execution at 100, 500, and 1000 concurrent students with Render/MongoDB metrics recorded.

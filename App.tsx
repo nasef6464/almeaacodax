@@ -36,6 +36,9 @@ const Tahsili = React.lazy(() => import('./pages/Tahsili').then(module => ({ def
 const TahsiliSubject = React.lazy(() => import('./pages/TahsiliSubject').then(module => ({ default: module.TahsiliSubject })));
 const Blog = React.lazy(() => import('./pages/Blog'));
 const CourseView = React.lazy(() => import('./pages/CourseView'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
+const VerifyEmail = React.lazy(() => import('./pages/VerifyEmail'));
 const BookSession = React.lazy(() => import('./pages/BookSession').then(module => ({ default: module.BookSession })));
 const LiveSessions = React.lazy(() => import('./pages/LiveSessions'));
 const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ default: module.QuizPage })));
@@ -247,6 +250,9 @@ const App: React.FC = () => {
                   <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
                   <Route path="/achievements" element={<Achievements />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
                   
                   {/* Old Hardcoded Routes mapped to generic or kept if needed. The new pattern replaces old Nafes */}
                   <Route path="/category/:pathId" element={<GenericPathPage />} />

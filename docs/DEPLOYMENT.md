@@ -86,6 +86,7 @@ npm run smoke:monitoring
 npm run smoke:database
 npm run smoke:notifications
 npm run smoke:auth-account
+npm run smoke:auth-frontend
 ```
 
 ### Load Testing
@@ -121,7 +122,7 @@ The backend now creates notification delivery records and in-app notifications. 
 
 ### Account Recovery
 
-Forgot-password and email-verification flows now create hashed tokens and queue notification delivery records. Configure `EMAIL_PROVIDER=resend` or `EMAIL_PROVIDER=http` before students rely on recovery emails outside staging.
+Forgot-password and email-verification flows now create hashed tokens, queue notification delivery records, and have student-facing screens at `/#/forgot-password`, `/#/reset-password?token=...`, and `/#/verify-email?token=...`. Configure `EMAIL_PROVIDER=resend` or `EMAIL_PROVIDER=http` before students rely on recovery emails outside staging.
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.

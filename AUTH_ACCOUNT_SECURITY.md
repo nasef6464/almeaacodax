@@ -22,6 +22,14 @@ Implemented:
 - `POST /api/auth/email/verify`
 - `POST /api/auth/email/resend-verification`
 
+## Frontend Routes
+
+- `/#/forgot-password`
+- `/#/reset-password?token=...`
+- `/#/verify-email?token=...`
+
+The login modal links to the password recovery screen. Reset and verification screens can accept a token from the URL or from a manual paste field.
+
 ## Provider Behavior
 
 The backend queues email delivery records. Real email delivery depends on configuring an email provider adapter later.
@@ -50,6 +58,5 @@ EMAIL_WEBHOOK_TOKEN=...
 
 ## Remaining Work
 
-- Add frontend screens for forgot/reset/verify flows if not already present in design.
 - Add optional Google OAuth after provider credentials are ready.
 - Move sessions to HttpOnly Secure SameSite cookies in a later auth-hardening sprint.

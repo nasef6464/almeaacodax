@@ -215,3 +215,9 @@
 - Added provider adapters for WhatsApp Cloud API and generic WhatsApp HTTP webhooks.
 - `console` mode remains staging-only; empty providers fail/retry instead of pretending to send.
 - Updated deployment docs and notification guides with required env variables.
+
+## Auth Frontend Recovery Sprint - 2026-05-12
+- Added frontend pages for forgot password, reset password, and email verification.
+- Linked password recovery from the login modal.
+- Pages accept tokens from URL query strings and manual paste fields.
+- Added guard: `npm run smoke:auth-frontend`.

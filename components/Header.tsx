@@ -52,6 +52,7 @@ const text = {
   signIn: '\u062f\u062e\u0648\u0644',
   or: '\u0623\u0648',
   continueWithGoogle: '\u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0629 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u062c\u0648\u062c\u0644',
+  forgotPassword: '\u0646\u0633\u064a\u062a \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631\u061f',
   hasAccount: '\u0644\u062f\u064a \u062d\u0633\u0627\u0628 \u0628\u0627\u0644\u0641\u0639\u0644\u061f \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
   noAccount: '\u0644\u064a\u0633 \u0644\u062f\u064a\u0643 \u062d\u0633\u0627\u0628\u061f \u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628 \u062c\u062f\u064a\u062f',
   main: '\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629',
@@ -483,7 +484,18 @@ export const Header: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">{text.password}</label>
+                  <div className="mb-1 flex items-center justify-between gap-2">
+                    <label className="block text-sm font-bold text-gray-700">{text.password}</label>
+                    {!isSignUp ? (
+                      <Link
+                        to="/forgot-password"
+                        onClick={() => setIsLoginModalOpen(false)}
+                        className="text-xs font-bold text-emerald-600 hover:underline"
+                      >
+                        {text.forgotPassword}
+                      </Link>
+                    ) : null}
+                  </div>
                   <input
                     type="password"
                     required
