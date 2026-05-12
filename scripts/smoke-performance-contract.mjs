@@ -50,6 +50,11 @@ assertIncludes('index.html', '<script src="https://cdn.tailwindcss.com"></script
 
 assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 assertNotIncludes('pages/Reports.tsx', "import * as XLSX from 'xlsx';");
+assertIncludes('pages/Results.tsx', "const ResultDonutChart = React.lazy(() =>");
+assertIncludes('pages/Results.tsx', "import('../components/results/ResultDonutChart')");
+assertIncludes('pages/Results.tsx', '<React.Suspense fallback={<ResultChartFallback />}>');
+assertNotIncludes('pages/Results.tsx', "from 'recharts';");
+assertIncludes('components/results/ResultDonutChart.tsx', "from 'recharts';");
 
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 for (const file of [
@@ -99,4 +104,4 @@ assertNotIncludes('vite.config.ts', "return 'video-dash';");
 assertNotIncludes('vite.config.ts', "return 'video-hls';");
 assertNotIncludes('package.json', '"react-player"');
 
-console.log('Performance contract passed: public shell, video, reports, and admin-heavy modules are lazy-loaded.');
+console.log('Performance contract passed: public shell, video, reports, results charts, and admin-heavy modules are lazy-loaded.');

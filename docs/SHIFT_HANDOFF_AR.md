@@ -361,3 +361,19 @@
 - Guard extended: `npm run smoke:performance` verifies the lazy spreadsheet contract.
 - Verified: `npm run typecheck`, `npm run smoke:performance`, `npm run build`, and `npm --prefix server run build`.
 - Scope: performance only. No visual design, typography, homepage, payment/package, quiz scoring, training/test separation, or permissions changed.
+
+## Results Chart Lazy Loading Sprint - 2026-05-12
+- Current batch target: reduce student result/report page startup weight without changing report layout or copy yet.
+- Moved the `recharts` donut chart out of `pages/Results.tsx` into a lazy component: `components/results/ResultDonutChart.tsx`.
+- `pages/Results.tsx` now loads the chart through `React.lazy` and keeps a stable circular fallback while the chart chunk arrives.
+- Guard extended: `npm run smoke:performance` checks that `pages/Results.tsx` does not statically import `recharts`.
+- Scope: performance only. Do not combine this with the upcoming report simplification UI sprint unless the user explicitly asks.
+
+## Student Reports Simplification Plan - Pending
+- User wants `تقاريري` in the student dashboard to be very simple by default: weak skill names, short suggestions, low-height cards, and little text.
+- Add a clear `تقرير تفصيلي` action that opens a dedicated page with skill details in a simple layout.
+- Weak-skill logic must be based on accumulated solved questions/attempts for each skill, with a minimum sample size, not a single question.
+- Reports should support the student, parent, teacher, supervisor, and admin perspectives without showing all details to the student by default.
+- Track context matters: when a student is enrolled in a track such as `نافس`, the dashboard should prioritize that track's tests/reports and show progress in the registered track.
+- If a student tries to buy/access track-related content without being registered in the right track, show a simple message and route them to track registration/selection first.
+- Keep the public site generally available; track-specific dashboards and pushed tests should be scoped by the student's registered track.

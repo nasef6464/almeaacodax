@@ -125,6 +125,21 @@ Expected effect:
 - Opening admin tabs stays lighter because the spreadsheet stack waits until the admin actually uses Excel.
 - The production build still emits `assets/spreadsheet-*.js` as an async chunk, which is expected and correct for export/import actions.
 
+## Results Chart Lazy Loading - 2026-05-12
+
+Closed the next student-facing report bundle target:
+
+- `pages/Results.tsx` no longer statically imports `recharts` during page module load.
+- The score donut chart moved to `components/results/ResultDonutChart.tsx` and loads through `React.lazy` only when the result chart is rendered.
+- The fallback keeps the chart area stable so the result page does not jump while the chart chunk arrives.
+- `npm run smoke:performance` now guards that results charts do not reintroduce a static `recharts` import.
+
+Student report planning note:
+
+- The next reports UX sprint should keep the default student/parent report very short: weak skills, simple recommendation, progress by registered track, and a button for a detailed report.
+- Weak skills should be calculated from enough attempts/questions per skill, not from one isolated question.
+- Detailed analytics remain available for admin, parent, supervisor, and teacher views, with export/download when needed.
+
 ## Admin Dashboard Split - 2026-05-12
 
 Closed the first admin dashboard performance pass:

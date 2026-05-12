@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import {
   ArrowRight,
   RefreshCw,
@@ -36,6 +35,10 @@ import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank } from '../utils/quizPresentation';
+
+const ResultDonutChart = React.lazy(() =>
+  import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
+);
 
 interface SkillRecommendation {
   lessonTitle?: string;
@@ -238,6 +241,10 @@ const getStatusFromMastery = (mastery: number): ResolvedAnalysisItem['status'] =
   if (mastery >= 60) return 'average';
   return 'weak';
 };
+
+const ResultChartFallback: React.FC = () => (
+  <div className="h-full w-full rounded-full border-[18px] border-gray-100 bg-white/70" aria-hidden="true" />
+);
 
 const getFriendlyResultMessage = (score: number) => {
   if (score >= 85) {
@@ -996,23 +1003,16 @@ const Results: React.FC = () => {
             {isFullResult ? (
               <div className="mt-6 grid grid-cols-1 items-center gap-6 md:grid-cols-[220px_1fr]">
                 <div className="h-52 sm:h-56 relative flex justify-center items-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={donutData}
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={0}
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                      >
-                        {donutData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={index === 0 ? scoreTone.ring : donutColors[index % donutColors.length]} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <React.Suspense fallback={<ResultChartFallback />}>
+                    <ResultDonutChart
+                      data={donutData}
+                      colors={donutColors}
+                      primaryColor={scoreTone.ring}
+                      innerRadius={60}
+                      outerRadius={80}
+                      cellKeyPrefix="cell"
+                    />
+                  </React.Suspense>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className={`text-4xl font-bold ${scoreTone.text}`}>{latestResult.score}%</span>
                     <span className="text-sm text-gray-500">النتيجة</span>
@@ -1060,23 +1060,16 @@ const Results: React.FC = () => {
               <div className="mt-6 grid gap-4 lg:grid-cols-[240px_1fr]">
                 <div className="rounded-3xl border border-white bg-white/95 p-4 text-center shadow-sm">
                   <div className="relative mx-auto h-40 max-w-[175px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={donutData}
-                          innerRadius={56}
-                          outerRadius={74}
-                          paddingAngle={0}
-                          dataKey="value"
-                          startAngle={90}
-                          endAngle={-270}
-                        >
-                          {donutData.map((entry, index) => (
-                            <Cell key={`simple-cell-${index}`} fill={index === 0 ? scoreTone.ring : '#e5e7eb'} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <React.Suspense fallback={<ResultChartFallback />}>
+                      <ResultDonutChart
+                        data={donutData}
+                        colors={['#e5e7eb']}
+                        primaryColor={scoreTone.ring}
+                        innerRadius={56}
+                        outerRadius={74}
+                        cellKeyPrefix="simple-cell"
+                      />
+                    </React.Suspense>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className={`text-4xl font-black ${scoreTone.text}`}>{latestResult.score}%</span>
                       <span className="mt-1 text-xs font-black text-gray-500">درجتك</span>
