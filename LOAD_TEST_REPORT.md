@@ -188,6 +188,8 @@ Closed report-to-quiz context pass:
 - The report follow-up action now opens the quiz center as a central directed-test workflow.
 - Weak-skill context is passed through the URL when available, so the quiz center can preselect the relevant path, subject, section, and skill.
 - Creating a central follow-up from that context seeds the draft with the selected skill id, reducing manual setup for schools.
+- Lead-student context is now passed as `targetUserId`, so a directed follow-up draft can target the student who needs immediate support.
+- The same flow accepts `targetGroupId` for later group-level report actions.
 
 ## Admin Dashboard Split - 2026-05-12
 

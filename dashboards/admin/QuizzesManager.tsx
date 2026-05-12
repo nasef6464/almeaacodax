@@ -158,6 +158,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     sections,
     skills,
     questions,
+    users,
+    groups,
     addQuiz,
   } = useStore();
 
@@ -183,6 +185,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || initialManagerParams.get('subjectId') || '');
   const [selectedSectionId, setSelectedSectionId] = useState(initialManagerParams.get('sectionId') || '');
   const [selectedSkillId, setSelectedSkillId] = useState(initialManagerParams.get('skillId') || '');
+  const initialTargetUserId = initialManagerParams.get('targetUserId') || '';
+  const initialTargetGroupId = initialManagerParams.get('targetGroupId') || '';
   const [modeFilter, setModeFilter] = useState<'all' | 'regular' | 'saher' | 'central'>(
     initialManagerParams.get('mode') === 'central' ? 'central' : initialManagerParams.get('mode') === 'saher' ? 'saher' : initialManagerParams.get('mode') === 'regular' ? 'regular' : 'all',
   );
@@ -207,6 +211,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const reportContextSkill = selectedSkillId ? skills.find((skill) => skill.id === selectedSkillId) : undefined;
   const reportContextSubject = selectedSubjectId ? subjects.find((subject) => subject.id === selectedSubjectId) : undefined;
+  const reportContextStudent = initialTargetUserId ? users.find((student) => student.id === initialTargetUserId) : undefined;
+  const reportContextGroup = initialTargetGroupId ? groups.find((group) => group.id === initialTargetGroupId) : undefined;
 
   const availableSections = useMemo(
     () =>
@@ -437,8 +443,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       createdAt,
       isPublished: false,
       showOnPlatform: false,
-      targetGroupIds: [],
-      targetUserIds: [],
+      targetGroupIds: initialTargetGroupId ? [initialTargetGroupId] : [],
+      targetUserIds: initialTargetUserId ? [initialTargetUserId] : [],
       dueDate: '',
       approvalStatus: 'draft',
     };
@@ -695,7 +701,9 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
               <p className="mt-1 text-xs font-bold leading-6 text-amber-800">
                 تم ضبط مركز الاختبارات على الاختبارات الموجهة
                 {reportContextSkill ? ` ومهارة ${reportContextSkill.name}` : ''}
-                {reportContextSubject ? ` في ${reportContextSubject.name}` : ''}.
+                {reportContextSubject ? ` في ${reportContextSubject.name}` : ''}
+                {reportContextStudent ? ` للطالب ${reportContextStudent.name}` : ''}
+                {reportContextGroup ? ` للمجموعة ${reportContextGroup.name}` : ''}.
               </p>
             </div>
             <button

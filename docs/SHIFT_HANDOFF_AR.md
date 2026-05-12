@@ -414,3 +414,9 @@
 - When the report has a weak skill id, the link also carries `pathId`, `subjectId`, `sectionId`, and `skillId`.
 - `QuizzesManager` reads those parameters, preselects filters, shows a small "opened from report" banner, and creates a central follow-up draft with the selected skill id.
 - This keeps reports, directed tests, and school follow-up workflow connected without duplicating quiz management screens.
+
+## Reports-To-Directed-Student Sprint - 2026-05-12
+- If the institutional report identifies a lead student, the follow-up quiz link now carries `targetUserId`.
+- `QuizzesManager` reads `targetUserId` and seeds newly-created central follow-up quizzes with that student in `targetUserIds`.
+- Optional `targetGroupId` support was added to the same link flow for future group-level report actions.
+- The report-origin banner now names the targeted student or group when available.

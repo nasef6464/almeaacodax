@@ -118,6 +118,8 @@ const buildDirectedQuizManagerLink = (context?: {
     subjectId?: string;
     sectionId?: string;
     skillId?: string;
+    targetUserId?: string;
+    targetGroupId?: string;
 }) => {
     const params = new URLSearchParams({
         tab: 'quizzes',
@@ -129,6 +131,8 @@ const buildDirectedQuizManagerLink = (context?: {
     if (context?.subjectId) params.set('subjectId', context.subjectId);
     if (context?.sectionId) params.set('sectionId', context.sectionId);
     if (context?.skillId) params.set('skillId', context.skillId);
+    if (context?.targetUserId) params.set('targetUserId', context.targetUserId);
+    if (context?.targetGroupId) params.set('targetGroupId', context.targetGroupId);
 
     return `/admin-dashboard?${params.toString()}`;
 };
@@ -790,6 +794,7 @@ const Reports: React.FC = () => {
                 subjectId: resolvedSkill?.subjectId,
                 sectionId: resolvedSkill?.sectionId,
                 skillId: scopedLeadSkill?.skillId,
+                targetUserId: scopedLeadStudent?.id,
             });
         const studentsLink =
             user.role === Role.ADMIN

@@ -71,6 +71,9 @@ assertIncludes('pages/Reports.tsx', 'buildDirectedQuizManagerLink');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'openedFromReports');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'source') ;
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'skillIds: selectedSkillId ? [selectedSkillId] : []');
+assertIncludes('pages/Reports.tsx', 'targetUserId: scopedLeadStudent?.id');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetUserId ? [initialTargetUserId] : []');
+assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 
 assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
 for (const file of [
