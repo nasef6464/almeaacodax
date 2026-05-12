@@ -37,6 +37,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - API Surface Hardening Sprint - 2026-05-12: tightened production CORS configuration, added request IDs to responses/logs/errors, added route-scoped body limits, hid production 5xx details, and added `smoke:api-security`.
 - Runtime Source-Of-Truth Sprint - 2026-05-12: forced production frontend/runtime paths to use the real Mongo-backed API, limited legacy Firebase sync to local development only, blocked local admin bypass in production, and added `smoke:runtime-source`.
 - NoSQL Injection Guard Sprint - 2026-05-12: added a backend request sanitizer that rejects Mongo operator keys and dotted keys in request bodies/query strings before route handlers, keeps rejected requests traceable with `requestId`, and added `smoke:nosql-sanitizer`.
+- Public Shell Performance Sprint - 2026-05-12: the public landing/auth shell now renders without waiting for the heavy content bootstrap, while data-heavy routes such as dashboard, category, quiz, results, and admin still block until bootstrap is ready; `smoke:performance` now guards this behavior.
 
 ## Still Required Before Large Launch
 

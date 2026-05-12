@@ -47,6 +47,41 @@ const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(
 // Dashboards
 const AdminDashboard = React.lazy(() => import('./dashboards/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 
+const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
+  '/dashboard',
+  '/admin-dashboard',
+  '/instructor-dashboard',
+  '/supervisor-dashboard',
+  '/parent-dashboard',
+  '/category',
+  '/quiz',
+  '/results',
+  '/courses',
+  '/course',
+  '/quizzes',
+  '/mock-exams',
+  '/my-quizzes',
+  '/reports',
+  '/favorites',
+  '/plan',
+  '/qa',
+  '/book-session',
+  '/live-sessions',
+  '/profile',
+  '/admin/quiz-gen',
+  '/achievements',
+];
+
+const getInitialRouterPath = () => {
+  const hashPath = window.location.hash.replace(/^#/, '').split(/[?#]/)[0];
+  return hashPath || window.location.pathname || '/';
+};
+
+const shouldBlockInitialBootstrap = () => {
+  const path = getInitialRouterPath();
+  return DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+};
+
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 text-amber-500">
     <Loader2 className="w-10 h-10 animate-spin" />
@@ -64,7 +99,7 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const [bootstrapReady, setBootstrapReady] = useState(false);
+  const [bootstrapReady, setBootstrapReady] = useState(() => !shouldBlockInitialBootstrap());
   const hydrateCourses = useStore((state) => state.hydrateCourses);
   const hydrateQuestions = useStore((state) => state.hydrateQuestions);
   const hydrateQuizzes = useStore((state) => state.hydrateQuizzes);

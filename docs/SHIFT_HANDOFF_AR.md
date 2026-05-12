@@ -247,3 +247,10 @@
 - Rejected unsafe requests return `400` with the active `requestId` for support/debugging.
 - Added guard: `npm run smoke:nosql-sanitizer`.
 - Visual check rule: after each completed batch, open or refresh the app in the in-app browser/Chrome and record whether the page renders normally. For this batch, the landing page rendered correctly; local console showed existing API connection warnings because the local backend was not running.
+
+## Public Shell Performance Sprint - 2026-05-12
+- Fixed one direct cause of Vercel first-load slowness: the public landing/auth shell no longer waits for the full content bootstrap before rendering.
+- Data-heavy routes still block until bootstrap is ready: dashboard, category, quiz, results, admin/staff dashboards, reports, courses, and student learning pages.
+- Added guard coverage to `npm run smoke:performance`.
+- Visual check: opened `http://127.0.0.1:5174/#/` in the in-app browser; the landing page rendered immediately with brand, hero content, and CTAs visible, with no blocking loading spinner.
+- Scope: frontend performance only. No paid/free, package, payment, quiz scoring, training/test separation, or admin permissions changed.
