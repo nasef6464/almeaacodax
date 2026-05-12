@@ -119,6 +119,8 @@ assertIncludes('server/src/routes/quiz.routes.ts', 'toQuestionSummaryText(item.t
 assertIncludes('server/src/routes/quiz.routes.ts', 'query.noTotal ? Promise.resolve(null) : QuestionModel.countDocuments(filter)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'PUBLIC_QUIZ_LIST_CACHE_TTL_MS');
 assertIncludes('server/src/routes/quiz.routes.ts', 'X-Quiz-List-Cache');
+assertIncludes('server/src/routes/quiz.routes.ts', 'QUESTION_SUMMARY_CACHE_TTL_MS');
+assertIncludes('server/src/routes/quiz.routes.ts', 'X-Question-Summary-Cache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'TAXONOMY_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'X-Taxonomy-Cache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearTaxonomyBootstrapCache');

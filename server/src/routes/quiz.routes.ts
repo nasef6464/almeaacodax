@@ -69,6 +69,8 @@ const questionListQuerySchema = z.object({
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
+const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
+const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
 
 let publicQuizListCache:
   | {
@@ -76,10 +78,32 @@ let publicQuizListCache:
       payload: unknown[];
     }
   | null = null;
+let publicQuestionSummaryCache = new Map<
+  string,
+  {
+    expiresAt: number;
+    payload: unknown[];
+    hasMore: boolean;
+  }
+>();
 
 const clearPublicQuizListCache = () => {
   publicQuizListCache = null;
 };
+
+const clearPublicQuestionSummaryCache = () => {
+  publicQuestionSummaryCache.clear();
+};
+
+const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySchema>) =>
+  JSON.stringify({
+    page: query.page,
+    limit: query.limit,
+    pathId: query.pathId || "",
+    subject: query.subject || "",
+    sectionId: query.sectionId || "",
+    skillId: query.skillId || "",
+  });
 
 const toQuestionSummaryText = (value: unknown) => {
   const raw = typeof value === "string" ? value : "";
@@ -770,6 +794,7 @@ export const quizRouter = Router();
 quizRouter.use((req, _res, next) => {
   if (req.method !== "GET") {
     clearPublicQuizListCache();
+    clearPublicQuestionSummaryCache();
   }
   next();
 });
@@ -779,6 +804,24 @@ quizRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const query = questionListQuerySchema.parse(req.query);
+    const canUseSummaryCache =
+      query.summary &&
+      query.noTotal &&
+      !query.ids &&
+      !query.search &&
+      !query.approvalStatus &&
+      !isStaffRole(req.authUser?.role);
+    const summaryCacheKey = canUseSummaryCache ? buildQuestionSummaryCacheKey(query) : "";
+    const summaryCacheItem = summaryCacheKey ? publicQuestionSummaryCache.get(summaryCacheKey) : undefined;
+    if (summaryCacheItem && summaryCacheItem.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "private, max-age=30");
+      res.setHeader("X-Question-Summary-Cache", "hit");
+      res.setHeader("X-Has-More", String(summaryCacheItem.hasMore));
+      res.setHeader("X-Page", String(query.page));
+      res.setHeader("X-Limit", String(query.limit));
+      return res.json(summaryCacheItem.payload);
+    }
+
     let baseFilter: Record<string, any> = {};
 
     if (!isStaffRole(req.authUser?.role)) {
@@ -866,6 +909,21 @@ quizRouter.get(
     res.setHeader("X-Has-More", String(hasMore));
     res.setHeader("X-Page", String(query.page));
     res.setHeader("X-Limit", String(query.limit));
+    if (summaryCacheKey) {
+      if (publicQuestionSummaryCache.size >= QUESTION_SUMMARY_CACHE_MAX_ENTRIES) {
+        const oldestKey = publicQuestionSummaryCache.keys().next().value;
+        if (oldestKey) {
+          publicQuestionSummaryCache.delete(oldestKey);
+        }
+      }
+      publicQuestionSummaryCache.set(summaryCacheKey, {
+        expiresAt: Date.now() + QUESTION_SUMMARY_CACHE_TTL_MS,
+        payload: items,
+        hasMore,
+      });
+      res.setHeader("Cache-Control", "private, max-age=30");
+      res.setHeader("X-Question-Summary-Cache", "miss");
+    }
     res.json(items);
   }),
 );
