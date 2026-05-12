@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactPlayer from 'react-player';
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 import {
@@ -48,6 +47,11 @@ interface VideoQuestionOverlayProps {
   onAnswer: (isCorrect: boolean) => void;
   onSkip: () => void;
 }
+
+const ReactPlayerFallback = React.lazy(async () => {
+  const module = await import('react-player');
+  return { default: module.default as React.ComponentType<any> };
+});
 
 const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, bankQuestion, onAnswer, onSkip }) => {
   const inlineQuestion = question.inlineQuestion || (bankQuestion
@@ -294,7 +298,6 @@ const normalizeVideoUrl = (rawUrl: string) => {
 };
 
 export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title, interactiveQuestions = [], questionBank = [] }) => {
-  const Player = ReactPlayer as any;
   const playerRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoSource = normalizeVideoUrl(url);
@@ -468,58 +471,66 @@ export const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({ url, title
           allowFullScreen
         />
       ) : (
-        <Player
-          ref={playerRef}
-          url={normalizedUrl}
-          width="100%"
-          height="100%"
-          playing={playing}
-          playsInline
-          volume={volume}
-          muted={muted}
-          onProgress={handleProgress as any}
-          onDuration={(nextDuration: number) => {
-            if (nextDuration > 0) setDuration(nextDuration);
-          }}
-          onReady={handleReady}
-          onError={() => {
-            setPlaying(false);
-            setHasPlaybackError(true);
-            void reportClientEvent({
-              source: 'video-player',
-              severity: 'warning',
-              message: 'Lesson video playback failed',
-              metadata: {
-                title,
-                url: normalizedUrl,
-                externalUrl: videoSource.externalUrl,
-                provider: videoSource.provider || (usesNativeIframe ? 'iframe' : 'file'),
+        <React.Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center bg-slate-950 text-sm font-bold text-white" dir="rtl">
+              جاري تجهيز الفيديو...
+            </div>
+          }
+        >
+          <ReactPlayerFallback
+            ref={playerRef}
+            url={normalizedUrl}
+            width="100%"
+            height="100%"
+            playing={playing}
+            playsInline
+            volume={volume}
+            muted={muted}
+            onProgress={handleProgress as any}
+            onDuration={(nextDuration: number) => {
+              if (nextDuration > 0) setDuration(nextDuration);
+            }}
+            onReady={handleReady}
+            onError={() => {
+              setPlaying(false);
+              setHasPlaybackError(true);
+              void reportClientEvent({
+                source: 'video-player',
+                severity: 'warning',
+                message: 'Lesson video playback failed',
+                metadata: {
+                  title,
+                  url: normalizedUrl,
+                  externalUrl: videoSource.externalUrl,
+                  provider: videoSource.provider || (usesNativeIframe ? 'iframe' : 'file'),
+                },
+              });
+            }}
+            config={{
+              file: {
+                attributes: {
+                  controlsList: 'nodownload',
+                  preload: 'metadata',
+                },
               },
-            });
-          }}
-          config={{
-            file: {
-              attributes: {
-                controlsList: 'nodownload',
-                preload: 'metadata',
+              youtube: {
+                playerVars: {
+                  autoplay: 0,
+                  controls: 0,
+                  disablekb: 1,
+                  fs: 0,
+                  modestbranding: 1,
+                  rel: 0,
+                  showinfo: 0,
+                  iv_load_policy: 3,
+                  origin: window.location.origin,
+                },
               },
-            },
-            youtube: {
-              playerVars: {
-                autoplay: 0,
-                controls: 0,
-                disablekb: 1,
-                fs: 0,
-                modestbranding: 1,
-                rel: 0,
-                showinfo: 0,
-                iv_load_policy: 3,
-                origin: window.location.origin,
-              },
-            },
-          } as any}
-          style={{ pointerEvents: 'none' }}
-        />
+            } as any}
+            style={{ pointerEvents: 'none' }}
+          />
+        </React.Suspense>
       )}
 
       {hasPlaybackError && (

@@ -85,6 +85,20 @@ Expected effect:
 - First paint on Vercel root/auth pages should improve because students do not wait for course/question/quiz/taxonomy/content/skill-progress calls before seeing the page.
 - If the backend is cold on Render, the public page can still appear while the backend wakes up, and private/data pages remain protected by the bootstrap gate.
 
+## Video Fallback Split - 2026-05-12
+
+Closed the second video performance pass:
+
+- `CustomVideoPlayer` no longer imports `react-player` at module load.
+- YouTube lessons continue to use the lighter Plyr/YouTube path first.
+- `react-player` now loads only inside a React lazy fallback for non-YouTube/non-Drive sources that need the generic player stack.
+- Timed in-video questions remain wired through the same overlay and were covered by `npm run smoke:video-questions`.
+
+Build note:
+
+- Vite still emits `assets/video-dash-*.js` as a separate async fallback chunk because `react-player` can support DASH sources.
+- The key improvement is that this chunk is no longer pulled just by opening the normal public shell or YouTube lesson path; it is deferred until a fallback video source actually needs it.
+
 ## Reports Export Split - 2026-05-12
 
 Closed the first reports-specific performance pass:

@@ -264,3 +264,18 @@
 - Frontend homepage settings fetch uses `cache: "no-store"` so admin changes are not hidden by browser cache.
 - Added guard: `npm run smoke:homepage-hero`.
 - Visual check done on `http://127.0.0.1:5174/#/`: hero renders the boy studying from the platform-style UI, and page typography/layout were not intentionally changed.
+
+## Typography Preservation Sprint - 2026-05-12
+- User explicitly requested restoring the original typography and not changing fonts unless asked.
+- Kept the platform font as Tajawal and added the missing `900` weight so `font-black` hero text renders consistently like the original screenshot.
+- Added Tailwind `fontFamily.tajawal` alias and applied Tajawal at `html`, `body`, and `#root`.
+- Added guard: `npm run smoke:typography`.
+- Browser DOM check on `http://127.0.0.1:5174/#/` confirmed the homepage heading, CTAs, and hero image are visible. Screenshot capture timed out twice in the in-app browser tool, but the page DOM rendered normally.
+- Scope: typography preservation only. No layout, color, spacing, package, payment, quiz, training, or admin behavior changed.
+
+## Video Fallback Performance Sprint - 2026-05-12
+- `CustomVideoPlayer` no longer imports `react-player` directly at module load.
+- YouTube lessons keep the lighter Plyr/YouTube path; `react-player` is now lazy-loaded only for generic fallback video sources.
+- Timed in-video question behavior remains covered by `npm run smoke:video-questions`.
+- `npm run build` still emits `video-dash` as an async fallback chunk because `react-player` supports DASH, but normal public/YouTube paths no longer pull it immediately.
+- Scope: performance/load splitting only. No video question authoring, lesson layout, student payment/access, quiz, package, or admin permissions changed.

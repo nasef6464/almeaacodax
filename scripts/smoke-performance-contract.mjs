@@ -35,6 +35,12 @@ for (const file of videoEntrypoints) {
   assertNotIncludes(file, "import { CustomVideoPlayer } from './CustomVideoPlayer';");
 }
 
+assertNotIncludes('components/CustomVideoPlayer.tsx', "import ReactPlayer from 'react-player';");
+assertIncludes('components/CustomVideoPlayer.tsx', "const ReactPlayerFallback = React.lazy(async () => {");
+assertIncludes('components/CustomVideoPlayer.tsx', "const module = await import('react-player');");
+assertIncludes('components/CustomVideoPlayer.tsx', '<React.Suspense');
+assertIncludes('components/CustomVideoPlayer.tsx', '<ReactPlayerFallback');
+
 assertIncludes('index.html', 'window.tailwind = window.tailwind || {};');
 assertIncludes('index.html', 'var tailwind = window.tailwind;');
 assertIncludes('index.html', 'tailwind.config = {');

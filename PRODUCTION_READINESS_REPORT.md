@@ -39,6 +39,8 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - NoSQL Injection Guard Sprint - 2026-05-12: added a backend request sanitizer that rejects Mongo operator keys and dotted keys in request bodies/query strings before route handlers, keeps rejected requests traceable with `requestId`, and added `smoke:nosql-sanitizer`.
 - Public Shell Performance Sprint - 2026-05-12: the public landing/auth shell now renders without waiting for the heavy content bootstrap, delays public-page bootstrap until idle, and still blocks data-heavy routes such as dashboard, category, quiz, results, and admin until bootstrap is ready; `smoke:performance` now guards this behavior.
 - Homepage Hero Management Sprint - 2026-05-12: added an optimized platform-study boy hero image, wired it as the default hero across frontend/backend/admin, added admin image upload with recommended dimensions and size guidance, added image alt text, forced homepage-settings reads to bypass browser cache, and added `smoke:homepage-hero`.
+- Typography Preservation Sprint - 2026-05-12: preserved the original Tajawal typography, added the missing 900 weight used by the homepage hero heading, and added `smoke:typography`.
+- Video Fallback Performance Sprint - 2026-05-12: deferred `react-player` inside `CustomVideoPlayer` so the heavy generic video stack loads only when fallback video sources need it, while YouTube/Plyr lessons and timed video questions remain covered by smoke checks.
 
 ## Still Required Before Large Launch
 
