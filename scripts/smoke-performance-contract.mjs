@@ -103,9 +103,14 @@ assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankM
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
 
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [');
+assertIncludes('App.tsx', 'const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [');
+assertIncludes('App.tsx', 'const shouldDeferQuestionBootstrap = (path: string) =>');
 assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
+assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions();');
+assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
+assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
 assertIncludes('App.tsx', 'const loadPublicAnnouncementAds = async () => {');
 assertIncludes('App.tsx', 'api.getPublicAnnouncementAds()');

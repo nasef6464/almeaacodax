@@ -85,6 +85,34 @@ Expected effect:
 - First paint on Vercel root/auth pages should improve because students do not wait for course/question/quiz/taxonomy/content/skill-progress calls before seeing the page.
 - If the backend is cold on Render, the public page avoids the previous multi-endpoint bootstrap burst. The only public follow-up request is the small announcement list, and private/data pages remain protected by the bootstrap gate.
 
+## Dashboard Question-Bank Defer - 2026-05-12
+
+Measured production timing after the latest deployment showed the root Vercel shell is not the main bottleneck:
+
+- Vercel shell: about 589 ms and 4 KB in the latest probe.
+- Render `/api/health`: about 979 ms.
+- `/api/taxonomy/bootstrap`: about 803 ms and 15 KB.
+- `/api/content/bootstrap`: about 680 ms and 28 KB.
+- `/api/quizzes/questions`: about 3111 ms and 726 KB.
+
+Direct cause found:
+
+- Private dashboards were waiting for the full app bootstrap.
+- The full bootstrap included the large question-bank endpoint.
+- So a slow or large question-bank response could keep admin/student/report dashboards behind the loading state even when the lighter data was already ready.
+
+Code fix applied:
+
+- Dashboards and reports now defer the general question-bank bootstrap.
+- Core data still loads first, the page opens, then the question bank hydrates in the background.
+- Quiz/category routes that need stricter data readiness remain protected by the existing bootstrap gate.
+- Guard extended in `npm run smoke:performance`.
+
+Expected effect:
+
+- Admin, teacher, supervisor, parent, student dashboard, and reports routes should stop being blocked by the large `/quizzes/questions` response on first entry.
+- Question-dependent widgets update when the deferred question bank arrives.
+
 ## Video Fallback Native Split - 2026-05-12
 
 Closed the second video performance pass:

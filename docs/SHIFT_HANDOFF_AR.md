@@ -178,6 +178,13 @@
 - Closed the production cache-header fix in `vercel.json`.
 - Do not restore the old global `no-store`; it made repeat visits redownload built assets and was one cause of Vercel slowness.
 - Hashed assets now use one-year immutable caching, while the SPA HTML shell uses revalidation so new deployments still appear.
+
+## Dashboard Bootstrap Performance Sprint - 2026-05-12
+- Production probe found the direct current bottleneck: `/api/quizzes/questions` returned about 726KB and took about 3.1s, while the Vercel shell and taxonomy/content bootstrap were much lighter.
+- Dashboards and reports now defer the general question-bank bootstrap instead of blocking the whole route on it.
+- Affected non-blocking routes: student dashboard, admin/teacher/supervisor dashboards, parent dashboard, and reports.
+- Question-dependent widgets hydrate when the question bank arrives in the background; quiz/category routes keep the stricter bootstrap gate.
+- Guard extended in `npm run smoke:performance`.
 - Guard: `npm run smoke:deployment-cache`.
 - Scope: deployment/performance only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.
 

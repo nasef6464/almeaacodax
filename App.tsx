@@ -99,6 +99,18 @@ const shouldBlockInitialBootstrap = () => {
 const isDataBootstrapBlockingPath = (path: string) =>
   DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
+const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [
+  '/dashboard',
+  '/admin-dashboard',
+  '/instructor-dashboard',
+  '/supervisor-dashboard',
+  '/parent-dashboard',
+  '/reports',
+];
+
+const shouldDeferQuestionBootstrap = (path: string) =>
+  QUESTION_BOOTSTRAP_DEFER_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
 const SEO_BASE_URL = 'https://almeaacodax.vercel.app';
 
 const SEO_PRIVATE_PREFIXES = [
@@ -313,7 +325,7 @@ const App: React.FC = () => {
   useEffect(() => {
     let mounted = true;
 
-    const bootstrapAppData = async () => {
+    const bootstrapAppData = async (options: { deferQuestions?: boolean } = {}) => {
       try {
         // If the backend is unreachable, avoid hydrating with empty arrays
         // (adapter falls back to empty on network errors) which would make
@@ -331,9 +343,10 @@ const App: React.FC = () => {
           }
         }
 
+        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions();
         const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
-          adapter.getQuestions(),
+          questionsPromise ?? Promise.resolve(null),
           adapter.getQuizzes(),
           adapter.getTaxonomyBootstrap(),
           adapter.getContentBootstrap(),
@@ -348,7 +361,7 @@ const App: React.FC = () => {
           hydrateCourses(coursesResult.value);
         }
 
-        if (questionsResult.status === 'fulfilled') {
+        if (questionsResult.status === 'fulfilled' && Array.isArray(questionsResult.value)) {
           hydrateQuestions(questionsResult.value);
         }
 
@@ -381,6 +394,18 @@ const App: React.FC = () => {
 
         if (skillProgressResult.status === 'fulfilled') {
           hydrateSkillProgress(skillProgressResult.value as any[]);
+        }
+
+        if (options.deferQuestions) {
+          void adapter.getQuestions()
+            .then((questions) => {
+              if (mounted) {
+                hydrateQuestions(questions);
+              }
+            })
+            .catch((error) => {
+              console.warn('Deferred question bootstrap unavailable:', error);
+            });
         }
       } catch (error) {
         console.warn('App bootstrap fallback active:', error);
@@ -443,7 +468,7 @@ const App: React.FC = () => {
       }
 
       bootstrapStarted = true;
-      void bootstrapAppData();
+      void bootstrapAppData({ deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath()) });
     };
 
     const startIfRouteNeedsData = () => {
