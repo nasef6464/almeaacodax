@@ -50,7 +50,12 @@ assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankM
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
 
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [');
-assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(() => !shouldBlockInitialBootstrap());");
+assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
+assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
+assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
+assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
+assertIncludes('App.tsx', 'idleHandle = requestIdle(startBootstrap, { timeout: 1200 });');
+assertIncludes('App.tsx', "window.addEventListener('hashchange', startIfRouteNeedsData);");
 assertIncludes('App.tsx', "'/dashboard'");
 assertIncludes('App.tsx', "'/category'");
 assertIncludes('App.tsx', "'/quiz'");

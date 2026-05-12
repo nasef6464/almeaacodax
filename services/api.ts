@@ -15,6 +15,7 @@ interface RequestOptions {
   method?: HttpMethod;
   body?: unknown;
   token?: string | null;
+  cache?: RequestCache;
 }
 
 const AUTH_STORAGE_KEY = "the-hundred-auth-session";
@@ -40,6 +41,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
       method: options.method || "GET",
+      cache: options.cache,
       headers: {
         "Content-Type": "application/json",
         ...(resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : {}),
@@ -345,6 +347,7 @@ export const api = {
   getHomepageSettings: (token?: string | null) =>
     request<unknown>("/content/homepage-settings", {
       token,
+      cache: "no-store",
     }),
   updateHomepageSettings: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/homepage-settings", {

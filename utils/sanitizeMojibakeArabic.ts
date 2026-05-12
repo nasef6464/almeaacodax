@@ -72,6 +72,7 @@ export const sanitizeHomepageSettings = (settings: HomepageSettings): HomepageSe
         description: sanitizeArabicText(settings.hero.description),
         primaryCtaLabel: sanitizeArabicText(settings.hero.primaryCtaLabel),
         secondaryCtaLabel: sanitizeArabicText(settings.hero.secondaryCtaLabel),
+        imageAlt: sanitizeArabicText(settings.hero.imageAlt),
         floatingCardTitle: sanitizeArabicText(settings.hero.floatingCardTitle),
         floatingCardSubtitle: sanitizeArabicText(settings.hero.floatingCardSubtitle),
         floatingCardProgressLabel: sanitizeArabicText(settings.hero.floatingCardProgressLabel),

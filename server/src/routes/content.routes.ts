@@ -500,6 +500,7 @@ const homepageSettingsSchema = z.object({
       secondaryCtaLabel: z.string().optional(),
       secondaryCtaLink: z.string().optional(),
       imageUrl: z.string().optional(),
+      imageAlt: z.string().optional(),
       floatingCardTitle: z.string().optional(),
       floatingCardSubtitle: z.string().optional(),
       floatingCardProgressLabel: z.string().optional(),
@@ -538,7 +539,8 @@ const defaultHomepageSettings = {
     primaryCtaLink: "/dashboard",
     secondaryCtaLabel: "تصفح الدورات",
     secondaryCtaLink: "/courses",
-    imageUrl: "https://img.freepik.com/free-photo/saudi-arab-boy-student-wearing-thobe-holding-tablet_1258-122164.jpg",
+    imageUrl: "/images/homepage-hero-boy-platform.jpg?v=20260512",
+    imageAlt: "طالب يستخدم منصة المئة",
     floatingCardTitle: "منصة المئة",
     floatingCardSubtitle: "مستواك: متقدم",
     floatingCardProgressLabel: "التقدم",
@@ -584,6 +586,7 @@ const defaultHomepageSettings = {
   ],
   featuredPathIds: [],
   featuredCourseIds: [],
+  featuredArticleLessonIds: [],
 };
 
 export const contentRouter = Router();

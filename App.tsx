@@ -1,6 +1,6 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import { Loader2 } from 'lucide-react';
 import { adapter } from './services/adapter';
@@ -82,6 +82,9 @@ const shouldBlockInitialBootstrap = () => {
   return DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 };
 
+const isDataBootstrapBlockingPath = (path: string) =>
+  DATA_BOOTSTRAP_BLOCKING_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 text-amber-500">
     <Loader2 className="w-10 h-10 animate-spin" />
@@ -98,8 +101,18 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
   return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
 };
 
+const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }> = ({ bootstrapReady, children }) => {
+  const location = useLocation();
+
+  if (!bootstrapReady && isDataBootstrapBlockingPath(location.pathname || '/')) {
+    return <LoadingFallback />;
+  }
+
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
-  const [bootstrapReady, setBootstrapReady] = useState(() => !shouldBlockInitialBootstrap());
+  const [bootstrapReady, setBootstrapReady] = useState(false);
   const hydrateCourses = useStore((state) => state.hydrateCourses);
   const hydrateQuestions = useStore((state) => state.hydrateQuestions);
   const hydrateQuizzes = useStore((state) => state.hydrateQuizzes);
@@ -221,16 +234,54 @@ const App: React.FC = () => {
       }
     };
 
-    bootstrapAppData();
+    let bootstrapStarted = false;
+    let delayTimer: ReturnType<typeof setTimeout> | undefined;
+    let idleHandle: number | undefined;
+
+    const cancelDeferredBootstrap = () => {
+      if (delayTimer !== undefined) {
+        window.clearTimeout(delayTimer);
+      }
+
+      if (idleHandle !== undefined && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleHandle);
+      }
+    };
+
+    const startBootstrap = () => {
+      if (bootstrapStarted) {
+        return;
+      }
+
+      bootstrapStarted = true;
+      void bootstrapAppData();
+    };
+
+    const startIfRouteNeedsData = () => {
+      if (shouldBlockInitialBootstrap()) {
+        cancelDeferredBootstrap();
+        startBootstrap();
+      }
+    };
+
+    const requestIdle = window.requestIdleCallback?.bind(window);
+
+    if (shouldBlockInitialBootstrap()) {
+      startBootstrap();
+    } else if (requestIdle) {
+      idleHandle = requestIdle(startBootstrap, { timeout: 1200 });
+    } else {
+      delayTimer = globalThis.setTimeout(startBootstrap, 450);
+    }
+
+    window.addEventListener('hashchange', startIfRouteNeedsData);
 
     return () => {
       mounted = false;
+      cancelDeferredBootstrap();
+      window.removeEventListener('hashchange', startIfRouteNeedsData);
     };
   }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateSkillProgress, hydrateTaxonomy]);
-
-  if (!bootstrapReady) {
-    return <LoadingFallback />;
-  }
 
   const staffDashboard = (
     <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
@@ -244,6 +295,7 @@ const App: React.FC = () => {
     <Router>
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
+        <BootstrapRouteGate bootstrapReady={bootstrapReady}>
         <Routes>
           {/* Routes without Main Layout (Full Screen) */}
           <Route path="/quiz" element={<Quiz />} />
@@ -301,6 +353,7 @@ const App: React.FC = () => {
             </Layout>
           } />
         </Routes>
+        </BootstrapRouteGate>
         </AppErrorBoundary>
         <AnnouncementAdsOverlay />
         {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}

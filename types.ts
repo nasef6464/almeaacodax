@@ -539,6 +539,7 @@ export interface HomepageHeroSettings {
     secondaryCtaLabel?: string;
     secondaryCtaLink?: string;
     imageUrl?: string;
+    imageAlt?: string;
     floatingCardTitle?: string;
     floatingCardSubtitle?: string;
     floatingCardProgressLabel?: string;

@@ -1,9 +1,12 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2 } from 'lucide-react';
+import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types';
 import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
+
+const DEFAULT_HERO_BOY_IMAGE =
+    '/images/homepage-hero-boy-platform.jpg?v=20260512';
 
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
@@ -17,7 +20,8 @@ const defaultHomepageSettings: HomepageSettings = {
         primaryCtaLink: '/dashboard',
         secondaryCtaLabel: 'تصفح الدورات',
         secondaryCtaLink: '/courses',
-        imageUrl: 'https://img.freepik.com/free-photo/saudi-arab-boy-student-wearing-thobe-holding-tablet_1258-122164.jpg',
+        imageUrl: DEFAULT_HERO_BOY_IMAGE,
+        imageAlt: 'طالب يستخدم منصة المئة',
         floatingCardTitle: 'منصة المئة',
         floatingCardSubtitle: 'مستواك: متقدم',
         floatingCardProgressLabel: 'التقدم',
@@ -152,6 +156,31 @@ export const HomepageManager: React.FC = () => {
         }));
     };
 
+    const handleHeroImageUpload = (file?: File | null) => {
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            setError('اختر ملف صورة فقط.');
+            return;
+        }
+
+        if (file.size > 900 * 1024) {
+            setError('حجم صورة البداية كبير. الأفضل ضغطها إلى أقل من 900KB قبل الرفع.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            updateHeroField('imageUrl', String(reader.result || ''));
+            setError(null);
+            setSuccess('تم تحميل الصورة داخل الإعدادات. اضغط حفظ التعديلات لنشرها.');
+        };
+        reader.onerror = () => setError('تعذر قراءة الصورة. جرّب صورة أخرى.');
+        reader.readAsDataURL(file);
+    };
+
     const updateSectionField = (field: keyof HomepageSettings['sections'], value: string) => {
         setSettings((prev) => ({
             ...prev,
@@ -257,7 +286,40 @@ export const HomepageManager: React.FC = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <TextField label="الشارة الصغيرة" value={settings.hero.badgeText || ''} onChange={(value) => updateHeroField('badgeText', value)} />
-                            <TextField label="الصورة الرئيسية" value={settings.hero.imageUrl || ''} onChange={(value) => updateHeroField('imageUrl', value)} />
+                            <div className="md:col-span-2 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 space-y-3">
+                                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">الصورة الرئيسية</label>
+                                        <p className="text-xs leading-6 text-gray-500">
+                                            الأبعاد المناسبة: 1200×800 أو 3:2، ويفضل WebP/JPG أقل من 900KB حتى تفتح الصفحة بسرعة.
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-blue-700 border border-blue-100 hover:bg-blue-50">
+                                            <Upload size={16} />
+                                            رفع صورة
+                                            <input
+                                                type="file"
+                                                accept="image/png,image/jpeg,image/webp"
+                                                className="hidden"
+                                                onChange={(event) => handleHeroImageUpload(event.target.files?.[0])}
+                                            />
+                                        </label>
+                                        <button
+                                            type="button"
+                                            onClick={() => updateHeroField('imageUrl', DEFAULT_HERO_BOY_IMAGE)}
+                                            className="rounded-xl border border-amber-100 bg-white px-4 py-2 text-sm font-bold text-amber-700 hover:bg-amber-50"
+                                        >
+                                            صورة ولد افتراضية
+                                        </button>
+                                    </div>
+                                </div>
+                                <TextField label="رابط الصورة أو الصورة المرفوعة" value={settings.hero.imageUrl || ''} onChange={(value) => updateHeroField('imageUrl', value)} />
+                                <TextField label="وصف الصورة للظهور والبحث" value={settings.hero.imageAlt || ''} onChange={(value) => updateHeroField('imageAlt', value)} />
+                                {settings.hero.imageUrl ? (
+                                    <img src={settings.hero.imageUrl} alt="" className="h-40 w-full rounded-2xl object-cover border border-white shadow-sm" />
+                                ) : null}
+                            </div>
                             <TextField label="مقدمة العنوان" value={settings.hero.titlePrefix || ''} onChange={(value) => updateHeroField('titlePrefix', value)} />
                             <TextField label="الكلمة المميزة" value={settings.hero.titleHighlight || ''} onChange={(value) => updateHeroField('titleHighlight', value)} />
                             <TextField label="نهاية العنوان" value={settings.hero.titleSuffix || ''} onChange={(value) => updateHeroField('titleSuffix', value)} />

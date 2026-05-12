@@ -34,6 +34,7 @@ const homepageHeroSchema = new Schema(
     secondaryCtaLabel: { type: String, default: "" },
     secondaryCtaLink: { type: String, default: "" },
     imageUrl: { type: String, default: "" },
+    imageAlt: { type: String, default: "" },
     floatingCardTitle: { type: String, default: "" },
     floatingCardSubtitle: { type: String, default: "" },
     floatingCardProgressLabel: { type: String, default: "" },
@@ -46,6 +47,8 @@ const homepageSectionsSchema = new Schema(
   {
     featuredCoursesTitle: { type: String, default: "" },
     featuredCoursesSubtitle: { type: String, default: "" },
+    featuredArticlesTitle: { type: String, default: "" },
+    featuredArticlesSubtitle: { type: String, default: "" },
     whyChooseTitle: { type: String, default: "" },
     whyChooseDescription: { type: String, default: "" },
     testimonialsTitle: { type: String, default: "" },
@@ -63,6 +66,7 @@ const homepageSettingsSchema = new Schema(
     sections: { type: homepageSectionsSchema, default: () => ({}) },
     featuredPathIds: { type: [String], default: [] },
     featuredCourseIds: { type: [String], default: [] },
+    featuredArticleLessonIds: { type: [String], default: [] },
   },
   {
     timestamps: true,

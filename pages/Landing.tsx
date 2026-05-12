@@ -7,6 +7,34 @@ import { api } from '../services/api';
 import { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 
+const DEFAULT_HERO_BOY_IMAGE =
+    '/images/homepage-hero-boy-platform.jpg?v=20260512';
+
+const LEGACY_HERO_IMAGE_HINTS = [
+    'saudi-arab-boy-student-wearing-thobe-holding-tablet_1258-122164',
+    'girl',
+    'woman',
+    'female',
+    'student-smiling',
+    'young-woman',
+    'portrait-woman',
+    'girl-student',
+];
+
+const resolveHomepageHeroImage = (imageUrl?: string) => {
+    const trimmed = imageUrl?.trim();
+    if (!trimmed) {
+        return DEFAULT_HERO_BOY_IMAGE;
+    }
+
+    const normalized = trimmed.toLowerCase();
+    if (LEGACY_HERO_IMAGE_HINTS.some((hint) => normalized.includes(hint))) {
+        return DEFAULT_HERO_BOY_IMAGE;
+    }
+
+    return trimmed;
+};
+
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
     hero: {
@@ -19,7 +47,8 @@ const defaultHomepageSettings: HomepageSettings = {
         primaryCtaLink: '/dashboard',
         secondaryCtaLabel: 'تصفح الدورات',
         secondaryCtaLink: '/courses',
-        imageUrl: 'https://img.freepik.com/free-photo/saudi-arab-boy-student-wearing-thobe-holding-tablet_1258-122164.jpg',
+        imageUrl: DEFAULT_HERO_BOY_IMAGE,
+        imageAlt: 'طالب يستخدم منصة المئة',
         floatingCardTitle: 'منصة المئة',
         floatingCardSubtitle: 'مستواك: متقدم',
         floatingCardProgressLabel: 'التقدم',
@@ -318,8 +347,8 @@ export const Landing: React.FC = () => {
                         <div className="lg:w-1/2 relative w-full">
                             <div className="relative w-full max-w-lg mx-auto">
                                 <img
-                                    src={homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl}
-                                    alt="طالب يستخدم منصة المئة"
+                                    src={resolveHomepageHeroImage(homepageSettings.hero.imageUrl || defaultHomepageSettings.hero.imageUrl)}
+                                    alt={homepageSettings.hero.imageAlt || defaultHomepageSettings.hero.imageAlt || 'طالب يستخدم منصة المئة'}
                                     className="w-full h-auto rounded-3xl shadow-2xl border-4 border-white relative z-10 transform transition-transform hover:scale-[1.02]"
                                 />
 

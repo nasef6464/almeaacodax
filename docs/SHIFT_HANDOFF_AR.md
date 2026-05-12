@@ -250,7 +250,17 @@
 
 ## Public Shell Performance Sprint - 2026-05-12
 - Fixed one direct cause of Vercel first-load slowness: the public landing/auth shell no longer waits for the full content bootstrap before rendering.
+- Public pages now delay heavy bootstrap until browser idle; if the user moves quickly into a data-heavy route, the idle delay is cancelled and bootstrap starts immediately.
 - Data-heavy routes still block until bootstrap is ready: dashboard, category, quiz, results, admin/staff dashboards, reports, courses, and student learning pages.
 - Added guard coverage to `npm run smoke:performance`.
 - Visual check: opened `http://127.0.0.1:5174/#/` in the in-app browser; the landing page rendered immediately with brand, hero content, and CTAs visible, with no blocking loading spinner.
 - Scope: frontend performance only. No paid/free, package, payment, quiz scoring, training/test separation, or admin permissions changed.
+
+## Homepage Hero Management Sprint - 2026-05-12
+- Do not change fonts or the landing-page layout unless the user asks explicitly.
+- Added optimized hero asset: `public/images/homepage-hero-boy-platform.jpg` showing a student studying through a simple platform-style UI; frontend defaults use `?v=20260512` to avoid stale browser/CDN cache.
+- Wired the asset as the default in `pages/Landing.tsx`, `dashboards/admin/HomepageManager.tsx`, and backend default homepage settings.
+- Admin homepage manager now supports direct hero image upload, image alt text, a default-boy reset button, and guidance: 1200x800 or 3:2, preferably WebP/JPG under 900KB.
+- Frontend homepage settings fetch uses `cache: "no-store"` so admin changes are not hidden by browser cache.
+- Added guard: `npm run smoke:homepage-hero`.
+- Visual check done on `http://127.0.0.1:5174/#/`: hero renders the boy studying from the platform-style UI, and page typography/layout were not intentionally changed.
