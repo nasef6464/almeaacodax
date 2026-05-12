@@ -1963,8 +1963,15 @@ const Reports: React.FC = () => {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className={`text-lg font-black ${subject.mastery < 50 ? 'text-rose-600' : 'text-amber-600'}`}>{subject.mastery}%</div>
-                                                <Link to="/dashboard?tab=saher" className="print-hide rounded-full bg-white px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                    اختبارات
+                                                <Link
+                                                    to={buildDirectedQuizManagerLink({
+                                                        subjectId: subject.subjectId,
+                                                        targetUserId: scopedLeadStudent?.id,
+                                                        targetGroupId: scopedLeadStudent?.groupIds?.[0],
+                                                    })}
+                                                    className="print-hide rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white hover:bg-indigo-700"
+                                                >
+                                                    توجيه اختبار
                                                 </Link>
                                             </div>
                                         </div>

@@ -105,6 +105,8 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'targetGroupId: student.groupIds?.[0]');
   assertIncludes(reportsSource, 'student.groupNames?.length');
   assertIncludes(reportsSource, 'to={student.followUpLink}');
+  assertIncludes(reportsSource, 'subjectId: subject.subjectId');
+  assertIncludes(reportsSource, 'targetGroupId: scopedLeadStudent?.groupIds?.[0]');
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {

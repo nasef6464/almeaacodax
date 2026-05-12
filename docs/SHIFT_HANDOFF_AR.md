@@ -430,3 +430,8 @@
 - Student follow-up cards now keep the student's first `groupId` in the directed quiz link when available.
 - Student cards show up to two group names, so staff know the school/class context before sending follow-up work.
 - Student follow-up Excel exports now include the group names column for school handover.
+
+## Reports-Subject-Follow-Up Sprint - 2026-05-12
+- The "مواد تحتاج تدخل" section now opens a central directed quiz for the selected subject instead of sending staff to a generic student quiz tab.
+- When a lead student exists, the subject action carries the student's `targetUserId` and first `targetGroupId` too.
+- This keeps subject-level intervention, student focus, and group context in one report-to-quiz flow.
