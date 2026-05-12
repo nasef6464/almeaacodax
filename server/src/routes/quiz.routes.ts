@@ -68,6 +68,19 @@ const questionListQuerySchema = z.object({
 });
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
+const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
+
+let publicQuizListCache:
+  | {
+      expiresAt: number;
+      payload: unknown[];
+    }
+  | null = null;
+
+const clearPublicQuizListCache = () => {
+  publicQuizListCache = null;
+};
+
 const toQuestionSummaryText = (value: unknown) => {
   const raw = typeof value === "string" ? value : "";
   const plain = raw
@@ -754,6 +767,13 @@ const filterResultsByManagedScope = (
 
 export const quizRouter = Router();
 
+quizRouter.use((req, _res, next) => {
+  if (req.method !== "GET") {
+    clearPublicQuizListCache();
+  }
+  next();
+});
+
 quizRouter.get(
   "/questions",
   optionalAuth,
@@ -914,6 +934,13 @@ quizRouter.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    const canUsePublicCache = !isStaffRole(req.authUser?.role);
+    if (canUsePublicCache && publicQuizListCache && publicQuizListCache.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "private, max-age=30");
+      res.setHeader("X-Quiz-List-Cache", "hit");
+      return res.json(publicQuizListCache.payload);
+    }
+
     const baseFilter = isStaffRole(req.authUser?.role)
       ? {}
       : {
@@ -922,7 +949,15 @@ quizRouter.get(
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
     const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
-    const items = await QuizModel.find(filter).sort({ createdAt: -1 });
+    const items = await QuizModel.find(filter).sort({ createdAt: -1 }).lean();
+    if (canUsePublicCache) {
+      publicQuizListCache = {
+        expiresAt: Date.now() + PUBLIC_QUIZ_LIST_CACHE_TTL_MS,
+        payload: items,
+      };
+      res.setHeader("Cache-Control", "private, max-age=30");
+      res.setHeader("X-Quiz-List-Cache", "miss");
+    }
     res.json(items);
   }),
 );

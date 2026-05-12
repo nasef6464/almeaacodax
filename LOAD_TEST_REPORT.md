@@ -111,6 +111,7 @@ Code fix applied:
 - The bootstrap asks for a bounded summary first page instead of treating the question bank as an unbounded full-detail payload.
 - Public/learner taxonomy bootstrap now uses short in-process caching, lean MongoDB reads, and automatic cache invalidation on taxonomy mutations so repeated student opens do not re-scan taxonomy collections.
 - Public content bootstrap now uses a short guest cache and a single active-path lookup for topics, lessons, and library items, while authenticated/student-specific study plans stay uncached.
+- Public/learner quiz list now uses a short cache and lean MongoDB reads so repeated dashboard/category opens do not re-query the same published quiz list.
 - Quiz/category routes that need stricter data readiness remain protected by the existing bootstrap gate.
 - Guard extended in `npm run smoke:performance`.
 
