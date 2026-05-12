@@ -13,7 +13,7 @@ function getRequestPath(req: Request) {
 
 function shouldSkipRoutineHealthLog(req: Request, statusCode: number, durationMs: number, slowThresholdMs: number) {
   const path = getRequestPath(req);
-  const isHealthRoute = path === "/" || path === "/api/health" || path === "/api/health/";
+  const isHealthRoute = path === "/" || path === "/api/health" || path === "/api/health/" || path.startsWith("/api/health/");
   return isHealthRoute && statusCode < 500 && durationMs < slowThresholdMs && process.env.REQUEST_LOG_LEVEL !== "debug";
 }
 

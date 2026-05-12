@@ -36,6 +36,11 @@ assertIncludes('pages/Landing.tsx', 'resolveHomepageHeroImage');
 assertIncludes('pages/Landing.tsx', 'homepageSettings.hero.imageAlt');
 
 assertIncludes('dashboards/admin/HomepageManager.tsx', '/images/homepage-hero-boy-platform.jpg');
+assertIncludes('dashboards/admin/HomepageManager.tsx', "import { useAuth } from '../../contexts/AuthContext';");
+assertIncludes('dashboards/admin/HomepageManager.tsx', 'const { user } = useAuth();');
+assertIncludes('dashboards/admin/HomepageManager.tsx', 'api.updateHomepageSettings(payload, user.token)');
+assertIncludes('dashboards/admin/HomepageManager.tsx', 'Authentication required');
+assertIncludes('dashboards/admin/HomepageManager.tsx', 'انتهت جلسة الإدارة');
 assertIncludes('dashboards/admin/HomepageManager.tsx', 'handleHeroImageUpload');
 assertIncludes('dashboards/admin/HomepageManager.tsx', 'accept="image/png,image/jpeg,image/webp"');
 assertIncludes('dashboards/admin/HomepageManager.tsx', '1200×800 أو 3:2');

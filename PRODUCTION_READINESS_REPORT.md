@@ -42,6 +42,8 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Typography Preservation Sprint - 2026-05-12: preserved the original Tajawal typography, added the missing 900 weight used by the homepage hero heading, and added `smoke:typography`.
 - Video Fallback Performance Sprint - 2026-05-12: deferred `react-player` inside `CustomVideoPlayer` so the heavy generic video stack loads only when fallback video sources need it, while YouTube/Plyr lessons and timed video questions remain covered by smoke checks.
 - SEO Privacy Sprint - 2026-05-12: added runtime route metadata, canonical/OG/Twitter updates, private-route `noindex` handling, strengthened `robots.txt`, added sitemap lastmod, added future clean-path `X-Robots-Tag` headers, documented `SEO_READINESS_REPORT.md`, and added `smoke:seo`.
+- Health Readiness Sprint - 2026-05-12: upgraded `/api/health` with live/ready probes, version/commit/uptime metadata, MongoDB readiness status, routine health-log suppression, deployment docs, and `smoke:health-readiness`.
+- Homepage Manager Save Fix - 2026-05-12: fixed the admin homepage save path to explicitly pass the authenticated admin token, added a clear Arabic expired-session message, and extended `smoke:homepage-hero` so this regression cannot return silently.
 
 ## Still Required Before Large Launch
 

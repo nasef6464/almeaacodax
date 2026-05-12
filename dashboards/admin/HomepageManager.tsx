@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { useStore } from '../../store/useStore';
 import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types';
 import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
@@ -70,6 +71,7 @@ const createEmptyTestimonial = (): HomepageTestimonial => ({
 });
 
 export const HomepageManager: React.FC = () => {
+    const { user } = useAuth();
     const { paths, courses, lessons, subjects } = useStore();
     const [settings, setSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [isLoading, setIsLoading] = useState(true);
@@ -209,6 +211,11 @@ export const HomepageManager: React.FC = () => {
         collection.includes(id) ? collection.filter((item) => item !== id) : [...collection, id];
 
     const handleSave = async () => {
+        if (!user?.token) {
+            setError('انتهت جلسة الإدارة. سجّل الدخول مرة أخرى ثم أعد الحفظ.');
+            return;
+        }
+
         setIsSaving(true);
         setError(null);
         setSuccess(null);
@@ -222,11 +229,16 @@ export const HomepageManager: React.FC = () => {
                 testimonials: settings.testimonials.filter((item) => item.name.trim().length > 0 && item.text.trim().length > 0),
             };
 
-            const response = await api.updateHomepageSettings(payload);
+            const response = await api.updateHomepageSettings(payload, user.token);
             setSettings(sanitizeHomepageSettings(response as HomepageSettings));
             setSuccess('تم حفظ إعدادات الصفحة الرئيسية بنجاح.');
         } catch (saveError) {
-            setError(saveError instanceof Error ? saveError.message : 'تعذر حفظ إعدادات الصفحة الرئيسية.');
+            const message = saveError instanceof Error ? saveError.message : 'تعذر حفظ إعدادات الصفحة الرئيسية.';
+            setError(
+                message === 'Authentication required'
+                    ? 'انتهت جلسة الإدارة أو لم تصل صلاحية الحفظ للخادم. سجّل الدخول كمدير ثم أعد المحاولة.'
+                    : message,
+            );
         } finally {
             setIsSaving(false);
         }

@@ -289,3 +289,15 @@
 - Added `SEO_READINESS_REPORT.md` and guard `npm run smoke:seo`.
 - Important: the app still uses `HashRouter`. Do not migrate to `BrowserRouter` casually; it needs a separate sprint with Vercel rewrites, old hash return URLs, payment redirects, quiz return links, and visual checks.
 - Visual check: local Chrome headless loaded `http://127.0.0.1:5174/#/` and confirmed the landing page hero renders with `robots=index, follow`; it then loaded `/#/results?attempt=seo-smoke` and confirmed private metadata changes to `robots=noindex, nofollow`.
+
+## Homepage Manager Save Fix + Health Readiness Sprint - 2026-05-12
+- User reported `Authentication required` when saving homepage manager changes. Root cause: the manager called `api.updateHomepageSettings(payload)` without explicitly passing the active admin session token, so the request could arrive without admin auth in some session states.
+- Fixed `dashboards/admin/HomepageManager.tsx` to use `useAuth()`, require `user.token` before saving, and call `api.updateHomepageSettings(payload, user.token)`.
+- Added clearer Arabic error copy for expired/missing admin sessions instead of raw `Authentication required`.
+- Extended `npm run smoke:homepage-hero` to guard the token-passing save contract.
+- Upgraded health monitoring in the same production-readiness batch: `/api/health/live` checks process liveness, `/api/health/ready` checks MongoDB readiness and returns `503` when unavailable, while `/api/health` stays backward-compatible.
+- Health payload now includes service name, environment, version, short commit when available, uptime, startedAt, timestamp, and database check state without secrets.
+- Routine logs now skip `/api/health/*` unless slow/failing.
+- Added guard `npm run smoke:health-readiness` and updated `DEPLOYMENT_GUIDE.md`.
+- Chrome visual/function check completed on `http://127.0.0.1:5174/#/admin-dashboard`: opened homepage manager as a dev admin, clicked `حفظ التعديلات`, and confirmed `تم حفظ إعدادات الصفحة الرئيسية بنجاح` with no raw `Authentication required`.
+- Completion rule reinforced: any admin feature is not considered closed unless the save path and the public/user-facing effect are both checked.
