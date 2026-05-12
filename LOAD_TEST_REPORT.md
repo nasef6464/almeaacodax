@@ -94,3 +94,18 @@ Expected effect:
 
 - Opening the admin dashboard no longer downloads every admin tool at once.
 - Teachers/supervisors/admins still get the same tabs and behavior, but inactive sections wait until selected.
+
+## Vercel Cache Headers - 2026-05-12
+
+Closed a production deployment speed issue:
+
+- The old `vercel.json` used `Cache-Control: no-store` for every route, including hashed Vite assets.
+- That forced browsers to redownload JavaScript, CSS, fonts, and images on repeat visits.
+- Hashed assets now use `public, max-age=31536000, immutable`.
+- The SPA HTML shell now uses `no-cache, max-age=0, must-revalidate` so users can still receive new deployments.
+- Added `npm run smoke:deployment-cache` to prevent this regression.
+
+Expected effect:
+
+- First visit still depends on remaining large chunks and Render API wake-up.
+- Repeat visits should be faster because Vercel/browser caching can finally reuse immutable assets.

@@ -24,6 +24,8 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Added a verified payment webhook foundation at `POST /api/payments/webhooks/payment`: it requires an HMAC signature, rejects mismatched amount/currency, stores gateway event/transaction data, prevents duplicate approval, and unlocks access only after the trusted gateway event is accepted.
 - Polished the locked-content package choice flow: when several packages can unlock the same item, the student sees a wider comparison-style package picker instead of a cramped vertical list.
 - Added a lightweight paid-content intro before payment methods so students first see a clear locked-content message and suitable package choices, then continue to payment details only if they choose.
+- Fixed Vercel cache policy: hashed production assets now use long immutable caching, while the HTML shell only revalidates. This removes the previous `no-store` rule that forced browsers to redownload every JavaScript/CSS asset on every visit.
+- Added `smoke:deployment-cache` so production cache headers cannot silently regress to a slow no-store configuration.
 
 ## Still Required Before Large Launch
 

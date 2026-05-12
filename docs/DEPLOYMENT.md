@@ -63,6 +63,20 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
 
 Set `VITE_API_URL` for both Production and Preview environments if preview deployments should talk to the same Render backend.
 
+### Vercel Cache Policy
+
+The frontend is a Vite SPA, so Vercel must not apply `no-store` to every file. The current `vercel.json` keeps the HTML shell fresh while allowing hashed assets to be cached:
+
+- `/assets/(.*)`: long immutable cache for built JS/CSS chunks and generated assets.
+- `/(.*).(js|css|woff|woff2|ttf|png|jpg|jpeg|webp|svg|ico)`: long immutable cache for static hashed files.
+- `/(.*)`: `no-cache` for the SPA shell so new deployments are still discovered.
+
+Run this before deployment if cache headers are edited:
+
+```bash
+npm run smoke:deployment-cache
+```
+
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.
 2.  Create a Database User.

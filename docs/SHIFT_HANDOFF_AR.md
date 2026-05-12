@@ -168,3 +168,10 @@
 - Production build result: the admin dashboard shell is now about 51 kB before gzip instead of loading the previous large admin bundle up front.
 - Important: this did not merge training/tests or change the student journey; it only changes when admin code downloads.
 - Guard: `npm run smoke:performance` checks that heavy admin managers are not statically reintroduced.
+
+## Vercel Cache Sprint - 2026-05-12
+- Closed the production cache-header fix in `vercel.json`.
+- Do not restore the old global `no-store`; it made repeat visits redownload built assets and was one cause of Vercel slowness.
+- Hashed assets now use one-year immutable caching, while the SPA HTML shell uses revalidation so new deployments still appear.
+- Guard: `npm run smoke:deployment-cache`.
+- Scope: deployment/performance only. No student, parent, admin, quiz, package, payment, training, or foundation logic changed.
