@@ -2,7 +2,8 @@ import { api } from "./api";
 import { AccessCode, AnnouncementAd, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
 
 const USE_REAL_API =
-  (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== "false";
+  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.PROD === true ||
+  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_USE_REAL_API !== "false";
 
 const FALLBACK_THUMBNAIL = "https://picsum.photos/seed/course-fallback/400/250";
 

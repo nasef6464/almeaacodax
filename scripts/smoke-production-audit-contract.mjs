@@ -10,6 +10,14 @@ const checks = [
     ok: () => /DEV_LOCAL_ADMIN_BYPASS=false/.test(read("server/.env.example")),
   },
   {
+    name: "local admin bypass is disabled in production even if env is misconfigured",
+    ok: () => /env\.DEV_LOCAL_ADMIN_BYPASS && env\.NODE_ENV !== "production" && isStrictLocalRequest\(req\)/.test(read("server/src/middleware/auth.ts")),
+  },
+  {
+    name: "legacy Firebase sync is development-only",
+    ok: () => /import\.meta\.env\.DEV && import\.meta\.env\.VITE_USE_REAL_API === 'false'/.test(read("App.tsx")),
+  },
+  {
     name: "admin audit model exists",
     ok: () => /AdminAuditLogModel/.test(read("server/src/models/AdminAuditLog.ts")),
   },

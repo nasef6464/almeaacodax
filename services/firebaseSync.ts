@@ -7,12 +7,12 @@ import { courses as mockCourses, currentUser } from './mockData';
 import { Role } from '../types';
 
 export const startFirebaseSync = () => {
-    const useRealApi =
-      (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_USE_REAL_API !== 'false';
+    const env = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
+    const allowLegacyFirebaseSync = env?.DEV === true && env?.VITE_USE_REAL_API === 'false';
 
     // When the platform is running against the real backend, Firebase listeners
     // become a second source of truth and can overwrite newer Mongo-backed data.
-    if (useRealApi) {
+    if (!allowLegacyFirebaseSync) {
       return () => undefined;
     }
 

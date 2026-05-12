@@ -235,3 +235,9 @@
 - Added route-scoped body limits: auth 100kb, quiz/payment/AI 1mb, general API 5mb.
 - Production 5xx errors now return a safe generic message with a request ID.
 - Added guard: `npm run smoke:api-security`.
+
+## Runtime Source-Of-Truth Sprint - 2026-05-12
+- Production frontend/runtime now always uses the real API path even if `VITE_USE_REAL_API=false` is accidentally set.
+- Legacy Firebase sync is limited to local development only.
+- Server local-admin bypass now refuses to run when `NODE_ENV=production`, even if `DEV_LOCAL_ADMIN_BYPASS=true` is accidentally set.
+- Added guard: `npm run smoke:runtime-source`.

@@ -9,6 +9,8 @@
 - Paid/free visibility is controlled from learning-space placement settings.
 - Foundation topic paid/free visibility is controlled by the topic itself.
 - Sensitive admin and blocked access events must be written to admin audit logs.
+- Legacy Firebase sync is development-only and cannot become a production source of truth.
+- Local admin bypass is blocked when `NODE_ENV=production`, even if the bypass env flag is accidentally enabled.
 
 ## Backend Middleware
 

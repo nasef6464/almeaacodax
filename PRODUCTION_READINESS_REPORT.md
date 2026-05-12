@@ -35,6 +35,7 @@ The platform is an advanced MVP. It is usable for controlled pilots, but broad p
 - Auth Frontend Recovery Sprint - 2026-05-12: added student-facing forgot-password, reset-password, and verify-email screens, linked password recovery from the login modal, and added `smoke:auth-frontend`.
 - Auth Login Security Sprint - 2026-05-12: added password-strength enforcement, failed-login counters, temporary account lock after repeated failed attempts, reset-on-success behavior, frontend guidance, and `smoke:auth-login-security`.
 - API Surface Hardening Sprint - 2026-05-12: tightened production CORS configuration, added request IDs to responses/logs/errors, added route-scoped body limits, hid production 5xx details, and added `smoke:api-security`.
+- Runtime Source-Of-Truth Sprint - 2026-05-12: forced production frontend/runtime paths to use the real Mongo-backed API, limited legacy Firebase sync to local development only, blocked local admin bypass in production, and added `smoke:runtime-source`.
 
 ## Still Required Before Large Launch
 

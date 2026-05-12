@@ -80,9 +80,9 @@ const App: React.FC = () => {
   useEffect(() => installGlobalClientTelemetry(), []);
 
   useEffect(() => {
-    const useRealApi = import.meta.env.VITE_USE_REAL_API !== 'false';
+    const allowLegacyFirebaseSync = import.meta.env.DEV && import.meta.env.VITE_USE_REAL_API === 'false';
 
-    if (useRealApi) {
+    if (!allowLegacyFirebaseSync) {
       return;
     }
 
@@ -113,7 +113,7 @@ const App: React.FC = () => {
         // If the backend is unreachable, avoid hydrating with empty arrays
         // (adapter falls back to empty on network errors) which would make
         // locally persisted admin edits "disappear" after refresh.
-        const useRealApi = import.meta.env.VITE_USE_REAL_API !== 'false';
+        const useRealApi = import.meta.env.PROD || import.meta.env.VITE_USE_REAL_API !== 'false';
         if (useRealApi) {
           try {
             await api.health();

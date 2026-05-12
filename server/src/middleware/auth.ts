@@ -45,7 +45,7 @@ function isStrictLocalRequest(req: Request) {
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  if (env.DEV_LOCAL_ADMIN_BYPASS && isStrictLocalRequest(req)) {
+  if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",
       email: env.ADMIN_EMAIL,
@@ -67,7 +67,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 }
 
 export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
-  if (env.DEV_LOCAL_ADMIN_BYPASS && isStrictLocalRequest(req)) {
+  if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",
       email: env.ADMIN_EMAIL,
