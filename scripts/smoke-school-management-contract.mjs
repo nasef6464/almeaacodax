@@ -46,6 +46,14 @@ check("frontend uses server relation workflow and supports one student add", () 
   assertIncludes(files.schools, "handleAddSingleStudent");
 });
 
+check("school management has launch readiness command center", () => {
+  assertIncludes(files.schools, "readinessStatusLabel");
+  assertIncludes(files.schools, "readinessNextStep");
+  assertIncludes(files.schools, "launchActionCards");
+  assertIncludes(files.schools, "downloadSchoolGapReport");
+  assertIncludes(files.schools, "readiness-gaps.xlsx");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 

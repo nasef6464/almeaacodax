@@ -1031,6 +1031,110 @@ export const SchoolsManager: React.FC = () => {
                 ? 'يوجد طلاب بلا ولي أمر مرتبط، راجع تبويب الربط والمتابعة قبل تسليم الحسابات.'
                 : '',
         ].filter(Boolean);
+        const readinessStatusLabel = readinessScore === readinessChecks.length
+            ? 'جاهزة للتسليم'
+            : readinessScore >= 2
+                ? 'قريبة من التسليم'
+                : 'تحتاج تجهيز';
+        const readinessNextStep = operationalWarnings[0] || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
+        const launchActionCards = [
+            {
+                title: 'الفصول والطلاب',
+                description: studentsWithoutClass.length > 0
+                    ? `${studentsWithoutClass.length} طالب يحتاج تحديد فصل`
+                    : `${schoolClasses.length} فصل و${schoolStudents.length} طالب داخل المدرسة`,
+                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
+                isReady: schoolClasses.length > 0 && studentsWithoutClass.length === 0,
+                onClick: () => setActiveTab('overview'),
+            },
+            {
+                title: 'المشرفون والمتابعة',
+                description: schoolSupervisors.length > 0
+                    ? `${schoolSupervisors.length} مشرف/معلم مرتبط بالمدرسة`
+                    : 'اربط مشرفًا أو مدير مدرسة قبل التسليم',
+                buttonLabel: 'ربط المشرفين',
+                isReady: schoolSupervisors.length > 0,
+                onClick: () => setActiveTab('relations'),
+            },
+            {
+                title: 'الوصول والباقات',
+                description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
+                    ? `${activeSchoolPackages.length} باقة نشطة و${activeSchoolCodes.length} كود صالح`
+                    : 'فعّل باقة وولّد كودًا صالحًا للطلاب',
+                buttonLabel: 'إدارة الباقات',
+                isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
+                onClick: () => setActiveTab('packages'),
+            },
+            {
+                title: 'التقرير التنفيذي',
+                description: schoolReport
+                    ? `${schoolReport.metrics.activeStudents} طالب نشط ومتوسط ${schoolReport.metrics.averageScore}%`
+                    : 'حمّل تقرير الأداء عند بدء ظهور نتائج الطلاب',
+                buttonLabel: 'تقارير الأداء',
+                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
+                onClick: () => setActiveTab('reports'),
+            },
+        ];
+        const downloadSchoolGapReport = () => {
+            createWorkbookDownload(`${selectedSchool.name}-readiness-gaps.xlsx`, [
+                {
+                    name: 'launch-summary',
+                    rows: [
+                        ['البند', 'القيمة'],
+                        ['اسم المدرسة', selectedSchool.name],
+                        ['حالة الجاهزية', readinessStatusLabel],
+                        ['درجة الجاهزية', `${readinessScore}/${readinessChecks.length}`],
+                        ['الخطوة التالية', readinessNextStep],
+                        ['طلاب بلا فصل', studentsWithoutClass.length],
+                        ['طلاب بلا ولي أمر', studentsWithoutParent.length],
+                        ['مشرفون بلا فصل محدد', supervisorsWithoutClass.length],
+                    ],
+                },
+                {
+                    name: 'warnings',
+                    rows: [
+                        ['الملاحظة'],
+                        ...(operationalWarnings.length ? operationalWarnings : ['لا توجد ملاحظات تشغيلية حرجة.']).map((warning) => [warning]),
+                    ],
+                },
+                {
+                    name: 'students-without-class',
+                    rows: [
+                        ['الطالب', 'البريد', 'الحالة'],
+                        ...studentsWithoutClass.map((student) => [
+                            student.name,
+                            student.email || '',
+                            student.isActive === false ? 'موقوف' : 'نشط',
+                        ]),
+                    ],
+                },
+                {
+                    name: 'students-without-parent',
+                    rows: [
+                        ['الطالب', 'البريد', 'الفصل'],
+                        ...studentsWithoutParent.map((student) => [
+                            student.name,
+                            student.email || '',
+                            schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id))?.name || 'بدون فصل',
+                        ]),
+                    ],
+                },
+                {
+                    name: 'supervisors',
+                    rows: [
+                        ['الاسم', 'البريد', 'الدور', 'النطاق'],
+                        ...schoolSupervisors.map((currentUser) => [
+                            currentUser.name,
+                            currentUser.email || '',
+                            currentUser.role === Role.TEACHER ? 'معلم' : 'مشرف',
+                            (currentUser.groupIds || [])
+                                .map((groupId) => groups.find((group) => group.id === groupId)?.name || groupId)
+                                .join(' | ') || selectedSchool.name,
+                        ]),
+                    ],
+                },
+            ]);
+        };
         const downloadSchoolHandover = () => {
             createWorkbookDownload(`${selectedSchool.name}-handover.xlsx`, [
                 {
@@ -1849,15 +1953,34 @@ export const SchoolsManager: React.FC = () => {
                             <h2 className="text-lg font-bold text-gray-900">جاهزية المدرسة للتشغيل</h2>
                             <p className="text-sm text-gray-500 mt-1">فحص سريع قبل تسليم المدرسة للطلاب والمشرفين.</p>
                         </div>
-                        <span className={`px-4 py-2 rounded-full text-sm font-bold ${
-                            readinessScore === readinessChecks.length
-                                ? 'bg-emerald-100 text-emerald-700'
-                                : readinessScore >= 2
-                                    ? 'bg-amber-100 text-amber-700'
-                                    : 'bg-red-100 text-red-700'
-                        }`}>
-                            {readinessScore}/{readinessChecks.length} جاهز
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={downloadSchoolGapReport}
+                                className="inline-flex items-center gap-2 rounded-xl bg-gray-50 px-4 py-2 text-xs font-black text-gray-700 transition-colors hover:bg-gray-100"
+                            >
+                                <FileSpreadsheet size={15} />
+                                ملف النواقص
+                            </button>
+                            <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                                readinessScore === readinessChecks.length
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : readinessScore >= 2
+                                        ? 'bg-amber-100 text-amber-700'
+                                        : 'bg-red-100 text-red-700'
+                            }`}>
+                                {readinessScore}/{readinessChecks.length} جاهز
+                            </span>
+                        </div>
+                    </div>
+                    <div className="mb-4 rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <p className="text-xs font-black text-gray-500">حالة التسليم</p>
+                                <p className="mt-1 text-lg font-black text-gray-900">{readinessStatusLabel}</p>
+                            </div>
+                            <p className="text-sm font-bold leading-7 text-gray-600 md:max-w-2xl">{readinessNextStep}</p>
+                        </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                         {readinessChecks.map((check) => (
@@ -1874,6 +1997,28 @@ export const SchoolsManager: React.FC = () => {
                                     <p className="font-bold text-gray-900 text-sm">{check.label}</p>
                                 </div>
                                 <p className={`text-xs ${check.isReady ? 'text-emerald-700' : 'text-amber-700'}`}>{check.hint}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-4 grid gap-3 lg:grid-cols-4">
+                        {launchActionCards.map((card) => (
+                            <div key={card.title} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                                <div className="mb-3 flex items-center justify-between gap-2">
+                                    <p className="text-sm font-black text-gray-900">{card.title}</p>
+                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
+                                        card.isReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                                    }`}>
+                                        {card.isReady ? 'جاهز' : 'استكمال'}
+                                    </span>
+                                </div>
+                                <p className="min-h-[42px] text-xs leading-6 text-gray-500">{card.description}</p>
+                                <button
+                                    type="button"
+                                    onClick={card.onClick}
+                                    className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-amber-600"
+                                >
+                                    {card.buttonLabel}
+                                </button>
                             </div>
                         ))}
                     </div>
