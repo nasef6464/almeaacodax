@@ -554,7 +554,7 @@ export const GenericPathPage: React.FC = () => {
                                 >
                                     {row.isOpen ? <CheckCircle2 size={14} /> : <Lock size={14} />}
                                     {row.label}
-                                    <span className="font-bold opacity-75">{row.isOpen ? 'مفتوح' : 'يحتاج باقة'}</span>
+                                    <span className="font-bold opacity-75">{row.isOpen ? 'مفتوح' : row.type === 'courses' ? 'يحتاج تفعيل' : 'يحتاج باقة'}</span>
                                 </span>
                             ))}
                         </div>
@@ -573,7 +573,7 @@ export const GenericPathPage: React.FC = () => {
                             className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-amber-100 transition hover:bg-amber-600"
                         >
                             <CreditCard size={18} />
-                            فتح المحتوى المقفول
+                            {lockedRows.some((row) => row.type === 'courses') ? 'عرض الباقات المناسبة' : 'فتح المحتوى المقفول'}
                         </button>
                     ) : (
                         <div className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700">
