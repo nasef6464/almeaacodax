@@ -145,6 +145,13 @@ assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getIniti
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
 assertIncludes('App.tsx', 'window.__ALMEAA_PERF_DEBUG__');
 assertIncludes('services/api.ts', '[almeaa:api]');
+assertIncludes('services/api.ts', 'const requestCached = async');
+assertIncludes('services/api.ts', 'const getPublicCacheStorage = ()');
+assertIncludes('services/api.ts', 'globalThis.sessionStorage');
+assertIncludes('services/api.ts', 'taxonomy-bootstrap');
+assertIncludes('services/api.ts', 'content-bootstrap');
+assertIncludes('services/api.ts', 'homepage-settings');
+assertIncludes('services/api.ts', 'announcement-ads');
 assertIncludes('components/PlatformFontBootstrap.tsx', 'requestIdle(() =>');
 assertIncludes('App.tsx', 'const loadPublicAnnouncementAds = async () => {');
 assertIncludes('App.tsx', 'api.getPublicAnnouncementAds()');

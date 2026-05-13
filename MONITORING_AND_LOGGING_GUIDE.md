@@ -7,6 +7,16 @@
 - This reduces Render cold-start wait time for real users while still logging maintenance failures for operators.
 - MongoDB remains a hard dependency before listening; Redis remains reported through `/api/health` and `/api/health/ready`.
 
+## 2026-05-13 Public Bootstrap Browser Cache
+
+- The frontend now keeps a short session cache for public bootstrap calls only:
+  - taxonomy bootstrap,
+  - content bootstrap,
+  - homepage settings,
+  - public announcement ads.
+- Cached data is returned immediately on repeat visits, then refreshed in the background.
+- Authenticated/admin reads still use fresh server requests where required.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.

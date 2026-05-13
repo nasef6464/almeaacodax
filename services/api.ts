@@ -26,7 +26,19 @@ interface PaginationOptions {
   limit?: number;
 }
 
+const PUBLIC_CACHE_PREFIX = "almeaa:public-api:";
+const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
+const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
+
 const AUTH_STORAGE_KEY = "the-hundred-auth-session";
+
+const getPublicCacheStorage = (): Storage | null => {
+  try {
+    return typeof globalThis !== "undefined" && "sessionStorage" in globalThis ? globalThis.sessionStorage : null;
+  } catch {
+    return null;
+  }
+};
 
 const getStoredSessionToken = (): string | null => {
   try {
@@ -97,6 +109,58 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   return JSON.parse(raw) as T;
 }
+
+const readPublicCache = <T>(key: string): T | null => {
+  const storage = getPublicCacheStorage();
+  if (!storage) {
+    return null;
+  }
+
+  try {
+    const raw = storage.getItem(`${PUBLIC_CACHE_PREFIX}${key}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { expiresAt?: number; value?: T };
+    if (!parsed.expiresAt || parsed.expiresAt < Date.now()) {
+      storage.removeItem(`${PUBLIC_CACHE_PREFIX}${key}`);
+      return null;
+    }
+    return parsed.value ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const writePublicCache = <T>(key: string, value: T, ttlMs: number) => {
+  const storage = getPublicCacheStorage();
+  if (!storage) {
+    return;
+  }
+
+  try {
+    storage.setItem(
+      `${PUBLIC_CACHE_PREFIX}${key}`,
+      JSON.stringify({ expiresAt: Date.now() + ttlMs, value }),
+    );
+  } catch {
+    // Cache is an optimization only; storage quota/private mode should never break the app.
+  }
+};
+
+const requestCached = async <T>(path: string, cacheKey: string, ttlMs = PUBLIC_CACHE_TTL_MS): Promise<T> => {
+  const cached = readPublicCache<T>(cacheKey);
+  if (cached) {
+    void request<T>(path)
+      .then((fresh) => writePublicCache(cacheKey, fresh, ttlMs))
+      .catch((error) => {
+        console.warn(`Public cache refresh failed for ${path}:`, error);
+      });
+    return cached;
+  }
+
+  const fresh = await request<T>(path);
+  writePublicCache(cacheKey, fresh, ttlMs);
+  return fresh;
+};
 
 const extractList = <T = unknown>(payload: unknown, key: string): T[] => {
   if (Array.isArray(payload)) {
@@ -294,7 +358,11 @@ export const api = {
       token,
     }),
   getTaxonomyBootstrap: () =>
-    request<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>("/taxonomy/bootstrap"),
+    requestCached<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>(
+      "/taxonomy/bootstrap",
+      "taxonomy-bootstrap",
+      BOOTSTRAP_CACHE_TTL_MS,
+    ),
   createPath: (payload: unknown, token?: string | null) =>
     request<unknown>("/taxonomy/paths", {
       method: "POST",
@@ -381,7 +449,7 @@ export const api = {
       token,
     }),
   getContentBootstrap: () =>
-    request<{
+    requestCached<{
       topics: unknown[];
       lessons: unknown[];
       libraryItems: unknown[];
@@ -390,16 +458,16 @@ export const api = {
       accessCodes: unknown[];
       announcementAds: unknown[];
       studyPlans: unknown[];
-    }>("/content/bootstrap"),
+    }>("/content/bootstrap", "content-bootstrap", BOOTSTRAP_CACHE_TTL_MS),
   getHomepageSettings: (token?: string | null) =>
-    request<unknown>("/content/homepage-settings", {
-      token,
-      cache: "no-store",
-    }),
+    token
+      ? request<unknown>("/content/homepage-settings", {
+          token,
+          cache: "no-store",
+        })
+      : requestCached<unknown>("/content/homepage-settings", "homepage-settings", PUBLIC_CACHE_TTL_MS),
   getPublicAnnouncementAds: () =>
-    request<{ announcementAds: unknown[] }>("/content/announcement-ads", {
-      cache: "no-store",
-    }),
+    requestCached<{ announcementAds: unknown[] }>("/content/announcement-ads", "announcement-ads", PUBLIC_CACHE_TTL_MS),
   updateHomepageSettings: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/homepage-settings", {
       method: "PATCH",
