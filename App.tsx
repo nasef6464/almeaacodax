@@ -62,6 +62,7 @@ const prefetchCommonRouteModules = (role?: string | null) => {
 };
 
 const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
+  '/category',
   '/quiz',
   '/results',
 ];
