@@ -78,6 +78,14 @@ const hasPlayableLessonMedia = (lesson: any) =>
   );
 
 const OPERATIONS_STATUS_CACHE_TTL_MS = 30 * 1000;
+const OPERATIONS_STATUS_PATH_SELECT = "_id id name isActive";
+const OPERATIONS_STATUS_SUBJECT_SELECT = "_id id name pathId";
+const OPERATIONS_STATUS_TOPIC_SELECT = "_id id title name pathId subjectId lessonIds quizIds showOnPlatform";
+const OPERATIONS_STATUS_LESSON_SELECT =
+  "_id id title name pathId subjectId showOnPlatform isPublished approvalStatus videoUrl fileUrl content recordingUrl";
+const OPERATIONS_STATUS_QUIZ_SELECT = "_id id title name pathId subjectId showOnPlatform isPublished approvalStatus";
+const OPERATIONS_STATUS_COURSE_SELECT = "_id id title name pathId category subjectId subject showOnPlatform isPublished approvalStatus";
+const OPERATIONS_STATUS_LIBRARY_SELECT = "_id id title name pathId subjectId showOnPlatform isPublished approvalStatus";
 let cachedOperationsStatus: { expiresAt: number; payload: unknown } | null = null;
 let pendingOperationsStatus: Promise<unknown> | null = null;
 
@@ -96,49 +104,89 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
 
     const loadStatusPayload = async () => {
       const [paths, subjects, topics, lessons, quizzes, courses, libraryItems] = await Promise.all([
-        PathModel.find().lean(),
-        SubjectModel.find().lean(),
-        TopicModel.find().lean(),
-        LessonModel.find().lean(),
-        QuizModel.find().lean(),
-        CourseModel.find().lean(),
-        LibraryItemModel.find().lean(),
+        PathModel.find().select(OPERATIONS_STATUS_PATH_SELECT).lean(),
+        SubjectModel.find().select(OPERATIONS_STATUS_SUBJECT_SELECT).lean(),
+        TopicModel.find().select(OPERATIONS_STATUS_TOPIC_SELECT).lean(),
+        LessonModel.find().select(OPERATIONS_STATUS_LESSON_SELECT).lean(),
+        QuizModel.find().select(OPERATIONS_STATUS_QUIZ_SELECT).lean(),
+        CourseModel.find().select(OPERATIONS_STATUS_COURSE_SELECT).lean(),
+        LibraryItemModel.find().select(OPERATIONS_STATUS_LIBRARY_SELECT).lean(),
       ]);
 
-    const activePathIds = new Set(paths.filter((path: any) => path.isActive !== false).map(idOf));
-    const visibleSubjects = subjects.filter((subject: any) => activePathIds.has(subject.pathId));
-    const visibleTopics = topics.filter((topic: any) => topic.showOnPlatform !== false && activePathIds.has(topic.pathId));
-    const visibleLessons = lessons.filter((lesson: any) => isVisibleContent(lesson) && activePathIds.has(lesson.pathId));
-    const visibleQuizzes = quizzes.filter((quiz: any) => isVisibleContent(quiz) && activePathIds.has(quiz.pathId));
-    const visibleCourses = courses.filter((course: any) => isVisibleContent(course) && activePathIds.has(course.pathId || course.category));
-    const visibleLibraryItems = libraryItems.filter((item: any) => isVisibleContent(item) && activePathIds.has(item.pathId));
+      const activePathIds = new Set(paths.filter((path: any) => path.isActive !== false).map(idOf));
+      const visibleSubjects = subjects.filter((subject: any) => activePathIds.has(subject.pathId));
+      const visibleTopics = topics.filter((topic: any) => topic.showOnPlatform !== false && activePathIds.has(topic.pathId));
+      const visibleLessons = lessons.filter((lesson: any) => isVisibleContent(lesson) && activePathIds.has(lesson.pathId));
+      const visibleQuizzes = quizzes.filter((quiz: any) => isVisibleContent(quiz) && activePathIds.has(quiz.pathId));
+      const visibleCourses = courses.filter((course: any) => isVisibleContent(course) && activePathIds.has(course.pathId || course.category));
+      const visibleLibraryItems = libraryItems.filter((item: any) => isVisibleContent(item) && activePathIds.has(item.pathId));
 
-    const pathById = new Map(paths.map((path: any) => [idOf(path), path]));
-    const visibleSubjectIds = new Set(visibleSubjects.map(idOf));
-    const lessonIds = new Set(visibleLessons.map(idOf));
-    const quizIds = new Set(visibleQuizzes.map(idOf));
-    const lessonById = new Map(visibleLessons.map((lesson: any) => [idOf(lesson), lesson]));
+      const pathById = new Map(paths.map((path: any) => [idOf(path), path]));
+      const visibleSubjectIds = new Set(visibleSubjects.map(idOf));
+      const lessonIds = new Set(visibleLessons.map(idOf));
+      const quizIds = new Set(visibleQuizzes.map(idOf));
+      const lessonById = new Map(visibleLessons.map((lesson: any) => [idOf(lesson), lesson]));
 
-    const spaces = visibleSubjects.map((subject: any) => {
-      const subjectId = idOf(subject);
-      const pathId = subject.pathId;
-      const spaceTopics = visibleTopics.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
-      const topicCount = spaceTopics.length;
-      const lessonCount = visibleLessons.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
-      const quizCount = visibleQuizzes.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
-      const courseCount = visibleCourses.filter(
-        (item: any) => (item.pathId || item.category) === pathId && (item.subjectId || item.subject) === subjectId,
-      ).length;
-      const libraryCount = visibleLibraryItems.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
-      const missingLessonRefs = spaceTopics.reduce(
+      const spaces = visibleSubjects.map((subject: any) => {
+        const subjectId = idOf(subject);
+        const pathId = subject.pathId;
+        const spaceTopics = visibleTopics.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
+        const topicCount = spaceTopics.length;
+        const lessonCount = visibleLessons.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
+        const quizCount = visibleQuizzes.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
+        const courseCount = visibleCourses.filter(
+          (item: any) => (item.pathId || item.category) === pathId && (item.subjectId || item.subject) === subjectId,
+        ).length;
+        const libraryCount = visibleLibraryItems.filter((item: any) => item.pathId === pathId && item.subjectId === subjectId).length;
+        const missingLessonRefs = spaceTopics.reduce(
+          (total: number, topic: any) => total + (topic.lessonIds || []).filter((lessonId: string) => !lessonIds.has(String(lessonId))).length,
+          0,
+        );
+        const missingQuizRefs = spaceTopics.reduce(
+          (total: number, topic: any) => total + (topic.quizIds || []).filter((quizId: string) => !quizIds.has(String(quizId))).length,
+          0,
+        );
+        const unplayableLinkedLessons = spaceTopics.reduce(
+          (total: number, topic: any) =>
+            total +
+            (topic.lessonIds || []).filter((lessonId: string) => {
+              const lesson = lessonById.get(String(lessonId));
+              return lesson && !hasPlayableLessonMedia(lesson);
+            }).length,
+          0,
+        );
+        const issueCount = missingLessonRefs + missingQuizRefs + unplayableLinkedLessons;
+        const total = topicCount + lessonCount + quizCount + courseCount + libraryCount;
+
+        return {
+          pathId,
+          pathName: pathById.get(pathId)?.name || pathId,
+          subjectId,
+          subjectName: subject.name,
+          total,
+          topics: topicCount,
+          lessons: lessonCount,
+          quizzes: quizCount,
+          courses: courseCount,
+          library: libraryCount,
+          issueCount,
+          missingLessonRefs,
+          missingQuizRefs,
+          unplayableLinkedLessons,
+          status: total === 0 ? "empty" : issueCount > 0 ? "needs_attention" : "ready",
+        };
+      });
+
+      const missingTopicSubjects = visibleTopics.filter((topic: any) => topic.subjectId && !visibleSubjectIds.has(topic.subjectId)).length;
+      const missingLessonRefs = visibleTopics.reduce(
         (total: number, topic: any) => total + (topic.lessonIds || []).filter((lessonId: string) => !lessonIds.has(String(lessonId))).length,
         0,
       );
-      const missingQuizRefs = spaceTopics.reduce(
+      const missingQuizRefs = visibleTopics.reduce(
         (total: number, topic: any) => total + (topic.quizIds || []).filter((quizId: string) => !quizIds.has(String(quizId))).length,
         0,
       );
-      const unplayableLinkedLessons = spaceTopics.reduce(
+      const unplayableLinkedLessons = visibleTopics.reduce(
         (total: number, topic: any) =>
           total +
           (topic.lessonIds || []).filter((lessonId: string) => {
@@ -147,99 +195,59 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
           }).length,
         0,
       );
-      const issueCount = missingLessonRefs + missingQuizRefs + unplayableLinkedLessons;
-      const total = topicCount + lessonCount + quizCount + courseCount + libraryCount;
+
+      const emptySpaces = spaces.filter((space) => space.total === 0).length;
+      const usableSpaces = spaces.filter((space) => space.total > 0).length;
+      const issueCount = missingTopicSubjects + missingLessonRefs + missingQuizRefs + unplayableLinkedLessons + emptySpaces;
+      const readinessScore = spaces.length
+        ? Math.max(0, Math.min(100, Math.round(((spaces.length - emptySpaces) / spaces.length) * 70 + (issueCount === 0 ? 30 : 0))))
+        : 0;
 
       return {
-        pathId,
-        pathName: pathById.get(pathId)?.name || pathId,
-        subjectId,
-        subjectName: subject.name,
-        total,
-        topics: topicCount,
-        lessons: lessonCount,
-        quizzes: quizCount,
-        courses: courseCount,
-        library: libraryCount,
-        issueCount,
-        missingLessonRefs,
-        missingQuizRefs,
-        unplayableLinkedLessons,
-        status: total === 0 ? "empty" : issueCount > 0 ? "needs_attention" : "ready",
-      };
-    });
-
-    const missingTopicSubjects = visibleTopics.filter((topic: any) => topic.subjectId && !visibleSubjectIds.has(topic.subjectId)).length;
-    const missingLessonRefs = visibleTopics.reduce(
-      (total: number, topic: any) => total + (topic.lessonIds || []).filter((lessonId: string) => !lessonIds.has(String(lessonId))).length,
-      0,
-    );
-    const missingQuizRefs = visibleTopics.reduce(
-      (total: number, topic: any) => total + (topic.quizIds || []).filter((quizId: string) => !quizIds.has(String(quizId))).length,
-      0,
-    );
-    const unplayableLinkedLessons = visibleTopics.reduce(
-      (total: number, topic: any) =>
-        total +
-        (topic.lessonIds || []).filter((lessonId: string) => {
-          const lesson = lessonById.get(String(lessonId));
-          return lesson && !hasPlayableLessonMedia(lesson);
-        }).length,
-      0,
-    );
-
-    const emptySpaces = spaces.filter((space) => space.total === 0).length;
-    const usableSpaces = spaces.filter((space) => space.total > 0).length;
-    const issueCount = missingTopicSubjects + missingLessonRefs + missingQuizRefs + unplayableLinkedLessons + emptySpaces;
-    const readinessScore = spaces.length
-      ? Math.max(0, Math.min(100, Math.round(((spaces.length - emptySpaces) / spaces.length) * 70 + (issueCount === 0 ? 30 : 0))))
-      : 0;
-
-      return {
-      checkedAt: new Date().toISOString(),
-      database: {
-        status: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-        name: mongoose.connection.db?.databaseName || "unknown",
-      },
-      counts: {
-        paths: paths.length,
-        subjects: subjects.length,
-        topics: topics.length,
-        lessons: lessons.length,
-        quizzes: quizzes.length,
-        courses: courses.length,
-        libraryItems: libraryItems.length,
-      },
-      visible: {
-        paths: activePathIds.size,
-        subjects: visibleSubjects.length,
-        topics: visibleTopics.length,
-        lessons: visibleLessons.length,
-        quizzes: visibleQuizzes.length,
-        courses: visibleCourses.length,
-        libraryItems: visibleLibraryItems.length,
-      },
-      learningReadiness: {
-        score: readinessScore,
-        usableSpaces,
-        emptySpaces,
-        readySpaces: spaces.filter((space) => space.status === "ready").length,
-        spacesNeedingAttention: spaces.filter((space) => space.status === "needs_attention").length,
-        spaces: spaces.slice(0, 12),
-      },
-      issues: {
-        missingTopicSubjects,
-        missingLessonRefs,
-        missingQuizRefs,
-        unplayableLinkedLessons,
-      },
-      deployment: {
-        api: "Render",
-        database: "MongoDB Atlas",
-        frontend: "Vercel",
-        nodeEnv: process.env.NODE_ENV || "development",
-        clientUrl: process.env.CLIENT_URL || "",
-      },
+        checkedAt: new Date().toISOString(),
+        database: {
+          status: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+          name: mongoose.connection.db?.databaseName || "unknown",
+        },
+        counts: {
+          paths: paths.length,
+          subjects: subjects.length,
+          topics: topics.length,
+          lessons: lessons.length,
+          quizzes: quizzes.length,
+          courses: courses.length,
+          libraryItems: libraryItems.length,
+        },
+        visible: {
+          paths: activePathIds.size,
+          subjects: visibleSubjects.length,
+          topics: visibleTopics.length,
+          lessons: visibleLessons.length,
+          quizzes: visibleQuizzes.length,
+          courses: visibleCourses.length,
+          libraryItems: visibleLibraryItems.length,
+        },
+        learningReadiness: {
+          score: readinessScore,
+          usableSpaces,
+          emptySpaces,
+          readySpaces: spaces.filter((space) => space.status === "ready").length,
+          spacesNeedingAttention: spaces.filter((space) => space.status === "needs_attention").length,
+          spaces: spaces.slice(0, 12),
+        },
+        issues: {
+          missingTopicSubjects,
+          missingLessonRefs,
+          missingQuizRefs,
+          unplayableLinkedLessons,
+        },
+        deployment: {
+          api: "Render",
+          database: "MongoDB Atlas",
+          frontend: "Vercel",
+          nodeEnv: process.env.NODE_ENV || "development",
+          clientUrl: process.env.CLIENT_URL || "",
+        },
       };
     };
 

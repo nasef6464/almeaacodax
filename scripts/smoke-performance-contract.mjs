@@ -154,6 +154,8 @@ assertIncludes('server/src/services/operationsAudit.ts', 'pendingOperationsAudit
 assertIncludes('server/src/routes/operations.routes.ts', 'OPERATIONS_STATUS_CACHE_TTL_MS');
 assertIncludes('server/src/routes/operations.routes.ts', 'cachedOperationsStatus');
 assertIncludes('server/src/routes/operations.routes.ts', 'X-Operations-Status-Cache');
+assertIncludes('server/src/routes/operations.routes.ts', 'OPERATIONS_STATUS_LESSON_SELECT');
+assertIncludes('server/src/routes/operations.routes.ts', 'select(OPERATIONS_STATUS_LESSON_SELECT)');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath())');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');

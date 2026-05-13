@@ -41,6 +41,7 @@
 - `/api/operations/status` now uses a short 30-second cache and shares one pending status build between concurrent admin requests.
 - This endpoint scans learning inventory for admin readiness, so caching prevents repeated full inventory scans while an admin dashboard is opening.
 - The response includes `X-Operations-Status-Cache` with `hit`, `miss`, or `shared` to make behavior visible in diagnostics.
+- The status scan now uses MongoDB field projections so it does not load large lesson bodies or unused document fields into memory.
 
 ## Current Status
 
