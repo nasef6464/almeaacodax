@@ -40,6 +40,7 @@ check("rate limits use RedisStore when Redis is configured", () => {
   assertIncludes(files.rateLimiters, "globalRateLimiter");
   assertIncludes(files.rateLimiters, "authRateLimiter");
   assertIncludes(files.rateLimiters, "sensitiveActionRateLimiter");
+  assertIncludes(files.rateLimiters, "passOnStoreError: true");
   assertIncludes(files.app, "globalRateLimiter");
   assertIncludes(files.app, "authRateLimiter");
   assertIncludes(files.app, "sensitiveActionRateLimiter");

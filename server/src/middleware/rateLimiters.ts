@@ -30,6 +30,7 @@ export function createRateLimiter(options: RateLimitOptions) {
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: resolveRequestKey,
+    passOnStoreError: true,
     ...(useRedis && redis
       ? {
           store: new RedisStore({

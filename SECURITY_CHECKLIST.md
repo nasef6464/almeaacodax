@@ -21,6 +21,7 @@
 - Request IDs are returned and logged for tracing support tickets and Render logs.
 - NoSQL operator/dotted-key sanitizer rejects unsafe keys in API request bodies and query strings before route handlers.
 - Global rate limiting enabled with Redis-backed distributed storage when `REDIS_URL` is configured.
+- Rate limiters use `passOnStoreError: true` so a temporary Redis outage is logged as an operational issue instead of turning student requests into 500 responses.
 - Auth, payment, AI, access-code, and quiz-submit routes have stricter limits through the shared limiter factory.
 - `requireRole` re-checks the current MongoDB user role and active state instead of trusting a stale JWT role.
 - Socket.IO can use `@socket.io/redis-adapter` when `REDIS_URL` is configured for multi-instance deployment.
