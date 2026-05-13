@@ -3,11 +3,14 @@ import {
     AlertTriangle,
     BookOpen,
     CheckCircle2,
+    Clipboard,
     Download,
     FileSpreadsheet,
     GraduationCap,
+    Mail,
     Printer,
     ShieldCheck,
+    Target,
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -208,6 +211,86 @@ export const SchoolPortalManager: React.FC = () => {
     const activeCodes = scope.codes.filter((code) => code.expiresAt > Date.now());
     const average = averageScore(scope.results);
     const schoolTitle = scope.schools.map((school) => school.name).join('، ') || 'نطاق الإشراف الحالي';
+    const primaryTargetGroupId = scope.classes[0]?.id || scope.schools[0]?.id || '';
+    const followUpEmails = watchList
+        .map((summary) => summary.student.email)
+        .filter(Boolean)
+        .slice(0, 40) as string[];
+    const followUpMessage = [
+        `تقرير متابعة ${schoolTitle}`,
+        '',
+        `عدد الطلاب داخل النطاق: ${scope.students.length}`,
+        `طلاب يحتاجون متابعة: ${watchList.length}`,
+        `متوسط الأداء: ${average}%`,
+        '',
+        'أولوية المتابعة:',
+        ...watchList.slice(0, 8).map((summary, index) => {
+            const reason = summary.results.length === 0
+                ? 'لم يبدأ القياس بعد'
+                : summary.weakSkills.map((skill) => skill.skill).join('، ') || `متوسط ${summary.average}%`;
+            return `${index + 1}. ${summary.student.name} - ${reason}`;
+        }),
+    ].join('\n');
+
+    const openTargetedQuiz = () => {
+        const params = new URLSearchParams({
+            tab: 'quizzes',
+            mode: 'central',
+            source: 'school-portal',
+        });
+        if (primaryTargetGroupId) params.set('targetGroupId', primaryTargetGroupId);
+        window.location.hash = `/admin-dashboard?${params.toString()}`;
+    };
+
+    const openReports = () => {
+        window.location.hash = '/reports';
+    };
+
+    const copyFollowUpMessage = async () => {
+        try {
+            await navigator.clipboard.writeText(followUpMessage);
+        } catch {
+            const textarea = document.createElement('textarea');
+            textarea.value = followUpMessage;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+        }
+    };
+
+    const openFollowUpEmail = () => {
+        const query = new URLSearchParams({
+            subject: `متابعة طلاب ${schoolTitle}`,
+            body: followUpMessage,
+        });
+        if (followUpEmails.length) {
+            query.set('bcc', followUpEmails.join(','));
+        }
+        window.location.href = `mailto:?${query.toString()}`;
+    };
+
+    const exportWatchList = () => {
+        createWorkbookDownload('school-follow-up-watchlist.xlsx', [
+            {
+                name: 'watchlist',
+                rows: [
+                    ['الطالب', 'البريد', 'الفصل', 'المحاولات', 'متوسط الأداء', 'سبب المتابعة', 'آخر اختبار'],
+                    ...watchList.map((summary) => [
+                        summary.student.name,
+                        summary.student.email || '',
+                        summary.classNames,
+                        summary.results.length,
+                        `${summary.average}%`,
+                        summary.results.length === 0
+                            ? 'لم يبدأ القياس بعد'
+                            : summary.weakSkills.map((skill) => `${skill.skill} (${skill.mastery}%)`).join(' | ') || 'متابعة أداء منخفض',
+                        summary.latest?.quizTitle || '',
+                    ]),
+                ],
+            },
+        ]);
+    };
 
     const exportPortalReport = () => {
         createWorkbookDownload('school-portal-supervisor-report.xlsx', [
@@ -379,6 +462,85 @@ export const SchoolPortalManager: React.FC = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                            <ShieldCheck size={14} />
+                            مركز قرارات المشرف
+                        </div>
+                        <h2 className="mt-3 text-lg font-black text-gray-900">ماذا أفعل الآن؟</h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                            أدوات سريعة للمتابعة اليومية: تقرير، اختبار موجه، رسالة، وتصدير قائمة الطلاب.
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+                        <button
+                            type="button"
+                            onClick={openTargetedQuiz}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700"
+                        >
+                            <Target size={15} />
+                            اختبار موجه
+                        </button>
+                        <button
+                            type="button"
+                            onClick={openReports}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+                        >
+                            <FileSpreadsheet size={15} />
+                            تقرير مفصل
+                        </button>
+                        <button
+                            type="button"
+                            onClick={exportWatchList}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-50 px-4 py-2.5 text-xs font-black text-amber-700 hover:bg-amber-100"
+                        >
+                            <Download size={15} />
+                            قائمة المتابعة
+                        </button>
+                        <button
+                            type="button"
+                            onClick={openFollowUpEmail}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-2.5 text-xs font-black text-blue-700 hover:bg-blue-100"
+                        >
+                            <Mail size={15} />
+                            مراسلة الطلاب
+                        </button>
+                        <button
+                            type="button"
+                            onClick={copyFollowUpMessage}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 py-2.5 text-xs font-black text-gray-700 hover:bg-gray-100"
+                        >
+                            <Clipboard size={15} />
+                            نسخ ملخص
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                        <div className="text-xs font-black text-gray-500">أولوية اليوم</div>
+                        <div className="mt-2 text-2xl font-black text-gray-900">{watchList.length.toLocaleString('ar-EG')}</div>
+                        <p className="mt-1 text-xs text-gray-500">طالب يحتاج متابعة أو قياس أولي.</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                        <div className="text-xs font-black text-gray-500">أفضل إجراء</div>
+                        <div className="mt-2 text-sm font-black text-gray-900">
+                            {watchList.length ? 'اختبار قصير ثم رسالة متابعة' : 'تصدير تقرير أسبوعي للمدرسة'}
+                        </div>
+                        <p className="mt-1 text-xs text-gray-500">مصمم ليخدم مدير المدرسة بدون زحمة.</p>
+                    </div>
+                    <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                        <div className="text-xs font-black text-gray-500">نطاق الاختبار التالي</div>
+                        <div className="mt-2 truncate text-sm font-black text-gray-900">
+                            {scope.classes[0]?.name || scope.schools[0]?.name || 'لم يحدد بعد'}
+                        </div>
+                        <p className="mt-1 text-xs text-gray-500">يمكن تغيير النطاق من مركز الاختبارات.</p>
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

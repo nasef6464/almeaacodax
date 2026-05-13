@@ -5,6 +5,7 @@ import { AnnouncementAd, Role, User } from '../types';
 
 const SESSION_DISMISSED_KEY = 'almeaa-dismissed-announcement-ads';
 const PERMANENT_DISMISSED_KEY = 'almeaa-dismissed-announcement-ads-once';
+export const ANNOUNCEMENT_AD_PREVIEW_EVENT = 'almeaa-announcement-ad-preview';
 
 const getDismissedIds = (storage: Storage, key: string) => {
   try {
@@ -69,12 +70,17 @@ export const AnnouncementAdsOverlay: React.FC = () => {
   const [index, setIndex] = useState(0);
   const [dismissedVersion, setDismissedVersion] = useState(0);
   const [canShowDelayed, setCanShowDelayed] = useState(false);
+  const [previewAdId, setPreviewAdId] = useState<string | null>(null);
 
   const visibleAds = useMemo(() => {
     return announcementAds
-      .filter((ad) => ad.id && !isDismissed(ad) && isLiveNow(ad) && matchesAudience(ad, user))
+      .filter((ad) => {
+        if (!ad.id) return false;
+        if (previewAdId === ad.id) return true;
+        return !isDismissed(ad) && isLiveNow(ad) && matchesAudience(ad, user);
+      })
       .sort((a, b) => a.priority - b.priority || b.createdAt - a.createdAt);
-  }, [announcementAds, dismissedVersion, user]);
+  }, [announcementAds, dismissedVersion, previewAdId, user]);
 
   const activeIndex = Math.min(index, Math.max(visibleAds.length - 1, 0));
   const activeAd = visibleAds[activeIndex];
@@ -83,22 +89,44 @@ export const AnnouncementAdsOverlay: React.FC = () => {
     setCanShowDelayed(false);
     if (!activeAd) return;
 
-    const delayMs = Math.max(0, Math.min(30, Number(activeAd.delaySeconds || 0))) * 1000;
+    const delayMs = previewAdId === activeAd.id ? 0 : Math.max(0, Math.min(30, Number(activeAd.delaySeconds || 0))) * 1000;
     const timer = window.setTimeout(() => setCanShowDelayed(true), delayMs);
     return () => window.clearTimeout(timer);
-  }, [activeAd?.id, activeAd?.delaySeconds]);
+  }, [activeAd?.id, activeAd?.delaySeconds, previewAdId]);
+
+  useEffect(() => {
+    const handlePreview = (event: Event) => {
+      const adId = (event as CustomEvent<{ id?: string }>).detail?.id;
+      if (!adId) return;
+      setClosed(false);
+      setPreviewAdId(adId);
+      setIndex(0);
+      setDismissedVersion((current) => current + 1);
+    };
+
+    window.addEventListener(ANNOUNCEMENT_AD_PREVIEW_EVENT, handlePreview);
+    return () => window.removeEventListener(ANNOUNCEMENT_AD_PREVIEW_EVENT, handlePreview);
+  }, []);
 
   if (closed || visibleAds.length === 0 || !activeAd || !canShowDelayed) {
     return null;
   }
 
   const closeOverlay = () => {
-    visibleAds.forEach((ad) => dismissIds([ad.id], ad.frequency));
+    if (!previewAdId) {
+      visibleAds.forEach((ad) => dismissIds([ad.id], ad.frequency));
+    }
+    setPreviewAdId(null);
     setClosed(true);
   };
 
   const skipActiveAd = () => {
-    dismissIds([activeAd.id], activeAd.frequency);
+    if (!previewAdId) {
+      dismissIds([activeAd.id], activeAd.frequency);
+    }
+    if (previewAdId === activeAd.id) {
+      setPreviewAdId(null);
+    }
     setIndex((current) => Math.min(current, Math.max(visibleAds.length - 2, 0)));
     setDismissedVersion((current) => current + 1);
   };

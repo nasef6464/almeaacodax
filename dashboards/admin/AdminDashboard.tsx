@@ -161,6 +161,19 @@ export const AdminDashboard: React.FC = () => {
     const [operationalStatus, setOperationalStatus] = useState<OperationalStatus | null>(null);
     const [operationalStatusError, setOperationalStatusError] = useState<string | null>(null);
 
+    useEffect(() => {
+        const syncRequestedTab = () => {
+            const requestedTab = getRequestedAdminTab();
+            if (requestedTab && requestedTab !== activeTab) {
+                setActiveTab(requestedTab);
+            }
+        };
+
+        window.addEventListener('hashchange', syncRequestedTab);
+        syncRequestedTab();
+        return () => window.removeEventListener('hashchange', syncRequestedTab);
+    }, [activeTab]);
+
     const loadAiStatus = async () => {
         if (user.role !== Role.ADMIN) {
             return;

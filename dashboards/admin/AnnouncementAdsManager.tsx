@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, ImagePlus, Megaphone, Plus, Trash2 } from 'lucide-react';
+import { ExternalLink, Eye, ImagePlus, Megaphone, Plus, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { AnnouncementAd, AnnouncementAudience, AnnouncementDisplayMode, AnnouncementFrequency, AnnouncementImageFit } from '../../types';
+import { ANNOUNCEMENT_AD_PREVIEW_EVENT } from '../../components/AnnouncementAdsOverlay';
 
 const MAX_AD_IMAGE_BYTES = 900 * 1024;
 
@@ -77,6 +78,12 @@ export const AnnouncementAdsManager: React.FC = () => {
     if (!selectedAd) return;
     updateAnnouncementAd(selectedAd.id, data);
     setFeedback('تم حفظ التعديل.');
+  };
+
+  const previewSelected = () => {
+    if (!selectedAd) return;
+    window.dispatchEvent(new CustomEvent(ANNOUNCEMENT_AD_PREVIEW_EVENT, { detail: { id: selectedAd.id } }));
+    setFeedback('تم فتح معاينة الإعلان على الموقع.');
   };
 
   const handleImageUpload = (file?: File) => {
@@ -313,6 +320,14 @@ export const AnnouncementAdsManager: React.FC = () => {
                   }`}
                 >
                   {selectedAd.isActive ? 'نشط ويظهر' : 'متوقف'}
+                </button>
+                <button
+                  type="button"
+                  onClick={previewSelected}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-indigo-50 px-5 py-2.5 text-sm font-black text-indigo-700 hover:bg-indigo-100"
+                >
+                  <Eye size={16} />
+                  معاينة على الموقع الآن
                 </button>
                 <button
                   type="button"
