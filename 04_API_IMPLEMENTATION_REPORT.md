@@ -97,6 +97,7 @@ The shared Phase 3 helpers are now used in the following API areas:
 | `GET /api/notifications/admin/deliveries` | `deliveries` | Admin-only |
 | `GET /api/operations/client-events` | `events` | Admin-only |
 | `GET /api/operations/admin-audit-logs` | `logs` | Admin-only |
+| `GET /api/content/schools/:id/report` | `quizResultsPagination` | School report keeps exact totals, but samples recent quiz attempts for heavy skill/class calculations |
 
 Each updated endpoint includes pagination metadata using the standard shape:
 
@@ -108,6 +109,17 @@ Each updated endpoint includes pagination metadata using the standard shape:
   "totalPages": 0
 }
 ```
+
+### School report hardening update
+
+The school report endpoint no longer loads every quiz result document for a large school in one request.
+
+What changed:
+
+- Student documents are fetched with a narrow projection (`id`, `_id`, `groupIds`, `isActive`) and `lean()`.
+- `totalStudents`, `activeStudents`, and `quizAttempts` are counted with `countDocuments`.
+- Recent quiz attempts are bounded with `page`, `limit`, `skip`, and `quizResultsPagination`.
+- The response preserves the existing `metrics`, `classSummaries`, and `weakestSkills` fields, and adds `sampledQuizAttempts` so admins know how many attempts were used in the current report window.
 
 ## Frontend Compatibility
 

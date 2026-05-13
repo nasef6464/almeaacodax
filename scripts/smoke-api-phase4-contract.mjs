@@ -7,6 +7,7 @@ const files = {
   paymentRoutes: await readFile(new URL("../server/src/routes/payment.routes.ts", import.meta.url), "utf8"),
   quizRoutes: await readFile(new URL("../server/src/routes/quiz.routes.ts", import.meta.url), "utf8"),
   courseRoutes: await readFile(new URL("../server/src/routes/course.routes.ts", import.meta.url), "utf8"),
+  contentRoutes: await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8"),
   notificationRoutes: await readFile(new URL("../server/src/routes/notification.routes.ts", import.meta.url), "utf8"),
   operationsRoutes: await readFile(new URL("../server/src/routes/operations.routes.ts", import.meta.url), "utf8"),
   apiClient: await readFile(new URL("../services/api.ts", import.meta.url), "utf8"),
@@ -51,12 +52,22 @@ check("large list endpoints expose pagination metadata", () => {
     files.paymentRoutes,
     files.quizRoutes,
     files.courseRoutes,
+    files.contentRoutes,
     files.notificationRoutes,
     files.operationsRoutes,
   ]) {
     assertIncludes(source, "resolvePagination");
     assertIncludes(source, "buildPaginatedResponse");
   }
+});
+
+check("school report uses bounded quiz result sampling instead of loading all results", () => {
+  assertIncludes(files.contentRoutes, '"/schools/:id/report"');
+  assertIncludes(files.contentRoutes, "QuizResultModel.countDocuments");
+  assertIncludes(files.contentRoutes, ".skip(pagination.skip)");
+  assertIncludes(files.contentRoutes, ".limit(pagination.limit)");
+  assertIncludes(files.contentRoutes, "quizResultsPagination: buildPaginatedResponse");
+  assertIncludes(files.contentRoutes, "sampledQuizAttempts");
 });
 
 check("frontend service client safely unwraps paginated list payloads", () => {

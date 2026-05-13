@@ -18,6 +18,7 @@ import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
+import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -260,6 +261,8 @@ const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter:
 
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
+
+const getModelDocumentId = (document: { id?: unknown; _id?: unknown }) => String(document.id || document._id || "");
 
 const buildDocumentsByIdsQuery = (values: string[]) => {
   const ids = uniqueStrings(values.map((value) => String(value || "").trim()));
@@ -1258,6 +1261,7 @@ contentRouter.get(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
+    const pagination = resolvePagination(req.query, { limit: 200 });
     const school = await GroupModel.findOne({
       ...buildDocumentQuery(req.params.id),
       type: "SCHOOL",
@@ -1269,17 +1273,27 @@ contentRouter.get(
 
     const schoolId = school.id || String(school._id);
 
-    const [classes, packages, codes, students] = await Promise.all([
-      GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 }),
-      B2BPackageModel.find({ schoolId }).sort({ createdAt: -1 }),
-      AccessCodeModel.find({ schoolId }).sort({ createdAt: -1 }),
-      UserModel.find({ schoolId }).sort({ createdAt: -1 }),
+    const [classes, packages, codes, students, totalStudents, activeStudents] = await Promise.all([
+      GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 }).lean(),
+      B2BPackageModel.find({ schoolId }).sort({ createdAt: -1 }).lean(),
+      AccessCodeModel.find({ schoolId }).sort({ createdAt: -1 }).lean(),
+      UserModel.find({ schoolId }).select("id _id groupIds isActive").sort({ createdAt: -1 }).lean(),
+      UserModel.countDocuments({ schoolId }),
+      UserModel.countDocuments({ schoolId, isActive: { $ne: false } }),
     ]);
 
-    const studentIds = students.map((student) => student.id || String(student._id));
-    const quizResults = studentIds.length
-      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 })
-      : [];
+    const studentIds = students.map(getModelDocumentId).filter(Boolean);
+    const [quizResults, quizResultTotal] = studentIds.length
+      ? await Promise.all([
+          QuizResultModel.find({ userId: { $in: studentIds } })
+            .select("userId score skillsAnalysis createdAt")
+            .sort({ createdAt: -1 })
+            .skip(pagination.skip)
+            .limit(pagination.limit)
+            .lean(),
+          QuizResultModel.countDocuments({ userId: { $in: studentIds } }),
+        ])
+      : [[], 0];
 
     const averageScore = quizResults.length
       ? Math.round(
@@ -1331,9 +1345,9 @@ contentRouter.get(
       .slice(0, 8);
 
     const classSummaries = classes.map((group) => {
-      const classId = group.id || String(group._id);
+      const classId = getModelDocumentId(group);
       const classStudents = students.filter((student) => (student.groupIds || []).includes(classId));
-      const classStudentIds = new Set(classStudents.map((student) => student.id || String(student._id)));
+      const classStudentIds = new Set(classStudents.map(getModelDocumentId).filter(Boolean));
       const classResults = quizResults.filter((result) => classStudentIds.has(String(result.userId)));
       const classAverageScore = classResults.length
         ? Math.round(classResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / classResults.length)
@@ -1355,16 +1369,18 @@ contentRouter.get(
         name: school.name,
       },
       metrics: {
-        totalStudents: students.length,
-        activeStudents: students.filter((student) => student.isActive !== false).length,
+        totalStudents,
+        activeStudents,
         totalClasses: classes.length,
         activePackages: packages.filter((pkg) => pkg.status === "active").length,
         activeCodes: codes.filter((code) => Number(code.expiresAt) > Date.now()).length,
-        quizAttempts: quizResults.length,
+        quizAttempts: quizResultTotal,
+        sampledQuizAttempts: quizResults.length,
         averageScore,
       },
       classSummaries,
       weakestSkills,
+      quizResultsPagination: buildPaginatedResponse([], pagination, quizResultTotal),
     });
   }),
 );
