@@ -331,7 +331,10 @@ export const api = {
       body: payload,
       token,
     }),
-  getPaymentRequests: async (token?: string | null, pagination: PaginationOptions = {}) => {
+  getPaymentRequests: async (
+    token?: string | null,
+    pagination: PaginationOptions & { status?: string; search?: string } = {},
+  ) => {
     const payload = await request<{ requests: unknown[] }>(withQuery("/payments/requests", { limit: 200, ...pagination }), {
       token,
     });
@@ -355,7 +358,10 @@ export const api = {
       body: payload,
       token,
     }),
-  getDiscountCodes: async (token?: string | null, pagination: PaginationOptions = {}) => {
+  getDiscountCodes: async (
+    token?: string | null,
+    pagination: PaginationOptions & { status?: string; search?: string } = {},
+  ) => {
     const payload = await request<{ codes: unknown[] }>(withQuery("/payments/discount-codes", { limit: 200, ...pagination }), {
       token,
     });

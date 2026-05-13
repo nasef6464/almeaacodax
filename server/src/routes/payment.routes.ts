@@ -77,6 +77,16 @@ const paymentWebhookSchema = z.object({
   occurredAt: z.number().optional(),
 });
 
+const paymentRequestListQuerySchema = z.object({
+  status: z.enum(["pending", "approved", "rejected", "cancelled", "all"]).optional(),
+  search: z.string().max(120).optional(),
+});
+
+const discountCodeListQuerySchema = z.object({
+  status: z.enum(["active", "paused", "expired", "all"]).optional(),
+  search: z.string().max(80).optional(),
+});
+
 const discountCodePayloadSchema = z.object({
   code: z.string().min(2).max(40),
   label: z.string().max(120).optional(),
@@ -481,15 +491,29 @@ paymentRouter.get(
   "/requests",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const filter = req.authUser?.role === "admin" ? {} : { userId: req.authUser?.id };
+    const query = paymentRequestListQuerySchema.parse(req.query);
+    const filter: Record<string, unknown> = req.authUser?.role === "admin" ? {} : { userId: req.authUser?.id };
+    if (query.status && query.status !== "all") {
+      filter.status = query.status;
+    }
+    const search = String(query.search || "").trim();
+    if (search) {
+      filter.$or = [
+        { userName: { $regex: search, $options: "i" } },
+        { userEmail: { $regex: search, $options: "i" } },
+        { itemName: { $regex: search, $options: "i" } },
+        { id: { $regex: search, $options: "i" } },
+        { paymentProviderCode: { $regex: search, $options: "i" } },
+      ];
+    }
     const pagination = resolvePagination(req.query, { limit: 50 });
     const [requests, total] = await Promise.all([
-      PaymentRequestModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      PaymentRequestModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
       PaymentRequestModel.countDocuments(filter),
     ]);
     return res.json({
       requests,
-      pagination: buildPaginatedResponse([], pagination, total),
+      pagination: buildPaginatedResponse(requests, pagination, total),
     });
   }),
 );
@@ -499,14 +523,26 @@ paymentRouter.get(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
+    const query = discountCodeListQuerySchema.parse(req.query);
+    const filter: Record<string, unknown> = {};
+    if (query.status && query.status !== "all") {
+      filter.status = query.status;
+    }
+    const search = String(query.search || "").trim().toUpperCase();
+    if (search) {
+      filter.$or = [
+        { code: { $regex: search, $options: "i" } },
+        { label: { $regex: search, $options: "i" } },
+      ];
+    }
     const pagination = resolvePagination(req.query, { limit: 50 });
     const [codes, total] = await Promise.all([
-      DiscountCodeModel.find().sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      DiscountCodeModel.countDocuments(),
+      DiscountCodeModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
+      DiscountCodeModel.countDocuments(filter),
     ]);
     return res.json({
       codes,
-      pagination: buildPaginatedResponse([], pagination, total),
+      pagination: buildPaginatedResponse(codes, pagination, total),
     });
   }),
 );

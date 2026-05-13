@@ -110,6 +110,21 @@ Each updated endpoint includes pagination metadata using the standard shape:
 }
 ```
 
+### Payment list hardening follow-up - 2026-05-13
+
+The payment list endpoints were tightened further after production review:
+
+- `GET /api/payments/requests` now supports bounded server-side filtering with:
+  - `status=pending|approved|rejected|cancelled|all`
+  - `search=...` across student name, email, item name, request id, and provider code.
+- `GET /api/payments/discount-codes` now supports:
+  - `status=active|paused|expired|all`
+  - `search=...` across code and label.
+- Both endpoints now use `.lean()` for lower memory overhead.
+- Pagination metadata now includes the same page items in `pagination.items` instead of returning an empty placeholder array, while the legacy `requests` and `codes` keys remain unchanged for frontend compatibility.
+
+No UI layout or visual styling was changed.
+
 ### School report hardening update
 
 The school report endpoint no longer loads every quiz result document for a large school in one request.

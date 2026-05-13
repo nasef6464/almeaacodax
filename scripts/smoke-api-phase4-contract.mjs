@@ -61,6 +61,17 @@ check("large list endpoints expose pagination metadata", () => {
   }
 });
 
+check("payment lists return bounded filtered pages with real items in pagination metadata", () => {
+  assertIncludes(files.paymentRoutes, "paymentRequestListQuerySchema");
+  assertIncludes(files.paymentRoutes, "discountCodeListQuerySchema");
+  assertIncludes(files.paymentRoutes, "filter.$or = [");
+  assertIncludes(files.paymentRoutes, "PaymentRequestModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()");
+  assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(requests, pagination, total)");
+  assertIncludes(files.paymentRoutes, "DiscountCodeModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()");
+  assertIncludes(files.paymentRoutes, "pagination: buildPaginatedResponse(codes, pagination, total)");
+  assertIncludes(files.apiClient, "pagination: PaginationOptions & { status?: string; search?: string } = {}");
+});
+
 check("school report uses bounded quiz result sampling instead of loading all results", () => {
   assertIncludes(files.contentRoutes, '"/schools/:id/report"');
   assertIncludes(files.contentRoutes, "QuizResultModel.countDocuments");
