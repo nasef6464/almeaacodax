@@ -77,17 +77,33 @@ const hasPlayableLessonMedia = (lesson: any) =>
       String(lesson?.recordingUrl || "").trim(),
   );
 
+const OPERATIONS_STATUS_CACHE_TTL_MS = 30 * 1000;
+let cachedOperationsStatus: { expiresAt: number; payload: unknown } | null = null;
+let pendingOperationsStatus: Promise<unknown> | null = null;
+
 operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
-    const [paths, subjects, topics, lessons, quizzes, courses, libraryItems] = await Promise.all([
-      PathModel.find().lean(),
-      SubjectModel.find().lean(),
-      TopicModel.find().lean(),
-      LessonModel.find().lean(),
-      QuizModel.find().lean(),
-      CourseModel.find().lean(),
-      LibraryItemModel.find().lean(),
-    ]);
+    if (cachedOperationsStatus && cachedOperationsStatus.expiresAt > Date.now()) {
+      res.setHeader("X-Operations-Status-Cache", "hit");
+      return res.json(cachedOperationsStatus.payload);
+    }
+
+    if (pendingOperationsStatus) {
+      const payload = await pendingOperationsStatus;
+      res.setHeader("X-Operations-Status-Cache", "shared");
+      return res.json(payload);
+    }
+
+    const loadStatusPayload = async () => {
+      const [paths, subjects, topics, lessons, quizzes, courses, libraryItems] = await Promise.all([
+        PathModel.find().lean(),
+        SubjectModel.find().lean(),
+        TopicModel.find().lean(),
+        LessonModel.find().lean(),
+        QuizModel.find().lean(),
+        CourseModel.find().lean(),
+        LibraryItemModel.find().lean(),
+      ]);
 
     const activePathIds = new Set(paths.filter((path: any) => path.isActive !== false).map(idOf));
     const visibleSubjects = subjects.filter((subject: any) => activePathIds.has(subject.pathId));
@@ -179,7 +195,7 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
       ? Math.max(0, Math.min(100, Math.round(((spaces.length - emptySpaces) / spaces.length) * 70 + (issueCount === 0 ? 30 : 0))))
       : 0;
 
-    res.json({
+      return {
       checkedAt: new Date().toISOString(),
       database: {
         status: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
@@ -224,7 +240,24 @@ operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req
         nodeEnv: process.env.NODE_ENV || "development",
         clientUrl: process.env.CLIENT_URL || "",
       },
-    });
+      };
+    };
+
+    pendingOperationsStatus = loadStatusPayload()
+      .then((payload) => {
+        cachedOperationsStatus = {
+          expiresAt: Date.now() + OPERATIONS_STATUS_CACHE_TTL_MS,
+          payload,
+        };
+        return payload;
+      })
+      .finally(() => {
+        pendingOperationsStatus = null;
+      });
+
+    const payload = await pendingOperationsStatus;
+    res.setHeader("X-Operations-Status-Cache", "miss");
+    return res.json(payload);
   } catch (error) {
     next(error);
   }

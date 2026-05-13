@@ -36,6 +36,12 @@
 - Public announcement ads inside bootstrap are capped to the display-sized set; admin management routes still keep full access.
 - This reduces duplicate MongoDB work during traffic spikes without changing the UI or hiding student learning content.
 
+## 2026-05-13 Operations Status Cache
+
+- `/api/operations/status` now uses a short 30-second cache and shares one pending status build between concurrent admin requests.
+- This endpoint scans learning inventory for admin readiness, so caching prevents repeated full inventory scans while an admin dashboard is opening.
+- The response includes `X-Operations-Status-Cache` with `hit`, `miss`, or `shared` to make behavior visible in diagnostics.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.
