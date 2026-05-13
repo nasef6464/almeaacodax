@@ -24,6 +24,12 @@
 - Timing warnings do not automatically mean the site is broken; they identify the next bottleneck to optimize.
 - Redis warnings mean the app is live, but not ready for multi-instance high-concurrency scale until `REDIS_URL` is configured.
 
+## 2026-05-13 Operations Audit Cache
+
+- Admin operations audit now uses a short 30-second in-process cache and shares one pending audit promise between concurrent requests.
+- This protects MongoDB when the admin dashboard opens multiple readiness panels or when an operator refreshes repeatedly.
+- The cache only affects operational diagnostics; student-facing content and security checks still use their normal route-level data rules.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.

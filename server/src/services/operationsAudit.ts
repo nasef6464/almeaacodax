@@ -73,7 +73,28 @@ const severityWeight: Record<Severity, number> = {
   success: 0,
 };
 
-export async function createOperationsAudit() {
+const OPERATIONS_AUDIT_CACHE_TTL_MS = 30 * 1000;
+
+type OperationsAuditResult = {
+  checkedAt: string;
+  score: number;
+  totals: {
+    checks: number;
+    issues: number;
+    critical: number;
+    warnings: number;
+    info: number;
+  };
+  inventory: Record<string, number>;
+  areaSummary: Record<Area, { total: number; issues: number; critical: number }>;
+  checks: OperationsAuditCheck[];
+  priorities: OperationsAuditCheck[];
+};
+
+let cachedOperationsAudit: { expiresAt: number; result: OperationsAuditResult } | null = null;
+let pendingOperationsAudit: Promise<OperationsAuditResult> | null = null;
+
+async function buildOperationsAudit(): Promise<OperationsAuditResult> {
   const [
     paths,
     subjects,
@@ -510,4 +531,29 @@ export async function createOperationsAudit() {
       .sort((a, b) => severityWeight[b.severity] - severityWeight[a.severity] || b.count - a.count)
       .slice(0, 8),
   };
+}
+
+export async function createOperationsAudit() {
+  const now = Date.now();
+  if (cachedOperationsAudit && cachedOperationsAudit.expiresAt > now) {
+    return cachedOperationsAudit.result;
+  }
+
+  if (pendingOperationsAudit) {
+    return pendingOperationsAudit;
+  }
+
+  pendingOperationsAudit = buildOperationsAudit()
+    .then((result) => {
+      cachedOperationsAudit = {
+        expiresAt: Date.now() + OPERATIONS_AUDIT_CACHE_TTL_MS,
+        result,
+      };
+      return result;
+    })
+    .finally(() => {
+      pendingOperationsAudit = null;
+    });
+
+  return pendingOperationsAudit;
 }
