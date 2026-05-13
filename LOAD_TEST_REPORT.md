@@ -6,6 +6,7 @@
 - The learner/public summary path no longer expands all published quiz `questionIds` before returning a bounded summary list. That expensive expansion remains available for full question loads, explicit `ids`, and search flows where compatibility matters.
 - This keeps the first question-bank summary response small and predictable as the question bank grows, without exposing answers or changing UI layout.
 - Category pages now defer the general question-bank bootstrap and student skill-progress bootstrap. The route opens with courses, quizzes, taxonomy, and content first; question summaries and skill-progress hydrate in the background.
+- Category course-tab bundles now lazy-load payment modals, skill details, file previews, and simulated test cards only when the student opens them or switches to their tabs. This reduces first route JavaScript without changing the UI layout.
 
 ## Status
 

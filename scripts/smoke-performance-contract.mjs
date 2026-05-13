@@ -161,6 +161,16 @@ assertIncludes('server/src/routes/operations.routes.ts', 'cachedOperationsStatus
 assertIncludes('server/src/routes/operations.routes.ts', 'X-Operations-Status-Cache');
 assertIncludes('server/src/routes/operations.routes.ts', 'OPERATIONS_STATUS_LESSON_SELECT');
 assertIncludes('server/src/routes/operations.routes.ts', 'select(OPERATIONS_STATUS_LESSON_SELECT)');
+assertIncludes('components/LearningSection.tsx', "React.lazy(() => import('./PaymentModal')");
+assertIncludes('components/LearningSection.tsx', "React.lazy(() => import('./SkillDetailsModal')");
+assertIncludes('components/LearningSection.tsx', "React.lazy(() => import('./SimulatedTestExperience')");
+assertIncludes('components/LearningSection.tsx', "React.lazy(() => import('./FileModal')");
+assertNotIncludes('components/LearningSection.tsx', "import { PaymentModal } from './PaymentModal';");
+assertNotIncludes('components/LearningSection.tsx', "import { SkillDetailsModal } from './SkillDetailsModal';");
+assertNotIncludes('components/LearningSection.tsx', "import { SimulatedTestExperience } from './SimulatedTestExperience';");
+assertNotIncludes('components/LearningSection.tsx', "import { FileModal } from './FileModal';");
+assertIncludes('pages/GenericPathPage.tsx', "React.lazy(() => import('../components/PaymentModal')");
+assertNotIncludes('pages/GenericPathPage.tsx', "import { PaymentModal } from '../components/PaymentModal';");
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', "console.warn('Deferred skill-progress bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(path)');

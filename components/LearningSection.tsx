@@ -3,10 +3,6 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
 import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package, CreditCard } from 'lucide-react';
 import { ProgressBar } from './ui/ProgressBar';
-import { SkillDetailsModal } from './SkillDetailsModal';
-import { SimulatedTestExperience } from './SimulatedTestExperience';
-import { FileModal } from './FileModal';
-import { PaymentModal } from './PaymentModal';
 import { useStore } from '../store/useStore';
 import { PackageContentType } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
@@ -15,6 +11,12 @@ import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+
+const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
+const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
+const FileModal = React.lazy(() => import('./FileModal').then((module) => ({ default: module.FileModal })));
+const PaymentModal = React.lazy(() => import('./PaymentModal').then((module) => ({ default: module.PaymentModal })));
+const LightweightModalFallback = () => null;
 
 interface LearningSectionProps {
     category: string;
@@ -993,24 +995,26 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    <SimulatedTestExperience 
-                        mode="bank"
-                        tests={banks.map(bank => ({
-                            id: bank.id,
-                            title: bank.title,
-                            questions: bank.questions,
-                            duration: 'غير محدد',
-                            type: 'bank',
-                            level: 'متعدد',
-                            isLocked: bank.isLocked
-                        }))} 
-                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), {
-                            returnTo: buildSectionReturnPath('banks'),
-                            source: 'training',
-                            returnOnFinish: shouldTrainingReturnOnFinish(test.id),
-                        }))}
-                        onLockedClick={(test) => handleItemClick(test, 'bank')}
-                    />
+                    <React.Suspense fallback={<LightweightModalFallback />}>
+                        <SimulatedTestExperience 
+                            mode="bank"
+                            tests={banks.map(bank => ({
+                                id: bank.id,
+                                title: bank.title,
+                                questions: bank.questions,
+                                duration: 'غير محدد',
+                                type: 'bank',
+                                level: 'متعدد',
+                                isLocked: bank.isLocked
+                            }))} 
+                            onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), {
+                                returnTo: buildSectionReturnPath('banks'),
+                                source: 'training',
+                                returnOnFinish: shouldTrainingReturnOnFinish(test.id),
+                            }))}
+                            onLockedClick={(test) => handleItemClick(test, 'bank')}
+                        />
+                    </React.Suspense>
                     </>
                 )}
 
@@ -1064,11 +1068,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                         </div>
                     )}
-                    <SimulatedTestExperience 
-                        tests={tests} 
-                        onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: buildSectionReturnPath('tests'), source: 'tests' }))}
-                        onLockedClick={(test) => handleItemClick(test, 'test')}
-                    />
+                    <React.Suspense fallback={<LightweightModalFallback />}>
+                        <SimulatedTestExperience 
+                            tests={tests} 
+                            onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: buildSectionReturnPath('tests'), source: 'tests' }))}
+                            onLockedClick={(test) => handleItemClick(test, 'test')}
+                        />
+                    </React.Suspense>
                     </>
                 )}
 
@@ -1161,44 +1167,54 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 )}
             </div>
 
-            <SkillDetailsModal 
-                isOpen={!!selectedSkill} 
-                onClose={() => setSelectedSkill(null)} 
-                skill={selectedSkill} 
-            />
-
-            {viewingFile && (
-                <FileModal 
-                    fileUrl={viewingFile.url || (viewingFile.type === 'pdf' ? "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" : "https://picsum.photos/seed/library/800/1200")}
-                    title={viewingFile.title}
-                    type={viewingFile.type}
-                    onClose={() => setViewingFile(null)}
-                />
+            {selectedSkill && (
+                <React.Suspense fallback={<LightweightModalFallback />}>
+                    <SkillDetailsModal 
+                        isOpen={!!selectedSkill} 
+                        onClose={() => setSelectedSkill(null)} 
+                        skill={selectedSkill} 
+                    />
+                </React.Suspense>
             )}
 
-            <PaymentModal 
-                isOpen={paymentModalData.isOpen} 
-                onClose={() => setPaymentModalData({ isOpen: false, item: null, type: '' })} 
-                item={{
-                    ...paymentModalData.item,
-                    id: paymentModalData.item?.id,
-                    packageId: paymentModalData.item?.packageId,
-                    purchaseType: paymentModalData.item?.purchaseType || (paymentModalData.type === 'course' ? 'course' : 'package'),
-                    title: paymentModalData.item?.title || `باقة ${paymentModalData.type === 'skill' ? 'التأسيس' : paymentModalData.type === 'bank' ? 'بنك الأسئلة' : paymentModalData.type === 'test' ? 'الاختبارات' : 'شاملة'}`,
-                    price: paymentModalData.item?.price || 99,
-                    currency: paymentModalData.item?.currency || 'ر.س',
-                    description: paymentModalData.item?.description || `اشترك الآن للوصول إلى ${paymentModalData.item?.title || 'المحتوى'} والمزيد من المحتوى الحصري.`,
-                    thumbnail: 'https://picsum.photos/seed/package/800/600',
-                    features: ['وصول كامل للمحتوى', 'تحديثات مستمرة', 'دعم فني'],
-                    category: 'باقة اشتراك',
-                    includedCourseIds: paymentModalData.item?.includedCourseIds || paymentModalData.item?.courseIds || [],
-                    contentTypes: paymentModalData.item?.contentTypes || ['all'],
-                    pathIds: paymentModalData.item?.pathIds || [category],
-                    subjectIds: paymentModalData.item?.subjectIds || [subject],
-                    accessContext: paymentModalData.item?.accessContext || 'إذا كان هذا الجزء تابعًا لوصول مدرسي أو باقة مفعلة من الإدارة فلن تحتاج شراءه. أما إذا بقي مغلقًا على حسابك فهذه هي وسيلة التفعيل المناسبة.',
-                }}
-                type={paymentModalData.type as any}
-            />
+            {viewingFile && (
+                <React.Suspense fallback={<LightweightModalFallback />}>
+                    <FileModal 
+                        fileUrl={viewingFile.url || (viewingFile.type === 'pdf' ? "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" : "https://picsum.photos/seed/library/800/1200")}
+                        title={viewingFile.title}
+                        type={viewingFile.type}
+                        onClose={() => setViewingFile(null)}
+                    />
+                </React.Suspense>
+            )}
+
+            {paymentModalData.isOpen && (
+                <React.Suspense fallback={<LightweightModalFallback />}>
+                    <PaymentModal 
+                        isOpen={paymentModalData.isOpen} 
+                        onClose={() => setPaymentModalData({ isOpen: false, item: null, type: '' })} 
+                        item={{
+                            ...paymentModalData.item,
+                            id: paymentModalData.item?.id,
+                            packageId: paymentModalData.item?.packageId,
+                            purchaseType: paymentModalData.item?.purchaseType || (paymentModalData.type === 'course' ? 'course' : 'package'),
+                            title: paymentModalData.item?.title || `باقة ${paymentModalData.type === 'skill' ? 'التأسيس' : paymentModalData.type === 'bank' ? 'بنك الأسئلة' : paymentModalData.type === 'test' ? 'الاختبارات' : 'شاملة'}`,
+                            price: paymentModalData.item?.price || 99,
+                            currency: paymentModalData.item?.currency || 'ر.س',
+                            description: paymentModalData.item?.description || `اشترك الآن للوصول إلى ${paymentModalData.item?.title || 'المحتوى'} والمزيد من المحتوى الحصري.`,
+                            thumbnail: 'https://picsum.photos/seed/package/800/600',
+                            features: ['وصول كامل للمحتوى', 'تحديثات مستمرة', 'دعم فني'],
+                            category: 'باقة اشتراك',
+                            includedCourseIds: paymentModalData.item?.includedCourseIds || paymentModalData.item?.courseIds || [],
+                            contentTypes: paymentModalData.item?.contentTypes || ['all'],
+                            pathIds: paymentModalData.item?.pathIds || [category],
+                            subjectIds: paymentModalData.item?.subjectIds || [subject],
+                            accessContext: paymentModalData.item?.accessContext || 'إذا كان هذا الجزء تابعًا لوصول مدرسي أو باقة مفعلة من الإدارة فلن تحتاج شراءه. أما إذا بقي مغلقًا على حسابك فهذه هي وسيلة التفعيل المناسبة.',
+                        }}
+                        type={paymentModalData.type as any}
+                    />
+                </React.Suspense>
+            )}
         </div>
     );
 };

@@ -5,11 +5,13 @@ import { Card } from '../components/ui/Card';
 import { Award, CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
 import { normalizePathId } from '../utils/normalizePathId';
-import { PaymentModal } from '../components/PaymentModal';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+
+const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
+const LightweightModalFallback = () => null;
 
 const packageContentLabels: Record<string, { label: string; description: string }> = {
     courses: { label: 'الدورات', description: 'دورات المسار المسجلة.' },
@@ -465,22 +467,26 @@ export const GenericPathPage: React.FC = () => {
                 return scorePackage(b) - scorePackage(a);
             })[0];
     };
-    const renderPackagePaymentModal = () => (
-        <PaymentModal
-            isOpen={!!selectedPackageForPayment}
-            onClose={() => setSelectedPackageForPayment(null)}
-            item={selectedPackageForPayment || {}}
-            type="package"
-        />
-    );
-    const renderMockExamPaymentModal = () => (
-        <PaymentModal
-            isOpen={!!selectedMockExamPaymentTarget}
-            onClose={() => setSelectedMockExamPaymentTarget(null)}
-            item={selectedMockExamPaymentTarget || {}}
-            type={selectedMockExamPaymentTarget?.paymentType || 'test'}
-        />
-    );
+    const renderPackagePaymentModal = () => selectedPackageForPayment ? (
+        <React.Suspense fallback={<LightweightModalFallback />}>
+            <PaymentModal
+                isOpen={!!selectedPackageForPayment}
+                onClose={() => setSelectedPackageForPayment(null)}
+                item={selectedPackageForPayment || {}}
+                type="package"
+            />
+        </React.Suspense>
+    ) : null;
+    const renderMockExamPaymentModal = () => selectedMockExamPaymentTarget ? (
+        <React.Suspense fallback={<LightweightModalFallback />}>
+            <PaymentModal
+                isOpen={!!selectedMockExamPaymentTarget}
+                onClose={() => setSelectedMockExamPaymentTarget(null)}
+                item={selectedMockExamPaymentTarget || {}}
+                type={selectedMockExamPaymentTarget?.paymentType || 'test'}
+            />
+        </React.Suspense>
+    ) : null;
 
     const canAccessMockExam = (quiz: any) => {
         if (isStaffViewer) return true;
@@ -868,12 +874,7 @@ export const GenericPathPage: React.FC = () => {
                         );
                     })}
                 </div>
-                <PaymentModal
-                    isOpen={!!selectedPackageForPayment}
-                    onClose={() => setSelectedPackageForPayment(null)}
-                    item={selectedPackageForPayment || {}}
-                    type="package"
-                />
+                {renderPackagePaymentModal()}
             </div>
         );
     };
