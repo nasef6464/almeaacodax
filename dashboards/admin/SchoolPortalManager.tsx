@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     AlertTriangle,
     BookOpen,
@@ -124,6 +124,7 @@ export const SchoolPortalManager: React.FC = () => {
         b2bPackages,
         accessCodes,
     } = useStore();
+    const [actionFeedback, setActionFeedback] = useState('');
 
     const scope = useMemo(() => {
         const userGroupIds = new Set(user.groupIds || []);
@@ -240,10 +241,12 @@ export const SchoolPortalManager: React.FC = () => {
         });
         if (primaryTargetGroupId) params.set('targetGroupId', primaryTargetGroupId);
         window.location.hash = `/admin-dashboard?${params.toString()}`;
+        setActionFeedback(primaryTargetGroupId ? 'تم فتح مركز الاختبارات مع تحديد نطاق المجموعة.' : 'تم فتح مركز الاختبارات لإنشاء اختبار موجه.');
     };
 
     const openReports = () => {
         window.location.hash = '/reports';
+        setActionFeedback('تم فتح مركز التقارير التفصيلية.');
     };
 
     const copyFollowUpMessage = async () => {
@@ -257,6 +260,7 @@ export const SchoolPortalManager: React.FC = () => {
             document.execCommand('copy');
             textarea.remove();
         }
+        setActionFeedback('تم نسخ ملخص المتابعة لاستخدامه في رسالة أو واتساب.');
     };
 
     const openFollowUpEmail = () => {
@@ -268,6 +272,7 @@ export const SchoolPortalManager: React.FC = () => {
             query.set('bcc', followUpEmails.join(','));
         }
         window.location.href = `mailto:?${query.toString()}`;
+        setActionFeedback(followUpEmails.length ? 'تم تجهيز رسالة بريد للطلاب داخل نطاق المشرف.' : 'لا توجد عناوين بريد متاحة داخل نطاق المتابعة الحالي.');
     };
 
     const exportWatchList = () => {
@@ -290,6 +295,7 @@ export const SchoolPortalManager: React.FC = () => {
                 ],
             },
         ]);
+        setActionFeedback('تم تجهيز ملف قائمة المتابعة للتنزيل.');
     };
 
     const exportPortalReport = () => {
@@ -519,6 +525,12 @@ export const SchoolPortalManager: React.FC = () => {
                         </button>
                     </div>
                 </div>
+
+                {actionFeedback && (
+                    <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-700">
+                        {actionFeedback}
+                    </div>
+                )}
 
                 <div className="mt-4 grid gap-3 lg:grid-cols-3">
                     <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">

@@ -154,6 +154,7 @@ export const AdminDashboard: React.FC = () => {
         updateLibraryItem,
     } = useStore();
     const [activeTab, setActiveTab] = useState(() => getRequestedAdminTab() || (user.role === Role.ADMIN ? 'paths' : 'overview'));
+    const [tabRequestVersion, setTabRequestVersion] = useState(0);
     const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
@@ -164,8 +165,11 @@ export const AdminDashboard: React.FC = () => {
     useEffect(() => {
         const syncRequestedTab = () => {
             const requestedTab = getRequestedAdminTab();
-            if (requestedTab && requestedTab !== activeTab) {
-                setActiveTab(requestedTab);
+            if (requestedTab) {
+                if (requestedTab !== activeTab) {
+                    setActiveTab(requestedTab);
+                }
+                setTabRequestVersion((current) => current + 1);
             }
         };
 
@@ -1932,7 +1936,7 @@ export const AdminDashboard: React.FC = () => {
             case 'library':
                 return renderLibraryCenter();
             case 'quizzes':
-                return <QuizzesManager />;
+                return <QuizzesManager key={`quizzes-${tabRequestVersion}`} />;
             case 'mock-exams':
                 return <MockExamManager />;
             case 'questions':
@@ -1944,7 +1948,7 @@ export const AdminDashboard: React.FC = () => {
             case 'groups':
                 return <SchoolsManager />;
             case 'school-portal':
-                return <SchoolPortalManager />;
+                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
             case 'financial':
                 return <FinancialManager />;
             case 'homepage':

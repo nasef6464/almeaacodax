@@ -21,7 +21,8 @@ const checks = [
       schoolPortal.includes("openTargetedQuiz") &&
       schoolPortal.includes("openFollowUpEmail") &&
       schoolPortal.includes("copyFollowUpMessage") &&
-      schoolPortal.includes("exportWatchList"),
+      schoolPortal.includes("exportWatchList") &&
+      schoolPortal.includes("actionFeedback"),
   },
   {
     name: "targeted quiz opens the quiz center with a scoped target group",
@@ -36,7 +37,9 @@ const checks = [
     ok:
       adminDashboard.includes("syncRequestedTab") &&
       adminDashboard.includes("hashchange") &&
-      adminDashboard.includes("getRequestedAdminTab"),
+      adminDashboard.includes("getRequestedAdminTab") &&
+      adminDashboard.includes("tabRequestVersion") &&
+      adminDashboard.includes("key={`quizzes-${tabRequestVersion}`}"),
   },
   {
     name: "announcement ads have a live preview path",
