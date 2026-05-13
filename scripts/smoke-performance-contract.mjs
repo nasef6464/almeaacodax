@@ -185,6 +185,11 @@ assertIncludes('pages/GenericPathPage.tsx', "React.lazy(() => import('../compone
 assertNotIncludes('pages/GenericPathPage.tsx', "import { PaymentModal } from '../components/PaymentModal';");
 assertIncludes('components/MainLayout.tsx', "React.lazy(() => import('./ChatWidget')");
 assertNotIncludes('components/MainLayout.tsx', "import { ChatWidget } from './ChatWidget';");
+assertIncludes('contexts/AuthContext.tsx', 'const restoreInitialSession = (): SessionUser | null => {');
+assertIncludes('contexts/AuthContext.tsx', 'const [user, setUser] = useState<SessionUser | null>(() => restoreInitialSession());');
+assertIncludes('contexts/AuthContext.tsx', 'const loading = false;');
+assertNotIncludes('contexts/AuthContext.tsx', 'const [loading, setLoading] = useState(true);');
+assertNotIncludes('contexts/AuthContext.tsx', '<Loader2 className="w-10 h-10 animate-spin" />');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', "console.warn('Deferred skill-progress bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(path)');

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { Loader2 } from 'lucide-react';
 import { api } from '../services/api';
 import { Role } from '../types';
 import { useStore } from '../store/useStore';
@@ -187,30 +186,36 @@ const resetStoreUser = () => {
   });
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<SessionUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as SessionUser;
-        if (!import.meta.env.DEV && parsed.token?.startsWith(DEV_TOKEN_PREFIX)) {
-          localStorage.removeItem(AUTH_STORAGE_KEY);
-          resetStoreUser();
-          return;
-        }
-        setUser(parsed);
-        syncStoreUser(parsed);
-      }
-    } catch (error) {
-      console.warn('Failed to restore auth session:', error);
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-    } finally {
-      setLoading(false);
+const restoreInitialSession = (): SessionUser | null => {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) {
+      return null;
     }
-  }, []);
+
+    const parsed = JSON.parse(raw) as SessionUser;
+    if (!parsed?.token || !parsed?.email || !parsed?.role) {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    }
+
+    if (!import.meta.env.DEV && parsed.token.startsWith(DEV_TOKEN_PREFIX)) {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    }
+
+    syncStoreUser(parsed);
+    return parsed;
+  } catch (error) {
+    console.warn('Failed to restore auth session:', error);
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    return null;
+  }
+};
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<SessionUser | null>(() => restoreInitialSession());
+  const loading = false;
 
   useEffect(() => {
     if (!user) {
@@ -340,14 +345,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     () => ({ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, devSwitchRole }),
     [user, loading],
   );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 text-emerald-500">
-        <Loader2 className="w-10 h-10 animate-spin" />
-      </div>
-    );
-  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
