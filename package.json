@@ -56,6 +56,7 @@
     "smoke:health-readiness": "node scripts/smoke-health-readiness-contract.mjs",
     "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
     "smoke:supervisor-dashboard": "node scripts/smoke-supervisor-dashboard-contract.mjs",
+    "smoke:school-management": "node scripts/smoke-school-management-contract.mjs",
     "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",
     "smoke:api-phase4": "node scripts/smoke-api-phase4-contract.mjs",

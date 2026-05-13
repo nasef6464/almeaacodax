@@ -653,6 +653,12 @@ export const api = {
       body: payload,
       token,
     }),
+  applySchoolRelations: (id: string, payload: unknown, token?: string | null) =>
+    request<unknown>(`/content/schools/${id}/relations`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   getCourses: async (pagination: PaginationOptions = {}) => {
     const query = { limit: 200, ...pagination };
     const path = withQuery("/courses", query);

@@ -585,6 +585,20 @@ const schoolImportSchema = z.object({
   rows: z.array(schoolImportRowSchema).min(1),
 });
 
+const schoolRelationRowSchema = z.object({
+  studentEmail: z.string().email(),
+  parentEmail: z.string().email().optional().or(z.literal("")),
+  parentName: z.string().optional(),
+  supervisorEmail: z.string().email().optional().or(z.literal("")),
+  supervisorName: z.string().optional(),
+  className: z.string().optional(),
+});
+
+const schoolRelationSchema = z.object({
+  rows: z.array(schoolRelationRowSchema).min(1),
+  createMissingUsers: z.boolean().default(true),
+});
+
 const homepageStatSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
@@ -1534,6 +1548,187 @@ contentRouter.post(
         ).length,
       },
       credentials,
+    });
+  }),
+);
+
+contentRouter.post(
+  "/schools/:id/relations",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const payload = schoolRelationSchema.parse(req.body);
+    const school = await GroupModel.findOne({
+      ...buildDocumentQuery(req.params.id),
+      type: "SCHOOL",
+    });
+
+    if (!school) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "School not found" });
+    }
+
+    const schoolId = school.id || String(school._id);
+    const currentStaff = await UserModel.findOne(buildDocumentQuery(req.authUser?.id || "")).select("schoolId groupIds role").lean();
+    const canManageSchool =
+      req.authUser?.role === "admin" ||
+      String(currentStaff?.schoolId || "") === schoolId ||
+      (currentStaff?.groupIds || []).map(String).includes(schoolId) ||
+      (school.supervisorIds || []).map(String).includes(String(req.authUser?.id || ""));
+
+    if (!canManageSchool) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+    }
+
+    const classes = await GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 });
+    const classByName = new Map(classes.map((item) => [String(item.name || "").trim().toLowerCase(), item]));
+    const studentEmails = payload.rows.map((row) => row.studentEmail.trim().toLowerCase());
+    const parentEmails = payload.rows.map((row) => String(row.parentEmail || "").trim().toLowerCase()).filter(Boolean);
+    const supervisorEmails = payload.rows.map((row) => String(row.supervisorEmail || "").trim().toLowerCase()).filter(Boolean);
+    const allEmails = Array.from(new Set([...studentEmails, ...parentEmails, ...supervisorEmails]));
+    const users = await UserModel.find({ email: { $in: allEmails } });
+    const usersByEmail = new Map(users.map((item) => [String(item.email || "").trim().toLowerCase(), item]));
+    const credentials: Array<{ role: "parent" | "supervisor"; name: string; email: string; password: string; linkedTo: string }> = [];
+    const summary = {
+      rows: payload.rows.length,
+      createdParents: 0,
+      createdSupervisors: 0,
+      linkedParents: 0,
+      linkedSupervisors: 0,
+      assignedClasses: 0,
+      missingStudents: 0,
+      missingParents: 0,
+      missingSupervisors: 0,
+      missingClasses: 0,
+      skippedRows: 0,
+    };
+
+    const createUserIfMissing = async (
+      email: string,
+      role: "parent" | "supervisor",
+      name: string,
+      linkedTo: string,
+    ) => {
+      const normalizedEmail = email.trim().toLowerCase();
+      const existing = usersByEmail.get(normalizedEmail);
+      if (existing || !payload.createMissingUsers) return existing;
+
+      const password = `Alm@${Math.random().toString(36).slice(2, 10)}`;
+      const created = await UserModel.create({
+        name,
+        email: normalizedEmail,
+        passwordHash: await bcrypt.hash(password, 10),
+        role,
+        isActive: true,
+        schoolId,
+        groupIds: role === "supervisor" ? [schoolId] : [],
+        linkedStudentIds: [],
+      });
+
+      usersByEmail.set(normalizedEmail, created);
+      credentials.push({ role, name: created.name, email: normalizedEmail, password, linkedTo });
+      if (role === "parent") summary.createdParents += 1;
+      if (role === "supervisor") summary.createdSupervisors += 1;
+      return created;
+    };
+
+    for (const row of payload.rows) {
+      const studentEmail = row.studentEmail.trim().toLowerCase();
+      if (!studentEmail) {
+        summary.skippedRows += 1;
+        continue;
+      }
+
+      const student = usersByEmail.get(studentEmail);
+      if (!student || student.role !== "student" || String(student.schoolId || "") !== schoolId) {
+        summary.missingStudents += 1;
+        continue;
+      }
+
+      const className = String(row.className || "").trim();
+      const classroom = className ? classByName.get(className.toLowerCase()) : undefined;
+      if (className && !classroom) {
+        summary.missingClasses += 1;
+      }
+
+      if (classroom) {
+        const classId = classroom.id || String(classroom._id);
+        await Promise.all([
+          UserModel.findByIdAndUpdate(student._id, { $set: { schoolId }, $addToSet: { groupIds: classId } }),
+          GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: student.id || String(student._id) } }),
+          GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), { $addToSet: { studentIds: student.id || String(student._id) } }),
+        ]);
+        summary.assignedClasses += 1;
+      }
+
+      const parentEmail = String(row.parentEmail || "").trim().toLowerCase();
+      if (parentEmail) {
+        const parent = await createUserIfMissing(
+          parentEmail,
+          "parent",
+          row.parentName?.trim() || `ولي أمر ${student.name}`,
+          student.name,
+        );
+        if (!parent) {
+          summary.missingParents += 1;
+        } else {
+          await UserModel.findByIdAndUpdate(parent._id, { $set: { schoolId }, $addToSet: { linkedStudentIds: student.id || String(student._id) } });
+          summary.linkedParents += 1;
+        }
+      }
+
+      const supervisorEmail = String(row.supervisorEmail || "").trim().toLowerCase();
+      if (supervisorEmail) {
+        const supervisor = await createUserIfMissing(
+          supervisorEmail,
+          "supervisor",
+          row.supervisorName?.trim() || `مشرف ${school.name}`,
+          classroom?.name || school.name,
+        );
+        if (!supervisor) {
+          summary.missingSupervisors += 1;
+        } else {
+          const targetGroupId = classroom ? classroom.id || String(classroom._id) : schoolId;
+          await Promise.all([
+            UserModel.findByIdAndUpdate(supervisor._id, { $set: { schoolId }, $addToSet: { groupIds: targetGroupId } }),
+            GroupModel.findOneAndUpdate(buildDocumentQuery(targetGroupId), { $addToSet: { supervisorIds: supervisor.id || String(supervisor._id) } }),
+          ]);
+          summary.linkedSupervisors += 1;
+        }
+      }
+    }
+
+    const latestClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId });
+    await Promise.all([
+      GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {
+        $set: {
+          totalStudents: await UserModel.countDocuments({ schoolId, role: "student" }),
+          totalSupervisors: await UserModel.countDocuments({ schoolId, role: { $in: ["teacher", "supervisor"] } }),
+        },
+      }),
+      ...latestClasses.map(async (group) => {
+        const classId = group.id || String(group._id);
+        const [studentCount, supervisorCount] = await Promise.all([
+          UserModel.countDocuments({ role: "student", groupIds: classId }),
+          UserModel.countDocuments({ role: { $in: ["teacher", "supervisor"] }, groupIds: classId }),
+        ]);
+        await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), {
+          $set: { totalStudents: studentCount, totalSupervisors: supervisorCount },
+        });
+      }),
+    ]);
+
+    const [updatedGroups, updatedUsers] = await Promise.all([
+      GroupModel.find({
+        $or: [{ _id: school._id }, { id: schoolId }, { parentId: schoolId }],
+      }).sort({ createdAt: -1 }),
+      UserModel.find({ schoolId }).select("-passwordHash").sort({ createdAt: -1 }),
+    ]);
+
+    return res.status(StatusCodes.CREATED).json({
+      summary,
+      credentials,
+      groups: updatedGroups,
+      users: updatedUsers,
     });
   }),
 );

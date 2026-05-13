@@ -71,6 +71,13 @@ type RelationCredential = {
     linkedTo: string;
 };
 
+type RelationResponse = {
+    summary: RelationImportSummary;
+    credentials: RelationCredential[];
+    users?: AdminUserPayload[];
+    groups?: Group[];
+};
+
 type AdminUserPayload = {
     id?: string;
     _id?: string;
@@ -567,6 +574,7 @@ export const SchoolsManager: React.FC = () => {
         createAccessCode,
         deleteAccessCode,
         hydrateUsers,
+        hydrateContentBootstrap,
     } = useStore();
 
     const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
@@ -594,6 +602,7 @@ export const SchoolsManager: React.FC = () => {
     const [newCodeMaxUses, setNewCodeMaxUses] = useState('50');
     const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
     const [bulkClassNames, setBulkClassNames] = useState('');
+    const [singleStudent, setSingleStudent] = useState({ name: '', email: '', className: '', password: '' });
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
@@ -898,6 +907,39 @@ export const SchoolsManager: React.FC = () => {
             await loadSchoolReport(selectedSchool.id);
         } catch (error) {
             setImportError(error instanceof Error ? error.message : 'تعذر استيراد الطلاب الآن.');
+        } finally {
+            setIsImporting(false);
+        }
+    };
+
+    const handleAddSingleStudent = async () => {
+        if (!selectedSchool) return;
+
+        const name = singleStudent.name.trim();
+        const email = singleStudent.email.trim().toLowerCase();
+        if (!name || !email) {
+            setImportError('اكتب اسم الطالب والبريد الإلكتروني قبل الإضافة.');
+            return;
+        }
+
+        setIsImporting(true);
+        setImportError(null);
+        try {
+            const response = await api.importSchoolStudents(selectedSchool.id, {
+                rows: [{
+                    name,
+                    email,
+                    className: singleStudent.className.trim() || undefined,
+                    password: singleStudent.password.trim() || undefined,
+                }],
+            }) as ImportResponse;
+            setImportSummary(response.summary);
+            setImportCredentials(response.credentials);
+            setSingleStudent({ name: '', email: '', className: '', password: '' });
+            await refreshUsers();
+            await loadSchoolReport(selectedSchool.id);
+        } catch (error) {
+            setImportError(error instanceof Error ? error.message : 'تعذر إضافة الطالب الآن.');
         } finally {
             setIsImporting(false);
         }
@@ -1509,6 +1551,32 @@ export const SchoolsManager: React.FC = () => {
             setRelationCredentials([]);
 
             try {
+                const response = await api.applySchoolRelations(selectedSchool.id, {
+                    rows: relationRows,
+                    createMissingUsers: createMissingRelationUsers,
+                }) as RelationResponse;
+
+                setRelationSummary(response.summary);
+                setRelationCredentials(response.credentials || []);
+                setRelationError(null);
+
+                if (response.users) {
+                    hydrateUsers(response.users.map(buildStoreUser));
+                } else {
+                    await refreshUsers();
+                }
+
+                if (response.groups) {
+                    hydrateContentBootstrap({ groups: response.groups });
+                    const updatedSelectedSchool = response.groups.find((group) => group.id === selectedSchool.id);
+                    if (updatedSelectedSchool) {
+                        setSelectedSchool(updatedSelectedSchool);
+                    }
+                }
+
+                await loadSchoolReport(selectedSchool.id);
+                return;
+
                 if (createMissingRelationUsers) {
                     const parentCreateQueue = new Map<string, { name: string; student: User }>();
                     const supervisorCreateQueue = new Map<string, { name: string; student: User; classroom?: Group }>();
@@ -1870,6 +1938,52 @@ export const SchoolsManager: React.FC = () => {
                                     </div>
                                     <div className="text-2xl font-black text-rose-800">{schoolStudents.length}</div>
                                     <p className="text-xs text-rose-700 mt-1">مرتبطون فعليًا بهذه المدرسة</p>
+                                </div>
+                            </div>
+
+                            <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <h3 className="text-lg font-black text-gray-900">إضافة طالب منفرد</h3>
+                                        <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع بدون ملف Excel.</p>
+                                    </div>
+                                    <button
+                                        onClick={() => void handleAddSingleStudent()}
+                                        disabled={isImporting}
+                                        className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                        إضافة الطالب
+                                    </button>
+                                </div>
+                                <div className="grid gap-3 md:grid-cols-4">
+                                    <input
+                                        value={singleStudent.name}
+                                        onChange={(event) => setSingleStudent((current) => ({ ...current, name: event.target.value }))}
+                                        placeholder="اسم الطالب"
+                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                    />
+                                    <input
+                                        value={singleStudent.email}
+                                        onChange={(event) => setSingleStudent((current) => ({ ...current, email: event.target.value }))}
+                                        placeholder="بريد الطالب"
+                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                    />
+                                    <select
+                                        value={singleStudent.className}
+                                        onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
+                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                    >
+                                        <option value="">بدون فصل</option>
+                                        {schoolClasses.map((classroom) => (
+                                            <option key={classroom.id} value={classroom.name}>{classroom.name}</option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        value={singleStudent.password}
+                                        onChange={(event) => setSingleStudent((current) => ({ ...current, password: event.target.value }))}
+                                        placeholder="كلمة مرور اختيارية"
+                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                    />
                                 </div>
                             </div>
 
