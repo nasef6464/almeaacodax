@@ -1,5 +1,12 @@
 # Monitoring And Logging Guide
 
+## 2026-05-13 Cold Start Hardening
+
+- Backend startup now opens the HTTP listener immediately after MongoDB connects.
+- Non-critical startup maintenance (`ensureSkillTaxonomy` and `ensureAdminAccount`) runs in the background through `runStartupMaintenance`.
+- This reduces Render cold-start wait time for real users while still logging maintenance failures for operators.
+- MongoDB remains a hard dependency before listening; Redis remains reported through `/api/health` and `/api/health/ready`.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.

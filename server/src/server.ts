@@ -7,10 +7,24 @@ import { ensureSkillTaxonomy } from "./services/ensureSkillTaxonomy.js";
 import { startNotificationWorkers } from "./queues/notificationQueue.js";
 import { createSocketServer } from "./sockets/index.js";
 
+async function runStartupMaintenance() {
+  const tasks = [
+    ["skill taxonomy", ensureSkillTaxonomy],
+    ["admin account", ensureAdminAccount],
+  ] as const;
+
+  for (const [name, task] of tasks) {
+    try {
+      await task();
+      console.info(`[startup] ${name} maintenance completed`);
+    } catch (error) {
+      console.error(`[startup] ${name} maintenance failed`, error);
+    }
+  }
+}
+
 async function bootstrap() {
   await connectToDatabase();
-  await ensureSkillTaxonomy();
-  await ensureAdminAccount();
 
   const app = createApp();
   const server = createServer(app);
@@ -20,6 +34,8 @@ async function bootstrap() {
   server.listen(env.PORT, () => {
     console.log(`API server listening on http://localhost:${env.PORT}`);
   });
+
+  void runStartupMaintenance();
 }
 
 bootstrap().catch((error) => {

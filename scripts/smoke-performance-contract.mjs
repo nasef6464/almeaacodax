@@ -160,6 +160,11 @@ assertIncludes('App.tsx', "'/results'");
 assertIncludes('services/api.ts', 'getPublicAnnouncementAds: () =>');
 assertIncludes('server/src/routes/content.routes.ts', '"/announcement-ads"');
 assertIncludes('server/src/routes/content.routes.ts', '.limit(8)');
+assertIncludes('server/src/server.ts', 'async function runStartupMaintenance()');
+assertIncludes('server/src/server.ts', 'void runStartupMaintenance();');
+assertIncludes('server/src/server.ts', 'await connectToDatabase();');
+assertIncludes('server/src/server.ts', 'server.listen(env.PORT');
+assertNotIncludes('server/src/server.ts', 'await ensureSkillTaxonomy();\n  await ensureAdminAccount();');
 
 assertIncludes('store/useStore.ts', "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
 assertIncludes('store/useStore.ts', "runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false'");
