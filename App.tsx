@@ -342,20 +342,11 @@ const App: React.FC = () => {
 
     const bootstrapAppData = async (options: { deferQuestions?: boolean } = {}) => {
       try {
-        // If the backend is unreachable, avoid hydrating with empty arrays
-        // (adapter falls back to empty on network errors) which would make
-        // locally persisted admin edits "disappear" after refresh.
         const useRealApi = import.meta.env.PROD || import.meta.env.VITE_USE_REAL_API !== 'false';
         if (useRealApi) {
-          try {
-            await api.health();
-          } catch (error) {
-            console.warn('API health check failed; skipping remote hydration to preserve local state.', error);
-            if (mounted) {
-              setBootstrapReady(true);
-            }
-            return;
-          }
+          void api.health().catch((error) => {
+            console.warn('API health check failed; continuing data bootstrap.', error);
+          });
         }
 
         const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
@@ -372,7 +363,9 @@ const App: React.FC = () => {
           return;
         }
 
-        if (coursesResult.status === 'fulfilled') {
+        const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+
+        if (coursesResult.status === 'fulfilled' && coursesResult.value.length > 0) {
           hydrateCourses(coursesResult.value);
         }
 
@@ -384,7 +377,16 @@ const App: React.FC = () => {
           hydrateQuizzes(quizzesResult.value);
         }
 
-        if (taxonomyResult.status === 'fulfilled') {
+        if (
+          taxonomyResult.status === 'fulfilled' &&
+          [
+            taxonomyResult.value.paths,
+            taxonomyResult.value.levels,
+            taxonomyResult.value.subjects,
+            taxonomyResult.value.sections,
+            taxonomyResult.value.skills,
+          ].some(hasItems)
+        ) {
           hydrateTaxonomy({
             paths: taxonomyResult.value.paths as any[],
             levels: taxonomyResult.value.levels as any[],
@@ -394,7 +396,19 @@ const App: React.FC = () => {
           });
         }
 
-        if (contentResult.status === 'fulfilled') {
+        if (
+          contentResult.status === 'fulfilled' &&
+          [
+            contentResult.value.topics,
+            contentResult.value.lessons,
+            contentResult.value.libraryItems,
+            contentResult.value.groups,
+            contentResult.value.b2bPackages,
+            contentResult.value.accessCodes,
+            contentResult.value.announcementAds,
+            contentResult.value.studyPlans,
+          ].some(hasItems)
+        ) {
           hydrateContentBootstrap({
             topics: contentResult.value.topics as any[],
             lessons: contentResult.value.lessons as any[],
