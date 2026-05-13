@@ -68,6 +68,12 @@ const questionListQuerySchema = z.object({
   noTotal: z.coerce.boolean().default(false),
 });
 
+const dashboardAnalyticsQuerySchema = z.object({
+  studentLimit: z.coerce.number().int().min(1).max(1000).default(500),
+  resultLimit: z.coerce.number().int().min(100).max(5000).default(2000),
+  attemptLimit: z.coerce.number().int().min(100).max(5000).default(3000),
+});
+
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
@@ -450,6 +456,8 @@ const assertTeacherManagedScope = async (
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
+const idOf = (item: any) => String(item?.id || item?._id || "");
+
 const buildRecommendedAction = (mastery: number, attemptCount: number) => {
   if (mastery < 45) {
     return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
@@ -796,35 +804,60 @@ const toSafeDate = (value?: string) => {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 };
 
-const resolveScopedStudents = async (authUser: any) => {
-  const allStudents = await UserModel.find({ role: "student" });
+const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
+
+const buildScopedStudentFilter = (authUser: any) => {
   const managedPathIds = new Set<string>((authUser.managedPathIds || []).map(String));
   const managedSubjectIds = new Set<string>((authUser.managedSubjectIds || []).map(String));
 
   if (authUser.role === "admin") {
-    return { students: allStudents, managedPathIds, managedSubjectIds };
+    return { filter: { role: "student" }, managedPathIds, managedSubjectIds };
   }
 
   if (authUser.role === "teacher" || authUser.role === "supervisor") {
     const allowedGroupIds = new Set((authUser.groupIds || []).map(String));
-    const students = allStudents.filter((student) => {
-      const studentGroupIds = (student.groupIds || []).map(String);
-      const sharesGroup = studentGroupIds.some((groupId) => allowedGroupIds.has(groupId));
-      const sharesSchool = !!authUser.schoolId && String(student.schoolId || "") === String(authUser.schoolId);
-      return sharesGroup || sharesSchool;
-    });
+    const scopeFilters: Record<string, unknown>[] = [];
 
-    return { students, managedPathIds, managedSubjectIds };
+    if (allowedGroupIds.size > 0) {
+      scopeFilters.push({ groupIds: { $in: Array.from(allowedGroupIds) } });
+    }
+    if (authUser.schoolId) {
+      scopeFilters.push({ schoolId: String(authUser.schoolId) });
+    }
+
+    return {
+      filter: scopeFilters.length ? { role: "student", $or: scopeFilters } : { role: "student", _id: { $exists: false } },
+      managedPathIds,
+      managedSubjectIds,
+    };
   }
 
   if (authUser.role === "parent") {
-    const linkedStudentIds = new Set((authUser.linkedStudentIds || []).map(String));
-    const students = allStudents.filter((student) => linkedStudentIds.has(String(student.id)));
-    return { students, managedPathIds, managedSubjectIds };
+    const linkedStudentIds = uniqueStrings((authUser.linkedStudentIds || []).map(String));
+    const studentIdentityFilter = linkedStudentIds.length ? buildDocumentsByIdsQuery(linkedStudentIds) : { _id: { $exists: false } };
+    return {
+      filter: { role: "student", ...studentIdentityFilter },
+      managedPathIds,
+      managedSubjectIds,
+    };
   }
 
-  const students = allStudents.filter((student) => String(student.id) === String(authUser.id));
-  return { students, managedPathIds, managedSubjectIds };
+  return {
+    filter: { role: "student", ...buildDocumentQuery(String(authUser.id || authUser._id || "")) },
+    managedPathIds,
+    managedSubjectIds,
+  };
+};
+
+const resolveScopedStudents = async (authUser: any, options?: { limit?: number }) => {
+  const { filter, managedPathIds, managedSubjectIds } = buildScopedStudentFilter(authUser);
+  const limit = Math.max(1, Math.min(options?.limit || 500, 1000));
+  const [students, totalStudents] = await Promise.all([
+    UserModel.find(filter).select(STUDENT_DASHBOARD_SELECT).sort({ createdAt: -1 }).limit(limit).lean(),
+    UserModel.countDocuments(filter),
+  ]);
+
+  return { students, totalStudents, isTruncated: totalStudents > students.length, managedPathIds, managedSubjectIds };
 };
 
 const filterResultsByManagedScope = (
@@ -1089,33 +1122,17 @@ quizRouter.get(
   "/analytics/overview",
   requireAuth,
   asyncHandler(async (req, res) => {
+    const query = dashboardAnalyticsQuerySchema.parse(req.query);
     const authUser = await UserModel.findById(req.authUser!.id);
 
     if (!authUser) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    const managedPathIds = new Set((authUser.managedPathIds || []).map(String));
-    const managedSubjectIds = new Set((authUser.managedSubjectIds || []).map(String));
-    const allStudents = await UserModel.find({ role: "student" });
-    let scopedStudents = allStudents.filter((student) => String(student.id) === req.authUser!.id);
+    const { students: scopedStudents, totalStudents, isTruncated, managedPathIds, managedSubjectIds } =
+      await resolveScopedStudents(authUser, { limit: query.studentLimit });
 
-    if (authUser.role === "admin") {
-      scopedStudents = allStudents;
-    } else if (authUser.role === "teacher" || authUser.role === "supervisor") {
-      const allowedGroupIds = new Set((authUser.groupIds || []).map(String));
-      scopedStudents = allStudents.filter((student) => {
-        const studentGroupIds = (student.groupIds || []).map(String);
-        const sharesGroup = studentGroupIds.some((groupId) => allowedGroupIds.has(groupId));
-        const sharesSchool = !!authUser.schoolId && String(student.schoolId || "") === String(authUser.schoolId);
-        return sharesGroup || sharesSchool;
-      });
-    } else if (authUser.role === "parent") {
-      const linkedStudentIds = new Set((authUser.linkedStudentIds || []).map(String));
-      scopedStudents = allStudents.filter((student) => linkedStudentIds.has(String(student.id)));
-    }
-
-    const scopedStudentIds = scopedStudents.map((student) => String(student.id));
+    const scopedStudentIds = scopedStudents.map((student) => idOf(student));
     const relatedGroupIds = uniqueStrings([
       ...scopedStudents.flatMap((student) => (student.groupIds || []).map(String)),
       ...(authUser.groupIds || []).map(String),
@@ -1123,13 +1140,13 @@ quizRouter.get(
     ]);
 
     const groups = relatedGroupIds.length
-      ? await GroupModel.find(buildDocumentsByIdsQuery(relatedGroupIds))
+      ? await GroupModel.find(buildDocumentsByIdsQuery(relatedGroupIds)).select("id name").lean()
       : [];
 
-    const groupNameById = new Map(groups.map((group) => [String(group.id), String(group.name || "")]));
+    const groupNameById = new Map(groups.map((group: any) => [idOf(group), String(group.name || "")]));
 
     let quizResults = scopedStudentIds.length
-      ? await QuizResultModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 })
+      ? await QuizResultModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.resultLimit).lean()
       : [];
 
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
@@ -1140,7 +1157,7 @@ quizRouter.get(
     }
 
     let questionAttempts = scopedStudentIds.length
-      ? await QuestionAttemptModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(5000)
+      ? await QuestionAttemptModel.find({ userId: { $in: scopedStudentIds } }).sort({ createdAt: -1 }).limit(query.attemptLimit).lean()
       : [];
 
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
@@ -1148,8 +1165,8 @@ quizRouter.get(
     }
 
     const attemptSkillIds = uniqueStrings(questionAttempts.flatMap((attempt) => (attempt.skillIds || []).map(String)));
-    const attemptSkills = attemptSkillIds.length ? await SkillModel.find(buildDocumentsByIdsQuery(attemptSkillIds)) : [];
-    const skillById = new Map(attemptSkills.map((skill) => [String(skill.id || skill._id), skill]));
+    const attemptSkills = attemptSkillIds.length ? await SkillModel.find(buildDocumentsByIdsQuery(attemptSkillIds)).lean() : [];
+    const skillById = new Map(attemptSkills.map((skill: any) => [idOf(skill), skill]));
     const attemptSubjectIds = uniqueStrings([
       ...questionAttempts.map((attempt) => String(attempt.subjectId || "")),
       ...attemptSkills.map((skill) => String(skill.subjectId || "")),
@@ -1158,10 +1175,10 @@ quizRouter.get(
       ...questionAttempts.map((attempt) => String(attempt.sectionId || "")),
       ...attemptSkills.map((skill) => String(skill.sectionId || "")),
     ]);
-    const attemptSubjects = attemptSubjectIds.length ? await SubjectModel.find(buildDocumentsByIdsQuery(attemptSubjectIds)) : [];
-    const attemptSections = attemptSectionIds.length ? await SectionModel.find(buildDocumentsByIdsQuery(attemptSectionIds)) : [];
-    const subjectNameById = new Map(attemptSubjects.map((subject) => [String(subject.id || subject._id), String(subject.name || "")]));
-    const sectionNameById = new Map(attemptSections.map((section) => [String(section.id || section._id), String(section.name || "")]));
+    const attemptSubjects = attemptSubjectIds.length ? await SubjectModel.find(buildDocumentsByIdsQuery(attemptSubjectIds)).select("id name").lean() : [];
+    const attemptSections = attemptSectionIds.length ? await SectionModel.find(buildDocumentsByIdsQuery(attemptSectionIds)).select("id name").lean() : [];
+    const subjectNameById = new Map(attemptSubjects.map((subject: any) => [idOf(subject), String(subject.name || "")]));
+    const sectionNameById = new Map(attemptSections.map((section: any) => [idOf(section), String(section.name || "")]));
     const attemptsByStudent = new Map<string, any[]>();
     questionAttempts.forEach((attempt) => {
       const key = String(attempt.userId || "");
@@ -1199,7 +1216,7 @@ quizRouter.get(
 
     const weakestStudents = scopedStudents
       .map((student) => {
-        const studentId = String(student.id);
+        const studentId = idOf(student);
         const results = resultsByStudent.get(studentId) || [];
         const granularAttempts = attemptsByStudent.get(studentId) || [];
         const attempts = results.length;
@@ -1445,7 +1462,7 @@ quizRouter.get(
         { targetUserIds: { $in: scopedStudentIds } },
         { targetGroupIds: { $in: relatedGroupIds } },
       ],
-    }).sort({ createdAt: -1 }).limit(12);
+    }).sort({ createdAt: -1 }).limit(12).lean();
 
     if (authUser.role === "teacher" && (managedPathIds.size > 0 || managedSubjectIds.size > 0)) {
       assignedFollowUps = assignedFollowUps.filter((quiz) => {
@@ -1467,10 +1484,17 @@ quizRouter.get(
     return res.json({
       scope: {
         role: authUser.role,
-        studentCount: scopedStudents.length,
+        studentCount: totalStudents,
+        sampledStudentCount: scopedStudents.length,
+        isTruncated,
         groupCount: relatedGroupIds.length,
         quizAttempts: quizResults.length,
         questionAttempts: questionAttempts.length,
+        limits: {
+          studentLimit: query.studentLimit,
+          resultLimit: query.resultLimit,
+          attemptLimit: query.attemptLimit,
+        },
       },
       weakestStudents,
       weakestSkills,
@@ -1516,13 +1540,15 @@ quizRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    const { students, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser);
-    const studentIds = students.map((student) => String(student.id));
-    const studentById = new Map(students.map((student) => [String(student.id), student]));
     const pagination = resolvePagination(req.query, { limit: 50 });
+    const { students, totalStudents, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser, {
+      limit: Math.max(pagination.limit, 200),
+    });
+    const studentIds = students.map((student) => idOf(student));
+    const studentById = new Map(students.map((student) => [idOf(student), student]));
 
     let results = studentIds.length
-      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit)
+      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()
       : [];
     const total = studentIds.length ? await QuizResultModel.countDocuments({ userId: { $in: studentIds } }) : 0;
     results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
@@ -1530,14 +1556,15 @@ quizRouter.get(
     return res.json({
       scope: {
         role: authUser.role,
-        studentCount: students.length,
+        studentCount: totalStudents,
+        sampledStudentCount: students.length,
         resultCount: results.length,
       },
       pagination: buildPaginatedResponse([], pagination, total),
       results: results.map((result) => {
         const student = studentById.get(String(result.userId || ""));
         return {
-          ...(typeof result.toJSON === "function" ? result.toJSON() : result),
+          ...result,
           studentName: student?.name || "",
           studentEmail: student?.email || "",
           studentSchoolId: student?.schoolId || undefined,

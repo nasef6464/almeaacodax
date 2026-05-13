@@ -58,6 +58,7 @@
     "smoke:frontend-phase5": "node scripts/smoke-frontend-phase5-contract.mjs",
     "smoke:security-rbac-phase6": "node scripts/smoke-security-rbac-phase6-contract.mjs",
     "smoke:exam-payment-phase8": "node scripts/smoke-exam-payment-phase8-contract.mjs",
+    "smoke:dashboards-phase11": "node scripts/smoke-dashboards-phase11-contract.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
   },

@@ -609,7 +609,8 @@ export const api = {
     }),
   getQuizzes: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, ...pagination })), "quizzes"),
-  getQuizAnalyticsOverview: () => request<unknown>("/quizzes/analytics/overview"),
+  getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
+    request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),
   createQuiz: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes", {
       method: "POST",
@@ -635,7 +636,8 @@ export const api = {
     }),
   getQuizResults: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 200, ...pagination })), "results"),
-  getScopedQuizResults: () => request<unknown>("/quizzes/results/scoped"),
+  getScopedQuizResults: (pagination: PaginationOptions = {}) =>
+    request<unknown>(withQuery("/quizzes/results/scoped", { limit: 200, ...pagination })),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
   getSkillProgress: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
