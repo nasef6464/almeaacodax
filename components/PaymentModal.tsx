@@ -46,6 +46,10 @@ const fallbackSettings: PaymentSettings = {
     card: {
         enabled: true,
         label: 'بطاقة بنكية',
+        providerName: 'Tap / MyFatoorah / HyperPay / Paymob / Fawry',
+        providerCode: 'manual_card',
+        gatewayMode: 'manual_review',
+        supportedCountries: ['SA', 'EG'],
         instructions: 'سيتم إرسال طلب دفع آمن ومراجعته من الإدارة قبل التفعيل.',
     },
     transfer: {
@@ -55,6 +59,10 @@ const fallbackSettings: PaymentSettings = {
         accountName: '',
         accountNumber: '',
         iban: '',
+        providerName: 'Bank transfer',
+        providerCode: 'manual_transfer',
+        gatewayMode: 'manual_review',
+        supportedCountries: ['SA', 'EG'],
         instructions: '',
         publishDetailsToStudents: true,
     },
@@ -62,6 +70,9 @@ const fallbackSettings: PaymentSettings = {
         enabled: true,
         label: 'محفظة إلكترونية',
         providerName: '',
+        providerCode: 'manual_wallet',
+        gatewayMode: 'manual_review',
+        supportedCountries: ['SA', 'EG'],
         phoneNumber: '',
         instructions: '',
         publishDetailsToStudents: true,
@@ -76,6 +87,11 @@ const packageContentLabels: Record<string, string> = {
     tests: 'الاختبارات',
     library: 'المكتبة',
     all: 'الباقة الشاملة',
+};
+
+const countryLabels: Record<string, string> = {
+    SA: 'السعودية',
+    EG: 'مصر',
 };
 
 export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, item, type = 'course' }) => {
@@ -218,6 +234,15 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         () => (['card', 'transfer', 'wallet'] as PaymentMethodKey[]).filter((key) => settings[key]?.enabled),
         [settings],
     );
+    const methodProviderLabel = (selectedMethod: PaymentMethodKey) => {
+        const methodSettings = settings[selectedMethod];
+        const provider = methodSettings?.providerName?.trim();
+        const countries = (methodSettings?.supportedCountries || [])
+            .map((country) => countryLabels[country] || country)
+            .filter(Boolean)
+            .join(' / ');
+        return [provider, countries].filter(Boolean).join(' - ');
+    };
 
     if (!isOpen || !item) return null;
 
@@ -268,6 +293,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             discountCode.trim() ? `كود الخصم: ${discountCode.trim().toUpperCase()}` : '',
             method === 'card' && cardHolderName.trim() ? `اسم حامل البطاقة: ${cardHolderName.trim()}` : '',
             method === 'card' && cardLast4.trim() ? `آخر 4 أرقام: ${cardLast4.trim()}` : '',
+            method ? `مزود الدفع: ${methodProviderLabel(method) || settings[method]?.providerCode || method}` : '',
         ].filter(Boolean).join(' | ');
 
         return {
@@ -279,6 +305,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             amount: getPrice(),
             currency: getCurrency(),
             paymentMethod: method,
+            paymentProviderCode: method ? settings[method]?.providerCode || '' : '',
+            paymentGatewayMode: method ? settings[method]?.gatewayMode || 'manual_review' : 'manual_review',
+            paymentCountry: method ? (settings[method]?.supportedCountries || [])[0] || '' : '',
             transferReference: method === 'transfer' ? transferReference.trim() : '',
             walletNumber: method === 'wallet' ? walletNumber.trim() : '',
             receiptUrl: receiptUrl.trim(),
@@ -365,6 +394,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <div className="text-right">
                     <p className="font-bold text-gray-800">{title}</p>
                     <p className="text-xs text-gray-500">{description}</p>
+                    {methodProviderLabel(selectedMethod) ? (
+                        <p className="mt-1 text-[11px] font-bold text-gray-400">{methodProviderLabel(selectedMethod)}</p>
+                    ) : null}
                 </div>
             </div>
             <ChevronLeft size={20} className="text-gray-400" />
@@ -531,6 +563,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     <h3 className="text-xl font-black text-gray-800">طلب دفع بالبطاقة</h3>
                     <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
                         {settings.card.instructions || 'سيتم إرسال رابط دفع آمن أو مراجعة الطلب من الإدارة.'}
+                        {methodProviderLabel('card') ? <div className="mt-2 text-xs font-black">{methodProviderLabel('card')}</div> : null}
                     </div>
                     <input value={cardHolderName} onChange={(event) => setCardHolderName(event.target.value)} placeholder="اسم حامل البطاقة" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                     <input value={cardLast4} onChange={(event) => setCardLast4(event.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="آخر 4 أرقام من البطاقة (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
@@ -541,6 +574,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <div className="space-y-4">
                     <h3 className="text-xl font-black text-gray-800">بيانات التحويل</h3>
                     <div className="bg-gray-50 p-6 rounded-2xl space-y-4 border border-gray-100">
+                        {settings.transfer.providerName && <InfoRow label="مزود الدفع" value={settings.transfer.providerName} />}
                         {settings.transfer.bankName && <InfoRow label="اسم البنك" value={settings.transfer.bankName} />}
                         {settings.transfer.iban && <InfoRow label="رقم الآيبان (IBAN)" value={settings.transfer.iban} mono />}
                         {settings.transfer.accountName && <InfoRow label="اسم المستفيد" value={settings.transfer.accountName} />}
@@ -556,6 +590,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     <h3 className="text-xl font-black text-gray-800">الدفع عبر المحفظة</h3>
                     <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                         {settings.wallet.instructions || 'أدخل رقم المحفظة أو الجوال المرتبط بها ليتم مراجعة الطلب.'}
+                        {methodProviderLabel('wallet') ? <div className="mt-2 text-xs font-black">{methodProviderLabel('wallet')}</div> : null}
                     </div>
                     {settings.wallet.providerName && (
                         <div className="p-4 border-2 border-emerald-500 bg-emerald-50 rounded-xl text-center">

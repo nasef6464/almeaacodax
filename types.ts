@@ -456,6 +456,9 @@ export interface PaymentMethodSettings {
     instructions?: string;
     phoneNumber?: string;
     providerName?: string;
+    providerCode?: string;
+    gatewayMode?: 'manual_review' | 'payment_link' | 'webhook';
+    supportedCountries?: string[];
     publishDetailsToStudents?: boolean;
 }
 
@@ -496,6 +499,9 @@ export interface PaymentRequest {
     discountCode?: string;
     notes?: string;
     approvalEvidence?: string;
+    paymentProviderCode?: string;
+    paymentGatewayMode?: string;
+    paymentCountry?: string;
     gatewayProvider?: string;
     gatewayTransactionId?: string;
     gatewayEventId?: string;

@@ -34,11 +34,34 @@ const defaultSettings: PaymentSettings = {
     key: 'default',
     currency: 'SAR',
     manualReviewRequired: true,
-    card: { enabled: true, label: 'بطاقة بنكية', instructions: '' },
-    transfer: { enabled: true, label: 'تحويل بنكي', bankName: '', accountName: '', accountNumber: '', iban: '', instructions: '', publishDetailsToStudents: true },
-    wallet: { enabled: true, label: 'محفظة إلكترونية', providerName: '', phoneNumber: '', instructions: '', publishDetailsToStudents: true },
+    card: { enabled: true, label: 'بطاقة بنكية', providerName: 'Tap / MyFatoorah / HyperPay / Paymob / Fawry', providerCode: 'manual_card', gatewayMode: 'manual_review', supportedCountries: ['SA', 'EG'], instructions: '' },
+    transfer: { enabled: true, label: 'تحويل بنكي', bankName: '', accountName: '', accountNumber: '', iban: '', providerName: 'Bank transfer', providerCode: 'manual_transfer', gatewayMode: 'manual_review', supportedCountries: ['SA', 'EG'], instructions: '', publishDetailsToStudents: true },
+    wallet: { enabled: true, label: 'محفظة إلكترونية', providerName: 'STC Pay / Vodafone Cash / Fawry', providerCode: 'manual_wallet', gatewayMode: 'manual_review', supportedCountries: ['SA', 'EG'], phoneNumber: '', instructions: '', publishDetailsToStudents: true },
     notes: '',
 };
+
+const paymentCountryOptions = [
+    { code: 'SA', label: 'السعودية' },
+    { code: 'EG', label: 'مصر' },
+];
+
+const paymentProviderPresets = {
+    card: [
+        { code: 'tap', label: 'Tap Payments', countries: ['SA'] },
+        { code: 'myfatoorah', label: 'MyFatoorah', countries: ['SA'] },
+        { code: 'hyperpay', label: 'HyperPay', countries: ['SA'] },
+        { code: 'paymob', label: 'Paymob', countries: ['EG'] },
+        { code: 'fawry', label: 'Fawry', countries: ['EG'] },
+    ],
+    transfer: [
+        { code: 'manual_transfer', label: 'تحويل بنكي يدوي', countries: ['SA', 'EG'] },
+    ],
+    wallet: [
+        { code: 'stc_pay', label: 'STC Pay', countries: ['SA'] },
+        { code: 'vodafone_cash', label: 'Vodafone Cash', countries: ['EG'] },
+        { code: 'fawry_wallet', label: 'Fawry Wallet', countries: ['EG'] },
+    ],
+} as const;
 
 const downloadCsv = (fileName: string, rows: Array<Array<string | number>>) => {
     const escapeCell = (cell: string | number) => {
@@ -696,6 +719,15 @@ export const FinancialManager: React.FC = () => {
             settings.wallet.enabled && settings.wallet.publishDetailsToStudents && !settings.wallet.phoneNumber
                 ? 'المحفظة الإلكترونية مفعلة لكن رقم الجوال/المحفظة غير مكتمل.'
                 : '',
+            settings.card.enabled && settings.card.gatewayMode === 'webhook' && !settings.webhookEnabled
+                ? 'تم اختيار اعتماد آلي للبطاقة لكن Webhook الدفع غير مفعل.'
+                : '',
+            settings.wallet.enabled && settings.wallet.gatewayMode === 'webhook' && !settings.webhookEnabled
+                ? 'تم اختيار اعتماد آلي للمحفظة لكن Webhook الدفع غير مفعل.'
+                : '',
+            settings.card.enabled && !(settings.card.supportedCountries || []).length
+                ? 'الدفع بالبطاقة مفعل بدون تحديد دولة تشغيل.'
+                : '',
             publicPackagesSummary.visible === 0 ? 'لا توجد باقات عامة ظاهرة للطلاب المستقلين.' : '',
             publicPackagesSummary.needsSetup > 0 ? `${publicPackagesSummary.needsSetup} باقة عامة تحتاج ضبط قبل البيع.` : '',
             schoolPackagesSummary.active === 0 && schools.length > 0 ? 'توجد مدارس لكن لا توجد باقات مدرسية نشطة.' : '',
@@ -887,12 +919,39 @@ export const FinancialManager: React.FC = () => {
         }
     };
 
-    const updateMethodSettings = (method: 'card' | 'transfer' | 'wallet', field: string, value: string | boolean) => {
+    const updateMethodSettings = (method: 'card' | 'transfer' | 'wallet', field: string, value: string | boolean | string[]) => {
         setSettings((current) => ({
             ...current,
             [method]: {
                 ...current[method],
                 [field]: value,
+            },
+        }));
+    };
+
+    const toggleMethodCountry = (method: 'card' | 'transfer' | 'wallet', countryCode: string) => {
+        const currentCountries = settings[method].supportedCountries || [];
+        updateMethodSettings(
+            method,
+            'supportedCountries',
+            currentCountries.includes(countryCode)
+                ? currentCountries.filter((country) => country !== countryCode)
+                : [...currentCountries, countryCode],
+        );
+    };
+
+    const applyProviderPreset = (
+        method: 'card' | 'transfer' | 'wallet',
+        preset: { code: string; label: string; countries: readonly string[] },
+    ) => {
+        setSettings((current) => ({
+            ...current,
+            [method]: {
+                ...current[method],
+                providerCode: preset.code,
+                providerName: preset.label,
+                supportedCountries: [...preset.countries],
+                gatewayMode: method === 'transfer' ? 'manual_review' : 'payment_link',
             },
         }));
     };
@@ -1315,6 +1374,60 @@ export const FinancialManager: React.FC = () => {
                                             onChange={(event) => updateMethodSettings(method, 'label', event.target.value)}
                                             className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
                                         />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-bold text-gray-700">مزود الدفع</label>
+                                        <input
+                                            value={settings[method].providerName || ''}
+                                            onChange={(event) => updateMethodSettings(method, 'providerName', event.target.value)}
+                                            className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-bold text-gray-700">نمط التشغيل</label>
+                                        <select
+                                            value={settings[method].gatewayMode || 'manual_review'}
+                                            onChange={(event) => updateMethodSettings(method, 'gatewayMode', event.target.value)}
+                                            className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+                                        >
+                                            <option value="manual_review">مراجعة يدوية</option>
+                                            <option value="payment_link">رابط دفع من المزود</option>
+                                            <option value="webhook">اعتماد آلي عبر Webhook</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-bold text-gray-700">الدول المدعومة</label>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {paymentCountryOptions.map((country) => (
+                                                <button
+                                                    key={`${method}-${country.code}`}
+                                                    type="button"
+                                                    onClick={() => toggleMethodCountry(method, country.code)}
+                                                    className={`rounded-full px-3 py-2 text-xs font-black transition-colors ${
+                                                        (settings[method].supportedCountries || []).includes(country.code)
+                                                            ? 'bg-indigo-600 text-white'
+                                                            : 'bg-white text-gray-600 border border-gray-200'
+                                                    }`}
+                                                >
+                                                    {country.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <label className="text-sm font-bold text-gray-700">اختيارات جاهزة للمزود</label>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {paymentProviderPresets[method].map((preset) => (
+                                                <button
+                                                    key={`${method}-${preset.code}`}
+                                                    type="button"
+                                                    onClick={() => applyProviderPreset(method, preset)}
+                                                    className="rounded-full border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-600 transition-colors hover:border-indigo-200 hover:text-indigo-700"
+                                                >
+                                                    {preset.label}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                     {method === 'transfer' && (
                                         <>

@@ -24,6 +24,9 @@ const paymentRequestSchema = new Schema(
     discountCode: { type: String, default: "" },
     notes: { type: String, default: "" },
     approvalEvidence: { type: String, default: "" },
+    paymentProviderCode: { type: String, default: "" },
+    paymentGatewayMode: { type: String, default: "manual_review" },
+    paymentCountry: { type: String, default: "" },
     gatewayProvider: { type: String, default: "" },
     gatewayTransactionId: { type: String, default: "" },
     gatewayEventId: { type: String, default: "" },
@@ -49,6 +52,7 @@ paymentRequestSchema.index({ status: 1, createdAt: -1 });
 paymentRequestSchema.index({ userId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ packageId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ discountCodeId: 1, status: 1, createdAt: -1 });
+paymentRequestSchema.index({ paymentProviderCode: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ gatewayEventId: 1 });
 paymentRequestSchema.index({ gatewayTransactionId: 1 });
 

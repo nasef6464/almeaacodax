@@ -24,6 +24,9 @@ const paymentMethodSettingsSchema = z.object({
   instructions: z.string().optional(),
   phoneNumber: z.string().optional(),
   providerName: z.string().optional(),
+  providerCode: z.string().max(80).optional(),
+  gatewayMode: z.enum(["manual_review", "payment_link", "webhook"]).optional(),
+  supportedCountries: z.array(z.string().max(3)).optional(),
   publishDetailsToStudents: z.boolean().optional(),
 });
 
@@ -51,6 +54,9 @@ const paymentRequestCreateSchema = z.object({
   walletNumber: z.string().optional(),
   receiptUrl: z.string().optional(),
   discountCode: z.string().max(80).optional(),
+  paymentProviderCode: z.string().max(80).optional(),
+  paymentGatewayMode: z.enum(["manual_review", "payment_link", "webhook"]).optional(),
+  paymentCountry: z.string().max(3).optional(),
   notes: z.string().optional(),
 });
 
@@ -103,6 +109,10 @@ const defaultSettings = {
   card: {
     enabled: false,
     label: "بطاقة بنكية",
+    providerName: "Tap / MyFatoorah / HyperPay / Paymob / Fawry",
+    providerCode: "manual_card",
+    gatewayMode: "manual_review",
+    supportedCountries: ["SA", "EG"],
     publishDetailsToStudents: true,
   },
   transfer: {
@@ -113,12 +123,19 @@ const defaultSettings = {
     accountNumber: "",
     iban: "",
     instructions: "",
+    providerName: "Bank transfer",
+    providerCode: "manual_transfer",
+    gatewayMode: "manual_review",
+    supportedCountries: ["SA", "EG"],
     publishDetailsToStudents: true,
   },
   wallet: {
     enabled: true,
     label: "محفظة إلكترونية",
     providerName: "",
+    providerCode: "manual_wallet",
+    gatewayMode: "manual_review",
+    supportedCountries: ["SA", "EG"],
     phoneNumber: "",
     instructions: "",
     publishDetailsToStudents: true,
@@ -133,6 +150,10 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   card: {
     enabled: Boolean(settings.card?.enabled),
     label: settings.card?.label || "بطاقة بنكية",
+    providerName: settings.card?.publishDetailsToStudents === false ? "" : (settings.card?.providerName || ""),
+    providerCode: settings.card?.providerCode || "manual_card",
+    gatewayMode: settings.card?.gatewayMode || "manual_review",
+    supportedCountries: settings.card?.supportedCountries || [],
     instructions: settings.card?.instructions || "",
   },
   transfer: {
@@ -142,12 +163,19 @@ const sanitizeSettingsForPublic = (settings: any) => ({
     accountName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountName || ""),
     accountNumber: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountNumber || ""),
     iban: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.iban || ""),
+    providerName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.providerName || ""),
+    providerCode: settings.transfer?.providerCode || "manual_transfer",
+    gatewayMode: settings.transfer?.gatewayMode || "manual_review",
+    supportedCountries: settings.transfer?.supportedCountries || [],
     instructions: settings.transfer?.instructions || "",
   },
   wallet: {
     enabled: Boolean(settings.wallet?.enabled),
     label: settings.wallet?.label || "محفظة إلكترونية",
     providerName: settings.wallet?.publishDetailsToStudents === false ? "" : (settings.wallet?.providerName || ""),
+    providerCode: settings.wallet?.providerCode || "manual_wallet",
+    gatewayMode: settings.wallet?.gatewayMode || "manual_review",
+    supportedCountries: settings.wallet?.supportedCountries || [],
     phoneNumber: settings.wallet?.publishDetailsToStudents === false ? "" : (settings.wallet?.phoneNumber || ""),
     instructions: settings.wallet?.instructions || "",
   },
@@ -400,6 +428,9 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
       itemId: updatedRequest.itemId,
       amount: updatedRequest.amount,
       currency: updatedRequest.currency,
+      paymentProviderCode: updatedRequest.paymentProviderCode || "",
+      paymentGatewayMode: updatedRequest.paymentGatewayMode || "",
+      paymentCountry: updatedRequest.paymentCountry || "",
       gatewayProvider: review.gatewayProvider || "",
       gatewayTransactionId: review.gatewayTransactionId || "",
     },
@@ -596,6 +627,11 @@ paymentRouter.post(
     const payload = paymentRequestCreateSchema.parse(req.body);
     const settings = await getOrCreateSettings();
     const user = await UserModel.findById(req.authUser?.id);
+    const selectedMethodSettings = ((settings as any)[payload.paymentMethod] || {}) as {
+      providerCode?: string;
+      gatewayMode?: "manual_review" | "payment_link" | "webhook";
+      supportedCountries?: string[];
+    };
 
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
@@ -603,6 +639,15 @@ paymentRouter.post(
 
     if (!isPaymentMethodEnabled(settings, payload.paymentMethod)) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة حاليًا" });
+    }
+
+    if (
+      payload.paymentCountry &&
+      Array.isArray(selectedMethodSettings.supportedCountries) &&
+      selectedMethodSettings.supportedCountries.length > 0 &&
+      !selectedMethodSettings.supportedCountries.includes(payload.paymentCountry)
+    ) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة لهذه الدولة حاليًا" });
     }
 
     if (!hasManualPaymentEvidence(payload)) {
@@ -661,6 +706,9 @@ paymentRouter.post(
       ...payload,
       packageId: payload.packageId || "",
       includedCourseIds: payload.includedCourseIds || [],
+      paymentProviderCode: payload.paymentProviderCode || selectedMethodSettings.providerCode || "",
+      paymentGatewayMode: payload.paymentGatewayMode || selectedMethodSettings.gatewayMode || "manual_review",
+      paymentCountry: payload.paymentCountry || selectedMethodSettings.supportedCountries?.[0] || "",
       originalAmount,
       discountAmount,
       discountCodeId,
