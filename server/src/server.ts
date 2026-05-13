@@ -4,6 +4,7 @@ import { connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
 import { ensureAdminAccount } from "./services/ensureAdminAccount.js";
 import { ensureSkillTaxonomy } from "./services/ensureSkillTaxonomy.js";
+import { startNotificationWorkers } from "./queues/notificationQueue.js";
 import { createSocketServer } from "./sockets/index.js";
 
 async function bootstrap() {
@@ -14,6 +15,7 @@ async function bootstrap() {
   const app = createApp();
   const server = createServer(app);
   createSocketServer(server);
+  startNotificationWorkers();
 
   server.listen(env.PORT, () => {
     console.log(`API server listening on http://localhost:${env.PORT}`);

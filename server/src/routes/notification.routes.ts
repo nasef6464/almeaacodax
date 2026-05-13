@@ -5,6 +5,7 @@ import { roles } from "../constants/roles.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
+import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
   getNotificationBatchLimit,
@@ -163,11 +164,15 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       variables: payload.variables,
       createdBy: req.authUser!.id,
     });
+    const queueResult = await enqueueNotificationDeliveries(result.deliveryIds || []);
 
     res.status(StatusCodes.ACCEPTED).json({
       ...result,
+      queue: queueResult,
       maxRecipientsPerRequest: getNotificationBatchLimit(),
-      message: "Notification delivery records created. External channels stay pending until a provider is configured.",
+      message: queueResult.queued
+        ? "Notification delivery records created and external deliveries queued."
+        : "Notification delivery records created. External channels stay pending until Redis/BullMQ is configured or processed manually.",
     });
   } catch (error) {
     next(error);
@@ -177,8 +182,13 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
 notificationRouter.post("/admin/process-pending", requireAuth, requireRole(["admin"]), async (req, res, next) => {
   try {
     const payload = processPendingSchema.parse(req.body || {});
+    const queueResult = await enqueuePendingNotifications(payload.limit);
+    if (queueResult.queued) {
+      return res.json({ mode: "queued", ...queueResult });
+    }
+
     const result = await processPendingNotifications(payload.limit);
-    res.json(result);
+    res.json({ mode: "inline-fallback", ...result });
   } catch (error) {
     next(error);
   }

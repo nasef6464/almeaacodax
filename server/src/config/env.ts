@@ -32,6 +32,15 @@ const envSchema = z.object({
       return value;
     }, z.boolean())
     .default(true),
+  NOTIFICATION_QUEUE_ENABLED: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+      }
+      return value;
+    }, z.boolean())
+    .default(true),
+  NOTIFICATION_QUEUE_CONCURRENCY: z.coerce.number().int().min(1).max(25).default(5),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   DEV_LOCAL_ADMIN_BYPASS: z

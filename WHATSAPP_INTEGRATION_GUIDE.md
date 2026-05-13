@@ -47,4 +47,5 @@ This marks pending WhatsApp deliveries as sent and logs a safe JSON line without
 - WhatsApp template messages must be approved by the provider before use.
 - OTP and marketing announcements should have separate templates and rate limits.
 - Bulk WhatsApp campaigns should run through a queue, not direct HTTP requests.
+- Configure `REDIS_URL` and `NOTIFICATION_QUEUE_ENABLED=true` so WhatsApp deliveries are handled by BullMQ workers instead of normal HTTP requests.
 - Delivery status webhooks should update `NotificationDelivery` records when the provider sends delivery/read/failure events.

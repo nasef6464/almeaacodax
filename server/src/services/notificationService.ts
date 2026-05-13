@@ -124,8 +124,53 @@ export async function createNotificationDeliveries(input: CreateNotificationInpu
     })),
   );
 
-  await NotificationDeliveryModel.insertMany(docs, { ordered: false });
-  return { campaignId, created: docs.length, recipients: recipients.length };
+  const inserted = await NotificationDeliveryModel.insertMany(docs, { ordered: false });
+  return {
+    campaignId,
+    created: docs.length,
+    recipients: recipients.length,
+    deliveryIds: inserted.map((item) => String(item.id)),
+  };
+}
+
+export async function processNotificationDeliveryById(deliveryId: string) {
+  const item = await NotificationDeliveryModel.findOne({
+    id: deliveryId,
+    status: { $in: ["pending", "retrying"] },
+    channel: { $in: ["email", "whatsapp"] },
+  });
+
+  if (!item) {
+    return { processed: false, status: "not_found_or_not_pending" };
+  }
+
+  const result = await sendExternalNotification({
+    channel: item.channel as NotificationChannel,
+    id: item.id,
+    recipientEmail: item.recipientEmail,
+    recipientPhone: item.recipientPhone,
+    subject: item.subject,
+    title: item.title,
+    body: item.body,
+  });
+
+  if (result.ok) {
+    item.status = "sent";
+    item.provider = result.provider;
+    item.providerMessageId = result.providerMessageId || item.providerMessageId || "";
+    item.sentAt = Date.now();
+    item.failureReason = "";
+    await item.save();
+    return { processed: true, status: "sent", provider: result.provider };
+  }
+
+  item.status = item.retryCount >= 3 ? "failed" : "retrying";
+  item.provider = result.provider;
+  item.failureReason = result.failureReason || `${item.channel}_provider_failed`;
+  item.retryCount += 1;
+  item.nextAttemptAt = Date.now() + 15 * 60 * 1000;
+  await item.save();
+  return { processed: true, status: item.status, provider: result.provider };
 }
 
 export async function processPendingNotifications(limit = 25) {
@@ -143,38 +188,17 @@ export async function processPendingNotifications(limit = 25) {
   let failed = 0;
 
   for (const item of pending) {
-    const result = await sendExternalNotification({
-      channel: item.channel as NotificationChannel,
-      id: item.id,
-      recipientEmail: item.recipientEmail,
-      recipientPhone: item.recipientPhone,
-      subject: item.subject,
-      title: item.title,
-      body: item.body,
-    });
-
-    if (result.ok) {
-      item.status = "sent";
-      item.provider = result.provider;
-      item.providerMessageId = result.providerMessageId || item.providerMessageId || "";
-      item.sentAt = Date.now();
-      item.failureReason = "";
+    const result = await processNotificationDeliveryById(item.id);
+    if (result.status === "sent") {
       sent += 1;
-      await item.save();
       continue;
     }
 
-    item.status = item.retryCount >= 3 ? "failed" : "retrying";
-    item.provider = result.provider;
-    item.failureReason = result.failureReason || `${item.channel}_provider_failed`;
-    item.retryCount += 1;
-    item.nextAttemptAt = Date.now() + 15 * 60 * 1000;
-    if (item.status === "failed") {
+    if (result.status === "failed") {
       failed += 1;
-    } else {
+    } else if (result.status === "retrying") {
       retrying += 1;
     }
-    await item.save();
   }
 
   return { scanned: pending.length, sent, retrying, failed };
