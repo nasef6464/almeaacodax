@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 const healthRoutes = await readFile(new URL("../server/src/routes/health.routes.ts", import.meta.url), "utf8");
 const redisConfig = await readFile(new URL("../server/src/config/redis.ts", import.meta.url), "utf8");
 const envConfig = await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8");
+const serverSource = await readFile(new URL("../server/src/server.ts", import.meta.url), "utf8");
+const queueSource = await readFile(new URL("../server/src/queues/notificationQueue.ts", import.meta.url), "utf8");
 const report = await readFile(new URL("../14_15_16_PRODUCTION_OPS_REPORT.md", import.meta.url), "utf8");
 
 const checks = [];
@@ -34,7 +36,7 @@ check("health readiness checks MongoDB and Redis dependencies", () => {
 check("readiness keeps liveness separate from dependency checks", () => {
   assertIncludes(healthRoutes, 'healthRouter.get("/live"');
   assertIncludes(healthRoutes, 'healthRouter.get("/ready"');
-  assertIncludes(healthRoutes, "res.status(dependencies.ok ? 200 : 503)");
+  assertIncludes(healthRoutes, "res.status(databaseReady ? 200 : 503)");
 });
 
 check("Redis health uses bounded ping timeout", () => {
@@ -48,6 +50,17 @@ check("Redis is required in production when scale features are enabled", () => {
   assertIncludes(healthRoutes, 'env.NODE_ENV === "production"');
   assertIncludes(envConfig, "RATE_LIMIT_REDIS_ENABLED");
   assertIncludes(envConfig, "NOTIFICATION_QUEUE_ENABLED");
+});
+
+check("server shuts down HTTP, queues, Redis, and MongoDB cleanly", () => {
+  assertIncludes(serverSource, 'process.once("SIGTERM"');
+  assertIncludes(serverSource, 'process.once("SIGINT"');
+  assertIncludes(serverSource, "server.close");
+  assertIncludes(serverSource, "closeNotificationQueue()");
+  assertIncludes(serverSource, "closeRedisClients()");
+  assertIncludes(serverSource, "mongoose.connection.close(false)");
+  assertIncludes(queueSource, "export async function closeNotificationQueue()");
+  assertIncludes(redisConfig, "export async function closeRedisClients()");
 });
 
 check("phase report documents production ops deliverables", () => {

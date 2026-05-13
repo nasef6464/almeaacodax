@@ -50,6 +50,21 @@ export function createRedisDuplicate(purpose: RedisPurpose) {
   return client ? client.duplicate({ keyPrefix: `${env.REDIS_KEY_PREFIX}:${purpose}:` }) : null;
 }
 
+export async function closeRedisClients() {
+  const activeClients = Array.from(clients.values());
+  clients.clear();
+
+  await Promise.allSettled(
+    activeClients.map(async (client) => {
+      try {
+        await client.quit();
+      } catch {
+        client.disconnect();
+      }
+    }),
+  );
+}
+
 export async function getRedisHealth(
   purpose: RedisPurpose,
   options: { required?: boolean; timeoutMs?: number } = {},

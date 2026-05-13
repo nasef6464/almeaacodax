@@ -2,10 +2,12 @@ import { createServer } from "http";
 import { createApp } from "./app.js";
 import { connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
+import { closeRedisClients } from "./config/redis.js";
 import { ensureAdminAccount } from "./services/ensureAdminAccount.js";
 import { ensureSkillTaxonomy } from "./services/ensureSkillTaxonomy.js";
-import { startNotificationWorkers } from "./queues/notificationQueue.js";
+import { closeNotificationQueue, startNotificationWorkers } from "./queues/notificationQueue.js";
 import { createSocketServer } from "./sockets/index.js";
+import mongoose from "mongoose";
 
 async function runStartupMaintenance() {
   const tasks = [
@@ -30,6 +32,50 @@ async function bootstrap() {
   const server = createServer(app);
   createSocketServer(server);
   startNotificationWorkers();
+
+  let shuttingDown = false;
+  const shutdown = async (signal: string) => {
+    if (shuttingDown) {
+      return;
+    }
+
+    shuttingDown = true;
+    console.info(`[shutdown] received ${signal}; closing server resources`);
+    const forceExitTimer = setTimeout(() => {
+      console.error("[shutdown] forced exit after timeout");
+      process.exit(1);
+    }, 15_000);
+    forceExitTimer.unref();
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        });
+      });
+      await closeNotificationQueue();
+      await closeRedisClients();
+      await mongoose.connection.close(false);
+      clearTimeout(forceExitTimer);
+      console.info("[shutdown] completed cleanly");
+      process.exit(0);
+    } catch (error) {
+      clearTimeout(forceExitTimer);
+      console.error("[shutdown] failed", error);
+      process.exit(1);
+    }
+  };
+
+  process.once("SIGTERM", () => {
+    void shutdown("SIGTERM");
+  });
+  process.once("SIGINT", () => {
+    void shutdown("SIGINT");
+  });
 
   server.listen(env.PORT, () => {
     console.log(`API server listening on http://localhost:${env.PORT}`);

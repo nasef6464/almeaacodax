@@ -47,6 +47,7 @@ The platform now has:
 - Structured slow/error request logs.
 - Client event capture for frontend errors.
 - Admin delivery-readiness endpoint for operational checks.
+- Graceful shutdown on `SIGTERM` and `SIGINT`: the API stops accepting new HTTP requests, closes BullMQ notification resources, closes Redis clients, then closes MongoDB cleanly. This is important for Render deploys and multi-instance restarts under load.
 
 External credentials still need to be configured later for full monitoring:
 

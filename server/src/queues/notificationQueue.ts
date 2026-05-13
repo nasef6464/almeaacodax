@@ -126,3 +126,15 @@ export function startNotificationWorkers() {
 
   return worker;
 }
+
+export async function closeNotificationQueue() {
+  const activeWorker = worker;
+  const activeQueue = queue;
+  worker = null;
+  queue = null;
+
+  await Promise.allSettled([
+    activeWorker?.close(),
+    activeQueue?.close(),
+  ].filter(Boolean) as Array<Promise<unknown>>);
+}
