@@ -114,6 +114,7 @@ const shouldStartBootstrapForPath = (path: string) =>
   DATA_BOOTSTRAP_START_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
 const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [
+  '/category',
   '/dashboard',
   '/admin-dashboard',
   '/instructor-dashboard',
@@ -124,6 +125,13 @@ const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [
 
 const shouldDeferQuestionBootstrap = (path: string) =>
   QUESTION_BOOTSTRAP_DEFER_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
+const SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES = [
+  '/category',
+];
+
+const shouldDeferSkillProgressBootstrap = (path: string) =>
+  SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
 const SEO_BASE_URL = 'https://almeaacodax.vercel.app';
 
@@ -341,7 +349,7 @@ const App: React.FC = () => {
   useEffect(() => {
     let mounted = true;
 
-    const bootstrapAppData = async (options: { deferQuestions?: boolean } = {}) => {
+    const bootstrapAppData = async (options: { deferQuestions?: boolean; deferSkillProgress?: boolean } = {}) => {
       try {
         const useRealApi = import.meta.env.PROD || import.meta.env.VITE_USE_REAL_API !== 'false';
         if (useRealApi) {
@@ -351,13 +359,14 @@ const App: React.FC = () => {
         }
 
         const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
+        const skillProgressPromise = options.deferSkillProgress ? null : api.getSkillProgress();
         const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
           adapter.getCourses(),
           questionsPromise ?? Promise.resolve(null),
           adapter.getQuizzes(),
           adapter.getTaxonomyBootstrap(),
           adapter.getContentBootstrap(),
-          api.getSkillProgress(),
+          skillProgressPromise ?? Promise.resolve(null),
         ]);
 
         if (!mounted) {
@@ -437,6 +446,18 @@ const App: React.FC = () => {
               console.warn('Deferred question bootstrap unavailable:', error);
             });
         }
+
+        if (options.deferSkillProgress) {
+          void api.getSkillProgress()
+            .then((skillProgress) => {
+              if (mounted) {
+                hydrateSkillProgress(skillProgress as any[]);
+              }
+            })
+            .catch((error) => {
+              console.warn('Deferred skill-progress bootstrap unavailable:', error);
+            });
+        }
       } catch (error) {
         console.warn('App bootstrap fallback active:', error);
       } finally {
@@ -498,7 +519,11 @@ const App: React.FC = () => {
       }
 
       bootstrapStarted = true;
-      void bootstrapAppData({ deferQuestions: shouldDeferQuestionBootstrap(getInitialRouterPath()) });
+      const path = getInitialRouterPath();
+      void bootstrapAppData({
+        deferQuestions: shouldDeferQuestionBootstrap(path),
+        deferSkillProgress: shouldDeferSkillProgressBootstrap(path),
+      });
     };
 
     const startIfRouteNeedsData = () => {

@@ -5,6 +5,7 @@
 - Added the production speed smoke measurement for `/api/quizzes/questions?summary=true&noTotal=true&limit=80`.
 - The learner/public summary path no longer expands all published quiz `questionIds` before returning a bounded summary list. That expensive expansion remains available for full question loads, explicit `ids`, and search flows where compatibility matters.
 - This keeps the first question-bank summary response small and predictable as the question bank grows, without exposing answers or changing UI layout.
+- Category pages now defer the general question-bank bootstrap and student skill-progress bootstrap. The route opens with courses, quizzes, taxonomy, and content first; question summaries and skill-progress hydrate in the background.
 
 ## Status
 
