@@ -6,6 +6,11 @@ const files = {
   library: await readFile(new URL("../server/src/models/LibraryItem.ts", import.meta.url), "utf8"),
   course: await readFile(new URL("../server/src/models/Course.ts", import.meta.url), "utf8"),
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
+  path: await readFile(new URL("../server/src/models/Path.ts", import.meta.url), "utf8"),
+  level: await readFile(new URL("../server/src/models/Level.ts", import.meta.url), "utf8"),
+  subject: await readFile(new URL("../server/src/models/Subject.ts", import.meta.url), "utf8"),
+  section: await readFile(new URL("../server/src/models/Section.ts", import.meta.url), "utf8"),
+  skill: await readFile(new URL("../server/src/models/Skill.ts", import.meta.url), "utf8"),
   payment: await readFile(new URL("../server/src/models/PaymentRequest.ts", import.meta.url), "utf8"),
   accessGrant: await readFile(new URL("../server/src/models/AccessGrant.ts", import.meta.url), "utf8"),
   discount: await readFile(new URL("../server/src/models/DiscountCode.ts", import.meta.url), "utf8"),
@@ -39,6 +44,14 @@ check("learning-space models have path/subject visibility indexes", () => {
   assertIncludes(files.topic, "topicSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, order: 1 })");
   assertIncludes(files.lesson, "lessonSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 })");
   assertIncludes(files.library, "libraryItemSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 })");
+});
+
+check("taxonomy bootstrap models have compound lookup indexes", () => {
+  assertIncludes(files.path, "pathSchema.index({ isActive: 1, createdAt: 1 })");
+  assertIncludes(files.level, "levelSchema.index({ pathId: 1, createdAt: 1 })");
+  assertIncludes(files.subject, "subjectSchema.index({ pathId: 1, createdAt: 1 })");
+  assertIncludes(files.section, "sectionSchema.index({ subjectId: 1, createdAt: 1 })");
+  assertIncludes(files.skill, "skillSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: 1 })");
 });
 
 check("package and access models have discovery indexes", () => {

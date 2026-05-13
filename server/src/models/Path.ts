@@ -24,4 +24,8 @@ const pathSchema = new Schema(
   },
 );
 
+pathSchema.index({ isActive: 1, createdAt: 1 });
+pathSchema.index({ showInNavbar: 1, isActive: 1, createdAt: 1 });
+pathSchema.index({ showInHome: 1, isActive: 1, createdAt: 1 });
+
 export const PathModel = mongoose.model("Path", pathSchema);

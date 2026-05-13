@@ -31,4 +31,7 @@ const subjectSchema = new Schema(
   },
 );
 
+subjectSchema.index({ pathId: 1, createdAt: 1 });
+subjectSchema.index({ levelId: 1, createdAt: 1 });
+
 export const SubjectModel = mongoose.model("Subject", subjectSchema);

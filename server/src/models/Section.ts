@@ -11,4 +11,6 @@ const sectionSchema = new Schema(
   },
 );
 
+sectionSchema.index({ subjectId: 1, createdAt: 1 });
+
 export const SectionModel = mongoose.model("Section", sectionSchema);

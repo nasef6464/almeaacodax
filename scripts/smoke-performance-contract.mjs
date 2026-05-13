@@ -152,6 +152,9 @@ assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearActivePathIdsCache(
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'TAXONOMY_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'Deferred taxonomy seed check failed');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'X-Taxonomy-Cache');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'publicTaxonomyBootstrapPromise');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'buildPublicTaxonomyBootstrapPayload');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'Cache-Control", "public, max-age=60, stale-while-revalidate=120"');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearTaxonomyBootstrapCache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'PathModel.find({ isActive: { $ne: false } })');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'SubjectModel.find({ pathId: { $in: visiblePathIds } })');

@@ -8,6 +8,7 @@ This sprint closes the first MongoDB hardening pass for high-traffic readiness. 
 
 Student and learning reads:
 
+- `Path`, `Level`, `Subject`, `Section`, `Skill`: taxonomy bootstrap lookup/order indexes for fast public path/subject opening.
 - `Topic`: path/subject/section visibility ordering, parent ordering, and linked lesson/quiz/library lookups.
 - `Lesson`: path/subject/section visible lesson loading, teacher/admin ownership review, teacher assignment review, and skill lookups.
 - `LibraryItem`: same learning-space and ownership indexes as lessons.

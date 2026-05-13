@@ -84,11 +84,19 @@ let publicTaxonomyBootstrapCache:
       };
     }
   | null = null;
+let publicTaxonomyBootstrapPromise: Promise<{
+  paths: unknown[];
+  levels: unknown[];
+  subjects: unknown[];
+  sections: unknown[];
+  skills: unknown[];
+}> | null = null;
 let skillTaxonomySeedCheckedAt = 0;
 let skillTaxonomySeedPromise: Promise<unknown> | null = null;
 
 const clearTaxonomyBootstrapCache = () => {
   publicTaxonomyBootstrapCache = null;
+  publicTaxonomyBootstrapPromise = null;
   skillTaxonomySeedCheckedAt = 0;
   clearActivePathIdsCache();
 };
@@ -112,6 +120,66 @@ const ensureSkillTaxonomyIfStale = async () => {
   await skillTaxonomySeedPromise;
 };
 
+const buildPublicTaxonomyBootstrapPayload = async () => {
+  const paths = await PathModel.find({ isActive: { $ne: false } }).sort({ createdAt: 1 }).lean();
+  const visiblePathIds = paths.map((path) => String(path._id)).filter(Boolean);
+  const [levels, subjects] =
+    visiblePathIds.length > 0
+      ? await Promise.all([
+          LevelModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
+          SubjectModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
+        ])
+      : [[], []];
+
+  const visibleSubjectIds = subjects.map((subject) => String(subject._id)).filter(Boolean);
+  const sections =
+    visibleSubjectIds.length > 0
+      ? await SectionModel.find({ subjectId: { $in: visibleSubjectIds } }).sort({ createdAt: 1 }).lean()
+      : [];
+  const visibleSectionIds = sections.map((section) => String(section._id)).filter(Boolean);
+  const skills =
+    visiblePathIds.length > 0 && visibleSubjectIds.length > 0 && visibleSectionIds.length > 0
+      ? await SkillModel.find({
+          pathId: { $in: visiblePathIds },
+          subjectId: { $in: visibleSubjectIds },
+          sectionId: { $in: visibleSectionIds },
+        })
+          .sort({ createdAt: 1 })
+          .lean()
+      : [];
+
+  return {
+    paths,
+    levels,
+    subjects,
+    sections,
+    skills,
+  };
+};
+
+const getPublicTaxonomyBootstrapPayload = async () => {
+  if (publicTaxonomyBootstrapCache && publicTaxonomyBootstrapCache.expiresAt > Date.now()) {
+    return { payload: publicTaxonomyBootstrapCache.payload, cache: "hit" as const };
+  }
+
+  if (!publicTaxonomyBootstrapPromise) {
+    publicTaxonomyBootstrapPromise = buildPublicTaxonomyBootstrapPayload()
+      .then((payload) => {
+        publicTaxonomyBootstrapCache = {
+          expiresAt: Date.now() + TAXONOMY_BOOTSTRAP_CACHE_TTL_MS,
+          payload,
+        };
+        return payload;
+      })
+      .finally(() => {
+        publicTaxonomyBootstrapPromise = null;
+      });
+  }
+
+  const payload = await publicTaxonomyBootstrapPromise;
+  return { payload, cache: "miss" as const };
+};
+
 taxonomyRouter.use((req, _res, next) => {
   if (req.method !== "GET") {
     clearTaxonomyBootstrapCache();
@@ -133,7 +201,7 @@ taxonomyRouter.get(
     }
 
     if (!canSeeInactiveTaxonomy && publicTaxonomyBootstrapCache && publicTaxonomyBootstrapCache.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "private, max-age=60");
+      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
       res.setHeader("X-Taxonomy-Cache", "hit");
       return res.json(publicTaxonomyBootstrapCache.payload);
     }
@@ -149,47 +217,9 @@ taxonomyRouter.get(
       return res.json({ paths, levels, subjects, sections, skills });
     }
 
-    const paths = await PathModel.find({ isActive: { $ne: false } }).sort({ createdAt: 1 }).lean();
-    const visiblePathIds = paths.map((path) => String(path._id)).filter(Boolean);
-    const [levels, subjects] =
-      visiblePathIds.length > 0
-        ? await Promise.all([
-            LevelModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
-            SubjectModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
-          ])
-        : [[], []];
-
-    const visibleSubjectIds = subjects.map((subject) => String(subject._id)).filter(Boolean);
-    const sections =
-      visibleSubjectIds.length > 0
-        ? await SectionModel.find({ subjectId: { $in: visibleSubjectIds } }).sort({ createdAt: 1 }).lean()
-        : [];
-    const visibleSectionIds = sections.map((section) => String(section._id)).filter(Boolean);
-    const skills =
-      visiblePathIds.length > 0 && visibleSubjectIds.length > 0 && visibleSectionIds.length > 0
-        ? await SkillModel.find({
-            pathId: { $in: visiblePathIds },
-            subjectId: { $in: visibleSubjectIds },
-            sectionId: { $in: visibleSectionIds },
-          })
-            .sort({ createdAt: 1 })
-            .lean()
-        : [];
-
-    const payload = {
-      paths,
-      levels,
-      subjects,
-      sections,
-      skills,
-    };
-
-    publicTaxonomyBootstrapCache = {
-      expiresAt: Date.now() + TAXONOMY_BOOTSTRAP_CACHE_TTL_MS,
-      payload,
-    };
-    res.setHeader("Cache-Control", "private, max-age=60");
-    res.setHeader("X-Taxonomy-Cache", "miss");
+    const { payload, cache } = await getPublicTaxonomyBootstrapPayload();
+    res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
+    res.setHeader("X-Taxonomy-Cache", cache);
     return res.json(payload);
   }),
 );

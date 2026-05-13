@@ -11,4 +11,6 @@ const levelSchema = new Schema(
   },
 );
 
+levelSchema.index({ pathId: 1, createdAt: 1 });
+
 export const LevelModel = mongoose.model("Level", levelSchema);
