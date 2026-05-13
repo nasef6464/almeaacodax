@@ -27,6 +27,12 @@ Do not commit real passwords, API keys, or JWT secrets. Keep secrets only in Ren
     - `MONGODB_URI`: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/almeaa?appName=almeaa`
     - `JWT_SECRET`: (Random 64-char string)
     - `CLIENT_URL`: `https://almeaacodax.vercel.app`
+    - `CORS_ALLOWED_ORIGINS`: `https://almeaacodax.vercel.app`
+    - `REDIS_URL`: managed Redis connection string for production scale
+    - `REDIS_KEY_PREFIX`: `almeaa`
+    - `RATE_LIMIT_REDIS_ENABLED`: `true`
+    - `NOTIFICATION_QUEUE_ENABLED`: `true`
+    - `NOTIFICATION_QUEUE_CONCURRENCY`: `5`
     - `ADMIN_EMAIL`: production admin email
     - `ADMIN_NAME`: production admin display name
     - `ADMIN_PASSWORD`: production admin password, kept only in Render
@@ -115,6 +121,20 @@ Render logs now include structured `http_request` JSON lines for failed and slow
 - If a slow API log appears, optimize that endpoint or its MongoDB query.
 - If no slow API log appears, investigate frontend bundles, Vercel/browser cache, network, or Render cold start.
 - Do not leave `REQUEST_LOG_LEVEL=debug` enabled after the investigation.
+
+### Production Health And Redis Readiness
+
+Use `/api/health/live` for liveness and `/api/health/ready` for Render health checks. The readiness endpoint checks MongoDB plus Redis-backed rate-limit and queue readiness when scale features are enabled in production.
+
+For multi-instance Render deployment, configure Redis before increasing traffic:
+
+```env
+REDIS_URL=redis://...
+REDIS_KEY_PREFIX=almeaa
+RATE_LIMIT_REDIS_ENABLED=true
+NOTIFICATION_QUEUE_ENABLED=true
+NOTIFICATION_QUEUE_CONCURRENCY=5
+```
 
 ### MongoDB Index Deployment
 

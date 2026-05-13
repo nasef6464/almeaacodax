@@ -62,6 +62,18 @@ Set these in Render:
 
 Use `REQUEST_LOG_LEVEL=debug` only briefly when investigating a specific issue. Backend logs now emit structured `http_request` lines for failed and slow API requests without logging request bodies or secrets.
 
+## Redis For Production Scale
+
+Set these in Render before running multiple backend instances or any large launch:
+
+- `REDIS_URL`
+- `REDIS_KEY_PREFIX=almeaa`
+- `RATE_LIMIT_REDIS_ENABLED=true`
+- `NOTIFICATION_QUEUE_ENABLED=true`
+- `NOTIFICATION_QUEUE_CONCURRENCY=5`
+
+Redis is used for distributed rate limiting and BullMQ notification queues. Without Redis, local development can still run, but multi-instance production should not rely on memory-only behavior.
+
 ## Health Checks
 
 Use these probes in Render, uptime monitors, and release smoke checks:
