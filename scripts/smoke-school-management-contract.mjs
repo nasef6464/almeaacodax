@@ -54,6 +54,15 @@ check("school management has launch readiness command center", () => {
   assertIncludes(files.schools, "readiness-gaps.xlsx");
 });
 
+check("school handover workbook includes operational launch plan", () => {
+  assertIncludes(files.schools, "schoolLaunchPlan");
+  assertIncludes(files.schools, "supervisorHandoverChecklist");
+  assertIncludes(files.schools, "schoolHandoverMessage");
+  assertIncludes(files.schools, "launch-plan");
+  assertIncludes(files.schools, "supervisor-checklist");
+  assertIncludes(files.schools, "handover-message");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 

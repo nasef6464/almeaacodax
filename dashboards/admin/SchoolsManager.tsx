@@ -1075,6 +1075,25 @@ export const SchoolsManager: React.FC = () => {
                 onClick: () => setActiveTab('reports'),
             },
         ];
+        const schoolLaunchPlan = [
+            ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
+            ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
+            ['أول 3 أيام', 'متابعة الطلاب الذين لم يبدأوا التدريب أو الاختبارات', studentsWithoutClass.length > 0 ? 'ابدأ بالطلاب غير المصنفين في فصول' : 'راجع بوابة المشرف يوميًا'],
+            ['نهاية الأسبوع الأول', 'تصدير تقرير الأداء ومشاركته مع الإدارة', schoolReport ? 'تقرير الأداء متاح من تبويب التقارير' : 'سيظهر التقرير بعد بدء الطلاب في القياس'],
+        ];
+        const supervisorHandoverChecklist = [
+            ['المشرف يرى مدرسته/فصوله من لوحة المشرف', schoolSupervisors.length > 0 ? 'جاهز' : 'يحتاج ربط مشرف'],
+            ['كل طالب داخل فصل واضح', studentsWithoutClass.length === 0 ? 'جاهز' : `${studentsWithoutClass.length} طالب يحتاج فصل`],
+            ['أولياء الأمور المرتبطون بالطلاب المهمين', studentsWithoutParent.length === 0 ? 'جاهز' : `${studentsWithoutParent.length} طالب بلا ولي أمر`],
+            ['يوجد كود أو باقة نشطة لتفعيل الطلاب', activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'يحتاج باقة وكود صالح'],
+            ['تقرير الأداء جاهز للمتابعة', schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'يظهر بعد بدء الاختبارات'],
+        ];
+        const schoolHandoverMessage = [
+            `تم تجهيز مساحة ${selectedSchool.name} على منصة المئة.`,
+            `حالة الجاهزية الحالية: ${readinessStatusLabel} (${readinessScore}/${readinessChecks.length}).`,
+            `الخطوة التالية: ${readinessNextStep}`,
+            'يمكن للمشرف متابعة الطلاب، تصدير التقارير، وتوجيه الاختبارات من لوحة المشرف.',
+        ].join('\n');
         const downloadSchoolGapReport = () => {
             createWorkbookDownload(`${selectedSchool.name}-readiness-gaps.xlsx`, [
                 {
@@ -1157,6 +1176,27 @@ export const SchoolsManager: React.FC = () => {
                     rows: [
                         ['الفحص', 'الحالة', 'ملاحظة'],
                         ...readinessChecks.map((check) => [check.label, check.isReady ? 'جاهز' : 'يحتاج استكمال', check.hint]),
+                    ],
+                },
+                {
+                    name: 'launch-plan',
+                    rows: [
+                        ['المرحلة', 'الإجراء', 'الملاحظة'],
+                        ...schoolLaunchPlan,
+                    ],
+                },
+                {
+                    name: 'supervisor-checklist',
+                    rows: [
+                        ['البند', 'الحالة'],
+                        ...supervisorHandoverChecklist,
+                    ],
+                },
+                {
+                    name: 'handover-message',
+                    rows: [
+                        ['رسالة جاهزة للإدارة'],
+                        ...schoolHandoverMessage.split('\n').map((line) => [line]),
                     ],
                 },
                 {
