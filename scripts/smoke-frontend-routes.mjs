@@ -132,6 +132,22 @@ await check('learning taxonomy exposes current student routes', async () => {
   return `paths=${activePaths.length}, subjectRoutes=${currentSubjectRoutes.length}, legacyRoutes=${legacyLearningRoutes.length}`;
 });
 
+await check('frontend api proxy exposes taxonomy', async () => {
+  const response = await fetchWithRetry(`${FRONTEND_URL}/api/taxonomy/bootstrap`, {
+    headers: {
+      'cache-control': 'no-cache',
+      pragma: 'no-cache',
+    },
+  });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+  const taxonomy = await response.json();
+  const paths = Array.isArray(taxonomy?.paths) ? taxonomy.paths : [];
+  if (paths.length === 0) {
+    throw new Error('frontend /api proxy returned no paths');
+  }
+  return `proxiedPaths=${paths.length}`;
+});
+
 let shellHtml = '';
 let entryAssetText = '';
 await check('frontend shell loads', async () => {
