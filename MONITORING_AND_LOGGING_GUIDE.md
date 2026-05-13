@@ -30,6 +30,12 @@
 - This protects MongoDB when the admin dashboard opens multiple readiness panels or when an operator refreshes repeatedly.
 - The cache only affects operational diagnostics; student-facing content and security checks still use their normal route-level data rules.
 
+## 2026-05-13 Content Bootstrap Concurrency Guard
+
+- Public content bootstrap now shares one pending load between concurrent anonymous visitors while the cache is warming.
+- Public announcement ads inside bootstrap are capped to the display-sized set; admin management routes still keep full access.
+- This reduces duplicate MongoDB work during traffic spikes without changing the UI or hiding student learning content.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.

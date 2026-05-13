@@ -225,24 +225,28 @@ const platformFontSettingsSchema = z.object({
 });
 
 const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 45 * 1000;
+const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
+type PublicContentBootstrapPayload = {
+  topics: unknown[];
+  lessons: unknown[];
+  libraryItems: unknown[];
+  groups: unknown[];
+  b2bPackages: unknown[];
+  accessCodes: unknown[];
+  announcementAds: unknown[];
+  studyPlans: unknown[];
+};
 let publicContentBootstrapCache:
   | {
       expiresAt: number;
-      payload: {
-        topics: unknown[];
-        lessons: unknown[];
-        libraryItems: unknown[];
-        groups: unknown[];
-        b2bPackages: unknown[];
-        accessCodes: unknown[];
-        announcementAds: unknown[];
-        studyPlans: unknown[];
-      };
+      payload: PublicContentBootstrapPayload;
     }
   | null = null;
+let publicContentBootstrapPromise: Promise<PublicContentBootstrapPayload> | null = null;
 
 const clearContentBootstrapCache = () => {
   publicContentBootstrapCache = null;
+  publicContentBootstrapPromise = null;
 };
 
 const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
@@ -314,13 +318,18 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   }
 
   if (!authUser) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 }).lean();
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
+      .sort({ priority: 1, createdAt: -1 })
+      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT)
+      .lean();
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
   const user = await UserModel.findById(authUser.id).select("schoolId groupIds linkedStudentIds role");
   if (!user) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
+      .sort({ priority: 1, createdAt: -1 })
+      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
@@ -348,7 +357,9 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
   ]);
 
   if (seedGroupIds.length === 0) {
-    const announcementAds = await AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 });
+    const announcementAds = await AnnouncementAdModel.find({ isActive: true })
+      .sort({ priority: 1, createdAt: -1 })
+      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT);
     return { groups: [], b2bPackages: [], accessCodes: [], announcementAds };
   }
 
@@ -370,7 +381,9 @@ const getScopedOperationalData = async (authUser?: { id: string; role: string; s
     user.role === "supervisor" && schoolIds.length
       ? AccessCodeModel.find({ schoolId: { $in: schoolIds } }).sort({ createdAt: -1 })
       : Promise.resolve([]),
-    AnnouncementAdModel.find({ isActive: true }).sort({ priority: 1, createdAt: -1 }),
+    AnnouncementAdModel.find({ isActive: true })
+      .sort({ priority: 1, createdAt: -1 })
+      .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT),
   ]);
 
   return { groups, b2bPackages, accessCodes, announcementAds };
@@ -794,35 +807,52 @@ contentRouter.get(
       return res.json(publicContentBootstrapCache.payload);
     }
 
-    const canSeeAllContent = isStaffRole(req.authUser?.role);
-    const lessonFilter = isStaffRole(req.authUser?.role)
-      ? {}
-      : {
-          showOnPlatform: { $ne: false },
-          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        };
-    const topicFilter = isStaffRole(req.authUser?.role) ? {} : { showOnPlatform: { $ne: false } };
-    const libraryFilter = isStaffRole(req.authUser?.role)
-      ? {}
-      : {
-          showOnPlatform: { $ne: false },
-          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        };
-    const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
-    const finalTopicFilter = canSeeAllContent ? topicFilter : scopeFilterToActivePaths(topicFilter, activePathIds);
-    const finalLessonFilter = canSeeAllContent ? lessonFilter : scopeFilterToActivePaths(lessonFilter, activePathIds);
-    const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
+    if (canUsePublicCache && publicContentBootstrapPromise) {
+      const payload = await publicContentBootstrapPromise;
+      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("X-Content-Cache", "shared");
+      return res.json(payload);
+    }
 
-    const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
-      TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
-      LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
-      LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
-      getScopedOperationalData(req.authUser),
-      req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean() : Promise.resolve([]),
-    ]);
+    const loadBootstrapPayload = async (): Promise<PublicContentBootstrapPayload> => {
+      const canSeeAllContent = isStaffRole(req.authUser?.role);
+      const lessonFilter = isStaffRole(req.authUser?.role)
+        ? {}
+        : {
+            showOnPlatform: { $ne: false },
+            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
+          };
+      const topicFilter = isStaffRole(req.authUser?.role) ? {} : { showOnPlatform: { $ne: false } };
+      const libraryFilter = isStaffRole(req.authUser?.role)
+        ? {}
+        : {
+            showOnPlatform: { $ne: false },
+            $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
+          };
+      const activePathIds = canSeeAllContent ? [] : await getActivePathIds();
+      const finalTopicFilter = canSeeAllContent ? topicFilter : scopeFilterToActivePaths(topicFilter, activePathIds);
+      const finalLessonFilter = canSeeAllContent ? lessonFilter : scopeFilterToActivePaths(lessonFilter, activePathIds);
+      const finalLibraryFilter = canSeeAllContent ? libraryFilter : scopeFilterToActivePaths(libraryFilter, activePathIds);
 
-    const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
-    const payload = { topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans };
+      const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
+        TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
+        LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
+        LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
+        getScopedOperationalData(req.authUser),
+        req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean() : Promise.resolve([]),
+      ]);
+
+      const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
+      return { topics, lessons, libraryItems, groups, b2bPackages, accessCodes, announcementAds, studyPlans };
+    };
+
+    const payloadPromise = loadBootstrapPayload();
+    const payload = canUsePublicCache
+      ? await (publicContentBootstrapPromise = payloadPromise.finally(() => {
+          publicContentBootstrapPromise = null;
+        }))
+      : await payloadPromise;
+
     if (canUsePublicCache) {
       publicContentBootstrapCache = {
         expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
