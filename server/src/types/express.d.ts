@@ -5,6 +5,11 @@ export interface AuthUser {
   email: string;
   role: AppRole;
   name: string;
+  schoolId?: string | null;
+  groupIds?: string[];
+  linkedStudentIds?: string[];
+  managedPathIds?: string[];
+  managedSubjectIds?: string[];
 }
 
 declare global {

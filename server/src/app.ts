@@ -2,7 +2,6 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import express from "express";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { randomUUID } from "node:crypto";
 import { env } from "./config/env.js";
@@ -10,6 +9,7 @@ import { apiRouter } from "./routes/index.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { rejectUnsafeMongoKeys } from "./middleware/mongoSanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
+import { authRateLimiter, globalRateLimiter, sensitiveActionRateLimiter } from "./middleware/rateLimiters.js";
 
 function parseAllowedOrigins() {
   const configuredOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
@@ -65,34 +65,14 @@ export function createApp() {
   );
   app.use(compression());
   app.use(requestLogger);
-  app.use(
-    rateLimit({
-      windowMs: 60 * 1000,
-      limit: 600,
-      standardHeaders: true,
-      legacyHeaders: false,
-      message: { message: "Too many requests, please try again shortly" },
-    }),
-  );
+  app.use(globalRateLimiter);
   app.use(
     ["/api/auth/login", "/api/auth/register", "/api/auth/forgot-password", "/api/auth/reset-password"],
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      limit: 20,
-      standardHeaders: true,
-      legacyHeaders: false,
-      message: { message: "Too many authentication attempts, please try again later" },
-    }),
+    authRateLimiter,
   );
   app.use(
     ["/api/quizzes/*/submit", "/api/ai/*", "/api/payments/*", "/api/auth/me/redeem-access-code"],
-    rateLimit({
-      windowMs: 60 * 1000,
-      limit: 60,
-      standardHeaders: true,
-      legacyHeaders: false,
-      message: { message: "Too many requests, please slow down" },
-    }),
+    sensitiveActionRateLimiter,
   );
   app.use("/api/auth", express.json({ limit: "100kb" }));
   app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));

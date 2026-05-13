@@ -22,6 +22,16 @@ const envSchema = z.object({
   MONGODB_SERVER_SELECTION_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60000).default(5000),
   MONGODB_SOCKET_TIMEOUT_MS: z.coerce.number().int().min(5000).max(120000).default(45000),
   MONGODB_MAX_IDLE_TIME_MS: z.coerce.number().int().min(10000).max(300000).default(60000),
+  REDIS_URL: z.string().optional().default(""),
+  REDIS_KEY_PREFIX: z.string().default("almeaa"),
+  RATE_LIMIT_REDIS_ENABLED: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+      }
+      return value;
+    }, z.boolean())
+    .default(true),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   DEV_LOCAL_ADMIN_BYPASS: z

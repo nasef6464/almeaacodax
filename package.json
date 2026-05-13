@@ -55,6 +55,7 @@
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",
     "smoke:api-phase4": "node scripts/smoke-api-phase4-contract.mjs",
     "smoke:frontend-phase5": "node scripts/smoke-frontend-phase5-contract.mjs",
+    "smoke:security-rbac-phase6": "node scripts/smoke-security-rbac-phase6-contract.mjs",
     "backup:learning": "npm --prefix server run backup:learning",
     "restore:learning": "npm --prefix server run restore:learning"
   },
