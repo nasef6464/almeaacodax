@@ -3592,6 +3592,33 @@ export const SchoolsManager: React.FC = () => {
                         activePackageCount > 0,
                         schoolCodes.length > 0,
                     ].filter(Boolean).length;
+                    const cardReadinessActions = [
+                        {
+                            label: 'الفصول',
+                            isReady: schoolClassCount > 0,
+                            tab: 'overview' as const,
+                            hint: schoolClassCount > 0 ? `${schoolClassCount} فصل` : 'أضف فصولًا',
+                        },
+                        {
+                            label: 'المشرفون',
+                            isReady: school.supervisorIds.length > 0,
+                            tab: 'relations' as const,
+                            hint: school.supervisorIds.length > 0 ? `${school.supervisorIds.length} مشرف` : 'اربط مشرفًا',
+                        },
+                        {
+                            label: 'الباقات',
+                            isReady: activePackageCount > 0,
+                            tab: 'packages' as const,
+                            hint: activePackageCount > 0 ? `${activePackageCount} باقة` : 'فعّل باقة',
+                        },
+                        {
+                            label: 'الأكواد',
+                            isReady: schoolCodes.length > 0,
+                            tab: 'packages' as const,
+                            hint: schoolCodes.length > 0 ? `${schoolCodes.length} كود` : 'ولّد كودًا',
+                        },
+                    ];
+                    const nextCardAction = cardReadinessActions.find((action) => !action.isReady);
 
                     return (
                         <div key={school.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
@@ -3616,6 +3643,36 @@ export const SchoolsManager: React.FC = () => {
                             }`}>
                                 <span>{cardReadinessScore === 4 ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
                                 <span>{cardReadinessScore}/4</span>
+                            </div>
+                            <div className="mb-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
+                                <div className="mb-2 flex items-center justify-between gap-2">
+                                    <p className="text-xs font-black text-gray-500">الخطوة التالية</p>
+                                    <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
+                                        {nextCardAction ? nextCardAction.label : 'جاهزة'}
+                                    </span>
+                                </div>
+                                <p className="text-sm font-bold text-gray-800">
+                                    {nextCardAction ? nextCardAction.hint : 'افتح إدارة المدرسة لمراجعة التسليم أو التقرير.'}
+                                </p>
+                                <div className="mt-3 grid grid-cols-2 gap-2">
+                                    {cardReadinessActions.map((action) => (
+                                        <button
+                                            key={action.label}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedSchool(school);
+                                                setActiveTab(action.tab);
+                                            }}
+                                            className={`rounded-lg px-2 py-1.5 text-[11px] font-black transition-colors ${
+                                                action.isReady
+                                                    ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                                                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                            }`}
+                                        >
+                                            {action.label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-3 gap-3 mb-5">

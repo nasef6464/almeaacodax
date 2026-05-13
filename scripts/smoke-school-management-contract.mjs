@@ -63,6 +63,13 @@ check("school handover workbook includes operational launch plan", () => {
   assertIncludes(files.schools, "handover-message");
 });
 
+check("school list cards expose next readiness action", () => {
+  assertIncludes(files.schools, "cardReadinessActions");
+  assertIncludes(files.schools, "nextCardAction");
+  assertIncludes(files.schools, "الخطوة التالية");
+  assertIncludes(files.schools, "setActiveTab(action.tab)");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 
