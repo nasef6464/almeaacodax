@@ -6,6 +6,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const paymentModal = read('components/PaymentModal.tsx');
 const learningSection = read('components/LearningSection.tsx');
+const genericPathPage = read('pages/GenericPathPage.tsx');
 const coursesPage = read('pages/Courses.tsx');
 const qudratPage = read('pages/Qudrat.tsx');
 const tahsiliPage = read('pages/Tahsili.tsx');
@@ -33,6 +34,17 @@ check('locked course cards open a course purchase request, not a package picker'
   includes(learningSection, "type: 'course',");
   notIncludes(learningSection, "item: coursePurchaseItem || course");
   notIncludes(learningSection, "type: coursePurchaseItem ? 'package' : 'course'");
+});
+
+check('course tab never renders the package marketplace inline', () => {
+  includes(learningSection, "buildPackagesPagePath");
+  includes(learningSection, "navigate(buildPackagesPagePath(contentType");
+  includes(learningSection, "navigate(buildPackagesPagePath(undefined, previewPackageId)");
+  includes(learningSection, "searchParams.get('tab') === 'packages'");
+  includes(learningSection, "const showPackagesInsideCourseTab = false;");
+  includes(learningSection, "{showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (");
+  notIncludes(genericPathPage, "tab=courses&package");
+  notIncludes(genericPathPage, "subject=${packageSubjectId}&tab=courses");
 });
 
 check('student course listings exclude package products', () => {

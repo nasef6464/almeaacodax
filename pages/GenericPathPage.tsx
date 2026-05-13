@@ -701,7 +701,7 @@ export const GenericPathPage: React.FC = () => {
                                             type="button"
                                             onClick={() => {
                                                 if (packageSubjectId) {
-                                                    navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                                    navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                                     return;
                                                 }
                                                 navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
@@ -727,7 +727,7 @@ export const GenericPathPage: React.FC = () => {
                                                     return;
                                                 }
                                                 if (packageSubjectId) {
-                                                    navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                                    navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                                     return;
                                                 }
                                                 navigate(`/course/${pkg.id}`);
@@ -836,7 +836,7 @@ export const GenericPathPage: React.FC = () => {
                                      type="button"
                                      onClick={() => {
                                          if (packageSubjectId) {
-                                             navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                             navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                              return;
                                          }
                                          navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
@@ -852,7 +852,7 @@ export const GenericPathPage: React.FC = () => {
                                              return;
                                          }
                                          if (packageSubjectId) {
-                                             navigate(`/category/${path.id}?subject=${packageSubjectId}&tab=courses&package=${pkg.id}`);
+                                             navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                              return;
                                          }
                                          navigate(`/course/${pkg.id}`);

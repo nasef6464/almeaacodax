@@ -130,6 +130,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         params.set('tab', tab);
         return `/category/${category}?${params.toString()}`;
     };
+    const buildPackagesPagePath = (contentType?: PackageContentType, packageId?: string) => {
+        const params = new URLSearchParams();
+        params.set('tab', 'packages');
+        if (subject) params.set('subject', subject);
+        if (contentType) params.set('contentType', contentType);
+        if (packageId) params.set('package', packageId);
+        return `/category/${category}?${params.toString()}`;
+    };
     const shouldTrainingReturnOnFinish = (quizId: string | number) => {
         const sourceQuiz = quizList.find((quiz) => matchesEntityId(quiz, String(quizId)));
         return sourceQuiz?.settings?.returnToSourceOnFinish === true || sourceQuiz?.settings?.showResultsReport === false;
@@ -146,7 +154,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [selectedSkill, setSelectedSkill] = useState<any>(null);
     const [viewingFile, setViewingFile] = useState<any>(null);
     const [paymentModalData, setPaymentModalData] = useState<{ isOpen: boolean, item: any, type: string }>({ isOpen: false, item: null, type: '' });
-    const [openedPreviewPackageId, setOpenedPreviewPackageId] = useState<string | null>(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
     const isAdminViewer = user.role === 'admin';
     const accessibleCourseIds = new Set([
@@ -324,6 +331,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             `باقة ${packageContentLabels[contentType] || 'المحتوى'}`,
             `اشترك الآن لفتح ${packageContentLabels[contentType] || 'هذا المحتوى'} في هذه المادة.`,
         );
+        if (packageItem) {
+            navigate(buildPackagesPagePath(contentType, packageItem.packageId || packageItem.id));
+            return;
+        }
         setPaymentModalData({
             isOpen: true,
             item: packageItem || fallbackItem,
@@ -400,24 +411,15 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             const bSubject = (b.subjectId || b.subject) === subject ? 1 : 0;
             return bSubject - aSubject || (a.price || 0) - (b.price || 0);
         });
+    const showPackagesInsideCourseTab = false;
 
     useEffect(() => {
         const previewPackageId = searchParams.get('package');
-        if (!previewPackageId) {
-            setOpenedPreviewPackageId(null);
+        if (!previewPackageId || searchParams.get('tab') === 'packages') {
             return;
         }
-        if (openedPreviewPackageId === previewPackageId || subjectPublicPackages.length === 0) return;
-        const previewPackage = subjectPublicPackages.find((pkg) => pkg.id === previewPackageId);
-        if (!previewPackage) return;
-        setActiveTab('courses');
-        setOpenedPreviewPackageId(previewPackageId);
-        setPaymentModalData({
-            isOpen: true,
-            item: previewPackage,
-            type: 'package',
-        });
-    }, [openedPreviewPackageId, searchParams, subjectPublicPackages]);
+        navigate(buildPackagesPagePath(undefined, previewPackageId), { replace: true });
+    }, [navigate, searchParams]);
 
     // Data Retrieval from Store
     let sectionCourses = courses.filter((course) => {
@@ -771,7 +773,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 </div>
                             </div>
                             <button
-                                onClick={() => openScopedPackageForType(activeTabAccess.contentType, activeTabPackage, 'package')}
+                                onClick={() => navigate(buildPackagesPagePath(activeTabAccess.contentType, activeTabPackage.packageId || activeTabPackage.id))}
                                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-amber-600"
                             >
                                 <Package size={18} />
@@ -783,7 +785,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'courses' && enabledTabs.courses && (
                     <div className="space-y-6">
-                        {subjectPublicPackages.length > 0 && (
+                        {showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (
                             <div className="rounded-3xl border border-amber-100 bg-amber-50/40 p-5">
                                 <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
