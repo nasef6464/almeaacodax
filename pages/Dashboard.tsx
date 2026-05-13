@@ -378,7 +378,7 @@ const PathsTab = () => {
                     <div className="grid gap-6">
                         {activePaths.map(path => {
                             // Calculate progress based on enrolled courses in this path
-                            const pathCourses = courses.filter(c => (c.category === path.category || c.category === path.title) && enrolledCourses.includes(c.id));
+                            const pathCourses = courses.filter(c => !c.isPackage && (c.category === path.category || c.category === path.title) && enrolledCourses.includes(c.id));
                             let pathTotalLessons = 0;
                             let pathCompletedLessons = 0;
                             pathCourses.forEach(course => {
@@ -588,7 +588,7 @@ const SessionsTab = () => {
 
 const MyCoursesTab = () => {
     const { courses, enrolledCourses, completedLessons } = useStore();
-    const activeCourses = courses.filter(c => enrolledCourses.includes(c.id));
+    const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -1305,7 +1305,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     
     // Debugging logs as requested
     // Get full course objects for enrolled courses
-    const activeCourses = courses.filter(c => enrolledCourses.includes(c.id));
+    const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
 
     // Calculate overall progress
     let totalLessonsInEnrolled = 0;

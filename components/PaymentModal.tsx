@@ -26,6 +26,7 @@ type PaymentPackageOption = {
     includedCourseIds?: string[];
     courseIds?: string[];
     accessContext?: string;
+    isPackage?: boolean;
 };
 
 type DiscountPreview = {
@@ -101,7 +102,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     const packageOptions = useMemo<PaymentPackageOption[]>(() => {
         if (!Array.isArray(item?.packageOptions)) return [];
-        return item.packageOptions.filter((option: PaymentPackageOption) => option?.id);
+        return item.packageOptions.filter((option: PaymentPackageOption) =>
+            option?.id &&
+            (
+                option.purchaseType === 'package' ||
+                option.isPackage === true ||
+                Boolean(option.packageId && option.packageId === option.id)
+            )
+        );
     }, [item]);
 
     const purchaseItem = useMemo(() => {

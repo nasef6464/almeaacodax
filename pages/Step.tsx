@@ -6,7 +6,7 @@ export const Step: React.FC = () => {
     const { subjects, courses } = useStore();
     
     // Filter only STEP courses for the grid below
-    const filteredCourses = courses.filter(course => course.category === 'STEP' || course.category === 'step');
+    const filteredCourses = courses.filter(course => !course.isPackage && (course.category === 'STEP' || course.category === 'step'));
 
     const pathSubjects = subjects.filter(s => s.pathId === 'p_step');
 

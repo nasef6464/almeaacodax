@@ -62,8 +62,9 @@ const Home: React.FC = () => {
   );
 
   const activeCourses = useMemo(() => {
-    const enrolled = courses.filter((course) => accessibleCourseIds.has(course.id));
-    return enrolled.length > 0 ? enrolled : courses.slice(0, 4);
+    const visibleCourses = courses.filter((course) => !course.isPackage);
+    const enrolled = visibleCourses.filter((course) => accessibleCourseIds.has(course.id));
+    return enrolled.length > 0 ? enrolled : visibleCourses.slice(0, 4);
   }, [accessibleCourseIds, courses]);
 
   const scheduleItems = useMemo(() => {

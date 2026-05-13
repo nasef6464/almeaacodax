@@ -7,7 +7,7 @@ export const Qudrat: React.FC = () => {
     const { paths, subjects, courses } = useStore();
     
     // Filter only Qudrat courses for the grid below
-    const filteredCourses = courses.filter(course => course.category === 'القدرات' || course.category === 'قدرات');
+    const filteredCourses = courses.filter(course => !course.isPackage && (course.category === 'القدرات' || course.category === 'قدرات'));
 
     const qudratPath = paths.find((path) => path.id === 'p_qudrat')
         || paths.find((path) => path.name.includes('القدرات') || path.name.includes('قدرات'));

@@ -276,6 +276,35 @@ const discountAppliesToPayload = (
   return true;
 };
 
+const getPaymentTargetItemId = (
+  payload: Pick<z.infer<typeof paymentRequestCreateSchema>, "itemType" | "itemId" | "packageId">,
+) => payload.packageId || payload.itemId;
+
+const validatePaymentTargetKind = (
+  payload: Pick<z.infer<typeof paymentRequestCreateSchema>, "itemType" | "itemId" | "packageId">,
+  purchasableItem: any,
+) => {
+  if (payload.itemType === "package") {
+    if (!purchasableItem || purchasableItem.isPackage !== true) {
+      return "اختر باقة صالحة من صفحة الباقات. لا يمكن إرسال دورة على أنها باقة.";
+    }
+  }
+
+  if (payload.itemType === "course") {
+    if (!purchasableItem || purchasableItem.isPackage === true) {
+      return "اختر دورة صالحة من صفحة الدورات. لا يمكن إرسال باقة على أنها دورة.";
+    }
+  }
+
+  if ((payload.itemType === "skill" || payload.itemType === "test") && payload.packageId) {
+    if (!purchasableItem || purchasableItem.isPackage !== true) {
+      return "الباقة المرتبطة بهذا الطلب غير صالحة.";
+    }
+  }
+
+  return "";
+};
+
 const calculateDiscountAmount = (discountCode: any, amount: number) => {
   if (discountCode.type === "fixed") {
     return Math.min(amount, Math.max(0, discountCode.value));
@@ -458,11 +487,22 @@ paymentRouter.post(
     const payload = discountCodePreviewSchema.parse(req.body);
     const normalizedDiscountCode = normalizeDiscountCode(payload.discountCode);
     const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
-    const targetItemId = payload.packageId || payload.itemId;
+    const targetItemId = getPaymentTargetItemId(payload as any);
     const purchasableItem = await CourseModel.findById(targetItemId).lean();
+    const targetKindError = validatePaymentTargetKind(payload as any, purchasableItem);
 
     if (!normalizedDiscountCode) {
       return res.json({ valid: false, originalAmount, discountAmount: 0, finalAmount: originalAmount });
+    }
+
+    if (targetKindError) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        valid: false,
+        message: targetKindError,
+        originalAmount,
+        discountAmount: 0,
+        finalAmount: originalAmount,
+      });
     }
 
     const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
@@ -591,8 +631,12 @@ paymentRouter.post(
       });
     }
 
-    const targetItemId = payload.packageId || payload.itemId;
+    const targetItemId = getPaymentTargetItemId(payload);
     const purchasableItem = await CourseModel.findById(targetItemId).lean();
+    const targetKindError = validatePaymentTargetKind(payload, purchasableItem);
+    if (targetKindError) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: targetKindError });
+    }
     const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
     let finalAmount = originalAmount;
     let discountAmount = 0;

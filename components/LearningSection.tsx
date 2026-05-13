@@ -874,11 +874,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {sectionCourses.map((baseCourse) => {
-                            const coursePurchaseItem = buildScopedPackageItem(
-                                'courses',
-                                'باقة الدورات',
-                                'اشترك الآن لفتح الدورات المرتبطة بهذا المسار وهذه المادة.'
-                            );
                             const course = {
                                 ...baseCourse,
                                 isPurchased: accessibleCourseIds.has(baseCourse.id) || hasCourseAccess || baseCourse.isPurchased,
@@ -937,8 +932,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             <button
                                                 onClick={() => setPaymentModalData({
                                                     isOpen: true,
-                                                    item: coursePurchaseItem || course,
-                                                    type: coursePurchaseItem ? 'package' : 'course',
+                                                    item: course,
+                                                    type: 'course',
                                                 })}
                                                 className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center mb-0"
                                                 style={{ backgroundColor: theme.base }}

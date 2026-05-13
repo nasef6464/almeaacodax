@@ -50,6 +50,7 @@ const Courses: React.FC = () => {
     );
 
     const canShowCourse = (course: Course) =>
+        !course.isPackage &&
         (canSeeHiddenPaths || !course.pathId || visiblePathIds.has(course.pathId)) &&
         course.showOnPlatform !== false &&
         course.isPublished !== false &&

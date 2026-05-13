@@ -7,7 +7,7 @@ export const Tahsili: React.FC = () => {
     const { paths, subjects, courses } = useStore();
     
     // Filter only Tahsili courses for the grid below
-    const filteredCourses = courses.filter(course => course.category === 'التحصيلي' || course.category === 'تحصيلي');
+    const filteredCourses = courses.filter(course => !course.isPackage && (course.category === 'التحصيلي' || course.category === 'تحصيلي'));
 
     const tahsiliPath = paths.find((path) => path.id === 'p_tahsili')
         || paths.find((path) => path.name.includes('التحصيلي') || path.name.includes('تحصيلي'));
