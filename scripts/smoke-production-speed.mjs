@@ -17,6 +17,7 @@ const SOFT_LIMITS_MS = {
   entryAsset: 1800,
   apiHealth: 1200,
   apiReady: 1500,
+  apiScaleReady: 1500,
   taxonomyBootstrap: 1800,
   contentBootstrap: 2500,
   courseList: 1800,
@@ -137,8 +138,14 @@ const health = await timedFetch("api health", `${API_URL}/health`, {}, SOFT_LIMI
 const ready = await timedFetch(
   "api ready",
   `${API_URL}/health/ready`,
-  { warnStatuses: [503] },
+  {},
   SOFT_LIMITS_MS.apiReady,
+);
+const scaleReady = await timedFetch(
+  "api scale-ready",
+  `${API_URL}/health/scale-ready`,
+  { warnStatuses: [503] },
+  SOFT_LIMITS_MS.apiScaleReady,
 );
 await timedFetch("taxonomy bootstrap", `${API_URL}/taxonomy/bootstrap`, {}, SOFT_LIMITS_MS.taxonomyBootstrap);
 await timedFetch("content bootstrap", `${API_URL}/content/bootstrap`, {}, SOFT_LIMITS_MS.contentBootstrap);
@@ -151,7 +158,7 @@ await timedFetch(
 );
 await timedFetch("announcement ads", `${API_URL}/content/announcement-ads`, {}, SOFT_LIMITS_MS.announcementAds);
 
-const healthSummary = summarizeHealth(health.json, ready.json);
+const healthSummary = summarizeHealth(health.json, scaleReady.json || ready.json);
 
 for (const item of results) {
   const mark = item.status === "pass" ? "PASS" : item.status === "warn" ? "WARN" : "FAIL";

@@ -6,6 +6,8 @@
 - Non-critical startup maintenance (`ensureSkillTaxonomy` and `ensureAdminAccount`) runs in the background through `runStartupMaintenance`.
 - This reduces Render cold-start wait time for real users while still logging maintenance failures for operators.
 - MongoDB remains a hard dependency before listening; Redis remains reported through `/api/health` and `/api/health/ready`.
+- `/api/health/ready` is the operational readiness probe: it returns 200 when MongoDB is connected even if Redis is still missing, while still reporting Redis warnings.
+- `/api/health/scale-ready` is the high-concurrency gate: it returns 503 until Redis-backed rate limits and queues are configured for multi-instance scale.
 
 ## 2026-05-13 Public Bootstrap Browser Cache
 

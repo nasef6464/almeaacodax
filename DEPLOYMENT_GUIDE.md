@@ -79,7 +79,8 @@ Redis is used for distributed rate limiting and BullMQ notification queues. With
 Use these probes in Render, uptime monitors, and release smoke checks:
 
 - `/api/health/live`: checks that the API process is running. It does not require MongoDB.
-- `/api/health/ready`: checks that the API is ready to serve real traffic and returns `503` if MongoDB is disconnected.
+- `/api/health/ready`: checks that the API is ready to serve real traffic and returns `503` if MongoDB is disconnected. Redis warnings are reported here but do not block normal serving.
+- `/api/health/scale-ready`: checks high-concurrency readiness and returns `503` until Redis-backed rate limits/queues are configured.
 - `/api/health`: backward-compatible readiness endpoint for existing checks.
 
 The health payload includes service name, environment, app version, short commit when the platform provides one, uptime, timestamp, and database check state. Health routes are excluded from routine logs unless they fail or become slow.

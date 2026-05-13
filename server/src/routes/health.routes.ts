@@ -91,12 +91,36 @@ healthRouter.get("/live", (_req, res) => {
 
 healthRouter.get("/ready", async (_req, res) => {
   const dependencies = await getDependencyHealth();
-  res.status(dependencies.ok ? 200 : 503).json({
+  const databaseReady = dependencies.database.ok;
+  res.status(databaseReady ? 200 : 503).json({
     status: dependencies.status,
+    ready: databaseReady,
+    scaleReady: dependencies.summary.redisConfiguredForScale,
     database: dependencies.database,
     redis: dependencies.redis,
     checks: dependencies.checks,
     summary: dependencies.summary,
+    ...getRuntimeHealth(),
+  });
+});
+
+healthRouter.get("/scale-ready", async (_req, res) => {
+  const dependencies = await getDependencyHealth();
+  const scaleReady = dependencies.ok && dependencies.summary.redisConfiguredForScale;
+  res.status(scaleReady ? 200 : 503).json({
+    status: scaleReady ? "scale_ready" : "scale_blocked",
+    ready: dependencies.database.ok,
+    scaleReady,
+    database: dependencies.database,
+    redis: dependencies.redis,
+    checks: dependencies.checks,
+    summary: dependencies.summary,
+    blockers: scaleReady
+      ? []
+      : [
+          ...(!dependencies.database.ok ? ["mongodb_not_ready"] : []),
+          ...(!dependencies.summary.redisConfiguredForScale ? ["redis_not_configured_for_multi_instance_scale"] : []),
+        ],
     ...getRuntimeHealth(),
   });
 });

@@ -329,7 +329,7 @@
 - Fixed `dashboards/admin/HomepageManager.tsx` to use `useAuth()`, require `user.token` before saving, and call `api.updateHomepageSettings(payload, user.token)`.
 - Added clearer Arabic error copy for expired/missing admin sessions instead of raw `Authentication required`.
 - Extended `npm run smoke:homepage-hero` to guard the token-passing save contract.
-- Upgraded health monitoring in the same production-readiness batch: `/api/health/live` checks process liveness, `/api/health/ready` checks MongoDB readiness and returns `503` when unavailable, while `/api/health` stays backward-compatible.
+- Upgraded health monitoring in the same production-readiness batch: `/api/health/live` checks process liveness, `/api/health/ready` checks MongoDB operational readiness and returns `503` only when MongoDB is unavailable, `/api/health/scale-ready` blocks high-concurrency readiness until Redis-backed rate limits/queues are configured, while `/api/health` stays backward-compatible.
 - Health payload now includes service name, environment, version, short commit when available, uptime, startedAt, timestamp, and database check state without secrets.
 - Routine logs now skip `/api/health/*` unless slow/failing.
 - Added guard `npm run smoke:health-readiness` and updated `DEPLOYMENT_GUIDE.md`.
