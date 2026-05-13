@@ -458,6 +458,8 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
+const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;
+
 const buildRecommendedAction = (mastery: number, attemptCount: number) => {
   if (mastery < 45) {
     return "خطة علاج عاجلة: شرح + تدريب + اختبار موجه";
@@ -1272,10 +1274,15 @@ quizRouter.get(
           });
         });
 
-        const weakestSkills = Array.from(weakSkillMap.values())
+        const reliableWeakSkillItems = Array.from(weakSkillMap.values()).filter((item) => item.count >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT);
+        const earlyWeakSignalCount = Array.from(weakSkillMap.values()).filter((item) => item.count < MIN_ANALYTICS_SKILL_EVIDENCE_COUNT).length;
+        const weakestSkills = reliableWeakSkillItems
           .map((item) => ({
             skill: item.skill,
             mastery: Math.round(item.masterySum / Math.max(item.count, 1)),
+            attempts: item.count,
+            isReliable: true,
+            evidenceThreshold: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
           }))
           .sort((a, b) => a.mastery - b.mastery)
           .slice(0, 3);
@@ -1291,7 +1298,8 @@ quizRouter.get(
           attempts,
           questionAttempts: granularAttempts.length,
           averageScore,
-          weakSkillCount: weakSkillMap.size,
+          weakSkillCount: reliableWeakSkillItems.length,
+          earlyWeakSignalCount,
           weakestSkills,
           latestAttemptAt: toSafeDate(results[0]?.createdAt),
           recommendedAction:
@@ -1374,7 +1382,9 @@ quizRouter.get(
       });
     });
 
+    const earlyWeakSkillSignalCount = Array.from(weakSkillMap.values()).filter((item) => item.attempts < MIN_ANALYTICS_SKILL_EVIDENCE_COUNT).length;
     const weakestSkills = Array.from(weakSkillMap.values())
+      .filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)
       .map((item) => {
         const mastery = Math.round(item.masterySum / Math.max(item.attempts, 1));
         return {
@@ -1385,6 +1395,8 @@ quizRouter.get(
           section: item.section,
           mastery,
           attempts: item.attempts,
+          isReliable: true,
+          evidenceThreshold: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
           affectedStudents: item.studentIds.size,
           recommendedAction: buildRecommendedAction(mastery, item.attempts),
         };
@@ -1495,6 +1507,8 @@ quizRouter.get(
         groupCount: relatedGroupIds.length,
         quizAttempts: quizResults.length,
         questionAttempts: questionAttempts.length,
+        earlyWeakSkillSignalCount,
+        minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT,
         limits: {
           studentLimit: query.studentLimit,
           resultLimit: query.resultLimit,

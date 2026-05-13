@@ -22,6 +22,8 @@ interface ScopedAnalyticsOverview {
         groupCount: number;
         quizAttempts: number;
         questionAttempts?: number;
+        earlyWeakSkillSignalCount?: number;
+        minSkillEvidence?: number;
     };
     weakestStudents: Array<{
         id: string;
@@ -29,10 +31,11 @@ interface ScopedAnalyticsOverview {
         averageScore: number;
         attempts: number;
         weakSkillCount: number;
+        earlyWeakSignalCount?: number;
         schoolName?: string;
         groupIds?: string[];
         groupNames?: string[];
-        weakestSkills?: Array<{ skill: string; mastery: number }>;
+        weakestSkills?: Array<{ skill: string; mastery: number; attempts?: number; isReliable?: boolean; evidenceThreshold?: number }>;
         recommendedAction?: string;
     }>;
     weakestSkills: Array<{
@@ -42,6 +45,8 @@ interface ScopedAnalyticsOverview {
         mastery: number;
         affectedStudents: number;
         attempts: number;
+        isReliable?: boolean;
+        evidenceThreshold?: number;
         recommendedAction?: string;
     }>;
     subjectSummaries: Array<{
@@ -1325,7 +1330,7 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
                             <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-sm font-bold leading-6 text-slate-600">
-                                راقب تكرار نفس المهارة تحت 50%.
+                                المهارات الظاهرة هنا مبنية على {scopedAnalytics.scope.minSkillEvidence || MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر، والإشارات الأولية لا تُحسب ضعفًا مؤكدًا.
                             </div>
                         </Card>
 
@@ -1546,6 +1551,10 @@ const Reports: React.FC = () => {
                                     <div className="text-xs text-purple-600 mb-1">إجابات</div>
                                     <div className="text-xl font-black text-purple-700">{scopedAnalytics.scope.questionAttempts || 0}</div>
                                 </div>
+                            </div>
+                            <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-xs font-bold leading-6 text-slate-600">
+                                يتم عرض المهارات الضعيفة المؤكدة فقط بعد {scopedAnalytics.scope.minSkillEvidence || MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر.
+                                {scopedAnalytics.scope.earlyWeakSkillSignalCount ? ` توجد ${scopedAnalytics.scope.earlyWeakSkillSignalCount} إشارة أولية تحتاج قياسًا إضافيًا قبل الحكم.` : ''}
                             </div>
 
                             {institutionalReportHub ? (

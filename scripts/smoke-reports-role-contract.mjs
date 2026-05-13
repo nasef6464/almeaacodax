@@ -97,6 +97,9 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, '!isStudentView && (');
   assertIncludes(reportsSource, 'scopedSkillReportCards');
   assertIncludes(reportsSource, 'scopedStudentFocusCards');
+  assertIncludes(reportsSource, 'minSkillEvidence?: number');
+  assertIncludes(reportsSource, 'earlyWeakSkillSignalCount?: number');
+  assertIncludes(reportsSource, 'يتم عرض المهارات الضعيفة المؤكدة فقط بعد');
   assertIncludes(reportsSource, 'downloadScopedSkillsWorkbook');
   assertIncludes(reportsSource, 'downloadScopedStudentsWorkbook');
   assertIncludes(reportsSource, 'scopedInterventionPlan');
@@ -132,6 +135,10 @@ check('server analytics scopes reports by role before returning weak skills and 
   assertIncludes(quizRoutesSource, 'authUser.role === "parent"');
   assertIncludes(quizRoutesSource, 'linkedStudentIds');
   assertIncludes(quizRoutesSource, 'matchesManagedScope');
+  assertIncludes(quizRoutesSource, 'const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;');
+  assertIncludes(quizRoutesSource, '.filter((item) => item.attempts >= MIN_ANALYTICS_SKILL_EVIDENCE_COUNT)');
+  assertIncludes(quizRoutesSource, 'earlyWeakSkillSignalCount');
+  assertIncludes(quizRoutesSource, 'minSkillEvidence: MIN_ANALYTICS_SKILL_EVIDENCE_COUNT');
   assertPattern(quizRoutesSource, /weakestStudents[\s\S]*weakestSkills[\s\S]*subjectSummaries/, 'analytics response should include students, skills, and subjects');
 });
 
