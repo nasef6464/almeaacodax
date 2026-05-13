@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Header } from './Header';
-import { ChatWidget } from './ChatWidget';
 import { Phone } from 'lucide-react';
+
+const ChatWidget = React.lazy(() => import('./ChatWidget').then((module) => ({ default: module.ChatWidget })));
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -17,7 +18,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 {children}
             </main>
 
-            <ChatWidget />
+            <React.Suspense fallback={null}>
+                <ChatWidget />
+            </React.Suspense>
 
             {/* WhatsApp Float Button */}
             <a 

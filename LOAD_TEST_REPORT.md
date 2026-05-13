@@ -9,6 +9,7 @@
 - Category course-tab bundles now lazy-load payment modals, skill details, file previews, and simulated test cards only when the student opens them or switches to their tabs. This reduces first route JavaScript without changing the UI layout.
 - Category routes now hydrate taxonomy immediately when that request finishes instead of waiting for the full bootstrap group. Courses, content, quizzes, health, question summaries, and skill-progress continue independently in the background.
 - Course list loading now has a 60-second learner/public server cache plus a browser session cache for non-staff sessions. Staff accounts bypass this cache so admin/teacher course management still sees fresh data.
+- The chat assistant widget is now lazy-loaded from `MainLayout`, so its AI service code is not part of the first route render. The floating chat keeps the same UI when the chunk loads.
 
 ## Status
 

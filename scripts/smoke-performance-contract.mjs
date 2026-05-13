@@ -183,6 +183,8 @@ assertNotIncludes('components/LearningSection.tsx', "import { SimulatedTestExper
 assertNotIncludes('components/LearningSection.tsx', "import { FileModal } from './FileModal';");
 assertIncludes('pages/GenericPathPage.tsx', "React.lazy(() => import('../components/PaymentModal')");
 assertNotIncludes('pages/GenericPathPage.tsx', "import { PaymentModal } from '../components/PaymentModal';");
+assertIncludes('components/MainLayout.tsx', "React.lazy(() => import('./ChatWidget')");
+assertNotIncludes('components/MainLayout.tsx', "import { ChatWidget } from './ChatWidget';");
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', "console.warn('Deferred skill-progress bootstrap unavailable:', error);");
 assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(path)');
