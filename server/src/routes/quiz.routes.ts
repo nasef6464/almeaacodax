@@ -119,6 +119,11 @@ const toQuestionSummaryText = (value: unknown) => {
     : plain;
 };
 
+const sanitizeQuestionForLearner = (question: Record<string, any>) => {
+  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
+  return safeQuestion;
+};
+
 const quizSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
@@ -218,6 +223,54 @@ const quizSubmitSchema = z.object({
   timeSpentSeconds: z.number().min(0).default(0),
   source: z.string().optional(),
 });
+
+const DIRECT_RESULT_DISABLED_MESSAGE =
+  "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.";
+
+const getQuizMaxAttempts = (quiz: any) => {
+  const value = Number(quiz?.settings?.maxAttempts ?? 1);
+  return Number.isFinite(value) && value > 0 ? Math.floor(value) : 1;
+};
+
+const getQuizPassingScore = (quiz: any) => {
+  const value = Number(quiz?.settings?.passingScore ?? 60);
+  if (!Number.isFinite(value)) return 60;
+  return Math.min(100, Math.max(0, value));
+};
+
+const assertQuizWindowIsOpen = (
+  quiz: any,
+  payload: z.infer<typeof quizSubmitSchema>,
+): { ok: true } | { ok: false; status: number; message: string } => {
+  const dueDateRaw = String(quiz?.dueDate || "").trim();
+  if (dueDateRaw) {
+    const dueDateMs = Date.parse(dueDateRaw);
+    if (Number.isFinite(dueDateMs) && Date.now() > dueDateMs) {
+      return {
+        ok: false,
+        status: StatusCodes.FORBIDDEN,
+        message: "Quiz submission deadline has passed",
+      };
+    }
+  }
+
+  const timeLimitMinutes = Number(quiz?.settings?.timeLimit ?? 0);
+  if (Number.isFinite(timeLimitMinutes) && timeLimitMinutes > 0) {
+    const allowedSeconds = Math.ceil(timeLimitMinutes * 60) + 60;
+    if (payload.timeSpentSeconds > allowedSeconds) {
+      return {
+        ok: false,
+        status: StatusCodes.REQUEST_TIMEOUT,
+        message: "Quiz time limit exceeded",
+      };
+    }
+  }
+
+  return { ok: true };
+};
+
+const buildSubmissionKey = (userId: string, quizId: string, attemptNumber: number) =>
+  `quiz-submit:${userId}:${quizId}:attempt:${attemptNumber}`;
 
 const buildDocumentQuery = (value: string) => {
   if (mongoose.Types.ObjectId.isValid(value)) {
@@ -901,9 +954,12 @@ quizRouter.get(
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
+    const canSeeAnswers = isStaffRole(req.authUser?.role);
     const items = query.summary
       ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-      : limitedItems;
+      : canSeeAnswers
+        ? limitedItems
+        : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
     if (total !== null) {
       res.setHeader("X-Total-Count", String(total));
     }
@@ -1617,6 +1673,28 @@ quizRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 
+    const quizWindow = assertQuizWindowIsOpen(quiz, payload);
+    if (quizWindow.ok === false) {
+      return res.status(quizWindow.status).json({ message: quizWindow.message });
+    }
+
+    const quizId = String(quiz.id || quiz._id);
+    const maxAttempts = getQuizMaxAttempts(quiz);
+    const previousAttempts = await QuizResultModel.countDocuments({
+      userId: req.authUser!.id,
+      quizId,
+    });
+
+    if (previousAttempts >= maxAttempts) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Quiz attempt limit reached",
+        maxAttempts,
+        attemptsUsed: previousAttempts,
+      });
+    }
+
+    const attemptNumber = previousAttempts + 1;
+    const submissionKey = buildSubmissionKey(req.authUser!.id, quizId, attemptNumber);
     const questionIds = getQuizQuestionIds(quiz);
     const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
     const questionById = new Map<string, any>();
@@ -1715,21 +1793,39 @@ quizRouter.post(
 
     const totalQuestions = orderedQuestions.length;
     const score = Math.round((correctAnswers / Math.max(totalQuestions, 1)) * 100);
+    const passingScore = getQuizPassingScore(quiz);
     const timeSpentMinutes = Math.max(0, Math.round(payload.timeSpentSeconds / 60));
-    const result = await QuizResultModel.create({
-      userId: req.authUser!.id,
-      quizId: String(quiz.id || quiz._id),
-      quizTitle: String(quiz.title || "اختبار"),
-      score,
-      totalQuestions,
-      correctAnswers,
-      wrongAnswers,
-      unanswered,
-      timeSpent: timeSpentMinutes > 0 ? `${timeSpentMinutes} دقيقة` : "أقل من دقيقة",
-      date: new Date().toISOString(),
-      skillsAnalysis,
-      questionReview,
-    });
+    let result;
+    try {
+      result = await QuizResultModel.create({
+        userId: req.authUser!.id,
+        quizId,
+        quizTitle: String(quiz.title || "اختبار"),
+        score,
+        passed: score >= passingScore,
+        attemptNumber,
+        source: payload.source || "",
+        totalQuestions,
+        correctAnswers,
+        wrongAnswers,
+        unanswered,
+        timeSpentSeconds: payload.timeSpentSeconds,
+        timeSpent: timeSpentMinutes > 0 ? `${timeSpentMinutes} دقيقة` : "أقل من دقيقة",
+        date: new Date().toISOString(),
+        skillsAnalysis,
+        questionReview,
+        submissionKey,
+      });
+    } catch (error: any) {
+      if (error?.code === 11000) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "Quiz submission already processed",
+          maxAttempts,
+          attemptsUsed: attemptNumber,
+        });
+      }
+      throw error;
+    }
 
     await updateSkillProgressFromResult(result, req.authUser!.id);
     return res.status(StatusCodes.CREATED).json(result);
@@ -1800,7 +1896,7 @@ quizRouter.post(
     });
 
     return res.status(StatusCodes.GONE).json({
-      message: "Direct quiz result creation is disabled. Submit quiz answers through /api/quizzes/:id/submit.",
+      message: DIRECT_RESULT_DISABLED_MESSAGE,
     });
   }),
 );
