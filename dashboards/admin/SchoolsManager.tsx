@@ -4,6 +4,7 @@ import {
     Building2,
     CheckCircle,
     Clock3,
+    Clipboard,
     Download,
     Edit2,
     FileSpreadsheet,
@@ -597,6 +598,7 @@ export const SchoolsManager: React.FC = () => {
     const [selectedPackageIdForCode, setSelectedPackageIdForCode] = useState('');
     const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
     const [managementError, setManagementError] = useState<string | null>(null);
+    const [managementNotice, setManagementNotice] = useState<string | null>(null);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
     const [newCodeMaxUses, setNewCodeMaxUses] = useState('50');
@@ -1094,6 +1096,20 @@ export const SchoolsManager: React.FC = () => {
             `الخطوة التالية: ${readinessNextStep}`,
             'يمكن للمشرف متابعة الطلاب، تصدير التقارير، وتوجيه الاختبارات من لوحة المشرف.',
         ].join('\n');
+        const copySchoolHandoverMessage = async () => {
+            try {
+                await navigator.clipboard.writeText(schoolHandoverMessage);
+            } catch {
+                const textarea = document.createElement('textarea');
+                textarea.value = schoolHandoverMessage;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                textarea.remove();
+            }
+            setManagementNotice('تم نسخ رسالة تسليم المدرسة للإدارة.');
+            setManagementError(null);
+        };
         const downloadSchoolGapReport = () => {
             createWorkbookDownload(`${selectedSchool.name}-readiness-gaps.xlsx`, [
                 {
@@ -1903,7 +1919,7 @@ export const SchoolsManager: React.FC = () => {
         return (
             <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { setManagementError(null); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
+                    <button onClick={() => { setManagementError(null); setManagementNotice(null); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة لقائمة المدارس
                     </button>
                     <h1 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
@@ -1931,6 +1947,14 @@ export const SchoolsManager: React.FC = () => {
                         ملف تسليم المدرسة
                     </button>
                     <button
+                        onClick={() => void copySchoolHandoverMessage()}
+                        className="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 transition-colors"
+                        title="نسخ رسالة جاهزة لإرسالها لإدارة المدرسة"
+                    >
+                        <Clipboard size={16} />
+                        نسخ رسالة التسليم
+                    </button>
+                    <button
                         onClick={printSchoolReport}
                         className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
                         title="طباعة تقرير جاهزية وتشغيل المدرسة"
@@ -1952,6 +1976,7 @@ export const SchoolsManager: React.FC = () => {
                             key={tab.id}
                             onClick={() => {
                                 setManagementError(null);
+                                setManagementNotice(null);
                                 setActiveTab(tab.id as typeof activeTab);
                             }}
                             className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
@@ -1968,6 +1993,12 @@ export const SchoolsManager: React.FC = () => {
                 {managementError && (
                     <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
                         {managementError}
+                    </div>
+                )}
+
+                {managementNotice && (
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
+                        {managementNotice}
                     </div>
                 )}
 

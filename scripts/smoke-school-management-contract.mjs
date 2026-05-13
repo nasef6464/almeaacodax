@@ -70,6 +70,13 @@ check("school list cards expose next readiness action", () => {
   assertIncludes(files.schools, "setActiveTab(action.tab)");
 });
 
+check("school management can copy handover message", () => {
+  assertIncludes(files.schools, "copySchoolHandoverMessage");
+  assertIncludes(files.schools, "navigator.clipboard.writeText(schoolHandoverMessage)");
+  assertIncludes(files.schools, "managementNotice");
+  assertIncludes(files.schools, "نسخ رسالة التسليم");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 
