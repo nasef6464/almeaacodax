@@ -232,6 +232,20 @@ export const SchoolPortalManager: React.FC = () => {
             return `${index + 1}. ${summary.student.name} - ${reason}`;
         }),
     ].join('\n');
+    const supervisorWeeklyPlan = [
+        ['اليوم', 'راجع قائمة الطلاب الذين لم يبدأوا القياس أو متوسطهم أقل من 60%.'],
+        ['خلال 48 ساعة', 'وجّه اختبارًا قصيرًا للمجموعة الأساسية ثم راقب نتائج المهارات الضعيفة.'],
+        ['منتصف الأسبوع', 'أرسل رسالة متابعة للطلاب وأولياء الأمور عند وجود بريد متاح.'],
+        ['نهاية الأسبوع', 'صدّر تقرير البوابة وشاركه مع إدارة المدرسة أو ولي الأمر حسب الحاجة.'],
+    ];
+    const supervisorBrief = [
+        `ملخص إشراف ${schoolTitle}`,
+        `الطلاب داخل النطاق: ${scope.students.length}`,
+        `يحتاجون متابعة: ${watchList.length}`,
+        `متوسط الأداء: ${average}%`,
+        `أفضل إجراء الآن: ${watchList.length ? 'اختبار قصير ثم رسالة متابعة' : 'تقرير أسبوعي للإدارة'}`,
+        `نطاق الاختبار المقترح: ${scope.classes[0]?.name || scope.schools[0]?.name || 'نطاق الإشراف الحالي'}`,
+    ].join('\n');
 
     const openTargetedQuiz = () => {
         const params = new URLSearchParams({
@@ -261,6 +275,20 @@ export const SchoolPortalManager: React.FC = () => {
             textarea.remove();
         }
         setActionFeedback('تم نسخ ملخص المتابعة لاستخدامه في رسالة أو واتساب.');
+    };
+
+    const copySupervisorBrief = async () => {
+        try {
+            await navigator.clipboard.writeText(supervisorBrief);
+        } catch {
+            const textarea = document.createElement('textarea');
+            textarea.value = supervisorBrief;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+        }
+        setActionFeedback('تم نسخ ملخص المشرف التنفيذي للإدارة.');
     };
 
     const openFollowUpEmail = () => {
@@ -340,6 +368,20 @@ export const SchoolPortalManager: React.FC = () => {
                         classroom.courseIds.length,
                         classroom.supervisorIds.length,
                     ]),
+                ],
+            },
+            {
+                name: 'weekly-plan',
+                rows: [
+                    ['المرحلة', 'الإجراء'],
+                    ...supervisorWeeklyPlan,
+                ],
+            },
+            {
+                name: 'supervisor-brief',
+                rows: [
+                    ['ملخص تنفيذي جاهز'],
+                    ...supervisorBrief.split('\n').map((line) => [line]),
                 ],
             },
             {
@@ -522,6 +564,14 @@ export const SchoolPortalManager: React.FC = () => {
                         >
                             <Clipboard size={15} />
                             نسخ ملخص
+                        </button>
+                        <button
+                            type="button"
+                            onClick={copySupervisorBrief}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-50 px-4 py-2.5 text-xs font-black text-indigo-700 hover:bg-indigo-100"
+                        >
+                            <Clipboard size={15} />
+                            ملخص للإدارة
                         </button>
                     </div>
                 </div>

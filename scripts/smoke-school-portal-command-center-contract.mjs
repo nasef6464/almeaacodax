@@ -21,6 +21,7 @@ const checks = [
       schoolPortal.includes("openTargetedQuiz") &&
       schoolPortal.includes("openFollowUpEmail") &&
       schoolPortal.includes("copyFollowUpMessage") &&
+      schoolPortal.includes("copySupervisorBrief") &&
       schoolPortal.includes("exportWatchList") &&
       schoolPortal.includes("actionFeedback"),
   },
@@ -40,6 +41,14 @@ const checks = [
       adminDashboard.includes("getRequestedAdminTab") &&
       adminDashboard.includes("tabRequestVersion") &&
       adminDashboard.includes("key={`quizzes-${tabRequestVersion}`}"),
+  },
+  {
+    name: "school portal report includes supervisor weekly plan",
+    ok:
+      schoolPortal.includes("supervisorWeeklyPlan") &&
+      schoolPortal.includes("supervisorBrief") &&
+      schoolPortal.includes("weekly-plan") &&
+      schoolPortal.includes("supervisor-brief"),
   },
   {
     name: "announcement ads have a live preview path",
