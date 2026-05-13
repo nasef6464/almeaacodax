@@ -46,6 +46,8 @@ assertIncludes('components/CustomVideoPlayer.tsx', "provider: 'file'");
 
 assertNotIncludes('index.html', 'cdn.tailwindcss.com');
 assertNotIncludes('index.html', '<script type="importmap">');
+assertIncludes('index.html', 'rel="preconnect" href="https://almeaacodax-k2ux.onrender.com"');
+assertIncludes('index.html', 'rel="dns-prefetch" href="https://almeaacodax-k2ux.onrender.com"');
 assertIncludes('index.tsx', "import './styles/main.css';");
 assertIncludes('styles/main.css', '@tailwind base;');
 assertIncludes('tailwind.config.cjs', './components/**/*.{ts,tsx}');
