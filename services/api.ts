@@ -1,6 +1,9 @@
 const runtimeHostname = (globalThis as { location?: { hostname?: string } }).location?.hostname || "";
+const productionApiBaseUrl = "https://almeaacodax-k2ux.onrender.com/api";
 const defaultApiBaseUrl =
-  runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
+  runtimeHostname === "almeaacodax.vercel.app" || runtimeHostname.endsWith(".vercel.app")
+    ? productionApiBaseUrl
+    : runtimeHostname && !["localhost", "127.0.0.1"].includes(runtimeHostname)
     ? "/api"
     : "http://localhost:4000/api";
 

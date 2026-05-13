@@ -120,6 +120,8 @@ assertIncludes('App.tsx', 'const hasItems = (value: unknown) => Array.isArray(va
 assertIncludes('App.tsx', "coursesResult.status === 'fulfilled' && coursesResult.value.length > 0");
 assertIncludes('App.tsx', '].some(hasItems)');
 assertIncludes('services/api.ts', 'ids?: string;');
+assertIncludes('services/api.ts', 'const productionApiBaseUrl = "https://almeaacodax-k2ux.onrender.com/api";');
+assertIncludes('services/api.ts', 'runtimeHostname === "almeaacodax.vercel.app" || runtimeHostname.endsWith(".vercel.app")');
 assertIncludes('services/api.ts', 'summary?: boolean');
 assertIncludes('services/api.ts', 'noTotal?: boolean');
 assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(200).default(80)');
@@ -132,6 +134,7 @@ assertIncludes('server/src/routes/quiz.routes.ts', 'X-Quiz-List-Cache');
 assertIncludes('server/src/routes/quiz.routes.ts', 'QUESTION_SUMMARY_CACHE_TTL_MS');
 assertIncludes('server/src/routes/quiz.routes.ts', 'X-Question-Summary-Cache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'TAXONOMY_BOOTSTRAP_CACHE_TTL_MS');
+assertIncludes('server/src/routes/taxonomy.routes.ts', 'Deferred taxonomy seed check failed');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'X-Taxonomy-Cache');
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'clearTaxonomyBootstrapCache');
 assertIncludes('server/src/routes/content.routes.ts', 'CONTENT_BOOTSTRAP_CACHE_TTL_MS');

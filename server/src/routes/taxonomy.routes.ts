@@ -122,7 +122,13 @@ taxonomyRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const canSeeInactiveTaxonomy = ["admin", "teacher", "supervisor"].includes(req.authUser?.role || "");
-    await ensureSkillTaxonomyIfStale();
+    if (canSeeInactiveTaxonomy) {
+      await ensureSkillTaxonomyIfStale();
+    } else {
+      void ensureSkillTaxonomyIfStale().catch((error) => {
+        console.warn("Deferred taxonomy seed check failed:", error);
+      });
+    }
 
     if (!canSeeInactiveTaxonomy && publicTaxonomyBootstrapCache && publicTaxonomyBootstrapCache.expiresAt > Date.now()) {
       res.setHeader("Cache-Control", "private, max-age=60");
