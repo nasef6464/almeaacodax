@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { ExternalLink, ImagePlus, Megaphone, Plus, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { AnnouncementAd, AnnouncementAudience } from '../../types';
+import { AnnouncementAd, AnnouncementAudience, AnnouncementDisplayMode, AnnouncementFrequency, AnnouncementImageFit } from '../../types';
+
+const MAX_AD_IMAGE_BYTES = 900 * 1024;
 
 const audienceLabels: Record<AnnouncementAudience, string> = {
   all: 'كل الزوار',
@@ -9,6 +11,22 @@ const audienceLabels: Record<AnnouncementAudience, string> = {
   student: 'الطلاب',
   parent: 'أولياء الأمور',
   staff: 'الإدارة والفريق',
+};
+
+const displayModeLabels: Record<AnnouncementDisplayMode, string> = {
+  modal: 'نافذة وسط الشاشة',
+  'top-banner': 'شريط علوي خفيف',
+};
+
+const frequencyLabels: Record<AnnouncementFrequency, string> = {
+  session: 'مرة في الجلسة',
+  once: 'مرة واحدة فقط',
+  always: 'كل زيارة',
+};
+
+const imageFitLabels: Record<AnnouncementImageFit, string> = {
+  cover: 'ملء المساحة',
+  contain: 'إظهار الصورة كاملة',
 };
 
 const toDateInput = (value?: number) => (value ? new Date(value).toISOString().slice(0, 10) : '');
@@ -26,6 +44,10 @@ const createDefaultAd = (): AnnouncementAd => ({
   ctaLabel: 'افتح الآن',
   ctaUrl: '/',
   audience: 'all',
+  displayMode: 'modal',
+  frequency: 'session',
+  imageFit: 'cover',
+  delaySeconds: 0,
   isActive: true,
   priority: 10,
   createdAt: Date.now(),
@@ -59,9 +81,16 @@ export const AnnouncementAdsManager: React.FC = () => {
 
   const handleImageUpload = (file?: File) => {
     if (!file || !selectedAd) return;
+
+    if (file.size > MAX_AD_IMAGE_BYTES) {
+      setFeedback('الصورة كبيرة. يفضل WebP/JPG أقل من 900KB وبأبعاد 1200x675.');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => {
       updateSelected({ imageUrl: String(reader.result || '') });
+      setFeedback('تم رفع صورة الإعلان.');
     };
     reader.readAsDataURL(file);
   };
@@ -77,7 +106,7 @@ export const AnnouncementAdsManager: React.FC = () => {
             </div>
             <h2 className="mt-3 text-2xl font-black text-gray-950">الإعلانات العائمة عند فتح الموقع</h2>
             <p className="mt-2 text-sm leading-7 text-gray-500">
-              أعلن بصورة أو رسالة مختصرة، وحدد الجمهور وزر الانتقال داخل المنصة.
+              أنشئ إعلانًا بصورة أو رسالة مختصرة، وحدد الجمهور وزر الانتقال داخل المنصة بدون التأثير على سرعة فتح الصفحة.
             </p>
           </div>
           <button
@@ -156,6 +185,32 @@ export const AnnouncementAdsManager: React.FC = () => {
                 </label>
 
                 <label className="space-y-2">
+                  <span className="text-sm font-bold text-gray-700">طريقة العرض</span>
+                  <select
+                    value={selectedAd.displayMode || 'modal'}
+                    onChange={(event) => updateSelected({ displayMode: event.target.value as AnnouncementDisplayMode })}
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                  >
+                    {Object.entries(displayModeLabels).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-sm font-bold text-gray-700">تكرار الظهور</span>
+                  <select
+                    value={selectedAd.frequency || 'session'}
+                    onChange={(event) => updateSelected({ frequency: event.target.value as AnnouncementFrequency })}
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                  >
+                    {Object.entries(frequencyLabels).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">الترتيب</span>
                   <input
                     type="number"
@@ -163,6 +218,31 @@ export const AnnouncementAdsManager: React.FC = () => {
                     onChange={(event) => updateSelected({ priority: Number(event.target.value || 0) })}
                     className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
                   />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-sm font-bold text-gray-700">تأخير الظهور بالثواني</span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={30}
+                    value={selectedAd.delaySeconds ?? 0}
+                    onChange={(event) => updateSelected({ delaySeconds: Math.max(0, Math.min(30, Number(event.target.value || 0))) })}
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                  />
+                </label>
+
+                <label className="space-y-2">
+                  <span className="text-sm font-bold text-gray-700">عرض الصورة</span>
+                  <select
+                    value={selectedAd.imageFit || 'cover'}
+                    onChange={(event) => updateSelected({ imageFit: event.target.value as AnnouncementImageFit })}
+                    className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                  >
+                    {Object.entries(imageFitLabels).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
                 </label>
 
                 <label className="space-y-2">
@@ -218,6 +298,9 @@ export const AnnouncementAdsManager: React.FC = () => {
                       <input type="file" accept="image/*" className="hidden" onChange={(event) => handleImageUpload(event.target.files?.[0])} />
                     </label>
                   </div>
+                  <span className="block text-xs font-bold leading-6 text-gray-500">
+                    الأبعاد المناسبة: 1200x675، ويفضل WebP/JPG أقل من 900KB حتى لا يبطئ الإعلان فتح الموقع.
+                  </span>
                 </label>
               </div>
 
@@ -250,7 +333,7 @@ export const AnnouncementAdsManager: React.FC = () => {
               <div className="mb-3 text-sm font-black text-gray-800">معاينة مختصرة</div>
               <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg">
                 {selectedAd.imageUrl ? (
-                  <img src={selectedAd.imageUrl} alt="" className="h-40 w-full object-cover" />
+                  <img src={selectedAd.imageUrl} alt="" className={`h-40 w-full ${selectedAd.imageFit === 'contain' ? 'object-contain bg-gray-50' : 'object-cover'}`} />
                 ) : (
                   <div className="h-28 bg-gradient-to-l from-indigo-600 to-amber-500" />
                 )}

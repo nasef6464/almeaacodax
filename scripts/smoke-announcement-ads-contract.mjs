@@ -10,8 +10,8 @@ const assert = (condition, message) => {
 };
 
 const checks = [
-  ['types.ts', ['AnnouncementAd', 'AnnouncementAudience', 'ctaUrl', 'audience']],
-  ['server/src/models/AnnouncementAd.ts', ['AnnouncementAdModel', 'imageUrl', 'ctaLabel', 'priority']],
+  ['types.ts', ['AnnouncementAd', 'AnnouncementAudience', 'AnnouncementDisplayMode', 'AnnouncementFrequency', 'ctaUrl', 'audience', 'delaySeconds']],
+  ['server/src/models/AnnouncementAd.ts', ['AnnouncementAdModel', 'imageUrl', 'ctaLabel', 'priority', 'displayMode', 'frequency', 'delaySeconds']],
   [
     'server/src/routes/content.routes.ts',
     [
@@ -23,12 +23,12 @@ const checks = [
     ],
   ],
   ['services/api.ts', ['createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'announcementAds']],
-  ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds']],
-  ['store/useStore.ts', ['announcementAds', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd']],
-  ['components/AnnouncementAdsOverlay.tsx', ['DISMISSED_KEY', 'goToTarget', 'visibleAds', 'matchesAudience']],
-  ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'audienceLabels', 'createAnnouncementAd', "boundary: 'start' | 'end' = 'start'", 'T23:59:59.999']],
+  ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds', 'displayMode', 'frequency', 'imageFit']],
+  ['store/useStore.ts', ['announcementAds', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'delaySeconds']],
+  ['components/AnnouncementAdsOverlay.tsx', ['SESSION_DISMISSED_KEY', 'PERMANENT_DISMISSED_KEY', 'goToTarget', 'visibleAds', 'matchesAudience', 'skipActiveAd', 'top-banner', 'تخطي هذا الإعلان']],
+  ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'audienceLabels', 'displayModeLabels', 'frequencyLabels', 'imageFitLabels', 'createAnnouncementAd', "boundary: 'start' | 'end' = 'start'", 'T23:59:59.999', 'MAX_AD_IMAGE_BYTES', '1200x675']],
   ['dashboards/admin/AdminDashboard.tsx', ['AnnouncementAdsManager', 'announcement-ads', 'Megaphone']],
-  ['App.tsx', ['AnnouncementAdsOverlay', 'announcementAds: contentResult.value.announcementAds']],
+  ['App.tsx', ['AnnouncementAdsOverlay', 'announcementAds: contentResult.announcementAds']],
   ['server/src/services/learningBackup.ts', ['announcementAds', 'AnnouncementAdModel']],
 ];
 
@@ -48,6 +48,10 @@ assert(lessonManager.includes("addInteractiveQuestion('bank')"), 'Lesson manager
 assert(lessonManager.includes('questionId') && lessonManager.includes('interactiveQuestions'), 'Video questions must keep question-bank references');
 
 const adsManager = read('dashboards/admin/AnnouncementAdsManager.tsx');
+assert(adsManager.includes('إدارة الإعلانات'), 'Announcement manager labels must be readable Arabic');
+assert(adsManager.includes('الصورة كبيرة'), 'Announcement manager must warn about oversized images');
+assert(adsManager.includes('طريقة العرض'), 'Announcement manager must expose display mode settings');
+assert(adsManager.includes('تكرار الظهور'), 'Announcement manager must expose frequency settings');
 assert(
   adsManager.includes("startsAt: fromDateInput(event.target.value, 'start')"),
   'Announcement ad start date must use a start-of-day boundary',

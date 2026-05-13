@@ -1358,6 +1358,10 @@ export const useStore = create<AppState>()(
                 const normalizedAd: AnnouncementAd = {
                     ...ad,
                     audience: ad.audience || 'all',
+                    displayMode: ad.displayMode || 'modal',
+                    frequency: ad.frequency || 'session',
+                    imageFit: ad.imageFit || 'cover',
+                    delaySeconds: Math.max(0, Math.min(30, Number(ad.delaySeconds ?? 0))),
                     isActive: ad.isActive !== false,
                     priority: Number(ad.priority ?? 0),
                     createdAt: ad.createdAt || Date.now(),
@@ -1372,6 +1376,7 @@ export const useStore = create<AppState>()(
                 const normalizedData: Partial<AnnouncementAd> = {
                     ...data,
                     ...(data.priority !== undefined ? { priority: Number(data.priority) } : {}),
+                    ...(data.delaySeconds !== undefined ? { delaySeconds: Math.max(0, Math.min(30, Number(data.delaySeconds || 0))) } : {}),
                     updatedAt: Date.now(),
                 };
                 api.updateAnnouncementAd(id, normalizedData).catch(console.error);

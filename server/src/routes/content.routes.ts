@@ -146,6 +146,10 @@ const announcementAdSchema = z.object({
   ctaLabel: z.string().optional().default(""),
   ctaUrl: z.string().optional().default(""),
   audience: z.enum(["all", "guest", "student", "parent", "staff"]).default("all"),
+  displayMode: z.enum(["modal", "top-banner"]).default("modal"),
+  frequency: z.enum(["always", "session", "once"]).default("session"),
+  imageFit: z.enum(["cover", "contain"]).default("cover"),
+  delaySeconds: z.number().min(0).max(30).default(0),
   isActive: z.boolean().default(true),
   priority: z.number().default(0),
   startsAt: z.number().nullable().optional(),
@@ -162,6 +166,10 @@ const announcementAdUpdateSchema = z.object({
   ctaLabel: z.string().optional(),
   ctaUrl: z.string().optional(),
   audience: z.enum(["all", "guest", "student", "parent", "staff"]).optional(),
+  displayMode: z.enum(["modal", "top-banner"]).optional(),
+  frequency: z.enum(["always", "session", "once"]).optional(),
+  imageFit: z.enum(["cover", "contain"]).optional(),
+  delaySeconds: z.number().min(0).max(30).optional(),
   isActive: z.boolean().optional(),
   priority: z.number().optional(),
   startsAt: z.number().nullable().optional(),
@@ -1184,7 +1192,7 @@ contentRouter.get(
         { $or: [{ endsAt: { $exists: false } }, { endsAt: null }, { endsAt: { $gte: now } }] },
       ],
     })
-      .select("title body imageUrl ctaLabel ctaUrl audience isActive startsAt endsAt priority createdAt updatedAt")
+      .select("title body imageUrl ctaLabel ctaUrl audience displayMode frequency imageFit delaySeconds isActive startsAt endsAt priority createdAt updatedAt")
       .sort({ priority: 1, createdAt: -1 })
       .limit(8);
 

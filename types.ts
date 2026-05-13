@@ -679,6 +679,9 @@ export interface B2BPackage {
 }
 
 export type AnnouncementAudience = 'all' | 'guest' | 'student' | 'parent' | 'staff';
+export type AnnouncementDisplayMode = 'modal' | 'top-banner';
+export type AnnouncementFrequency = 'always' | 'session' | 'once';
+export type AnnouncementImageFit = 'cover' | 'contain';
 
 export interface AnnouncementAd {
     id: string;
@@ -688,6 +691,10 @@ export interface AnnouncementAd {
     ctaLabel?: string;
     ctaUrl?: string;
     audience: AnnouncementAudience;
+    displayMode?: AnnouncementDisplayMode;
+    frequency?: AnnouncementFrequency;
+    imageFit?: AnnouncementImageFit;
+    delaySeconds?: number;
     isActive: boolean;
     priority: number;
     startsAt?: number;

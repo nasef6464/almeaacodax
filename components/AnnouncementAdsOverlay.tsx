@@ -1,25 +1,37 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { AnnouncementAd, Role, User } from '../types';
 
-const DISMISSED_KEY = 'almeaa-dismissed-announcement-ads';
+const SESSION_DISMISSED_KEY = 'almeaa-dismissed-announcement-ads';
+const PERMANENT_DISMISSED_KEY = 'almeaa-dismissed-announcement-ads-once';
 
-const getDismissedIds = () => {
+const getDismissedIds = (storage: Storage, key: string) => {
   try {
-    return new Set(JSON.parse(sessionStorage.getItem(DISMISSED_KEY) || '[]') as string[]);
+    return new Set(JSON.parse(storage.getItem(key) || '[]') as string[]);
   } catch {
     return new Set<string>();
   }
 };
 
-const dismissIds = (ids: string[]) => {
+const dismissIds = (ids: string[], frequency: AnnouncementAd['frequency'] = 'session') => {
+  if (frequency === 'always') return;
+
   try {
-    const nextIds = new Set([...getDismissedIds(), ...ids]);
-    sessionStorage.setItem(DISMISSED_KEY, JSON.stringify([...nextIds]));
+    const storage = frequency === 'once' ? localStorage : sessionStorage;
+    const key = frequency === 'once' ? PERMANENT_DISMISSED_KEY : SESSION_DISMISSED_KEY;
+    const nextIds = new Set([...getDismissedIds(storage, key), ...ids]);
+    storage.setItem(key, JSON.stringify([...nextIds]));
   } catch {
-    // Session storage can be unavailable in strict privacy modes.
+    // Storage can be unavailable in strict privacy modes.
   }
+};
+
+const isDismissed = (ad: AnnouncementAd) => {
+  if (ad.frequency === 'always') return false;
+  const sessionDismissed = getDismissedIds(sessionStorage, SESSION_DISMISSED_KEY);
+  const permanentDismissed = getDismissedIds(localStorage, PERMANENT_DISMISSED_KEY);
+  return sessionDismissed.has(ad.id) || permanentDismissed.has(ad.id);
 };
 
 const matchesAudience = (ad: AnnouncementAd, user?: User | null) => {
@@ -55,25 +67,87 @@ export const AnnouncementAdsOverlay: React.FC = () => {
   const announcementAds = useStore((state) => state.announcementAds);
   const [closed, setClosed] = useState(false);
   const [index, setIndex] = useState(0);
+  const [dismissedVersion, setDismissedVersion] = useState(0);
+  const [canShowDelayed, setCanShowDelayed] = useState(false);
 
   const visibleAds = useMemo(() => {
-    const dismissedIds = getDismissedIds();
     return announcementAds
-      .filter((ad) => ad.id && !dismissedIds.has(ad.id) && isLiveNow(ad) && matchesAudience(ad, user))
+      .filter((ad) => ad.id && !isDismissed(ad) && isLiveNow(ad) && matchesAudience(ad, user))
       .sort((a, b) => a.priority - b.priority || b.createdAt - a.createdAt);
-  }, [announcementAds, user]);
+  }, [announcementAds, dismissedVersion, user]);
 
-  if (closed || visibleAds.length === 0) {
+  const activeIndex = Math.min(index, Math.max(visibleAds.length - 1, 0));
+  const activeAd = visibleAds[activeIndex];
+
+  useEffect(() => {
+    setCanShowDelayed(false);
+    if (!activeAd) return;
+
+    const delayMs = Math.max(0, Math.min(30, Number(activeAd.delaySeconds || 0))) * 1000;
+    const timer = window.setTimeout(() => setCanShowDelayed(true), delayMs);
+    return () => window.clearTimeout(timer);
+  }, [activeAd?.id, activeAd?.delaySeconds]);
+
+  if (closed || visibleAds.length === 0 || !activeAd || !canShowDelayed) {
     return null;
   }
 
-  const activeIndex = Math.min(index, visibleAds.length - 1);
-  const activeAd = visibleAds[activeIndex];
-
   const closeOverlay = () => {
-    dismissIds(visibleAds.map((ad) => ad.id));
+    visibleAds.forEach((ad) => dismissIds([ad.id], ad.frequency));
     setClosed(true);
   };
+
+  const skipActiveAd = () => {
+    dismissIds([activeAd.id], activeAd.frequency);
+    setIndex((current) => Math.min(current, Math.max(visibleAds.length - 2, 0)));
+    setDismissedVersion((current) => current + 1);
+  };
+
+  const imageObjectClass = activeAd.imageFit === 'contain' ? 'object-contain bg-gray-50' : 'object-cover';
+
+  if (activeAd.displayMode === 'top-banner') {
+    return (
+      <div className="fixed inset-x-0 top-0 z-[90] px-3 pt-3" dir="rtl">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 rounded-2xl border border-amber-100 bg-white/95 p-3 shadow-xl shadow-slate-900/10 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            {activeAd.imageUrl ? (
+              <img src={activeAd.imageUrl} alt={activeAd.title} className={`h-14 w-20 rounded-xl ${imageObjectClass}`} />
+            ) : (
+              <div className="h-14 w-20 rounded-xl bg-gradient-to-l from-indigo-600 to-amber-500" />
+            )}
+            <div className="min-w-0">
+              <p className="text-[11px] font-black text-amber-600">إعلان المنصة</p>
+              <h2 className="truncate text-sm font-black text-gray-950 sm:text-base">{activeAd.title}</h2>
+              {activeAd.body ? <p className="line-clamp-1 text-xs font-bold text-gray-500">{activeAd.body}</p> : null}
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            {activeAd.ctaLabel && activeAd.ctaUrl ? (
+              <button
+                type="button"
+                onClick={() => {
+                  dismissIds([activeAd.id], activeAd.frequency);
+                  goToTarget(activeAd.ctaUrl || '');
+                }}
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white transition hover:bg-indigo-700"
+              >
+                {activeAd.ctaLabel}
+                <ExternalLink size={14} />
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={skipActiveAd}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200"
+              aria-label="إغلاق الإعلان"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/55 px-4 py-6" dir="rtl">
@@ -89,7 +163,7 @@ export const AnnouncementAdsOverlay: React.FC = () => {
 
         {activeAd.imageUrl ? (
           <div className="bg-gray-100">
-            <img src={activeAd.imageUrl} alt={activeAd.title} className="h-64 w-full object-cover" />
+            <img src={activeAd.imageUrl} alt={activeAd.title} className={`h-64 w-full ${imageObjectClass}`} />
           </div>
         ) : (
           <div className="h-36 bg-gradient-to-l from-indigo-600 to-amber-500" />
@@ -131,19 +205,30 @@ export const AnnouncementAdsOverlay: React.FC = () => {
               ) : null}
             </div>
 
-            {activeAd.ctaLabel && activeAd.ctaUrl ? (
-              <button
-                type="button"
-                onClick={() => {
-                  dismissIds([activeAd.id]);
-                  goToTarget(activeAd.ctaUrl || '');
-                }}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700"
-              >
-                {activeAd.ctaLabel}
-                <ExternalLink size={16} />
-              </button>
-            ) : null}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              {visibleAds.length > 1 ? (
+                <button
+                  type="button"
+                  onClick={skipActiveAd}
+                  className="inline-flex items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-black text-gray-600 transition hover:bg-gray-50"
+                >
+                  تخطي هذا الإعلان
+                </button>
+              ) : null}
+              {activeAd.ctaLabel && activeAd.ctaUrl ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    dismissIds([activeAd.id], activeAd.frequency);
+                    goToTarget(activeAd.ctaUrl || '');
+                  }}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700"
+                >
+                  {activeAd.ctaLabel}
+                  <ExternalLink size={16} />
+                </button>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
