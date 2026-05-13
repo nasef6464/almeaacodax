@@ -1,5 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
+import { env } from "../config/env.js";
+import { getRedisHealth } from "../config/redis.js";
 
 export const healthRouter = Router();
 
@@ -40,6 +42,46 @@ function getRuntimeHealth() {
   };
 }
 
+function isRedisRequiredForScale(featureEnabled: boolean) {
+  return env.NODE_ENV === "production" && featureEnabled;
+}
+
+async function getDependencyHealth() {
+  const database = getDatabaseHealth();
+  const [rateLimitRedis, queueRedis] = await Promise.all([
+    getRedisHealth("rate-limit", {
+      required: isRedisRequiredForScale(env.RATE_LIMIT_REDIS_ENABLED),
+    }),
+    getRedisHealth("queue", {
+      required: isRedisRequiredForScale(env.NOTIFICATION_QUEUE_ENABLED),
+    }),
+  ]);
+
+  const checks = {
+    database: database.ok ? "pass" : "fail",
+    redisRateLimit: rateLimitRedis.ok ? "pass" : rateLimitRedis.required ? "fail" : "warn",
+    redisQueue: queueRedis.ok ? "pass" : queueRedis.required ? "fail" : "warn",
+  };
+  const failedCriticalChecks = Object.values(checks).filter((status) => status === "fail").length;
+  const warnings = Object.values(checks).filter((status) => status === "warn").length;
+
+  return {
+    status: failedCriticalChecks > 0 ? "degraded" : warnings > 0 ? "ready_with_warnings" : "ok",
+    ok: failedCriticalChecks === 0,
+    database,
+    redis: {
+      rateLimit: rateLimitRedis,
+      queue: queueRedis,
+    },
+    checks,
+    summary: {
+      failedCriticalChecks,
+      warnings,
+      redisConfiguredForScale: rateLimitRedis.configured && queueRedis.configured,
+    },
+  };
+}
+
 healthRouter.get("/live", (_req, res) => {
   res.json({
     status: "ok",
@@ -47,27 +89,29 @@ healthRouter.get("/live", (_req, res) => {
   });
 });
 
-healthRouter.get("/ready", (_req, res) => {
-  const database = getDatabaseHealth();
-  const status = database.ok ? "ok" : "degraded";
-  res.status(database.ok ? 200 : 503).json({
-    status,
-    database,
-    checks: {
-      database: database.ok ? "pass" : "fail",
-    },
+healthRouter.get("/ready", async (_req, res) => {
+  const dependencies = await getDependencyHealth();
+  res.status(dependencies.ok ? 200 : 503).json({
+    status: dependencies.status,
+    database: dependencies.database,
+    redis: dependencies.redis,
+    checks: dependencies.checks,
+    summary: dependencies.summary,
     ...getRuntimeHealth(),
   });
 });
 
-healthRouter.get("/", (_req, res) => {
-  const database = getDatabaseHealth();
-  res.status(database.ok ? 200 : 503).json({
-    status: database.ok ? "ok" : "degraded",
-    database: database.status,
-    checks: {
-      database: database.ok ? "pass" : "fail",
+healthRouter.get("/", async (_req, res) => {
+  const dependencies = await getDependencyHealth();
+  res.status(dependencies.ok ? 200 : 503).json({
+    status: dependencies.status,
+    database: dependencies.database.status,
+    redis: {
+      rateLimit: dependencies.redis.rateLimit.status,
+      queue: dependencies.redis.queue.status,
     },
+    checks: dependencies.checks,
+    summary: dependencies.summary,
     ...getRuntimeHealth(),
   });
 });

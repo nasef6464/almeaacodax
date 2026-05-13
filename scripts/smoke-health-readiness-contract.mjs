@@ -20,10 +20,13 @@ function assertIncludes(file, needle) {
 
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/live"');
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/ready"');
-assertIncludes('server/src/routes/health.routes.ts', 'database.ok ? 200 : 503');
+assertIncludes('server/src/routes/health.routes.ts', 'res.status(dependencies.ok ? 200 : 503)');
 assertIncludes('server/src/routes/health.routes.ts', 'RENDER_GIT_COMMIT');
 assertIncludes('server/src/routes/health.routes.ts', 'uptimeSeconds');
-assertIncludes('server/src/routes/health.routes.ts', 'checks: {');
+assertIncludes('server/src/routes/health.routes.ts', 'const checks = {');
+assertIncludes('server/src/routes/health.routes.ts', 'redisConfiguredForScale');
+assertIncludes('server/src/routes/health.routes.ts', 'redisRateLimit');
+assertIncludes('server/src/routes/health.routes.ts', 'redisQueue');
 assertIncludes('server/src/routes/health.routes.ts', 'service: "The Hundred Platform API"');
 assertIncludes('server/src/middleware/requestLogger.ts', 'path.startsWith("/api/health/")');
 assertIncludes('DEPLOYMENT_GUIDE.md', '/api/health/live');

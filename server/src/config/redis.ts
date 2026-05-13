@@ -4,6 +4,7 @@ import { env } from "./env.js";
 type RedisPurpose = "rate-limit" | "socket-pub" | "socket-sub" | "queue";
 
 const clients = new Map<string, RedisClient>();
+const DEFAULT_REDIS_HEALTH_TIMEOUT_MS = 800;
 
 const buildRedisKey = (purpose: RedisPurpose) => `${purpose}:${env.REDIS_URL || "memory"}`;
 
@@ -47,4 +48,64 @@ export function createRedisClient(purpose: RedisPurpose) {
 export function createRedisDuplicate(purpose: RedisPurpose) {
   const client = createRedisClient(purpose);
   return client ? client.duplicate({ keyPrefix: `${env.REDIS_KEY_PREFIX}:${purpose}:` }) : null;
+}
+
+export async function getRedisHealth(
+  purpose: RedisPurpose,
+  options: { required?: boolean; timeoutMs?: number } = {},
+) {
+  const required = options.required === true;
+  const timeoutMs = options.timeoutMs || DEFAULT_REDIS_HEALTH_TIMEOUT_MS;
+
+  if (!isRedisConfigured()) {
+    return {
+      ok: !required,
+      configured: false,
+      required,
+      purpose,
+      status: required ? "missing" : "not_configured",
+      latencyMs: null,
+    };
+  }
+
+  const client = createRedisClient(purpose);
+  if (!client) {
+    return {
+      ok: !required,
+      configured: false,
+      required,
+      purpose,
+      status: required ? "missing" : "not_configured",
+      latencyMs: null,
+    };
+  }
+
+  const startedAt = Date.now();
+  try {
+    await Promise.race([
+      client.ping(),
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("redis_health_timeout")), timeoutMs);
+      }),
+    ]);
+
+    return {
+      ok: true,
+      configured: true,
+      required,
+      purpose,
+      status: client.status || "ready",
+      latencyMs: Date.now() - startedAt,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      configured: true,
+      required,
+      purpose,
+      status: "unhealthy",
+      latencyMs: Date.now() - startedAt,
+      error: error instanceof Error ? error.message : "redis_health_failed",
+    };
+  }
 }
