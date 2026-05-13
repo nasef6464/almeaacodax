@@ -14,6 +14,7 @@
     "server:check": "npm --prefix server run check",
     "smoke:operational": "npm --prefix server run smoke:operational:api",
     "smoke:frontend": "node scripts/smoke-frontend-routes.mjs",
+    "smoke:production-speed": "node scripts/smoke-production-speed.mjs",
     "smoke:frontend:strict": "node scripts/smoke-frontend-strict.mjs",
     "smoke:learning-quiz": "node scripts/smoke-learning-quiz-journey.mjs",
     "smoke:student-journey": "node scripts/smoke-student-learning-journey.mjs",

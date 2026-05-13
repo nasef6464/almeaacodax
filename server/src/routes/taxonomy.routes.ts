@@ -136,36 +136,50 @@ taxonomyRouter.get(
       return res.json(publicTaxonomyBootstrapCache.payload);
     }
 
-    const pathFilter = canSeeInactiveTaxonomy ? {} : { isActive: { $ne: false } };
-    const [paths, levels, subjects, sections, skills] = await Promise.all([
-      PathModel.find(pathFilter).sort({ createdAt: 1 }).lean(),
-      LevelModel.find().sort({ createdAt: 1 }).lean(),
-      SubjectModel.find().sort({ createdAt: 1 }).lean(),
-      SectionModel.find().sort({ createdAt: 1 }).lean(),
-      SkillModel.find().sort({ createdAt: 1 }).lean(),
-    ]);
-
     if (canSeeInactiveTaxonomy) {
+      const [paths, levels, subjects, sections, skills] = await Promise.all([
+        PathModel.find().sort({ createdAt: 1 }).lean(),
+        LevelModel.find().sort({ createdAt: 1 }).lean(),
+        SubjectModel.find().sort({ createdAt: 1 }).lean(),
+        SectionModel.find().sort({ createdAt: 1 }).lean(),
+        SkillModel.find().sort({ createdAt: 1 }).lean(),
+      ]);
       return res.json({ paths, levels, subjects, sections, skills });
     }
 
-    const visiblePathIds = new Set(paths.map((path) => String(path._id)));
-    const visibleSubjects = subjects.filter((subject) => visiblePathIds.has(String(subject.pathId)));
-    const visibleSubjectIds = new Set(visibleSubjects.map((subject) => String(subject._id)));
-    const visibleSections = sections.filter((section) => visibleSubjectIds.has(String(section.subjectId)));
-    const visibleSectionIds = new Set(visibleSections.map((section) => String(section._id)));
+    const paths = await PathModel.find({ isActive: { $ne: false } }).sort({ createdAt: 1 }).lean();
+    const visiblePathIds = paths.map((path) => String(path._id)).filter(Boolean);
+    const [levels, subjects] =
+      visiblePathIds.length > 0
+        ? await Promise.all([
+            LevelModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
+            SubjectModel.find({ pathId: { $in: visiblePathIds } }).sort({ createdAt: 1 }).lean(),
+          ])
+        : [[], []];
+
+    const visibleSubjectIds = subjects.map((subject) => String(subject._id)).filter(Boolean);
+    const sections =
+      visibleSubjectIds.length > 0
+        ? await SectionModel.find({ subjectId: { $in: visibleSubjectIds } }).sort({ createdAt: 1 }).lean()
+        : [];
+    const visibleSectionIds = sections.map((section) => String(section._id)).filter(Boolean);
+    const skills =
+      visiblePathIds.length > 0 && visibleSubjectIds.length > 0 && visibleSectionIds.length > 0
+        ? await SkillModel.find({
+            pathId: { $in: visiblePathIds },
+            subjectId: { $in: visibleSubjectIds },
+            sectionId: { $in: visibleSectionIds },
+          })
+            .sort({ createdAt: 1 })
+            .lean()
+        : [];
 
     const payload = {
       paths,
-      levels: levels.filter((level) => visiblePathIds.has(String(level.pathId))),
-      subjects: visibleSubjects,
-      sections: visibleSections,
-      skills: skills.filter(
-        (skill) =>
-          visiblePathIds.has(String(skill.pathId)) &&
-          visibleSubjectIds.has(String(skill.subjectId)) &&
-          visibleSectionIds.has(String(skill.sectionId)),
-      ),
+      levels,
+      subjects,
+      sections,
+      skills,
     };
 
     publicTaxonomyBootstrapCache = {

@@ -17,6 +17,13 @@
 - Cached data is returned immediately on repeat visits, then refreshed in the background.
 - Authenticated/admin reads still use fresh server requests where required.
 
+## 2026-05-13 Production Speed Smoke
+
+- Run `npm run smoke:production-speed` after each deployment to measure the real Vercel and Render URLs.
+- The smoke checks frontend shell time, entry asset time, API health, readiness, taxonomy bootstrap, content bootstrap, and announcement ads.
+- Timing warnings do not automatically mean the site is broken; they identify the next bottleneck to optimize.
+- Redis warnings mean the app is live, but not ready for multi-instance high-concurrency scale until `REDIS_URL` is configured.
+
 ## Current Status
 
 The backend now has production-safe request diagnostics for API failures and slow endpoints.
