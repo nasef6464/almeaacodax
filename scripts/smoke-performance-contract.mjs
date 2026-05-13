@@ -151,6 +151,9 @@ assertIncludes('server/src/routes/content.routes.ts', 'X-Content-Cache", "shared
 assertIncludes('server/src/services/operationsAudit.ts', 'OPERATIONS_AUDIT_CACHE_TTL_MS');
 assertIncludes('server/src/services/operationsAudit.ts', 'cachedOperationsAudit');
 assertIncludes('server/src/services/operationsAudit.ts', 'pendingOperationsAudit');
+assertIncludes('server/src/services/operationsAudit.ts', 'LessonModel.aggregate');
+assertIncludes('server/src/services/operationsAudit.ts', 'contentPresent');
+assertIncludes('server/src/services/operationsAudit.ts', '$strLenCP');
 assertIncludes('server/src/routes/operations.routes.ts', 'OPERATIONS_STATUS_CACHE_TTL_MS');
 assertIncludes('server/src/routes/operations.routes.ts', 'cachedOperationsStatus');
 assertIncludes('server/src/routes/operations.routes.ts', 'X-Operations-Status-Cache');

@@ -29,6 +29,7 @@
 - Admin operations audit now uses a short 30-second in-process cache and shares one pending audit promise between concurrent requests.
 - This protects MongoDB when the admin dashboard opens multiple readiness panels or when an operator refreshes repeatedly.
 - The cache only affects operational diagnostics; student-facing content and security checks still use their normal route-level data rules.
+- The audit scan now uses field projections, and lesson content is reduced to a `contentPresent` flag so large lesson bodies are not loaded for diagnostics.
 
 ## 2026-05-13 Content Bootstrap Concurrency Guard
 

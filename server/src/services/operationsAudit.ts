@@ -54,6 +54,7 @@ const hasPlayableLessonMedia = (lesson: any) =>
   Boolean(
     normalizeUrl(lesson?.videoUrl) ||
       String(lesson?.fileUrl || "").trim() ||
+      lesson?.contentPresent === true ||
       String(lesson?.content || "").trim() ||
       String(lesson?.recordingUrl || "").trim(),
   );
@@ -74,6 +75,24 @@ const severityWeight: Record<Severity, number> = {
 };
 
 const OPERATIONS_AUDIT_CACHE_TTL_MS = 30 * 1000;
+const OPERATIONS_AUDIT_PATH_SELECT = "_id id name isActive";
+const OPERATIONS_AUDIT_SUBJECT_SELECT = "_id id name pathId";
+const OPERATIONS_AUDIT_SECTION_SELECT = "_id id name subjectId";
+const OPERATIONS_AUDIT_SKILL_SELECT = "_id id name pathId subjectId sectionId";
+const OPERATIONS_AUDIT_TOPIC_SELECT = "_id id title name pathId subjectId lessonIds quizIds showOnPlatform";
+const OPERATIONS_AUDIT_QUIZ_SELECT =
+  "_id id title name pathId subjectId sectionId questionIds skillIds showOnPlatform isPublished approvalStatus";
+const OPERATIONS_AUDIT_QUESTION_SELECT =
+  "_id id title name pathId subject sectionId skillIds type text options correctOptionIndex explanation showOnPlatform isPublished approvalStatus";
+const OPERATIONS_AUDIT_COURSE_SELECT =
+  "_id id title name pathId category subjectId subject showOnPlatform isPublished approvalStatus";
+const OPERATIONS_AUDIT_LIBRARY_SELECT =
+  "_id id title name pathId subjectId sectionId skillIds showOnPlatform isPublished approvalStatus";
+const OPERATIONS_AUDIT_USER_SELECT =
+  "_id id email role isActive managedPathIds managedSubjectIds linkedStudentIds";
+const OPERATIONS_AUDIT_GROUP_SELECT = "_id id name type parentId";
+const OPERATIONS_AUDIT_B2B_PACKAGE_SELECT = "_id id name title status maxStudents";
+const OPERATIONS_AUDIT_PAYMENT_SELECT = "_id id status";
 
 type OperationsAuditResult = {
   checkedAt: string;
@@ -112,21 +131,50 @@ async function buildOperationsAudit(): Promise<OperationsAuditResult> {
     paymentRequests,
     homepageSettings,
   ] = await Promise.all([
-    PathModel.find().lean(),
-    SubjectModel.find().lean(),
-    SectionModel.find().lean(),
-    SkillModel.find().lean(),
-    TopicModel.find().lean(),
-    LessonModel.find().lean(),
-    QuizModel.find().lean(),
-    QuestionModel.find().lean(),
-    CourseModel.find().lean(),
-    LibraryItemModel.find().lean(),
-    UserModel.find().lean(),
-    GroupModel.find().lean(),
-    B2BPackageModel.find().lean(),
-    PaymentRequestModel.find().lean(),
-    HomepageSettingsModel.findOne({ key: "default" }).lean(),
+    PathModel.find().select(OPERATIONS_AUDIT_PATH_SELECT).lean(),
+    SubjectModel.find().select(OPERATIONS_AUDIT_SUBJECT_SELECT).lean(),
+    SectionModel.find().select(OPERATIONS_AUDIT_SECTION_SELECT).lean(),
+    SkillModel.find().select(OPERATIONS_AUDIT_SKILL_SELECT).lean(),
+    TopicModel.find().select(OPERATIONS_AUDIT_TOPIC_SELECT).lean(),
+    LessonModel.aggregate([
+      {
+        $project: {
+          _id: 1,
+          id: 1,
+          title: 1,
+          name: 1,
+          pathId: 1,
+          subjectId: 1,
+          sectionId: 1,
+          skillIds: 1,
+          showOnPlatform: 1,
+          isPublished: 1,
+          approvalStatus: 1,
+          videoUrl: 1,
+          fileUrl: 1,
+          recordingUrl: 1,
+          contentPresent: {
+            $gt: [
+              {
+                $strLenCP: {
+                  $ifNull: ["$content", ""],
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+    ]),
+    QuizModel.find().select(OPERATIONS_AUDIT_QUIZ_SELECT).lean(),
+    QuestionModel.find().select(OPERATIONS_AUDIT_QUESTION_SELECT).lean(),
+    CourseModel.find().select(OPERATIONS_AUDIT_COURSE_SELECT).lean(),
+    LibraryItemModel.find().select(OPERATIONS_AUDIT_LIBRARY_SELECT).lean(),
+    UserModel.find().select(OPERATIONS_AUDIT_USER_SELECT).lean(),
+    GroupModel.find().select(OPERATIONS_AUDIT_GROUP_SELECT).lean(),
+    B2BPackageModel.find().select(OPERATIONS_AUDIT_B2B_PACKAGE_SELECT).lean(),
+    PaymentRequestModel.find().select(OPERATIONS_AUDIT_PAYMENT_SELECT).lean(),
+    HomepageSettingsModel.findOne({ key: "default" }).select("hero featuredPathIds").lean(),
   ]);
 
   const pathIds = new Set(paths.map(idOf));
