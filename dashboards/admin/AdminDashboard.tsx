@@ -564,6 +564,7 @@ export const AdminDashboard: React.FC = () => {
 
     const supervisorScopeSummary = useMemo(() => {
         const scopedGroupIds = new Set(user.groupIds || []);
+        const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id));
         const scopedStudents = users.filter((item) => {
             if (item.role !== Role.STUDENT) {
                 return false;
@@ -573,22 +574,102 @@ export const AdminDashboard: React.FC = () => {
             const sharesSchool = !!user.schoolId && item.schoolId === user.schoolId;
             return sharesGroup || sharesSchool;
         });
+        const scopedStudentIds = new Set(scopedStudents.map((student) => student.id));
+        const scopedResults = examResults.filter((result) => result.userId && scopedStudentIds.has(result.userId));
 
         const assignedFollowUps = quizzes.filter((quiz) => {
             const targetsScopedGroup = (quiz.targetGroupIds || []).some((groupId) => scopedGroupIds.has(groupId));
             const targetsScopedStudent = (quiz.targetUserIds || []).some((studentId) =>
-                scopedStudents.some((student) => student.id === studentId),
+                scopedStudentIds.has(studentId),
             );
             return targetsScopedGroup || targetsScopedStudent;
         });
 
+        const averageScore = scopedResults.length
+            ? Math.round(scopedResults.reduce((total, result) => total + Number(result.score || 0), 0) / scopedResults.length)
+            : 0;
+
+        const weakSkillMap = new Map<string, { skill: string; total: number; count: number; students: Set<string> }>();
+        scopedResults.forEach((result) => {
+            (result.skillsAnalysis || []).forEach((skill) => {
+                const skillName = String(skill.skill || '').trim();
+                if (!skillName) return;
+                const key = skill.skillId || skillName;
+                const current = weakSkillMap.get(key) || { skill: skillName, total: 0, count: 0, students: new Set<string>() };
+                current.total += Number(skill.mastery || 0);
+                current.count += 1;
+                if (result.userId) current.students.add(result.userId);
+                weakSkillMap.set(key, current);
+            });
+        });
+
+        const weakestSkills = Array.from(weakSkillMap.values())
+            .map((skill) => ({
+                skill: skill.skill,
+                mastery: skill.count ? Math.round(skill.total / skill.count) : 0,
+                attempts: skill.count,
+                affectedStudents: skill.students.size,
+            }))
+            .filter((skill) => skill.mastery < 70)
+            .sort((a, b) => a.mastery - b.mastery || b.affectedStudents - a.affectedStudents)
+            .slice(0, 4);
+
+        const studentsNeedingFollowUp = scopedStudents
+            .map((student) => {
+                const studentResults = scopedResults.filter((result) => result.userId === student.id);
+                const studentAverage = studentResults.length
+                    ? Math.round(studentResults.reduce((total, result) => total + Number(result.score || 0), 0) / studentResults.length)
+                    : 0;
+                const latestResult = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
+                const topWeakSkills = [...(latestResult?.skillsAnalysis || [])]
+                    .filter((skill) => Number(skill.mastery || 0) < 70)
+                    .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
+                    .slice(0, 2)
+                    .map((skill) => skill.skill)
+                    .filter(Boolean);
+
+                return {
+                    id: student.id,
+                    name: student.name,
+                    average: studentAverage,
+                    attempts: studentResults.length,
+                    latestQuiz: latestResult?.quizTitle || 'لم يبدأ بعد',
+                    weakSkills: topWeakSkills,
+                };
+            })
+            .filter((student) => student.attempts === 0 || student.average < 70)
+            .sort((a, b) => a.attempts - b.attempts || a.average - b.average)
+            .slice(0, 5);
+
+        const groupSnapshots = scopedGroupList
+            .map((group) => {
+                const groupStudentIds = new Set(group.studentIds || []);
+                const groupResults = scopedResults.filter((result) => result.userId && groupStudentIds.has(result.userId));
+                const groupAverage = groupResults.length
+                    ? Math.round(groupResults.reduce((total, result) => total + Number(result.score || 0), 0) / groupResults.length)
+                    : 0;
+
+                return {
+                    id: group.id,
+                    name: group.name,
+                    studentCount: group.studentIds?.length || 0,
+                    average: groupAverage,
+                    attempts: groupResults.length,
+                };
+            })
+            .sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)
+            .slice(0, 4);
+
         return {
-            groupCount: groups.filter((group) => scopedGroupIds.has(group.id)).length,
+            groupCount: scopedGroupList.length,
             studentCount: scopedStudents.length,
             followUpCount: assignedFollowUps.length,
-            weakStudentsCount: scopedStudents.filter((student) =>
-                examResults.some((result) => result.userId === student.id && result.score < 60),
-            ).length,
+            resultCount: scopedResults.length,
+            averageScore,
+            weakStudentsCount: studentsNeedingFollowUp.length,
+            weakestSkills,
+            studentsNeedingFollowUp,
+            groupSnapshots,
         };
     }, [examResults, groups, quizzes, user.groupIds, user.schoolId, users]);
 
@@ -1086,7 +1167,7 @@ export const AdminDashboard: React.FC = () => {
                     )}
 
                     {user.role === Role.SUPERVISOR && (
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900">نطاق الإشراف الحالي</h3>
@@ -1095,7 +1176,7 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="text-sm text-amber-600 font-bold">مشرف مجموعة</div>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                 <div className="rounded-xl bg-indigo-50 p-4">
                                     <div className="text-xs text-indigo-600 mb-1">المجموعات التابعة</div>
                                     <div className="text-2xl font-black text-indigo-700">{supervisorScopeSummary.groupCount}</div>
@@ -1104,6 +1185,10 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="text-xs text-emerald-600 mb-1">الطلاب داخل النطاق</div>
                                     <div className="text-2xl font-black text-emerald-700">{supervisorScopeSummary.studentCount}</div>
                                 </div>
+                                <div className="rounded-xl bg-blue-50 p-4">
+                                    <div className="text-xs text-blue-600 mb-1">متوسط الأداء</div>
+                                    <div className="text-2xl font-black text-blue-700">{supervisorScopeSummary.averageScore}%</div>
+                                </div>
                                 <div className="rounded-xl bg-rose-50 p-4">
                                     <div className="text-xs text-rose-600 mb-1">الطلاب الضعاف</div>
                                     <div className="text-2xl font-black text-rose-700">{supervisorScopeSummary.weakStudentsCount}</div>
@@ -1111,6 +1196,98 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="rounded-xl bg-purple-50 p-4">
                                     <div className="text-xs text-purple-600 mb-1">اختبارات المتابعة</div>
                                     <div className="text-2xl font-black text-purple-700">{supervisorScopeSummary.followUpCount}</div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                <a href="#/reports" className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                                    التقارير
+                                </a>
+                                <button onClick={() => setActiveTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
+                                    الطلاب والمجموعات
+                                </button>
+                                <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
+                                    توجيه اختبار
+                                </button>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">متابعة الطلاب</h4>
+                                        <a href="#/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.studentsNeedingFollowUp.length ? supervisorScopeSummary.studentsNeedingFollowUp.map((student) => (
+                                            <div key={student.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate text-sm font-black text-gray-900">{student.name}</div>
+                                                        <div className="mt-1 truncate text-xs text-gray-500">{student.latestQuiz}</div>
+                                                    </div>
+                                                    <div className={`rounded-lg px-2.5 py-1 text-xs font-black ${student.average < 60 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                                        {student.attempts ? `${student.average}%` : 'جديد'}
+                                                    </div>
+                                                </div>
+                                                {student.weakSkills.length ? (
+                                                    <div className="mt-2 text-xs text-gray-500">الأولوية: {student.weakSkills.join('، ')}</div>
+                                                ) : null}
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm font-bold text-emerald-700">
+                                                لا توجد حالات حرجة ظاهرة الآن.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">أضعف المهارات</h4>
+                                        <button onClick={() => setActiveTab('skills')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">المهارات</button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.weakestSkills.length ? supervisorScopeSummary.weakestSkills.map((skill) => (
+                                            <div key={skill.skill} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div className="min-w-0 truncate text-sm font-black text-gray-900">{skill.skill}</div>
+                                                    <div className="text-xs font-black text-rose-700">{skill.mastery}%</div>
+                                                </div>
+                                                <div className="mt-2 h-2 rounded-full bg-gray-100">
+                                                    <div className="h-full rounded-full bg-rose-500" style={{ width: `${Math.max(8, Math.min(skill.mastery, 100))}%` }} />
+                                                </div>
+                                                <div className="mt-2 text-xs text-gray-500">{skill.affectedStudents} طالب - {skill.attempts} محاولة</div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
+                                                تظهر المهارات بعد توفر نتائج كافية.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">المجموعات</h4>
+                                        <button onClick={() => setActiveTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.groupSnapshots.length ? supervisorScopeSummary.groupSnapshots.map((group) => (
+                                            <div key={group.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate text-sm font-black text-gray-900">{group.name}</div>
+                                                        <div className="mt-1 text-xs text-gray-500">{group.studentCount} طالب - {group.attempts} نتيجة</div>
+                                                    </div>
+                                                    <div className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">{group.average}%</div>
+                                                </div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
+                                                اربط المشرف بمجموعة لعرض بياناتها هنا.
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
