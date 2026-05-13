@@ -18,6 +18,11 @@ interface RequestOptions {
   cache?: RequestCache;
 }
 
+interface PaginationOptions {
+  page?: number;
+  limit?: number;
+}
+
 const AUTH_STORAGE_KEY = "the-hundred-auth-session";
 
 const getStoredSessionToken = (): string | null => {
@@ -103,6 +108,19 @@ const extractList = <T = unknown>(payload: unknown, key: string): T[] => {
   return [];
 };
 
+const withQuery = (path: string, query?: Record<string, string | number | boolean | undefined | null>) => {
+  const entries = Object.entries(query || {}).filter(([, value]) => value !== undefined && value !== null && value !== "");
+  if (!entries.length) {
+    return path;
+  }
+
+  const search = new URLSearchParams();
+  entries.forEach(([key, value]) => {
+    search.set(key, String(value));
+  });
+  return `${path}?${search.toString()}`;
+};
+
 export const api = {
   baseUrl: API_BASE_URL,
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
@@ -148,8 +166,8 @@ export const api = {
       body: payload,
       token,
     }),
-  getAdminUsers: async () => {
-    const payload = await request<{ users: unknown[] }>("/auth/admin/users?limit=200");
+  getAdminUsers: async (pagination: PaginationOptions = {}) => {
+    const payload = await request<{ users: unknown[] }>(withQuery("/auth/admin/users", { limit: 200, ...pagination }));
     return { ...payload, users: extractList(payload, "users") };
   },
   updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
@@ -230,8 +248,8 @@ export const api = {
       body: payload,
       token,
     }),
-  getPaymentRequests: async (token?: string | null) => {
-    const payload = await request<{ requests: unknown[] }>("/payments/requests?limit=200", {
+  getPaymentRequests: async (token?: string | null, pagination: PaginationOptions = {}) => {
+    const payload = await request<{ requests: unknown[] }>(withQuery("/payments/requests", { limit: 200, ...pagination }), {
       token,
     });
     return { ...payload, requests: extractList(payload, "requests") };
@@ -254,8 +272,8 @@ export const api = {
       body: payload,
       token,
     }),
-  getDiscountCodes: async (token?: string | null) => {
-    const payload = await request<{ codes: unknown[] }>("/payments/discount-codes?limit=200", {
+  getDiscountCodes: async (token?: string | null, pagination: PaginationOptions = {}) => {
+    const payload = await request<{ codes: unknown[] }>(withQuery("/payments/discount-codes", { limit: 200, ...pagination }), {
       token,
     });
     return { ...payload, codes: extractList(payload, "codes") };
@@ -542,7 +560,8 @@ export const api = {
       body: payload,
       token,
     }),
-  getCourses: async () => extractList(await request<unknown>("/courses?limit=200"), "courses"),
+  getCourses: async (pagination: PaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/courses", { limit: 200, ...pagination })), "courses"),
   getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
   createCourse: (payload: unknown, token?: string | null) =>
     request<unknown>("/courses", {
@@ -588,7 +607,8 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  getQuizzes: async () => extractList(await request<unknown>("/quizzes?limit=200"), "quizzes"),
+  getQuizzes: async (pagination: PaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, ...pagination })), "quizzes"),
   getQuizAnalyticsOverview: () => request<unknown>("/quizzes/analytics/overview"),
   createQuiz: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes", {
@@ -613,11 +633,14 @@ export const api = {
       body: payload,
       token,
     }),
-  getQuizResults: async () => extractList(await request<unknown>("/quizzes/results?limit=200"), "results"),
+  getQuizResults: async (pagination: PaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 200, ...pagination })), "results"),
   getScopedQuizResults: () => request<unknown>("/quizzes/results/scoped"),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
-  getSkillProgress: async () => extractList(await request<unknown>("/quizzes/skill-progress?limit=200"), "skillProgress"),
-  getQuestionAttempts: async () => extractList(await request<unknown>("/quizzes/question-attempts?limit=200"), "questionAttempts"),
+  getSkillProgress: async (pagination: PaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
+  getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 200, ...pagination })), "questionAttempts"),
   createQuestionAttempt: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/question-attempts", {
       method: "POST",

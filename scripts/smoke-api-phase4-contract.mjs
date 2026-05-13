@@ -61,9 +61,9 @@ check("large list endpoints expose pagination metadata", () => {
 
 check("frontend service client safely unwraps paginated list payloads", () => {
   assertIncludes(files.apiClient, "extractList");
-  assertIncludes(files.apiClient, 'extractList(await request<unknown>("/quizzes?limit=200"), "quizzes")');
-  assertIncludes(files.apiClient, 'extractList(await request<unknown>("/courses?limit=200"), "courses")');
-  assertIncludes(files.apiClient, 'extractList(await request<unknown>("/quizzes/results?limit=200"), "results")');
+  assertIncludes(files.apiClient, 'withQuery("/quizzes"');
+  assertIncludes(files.apiClient, 'withQuery("/courses"');
+  assertIncludes(files.apiClient, 'withQuery("/quizzes/results"');
 });
 
 for (const [name, fn] of checks) {
