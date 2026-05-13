@@ -99,7 +99,7 @@ const roleScopeTitle: Record<string, string> = {
 };
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
-const MIN_SKILL_EVIDENCE_COUNT = 2;
+const MIN_SKILL_EVIDENCE_COUNT = 3;
 
 const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
 
@@ -485,7 +485,16 @@ const Reports: React.FC = () => {
     );
     const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
     const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
-    const focusedReportSkills = (reliableAggregatedSkills.length > 0 ? reliableAggregatedSkills : reportBaseSkills).slice(0, 6);
+    const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
+    const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
+    const earlyWeakSignals = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable);
+    const focusedReportSkills = (
+        reliableWeakSkills.length > 0
+            ? [...reliableWeakSkills, ...reliableAverageSkills]
+            : reliableAggregatedSkills.length > 0
+                ? reliableAggregatedSkills
+                : reportBaseSkills
+    ).slice(0, 6);
     const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
     const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
@@ -495,13 +504,15 @@ const Reports: React.FC = () => {
     const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
     const hasStudentTrackScope = studentEnrolledPathIds.length > 0;
     const skillReadinessSummary = useMemo(() => {
-        const weak = aggregatedSkills.filter((skill) => skill.mastery < 50).length;
-        const average = aggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
-        const strong = aggregatedSkills.filter((skill) => skill.mastery >= 75).length;
-        const total = aggregatedSkills.length;
+        const weak = reportBaseSkills.filter((skill) => skill.mastery < 50 && skill.isReliable).length;
+        const early = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable).length;
+        const average = reportBaseSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75).length;
+        const strong = reportBaseSkills.filter((skill) => skill.mastery >= 75).length;
+        const total = reportBaseSkills.length;
 
         return {
             weak,
+            early,
             average,
             strong,
             total,
@@ -509,14 +520,16 @@ const Reports: React.FC = () => {
             minEvidence: MIN_SKILL_EVIDENCE_COUNT,
             message:
                 weak > 0
-                    ? `ابدأ بـ ${weak} مهارة تحتاج دعمًا واضحًا.`
+                    ? `ابدأ بـ ${weak} مهارة ضعفها مؤكد بعد ${MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر.`
                     : average > 0
                         ? `مستواك جيد، وراجع ${average} مهارة لتثبيت التحسن.`
-                        : total > 0
-                            ? 'مؤشراتك مطمئنة. حافظ على التدريب القصير.'
+                        : early > 0
+                            ? `${early} مهارة بها إشارات أولية وتحتاج محاولات أكثر قبل الحكم.`
+                            : total > 0
+                                ? 'مؤشراتك مطمئنة. حافظ على التدريب القصير.'
                             : 'ابدأ اختبارًا قصيرًا حتى تظهر خريطة مهاراتك.',
         };
-    }, [aggregatedSkills, reliableAggregatedSkills.length]);
+    }, [reliableAggregatedSkills.length, reportBaseSkills]);
     const studentWeeklyPlan = useMemo(() => {
         const dayLabels = ['اليوم 1', 'اليوم 2', 'اليوم 3'];
 
@@ -585,13 +598,13 @@ const Reports: React.FC = () => {
 
         const weakest = focusedReportSkills[0];
         const nextTwo = focusedReportSkills.slice(0, 2).map((skill) => displayText(skill.skill)).filter(Boolean);
+        const weaknessLabel = weakest?.isReliable ? 'ضعف مؤكد' : 'إشارة أولية';
         const parts = [
             `متوسطك الحالي ${stats?.averageScore || 0}%.`,
             studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
-            weakest ? `ابدأ بمهارة ${displayText(weakest.skill)} (${weakest.mastery}%).` : null,
-            weakest ? `ظهرت في ${weakest.attempts} محاولة/سؤال${weakest.isReliable ? '' : '؛ اعتبرها قراءة أولية حتى تتكرر'}.` : null,
+            weakest ? `${weaknessLabel}: ${displayText(weakest.skill)} (${weakest.mastery}%) من ${weakest.attempts} محاولة.` : null,
             nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
-            'الخطوة: شرح قصير، تدريب بسيط، ثم إعادة قياس.',
+            'الخطوة: شرح قصير، تدريب بسيط، ثم إعادة قياس بعد عدة أسئلة.',
         ].filter(Boolean);
 
         return parts.join(' ');
@@ -2412,6 +2425,7 @@ const Reports: React.FC = () => {
                         <p className="mt-2 text-sm font-bold leading-7 text-indigo-900">{skillReadinessSummary.message}</p>
                         <div className="mt-3 text-xs font-bold text-indigo-500">
                             إجمالي المهارات المرصودة: {skillReadinessSummary.total}
+                            {skillReadinessSummary.early > 0 ? ` - إشارات أولية تحتاج تأكيد: ${skillReadinessSummary.early}` : ''}
                         </div>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
@@ -2453,7 +2467,9 @@ const Reports: React.FC = () => {
                                 <div className="mt-4 h-2 rounded-full bg-white/70 overflow-hidden">
                                     <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
                                 </div>
-                                <div className="mt-3 text-xs font-bold text-gray-500">اضغط لعرض المقترحات</div>
+                                <div className="mt-3 text-xs font-bold text-gray-500">
+                                    {skill.isReliable ? 'قياس مؤكد من عدة محاولات' : `قراءة أولية حتى ${MIN_SKILL_EVIDENCE_COUNT} محاولات`}
+                                </div>
                             </button>
                         );
                     })}
