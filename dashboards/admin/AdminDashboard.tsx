@@ -142,6 +142,8 @@ export const AdminDashboard: React.FC = () => {
         questions,
         lessons,
         libraryItems,
+        b2bPackages,
+        accessCodes,
         subjects,
         paths,
         examResults,
@@ -403,6 +405,81 @@ export const AdminDashboard: React.FC = () => {
         platformReadiness.quizzesWithoutQuestions,
     ]);
 
+    const schoolCommandCenter = useMemo(() => {
+        const schools = groups.filter((group) => group.type === 'SCHOOL');
+        const classes = groups.filter((group) => group.type === 'CLASS');
+        const students = users.filter((item) => item.role === Role.STUDENT);
+        const parents = users.filter((item) => item.role === Role.PARENT);
+        const supervisors = users.filter((item) => item.role === Role.SUPERVISOR || item.role === Role.TEACHER);
+        const activeCodes = accessCodes.filter((code) => Number(code.expiresAt || 0) > Date.now());
+
+        const schoolRows = schools.map((school) => {
+            const schoolClasses = classes.filter((group) => group.parentId === school.id);
+            const classIds = new Set(schoolClasses.map((group) => group.id));
+            const schoolStudents = students.filter((student) => student.schoolId === school.id || (student.groupIds || []).some((groupId) => classIds.has(groupId)));
+            const studentIds = new Set(schoolStudents.map((student) => student.id));
+            const schoolResults = examResults.filter((result) => result.userId && studentIds.has(result.userId));
+            const average = schoolResults.length
+                ? Math.round(schoolResults.reduce((sum, result) => sum + Number(result.score || 0), 0) / schoolResults.length)
+                : 0;
+            const studentsWithoutClass = schoolStudents.filter((student) => !(student.groupIds || []).some((groupId) => classIds.has(groupId))).length;
+            const studentsWithoutParent = schoolStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))).length;
+            const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id && pkg.status === 'active').length;
+            const schoolCodes = activeCodes.filter((code) => code.schoolId === school.id).length;
+            const schoolSupervisors = supervisors.filter((staff) =>
+                staff.schoolId === school.id ||
+                (staff.groupIds || []).includes(school.id) ||
+                (staff.groupIds || []).some((groupId) => classIds.has(groupId)) ||
+                (school.supervisorIds || []).includes(staff.id),
+            ).length;
+            const issueCount = [
+                schoolClasses.length === 0,
+                schoolSupervisors === 0,
+                schoolStudents.length === 0,
+                schoolPackages === 0,
+                schoolCodes === 0,
+                studentsWithoutClass > 0,
+                studentsWithoutParent > 0,
+            ].filter(Boolean).length;
+
+            return {
+                id: school.id,
+                name: school.name,
+                classCount: schoolClasses.length,
+                studentCount: schoolStudents.length,
+                supervisorCount: schoolSupervisors,
+                packageCount: schoolPackages,
+                activeCodeCount: schoolCodes,
+                studentsWithoutClass,
+                studentsWithoutParent,
+                quizAttempts: schoolResults.length,
+                average,
+                issueCount,
+            };
+        });
+
+        const needsSetup = schoolRows
+            .filter((school) => school.issueCount > 0)
+            .sort((a, b) => b.issueCount - a.issueCount || a.average - b.average)
+            .slice(0, 5);
+        const performanceWatch = schoolRows
+            .filter((school) => school.quizAttempts > 0)
+            .sort((a, b) => a.average - b.average)
+            .slice(0, 5);
+
+        return {
+            schoolCount: schools.length,
+            classCount: classes.length,
+            schoolStudentCount: students.filter((student) => Boolean(student.schoolId)).length,
+            studentsWithoutClass: schoolRows.reduce((sum, school) => sum + school.studentsWithoutClass, 0),
+            studentsWithoutParent: schoolRows.reduce((sum, school) => sum + school.studentsWithoutParent, 0),
+            activeSchoolPackages: b2bPackages.filter((pkg) => pkg.status === 'active').length,
+            activeCodes: activeCodes.length,
+            needsSetup,
+            performanceWatch,
+        };
+    }, [accessCodes, b2bPackages, examResults, groups, users]);
+
     const reviewQueue = useMemo<ReviewQueueItem[]>(() => {
         const normalizeItem = (
             type: string,
@@ -563,15 +640,30 @@ export const AdminDashboard: React.FC = () => {
     }, [aiStatus?.provider]);
 
     const supervisorScopeSummary = useMemo(() => {
-        const scopedGroupIds = new Set(user.groupIds || []);
-        const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id));
+        const directGroupIds = new Set(user.groupIds || []);
+        const directGroups = groups.filter((group) => directGroupIds.has(group.id));
+        const scopedSchoolIds = new Set<string>();
+        if (user.schoolId) scopedSchoolIds.add(user.schoolId);
+        directGroups.forEach((group) => {
+            if (group.type === 'SCHOOL') scopedSchoolIds.add(group.id);
+            if (group.parentId) scopedSchoolIds.add(group.parentId);
+        });
+
+        const scopedGroupIds = new Set<string>(directGroupIds);
+        groups.forEach((group) => {
+            if (group.parentId && scopedSchoolIds.has(group.parentId)) {
+                scopedGroupIds.add(group.id);
+            }
+        });
+
+        const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id) || scopedSchoolIds.has(group.id));
         const scopedStudents = users.filter((item) => {
             if (item.role !== Role.STUDENT) {
                 return false;
             }
 
             const sharesGroup = (item.groupIds || []).some((groupId) => scopedGroupIds.has(groupId));
-            const sharesSchool = !!user.schoolId && item.schoolId === user.schoolId;
+            const sharesSchool = !!item.schoolId && scopedSchoolIds.has(item.schoolId);
             return sharesGroup || sharesSchool;
         });
         const scopedStudentIds = new Set(scopedStudents.map((student) => student.id));
@@ -661,6 +753,7 @@ export const AdminDashboard: React.FC = () => {
             .slice(0, 4);
 
         return {
+            schoolCount: scopedSchoolIds.size,
             groupCount: scopedGroupList.length,
             studentCount: scopedStudents.length,
             followUpCount: assignedFollowUps.length,
@@ -672,6 +765,41 @@ export const AdminDashboard: React.FC = () => {
             groupSnapshots,
         };
     }, [examResults, groups, quizzes, user.groupIds, user.schoolId, users]);
+
+    const supervisorActionCards = useMemo(() => [
+        {
+            title: 'الطلاب الذين يحتاجون متابعة',
+            value: supervisorScopeSummary.weakStudentsCount,
+            hint: 'ابدأ بمن لم يختبر أو متوسطه أقل من 70%.',
+            actionLabel: 'فتح التقرير',
+            action: () => { window.location.hash = '#/reports'; },
+            tone: 'rose',
+        },
+        {
+            title: 'اختبار موجه للنطاق',
+            value: supervisorScopeSummary.followUpCount,
+            hint: 'استخدمه لقياس فصل أو مدرسة أو طلاب محددين.',
+            actionLabel: 'توجيه اختبار',
+            action: () => setActiveTab('quizzes'),
+            tone: 'emerald',
+        },
+        {
+            title: 'تنظيم الطلاب والمجموعات',
+            value: supervisorScopeSummary.groupCount,
+            hint: 'راجع الفصول والطلاب المرتبطين بحسابك.',
+            actionLabel: 'بوابة المدرسة',
+            action: () => setActiveTab('school-portal'),
+            tone: 'indigo',
+        },
+        {
+            title: 'رسالة متابعة جاهزة',
+            value: supervisorScopeSummary.studentCount,
+            hint: 'جهز قائمة الطلاب من التقرير ثم أرسل تنبيهًا مناسبًا.',
+            actionLabel: 'قائمة الطلاب',
+            action: () => setActiveTab('school-portal'),
+            tone: 'amber',
+        },
+    ], [supervisorScopeSummary.followUpCount, supervisorScopeSummary.groupCount, supervisorScopeSummary.studentCount, supervisorScopeSummary.weakStudentsCount]);
 
     const menuItems = useMemo(() => {
         const adminItems = [
@@ -1006,6 +1134,124 @@ export const AdminDashboard: React.FC = () => {
                 </div>
             </div>
 
+            {user.role === Role.ADMIN && (
+                <div className="rounded-2xl border border-indigo-100 bg-white shadow-sm overflow-hidden">
+                    <div className="flex flex-col gap-4 border-b border-indigo-50 bg-indigo-50/50 p-6 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <h3 className="text-xl font-black text-gray-900">مركز التقارير والإشراف المدرسي</h3>
+                            <p className="mt-1 text-sm text-gray-500">
+                                متابعة جاهزية المدارس والفصول والطلاب قبل التعاقد أو التشغيل الفعلي.
+                            </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            <button onClick={() => setActiveTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                                المدارس والمجموعات
+                            </button>
+                            <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
+                                التقارير
+                            </a>
+                            <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
+                                توجيه اختبار
+                            </button>
+                            <button onClick={() => setActiveTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
+                                رسالة أو إعلان
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 p-6 lg:grid-cols-6">
+                        {[
+                            { label: 'مدارس', value: schoolCommandCenter.schoolCount, tone: 'indigo' },
+                            { label: 'فصول', value: schoolCommandCenter.classCount, tone: 'blue' },
+                            { label: 'طلاب مدارس', value: schoolCommandCenter.schoolStudentCount, tone: 'emerald' },
+                            { label: 'بلا فصل', value: schoolCommandCenter.studentsWithoutClass, tone: 'amber' },
+                            { label: 'بلا ولي أمر', value: schoolCommandCenter.studentsWithoutParent, tone: 'rose' },
+                            { label: 'أكواد نشطة', value: schoolCommandCenter.activeCodes, tone: 'purple' },
+                        ].map((item) => (
+                            <div key={item.label} className={`rounded-2xl border p-4 ${
+                                item.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50 text-indigo-700' :
+                                item.tone === 'blue' ? 'border-blue-100 bg-blue-50 text-blue-700' :
+                                item.tone === 'emerald' ? 'border-emerald-100 bg-emerald-50 text-emerald-700' :
+                                item.tone === 'amber' ? 'border-amber-100 bg-amber-50 text-amber-700' :
+                                item.tone === 'rose' ? 'border-rose-100 bg-rose-50 text-rose-700' :
+                                'border-purple-100 bg-purple-50 text-purple-700'
+                            }`}>
+                                <div className="text-xs font-black">{item.label}</div>
+                                <div className="mt-2 text-2xl font-black">{item.value.toLocaleString('ar-EG')}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-5 px-6 pb-6 lg:grid-cols-2">
+                        <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                            <div className="mb-3 flex items-center justify-between">
+                                <h4 className="text-sm font-black text-gray-900">مدارس تحتاج ضبط</h4>
+                                <button onClick={() => setActiveTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
+                                    إدارة المدارس
+                                </button>
+                            </div>
+                            <div className="space-y-3">
+                                {schoolCommandCenter.needsSetup.length ? schoolCommandCenter.needsSetup.map((school) => (
+                                    <div key={school.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="min-w-0">
+                                                <div className="truncate text-sm font-black text-gray-900">{school.name}</div>
+                                                <div className="mt-1 text-xs text-gray-500">
+                                                    {school.studentCount} طالب - {school.classCount} فصل - {school.supervisorCount} مشرف
+                                                </div>
+                                            </div>
+                                            <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
+                                                {school.issueCount} تنبيه
+                                            </span>
+                                        </div>
+                                        <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-gray-500">
+                                            <span>بلا فصل: <b className="text-gray-900">{school.studentsWithoutClass}</b></span>
+                                            <span>بلا ولي أمر: <b className="text-gray-900">{school.studentsWithoutParent}</b></span>
+                                            <span>باقات: <b className="text-gray-900">{school.packageCount}</b></span>
+                                            <span>أكواد: <b className="text-gray-900">{school.activeCodeCount}</b></span>
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="rounded-xl border border-dashed border-emerald-200 bg-white p-4 text-sm font-bold text-emerald-700">
+                                        المدارس الحالية جاهزة مبدئيًا ولا توجد نواقص ظاهرة.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                            <div className="mb-3 flex items-center justify-between">
+                                <h4 className="text-sm font-black text-gray-900">أداء المدارس</h4>
+                                <a href="#/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
+                            </div>
+                            <div className="space-y-3">
+                                {schoolCommandCenter.performanceWatch.length ? schoolCommandCenter.performanceWatch.map((school) => (
+                                    <div key={school.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="min-w-0">
+                                                <div className="truncate text-sm font-black text-gray-900">{school.name}</div>
+                                                <div className="mt-1 text-xs text-gray-500">{school.quizAttempts} نتيجة مسجلة</div>
+                                            </div>
+                                            <span className={`rounded-lg px-2.5 py-1 text-xs font-black ${
+                                                school.average < 60 ? 'bg-rose-50 text-rose-700' :
+                                                school.average < 75 ? 'bg-amber-50 text-amber-700' :
+                                                'bg-emerald-50 text-emerald-700'
+                                            }`}>
+                                                {school.average}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
+                                        سيظهر أداء المدارس بعد توفر نتائج اختبارات موجهة للطلاب.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-96">
                     <div className="flex items-center justify-between mb-5">
@@ -1173,12 +1419,14 @@ export const AdminDashboard: React.FC = () => {
                                     <h3 className="text-lg font-bold text-gray-900">نطاق الإشراف الحالي</h3>
                                     <p className="text-sm text-gray-500 mt-1">متابعة سريعة للمجموعات والطلاب والاختبارات الموجهة داخل نطاقك.</p>
                                 </div>
-                                <div className="text-sm text-amber-600 font-bold">مشرف مجموعة</div>
+                                <div className="text-sm text-amber-600 font-bold">
+                                    {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف مجموعة'}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                 <div className="rounded-xl bg-indigo-50 p-4">
-                                    <div className="text-xs text-indigo-600 mb-1">المجموعات التابعة</div>
+                                    <div className="text-xs text-indigo-600 mb-1">المدارس/المجموعات</div>
                                     <div className="text-2xl font-black text-indigo-700">{supervisorScopeSummary.groupCount}</div>
                                 </div>
                                 <div className="rounded-xl bg-emerald-50 p-4">
@@ -1209,6 +1457,42 @@ export const AdminDashboard: React.FC = () => {
                                 <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
                                     توجيه اختبار
                                 </button>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                {supervisorActionCards.map((card) => (
+                                    <button
+                                        key={card.title}
+                                        onClick={card.action}
+                                        className={`rounded-2xl border p-4 text-right transition hover:-translate-y-0.5 hover:shadow-sm ${
+                                            card.tone === 'rose' ? 'border-rose-100 bg-rose-50/70' :
+                                            card.tone === 'emerald' ? 'border-emerald-100 bg-emerald-50/70' :
+                                            card.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50/70' :
+                                            'border-amber-100 bg-amber-50/70'
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
+                                            <span className="text-sm font-black text-gray-900">{card.title}</span>
+                                            <span className={`rounded-xl px-2.5 py-1 text-sm font-black ${
+                                                card.tone === 'rose' ? 'bg-white text-rose-700' :
+                                                card.tone === 'emerald' ? 'bg-white text-emerald-700' :
+                                                card.tone === 'indigo' ? 'bg-white text-indigo-700' :
+                                                'bg-white text-amber-700'
+                                            }`}>
+                                                {card.value.toLocaleString('ar-EG')}
+                                            </span>
+                                        </div>
+                                        <p className="mt-2 min-h-[40px] text-xs leading-5 text-gray-500">{card.hint}</p>
+                                        <div className={`mt-3 text-xs font-black ${
+                                            card.tone === 'rose' ? 'text-rose-700' :
+                                            card.tone === 'emerald' ? 'text-emerald-700' :
+                                            card.tone === 'indigo' ? 'text-indigo-700' :
+                                            'text-amber-700'
+                                        }`}>
+                                            {card.actionLabel}
+                                        </div>
+                                    </button>
+                                ))}
                             </div>
 
                             <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">

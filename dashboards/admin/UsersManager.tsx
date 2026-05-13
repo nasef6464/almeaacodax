@@ -389,17 +389,15 @@ export const UsersManager: React.FC = () => {
         }
     };
 
-    const handleSupervisorGroupChange = (user: User, nextGroupId: string) => {
-        const currentGroupId = user.groupIds?.[0];
-        if (currentGroupId && currentGroupId !== nextGroupId) {
-            removeSupervisorFromGroup(user.id, currentGroupId);
-        }
+    const handleSupervisorGroupsChange = (user: User, nextGroupIds: string[]) => {
+        const currentGroupIds = user.groupIds || [];
+        currentGroupIds
+            .filter((groupId) => !nextGroupIds.includes(groupId))
+            .forEach((groupId) => removeSupervisorFromGroup(user.id, groupId));
 
-        if (nextGroupId) {
-            assignSupervisorToGroup(user.id, nextGroupId);
-        } else if (currentGroupId) {
-            removeSupervisorFromGroup(user.id, currentGroupId);
-        }
+        nextGroupIds
+            .filter((groupId) => !currentGroupIds.includes(groupId))
+            .forEach((groupId) => assignSupervisorToGroup(user.id, groupId));
     };
 
     const handleParentSchoolChange = (user: User, nextSchoolId: string) => {
@@ -786,7 +784,7 @@ export const UsersManager: React.FC = () => {
                                 const currentSchoolId = currentUser.schoolId || '';
                                 const availableClasses = classes.filter((group) => !currentSchoolId || group.parentId === currentSchoolId);
                                 const currentClassId = classes.find((group) => currentUser.groupIds?.includes(group.id))?.id || '';
-                                const currentSupervisorGroupId = currentUser.groupIds?.[0] || '';
+                                const currentSupervisorGroupIds = currentUser.groupIds || [];
                                 const parentCandidates = students.filter((student) => !currentSchoolId || student.schoolId === currentSchoolId);
 
                                 return (
@@ -862,16 +860,21 @@ export const UsersManager: React.FC = () => {
                                                     </select>
                                                 </div>
                                             ) : isEditing && currentUser.role === Role.SUPERVISOR ? (
-                                                <select
-                                                    className="w-full min-w-[220px] border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
-                                                    value={currentSupervisorGroupId}
-                                                    onChange={(event) => handleSupervisorGroupChange(currentUser, event.target.value)}
-                                                >
-                                                    <option value="">بدون تكليف</option>
-                                                    {[...schools, ...classes].map((group) => (
-                                                        <option key={group.id} value={group.id}>{group.name}</option>
-                                                    ))}
-                                                </select>
+                                                <div className="space-y-2 min-w-[260px]">
+                                                    <MultiSelectField
+                                                        value={currentSupervisorGroupIds}
+                                                        options={[...schools, ...classes].map((group) => ({
+                                                            value: group.id,
+                                                            label: `${group.type === 'SCHOOL' ? 'مدرسة' : 'فصل'} - ${group.name}`,
+                                                        }))}
+                                                        placeholder="اختر مدرسة أو فصلًا أو أكثر"
+                                                        onChange={(nextGroupIds) => handleSupervisorGroupsChange(currentUser, nextGroupIds)}
+                                                        size="sm"
+                                                    />
+                                                    <p className="text-[11px] text-gray-400">
+                                                        يمكن جعل المشرف مدير مدرسة باختيار المدرسة، أو مسؤولًا عن فصل/عدة فصول من نفس الحساب.
+                                                    </p>
+                                                </div>
                                             ) : isEditing && currentUser.role === Role.PARENT ? (
                                                 <div className="space-y-2 min-w-[240px]">
                                                     <select
