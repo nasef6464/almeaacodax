@@ -108,20 +108,26 @@ assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { QuestionBankM
 assertNotIncludes('dashboards/admin/AdminDashboard.tsx', "import { LessonsManager } from './LessonsManager';");
 
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [');
+assertNotIncludes('App.tsx', "  '/category',\n  '/quiz',");
 assertIncludes('App.tsx', 'const DATA_BOOTSTRAP_START_PREFIXES = [');
 assertIncludes('App.tsx', 'const QUESTION_BOOTSTRAP_DEFER_PREFIXES = [');
 assertIncludes('App.tsx', 'const shouldDeferQuestionBootstrap = (path: string) =>');
 assertIncludes('App.tsx', 'const SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES = [');
 assertIncludes('App.tsx', 'const shouldDeferSkillProgressBootstrap = (path: string) =>');
 assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
+assertIncludes('App.tsx', 'const CategoryRouteShellGate: React.FC<{ children: React.ReactNode }>');
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', 'shouldStartBootstrapForPath(path)');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
 assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });');
+assertIncludes('App.tsx', 'const taxonomyPromise = adapter.getTaxonomyBootstrap();');
+assertIncludes('App.tsx', 'taxonomyPromise');
+assertIncludes('App.tsx', 'hydrateTaxonomy({');
+assertIncludes('App.tsx', 'window.setTimeout(() => {');
 assertIncludes('App.tsx', "console.warn('API health check failed; continuing data bootstrap.', error);");
 assertNotIncludes('App.tsx', "API health check failed; skipping remote hydration to preserve local state.");
 assertIncludes('App.tsx', 'const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;');
-assertIncludes('App.tsx', "coursesResult.status === 'fulfilled' && coursesResult.value.length > 0");
+assertIncludes('App.tsx', "console.warn('Course bootstrap unavailable:', error)");
 assertIncludes('App.tsx', '].some(hasItems)');
 assertIncludes('services/api.ts', 'ids?: string;');
 assertIncludes('services/api.ts', 'const productionApiBaseUrl = "https://almeaacodax-k2ux.onrender.com/api";');

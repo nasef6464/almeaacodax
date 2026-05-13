@@ -62,7 +62,6 @@ const prefetchCommonRouteModules = (role?: string | null) => {
 };
 
 const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
-  '/category',
   '/quiz',
   '/results',
 ];
@@ -301,6 +300,19 @@ const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.Re
   return <>{children}</>;
 };
 
+const CategoryRouteShellGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const paths = useStore((state) => state.paths);
+  const subjects = useStore((state) => state.subjects);
+  const isCategoryRoute = location.pathname === '/category' || location.pathname.startsWith('/category/');
+
+  if (isCategoryRoute && paths.length === 0 && subjects.length === 0) {
+    return <LoadingFallback />;
+  }
+
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
   const [bootstrapReady, setBootstrapReady] = useState(false);
   const hydrateCourses = useStore((state) => state.hydrateCourses);
@@ -353,19 +365,96 @@ const App: React.FC = () => {
       try {
         const useRealApi = import.meta.env.PROD || import.meta.env.VITE_USE_REAL_API !== 'false';
         if (useRealApi) {
-          void api.health().catch((error) => {
-            console.warn('API health check failed; continuing data bootstrap.', error);
-          });
+          window.setTimeout(() => {
+            void api.health().catch((error) => {
+              console.warn('API health check failed; continuing data bootstrap.', error);
+            });
+          }, 2000);
         }
 
         const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
         const skillProgressPromise = options.deferSkillProgress ? null : api.getSkillProgress();
-        const [coursesResult, questionsResult, quizzesResult, taxonomyResult, contentResult, skillProgressResult] = await Promise.allSettled([
-          adapter.getCourses(),
+        const coursesPromise = adapter.getCourses();
+        const quizzesPromise = adapter.getQuizzes();
+        const taxonomyPromise = adapter.getTaxonomyBootstrap();
+        const contentPromise = adapter.getContentBootstrap();
+
+        coursesPromise
+          .then((courses) => {
+            if (mounted && courses.length > 0) {
+              hydrateCourses(courses);
+            }
+          })
+          .catch((error) => console.warn('Course bootstrap unavailable:', error));
+
+        quizzesPromise
+          .then((quizzes) => {
+            if (mounted) {
+              hydrateQuizzes(quizzes);
+            }
+          })
+          .catch((error) => console.warn('Quiz bootstrap unavailable:', error));
+
+        taxonomyPromise
+          .then((taxonomyResult) => {
+            if (!mounted) return;
+            const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+            if (
+              [
+                taxonomyResult.paths,
+                taxonomyResult.levels,
+                taxonomyResult.subjects,
+                taxonomyResult.sections,
+                taxonomyResult.skills,
+              ].some(hasItems)
+            ) {
+              hydrateTaxonomy({
+                paths: taxonomyResult.paths as any[],
+                levels: taxonomyResult.levels as any[],
+                subjects: taxonomyResult.subjects as any[],
+                sections: taxonomyResult.sections as any[],
+                skills: taxonomyResult.skills as any[],
+              });
+            }
+          })
+          .catch((error) => console.warn('Taxonomy bootstrap unavailable:', error));
+
+        contentPromise
+          .then((contentResult) => {
+            if (!mounted) return;
+            const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+            if (
+              [
+                contentResult.topics,
+                contentResult.lessons,
+                contentResult.libraryItems,
+                contentResult.groups,
+                contentResult.b2bPackages,
+                contentResult.accessCodes,
+                contentResult.announcementAds,
+                contentResult.studyPlans,
+              ].some(hasItems)
+            ) {
+              hydrateContentBootstrap({
+                topics: contentResult.topics as any[],
+                lessons: contentResult.lessons as any[],
+                libraryItems: contentResult.libraryItems as any[],
+                groups: contentResult.groups as any[],
+                b2bPackages: contentResult.b2bPackages as any[],
+                accessCodes: contentResult.accessCodes as any[],
+                announcementAds: contentResult.announcementAds as any[],
+                studyPlans: contentResult.studyPlans as any[],
+              });
+            }
+          })
+          .catch((error) => console.warn('Content bootstrap unavailable:', error));
+
+        const [, questionsResult, , , , skillProgressResult] = await Promise.allSettled([
+          coursesPromise,
           questionsPromise ?? Promise.resolve(null),
-          adapter.getQuizzes(),
-          adapter.getTaxonomyBootstrap(),
-          adapter.getContentBootstrap(),
+          quizzesPromise,
+          taxonomyPromise,
+          contentPromise,
           skillProgressPromise ?? Promise.resolve(null),
         ]);
 
@@ -373,62 +462,8 @@ const App: React.FC = () => {
           return;
         }
 
-        const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
-
-        if (coursesResult.status === 'fulfilled' && coursesResult.value.length > 0) {
-          hydrateCourses(coursesResult.value);
-        }
-
         if (questionsResult.status === 'fulfilled' && Array.isArray(questionsResult.value)) {
           hydrateQuestions(questionsResult.value);
-        }
-
-        if (quizzesResult.status === 'fulfilled') {
-          hydrateQuizzes(quizzesResult.value);
-        }
-
-        if (
-          taxonomyResult.status === 'fulfilled' &&
-          [
-            taxonomyResult.value.paths,
-            taxonomyResult.value.levels,
-            taxonomyResult.value.subjects,
-            taxonomyResult.value.sections,
-            taxonomyResult.value.skills,
-          ].some(hasItems)
-        ) {
-          hydrateTaxonomy({
-            paths: taxonomyResult.value.paths as any[],
-            levels: taxonomyResult.value.levels as any[],
-            subjects: taxonomyResult.value.subjects as any[],
-            sections: taxonomyResult.value.sections as any[],
-            skills: taxonomyResult.value.skills as any[],
-          });
-        }
-
-        if (
-          contentResult.status === 'fulfilled' &&
-          [
-            contentResult.value.topics,
-            contentResult.value.lessons,
-            contentResult.value.libraryItems,
-            contentResult.value.groups,
-            contentResult.value.b2bPackages,
-            contentResult.value.accessCodes,
-            contentResult.value.announcementAds,
-            contentResult.value.studyPlans,
-          ].some(hasItems)
-        ) {
-          hydrateContentBootstrap({
-            topics: contentResult.value.topics as any[],
-            lessons: contentResult.value.lessons as any[],
-            libraryItems: contentResult.value.libraryItems as any[],
-            groups: contentResult.value.groups as any[],
-            b2bPackages: contentResult.value.b2bPackages as any[],
-            accessCodes: contentResult.value.accessCodes as any[],
-            announcementAds: contentResult.value.announcementAds as any[],
-            studyPlans: contentResult.value.studyPlans as any[],
-          });
         }
 
         if (skillProgressResult.status === 'fulfilled') {
@@ -602,6 +637,7 @@ const App: React.FC = () => {
         <AppErrorBoundary>
         <SeoRouteMeta />
         <BootstrapRouteGate bootstrapReady={bootstrapReady}>
+        <CategoryRouteShellGate>
         <Routes>
           {/* Routes without Main Layout (Full Screen) */}
           <Route path="/quiz" element={<Quiz />} />
@@ -659,6 +695,7 @@ const App: React.FC = () => {
             </Layout>
           } />
         </Routes>
+        </CategoryRouteShellGate>
         </BootstrapRouteGate>
         </AppErrorBoundary>
         <AnnouncementAdsOverlay />

@@ -7,6 +7,7 @@
 - This keeps the first question-bank summary response small and predictable as the question bank grows, without exposing answers or changing UI layout.
 - Category pages now defer the general question-bank bootstrap and student skill-progress bootstrap. The route opens with courses, quizzes, taxonomy, and content first; question summaries and skill-progress hydrate in the background.
 - Category course-tab bundles now lazy-load payment modals, skill details, file previews, and simulated test cards only when the student opens them or switches to their tabs. This reduces first route JavaScript without changing the UI layout.
+- Category routes now hydrate taxonomy immediately when that request finishes instead of waiting for the full bootstrap group. Courses, content, quizzes, health, question summaries, and skill-progress continue independently in the background.
 
 ## Status
 
@@ -85,7 +86,7 @@ Closed a direct first-open bottleneck:
 - The heavy bootstrap no longer starts automatically on public landing/auth pages. This avoids pulling courses, questions, quizzes, taxonomy, content bootstrap, and skill-progress data for a visitor who has not entered the learning app yet.
 - Public pages now fetch only the lightweight active announcement-ad list so the opening announcement feature still works without a full data load.
 - If the user moves from a public page into a data-heavy route, the app starts the full bootstrap immediately and keeps the route protected by the loading gate.
-- Data-heavy routes still block until bootstrap is ready: dashboards, category pages, quizzes, results, reports, courses, and admin/staff screens.
+- Data-heavy quiz/result routes still block until bootstrap is ready, while category pages now use a lighter taxonomy shell gate so the page frame can appear before the full background bootstrap completes.
 - `npm run smoke:performance` now guards this split so the root page cannot silently return to blocking on the full content bootstrap.
 
 Expected effect:
