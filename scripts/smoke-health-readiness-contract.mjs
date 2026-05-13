@@ -20,6 +20,8 @@ function assertIncludes(file, needle) {
 
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/live"');
 assertIncludes('server/src/routes/health.routes.ts', 'healthRouter.get("/ready"');
+assertIncludes('server/src/routes/health.routes.ts', 'res.status(200).json({');
+assertIncludes('server/src/routes/health.routes.ts', 'ready: dependencies.ok');
 assertIncludes('server/src/routes/health.routes.ts', 'res.status(dependencies.ok ? 200 : 503)');
 assertIncludes('server/src/routes/health.routes.ts', 'RENDER_GIT_COMMIT');
 assertIncludes('server/src/routes/health.routes.ts', 'uptimeSeconds');

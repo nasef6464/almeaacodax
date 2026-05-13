@@ -103,8 +103,9 @@ healthRouter.get("/ready", async (_req, res) => {
 
 healthRouter.get("/", async (_req, res) => {
   const dependencies = await getDependencyHealth();
-  res.status(dependencies.ok ? 200 : 503).json({
-    status: dependencies.status,
+  res.status(200).json({
+    status: dependencies.ok ? dependencies.status : "live_with_dependency_warnings",
+    ready: dependencies.ok,
     database: dependencies.database.status,
     redis: {
       rateLimit: dependencies.redis.rateLimit.status,
