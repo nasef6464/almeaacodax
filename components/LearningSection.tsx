@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
-import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package } from 'lucide-react';
+import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package, CreditCard } from 'lucide-react';
 import { ProgressBar } from './ui/ProgressBar';
 import { SkillDetailsModal } from './SkillDetailsModal';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
@@ -303,9 +303,18 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         ? buildScopedPackageItem(activeTabAccess.contentType, activeTabAccess.action, activeTabAccess.description)
         : null;
     const showActiveTabAccessNotice = !isStaffViewer && activeTabAccess && !activeTabAccess.hasAccess && Boolean(activeTabPackage);
+    const isCourseTabNotice = activeTab === 'courses';
 
     const isPremiumLocked = (shouldLock?: boolean, accessGranted = false) => Boolean(!isStaffViewer && shouldLock && !accessGranted);
     const getLockedContentMessage = (contentType: PackageContentType) => {
+        if (contentType === 'courses') {
+            return {
+                title: 'هذه دورة مدفوعة',
+                description: 'يمكنك طلب شراء الدورة من زر البطاقة نفسها، أو الانتقال إلى صفحة الباقات إذا كنت تريد فتح أكثر من جزء في هذا المسار.',
+                coverageSummary: '',
+            };
+        }
+
         const packageItem = buildScopedPackageItem(
             contentType,
             `باقة ${packageContentLabels[contentType] || 'المحتوى'}`,
@@ -746,11 +755,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             </div>
                             <div className="flex flex-wrap gap-2 text-sm font-black">
                                 <span className="rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">متاح الآن: {activeTabSummary.open}</span>
-                                <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">يحتاج باقة: {activeTabSummary.locked}</span>
+                                <span className="rounded-full bg-amber-50 px-3 py-2 text-amber-700">{isCourseTabNotice ? 'يحتاج تفعيل' : 'يحتاج باقة'}: {activeTabSummary.locked}</span>
                                 {activeTabAccess?.hasAccess ? (
                                     <span className="rounded-full bg-indigo-50 px-3 py-2 text-indigo-700">وصولك لهذا القسم مفعل</span>
                                 ) : (
-                                    <span className="rounded-full bg-gray-100 px-3 py-2 text-gray-700">يمكن فتحه من الباقة المناسبة</span>
+                                    <span className="rounded-full bg-gray-100 px-3 py-2 text-gray-700">{isCourseTabNotice ? 'يمكن تفعيله من شراء الدورة أو الباقة المناسبة' : 'يمكن فتحه من الباقة المناسبة'}</span>
                                 )}
                             </div>
                         </div>
@@ -764,7 +773,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                     <Lock size={20} />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-black text-gray-900">هذا القسم فيه محتوى يحتاج باقة</div>
+                                    <div className="text-sm font-black text-gray-900">{isCourseTabNotice ? 'هذا القسم فيه دورات مدفوعة' : 'هذا القسم فيه محتوى يحتاج باقة'}</div>
                                     <div className="mt-1 flex flex-wrap gap-2 text-xs font-bold">
                                         <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-emerald-700">مفتوح {activeTabSummary.open}</span>
                                         <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">يحتاج تفعيل {activeTabSummary.locked}</span>
@@ -776,8 +785,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 onClick={() => navigate(buildPackagesPagePath(activeTabAccess.contentType, activeTabPackage.packageId || activeTabPackage.id))}
                                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-amber-600"
                             >
-                                <Package size={18} />
-                                فتح الباقة
+                                {isCourseTabNotice ? <CreditCard size={18} /> : <Package size={18} />}
+                                {isCourseTabNotice ? 'عرض الباقات المناسبة' : 'فتح الباقة'}
                             </button>
                         </div>
                     </div>
@@ -906,7 +915,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">{course.category}</span>
                                         <div className="mb-2 flex flex-wrap gap-2">
                                             <span className={`rounded-full px-3 py-1 text-[11px] font-black ${isPurchased ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white'}`}>
-                                                {isPurchased ? 'مفتوح لك الآن' : 'يتطلب باقة أو شراء'}
+                                                {isPurchased ? 'مفتوح لك الآن' : 'مدفوع أو يحتاج تفعيل'}
                                             </span>
                                         </div>
                                         <h3 className="font-bold text-xl text-white mb-1">{course.title}</h3>
@@ -940,7 +949,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                                 className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center mb-0"
                                                 style={{ backgroundColor: theme.base }}
                                             >
-                                                افتح هذه الدورات الآن
+                                                طلب شراء الدورة
                                             </button>
                                         )}
                                         <Link

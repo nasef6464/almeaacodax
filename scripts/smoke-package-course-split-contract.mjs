@@ -32,8 +32,14 @@ check('package choices in the floating payment modal only accept package product
 check('locked course cards open a course purchase request, not a package picker', () => {
   includes(learningSection, "item: course,");
   includes(learningSection, "type: 'course',");
+  includes(learningSection, "if (contentType === 'courses')");
+  includes(learningSection, "'هذه دورة مدفوعة'");
+  includes(learningSection, "طلب شراء الدورة");
+  includes(learningSection, "'مدفوع أو يحتاج تفعيل'");
   notIncludes(learningSection, "item: coursePurchaseItem || course");
   notIncludes(learningSection, "type: coursePurchaseItem ? 'package' : 'course'");
+  notIncludes(learningSection, "'يتطلب باقة أو شراء'");
+  notIncludes(learningSection, "'افتح هذه الدورات الآن'");
 });
 
 check('course tab never renders the package marketplace inline', () => {
@@ -42,6 +48,9 @@ check('course tab never renders the package marketplace inline', () => {
   includes(learningSection, "navigate(buildPackagesPagePath(undefined, previewPackageId)");
   includes(learningSection, "searchParams.get('tab') === 'packages'");
   includes(learningSection, "const showPackagesInsideCourseTab = false;");
+  includes(learningSection, "const isCourseTabNotice = activeTab === 'courses';");
+  includes(learningSection, "'هذا القسم فيه دورات مدفوعة'");
+  includes(learningSection, "'عرض الباقات المناسبة'");
   includes(learningSection, "{showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (");
   notIncludes(genericPathPage, "tab=courses&package");
   notIncludes(genericPathPage, "subject=${packageSubjectId}&tab=courses");
