@@ -920,19 +920,24 @@ quizRouter.get(
         },
         req.authUser,
       );
-      const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
-      const linkedQuestionIds = uniqueStrings(
-        visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
-      );
-      const linkedObjectIds = linkedQuestionIds
-        .filter((id) => mongoose.Types.ObjectId.isValid(id))
-        .map((id) => new mongoose.Types.ObjectId(id));
-      const linkedQuestionConditions: Record<string, any>[] = linkedQuestionIds.length > 0
-        ? [{ id: { $in: linkedQuestionIds } }]
-        : [];
+      const shouldExpandLinkedQuizQuestions = !query.summary || Boolean(query.ids) || Boolean(query.search);
+      const linkedQuestionConditions: Record<string, any>[] = [];
 
-      if (linkedObjectIds.length > 0) {
-        linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
+      if (shouldExpandLinkedQuizQuestions) {
+        const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
+        const linkedQuestionIds = uniqueStrings(
+          visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
+        );
+        const linkedObjectIds = linkedQuestionIds
+          .filter((id) => mongoose.Types.ObjectId.isValid(id))
+          .map((id) => new mongoose.Types.ObjectId(id));
+
+        if (linkedQuestionIds.length > 0) {
+          linkedQuestionConditions.push({ id: { $in: linkedQuestionIds } });
+        }
+        if (linkedObjectIds.length > 0) {
+          linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
+        }
       }
 
       baseFilter = {

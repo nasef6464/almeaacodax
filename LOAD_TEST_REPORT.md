@@ -1,5 +1,11 @@
 # Load Test Report
 
+## Question Summary Endpoint Guard - 2026-05-13
+
+- Added the production speed smoke measurement for `/api/quizzes/questions?summary=true&noTotal=true&limit=80`.
+- The learner/public summary path no longer expands all published quiz `questionIds` before returning a bounded summary list. That expensive expansion remains available for full question loads, explicit `ids`, and search flows where compatibility matters.
+- This keeps the first question-bank summary response small and predictable as the question bank grows, without exposing answers or changing UI layout.
+
 ## Status
 
 Not executed yet in this sprint. The project now has the production-hardening checklist needed before formal pressure testing.

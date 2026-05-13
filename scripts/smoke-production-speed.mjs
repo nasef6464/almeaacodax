@@ -19,6 +19,7 @@ const SOFT_LIMITS_MS = {
   apiReady: 1500,
   taxonomyBootstrap: 1800,
   contentBootstrap: 2500,
+  questionSummary: 1800,
   announcementAds: 1200,
 };
 
@@ -140,6 +141,12 @@ const ready = await timedFetch(
 );
 await timedFetch("taxonomy bootstrap", `${API_URL}/taxonomy/bootstrap`, {}, SOFT_LIMITS_MS.taxonomyBootstrap);
 await timedFetch("content bootstrap", `${API_URL}/content/bootstrap`, {}, SOFT_LIMITS_MS.contentBootstrap);
+await timedFetch(
+  "question summary",
+  `${API_URL}/quizzes/questions?summary=true&noTotal=true&limit=80&page=1&pathId=p_1777779639431&subject=sub_1777779748206`,
+  {},
+  SOFT_LIMITS_MS.questionSummary,
+);
 await timedFetch("announcement ads", `${API_URL}/content/announcement-ads`, {}, SOFT_LIMITS_MS.announcementAds);
 
 const healthSummary = summarizeHealth(health.json, ready.json);

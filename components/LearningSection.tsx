@@ -407,20 +407,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         return pathMatches && subjectMatches;
     };
 
-    const purchasedPackageIds = new Set(user.subscription?.purchasedPackages || []);
     const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
-    const subjectPublicPackages = courses
-        .filter((course) => {
-            const packagePathId = course.pathId || course.category;
-            const packageSubjectId = course.subjectId || course.subject;
-            return course.isPackage && canStudentSeeCourse(course) && matchesScopedContent(packagePathId, packageSubjectId);
-        })
-        .sort((a, b) => {
-            const aSubject = (a.subjectId || a.subject) === subject ? 1 : 0;
-            const bSubject = (b.subjectId || b.subject) === subject ? 1 : 0;
-            return bSubject - aSubject || (a.price || 0) - (b.price || 0);
-        });
-    const showPackagesInsideCourseTab = false;
 
     useEffect(() => {
         const previewPackageId = searchParams.get('package');
@@ -656,28 +643,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     };
     const shouldShowActiveTabAccessNotice = Boolean(showActiveTabAccessNotice && activeTabSummary.locked > 0);
     const showStaffInventory = showPublicAdminDiagnostics;
-    const getScopedPackageCoverage = (pkg: any) => {
-        const contentTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
-        const includesAll = contentTypes.includes('all');
-        const packagePathId = pkg.pathId || pkg.category || category;
-        const packageSubjectId = pkg.subjectId || pkg.subject || subject;
-        const matchesScope = (item: { pathId?: string; category?: string; subjectId?: string; subject?: string }) => {
-            const itemPathId = item.pathId || item.category;
-            const itemSubjectId = item.subjectId || item.subject;
-            const pathMatches = !itemPathId || itemPathId === packagePathId;
-            const subjectMatches = !itemSubjectId || itemSubjectId === packageSubjectId;
-            return pathMatches && subjectMatches;
-        };
-        const shouldCount = (type: PackageContentType) => includesAll || contentTypes.includes(type);
-
-        return [
-            { label: 'الدورات', count: shouldCount('courses') ? sectionCourses.filter((course) => matchesScope(course)).length : 0 },
-            { label: 'التأسيس', count: shouldCount('foundation') ? mappedSkills.length : 0 },
-            { label: 'التدريب', count: shouldCount('banks') ? banks.length : 0 },
-            { label: 'الاختبارات', count: shouldCount('tests') ? tests.length : 0 },
-            { label: 'المكتبة', count: shouldCount('library') ? sectionLibraryItems.filter((item) => matchesScope(item)).length : 0 },
-        ].filter((item) => item.count > 0);
-    };
 
     const handleItemClick = (item: any, type: string) => {
         if (item.isLocked) {
@@ -794,95 +759,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
                 {activeTab === 'courses' && enabledTabs.courses && (
                     <div className="space-y-6">
-                        {showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (
-                            <div className="rounded-3xl border border-amber-100 bg-amber-50/40 p-5">
-                                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
-                                        <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">
-                                            <Package size={14} />
-                                            الباقات والعروض المتاحة
-                                        </div>
-                                        <h3 className="mt-2 text-xl font-black text-gray-900">اختر الباقة المناسبة لفتح المحتوى المقفول</h3>
-                                        <p className="mt-1 text-sm text-gray-500">الباقات هنا عامة للطلاب المستقلين، أما طلاب المدارس فيفتح لهم المحتوى حسب باقة المدرسة أو كود التفعيل.</p>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                                    {subjectPublicPackages.map((pkg) => {
-                                        const pkgTypes = pkg.packageContentTypes?.length ? pkg.packageContentTypes : ['all' as PackageContentType];
-                                        const packageCoverage = getScopedPackageCoverage(pkg);
-                                        const packageIsActive =
-                                            isStaffViewer ||
-                                            user.subscription?.plan === 'premium' ||
-                                            purchasedPackageIds.has(pkg.id) ||
-                                            hasScopedPackageAccess('all', category, subject);
-                                        const contentLabel = pkgTypes.includes('all')
-                                            ? 'باقة شاملة'
-                                            : pkgTypes.map((type) => packageContentLabels[type]).filter(Boolean).join(' + ');
-
-                                        return (
-                                            <div key={pkg.id} className="overflow-hidden rounded-3xl border border-white bg-white shadow-sm">
-                                                <div className="relative h-36 bg-gray-900">
-                                                    <img src={pkg.thumbnail} alt={pkg.title} className="absolute inset-0 h-full w-full object-cover opacity-80" />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
-                                                    <div className="absolute bottom-3 left-3 right-3">
-                                                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur">{contentLabel}</span>
-                                                        <h4 className="mt-2 line-clamp-2 text-lg font-black text-white">{pkg.title}</h4>
-                                                    </div>
-                                                    {!packageIsActive && (
-                                                        <div className="absolute left-3 top-3 rounded-full bg-black/50 p-2 text-white backdrop-blur">
-                                                            <Lock size={16} />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="space-y-4 p-4">
-                                                    <p className="line-clamp-2 text-sm text-gray-500">{pkg.description || 'باقة عامة لفتح محتوى هذا المسار حسب إعدادات الإدارة.'}</p>
-                                                    {showPublicAdminDiagnostics && packageCoverage.length > 0 ? (
-                                                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
-                                                            <div className="mb-2 text-[11px] font-black text-amber-700">ماذا ستفتح لك هذه الباقة؟</div>
-                                                            <div className="grid grid-cols-2 gap-2">
-                                                                {packageCoverage.map((coverage) => (
-                                                                    <div key={coverage.label} className="rounded-xl bg-white px-3 py-2 text-center">
-                                                                        <div className="text-base font-black text-gray-900">{coverage.count}</div>
-                                                                        <div className="text-[11px] font-bold text-gray-500">{coverage.label}</div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    ) : null}
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="text-xl font-black text-emerald-600">{pkg.price || 0} {pkg.currency || 'ر.س'}</span>
-                                                        {pkg.originalPrice ? <span className="text-sm font-bold text-gray-400 line-through">{pkg.originalPrice} {pkg.currency || 'ر.س'}</span> : null}
-                                                    </div>
-                                                    {showPublicAdminDiagnostics ? (
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {(pkg.features || []).slice(0, 3).map((feature) => (
-                                                                <span key={feature} className="rounded-full bg-gray-50 px-2 py-1 text-xs font-bold text-gray-600">{feature}</span>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-xs text-gray-400">اختيار بسيط يفتح المحتوى المناسب</div>
-                                                    )}
-                                                    <button
-                                                        onClick={() => {
-                                                            if (!packageIsActive) {
-                                                                setPaymentModalData({ isOpen: true, item: pkg, type: 'package' });
-                                                            }
-                                                        }}
-                                                        className={`w-full rounded-xl py-3 font-black transition-colors ${
-                                                            packageIsActive ? 'bg-emerald-50 text-emerald-700' : 'text-white hover:opacity-90'
-                                                        }`}
-                                                        style={packageIsActive ? undefined : { backgroundColor: theme.base }}
-                                                    >
-                                                        {packageIsActive ? 'الباقة مفعلة لديك' : 'اشترك في الباقة'}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
-
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {sectionCourses.map((baseCourse) => {
                             const course = {

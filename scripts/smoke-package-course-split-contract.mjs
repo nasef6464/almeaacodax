@@ -47,13 +47,14 @@ check('course tab never renders the package marketplace inline', () => {
   includes(learningSection, "navigate(buildPackagesPagePath(contentType");
   includes(learningSection, "navigate(buildPackagesPagePath(undefined, previewPackageId)");
   includes(learningSection, "searchParams.get('tab') === 'packages'");
-  includes(learningSection, "const showPackagesInsideCourseTab = false;");
+  notIncludes(learningSection, "const showPackagesInsideCourseTab");
+  notIncludes(learningSection, "subjectPublicPackages");
   includes(learningSection, "const isCourseTabNotice = activeTab === 'courses';");
   includes(learningSection, "'هذا القسم فيه دورات مدفوعة'");
   includes(learningSection, "'عرض الباقات المناسبة'");
   includes(genericPathPage, "row.type === 'courses' ? 'يحتاج تفعيل' : 'يحتاج باقة'");
   includes(genericPathPage, "lockedRows.some((row) => row.type === 'courses') ? 'عرض الباقات المناسبة' : 'فتح المحتوى المقفول'");
-  includes(learningSection, "{showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (");
+  notIncludes(learningSection, "{showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (");
   notIncludes(genericPathPage, "tab=courses&package");
   notIncludes(genericPathPage, "subject=${packageSubjectId}&tab=courses");
 });
