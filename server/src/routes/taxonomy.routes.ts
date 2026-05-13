@@ -15,6 +15,7 @@ import { QuizModel } from "../models/Quiz.js";
 import { TopicModel } from "../models/Topic.js";
 import { CourseModel } from "../models/Course.js";
 import { ensureSkillTaxonomy } from "../services/ensureSkillTaxonomy.js";
+import { clearActivePathIdsCache } from "../services/visibility.js";
 
 const pathSchema = z.object({
   id: z.string().optional(),
@@ -89,6 +90,7 @@ let skillTaxonomySeedPromise: Promise<unknown> | null = null;
 const clearTaxonomyBootstrapCache = () => {
   publicTaxonomyBootstrapCache = null;
   skillTaxonomySeedCheckedAt = 0;
+  clearActivePathIdsCache();
 };
 
 const ensureSkillTaxonomyIfStale = async () => {

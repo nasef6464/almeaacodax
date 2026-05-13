@@ -160,20 +160,64 @@ const buildOwnedCourseQuery = (
 
 export const courseRouter = Router();
 
+const PUBLIC_COURSE_LIST_CACHE_TTL_MS = 60 * 1000;
+let publicCourseListCache:
+  | {
+      key: string;
+      expiresAt: number;
+      payload: {
+        courses: unknown[];
+        pagination: ReturnType<typeof buildPaginatedResponse>;
+      };
+    }
+  | null = null;
+
+const clearPublicCourseListCache = () => {
+  publicCourseListCache = null;
+};
+
+courseRouter.use((req, _res, next) => {
+  if (req.method !== "GET") {
+    clearPublicCourseListCache();
+  }
+  next();
+});
+
 courseRouter.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const filter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const isStaffViewer = isStaffRole(req.authUser?.role);
     const pagination = resolvePagination(req.query, { limit: 200 });
+    const cacheKey = `${pagination.page}:${pagination.limit}`;
+
+    if (!isStaffViewer && publicCourseListCache?.key === cacheKey && publicCourseListCache.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "private, max-age=60");
+      res.setHeader("X-Course-List-Cache", "hit");
+      return res.json(publicCourseListCache.payload);
+    }
+
+    const filter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
     const [items, total] = await Promise.all([
-      CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
       CourseModel.countDocuments(filter),
     ]);
-    res.json({
+    const payload = {
       courses: items,
       pagination: buildPaginatedResponse([], pagination, total),
-    });
+    };
+
+    if (!isStaffViewer) {
+      publicCourseListCache = {
+        key: cacheKey,
+        expiresAt: Date.now() + PUBLIC_COURSE_LIST_CACHE_TTL_MS,
+        payload,
+      };
+      res.setHeader("Cache-Control", "private, max-age=60");
+      res.setHeader("X-Course-List-Cache", "miss");
+    }
+
+    res.json(payload);
   }),
 );
 

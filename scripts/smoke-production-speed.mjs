@@ -19,6 +19,7 @@ const SOFT_LIMITS_MS = {
   apiReady: 1500,
   taxonomyBootstrap: 1800,
   contentBootstrap: 2500,
+  courseList: 1800,
   questionSummary: 1800,
   announcementAds: 1200,
 };
@@ -141,6 +142,7 @@ const ready = await timedFetch(
 );
 await timedFetch("taxonomy bootstrap", `${API_URL}/taxonomy/bootstrap`, {}, SOFT_LIMITS_MS.taxonomyBootstrap);
 await timedFetch("content bootstrap", `${API_URL}/content/bootstrap`, {}, SOFT_LIMITS_MS.contentBootstrap);
+await timedFetch("course list", `${API_URL}/courses?limit=200`, {}, SOFT_LIMITS_MS.courseList);
 await timedFetch(
   "question summary",
   `${API_URL}/quizzes/questions?summary=true&noTotal=true&limit=80&page=1&pathId=p_1777779639431&subject=sub_1777779748206`,

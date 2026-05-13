@@ -130,6 +130,22 @@ const readPublicCache = <T>(key: string): T | null => {
   }
 };
 
+const getStoredSessionRole = (): string | null => {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as { role?: string; user?: { role?: string } };
+    return parsed.role || parsed.user?.role || null;
+  } catch {
+    return null;
+  }
+};
+
+const canUsePublicLearningCache = () => !["admin", "teacher", "supervisor"].includes(getStoredSessionRole() || "");
+
 const writePublicCache = <T>(key: string, value: T, ttlMs: number) => {
   const storage = getPublicCacheStorage();
   if (!storage) {
@@ -631,8 +647,14 @@ export const api = {
       body: payload,
       token,
     }),
-  getCourses: async (pagination: PaginationOptions = {}) =>
-    extractList(await request<unknown>(withQuery("/courses", { limit: 200, ...pagination })), "courses"),
+  getCourses: async (pagination: PaginationOptions = {}) => {
+    const query = { limit: 200, ...pagination };
+    const path = withQuery("/courses", query);
+    const payload = canUsePublicLearningCache()
+      ? await requestCached<unknown>(path, `courses-${query.page || 1}-${query.limit}`, BOOTSTRAP_CACHE_TTL_MS)
+      : await request<unknown>(path);
+    return extractList(payload, "courses");
+  },
   getCourseById: (id: string) => request<unknown>(`/courses/${id}`),
   createCourse: (payload: unknown, token?: string | null) =>
     request<unknown>("/courses", {

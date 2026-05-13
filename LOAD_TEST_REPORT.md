@@ -8,6 +8,7 @@
 - Category pages now defer the general question-bank bootstrap and student skill-progress bootstrap. The route opens with courses, quizzes, taxonomy, and content first; question summaries and skill-progress hydrate in the background.
 - Category course-tab bundles now lazy-load payment modals, skill details, file previews, and simulated test cards only when the student opens them or switches to their tabs. This reduces first route JavaScript without changing the UI layout.
 - Category routes now hydrate taxonomy immediately when that request finishes instead of waiting for the full bootstrap group. Courses, content, quizzes, health, question summaries, and skill-progress continue independently in the background.
+- Course list loading now has a 60-second learner/public server cache plus a browser session cache for non-staff sessions. Staff accounts bypass this cache so admin/teacher course management still sees fresh data.
 
 ## Status
 
