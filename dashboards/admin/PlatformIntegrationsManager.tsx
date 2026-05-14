@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Save, ShieldCheck, Link2, UserRoundPlus, Plus, Trash2, Search, Radio, RefreshCw } from "lucide-react";
+import { Save, ShieldCheck, Link2, UserRoundPlus, Plus, Trash2, Search, Radio, RefreshCw, ExternalLink, Copy } from "lucide-react";
 import { api } from "../../services/api";
 
 type ProviderConfig = {
@@ -217,6 +217,119 @@ const providerLabels: Array<{ key: keyof IntegrationSettings["providers"]; label
   { key: "youtubeLive", label: "YouTube Live Streams" },
 ];
 
+const providerGuides: Record<
+  keyof IntegrationSettings["providers"],
+  {
+    sourceLabel: string;
+    sourceUrl: string;
+    fieldsHelp: string[];
+    notes: string[];
+    callbackPath?: string;
+    webhookPath?: string;
+  }
+> = {
+  google: {
+    sourceLabel: "Google Cloud Console",
+    sourceUrl: "https://console.cloud.google.com/apis/credentials",
+    fieldsHelp: [
+      "Client ID -> ضعها في خانة Client ID",
+      "Client Secret -> ضعها في خانة Client Secret",
+      "Redirect URI -> ضعها في خانة Callback URL",
+    ],
+    notes: ["نوع التطبيق: Web application", "فعّل Google Identity/OAuth consent screen"],
+    callbackPath: "/api/auth/google/callback",
+  },
+  facebook: {
+    sourceLabel: "Meta Developers",
+    sourceUrl: "https://developers.facebook.com/apps/",
+    fieldsHelp: [
+      "App ID -> ضعها في App ID",
+      "App Secret -> ضعها في Client Secret",
+      "Valid OAuth Redirect URI -> ضعها في Callback URL",
+    ],
+    notes: ["أضف النطاق في App Domains", "فعّل Facebook Login (Web)"],
+    callbackPath: "/api/auth/facebook/callback",
+  },
+  whatsapp: {
+    sourceLabel: "Meta WhatsApp Cloud API",
+    sourceUrl: "https://developers.facebook.com/docs/whatsapp/cloud-api/",
+    fieldsHelp: [
+      "Access Token -> ضعها في Access Token",
+      "Phone Number ID -> ضعها في Phone Number ID",
+      "Business Account ID -> ضعها في Business Account ID",
+      "Verify Token -> ضعها في Verify Token",
+      "Webhook URL -> ضعها في Webhook URL",
+    ],
+    notes: ["الرقم يكون دولي بدون 00 في الإعدادات العامة للزر العائم", "اختبر Webhook من Meta dashboard"],
+    webhookPath: "/api/webhooks/whatsapp",
+  },
+  telegram: {
+    sourceLabel: "Telegram BotFather",
+    sourceUrl: "https://t.me/BotFather",
+    fieldsHelp: [
+      "Bot Token -> ضعها في Access Token أو Bot Token",
+      "Bot Username -> ضعها في Bot Username",
+      "Webhook URL -> ضعها في Webhook URL",
+    ],
+    notes: ["استخدم /setdomain و /setprivacy عند الحاجة"],
+    webhookPath: "/api/webhooks/telegram",
+  },
+  email: {
+    sourceLabel: "Email Provider Dashboard",
+    sourceUrl: "https://resend.com/",
+    fieldsHelp: [
+      "API Key -> ضعها في API Key",
+      "From Email -> ضعها في From Email",
+      "Sender Name -> ضعها في Sender Name",
+    ],
+    notes: ["يمكن التبديل بين Resend/SendGrid/Mailgun حسب البنية الخلفية"],
+  },
+  sentry: {
+    sourceLabel: "Sentry Project Settings",
+    sourceUrl: "https://sentry.io/settings/",
+    fieldsHelp: ["DSN -> ضعها في Access Token (DSN)", "Environment -> يوضع في متغيرات الخادم"],
+    notes: ["يفضل تفعيل release tracking"],
+  },
+  redis: {
+    sourceLabel: "Upstash / Redis Cloud",
+    sourceUrl: "https://console.upstash.com/",
+    fieldsHelp: ["Redis URL -> ضعها في Access Token (أو REDIS_URL في env)"],
+    notes: ["مطلوبة للـqueue + distributed rate limit"],
+  },
+  zoom: {
+    sourceLabel: "Zoom Marketplace",
+    sourceUrl: "https://marketplace.zoom.us/",
+    fieldsHelp: [
+      "Client ID -> خانة Client ID",
+      "Client Secret -> خانة Client Secret",
+      "Redirect URL -> خانة Callback URL",
+    ],
+    notes: ["نوع التطبيق: OAuth"],
+    callbackPath: "/api/auth/zoom/callback",
+  },
+  googleMeet: {
+    sourceLabel: "Google Cloud (Calendar/Meet scopes)",
+    sourceUrl: "https://console.cloud.google.com/apis/credentials",
+    fieldsHelp: ["Client ID", "Client Secret", "Callback URL"],
+    notes: ["فعّل Google Calendar API وصلاحيات إنشاء الاجتماعات"],
+    callbackPath: "/api/auth/google-meet/callback",
+  },
+  teams: {
+    sourceLabel: "Microsoft Entra Admin Center",
+    sourceUrl: "https://entra.microsoft.com/",
+    fieldsHelp: ["Application (client) ID", "Client Secret", "Redirect URI (Callback URL)"],
+    notes: ["فعّل صلاحيات Teams/Graph المناسبة"],
+    callbackPath: "/api/auth/teams/callback",
+  },
+  youtubeLive: {
+    sourceLabel: "Google Cloud (YouTube Data API)",
+    sourceUrl: "https://console.cloud.google.com/apis/library/youtube.googleapis.com",
+    fieldsHelp: ["API Key أو OAuth حسب التدفق", "Callback URL عند استخدام OAuth"],
+    notes: ["فعّل YouTube Data API v3"],
+    callbackPath: "/api/auth/youtube/callback",
+  },
+};
+
 export const PlatformIntegrationsManager: React.FC = () => {
   const [settings, setSettings] = useState<IntegrationSettings>(emptySettings);
   const [loading, setLoading] = useState(true);
@@ -228,6 +341,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
     score: number;
     checks: Array<{ id: string; title: string; status: "pass" | "warning" | "fail"; detail: string }>;
   }>(null);
+  const [openGuideFor, setOpenGuideFor] = useState<keyof IntegrationSettings["providers"] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -375,6 +489,27 @@ export const PlatformIntegrationsManager: React.FC = () => {
     }
   };
 
+  const recommendedPublicBase = useMemo(() => {
+    const bySeo = String(settings.seo.canonicalBaseUrl || "").trim();
+    if (bySeo) return bySeo.replace(/\/+$/, "");
+    if (typeof window !== "undefined" && window.location?.origin) return window.location.origin.replace(/\/+$/, "");
+    return "https://your-domain.com";
+  }, [settings.seo.canonicalBaseUrl]);
+
+  const suggestedUrl = (path?: string) => (path ? `${recommendedPublicBase}${path}` : "");
+
+  const copyText = async (value: string) => {
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      setStatusType("success");
+      setStatusMessage("تم نسخ الرابط.");
+    } catch {
+      setStatusType("error");
+      setStatusMessage("تعذر النسخ، انسخه يدويًا.");
+    }
+  };
+
   useEffect(() => {
     void loadReadiness();
   }, []);
@@ -484,12 +619,29 @@ export const PlatformIntegrationsManager: React.FC = () => {
 
       <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <h3 className="text-lg font-black text-gray-900">مزودو التكاملات</h3>
+        <div className="mt-3 rounded-xl border border-indigo-100 bg-indigo-50 p-3 text-xs text-indigo-800">
+          <div className="font-black">الدومين الحالي المقترح للروابط:</div>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <code className="truncate">{recommendedPublicBase}</code>
+            <button onClick={() => void copyText(recommendedPublicBase)} className="inline-flex items-center gap-1 rounded border border-indigo-200 bg-white px-2 py-1">
+              <Copy size={12} />
+              نسخ
+            </button>
+          </div>
+          <div className="mt-2">عند نقل المنصة لاستضافة جديدة، غيّر Canonical Base URL في SEO ثم استخدم نفس الأزرار لنسخ الروابط الجديدة تلقائيًا.</div>
+        </div>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           {providerLabels.map((provider) => (
             <div key={provider.key} className="rounded-xl border border-gray-100 p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h4 className="font-black text-gray-900">{provider.label}</h4>
-                <input type="checkbox" checked={settings.providers[provider.key].enabled} onChange={(e) => updateProvider(provider.key, { enabled: e.target.checked })} />
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setOpenGuideFor(provider.key)} className="inline-flex items-center gap-1 rounded border border-gray-200 bg-white px-2 py-1 text-xs">
+                    <ExternalLink size={12} />
+                    فتح دليل الإعداد
+                  </button>
+                  <input type="checkbox" checked={settings.providers[provider.key].enabled} onChange={(e) => updateProvider(provider.key, { enabled: e.target.checked })} />
+                </div>
               </div>
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].mode || ""} onChange={(e) => updateProvider(provider.key, { mode: e.target.value })} placeholder="mode" />
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].appId || ""} onChange={(e) => updateProvider(provider.key, { appId: e.target.value })} placeholder="App ID / Project ID" />
@@ -500,10 +652,75 @@ export const PlatformIntegrationsManager: React.FC = () => {
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].callbackUrl || ""} onChange={(e) => updateProvider(provider.key, { callbackUrl: e.target.value })} placeholder="Callback URL" />
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].webhookUrl || ""} onChange={(e) => updateProvider(provider.key, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
               <textarea className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" rows={2} value={settings.providers[provider.key].note || ""} onChange={(e) => updateProvider(provider.key, { note: e.target.value })} placeholder="ملاحظات تشغيلية" />
+              {(providerGuides[provider.key].callbackPath || providerGuides[provider.key].webhookPath) ? (
+                <div className="mt-2 space-y-1 text-xs">
+                  {providerGuides[provider.key].callbackPath ? (
+                    <div className="flex items-center justify-between gap-2 rounded border border-gray-100 px-2 py-1">
+                      <span className="text-gray-500">Callback URL:</span>
+                      <button onClick={() => void copyText(suggestedUrl(providerGuides[provider.key].callbackPath))} className="inline-flex items-center gap-1 rounded border border-gray-200 bg-white px-2 py-0.5">
+                        <Copy size={11} />
+                        نسخ
+                      </button>
+                    </div>
+                  ) : null}
+                  {providerGuides[provider.key].webhookPath ? (
+                    <div className="flex items-center justify-between gap-2 rounded border border-gray-100 px-2 py-1">
+                      <span className="text-gray-500">Webhook URL:</span>
+                      <button onClick={() => void copyText(suggestedUrl(providerGuides[provider.key].webhookPath))} className="inline-flex items-center gap-1 rounded border border-gray-200 bg-white px-2 py-0.5">
+                        <Copy size={11} />
+                        نسخ
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
       </div>
+
+      {openGuideFor ? (
+        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-lg font-black text-gray-900">ملف شرح الإعداد - {providerLabels.find((p) => p.key === openGuideFor)?.label}</h3>
+            <button onClick={() => setOpenGuideFor(null)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs">إغلاق</button>
+          </div>
+          <a href={providerGuides[openGuideFor].sourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm font-bold text-blue-700 underline">
+            {providerGuides[openGuideFor].sourceLabel}
+            <ExternalLink size={14} />
+          </a>
+          <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+            <div className="rounded-xl border border-amber-200 bg-white p-3">
+              <div className="font-black text-sm">القيم التي تضعها هنا</div>
+              <ul className="mt-2 list-disc space-y-1 pr-4 text-xs text-gray-700">
+                {providerGuides[openGuideFor].fieldsHelp.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-xl border border-amber-200 bg-white p-3">
+              <div className="font-black text-sm">ملاحظات مهمة</div>
+              <ul className="mt-2 list-disc space-y-1 pr-4 text-xs text-gray-700">
+                {providerGuides[openGuideFor].notes.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+              {providerGuides[openGuideFor].callbackPath ? (
+                <div className="mt-2 rounded border border-gray-100 px-2 py-1 text-xs">
+                  <div>Authorized Redirect URI:</div>
+                  <code className="break-all">{suggestedUrl(providerGuides[openGuideFor].callbackPath)}</code>
+                </div>
+              ) : null}
+              {providerGuides[openGuideFor].webhookPath ? (
+                <div className="mt-2 rounded border border-gray-100 px-2 py-1 text-xs">
+                  <div>Webhook URL:</div>
+                  <code className="break-all">{suggestedUrl(providerGuides[openGuideFor].webhookPath)}</code>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <h3 className="text-lg font-black text-gray-900">زر التواصل العائم</h3>
