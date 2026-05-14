@@ -641,6 +641,93 @@ export const SchoolsManager: React.FC = () => {
 
         return schools.filter((school) => school.name.toLowerCase().includes(keyword));
     }, [schoolSearch, schools]);
+    const schoolPortfolioRows = useMemo(() => schools.map((school) => {
+        const schoolClasses = classes.filter((group) => group.parentId === school.id);
+        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
+        const schoolStudents = students.filter((student) =>
+            student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
+        );
+        const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
+        const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
+        const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
+        const readinessChecks = [
+            { key: 'classes', label: 'الفصول', isReady: schoolClasses.length > 0, tab: 'overview' as const, hint: 'أضف فصول المدرسة' },
+            { key: 'supervisors', label: 'المشرفون', isReady: school.supervisorIds.length > 0, tab: 'relations' as const, hint: 'اربط مدير المدرسة أو المشرفين' },
+            { key: 'packages', label: 'الباقات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية' },
+            { key: 'codes', label: 'الأكواد', isReady: schoolCodes.length > 0, tab: 'packages' as const, hint: 'ولّد كود دخول صالح' },
+        ];
+        const readinessScore = readinessChecks.filter((check) => check.isReady).length;
+        const nextAction = readinessChecks.find((check) => !check.isReady);
+        const status = readinessScore === readinessChecks.length
+            ? 'جاهزة للبيع/التسليم'
+            : readinessScore >= 2
+                ? 'قريبة من التسليم'
+                : 'تحتاج تجهيز';
+
+        return {
+            school,
+            classCount: schoolClasses.length,
+            studentCount: schoolStudents.length,
+            supervisorCount: school.supervisorIds.length,
+            activePackageCount,
+            activeCodeCount: schoolCodes.length,
+            readinessScore,
+            status,
+            nextAction,
+        };
+    }), [accessCodes, b2bPackages, classes, schools, students]);
+    const schoolPortfolioSummary = useMemo(() => {
+        const ready = schoolPortfolioRows.filter((row) => row.readinessScore === 4).length;
+        const nearReady = schoolPortfolioRows.filter((row) => row.readinessScore >= 2 && row.readinessScore < 4).length;
+        const needsSetup = schoolPortfolioRows.filter((row) => row.readinessScore < 2).length;
+        const nextPriority = [...schoolPortfolioRows].sort((a, b) => a.readinessScore - b.readinessScore || b.studentCount - a.studentCount)[0];
+
+        return {
+            ready,
+            nearReady,
+            needsSetup,
+            totalStudents: schoolPortfolioRows.reduce((sum, row) => sum + row.studentCount, 0),
+            totalActivePackages: schoolPortfolioRows.reduce((sum, row) => sum + row.activePackageCount, 0),
+            nextPriority,
+        };
+    }, [schoolPortfolioRows]);
+
+    const exportSchoolPortfolioReadiness = () => {
+        createWorkbookDownload('schools-portfolio-readiness.xlsx', [
+            {
+                name: 'portfolio-summary',
+                rows: [
+                    ['البند', 'القيمة'],
+                    ['عدد المدارس', schoolPortfolioRows.length],
+                    ['جاهزة للبيع/التسليم', schoolPortfolioSummary.ready],
+                    ['قريبة من التسليم', schoolPortfolioSummary.nearReady],
+                    ['تحتاج تجهيز', schoolPortfolioSummary.needsSetup],
+                    ['إجمالي الطلاب', schoolPortfolioSummary.totalStudents],
+                    ['الباقات النشطة', schoolPortfolioSummary.totalActivePackages],
+                    ['أولوية المتابعة', schoolPortfolioSummary.nextPriority?.school.name || 'لا توجد'],
+                ],
+            },
+            {
+                name: 'schools-readiness',
+                rows: [
+                    ['المدرسة', 'الحالة', 'درجة الجاهزية', 'الفصول', 'الطلاب', 'المشرفون', 'الباقات النشطة', 'الأكواد الصالحة', 'الخطوة التالية'],
+                    ...schoolPortfolioRows.map((row) => [
+                        row.school.name,
+                        row.status,
+                        `${row.readinessScore}/4`,
+                        row.classCount,
+                        row.studentCount,
+                        row.supervisorCount,
+                        row.activePackageCount,
+                        row.activeCodeCount,
+                        row.nextAction?.hint || 'مراجعة تقرير التسليم',
+                    ]),
+                ],
+            },
+        ]);
+        setManagementNotice('تم تجهيز ملف جاهزية محفظة المدارس للتنزيل.');
+        setManagementError(null);
+    };
 
     const refreshUsers = async () => {
         if (user.role !== Role.ADMIN) {
@@ -3592,13 +3679,72 @@ export const SchoolsManager: React.FC = () => {
                     <h1 className="text-2xl font-bold text-gray-900">المدارس والجهات (B2B)</h1>
                     <p className="text-sm text-gray-500 mt-1">إدارة التعاقدات، الباقات، الفصول، والمشرفين للمدارس والسناتر.</p>
                 </div>
-                <button
-                    onClick={handleCreateSchool}
-                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors"
-                >
-                    <Plus size={20} /> إضافة مدرسة جديدة
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={exportSchoolPortfolioReadiness}
+                        className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+                    >
+                        <Download size={18} /> تصدير جاهزية المدارس
+                    </button>
+                    <button
+                        onClick={handleCreateSchool}
+                        className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors"
+                    >
+                        <Plus size={20} /> إضافة مدرسة جديدة
+                    </button>
+                </div>
             </div>
+
+            <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
+                            <ShieldCheck size={14} />
+                            مركز جاهزية التعاقدات المدرسية
+                        </div>
+                        <h2 className="mt-3 text-lg font-black text-gray-900">أين نبدأ اليوم؟</h2>
+                        <p className="mt-1 text-sm text-gray-500">ملخص سريع لمحفظة المدارس قبل الدخول في التفاصيل؛ مفيد للمبيعات والتسليم والمتابعة.</p>
+                    </div>
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-right">
+                        <div className="text-xs font-black text-amber-700">أولوية المتابعة</div>
+                        <div className="mt-1 text-sm font-black text-gray-900">
+                            {schoolPortfolioSummary.nextPriority?.school.name || 'لا توجد مدارس بعد'}
+                        </div>
+                        <p className="mt-1 text-xs font-bold text-gray-600">
+                            {schoolPortfolioSummary.nextPriority?.nextAction?.hint || 'أضف مدرسة جديدة أو راجع المدارس الجاهزة.'}
+                        </p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-6">
+                    {[
+                        { label: 'مدارس', value: schoolPortfolioRows.length, tone: 'slate' },
+                        { label: 'جاهزة', value: schoolPortfolioSummary.ready, tone: 'emerald' },
+                        { label: 'قريبة', value: schoolPortfolioSummary.nearReady, tone: 'amber' },
+                        { label: 'تحتاج تجهيز', value: schoolPortfolioSummary.needsSetup, tone: 'rose' },
+                        { label: 'طلاب', value: schoolPortfolioSummary.totalStudents, tone: 'blue' },
+                        { label: 'باقات نشطة', value: schoolPortfolioSummary.totalActivePackages, tone: 'indigo' },
+                    ].map((item) => (
+                        <div key={item.label} className={`rounded-2xl border p-4 text-center ${
+                            item.tone === 'emerald' ? 'border-emerald-100 bg-emerald-50' :
+                            item.tone === 'amber' ? 'border-amber-100 bg-amber-50' :
+                            item.tone === 'rose' ? 'border-rose-100 bg-rose-50' :
+                            item.tone === 'blue' ? 'border-blue-100 bg-blue-50' :
+                            item.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50' :
+                            'border-gray-100 bg-gray-50'
+                        }`}>
+                            <div className="text-xs font-black text-gray-500">{item.label}</div>
+                            <div className="mt-1 text-2xl font-black text-gray-900">{item.value}</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {managementNotice && (
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
+                    {managementNotice}
+                </div>
+            )}
 
             <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
                 <Search size={18} className="text-gray-400" />
