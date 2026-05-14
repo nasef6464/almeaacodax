@@ -204,6 +204,39 @@ export const SchoolPortalManager: React.FC = () => {
     const watchList = studentSummaries
         .filter((summary) => summary.results.length === 0 || summary.average < 60 || summary.weakSkills.length > 0)
         .sort((a, b) => a.average - b.average);
+    const interventionPlan = [
+        {
+            id: 'not-started',
+            title: 'لم يبدأوا القياس',
+            tone: 'amber',
+            students: studentSummaries.filter((summary) => summary.results.length === 0),
+            action: 'ابدأ باختبار قياس قصير موجه للمجموعة، ثم أرسل تنبيه دخول للطالب وولي الأمر.',
+        },
+        {
+            id: 'low-average',
+            title: 'متوسط منخفض',
+            tone: 'rose',
+            students: studentSummaries.filter((summary) => summary.results.length > 0 && summary.average < 60),
+            action: 'وجّه تدريبًا علاجيًا قصيرًا ثم اختبار متابعة بعد 48 ساعة.',
+        },
+        {
+            id: 'weak-skills',
+            title: 'ضعف مهاري واضح',
+            tone: 'indigo',
+            students: studentSummaries.filter((summary) => summary.weakSkills.length > 0 && summary.average >= 60),
+            action: 'اجمع الطلاب حسب المهارة الضعيفة وأرسل اختبارًا موجها على نفس المهارة.',
+        },
+        {
+            id: 'stable',
+            title: 'مستقرون',
+            tone: 'emerald',
+            students: studentSummaries.filter((summary) => summary.results.length > 0 && summary.average >= 75 && summary.weakSkills.length === 0),
+            action: 'اكتف بتقرير أسبوعي وتحفيز، ولا تزحمهم برسائل علاجية.',
+        },
+    ];
+    const priorityIntervention = interventionPlan
+        .filter((item) => item.id !== 'stable')
+        .sort((a, b) => b.students.length - a.students.length)[0];
     const classActionPlan = scope.classes.map((classroom) => {
         const classroomStudents = studentSummaries.filter((summary) =>
             classroom.studentIds.includes(summary.student.id) || (summary.student.groupIds || []).includes(classroom.id),
@@ -262,6 +295,13 @@ export const SchoolPortalManager: React.FC = () => {
         '',
         'أولوية الفصول:',
         ...classActionPlan.slice(0, 5).map((item, index) => `${index + 1}. ${item.classroom.name}: ${item.nextAction}`),
+        ].join('\n');
+    const interventionBrief = [
+        `خطة تدخل أسبوعية - ${schoolTitle}`,
+        `الأولوية الحالية: ${priorityIntervention?.title || 'لا توجد أولوية حرجة'}`,
+        `الإجراء المقترح: ${priorityIntervention?.action || 'اكتف بتقرير متابعة أسبوعي.'}`,
+        '',
+        ...interventionPlan.map((item) => `${item.title}: ${item.students.length} طالب`),
     ].join('\n');
     const supervisorWeeklyPlan = [
         ['اليوم', 'راجع قائمة الطلاب الذين لم يبدأوا القياس أو متوسطهم أقل من 60%.'],
@@ -310,10 +350,10 @@ export const SchoolPortalManager: React.FC = () => {
 
     const copySupervisorBrief = async () => {
         try {
-            await navigator.clipboard.writeText(supervisorBrief);
+            await navigator.clipboard.writeText(`${supervisorBrief}\n\n${interventionBrief}`);
         } catch {
             const textarea = document.createElement('textarea');
-            textarea.value = supervisorBrief;
+            textarea.value = `${supervisorBrief}\n\n${interventionBrief}`;
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
@@ -377,6 +417,37 @@ export const SchoolPortalManager: React.FC = () => {
         setActionFeedback('تم تجهيز خطة متابعة الفصول للتنزيل.');
     };
 
+    const exportInterventionPlan = () => {
+        createWorkbookDownload('school-weekly-intervention-plan.xlsx', [
+            {
+                name: 'intervention-summary',
+                rows: [
+                    ['البند', 'القيمة'],
+                    ['النطاق', schoolTitle],
+                    ['الأولوية الحالية', priorityIntervention?.title || 'لا توجد أولوية حرجة'],
+                    ['الإجراء المقترح', priorityIntervention?.action || 'تقرير أسبوعي وتحفيز'],
+                    ...interventionPlan.map((item) => [item.title, item.students.length]),
+                ],
+            },
+            ...interventionPlan.map((item) => ({
+                name: item.id,
+                rows: [
+                    ['الطالب', 'البريد', 'الفصل', 'المحاولات', 'المتوسط', 'أضعف المهارات', 'الإجراء المقترح'],
+                    ...item.students.map((summary) => [
+                        summary.student.name,
+                        summary.student.email || '',
+                        summary.classNames,
+                        summary.results.length,
+                        summary.results.length ? `${summary.average}%` : 'بدون قياس',
+                        summary.weakSkills.map((skill) => `${skill.skill} (${skill.mastery}%)`).join(' | ') || '-',
+                        item.action,
+                    ]),
+                ],
+            })),
+        ]);
+        setActionFeedback('تم تجهيز خطة التدخل الأسبوعية للتنزيل.');
+    };
+
     const exportPortalReport = () => {
         createWorkbookDownload('school-portal-supervisor-report.xlsx', [
             {
@@ -436,6 +507,13 @@ export const SchoolPortalManager: React.FC = () => {
                 ],
             },
             {
+                name: 'intervention-summary',
+                rows: [
+                    ['الفئة', 'عدد الطلاب', 'الإجراء المقترح'],
+                    ...interventionPlan.map((item) => [item.title, item.students.length, item.action]),
+                ],
+            },
+            {
                 name: 'weekly-plan',
                 rows: [
                     ['المرحلة', 'الإجراء'],
@@ -447,6 +525,9 @@ export const SchoolPortalManager: React.FC = () => {
                 rows: [
                     ['ملخص تنفيذي جاهز'],
                     ...supervisorBrief.split('\n').map((line) => [line]),
+                    [''],
+                    ['خطة التدخل الأسبوعية'],
+                    ...interventionBrief.split('\n').map((line) => [line]),
                 ],
             },
             {
@@ -667,6 +748,65 @@ export const SchoolPortalManager: React.FC = () => {
                         </div>
                         <p className="mt-1 text-xs text-gray-500">يمكن تغيير النطاق من مركز الاختبارات.</p>
                     </div>
+                </div>
+            </div>
+
+            <div className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h2 className="text-lg font-black text-gray-900">خطة التدخل الأسبوعية</h2>
+                        <p className="mt-1 text-sm text-gray-500">تقسيم عملي للطلاب حسب الحاجة حتى يعرف المشرف من يبدأ به وماذا يرسل.</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={exportInterventionPlan}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+                    >
+                        <Download size={15} />
+                        تصدير خطة التدخل
+                    </button>
+                </div>
+                <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
+                    <div className="text-xs font-black text-amber-700">الأولوية الآن</div>
+                    <div className="mt-1 text-base font-black text-gray-900">{priorityIntervention?.title || 'لا توجد أولوية حرجة'}</div>
+                    <p className="mt-1 text-sm leading-6 text-gray-600">{priorityIntervention?.action || 'استمر في المتابعة الأسبوعية والتحفيز.'}</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    {interventionPlan.map((item) => (
+                        <div key={item.id} className={`rounded-2xl border p-4 ${
+                            item.tone === 'rose' ? 'border-rose-100 bg-rose-50/70' :
+                            item.tone === 'amber' ? 'border-amber-100 bg-amber-50/70' :
+                            item.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50/70' :
+                            'border-emerald-100 bg-emerald-50/70'
+                        }`}>
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="text-sm font-black text-gray-900">{item.title}</div>
+                                <div className={`rounded-full px-3 py-1 text-xs font-black ${
+                                    item.tone === 'rose' ? 'bg-white text-rose-700' :
+                                    item.tone === 'amber' ? 'bg-white text-amber-700' :
+                                    item.tone === 'indigo' ? 'bg-white text-indigo-700' :
+                                    'bg-white text-emerald-700'
+                                }`}>
+                                    {item.students.length} طالب
+                                </div>
+                            </div>
+                            <p className="mt-3 text-xs font-bold leading-6 text-gray-600">{item.action}</p>
+                            {item.students.length > 0 && (
+                                <div className="mt-3 flex flex-wrap gap-1">
+                                    {item.students.slice(0, 3).map((summary) => (
+                                        <span key={summary.student.id} className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-600">
+                                            {summary.student.name}
+                                        </span>
+                                    ))}
+                                    {item.students.length > 3 && (
+                                        <span className="rounded-full bg-white px-2 py-1 text-[11px] font-bold text-gray-400">
+                                            +{item.students.length - 3}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             </div>
 

@@ -60,6 +60,17 @@ const checks = [
       schoolPortal.includes("تصدير خطة الفصول"),
   },
   {
+    name: "school portal includes weekly intervention planning",
+    ok:
+      schoolPortal.includes("interventionPlan") &&
+      schoolPortal.includes("priorityIntervention") &&
+      schoolPortal.includes("exportInterventionPlan") &&
+      schoolPortal.includes("school-weekly-intervention-plan.xlsx") &&
+      schoolPortal.includes("خطة التدخل الأسبوعية") &&
+      schoolPortal.includes("تصدير خطة التدخل") &&
+      schoolPortal.includes("intervention-summary"),
+  },
+  {
     name: "announcement ads have a live preview path",
     ok:
       read("components/AnnouncementAdsOverlay.tsx").includes("ANNOUNCEMENT_AD_PREVIEW_EVENT") &&
