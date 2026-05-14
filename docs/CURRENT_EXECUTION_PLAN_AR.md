@@ -144,3 +144,25 @@
 - 2026-05-12: Closed direct-unlock cleanup batch. Removed stale frontend api.completePurchase, stopped enrollCourse from writing fake purchasedCourses, changed operational API seed purchases to payment request + admin review, changed seed quiz results to /api/quizzes/:id/submit, and added npm run smoke:direct-unlock-cleanup.
 - 2026-05-12: Closed quiz client security cleanup. Removed the frontend direct quiz-result POST helper, stopped store saveExamResult from syncing direct results, stripped client-calculated isCorrect before question-attempt API sync, and added npm run smoke:quiz-client-security.
 - 2026-05-12: Closed question HTML security cleanup. Strengthened normalizeQuestionHtml against script/style/object/embed/link/meta/base tags, inline event/srcdoc attributes, unsafe javascript/data/vbscript URLs, and unsafe style expressions. Admin question previews now use the shared sanitizer, guarded by npm run smoke:question-html-security.
+
+- 2026-05-14: تم إغلاق دفعة مشتركة (1+2) خاصة بفصل الباقات/الدورات والدفع:
+  - قفل نافذة الدفع بحيث سياق الدورة لا يتحول إلى اختيار باقات.
+  - تثبيت readiness الدفع (مصر/السعودية) عبر إعدادات المزود/الدولة/نمط البوابة.
+  - تثبيت حارس التحقق الخلفي لنوع العنصر قبل إنشاء طلب الدفع.
+  - الفحوص: `smoke:package-course-split` + `smoke:payment-package` + `smoke:payment-providers` + `typecheck` + `build` + `server build`.
+
+## الدفعات التالية بدقة (بعد إغلاق 1+2)
+
+1. دفعة الأداء الإنتاجي (Render/Vercel startup + route/data split):
+   - قياس أول تحميل فعليًا على الإنتاج.
+   - تخفيف الاستدعاءات غير الحرجة عند أول فتح.
+   - تسريع فتح لوحات الإدارة/الطالب بدون شاشة بيضاء.
+2. دفعة تقارير الإشراف المدرسي:
+   - تقارير مجمعة/مفردة للمدرسة والفصل والطالب.
+   - تصدير CSV/PDF وتشغيل زر الإرسال والتنبيهات من نفس المركز.
+3. دفعة دورة الدفع الحي (بوابة فعلية):
+   - ربط مزود فعلي (Tap/Paymob/HyperPay/MyFatoorah حسب الدولة).
+   - تفعيل webhook حقيقي وتحقق توقيع end-to-end.
+4. دفعة QA إنتاجية نهائية:
+   - فحص أدوار كامل (مدير/مشرف/طالب/ولي أمر).
+   - smoke + visual production checklist قبل التسليم النهائي.

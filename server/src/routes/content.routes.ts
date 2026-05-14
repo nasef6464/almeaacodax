@@ -15,6 +15,7 @@ import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
+import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
@@ -749,6 +750,183 @@ const defaultPlatformFontSettings = {
   buttonColor: "",
   bodyCustomFont: {},
   headingCustomFont: {},
+};
+
+const providerSettingsSchema = z.object({
+  enabled: z.boolean().default(false),
+  mode: z.string().default("oauth"),
+  appId: z.string().optional().default(""),
+  appSecret: z.string().optional().default(""),
+  clientId: z.string().optional().default(""),
+  clientSecret: z.string().optional().default(""),
+  apiKey: z.string().optional().default(""),
+  accessToken: z.string().optional().default(""),
+  callbackUrl: z.string().optional().default(""),
+  fromEmail: z.string().optional().default(""),
+  senderName: z.string().optional().default(""),
+  botUsername: z.string().optional().default(""),
+  botToken: z.string().optional().default(""),
+  chatId: z.string().optional().default(""),
+  phoneNumber: z.string().optional().default(""),
+  phoneNumberId: z.string().optional().default(""),
+  businessAccountId: z.string().optional().default(""),
+  verifyToken: z.string().optional().default(""),
+  webhookUrl: z.string().optional().default(""),
+  note: z.string().optional().default(""),
+});
+
+const externalPlatformSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  enabled: z.boolean().default(false),
+  platformType: z.enum(["lms", "marketplace", "crm", "custom"]).default("custom"),
+  baseUrl: z.string().optional().default(""),
+  apiKey: z.string().optional().default(""),
+  apiSecret: z.string().optional().default(""),
+  webhookUrl: z.string().optional().default(""),
+  webhookSecret: z.string().optional().default(""),
+  syncStudents: z.boolean().default(false),
+  syncCourses: z.boolean().default(false),
+  syncOrders: z.boolean().default(false),
+  syncScheduleCron: z.string().optional().default(""),
+  note: z.string().optional().default(""),
+});
+
+const seoSettingsSchema = z.object({
+  enabled: z.boolean().default(true),
+  siteName: z.string().optional().default("منصة المئة"),
+  defaultTitle: z.string().optional().default("منصة المئة | قدرات وتحصيلي"),
+  defaultDescription: z.string().optional().default("منصة تعليمية ذكية للتدريب على القدرات والتحصيلي."),
+  defaultKeywords: z.array(z.string()).default([]),
+  canonicalBaseUrl: z.string().optional().default(""),
+  defaultOgImage: z.string().optional().default(""),
+  twitterHandle: z.string().optional().default(""),
+  googleSiteVerification: z.string().optional().default(""),
+  googleAnalyticsId: z.string().optional().default(""),
+  googleTagManagerId: z.string().optional().default(""),
+  robotsIndexingEnabled: z.boolean().default(true),
+  noIndexPaths: z.array(z.string()).default(["/#/admin-dashboard", "/#/dashboard", "/#/login"]),
+  organizationName: z.string().optional().default("منصة المئة"),
+  organizationLogoUrl: z.string().optional().default(""),
+  organizationUrl: z.string().optional().default(""),
+});
+
+const platformIntegrationSettingsSchema = z.object({
+  auth: z.object({
+    allowSelfRegistration: z.boolean().default(true),
+    allowEmailPassword: z.boolean().default(true),
+    requireEmailVerification: z.boolean().default(false),
+    requireAdminApproval: z.boolean().default(false),
+    defaultRole: z.enum(["student", "parent"]).default("student"),
+    registrationTitle: z.string().optional().default(""),
+    registrationSubtitle: z.string().optional().default(""),
+    termsLink: z.string().optional().default(""),
+    privacyLink: z.string().optional().default(""),
+    maxAccountsPerDevice: z.number().int().min(1).max(20).default(3),
+    allowedEmailDomains: z.array(z.string()).default([]),
+  }),
+  providers: z.object({
+    google: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
+    facebook: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
+    whatsapp: providerSettingsSchema.default({ enabled: false, mode: "otp" }),
+    telegram: providerSettingsSchema.default({ enabled: false, mode: "bot" }),
+    email: providerSettingsSchema.default({ enabled: false, mode: "smtp" }),
+    sentry: providerSettingsSchema.default({ enabled: false, mode: "dsn" }),
+    redis: providerSettingsSchema.default({ enabled: false, mode: "managed" }),
+    zoom: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
+    googleMeet: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
+    teams: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
+    youtubeLive: providerSettingsSchema.default({ enabled: false, mode: "api" }),
+  }),
+  seo: seoSettingsSchema.default({}),
+  externalPlatforms: z.array(externalPlatformSchema).default([]),
+  registrationFields: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        key: z.string().min(1),
+        label: z.string().min(1),
+        type: z.enum(["text", "email", "phone", "select", "textarea"]).default("text"),
+        required: z.boolean().default(false),
+        enabled: z.boolean().default(true),
+        options: z.array(z.string()).default([]),
+        placeholder: z.string().optional().default(""),
+        helpText: z.string().optional().default(""),
+        order: z.number().int().min(0).default(0),
+      }),
+    )
+    .default([]),
+});
+
+const defaultPlatformIntegrationSettings = {
+  key: "default",
+  auth: {
+    allowSelfRegistration: true,
+    allowEmailPassword: true,
+    requireEmailVerification: false,
+    requireAdminApproval: false,
+    defaultRole: "student",
+    registrationTitle: "ابدأ رحلتك التعليمية الآن",
+    registrationSubtitle: "سجل حسابك واختر المسار المناسب لك.",
+    termsLink: "",
+    privacyLink: "",
+    maxAccountsPerDevice: 3,
+    allowedEmailDomains: [],
+  },
+  providers: {
+    google: { enabled: false, mode: "oauth", clientId: "", callbackUrl: "", note: "" },
+    facebook: { enabled: false, mode: "oauth", clientId: "", callbackUrl: "", note: "" },
+    whatsapp: { enabled: false, mode: "otp", phoneNumberId: "", webhookUrl: "", note: "" },
+    telegram: { enabled: false, mode: "bot", botUsername: "", webhookUrl: "", note: "" },
+    email: { enabled: false, mode: "smtp", fromEmail: "", senderName: "", apiKey: "", webhookUrl: "", note: "" },
+    sentry: { enabled: false, mode: "dsn", accessToken: "", note: "" },
+    redis: { enabled: false, mode: "managed", callbackUrl: "", accessToken: "", note: "" },
+    zoom: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
+    googleMeet: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
+    teams: { enabled: false, mode: "oauth", clientId: "", clientSecret: "", callbackUrl: "", note: "" },
+    youtubeLive: { enabled: false, mode: "api", apiKey: "", callbackUrl: "", note: "" },
+  },
+  seo: {
+    enabled: true,
+    siteName: "منصة المئة",
+    defaultTitle: "منصة المئة | قدرات وتحصيلي",
+    defaultDescription: "منصة تعليمية ذكية للتدريب على القدرات والتحصيلي.",
+    defaultKeywords: ["منصة المئة", "قدرات", "تحصيلي", "اختبارات", "تدريب"],
+    canonicalBaseUrl: "",
+    defaultOgImage: "",
+    twitterHandle: "",
+    googleSiteVerification: "",
+    googleAnalyticsId: "",
+    googleTagManagerId: "",
+    robotsIndexingEnabled: true,
+    noIndexPaths: ["/#/admin-dashboard", "/#/dashboard", "/#/login"],
+    organizationName: "منصة المئة",
+    organizationLogoUrl: "",
+    organizationUrl: "",
+  },
+  externalPlatforms: [
+    {
+      id: "eduoma",
+      name: "Eduoma",
+      enabled: false,
+      platformType: "lms",
+      baseUrl: "",
+      apiKey: "",
+      apiSecret: "",
+      webhookUrl: "",
+      webhookSecret: "",
+      syncStudents: false,
+      syncCourses: false,
+      syncOrders: false,
+      syncScheduleCron: "",
+      note: "",
+    },
+  ],
+  registrationFields: [
+    { id: "full_name", key: "name", label: "الاسم الكامل", type: "text", required: true, enabled: true, options: [], placeholder: "", helpText: "", order: 0 },
+    { id: "email", key: "email", label: "البريد الإلكتروني", type: "email", required: true, enabled: true, options: [], placeholder: "", helpText: "", order: 1 },
+    { id: "phone", key: "phone", label: "رقم الجوال", type: "phone", required: false, enabled: true, options: [], placeholder: "", helpText: "", order: 2 },
+  ],
 };
 
 export const contentRouter = Router();
@@ -1549,6 +1727,42 @@ contentRouter.post(
       },
       credentials,
     });
+  }),
+);
+
+contentRouter.get(
+  "/platform-integrations",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    let settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" });
+    if (!settings) {
+      settings = await PlatformIntegrationSettingsModel.create(defaultPlatformIntegrationSettings);
+    }
+
+    return res.json(settings);
+  }),
+);
+
+contentRouter.patch(
+  "/platform-integrations",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = platformIntegrationSettingsSchema.parse(req.body);
+    const settings = await PlatformIntegrationSettingsModel.findOneAndUpdate(
+      { key: "default" },
+      {
+        $set: {
+          ...payload,
+          updatedBy: req.authUser?.id || "",
+        },
+        $setOnInsert: { key: "default" },
+      },
+      { new: true, upsert: true },
+    );
+
+    return res.json(settings);
   }),
 );
 

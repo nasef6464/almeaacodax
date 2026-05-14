@@ -21,6 +21,14 @@ function assertNotIncludes(file, needle) {
   }
 }
 
+function assertAnyIncludes(file, needles) {
+  const content = read(file);
+  const matched = needles.some((needle) => content.includes(needle));
+  if (!matched) {
+    throw new Error(`${file} must include one of: ${needles.join(' | ')}`);
+  }
+}
+
 const videoEntrypoints = [
   'components/VideoModal.tsx',
   'components/CoursePlayer.tsx',
@@ -121,8 +129,14 @@ assertIncludes('App.tsx', 'const CategoryRouteShellGate: React.FC<{ children: Re
 assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', 'shouldStartBootstrapForPath(path)');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
-assertIncludes('App.tsx', 'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });');
-assertIncludes('App.tsx', 'const taxonomyPromise = adapter.getTaxonomyBootstrap();');
+assertAnyIncludes('App.tsx', [
+  'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });',
+  'const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 120 }) : null;',
+]);
+assertAnyIncludes('App.tsx', [
+  'const taxonomyPromise = adapter.getTaxonomyBootstrap();',
+  'const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;',
+]);
 assertIncludes('App.tsx', 'taxonomyPromise');
 assertIncludes('App.tsx', 'hydrateTaxonomy({');
 assertIncludes('App.tsx', 'window.setTimeout(() => {');

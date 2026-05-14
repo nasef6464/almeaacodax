@@ -1536,10 +1536,21 @@ quizRouter.get(
   "/results",
   requireAuth,
   asyncHandler(async (req, res) => {
+    const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
     const filter = { userId: req.authUser!.id };
     const pagination = resolvePagination(req.query, { limit: 50 });
+    const projection = includeReview
+      ? null
+      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt";
+    const resultsQuery = QuizResultModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(pagination.skip)
+      .limit(pagination.limit);
+    if (projection) {
+      resultsQuery.select(projection);
+    }
     const [items, total] = await Promise.all([
-      QuizResultModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      resultsQuery.lean(),
       QuizResultModel.countDocuments(filter),
     ]);
     res.json({
@@ -1560,15 +1571,27 @@ quizRouter.get(
     }
 
     const pagination = resolvePagination(req.query, { limit: 50 });
+    const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
+    const projection = includeReview
+      ? null
+      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt pathId subjectId sectionId";
     const { students, totalStudents, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser, {
       limit: Math.max(pagination.limit, 200),
     });
     const studentIds = students.map((student) => idOf(student));
     const studentById = new Map(students.map((student) => [idOf(student), student]));
 
-    let results = studentIds.length
-      ? await QuizResultModel.find({ userId: { $in: studentIds } }).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean()
-      : [];
+    let results: any[] = [];
+    if (studentIds.length) {
+      const scopedResultsQuery = QuizResultModel.find({ userId: { $in: studentIds } })
+        .sort({ createdAt: -1 })
+        .skip(pagination.skip)
+        .limit(pagination.limit);
+      if (projection) {
+        scopedResultsQuery.select(projection);
+      }
+      results = await scopedResultsQuery.lean();
+    }
     const total = studentIds.length ? await QuizResultModel.countDocuments({ userId: { $in: studentIds } }) : 0;
     results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
 

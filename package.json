@@ -61,6 +61,7 @@
     "smoke:school-portal-command": "node scripts/smoke-school-portal-command-center-contract.mjs",
     "smoke:production-hardening": "node scripts/smoke-production-hardening-contract.mjs",
     "smoke:production-audit": "node scripts/smoke-production-audit-contract.mjs",
+    "smoke:batch12-golive": "node scripts/smoke-batch12-go-live.mjs",
     "smoke:api-phase4": "node scripts/smoke-api-phase4-contract.mjs",
     "smoke:frontend-phase5": "node scripts/smoke-frontend-phase5-contract.mjs",
     "smoke:security-rbac-phase6": "node scripts/smoke-security-rbac-phase6-contract.mjs",

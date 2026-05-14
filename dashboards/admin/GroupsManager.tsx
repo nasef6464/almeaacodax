@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { Group, GroupType, Role } from '../../types';
 import { Building2, Users, BookOpen, Plus, Search, MoreVertical, Edit2, Trash2, UserCheck, UserMinus, Shield, Download, FileSpreadsheet } from 'lucide-react';
@@ -56,6 +56,20 @@ export const GroupsManager: React.FC = () => {
     const totalLinkedSupervisors = groups.reduce((sum, group) => sum + group.supervisorIds.length, 0);
     const groupsWithoutSupervisor = groups.filter(group => group.supervisorIds.length === 0).length;
     const groupsWithoutContent = groups.filter(group => group.courseIds.length === 0).length;
+    const readinessIssues = useMemo(() => {
+        return groups
+            .map((group) => {
+                const issues: string[] = [];
+                if (group.supervisorIds.length === 0) issues.push('بدون مشرف');
+                if (group.courseIds.length === 0) issues.push('بدون محتوى');
+                if (group.type !== 'SCHOOL' && group.studentIds.length === 0) issues.push('بدون طلاب');
+                return {
+                    group,
+                    issues,
+                };
+            })
+            .filter((item) => item.issues.length > 0);
+    }, [groups]);
 
     const getTypeBadge = (type: GroupType) => {
         switch (type) {
@@ -181,6 +195,21 @@ export const GroupsManager: React.FC = () => {
             { name: 'students', rows: studentRows },
             { name: 'supervisors', rows: supervisorRows },
         ]);
+    };
+
+    const exportReadinessIssuesWorkbook = () => {
+        const rows: Array<Array<string | number>> = [
+            ['المجموعة', 'النوع', 'المشكلات', 'عدد الطلاب', 'عدد المشرفين', 'عدد الدورات'],
+            ...readinessIssues.map(({ group, issues }) => [
+                group.name,
+                group.type === 'SCHOOL' ? 'مدرسة' : group.type === 'CLASS' ? 'فصل' : 'مجموعة خاصة',
+                issues.join(' - '),
+                group.studentIds.length,
+                group.supervisorIds.length,
+                group.courseIds.length,
+            ]),
+        ];
+        createWorkbookDownload('groups-readiness-issues.xlsx', [{ name: 'readiness-issues', rows }]);
     };
 
     const exportSelectedGroupRoster = (
@@ -559,6 +588,13 @@ export const GroupsManager: React.FC = () => {
                         <Download size={18} />
                         <span>تصدير التشغيل</span>
                     </button>
+                    <button
+                        onClick={exportReadinessIssuesWorkbook}
+                        className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+                    >
+                        <FileSpreadsheet size={18} />
+                        <span>تصدير نواقص الجاهزية</span>
+                    </button>
                     <button 
                         onClick={handleCreateGroup}
                         className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
@@ -589,6 +625,11 @@ export const GroupsManager: React.FC = () => {
                     <p className="text-xs text-gray-500 mb-2">تنبيهات تشغيل</p>
                     <p className="text-2xl font-black text-amber-600">{groupsWithoutSupervisor + groupsWithoutContent}</p>
                     <p className="text-xs text-gray-400 mt-1">{groupsWithoutSupervisor} بلا مشرف، {groupsWithoutContent} بلا محتوى</p>
+                </div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                    <p className="text-xs text-gray-500 mb-2">نواقص الجاهزية</p>
+                    <p className="text-2xl font-black text-rose-700">{readinessIssues.length}</p>
+                    <p className="text-xs text-gray-400 mt-1">مجموعات تحتاج تدخل قبل التسليم</p>
                 </div>
             </div>
 
@@ -622,6 +663,9 @@ export const GroupsManager: React.FC = () => {
             {/* Groups Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredGroups.map(group => (
+                    (() => {
+                        const groupIssues = readinessIssues.find((item) => item.group.id === group.id)?.issues || [];
+                        return (
                     <div 
                         key={group.id} 
                         className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all cursor-pointer group"
@@ -631,6 +675,15 @@ export const GroupsManager: React.FC = () => {
                             <div>
                                 <h3 className="font-bold text-gray-900 text-lg group-hover:text-amber-600 transition-colors">{group.name}</h3>
                                 <div className="mt-2">{getTypeBadge(group.type)}</div>
+                                {groupIssues.length ? (
+                                    <div className="mt-2 rounded-full bg-rose-50 px-3 py-1 text-[11px] font-black text-rose-700 inline-flex">
+                                        {groupIssues.join(' - ')}
+                                    </div>
+                                ) : (
+                                    <div className="mt-2 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 inline-flex">
+                                        جاهز تشغيليًا
+                                    </div>
+                                )}
                             </div>
                             <button className="text-gray-400 hover:text-gray-900">
                                 <MoreVertical size={18} />
@@ -652,6 +705,8 @@ export const GroupsManager: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                        );
+                    })()
                 ))}
                 {filteredGroups.length === 0 && (
                     <div className="col-span-full text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
