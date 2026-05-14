@@ -47,6 +47,19 @@ A change is acceptable only if:
 - No secrets are leaked
 - The next engineer can continue without re-discovering the same facts
 
+## Strict Batch Completion Rule
+This rule is mandatory from 2026-05-14 onward.
+
+No development batch may be described as complete unless all of the following are true:
+- The touched feature is finished end-to-end, not partially improved.
+- The exact affected user roles were tested or the missing role session is documented clearly.
+- Relevant smoke/type/build checks passed.
+- Frontend changes were visually checked in the in-app browser.
+- Production was checked on `https://almeaacodax.vercel.app/` after pushing when the change affects deployed behavior.
+- The current handover/status files were updated with what changed, what remains, and any known limitation.
+
+If any item is missing, the batch must be marked as **open**, **partial**, or **not production-verified**. Do not tell the owner that a feature is closed while there are known gaps.
+
 ## Testing requirements
 - Run the relevant type checks or build checks when code is modified
 - Verify the user journey in the browser for frontend changes
@@ -95,4 +108,3 @@ The new agent is responsible for:
 ## Rule: verify before modifying
 The new agent must inspect the relevant code and confirm the behavior before making a change.  
 This is mandatory for routes, models, access rules, reporting logic, payments, and AI flows.
-

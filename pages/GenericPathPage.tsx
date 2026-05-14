@@ -571,7 +571,7 @@ export const GenericPathPage: React.FC = () => {
                             type="button"
                             onClick={() => {
                                 if (suggestedPackage) {
-                                    setSelectedPackageForPayment(buildPaymentPackage(suggestedPackage, suggestedContentTypes));
+                                    navigate(`/category/${path.id}?tab=packages&subject=${subjectId}&package=${suggestedPackage.id}`);
                                     return;
                                 }
                                 navigate(`/category/${path.id}?tab=packages`);
@@ -1174,7 +1174,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                             </p>
                         </Card>
                     )}
-                    {renderPackages()}
                     {renderMockExamPaymentModal()}
                 </div>
             </div>
@@ -1205,7 +1204,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                 لا توجد مواد حالياً في هذا المسار.
                             </div>
                         )}
-                        {renderPackages()}
                     </div>
                 </div>
             );
@@ -1261,7 +1259,6 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                         {renderMockExamEntryCard()}
                         {renderPackageEntryCard()}
                     </div>
-                    {renderPackages()}
                 </div>
             </div>
         );

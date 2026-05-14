@@ -57,6 +57,14 @@ check('course tab never renders the package marketplace inline', () => {
   notIncludes(learningSection, "{showPackagesInsideCourseTab && subjectPublicPackages.length > 0 && (");
   notIncludes(genericPathPage, "tab=courses&package");
   notIncludes(genericPathPage, "subject=${packageSubjectId}&tab=courses");
+  includes(genericPathPage, "navigate(`/category/${path.id}?tab=packages&subject=${subjectId}&package=${suggestedPackage.id}`)");
+  notIncludes(genericPathPage, "setSelectedPackageForPayment(buildPaymentPackage(suggestedPackage");
+});
+
+check('path-level package cards only render on packages route', () => {
+  const calls = [...genericPathPage.matchAll(/\{renderPackages\(\)\}/g)].length;
+  if (calls !== 1) throw new Error(`Expected renderPackages() to be mounted only once on tab=packages route, found ${calls}`);
+  includes(genericPathPage, "if (isPackagesTab)");
 });
 
 check('student course listings exclude package products', () => {
