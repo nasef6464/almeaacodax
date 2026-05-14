@@ -188,6 +188,30 @@ const resetStoreUser = () => {
 
 const restoreInitialSession = (): SessionUser | null => {
   try {
+    const hash = window.location.hash || '';
+    const queryIndex = hash.indexOf('?');
+    if (queryIndex >= 0) {
+      const params = new URLSearchParams(hash.slice(queryIndex + 1));
+      const oauthToken = params.get('oauth_token');
+      const oauthUser = params.get('oauth_user');
+      if (oauthToken && oauthUser) {
+        const decoded = JSON.parse(atob(oauthUser.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(oauthUser.length / 4) * 4, '='))) as BackendAuthUser;
+        const sessionUser = buildSessionUser(decoded, oauthToken);
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionUser));
+        const oauthReturn = decodeURIComponent(params.get('oauth_return') || '/');
+        window.location.hash = oauthReturn.startsWith('/') ? `#${oauthReturn}` : '#/';
+        syncStoreUser(sessionUser, decoded);
+        return sessionUser;
+      }
+      if (params.get('oauth_error')) {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to restore OAuth session from URL:', error);
+  }
+
+  try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
     if (!raw) {
       return null;
@@ -317,7 +341,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    throw new Error('\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0628\u062c\u0648\u062c\u0644 \u063a\u064a\u0631 \u0645\u0641\u0639\u0644 \u0628\u0639\u062f \u0641\u064a \u0627\u0644\u0646\u0633\u062e\u0629 \u0627\u0644\u062d\u0627\u0644\u064a\u0629.');
+    const returnTo = window.location.hash.replace(/^#/, '') || '/';
+    const startUrl = `${api.baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`;
+    window.location.assign(startUrl);
   };
 
   const logout = async () => {

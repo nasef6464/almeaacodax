@@ -15,6 +15,7 @@ import { grantAccessToUser } from "../services/accessGrantService.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
+import { env } from "../config/env.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -106,6 +107,9 @@ const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
 const MAX_FAILED_LOGIN_ATTEMPTS = 5;
 const LOGIN_LOCK_MS = 15 * 60 * 1000;
+const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";
+const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 function isLoginLocked(user: any) {
   return typeof user.loginLockedUntil === "number" && user.loginLockedUntil > Date.now();
@@ -145,6 +149,18 @@ async function queueEmailVerification(user: any) {
     createdBy: "system",
   });
 }
+
+const ensureGoogleOAuthEnabled = (res: any) => {
+  if (!env.GOOGLE_OAUTH_ENABLED) {
+    res.status(StatusCodes.BAD_REQUEST).json({ message: "Google login is disabled." });
+    return false;
+  }
+  if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET || !env.GOOGLE_REDIRECT_URI) {
+    res.status(StatusCodes.BAD_REQUEST).json({ message: "Google OAuth env is not configured." });
+    return false;
+  }
+  return true;
+};
 
 export const authRouter = Router();
 
@@ -231,6 +247,144 @@ authRouter.post(
       token,
       user: serializeUser(user),
     });
+  }),
+);
+
+authRouter.get(
+  "/google/start",
+  asyncHandler(async (req, res) => {
+    if (!ensureGoogleOAuthEnabled(res)) return;
+    const statePayload = {
+      returnTo: typeof req.query.returnTo === "string" ? req.query.returnTo : "/",
+      ts: Date.now(),
+    };
+    const state = Buffer.from(JSON.stringify(statePayload), "utf8").toString("base64url");
+    const params = new URLSearchParams({
+      client_id: env.GOOGLE_CLIENT_ID,
+      redirect_uri: env.GOOGLE_REDIRECT_URI,
+      response_type: "code",
+      scope: "openid email profile",
+      access_type: "online",
+      include_granted_scopes: "true",
+      prompt: "select_account",
+      state,
+    });
+    return res.redirect(`${GOOGLE_AUTH_BASE}?${params.toString()}`);
+  }),
+);
+
+authRouter.get(
+  "/google/callback",
+  asyncHandler(async (req, res) => {
+    if (!ensureGoogleOAuthEnabled(res)) return;
+
+    const code = typeof req.query.code === "string" ? req.query.code : "";
+    const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
+    const oauthError = typeof req.query.error === "string" ? req.query.error : "";
+
+    const fallbackRedirect = `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_error=google`;
+    if (oauthError || !code) {
+      return res.redirect(fallbackRedirect);
+    }
+
+    let returnTo = "/";
+    if (stateRaw) {
+      try {
+        const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as { returnTo?: string };
+        if (parsed?.returnTo && parsed.returnTo.startsWith("/")) {
+          returnTo = parsed.returnTo;
+        }
+      } catch {
+        returnTo = "/";
+      }
+    }
+
+    const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: env.GOOGLE_REDIRECT_URI,
+        grant_type: "authorization_code",
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      return res.redirect(`${fallbackRedirect}&step=token`);
+    }
+
+    const tokenJson = (await tokenResponse.json()) as { access_token?: string };
+    if (!tokenJson.access_token) {
+      return res.redirect(`${fallbackRedirect}&step=access_token`);
+    }
+
+    const profileResponse = await fetch(GOOGLE_USERINFO_URL, {
+      headers: { Authorization: `Bearer ${tokenJson.access_token}` },
+    });
+    if (!profileResponse.ok) {
+      return res.redirect(`${fallbackRedirect}&step=profile`);
+    }
+
+    const profile = (await profileResponse.json()) as {
+      email?: string;
+      email_verified?: boolean;
+      name?: string;
+      picture?: string;
+      sub?: string;
+    };
+
+    const email = String(profile.email || "").toLowerCase().trim();
+    if (!email) {
+      return res.redirect(`${fallbackRedirect}&step=email`);
+    }
+
+    let user = await UserModel.findOne({ email });
+    if (!user) {
+      const randomPassword = createSecureToken();
+      user = await UserModel.create({
+        name: profile.name || email.split("@")[0] || "Student",
+        email,
+        passwordHash: await bcrypt.hash(randomPassword, 10),
+        role: "student",
+        avatar: profile.picture || "",
+        emailVerified: Boolean(profile.email_verified),
+        emailVerifiedAt: profile.email_verified ? Date.now() : null,
+      });
+    } else {
+      let touched = false;
+      if (!user.avatar && profile.picture) {
+        user.avatar = profile.picture;
+        touched = true;
+      }
+      if (!user.emailVerified && profile.email_verified) {
+        user.emailVerified = true;
+        user.emailVerifiedAt = Date.now();
+        touched = true;
+      }
+      if (touched) await user.save();
+    }
+
+    if (user.isActive === false) {
+      return res.redirect(`${fallbackRedirect}&step=disabled`);
+    }
+
+    const token = signAccessToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
+    setAuthCookie(res, token);
+
+    const safeUser = encodeURIComponent(
+      Buffer.from(JSON.stringify(serializeUser(user)), "utf8").toString("base64url"),
+    );
+    const returnUrl = encodeURIComponent(returnTo || "/");
+    return res.redirect(
+      `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_provider=google&oauth_token=${encodeURIComponent(token)}&oauth_user=${safeUser}&oauth_return=${returnUrl}`,
+    );
   }),
 );
 
