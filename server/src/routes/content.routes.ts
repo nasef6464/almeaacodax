@@ -811,6 +811,16 @@ const seoSettingsSchema = z.object({
   organizationUrl: z.string().optional().default(""),
 });
 
+const contactWidgetSchema = z.object({
+  enabled: z.boolean().default(true),
+  channel: z.enum(["whatsapp", "telegram", "phone"]).default("whatsapp"),
+  whatsappNumber: z.string().optional().default(""),
+  whatsappMessage: z.string().optional().default("مرحبًا، أريد الاستفسار عن منصة المئة."),
+  openInNewTab: z.boolean().default(true),
+  showOnPublicPages: z.boolean().default(true),
+  showOnDashboardPages: z.boolean().default(false),
+});
+
 const platformIntegrationSettingsSchema = z.object({
   auth: z.object({
     allowSelfRegistration: z.boolean().default(true),
@@ -839,6 +849,7 @@ const platformIntegrationSettingsSchema = z.object({
     youtubeLive: providerSettingsSchema.default({ enabled: false, mode: "api" }),
   }),
   seo: seoSettingsSchema.default({}),
+  contactWidget: contactWidgetSchema.default({}),
   externalPlatforms: z.array(externalPlatformSchema).default([]),
   registrationFields: z
     .array(
@@ -903,6 +914,15 @@ const defaultPlatformIntegrationSettings = {
     organizationName: "منصة المئة",
     organizationLogoUrl: "",
     organizationUrl: "",
+  },
+  contactWidget: {
+    enabled: true,
+    channel: "whatsapp",
+    whatsappNumber: "",
+    whatsappMessage: "مرحبًا، أريد الاستفسار عن منصة المئة.",
+    openInNewTab: true,
+    showOnPublicPages: true,
+    showOnDashboardPages: false,
   },
   externalPlatforms: [
     {
@@ -1741,6 +1761,34 @@ contentRouter.get(
     }
 
     return res.json(settings);
+  }),
+);
+
+contentRouter.get(
+  "/public-contact-widget",
+  optionalAuth,
+  asyncHandler(async (_req, res) => {
+    const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    const fallback = {
+      enabled: false,
+      channel: "whatsapp",
+      whatsappNumber: "",
+      whatsappMessage: "",
+      openInNewTab: true,
+      showOnPublicPages: true,
+      showOnDashboardPages: false,
+    };
+    const widget = (settings?.contactWidget as Record<string, unknown> | undefined) || fallback;
+    const safeWidget = {
+      enabled: Boolean(widget.enabled),
+      channel: (String(widget.channel || "whatsapp") as "whatsapp" | "telegram" | "phone"),
+      whatsappNumber: String(widget.whatsappNumber || "").replace(/[^\d+]/g, ""),
+      whatsappMessage: String(widget.whatsappMessage || ""),
+      openInNewTab: widget.openInNewTab !== false,
+      showOnPublicPages: widget.showOnPublicPages !== false,
+      showOnDashboardPages: widget.showOnDashboardPages === true,
+    };
+    return res.json(safeWidget);
   }),
 );
 

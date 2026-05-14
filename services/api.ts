@@ -518,6 +518,16 @@ export const api = {
       body: payload,
       token,
     }),
+  getPublicContactWidget: () =>
+    requestCached<{
+      enabled: boolean;
+      channel: "whatsapp" | "telegram" | "phone";
+      whatsappNumber: string;
+      whatsappMessage: string;
+      openInNewTab: boolean;
+      showOnPublicPages: boolean;
+      showOnDashboardPages: boolean;
+    }>("/content/public-contact-widget", "public-contact-widget", PUBLIC_CACHE_TTL_MS),
   createTopic: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/topics", {
       method: "POST",

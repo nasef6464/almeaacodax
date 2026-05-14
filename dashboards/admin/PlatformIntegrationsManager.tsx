@@ -101,6 +101,15 @@ type IntegrationSettings = {
     organizationLogoUrl: string;
     organizationUrl: string;
   };
+  contactWidget: {
+    enabled: boolean;
+    channel: "whatsapp" | "telegram" | "phone";
+    whatsappNumber: string;
+    whatsappMessage: string;
+    openInNewTab: boolean;
+    showOnPublicPages: boolean;
+    showOnDashboardPages: boolean;
+  };
   externalPlatforms: ExternalPlatform[];
   registrationFields: RegistrationField[];
 };
@@ -150,6 +159,15 @@ const emptySettings: IntegrationSettings = {
     organizationName: "",
     organizationLogoUrl: "",
     organizationUrl: "",
+  },
+  contactWidget: {
+    enabled: true,
+    channel: "whatsapp",
+    whatsappNumber: "",
+    whatsappMessage: "مرحبًا، أريد الاستفسار عن منصة المئة.",
+    openInNewTab: true,
+    showOnPublicPages: true,
+    showOnDashboardPages: false,
   },
   externalPlatforms: [],
   registrationFields: [],
@@ -257,6 +275,12 @@ export const PlatformIntegrationsManager: React.FC = () => {
 
   const updateSeo = <K extends keyof IntegrationSettings["seo"]>(key: K, value: IntegrationSettings["seo"][K]) => {
     setSettings((prev) => ({ ...prev, seo: { ...prev.seo, [key]: value } }));
+  };
+  const updateContactWidget = <K extends keyof IntegrationSettings["contactWidget"]>(
+    key: K,
+    value: IntegrationSettings["contactWidget"][K],
+  ) => {
+    setSettings((prev) => ({ ...prev, contactWidget: { ...prev.contactWidget, [key]: value } }));
   };
 
   const updateField = (id: string, patch: Partial<RegistrationField>) => {
@@ -478,6 +502,35 @@ export const PlatformIntegrationsManager: React.FC = () => {
               <textarea className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" rows={2} value={settings.providers[provider.key].note || ""} onChange={(e) => updateProvider(provider.key, { note: e.target.value })} placeholder="ملاحظات تشغيلية" />
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
+        <h3 className="text-lg font-black text-gray-900">زر التواصل العائم</h3>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+            <span>تفعيل الزر العائم</span>
+            <input type="checkbox" checked={settings.contactWidget.enabled} onChange={(e) => updateContactWidget("enabled", e.target.checked)} />
+          </label>
+          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+            <span>فتح في تبويب جديد</span>
+            <input type="checkbox" checked={settings.contactWidget.openInNewTab} onChange={(e) => updateContactWidget("openInNewTab", e.target.checked)} />
+          </label>
+          <select className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.contactWidget.channel} onChange={(e) => updateContactWidget("channel", e.target.value as "whatsapp" | "telegram" | "phone")}>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="telegram">Telegram</option>
+            <option value="phone">Phone</option>
+          </select>
+          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.contactWidget.whatsappNumber} onChange={(e) => updateContactWidget("whatsappNumber", e.target.value)} placeholder="رقم الواتساب بصيغة دولية 9665xxxxxxx" />
+          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.contactWidget.whatsappMessage} onChange={(e) => updateContactWidget("whatsappMessage", e.target.value)} placeholder="رسالة البداية" />
+          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+            <span>إظهار في الصفحات العامة</span>
+            <input type="checkbox" checked={settings.contactWidget.showOnPublicPages} onChange={(e) => updateContactWidget("showOnPublicPages", e.target.checked)} />
+          </label>
+          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+            <span>إظهار في لوحات المستخدمين</span>
+            <input type="checkbox" checked={settings.contactWidget.showOnDashboardPages} onChange={(e) => updateContactWidget("showOnDashboardPages", e.target.checked)} />
+          </label>
         </div>
       </div>
 

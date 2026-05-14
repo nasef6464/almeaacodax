@@ -89,6 +89,15 @@ const platformIntegrationSettingsSchema = new Schema<any>(
       organizationLogoUrl: { type: String, default: "" },
       organizationUrl: { type: String, default: "" },
     },
+    contactWidget: {
+      enabled: { type: Boolean, default: true },
+      channel: { type: String, enum: ["whatsapp", "telegram", "phone"], default: "whatsapp" },
+      whatsappNumber: { type: String, default: "" },
+      whatsappMessage: { type: String, default: "مرحبًا، أريد الاستفسار عن منصة المئة." },
+      openInNewTab: { type: Boolean, default: true },
+      showOnPublicPages: { type: Boolean, default: true },
+      showOnDashboardPages: { type: Boolean, default: false },
+    },
     externalPlatforms: {
       type: [
         new Schema(
