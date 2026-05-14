@@ -51,6 +51,15 @@ const checks = [
       schoolPortal.includes("supervisor-brief"),
   },
   {
+    name: "school portal includes class action planning",
+    ok:
+      schoolPortal.includes("classActionPlan") &&
+      schoolPortal.includes("exportClassActionPlan") &&
+      schoolPortal.includes("class-action-plan") &&
+      schoolPortal.includes("خطة متابعة الفصول") &&
+      schoolPortal.includes("تصدير خطة الفصول"),
+  },
+  {
     name: "announcement ads have a live preview path",
     ok:
       read("components/AnnouncementAdsOverlay.tsx").includes("ANNOUNCEMENT_AD_PREVIEW_EVENT") &&

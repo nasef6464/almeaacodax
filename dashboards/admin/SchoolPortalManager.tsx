@@ -204,6 +204,34 @@ export const SchoolPortalManager: React.FC = () => {
     const watchList = studentSummaries
         .filter((summary) => summary.results.length === 0 || summary.average < 60 || summary.weakSkills.length > 0)
         .sort((a, b) => a.average - b.average);
+    const classActionPlan = scope.classes.map((classroom) => {
+        const classroomStudents = studentSummaries.filter((summary) =>
+            classroom.studentIds.includes(summary.student.id) || (summary.student.groupIds || []).includes(classroom.id),
+        );
+        const classroomAverage = averageScore(classroomStudents.flatMap((item) => item.results));
+        const classroomWatchList = classroomStudents.filter((summary) =>
+            summary.results.length === 0 || summary.average < 60 || summary.weakSkills.length > 0,
+        );
+        const studentsWithoutAttempts = classroomStudents.filter((summary) => summary.results.length === 0).length;
+        const nextAction = classroomStudents.length === 0
+            ? 'أضف الطلاب أو راجع ربط الفصل.'
+            : studentsWithoutAttempts > 0
+                ? 'ابدأ باختبار قياس قصير للطلاب الذين لم يبدأوا.'
+                : classroomAverage < 60
+                    ? 'وجّه خطة علاجية قصيرة ثم اختبار متابعة.'
+                    : classroomWatchList.length > 0
+                        ? 'راجع الطلاب الضعاف وأرسل تنبيه متابعة.'
+                        : 'الفصل مستقر، صدّر تقريرًا أسبوعيًا فقط.';
+
+        return {
+            classroom,
+            studentCount: classroomStudents.length,
+            average: classroomAverage,
+            watchCount: classroomWatchList.length,
+            studentsWithoutAttempts,
+            nextAction,
+        };
+    }).sort((a, b) => b.watchCount - a.watchCount || a.average - b.average);
 
     const totalSeats = scope.packages
         .filter((pkg) => pkg.status === 'active')
@@ -231,6 +259,9 @@ export const SchoolPortalManager: React.FC = () => {
                 : summary.weakSkills.map((skill) => skill.skill).join('، ') || `متوسط ${summary.average}%`;
             return `${index + 1}. ${summary.student.name} - ${reason}`;
         }),
+        '',
+        'أولوية الفصول:',
+        ...classActionPlan.slice(0, 5).map((item, index) => `${index + 1}. ${item.classroom.name}: ${item.nextAction}`),
     ].join('\n');
     const supervisorWeeklyPlan = [
         ['اليوم', 'راجع قائمة الطلاب الذين لم يبدأوا القياس أو متوسطهم أقل من 60%.'],
@@ -326,6 +357,26 @@ export const SchoolPortalManager: React.FC = () => {
         setActionFeedback('تم تجهيز ملف قائمة المتابعة للتنزيل.');
     };
 
+    const exportClassActionPlan = () => {
+        createWorkbookDownload('school-class-action-plan.xlsx', [
+            {
+                name: 'class-action-plan',
+                rows: [
+                    ['الفصل', 'عدد الطلاب', 'متوسط الأداء', 'يحتاجون متابعة', 'لم يبدأوا القياس', 'الإجراء التالي'],
+                    ...classActionPlan.map((item) => [
+                        item.classroom.name,
+                        item.studentCount,
+                        `${item.average}%`,
+                        item.watchCount,
+                        item.studentsWithoutAttempts,
+                        item.nextAction,
+                    ]),
+                ],
+            },
+        ]);
+        setActionFeedback('تم تجهيز خطة متابعة الفصول للتنزيل.');
+    };
+
     const exportPortalReport = () => {
         createWorkbookDownload('school-portal-supervisor-report.xlsx', [
             {
@@ -367,6 +418,20 @@ export const SchoolPortalManager: React.FC = () => {
                         studentSummaries.filter((summary) => (summary.student.groupIds || []).includes(classroom.id) || classroom.studentIds.includes(summary.student.id)).length,
                         classroom.courseIds.length,
                         classroom.supervisorIds.length,
+                    ]),
+                ],
+            },
+            {
+                name: 'class-action-plan',
+                rows: [
+                    ['الفصل', 'عدد الطلاب', 'متوسط الأداء', 'يحتاجون متابعة', 'لم يبدأوا القياس', 'الإجراء التالي'],
+                    ...classActionPlan.map((item) => [
+                        item.classroom.name,
+                        item.studentCount,
+                        `${item.average}%`,
+                        item.watchCount,
+                        item.studentsWithoutAttempts,
+                        item.nextAction,
                     ]),
                 ],
             },
@@ -602,6 +667,61 @@ export const SchoolPortalManager: React.FC = () => {
                         </div>
                         <p className="mt-1 text-xs text-gray-500">يمكن تغيير النطاق من مركز الاختبارات.</p>
                     </div>
+                </div>
+            </div>
+
+            <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h2 className="text-lg font-black text-gray-900">خطة متابعة الفصول</h2>
+                        <p className="mt-1 text-sm text-gray-500">ترتيب سريع يساعد المشرف يعرف يبدأ بأي فصل وما الإجراء التالي.</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={exportClassActionPlan}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-2.5 text-xs font-black text-blue-700 hover:bg-blue-100"
+                    >
+                        <Download size={15} />
+                        تصدير خطة الفصول
+                    </button>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-right text-sm">
+                        <thead>
+                            <tr className="border-b border-gray-100 text-xs text-gray-500">
+                                <th className="py-3 font-black">الفصل</th>
+                                <th className="py-3 font-black">الطلاب</th>
+                                <th className="py-3 font-black">المتوسط</th>
+                                <th className="py-3 font-black">متابعة</th>
+                                <th className="py-3 font-black">الإجراء التالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {classActionPlan.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-6 text-center text-sm font-bold text-gray-500">
+                                        لا توجد فصول داخل نطاق هذا المشرف حتى الآن.
+                                    </td>
+                                </tr>
+                            ) : classActionPlan.slice(0, 8).map((item) => (
+                                <tr key={item.classroom.id} className="border-b border-gray-50 last:border-0">
+                                    <td className="py-3 font-bold text-gray-900">{item.classroom.name}</td>
+                                    <td className="py-3 text-gray-600">{item.studentCount}</td>
+                                    <td className="py-3">
+                                        <span className={`rounded-full px-2 py-1 text-xs font-black ${
+                                            item.average >= 75 ? 'bg-emerald-50 text-emerald-700' :
+                                            item.average >= 60 ? 'bg-amber-50 text-amber-700' :
+                                            'bg-rose-50 text-rose-700'
+                                        }`}>
+                                            {item.studentCount ? `${item.average}%` : '-'}
+                                        </span>
+                                    </td>
+                                    <td className="py-3 text-gray-600">{item.watchCount}</td>
+                                    <td className="py-3 text-gray-700">{item.nextAction}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
