@@ -72,6 +72,17 @@ check('handover report documents external credentials and no live gateway claim'
   includes(report, 'Fawry');
 });
 
+check('student payment modal explains purchase separation and safe manual review', () => {
+  includes(modal, 'purchaseSeparationLabel');
+  includes(modal, 'packageCourseSeparationNote');
+  includes(modal, 'paymentDecisionRows');
+  includes(modal, 'renderPaymentDecisionSummary');
+  includes(modal, 'ملخص طلب الشراء');
+  includes(modal, 'لن يتم فتح المحتوى تلقائيًا من المتصفح');
+  includes(modal, 'هذا الطلب يفتح الباقة المختارة فقط');
+  includes(modal, 'هذا الطلب يفتح هذا العنصر فقط');
+});
+
 let failed = 0;
 for (const item of checks) {
   try {

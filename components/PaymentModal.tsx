@@ -284,6 +284,47 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const audienceLabel = shouldPurchaseAsPackage ? 'عرض شراء فردي' : 'تفعيل مباشر لهذا العنصر';
     const accessContext = typeof purchaseItem?.accessContext === 'string' ? purchaseItem.accessContext : '';
     const hasPackageChoices = packageOptions.length > 1;
+    const purchaseSeparationLabel = shouldPurchaseAsPackage ? 'باقة / عضوية' : type === 'course' ? 'دورة منفصلة' : getTitle();
+    const packageCourseSeparationNote = shouldPurchaseAsPackage
+        ? 'هذا الطلب يفتح الباقة المختارة فقط، وقد تشمل دورات أو تأسيس أو تدريب حسب إعداد الباقة.'
+        : 'هذا الطلب يفتح هذا العنصر فقط ولا يدمجه مع الباقات المعروضة في صفحة الباقات.';
+    const selectedProviderSummary = method
+        ? methodProviderLabel(method) || settings[method]?.label || settings[method]?.providerCode || 'وسيلة دفع'
+        : 'اختر وسيلة الدفع المناسبة';
+    const reviewSafetyNote = settings.manualReviewRequired
+        ? 'لن يتم فتح المحتوى تلقائيًا من المتصفح. يتم إنشاء طلب مراجعة فقط، والإدارة أو Webhook موثق هو من يعتمد التفعيل.'
+        : 'سيتم تسجيل الطلب مع بيانات مزود الدفع للمراجعة والتسوية.';
+    const paymentDecisionRows = [
+        { label: 'نوع الطلب', value: purchaseSeparationLabel },
+        { label: 'النطاق', value: scopeLabel },
+        { label: 'المزود', value: selectedProviderSummary },
+        { label: 'طريقة التفعيل', value: settings.manualReviewRequired ? 'مراجعة إدارية قبل الفتح' : 'طلب دفع آمن' },
+    ];
+
+    const renderPaymentDecisionSummary = (compact = false) => (
+        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-right">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p className="text-xs font-black text-slate-500">ملخص طلب الشراء</p>
+                    <p className="mt-1 text-sm font-black text-slate-900">{packageCourseSeparationNote}</p>
+                </div>
+                <span className="w-fit rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 shadow-sm">
+                    {purchaseSeparationLabel}
+                </span>
+            </div>
+            <div className={`mt-4 grid grid-cols-1 gap-2 ${compact ? 'sm:grid-cols-2' : 'sm:grid-cols-4'}`}>
+                {paymentDecisionRows.map((row) => (
+                    <div key={row.label} className="rounded-xl bg-white px-3 py-2 shadow-sm">
+                        <div className="text-[11px] font-black text-slate-400">{row.label}</div>
+                        <div className="mt-1 text-xs font-black text-slate-800">{row.value}</div>
+                    </div>
+                ))}
+            </div>
+            <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold leading-6 text-amber-800">
+                {reviewSafetyNote}
+            </div>
+        </div>
+    );
 
     const buildPaymentRequestPayload = () => {
         const packageId = purchaseItem.packageId || (shouldPurchaseAsPackage ? purchaseItem.id : undefined);
@@ -455,6 +496,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 </div>
             </div>
 
+            {renderPaymentDecisionSummary(true)}
+
             {hasPackageChoices ? renderPackageChoices(true) : null}
 
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -510,6 +553,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 ) : null}
             </div>
 
+            {renderPaymentDecisionSummary()}
+
             {hasPackageChoices ? renderPackageChoices() : null}
 
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
@@ -557,6 +602,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             </button>
 
             {actionError && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{actionError}</div>}
+
+            {renderPaymentDecisionSummary(true)}
 
             {method === 'card' && (
                 <div className="space-y-4">
