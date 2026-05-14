@@ -95,6 +95,27 @@ For staging-only provider simulation:
 
 For production, keep these unset until a real provider adapter and credentials are configured. Notification records will still be created and visible in delivery logs.
 
+## External Credentials (Google / Email / WhatsApp / Sentry / Redis)
+
+Set these on Render backend:
+
+- `GOOGLE_OAUTH_ENABLED=true`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_REDIRECT_URI`
+- `EMAIL_PROVIDER` + provider-specific keys (`RESEND_API_KEY` / `EMAIL_WEBHOOK_URL`)
+- `WHATSAPP_PROVIDER` + provider-specific keys (`WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` or webhook)
+- `SENTRY_DSN`
+- `SENTRY_ENVIRONMENT=production`
+- `SENTRY_TRACES_SAMPLE_RATE=0.05` (start low in production)
+- `REDIS_URL` and `REDIS_KEY_PREFIX`
+
+Verification endpoint (admin token required):
+
+- `GET /api/operations/integrations-readiness`
+
+This endpoint returns per-integration status (`pass`, `warning`, `fail`) and required env keys so deployment teams can close missing credentials quickly.
+
 ## Still Needed For Large Launch
 
 - Upgrade Render away from free cold-start behavior.

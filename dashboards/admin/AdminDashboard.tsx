@@ -47,6 +47,7 @@ const SkillsTreeManager = lazyNamed(() => import('./SkillsTreeManager'), 'Skills
 const FinancialManager = lazyNamed(() => import('./FinancialManager'), 'FinancialManager');
 const HomepageManager = lazyNamed(() => import('./HomepageManager'), 'HomepageManager');
 const PlatformFontsManager = lazyNamed(() => import('./PlatformFontsManager'), 'PlatformFontsManager');
+const PlatformIntegrationsManager = lazyNamed(() => import('./PlatformIntegrationsManager'), 'PlatformIntegrationsManager');
 const LiveSessionsManager = lazyNamed(() => import('./LiveSessionsManager'), 'LiveSessionsManager');
 const BackupManager = lazyNamed(() => import('./BackupManager'), 'BackupManager');
 const OperationsCommandCenter = lazyNamed(() => import('./OperationsCommandCenter'), 'OperationsCommandCenter');
@@ -876,6 +877,16 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'platform-fonts', label: 'إدارة خطوط المنصة', icon: <Type size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
+        if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'platform-integrations')) {
+            const fontsIndex = nextItems.findIndex((item) => item.id === 'platform-fonts');
+            const targetIndex = fontsIndex === -1 ? insertIndex : fontsIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'platform-integrations', label: 'إدارة التكاملات والتسجيل', icon: <Settings size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1957,6 +1968,8 @@ export const AdminDashboard: React.FC = () => {
                 return <AnnouncementAdsManager />;
             case 'platform-fonts':
                 return <PlatformFontsManager />;
+            case 'platform-integrations':
+                return <PlatformIntegrationsManager />;
             case 'live-sessions':
                 return <LiveSessionsManager />;
             case 'backups':

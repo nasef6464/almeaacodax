@@ -507,6 +507,17 @@ export const api = {
       body: payload,
       token,
     }),
+  getPlatformIntegrations: (token?: string | null) =>
+    request<unknown>("/content/platform-integrations", {
+      token,
+      cache: "no-store",
+    }),
+  updatePlatformIntegrations: (payload: unknown, token?: string | null) =>
+    request<unknown>("/content/platform-integrations", {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   createTopic: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/topics", {
       method: "POST",
@@ -973,6 +984,24 @@ export const api = {
         routeHint?: string;
       }>;
     }>("/operations/delivery-readiness", { token }),
+  getIntegrationsReadiness: (token?: string | null) =>
+    request<{
+      checkedAt: string;
+      score: number;
+      status: "ready" | "ready_with_notes" | "blocked";
+      checks: Array<{
+        id: string;
+        title: string;
+        status: "pass" | "warning" | "fail";
+        detail: string;
+        requiredEnv: string[];
+      }>;
+      summary: {
+        failed: number;
+        warnings: number;
+        passed: number;
+      };
+    }>("/operations/integrations-readiness", { token }),
   getAdminAuditLogs: (limit = 50, token?: string | null) =>
     request<{
       logs: Array<{

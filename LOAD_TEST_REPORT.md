@@ -1,5 +1,116 @@
 # Load Test Report
 
+## Production Autocannon Re-Run - 2026-05-14 (Phase 3 Closure)
+
+Environment:
+- Frontend: `https://almeaacodax.vercel.app`
+- Backend API: `https://almeaacodax-k2ux.onrender.com/api`
+- Method: `node scripts/run-production-load-autocannon.mjs`
+- Duration per test: `12s`
+- Concurrency levels: `20`, `100`, `500`, `1000`
+- Endpoints tested:
+  - `GET /health`
+  - `GET /content/bootstrap`
+  - `POST /auth/login`
+  - `GET /quizzes/results`
+
+### Highlights from the re-run
+
+- `GET /content/bootstrap`
+  - `c=20`: ~`61.67 req/s`, stable.
+  - `c=100`: ~`71.92 req/s`, stable but higher latency (`p95 ~ 2.28s`).
+  - `c=500`: degraded with `502/503` and timeouts.
+  - `c=1000`: collapse/timeouts.
+
+- `POST /auth/login`
+  - highly sensitive under burst traffic (`timeouts` and `503/429` behavior depending on saturation/rate limits).
+
+- `GET /quizzes/results`
+  - still expensive under pressure and can time out early at high concurrency.
+
+- `GET /health`
+  - good at low concurrency, unstable at high burst.
+
+Raw outputs:
+- `load-tests/results/prod_*.jsonl`
+- `load-tests/results/prod_load_summary.json`
+
+### Re-run capacity decision
+
+- `20 concurrent`: **Ready**
+- `100 concurrent`: **Conditionally ready**
+- `500 concurrent`: **Not ready**
+- `1000+ concurrent`: **Not ready**
+
+This confirms the platform still needs infrastructure scaling + endpoint tuning before claiming high-concurrency readiness.
+
+## Production Autocannon Run - 2026-05-14
+
+Environment:
+- Frontend: `https://almeaacodax.vercel.app`
+- Backend API: `https://almeaacodax-k2ux.onrender.com/api`
+- Method: real external run using `autocannon` against production API endpoints.
+- Duration per test: `12s`
+- Concurrency levels: `20`, `100`, `500`, `1000`
+- Endpoints tested:
+  - `GET /health`
+  - `GET /content/bootstrap`
+  - `POST /auth/login`
+  - `GET /quizzes/results` (student token)
+
+### Observed Results (high-signal)
+
+- `GET /health`
+  - `c=20`: ~`72 req/s`, no timeouts, mostly stable.
+  - `c=100`: ~`238 req/s`, notable `429` responses.
+  - `c=500`: timed out heavily.
+  - `c=1000`: severe degradation (`502/503` + timeouts).
+
+- `GET /content/bootstrap`
+  - `c=20`: ~`60 req/s`, stable, `200` only.
+  - `c=100`: ~`62 req/s`, stable.
+  - `c=500`: major degradation, many `502/503` and timeouts.
+  - `c=1000`: mostly failed/timeouts.
+
+- `POST /auth/login`
+  - `c=20`: high rate but mostly throttled (`429`) and invalid payload (`400`) behavior under stress.
+  - `c=100`: mostly throttled (`429`).
+  - `c=500`: near total timeout failure.
+  - `c=1000`: severe overload (`503`) and timeouts.
+
+- `GET /quizzes/results`
+  - `c=20`: low throughput, early throttling (`429`) and timeouts.
+  - `c=100`: high throttling, very low successful responses.
+  - `c=500`: mostly `502/503`.
+  - `c=1000`: timeout collapse.
+
+Raw outputs saved under:
+- `load-tests/results/prod_*.jsonl`
+- `load-tests/results/prod_load_summary.json`
+
+### Capacity Conclusion From This Run
+
+- Current production setup is **usable for low-to-moderate real traffic** but **not ready** for sustained synthetic high-concurrency spikes at `500+`.
+- The first hard bottlenecks are:
+  1. Render instance capacity / cold-start and saturation behavior.
+  2. Rate limiting behavior under burst patterns.
+  3. Expensive authenticated endpoints under load (`/quizzes/results`).
+
+### Readiness Matrix (evidence-based)
+
+- `20 concurrent`: **Ready** (with monitoring).
+- `100 concurrent`: **Conditionally ready** (acceptable for normal usage patterns, but burst throttling is visible).
+- `500 concurrent`: **Not ready** on current production sizing.
+- `1000+ concurrent`: **Not ready** on current production sizing.
+
+### Immediate Upgrade Path Before Next Run
+
+1. Upgrade Render service class (CPU/RAM) and keep at least 2 warm instances.
+2. Move to managed Redis with confirmed connectivity (`/api/health/scale-ready` + `/api/operations/integrations-readiness`).
+3. Tune burst and role-aware rate limits (protect auth while reducing false-positive throttling on normal learner flows).
+4. Add dedicated read-optimized query/index path for report/result endpoints.
+5. Re-run staged load test with longer windows (`30s/60s`) and realistic journey mix.
+
 ## Question Summary Endpoint Guard - 2026-05-13
 
 - Added the production speed smoke measurement for `/api/quizzes/questions?summary=true&noTotal=true&limit=80`.

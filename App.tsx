@@ -132,6 +132,75 @@ const SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES = [
 const shouldDeferSkillProgressBootstrap = (path: string) =>
   SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
+type BootstrapProfile = {
+  loadCourses: boolean;
+  loadQuizzes: boolean;
+  loadTaxonomy: boolean;
+  loadContent: boolean;
+  loadQuestions: boolean;
+  loadSkillProgress: boolean;
+};
+
+const MINIMAL_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: false,
+  loadQuizzes: false,
+  loadTaxonomy: true,
+  loadContent: false,
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const FULL_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: true,
+  loadQuizzes: true,
+  loadTaxonomy: true,
+  loadContent: true,
+  loadQuestions: true,
+  loadSkillProgress: true,
+};
+
+const resolveBootstrapProfile = (path: string): BootstrapProfile => {
+  if (path === '/' || path === '/blog') {
+    return MINIMAL_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/category/') || path === '/courses' || path.startsWith('/course/')) {
+    return {
+      ...FULL_BOOTSTRAP_PROFILE,
+      loadQuestions: false,
+      loadSkillProgress: false,
+    };
+  }
+
+  if (
+    path.startsWith('/admin-dashboard') ||
+    path.startsWith('/instructor-dashboard') ||
+    path.startsWith('/supervisor-dashboard') ||
+    path.startsWith('/parent-dashboard')
+  ) {
+    return {
+      ...FULL_BOOTSTRAP_PROFILE,
+      loadQuestions: false,
+      loadSkillProgress: false,
+    };
+  }
+
+  if (
+    path.startsWith('/quiz') ||
+    path.startsWith('/results') ||
+    path.startsWith('/reports') ||
+    path.startsWith('/dashboard')
+  ) {
+    return FULL_BOOTSTRAP_PROFILE;
+  }
+
+  return {
+    ...FULL_BOOTSTRAP_PROFILE,
+    loadQuestions: false,
+    loadSkillProgress: false,
+  };
+};
+
 const SEO_BASE_URL = 'https://almeaacodax.vercel.app';
 
 const SEO_PRIVATE_PREFIXES = [
@@ -361,9 +430,16 @@ const App: React.FC = () => {
   useEffect(() => {
     let mounted = true;
 
-    const bootstrapAppData = async (options: { deferQuestions?: boolean; deferSkillProgress?: boolean } = {}) => {
+    const bootstrapAppData = async (
+      options: {
+        profile?: BootstrapProfile;
+        deferQuestions?: boolean;
+        deferSkillProgress?: boolean;
+      } = {},
+    ) => {
       try {
         const useRealApi = import.meta.env.PROD || import.meta.env.VITE_USE_REAL_API !== 'false';
+        const profile = options.profile ?? FULL_BOOTSTRAP_PROFILE;
         if (useRealApi) {
           window.setTimeout(() => {
             void api.health().catch((error) => {
@@ -372,89 +448,79 @@ const App: React.FC = () => {
           }, 2000);
         }
 
-        const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });
-        const skillProgressPromise = options.deferSkillProgress ? null : api.getSkillProgress();
-        const coursesPromise = adapter.getCourses();
-        const quizzesPromise = adapter.getQuizzes();
-        const taxonomyPromise = adapter.getTaxonomyBootstrap();
-        const contentPromise = adapter.getContentBootstrap();
+        const shouldLoadQuestions = profile.loadQuestions && !options.deferQuestions;
+        const shouldLoadSkillProgress = profile.loadSkillProgress && !options.deferSkillProgress;
+        const coursesPromise = profile.loadCourses ? adapter.getCourses() : null;
+        const quizzesPromise = profile.loadQuizzes ? adapter.getQuizzes() : null;
+        const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;
+        const contentPromise = profile.loadContent ? adapter.getContentBootstrap() : null;
+        const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 120 }) : null;
+        const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress() : null;
 
-        coursesPromise
-          .then((courses) => {
-            if (mounted && courses.length > 0) {
-              hydrateCourses(courses);
-            }
-          })
-          .catch((error) => console.warn('Course bootstrap unavailable:', error));
+        coursesPromise?.then((courses) => {
+          if (mounted && courses.length > 0) {
+            hydrateCourses(courses);
+          }
+        }).catch((error) => console.warn('Course bootstrap unavailable:', error));
 
-        quizzesPromise
-          .then((quizzes) => {
-            if (mounted) {
-              hydrateQuizzes(quizzes);
-            }
-          })
-          .catch((error) => console.warn('Quiz bootstrap unavailable:', error));
+        quizzesPromise?.then((quizzes) => {
+          if (mounted) {
+            hydrateQuizzes(quizzes);
+          }
+        }).catch((error) => console.warn('Quiz bootstrap unavailable:', error));
 
-        taxonomyPromise
-          .then((taxonomyResult) => {
-            if (!mounted) return;
-            const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
-            if (
-              [
-                taxonomyResult.paths,
-                taxonomyResult.levels,
-                taxonomyResult.subjects,
-                taxonomyResult.sections,
-                taxonomyResult.skills,
-              ].some(hasItems)
-            ) {
-              hydrateTaxonomy({
-                paths: taxonomyResult.paths as any[],
-                levels: taxonomyResult.levels as any[],
-                subjects: taxonomyResult.subjects as any[],
-                sections: taxonomyResult.sections as any[],
-                skills: taxonomyResult.skills as any[],
-              });
-            }
-          })
-          .catch((error) => console.warn('Taxonomy bootstrap unavailable:', error));
+        taxonomyPromise?.then((taxonomyResult) => {
+          if (!mounted) return;
+          const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+          if (
+            [
+              taxonomyResult.paths,
+              taxonomyResult.levels,
+              taxonomyResult.subjects,
+              taxonomyResult.sections,
+              taxonomyResult.skills,
+            ].some(hasItems)
+          ) {
+            hydrateTaxonomy({
+              paths: taxonomyResult.paths as any[],
+              levels: taxonomyResult.levels as any[],
+              subjects: taxonomyResult.subjects as any[],
+              sections: taxonomyResult.sections as any[],
+              skills: taxonomyResult.skills as any[],
+            });
+          }
+        }).catch((error) => console.warn('Taxonomy bootstrap unavailable:', error));
 
-        contentPromise
-          .then((contentResult) => {
-            if (!mounted) return;
-            const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
-            if (
-              [
-                contentResult.topics,
-                contentResult.lessons,
-                contentResult.libraryItems,
-                contentResult.groups,
-                contentResult.b2bPackages,
-                contentResult.accessCodes,
-                contentResult.announcementAds,
-                contentResult.studyPlans,
-              ].some(hasItems)
-            ) {
-              hydrateContentBootstrap({
-                topics: contentResult.topics as any[],
-                lessons: contentResult.lessons as any[],
-                libraryItems: contentResult.libraryItems as any[],
-                groups: contentResult.groups as any[],
-                b2bPackages: contentResult.b2bPackages as any[],
-                accessCodes: contentResult.accessCodes as any[],
-                announcementAds: contentResult.announcementAds as any[],
-                studyPlans: contentResult.studyPlans as any[],
-              });
-            }
-          })
-          .catch((error) => console.warn('Content bootstrap unavailable:', error));
+        contentPromise?.then((contentResult) => {
+          if (!mounted) return;
+          const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+          if (
+            [
+              contentResult.topics,
+              contentResult.lessons,
+              contentResult.libraryItems,
+              contentResult.groups,
+              contentResult.b2bPackages,
+              contentResult.accessCodes,
+              contentResult.announcementAds,
+              contentResult.studyPlans,
+            ].some(hasItems)
+          ) {
+            hydrateContentBootstrap({
+              topics: contentResult.topics as any[],
+              lessons: contentResult.lessons as any[],
+              libraryItems: contentResult.libraryItems as any[],
+              groups: contentResult.groups as any[],
+              b2bPackages: contentResult.b2bPackages as any[],
+              accessCodes: contentResult.accessCodes as any[],
+              announcementAds: contentResult.announcementAds as any[],
+              studyPlans: contentResult.studyPlans as any[],
+            });
+          }
+        }).catch((error) => console.warn('Content bootstrap unavailable:', error));
 
-        const [, questionsResult, , , , skillProgressResult] = await Promise.allSettled([
-          coursesPromise,
+        const [questionsResult, skillProgressResult] = await Promise.allSettled([
           questionsPromise ?? Promise.resolve(null),
-          quizzesPromise,
-          taxonomyPromise,
-          contentPromise,
           skillProgressPromise ?? Promise.resolve(null),
         ]);
 
@@ -470,7 +536,7 @@ const App: React.FC = () => {
           hydrateSkillProgress(skillProgressResult.value as any[]);
         }
 
-        if (options.deferQuestions) {
+        if (profile.loadQuestions && options.deferQuestions) {
           void adapter.getQuestions({ page: 1, limit: 20, summary: true, noTotal: true })
             .then((questions) => {
               if (mounted) {
@@ -482,7 +548,7 @@ const App: React.FC = () => {
             });
         }
 
-        if (options.deferSkillProgress) {
+        if (profile.loadSkillProgress && options.deferSkillProgress) {
           void api.getSkillProgress()
             .then((skillProgress) => {
               if (mounted) {
@@ -555,7 +621,9 @@ const App: React.FC = () => {
 
       bootstrapStarted = true;
       const path = getInitialRouterPath();
+      const profile = resolveBootstrapProfile(path);
       void bootstrapAppData({
+        profile,
         deferQuestions: shouldDeferQuestionBootstrap(path),
         deferSkillProgress: shouldDeferSkillProgressBootstrap(path),
       });

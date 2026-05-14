@@ -128,10 +128,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         );
     }, [item]);
 
+    const shouldUsePackageOptions = type !== 'course';
+
     const purchaseItem = useMemo(() => {
-        if (!packageOptions.length) return item;
+        if (!shouldUsePackageOptions || !packageOptions.length) return item;
         return packageOptions.find((option) => option.id === selectedPackageId) || packageOptions[0] || item;
-    }, [item, packageOptions, selectedPackageId]);
+    }, [item, packageOptions, selectedPackageId, shouldUsePackageOptions]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -151,8 +153,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         setDiscountCode('');
         setDiscountPreview(null);
         setDiscountPreviewLoading(false);
-        setSelectedPackageId(Array.isArray(item?.packageOptions) && item.packageOptions[0]?.id ? item.packageOptions[0].id : '');
-    }, [isOpen, item?.id, type]);
+        setSelectedPackageId(
+            shouldUsePackageOptions && Array.isArray(item?.packageOptions) && item.packageOptions[0]?.id
+                ? item.packageOptions[0].id
+                : '',
+        );
+    }, [isOpen, item?.id, type, shouldUsePackageOptions]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -248,7 +254,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     const shouldPurchaseAsPackage =
         type === 'package' ||
-        purchaseItem?.purchaseType === 'package' ||
+        (type !== 'course' && purchaseItem?.purchaseType === 'package') ||
         ((type === 'skill' || type === 'test' || type === 'bank') && (purchaseItem?.packageId || purchaseItem?.includedCourseIds?.length));
 
     const getTitle = () => {
@@ -284,6 +290,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const audienceLabel = shouldPurchaseAsPackage ? 'عرض شراء فردي' : 'تفعيل مباشر لهذا العنصر';
     const accessContext = typeof purchaseItem?.accessContext === 'string' ? purchaseItem.accessContext : '';
     const hasPackageChoices = packageOptions.length > 1;
+    const showPackageChoices = shouldUsePackageOptions && hasPackageChoices;
     const purchaseSeparationLabel = shouldPurchaseAsPackage ? 'باقة / عضوية' : type === 'course' ? 'دورة منفصلة' : getTitle();
     const packageCourseSeparationNote = shouldPurchaseAsPackage
         ? 'هذا الطلب يفتح الباقة المختارة فقط، وقد تشمل دورات أو تأسيس أو تدريب حسب إعداد الباقة.'
@@ -498,7 +505,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
             {renderPaymentDecisionSummary(true)}
 
-            {hasPackageChoices ? renderPackageChoices(true) : null}
+                {showPackageChoices ? renderPackageChoices(true) : null}
 
             <div className="flex flex-col gap-3 sm:flex-row">
                 <button
@@ -555,7 +562,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
             {renderPaymentDecisionSummary()}
 
-            {hasPackageChoices ? renderPackageChoices() : null}
+            {showPackageChoices ? renderPackageChoices() : null}
 
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3 text-right">
                 <div>

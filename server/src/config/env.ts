@@ -43,6 +43,20 @@ const envSchema = z.object({
   NOTIFICATION_QUEUE_CONCURRENCY: z.coerce.number().int().min(1).max(25).default(5),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),
+  GOOGLE_CLIENT_ID: z.string().optional().default(""),
+  GOOGLE_CLIENT_SECRET: z.string().optional().default(""),
+  GOOGLE_REDIRECT_URI: z.string().optional().default(""),
+  GOOGLE_OAUTH_ENABLED: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+      }
+      return value;
+    }, z.boolean())
+    .default(false),
+  SENTRY_DSN: z.string().optional().default(""),
+  SENTRY_ENVIRONMENT: z.string().optional().default("production"),
+  SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
   DEV_LOCAL_ADMIN_BYPASS: z
     .preprocess((value) => {
       if (typeof value === "string") {

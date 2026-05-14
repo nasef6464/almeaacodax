@@ -6,6 +6,7 @@ import { createRedisClient, isRedisConfigured } from "../config/redis.js";
 
 type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
   keyPrefix: string;
+  skip?: NonNullable<Options["skip"]>;
 };
 
 const resolveRequestKey = (req: Request) => {
@@ -31,6 +32,7 @@ export function createRateLimiter(options: RateLimitOptions) {
     legacyHeaders: false,
     keyGenerator: resolveRequestKey,
     passOnStoreError: true,
+    ...(options.skip ? { skip: options.skip } : {}),
     ...(useRedis && redis
       ? {
           store: new RedisStore({
@@ -48,6 +50,19 @@ export const globalRateLimiter = createRateLimiter({
   windowMs: 60 * 1000,
   limit: 600,
   message: { message: "Too many requests, please try again shortly" },
+  skip: (req) => {
+    const path = req.path || "";
+    const method = (req.method || "GET").toUpperCase();
+    if (method !== "GET") return false;
+
+    // Keep public health and bootstrap reads responsive under burst traffic.
+    return (
+      path === "/" ||
+      path.startsWith("/api/health") ||
+      path === "/api/content/bootstrap" ||
+      path === "/api/taxonomy/bootstrap"
+    );
+  },
 });
 
 export const authRateLimiter = createRateLimiter({

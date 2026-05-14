@@ -307,6 +307,8 @@ const Reports: React.FC = () => {
     const [scopedSmartRemediation, setScopedSmartRemediation] = useState<SmartRemediationPlan | null>(null);
     const [scopedSmartRemediationLoading, setScopedSmartRemediationLoading] = useState(false);
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
+    const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
+    const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -476,6 +478,11 @@ const Reports: React.FC = () => {
     }, [examResults, questionAttempts, questions, sections, skills, subjects]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
+    const studentEvidenceSummary = useMemo(() => {
+        const totalQuestions = aggregatedSkills.reduce((sum, skill) => sum + (skill.totalEvidence || skill.attempts || 0), 0);
+        const uniqueSkills = aggregatedSkills.length;
+        return { totalQuestions, uniqueSkills };
+    }, [aggregatedSkills]);
     const studentEnrolledPathIds = useMemo(() => Array.from(new Set(enrolledPaths || [])).filter(Boolean), [enrolledPaths]);
     const studentEnrolledPathLabels = useMemo(
         () => studentEnrolledPathIds.map((pathId, index) => displayText(paths.find((path) => path.id === pathId)?.name) || `مسار مسجل ${index + 1}`),
@@ -774,7 +781,33 @@ const Reports: React.FC = () => {
     const scopedLeadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
     const scopedLeadSkill = scopedAnalytics?.weakestSkills?.[0] || null;
     const scopedLeadSubject = scopedAnalytics?.subjectSummaries?.[0] || null;
-    const scopedLatestResults = useMemo(() => scopedResults.slice(0, 6), [scopedResults]);
+    const scopedAvailableGroups = useMemo(() => {
+        const names = new Set<string>();
+        (scopedAnalytics?.weakestStudents || []).forEach((student) => {
+            (student.groupNames || []).forEach((name) => {
+                const normalized = displayText(name);
+                if (normalized) names.add(normalized);
+            });
+        });
+        return Array.from(names);
+    }, [scopedAnalytics?.weakestStudents]);
+    const scopedFilteredStudents = useMemo(() => {
+        if (!scopedAnalytics?.weakestStudents?.length) return [];
+        if (scopedGroupFilter === 'all') return scopedAnalytics.weakestStudents;
+        return scopedAnalytics.weakestStudents.filter((student) => (student.groupNames || []).some((name) => displayText(name) === scopedGroupFilter));
+    }, [scopedAnalytics?.weakestStudents, scopedGroupFilter]);
+    const scopedLatestResults = useMemo(() => {
+        if (!scopedResults.length) return [];
+        const filtered = scopedGroupFilter === 'all'
+            ? scopedResults
+            : scopedResults.filter((result) => {
+                const student = scopedFilteredStudents.find((item) => item.id === result.userId);
+                return !!student;
+            });
+        return filtered.slice(0, 6);
+    }, [scopedResults, scopedGroupFilter, scopedFilteredStudents]);
+    const showScopedAggregatedSections = scopedReportMode === 'combined' || scopedReportMode === 'aggregated';
+    const showScopedIndividualSections = scopedReportMode === 'combined' || scopedReportMode === 'individual';
     const scopedLeadStudentSummary = useMemo(() => {
         if (!scopedLeadStudent) return '';
 
@@ -883,7 +916,7 @@ const Reports: React.FC = () => {
         });
     }, [lessons, libraryItems, questions, quizzes, scopedAnalytics?.weakestSkills, skills, topics]);
     const scopedStudentFocusCards = useMemo(() => {
-        return (scopedAnalytics?.weakestStudents || []).slice(0, 4).map((student) => {
+        return scopedFilteredStudents.slice(0, 4).map((student) => {
             const topSkills = (student.weakestSkills || []).slice(0, 2);
             const primarySkillName = topSkills[0]?.skill;
             const resolvedSkill = primarySkillName
@@ -906,7 +939,7 @@ const Reports: React.FC = () => {
                     : 'border-amber-100 bg-amber-50/70 text-amber-700',
             };
         });
-    }, [scopedAnalytics?.weakestStudents, skills]);
+    }, [scopedFilteredStudents, skills]);
     const downloadScopedSkillsWorkbook = async () => {
         if (!scopedAnalytics?.weakestSkills?.length) return;
 
@@ -1529,6 +1562,41 @@ const Reports: React.FC = () => {
                             {user.role === Role.ADMIN ? 'مدير' : user.role === Role.SUPERVISOR ? 'مشرف' : user.role === Role.TEACHER ? 'معلم' : 'ولي أمر'}
                         </div>
                     </div>
+                    <div className="mb-4 flex flex-wrap items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setScopedReportMode('combined')}
+                            className={`rounded-full px-3 py-1.5 text-xs font-black transition ${scopedReportMode === 'combined' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                        >
+                            عرض كامل
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setScopedReportMode('aggregated')}
+                            className={`rounded-full px-3 py-1.5 text-xs font-black transition ${scopedReportMode === 'aggregated' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                        >
+                            تقرير مجمّع
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setScopedReportMode('individual')}
+                            className={`rounded-full px-3 py-1.5 text-xs font-black transition ${scopedReportMode === 'individual' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                        >
+                            تقرير مفرد
+                        </button>
+                        {scopedAvailableGroups.length > 0 ? (
+                            <select
+                                value={scopedGroupFilter}
+                                onChange={(event) => setScopedGroupFilter(event.target.value)}
+                                className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 focus:border-indigo-400 focus:outline-none"
+                            >
+                                <option value="all">كل المجموعات</option>
+                                {scopedAvailableGroups.map((groupName) => (
+                                    <option key={groupName} value={groupName}>{groupName}</option>
+                                ))}
+                            </select>
+                        ) : null}
+                    </div>
 
                     {scopedAnalyticsLoading ? (
                         <div className="text-sm text-gray-500">جارٍ تحميل التقارير المجمعة...</div>
@@ -1622,7 +1690,8 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
 
-                            <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr]">
+                            <div className={`grid gap-4 ${showScopedAggregatedSections && showScopedIndividualSections ? 'xl:grid-cols-[1.25fr_0.95fr]' : 'xl:grid-cols-1'}`}>
+                                {showScopedAggregatedSections ? (
                                 <div className="rounded-3xl border border-indigo-100 bg-white p-4">
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
@@ -1688,7 +1757,9 @@ const Reports: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
+                                ) : null}
 
+                                {showScopedIndividualSections ? (
                                 <div className="rounded-3xl border border-rose-100 bg-white p-4">
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
@@ -1763,6 +1834,7 @@ const Reports: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
+                                ) : null}
                             </div>
 
                             <div className="rounded-3xl border border-gray-100 bg-slate-50/70 p-4">
@@ -1913,6 +1985,7 @@ const Reports: React.FC = () => {
                                 ) : null}
                             </div>
 
+                            {showScopedIndividualSections ? (
                             <div className="rounded-3xl border border-gray-100 bg-white p-4">
                                 <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                     <div>
@@ -1997,6 +2070,7 @@ const Reports: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+                            ) : null}
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <div className="space-y-3">
@@ -2231,6 +2305,9 @@ const Reports: React.FC = () => {
                             <h2 className="text-xl font-black text-gray-900">أضعف مهارة الآن</h2>
                             <p className="mt-1 text-sm leading-6 text-gray-500">
                                 ملخص سريع: المهارة، السبب المختصر، والخطوة التالية.
+                            </p>
+                            <p className="mt-1 text-xs font-bold text-indigo-600">
+                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
                             </p>
                         </div>
                         <button
