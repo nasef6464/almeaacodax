@@ -56,7 +56,7 @@ const questionSchema = questionBaseSchema.refine(
 
 const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(80),
+  limit: z.coerce.number().int().min(1).max(1000).default(80),
   ids: z.string().trim().optional(),
   pathId: z.string().trim().optional(),
   subject: z.string().trim().optional(),
@@ -127,7 +127,26 @@ const toQuestionSummaryText = (value: unknown) => {
 };
 
 const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, reviewerNotes, approvedBy, approvedAt, __v, ...safeQuestion } = question;
+  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
+  delete safeQuestion.reviewerNotes;
+  delete safeQuestion.approvedBy;
+  delete safeQuestion.approvedAt;
+  return safeQuestion;
+};
+
+const sanitizeQuestionSummaryForLearner = (question: Record<string, any>) => {
+  const {
+    correctOptionIndex,
+    explanation,
+    reviewerNotes,
+    approvedBy,
+    approvedAt,
+    ownerId,
+    createdBy,
+    assignedTeacherId,
+    __v,
+    ...safeQuestion
+  } = question;
   return safeQuestion;
 };
 
@@ -905,7 +924,11 @@ quizRouter.get(
   "/questions",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const query = questionListQuerySchema.parse(req.query);
+    const parsedQuery = questionListQuerySchema.parse(req.query);
+    const query = {
+      ...parsedQuery,
+      limit: Math.min(100, Math.max(1, parsedQuery.limit)),
+    };
     const canUseSummaryCache =
       query.summary &&
       query.noTotal &&
@@ -1009,7 +1032,9 @@ quizRouter.get(
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
     const canSeeAnswers = isStaffRole(req.authUser?.role);
     const items = query.summary
-      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+      ? canSeeAnswers
+        ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
+        : limitedItems.map((item) => sanitizeQuestionSummaryForLearner({ ...item, text: toQuestionSummaryText(item.text) }))
       : canSeeAnswers
         ? limitedItems
         : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
