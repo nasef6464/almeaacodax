@@ -1,0 +1,174 @@
+# ملف تسليم الجلسة التالية (مرجع إلزامي)
+
+آخر تحديث: 2026-05-14
+
+هذا الملف هو المرجع السريع لأي حساب Codex جديد أو أي محادثة جديدة لاستكمال المشروع بدون فقدان السياق.
+
+---
+
+## 1) قاعدة العمل الإلزامية (كما اتفقنا)
+
+أي دفعة يتم الدخول فيها يجب أن تُغلق بالكامل قبل الانتقال لدفعة جديدة:
+
+1. تطوير فعلي في الكود
+2. فحوصات تقنية (typecheck/build/smoke مناسب)
+3. تحقق بصري عند الحاجة
+4. توثيق ما تم في ملف تقرير دفعة
+5. إعلان حالة الدفعة بوضوح:
+   - `مقفول نهائيًا`
+   - أو `مقفول برمجيًا ويحتاج تفعيل خارجي`
+   - أو `مفتوح`
+
+ممنوع إعلان أي دفعة "مقفولة نهائيًا" بدون فحوص.
+
+---
+
+## 2) ما تم إغلاقه مؤخرًا
+
+### دفعات التكاملات (Integration Track)
+- سجل تغييرات التكاملات + الاسترجاع:
+  - `docs/BATCH_INTEGRATIONS_HISTORY_RESTORE_2026-05-14_AR.md`
+- Checklist تشغيل إنتاجي للتكاملات:
+  - `docs/BATCH_INTEGRATIONS_PRODUCTION_CHECKLIST_2026-05-14_AR.md`
+- تقوية أسرار التكاملات (mask + preserve on save):
+  - `docs/BATCH_INTEGRATIONS_SECRET_HARDENING_2026-05-14_AR.md`
+- Runtime audit للتكاملات:
+  - `docs/BATCH_INTEGRATIONS_RUNTIME_AUDIT_2026-05-14_AR.md`
+- اختبار إرسال فعلي Email/WhatsApp:
+  - `docs/BATCH_INTEGRATIONS_TEST_DELIVERY_2026-05-14_AR.md`
+- حارس Smoke مخصص للتكاملات:
+  - `docs/BATCH_INTEGRATIONS_RUNTIME_GUARD_2026-05-14_AR.md`
+  - `scripts/smoke-integrations-runtime-contract.mjs`
+  - `npm run smoke:integrations-runtime`
+
+### دفعة قبول الأدوار
+- تقرير قبول أدوار الإنتاج:
+  - `docs/BATCH_ROLE_ACCEPTANCE_VERCEL_2026-05-14_AR.md`
+
+---
+
+## 3) ما يزال مطلوبًا قبل إعلان جاهزية إنتاج كاملة
+
+1. تفعيل Credentials الخارجية نهائيًا على الاستضافات:
+   - Google OAuth
+   - Email provider
+   - WhatsApp provider
+   - Sentry
+   - Redis managed
+
+2. اختبار end-to-end بعد التفعيل:
+   - Google login
+   - Test email delivery
+   - Test WhatsApp delivery
+   - Runtime audit = green للمزودات المفعلة
+
+3. Load test فعلي على بنية مناسبة (مدفوعة) قبل أي ادعاء سعة عالية.
+
+---
+
+## 4) متغيرات البيئة المطلوبة (مختصر عملي)
+
+### Backend (Render)
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_REDIRECT_URI`
+- `APP_BASE_URL`
+- `EMAIL_PROVIDER` + مفاتيحه
+- `WHATSAPP_PROVIDER` + مفاتيحه
+- `SENTRY_DSN`
+- `REDIS_URL`
+
+### Frontend (Vercel)
+- `VITE_API_URL`
+
+---
+
+## 5) نقطة مهمة جدًا بخصوص الصلاحيات والوصول
+
+أي حساب Codex جديد **قد لا يملك وصول مباشر** لحساباتك الخارجية (GitHub/Vercel/Render/MongoDB) داخل الجلسة.
+
+لذلك:
+- لا تفترض أن الحساب الجديد يستطيع تعديل ENV بنفسه.
+- الحساب الجديد يجهز الكود والفحوص والوثائق، وأنت تضيف مفاتيح ENV عند الحاجة.
+- بعد الإضافة، الحساب ينفذ تحقق التشغيل ويغلق الدفعة.
+
+---
+
+## 6) أوامر فحص أساسية يجب تشغيلها بعد أي دفعة
+
+- `npm run typecheck`
+- `npm --prefix server run build`
+- `npm run smoke:api-phase4`
+- `npm run smoke:frontend`
+- `npm run smoke:integrations-runtime` (خاص بالتكاملات)
+
+---
+
+## 7) ترتيب القراءة الإجباري لأي حساب جديد
+
+1. `docs/NEXT_SESSION_HANDOVER_AR.md` (هذا الملف)
+2. `docs/project-handover/17_STRICT_BATCH_RULE_AR.md`
+3. `docs/project-handover/16_CURRENT_WORKING_STATE_AR.md`
+4. آخر تقارير الدفعات في `docs/`
+
+---
+
+## 8) المطلوب عند طلب "اكمل"
+
+عند طلب المستخدم "اكمل":
+1. اختر دفعة واحدة فقط
+2. نفذها حتى الإغلاق الكامل
+3. شغّل الفحوص
+4. حدّث ملفات التسليم
+5. ثم انتقل للدفعة التالية
+
+
+## ????? ????? ??? ?????? ??????? (Google OAuth Callback Compatibility)
+
+- ?? ????? ??? ??? callback ???????? ?? Google OAuth:
+  - ??????? ???? ?????? ??? ????????:
+    - `GET /api/auth/google/callback`
+    - `GET /api/auth/google/call`
+  - ?????: ??????? ????? ?????? ?? ??? ????? ????? Google Cloud ??`redirect URI` (???? ????? ??????? ???? ??????).
+- ????? ???? ???? ???????:
+  - `docs/BATCH_GOOGLE_CALLBACK_COMPAT_ALIAS_2026-05-14_AR.md`
+
+### ????? ?????? ?????
+- ???? ????:
+  - `https://almeaacodax-k2ux.onrender.com/api/auth/google/start?returnTo=%2Fcategory%2Fp_1777779639431%3Fsubject%3Dsub_1777779748206%26tab%3Dpackages`
+- ??? ?? ??? ??????? ?? OAuth (?? ?? ????? ????????) ????? ?????? `/login?oauth_error=google`
+- ??? ?? ??????? ?????? ???`GOOGLE_REDIRECT_URI` ?????? ???? ?????? ???? ?????.
+
+## Google OAuth Callback Compatibility (Batch Closure)
+- Server-side route handling updated to accept both callback endpoints:
+  - GET /api/auth/google/callback
+  - GET /api/auth/google/call
+- Purpose: keep Google login stable even if redirect URI is configured as /google/call in Google Cloud.
+- Delivery note: this change is already in source (`server/src/routes/auth.routes.ts`) and documented in `docs/BATCH_GOOGLE_CALLBACK_COMPAT_ALIAS_2026-05-14_AR.md`.
+- Verification:
+  - `curl -I -s "https://almeaacodax-k2ux.onrender.com/api/auth/google/callback?error=access_denied&state=abc"` should redirect toward Vercel login page.
+  - `curl -I -s "https://almeaacodax-k2ux.onrender.com/api/auth/google/call?error=access_denied&state=abc"` should also work after deployment sync.
+
+## تحديث دفعة (Batch Closure) - 2026-05-14
+- تم إغلاق دُفعة التشغيل الأخيرة بنجاح:
+  - إصلاح TypeScript error في `dashboards/admin/FinancialManager.tsx` عبر توسيع نوع استعلام الطلبات في `services/api.ts`.
+  - تفعيل فحوصات الإغلاق:  
+    - `npm run typecheck` ✅  
+    - `npm run build` ✅  
+    - `npm --prefix server run build` ✅  
+    - `npm run smoke:integrations-runtime` ✅  
+    - `npm run smoke:auth-account` ✅  
+    - `npm run smoke:auth-cookie` ✅
+  - حالة التزامن:
+    - مسارات Google OAuth الآن تقبل alias القديم والجديد:
+      `/api/auth/google/callback` و `/api/auth/google/call`.
+    - دليل التنفيذ موجود بالفعل:
+      `docs/BATCH_GOOGLE_CALLBACK_COMPAT_ALIAS_2026-05-14_AR.md`.
+- ما بقى متبقّى كبند عملي قبل إغلاق الدفعة النهائية للميتاب:
+  1. تشغيل اختبارات نهاية-إلى-نهاية على رابط Vercel النهائي بعد أي نشر جديد.
+  2. التأكد من تفعيل إعدادات Google OAuth/Email/WhatsApp/Sentry في Render وVercel حسب ملف `docs/BATCH_INTEGRATIONS_SETUP_CHECKLIST...`.
+  3. البدء بدفعة 3+4 من خارطة العمل حسب الاتفاق (تحسينات API/تقارير/لوحة الإدارة حسب الأولوية الحالية).
+
+## قاعدة تشغيل جديدة (ملزمة)
+- بأمر المالك "اكمل" عند بدء دفعة جديدة: لا نتوقف حتى إغلاق الدفعة إغلاقًا نهائيًا مع تحقق حي على الإنتاج.
+- لا نرجع لنفس الدفعة لاحقًا إلا إذا ظهر خلل جديد بعد الإغلاق النهائي.
