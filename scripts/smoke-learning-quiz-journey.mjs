@@ -32,6 +32,12 @@ async function fetchJson(path) {
   return response.json();
 }
 
+function extractList(payload, key) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object' && Array.isArray(payload[key])) return payload[key];
+  return [];
+}
+
 const stripCopySuffix = (value) => String(value || '').replace(/_copy(?:_\d+)?$/i, '');
 const isSafeInternalRoute = (target) => Boolean(target && target.startsWith('/') && !target.startsWith('//'));
 
@@ -42,7 +48,8 @@ function buildQuizRouteWithContext(quizId, context = {}) {
   return `/quiz/${quizId}${params.toString() ? `?${params.toString()}` : ''}`;
 }
 
-const quizzes = await fetchJson('/quizzes');
+const quizzesPayload = await fetchJson('/quizzes');
+const quizzes = extractList(quizzesPayload, 'quizzes');
 const questions = await fetchJson('/quizzes/questions');
 const questionIds = new Set(
   questions.flatMap((question) => {

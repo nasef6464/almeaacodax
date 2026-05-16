@@ -287,3 +287,12 @@
   - `/api/content/access-code-redemptions` => `401`
   - `/api/health` => `200`
 - Scope stayed isolated to pagination/security in access-code listing and redemption history.
+
+## Update 2026-05-16 — Batch 08 Final Closure
+- Batch 08 (Questions Pagination) reached full closure.
+- Added paginated mode for `/quizzes/questions` with backward compatibility for existing array consumers.
+- Enforced hard cap limit=100 and learner-safe summary serializer.
+- Production live verification passed with:
+  - legacy shape (`array`) still available,
+  - `paginate=true` returning `data + pagination`,
+  - `limit=999` clamped to `100`.

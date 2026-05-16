@@ -30,6 +30,12 @@ async function fetchJson(path) {
   return response.json();
 }
 
+const extractList = (payload, key) => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object' && Array.isArray(payload[key])) return payload[key];
+  return [];
+};
+
 const idOf = (item) => String(item?.id || item?._id || '').trim();
 const stripCopySuffix = (value) => String(value || '').replace(/_copy(?:_\d+)?$/i, '');
 const visibleToLearner = (item) =>
@@ -90,12 +96,13 @@ function matchesEntityId(item, value) {
   return actual === expected || actual === stripCopySuffix(expected) || stripCopySuffix(actual) === expected;
 }
 
-const [taxonomy, content, quizzes, questions] = await Promise.all([
+const [taxonomy, content, quizzesPayload, questions] = await Promise.all([
   fetchJson('/taxonomy/bootstrap'),
   fetchJson('/content/bootstrap'),
   fetchJson('/quizzes'),
   fetchJson('/quizzes/questions'),
 ]);
+const quizzes = extractList(quizzesPayload, 'quizzes');
 
 const path = (taxonomy.paths || []).find((item) => idOf(item) === TARGET_PATH_ID);
 const subject = (taxonomy.subjects || []).find((item) => idOf(item) === TARGET_SUBJECT_ID);

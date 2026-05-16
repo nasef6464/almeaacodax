@@ -10,7 +10,7 @@
 | 05 | Payment Requests Pagination | Programmatically closed, check pending | 2026-05-16 | 2026-05-16 | PAYMENT_REQUESTS_PAGINATION_FIX_2026-05-14_AR.md | ØªÙ…Øª Ù…Ø±Ø§Ø¬Ø¹Ø© ØªÙ†ÙÙŠØ° pagination ÙÙŠ Backend/UIØŒ ÙØ´Ù„ check Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† ØªÙˆÙØ± ÙˆØ³ÙŠÙ„Ø© Ø§Ù„Ø¯ÙØ¹ Ù„Ù„Ø¯ÙˆÙ„. |
 | 06 | Quiz Results Pagination | Programmatically closed, production verification pending | 2026-05-16 | 2026-05-16 | QUIZ_RESULTS_PAGINATION_FIX_2026-05-14_AR.md | ØªÙ… Ø§Ù„ØªØ£ÙƒØ¯ Ù…Ù† Ø£Ù† Ø¬Ù…ÙŠØ¹ Ù†Ù‚Ø§Ø· Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø± ÙˆØ§Ù„Ù€ question-attempts ØªØ¹Ù…Ù„ Ø¨Ù†Ø¸Ø§Ù… pagination ÙØ¹Ù„ÙŠ ÙˆØªØ³ØªØ®Ø¯Ù… `buildPaginatedResponse` Ùˆ`resolvePagination`. | 
 | 07 | Access Codes Pagination | Fully closed | 2026-05-16 | 2026-05-16 | ACCESS_CODES_PAGINATION_FIX_2026-05-14_AR.md | تم تنفيذ الترقيم الآمن، نجحت الفحوص، وتم التحقق الحي على الإنتاج بعد النشر. |
-| 08 | Questions Pagination | Open |  |  | QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md | ?? ????.
+| 08 | Questions Pagination | Fully closed | 2026-05-16 | 2026-05-16 | QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md | تم تنفيذ pagination آمن للأسئلة مع hard cap=100 وsafe serializer وتحقق حي على الإنتاج. |
 | 09 | RBAC Security Audit Plan | Open |  |  | RBAC_SECURITY_AUDIT_PLAN_2026-05-14_AR.md | ?? ????.
 | 10 | RBAC/API Hardening Batch 1 | Open |  |  | RBAC_API_HARDENING_BATCH_1_2026-05-14_AR.md | ?? ????.
 | 11 | Sentry Monitoring Readiness | Open |  |  | SENTRY_MONITORING_READY_2026-05-14_AR.md | ?? ????.
@@ -72,3 +72,12 @@
   - `GET /api/content/access-code-redemptions` => `401` (بعد أن كانت `404` قبل النشر).
   - `GET /api/health` => `200`.
 - النتيجة: مسارات الدفعة 07 فعالة ومحمية، ولا حاجة للعودة للدفعة إلا عند ظهور خلل جديد.
+
+
+## تحديث 2026-05-16 — BATCH 08 (إغلاق نهائي)
+- الحالة: **Fully closed**.
+- تم تنفيذ ترقيم آمن لمسار الأسئلة `GET /api/quizzes/questions` مع `paginate=true` و`pagination` object.
+- تم تطبيق hard cap فعلي: `limit=999` يتم قصّه إلى `100`.
+- تم تقوية Safe Serializer لردود المتعلم لمنع تسريب حقول الإجابة الصحيحة والحقول الداخلية الحساسة.
+- فحوص البناء/النوع/الـsmoke المكتملة: ناجحة.
+- تحقق حي على الإنتاج: نجح (200 مع array legacy + 200 مع pagination mode وحد limit=100).
