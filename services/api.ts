@@ -630,6 +630,54 @@ export const api = {
       method: "DELETE",
       token,
     }),
+  getAccessCodes: (
+    params?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      schoolId?: string;
+      packageId?: string;
+      status?: "active" | "expired" | "exhausted";
+      dateFrom?: string;
+      dateTo?: string;
+      sortBy?: "createdAt" | "expiresAt" | "currentUses" | "maxUses" | "code";
+      sortOrder?: "asc" | "desc";
+    },
+    token?: string | null,
+  ) => {
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params || {})) {
+      if (value !== undefined && value !== null && String(value).trim()) {
+        searchParams.set(key, String(value));
+      }
+    }
+    const query = searchParams.toString();
+    return request<unknown>(`/content/access-codes${query ? `?${query}` : ""}`, { token });
+  },
+  getAccessCodeRedemptions: (
+    params?: {
+      page?: number;
+      limit?: number;
+      accessCodeId?: string;
+      userId?: string;
+      schoolId?: string;
+      status?: "active" | "revoked" | "expired";
+      dateFrom?: string;
+      dateTo?: string;
+      sortBy?: "grantedAt" | "expiresAt" | "createdAt";
+      sortOrder?: "asc" | "desc";
+    },
+    token?: string | null,
+  ) => {
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params || {})) {
+      if (value !== undefined && value !== null && String(value).trim()) {
+        searchParams.set(key, String(value));
+      }
+    }
+    const query = searchParams.toString();
+    return request<unknown>(`/content/access-code-redemptions${query ? `?${query}` : ""}`, { token });
+  },
   createAccessCode: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/access-codes", {
       method: "POST",

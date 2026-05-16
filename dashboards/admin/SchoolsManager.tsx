@@ -133,6 +133,30 @@ type SchoolReport = {
     }>;
 };
 
+type AccessCodesPagination = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+};
+
+type AccessCodesListResponse = {
+    data?: Array<{
+        id?: string;
+        _id?: string;
+        code?: string;
+        schoolId?: string;
+        packageId?: string;
+        maxUses?: number;
+        currentUses?: number;
+        expiresAt?: number;
+        createdAt?: number;
+    }>;
+    pagination?: Partial<AccessCodesPagination>;
+};
+
 const buildStoreUser = (user: AdminUserPayload): User => ({
     id: String(user.id || user._id || user.email),
     name: user.name,
@@ -605,6 +629,19 @@ export const SchoolsManager: React.FC = () => {
     const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
     const [bulkClassNames, setBulkClassNames] = useState('');
     const [singleStudent, setSingleStudent] = useState({ name: '', email: '', className: '', password: '' });
+    const [pagedAccessCodes, setPagedAccessCodes] = useState<Array<{
+        id: string;
+        code: string;
+        schoolId: string;
+        packageId: string;
+        maxUses: number;
+        currentUses: number;
+        expiresAt: number;
+        createdAt: number;
+    }>>([]);
+    const [pagedAccessCodesPagination, setPagedAccessCodesPagination] = useState<AccessCodesPagination | null>(null);
+    const [isLoadingPagedAccessCodes, setIsLoadingPagedAccessCodes] = useState(false);
+    const [pagedAccessCodesError, setPagedAccessCodesError] = useState<string | null>(null);
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
@@ -780,6 +817,75 @@ export const SchoolsManager: React.FC = () => {
                 : (packages[0]?.id || '')
         ));
     }, [selectedSchool, b2bPackages]);
+
+    useEffect(() => {
+        let cancelled = false;
+        if (!selectedSchool || activeTab !== 'packages') {
+            setPagedAccessCodes([]);
+            setPagedAccessCodesPagination(null);
+            setPagedAccessCodesError(null);
+            setIsLoadingPagedAccessCodes(false);
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        setIsLoadingPagedAccessCodes(true);
+        setPagedAccessCodesError(null);
+        void (async () => {
+            try {
+                const response = await api.getAccessCodes({
+                    schoolId: selectedSchool.id,
+                    page: 1,
+                    limit: 100,
+                    sortBy: 'createdAt',
+                    sortOrder: 'desc',
+                }) as AccessCodesListResponse;
+
+                if (cancelled) return;
+                const incoming = Array.isArray(response?.data) ? response.data : [];
+                setPagedAccessCodes(
+                    incoming.map((code) => ({
+                        id: String(code.id || code._id || ''),
+                        code: String(code.code || ''),
+                        schoolId: String(code.schoolId || ''),
+                        packageId: String(code.packageId || ''),
+                        maxUses: Number(code.maxUses || 0),
+                        currentUses: Number(code.currentUses || 0),
+                        expiresAt: Number(code.expiresAt || 0),
+                        createdAt: Number(code.createdAt || 0),
+                    })).filter((code) => code.id && code.schoolId),
+                );
+
+                const pagination = response?.pagination || {};
+                if (typeof pagination.page === 'number' && typeof pagination.limit === 'number') {
+                    setPagedAccessCodesPagination({
+                        total: Number(pagination.total || 0),
+                        page: pagination.page,
+                        limit: pagination.limit,
+                        totalPages: Number(pagination.totalPages || 1),
+                        hasNext: Boolean(pagination.hasNext),
+                        hasPrev: Boolean(pagination.hasPrev),
+                    });
+                } else {
+                    setPagedAccessCodesPagination(null);
+                }
+            } catch (error) {
+                if (cancelled) return;
+                setPagedAccessCodes([]);
+                setPagedAccessCodesPagination(null);
+                setPagedAccessCodesError(error instanceof Error ? error.message : 'تعذّر تحميل أكواد التفعيل المرقّمة.');
+            } finally {
+                if (!cancelled) {
+                    setIsLoadingPagedAccessCodes(false);
+                }
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [selectedSchool?.id, activeTab, accessCodes.length]);
 
     const handleCreateSchool = () => {
         const newSchool: Group = {
@@ -1071,6 +1177,7 @@ export const SchoolsManager: React.FC = () => {
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
         const activeSchoolCodes = schoolCodes.filter((code) => code.expiresAt > Date.now());
+        const tableSchoolCodes = pagedAccessCodes.length > 0 ? pagedAccessCodes : schoolCodes;
         const selectedPackageForCode = schoolPackages.find((pkg) => pkg.id === selectedPackageIdForCode);
         const totalSeats = activeSchoolPackages.reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
         const usedSeats = schoolCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
@@ -3148,7 +3255,7 @@ export const SchoolsManager: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
-                                            {schoolCodes.map((code) => (
+                                            {tableSchoolCodes.map((code) => (
                                                 <tr key={code.id} className="bg-white">
                                                     <td className="p-4 font-mono font-bold text-amber-600">{code.code}</td>
                                                     <td className="p-4 text-sm text-gray-800">{schoolPackages.find((pkg) => pkg.id === code.packageId)?.name || 'باقة غير معروفة'}</td>
@@ -3185,6 +3292,15 @@ export const SchoolsManager: React.FC = () => {
                                             ))}
                                         </tbody>
                                     </table>
+                                    {(isLoadingPagedAccessCodes || pagedAccessCodesError || pagedAccessCodesPagination) && (
+                                        <div className="px-4 py-3 text-xs text-gray-500 border-t border-gray-200 bg-white">
+                                            {isLoadingPagedAccessCodes ? 'جاري تحميل الأكواد...' : ''}
+                                            {!isLoadingPagedAccessCodes && pagedAccessCodesError ? pagedAccessCodesError : ''}
+                                            {!isLoadingPagedAccessCodes && !pagedAccessCodesError && pagedAccessCodesPagination
+                                                ? `إجمالي الأكواد: ${pagedAccessCodesPagination.total} (الحد الأقصى للصفحة الحالية: ${pagedAccessCodesPagination.limit})`
+                                                : ''}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

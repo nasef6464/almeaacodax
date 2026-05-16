@@ -11,6 +11,7 @@ import { LibraryItemModel } from "../models/LibraryItem.js";
 import { GroupModel } from "../models/Group.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
+import { AccessGrantModel } from "../models/AccessGrant.js";
 import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
@@ -277,6 +278,40 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 
 const getModelDocumentId = (document: { id?: unknown; _id?: unknown }) => String(document.id || document._id || "");
 
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const parseDateToTimestamp = (value?: string) => {
+  if (!value) {
+    return null;
+  }
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const buildPaginationMeta = (total: number, page: number, limit: number) => {
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(limit, 1)));
+  return {
+    total,
+    page,
+    limit,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
+};
+
+const normalizeAccessCodeResponse = (code: any) => ({
+  id: String(code.id || code._id || ""),
+  code: String(code.code || ""),
+  schoolId: String(code.schoolId || ""),
+  packageId: String(code.packageId || ""),
+  maxUses: Number(code.maxUses || 0),
+  currentUses: Number(code.currentUses || 0),
+  expiresAt: Number(code.expiresAt || 0),
+  createdAt: Number(code.createdAt || 0),
+});
+
 const buildDocumentsByIdsQuery = (values: string[]) => {
   const ids = uniqueStrings(values.map((value) => String(value || "").trim()));
   const objectIds = ids
@@ -289,6 +324,38 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
+};
+
+const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) => {
+  const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
+  if (!user) {
+    return [] as string[];
+  }
+
+  const managedGroups = await GroupModel.find({
+    $or: [
+      { ownerId: authUser.id },
+      { supervisorIds: authUser.id },
+      { createdBy: authUser.id },
+      ...(user.schoolId ? [{ _id: user.schoolId }, { id: user.schoolId }] : []),
+    ],
+  }).select("id _id parentId type");
+
+  const managedGroupIds = uniqueStrings([
+    ...(user.groupIds || []).map(String),
+    ...managedGroups.map((group) => String(group.id || group._id)),
+  ]);
+
+  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type");
+  const schoolIds = uniqueStrings([
+    String(user.schoolId || ""),
+    ...managedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+    ...managedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+  ]);
+
+  return uniqueStrings(schoolIds.filter(Boolean));
 };
 
 const buildOwnedDocumentQuery = (
@@ -554,6 +621,32 @@ const accessCodeSchema = z.object({
   currentUses: z.number().min(0).default(0),
   expiresAt: z.number(),
   createdAt: z.number().optional(),
+});
+
+const accessCodesListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).optional(),
+  search: z.string().trim().optional(),
+  schoolId: z.string().trim().optional(),
+  packageId: z.string().trim().optional(),
+  status: z.enum(["active", "expired", "exhausted"]).optional(),
+  dateFrom: z.string().trim().optional(),
+  dateTo: z.string().trim().optional(),
+  sortBy: z.enum(["createdAt", "expiresAt", "currentUses", "maxUses", "code"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+});
+
+const accessCodeRedemptionsListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).optional(),
+  accessCodeId: z.string().trim().optional(),
+  userId: z.string().trim().optional(),
+  schoolId: z.string().trim().optional(),
+  status: z.enum(["active", "revoked", "expired"]).optional(),
+  dateFrom: z.string().trim().optional(),
+  dateTo: z.string().trim().optional(),
+  sortBy: z.enum(["grantedAt", "expiresAt", "createdAt"]).default("grantedAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
 const studyPlanSchema = z.object({
@@ -1503,6 +1596,203 @@ contentRouter.delete(
     }
 
     return res.json({ success: true });
+  }),
+);
+
+contentRouter.get(
+  "/access-codes",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const query = accessCodesListQuerySchema.parse(req.query);
+    const safePage = Math.max(1, Number(query.page || 1));
+    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
+    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
+    const authUser = req.authUser!;
+    const filter: Record<string, unknown> = {};
+
+    if (authUser.role === "supervisor") {
+      const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
+      }
+      filter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
+    } else if (query.schoolId) {
+      filter.schoolId = query.schoolId;
+    }
+
+    if (query.packageId) {
+      filter.packageId = query.packageId;
+    }
+
+    if (query.search) {
+      filter.code = { $regex: escapeRegExp(query.search), $options: "i" };
+    }
+
+    const createdAtFilter: Record<string, number> = {};
+    const dateFrom = parseDateToTimestamp(query.dateFrom);
+    const dateTo = parseDateToTimestamp(query.dateTo);
+    if (dateFrom !== null) {
+      createdAtFilter.$gte = dateFrom;
+    }
+    if (dateTo !== null) {
+      createdAtFilter.$lte = dateTo;
+    }
+    if (Object.keys(createdAtFilter).length > 0) {
+      filter.createdAt = createdAtFilter;
+    }
+
+    const now = Date.now();
+    if (query.status === "active") {
+      filter.$expr = {
+        $and: [
+          { $gt: ["$expiresAt", now] },
+          { $lt: ["$currentUses", "$maxUses"] },
+        ],
+      };
+    } else if (query.status === "expired") {
+      filter.expiresAt = { $lte: now };
+    } else if (query.status === "exhausted") {
+      filter.$expr = { $gte: ["$currentUses", "$maxUses"] };
+    }
+
+    const direction = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
+    if (query.sortBy !== "createdAt") {
+      sort.createdAt = -1;
+    }
+
+    const [codes, total] = await Promise.all([
+      AccessCodeModel.find(filter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
+      AccessCodeModel.countDocuments(filter),
+    ]);
+
+    return res.json({
+      data: codes.map(normalizeAccessCodeResponse),
+      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
+    });
+  }),
+);
+
+contentRouter.get(
+  "/access-code-redemptions",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const query = accessCodeRedemptionsListQuerySchema.parse(req.query);
+    const safePage = Math.max(1, Number(query.page || 1));
+    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
+    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
+    const authUser = req.authUser!;
+    const grantFilter: Record<string, unknown> = { sourceType: "access_code" };
+    const accessCodeFilter: Record<string, unknown> = {};
+    let shouldResolveScopedCodes = false;
+
+    if (authUser.role === "supervisor") {
+      const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
+      }
+      accessCodeFilter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
+      shouldResolveScopedCodes = true;
+    } else if (query.schoolId) {
+      accessCodeFilter.schoolId = query.schoolId;
+      shouldResolveScopedCodes = true;
+    }
+
+    if (query.accessCodeId) {
+      const orConditions: Array<Record<string, unknown>> = [{ id: query.accessCodeId }];
+      if (mongoose.Types.ObjectId.isValid(query.accessCodeId)) {
+        orConditions.push({ _id: new mongoose.Types.ObjectId(query.accessCodeId) });
+      }
+      accessCodeFilter.$or = orConditions;
+      shouldResolveScopedCodes = true;
+    }
+
+    if (query.userId) {
+      grantFilter.userId = query.userId;
+    }
+    if (query.status) {
+      grantFilter.status = query.status;
+    }
+
+    const grantedAtFilter: Record<string, number> = {};
+    const dateFrom = parseDateToTimestamp(query.dateFrom);
+    const dateTo = parseDateToTimestamp(query.dateTo);
+    if (dateFrom !== null) {
+      grantedAtFilter.$gte = dateFrom;
+    }
+    if (dateTo !== null) {
+      grantedAtFilter.$lte = dateTo;
+    }
+    if (Object.keys(grantedAtFilter).length > 0) {
+      grantFilter.grantedAt = grantedAtFilter;
+    }
+
+    if (shouldResolveScopedCodes) {
+      const scopedCodes = await AccessCodeModel.find(accessCodeFilter).select("id _id schoolId packageId code").lean();
+      const scopedAccessCodeIds = scopedCodes.map((code) => String(code._id));
+      if (scopedAccessCodeIds.length === 0) {
+        return res.json({
+          data: [],
+          pagination: buildPaginationMeta(0, pagination.page, pagination.limit),
+        });
+      }
+      grantFilter["metadata.accessCodeId"] = { $in: scopedAccessCodeIds };
+    }
+
+    const direction = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
+    if (query.sortBy !== "grantedAt") {
+      sort.grantedAt = -1;
+    }
+
+    const [grants, total] = await Promise.all([
+      AccessGrantModel.find(grantFilter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
+      AccessGrantModel.countDocuments(grantFilter),
+    ]);
+
+    const accessCodeIds = Array.from(
+      new Set(
+        grants
+          .map((grant) => String((grant as any)?.metadata?.accessCodeId || ""))
+          .filter(Boolean),
+      ),
+    );
+    const userIds = Array.from(new Set(grants.map((grant) => String((grant as any)?.userId || "")).filter(Boolean)));
+
+    const [codes, users] = await Promise.all([
+      accessCodeIds.length
+        ? AccessCodeModel.find({ _id: { $in: accessCodeIds } }).select("id _id code schoolId packageId").lean()
+        : Promise.resolve([]),
+      userIds.length ? UserModel.find(buildDocumentsByIdsQuery(userIds)).select("id _id name email").lean() : Promise.resolve([]),
+    ]);
+
+    const codeById = new Map(codes.map((code) => [String(code._id), code]));
+    const userById = new Map(users.map((user) => [String((user as any).id || user._id), user]));
+
+    return res.json({
+      data: grants.map((grant: any) => {
+        const accessCodeId = String(grant?.metadata?.accessCodeId || "");
+        const code = codeById.get(accessCodeId);
+        const userItem = userById.get(String(grant.userId || ""));
+        return {
+          id: String(grant.id || grant._id || ""),
+          userId: String(grant.userId || ""),
+          userName: String(userItem?.name || ""),
+          userEmail: String(userItem?.email || ""),
+          accessCodeId,
+          accessCode: String(code?.code || grant?.metadata?.accessCode || ""),
+          schoolId: String(code?.schoolId || ""),
+          packageId: String(code?.packageId || grant.packageId || ""),
+          status: String(grant.status || ""),
+          grantedBy: String(grant.grantedBy || ""),
+          grantedAt: Number(grant.grantedAt || 0),
+          expiresAt: typeof grant.expiresAt === "number" ? grant.expiresAt : null,
+        };
+      }),
+      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
+    });
   }),
 );
 
