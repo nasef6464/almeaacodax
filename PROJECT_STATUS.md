@@ -77,3 +77,8 @@
 - `/api/admin/quiz-results` => `404`
 - legacy `/api/quizzes/results` => `401`
 - Conclusion: Batch 06 new endpoints are still not deployed on production.
+
+## Final Closure Update (Batch 06)
+- Batch 06 is now fully closed after successful live production verification.
+- Verified behaviors: auth/role guards, limit cap, pagination envelope, and no correct-answer leakage.
+- Closure date: 2026-05-16.

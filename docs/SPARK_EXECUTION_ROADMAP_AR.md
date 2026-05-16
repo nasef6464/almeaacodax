@@ -265,3 +265,7 @@
   - تحديث التقارير والـ Ledger.
   - تحقق حي على الإنتاج للجزء المتأثر.
 - إذا تعذر التحقق الحي: تُسجّل الحالة جزئية بوضوح ولا تعتبر الدفعة مغلقة نهائيًا.
+
+## Update 2026-05-16 — Batch 06 Final Closure
+- Batch 06 (Quiz Results Pagination) reached full closure after successful live production verification.
+- Verified in production: auth/role responses (401/403/200), hard cap limit=100, pagination envelope, and no correct-answer leakage fields.

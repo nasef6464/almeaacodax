@@ -166,3 +166,14 @@ BATCH-07 — ترقيم كودات الوصول (Access Codes Pagination)
 - `GET /api/admin/quiz-results` بدون auth: `404`
 - `GET /api/quizzes/results` (قديم) بدون auth: `401`
 - الخلاصة: الخدمة الحية متاحة، لكن endpoints الجديدة للدفعة 06 لم تُنشر بعد.
+
+## إغلاق نهائي حي (2026-05-16)
+- تم تحقق الإنتاج الحي بنجاح للمسارات الجديدة:
+  - `GET /api/quiz-results/my` بدون auth => `401`
+  - `GET /api/admin/quiz-results` بدون auth => `401`
+  - كطالب: `GET /api/admin/quiz-results` => `403`
+  - كأدمن: `GET /api/admin/quiz-results` => `200`
+- تم التحقق من `limit=999` وإرجاع `limit=100` فعليًا.
+- تم التحقق من وجود `pagination` في الردود.
+- تم التحقق من عدم تسريب الحقول الحساسة (`correctAnswer`, `correctIndex`, `correctOptionIndex`, `explanation`).
+- الحالة النهائية للدفعة: **مكتملة ✅ (Fully closed)**.
