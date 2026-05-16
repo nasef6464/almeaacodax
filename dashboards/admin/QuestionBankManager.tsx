@@ -1,10 +1,11 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target } from 'lucide-react';
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx } from '../../utils/xlsxLoader';
+import { api } from '../../services/api';
 
 interface QuestionBankManagerProps {
   subjectId?: string;
@@ -28,6 +29,15 @@ type PendingImportBatch = {
   importedQuestions: Question[];
   rowErrors: string[];
   previewRows: ImportPreviewRow[];
+};
+
+type QuestionPaginationMeta = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
 };
 
 const normalizeLookup = (value?: string) =>
@@ -187,12 +197,17 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [selectedSkillId, setSelectedSkillId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isImporting, setIsImporting] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<{ imported: number; failed: number; samples: string[] } | null>(null);
   const [pendingImportBatch, setPendingImportBatch] = useState<PendingImportBatch | null>(null);
   const [previewQuestion, setPreviewQuestion] = useState<Question | null>(null);
+  const [pagedQuestions, setPagedQuestions] = useState<Question[] | null>(null);
+  const [pagedPagination, setPagedPagination] = useState<QuestionPaginationMeta | null>(null);
+  const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
+  const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -258,20 +273,64 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     [questions, searchTerm],
   );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedPathId, selectedSubjectId, selectedSectionId, selectedSkillId, searchTerm, subjectId]);
+
+  useEffect(() => {
+    let active = true;
+    const loadPagedQuestions = async () => {
+      setIsLoadingPagedQuestions(true);
+      setPagedQuestionsError(null);
+      try {
+        const response = await api.getQuestionsPaginated({
+          page: currentPage,
+          limit: 100,
+          summary: true,
+          pathId: selectedPathId || undefined,
+          subject: (subjectId || selectedSubjectId) || undefined,
+          sectionId: selectedSectionId || undefined,
+          skillId: selectedSkillId || undefined,
+          search: searchTerm || undefined,
+        });
+
+        if (!active) return;
+        setPagedQuestions(Array.isArray(response?.data) ? (response.data as Question[]) : []);
+        setPagedPagination(response?.pagination || null);
+      } catch (error) {
+        if (!active) return;
+        setPagedQuestions(null);
+        setPagedPagination(null);
+        setPagedQuestionsError(error instanceof Error ? error.message : 'تعذر تحميل الأسئلة المرقمة الآن.');
+      } finally {
+        if (active) {
+          setIsLoadingPagedQuestions(false);
+        }
+      }
+    };
+
+    void loadPagedQuestions();
+    return () => {
+      active = false;
+    };
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId]);
+
+  const displayedQuestions = pagedQuestions ?? filteredQuestions;
+
   const questionCoverageSummary = useMemo(() => {
-    const mainSkillCount = new Set(filteredQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
-    const subSkillCount = new Set(filteredQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
-    const pendingCount = filteredQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
-    const approvedCount = filteredQuestions.filter((question) => question.approvalStatus === 'approved').length;
+    const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
+    const subSkillCount = new Set(displayedQuestions.flatMap((question) => question.skillIds || []).filter(Boolean)).size;
+    const pendingCount = displayedQuestions.filter((question) => question.approvalStatus === 'pending_review').length;
+    const approvedCount = displayedQuestions.filter((question) => question.approvalStatus === 'approved').length;
 
     return {
-      total: filteredQuestions.length,
+      total: pagedPagination?.total ?? displayedQuestions.length,
       mainSkillCount,
       subSkillCount,
       pendingCount,
       approvedCount,
     };
-  }, [filteredQuestions]);
+  }, [displayedQuestions, pagedPagination?.total]);
 
   const resetEditorQuestion = () => {
     setCurrentQuestion({
@@ -1082,7 +1141,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredQuestions.map((question) => {
+              {displayedQuestions.map((question) => {
                 const statusMeta = getStatusMeta(question);
                 return (
                   <tr key={question.id} className="hover:bg-gray-50 transition-colors">
@@ -1197,7 +1256,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   </tr>
                 );
               })}
-              {filteredQuestions.length === 0 && (
+              {displayedQuestions.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                     لا توجد أسئلة مطابقة للبحث.
@@ -1207,6 +1266,39 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             </tbody>
           </table>
         </div>
+        {(isLoadingPagedQuestions || pagedQuestionsError || pagedPagination) && (
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 border-t border-gray-100 bg-gray-50 px-4 py-3 text-xs font-bold text-gray-600">
+            <div>
+              {isLoadingPagedQuestions ? 'جارٍ تحميل صفحة الأسئلة...' : pagedQuestionsError || ''}
+              {!isLoadingPagedQuestions && !pagedQuestionsError && pagedPagination
+                ? `إجمالي الأسئلة: ${pagedPagination.total}`
+                : ''}
+            </div>
+            {pagedPagination && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={!pagedPagination.hasPrev || isLoadingPagedQuestions}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  السابق
+                </button>
+                <span>
+                  صفحة {pagedPagination.page} من {pagedPagination.totalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => page + 1)}
+                  disabled={!pagedPagination.hasNext || isLoadingPagedQuestions}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  التالي
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {previewQuestion && (

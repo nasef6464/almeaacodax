@@ -26,6 +26,15 @@ interface PaginationOptions {
   limit?: number;
 }
 
+interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 const PUBLIC_CACHE_PREFIX = "almeaa:public-api:";
 const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -754,7 +763,7 @@ export const api = {
       method: "DELETE",
       token,
     }),
-  getQuestions: (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string; summary?: boolean; noTotal?: boolean }) => {
+  getQuestions: async (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string; summary?: boolean; noTotal?: boolean }) => {
     const searchParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params || {})) {
       if (value !== undefined && value !== null && String(value).trim()) {
@@ -762,7 +771,12 @@ export const api = {
       }
     }
     const query = searchParams.toString();
-    return request<unknown[]>(`/quizzes/questions${query ? `?${query}` : ""}`);
+    const payload = await request<unknown>(`/quizzes/questions${query ? `?${query}` : ""}`);
+    return extractList(payload, "data");
+  },
+  getQuestionsPaginated: (params?: { page?: number; limit?: number; ids?: string; pathId?: string; subject?: string; sectionId?: string; skillId?: string; search?: string; approvalStatus?: string; summary?: boolean; noTotal?: boolean }) => {
+    const query = withQuery("/quizzes/questions", { ...(params || {}), paginate: true });
+    return request<{ data: unknown[]; pagination: PaginationMeta }>(query);
   },
   createQuestion: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/questions", {

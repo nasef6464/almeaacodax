@@ -454,7 +454,7 @@ const App: React.FC = () => {
         const quizzesPromise = profile.loadQuizzes ? adapter.getQuizzes() : null;
         const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;
         const contentPromise = profile.loadContent ? adapter.getContentBootstrap() : null;
-        const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 120 }) : null;
+        const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;
         const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress() : null;
 
         coursesPromise?.then((courses) => {

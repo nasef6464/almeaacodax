@@ -56,7 +56,7 @@ const questionSchema = questionBaseSchema.refine(
 
 const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(200).default(80),
+  limit: z.coerce.number().int().min(1).max(100).default(80),
   ids: z.string().trim().optional(),
   pathId: z.string().trim().optional(),
   subject: z.string().trim().optional(),
@@ -66,6 +66,7 @@ const questionListQuerySchema = z.object({
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),
+  paginate: z.coerce.boolean().default(false),
 });
 
 const dashboardAnalyticsQuerySchema = z.object({
@@ -126,8 +127,20 @@ const toQuestionSummaryText = (value: unknown) => {
 };
 
 const sanitizeQuestionForLearner = (question: Record<string, any>) => {
-  const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
+  const { correctOptionIndex, explanation, reviewerNotes, approvedBy, approvedAt, __v, ...safeQuestion } = question;
   return safeQuestion;
+};
+
+const buildQuestionPaginationMeta = (total: number, page: number, limit: number) => {
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(limit, 1)));
+  return {
+    total,
+    page,
+    limit,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
 };
 
 const quizSchema = z.object({
@@ -1021,6 +1034,14 @@ quizRouter.get(
       res.setHeader("Cache-Control", "private, max-age=30");
       res.setHeader("X-Question-Summary-Cache", "miss");
     }
+    if (query.paginate) {
+      const safeTotal = total !== null ? total : (query.page - 1) * query.limit + items.length + (hasMore ? 1 : 0);
+      return res.json({
+        data: items,
+        pagination: buildQuestionPaginationMeta(safeTotal, query.page, query.limit),
+      });
+    }
+
     res.json(items);
   }),
 );
