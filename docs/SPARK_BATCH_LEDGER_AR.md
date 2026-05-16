@@ -9,7 +9,7 @@
 | 04 | Admin Users Pagination | Fully closed | 2026-05-16 | 2026-05-16 | ADMIN_USERS_PAGINATION_FIX_2026-05-14_AR.md | ?? ????? pagination ??? endpoint ?????????? ?????? ???? ??????? ?? ???? typecheck/build.
 | 05 | Payment Requests Pagination | Programmatically closed, check pending | 2026-05-16 | 2026-05-16 | PAYMENT_REQUESTS_PAGINATION_FIX_2026-05-14_AR.md | ØªÙ…Øª Ù…Ø±Ø§Ø¬Ø¹Ø© ØªÙ†ÙÙŠØ° pagination ÙÙŠ Backend/UIØŒ ÙØ´Ù„ check Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† ØªÙˆÙØ± ÙˆØ³ÙŠÙ„Ø© Ø§Ù„Ø¯ÙØ¹ Ù„Ù„Ø¯ÙˆÙ„. |
 | 06 | Quiz Results Pagination | Programmatically closed, production verification pending | 2026-05-16 | 2026-05-16 | QUIZ_RESULTS_PAGINATION_FIX_2026-05-14_AR.md | ØªÙ… Ø§Ù„ØªØ£ÙƒØ¯ Ù…Ù† Ø£Ù† Ø¬Ù…ÙŠØ¹ Ù†Ù‚Ø§Ø· Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø± ÙˆØ§Ù„Ù€ question-attempts ØªØ¹Ù…Ù„ Ø¨Ù†Ø¸Ø§Ù… pagination ÙØ¹Ù„ÙŠ ÙˆØªØ³ØªØ®Ø¯Ù… `buildPaginatedResponse` Ùˆ`resolvePagination`. | 
-| 07 | Access Codes Pagination | Programmatically closed, production verification pending | 2026-05-16 | 2026-05-16 | ACCESS_CODES_PAGINATION_FIX_2026-05-14_AR.md | تم تنفيذ الترقيم الآمن محليًا والفحوص نجحت، والتحقق الحي على الإنتاج بانتظار النشر. |
+| 07 | Access Codes Pagination | Fully closed | 2026-05-16 | 2026-05-16 | ACCESS_CODES_PAGINATION_FIX_2026-05-14_AR.md | تم تنفيذ الترقيم الآمن، نجحت الفحوص، وتم التحقق الحي على الإنتاج بعد النشر. |
 | 08 | Questions Pagination | Open |  |  | QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md | ?? ????.
 | 09 | RBAC Security Audit Plan | Open |  |  | RBAC_SECURITY_AUDIT_PLAN_2026-05-14_AR.md | ?? ????.
 | 10 | RBAC/API Hardening Batch 1 | Open |  |  | RBAC_API_HARDENING_BATCH_1_2026-05-14_AR.md | ?? ????.
@@ -62,3 +62,13 @@
 - Ø§Ù„ÙØ­ÙˆØµ: `npm --prefix server run build`, `npm run typecheck`, `npm run build`, `npm run smoke:api-phase4`, `npm run smoke:school-management`, `npm run smoke:auth-cookie`, `npm run smoke:health-readiness` ÙƒÙ„Ù‡Ø§ Ù†Ø§Ø¬Ø­Ø©.
 - Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ: ØªØ­Ù‚Ù‚ Ø­ÙŠ Ø¹Ù„Ù‰ Ø§Ù„Ø¥Ù†ØªØ§Ø¬ Ø¨Ø¹Ø¯ Ù†Ø´Ø± Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª (Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø© Ù…Ø§ Ø²Ø§Ù„Øª 404 Ù‚Ø¨Ù„ Ø§Ù„Ù†Ø´Ø±).
 
+
+
+## تحديث 2026-05-16 — BATCH 07 (إغلاق نهائي)
+- الحالة: **Fully closed**.
+- تم نشر التعديلات على `main`.
+- تحقق حي على الإنتاج:
+  - `GET /api/content/access-codes` => `401` (بعد أن كانت `404` قبل النشر).
+  - `GET /api/content/access-code-redemptions` => `401` (بعد أن كانت `404` قبل النشر).
+  - `GET /api/health` => `200`.
+- النتيجة: مسارات الدفعة 07 فعالة ومحمية، ولا حاجة للعودة للدفعة إلا عند ظهور خلل جديد.
