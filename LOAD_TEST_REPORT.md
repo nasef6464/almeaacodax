@@ -536,3 +536,26 @@ Evidence:
 - `load-tests/results/prod_authd_me_preferences_patch_c500_2026-05-17_r2.jsonl`
 - `load-tests/results/prod_authd_me_preferences_patch_c1000_2026-05-17_r2.jsonl`
 - `load-tests/results/prod_authd_retest_summary_2026-05-17_r2.json`
+
+## Production Authenticated Hardening Retest - 2026-05-17 (Batch 20Z)
+
+Code hardening applied:
+- Added `noTotal` query option to quiz results endpoints to skip `countDocuments` on demand.
+- Wired client quiz results fetchers to request `noTotal=true` by default for list views.
+
+Retest target:
+- `GET /api/quizzes/results?noTotal=true&limit=20`
+- Concurrency: `500`, `1000`
+- Auth: direct bearer token
+
+Observed:
+- `c=500`: `2xx=49`, `timeouts=451`.
+- `c=1000`: `2xx=36`, `timeouts=973`.
+
+Conclusion:
+- The query-count removal is functionally correct but insufficient alone for authenticated 500+/1000 closure.
+- Authenticated high-concurrency remains pending deeper infra/query hardening.
+
+Evidence:
+- `load-tests/results/prod_authd_quizzes_results_nototal_c500_2026-05-17.jsonl`
+- `load-tests/results/prod_authd_quizzes_results_nototal_c1000_2026-05-17.jsonl`

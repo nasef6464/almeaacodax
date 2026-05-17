@@ -199,3 +199,8 @@
 - Executed controlled authenticated production retest at 500/1000 using direct bearer token on `/quizzes/results` and `/auth/me/preferences`.
 - Evidence confirms authenticated high-concurrency is still not production-closed: heavy timeout/non2xx at 500+, full collapse on some 1000 runs.
 - Status: Programmatically closed (execution documented), final authenticated 500+/1000 closure pending hardening.
+
+## Update BATCH 20Z — 2026-05-17
+- Added safe `noTotal` mode in quiz results endpoints and enabled it by default in client list fetches.
+- Ran authenticated production retest at 500/1000 with `noTotal=true`; results still showed heavy timeouts at both levels.
+- Status: Partially closed (hardening step done, final authenticated 500+ closure pending).

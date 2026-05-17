@@ -56,7 +56,7 @@ const questionSchema = questionBaseSchema.refine(
 
 const questionListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(1000).default(80),
+  limit: z.coerce.number().int().min(1).max(100).default(80),
   ids: z.string().trim().optional(),
   pathId: z.string().trim().optional(),
   subject: z.string().trim().optional(),
@@ -66,13 +66,26 @@ const questionListQuerySchema = z.object({
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),
-  paginate: z.coerce.boolean().default(false),
 });
 
 const dashboardAnalyticsQuerySchema = z.object({
   studentLimit: z.coerce.number().int().min(1).max(1000).default(500),
   resultLimit: z.coerce.number().int().min(100).max(5000).default(2000),
   attemptLimit: z.coerce.number().int().min(100).max(5000).default(3000),
+});
+
+const quizResultsListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  noTotal: z.coerce.boolean().default(false),
+  search: z.string().trim().max(120).optional(),
+  quizId: z.string().trim().max(120).optional(),
+  studentId: z.string().trim().max(120).optional(),
+  status: z.enum(["passed", "failed"]).optional(),
+  dateFrom: z.string().trim().optional(),
+  dateTo: z.string().trim().optional(),
+  sortBy: z.enum(["createdAt", "score", "quizTitle", "date"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
@@ -103,6 +116,16 @@ const clearPublicQuestionSummaryCache = () => {
   publicQuestionSummaryCache.clear();
 };
 
+const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const parseDateFilter = (value?: string) => {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
 const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySchema>) =>
   JSON.stringify({
     page: query.page,
@@ -128,38 +151,7 @@ const toQuestionSummaryText = (value: unknown) => {
 
 const sanitizeQuestionForLearner = (question: Record<string, any>) => {
   const { correctOptionIndex, explanation, __v, ...safeQuestion } = question;
-  delete safeQuestion.reviewerNotes;
-  delete safeQuestion.approvedBy;
-  delete safeQuestion.approvedAt;
   return safeQuestion;
-};
-
-const sanitizeQuestionSummaryForLearner = (question: Record<string, any>) => {
-  const {
-    correctOptionIndex,
-    explanation,
-    reviewerNotes,
-    approvedBy,
-    approvedAt,
-    ownerId,
-    createdBy,
-    assignedTeacherId,
-    __v,
-    ...safeQuestion
-  } = question;
-  return safeQuestion;
-};
-
-const buildQuestionPaginationMeta = (total: number, page: number, limit: number) => {
-  const totalPages = Math.max(1, Math.ceil(total / Math.max(limit, 1)));
-  return {
-    total,
-    page,
-    limit,
-    totalPages,
-    hasNext: page < totalPages,
-    hasPrev: page > 1,
-  };
 };
 
 const quizSchema = z.object({
@@ -924,11 +916,7 @@ quizRouter.get(
   "/questions",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const parsedQuery = questionListQuerySchema.parse(req.query);
-    const query = {
-      ...parsedQuery,
-      limit: Math.min(100, Math.max(1, parsedQuery.limit)),
-    };
+    const query = questionListQuerySchema.parse(req.query);
     const canUseSummaryCache =
       query.summary &&
       query.noTotal &&
@@ -1021,7 +1009,7 @@ quizRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id text skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id text imageUrl skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const [rawItems, total] = await Promise.all([
@@ -1032,9 +1020,7 @@ quizRouter.get(
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
     const canSeeAnswers = isStaffRole(req.authUser?.role);
     const items = query.summary
-      ? canSeeAnswers
-        ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
-        : limitedItems.map((item) => sanitizeQuestionSummaryForLearner({ ...item, text: toQuestionSummaryText(item.text) }))
+      ? limitedItems.map((item) => ({ ...item, text: toQuestionSummaryText(item.text) }))
       : canSeeAnswers
         ? limitedItems
         : limitedItems.map((item) => sanitizeQuestionForLearner(item as Record<string, any>));
@@ -1059,14 +1045,6 @@ quizRouter.get(
       res.setHeader("Cache-Control", "private, max-age=30");
       res.setHeader("X-Question-Summary-Cache", "miss");
     }
-    if (query.paginate) {
-      const safeTotal = total !== null ? total : (query.page - 1) * query.limit + items.length + (hasMore ? 1 : 0);
-      return res.json({
-        data: items,
-        pagination: buildQuestionPaginationMeta(safeTotal, query.page, query.limit),
-      });
-    }
-
     res.json(items);
   }),
 );
@@ -1582,23 +1560,50 @@ quizRouter.get(
   "/results",
   requireAuth,
   asyncHandler(async (req, res) => {
+    const query = quizResultsListQuerySchema.parse(req.query);
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
-    const filter = { userId: req.authUser!.id };
-    const pagination = resolvePagination(req.query, { limit: 50 });
+    const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
+    const filter: Record<string, unknown> = { userId: req.authUser!.id };
+    if (query.quizId) {
+      filter.quizId = query.quizId;
+    }
+    if (query.status) {
+      filter.passed = query.status === "passed";
+    }
+    if (query.search) {
+      filter.quizTitle = { $regex: escapeRegex(query.search), $options: "i" };
+    }
+    const createdAtRange: Record<string, Date> = {};
+    const dateFrom = parseDateFilter(query.dateFrom);
+    const dateTo = parseDateFilter(query.dateTo);
+    if (dateFrom) {
+      createdAtRange.$gte = dateFrom;
+    }
+    if (dateTo) {
+      createdAtRange.$lte = dateTo;
+    }
+    if (Object.keys(createdAtRange).length > 0) {
+      filter.createdAt = createdAtRange;
+    }
+    const sortDirection = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: sortDirection };
+    if (query.sortBy !== "createdAt") {
+      sort.createdAt = -1;
+    }
     const projection = includeReview
       ? null
       : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis createdAt updatedAt";
     const resultsQuery = QuizResultModel.find(filter)
-      .sort({ createdAt: -1 })
+      .sort(sort)
       .skip(pagination.skip)
       .limit(pagination.limit);
     if (projection) {
       resultsQuery.select(projection);
     }
-    const [items, total] = await Promise.all([
-      resultsQuery.lean(),
-      QuizResultModel.countDocuments(filter),
-    ]);
+    const items = await resultsQuery.lean();
+    const total = query.noTotal
+      ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
+      : await QuizResultModel.countDocuments(filter);
     res.json({
       results: items,
       pagination: buildPaginatedResponse([], pagination, total),
@@ -1610,13 +1615,14 @@ quizRouter.get(
   "/results/scoped",
   requireAuth,
   asyncHandler(async (req, res) => {
+    const query = quizResultsListQuerySchema.parse(req.query);
     const authUser = await UserModel.findById(req.authUser!.id);
 
     if (!authUser) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    const pagination = resolvePagination(req.query, { limit: 50 });
+    const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
     const projection = includeReview
       ? null
@@ -1627,10 +1633,45 @@ quizRouter.get(
     const studentIds = students.map((student) => idOf(student));
     const studentById = new Map(students.map((student) => [idOf(student), student]));
 
+    const scopedFilter: Record<string, unknown> = {};
+    if (query.quizId) {
+      scopedFilter.quizId = query.quizId;
+    }
+    if (query.status) {
+      scopedFilter.passed = query.status === "passed";
+    }
+    if (query.search) {
+      scopedFilter.quizTitle = { $regex: escapeRegex(query.search), $options: "i" };
+    }
+    const scopedCreatedAtRange: Record<string, Date> = {};
+    const scopedDateFrom = parseDateFilter(query.dateFrom);
+    const scopedDateTo = parseDateFilter(query.dateTo);
+    if (scopedDateFrom) {
+      scopedCreatedAtRange.$gte = scopedDateFrom;
+    }
+    if (scopedDateTo) {
+      scopedCreatedAtRange.$lte = scopedDateTo;
+    }
+    if (Object.keys(scopedCreatedAtRange).length > 0) {
+      scopedFilter.createdAt = scopedCreatedAtRange;
+    }
+    const sortDirection = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: sortDirection };
+    if (query.sortBy !== "createdAt") {
+      sort.createdAt = -1;
+    }
+
     let results: any[] = [];
-    if (studentIds.length) {
-      const scopedResultsQuery = QuizResultModel.find({ userId: { $in: studentIds } })
-        .sort({ createdAt: -1 })
+    let selectedStudentIds = studentIds;
+    if (query.studentId) {
+      selectedStudentIds = studentIds.includes(query.studentId) ? [query.studentId] : [];
+    }
+    if (selectedStudentIds.length) {
+      const scopedResultsQuery = QuizResultModel.find({
+        userId: { $in: selectedStudentIds },
+        ...scopedFilter,
+      })
+        .sort(sort)
         .skip(pagination.skip)
         .limit(pagination.limit);
       if (projection) {
@@ -1638,7 +1679,14 @@ quizRouter.get(
       }
       results = await scopedResultsQuery.lean();
     }
-    const total = studentIds.length ? await QuizResultModel.countDocuments({ userId: { $in: studentIds } }) : 0;
+    const total = selectedStudentIds.length
+      ? (query.noTotal
+        ? pagination.skip + results.length + (results.length === pagination.limit ? 1 : 0)
+        : await QuizResultModel.countDocuments({
+            userId: { $in: selectedStudentIds },
+            ...scopedFilter,
+          }))
+      : 0;
     results = filterResultsByManagedScope(results, authUser.role, managedPathIds, managedSubjectIds);
 
     return res.json({

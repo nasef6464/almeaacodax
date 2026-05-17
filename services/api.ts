@@ -30,6 +30,7 @@ interface PaginationOptions {
 }
 
 interface QuizResultsPaginationOptions extends PaginationOptions {
+  noTotal?: boolean;
   quizId?: string;
   studentId?: string;
   status?: "passed" | "failed";
@@ -973,13 +974,13 @@ export const api = {
       token,
     }),
   getQuizResults: async (pagination: QuizResultsPaginationOptions = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 100, ...pagination })), "results"),
+    extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 100, noTotal: true, ...pagination })), "results"),
   getMyQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
     request<QuizResultsPageResponse>(withQuery("/quiz-results/my", { limit: 100, ...pagination })),
   getAdminQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
     request<QuizResultsPageResponse>(withQuery("/admin/quiz-results", { limit: 100, ...pagination })),
   getScopedQuizResults: (pagination: QuizResultsPaginationOptions = {}) =>
-    request<unknown>(withQuery("/quizzes/results/scoped", { limit: 100, ...pagination })),
+    request<unknown>(withQuery("/quizzes/results/scoped", { limit: 100, noTotal: true, ...pagination })),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
   getSkillProgress: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
