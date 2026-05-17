@@ -505,3 +505,34 @@ Interpretation:
 - Authenticated route is reachable and measurable with valid bearer token.
 - High-concurrency authenticated runs at 500/1000 from the prior window remain inconclusive in several outputs (sent connections with zero counted responses), so final 500+ authenticated closure still requires a controlled retest window with infra metrics correlation.
 
+## Production Controlled Authenticated Retest - 2026-05-17 (Batch 20Y)
+
+Environment:
+- API: `https://almeaacodax-k2ux.onrender.com/api`
+- Method: `autocannon` authenticated direct bearer runs (no login burst)
+- Duration: `12s` per run
+- Endpoints:
+  - `GET /quizzes/results`
+  - `PATCH /auth/me/preferences`
+- Concurrency levels:
+  - `500`
+  - `1000`
+
+Observed:
+- `GET /quizzes/results`:
+  - `c=500`: partial success (`200=101`) with heavy timeout (`412`).
+  - `c=1000`: complete timeout collapse (`timeouts=1000`, `2xx=0`).
+- `PATCH /auth/me/preferences`:
+  - `c=500`: heavy timeout (`358`) + many `400` (`non2xx=300`).
+  - `c=1000`: heavy timeout (`699`) + many `400` (`non2xx=766`).
+
+Conclusion:
+- Authenticated 500+/1000 production readiness is still **NOT CLOSED**.
+- Platform remains acceptable for lower/controlled traffic windows, but authenticated high-concurrency requires infra/query hardening before final closure.
+
+Evidence:
+- `load-tests/results/prod_authd_quizzes_results_c500_2026-05-17_r2.jsonl`
+- `load-tests/results/prod_authd_quizzes_results_c1000_2026-05-17_r2.jsonl`
+- `load-tests/results/prod_authd_me_preferences_patch_c500_2026-05-17_r2.jsonl`
+- `load-tests/results/prod_authd_me_preferences_patch_c1000_2026-05-17_r2.jsonl`
+- `load-tests/results/prod_authd_retest_summary_2026-05-17_r2.json`

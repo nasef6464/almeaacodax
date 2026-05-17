@@ -194,3 +194,8 @@
 - Prior authenticated 500+/1000 outputs remained inconclusive in parts, so full authenticated high-concurrency closure is still pending controlled retest with infra metrics.
 - Status: Programmatically closed (continuation), final 500+ authenticated closure pending.
 
+
+## Update BATCH 20Y — 2026-05-17
+- Executed controlled authenticated production retest at 500/1000 using direct bearer token on `/quizzes/results` and `/auth/me/preferences`.
+- Evidence confirms authenticated high-concurrency is still not production-closed: heavy timeout/non2xx at 500+, full collapse on some 1000 runs.
+- Status: Programmatically closed (execution documented), final authenticated 500+/1000 closure pending hardening.
