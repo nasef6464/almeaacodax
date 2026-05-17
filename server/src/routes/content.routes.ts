@@ -248,18 +248,15 @@ type PublicContentBootstrapPayload = {
   announcementAds: unknown[];
   studyPlans: unknown[];
 };
+type ContentBootstrapCachePayload = PublicContentBootstrapPayload;
+type ContentBootstrapCacheEntry = { expiresAt: number; payload: ContentBootstrapCachePayload };
 const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
-let publicContentBootstrapCache:
-  | {
-      expiresAt: number;
-      payload: PublicContentBootstrapPayload;
-    }
-  | null = null;
-let publicContentBootstrapPromise: Promise<PublicContentBootstrapPayload> | null = null;
+let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
+let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
 
 const clearContentBootstrapCache = () => {
-  publicContentBootstrapCache = null;
-  publicContentBootstrapPromise = null;
+  contentBootstrapCache.clear();
+  contentBootstrapPromises.clear();
 };
 
 const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
@@ -1225,17 +1222,23 @@ contentRouter.get(
     const scope = requestedScope === "full" && !canUseFullScope ? "learning" : requestedScope;
     const includeOperationalData = scope !== "learning";
     const includeStudyPlans = scope !== "learning";
-    const canUsePublicCache = !req.authUser;
-    if (canUsePublicCache && publicContentBootstrapCache && publicContentBootstrapCache.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+    const isNonStaffAuthedLearning = Boolean(req.authUser) && !canUseFullScope && scope === "learning";
+    const canUseSharedCache = !req.authUser || isNonStaffAuthedLearning;
+    const cacheKey = canUseSharedCache ? `scope:${scope}:shared-learning` : "";
+    const cachedEntry = cacheKey ? contentBootstrapCache.get(cacheKey) : null;
+    if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "hit");
-      return res.json(publicContentBootstrapCache.payload);
+      res.setHeader("X-Content-Scope", scope);
+      return res.json(cachedEntry.payload);
     }
 
-    if (canUsePublicCache && publicContentBootstrapPromise) {
-      const payload = await publicContentBootstrapPromise;
-      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+    const pendingPromise = cacheKey ? contentBootstrapPromises.get(cacheKey) : null;
+    if (pendingPromise) {
+      const payload = await pendingPromise;
+      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "shared");
+      res.setHeader("X-Content-Scope", scope);
       return res.json(payload);
     }
 
@@ -1276,18 +1279,23 @@ contentRouter.get(
     };
 
     const payloadPromise = loadBootstrapPayload();
-    const payload = canUsePublicCache
-      ? await (publicContentBootstrapPromise = payloadPromise.finally(() => {
-          publicContentBootstrapPromise = null;
-        }))
+    const payload = canUseSharedCache
+      ? await (() => {
+          if (!cacheKey) return payloadPromise;
+          const inflight = payloadPromise.finally(() => {
+            contentBootstrapPromises.delete(cacheKey);
+          });
+          contentBootstrapPromises.set(cacheKey, inflight);
+          return inflight;
+        })()
       : await payloadPromise;
 
-    if (canUsePublicCache) {
-      publicContentBootstrapCache = {
+    if (canUseSharedCache && cacheKey) {
+      contentBootstrapCache.set(cacheKey, {
         expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
         payload,
-      };
-      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+      });
+      res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "miss");
     }
     res.setHeader("X-Content-Scope", scope);
