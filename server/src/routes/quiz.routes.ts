@@ -181,6 +181,71 @@ const sanitizeQuestionForLearner = (question: Record<string, any>) => {
   return safeQuestion;
 };
 
+const isQuestionContentUsable = (question: any) => {
+  const hasText = String(question?.text || "").trim().length > 0;
+  const hasImage = String(question?.imageUrl || "").trim().length > 0;
+  if (!hasText && !hasImage) return false;
+
+  const type = String(question?.type || "mcq");
+  if (type === "mcq" || type === "true_false") {
+    return Array.isArray(question?.options) && question.options.length >= 2;
+  }
+  return true;
+};
+
+const validateQuizQuestionIntegrity = async (quizLike: any) => {
+  const normalizedIds = uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim()).filter(Boolean));
+  if (normalizedIds.length === 0) {
+    return {
+      ok: false,
+      totalReferenced: 0,
+      resolved: 0,
+      missingIds: [] as string[],
+      invalidContentIds: [] as string[],
+      message: "Cannot publish a quiz without valid questions",
+    };
+  }
+
+  const questions = await QuestionModel.find(buildDocumentsByIdsQuery(normalizedIds))
+    .select("id text imageUrl options type")
+    .lean();
+  const byCanonicalId = new Map<string, any>();
+
+  questions.forEach((question: any) => {
+    const canonicalId = String(question.id || question._id);
+    byCanonicalId.set(canonicalId, question);
+    const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
+    if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
+      byCanonicalId.set(withoutCopySuffix, question);
+    }
+  });
+
+  const missingIds: string[] = [];
+  const invalidContentIds: string[] = [];
+  normalizedIds.forEach((id) => {
+    const resolved = byCanonicalId.get(id) || byCanonicalId.get(id.replace(/_copy(?:_\d+)?$/i, ""));
+    if (!resolved) {
+      missingIds.push(id);
+      return;
+    }
+    if (!isQuestionContentUsable(resolved)) {
+      invalidContentIds.push(id);
+    }
+  });
+
+  const ok = missingIds.length === 0 && invalidContentIds.length === 0;
+  return {
+    ok,
+    totalReferenced: normalizedIds.length,
+    resolved: normalizedIds.length - missingIds.length,
+    missingIds,
+    invalidContentIds,
+    message: ok
+      ? "ok"
+      : "Cannot publish quiz: some referenced questions are missing or have incomplete content",
+  };
+};
+
 const quizSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
@@ -1849,6 +1914,21 @@ quizRouter.post(
     await assertTeacherManagedScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
+    const willBePublished = req.authUser?.role === "admin" ? Boolean(payload.isPublished) : false;
+    if (willBePublished) {
+      const integrity = await validateQuizQuestionIntegrity(payload);
+      if (!integrity.ok) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: integrity.message,
+          integrity: {
+            totalReferenced: integrity.totalReferenced,
+            resolved: integrity.resolved,
+            missingIds: integrity.missingIds.slice(0, 20),
+            invalidContentIds: integrity.invalidContentIds.slice(0, 20),
+          },
+        });
+      }
+    }
     const created = await QuizModel.create({
       ...payload,
       ...workflowDefaults,
@@ -2073,8 +2153,60 @@ quizRouter.patch(
       req.authUser!,
       { respectPublished: true },
     );
+    const nextQuizState = {
+      ...existing.toObject(),
+      ...normalizedPayload,
+      ...sanitizedPayload,
+    };
+    if (nextQuizState.isPublished === true) {
+      const integrity = await validateQuizQuestionIntegrity(nextQuizState);
+      if (!integrity.ok) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: integrity.message,
+          integrity: {
+            totalReferenced: integrity.totalReferenced,
+            resolved: integrity.resolved,
+            missingIds: integrity.missingIds.slice(0, 20),
+            invalidContentIds: integrity.invalidContentIds.slice(0, 20),
+          },
+        });
+      }
+    }
     const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
+  }),
+);
+
+quizRouter.get(
+  "/integrity-report",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const limit = Math.max(1, Math.min(Number(req.query.limit || 50), 200));
+    const quizzes = await QuizModel.find({ isPublished: true }).sort({ updatedAt: -1 }).limit(limit).lean();
+    const issues: Array<Record<string, unknown>> = [];
+
+    for (const quiz of quizzes) {
+      const integrity = await validateQuizQuestionIntegrity(quiz);
+      if (!integrity.ok) {
+        issues.push({
+          quizId: String(quiz.id || quiz._id || ""),
+          title: String(quiz.title || ""),
+          pathId: String(quiz.pathId || ""),
+          subjectId: String(quiz.subjectId || ""),
+          totalReferenced: integrity.totalReferenced,
+          resolved: integrity.resolved,
+          missingIds: integrity.missingIds,
+          invalidContentIds: integrity.invalidContentIds,
+        });
+      }
+    }
+
+    res.json({
+      scanned: quizzes.length,
+      affected: issues.length,
+      issues,
+    });
   }),
 );
 
