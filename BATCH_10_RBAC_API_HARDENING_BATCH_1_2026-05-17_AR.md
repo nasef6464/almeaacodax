@@ -2,7 +2,7 @@
 
 **التاريخ:** 2026-05-17  
 **اسم الدفعة:** BATCH 10R — RBAC/API Hardening Production Verification  
-**الحالة:** Programmatically closed, production verification pending ⚠️
+**الحالة:** Fully closed ✅
 
 ## ما تم
 - تنفيذ تحقق حي على الإنتاج لمسارات المدارس الحساسة:
@@ -26,10 +26,17 @@
 
 ## فحص الإنتاج
 - **قبل نشر الإصلاح الجديد**: FAIL (المشرف وصل خارج النطاق).
-- **بعد نشر الإصلاح**: Pending (لم يتم بعد).
+- **بعد نشر الإصلاح (`67b662d`)**: PASS
+  - `adminReportStatus: 200`
+  - `supReportStatus: 403`
+  - `supImportStatus: 403`
+  - `supRelationsStatus: 403`
+  - `studentReportStatus: 403`
+  - `failures: []`
 
 ## القرار
-- الدفعة غير مغلقة نهائيًا حتى نشر commit الإصلاح وإعادة التحقق الحي 403/200.
+- تم إغلاق الخطر الحرج الخاص بنطاق المشرف في المسارات المدرسية الحساسة.
+- الحالة النهائية للدفعة: **Fully closed**.
 
 ## الدفعة التالية المقترحة
-- BATCH 10R-DEPLOY — Deploy RBAC scope fix + Live re-verification
+- BATCH 10B — Supervisor School Report Scope Fix (إن بقيت مخاطر إضافية خارج نطاق هذه الدفعة)

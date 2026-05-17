@@ -12,7 +12,7 @@
 | 07 | Access Codes Pagination | Fully closed | 2026-05-17 | ACCESS_CODES_PAGINATION_FIX_2026-05-14_AR.md | ????? ???? ?????. |
 | 08 | Questions Pagination | Fully closed | 2026-05-17 | QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md | ????? ???? ?????. |
 | 09 | RBAC Security Audit Plan | Fully closed | 2026-05-17 | BATCH_09_RBAC_AUDIT_AR.md | ????? RBAC ???? ??? ???? ???????? ?? ????? ????? ???? ????? scope ??? supervisor. |
-| 10 | RBAC/API Hardening Batch 1 | Programmatically closed, production verification pending | 2026-05-17 | BATCH_10_RBAC_API_HARDENING_BATCH_1_2026-05-17_AR.md | تحقق حي كشف وصول مشرف جديد لمسارات مدارس خارج النطاق في النسخة المنشورة؛ تم تنفيذ fix تضييق scope محليًا وجاهز للنشر وإعادة التحقق. |
+| 10 | RBAC/API Hardening Batch 1 | Fully closed | 2026-05-17 | BATCH_10_RBAC_API_HARDENING_BATCH_1_2026-05-17_AR.md | تم التحقق الحي بعد النشر (`67b662d`): المشرف خارج النطاق أصبح 403 على report/import/relations، والطالب 403، والأدمن مسموح. |
 | 11 | Sentry Monitoring Readiness | Fully closed | 2026-05-17 | SENTRY_MONITORING_READY_2026-05-14_AR.md | ????? ???? ?????. |
 | 12 | Redis/BullMQ Production Queue Readiness | Fully closed | 2026-05-17 | BATCH_12R_REDIS_QUEUE_PRODUCTION_VERIFICATION_CLOSURE_2026-05-17_AR.md | ?? ?????? ???????? ??????? ?????: `smoke:notification-phase10` PASS? `smoke:production-ops-phase14` PASS? `smoke:batch12-golive` PASS? ?`managed_redis` ???? PASS (Redis reachable). |
 | 13 | Firebase Legacy Cleanup / Isolation | Fully closed | 2026-05-17 | FIREBASE_LEGACY_CLEANUP_2026-05-14_AR.md | ????? ???? ?????. |
@@ -96,4 +96,12 @@
 - الإنتاج الحالي: المشرف الجديد استطاع الوصول إلى report/import/relations لمدرسة الاختبار (خطر RBAC).
 - تم تنفيذ إصلاح scope محليًا في content.routes.ts وهو جاهز للنشر.
 - الحالة: Programmatically closed, production verification pending.
+
+## تحديث BATCH 10R Final Closure — 2026-05-17
+- تم نشر الإصلاح على الإنتاج (commit: `67b662d`).
+- التحقق الحي النهائي PASS:
+  - admin report = 200
+  - supervisor out-of-scope report/import/relations = 403
+  - student report = 403
+- الحالة النهائية: **Fully closed**.
 
