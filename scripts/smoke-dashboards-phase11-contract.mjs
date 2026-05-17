@@ -32,6 +32,12 @@ function assertNotIncludes(source, fragment, message) {
   }
 }
 
+function assertAnyIncludes(source, fragments, message) {
+  if (!fragments.some((fragment) => source.includes(fragment))) {
+    throw new Error(message || `Missing all expected fragments: ${fragments.join(", ")}`);
+  }
+}
+
 const analyticsStart = files.quizRoutes.indexOf('"/analytics/overview"');
 const analyticsEnd = files.quizRoutes.indexOf('"/results"', analyticsStart);
 const analyticsRoute = files.quizRoutes.slice(analyticsStart, analyticsEnd);
@@ -71,7 +77,10 @@ check("frontend API requests dashboard data with safe limits without visual rewr
   assertIncludes(files.api, "getQuizAnalyticsOverview: (pagination: PaginationOptions = {})");
   assertIncludes(files.api, "studentLimit: 500");
   assertIncludes(files.api, "resultLimit: 2000");
-  assertIncludes(files.api, "getScopedQuizResults: (pagination: PaginationOptions = {})");
+  assertAnyIncludes(files.api, [
+    "getScopedQuizResults: (pagination: PaginationOptions = {})",
+    "getScopedQuizResults: (pagination: QuizResultsPaginationOptions = {})",
+  ]);
   assertIncludes(files.dashboard, "api.getScopedQuizResults()");
   assertIncludes(files.reports, "api.getQuizAnalyticsOverview()");
 });
