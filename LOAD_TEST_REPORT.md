@@ -584,3 +584,31 @@ Conclusion:
 Evidence:
 - `load-tests/results/prod_authd_quizzes_results_cached_nototal_c500_2026-05-17.jsonl`
 - `load-tests/results/prod_authd_quizzes_results_cached_nototal_c1000_2026-05-17.jsonl`
+
+## Production Journey Mix Window - 2026-05-17 (Batch 20ZB)
+
+Window scope:
+- Public reads:
+  - `GET /health` (`c=300`)
+  - `GET /content/bootstrap` (`c=300`)
+  - `GET /taxonomy/bootstrap` (`c=300`)
+- Authenticated reads:
+  - `GET /auth/me` (`c=500`)
+  - `GET /quizzes/results?noTotal=true&limit=20` (`c=500`, `c=1000`)
+
+Key outcomes:
+- `health` remained stable (`timeouts=0`, `errors=0`, all `200`).
+- `content/bootstrap` and `taxonomy/bootstrap` still show timeout pressure under `c=300` burst.
+- Authenticated results path remains the strongest improved path after cache hardening:
+  - `c=500`: `2xx=552`, `timeouts=194`
+  - `c=1000`: `2xx=317`, `timeouts=322`
+- This is materially better than pre-cache/noTotal baselines and supports the hardening direction.
+
+Evidence:
+- `load-tests/results/prod_20zb_health_c300_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_bootstrap_c300_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_taxonomy_c300_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_auth_me_c500_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_quiz_results_nototal_c500_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_quiz_results_nototal_c1000_2026-05-17.jsonl`
+- `load-tests/results/prod_20zb_journey_mix_summary_2026-05-17.json`

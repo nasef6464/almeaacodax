@@ -209,3 +209,8 @@
 - Added 5s short-lived cache for authenticated `/quizzes/results` (only with `noTotal=true` and without review payload), plus submit-triggered cache invalidation.
 - Production retest improved markedly: c500 (`2xx=428`, `timeouts=197`) and c1000 (`2xx=330`, `timeouts=678`) vs prior no-cache run.
 - Status: Partially closed (material improvement delivered, final 500+/1000 closure still pending).
+
+## Update BATCH 20ZB — 2026-05-17
+- Ran a mixed production load window (public + authenticated) and captured dedicated evidence/summary artifacts.
+- Authenticated quiz-results path showed sustained improvement vs pre-cache baselines, while bootstrap/taxonomy remained the current pressure points.
+- Status: Programmatically closed, full production 500+/1000 closure still pending.

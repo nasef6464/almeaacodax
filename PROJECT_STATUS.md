@@ -2,13 +2,13 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: BATCH 20ZA - Authenticated Endpoint Decomposition + Cache Step
-- Status: Partially closed
+- Active Batch: BATCH 20ZB - Authenticated Journey Mix + Correlation Window
+- Status: Programmatically closed, production scale closure pending
 
 ## Delivered in this update
-- Added a short-lived authenticated quiz-results cache (5s) for `noTotal=true` read paths with cache invalidation on quiz submit.
-- Deployed and executed production retest for authenticated `/quizzes/results?noTotal=true&limit=20` at 500/1000 concurrency.
-- Recorded strong measurable improvement vs previous run, while confirming final 500+/1000 closure is still pending.
+- Executed mixed production load window across public and authenticated endpoints after 20ZA hardening.
+- Confirmed strong improvement trend for authenticated quiz-results path under 500/1000 pressure.
+- Identified remaining bottleneck pressure on bootstrap/taxonomy read paths under c=300 burst.
 
 ## Checks
 - `npm --prefix server run build` PASS
@@ -17,4 +17,4 @@
 - `npm run smoke:frontend:strict` PASS
 
 ## Next Suggested Step
-- Start BATCH 20ZB - Authenticated Journey Mix + Render/Mongo Correlation Window.
+- Start BATCH 20ZC - Bootstrap/Taxonomy Read Path Hardening + Extended Correlation Run.
