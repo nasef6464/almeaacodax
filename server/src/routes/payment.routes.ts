@@ -1,4 +1,4 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import crypto from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
@@ -41,14 +41,14 @@ const paymentSettingsUpdateSchema = z.object({
   notes: z.string().optional(),
 });
 
+const paymentCountryPresetSchema = z.object({
+  country: z.enum(["SA", "EG"]),
+});
+
 const paymentRequestCreateSchema = z.object({
   itemType: z.enum(["course", "package", "skill", "test"]),
   itemId: z.string().min(1),
-  itemName: z.string().min(1),
   packageId: z.string().optional(),
-  includedCourseIds: z.array(z.string()).optional(),
-  amount: z.number().min(0),
-  currency: z.string().default("SAR"),
   paymentMethod: z.enum(["card", "transfer", "wallet"]),
   transferReference: z.string().optional(),
   walletNumber: z.string().optional(),
@@ -80,6 +80,8 @@ const paymentWebhookSchema = z.object({
 const paymentRequestListQuerySchema = z.object({
   status: z.enum(["pending", "approved", "rejected", "cancelled", "all"]).optional(),
   search: z.string().max(120).optional(),
+  paymentCountry: z.string().max(3).optional(),
+  paymentMethod: z.enum(["card", "transfer", "wallet", "all"]).optional(),
 });
 
 const discountCodeListQuerySchema = z.object({
@@ -107,7 +109,6 @@ const discountCodePreviewSchema = z.object({
   itemType: z.enum(["course", "package", "skill", "test"]).optional(),
   itemId: z.string().min(1),
   packageId: z.string().optional(),
-  amount: z.number().min(0),
   discountCode: z.string().max(80),
 });
 
@@ -118,7 +119,7 @@ const defaultSettings = {
   webhookSecret: "",
   card: {
     enabled: false,
-    label: "بطاقة بنكية",
+    label: "????? ?????",
     providerName: "Tap / MyFatoorah / HyperPay / Paymob / Fawry",
     providerCode: "manual_card",
     gatewayMode: "manual_review",
@@ -127,7 +128,7 @@ const defaultSettings = {
   },
   transfer: {
     enabled: true,
-    label: "تحويل بنكي",
+    label: "????? ????",
     bankName: "",
     accountName: "",
     accountNumber: "",
@@ -141,7 +142,7 @@ const defaultSettings = {
   },
   wallet: {
     enabled: true,
-    label: "محفظة إلكترونية",
+    label: "????? ?????????",
     providerName: "",
     providerCode: "manual_wallet",
     gatewayMode: "manual_review",
@@ -153,13 +154,74 @@ const defaultSettings = {
   notes: "",
 };
 
+const paymentCountryPresets = {
+  SA: {
+    currency: "SAR",
+    card: {
+      enabled: true,
+      providerName: "Tap / MyFatoorah / HyperPay",
+      providerCode: "tap",
+      gatewayMode: "payment_link" as const,
+      supportedCountries: ["SA"],
+    },
+    transfer: {
+      enabled: true,
+      providerName: "Bank transfer",
+      providerCode: "manual_transfer",
+      gatewayMode: "manual_review" as const,
+      supportedCountries: ["SA"],
+    },
+    wallet: {
+      enabled: true,
+      providerName: "STC Pay",
+      providerCode: "stc_pay",
+      gatewayMode: "manual_review" as const,
+      supportedCountries: ["SA"],
+    },
+  },
+  EG: {
+    currency: "EGP",
+    card: {
+      enabled: true,
+      providerName: "Paymob / Fawry",
+      providerCode: "paymob",
+      gatewayMode: "payment_link" as const,
+      supportedCountries: ["EG"],
+    },
+    transfer: {
+      enabled: true,
+      providerName: "Bank transfer",
+      providerCode: "manual_transfer",
+      gatewayMode: "manual_review" as const,
+      supportedCountries: ["EG"],
+    },
+    wallet: {
+      enabled: true,
+      providerName: "Vodafone Cash / Fawry Wallet",
+      providerCode: "vodafone_cash",
+      gatewayMode: "manual_review" as const,
+      supportedCountries: ["EG"],
+    },
+  },
+};
+
+const PAYMENT_ERRORS = {
+  courseAsPackage: "لا يمكن إرسال دورة على أنها باقة",
+  packageAsCourse: "لا يمكن إرسال باقة على أنها دورة",
+  packageRequiredForSkillOrTest: "العنصر المحدد يحتاج باقة صالحة.",
+  paymentMethodUnavailableForCountry: "وسيلة الدفع غير متاحة لهذه الدولة حاليًا",
+  missingPurchaseUserForApproval: "لا يمكن اعتماد طلب دفع لمستخدم غير موجود",
+  discountApprovalFailedDuringReview: "تعذر اعتماد كود الخصم أثناء المراجعة",
+  discountNoLongerAvailableForApproval: "كود الخصم لم يعد متاحًا للاعتماد",
+} as const;
+
 const sanitizeSettingsForPublic = (settings: any) => ({
   key: settings.key,
   currency: settings.currency,
   manualReviewRequired: settings.manualReviewRequired,
   card: {
     enabled: Boolean(settings.card?.enabled),
-    label: settings.card?.label || "بطاقة بنكية",
+    label: settings.card?.label || "????? ?????",
     providerName: settings.card?.publishDetailsToStudents === false ? "" : (settings.card?.providerName || ""),
     providerCode: settings.card?.providerCode || "manual_card",
     gatewayMode: settings.card?.gatewayMode || "manual_review",
@@ -168,7 +230,7 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   },
   transfer: {
     enabled: Boolean(settings.transfer?.enabled),
-    label: settings.transfer?.label || "تحويل بنكي",
+    label: settings.transfer?.label || "????? ????",
     bankName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.bankName || ""),
     accountName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountName || ""),
     accountNumber: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountNumber || ""),
@@ -181,7 +243,7 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   },
   wallet: {
     enabled: Boolean(settings.wallet?.enabled),
-    label: settings.wallet?.label || "محفظة إلكترونية",
+    label: settings.wallet?.label || "????? ?????????",
     providerName: settings.wallet?.publishDetailsToStudents === false ? "" : (settings.wallet?.providerName || ""),
     providerCode: settings.wallet?.providerCode || "manual_wallet",
     gatewayMode: settings.wallet?.gatewayMode || "manual_review",
@@ -255,16 +317,21 @@ const verifyPaymentWebhookSignature = (secret: string, payload: unknown, signatu
 
 const userAlreadyOwnsPurchase = (
   user: any,
-  payload: z.infer<typeof paymentRequestCreateSchema>,
+  target: {
+    itemType: "course" | "package" | "skill" | "test";
+    itemId: string;
+    packageId: string;
+    includedCourseIds: string[];
+  },
 ) => {
   const purchasedCourses = new Set<string>([
     ...((user.subscription?.purchasedCourses || []).map(String)),
     ...((user.enrolledCourses || []).map(String)),
   ]);
   const purchasedPackages = new Set<string>((user.subscription?.purchasedPackages || []).map(String));
-  const targetPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
+  const targetPackageId = target.packageId || (target.itemType === "package" ? target.itemId : "");
 
-  if (payload.itemType === "course" && purchasedCourses.has(payload.itemId)) {
+  if (target.itemType === "course" && purchasedCourses.has(target.itemId)) {
     return true;
   }
 
@@ -272,7 +339,7 @@ const userAlreadyOwnsPurchase = (
     return true;
   }
 
-  if (payload.includedCourseIds?.length && payload.includedCourseIds.every((courseId) => purchasedCourses.has(String(courseId)))) {
+  if (target.includedCourseIds?.length && target.includedCourseIds.every((courseId) => purchasedCourses.has(String(courseId)))) {
     return true;
   }
 
@@ -298,7 +365,13 @@ const isDiscountCodeActive = (discountCode: any, now = Date.now()) => {
 
 const discountAppliesToPayload = (
   discountCode: any,
-  payload: z.infer<typeof paymentRequestCreateSchema>,
+  originalAmount: number,
+  payload: {
+    itemType: "course" | "package" | "skill" | "test";
+    itemId: string;
+    packageId?: string;
+    includedCourseIds?: string[];
+  },
   purchasableItem: any,
 ) => {
   const packageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
@@ -306,7 +379,7 @@ const discountAppliesToPayload = (
   const subjectId = purchasableItem?.subjectId || purchasableItem?.subject || "";
   const contentTypes = purchasableItem?.packageContentTypes?.length ? purchasableItem.packageContentTypes : [];
 
-  if (discountCode.minAmount > 0 && payload.amount < discountCode.minAmount) return false;
+  if (discountCode.minAmount > 0 && originalAmount < discountCode.minAmount) return false;
   if (discountCode.packageIds?.length && !discountCode.packageIds.includes(packageId || payload.itemId)) return false;
   if (discountCode.pathIds?.length && (!pathId || !discountCode.pathIds.includes(pathId))) return false;
   if (discountCode.subjectIds?.length && (!subjectId || !discountCode.subjectIds.includes(subjectId))) return false;
@@ -318,25 +391,76 @@ const getPaymentTargetItemId = (
   payload: Pick<z.infer<typeof paymentRequestCreateSchema>, "itemType" | "itemId" | "packageId">,
 ) => payload.packageId || payload.itemId;
 
+const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestCreateSchema>) => {
+  const targetItemId = getPaymentTargetItemId(payload);
+  const primaryTarget = await CourseModel.findById(targetItemId).lean();
+
+  if (!primaryTarget) {
+    return {
+      ok: false as const,
+      error: "?????? ??????? ??? ????? ?? ?? ????",
+    };
+  }
+
+  const targetKindError = validatePaymentTargetKind(payload, primaryTarget);
+  if (targetKindError) {
+    return {
+      ok: false as const,
+      error: targetKindError,
+    };
+  }
+
+  let packageItem = primaryTarget;
+  if (payload.packageId && payload.itemType !== "package") {
+    const foundPackage = await CourseModel.findById(payload.packageId).lean();
+    if (!foundPackage || foundPackage.isPackage !== true) {
+      return {
+        ok: false as const,
+        error: "?????? ???????? ???? ????? ??? ?????.",
+      };
+    }
+    packageItem = foundPackage;
+  }
+
+  const currency = String((primaryTarget.currency || packageItem.currency || "SAR")).trim() || "SAR";
+  const rawAmount = primaryTarget.originalPrice ?? primaryTarget.price ?? 0;
+  const resolvedAmount = Number.isFinite(rawAmount) ? Math.max(0, Number(rawAmount)) : 0;
+  const resolvedIncludedCourseIds = Array.isArray(packageItem?.includedCourses)
+    ? packageItem.includedCourses.filter(Boolean).map((id: any) => String(id))
+    : [];
+  const resolvedPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
+
+  return {
+    ok: true as const,
+    target: primaryTarget,
+    packageItem,
+    packageId: resolvedPackageId,
+    itemName: String(primaryTarget.title || ""),
+    originalAmount: resolvedAmount,
+    includedCourseIds: resolvedIncludedCourseIds,
+    currency,
+  };
+};
+
 const validatePaymentTargetKind = (
   payload: Pick<z.infer<typeof paymentRequestCreateSchema>, "itemType" | "itemId" | "packageId">,
   purchasableItem: any,
 ) => {
   if (payload.itemType === "package") {
     if (!purchasableItem || purchasableItem.isPackage !== true) {
-      return "اختر باقة صالحة من صفحة الباقات. لا يمكن إرسال دورة على أنها باقة.";
+      return PAYMENT_ERRORS.courseAsPackage;
     }
   }
 
   if (payload.itemType === "course") {
     if (!purchasableItem || purchasableItem.isPackage === true) {
-      return "اختر دورة صالحة من صفحة الدورات. لا يمكن إرسال باقة على أنها دورة.";
+      return PAYMENT_ERRORS.packageAsCourse;
     }
   }
 
   if ((payload.itemType === "skill" || payload.itemType === "test") && payload.packageId) {
     if (!purchasableItem || purchasableItem.isPackage !== true) {
-      return "الباقة المرتبطة بهذا الطلب غير صالحة.";
+      return PAYMENT_ERRORS.packageRequiredForSkillOrTest;
     }
   }
 
@@ -488,6 +612,55 @@ paymentRouter.patch(
 );
 
 paymentRouter.get(
+  "/settings/presets",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    return res.json({
+      presets: paymentCountryPresets,
+      countries: [
+        { code: "SA", label: "????????" },
+        { code: "EG", label: "???" },
+      ],
+    });
+  }),
+);
+
+paymentRouter.post(
+  "/settings/apply-country-preset",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const payload = paymentCountryPresetSchema.parse(req.body);
+    const settings = await getOrCreateSettings();
+    const preset = paymentCountryPresets[payload.country];
+
+    settings.currency = preset.currency;
+    settings.card = {
+      ...settings.card,
+      ...preset.card,
+    } as any;
+    settings.transfer = {
+      ...settings.transfer,
+      ...preset.transfer,
+    } as any;
+    settings.wallet = {
+      ...settings.wallet,
+      ...preset.wallet,
+    } as any;
+
+    await settings.save();
+    await recordAdminAuditLog(req, {
+      action: "payment.settings.apply-country-preset",
+      resourceType: "payment-settings",
+      resourceId: "default",
+      metadata: { country: payload.country },
+    });
+    return res.json(settings);
+  }),
+);
+
+paymentRouter.get(
   "/requests",
   requireAuth,
   asyncHandler(async (req, res) => {
@@ -495,6 +668,12 @@ paymentRouter.get(
     const filter: Record<string, unknown> = req.authUser?.role === "admin" ? {} : { userId: req.authUser?.id };
     if (query.status && query.status !== "all") {
       filter.status = query.status;
+    }
+    if (query.paymentCountry && query.paymentCountry !== "all") {
+      filter.paymentCountry = query.paymentCountry;
+    }
+    if (query.paymentMethod && query.paymentMethod !== "all") {
+      filter.paymentMethod = query.paymentMethod;
     }
     const search = String(query.search || "").trim();
     if (search) {
@@ -514,6 +693,24 @@ paymentRouter.get(
     return res.json({
       requests,
       pagination: buildPaginatedResponse(requests, pagination, total),
+    });
+  }),
+);
+
+paymentRouter.get(
+  "/requests/summary",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const [all, pending, approved, rejected, cancelled] = await Promise.all([
+      PaymentRequestModel.countDocuments({}),
+      PaymentRequestModel.countDocuments({ status: "pending" }),
+      PaymentRequestModel.countDocuments({ status: "approved" }),
+      PaymentRequestModel.countDocuments({ status: "rejected" }),
+      PaymentRequestModel.countDocuments({ status: "cancelled" }),
+    ]);
+    return res.json({
+      totals: { all, pending, approved, rejected, cancelled },
     });
   }),
 );
@@ -553,19 +750,32 @@ paymentRouter.post(
   asyncHandler(async (req, res) => {
     const payload = discountCodePreviewSchema.parse(req.body);
     const normalizedDiscountCode = normalizeDiscountCode(payload.discountCode);
-    const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
-    const targetItemId = getPaymentTargetItemId(payload as any);
-    const purchasableItem = await CourseModel.findById(targetItemId).lean();
-    const targetKindError = validatePaymentTargetKind(payload as any, purchasableItem);
+    const trustedRequestPayload: any = {
+      itemType: payload.itemType || "course",
+      itemId: payload.itemId,
+      packageId: payload.packageId,
+      includedCourseIds: [],
+      paymentMethod: "transfer",
+      paymentProviderCode: "",
+      paymentGatewayMode: "manual_review",
+      paymentCountry: "",
+      notes: "",
+      transferReference: "",
+      walletNumber: "",
+      receiptUrl: "",
+      discountCode: "",
+    };
+    const resolvedTarget = await buildTrustedPaymentTarget(trustedRequestPayload);
+    const originalAmount = resolvedTarget.ok ? resolvedTarget.originalAmount : 0;
 
     if (!normalizedDiscountCode) {
       return res.json({ valid: false, originalAmount, discountAmount: 0, finalAmount: originalAmount });
     }
 
-    if (targetKindError) {
+    if (!resolvedTarget.ok) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         valid: false,
-        message: targetKindError,
+        message: resolvedTarget.error,
         originalAmount,
         discountAmount: 0,
         finalAmount: originalAmount,
@@ -573,10 +783,21 @@ paymentRouter.post(
     }
 
     const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
-    if (!discountCode || !isDiscountCodeActive(discountCode) || !discountAppliesToPayload(discountCode, payload as any, purchasableItem)) {
+    if (!discountCode || !isDiscountCodeActive(discountCode)
+      || !discountAppliesToPayload(
+        discountCode,
+        originalAmount,
+        {
+          itemType: payload.itemType || "course",
+          itemId: payload.itemId,
+          packageId: payload.packageId,
+          includedCourseIds: resolvedTarget.includedCourseIds,
+        },
+        resolvedTarget.target,
+      )) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         valid: false,
-        message: "كود الخصم غير صالح لهذا الطلب",
+        message: "??? ????? ??? ???? ???? ?????",
         originalAmount,
         discountAmount: 0,
         finalAmount: originalAmount,
@@ -674,7 +895,7 @@ paymentRouter.post(
     }
 
     if (!isPaymentMethodEnabled(settings, payload.paymentMethod)) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة حاليًا" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "????? ????? ??? ????? ??????" });
     }
 
     if (
@@ -683,18 +904,28 @@ paymentRouter.post(
       selectedMethodSettings.supportedCountries.length > 0 &&
       !selectedMethodSettings.supportedCountries.includes(payload.paymentCountry)
     ) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير متاحة لهذه الدولة حاليًا" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: PAYMENT_ERRORS.paymentMethodUnavailableForCountry });
     }
 
     if (!hasManualPaymentEvidence(payload)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "أرسل مرجع دفع أو إيصالًا واضحًا حتى يمكن مراجعة الطلب يدويًا",
+        message: "???? ???? ??? ?? ??????? ?????? ??? ???? ?????? ????? ??????",
       });
     }
 
-    if (userAlreadyOwnsPurchase(user, payload)) {
+    const trustedTarget = await buildTrustedPaymentTarget(payload);
+    if (!trustedTarget.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: trustedTarget.error });
+    }
+
+    if (userAlreadyOwnsPurchase(user, {
+      itemType: payload.itemType,
+      itemId: payload.itemId,
+      packageId: trustedTarget.packageId || "",
+      includedCourseIds: trustedTarget.includedCourseIds || [],
+    })) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "هذا المحتوى مفعل بالفعل على حسابك",
+        message: "??? ??????? ???? ?????? ??? ?????",
       });
     }
 
@@ -707,18 +938,12 @@ paymentRouter.post(
 
     if (pendingDuplicate) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "يوجد طلب دفع قيد المراجعة لهذا المحتوى بالفعل",
+        message: "???? ??? ??? ??? ???????? ???? ??????? ??????",
         request: pendingDuplicate,
       });
     }
 
-    const targetItemId = getPaymentTargetItemId(payload);
-    const purchasableItem = await CourseModel.findById(targetItemId).lean();
-    const targetKindError = validatePaymentTargetKind(payload, purchasableItem);
-    if (targetKindError) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: targetKindError });
-    }
-    const originalAmount = Number.isFinite(payload.amount) ? Math.max(0, payload.amount) : 0;
+    const originalAmount = trustedTarget.originalAmount;
     let finalAmount = originalAmount;
     let discountAmount = 0;
     let discountCodeId = "";
@@ -726,25 +951,43 @@ paymentRouter.post(
 
     if (normalizedDiscountCode) {
       const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
-      if (!discountCode || !isDiscountCodeActive(discountCode) || !discountAppliesToPayload(discountCode, payload, purchasableItem)) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير صالح لهذا الطلب" });
+      if (!discountCode || !isDiscountCodeActive(discountCode) || !discountAppliesToPayload(
+        discountCode,
+        originalAmount,
+        {
+          itemType: payload.itemType,
+          itemId: payload.itemId,
+          packageId: trustedTarget.packageId,
+          includedCourseIds: trustedTarget.includedCourseIds || [],
+        },
+        trustedTarget.target,
+      )) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "??? ????? ??? ???? ???? ?????" });
       }
       discountAmount = calculateDiscountAmount(discountCode, originalAmount);
       finalAmount = Math.max(0, originalAmount - discountAmount);
       discountCodeId = String(discountCode._id);
     }
 
-    const created = await PaymentRequestModel.create({
+        const created = await PaymentRequestModel.create({
       id: `payreq_${Date.now()}`,
       userId: String(user._id),
       userName: user.name,
       userEmail: user.email,
-      ...payload,
-      packageId: payload.packageId || "",
-      includedCourseIds: payload.includedCourseIds || [],
+      itemType: payload.itemType,
+      itemId: payload.itemId,
+      itemName: trustedTarget.itemName,
+      packageId: trustedTarget.packageId || "",
+      includedCourseIds: trustedTarget.includedCourseIds || [],
+      currency: trustedTarget.currency,
+      paymentMethod: payload.paymentMethod,
+      transferReference: payload.transferReference || "",
+      walletNumber: payload.walletNumber || "",
+      receiptUrl: payload.receiptUrl || "",
       paymentProviderCode: payload.paymentProviderCode || selectedMethodSettings.providerCode || "",
       paymentGatewayMode: payload.paymentGatewayMode || selectedMethodSettings.gatewayMode || "manual_review",
       paymentCountry: payload.paymentCountry || selectedMethodSettings.supportedCountries?.[0] || "",
+      notes: payload.notes || "",
       originalAmount,
       discountAmount,
       discountCodeId,
@@ -807,7 +1050,7 @@ paymentRouter.post(
         {
           $set: {
             status: payload.status === "cancelled" ? "cancelled" : "rejected",
-            reviewerNotes: `بوابة الدفع: ${payload.status}`,
+            reviewerNotes: `????? ?????: ${payload.status}`,
             reviewedBy: `webhook:${payload.provider}`,
             reviewedAt: Date.now(),
             gatewayProvider: payload.provider,
@@ -830,7 +1073,7 @@ paymentRouter.post(
 
     const approved = await completeApprovedPaymentRequest(requestDoc, {
       reviewedBy: `webhook:${payload.provider}`,
-      reviewerNotes: "تم الاعتماد آليًا من بوابة الدفع",
+      reviewerNotes: "?? ???????? ????? ?? ????? ?????",
       approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
       gatewayProvider: payload.provider,
       gatewayTransactionId: payload.transactionId || "",
@@ -847,12 +1090,12 @@ paymentRouter.post(
       await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
         $set: {
           status: "pending",
-          reviewerNotes: "تعذر اعتماد كود الخصم أثناء معالجة الدفع",
+          reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
           reviewedBy: "",
           reviewedAt: null,
         },
       });
-      return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+      return res.status(StatusCodes.CONFLICT).json({ message: "??? ????? ?? ??? ?????? ????????" });
     }
 
     const access = await grantApprovedPaymentAccess(approved.request, {
@@ -893,7 +1136,7 @@ paymentRouter.patch(
 
     if (requestDoc.status === "approved" && payload.status === "approved") {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "طلب الدفع معتمد بالفعل",
+        message: "??? ????? ????? ??????",
         request: requestDoc,
       });
     }
@@ -901,12 +1144,12 @@ paymentRouter.patch(
     if (payload.status === "approved") {
       const purchaseUser = await UserModel.findById(requestDoc.userId).select("_id");
       if (!purchaseUser) {
-        return res.status(StatusCodes.NOT_FOUND).json({ message: "لا يمكن اعتماد طلب دفع لمستخدم غير موجود" });
+        return res.status(StatusCodes.NOT_FOUND).json({ message: PAYMENT_ERRORS.missingPurchaseUserForApproval });
       }
 
       if (!hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "لا يمكن اعتماد طلب دفع بدون مرجع أو إيصال أو دليل مراجعة واضح",
+          message: "?? ???? ?????? ??? ??? ???? ???? ?? ????? ?? ???? ?????? ????",
         });
       }
 
@@ -922,7 +1165,7 @@ paymentRouter.patch(
 
       if (approved.duplicate || !approved.request) {
         return res.status(StatusCodes.CONFLICT).json({
-          message: "طلب الدفع لم يعد قيد المراجعة",
+          message: "??? ????? ?? ??? ??? ????????",
           request: await PaymentRequestModel.findById(requestDoc._id),
         });
       }
@@ -932,13 +1175,13 @@ paymentRouter.patch(
         await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
           $set: {
             status: "pending",
-            reviewerNotes: "تعذر اعتماد كود الخصم أثناء المراجعة",
+            reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
             approvalEvidence: "",
             reviewedBy: "",
             reviewedAt: null,
           },
         });
-        return res.status(StatusCodes.CONFLICT).json({ message: "كود الخصم لم يعد متاحًا للاعتماد" });
+        return res.status(StatusCodes.CONFLICT).json({ message: PAYMENT_ERRORS.discountApprovalFailedDuringReview });
       }
 
       const access = await grantApprovedPaymentAccess(approved.request, {
@@ -984,3 +1227,5 @@ paymentRouter.patch(
     });
   }),
 );
+
+
