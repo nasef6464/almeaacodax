@@ -476,3 +476,19 @@ Decision note:
 - This confirms survivability for these two read probes under short high-concurrency windows.
 - Full 500+ closure still requires full-journey retest (auth/results/write paths) with sustained duration and infra observability correlation.
 
+## Production Full-Journey Edge Retest - 2026-05-17 (Batch 20V)
+
+Scope executed (high concurrency, 6s window):
+- `POST /auth/login` with invalid credentials (`c=500`, `c=1000`)
+- `GET /quizzes/results` unauthenticated (`c=500`, `c=1000`)
+
+Summary (`load-tests/results/prod_journey_retest_summary_2026-05-17.json`):
+- `auth/login c=500`: ~44.5 rps, non2xx=267 (`401`,`429`), p99 ~7317ms
+- `auth/login c=1000`: ~66 rps, non2xx=330 (`429`), p99 ~8584ms
+- `quizzes/results unauth c=500`: ~143.2 rps, non2xx=716 (`401`), p99 ~6728ms
+- `quizzes/results unauth c=1000`: ~84.8 rps, non2xx=424 (`401`), p99 ~6980ms
+
+Interpretation:
+- Under high concurrency, auth/result edges stayed responsive without transport-level timeouts in this short window.
+- Elevated p99 remains visible and confirms the need for sustained-duration full authenticated/write-path retests before claiming full 500+ readiness.
+

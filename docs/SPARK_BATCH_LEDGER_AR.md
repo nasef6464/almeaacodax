@@ -173,3 +173,10 @@
 - Captured evidence files under load-tests/results/prod_retest_* and appended report section in LOAD_TEST_REPORT.md.
 - Status: Programmatically closed, full-journey 500+ closure pending.
 
+
+
+## Update BATCH 20V — 2026-05-17
+- Executed high-concurrency journey edge retest for uth/login and unauthenticated quizzes/results at 500/1000.
+- Captured report + artifacts under load-tests/results/prod_journey_* with expected 401/429 behavior and no transport-level timeouts.
+- Status: Programmatically closed, authenticated/write-path expansion pending.
+
