@@ -236,7 +236,7 @@ const platformFontSettingsSchema = z.object({
   headingCustomFont: platformFontUploadSchema.optional(),
 });
 
-const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 45 * 1000;
+const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 type PublicContentBootstrapPayload = {
   topics: unknown[];
@@ -1227,14 +1227,14 @@ contentRouter.get(
     const includeStudyPlans = scope !== "learning";
     const canUsePublicCache = !req.authUser;
     if (canUsePublicCache && publicContentBootstrapCache && publicContentBootstrapCache.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "hit");
       return res.json(publicContentBootstrapCache.payload);
     }
 
     if (canUsePublicCache && publicContentBootstrapPromise) {
       const payload = await publicContentBootstrapPromise;
-      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "shared");
       return res.json(payload);
     }
@@ -1287,7 +1287,7 @@ contentRouter.get(
         expiresAt: Date.now() + CONTENT_BOOTSTRAP_CACHE_TTL_MS,
         payload,
       };
-      res.setHeader("Cache-Control", "private, max-age=45");
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "miss");
     }
     res.setHeader("X-Content-Scope", scope);

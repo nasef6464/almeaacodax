@@ -69,7 +69,7 @@ const skillSchema = z.object({
 
 export const taxonomyRouter = Router();
 
-const TAXONOMY_BOOTSTRAP_CACHE_TTL_MS = 60 * 1000;
+const TAXONOMY_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
 const TAXONOMY_SEED_CHECK_TTL_MS = 5 * 60 * 1000;
 
 let publicTaxonomyBootstrapCache:
@@ -201,7 +201,7 @@ taxonomyRouter.get(
     }
 
     if (!canSeeInactiveTaxonomy && publicTaxonomyBootstrapCache && publicTaxonomyBootstrapCache.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Taxonomy-Cache", "hit");
       return res.json(publicTaxonomyBootstrapCache.payload);
     }
@@ -218,7 +218,7 @@ taxonomyRouter.get(
     }
 
     const { payload, cache } = await getPublicTaxonomyBootstrapPayload();
-    res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
+    res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
     res.setHeader("X-Taxonomy-Cache", cache);
     return res.json(payload);
   }),
@@ -227,7 +227,7 @@ taxonomyRouter.get(
 taxonomyRouter.post(
   "/paths",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = pathSchema.parse(req.body);
     const created = await PathModel.create({
@@ -241,7 +241,7 @@ taxonomyRouter.post(
 taxonomyRouter.patch(
   "/paths/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = pathSchema.partial().parse(req.body);
     const updated = await PathModel.findByIdAndUpdate(req.params.id, payload, { new: true });
@@ -255,7 +255,7 @@ taxonomyRouter.patch(
 taxonomyRouter.delete(
   "/paths/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const deleted = await PathModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -312,7 +312,7 @@ taxonomyRouter.delete(
 taxonomyRouter.post(
   "/levels",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = levelSchema.parse(req.body);
     const created = await LevelModel.create({
@@ -326,7 +326,7 @@ taxonomyRouter.post(
 taxonomyRouter.patch(
   "/levels/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = levelSchema.partial().parse(req.body);
     const updated = await LevelModel.findByIdAndUpdate(req.params.id, payload, { new: true });
@@ -340,7 +340,7 @@ taxonomyRouter.patch(
 taxonomyRouter.delete(
   "/levels/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const deleted = await LevelModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -392,7 +392,7 @@ taxonomyRouter.delete(
 taxonomyRouter.post(
   "/subjects",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = subjectSchema.parse(req.body);
     const created = await SubjectModel.create({
@@ -406,7 +406,7 @@ taxonomyRouter.post(
 taxonomyRouter.patch(
   "/subjects/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = subjectSchema.partial().parse(req.body);
     const updated = await SubjectModel.findByIdAndUpdate(req.params.id, payload, { new: true });
@@ -420,7 +420,7 @@ taxonomyRouter.patch(
 taxonomyRouter.delete(
   "/subjects/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const deleted = await SubjectModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -479,7 +479,7 @@ taxonomyRouter.delete(
 taxonomyRouter.post(
   "/sections",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = sectionSchema.parse(req.body);
     const created = await SectionModel.create({
@@ -493,7 +493,7 @@ taxonomyRouter.post(
 taxonomyRouter.patch(
   "/sections/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = sectionSchema.partial().parse(req.body);
     const updated = await SectionModel.findByIdAndUpdate(req.params.id, payload, { new: true });
@@ -507,7 +507,7 @@ taxonomyRouter.patch(
 taxonomyRouter.delete(
   "/sections/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const deleted = await SectionModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -568,7 +568,7 @@ taxonomyRouter.delete(
 taxonomyRouter.post(
   "/skills",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = skillSchema.parse(req.body);
     const created = await SkillModel.create({
@@ -582,7 +582,7 @@ taxonomyRouter.post(
 taxonomyRouter.patch(
   "/skills/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = skillSchema.partial().parse(req.body);
     const updated = await SkillModel.findByIdAndUpdate(req.params.id, payload, { new: true });
@@ -596,7 +596,7 @@ taxonomyRouter.patch(
 taxonomyRouter.delete(
   "/skills/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const deleted = await SkillModel.findByIdAndDelete(req.params.id);
     if (!deleted) {
