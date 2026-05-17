@@ -17,6 +17,41 @@ const resolveRequestKey = (req: Request) => {
   return ipKeyGenerator(req.ip || req.socket.remoteAddress || "unknown");
 };
 
+const normalizeIp = (value: string) =>
+  String(value || "")
+    .trim()
+    .replace(/^::ffff:/i, "");
+
+const getRequestIp = (req: Request) => normalizeIp(req.ip || req.socket.remoteAddress || "");
+
+const parseAdminBypassIps = () =>
+  new Set(
+    String(env.ADMIN_LOGIN_BYPASS_IPS || "")
+      .split(",")
+      .map((ip) => normalizeIp(ip))
+      .filter(Boolean),
+  );
+
+const isAdminLoginBypassRequest = (req: Request) => {
+  if (!env.ADMIN_LOGIN_BYPASS_ENABLED) return false;
+
+  const bypassEmail = String(env.ADMIN_LOGIN_BYPASS_EMAIL || "").trim().toLowerCase();
+  if (!bypassEmail) return false;
+
+  const allowedIps = parseAdminBypassIps();
+  if (allowedIps.size === 0) return false;
+
+  const requestPath = String(req.originalUrl || req.path || "").toLowerCase();
+  if (!requestPath.endsWith("/api/auth/login")) return false;
+
+  const body = req.body && typeof req.body === "object" ? req.body : {};
+  const loginEmail = String((body as Record<string, unknown>).email || "").trim().toLowerCase();
+  if (!loginEmail || loginEmail !== bypassEmail) return false;
+
+  const requestIp = getRequestIp(req);
+  return allowedIps.has(requestIp);
+};
+
 export function createRateLimiter(options: RateLimitOptions) {
   const redis = env.RATE_LIMIT_REDIS_ENABLED ? createRedisClient("rate-limit") : null;
   const useRedis = Boolean(redis && isRedisConfigured());
@@ -47,8 +82,8 @@ export function createRateLimiter(options: RateLimitOptions) {
 
 export const globalRateLimiter = createRateLimiter({
   keyPrefix: "global",
-  windowMs: 60 * 1000,
-  limit: 600,
+  windowMs: env.RATE_LIMIT_GLOBAL_WINDOW_MS,
+  limit: env.RATE_LIMIT_GLOBAL_LIMIT,
   message: { message: "Too many requests, please try again shortly" },
   skip: (req) => {
     const path = req.path || "";
@@ -67,14 +102,15 @@ export const globalRateLimiter = createRateLimiter({
 
 export const authRateLimiter = createRateLimiter({
   keyPrefix: "auth",
-  windowMs: 15 * 60 * 1000,
-  limit: 20,
+  windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS,
+  limit: env.RATE_LIMIT_AUTH_LIMIT,
   message: { message: "Too many authentication attempts, please try again later" },
+  skip: isAdminLoginBypassRequest,
 });
 
 export const sensitiveActionRateLimiter = createRateLimiter({
   keyPrefix: "sensitive",
-  windowMs: 60 * 1000,
-  limit: 60,
+  windowMs: env.RATE_LIMIT_SENSITIVE_WINDOW_MS,
+  limit: env.RATE_LIMIT_SENSITIVE_LIMIT,
   message: { message: "Too many requests, please slow down" },
 });

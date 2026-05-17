@@ -159,3 +159,10 @@
 - Updated LOAD_TEST_REPORT.md with fresh evidence and kept 500+ status pending infrastructure tuning/retest window.
 - Status: Programmatically closed, production scale hardening pending.
 
+
+
+## Update BATCH 20T — 2026-05-17
+- Added env-level rate-limit tuning keys and wired middleware to consume them for production tuning readiness.
+- Build + readiness + auth-cookie smokes passed after change.
+- Status: Programmatically closed.
+

@@ -32,6 +32,12 @@ const envSchema = z.object({
       return value;
     }, z.boolean())
     .default(true),
+  RATE_LIMIT_GLOBAL_WINDOW_MS: z.coerce.number().int().min(1000).max(60 * 60 * 1000).default(60 * 1000),
+  RATE_LIMIT_GLOBAL_LIMIT: z.coerce.number().int().min(50).max(5000).default(600),
+  RATE_LIMIT_AUTH_WINDOW_MS: z.coerce.number().int().min(30 * 1000).max(24 * 60 * 60 * 1000).default(15 * 60 * 1000),
+  RATE_LIMIT_AUTH_LIMIT: z.coerce.number().int().min(3).max(500).default(20),
+  RATE_LIMIT_SENSITIVE_WINDOW_MS: z.coerce.number().int().min(1000).max(60 * 60 * 1000).default(60 * 1000),
+  RATE_LIMIT_SENSITIVE_LIMIT: z.coerce.number().int().min(10).max(2000).default(60),
   NOTIFICATION_QUEUE_ENABLED: z
     .preprocess((value) => {
       if (typeof value === "string") {
@@ -68,6 +74,16 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().default("Platform Admin"),
   ADMIN_EMAIL: z.string().email().default("admin@example.com"),
   ADMIN_PASSWORD: z.string().min(6).default("change-me"),
+  ADMIN_LOGIN_BYPASS_ENABLED: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+      }
+      return value;
+    }, z.boolean())
+    .default(false),
+  ADMIN_LOGIN_BYPASS_EMAIL: z.string().email().optional().default(""),
+  ADMIN_LOGIN_BYPASS_IPS: z.string().default(""),
   AI_PROVIDER: z.preprocess((value) => {
     // Render/CI UIs sometimes save an empty string; treat it as "unset".
     if (typeof value === "string" && value.trim() === "") return undefined;
