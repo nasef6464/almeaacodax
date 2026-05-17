@@ -30,3 +30,8 @@
 
 ## Suggested Immediate Batch
 - BATCH 20ZG - Quiz Content Integrity & Media Availability Investigation + Guard Rails (diagnose + safe server-side validation + admin audit report path).
+
+## Progress Update (2026-05-18)
+- Production now serves learner quiz list with integrity guard filtering active.
+- Broken quizzes (missing/invalid question links) are excluded from learner listing to avoid runtime "لا توجد أسئلة متاحة".
+- Remaining work is data repair for affected quizzes/questions in admin content inventory.
