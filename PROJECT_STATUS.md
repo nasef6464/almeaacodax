@@ -2,13 +2,13 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: BATCH 20ZB - Authenticated Journey Mix + Correlation Window
-- Status: Programmatically closed, production scale closure pending
+- Active Batch: BATCH 20ZC - Bootstrap/Taxonomy Hardening Retest
+- Status: Partially closed (no measurable gain)
 
 ## Delivered in this update
-- Executed mixed production load window across public and authenticated endpoints after 20ZA hardening.
-- Confirmed strong improvement trend for authenticated quiz-results path under 500/1000 pressure.
-- Identified remaining bottleneck pressure on bootstrap/taxonomy read paths under c=300 burst.
+- Applied low-risk TTL/SWR cache-header tuning for public bootstrap and taxonomy endpoints.
+- Deployed and re-ran c=300 production probes for both endpoints.
+- Measured outcome did not show sufficient improvement; content/bootstrap got worse in this window.
 
 ## Checks
 - `npm --prefix server run build` PASS
@@ -17,4 +17,4 @@
 - `npm run smoke:frontend:strict` PASS
 
 ## Next Suggested Step
-- Start BATCH 20ZC - Bootstrap/Taxonomy Read Path Hardening + Extended Correlation Run.
+- Start BATCH 20ZD - Bootstrap Payload Decomposition (minimal learning shell) + Retest.

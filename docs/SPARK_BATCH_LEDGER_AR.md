@@ -214,3 +214,8 @@
 - Ran a mixed production load window (public + authenticated) and captured dedicated evidence/summary artifacts.
 - Authenticated quiz-results path showed sustained improvement vs pre-cache baselines, while bootstrap/taxonomy remained the current pressure points.
 - Status: Programmatically closed, full production 500+/1000 closure still pending.
+
+## Update BATCH 20ZC — 2026-05-17
+- Tested cache TTL/SWR-only hardening on bootstrap/taxonomy and executed fresh c=300 production probes.
+- Outcome: no reliable gain; bootstrap path showed worse timeout profile in this run window.
+- Status: Partially closed, deeper payload/query decomposition required next.

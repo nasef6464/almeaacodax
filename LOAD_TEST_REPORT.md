@@ -612,3 +612,26 @@ Evidence:
 - `load-tests/results/prod_20zb_quiz_results_nototal_c500_2026-05-17.jsonl`
 - `load-tests/results/prod_20zb_quiz_results_nototal_c1000_2026-05-17.jsonl`
 - `load-tests/results/prod_20zb_journey_mix_summary_2026-05-17.json`
+
+## Production Bootstrap/Taxonomy Retest - 2026-05-17 (Batch 20ZC)
+
+Change under test:
+- Increased public cache TTL and SWR headers for:
+  - `/api/content/bootstrap`
+  - `/api/taxonomy/bootstrap`
+
+Retest:
+- `GET /content/bootstrap` at `c=300`
+- `GET /taxonomy/bootstrap` at `c=300`
+
+Observed:
+- `/content/bootstrap`: `2xx=153`, `timeouts=183` (worse than prior 20ZB window).
+- `/taxonomy/bootstrap`: `2xx=290`, `timeouts=129` (no material improvement vs prior 20ZB).
+
+Conclusion:
+- Header/TTL-only tuning did not deliver the intended production gain for c=300 burst.
+- Further hardening must target query/payload shape and endpoint decomposition rather than cache headers alone.
+
+Evidence:
+- `load-tests/results/prod_20zc_bootstrap_c300_2026-05-17.jsonl`
+- `load-tests/results/prod_20zc_taxonomy_c300_2026-05-17.jsonl`
