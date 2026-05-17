@@ -237,6 +237,7 @@ const platformFontSettingsSchema = z.object({
 });
 
 const CONTENT_BOOTSTRAP_CACHE_TTL_MS = 3 * 60 * 1000;
+const CONTENT_BOOTSTRAP_MINIMAL_CACHE_TTL_MS = 3 * 60 * 1000;
 const PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT = 8;
 type PublicContentBootstrapPayload = {
   topics: unknown[];
@@ -253,10 +254,19 @@ type ContentBootstrapCacheEntry = { expiresAt: number; payload: ContentBootstrap
 const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
+let contentBootstrapMinimalCache:
+  | {
+      expiresAt: number;
+      payload: PublicContentBootstrapPayload;
+    }
+  | null = null;
+let contentBootstrapMinimalPromise: Promise<PublicContentBootstrapPayload> | null = null;
 
 const clearContentBootstrapCache = () => {
   contentBootstrapCache.clear();
   contentBootstrapPromises.clear();
+  contentBootstrapMinimalCache = null;
+  contentBootstrapMinimalPromise = null;
 };
 
 const scopeFilterToActivePaths = <T extends Record<string, unknown>>(baseFilter: T, activePathIds: string[], pathField = "pathId") => ({
@@ -1210,6 +1220,54 @@ contentRouter.patch(
     );
 
     return res.json(settings);
+  }),
+);
+
+contentRouter.get(
+  "/bootstrap/minimal",
+  optionalAuth,
+  asyncHandler(async (_req, res) => {
+    if (contentBootstrapMinimalCache && contentBootstrapMinimalCache.expiresAt > Date.now()) {
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+      res.setHeader("X-Content-Minimal-Cache", "hit");
+      return res.json(contentBootstrapMinimalCache.payload);
+    }
+
+    if (contentBootstrapMinimalPromise) {
+      const payload = await contentBootstrapMinimalPromise;
+      res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+      res.setHeader("X-Content-Minimal-Cache", "shared");
+      return res.json(payload);
+    }
+
+    const loadMinimalPayload = async (): Promise<PublicContentBootstrapPayload> => {
+      const announcementAds = await AnnouncementAdModel.find({ isActive: true, audience: { $in: ["all", "guest"] } })
+        .sort({ priority: -1, createdAt: -1 })
+        .limit(PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT)
+        .lean();
+
+      return {
+        topics: [],
+        lessons: [],
+        libraryItems: [],
+        groups: [],
+        b2bPackages: [],
+        accessCodes: [],
+        announcementAds,
+        studyPlans: [],
+      };
+    };
+
+    const payload = await (contentBootstrapMinimalPromise = loadMinimalPayload().finally(() => {
+      contentBootstrapMinimalPromise = null;
+    }));
+    contentBootstrapMinimalCache = {
+      expiresAt: Date.now() + CONTENT_BOOTSTRAP_MINIMAL_CACHE_TTL_MS,
+      payload,
+    };
+    res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=180");
+    res.setHeader("X-Content-Minimal-Cache", "miss");
+    return res.json(payload);
   }),
 );
 

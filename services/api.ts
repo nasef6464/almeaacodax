@@ -576,6 +576,17 @@ export const api = {
       announcementAds: unknown[];
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap", { scope }), `content-bootstrap:${scope}`, BOOTSTRAP_CACHE_TTL_MS),
+  getContentBootstrapMinimal: () =>
+    requestCached<{
+      topics: unknown[];
+      lessons: unknown[];
+      libraryItems: unknown[];
+      groups: unknown[];
+      b2bPackages: unknown[];
+      accessCodes: unknown[];
+      announcementAds: unknown[];
+      studyPlans: unknown[];
+    }>("/content/bootstrap/minimal", "content-bootstrap:minimal", BOOTSTRAP_CACHE_TTL_MS),
   getHomepageSettings: (token?: string | null) =>
     token
       ? request<unknown>("/content/homepage-settings", {

@@ -1,6 +1,6 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import { Loader2 } from 'lucide-react';
 import { adapter } from './services/adapter';
@@ -92,8 +92,14 @@ const DATA_BOOTSTRAP_START_PREFIXES = [
 ];
 
 const getInitialRouterPath = () => {
-  const hashPath = window.location.hash.replace(/^#/, '').split(/[?#]/)[0];
-  return hashPath || window.location.pathname || '/';
+  const pathname = window.location.pathname || '/';
+  const hashPath = window.location.hash.replace(/^#/, '');
+
+  if ((pathname === '/' || !pathname) && hashPath.startsWith('/')) {
+    return hashPath.split(/[?#]/)[0];
+  }
+
+  return pathname;
 };
 
 const shouldBlockInitialBootstrap = () => {
@@ -137,6 +143,7 @@ type BootstrapProfile = {
   loadQuizzes: boolean;
   loadTaxonomy: boolean;
   loadContent: boolean;
+  contentScope: 'full' | 'learning';
   loadQuestions: boolean;
   loadSkillProgress: boolean;
 };
@@ -146,6 +153,7 @@ const MINIMAL_BOOTSTRAP_PROFILE: BootstrapProfile = {
   loadQuizzes: false,
   loadTaxonomy: true,
   loadContent: false,
+  contentScope: 'learning',
   loadQuestions: false,
   loadSkillProgress: false,
 };
@@ -155,6 +163,7 @@ const FULL_BOOTSTRAP_PROFILE: BootstrapProfile = {
   loadQuizzes: true,
   loadTaxonomy: true,
   loadContent: true,
+  contentScope: 'full',
   loadQuestions: true,
   loadSkillProgress: true,
 };
@@ -167,6 +176,7 @@ const resolveBootstrapProfile = (path: string): BootstrapProfile => {
   if (path.startsWith('/category/') || path === '/courses' || path.startsWith('/course/')) {
     return {
       ...FULL_BOOTSTRAP_PROFILE,
+      contentScope: 'learning',
       loadQuestions: false,
       loadSkillProgress: false,
     };
@@ -359,6 +369,31 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
   return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
 };
 
+const LegacyHashRouteCompat: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const rawHash = window.location.hash || '';
+    if (!rawHash.startsWith('#/')) {
+      return;
+    }
+
+    if (location.pathname !== '/' || location.search) {
+      return;
+    }
+
+    const target = rawHash.slice(1);
+    if (!target.startsWith('/')) {
+      return;
+    }
+
+    navigate(target, { replace: true });
+  }, [location.pathname, location.search, navigate]);
+
+  return null;
+};
+
 const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }> = ({ bootstrapReady, children }) => {
   const location = useLocation();
 
@@ -402,7 +437,10 @@ const App: React.FC = () => {
   useEffect(() => installGlobalClientTelemetry(), []);
 
   useEffect(() => {
-    const allowLegacyFirebaseSync = import.meta.env.DEV && import.meta.env.VITE_USE_REAL_API === 'false';
+    const useLegacyFirebaseDevMode = import.meta.env.DEV && import.meta.env.VITE_USE_REAL_API === 'false';
+    const allowLegacyFirebaseSync =
+      useLegacyFirebaseDevMode &&
+      import.meta.env.VITE_ENABLE_FIREBASE_LEGACY_SYNC === 'true';
 
     if (!allowLegacyFirebaseSync) {
       return;
@@ -453,7 +491,7 @@ const App: React.FC = () => {
         const coursesPromise = profile.loadCourses ? adapter.getCourses() : null;
         const quizzesPromise = profile.loadQuizzes ? adapter.getQuizzes() : null;
         const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;
-        const contentPromise = profile.loadContent ? adapter.getContentBootstrap() : null;
+        const contentPromise = profile.loadContent ? adapter.getContentBootstrap(profile.contentScope) : null;
         const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;
         const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress() : null;
 
@@ -540,7 +578,14 @@ const App: React.FC = () => {
           void adapter.getQuestions({ page: 1, limit: 20, summary: true, noTotal: true })
             .then((questions) => {
               if (mounted) {
-                hydrateQuestions(questions);
+                const currentQuestions = useStore.getState().questions || [];
+                const mergedById = new Map(currentQuestions.map((question) => [question.id, question]));
+                questions.forEach((question) => {
+                  if (!mergedById.has(question.id)) {
+                    mergedById.set(question.id, question);
+                  }
+                });
+                hydrateQuestions(Array.from(mergedById.values()));
               }
             })
             .catch((error) => {
@@ -570,7 +615,7 @@ const App: React.FC = () => {
 
     const loadPublicAnnouncementAds = async () => {
       try {
-        const response = await api.getPublicAnnouncementAds();
+        const response = await api.getContentBootstrapMinimal();
 
         if (mounted) {
           hydrateContentBootstrap({
@@ -664,11 +709,28 @@ const App: React.FC = () => {
     }
 
     window.addEventListener('hashchange', startIfRouteNeedsData);
+    window.addEventListener('popstate', startIfRouteNeedsData);
+
+    const originalPushState = window.history.pushState.bind(window.history);
+    const originalReplaceState = window.history.replaceState.bind(window.history);
+
+    window.history.pushState = ((...args: Parameters<History['pushState']>) => {
+      originalPushState(...args);
+      startIfRouteNeedsData();
+    }) as History['pushState'];
+
+    window.history.replaceState = ((...args: Parameters<History['replaceState']>) => {
+      originalReplaceState(...args);
+      startIfRouteNeedsData();
+    }) as History['replaceState'];
 
     return () => {
       mounted = false;
       cancelDeferredBootstrap();
       window.removeEventListener('hashchange', startIfRouteNeedsData);
+      window.removeEventListener('popstate', startIfRouteNeedsData);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
     };
   }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateSkillProgress, hydrateTaxonomy]);
 
@@ -703,6 +765,7 @@ const App: React.FC = () => {
       <PlatformFontBootstrap />
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
+        <LegacyHashRouteCompat />
         <SeoRouteMeta />
         <BootstrapRouteGate bootstrapReady={bootstrapReady}>
         <CategoryRouteShellGate>
