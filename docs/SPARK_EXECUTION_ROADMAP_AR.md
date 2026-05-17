@@ -506,3 +506,8 @@ pm run smoke:health-readiness.
 - مسارات history/runtime-audit/setup-checklist غير متاحة على الإنتاج (404).
 - القرار: الإبقاء على Batch 03 بحالة Programmatically closed, production verification pending حتى إصلاح ومزامنة الإنتاج.
 
+
+## Update 2026-05-17 — BATCH 03R Final Production PASS
+- تم فحص endpoints التكاملات حيًا على الإنتاج بنجاح (GET/PATCH/history/runtime-audit/setup-checklist = 200).
+- تم اعتماد إغلاق BATCH 03R كـ Fully closed.
+

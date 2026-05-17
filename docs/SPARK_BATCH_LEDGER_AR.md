@@ -5,7 +5,7 @@
 | 00 | Current State Verification | Fully closed | 2026-05-17 | BATCH_00_CURRENT_STATE_VERIFICATION_2026-05-14_AR.md | ????? ???? ?????. |
 | 01 | Data Visibility Regression Tests | Fully closed | 2026-05-17 | DATA_VISIBILITY_REGRESSION_TESTS_2026-05-14_AR.md | ????? ???? ?????. |
 | 02 | Payment Amount Tampering Protection | Fully closed | 2026-05-17 | BATCH_02R_PAYMENT_AMOUNT_TAMPERING_PRODUCTION_CLOSURE_2026-05-16_AR.md | تم التحقق الحي بعد نشر `e1129da`: الطلب المزوّر تم تصحيحه لقيم server-verified (`amount/itemName/includedCourseIds`) وتم منح access مطابق للقيم الموثوقة فقط. |
-| 03 | Platform Integration Secrets Security | Programmatically closed, production verification pending | 2026-05-17 | BATCH_03R_PLATFORM_INTEGRATION_SECRETS_PRODUCTION_CLOSURE_2026-05-17_AR.md | تحقق الإنتاج: `GET /content/platform-integrations` masked بدون تسريب، لكن `PATCH` يرجع 500 ومسارات `history/runtime-audit/setup-checklist` ترجع 404؛ الإغلاق النهائي مؤجل لحين مزامنة ونجاح التحقق الحي. |
+| 03 | Platform Integration Secrets Security | Fully closed | 2026-05-17 | BATCH_03R_PLATFORM_INTEGRATION_SECRETS_PRODUCTION_CLOSURE_2026-05-17_AR.md | تحقق إنتاجي ناجح: GET/PATCH/history/runtime-audit/setup-checklist كلها 200 مع إخفاء الأسرار. |
 | 04 | Admin Users Pagination | Fully closed | 2026-05-17 | ADMIN_USERS_PAGINATION_FIX_2026-05-14_AR.md | ????? ???? ?????. |
 | 05 | Payment Requests Pagination | Programmatically closed, production verification pending | 2026-05-17 | PAYMENT_REQUESTS_PAGINATION_FIX_2026-05-14_AR.md | ??????? ?????? ??????? ???????? ??????? ??? ?????. |
 | 06 | Quiz Results Pagination | Fully closed | 2026-05-17 | QUIZ_RESULTS_PAGINATION_FIX_2026-05-14_AR.md | ??????? ???? ?? ????? ??? ????? ???????? ???????. |
@@ -77,4 +77,10 @@
 - PATCH /content/platform-integrations: FAIL (500).
 - history/runtime-audit/setup-checklist: FAIL (404).
 - الحالة: Programmatically closed, production verification pending.
+
+
+
+## تحديث BATCH 03R Final Closure — 2026-05-17
+- تم التحقق الحي بنجاح على الإنتاج.
+- الحالة النهائية: **Fully closed**.
 
