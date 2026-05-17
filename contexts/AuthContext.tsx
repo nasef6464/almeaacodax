@@ -113,13 +113,12 @@ const toArray = (value?: string[] | string): string[] => {
   return [];
 };
 
-const buildSessionUser = (user: BackendAuthUser, token: string): SessionUser => ({
+const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   id: String(user.id || user._id || user.email),
   email: user.email,
   displayName: user.name,
   photoURL: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
   role: user.role,
-  token,
 });
 
 const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAuthUser | null) => {
@@ -213,9 +212,9 @@ const restoreInitialSession = (): SessionUser | null => {
       return null;
     }
 
-    if (!import.meta.env.DEV && parsed.token?.startsWith(DEV_TOKEN_PREFIX)) {
-      sessionStorage.removeItem(SESSION_STORAGE_KEY);
-      return null;
+    if ('token' in parsed) {
+      delete parsed.token;
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(parsed));
     }
 
     syncStoreUser(parsed);
@@ -232,6 +231,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loading = false;
 
   useEffect(() => {
+    try {
+      localStorage.removeItem('the-hundred-auth-session');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
     if (user) {
       return;
     }
@@ -242,7 +249,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (cancelled) return;
         const backendUser = (response as { user?: BackendAuthUser })?.user;
         if (!backendUser?.email || !backendUser?.role) return;
-        const sessionUser = buildSessionUser(backendUser, "");
+        const sessionUser = buildSessionUser(backendUser);
         persistSession(sessionUser, backendUser);
       })
       .catch(() => {
@@ -259,11 +266,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       syncStoreUser(null);
       useStore.getState().hydrateExamResults([]);
       useStore.getState().hydrateQuestionAttempts([]);
-      return;
-    }
-
-    if (user.token?.startsWith(DEV_TOKEN_PREFIX)) {
-      syncStoreUser(user, buildDevBackendUser(user.role));
       return;
     }
 
@@ -325,10 +327,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   function persistSession(sessionUser: SessionUser, backendUser: BackendAuthUser) {
-    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
-      ...sessionUser,
-      token: undefined,
-    }));
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
     setUser(sessionUser);
     syncStoreUser(sessionUser, backendUser);
   }
@@ -339,7 +338,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user: BackendAuthUser;
     };
 
-    const sessionUser = buildSessionUser(response.user, response.token);
+    const sessionUser = buildSessionUser(response.user);
     persistSession(sessionUser, response.user);
     return sessionUser;
   };
@@ -351,7 +350,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user: BackendAuthUser;
     };
 
-    const sessionUser = buildSessionUser(response.user, response.token);
+    const sessionUser = buildSessionUser(response.user);
     persistSession(sessionUser, response.user);
     return sessionUser;
   };
@@ -379,7 +378,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const backendUser = buildDevBackendUser(role);
-    const sessionUser = buildSessionUser(backendUser, `${DEV_TOKEN_PREFIX}${role}`);
+    const sessionUser = buildSessionUser(backendUser);
     persistSession(sessionUser, backendUser);
   };
 
