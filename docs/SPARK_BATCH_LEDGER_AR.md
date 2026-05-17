@@ -7,7 +7,7 @@
 | 02 | Payment Amount Tampering Protection | Fully closed | 2026-05-17 | BATCH_02R_PAYMENT_AMOUNT_TAMPERING_PRODUCTION_CLOSURE_2026-05-16_AR.md | تم التحقق الحي بعد نشر `e1129da`: الطلب المزوّر تم تصحيحه لقيم server-verified (`amount/itemName/includedCourseIds`) وتم منح access مطابق للقيم الموثوقة فقط. |
 | 03 | Platform Integration Secrets Security | Fully closed | 2026-05-17 | BATCH_03R_PLATFORM_INTEGRATION_SECRETS_PRODUCTION_CLOSURE_2026-05-17_AR.md | تحقق إنتاجي ناجح: GET/PATCH/history/runtime-audit/setup-checklist كلها 200 مع إخفاء الأسرار. |
 | 04 | Admin Users Pagination | Fully closed | 2026-05-17 | ADMIN_USERS_PAGINATION_FIX_2026-05-14_AR.md | ????? ???? ?????. |
-| 05 | Payment Requests Pagination | Programmatically closed, production verification pending | 2026-05-17 | PAYMENT_REQUESTS_PAGINATION_FIX_2026-05-14_AR.md | ??????? ?????? ??????? ???????? ??????? ??? ?????. |
+| 05 | Payment Requests Pagination | Fully closed | 2026-05-17 | PAYMENT_REQUESTS_PAGINATION_FIX_2026-05-14_AR.md | تحقق حي ناجح على الإنتاج: pagination للأدمن + عزل scope للطالب + بحث requestId عبر search، مع نجاح جميع الفحوص المطلوبة. |
 | 06 | Quiz Results Pagination | Fully closed | 2026-05-17 | QUIZ_RESULTS_PAGINATION_FIX_2026-05-14_AR.md | ??????? ???? ?? ????? ??? ????? ???????? ???????. |
 | 07 | Access Codes Pagination | Fully closed | 2026-05-17 | ACCESS_CODES_PAGINATION_FIX_2026-05-14_AR.md | ????? ???? ?????. |
 | 08 | Questions Pagination | Fully closed | 2026-05-17 | QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md | ????? ???? ?????. |
@@ -82,5 +82,11 @@
 
 ## تحديث BATCH 03R Final Closure — 2026-05-17
 - تم التحقق الحي بنجاح على الإنتاج.
+- الحالة النهائية: **Fully closed**.
+
+
+
+## تحديث BATCH 05R Final Closure — 2026-05-17
+- تم التحقق الحي على الإنتاج بنجاح لمسار طلبات الدفع paginated.
 - الحالة النهائية: **Fully closed**.
 

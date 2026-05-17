@@ -511,3 +511,9 @@ pm run smoke:health-readiness.
 - تم فحص endpoints التكاملات حيًا على الإنتاج بنجاح (GET/PATCH/history/runtime-audit/setup-checklist = 200).
 - تم اعتماد إغلاق BATCH 03R كـ Fully closed.
 
+
+## Update 2026-05-17 — BATCH 05R Final Production PASS
+- تم التحقق الحي بنجاح لمسار /payments/requests مع pagination metadata كاملة.
+- تم التحقق من عزل الطالب لطلباته فقط.
+- تم اعتماد إغلاق BATCH 05 كـ Fully closed.
+
