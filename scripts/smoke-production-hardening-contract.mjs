@@ -27,6 +27,12 @@ function assertNotIncludes(source, fragment, message) {
   }
 }
 
+function assertAnyIncludes(source, fragments, message) {
+  if (!fragments.some((fragment) => source.includes(fragment))) {
+    throw new Error(message || `Missing all expected fragments: ${fragments.join(", ")}`);
+  }
+}
+
 check('direct learner purchase unlock is disabled', () => {
   assertIncludes(authRoutesSource, '"/me/purchase"');
   assertIncludes(authRoutesSource, 'StatusCodes.GONE');
@@ -59,7 +65,11 @@ check('server has baseline production security middleware', () => {
   assertIncludes(appSource, 'helmet({');
   assertIncludes(appSource, 'compression()');
   assertIncludes(appSource, 'app.set("trust proxy", 1)');
-  assertIncludes(appSource, 'rateLimit({');
+  assertAnyIncludes(
+    appSource,
+    ['rateLimit({', 'globalRateLimiter', 'authRateLimiter', 'sensitiveActionRateLimiter'],
+    'Missing baseline rate limit middleware wiring',
+  );
   assertIncludes(appSource, '"/api/auth/login"');
   assertIncludes(appSource, '"/api/quizzes/*/submit"');
   assertIncludes(appSource, 'express.json({ limit: "100kb" })');
