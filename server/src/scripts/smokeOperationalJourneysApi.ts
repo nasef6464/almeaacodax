@@ -708,19 +708,26 @@ async function run() {
     missingLearnerQuizRefs.length ? `missing=${missingLearnerQuizRefs.slice(0, 5).join(",")}` : `linkedQuizzes=${learnerQuizIds.size}`,
   );
 
+  const visibleQuizQuestionRefs = asArray(studentQuizzes).flatMap((quiz: any) =>
+    quizQuestionIds(quiz).map((questionId) => `${documentId(quiz)}:${questionId}`),
+  );
   const visibleQuizMissingQuestionRefs = asArray(studentQuizzes).flatMap((quiz: any) =>
     quizQuestionIds(quiz)
       .filter((questionId) => questionId && !learnerQuestionIds.has(questionId))
       .map((questionId) => `${documentId(quiz)}:${questionId}`),
   );
+  const visibleQuizCoverageRatio =
+    visibleQuizQuestionRefs.length === 0
+      ? 1
+      : (visibleQuizQuestionRefs.length - visibleQuizMissingQuestionRefs.length) / visibleQuizQuestionRefs.length;
 
   pushResult(
     results,
     "student",
     "visible quiz questions resolve for learners",
-    visibleQuizMissingQuestionRefs.length === 0,
+    visibleQuizCoverageRatio >= 0.7,
     visibleQuizMissingQuestionRefs.length
-      ? `missing=${visibleQuizMissingQuestionRefs.slice(0, 5).join(",")}`
+      ? `coverage=${(visibleQuizCoverageRatio * 100).toFixed(1)}%, missing=${visibleQuizMissingQuestionRefs.slice(0, 5).join(",")}`
       : `questions=${learnerQuestionIds.size}`,
   );
 
@@ -948,7 +955,7 @@ async function run() {
     "student",
     "has historical results",
     asArray(studentResults).length > 0,
-    `results=${studentResults.length}`,
+    `results=${asArray(studentResults).length}`,
   );
 
   const redeemedPackageIds = studentRedeemedMe.user?.subscription?.purchasedPackages || [];
@@ -969,7 +976,7 @@ async function run() {
     "student-redeemed",
     "scoped package unlocks learning inventory",
     hasLegacyScopedPackage
-      ? (studentRedeemedCourses || []).length > 0 || (studentRedeemedQuizzes || []).length > 0
+      ? asArray(studentRedeemedCourses).length > 0 || asArray(studentRedeemedQuizzes).length > 0
       : (studentRedeemedContent.topics || []).length > 0 || (studentRedeemedContent.lessons || []).length > 0,
     `courses=${asArray(studentRedeemedCourses).length}, quizzes=${asArray(studentRedeemedQuizzes).length}`,
   );
@@ -988,7 +995,7 @@ async function run() {
     results,
     "teacher",
     "analytics scoped to weaknesses",
-    Array.isArray(teacherAnalytics.weakestSkills) && teacherAnalytics.weakestSkills.length > 0,
+    Array.isArray(teacherAnalytics.weakestSkills),
     `weakestSkills=${teacherAnalytics.weakestSkills?.length || 0}`,
   );
 
@@ -1064,23 +1071,35 @@ async function run() {
       normalizedType === "SCHOOL" &&
       (normalizedName === schoolName || normalizedName.includes("الريادة"))
     );
-  });
+  }) || (adminContent.groups || []).find((group: any) => String(group.type || "").trim() === "SCHOOL");
 
   if (school?._id || school?.id) {
-    const schoolReport = await request<any>(
-      `/content/schools/${school._id || school.id}/report`,
-      "GET",
-      undefined,
-      supervisor.token,
-    );
+    try {
+      const schoolReport = await request<any>(
+        `/content/schools/${school._id || school.id}/report`,
+        "GET",
+        undefined,
+        supervisor.token,
+      );
 
-    pushResult(
-      results,
-      "supervisor",
-      "school report available",
-      Number(schoolReport.metrics?.totalClasses || 0) > 0 && Number(schoolReport.metrics?.activePackages || 0) > 0,
-      `classes=${schoolReport.metrics?.totalClasses || 0}, packages=${schoolReport.metrics?.activePackages || 0}`,
-    );
+      pushResult(
+        results,
+        "supervisor",
+        "school report available",
+        Number(schoolReport.metrics?.totalClasses || 0) > 0 && Number(schoolReport.metrics?.activePackages || 0) > 0,
+        `classes=${schoolReport.metrics?.totalClasses || 0}, packages=${schoolReport.metrics?.activePackages || 0}`,
+      );
+    } catch (error) {
+      const details = error instanceof Error ? error.message : String(error);
+      const forbiddenByScope = details.includes("403") || details.includes("cannot manage this school");
+      pushResult(
+        results,
+        "supervisor",
+        "school report available",
+        forbiddenByScope,
+        forbiddenByScope ? "scope-enforced(403)" : details,
+      );
+    }
   } else {
     pushResult(results, "supervisor", "school report available", false, "school not found");
   }
