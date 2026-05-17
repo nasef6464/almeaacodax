@@ -1,6 +1,7 @@
 const API_BASE = process.env.SMOKE_API_BASE_URL || process.env.SEED_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "nasef64@gmail.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn0508438250";
+const ADMIN_TOKEN = process.env.SMOKE_ADMIN_TOKEN || process.env.GOLIVE_ADMIN_TOKEN || "";
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
@@ -91,16 +92,35 @@ async function login(email: string, password: string): Promise<AuthSession> {
   return request<AuthSession>("/auth/login", "POST", { email, password });
 }
 
+async function sessionFromToken(token: string): Promise<AuthSession> {
+  const profile = await request<{ user: any }>("/auth/me", "GET", undefined, token);
+  return { token, user: profile.user };
+}
+
 function pushResult(results: CheckResult[], role: string, check: string, passed: boolean, details: string) {
   results.push({ role, check, passed, details });
 }
 
+function asArray(value: unknown): any[] {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== "object") return [];
+
+  const record = value as Record<string, unknown>;
+  for (const key of ["data", "items", "results", "courses", "quizzes", "questions", "topics", "lessons", "libraryItems", "users"]) {
+    if (Array.isArray(record[key])) {
+      return record[key] as any[];
+    }
+  }
+
+  return [];
+}
+
 function hasItemById(items: any[] | undefined, expectedId: string) {
-  return (items || []).some((item: any) => String(item.id || item._id || "") === expectedId);
+  return asArray(items).some((item: any) => String(item.id || item._id || "") === expectedId);
 }
 
 function hasLessonByTitle(items: any[] | undefined, expectedTitle: string) {
-  return (items || []).some(
+  return asArray(items).some(
     (item: any) =>
       String(item.title || "").trim() === expectedTitle &&
       String(item.approvalStatus || "").trim() === "pending_review",
@@ -132,7 +152,7 @@ function contentPathId(item: any) {
 }
 
 function countItemsOutsidePaths(items: any[] | undefined, visiblePathIds: Set<string>) {
-  return (items || []).filter((item: any) => {
+  return asArray(items).filter((item: any) => {
     const pathId = contentPathId(item);
     return pathId && !visiblePathIds.has(pathId);
   }).length;
@@ -192,7 +212,10 @@ async function run() {
   const schoolName = "مدرسة الرياضة - تشغيل";
   const pendingLessonTitle = "مراجعة سريعة على الكسور المركبة";
 
-  const admin = await login(ADMIN_EMAIL, ADMIN_PASSWORD);
+  const admin =
+    ADMIN_TOKEN.trim().length > 0
+      ? await sessionFromToken(ADMIN_TOKEN.trim())
+      : await login(ADMIN_EMAIL, ADMIN_PASSWORD);
   const teacher = await login("teacher.quant@almeaa.local", "Teacher@123");
   const supervisor = await login("supervisor.group@almeaa.local", "Supervisor@123");
   const student = await login("student.a@almeaa.local", "Student@123");
@@ -634,8 +657,8 @@ async function run() {
   );
 
   const learnerLessonIds = new Set<string>((studentContent.lessons || []).map((lesson: any) => documentId(lesson)));
-  const learnerQuizIds = new Set<string>((studentQuizzes || []).map((quiz: any) => documentId(quiz)));
-  const learnerQuestionIds = new Set<string>((studentQuestions || []).map((question: any) => documentId(question)));
+  const learnerQuizIds = new Set<string>(asArray(studentQuizzes).map((quiz: any) => documentId(quiz)));
+  const learnerQuestionIds = new Set<string>(asArray(studentQuestions).map((question: any) => documentId(question)));
   const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
     (topic.lessonIds || [])
@@ -685,7 +708,7 @@ async function run() {
     missingLearnerQuizRefs.length ? `missing=${missingLearnerQuizRefs.slice(0, 5).join(",")}` : `linkedQuizzes=${learnerQuizIds.size}`,
   );
 
-  const visibleQuizMissingQuestionRefs = (studentQuizzes || []).flatMap((quiz: any) =>
+  const visibleQuizMissingQuestionRefs = asArray(studentQuizzes).flatMap((quiz: any) =>
     quizQuestionIds(quiz)
       .filter((questionId) => questionId && !learnerQuestionIds.has(questionId))
       .map((questionId) => `${documentId(quiz)}:${questionId}`),
@@ -743,14 +766,14 @@ async function run() {
     results,
     "admin",
     "pending quiz visible to reviewers",
-    hasItemById(adminQuizzes, pendingQuizId),
+    hasItemById(asArray(adminQuizzes), pendingQuizId),
     pendingQuizId,
   );
   pushResult(
     results,
     "teacher",
     "pending quiz visible to owner",
-    hasItemById(teacherQuizzes, pendingQuizId),
+    hasItemById(asArray(teacherQuizzes), pendingQuizId),
     pendingQuizId,
   );
   pushResult(
@@ -790,9 +813,9 @@ async function run() {
     (studentContent.topics || []).length > 0 ||
       (studentContent.lessons || []).length > 0 ||
       (studentContent.libraryItems || []).length > 0 ||
-      (studentCourses || []).length > 0 ||
-      (studentQuizzes || []).length > 0,
-    `topics=${studentContent.topics?.length || 0}, lessons=${studentContent.lessons?.length || 0}, library=${studentContent.libraryItems?.length || 0}, courses=${studentCourses.length}, quizzes=${studentQuizzes.length}`,
+      asArray(studentCourses).length > 0 ||
+      asArray(studentQuizzes).length > 0,
+    `topics=${studentContent.topics?.length || 0}, lessons=${studentContent.lessons?.length || 0}, library=${studentContent.libraryItems?.length || 0}, courses=${asArray(studentCourses).length}, quizzes=${asArray(studentQuizzes).length}`,
   );
 
   const visibleSubjects = (taxonomy.subjects || []).filter((subject: any) => studentPathIds.has(String(subject.pathId || "")));
@@ -802,9 +825,9 @@ async function run() {
     const topics = (studentContent.topics || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
     const lessons = (studentContent.lessons || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
     const library = (studentContent.libraryItems || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId);
-    const banks = (studentQuizzes || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type === "bank");
-    const exams = (studentQuizzes || []).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type !== "bank");
-    const courses = (studentCourses || []).filter(
+    const banks = asArray(studentQuizzes).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type === "bank");
+    const exams = asArray(studentQuizzes).filter((item: any) => item.pathId === pathId && item.subjectId === subjectId && item.type !== "bank");
+    const courses = asArray(studentCourses).filter(
       (item: any) => (item.pathId || item.category) === pathId && (item.subjectId || item.subject) === subjectId,
     );
     return { pathId, subjectId, topics, lessons, library, banks, exams, courses, total: topics.length + lessons.length + library.length + banks.length + exams.length + courses.length };
@@ -841,12 +864,12 @@ async function run() {
     results,
     "student",
     "public packages visible as sellable catalog",
-    (studentCourses || []).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0) ||
-      (studentCourses || []).length === 0,
-    `packages=${(studentCourses || []).filter((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0).length}`,
+    asArray(studentCourses).some((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0) ||
+      asArray(studentCourses).length === 0,
+    `packages=${asArray(studentCourses).filter((item: any) => item.isPackage === true || item.packageContentTypes?.length > 0).length}`,
   );
 
-  const learnerPublicPackages = (studentCourses || []).filter(
+  const learnerPublicPackages = asArray(studentCourses).filter(
     (item: any) => item.isPackage === true || item.packageContentTypes?.length > 0,
   );
   const unsafeLearnerPackages = learnerPublicPackages.filter((item: any) => !isPublishedForStudents(item));
@@ -882,9 +905,9 @@ async function run() {
     const topicCount = (studentContent.topics || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId).length;
     const lessonCount = (studentContent.lessons || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId).length;
     const libraryCount = (studentContent.libraryItems || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId).length;
-    const bankCount = (studentQuizzes || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId && item.type === "bank").length;
-    const examCount = (studentQuizzes || []).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId && item.type !== "bank").length;
-    const courseCount = (studentCourses || []).filter(
+    const bankCount = asArray(studentQuizzes).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId && item.type === "bank").length;
+    const examCount = asArray(studentQuizzes).filter((item: any) => item.pathId === target.pathId && item.subjectId === subjectId && item.type !== "bank").length;
+    const courseCount = asArray(studentCourses).filter(
       (item: any) => (item.pathId || item.category) === target.pathId && (item.subjectId || item.subject) === subjectId,
     ).length;
 
@@ -924,7 +947,7 @@ async function run() {
     results,
     "student",
     "has historical results",
-    (studentResults || []).length > 0,
+    asArray(studentResults).length > 0,
     `results=${studentResults.length}`,
   );
 
@@ -948,7 +971,7 @@ async function run() {
     hasLegacyScopedPackage
       ? (studentRedeemedCourses || []).length > 0 || (studentRedeemedQuizzes || []).length > 0
       : (studentRedeemedContent.topics || []).length > 0 || (studentRedeemedContent.lessons || []).length > 0,
-    `courses=${studentRedeemedCourses.length}, quizzes=${studentRedeemedQuizzes.length}`,
+    `courses=${asArray(studentRedeemedCourses).length}, quizzes=${asArray(studentRedeemedQuizzes).length}`,
   );
 
   pushResult(
@@ -1083,3 +1106,4 @@ run().catch((error) => {
   console.error(error);
   process.exit(1);
 });
+
