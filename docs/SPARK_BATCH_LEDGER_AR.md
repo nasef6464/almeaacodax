@@ -18,7 +18,7 @@
 | 13 | Firebase Legacy Cleanup / Isolation | Fully closed | 2026-05-17 | FIREBASE_LEGACY_CLEANUP_2026-05-14_AR.md | ????? ???? ?????. |
 | 14 | Content Bootstrap Split Plan | Fully closed | 2026-05-17 | CONTENT_BOOTSTRAP_SPLIT_PLAN_2026-05-14_AR.md | ???? ??? ?????. |
 | 15 | Content Bootstrap Safe Implementation | Fully closed | 2026-05-17 | BATCH_15R_CONTENT_BOOTSTRAP_SCOPE_HARDENING_CLOSURE_2026-05-17_AR.md | Enforced safe bootstrap scope for non-staff on production (`x-content-scope: learning`) with live verification pass. |
-| 16 | Auth Cookie Migration Plan | Programmatically closed, migration outcome pending | 2026-05-17 | AUTH_COOKIE_MIGRATION_PLAN_2026-05-14_AR.md | ????? ????? ??? ??????? ??????? ?? ???? ???? localStorage/hash. |
+| 16 | Auth Cookie Migration Plan | Fully closed | 2026-05-17 | BATCH_16R_AUTH_COOKIE_OUTCOME_VERIFICATION_CLOSURE_2026-05-17_AR.md | Verified cookie-first outcome on code + production auth endpoints; no oauth token in callback URL flow. |
 | 17 | Auth Cookie Migration Phase 1 | Fully closed | 2026-05-17 | BATCH_17R_AUTH_COOKIE_PRODUCTION_CLOSURE_2026-05-17_AR.md | ?? ????? ??? ??????? (`0d25f1ee1897`) + ???? callback ???? oauth_token + ????? ????? ???? Google ?????? + Local Storage ???? token. |
 | 18 | SEO BrowserRouter Migration Plan | Fully closed | 2026-05-17 | SEO_BROWSERROUTER_MIGRATION_PLAN_2026-05-14_AR.md | ???? ??? ?????. |
 | 19 | SEO BrowserRouter Safe Implementation | Fully closed | 2026-05-17 | BATCH_19R_SEO_BROWSERROUTER_PRODUCTION_CLOSURE_2026-05-17_AR.md | ?? ??? ????? SEO clean routes ???? hash ?? status/sitemap/robots ??? ???????. |
@@ -137,4 +137,11 @@
 - Forced /api/content/bootstrap non-staff requests to learning scope even when scope=full is requested.
 - Live production check passed with header x-content-scope: learning and zero operational payload for guest requests.
 - Batch 15 status moved to **Fully closed**.
+
+
+
+## Update BATCH 16R — 2026-05-17
+- Verified cookie-first auth outcome (VITE_AUTH_COOKIE_FIRST) and cleanup of legacy localStorage auth session key.
+- Verified production auth guard (/api/auth/me => 401 unauthenticated) and OAuth start redirect with state-based flow only.
+- Batch 16 moved to **Fully closed**.
 
