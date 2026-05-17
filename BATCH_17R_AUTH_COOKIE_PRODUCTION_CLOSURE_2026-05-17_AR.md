@@ -1,6 +1,6 @@
 # BATCH 17R — Auth Cookie Production Closure
 **التاريخ:** 2026-05-17  
-**الحالة:** Programmatically closed, production verification pending ⚠️
+**الحالة:** Programmatically closed, final manual browser verification pending ⚠️
 
 ## ما تم
 - إزالة تمرير `oauth_token` و `oauth_user` من رابط Google callback في السيرفر.
@@ -24,13 +24,16 @@
 - `npm run smoke:health-readiness`: PASS
 
 ## فحص الإنتاج
-- لم يتم بعد في هذه الجولة.
-- مطلوب نشر آخر commit ثم التحقق الحي من:
-  1. تسجيل دخول Google/Email يعمل.
-  2. لا يوجد `oauth_token` في URL بعد الرجوع.
-  3. لا يوجد token مخزن في localStorage.
-  4. `/auth/me` يعمل بعد refresh اعتمادًا على cookie.
+- تم نشر الإصلاح على الإنتاج (`0d25f1ee1897`).
+- تحقق حي ناجح من مسارات callback:
+  - `GET /api/auth/google/callback?error=...` -> `302` إلى `#/login?oauth_error=google` بدون `oauth_token`.
+  - `GET /api/auth/google/call?error=...` -> `302` بنفس النتيجة بدون `oauth_token`.
+- ما يزال مطلوب تحقق يدوي أخير داخل المتصفح لضمان عدم بقاء token قديم من جلسات سابقة:
+  1. Hard refresh / Clear site data.
+  2. تسجيل دخول Google.
+  3. التأكد أن Local Storage لا يحتوي token جلسة.
+  4. تأكيد استمرار الجلسة بعد refresh عبر cookie.
 
 ## القرار
-- الحالة الآن: **Programmatically closed, production verification pending**.
-- لا تُعد Fully closed إلا بعد التحقق الحي على الإنتاج.
+- الحالة الآن: **Programmatically closed, final manual browser verification pending**.
+- لا تُعد Fully closed إلا بعد خطوة التحقق اليدوي الأخيرة داخل المتصفح.
