@@ -1225,9 +1225,32 @@ quizRouter.get(
       QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
       QuizModel.countDocuments(filter),
     ]);
+    let safeItems = items;
+
+    if (!isStaffRole(req.authUser?.role) && items.length > 0) {
+      const allQuestionIds = uniqueStrings(items.flatMap((quiz: any) => getQuizQuestionIds(quiz).map(String)));
+      const questions = allQuestionIds.length
+        ? await QuestionModel.find(buildDocumentsByIdsQuery(allQuestionIds)).select("id text imageUrl options type").lean()
+        : [];
+      const usableById = new Map<string, boolean>();
+      questions.forEach((question: any) => {
+        const canonicalId = String(question.id || question._id);
+        const usable = isQuestionContentUsable(question);
+        usableById.set(canonicalId, usable);
+        const withoutCopySuffix = canonicalId.replace(/_copy(?:_\d+)?$/i, "");
+        if (withoutCopySuffix && withoutCopySuffix !== canonicalId) {
+          usableById.set(withoutCopySuffix, usable);
+        }
+      });
+
+      safeItems = items.filter((quiz: any) =>
+        getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
+      );
+    }
+
     const payload = {
-      quizzes: items,
-      pagination: buildPaginatedResponse([], pagination, total),
+      quizzes: safeItems,
+      pagination: buildPaginatedResponse([], pagination, isStaffRole(req.authUser?.role) ? total : safeItems.length),
     };
     if (canUsePublicCache) {
       publicQuizListCache = {
