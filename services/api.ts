@@ -72,9 +72,9 @@ const PUBLIC_CACHE_PREFIX = "almeaa:public-api:";
 const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 
-const AUTH_STORAGE_KEY = "the-hundred-auth-session";
+const SESSION_STORAGE_KEY = "the-hundred-auth-profile";
 const COOKIE_FIRST_AUTH_ENABLED =
-  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST === "true";
+  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST !== "false";
 
 const getPublicCacheStorage = (): Storage | null => {
   try {
@@ -85,8 +85,12 @@ const getPublicCacheStorage = (): Storage | null => {
 };
 
 const getStoredSessionToken = (): string | null => {
+  if (COOKIE_FIRST_AUTH_ENABLED) {
+    return null;
+  }
+
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) {
       return null;
     }
@@ -179,7 +183,7 @@ const readPublicCache = <T>(key: string): T | null => {
 
 const getStoredSessionRole = (): string | null => {
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) {
       return null;
     }

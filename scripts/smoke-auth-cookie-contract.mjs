@@ -55,12 +55,13 @@ check("auth middleware accepts bearer token or cookie token", () => {
   assertIncludes(authMiddlewareSource, "req.cookies");
 });
 
-check("frontend sends credentials and clears server session on logout", () => {
+check("frontend sends credentials and clears client profile on logout (cookie-first)", () => {
   assertIncludes(apiSource, 'credentials: "include"');
+  assertIncludes(apiSource, 'VITE_AUTH_COOKIE_FIRST !== "false"');
   assertIncludes(apiSource, "logout: () =>");
   assertIncludes(apiSource, 'request<void>("/auth/logout"');
   assertIncludes(authContextSource, "await api.logout()");
-  assertIncludes(authContextSource, "localStorage.removeItem(AUTH_STORAGE_KEY)");
+  assertIncludes(authContextSource, "sessionStorage.removeItem(SESSION_STORAGE_KEY)");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");

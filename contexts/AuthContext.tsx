@@ -40,7 +40,7 @@ interface SessionUser {
   displayName: string;
   photoURL: string;
   role: BackendRole;
-  token: string;
+  token?: string;
 }
 
 interface AuthContextType {
@@ -53,7 +53,7 @@ interface AuthContextType {
   devSwitchRole?: (role: BackendRole) => void;
 }
 
-const AUTH_STORAGE_KEY = 'the-hundred-auth-session';
+const SESSION_STORAGE_KEY = 'the-hundred-auth-profile';
 
 const roleMap: Record<BackendRole, Role> = {
   admin: Role.ADMIN,
@@ -192,19 +192,9 @@ const restoreInitialSession = (): SessionUser | null => {
     const queryIndex = hash.indexOf('?');
     if (queryIndex >= 0) {
       const params = new URLSearchParams(hash.slice(queryIndex + 1));
-      const oauthToken = params.get('oauth_token');
-      const oauthUser = params.get('oauth_user');
-      if (oauthToken && oauthUser) {
-        const decoded = JSON.parse(atob(oauthUser.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(oauthUser.length / 4) * 4, '='))) as BackendAuthUser;
-        const sessionUser = buildSessionUser(decoded, oauthToken);
-        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionUser));
-        const oauthReturn = decodeURIComponent(params.get('oauth_return') || '/');
+      const oauthReturn = decodeURIComponent(params.get('oauth_return') || '/');
+      if (params.get('oauth_provider') || params.get('oauth_error')) {
         window.location.hash = oauthReturn.startsWith('/') ? `#${oauthReturn}` : '#/';
-        syncStoreUser(sessionUser, decoded);
-        return sessionUser;
-      }
-      if (params.get('oauth_error')) {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
       }
     }
   } catch (error) {
@@ -212,19 +202,19 @@ const restoreInitialSession = (): SessionUser | null => {
   }
 
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) {
       return null;
     }
 
     const parsed = JSON.parse(raw) as SessionUser;
-    if (!parsed?.token || !parsed?.email || !parsed?.role) {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
+    if (!parsed?.email || !parsed?.role) {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
       return null;
     }
 
-    if (!import.meta.env.DEV && parsed.token.startsWith(DEV_TOKEN_PREFIX)) {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
+    if (!import.meta.env.DEV && parsed.token?.startsWith(DEV_TOKEN_PREFIX)) {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
       return null;
     }
 
@@ -232,7 +222,7 @@ const restoreInitialSession = (): SessionUser | null => {
     return parsed;
   } catch (error) {
     console.warn('Failed to restore auth session:', error);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
     return null;
   }
 };
@@ -242,6 +232,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loading = false;
 
   useEffect(() => {
+    if (user) {
+      return;
+    }
+
+    let cancelled = false;
+    api.getCurrentUser()
+      .then((response) => {
+        if (cancelled) return;
+        const backendUser = (response as { user?: BackendAuthUser })?.user;
+        if (!backendUser?.email || !backendUser?.role) return;
+        const sessionUser = buildSessionUser(backendUser, "");
+        persistSession(sessionUser, backendUser);
+      })
+      .catch(() => {
+        // No active cookie session; keep guest state.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
     if (!user) {
       syncStoreUser(null);
       useStore.getState().hydrateExamResults([]);
@@ -249,7 +262,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    if (user.token.startsWith(DEV_TOKEN_PREFIX)) {
+    if (user.token?.startsWith(DEV_TOKEN_PREFIX)) {
       syncStoreUser(user, buildDevBackendUser(user.role));
       return;
     }
@@ -260,15 +273,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const hydrateNonCriticalSessionData = () => {
       Promise.all([
-        api.getQuizResults(),
-        api.getQuestionAttempts(),
+        api.getMyQuizResultsPage({ page: 1, limit: 100, sortBy: 'createdAt', sortOrder: 'desc' }),
+        api.getQuestionAttempts({ page: 1, limit: 100 }),
       ])
-        .then(([results, questionAttempts]) => {
+        .then(([resultsPage, questionAttempts]) => {
           if (cancelled) {
             return;
           }
 
-          useStore.getState().hydrateExamResults(results as any[]);
+          useStore.getState().hydrateExamResults((resultsPage as { data?: unknown[] })?.data as any[] || []);
           useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
         })
         .catch((error) => {
@@ -294,7 +307,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .catch((error) => {
         console.warn('Failed to hydrate session data:', error);
         if (isAuthSessionError(error)) {
-          localStorage.removeItem(AUTH_STORAGE_KEY);
+          sessionStorage.removeItem(SESSION_STORAGE_KEY);
           setUser(null);
           resetStoreUser();
         }
@@ -311,11 +324,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [user]);
 
-  const persistSession = (sessionUser: SessionUser, backendUser: BackendAuthUser) => {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionUser));
+  function persistSession(sessionUser: SessionUser, backendUser: BackendAuthUser) {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
+      ...sessionUser,
+      token: undefined,
+    }));
     setUser(sessionUser);
     syncStoreUser(sessionUser, backendUser);
-  };
+  }
 
   const signInWithEmail = async (email: string, password: string) => {
     const response = (await api.login(email, password)) as {
@@ -352,7 +368,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.warn('Failed to clear server session cookie:', error);
     }
-    localStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
     setUser(null);
     resetStoreUser();
   };

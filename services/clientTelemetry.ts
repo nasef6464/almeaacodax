@@ -19,7 +19,9 @@ type ClientTelemetryPayload = {
   metadata?: Record<string, unknown>;
 };
 
-const AUTH_STORAGE_KEY = 'the-hundred-auth-session';
+const SESSION_STORAGE_KEY = 'the-hundred-auth-profile';
+const COOKIE_FIRST_AUTH_ENABLED =
+  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST !== 'false';
 const MAX_MESSAGE_LENGTH = 800;
 const MAX_STACK_LENGTH = 3000;
 const sentRecently = new Map<string, number>();
@@ -27,8 +29,12 @@ const sentRecently = new Map<string, number>();
 const truncate = (value: unknown, maxLength: number) => String(value || '').slice(0, maxLength);
 
 const getStoredSessionToken = (): string | null => {
+  if (COOKIE_FIRST_AUTH_ENABLED) {
+    return null;
+  }
+
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { token?: string };
     return parsed.token || null;

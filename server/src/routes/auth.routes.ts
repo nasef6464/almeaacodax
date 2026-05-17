@@ -60,6 +60,30 @@ const adminUpdateUserSchema = z.object({
   managedSubjectIds: z.array(z.string()).optional(),
 });
 
+const adminUsersQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+  search: z.string().trim().max(120).optional(),
+  role: z.enum(["student", "teacher", "admin", "supervisor", "parent"]).optional(),
+  isActive: z.preprocess((value) => {
+    if (value === undefined || value === null || value === "") {
+      return undefined;
+    }
+
+    if (typeof value === "boolean") {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const lowered = value.toLowerCase();
+      if (lowered === "true") return true;
+      if (lowered === "false") return false;
+    }
+
+    return value;
+  }, z.boolean().optional()),
+});
+
 const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(),
   reviewLater: z.array(z.string()).optional(),
@@ -273,120 +297,117 @@ authRouter.get(
   }),
 );
 
-authRouter.get(
-  "/google/callback",
-  asyncHandler(async (req, res) => {
-    if (!ensureGoogleOAuthEnabled(res)) return;
+const handleGoogleCallback = asyncHandler(async (req, res) => {
+  if (!ensureGoogleOAuthEnabled(res)) return;
 
-    const code = typeof req.query.code === "string" ? req.query.code : "";
-    const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
-    const oauthError = typeof req.query.error === "string" ? req.query.error : "";
+  const code = typeof req.query.code === "string" ? req.query.code : "";
+  const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
+  const oauthError = typeof req.query.error === "string" ? req.query.error : "";
 
-    const fallbackRedirect = `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_error=google`;
-    if (oauthError || !code) {
-      return res.redirect(fallbackRedirect);
-    }
+  const fallbackRedirect = `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_error=google`;
+  if (oauthError || !code) {
+    return res.redirect(fallbackRedirect);
+  }
 
-    let returnTo = "/";
-    if (stateRaw) {
-      try {
-        const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as { returnTo?: string };
-        if (parsed?.returnTo && parsed.returnTo.startsWith("/")) {
-          returnTo = parsed.returnTo;
-        }
-      } catch {
-        returnTo = "/";
+  let returnTo = "/";
+  if (stateRaw) {
+    try {
+      const parsed = JSON.parse(Buffer.from(stateRaw, "base64url").toString("utf8")) as { returnTo?: string };
+      if (parsed?.returnTo && parsed.returnTo.startsWith("/")) {
+        returnTo = parsed.returnTo;
       }
+    } catch {
+      returnTo = "/";
     }
+  }
 
-    const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        code,
-        client_id: env.GOOGLE_CLIENT_ID,
-        client_secret: env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: env.GOOGLE_REDIRECT_URI,
-        grant_type: "authorization_code",
-      }),
+  const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      code,
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: env.GOOGLE_REDIRECT_URI,
+      grant_type: "authorization_code",
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    return res.redirect(`${fallbackRedirect}&step=token`);
+  }
+
+  const tokenJson = (await tokenResponse.json()) as { access_token?: string };
+  if (!tokenJson.access_token) {
+    return res.redirect(`${fallbackRedirect}&step=access_token`);
+  }
+
+  const profileResponse = await fetch(GOOGLE_USERINFO_URL, {
+    headers: { Authorization: `Bearer ${tokenJson.access_token}` },
+  });
+  if (!profileResponse.ok) {
+    return res.redirect(`${fallbackRedirect}&step=profile`);
+  }
+
+  const profile = (await profileResponse.json()) as {
+    email?: string;
+    email_verified?: boolean;
+    name?: string;
+    picture?: string;
+    sub?: string;
+  };
+
+  const email = String(profile.email || "").toLowerCase().trim();
+  if (!email) {
+    return res.redirect(`${fallbackRedirect}&step=email`);
+  }
+
+  let user = await UserModel.findOne({ email });
+  if (!user) {
+    const randomPassword = createSecureToken();
+    user = await UserModel.create({
+      name: profile.name || email.split("@")[0] || "Student",
+      email,
+      passwordHash: await bcrypt.hash(randomPassword, 10),
+      role: "student",
+      avatar: profile.picture || "",
+      emailVerified: Boolean(profile.email_verified),
+      emailVerifiedAt: profile.email_verified ? Date.now() : null,
     });
-
-    if (!tokenResponse.ok) {
-      return res.redirect(`${fallbackRedirect}&step=token`);
+  } else {
+    let touched = false;
+    if (!user.avatar && profile.picture) {
+      user.avatar = profile.picture;
+      touched = true;
     }
-
-    const tokenJson = (await tokenResponse.json()) as { access_token?: string };
-    if (!tokenJson.access_token) {
-      return res.redirect(`${fallbackRedirect}&step=access_token`);
+    if (!user.emailVerified && profile.email_verified) {
+      user.emailVerified = true;
+      user.emailVerifiedAt = Date.now();
+      touched = true;
     }
+    if (touched) await user.save();
+  }
 
-    const profileResponse = await fetch(GOOGLE_USERINFO_URL, {
-      headers: { Authorization: `Bearer ${tokenJson.access_token}` },
-    });
-    if (!profileResponse.ok) {
-      return res.redirect(`${fallbackRedirect}&step=profile`);
-    }
+  if (user.isActive === false) {
+    return res.redirect(`${fallbackRedirect}&step=disabled`);
+  }
 
-    const profile = (await profileResponse.json()) as {
-      email?: string;
-      email_verified?: boolean;
-      name?: string;
-      picture?: string;
-      sub?: string;
-    };
+  const token = signAccessToken({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    name: user.name,
+  });
+  setAuthCookie(res, token);
 
-    const email = String(profile.email || "").toLowerCase().trim();
-    if (!email) {
-      return res.redirect(`${fallbackRedirect}&step=email`);
-    }
+  const returnUrl = encodeURIComponent(returnTo || "/");
+  return res.redirect(
+    `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_provider=google&oauth_return=${returnUrl}`,
+  );
+});
 
-    let user = await UserModel.findOne({ email });
-    if (!user) {
-      const randomPassword = createSecureToken();
-      user = await UserModel.create({
-        name: profile.name || email.split("@")[0] || "Student",
-        email,
-        passwordHash: await bcrypt.hash(randomPassword, 10),
-        role: "student",
-        avatar: profile.picture || "",
-        emailVerified: Boolean(profile.email_verified),
-        emailVerifiedAt: profile.email_verified ? Date.now() : null,
-      });
-    } else {
-      let touched = false;
-      if (!user.avatar && profile.picture) {
-        user.avatar = profile.picture;
-        touched = true;
-      }
-      if (!user.emailVerified && profile.email_verified) {
-        user.emailVerified = true;
-        user.emailVerifiedAt = Date.now();
-        touched = true;
-      }
-      if (touched) await user.save();
-    }
-
-    if (user.isActive === false) {
-      return res.redirect(`${fallbackRedirect}&step=disabled`);
-    }
-
-    const token = signAccessToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
-    setAuthCookie(res, token);
-
-    const safeUser = encodeURIComponent(
-      Buffer.from(JSON.stringify(serializeUser(user)), "utf8").toString("base64url"),
-    );
-    const returnUrl = encodeURIComponent(returnTo || "/");
-    return res.redirect(
-      `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_provider=google&oauth_token=${encodeURIComponent(token)}&oauth_user=${safeUser}&oauth_return=${returnUrl}`,
-    );
-  }),
-);
+authRouter.get("/google/callback", handleGoogleCallback);
+authRouter.get("/google/call", handleGoogleCallback);
 
 authRouter.post(
   "/logout",
@@ -570,15 +591,39 @@ authRouter.get(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const pagination = resolvePagination(req.query, { limit: 50 });
+    const query = adminUsersQuerySchema.parse(req.query);
+    const pagination = resolvePagination(
+      { page: query.page, limit: Math.min(query.limit || 50, 100) },
+      { limit: 50 },
+    );
+
+    const search = query.search?.trim();
+    const mongoQuery: Record<string, unknown> = {};
+
+    if (query.role) {
+      mongoQuery.role = query.role;
+    }
+
+    if (typeof query.isActive === "boolean") {
+      mongoQuery.isActive = query.isActive;
+    }
+
+    if (search) {
+      const escapedSearch = escapeRegExp(search);
+      mongoQuery.$or = [
+        { name: { $regex: escapedSearch, $options: "i" } },
+        { email: { $regex: escapedSearch, $options: "i" } },
+      ];
+    }
+
     const [users, total] = await Promise.all([
-      UserModel.find().sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
-      UserModel.countDocuments(),
+      UserModel.find(mongoQuery).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit),
+      UserModel.countDocuments(mongoQuery),
     ]);
 
     return res.json({
       users: users.map(serializeUser),
-      pagination: buildPaginatedResponse([], pagination, total),
+      pagination: buildPaginatedResponse(users, pagination, total),
     });
   }),
 );
