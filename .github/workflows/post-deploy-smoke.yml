@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
       - name: Frontend strict smoke
         run: npm run smoke:frontend:strict
 
