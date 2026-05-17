@@ -492,3 +492,16 @@ Interpretation:
 - Under high concurrency, auth/result edges stayed responsive without transport-level timeouts in this short window.
 - Elevated p99 remains visible and confirms the need for sustained-duration full authenticated/write-path retests before claiming full 500+ readiness.
 
+## Authenticated Probe Note - 2026-05-17 (Post-20W)
+
+A direct authenticated probe was executed with corrected header format:
+- Endpoint: `GET /quizzes/results`
+- Concurrency: `50`
+- Duration: `5s`
+- Result: `200` responses observed (`2xx=58`), no transport timeouts.
+- Evidence file: `load-tests/results/prod_authd_quizzes_results_c50_probe_2026-05-17.jsonl`
+
+Interpretation:
+- Authenticated route is reachable and measurable with valid bearer token.
+- High-concurrency authenticated runs at 500/1000 from the prior window remain inconclusive in several outputs (sent connections with zero counted responses), so final 500+ authenticated closure still requires a controlled retest window with infra metrics correlation.
+

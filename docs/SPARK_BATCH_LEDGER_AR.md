@@ -187,3 +187,10 @@
 - Blocked by auth limiter (429) during token acquisition from /api/auth/login in production.
 - Status: Programmatically closed with blocker documentation; continuation requires dedicated load token.
 
+
+
+## Update BATCH 20X — 2026-05-17
+- Executed authenticated probe with corrected Authorization header at c=50 and confirmed 200 responses.
+- Prior authenticated 500+/1000 outputs remained inconclusive in parts, so full authenticated high-concurrency closure is still pending controlled retest with infra metrics.
+- Status: Programmatically closed (continuation), final 500+ authenticated closure pending.
+
