@@ -2,19 +2,17 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: Post-rotation Production Verification
+- Active Batch: BATCH 22 - Production Guardrails and CI Secrets
 - Status: Fully closed
 
 ## Delivered in this update
-- Verified post-rotation production health and strict frontend smoke.
-- Verified production hardening contract remains green.
-- Completed operational smoke with refreshed admin token (71/71 PASS).
+- Added GitHub Actions post-deploy smoke workflow.
+- Enforced `SMOKE_ADMIN_TOKEN` availability as a CI gate.
+- Automated strict frontend, hardening, and operational smoke checks on `main` pushes.
 
 ## Checks
-- `GET /api/health` PASS
 - `npm run smoke:frontend:strict` PASS
 - `npm run smoke:production-hardening` PASS
-- `npm run smoke:operational` PASS (71/71)
 
 ## Next Suggested Step
-- Freeze baseline and open only owner-approved future batches.
+- Monitor first CI run after adding `SMOKE_ADMIN_TOKEN` secret, then freeze baseline.
