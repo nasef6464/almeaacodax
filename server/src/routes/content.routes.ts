@@ -1220,7 +1220,9 @@ contentRouter.get(
   "/bootstrap",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const scope = contentBootstrapScopeSchema.parse(req.query.scope);
+    const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
+    const canUseFullScope = isStaffRole(req.authUser?.role);
+    const scope = requestedScope === "full" && !canUseFullScope ? "learning" : requestedScope;
     const includeOperationalData = scope !== "learning";
     const includeStudyPlans = scope !== "learning";
     const canUsePublicCache = !req.authUser;
@@ -1288,6 +1290,7 @@ contentRouter.get(
       res.setHeader("Cache-Control", "private, max-age=45");
       res.setHeader("X-Content-Cache", "miss");
     }
+    res.setHeader("X-Content-Scope", scope);
     res.json(payload);
   }),
 );
