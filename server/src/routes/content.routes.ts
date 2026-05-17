@@ -626,27 +626,19 @@ const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) =
     return [] as string[];
   }
 
-  const managedGroups = await GroupModel.find({
-    $or: [
-      { ownerId: authUser.id },
-      { supervisorIds: authUser.id },
-      { createdBy: authUser.id },
-      ...(user.schoolId ? [{ _id: user.schoolId }, { id: user.schoolId }] : []),
-    ],
-  }).select("id _id parentId type");
-
-  const managedGroupIds = uniqueStrings([
-    ...(user.groupIds || []).map(String),
-    ...managedGroups.map((group) => String(group.id || group._id)),
+  const managedGroupIds = uniqueStrings([...(user.groupIds || []).map(String)]);
+  const [seedGroups, directSupervisedSchools] = await Promise.all([
+    managedGroupIds.length
+      ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type")
+      : Promise.resolve([]),
+    GroupModel.find({ type: "SCHOOL", supervisorIds: authUser.id }).select("id _id"),
   ]);
 
-  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type");
   const schoolIds = uniqueStrings([
     String(user.schoolId || ""),
-    ...managedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
+    ...directSupervisedSchools.map((group) => String(group.id || group._id)),
     ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
     ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
-    ...managedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
   ]);
 
   return uniqueStrings(schoolIds.filter(Boolean));

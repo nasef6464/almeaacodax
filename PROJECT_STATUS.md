@@ -2,21 +2,18 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: BATCH 05R - Payment Requests Pagination Production Verification
-- Status: Fully closed
+- Active Batch: BATCH 10R - RBAC/API Hardening Production Verification
+- Status: Programmatically closed, production verification pending
 
 ## Delivered in this update
-- Live production verification for payments requests pagination completed.
-- Admin pagination metadata validated (`page/limit/total/totalPages`).
-- Student scope isolation validated (student sees only own requests).
-- Search + pagination path validated in production.
+- Live production RBAC check executed on school-sensitive routes.
+- Found production risk: newly created supervisor could access school report/import/relations.
+- Implemented scope-tightening fix in backend route logic (local, ready for deploy).
 
 ## Checks
 - `npm --prefix server run build` PASS
-- `npm run typecheck` PASS
-- `npm run build` PASS
-- `npm run smoke:api-phase4` PASS
-- `npm run smoke:payment-providers` PASS (7/7)
+- `npm run smoke:security-rbac-phase6` PASS
+- Live production check (before deploy) FAIL for supervisor out-of-scope access
 
 ## Next Suggested Step
-- BATCH 10R — RBAC/API Hardening Production Verification
+- Deploy latest RBAC fix commit, then rerun live verification to close batch.
