@@ -635,3 +635,36 @@ Conclusion:
 Evidence:
 - `load-tests/results/prod_20zc_bootstrap_c300_2026-05-17.jsonl`
 - `load-tests/results/prod_20zc_taxonomy_c300_2026-05-17.jsonl`
+
+## Production Learning-Scope Shared Cache Retest - 2026-05-18 (Batch 20ZD)
+
+Change under test:
+- `content/bootstrap` now allows shared in-memory cache for authenticated non-staff when `scope=learning` (same non-personal payload class), not only guest traffic.
+
+Runs:
+- `GET /content/bootstrap?scope=learning` at `c=300` (guest)
+- `GET /content/bootstrap?scope=learning` at `c=300` (authenticated)
+- `GET /taxonomy/bootstrap` at `c=300` (guest)
+- Stability probes:
+  - `GET /health` at `c=50`
+  - `GET /taxonomy/bootstrap` at `c=100`
+
+Observed:
+- `content/bootstrap?scope=learning`:
+  - guest c300: `2xx=112`, `timeouts=191`
+  - auth c300: `2xx=53`, `timeouts=247`
+- `taxonomy/bootstrap` c300: collapse window (`2xx=0`, `timeouts=255`) in that burst.
+- Stability probes confirmed service availability outside collapse window:
+  - `health` c50: stable `2xx=373`, `timeouts=0`
+  - `taxonomy/bootstrap` c100: stable `2xx=492`, `timeouts=0`
+
+Conclusion:
+- Shared authenticated learning-cache is functionally valid, but c300 burst behavior remains unstable and not closure-ready.
+- This points to burst-saturation dynamics requiring deeper endpoint decomposition and staged traffic shaping, not only cache adjustments.
+
+Evidence:
+- `load-tests/results/prod_20zd_bootstrap_learning_guest_c300_2026-05-18.jsonl`
+- `load-tests/results/prod_20zd_bootstrap_learning_auth_c300_2026-05-18.jsonl`
+- `load-tests/results/prod_20zd_taxonomy_guest_c300_2026-05-18.jsonl`
+- `load-tests/results/prod_20zd_health_probe_c50_2026-05-18.jsonl`
+- `load-tests/results/prod_20zd_taxonomy_probe_c100_2026-05-18.jsonl`

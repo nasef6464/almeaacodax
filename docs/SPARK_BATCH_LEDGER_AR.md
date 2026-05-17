@@ -219,3 +219,8 @@
 - Tested cache TTL/SWR-only hardening on bootstrap/taxonomy and executed fresh c=300 production probes.
 - Outcome: no reliable gain; bootstrap path showed worse timeout profile in this run window.
 - Status: Partially closed, deeper payload/query decomposition required next.
+
+## Update BATCH 20ZD — 2026-05-18
+- Extended learning-scope bootstrap cache sharing to authenticated non-staff and validated deployment.
+- c300 burst retests remained unstable, while lower-load probes confirmed service health outside collapse windows.
+- Status: Partially closed; deeper payload decomposition required.
