@@ -22,7 +22,7 @@
 | 17 | Auth Cookie Migration Phase 1 | Fully closed | 2026-05-17 | BATCH_17R_AUTH_COOKIE_PRODUCTION_CLOSURE_2026-05-17_AR.md | ?? ????? ??? ??????? (`0d25f1ee1897`) + ???? callback ???? oauth_token + ????? ????? ???? Google ?????? + Local Storage ???? token. |
 | 18 | SEO BrowserRouter Migration Plan | Fully closed | 2026-05-17 | SEO_BROWSERROUTER_MIGRATION_PLAN_2026-05-14_AR.md | ???? ??? ?????. |
 | 19 | SEO BrowserRouter Safe Implementation | Fully closed | 2026-05-17 | BATCH_19R_SEO_BROWSERROUTER_PRODUCTION_CLOSURE_2026-05-17_AR.md | ?? ??? ????? SEO clean routes ???? hash ?? status/sitemap/robots ??? ???????. |
-| 20 | Load Testing Scripts | Programmatically closed (script + evidence ready), scale hardening pending | 2026-05-17 | BATCH_20R_LOAD_TESTING_PRODUCTION_CLOSURE_2026-05-17_AR.md | ???? ?????? ????? ??????? ????? ???? ?? 500+ ??? ???? ???. |
+| 20 | Load Testing Scripts | Programmatically closed (script+evidence ready), scale hardening pending | 2026-05-17 | BATCH_20R_LOAD_TESTING_SCALE_HARDENING_CLOSURE_2026-05-17_AR.md | Revalidated contracts/build; production evidence still shows 500+ not ready without infra hardening window. |
 | 21 | Final Production Readiness Report | Fully closed | 2026-05-17 | BATCH_21B_PRODUCTION_HARDENING_CONTRACT_ALIGNMENT_2026-05-17_AR.md | ?? ?????? ??? hardening ?? middleware ??????? ?????? ????? ??????? ???? ???? ??????? ???????? PASS. |
 
 ## ????? BATCH 02R — 2026-05-17
@@ -144,4 +144,11 @@
 - Verified cookie-first auth outcome (VITE_AUTH_COOKIE_FIRST) and cleanup of legacy localStorage auth session key.
 - Verified production auth guard (/api/auth/me => 401 unauthenticated) and OAuth start redirect with state-based flow only.
 - Batch 16 moved to **Fully closed**.
+
+
+
+## Update BATCH 20R — 2026-05-17
+- Re-ran load-test contracts and core builds successfully.
+- Kept status evidence-based: 20 ready, 100 conditional, 500+ pending infra hardening.
+- Batch remains programmatically closed until scale execution window completes.
 
