@@ -166,3 +166,10 @@
 - Build + readiness + auth-cookie smokes passed after change.
 - Status: Programmatically closed.
 
+
+
+## Update BATCH 20U — 2026-05-17
+- Executed short 500/1000 production retest window for /health and /content/bootstrap with 200-only responses and no timeouts/errors.
+- Captured evidence files under load-tests/results/prod_retest_* and appended report section in LOAD_TEST_REPORT.md.
+- Status: Programmatically closed, full-journey 500+ closure pending.
+

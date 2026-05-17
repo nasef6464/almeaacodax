@@ -458,3 +458,21 @@ What this means for load tests:
 
 - The app is better prepared for 100/500/1000-user measurement.
 - This still does not certify 10k users; it removes obvious first-pass index gaps before real pressure testing.
+## Production Retest Window - 2026-05-17 (Batch 20U)
+
+Executed short retest probes (6s) on production for high concurrency after 20T tuning prep.
+
+Endpoints and levels:
+- GET /health @ c=500, c=1000
+- GET /content/bootstrap @ c=500, c=1000
+
+Observed summary (`load-tests/results/prod_retest_summary_2026-05-17.json`):
+- /health c=500: ~95.67 req/s, 200-only, no errors/timeouts, p99 ~7324ms
+- /health c=1000: ~99.4 req/s, 200-only, no errors/timeouts, p99 ~7083ms
+- /content/bootstrap c=500: ~11.5 req/s, 200-only, no errors/timeouts, p99 ~7314ms
+- /content/bootstrap c=1000: ~9 req/s, 200-only, no errors/timeouts, p99 ~7323ms
+
+Decision note:
+- This confirms survivability for these two read probes under short high-concurrency windows.
+- Full 500+ closure still requires full-journey retest (auth/results/write paths) with sustained duration and infra observability correlation.
+
