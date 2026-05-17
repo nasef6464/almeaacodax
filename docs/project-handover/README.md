@@ -2,6 +2,16 @@
 
 This folder is the handover package for the next AI coding agent and for the product owner.
 
+Important: read `../NEXT_SESSION_HANDOVER_AR.md` first before using this package, because it contains the latest strict execution contract and the current closed/open batches.
+Latest closed batch reports:
+- `../BATCH_SUPERVISOR_REPORTS_FINAL_2026-05-14_AR.md`
+- `../BATCH_PAYMENT_COUNTRY_PRESETS_2026-05-14_AR.md`
+- `../BATCH_PAYMENT_ADMIN_UI_PRESETS_SUMMARY_2026-05-14_AR.md`
+- `../BATCH_PAYMENT_REQUESTS_SERVER_PAGINATION_2026-05-14_AR.md`
+- `../BATCH_PAYMENT_REQUEST_FILTERS_COUNTRY_METHOD_2026-05-14_AR.md`
+- `../BATCH_PAYMENT_REQUESTS_GLOBAL_SUMMARY_RESET_FILTERS_2026-05-14_AR.md`
+- `../BATCH_GOOGLE_CALLBACK_COMPAT_ALIAS_2026-05-14_AR.md`
+
 ## Recommended reading order
 1. `17_STRICT_BATCH_RULE_AR.md` - mandatory current rule: every touched batch must be fully closed, tested, deployed, and documented before moving on
 2. `16_CURRENT_WORKING_STATE_AR.md` - Arabic live handover for the current production state and next-agent instructions
@@ -30,3 +40,10 @@ This folder is the handover package for the next AI coding agent and for the pro
 
 ## Scope
 This handover package documents the repository as it currently exists, without modifying source code.
+
+## Mandatory Deployment Rule (New)
+- After every batch closure, the agent must perform: `commit` + `push` to GitHub.
+- Backend changes require Render deploy using the same commit SHA.
+- Frontend changes require Vercel deploy using the same commit SHA.
+- Batch status cannot be marked `Fully closed` without live production verification after deploy.
+- This rule is mandatory for any future/new Codex account working on this repository.

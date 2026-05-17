@@ -24,6 +24,39 @@ interface RequestOptions {
 interface PaginationOptions {
   page?: number;
   limit?: number;
+  search?: string;
+  role?: string;
+  isActive?: boolean;
+}
+
+interface QuizResultsPaginationOptions extends PaginationOptions {
+  quizId?: string;
+  studentId?: string;
+  status?: "passed" | "failed";
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: "createdAt" | "score" | "quizTitle" | "date";
+  sortOrder?: "asc" | "desc";
+}
+
+interface QuizResultsPageResponse<T = unknown> {
+  data: T[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+interface PaginatedResponseShape {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  items?: number;
 }
 
 interface PaginationMeta {
@@ -40,6 +73,8 @@ const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 
 const AUTH_STORAGE_KEY = "the-hundred-auth-session";
+const COOKIE_FIRST_AUTH_ENABLED =
+  (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST === "true";
 
 const getPublicCacheStorage = (): Storage | null => {
   try {
@@ -64,7 +99,10 @@ const getStoredSessionToken = (): string | null => {
 };
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const resolvedToken = options.token === undefined ? getStoredSessionToken() : options.token;
+  const resolvedToken =
+    options.token === undefined
+      ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
+      : options.token;
   const startedAt = performance.now();
 
   let response: Response;
@@ -259,8 +297,21 @@ export const api = {
       token,
     }),
   getAdminUsers: async (pagination: PaginationOptions = {}) => {
-    const payload = await request<{ users: unknown[] }>(withQuery("/auth/admin/users", { limit: 200, ...pagination }));
-    return { ...payload, users: extractList(payload, "users") };
+    const payload = await request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
+      withQuery("/auth/admin/users", { limit: 200, ...pagination }),
+    );
+
+    return {
+      ...payload,
+      users: extractList(payload, "users"),
+      pagination: payload.pagination || {
+        page: 1,
+        limit: 200,
+        total: 0,
+        totalPages: 0,
+        items: 0,
+      },
+    };
   },
   updateAdminUser: (id: string, payload: unknown, token?: string | null) =>
     request<{ user: unknown }>(`/auth/admin/users/${id}`, {
@@ -340,11 +391,26 @@ export const api = {
       body: payload,
       token,
     }),
+  getPaymentCountryPresets: (token?: string | null) =>
+    request<unknown>("/payments/settings/presets", {
+      token,
+    }),
+  applyPaymentCountryPreset: (country: "SA" | "EG", token?: string | null) =>
+    request<unknown>("/payments/settings/apply-country-preset", {
+      method: "POST",
+      body: { country },
+      token,
+    }),
   getPaymentRequests: async (
-    token?: string | null,
-    pagination: PaginationOptions & { status?: string; search?: string } = {},
-  ) => {
-    const payload = await request<{ requests: unknown[] }>(withQuery("/payments/requests", { limit: 200, ...pagination }), {
+      token?: string | null,
+      pagination: PaginationOptions & {
+        status?: string;
+        search?: string;
+        paymentCountry?: string | "all";
+        paymentMethod?: string | "all";
+      } = {},
+    ) => {
+    const payload = await request<{ requests: unknown[]; pagination?: unknown }>(withQuery("/payments/requests", { limit: 50, ...pagination }), {
       token,
     });
     return { ...payload, requests: extractList(payload, "requests") };
@@ -365,6 +431,10 @@ export const api = {
     request<{ request: unknown; user?: unknown }>(`/payments/requests/${id}/review`, {
       method: "PATCH",
       body: payload,
+      token,
+    }),
+  getPaymentRequestsSummary: (token?: string | null) =>
+    request<unknown>("/payments/requests/summary", {
       token,
     }),
   getDiscountCodes: async (
@@ -489,7 +559,18 @@ export const api = {
       accessCodes: unknown[];
       announcementAds: unknown[];
       studyPlans: unknown[];
-    }>("/content/bootstrap", "content-bootstrap", BOOTSTRAP_CACHE_TTL_MS),
+    }>(withQuery("/content/bootstrap", { scope: "full" }), "content-bootstrap:full", BOOTSTRAP_CACHE_TTL_MS),
+  getContentBootstrapByScope: (scope: "full" | "learning" = "full") =>
+    requestCached<{
+      topics: unknown[];
+      lessons: unknown[];
+      libraryItems: unknown[];
+      groups: unknown[];
+      b2bPackages: unknown[];
+      accessCodes: unknown[];
+      announcementAds: unknown[];
+      studyPlans: unknown[];
+    }>(withQuery("/content/bootstrap", { scope }), `content-bootstrap:${scope}`, BOOTSTRAP_CACHE_TTL_MS),
   getHomepageSettings: (token?: string | null) =>
     token
       ? request<unknown>("/content/homepage-settings", {
@@ -527,6 +608,71 @@ export const api = {
       body: payload,
       token,
     }),
+  getPlatformIntegrationsHistory: (token?: string | null) =>
+    request<{ history: Array<{ _id: string; updatedBy?: string; note?: string; createdAt?: string }> }>(
+      "/content/platform-integrations/history",
+      { token },
+    ),
+  restorePlatformIntegrationsHistory: (id: string, token?: string | null) =>
+    request<{ settings: unknown; restoredFrom: string }>(`/content/platform-integrations/history/${id}/restore`, {
+      method: "POST",
+      body: {},
+      token,
+    }),
+  getPlatformIntegrationsSetupChecklist: (token?: string | null) =>
+    request<{
+      publicBaseUrl: string;
+      apiBaseUrl: string;
+      summary: { total: number; enabled: number; configuredEnabled: number; blockers: string[] };
+      checks: Array<{
+        id: string;
+        title: string;
+        envKeys: string[];
+        callbackUrl: string;
+        webhookUrl: string;
+        enabled: boolean;
+        isConfigured: boolean;
+        notes: string;
+      }>;
+    }>("/content/platform-integrations/setup-checklist", {
+      token,
+      cache: "no-store",
+    }),
+  getPlatformIntegrationsRuntimeAudit: (token?: string | null) =>
+    request<{
+      summary: { total: number; enabled: number; runtimeReady: number; blocked: string[] };
+      items: Array<{
+        id: string;
+        title: string;
+        enabled: boolean;
+        dbConfigured: boolean;
+        envConfigured: boolean;
+        runtimeReady: boolean;
+        health?: { ok: boolean; status: string; latencyMs: number | null; error: string };
+      }>;
+    }>("/content/platform-integrations/runtime-audit", {
+      token,
+      cache: "no-store",
+    }),
+  testIntegrationDelivery: (
+    payload: {
+      channel: "email" | "whatsapp";
+      recipientEmail?: string;
+      recipientPhone?: string;
+      subject?: string;
+      title?: string;
+      body?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<{ ok: boolean; provider: string; providerMessageId?: string; failureReason?: string }>(
+      "/notifications/admin/test-delivery",
+      {
+        method: "POST",
+        body: payload,
+        token,
+      },
+    ),
   getPublicContactWidget: () =>
     requestCached<{
       enabled: boolean;
@@ -822,15 +968,19 @@ export const api = {
       body: payload,
       token,
     }),
-  getQuizResults: async (pagination: PaginationOptions = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 200, ...pagination })), "results"),
-  getScopedQuizResults: (pagination: PaginationOptions = {}) =>
-    request<unknown>(withQuery("/quizzes/results/scoped", { limit: 200, ...pagination })),
+  getQuizResults: async (pagination: QuizResultsPaginationOptions = {}) =>
+    extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 100, ...pagination })), "results"),
+  getMyQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
+    request<QuizResultsPageResponse>(withQuery("/quiz-results/my", { limit: 100, ...pagination })),
+  getAdminQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
+    request<QuizResultsPageResponse>(withQuery("/admin/quiz-results", { limit: 100, ...pagination })),
+  getScopedQuizResults: (pagination: QuizResultsPaginationOptions = {}) =>
+    request<unknown>(withQuery("/quizzes/results/scoped", { limit: 100, ...pagination })),
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
   getSkillProgress: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/skill-progress", { limit: 200, ...pagination })), "skillProgress"),
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
-    extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 200, ...pagination })), "questionAttempts"),
+    extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 100, ...pagination })), "questionAttempts"),
   createQuestionAttempt: (payload: unknown, token?: string | null) =>
     request<unknown>("/quizzes/question-attempts", {
       method: "POST",

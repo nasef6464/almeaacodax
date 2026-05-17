@@ -112,6 +112,43 @@ type IntegrationSettings = {
   };
   externalPlatforms: ExternalPlatform[];
   registrationFields: RegistrationField[];
+  providerSecretState?: Record<string, Partial<Record<"appSecret" | "clientSecret" | "apiKey" | "accessToken" | "botToken" | "verifyToken", boolean>>>;
+};
+
+type IntegrationHistoryItem = {
+  _id: string;
+  updatedBy?: string;
+  note?: string;
+  createdAt?: string;
+};
+
+type SetupChecklist = {
+  publicBaseUrl: string;
+  apiBaseUrl: string;
+  summary: { total: number; enabled: number; configuredEnabled: number; blockers: string[] };
+  checks: Array<{
+    id: string;
+    title: string;
+    envKeys: string[];
+    callbackUrl: string;
+    webhookUrl: string;
+    enabled: boolean;
+    isConfigured: boolean;
+    notes: string;
+  }>;
+};
+
+type RuntimeAudit = {
+  summary: { total: number; enabled: number; runtimeReady: number; blocked: string[] };
+  items: Array<{
+    id: string;
+    title: string;
+    enabled: boolean;
+    dbConfigured: boolean;
+    envConfigured: boolean;
+    runtimeReady: boolean;
+    health?: { ok: boolean; status: string; latencyMs: number | null; error: string };
+  }>;
 };
 
 const emptySettings: IntegrationSettings = {
@@ -332,16 +369,26 @@ const providerGuides: Record<
 
 export const PlatformIntegrationsManager: React.FC = () => {
   const [settings, setSettings] = useState<IntegrationSettings>(emptySettings);
+  const [history, setHistory] = useState<IntegrationHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [restoringId, setRestoringId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState<"success" | "error">("success");
+  const [setupChecklist, setSetupChecklist] = useState<SetupChecklist | null>(null);
+  const [runtimeAudit, setRuntimeAudit] = useState<RuntimeAudit | null>(null);
   const [readiness, setReadiness] = useState<null | {
     status: string;
     score: number;
     checks: Array<{ id: string; title: string; status: "pass" | "warning" | "fail"; detail: string }>;
   }>(null);
   const [openGuideFor, setOpenGuideFor] = useState<keyof IntegrationSettings["providers"] | null>(null);
+  const [testChannel, setTestChannel] = useState<"email" | "whatsapp">("email");
+  const [testEmail, setTestEmail] = useState("");
+  const [testPhone, setTestPhone] = useState("");
+  const [testMessage, setTestMessage] = useState("هذه رسالة اختبار من منصة المئة.");
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testResult, setTestResult] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -448,6 +495,50 @@ export const PlatformIntegrationsManager: React.FC = () => {
     }
   };
 
+  const loadSetupChecklist = async () => {
+    try {
+      const payload = await api.getPlatformIntegrationsSetupChecklist();
+      setSetupChecklist(payload);
+    } catch {
+      setSetupChecklist(null);
+    }
+  };
+
+  const loadRuntimeAudit = async () => {
+    try {
+      const payload = await api.getPlatformIntegrationsRuntimeAudit();
+      setRuntimeAudit(payload);
+    } catch {
+      setRuntimeAudit(null);
+    }
+  };
+
+  const loadHistory = async () => {
+    try {
+      const payload = await api.getPlatformIntegrationsHistory();
+      setHistory(Array.isArray(payload.history) ? payload.history : []);
+    } catch {
+      setHistory([]);
+    }
+  };
+
+  const restoreSnapshot = async (snapshotId: string) => {
+    setRestoringId(snapshotId);
+    setStatusMessage("");
+    try {
+      const restored = await api.restorePlatformIntegrationsHistory(snapshotId);
+      setSettings({ ...emptySettings, ...(restored.settings as IntegrationSettings) });
+      setStatusType("success");
+      setStatusMessage("تم استرجاع إعدادات التكاملات بنجاح.");
+      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit()]);
+    } catch (error) {
+      setStatusType("error");
+      setStatusMessage(error instanceof Error ? error.message : "تعذر استرجاع النسخة.");
+    } finally {
+      setRestoringId(null);
+    }
+  };
+
   const save = async () => {
     setSaving(true);
     setStatusMessage("");
@@ -480,7 +571,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
       setSettings({ ...emptySettings, ...updated });
       setStatusType("success");
       setStatusMessage("تم حفظ إعدادات التكاملات والتسجيل وSEO بنجاح.");
-      await loadReadiness();
+      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit()]);
     } catch (error) {
       setStatusType("error");
       setStatusMessage(error instanceof Error ? error.message : "تعذر حفظ الإعدادات.");
@@ -510,8 +601,32 @@ export const PlatformIntegrationsManager: React.FC = () => {
     }
   };
 
+  const sendIntegrationTest = async () => {
+    setSendingTest(true);
+    setTestResult("");
+    try {
+      const payload =
+        testChannel === "email"
+          ? { channel: "email" as const, recipientEmail: testEmail, title: "اختبار البريد", subject: "اختبار البريد", body: testMessage }
+          : { channel: "whatsapp" as const, recipientPhone: testPhone, title: "اختبار واتساب", subject: "اختبار واتساب", body: testMessage };
+      const result = await api.testIntegrationDelivery(payload);
+      if (result.ok) {
+        setTestResult(`نجح الاختبار عبر ${result.provider}${result.providerMessageId ? ` - ${result.providerMessageId}` : ""}`);
+      } else {
+        setTestResult(`فشل الاختبار: ${result.failureReason || "provider_error"}`);
+      }
+    } catch (error) {
+      setTestResult(error instanceof Error ? error.message : "تعذر تنفيذ اختبار الإرسال.");
+    } finally {
+      setSendingTest(false);
+    }
+  };
+
   useEffect(() => {
     void loadReadiness();
+    void loadHistory();
+    void loadSetupChecklist();
+    void loadRuntimeAudit();
   }, []);
 
   if (loading) {
@@ -643,6 +758,11 @@ export const PlatformIntegrationsManager: React.FC = () => {
                   <input type="checkbox" checked={settings.providers[provider.key].enabled} onChange={(e) => updateProvider(provider.key, { enabled: e.target.checked })} />
                 </div>
               </div>
+              {settings.providerSecretState?.[provider.key] ? (
+                <div className="mb-2 rounded-lg border border-amber-100 bg-amber-50 px-2 py-1 text-xs text-amber-800">
+                  توجد مفاتيح سرية محفوظة لهذا المزود. اترك حقل السر فارغًا إذا لا تريد تغييره.
+                </div>
+              ) : null}
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].mode || ""} onChange={(e) => updateProvider(provider.key, { mode: e.target.value })} placeholder="mode" />
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].appId || ""} onChange={(e) => updateProvider(provider.key, { appId: e.target.value })} placeholder="App ID / Project ID" />
               <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].clientId || ""} onChange={(e) => updateProvider(provider.key, { clientId: e.target.value })} placeholder="Client ID" />
@@ -721,6 +841,170 @@ export const PlatformIntegrationsManager: React.FC = () => {
           </div>
         </div>
       ) : null}
+
+      {setupChecklist ? (
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-lg font-black text-gray-900">جاهزية الربط الإنتاجي</h3>
+            <button
+              onClick={() => void loadSetupChecklist()}
+              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700"
+            >
+              <RefreshCw size={14} />
+              تحديث القائمة
+            </button>
+          </div>
+          <div className="mb-3 grid grid-cols-1 gap-2 md:grid-cols-3">
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">إجمالي التكاملات</div>
+              <div className="font-black text-gray-900">{setupChecklist.summary.total}</div>
+            </div>
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">المفعلة</div>
+              <div className="font-black text-gray-900">{setupChecklist.summary.enabled}</div>
+            </div>
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">مكتملة التفعيل</div>
+              <div className="font-black text-gray-900">{setupChecklist.summary.configuredEnabled}</div>
+            </div>
+          </div>
+          <div className="mb-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-xs text-gray-700">
+            <div>Public Base URL: <code className="break-all">{setupChecklist.publicBaseUrl || "-"}</code></div>
+            <div>API Base URL: <code className="break-all">{setupChecklist.apiBaseUrl || "-"}</code></div>
+          </div>
+          <div className="space-y-2">
+            {setupChecklist.checks.map((item) => (
+              <div key={item.id} className="rounded-xl border border-gray-100 px-3 py-3">
+                <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+                  <div className="font-black text-gray-900">{item.title}</div>
+                  <div className={`rounded-full px-2 py-0.5 text-xs font-black ${item.enabled ? (item.isConfigured ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700") : "bg-gray-100 text-gray-600"}`}>
+                    {item.enabled ? (item.isConfigured ? "مفعل ومكتمل" : "مفعل ناقص") : "غير مفعل"}
+                  </div>
+                </div>
+                <div className="mb-1 text-xs text-gray-600">{item.notes}</div>
+                {item.callbackUrl ? (
+                  <div className="mb-1 flex items-center justify-between gap-2 rounded border border-gray-100 px-2 py-1 text-xs">
+                    <span className="text-gray-500">Callback URL</span>
+                    <button onClick={() => void copyText(item.callbackUrl)} className="inline-flex items-center gap-1 rounded border border-gray-200 bg-white px-2 py-0.5">
+                      <Copy size={11} />
+                      نسخ
+                    </button>
+                  </div>
+                ) : null}
+                {item.webhookUrl ? (
+                  <div className="mb-1 flex items-center justify-between gap-2 rounded border border-gray-100 px-2 py-1 text-xs">
+                    <span className="text-gray-500">Webhook URL</span>
+                    <button onClick={() => void copyText(item.webhookUrl)} className="inline-flex items-center gap-1 rounded border border-gray-200 bg-white px-2 py-0.5">
+                      <Copy size={11} />
+                      نسخ
+                    </button>
+                  </div>
+                ) : null}
+                <div className="text-xs text-gray-600">ENV: {item.envKeys.join(" , ")}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {runtimeAudit ? (
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-lg font-black text-gray-900">فحص التشغيل الفعلي (Runtime)</h3>
+            <button
+              onClick={() => void loadRuntimeAudit()}
+              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700"
+            >
+              <RefreshCw size={14} />
+              تحديث الفحص
+            </button>
+          </div>
+          <div className="mb-3 grid grid-cols-1 gap-2 md:grid-cols-3">
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">المفعل</div>
+              <div className="font-black text-gray-900">{runtimeAudit.summary.enabled}</div>
+            </div>
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">جاهز تشغيل فعلي</div>
+              <div className="font-black text-gray-900">{runtimeAudit.summary.runtimeReady}</div>
+            </div>
+            <div className="rounded-xl border border-gray-100 px-3 py-2 text-sm">
+              <div className="text-xs text-gray-500">معطل بسبب نقص</div>
+              <div className="font-black text-gray-900">{runtimeAudit.summary.blocked.length}</div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {runtimeAudit.items.map((item) => (
+              <div key={item.id} className="rounded-xl border border-gray-100 px-3 py-3 text-sm">
+                <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+                  <div className="font-black text-gray-900">{item.title}</div>
+                  <div className={`rounded-full px-2 py-0.5 text-xs font-black ${item.enabled ? (item.runtimeReady ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700") : "bg-gray-100 text-gray-600"}`}>
+                    {item.enabled ? (item.runtimeReady ? "جاهز فعليًا" : "مفعل لكن غير جاهز") : "غير مفعل"}
+                  </div>
+                </div>
+                <div className="text-xs text-gray-600">
+                  DB: {item.dbConfigured ? "مكتمل" : "ناقص"} | ENV: {item.envConfigured ? "مكتمل" : "ناقص"}
+                </div>
+                {item.health ? (
+                  <div className="mt-1 text-xs text-gray-600">
+                    Redis Health: {item.health.ok ? `ok (${item.health.latencyMs ?? "?"}ms)` : `fail (${item.health.status}${item.health.error ? ` - ${item.health.error}` : ""})`}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
+        <h3 className="text-lg font-black text-gray-900">اختبار إرسال التكاملات</h3>
+        <p className="mt-1 text-sm text-gray-500">اختبار فعلي سريع للبريد أو الواتساب من نفس إعدادات التشغيل الحالية.</p>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <select
+            className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+            value={testChannel}
+            onChange={(e) => setTestChannel(e.target.value as "email" | "whatsapp")}
+          >
+            <option value="email">Email</option>
+            <option value="whatsapp">WhatsApp</option>
+          </select>
+          {testChannel === "email" ? (
+            <input
+              className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+              value={testEmail}
+              onChange={(e) => setTestEmail(e.target.value)}
+              placeholder="recipient@email.com"
+            />
+          ) : (
+            <input
+              className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
+              value={testPhone}
+              onChange={(e) => setTestPhone(e.target.value)}
+              placeholder="9665xxxxxxxx"
+            />
+          )}
+          <input
+            className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2"
+            value={testMessage}
+            onChange={(e) => setTestMessage(e.target.value)}
+            placeholder="نص رسالة الاختبار"
+          />
+          <div className="md:col-span-2">
+            <button
+              onClick={() => void sendIntegrationTest()}
+              disabled={sendingTest}
+              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-black text-white hover:bg-amber-600 disabled:opacity-60"
+            >
+              {sendingTest ? "جارٍ الإرسال..." : "إرسال اختبار"}
+            </button>
+          </div>
+          {testResult ? (
+            <div className="md:col-span-2 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+              {testResult}
+            </div>
+          ) : null}
+        </div>
+      </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <h3 className="text-lg font-black text-gray-900">زر التواصل العائم</h3>
@@ -862,6 +1146,43 @@ export const PlatformIntegrationsManager: React.FC = () => {
             <div className="rounded-xl border border-dashed border-gray-200 p-4 text-sm text-gray-500">لا توجد حقول إضافية حالياً.</div>
           ) : null}
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h3 className="text-lg font-black text-gray-900">سجل تغييرات التكاملات</h3>
+          <button
+            onClick={() => void loadHistory()}
+            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700"
+          >
+            <RefreshCw size={14} />
+            تحديث السجل
+          </button>
+        </div>
+        {history.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-gray-200 p-4 text-sm text-gray-500">
+            لا توجد لقطات محفوظة حتى الآن.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {history.map((entry) => (
+              <div key={entry._id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 px-3 py-2">
+                <div className="text-xs text-gray-600">
+                  <div className="font-black text-gray-800">{entry.note || "تعديل إعدادات التكاملات"}</div>
+                  <div>{entry.createdAt ? new Date(entry.createdAt).toLocaleString("ar-EG") : "-"}</div>
+                  <div>by: {entry.updatedBy || "-"}</div>
+                </div>
+                <button
+                  onClick={() => void restoreSnapshot(entry._id)}
+                  disabled={restoringId === entry._id}
+                  className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 disabled:opacity-60"
+                >
+                  {restoringId === entry._id ? "جارٍ الاسترجاع..." : "استرجاع هذه النسخة"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 text-sm text-indigo-800">

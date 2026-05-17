@@ -17,10 +17,12 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { HomepageSettingsModel } from "../models/HomepageSettings.js";
 import { PlatformFontSettingsModel } from "../models/PlatformFontSettings.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
+import { PlatformIntegrationHistoryModel } from "../models/PlatformIntegrationHistory.js";
 import { StudyPlanModel } from "../models/StudyPlan.js";
 import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
+import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -246,6 +248,7 @@ type PublicContentBootstrapPayload = {
   announcementAds: unknown[];
   studyPlans: unknown[];
 };
+const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
 let publicContentBootstrapCache:
   | {
       expiresAt: number;
@@ -278,40 +281,6 @@ const uniqueStrings = (values: Array<string | undefined | null>) =>
 
 const getModelDocumentId = (document: { id?: unknown; _id?: unknown }) => String(document.id || document._id || "");
 
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const parseDateToTimestamp = (value?: string) => {
-  if (!value) {
-    return null;
-  }
-  const timestamp = Date.parse(value);
-  return Number.isFinite(timestamp) ? timestamp : null;
-};
-
-const buildPaginationMeta = (total: number, page: number, limit: number) => {
-  const totalPages = Math.max(1, Math.ceil(total / Math.max(limit, 1)));
-  return {
-    total,
-    page,
-    limit,
-    totalPages,
-    hasNext: page < totalPages,
-    hasPrev: page > 1,
-  };
-};
-
-const normalizeAccessCodeResponse = (code: any) => ({
-  id: String(code.id || code._id || ""),
-  code: String(code.code || ""),
-  schoolId: String(code.schoolId || ""),
-  packageId: String(code.packageId || ""),
-  maxUses: Number(code.maxUses || 0),
-  currentUses: Number(code.currentUses || 0),
-  expiresAt: Number(code.expiresAt || 0),
-  createdAt: Number(code.createdAt || 0),
-});
-
 const buildDocumentsByIdsQuery = (values: string[]) => {
   const ids = uniqueStrings(values.map((value) => String(value || "").trim()));
   const objectIds = ids
@@ -324,38 +293,6 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
-};
-
-const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) => {
-  const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
-  if (!user) {
-    return [] as string[];
-  }
-
-  const managedGroups = await GroupModel.find({
-    $or: [
-      { ownerId: authUser.id },
-      { supervisorIds: authUser.id },
-      { createdBy: authUser.id },
-      ...(user.schoolId ? [{ _id: user.schoolId }, { id: user.schoolId }] : []),
-    ],
-  }).select("id _id parentId type");
-
-  const managedGroupIds = uniqueStrings([
-    ...(user.groupIds || []).map(String),
-    ...managedGroups.map((group) => String(group.id || group._id)),
-  ]);
-
-  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type");
-  const schoolIds = uniqueStrings([
-    String(user.schoolId || ""),
-    ...managedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
-    ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
-    ...managedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
-  ]);
-
-  return uniqueStrings(schoolIds.filter(Boolean));
 };
 
 const buildOwnedDocumentQuery = (
@@ -648,6 +585,94 @@ const accessCodeRedemptionsListQuerySchema = z.object({
   sortBy: z.enum(["grantedAt", "expiresAt", "createdAt"]).default("grantedAt"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const parseDateToTimestamp = (value?: string) => {
+  if (!value) {
+    return null;
+  }
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const buildPaginationMeta = (total: number, page: number, limit: number) => {
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(limit, 1)));
+  return {
+    total,
+    page,
+    limit,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
+};
+
+const normalizeAccessCodeResponse = (code: any) => ({
+  id: String(code.id || code._id || ""),
+  code: String(code.code || ""),
+  schoolId: String(code.schoolId || ""),
+  packageId: String(code.packageId || ""),
+  maxUses: Number(code.maxUses || 0),
+  currentUses: Number(code.currentUses || 0),
+  expiresAt: Number(code.expiresAt || 0),
+  createdAt: Number(code.createdAt || 0),
+});
+
+const resolveAccessCodeSchoolsForSupervisor = async (authUser: { id: string }) => {
+  const user = await UserModel.findById(authUser.id).select("schoolId groupIds role").lean();
+  if (!user) {
+    return [] as string[];
+  }
+
+  const managedGroups = await GroupModel.find({
+    $or: [
+      { ownerId: authUser.id },
+      { supervisorIds: authUser.id },
+      { createdBy: authUser.id },
+      ...(user.schoolId ? [{ _id: user.schoolId }, { id: user.schoolId }] : []),
+    ],
+  }).select("id _id parentId type");
+
+  const managedGroupIds = uniqueStrings([
+    ...(user.groupIds || []).map(String),
+    ...managedGroups.map((group) => String(group.id || group._id)),
+  ]);
+
+  const seedGroups = await GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type");
+  const schoolIds = uniqueStrings([
+    String(user.schoolId || ""),
+    ...managedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "SCHOOL").map((group) => String(group.id || group._id)),
+    ...seedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+    ...managedGroups.filter((group) => group.type === "CLASS" || group.type === "PRIVATE_GROUP").map((group) => String(group.parentId || "")),
+  ]);
+
+  return uniqueStrings(schoolIds.filter(Boolean));
+};
+
+const assertSchoolManagementScope = async (
+  authUser: { id: string; role: string },
+  school: { id?: string; _id?: unknown; supervisorIds?: unknown[] },
+) => {
+  if (authUser.role === "admin") {
+    return true;
+  }
+
+  const schoolId = String(school.id || school._id || "");
+  if (!schoolId) {
+    return false;
+  }
+
+  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+  if (scopedSchoolIds.includes(schoolId)) {
+    return true;
+  }
+
+  const supervisorIds = Array.isArray(school.supervisorIds) ? school.supervisorIds.map(String) : [];
+  return supervisorIds.includes(String(authUser.id));
+};
 
 const studyPlanSchema = z.object({
   id: z.string().min(1),
@@ -1042,6 +1067,73 @@ const defaultPlatformIntegrationSettings = {
   ],
 };
 
+const normalizeBaseUrl = (value?: string) => {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) return "";
+  return trimmed.replace(/\/+$/, "");
+};
+
+const buildPublicBaseUrl = (settings: { seo?: { canonicalBaseUrl?: string } } | null | undefined, reqHost?: string) => {
+  const bySeo = normalizeBaseUrl(settings?.seo?.canonicalBaseUrl);
+  if (bySeo) return bySeo;
+  const byHost = normalizeBaseUrl(reqHost);
+  if (byHost) return byHost;
+  return "";
+};
+
+const SENSITIVE_PROVIDER_FIELDS = ["appSecret", "clientSecret", "apiKey", "accessToken", "botToken", "verifyToken"] as const;
+
+const maskSensitiveProviderValues = (settings: Record<string, unknown>) => {
+  const masked = JSON.parse(JSON.stringify(settings)) as Record<string, unknown>;
+  const providers = (masked.providers as Record<string, Record<string, unknown>> | undefined) || {};
+  const providerSecretState: Record<string, Record<string, boolean>> = {};
+
+  Object.entries(providers).forEach(([providerKey, providerConfig]) => {
+    providerSecretState[providerKey] = {};
+    SENSITIVE_PROVIDER_FIELDS.forEach((fieldKey) => {
+      const currentValue = String(providerConfig[fieldKey] || "");
+      providerSecretState[providerKey][fieldKey] = currentValue.length > 0;
+      if (currentValue.length > 0) {
+        providerConfig[fieldKey] = "";
+      }
+    });
+  });
+
+  masked.providerSecretState = providerSecretState;
+  return masked;
+};
+
+const mergeSensitiveProviderValues = (
+  payload: Record<string, unknown>,
+  previous?: Record<string, unknown> | null,
+) => {
+  const merged = JSON.parse(JSON.stringify(payload)) as Record<string, unknown>;
+  const mergedProviders = (merged.providers as Record<string, Record<string, unknown>> | undefined) || {};
+  const previousProviders = ((previous?.providers as Record<string, Record<string, unknown>> | undefined) || {});
+
+  Object.entries(mergedProviders).forEach(([providerKey, providerConfig]) => {
+    const previousConfig = previousProviders[providerKey] || {};
+    SENSITIVE_PROVIDER_FIELDS.forEach((fieldKey) => {
+      const incomingValue = String(providerConfig[fieldKey] || "").trim();
+      const previousValue = String(previousConfig[fieldKey] || "");
+      if (!incomingValue && previousValue) {
+        providerConfig[fieldKey] = previousValue;
+      }
+    });
+  });
+
+  return merged;
+};
+
+const maskIntegrationSnapshot = (snapshot: unknown) => {
+  if (!snapshot || typeof snapshot !== "object") {
+    return {};
+  }
+
+  const safeSnapshot = maskSensitiveProviderValues(JSON.parse(JSON.stringify(snapshot)) as Record<string, unknown>);
+  return safeSnapshot;
+};
+
 export const contentRouter = Router();
 
 contentRouter.use((req, _res, next) => {
@@ -1113,6 +1205,9 @@ contentRouter.get(
   "/bootstrap",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    const scope = contentBootstrapScopeSchema.parse(req.query.scope);
+    const includeOperationalData = scope !== "learning";
+    const includeStudyPlans = scope !== "learning";
     const canUsePublicCache = !req.authUser;
     if (canUsePublicCache && publicContentBootstrapCache && publicContentBootstrapCache.expiresAt > Date.now()) {
       res.setHeader("Cache-Control", "private, max-age=45");
@@ -1151,8 +1246,12 @@ contentRouter.get(
         TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
         LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
         LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
-        getScopedOperationalData(req.authUser),
-        req.authUser ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean() : Promise.resolve([]),
+        includeOperationalData
+          ? getScopedOperationalData(req.authUser)
+          : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
+        includeStudyPlans && req.authUser
+          ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean()
+          : Promise.resolve([]),
       ]);
 
       const { groups, b2bPackages, accessCodes, announcementAds } = operationalData;
@@ -1600,203 +1699,6 @@ contentRouter.delete(
 );
 
 contentRouter.get(
-  "/access-codes",
-  requireAuth,
-  requireRole(["admin", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const query = accessCodesListQuerySchema.parse(req.query);
-    const safePage = Math.max(1, Number(query.page || 1));
-    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
-    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
-    const authUser = req.authUser!;
-    const filter: Record<string, unknown> = {};
-
-    if (authUser.role === "supervisor") {
-      const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
-      }
-      filter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
-    } else if (query.schoolId) {
-      filter.schoolId = query.schoolId;
-    }
-
-    if (query.packageId) {
-      filter.packageId = query.packageId;
-    }
-
-    if (query.search) {
-      filter.code = { $regex: escapeRegExp(query.search), $options: "i" };
-    }
-
-    const createdAtFilter: Record<string, number> = {};
-    const dateFrom = parseDateToTimestamp(query.dateFrom);
-    const dateTo = parseDateToTimestamp(query.dateTo);
-    if (dateFrom !== null) {
-      createdAtFilter.$gte = dateFrom;
-    }
-    if (dateTo !== null) {
-      createdAtFilter.$lte = dateTo;
-    }
-    if (Object.keys(createdAtFilter).length > 0) {
-      filter.createdAt = createdAtFilter;
-    }
-
-    const now = Date.now();
-    if (query.status === "active") {
-      filter.$expr = {
-        $and: [
-          { $gt: ["$expiresAt", now] },
-          { $lt: ["$currentUses", "$maxUses"] },
-        ],
-      };
-    } else if (query.status === "expired") {
-      filter.expiresAt = { $lte: now };
-    } else if (query.status === "exhausted") {
-      filter.$expr = { $gte: ["$currentUses", "$maxUses"] };
-    }
-
-    const direction = query.sortOrder === "asc" ? 1 : -1;
-    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
-    if (query.sortBy !== "createdAt") {
-      sort.createdAt = -1;
-    }
-
-    const [codes, total] = await Promise.all([
-      AccessCodeModel.find(filter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
-      AccessCodeModel.countDocuments(filter),
-    ]);
-
-    return res.json({
-      data: codes.map(normalizeAccessCodeResponse),
-      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
-    });
-  }),
-);
-
-contentRouter.get(
-  "/access-code-redemptions",
-  requireAuth,
-  requireRole(["admin", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const query = accessCodeRedemptionsListQuerySchema.parse(req.query);
-    const safePage = Math.max(1, Number(query.page || 1));
-    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
-    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
-    const authUser = req.authUser!;
-    const grantFilter: Record<string, unknown> = { sourceType: "access_code" };
-    const accessCodeFilter: Record<string, unknown> = {};
-    let shouldResolveScopedCodes = false;
-
-    if (authUser.role === "supervisor") {
-      const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
-      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
-        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
-      }
-      accessCodeFilter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
-      shouldResolveScopedCodes = true;
-    } else if (query.schoolId) {
-      accessCodeFilter.schoolId = query.schoolId;
-      shouldResolveScopedCodes = true;
-    }
-
-    if (query.accessCodeId) {
-      const orConditions: Array<Record<string, unknown>> = [{ id: query.accessCodeId }];
-      if (mongoose.Types.ObjectId.isValid(query.accessCodeId)) {
-        orConditions.push({ _id: new mongoose.Types.ObjectId(query.accessCodeId) });
-      }
-      accessCodeFilter.$or = orConditions;
-      shouldResolveScopedCodes = true;
-    }
-
-    if (query.userId) {
-      grantFilter.userId = query.userId;
-    }
-    if (query.status) {
-      grantFilter.status = query.status;
-    }
-
-    const grantedAtFilter: Record<string, number> = {};
-    const dateFrom = parseDateToTimestamp(query.dateFrom);
-    const dateTo = parseDateToTimestamp(query.dateTo);
-    if (dateFrom !== null) {
-      grantedAtFilter.$gte = dateFrom;
-    }
-    if (dateTo !== null) {
-      grantedAtFilter.$lte = dateTo;
-    }
-    if (Object.keys(grantedAtFilter).length > 0) {
-      grantFilter.grantedAt = grantedAtFilter;
-    }
-
-    if (shouldResolveScopedCodes) {
-      const scopedCodes = await AccessCodeModel.find(accessCodeFilter).select("id _id schoolId packageId code").lean();
-      const scopedAccessCodeIds = scopedCodes.map((code) => String(code._id));
-      if (scopedAccessCodeIds.length === 0) {
-        return res.json({
-          data: [],
-          pagination: buildPaginationMeta(0, pagination.page, pagination.limit),
-        });
-      }
-      grantFilter["metadata.accessCodeId"] = { $in: scopedAccessCodeIds };
-    }
-
-    const direction = query.sortOrder === "asc" ? 1 : -1;
-    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
-    if (query.sortBy !== "grantedAt") {
-      sort.grantedAt = -1;
-    }
-
-    const [grants, total] = await Promise.all([
-      AccessGrantModel.find(grantFilter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
-      AccessGrantModel.countDocuments(grantFilter),
-    ]);
-
-    const accessCodeIds = Array.from(
-      new Set(
-        grants
-          .map((grant) => String((grant as any)?.metadata?.accessCodeId || ""))
-          .filter(Boolean),
-      ),
-    );
-    const userIds = Array.from(new Set(grants.map((grant) => String((grant as any)?.userId || "")).filter(Boolean)));
-
-    const [codes, users] = await Promise.all([
-      accessCodeIds.length
-        ? AccessCodeModel.find({ _id: { $in: accessCodeIds } }).select("id _id code schoolId packageId").lean()
-        : Promise.resolve([]),
-      userIds.length ? UserModel.find(buildDocumentsByIdsQuery(userIds)).select("id _id name email").lean() : Promise.resolve([]),
-    ]);
-
-    const codeById = new Map(codes.map((code) => [String(code._id), code]));
-    const userById = new Map(users.map((user) => [String((user as any).id || user._id), user]));
-
-    return res.json({
-      data: grants.map((grant: any) => {
-        const accessCodeId = String(grant?.metadata?.accessCodeId || "");
-        const code = codeById.get(accessCodeId);
-        const userItem = userById.get(String(grant.userId || ""));
-        return {
-          id: String(grant.id || grant._id || ""),
-          userId: String(grant.userId || ""),
-          userName: String(userItem?.name || ""),
-          userEmail: String(userItem?.email || ""),
-          accessCodeId,
-          accessCode: String(code?.code || grant?.metadata?.accessCode || ""),
-          schoolId: String(code?.schoolId || ""),
-          packageId: String(code?.packageId || grant.packageId || ""),
-          status: String(grant.status || ""),
-          grantedBy: String(grant.grantedBy || ""),
-          grantedAt: Number(grant.grantedAt || 0),
-          expiresAt: typeof grant.expiresAt === "number" ? grant.expiresAt : null,
-        };
-      }),
-      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
-    });
-  }),
-);
-
-contentRouter.get(
   "/schools/:id/report",
   requireAuth,
   requireRole(["admin", "supervisor"]),
@@ -1809,6 +1711,11 @@ contentRouter.get(
 
     if (!school) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "School not found" });
+    }
+
+    const canManageSchool = await assertSchoolManagementScope(req.authUser!, school as any);
+    if (!canManageSchool) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
     }
 
     const schoolId = school.id || String(school._id);
@@ -1940,6 +1847,11 @@ contentRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "School not found" });
     }
 
+    const canManageSchool = await assertSchoolManagementScope(req.authUser!, school as any);
+    if (!canManageSchool) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+    }
+
     const schoolId = school.id || String(school._id);
     const existingClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 });
     const classById = new Map(existingClasses.map((item) => [item.id || String(item._id), item]));
@@ -2050,7 +1962,209 @@ contentRouter.get(
       settings = await PlatformIntegrationSettingsModel.create(defaultPlatformIntegrationSettings);
     }
 
-    return res.json(settings);
+    const safeSettings = maskSensitiveProviderValues((settings.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    return res.json(safeSettings);
+  }),
+);
+
+contentRouter.get(
+  "/access-codes",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const query = accessCodesListQuerySchema.parse(req.query);
+    const safePage = Math.max(1, Number(query.page || 1));
+    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
+    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
+    const authUser = req.authUser!;
+    const filter: Record<string, unknown> = {};
+    let scopedSchoolIds: string[] | null = null;
+
+    if (authUser.role === "supervisor") {
+      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
+      }
+      filter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
+    } else if (query.schoolId) {
+      filter.schoolId = query.schoolId;
+    }
+
+    if (query.packageId) {
+      filter.packageId = query.packageId;
+    }
+
+    if (query.search) {
+      filter.code = { $regex: escapeRegExp(query.search), $options: "i" };
+    }
+
+    const createdAtFilter: Record<string, number> = {};
+    const dateFrom = parseDateToTimestamp(query.dateFrom);
+    const dateTo = parseDateToTimestamp(query.dateTo);
+    if (dateFrom !== null) {
+      createdAtFilter.$gte = dateFrom;
+    }
+    if (dateTo !== null) {
+      createdAtFilter.$lte = dateTo;
+    }
+    if (Object.keys(createdAtFilter).length > 0) {
+      filter.createdAt = createdAtFilter;
+    }
+
+    const now = Date.now();
+    if (query.status === "active") {
+      filter.$expr = {
+        $and: [
+          { $gt: ["$expiresAt", now] },
+          { $lt: ["$currentUses", "$maxUses"] },
+        ],
+      };
+    } else if (query.status === "expired") {
+      filter.expiresAt = { $lte: now };
+    } else if (query.status === "exhausted") {
+      filter.$expr = { $gte: ["$currentUses", "$maxUses"] };
+    }
+
+    const direction = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
+    if (query.sortBy !== "createdAt") {
+      sort.createdAt = -1;
+    }
+
+    const [codes, total] = await Promise.all([
+      AccessCodeModel.find(filter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
+      AccessCodeModel.countDocuments(filter),
+    ]);
+
+    return res.json({
+      data: codes.map(normalizeAccessCodeResponse),
+      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
+    });
+  }),
+);
+
+contentRouter.get(
+  "/access-code-redemptions",
+  requireAuth,
+  requireRole(["admin", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const query = accessCodeRedemptionsListQuerySchema.parse(req.query);
+    const safePage = Math.max(1, Number(query.page || 1));
+    const safeLimit = Math.min(100, Math.max(1, Number(query.limit || 20)));
+    const pagination = resolvePagination({ page: safePage, limit: safeLimit }, { page: safePage, limit: safeLimit });
+    const authUser = req.authUser!;
+    const grantFilter: Record<string, unknown> = { sourceType: "access_code" };
+    const accessCodeFilter: Record<string, unknown> = {};
+    let shouldResolveScopedCodes = false;
+    let scopedSchoolIds: string[] | null = null;
+
+    if (authUser.role === "supervisor") {
+      scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+      if (query.schoolId && !scopedSchoolIds.includes(query.schoolId)) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "School scope denied" });
+      }
+      accessCodeFilter.schoolId = query.schoolId ? query.schoolId : { $in: scopedSchoolIds };
+      shouldResolveScopedCodes = true;
+    } else if (query.schoolId) {
+      accessCodeFilter.schoolId = query.schoolId;
+      shouldResolveScopedCodes = true;
+    }
+
+    if (query.accessCodeId) {
+      accessCodeFilter.$or = [
+        { id: query.accessCodeId },
+        { _id: mongoose.Types.ObjectId.isValid(query.accessCodeId) ? new mongoose.Types.ObjectId(query.accessCodeId) : null },
+      ].filter((entry) => entry._id !== null) as Array<Record<string, unknown>>;
+      if (!accessCodeFilter.$or || (accessCodeFilter.$or as unknown[]).length === 0) {
+        accessCodeFilter.$or = [{ id: query.accessCodeId }];
+      }
+      shouldResolveScopedCodes = true;
+    }
+
+    if (query.userId) {
+      grantFilter.userId = query.userId;
+    }
+    if (query.status) {
+      grantFilter.status = query.status;
+    }
+
+    const grantedAtFilter: Record<string, number> = {};
+    const dateFrom = parseDateToTimestamp(query.dateFrom);
+    const dateTo = parseDateToTimestamp(query.dateTo);
+    if (dateFrom !== null) {
+      grantedAtFilter.$gte = dateFrom;
+    }
+    if (dateTo !== null) {
+      grantedAtFilter.$lte = dateTo;
+    }
+    if (Object.keys(grantedAtFilter).length > 0) {
+      grantFilter.grantedAt = grantedAtFilter;
+    }
+
+    if (shouldResolveScopedCodes) {
+      const scopedCodes = await AccessCodeModel.find(accessCodeFilter).select("id _id schoolId packageId code").lean();
+      const scopedAccessCodeIds = scopedCodes.map((code) => String(code._id));
+      if (scopedAccessCodeIds.length === 0) {
+        return res.json({
+          data: [],
+          pagination: buildPaginationMeta(0, pagination.page, pagination.limit),
+        });
+      }
+      grantFilter["metadata.accessCodeId"] = { $in: scopedAccessCodeIds };
+    }
+
+    const direction = query.sortOrder === "asc" ? 1 : -1;
+    const sort: Record<string, 1 | -1> = { [query.sortBy]: direction };
+    if (query.sortBy !== "grantedAt") {
+      sort.grantedAt = -1;
+    }
+
+    const [grants, total] = await Promise.all([
+      AccessGrantModel.find(grantFilter).sort(sort).skip(pagination.skip).limit(pagination.limit).lean(),
+      AccessGrantModel.countDocuments(grantFilter),
+    ]);
+
+    const accessCodeIds = Array.from(
+      new Set(
+        grants
+          .map((grant) => String((grant as any)?.metadata?.accessCodeId || ""))
+          .filter(Boolean),
+      ),
+    );
+    const userIds = Array.from(new Set(grants.map((grant) => String((grant as any)?.userId || "")).filter(Boolean)));
+
+    const [codes, users] = await Promise.all([
+      accessCodeIds.length
+        ? AccessCodeModel.find({ _id: { $in: accessCodeIds } }).select("id _id code schoolId packageId").lean()
+        : Promise.resolve([]),
+      userIds.length ? UserModel.find(buildDocumentsByIdsQuery(userIds)).select("id _id name email").lean() : Promise.resolve([]),
+    ]);
+
+    const codeById = new Map(codes.map((code) => [String(code._id), code]));
+    const userById = new Map(users.map((user) => [String((user as any).id || user._id), user]));
+
+    return res.json({
+      data: grants.map((grant: any) => {
+        const accessCodeId = String(grant?.metadata?.accessCodeId || "");
+        const code = codeById.get(accessCodeId);
+        const userItem = userById.get(String(grant.userId || ""));
+        return {
+          id: String(grant.id || grant._id || ""),
+          userId: String(grant.userId || ""),
+          userName: String(userItem?.name || ""),
+          userEmail: String(userItem?.email || ""),
+          accessCodeId,
+          accessCode: String(code?.code || grant?.metadata?.accessCode || ""),
+          schoolId: String(code?.schoolId || ""),
+          packageId: String(code?.packageId || grant.packageId || ""),
+          status: String(grant.status || ""),
+          grantedBy: String(grant.grantedBy || ""),
+          grantedAt: Number(grant.grantedAt || 0),
+          expiresAt: typeof grant.expiresAt === "number" ? grant.expiresAt : null,
+        };
+      }),
+      pagination: buildPaginationMeta(total, pagination.page, pagination.limit),
+    });
   }),
 );
 
@@ -2088,11 +2202,21 @@ contentRouter.patch(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = platformIntegrationSettingsSchema.parse(req.body);
+    const previous = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    if (previous) {
+      await PlatformIntegrationHistoryModel.create({
+        settingsKey: "default",
+        snapshot: previous,
+        updatedBy: req.authUser?.id || "",
+        note: "auto-backup before update",
+      });
+    }
+    const mergedPayload = mergeSensitiveProviderValues(payload as unknown as Record<string, unknown>, previous as Record<string, unknown> | null);
     const settings = await PlatformIntegrationSettingsModel.findOneAndUpdate(
       { key: "default" },
       {
         $set: {
-          ...payload,
+          ...mergedPayload,
           updatedBy: req.authUser?.id || "",
         },
         $setOnInsert: { key: "default" },
@@ -2100,7 +2224,299 @@ contentRouter.patch(
       { new: true, upsert: true },
     );
 
-    return res.json(settings);
+    const safeSettings = maskSensitiveProviderValues((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    return res.json(safeSettings);
+  }),
+);
+
+contentRouter.get(
+  "/platform-integrations/history",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const history = await PlatformIntegrationHistoryModel.find({ settingsKey: "default" })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .lean();
+    const safeHistory = history.map((item) => {
+      const maskedSnapshot = maskIntegrationSnapshot((item as { snapshot?: unknown }).snapshot).providerSecretState;
+      return {
+        _id: String(item._id),
+        updatedBy: String(item.updatedBy || ""),
+        note: String(item.note || ""),
+        createdAt: item.createdAt || null,
+        providerSecretState: maskedSnapshot,
+      };
+    });
+    return res.json({ history: safeHistory });
+  }),
+);
+
+contentRouter.get(
+  "/platform-integrations/setup-checklist",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    const publicBaseUrl = buildPublicBaseUrl(
+      settings as { seo?: { canonicalBaseUrl?: string } } | null,
+      `${req.protocol}://${req.get("host") || ""}`,
+    );
+    const apiBaseUrl = `${normalizeBaseUrl(publicBaseUrl)}/api`;
+
+    const providers = (settings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
+
+    const checks = [
+      {
+        id: "google",
+        title: "Google OAuth",
+        envKeys: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"],
+        callbackUrl: `${apiBaseUrl}/auth/google/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.google?.enabled),
+        isConfigured: Boolean(providers.google?.clientId && providers.google?.clientSecret),
+        notes: "تأكد من إضافة نفس Callback في Google Cloud.",
+      },
+      {
+        id: "facebook",
+        title: "Facebook OAuth",
+        envKeys: ["FACEBOOK_APP_ID", "FACEBOOK_APP_SECRET"],
+        callbackUrl: `${apiBaseUrl}/auth/facebook/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.facebook?.enabled),
+        isConfigured: Boolean(providers.facebook?.clientId && providers.facebook?.clientSecret),
+        notes: "أضف domain المنصة داخل App Domains في Meta.",
+      },
+      {
+        id: "whatsapp",
+        title: "WhatsApp Cloud",
+        envKeys: ["WHATSAPP_ACCESS_TOKEN", "WHATSAPP_PHONE_NUMBER_ID", "WHATSAPP_VERIFY_TOKEN"],
+        callbackUrl: "",
+        webhookUrl: `${apiBaseUrl}/webhooks/whatsapp`,
+        enabled: Boolean(providers.whatsapp?.enabled),
+        isConfigured: Boolean(providers.whatsapp?.accessToken && providers.whatsapp?.phoneNumberId && providers.whatsapp?.verifyToken),
+        notes: "Webhook verification token لازم يطابق الإعداد داخل Meta.",
+      },
+      {
+        id: "email",
+        title: "Email Provider",
+        envKeys: ["EMAIL_PROVIDER", "EMAIL_API_KEY", "EMAIL_FROM"],
+        callbackUrl: "",
+        webhookUrl: "",
+        enabled: Boolean(providers.email?.enabled),
+        isConfigured: Boolean(providers.email?.apiKey && providers.email?.fromEmail),
+        notes: "يفضل Resend أو SendGrid مع domain موثق.",
+      },
+      {
+        id: "sentry",
+        title: "Sentry",
+        envKeys: ["SENTRY_DSN"],
+        callbackUrl: "",
+        webhookUrl: "",
+        enabled: Boolean(providers.sentry?.enabled),
+        isConfigured: Boolean(providers.sentry?.accessToken),
+        notes: "أضف DSN في السيرفر والواجهة إذا مطلوب.",
+      },
+      {
+        id: "redis",
+        title: "Redis Managed",
+        envKeys: ["REDIS_URL"],
+        callbackUrl: "",
+        webhookUrl: "",
+        enabled: Boolean(providers.redis?.enabled),
+        isConfigured: Boolean(providers.redis?.accessToken),
+        notes: "مطلوب للتوسع: Rate Limit + Queue + Socket adapter.",
+      },
+      {
+        id: "zoom",
+        title: "Zoom",
+        envKeys: ["ZOOM_CLIENT_ID", "ZOOM_CLIENT_SECRET"],
+        callbackUrl: `${apiBaseUrl}/auth/zoom/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.zoom?.enabled),
+        isConfigured: Boolean(providers.zoom?.clientId && providers.zoom?.clientSecret),
+        notes: "OAuth app من Zoom Marketplace.",
+      },
+      {
+        id: "googleMeet",
+        title: "Google Meet",
+        envKeys: ["GOOGLE_MEET_CLIENT_ID", "GOOGLE_MEET_CLIENT_SECRET"],
+        callbackUrl: `${apiBaseUrl}/auth/google-meet/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.googleMeet?.enabled),
+        isConfigured: Boolean(providers.googleMeet?.clientId && providers.googleMeet?.clientSecret),
+        notes: "فعّل Google Calendar API للإنشاء.",
+      },
+      {
+        id: "teams",
+        title: "Microsoft Teams",
+        envKeys: ["TEAMS_CLIENT_ID", "TEAMS_CLIENT_SECRET", "TEAMS_TENANT_ID"],
+        callbackUrl: `${apiBaseUrl}/auth/teams/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.teams?.enabled),
+        isConfigured: Boolean(providers.teams?.clientId && providers.teams?.clientSecret),
+        notes: "تأكد من صلاحيات Microsoft Graph اللازمة.",
+      },
+      {
+        id: "youtubeLive",
+        title: "YouTube Live",
+        envKeys: ["YOUTUBE_API_KEY"],
+        callbackUrl: `${apiBaseUrl}/auth/youtube/callback`,
+        webhookUrl: "",
+        enabled: Boolean(providers.youtubeLive?.enabled),
+        isConfigured: Boolean(providers.youtubeLive?.apiKey),
+        notes: "فعّل YouTube Data API v3.",
+      },
+    ];
+
+    const enabledCount = checks.filter((item) => item.enabled).length;
+    const configuredEnabledCount = checks.filter((item) => item.enabled && item.isConfigured).length;
+
+    return res.json({
+      publicBaseUrl,
+      apiBaseUrl,
+      summary: {
+        total: checks.length,
+        enabled: enabledCount,
+        configuredEnabled: configuredEnabledCount,
+        blockers: checks.filter((item) => item.enabled && !item.isConfigured).map((item) => item.id),
+      },
+      checks,
+    });
+  }),
+);
+
+contentRouter.get(
+  "/platform-integrations/runtime-audit",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (_req, res) => {
+    const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    const providers = (settings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
+
+    const isDbConfigured = {
+      google: Boolean(providers.google?.clientId && providers.google?.clientSecret),
+      facebook: Boolean(providers.facebook?.clientId && providers.facebook?.clientSecret),
+      whatsapp: Boolean(providers.whatsapp?.accessToken && providers.whatsapp?.phoneNumberId && providers.whatsapp?.verifyToken),
+      email: Boolean(providers.email?.apiKey && providers.email?.fromEmail),
+      sentry: Boolean(providers.sentry?.accessToken),
+      redis: Boolean(providers.redis?.accessToken),
+    };
+
+    const emailProvider = String(process.env.EMAIL_PROVIDER || "").trim().toLowerCase();
+    const emailEnvConfigured =
+      emailProvider === "console" ||
+      (emailProvider === "resend" && Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM)) ||
+      (emailProvider === "http" && Boolean(process.env.EMAIL_WEBHOOK_URL && process.env.EMAIL_WEBHOOK_URL.trim()));
+
+    const whatsappProvider = String(process.env.WHATSAPP_PROVIDER || "").trim().toLowerCase();
+    const whatsappEnvConfigured =
+      whatsappProvider === "console" ||
+      (whatsappProvider === "whatsapp_cloud" &&
+        Boolean(process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.WHATSAPP_VERIFY_TOKEN)) ||
+      (whatsappProvider === "http" && Boolean(process.env.WHATSAPP_WEBHOOK_URL && process.env.WHATSAPP_WEBHOOK_URL.trim()));
+
+    const redisHealth = await getRedisHealth("queue", { required: false, timeoutMs: 1500 });
+    const sentryEnvConfigured = Boolean(String(process.env.SENTRY_DSN || "").trim());
+
+    const items = [
+      {
+        id: "google",
+        title: "Google OAuth",
+        enabled: Boolean(providers.google?.enabled),
+        dbConfigured: isDbConfigured.google,
+        envConfigured: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+      },
+      {
+        id: "facebook",
+        title: "Facebook OAuth",
+        enabled: Boolean(providers.facebook?.enabled),
+        dbConfigured: isDbConfigured.facebook,
+        envConfigured: Boolean(process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET),
+      },
+      {
+        id: "email",
+        title: "Email Provider",
+        enabled: Boolean(providers.email?.enabled),
+        dbConfigured: isDbConfigured.email,
+        envConfigured: emailEnvConfigured,
+      },
+      {
+        id: "whatsapp",
+        title: "WhatsApp Provider",
+        enabled: Boolean(providers.whatsapp?.enabled),
+        dbConfigured: isDbConfigured.whatsapp,
+        envConfigured: whatsappEnvConfigured,
+      },
+      {
+        id: "sentry",
+        title: "Sentry",
+        enabled: Boolean(providers.sentry?.enabled),
+        dbConfigured: isDbConfigured.sentry,
+        envConfigured: sentryEnvConfigured,
+      },
+      {
+        id: "redis",
+        title: "Redis Managed",
+        enabled: Boolean(providers.redis?.enabled),
+        dbConfigured: isDbConfigured.redis,
+        envConfigured: isRedisConfigured(),
+        health: {
+          ok: redisHealth.ok,
+          status: redisHealth.status,
+          latencyMs: redisHealth.latencyMs ?? null,
+          error: redisHealth.error || "",
+        },
+      },
+    ].map((item) => {
+      const runtimeReady = item.enabled ? item.dbConfigured && item.envConfigured : true;
+      return { ...item, runtimeReady };
+    });
+
+    return res.json({
+      summary: {
+        total: items.length,
+        enabled: items.filter((item) => item.enabled).length,
+        runtimeReady: items.filter((item) => item.enabled && item.runtimeReady).length,
+        blocked: items.filter((item) => item.enabled && !item.runtimeReady).map((item) => item.id),
+      },
+      items,
+    });
+  }),
+);
+
+contentRouter.post(
+  "/platform-integrations/history/:id/restore",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const item = await PlatformIntegrationHistoryModel.findById(req.params.id).lean();
+    if (!item?.snapshot || typeof item.snapshot !== "object") {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "History snapshot not found." });
+    }
+
+    const parsedSnapshot = platformIntegrationSettingsSchema.parse(item.snapshot as Record<string, unknown>);
+    const settings = await PlatformIntegrationSettingsModel.findOneAndUpdate(
+      { key: "default" },
+      {
+        $set: {
+          ...parsedSnapshot,
+          updatedBy: req.authUser?.id || "",
+        },
+        $setOnInsert: { key: "default" },
+      },
+      { new: true, upsert: true },
+    );
+
+    await PlatformIntegrationHistoryModel.create({
+      settingsKey: "default",
+      snapshot: settings?.toJSON?.() || settings,
+      updatedBy: req.authUser?.id || "",
+      note: `restore from ${String(req.params.id)}`,
+    });
+
+    const safeSettings = maskSensitiveProviderValues((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    return res.json({ settings: safeSettings, restoredFrom: req.params.id });
   }),
 );
 
@@ -2120,12 +2536,7 @@ contentRouter.post(
     }
 
     const schoolId = school.id || String(school._id);
-    const currentStaff = await UserModel.findOne(buildDocumentQuery(req.authUser?.id || "")).select("schoolId groupIds role").lean();
-    const canManageSchool =
-      req.authUser?.role === "admin" ||
-      String(currentStaff?.schoolId || "") === schoolId ||
-      (currentStaff?.groupIds || []).map(String).includes(schoolId) ||
-      (school.supervisorIds || []).map(String).includes(String(req.authUser?.id || ""));
+    const canManageSchool = await assertSchoolManagementScope(req.authUser!, school as any);
 
     if (!canManageSchool) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
