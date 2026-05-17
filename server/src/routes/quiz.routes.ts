@@ -2233,6 +2233,71 @@ quizRouter.get(
   }),
 );
 
+quizRouter.post(
+  "/integrity-repair",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const dryRun = req.query.dryRun !== "false";
+    const limit = Math.max(1, Math.min(Number(req.query.limit || 200), 1000));
+    const quizzes = await QuizModel.find({ isPublished: true }).sort({ updatedAt: -1 }).limit(limit).lean();
+
+    const actions: Array<Record<string, unknown>> = [];
+    let scanned = 0;
+    let affected = 0;
+    let unpublished = 0;
+
+    for (const quiz of quizzes) {
+      scanned += 1;
+      const integrity = await validateQuizQuestionIntegrity(quiz);
+      if (integrity.ok) continue;
+      affected += 1;
+
+      const action = {
+        quizId: String(quiz.id || quiz._id || ""),
+        title: String(quiz.title || ""),
+        pathId: String(quiz.pathId || ""),
+        subjectId: String(quiz.subjectId || ""),
+        totalReferenced: integrity.totalReferenced,
+        resolved: integrity.resolved,
+        missingIds: integrity.missingIds,
+        invalidContentIds: integrity.invalidContentIds,
+      };
+      actions.push(action);
+
+      if (!dryRun) {
+        await QuizModel.updateOne(
+          { _id: quiz._id },
+          {
+            $set: {
+              isPublished: false,
+              approvalStatus: "pending_review",
+              reviewerNotes: [
+                String(quiz.reviewerNotes || "").trim(),
+                "Auto-unpublished by integrity-repair: missing/invalid question references.",
+              ]
+                .filter(Boolean)
+                .join(" | "),
+            },
+          },
+        );
+        unpublished += 1;
+      }
+    }
+
+    clearPublicQuizListCache();
+    clearPublicQuestionSummaryCache();
+
+    res.json({
+      dryRun,
+      scanned,
+      affected,
+      unpublished,
+      actions,
+    });
+  }),
+);
+
 quizRouter.delete(
   "/:id",
   requireAuth,

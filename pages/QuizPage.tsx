@@ -129,6 +129,7 @@ export const QuizPage: React.FC = () => {
   const [draftRestored, setDraftRestored] = useState(false);
   const [quizStatusMessage, setQuizStatusMessage] = useState<string | null>(null);
   const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
+  const [quizScopedQuestions, setQuizScopedQuestions] = useState<Question[]>([]);
   const activeQuizLoadKeyRef = useRef('');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -191,6 +192,51 @@ export const QuizPage: React.FC = () => {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(QUIZ_THEME_STORAGE_KEY, String(isNightMode));
   }, [isNightMode]);
+
+  useEffect(() => {
+    const foundQuiz = quizzes.find((item) => item.id === quizId);
+    if (!foundQuiz) {
+      setQuizScopedQuestions([]);
+      return;
+    }
+
+    const sourceQuestionIds = flattenMockExamQuestionIds(foundQuiz);
+    if (sourceQuestionIds.length === 0) {
+      setQuizScopedQuestions([]);
+      return;
+    }
+
+    const localBank = [...questions, ...quizScopedQuestions];
+    const missingIds = sourceQuestionIds.filter((id) => !resolveQuestionFromBank(localBank, id));
+    if (missingIds.length === 0) return;
+
+    let cancelled = false;
+    const run = async () => {
+      try {
+        const fetched = await api.getQuestions({
+          ids: missingIds.join(','),
+          limit: Math.min(Math.max(missingIds.length, 20), 200),
+          noTotal: true,
+        }) as Question[];
+        if (cancelled || !Array.isArray(fetched) || fetched.length === 0) return;
+        setQuizScopedQuestions((prev) => {
+          const merged = [...prev, ...fetched];
+          const byId = new Map<string, Question>();
+          merged.forEach((item) => {
+            if (item?.id) byId.set(String(item.id), item);
+          });
+          return Array.from(byId.values());
+        });
+      } catch (error) {
+        console.warn('Unable to fetch quiz-scoped questions by ids:', error);
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [quizId, quizzes, questions, quizScopedQuestions]);
 
   useEffect(() => {
     const foundQuiz = quizzes.find((item) => item.id === quizId);
@@ -260,12 +306,13 @@ export const QuizPage: React.FC = () => {
     }
 
     const sourceQuestionIds = flattenMockExamQuestionIds(foundQuiz);
+    const questionBank = [...questions, ...quizScopedQuestions];
     const resolvedQuestions = sourceQuestionIds
-      .map((id) => resolveQuestionFromBank(questions, id))
+      .map((id) => resolveQuestionFromBank(questionBank, id))
       .filter((question): question is Question => Boolean(question));
     const loadedQuestions = supplementMissingQuizQuestions(
       foundQuiz,
-      questions,
+      questionBank,
       resolvedQuestions,
       sourceQuestionIds.length,
     );
@@ -338,7 +385,7 @@ export const QuizPage: React.FC = () => {
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
     }
-  }, [quizId, quizzes, questions, user, checkAccess, hasScopedPackageAccess]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
