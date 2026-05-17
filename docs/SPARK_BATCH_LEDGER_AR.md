@@ -224,3 +224,8 @@
 - Extended learning-scope bootstrap cache sharing to authenticated non-staff and validated deployment.
 - c300 burst retests remained unstable, while lower-load probes confirmed service health outside collapse windows.
 - Status: Partially closed; deeper payload decomposition required.
+
+## Update BATCH 20ZE — 2026-05-18
+- Delivered a true minimal bootstrap endpoint and switched public ads bootstrap usage to it.
+- Production load evidence at c300 showed zero timeouts on the minimal path and strong gain vs the heavier learning bootstrap path.
+- Status: Programmatically closed.

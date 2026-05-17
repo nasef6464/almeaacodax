@@ -668,3 +668,23 @@ Evidence:
 - `load-tests/results/prod_20zd_taxonomy_guest_c300_2026-05-18.jsonl`
 - `load-tests/results/prod_20zd_health_probe_c50_2026-05-18.jsonl`
 - `load-tests/results/prod_20zd_taxonomy_probe_c100_2026-05-18.jsonl`
+
+## Production Minimal Bootstrap Decomposition - 2026-05-18 (Batch 20ZE)
+
+Implementation:
+- Added `GET /api/content/bootstrap/minimal` returning only the minimal public shell payload (announcement ads + empty heavy collections) with shared caching.
+- Public client ad-hydration path now uses `content/bootstrap/minimal` instead of a separate announcement endpoint fetch path.
+
+Load comparison (`c=300`, 10s):
+- `GET /content/bootstrap/minimal`:
+  - `2xx=1433`, `timeouts=0`, `errors=0`.
+- `GET /content/bootstrap?scope=learning` (existing heavier path):
+  - `2xx=184`, `timeouts=171`.
+
+Conclusion:
+- True payload decomposition provides a strong measurable gain for the public shell bootstrap path.
+- The heavier learning bootstrap path still requires further decomposition/migration to achieve closure at high burst.
+
+Evidence:
+- `load-tests/results/prod_20ze_bootstrap_minimal_c300_2026-05-18.jsonl`
+- `load-tests/results/prod_20ze_bootstrap_learning_guest_c300_2026-05-18.jsonl`

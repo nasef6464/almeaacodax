@@ -2,13 +2,13 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 20ZD - Bootstrap Shared Learning Cache Retest
-- Status: Partially closed
+- Active Batch: BATCH 20ZE - Minimal Bootstrap Mode
+- Status: Programmatically closed
 
 ## Delivered in this update
-- Enabled shared cache usage for authenticated non-staff content bootstrap requests when `scope=learning`.
-- Deployed and executed c300 production burst retests for learning bootstrap and taxonomy, plus stability probes.
-- Confirmed functional correctness but no closure-grade gain at c300 burst levels.
+- Implemented a true minimal bootstrap endpoint and wired public announcement hydration to it.
+- Verified major production performance gain for the minimal path at c=300 (zero timeouts).
+- Confirmed heavy learning bootstrap path still needs staged segmentation for full high-burst closure.
 
 ## Checks
 - `npm --prefix server run build` PASS
@@ -17,4 +17,4 @@
 - `npm run smoke:frontend:strict` PASS
 
 ## Next Suggested Step
-- Start BATCH 20ZE - True payload decomposition (minimal bootstrap mode) + staged retest.
+- Start BATCH 20ZF - Learning Bootstrap Segmentation (topics/lessons split) + staged rollout.
