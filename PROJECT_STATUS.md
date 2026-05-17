@@ -13,6 +13,7 @@
 ## Checks
 - `npm run smoke:frontend:strict` PASS
 - `npm run smoke:production-hardening` PASS
+- `Post Deploy Smoke` (GitHub Actions run #4 on `main`) PASS
 
 ## Next Suggested Step
-- Monitor first CI run after adding `SMOKE_ADMIN_TOKEN` secret, then freeze baseline.
+- Rotate exposed admin token/session, update `SMOKE_ADMIN_TOKEN`, and keep the same smoke baseline.
