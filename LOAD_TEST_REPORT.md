@@ -1,5 +1,31 @@
 # Load Test Report
 
+## Production Quick Verification - 2026-05-17 (Safe Window)
+
+Environment:
+- API: `https://almeaacodax-k2ux.onrender.com/api`
+- Method: `autocannon` quick safe run (8s per probe)
+- Endpoints tested:
+  - `GET /health`
+  - `GET /content/bootstrap`
+- Concurrency levels:
+  - `20`
+  - `100`
+
+Summary:
+- `GET /health`
+  - `c=20`: ~`37.5 req/s`, `200` only, no timeouts/errors.
+  - `c=100`: ~`49.63 req/s`, `200` only, no timeouts/errors.
+- `GET /content/bootstrap`
+  - `c=20`: ~`26.5 req/s`, `200` only, no timeouts/errors.
+  - `c=100`: ~`43.25 req/s`, `200` only, no timeouts/errors.
+
+Raw outputs:
+- `load-tests/results/prod_quick_health_c20_2026-05-17.jsonl`
+- `load-tests/results/prod_quick_health_c100_2026-05-17.jsonl`
+- `load-tests/results/prod_quick_content_bootstrap_c20_2026-05-17.jsonl`
+- `load-tests/results/prod_quick_content_bootstrap_c100_2026-05-17.jsonl`
+
 ## Production Autocannon Re-Run - 2026-05-14 (Phase 3 Closure)
 
 Environment:
