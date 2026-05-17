@@ -559,3 +559,28 @@ Conclusion:
 Evidence:
 - `load-tests/results/prod_authd_quizzes_results_nototal_c500_2026-05-17.jsonl`
 - `load-tests/results/prod_authd_quizzes_results_nototal_c1000_2026-05-17.jsonl`
+
+## Production Authenticated Cached Retest - 2026-05-17 (Batch 20ZA)
+
+Change under test:
+- Added a 5-second short-lived in-memory cache for authenticated `GET /quizzes/results` when `noTotal=true` and `includeReview=false`, with full cache invalidation on quiz submit.
+
+Retest target:
+- `GET /api/quizzes/results?noTotal=true&limit=20`
+- Concurrency: `500`, `1000`
+
+Observed (after deploy `20f05bd`):
+- `c=500`: `2xx=428`, `timeouts=197`.
+- `c=1000`: `2xx=330`, `timeouts=678`.
+
+Comparison vs previous no-cache/noTotal run:
+- Previous `c=500`: `2xx=49`, `timeouts=451` -> improved strongly.
+- Previous `c=1000`: `2xx=36`, `timeouts=973` -> improved strongly.
+
+Conclusion:
+- The cache step materially improves authenticated read resilience under burst load.
+- Final 500+/1000 closure is still pending (timeouts still non-zero/high), but the trend is clearly better and hardening direction is valid.
+
+Evidence:
+- `load-tests/results/prod_authd_quizzes_results_cached_nototal_c500_2026-05-17.jsonl`
+- `load-tests/results/prod_authd_quizzes_results_cached_nototal_c1000_2026-05-17.jsonl`

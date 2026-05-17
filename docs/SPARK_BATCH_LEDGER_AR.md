@@ -204,3 +204,8 @@
 - Added safe `noTotal` mode in quiz results endpoints and enabled it by default in client list fetches.
 - Ran authenticated production retest at 500/1000 with `noTotal=true`; results still showed heavy timeouts at both levels.
 - Status: Partially closed (hardening step done, final authenticated 500+ closure pending).
+
+## Update BATCH 20ZA — 2026-05-17
+- Added 5s short-lived cache for authenticated `/quizzes/results` (only with `noTotal=true` and without review payload), plus submit-triggered cache invalidation.
+- Production retest improved markedly: c500 (`2xx=428`, `timeouts=197`) and c1000 (`2xx=330`, `timeouts=678`) vs prior no-cache run.
+- Status: Partially closed (material improvement delivered, final 500+/1000 closure still pending).

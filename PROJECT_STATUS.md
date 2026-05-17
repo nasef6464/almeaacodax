@@ -2,19 +2,19 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: BATCH 20Z - Authenticated 500+ Hardening (Step 1)
+- Active Batch: BATCH 20ZA - Authenticated Endpoint Decomposition + Cache Step
 - Status: Partially closed
 
 ## Delivered in this update
-- Implemented a safe server/client optimization for quiz-results list reads using `noTotal=true` to avoid heavy count queries on high-pressure paths.
-- Re-ran controlled authenticated production probes on `/api/quizzes/results?noTotal=true&limit=20` at 500/1000 concurrency.
-- Verified that optimization is correct but not sufficient for final authenticated 500+ closure.
+- Added a short-lived authenticated quiz-results cache (5s) for `noTotal=true` read paths with cache invalidation on quiz submit.
+- Deployed and executed production retest for authenticated `/quizzes/results?noTotal=true&limit=20` at 500/1000 concurrency.
+- Recorded strong measurable improvement vs previous run, while confirming final 500+/1000 closure is still pending.
 
 ## Checks
 - `npm --prefix server run build` PASS
 - `npm run typecheck` PASS
-- `npm run smoke:frontend:strict` PASS
 - `npm run smoke:production-hardening` PASS
+- `npm run smoke:frontend:strict` PASS
 
 ## Next Suggested Step
-- Start BATCH 20ZA - Authenticated Endpoint Decomposition + Infra Correlation Retest.
+- Start BATCH 20ZB - Authenticated Journey Mix + Render/Mongo Correlation Window.
