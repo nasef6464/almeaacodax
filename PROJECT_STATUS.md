@@ -2,22 +2,18 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-17
-- Active Batch: BATCH 17R - Auth Cookie Production Closure
-- Status: Programmatically closed, final manual browser verification pending
+- Active Batch: BATCH 19R - SEO BrowserRouter Production Closure
+- Status: Fully closed
 
 ## Delivered in this update
-- Removed OAuth token payloads from Google callback URL (`oauth_token` / `oauth_user` no longer emitted).
-- Frontend auth flow now defaults to cookie-first and no longer persists auth token in localStorage.
-- Session profile persistence moved to sessionStorage (non-sensitive profile only).
-- Production deployed on commit `0d25f1ee1897`; callback redirects verified without token leakage.
+- Published SEO clean-route generation in backend SEO endpoints.
+- Removed hash-based SEO route output from status/sitemap/robots.
+- Verified production SEO status response reflects clean routes.
 
 ## Checks
-- `npm --prefix server run build` PASS
-- `npm run typecheck` PASS (after one timeout retry)
-- `npm run build` PASS
-- `npm run smoke:auth-cookie` PASS (5/5)
+- `npm run smoke:seo` PASS
 - `npm run smoke:health-readiness` PASS
-- Live check: `/api/auth/google/callback` + `/api/auth/google/call` redirect without `oauth_token` PASS
+- Live check: `/api/seo/status` PASS (clean non-hash routes)
 
 ## Next Suggested Step
-- Complete final browser verification (clear old storage + Google sign-in check), then mark Fully closed.
+- Continue with next open hardening batch after owner approval.

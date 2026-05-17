@@ -29,7 +29,7 @@ const isoDate = (value?: Date | string | null) => {
   return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
 };
 
-const hashUrl = (baseUrl: string, hashPath: string) => `${baseUrl}/#${hashPath}`;
+const routeUrl = (baseUrl: string, routePath: string) => `${baseUrl}${routePath}`;
 
 async function buildSeoEntries(): Promise<SeoEntry[]> {
   const baseUrl = cleanBaseUrl();
@@ -47,14 +47,14 @@ async function buildSeoEntries(): Promise<SeoEntry[]> {
       title: "الصفحة الرئيسية",
     },
     {
-      loc: hashUrl(baseUrl, "/blog"),
+      loc: routeUrl(baseUrl, "/blog"),
       priority: "0.5",
       changefreq: "weekly",
       lastmod: new Date().toISOString(),
       title: "المدونة",
     },
     {
-      loc: hashUrl(baseUrl, "/quizzes"),
+      loc: routeUrl(baseUrl, "/quizzes"),
       priority: "0.6",
       changefreq: "weekly",
       lastmod: new Date().toISOString(),
@@ -66,7 +66,7 @@ async function buildSeoEntries(): Promise<SeoEntry[]> {
     const pathId = String(path._id || "").trim();
     if (!pathId) continue;
     entries.push({
-      loc: hashUrl(baseUrl, `/category/${encodeURIComponent(pathId)}`),
+      loc: routeUrl(baseUrl, `/category/${encodeURIComponent(pathId)}`),
       priority: path.showInHome === false ? "0.6" : "0.9",
       changefreq: "weekly",
       lastmod: isoDate(path.updatedAt),
@@ -78,7 +78,7 @@ async function buildSeoEntries(): Promise<SeoEntry[]> {
       const subjectId = String(subject._id || "").trim();
       if (!subjectId) continue;
       entries.push({
-        loc: hashUrl(baseUrl, `/category/${encodeURIComponent(pathId)}?subject=${encodeURIComponent(subjectId)}`),
+        loc: routeUrl(baseUrl, `/category/${encodeURIComponent(pathId)}?subject=${encodeURIComponent(subjectId)}`),
         priority: "0.8",
         changefreq: "weekly",
         lastmod: isoDate(subject.updatedAt),
@@ -94,7 +94,7 @@ seoRouter.get("/status", async (_req, res, next) => {
   try {
     const entries = await buildSeoEntries();
     const baseUrl = cleanBaseUrl();
-    const pathEntries = entries.filter((entry) => entry.loc.includes("/#/category/") && !entry.loc.includes("?subject="));
+    const pathEntries = entries.filter((entry) => entry.loc.includes("/category/") && !entry.loc.includes("?subject="));
     const subjectEntries = entries.filter((entry) => entry.loc.includes("?subject="));
 
     res.json({
@@ -107,7 +107,7 @@ seoRouter.get("/status", async (_req, res, next) => {
       paths: pathEntries.length,
       subjects: subjectEntries.length,
       warnings: [
-        "المنصة تعمل حاليا بنظام روابط Hash، وهذا مقبول للتشغيل الحالي، لكن التحسين الأكبر للبحث لاحقا هو الانتقال إلى روابط نظيفة بدون # عند مرحلة SEO المتقدمة.",
+        "روابط SEO تعمل بصيغة نظيفة بدون hash، مع الاستمرار في حماية مسارات التطبيق الخاصة من الفهرسة.",
       ],
       sampleRoutes: entries.slice(0, 8).map((entry) => ({ title: entry.title, loc: entry.loc })),
     });
@@ -148,8 +148,8 @@ seoRouter.get("/robots.txt", async (_req, res) => {
   res.send(`User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /#/admin-dashboard
-Disallow: /#/login
+Disallow: /admin-dashboard
+Disallow: /login
 
 Sitemap: ${baseUrl}/sitemap.xml
 `);
