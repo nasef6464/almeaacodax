@@ -92,6 +92,8 @@ const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 const PUBLIC_QUIZ_LIST_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_TTL_MS = 30 * 1000;
 const QUESTION_SUMMARY_CACHE_MAX_ENTRIES = 100;
+const QUIZ_RESULTS_CACHE_TTL_MS = 5 * 1000;
+const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
 
 let publicQuizListCache:
   | {
@@ -107,6 +109,13 @@ let publicQuestionSummaryCache = new Map<
     hasMore: boolean;
   }
 >();
+let quizResultsCache = new Map<
+  string,
+  {
+    expiresAt: number;
+    payload: unknown;
+  }
+>();
 
 const clearPublicQuizListCache = () => {
   publicQuizListCache = null;
@@ -114,6 +123,24 @@ const clearPublicQuizListCache = () => {
 
 const clearPublicQuestionSummaryCache = () => {
   publicQuestionSummaryCache.clear();
+};
+
+const clearQuizResultsCache = () => {
+  quizResultsCache.clear();
+};
+
+const buildQuizResultsCacheKey = (
+  userId: string,
+  originalUrl: string,
+  includeReview: boolean,
+) => `${userId}:${includeReview ? "review" : "list"}:${originalUrl}`;
+
+const trimQuizResultsCacheIfNeeded = () => {
+  if (quizResultsCache.size <= QUIZ_RESULTS_CACHE_MAX_ENTRIES) return;
+  const firstKey = quizResultsCache.keys().next().value;
+  if (firstKey) {
+    quizResultsCache.delete(firstKey);
+  }
 };
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -1562,6 +1589,19 @@ quizRouter.get(
   asyncHandler(async (req, res) => {
     const query = quizResultsListQuerySchema.parse(req.query);
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
+    const canUseShortCache = !includeReview && query.noTotal;
+    const cacheKey = buildQuizResultsCacheKey(req.authUser!.id, req.originalUrl || req.url || "/results", includeReview);
+    if (canUseShortCache) {
+      const cached = quizResultsCache.get(cacheKey);
+      if (cached && cached.expiresAt > Date.now()) {
+        res.setHeader("X-Quiz-Results-Cache", "hit");
+        return res.json(cached.payload);
+      }
+      if (cached) {
+        quizResultsCache.delete(cacheKey);
+      }
+      res.setHeader("X-Quiz-Results-Cache", "miss");
+    }
     const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
     const filter: Record<string, unknown> = { userId: req.authUser!.id };
     if (query.quizId) {
@@ -1604,10 +1644,18 @@ quizRouter.get(
     const total = query.noTotal
       ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
       : await QuizResultModel.countDocuments(filter);
-    res.json({
+    const payload = {
       results: items,
       pagination: buildPaginatedResponse([], pagination, total),
-    });
+    };
+    if (canUseShortCache) {
+      quizResultsCache.set(cacheKey, {
+        expiresAt: Date.now() + QUIZ_RESULTS_CACHE_TTL_MS,
+        payload,
+      });
+      trimQuizResultsCacheIfNeeded();
+    }
+    res.json(payload);
   }),
 );
 
@@ -1991,6 +2039,7 @@ quizRouter.post(
     }
 
     await updateSkillProgressFromResult(result, req.authUser!.id);
+    clearQuizResultsCache();
     return res.status(StatusCodes.CREATED).json(result);
   }),
 );
