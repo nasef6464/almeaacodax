@@ -987,6 +987,29 @@ const platformIntegrationSettingsSchema = z.object({
     .default([]),
 });
 
+const providerSettingsPatchSchema = providerSettingsSchema.partial();
+
+const platformIntegrationSettingsPatchSchema = z.object({
+  auth: platformIntegrationSettingsSchema.shape.auth.partial().optional(),
+  providers: z.object({
+    google: providerSettingsPatchSchema.optional(),
+    facebook: providerSettingsPatchSchema.optional(),
+    whatsapp: providerSettingsPatchSchema.optional(),
+    telegram: providerSettingsPatchSchema.optional(),
+    email: providerSettingsPatchSchema.optional(),
+    sentry: providerSettingsPatchSchema.optional(),
+    redis: providerSettingsPatchSchema.optional(),
+    zoom: providerSettingsPatchSchema.optional(),
+    googleMeet: providerSettingsPatchSchema.optional(),
+    teams: providerSettingsPatchSchema.optional(),
+    youtubeLive: providerSettingsPatchSchema.optional(),
+  }).partial().optional(),
+  seo: seoSettingsSchema.partial().optional(),
+  contactWidget: contactWidgetSchema.partial().optional(),
+  externalPlatforms: z.array(externalPlatformSchema).optional(),
+  registrationFields: platformIntegrationSettingsSchema.shape.registrationFields.optional(),
+});
+
 const defaultPlatformIntegrationSettings = {
   key: "default",
   auth: {
@@ -2201,8 +2224,43 @@ contentRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = platformIntegrationSettingsSchema.parse(req.body);
+    const partialPayload = platformIntegrationSettingsPatchSchema.parse(req.body);
     const previous = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    const baseSettings = (previous || defaultPlatformIntegrationSettings) as Record<string, any>;
+
+    const nextPayload = {
+      ...baseSettings,
+      ...partialPayload,
+      auth: {
+        ...(baseSettings.auth || {}),
+        ...(partialPayload.auth || {}),
+      },
+      providers: (() => {
+        const baseProviders = (baseSettings.providers || {}) as Record<string, Record<string, unknown>>;
+        const incomingProviders = (partialPayload.providers || {}) as Record<string, Record<string, unknown>>;
+        const mergedProviders: Record<string, Record<string, unknown>> = { ...baseProviders };
+        Object.entries(incomingProviders).forEach(([providerKey, providerPatch]) => {
+          mergedProviders[providerKey] = {
+            ...(baseProviders[providerKey] || {}),
+            ...(providerPatch || {}),
+          };
+        });
+        return mergedProviders;
+      })(),
+      seo: {
+        ...(baseSettings.seo || {}),
+        ...(partialPayload.seo || {}),
+      },
+      contactWidget: {
+        ...(baseSettings.contactWidget || {}),
+        ...(partialPayload.contactWidget || {}),
+      },
+      externalPlatforms: partialPayload.externalPlatforms ?? baseSettings.externalPlatforms ?? [],
+      registrationFields: partialPayload.registrationFields ?? baseSettings.registrationFields ?? [],
+    };
+
+    const payload = platformIntegrationSettingsSchema.parse(nextPayload);
+
     if (previous) {
       await PlatformIntegrationHistoryModel.create({
         settingsKey: "default",
