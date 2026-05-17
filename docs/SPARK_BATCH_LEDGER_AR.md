@@ -180,3 +180,10 @@
 - Captured report + artifacts under load-tests/results/prod_journey_* with expected 401/429 behavior and no transport-level timeouts.
 - Status: Programmatically closed, authenticated/write-path expansion pending.
 
+
+
+## Update BATCH 20W — 2026-05-17
+- Attempted authenticated 500+/1000 retest for results/write-light paths.
+- Blocked by auth limiter (429) during token acquisition from /api/auth/login in production.
+- Status: Programmatically closed with blocker documentation; continuation requires dedicated load token.
+
