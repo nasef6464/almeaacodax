@@ -31,8 +31,10 @@
     "smoke:payment-package": "node scripts/smoke-payment-package-contract.mjs",
     "smoke:package-course-split": "node scripts/smoke-package-course-split-contract.mjs",
     "smoke:payment-providers": "node scripts/smoke-payment-provider-readiness-contract.mjs",
+    "smoke:payment-tampering": "node scripts/smoke-payment-tampering-contract.mjs",
     "smoke:direct-unlock-cleanup": "node scripts/smoke-direct-unlock-cleanup-contract.mjs",
     "smoke:quiz-client-security": "node scripts/smoke-quiz-client-security-contract.mjs",
+    "smoke:quiz-integrity-guard": "node scripts/smoke-quiz-integrity-guard-contract.mjs",
     "smoke:performance": "node scripts/smoke-performance-contract.mjs",
     "smoke:deployment-cache": "node scripts/smoke-deployment-cache-contract.mjs",
     "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
@@ -40,6 +42,7 @@
     "smoke:database": "node scripts/smoke-database-index-contract.mjs",
     "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
     "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
+    "smoke:integrations-runtime": "node scripts/smoke-integrations-runtime-contract.mjs",
     "smoke:auth-account": "node scripts/smoke-auth-account-contract.mjs",
     "smoke:auth-frontend": "node scripts/smoke-auth-frontend-contract.mjs",
     "smoke:auth-login-security": "node scripts/smoke-auth-login-security-contract.mjs",
@@ -48,6 +51,7 @@
     "smoke:question-html-security": "node scripts/smoke-question-html-security-contract.mjs",
     "smoke:route-loading": "node scripts/smoke-route-loading-contract.mjs",
     "smoke:runtime-source": "node scripts/smoke-runtime-source-contract.mjs",
+    "smoke:data-visibility-regression": "node scripts/smoke-data-visibility-regression-contract.mjs",
     "smoke:nosql-sanitizer": "node scripts/smoke-nosql-sanitizer-contract.mjs",
     "smoke:homepage-hero": "node scripts/smoke-homepage-hero-contract.mjs",
     "smoke:typography": "node scripts/smoke-typography-contract.mjs",
@@ -103,3 +107,7 @@
     "vite": "^6.2.0"
   }
 }
+
+
+
+
