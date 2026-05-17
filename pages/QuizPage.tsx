@@ -130,6 +130,7 @@ export const QuizPage: React.FC = () => {
   const [quizStatusMessage, setQuizStatusMessage] = useState<string | null>(null);
   const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
   const [quizScopedQuestions, setQuizScopedQuestions] = useState<Question[]>([]);
+  const [isResolvingScopedQuestions, setIsResolvingScopedQuestions] = useState(false);
   const activeQuizLoadKeyRef = useRef('');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -197,20 +198,26 @@ export const QuizPage: React.FC = () => {
     const foundQuiz = quizzes.find((item) => item.id === quizId);
     if (!foundQuiz) {
       setQuizScopedQuestions([]);
+      setIsResolvingScopedQuestions(false);
       return;
     }
 
     const sourceQuestionIds = flattenMockExamQuestionIds(foundQuiz);
     if (sourceQuestionIds.length === 0) {
       setQuizScopedQuestions([]);
+      setIsResolvingScopedQuestions(false);
       return;
     }
 
     const localBank = [...questions, ...quizScopedQuestions];
     const missingIds = sourceQuestionIds.filter((id) => !resolveQuestionFromBank(localBank, id));
-    if (missingIds.length === 0) return;
+    if (missingIds.length === 0) {
+      setIsResolvingScopedQuestions(false);
+      return;
+    }
 
     let cancelled = false;
+    setIsResolvingScopedQuestions(true);
     const run = async () => {
       try {
         const fetched = await api.getQuestions({
@@ -229,6 +236,10 @@ export const QuizPage: React.FC = () => {
         });
       } catch (error) {
         console.warn('Unable to fetch quiz-scoped questions by ids:', error);
+      } finally {
+        if (!cancelled) {
+          setIsResolvingScopedQuestions(false);
+        }
       }
     };
 
@@ -239,6 +250,10 @@ export const QuizPage: React.FC = () => {
   }, [quizId, quizzes, questions, quizScopedQuestions]);
 
   useEffect(() => {
+    if (isResolvingScopedQuestions) {
+      return;
+    }
+
     const foundQuiz = quizzes.find((item) => item.id === quizId);
     if (!foundQuiz) {
       activeQuizLoadKeyRef.current = '';
@@ -385,7 +400,7 @@ export const QuizPage: React.FC = () => {
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -814,6 +829,10 @@ export const QuizPage: React.FC = () => {
 
   if (hasAccess === null) {
     return <div className="min-h-screen flex items-center justify-center">جاري التحميل...</div>;
+  }
+
+  if (isResolvingScopedQuestions) {
+    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
   }
 
   if (!hasAccess || !quiz) {
@@ -1425,3 +1444,4 @@ export const QuizPage: React.FC = () => {
     </div>
   );
 };
+
