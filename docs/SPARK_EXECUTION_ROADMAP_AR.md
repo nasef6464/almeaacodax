@@ -607,3 +607,10 @@ pm run smoke:health-readiness.
   - `npm run smoke:sentry-runtime` PASS
 - Next suggested:
   - BATCH 27D — Sentry Live Production Event Proof (final closure evidence)
+
+## Update 2026-05-18 — Course Linkage Execution Track
+- BATCH 30B completed programmatically: Arabic encoding cleanup + path/subject field canonicalization in course builders.
+- Execution order remains strict:
+  1. BATCH 30C — Course Visibility Contract (Admin -> Student)
+  2. BATCH 30D — Curriculum Import Scope Guard
+- Rule: do not start 30D before full closure of 30C.

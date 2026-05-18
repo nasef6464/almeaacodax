@@ -27,3 +27,20 @@
 
 ## Next Suggested Step
 - BATCH 27D — Sentry Live Production Event Proof (Final closure evidence)
+
+## Update 2026-05-18 — Course Linkage Audit Entry
+- Added dedicated audit: `COURSE_LINKAGE_AUDIT_2026-05-18_AR.md`.
+- Confirmed course linkage gaps across admin settings, student learning listing, and course player path.
+- Next focused execution sequence (single-batch closure mode):
+  1. `BATCH 30B — Course Builder Arabic Encoding & Field Canonicalization`
+  2. `BATCH 30C — Course Visibility Contract (Admin -> Student)`
+  3. `BATCH 30D — Curriculum Import Scope Guard`
+- No feature/UI redesign performed in this audit step.
+
+## Update 2026-05-18 — BATCH 30B Course Builder Canonicalization
+- Batch executed: `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR`.
+- Removed duplicated path/subject editing flow inside `AdvancedCourseBuilder` and kept one canonical settings flow.
+- Fixed Arabic mojibake text corruption in course builders to prevent `????` labels.
+- Checks passed: server build, typecheck, frontend build, health-readiness smoke.
+- Status: Programmatically closed, production verification pending.
+- Next suggested: `BATCH 30C — Course Visibility Contract (Admin -> Student)`.

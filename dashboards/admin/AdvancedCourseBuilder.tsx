@@ -657,55 +657,6 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="hidden">
-                        <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
-                        <select
-                          value={selectedPathId}
-                          onChange={(e) => {
-                            const nextPathId = e.target.value;
-                            const nextSubjectId = availableSubjects.some((subject) => subject.id === selectedSubjectId && subject.pathId === nextPathId)
-                              ? selectedSubjectId
-                              : '';
-                            setCourseData({
-                              ...courseData,
-                              pathId: nextPathId || undefined,
-                              subjectId: nextSubjectId || undefined,
-                              subject: nextSubjectId || '',
-                              skills: [],
-                            });
-                          }}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                          <option value="">بدون مسار محدد</option>
-                          {paths.map((path) => (
-                            <option key={path.id} value={path.id}>{getSafeLabel(path.name, 'مسار بدون اسم')}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
-                        <select
-                          value={selectedSubjectId}
-                          onChange={(e) => {
-                            const nextSubjectId = e.target.value;
-                            setCourseData({
-                              ...courseData,
-                              subjectId: nextSubjectId || undefined,
-                              subject: nextSubjectId || '',
-                              skills: [],
-                            });
-                          }}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                          <option value="">بدون مادة محددة</option>
-                          {availableSubjects.map((subject) => (
-                            <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">المدرب / المعلم</label>
                         <select
@@ -792,28 +743,27 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                           <option value="Advanced">محترف (خبير)</option>
                         </select>
                       </div>
-                    </div>
-
-                    <div className="hidden">
-                      <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
-                      <select
-                        value={selectedSubjectId}
-                        onChange={(e) => {
-                          const nextSubjectId = e.target.value;
-                          setCourseData((prev) => ({
-                            ...prev,
-                            subjectId: nextSubjectId || undefined,
-                            subject: nextSubjectId || '',
-                            skills: [],
-                          }));
-                        }}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      >
-                        <option value="">بدون مادة محددة</option>
-                        {availableSubjects.map((subject) => (
-                          <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
-                        ))}
-                      </select>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
+                        <select
+                          value={selectedSubjectId}
+                          onChange={(e) => {
+                            const nextSubjectId = e.target.value;
+                            setCourseData((prev) => ({
+                              ...prev,
+                              subjectId: nextSubjectId || undefined,
+                              subject: nextSubjectId || '',
+                              skills: [],
+                            }));
+                          }}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="">بدون مادة محددة</option>
+                          {availableSubjects.map((subject) => (
+                            <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     <div>
@@ -1035,3 +985,4 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     </div>
   );
 };
+

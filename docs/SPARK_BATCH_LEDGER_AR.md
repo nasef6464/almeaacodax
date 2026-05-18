@@ -540,3 +540,18 @@
   - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
 - Next:
   - BATCH 27D — Sentry Live Production Event Proof (Final evidence)
+
+## Update 2026-05-18 — BATCH 30B
+- Batch: Course Builder Arabic Encoding & Field Canonicalization.
+- Status: Programmatically closed, production verification pending.
+- Scope delivered:
+  - Removed duplicated path/subject setting flow in `AdvancedCourseBuilder`.
+  - Kept single canonical source-of-truth for `pathId/subjectId` editing.
+  - Fixed Arabic mojibake text corruption in course builders.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS (after one timeout retry)
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+- Report: `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR.md`
+- Next: `BATCH 30C — Course Visibility Contract (Admin -> Student)`

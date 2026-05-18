@@ -247,3 +247,39 @@
    - هذا الملف (إجباري).
 
 
+
+## 9) تحديث جديد — فحص ترابط الدورات (2026-05-18)
+
+تم تنفيذ فحص ترابط شامل للدورات (إعدادات الإدارة + صفحة تعلم الطالب + مشغل الدورة) وتوثيقه في:
+- `COURSE_LINKAGE_AUDIT_2026-05-18_AR.md`
+
+### أهم النتائج المؤكدة
+1. وجود نصوص عربية مشوهة (Mojibake) في باني الدورات.
+2. وجود تكرار وظيفي في حقول المسار/المادة داخل إعدادات الدورة.
+3. سياسة ظهور الدورة للطالب تعتمد أعلامًا متعددة (`showOnPlatform`, `isPublished`, `approvalStatus`) وتحتاج توحيد contract واضح.
+4. نقص Empty State واضح في تبويب الدورات بصفحة التعلم عند عدم وجود دورات مطابقة.
+5. استدعاء الدروس/الاختبارات يحتاج حارس نطاق أقوى لمنع إدراج عناصر خارج المادة/المسار.
+
+### تم إضافته للخطة التنفيذية
+- `BATCH 30B — Course Builder Arabic Encoding & Field Canonicalization`
+- `BATCH 30C — Course Visibility Contract (Admin -> Student)`
+- `BATCH 30D — Curriculum Import Scope Guard`
+
+### قاعدة المتابعة
+لا يتم بدء 30C قبل إغلاق 30B بالكامل، ولا 30D قبل إغلاق 30C بالكامل (تنفيذ + فحوص + رفع + نشر + تحقق حي + توثيق).
+
+## 10) تحديث إغلاق BATCH 30B — 2026-05-18
+- الحالة: Programmatically closed, production verification pending.
+- المنجز:
+  - إزالة تكرار حقول المسار/المادة في `AdvancedCourseBuilder`.
+  - إبقاء مصدر تعديل موحّد لربط `pathId/subjectId`.
+  - إصلاح النصوص العربية المشوّهة في باني الدورات.
+- الفحوص:
+  - server build: PASS
+  - typecheck: PASS (بعد retry من timeout)
+  - frontend build: PASS
+  - smoke:health-readiness: PASS
+- التقرير:
+  - `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR.md`
+- التالي:
+  - BATCH 30C — Course Visibility Contract (Admin -> Student)

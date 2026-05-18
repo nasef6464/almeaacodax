@@ -655,3 +655,4 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
     </div>
   );
 };
+
