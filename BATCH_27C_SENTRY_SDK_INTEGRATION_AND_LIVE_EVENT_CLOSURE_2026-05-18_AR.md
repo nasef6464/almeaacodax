@@ -74,3 +74,25 @@
 
 ## الدفعة التالية المقترحة
 - BATCH 27D — Sentry Live Production Event Proof (final evidence + closure)
+
+## Update 2026-05-19 - Final Production Closure
+**Final status:** Fully closed
+
+### Final live proof
+- Production endpoint used: `POST /api/operations/sentry/test-event`
+- Smoke command: `npm run smoke:sentry-live-proof`
+- Result: PASS
+- Verified `eventId`: `39a8881844724be6844dd2f7fd63c88c`
+- Verified visually in Sentry dashboard under issue: `Manual Sentry smoke event`
+- Verified release in Sentry: `83832c0426e5`
+- Verified environment in Sentry: `production`
+
+### Deployment and runtime closure notes
+- Render was redeployed until backend production served the required Sentry-enabled commit path.
+- Missing backend CSRF middleware was added to Git and deployed.
+- Production auth flow required CSRF support, so the smoke tooling was updated accordingly.
+- `scripts/resolve-smoke-admin-token.mjs` now supports CSRF-protected production login.
+- Render production health verification passed: `https://almeaacodax-k2ux.onrender.com/api/health` => `200 OK`, `ready=true`.
+
+### Closure outcome
+BATCH 27C is no longer pending. The batch is now **Fully closed** with real production evidence captured both from the API response and from the Sentry dashboard itself.

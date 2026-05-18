@@ -283,3 +283,25 @@
   - `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR.md`
 - التالي:
   - BATCH 30C — Course Visibility Contract (Admin -> Student)
+
+## 11) Update 2026-05-19 — BATCH 27C Final Closure
+- Final batch status: `BATCH 27C` is now **Fully closed**.
+- Live Sentry proof completed successfully from production.
+- Verified Sentry issue: `Manual Sentry smoke event`.
+- Verified `eventId`: `39a8881844724be6844dd2f7fd63c88c`.
+- Verified release in Sentry: `83832c0426e5`.
+- Verified environment in Sentry: `production`.
+- Checks completed:
+  - `npm --prefix server run build`: PASS
+  - `npm run typecheck`: PASS
+  - `npm run build`: PASS
+  - `npm run smoke:monitoring`: PASS
+  - `npm run smoke:health-readiness`: PASS
+  - `npm run smoke:sentry-runtime`: PASS
+  - `npm run smoke:sentry-live-proof`: PASS
+- GitHub push status: PASS
+- Render deployment status: PASS
+- Live backend verification:
+  - `https://almeaacodax-k2ux.onrender.com/api/health` => `200`, `ready=true`, commit `83832c0426e5`
+- Remaining step for the next account:
+  - no mandatory continuation for BATCH 27C; wait for owner direction before opening the next batch.

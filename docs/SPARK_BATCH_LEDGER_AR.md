@@ -555,3 +555,22 @@
   - `npm run smoke:health-readiness` PASS
 - Report: `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR.md`
 - Next: `BATCH 30C — Course Visibility Contract (Admin -> Student)`
+
+## Update 2026-05-19 — BATCH 27C Final Production Closure
+- Batch: BATCH 27C — Sentry SDK Integration + Live Event Closure
+- Status: Fully closed
+- Final production evidence:
+  - `npm run smoke:sentry-live-proof` PASS
+  - Event emitted from production endpoint: `POST /api/operations/sentry/test-event`
+  - Verified `eventId`: `39a8881844724be6844dd2f7fd63c88c`
+  - Verified in Sentry dashboard under issue `Manual Sentry smoke event`
+  - Verified Sentry release: `83832c0426e5`
+  - Verified environment: `production`
+  - Render health: `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`)
+- Supporting closure work:
+  - Render build command corrected for backend compile
+  - missing CSRF middleware file deployed
+  - auth CSRF token route deployed
+  - admin token resolver updated for CSRF-protected production login
+- Reports:
+  - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
