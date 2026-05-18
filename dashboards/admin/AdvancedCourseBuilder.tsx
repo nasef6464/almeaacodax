@@ -451,7 +451,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                           }}
                                           className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-bold text-gray-700 outline-none"
                                         >
-                                          <option value="">????? ??????? ?????? ??????</option>
+                                          <option value="">تصفية الدروس حسب المسار</option>
                                           {paths.map((path) => (
                                             <option key={path.id} value={path.id}>{path.name}</option>
                                           ))}
@@ -461,7 +461,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                           onChange={(event) => setImportSubjectId(event.target.value)}
                                           className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-bold text-gray-700 outline-none"
                                         >
-                                          <option value="">????? ??????? ??????? ??????</option>
+                                          <option value="">تصفية الدروس حسب المادة</option>
                                           {importSubjects.map((subject) => (
                                             <option key={subject.id} value={subject.id}>{subject.name}</option>
                                           ))}
@@ -717,19 +717,19 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
 
                     <div className="grid grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">?????</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">التصنيف</label>
                         <select 
-                          value={courseData.category || '??????????????'} 
+                          value={courseData.category || 'دورة تعليمية'} 
                           onChange={(e) => setCourseData({...courseData, category: e.target.value})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                          <option value="??????????????">??????????????</option>
-                          <option value="????????????????">????????????????</option>
-                          <option value="???????????? ??????????????">???????????? ??????????????</option>
+                          <option value="دورة تعليمية">دورة تعليمية</option>
+                          <option value="برنامج تدريبي">برنامج تدريبي</option>
+                          <option value="مسار تطوير مهارات">مسار تطوير مهارات</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">??????</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
                         <select
                           value={selectedPathId}
                           onChange={(e) => {
@@ -747,28 +747,28 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                           }}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                          <option value="">???? ???? ????</option>
+                          <option value="">بدون مسار محدد</option>
                           {paths.map((path) => (
                             <option key={path.id} value={path.id}>{path.name}</option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">??????????????</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المستوى</label>
                         <select 
                           value={courseData.level || 'Beginner'} 
                           onChange={(e) => setCourseData({...courseData, level: e.target.value as any})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                          <option value="Beginner">?????????? (??????????)</option>
-                          <option value="Intermediate">?????????? (??????????)</option>
-                          <option value="Advanced">?????????? (????????)</option>
+                          <option value="Beginner">مبتدئ (تأسيسي)</option>
+                          <option value="Intermediate">متوسط (متقدم)</option>
+                          <option value="Advanced">محترف (خبير)</option>
                         </select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">??????</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
                       <select
                         value={selectedSubjectId}
                         onChange={(e) => {
@@ -782,7 +782,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       >
-                        <option value="">???? ???? ?????</option>
+                        <option value="">بدون مادة محددة</option>
                         {availableSubjects.map((subject) => (
                           <option key={subject.id} value={subject.id}>{subject.name}</option>
                         ))}

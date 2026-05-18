@@ -676,6 +676,68 @@ const assertSchoolManagementScope = async (
   return supervisorIds.includes(String(authUser.id));
 };
 
+const hasTopicManagementScope = (
+  authUser: { role: string; managedPathIds?: string[]; managedSubjectIds?: string[] },
+  topic: { pathId?: unknown; subjectId?: unknown },
+) => {
+  if (authUser.role === "admin") {
+    return true;
+  }
+
+  const topicPathId = String(topic.pathId || "");
+  const topicSubjectId = String(topic.subjectId || "");
+  const managedPathIds = Array.isArray(authUser.managedPathIds) ? authUser.managedPathIds.map(String) : [];
+  const managedSubjectIds = Array.isArray(authUser.managedSubjectIds) ? authUser.managedSubjectIds.map(String) : [];
+
+  return managedPathIds.includes(topicPathId) || managedSubjectIds.includes(topicSubjectId);
+};
+
+const hasGroupManagementScope = async (
+  authUser: { id: string; role: string },
+  group: { id?: string; _id?: unknown; type?: unknown; parentId?: unknown; ownerId?: unknown; supervisorIds?: unknown[] },
+) => {
+  if (authUser.role === "admin") {
+    return true;
+  }
+
+  const groupId = String(group.id || group._id || "");
+  const parentId = String(group.parentId || "");
+  const ownerId = String(group.ownerId || "");
+  const supervisorIds = Array.isArray(group.supervisorIds) ? group.supervisorIds.map(String) : [];
+
+  if (ownerId && ownerId === String(authUser.id)) {
+    return true;
+  }
+
+  if (supervisorIds.includes(String(authUser.id))) {
+    return true;
+  }
+
+  if (authUser.role === "supervisor") {
+    const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+    if (String(group.type || "") === "SCHOOL" && scopedSchoolIds.includes(groupId)) {
+      return true;
+    }
+    if (scopedSchoolIds.includes(parentId)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const hasSchoolIdManagementScope = async (
+  authUser: { id: string; role: string },
+  schoolId: string,
+) => {
+  if (authUser.role === "admin") {
+    return true;
+  }
+
+  const scopedSchoolIds = await resolveAccessCodeSchoolsForSupervisor({ id: authUser.id });
+  return scopedSchoolIds.includes(String(schoolId || ""));
+};
+
 const studyPlanSchema = z.object({
   id: z.string().min(1),
   userId: z.string().optional(),
@@ -1445,7 +1507,17 @@ contentRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = topicUpdateSchema.parse(req.body);
-    const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
+    const existing = await TopicModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
+    }
+
+    const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
+    if (!canManageTopic) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
+    }
+
+    const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
       new: true,
     });
 
@@ -1462,7 +1534,17 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await TopicModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+    const existing = await TopicModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
+    }
+
+    const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
+    if (!canManageTopic) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
+    }
+
+    const deleted = await TopicModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
 
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
@@ -1605,7 +1687,17 @@ contentRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.partial().parse(req.body);
-    const updated = await GroupModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
+    const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Group not found" });
+    }
+
+    const canManageGroup = await hasGroupManagementScope(req.authUser!, existing as any);
+    if (!canManageGroup) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this group" });
+    }
+
+    const updated = await GroupModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
       new: true,
     });
 
@@ -1622,7 +1714,17 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await GroupModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+    const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Group not found" });
+    }
+
+    const canManageGroup = await hasGroupManagementScope(req.authUser!, existing as any);
+    if (!canManageGroup) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this group" });
+    }
+
+    const deleted = await GroupModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
 
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Group not found" });
@@ -1638,6 +1740,12 @@ contentRouter.post(
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = b2bPackageSchema.parse(req.body);
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(payload.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
     const created = await B2BPackageModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
@@ -1649,7 +1757,19 @@ contentRouter.patch(
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = b2bPackageSchema.partial().parse(req.body);
-    const updated = await B2BPackageModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
+    const existing = await B2BPackageModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Package not found" });
+    }
+
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(existing.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
+
+    const updated = await B2BPackageModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
       new: true,
     });
 
@@ -1666,7 +1786,19 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await B2BPackageModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+    const existing = await B2BPackageModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Package not found" });
+    }
+
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(existing.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
+
+    const deleted = await B2BPackageModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
 
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Package not found" });
@@ -1753,6 +1885,12 @@ contentRouter.post(
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = accessCodeSchema.parse(req.body);
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(payload.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
     const created = await AccessCodeModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
@@ -1764,7 +1902,19 @@ contentRouter.patch(
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = accessCodeSchema.partial().parse(req.body);
-    const updated = await AccessCodeModel.findOneAndUpdate(buildDocumentQuery(req.params.id), payload, {
+    const existing = await AccessCodeModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Access code not found" });
+    }
+
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(existing.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
+
+    const updated = await AccessCodeModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
       new: true,
     });
 
@@ -1781,7 +1931,19 @@ contentRouter.delete(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const deleted = await AccessCodeModel.findOneAndDelete(buildDocumentQuery(req.params.id));
+    const existing = await AccessCodeModel.findOne(buildDocumentQuery(req.params.id));
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Access code not found" });
+    }
+
+    if (req.authUser?.role === "supervisor") {
+      const canManageSchool = await hasSchoolIdManagementScope(req.authUser, String(existing.schoolId || ""));
+      if (!canManageSchool) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
+      }
+    }
+
+    const deleted = await AccessCodeModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
 
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Access code not found" });

@@ -367,3 +367,25 @@
   - `BATCH_25_RBAC_SCOPE_AUDIT_BATCH_2_2026-05-18_AR.md`
 - Next:
   - BATCH 25B — RBAC Scope Hardening for Content CRUD
+
+## Update 2026-05-18 — BATCH 25B
+- Batch: BATCH 25B — RBAC Scope Hardening for Content CRUD
+- Status: Programmatically closed, production verification pending
+- Implemented hardening on:
+  - `PATCH/DELETE /topics/:id` (managed path/subject scope)
+  - `PATCH/DELETE /groups/:id` (owner/supervisor/school scope)
+  - `POST/PATCH/DELETE /b2b-packages*` (supervisor school scope)
+  - `POST/PATCH/DELETE /access-codes*` (supervisor school scope)
+- Added smoke contract:
+  - `scripts/smoke-rbac-content-crud-scope-contract.mjs`
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `node scripts/smoke-rbac-content-crud-scope-contract.mjs` PASS
+  - `node scripts/smoke-rbac-school-scope-contract.mjs` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-builder` PASS
+- Note:
+  - Included UI hotfix for corrupted Arabic labels (`????`) in advanced course builder.
+- Report:
+  - `BATCH_25B_RBAC_SCOPE_HARDENING_FOR_CONTENT_CRUD_2026-05-18_AR.md`
