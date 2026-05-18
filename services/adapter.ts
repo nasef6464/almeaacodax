@@ -1,11 +1,13 @@
 import { api } from "./api";
 import { AccessCode, AnnouncementAd, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
+import { sanitizeArabicText } from "../utils/sanitizeMojibakeArabic";
 
 const USE_REAL_API =
   (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.PROD === true ||
   (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_USE_REAL_API !== "false";
 
 const FALLBACK_THUMBNAIL = "https://picsum.photos/seed/course-fallback/400/250";
+const cleanText = (value: unknown) => sanitizeArabicText(String(value || "")).trim();
 
 const toTimestamp = (value: unknown, fallback = Date.now()) => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -30,7 +32,7 @@ const toTimestamp = (value: unknown, fallback = Date.now()) => {
 
 const normalizePath = (path: any): CategoryPath => ({
   id: String(path?.id || path?._id || ""),
-  name: String(path?.name || ""),
+  name: cleanText(path?.name),
   color: path?.color,
   icon: path?.icon,
   iconUrl: path?.iconUrl,
@@ -46,14 +48,14 @@ const normalizePath = (path: any): CategoryPath => ({
 const normalizeLevel = (level: any): CategoryLevel => ({
   id: String(level?.id || level?._id || ""),
   pathId: String(level?.pathId || ""),
-  name: String(level?.name || ""),
+  name: cleanText(level?.name),
 });
 
 const normalizeSubject = (subject: any): CategorySubject => ({
   id: String(subject?.id || subject?._id || ""),
   pathId: String(subject?.pathId || ""),
   levelId: subject?.levelId || undefined,
-  name: String(subject?.name || ""),
+  name: cleanText(subject?.name),
   color: subject?.color,
   icon: subject?.icon,
   iconUrl: subject?.iconUrl,
@@ -83,12 +85,12 @@ const normalizeStudyPlan = (plan: any): StudyPlan => ({
 const normalizeSection = (section: any): CategorySection => ({
   id: String(section?.id || section?._id || ""),
   subjectId: String(section?.subjectId || ""),
-  name: String(section?.name || ""),
+  name: cleanText(section?.name),
 });
 
 const normalizeSkill = (skill: any): Skill => ({
   id: String(skill?.id || skill?._id || ""),
-  name: String(skill?.name || ""),
+  name: cleanText(skill?.name),
   pathId: String(skill?.pathId || ""),
   subjectId: String(skill?.subjectId || ""),
   sectionId: String(skill?.sectionId || ""),
@@ -100,7 +102,7 @@ const normalizeSkill = (skill: any): Skill => ({
 
 const normalizeLesson = (lesson: any, moduleIndex: number, lessonIndex: number): Lesson => ({
   id: String(lesson?.id || lesson?._id || `lesson-${moduleIndex + 1}-${lessonIndex + 1}`),
-  title: String(lesson?.title || `الدرس ${lessonIndex + 1}`),
+  title: cleanText(lesson?.title || `الدرس ${lessonIndex + 1}`),
   description: lesson?.description || "",
   type: lesson?.type || "video",
   duration: String(lesson?.duration || "0 دقيقة"),
@@ -142,7 +144,7 @@ const normalizeTopic = (topic: any): Topic => ({
   pathId: topic?.pathId || undefined,
   subjectId: String(topic?.subjectId || ""),
   sectionId: topic?.sectionId || undefined,
-  title: String(topic?.title || ""),
+  title: cleanText(topic?.title),
   parentId: topic?.parentId || null,
   order: Number(topic?.order ?? 0),
   showOnPlatform: topic?.showOnPlatform !== false,
@@ -154,7 +156,7 @@ const normalizeTopic = (topic: any): Topic => ({
 
 const normalizeLibraryItem = (item: any): LibraryItem => ({
   id: String(item?.id || item?._id || ""),
-  title: String(item?.title || ""),
+  title: cleanText(item?.title),
   size: String(item?.size || ""),
   downloads: Number(item?.downloads ?? 0),
   type: item?.type || "pdf",
@@ -178,7 +180,7 @@ const normalizeLibraryItem = (item: any): LibraryItem => ({
 
 const normalizeGroup = (group: any): Group => ({
   id: String(group?.id || group?._id || ""),
-  name: String(group?.name || ""),
+  name: cleanText(group?.name),
   type: group?.type || "CLASS",
   parentId: group?.parentId || undefined,
   ownerId: String(group?.ownerId || ""),
@@ -197,7 +199,7 @@ const normalizeGroup = (group: any): Group => ({
 const normalizeB2BPackage = (pkg: any): B2BPackage => ({
   id: String(pkg?.id || pkg?._id || ""),
   schoolId: String(pkg?.schoolId || ""),
-  name: String(pkg?.name || ""),
+  name: cleanText(pkg?.name),
   assignedTeacherId: pkg?.assignedTeacherId || undefined,
   revenueSharePercentage: typeof pkg?.revenueSharePercentage === "number" ? pkg.revenueSharePercentage : undefined,
   courseIds: Array.isArray(pkg?.courseIds) ? pkg.courseIds.map(String) : [],
@@ -224,7 +226,7 @@ const normalizeAccessCode = (code: any): AccessCode => ({
 
 const normalizeAnnouncementAd = (ad: any): AnnouncementAd => ({
   id: String(ad?.id || ad?._id || ""),
-  title: String(ad?.title || ""),
+  title: cleanText(ad?.title),
   body: ad?.body || "",
   imageUrl: ad?.imageUrl || "",
   ctaLabel: ad?.ctaLabel || "",
@@ -244,7 +246,7 @@ const normalizeAnnouncementAd = (ad: any): AnnouncementAd => ({
 
 const normalizeModule = (module: any, moduleIndex: number): Module => ({
   id: String(module?.id || module?._id || `module-${moduleIndex + 1}`),
-  title: String(module?.title || `الوحدة ${moduleIndex + 1}`),
+  title: cleanText(module?.title || `الوحدة ${moduleIndex + 1}`),
   order: Number(module?.order ?? moduleIndex),
   lessons: Array.isArray(module?.lessons)
     ? module.lessons.map((lesson: any, lessonIndex: number) => normalizeLesson(lesson, moduleIndex, lessonIndex))
@@ -253,17 +255,17 @@ const normalizeModule = (module: any, moduleIndex: number): Module => ({
 
 const normalizeCourse = (course: any): Course => ({
   id: String(course?.id || course?._id || ""),
-  title: String(course?.title || "دورة بدون عنوان"),
+  title: cleanText(course?.title || "دورة بدون عنوان"),
   thumbnail: course?.thumbnail || FALLBACK_THUMBNAIL,
-  instructor: String(course?.instructor || "فريق المنصة"),
+  instructor: cleanText(course?.instructor || "فريق المنصة"),
   price: Number(course?.price ?? 0),
   currency: String(course?.currency || "ر.س"),
   duration: Number(course?.duration ?? 0),
   level: course?.level || "Beginner",
   rating: Number(course?.rating ?? 0),
   progress: Number(course?.progress ?? 0),
-  category: String(course?.category || "عام"),
-  subject: course?.subject || "",
+  category: cleanText(course?.category || "عام"),
+  subject: cleanText(course?.subject || ""),
   pathId: course?.pathId ? String(course.pathId) : undefined,
   subjectId: course?.subjectId ? String(course.subjectId) : undefined,
   sectionId: course?.sectionId ? String(course.sectionId) : undefined,
@@ -303,7 +305,7 @@ const normalizeCourse = (course: any): Course => ({
 
 const normalizeQuestion = (question: any): Question => ({
   id: String(question?.id || question?._id || ""),
-  text: String(question?.text || ""),
+  text: cleanText(question?.text),
   options: Array.isArray(question?.options) ? question.options.map(String) : [],
   correctOptionIndex: Number(question?.correctOptionIndex ?? 0),
   explanation: question?.explanation || "",
@@ -311,7 +313,7 @@ const normalizeQuestion = (question: any): Question => ({
   imageUrl: question?.imageUrl,
   skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
   pathId: question?.pathId,
-  subject: String(question?.subject || ""),
+  subject: cleanText(question?.subject || ""),
   sectionId: question?.sectionId,
   difficulty: question?.difficulty || "Medium",
   type: question?.type || "mcq",
@@ -343,7 +345,7 @@ const normalizeQuizLearningPlacements = (placements: any): Quiz["learningPlaceme
 
 const normalizeQuiz = (quiz: any): Quiz => ({
   id: String(quiz?.id || quiz?._id || ""),
-  title: String(quiz?.title || ""),
+  title: cleanText(quiz?.title),
   description: quiz?.description || "",
   pathId: String(quiz?.pathId || ""),
   subjectId: String(quiz?.subjectId || ""),
@@ -360,7 +362,7 @@ const normalizeQuiz = (quiz: any): Quiz => ({
         sections: Array.isArray(quiz.mockExam.sections)
           ? quiz.mockExam.sections.map((section: any) => ({
               id: String(section?.id || ""),
-              title: String(section?.title || ""),
+              title: cleanText(section?.title),
               subjectId: section?.subjectId ? String(section.subjectId) : undefined,
               questionIds: Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [],
               timeLimit: typeof section?.timeLimit === "number" ? section.timeLimit : undefined,
@@ -444,7 +446,7 @@ export const adapter = {
     return null;
   },
 
-  async getTaxonomyBootstrap() {
+  async getTaxonomyBootstrap(phase: "full" | "core" = "full") {
     if (!USE_REAL_API) {
       return {
         paths: [],
@@ -456,7 +458,7 @@ export const adapter = {
     }
 
     try {
-      const data = await api.getTaxonomyBootstrap();
+      const data = await api.getTaxonomyBootstrap(phase);
 
       return {
         paths: Array.isArray(data?.paths) ? data.paths.map(normalizePath).filter((path) => path.id && path.name) : [],
@@ -483,7 +485,7 @@ export const adapter = {
     }
   },
 
-  async getContentBootstrap() {
+  async getContentBootstrap(scope: "full" | "learning" = "full", phase: "full" | "core" = "full") {
     if (!USE_REAL_API) {
       return {
         topics: [],
@@ -498,7 +500,7 @@ export const adapter = {
     }
 
     try {
-      const data = await api.getContentBootstrap();
+      const data = await api.getContentBootstrapByScope(scope, phase);
       return {
         topics: Array.isArray(data?.topics) ? data.topics.map(normalizeTopic).filter((topic) => topic.id && topic.subjectId && topic.title) : [],
         lessons: Array.isArray(data?.lessons) ? data.lessons.map((lesson: any, index: number) => normalizeLesson(lesson, 0, index)).filter((lesson) => lesson.id && lesson.title) : [],
