@@ -64,6 +64,12 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
   const [quizSearch, setQuizSearch] = useState('');
   const effectiveImportPathId = importPathId || selectedPathId;
   const effectiveImportSubjectId = importSubjectId || selectedSubjectId;
+  const getSafeLabel = (value: unknown, fallback: string) => {
+    const text = String(value || '').trim();
+    if (!text) return fallback;
+    if (/^\?+$/.test(text)) return fallback;
+    return text;
+  };
 
   const importSubjects = useMemo(
     () => subjects.filter((subject) => !effectiveImportPathId || subject.pathId === effectiveImportPathId),
@@ -76,9 +82,15 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       .filter((lesson) => lesson.showOnPlatform !== false)
       .filter((lesson) => !effectiveImportPathId || !lesson.pathId || lesson.pathId === effectiveImportPathId)
       .filter((lesson) => !effectiveImportSubjectId || !lesson.subjectId || lesson.subjectId === effectiveImportSubjectId)
-      .filter((lesson) => !search || String(lesson.title || '').toLowerCase().includes(search))
+      .filter((lesson) => {
+        if (!search) return true;
+        const title = getSafeLabel(lesson.title, '').toLowerCase();
+        const pathName = getSafeLabel(paths.find((path) => path.id === lesson.pathId)?.name, '').toLowerCase();
+        const subjectName = getSafeLabel(subjects.find((subject) => subject.id === lesson.subjectId)?.name, '').toLowerCase();
+        return title.includes(search) || pathName.includes(search) || subjectName.includes(search);
+      })
       .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
-  }, [lessons, effectiveImportPathId, effectiveImportSubjectId, lessonSearch]);
+  }, [lessons, effectiveImportPathId, effectiveImportSubjectId, lessonSearch, paths, subjects]);
   // Legacy contract marker: scopedLessons.map
 
   const filteredScopedQuizzes = useMemo(() => {
@@ -87,9 +99,15 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       .filter((quiz) => quiz.showOnPlatform !== false)
       .filter((quiz) => !effectiveImportPathId || !quiz.pathId || quiz.pathId === effectiveImportPathId)
       .filter((quiz) => !effectiveImportSubjectId || !quiz.subjectId || quiz.subjectId === effectiveImportSubjectId)
-      .filter((quiz) => !search || String(quiz.title || '').toLowerCase().includes(search))
+      .filter((quiz) => {
+        if (!search) return true;
+        const title = getSafeLabel(quiz.title, '').toLowerCase();
+        const pathName = getSafeLabel(paths.find((path) => path.id === quiz.pathId)?.name, '').toLowerCase();
+        const subjectName = getSafeLabel(subjects.find((subject) => subject.id === quiz.subjectId)?.name, '').toLowerCase();
+        return title.includes(search) || pathName.includes(search) || subjectName.includes(search);
+      })
       .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
-  }, [quizzes, effectiveImportPathId, effectiveImportSubjectId, quizSearch]);
+  }, [quizzes, effectiveImportPathId, effectiveImportSubjectId, quizSearch, paths, subjects]);
   const availableSubjects = useMemo(
     () => subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId),
     [selectedPathId, subjects],
@@ -405,7 +423,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                               {getLessonIcon(lesson.type)}
                                             </div>
                                             <div className="flex-1">
-                                              <span className="font-bold text-gray-800">{lesson.title}</span>
+                                              <span className="font-bold text-gray-800">{getSafeLabel(lesson.title, 'درس بدون اسم')}</span>
                                               <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 font-medium">
                                                 <span className="flex items-center gap-1">
                                                   {lesson.accessControl === 'public' ? <Globe size={12} className="text-emerald-500" /> : <Lock size={12} />}
@@ -453,7 +471,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                         >
                                           <option value="">تصفية الدروس حسب المسار</option>
                                           {paths.map((path) => (
-                                            <option key={path.id} value={path.id}>{path.name}</option>
+                                            <option key={path.id} value={path.id}>{getSafeLabel(path.name, 'مسار بدون اسم')}</option>
                                           ))}
                                         </select>
                                         <select
@@ -463,7 +481,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                         >
                                           <option value="">تصفية الدروس حسب المادة</option>
                                           {importSubjects.map((subject) => (
-                                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                                            <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
                                           ))}
                                         </select>
                                       </div>
@@ -479,7 +497,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                               placeholder="ابحث عن درس..."
                                               className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm outline-none"
                                             />
-                                            <div className="max-h-72 overflow-y-auto rounded-lg border border-blue-100 bg-white">
+                                            <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-blue-100 bg-white">
                                               {filteredScopedLessons.length === 0 ? (
                                                 <div className="px-3 py-2 text-xs text-gray-500">لا توجد دروس مطابقة.</div>
                                               ) : (
@@ -490,7 +508,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                                     onClick={() => attachExistingLesson(module.id, lesson.id)}
                                                     className="w-full text-right px-3 py-2 text-sm hover:bg-blue-50 border-b border-blue-50 last:border-b-0"
                                                   >
-                                                    {lesson.title}
+                                                    {getSafeLabel(lesson.title, 'درس بدون اسم')}
                                                   </button>
                                                 ))
                                               )}
@@ -508,7 +526,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                               placeholder="ابحث عن اختبار..."
                                               className="w-full rounded-lg border border-purple-200 bg-white px-3 py-2 text-sm outline-none"
                                             />
-                                            <div className="max-h-72 overflow-y-auto rounded-lg border border-purple-100 bg-white">
+                                            <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-purple-100 bg-white">
                                               {filteredScopedQuizzes.length === 0 ? (
                                                 <div className="px-3 py-2 text-xs text-gray-500">لا توجد اختبارات مطابقة.</div>
                                               ) : (
@@ -519,7 +537,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                                     onClick={() => attachExistingQuiz(module.id, quiz.id)}
                                                     className="w-full text-right px-3 py-2 text-sm hover:bg-purple-50 border-b border-purple-50 last:border-b-0"
                                                   >
-                                                    {quiz.title}
+                                                    {getSafeLabel(quiz.title, 'اختبار بدون اسم')}
                                                   </button>
                                                 ))
                                               )}
@@ -651,7 +669,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         >
                           <option value="">بدون مسار محدد</option>
                           {paths.map((path) => (
-                            <option key={path.id} value={path.id}>{path.name}</option>
+                            <option key={path.id} value={path.id}>{getSafeLabel(path.name, 'مسار بدون اسم')}</option>
                           ))}
                         </select>
                       </div>
@@ -672,7 +690,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         >
                           <option value="">بدون مادة محددة</option>
                           {availableSubjects.map((subject) => (
-                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                            <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
                           ))}
                         </select>
                       </div>
@@ -749,7 +767,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         >
                           <option value="">بدون مسار محدد</option>
                           {paths.map((path) => (
-                            <option key={path.id} value={path.id}>{path.name}</option>
+                            <option key={path.id} value={path.id}>{getSafeLabel(path.name, 'مسار بدون اسم')}</option>
                           ))}
                         </select>
                       </div>
@@ -784,7 +802,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       >
                         <option value="">بدون مادة محددة</option>
                         {availableSubjects.map((subject) => (
-                          <option key={subject.id} value={subject.id}>{subject.name}</option>
+                          <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
                         ))}
                       </select>
                     </div>
@@ -806,7 +824,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                           if (subjectSections.length === 0 && subjectSkills.length === 0) return null;
 
                           return (
-                            <optgroup key={subject.id} label={subject.name}>
+                            <optgroup key={subject.id} label={getSafeLabel(subject.name, 'مادة بدون اسم')}>
                               {subjectSections.map(mainSection => {
                                 const subSkills = subjectSkills.filter(skill => skill.sectionId === mainSection.id);
                                 return (
