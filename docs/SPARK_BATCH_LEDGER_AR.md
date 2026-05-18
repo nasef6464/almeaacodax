@@ -416,3 +416,19 @@
   - Full multi-role runtime matrix evidence (admin/supervisor/teacher/student/parent) still pending.
 - Report:
   - `BATCH_25C_LIVE_ROLE_MATRIX_VERIFICATION_2026-05-18_AR.md`
+
+## Update 2026-05-18 — BATCH 30 (Arabic text integrity pass)
+- Batch: BATCH 30 — Course Settings Scope UX Consistency
+- Status: Programmatically closed, production verification pending
+- Added:
+  - Safe label rendering + mojibake sanitization for subject/section/skill labels in both `CourseBuilder` and `AdvancedCourseBuilder`.
+  - Adapter-level sanitization for taxonomy/curriculum labels before hydration to reduce recurring `????` artifacts from source data.
+  - Fixed Arabic activity text literals in `store/useStore.ts`.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-builder` PASS
+- Commits:
+  - `6ce8259`, `6c87122`, `72fc457`, `f4ab6fc`, `e375cf0`
+- Report:
+  - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`

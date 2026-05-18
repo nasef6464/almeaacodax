@@ -18,10 +18,17 @@
   - إضافة sanitization مركزي داخل `services/adapter.ts` لتطبيع أسماء (المسارات/المواد/الأقسام/المهارات/الدروس/الاختبارات) قبل دخولها للـstore.
 - رفع التحديثات على GitHub في commit:
   - `a9cef7d`
+  - `6ce8259`
+  - `6c87122`
+  - `72fc457`
+  - `f4ab6fc`
+  - `e375cf0`
 
 ## الملفات المعدلة في هذه الدفعة
 - `dashboards/admin/CourseBuilder.tsx`
 - `dashboards/admin/AdvancedCourseBuilder.tsx`
+- `services/adapter.ts`
+- `store/useStore.ts`
 - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 - `docs/NEXT_SESSION_HANDOVER_AR.md`
 - `docs/SPARK_BATCH_LEDGER_AR.md`
