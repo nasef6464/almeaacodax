@@ -389,3 +389,15 @@
   - Included UI hotfix for corrupted Arabic labels (`????`) in advanced course builder.
 - Report:
   - `BATCH_25B_RBAC_SCOPE_HARDENING_FOR_CONTENT_CRUD_2026-05-18_AR.md`
+
+## Update 2026-05-18 — BATCH 27
+- Batch: BATCH 27 — Sentry Production Verification
+- Status: Programmatically closed, production verification pending
+- Checks:
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:health-readiness` PASS
+  - Production `/api/health` PASS (`ready=true`, db/redis pass)
+- Remaining:
+  - Need live Sentry event evidence (issue/release timestamp) to mark Fully closed.
+- Report:
+  - `BATCH_27_SENTRY_PRODUCTION_VERIFICATION_2026-05-18_AR.md`
