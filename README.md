@@ -136,6 +136,7 @@ Current production notes:
 - Latest operational smoke result: `59/59` checks passing, including published learner topic links resolving to visible lessons/quizzes and every linked learner lesson having playable media.
 - Use `npm run smoke:frontend` after every push to confirm Vercel, Render, and Atlas are reachable. A `WARN production deployment is stale` line means GitHub has the commit, but Vercel is still serving an older frontend asset.
 - Use `npm run smoke:frontend:strict` when Vercel says the deployment is complete. It fails until the production frontend includes the expected Git commit/version.
+- To resolve `SMOKE_ADMIN_TOKEN` for protected production smoke checks, set `SMOKE_ADMIN_EMAIL` and `SMOKE_ADMIN_PASSWORD` locally, then run `npm run smoke:resolve-admin-token`. The helper extracts the token from either the login JSON body or the `almeaa_access_token` HttpOnly cookie header without writing it into repo-tracked files.
 
 ### Local MongoDB option
 

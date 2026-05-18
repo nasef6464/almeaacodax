@@ -41,6 +41,7 @@
     "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
     "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
     "smoke:sentry-live-proof": "node scripts/smoke-sentry-live-proof.mjs",
+    "smoke:resolve-admin-token": "node scripts/resolve-smoke-admin-token.mjs",
     "smoke:database": "node scripts/smoke-database-index-contract.mjs",
     "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
     "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
