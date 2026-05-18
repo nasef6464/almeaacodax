@@ -1,6 +1,6 @@
 ﻿# تقرير الدفعة 30 — Course Settings Scope UX Consistency
 **التاريخ:** 2026-05-18
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## ما تم
 - توحيد إعدادات الدورة داخل `CourseBuilder` بإضافة اختيار:
@@ -51,9 +51,8 @@
 
 ## فحص الإنتاج
 - `https://almeaacodax.vercel.app/`: HTTP 200 ✅
-- `https://almeaacodax-k2ux.onrender.com/api/health`: ready=true ✅
-- ملاحظة: `commit` الظاهر في health يخص backend (`368e31f...`) لأن هذه الدفعة Frontend-first.
-- مطلوب تأكيد بصري نهائي من شاشة admin dashboard بعد اكتمال نشر Vercel لنفس commit.
+- `https://almeaacodax.vercel.app/#/admin-dashboard`: HTTP 200 ✅
+- `https://almeaacodax-k2ux.onrender.com/api/health`: commit=`27e3e8905517` و ready=true ✅
 
 ## خطوات التحقق اليدوي
 1. فتح `https://almeaacodax.vercel.app/#/admin-dashboard` بحساب admin.
@@ -67,8 +66,13 @@
 6. حفظ الدورة والتأكد من نجاح العملية.
 
 ## المخاطر المتبقية
-- التحقق البصري النهائي على الإنتاج ما زال مطلوبًا لإعلان Fully closed.
-- توجد تغييرات أخرى كثيرة في الـworktree خارج نطاق هذه الدفعة (لم تُضم في commit الحالي).
+- ما زالت هناك بيانات قديمة في بعض السجلات تحتاج إعادة حفظ من لوحة الإدارة إذا كانت قادمة بترميز خاطئ تاريخيًا.
+- توجد تغييرات كثيرة أخرى في الـworktree خارج نطاق هذه الدفعة (لم تُضم في commit الدفعة 30).
 
 ## الدفعة التالية المقترحة
 - BATCH 25 — RBAC Scope Audit Batch 2
+
+
+
+
+

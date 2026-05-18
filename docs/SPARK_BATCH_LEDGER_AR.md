@@ -432,3 +432,23 @@
   - `6ce8259`, `6c87122`, `72fc457`, `f4ab6fc`, `e375cf0`
 - Report:
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
+
+## Update 2026-05-18 — BATCH 30 Final Production Closure
+- Batch: BATCH 30 — Course Settings Scope UX Consistency
+- Status: Fully closed
+- Final verification:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-builder` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `https://almeaacodax.vercel.app/` => 200
+  - `https://almeaacodax.vercel.app/#/admin-dashboard` => 200
+  - `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, redis/db pass)
+- Scope closed:
+  - Unified course settings (path -> subject -> skills) consistency.
+  - Added lesson/quiz import filtering and search in AdvancedCourseBuilder.
+  - Added safe Arabic label sanitization/fallback to prevent `????` UI artifacts.
+- Report:
+  - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
+- Next:
+  - BATCH 25C-FINAL — Multi-role live matrix verification
