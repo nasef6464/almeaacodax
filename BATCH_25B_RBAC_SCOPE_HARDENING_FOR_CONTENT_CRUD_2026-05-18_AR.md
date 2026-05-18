@@ -27,7 +27,6 @@
 - `BATCH_25B_RBAC_SCOPE_HARDENING_FOR_CONTENT_CRUD_2026-05-18_AR.md`
 - `PROJECT_STATUS.md`
 - `docs/SPARK_BATCH_LEDGER_AR.md`
-- `docs/NEXT_SESSION_HANDOVER_AR.md`
 
 ## الفحوص
 - `npm --prefix server run build`: PASS
@@ -36,13 +35,16 @@
 - `npm run typecheck`: PASS
 - `npm run build`: PASS
 - `npm run smoke:course-builder`: PASS
+- `npm run smoke:production-hardening`: PASS
+- `npm run smoke:health-readiness`: PASS
+- `npm run smoke:api-phase4`: PASS
 
 ## فحص الإنتاج
-- API health probe: PASS (`/api/health` جاهز)
-- Frontend build: PASS
-- مطلوب متابعة نشر Vercel/Render والتأكد الحي النهائي من:
-  - صلاحيات CRUD حسب الدور
-  - اختفاء نصوص `????` من واجهة الباني
+- `https://almeaacodax-k2ux.onrender.com/api/health`: PASS
+  - `ready=true`
+  - `commit=27e3e8905517` (نفس دفعة hardening)
+- `https://almeaacodax.vercel.app/`: HTTP 200
+- ما زال مطلوبًا التحقق الحي النهائي متعدد الأدوار (admin/supervisor) على endpoints الهدف.
 
 ## التحقق اليدوي المقترح
 1. الدخول كـ supervisor ومحاولة تعديل/حذف package أو access code خارج مدرسته -> يجب `403`.
@@ -54,4 +56,4 @@
 - التحقق الحي متعدد الأدوار على الإنتاج ما زال مطلوبًا قبل إعلان Fully closed.
 
 ## الدفعة التالية المقترحة
-- BATCH 27 — Sentry Production Verification
+- BATCH 27 — Sentry Production Verification (فقط إذا أردت إعادة التحقق الإنتاجي الحي رغم أن فحوص المراقبة الحالية ناجحة ومؤرشفة مسبقًا)
