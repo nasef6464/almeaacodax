@@ -83,7 +83,10 @@ const envSchema = z.object({
       return value;
     }, z.boolean())
     .default(false),
-  ADMIN_LOGIN_BYPASS_EMAIL: z.string().email().optional().default(""),
+  ADMIN_LOGIN_BYPASS_EMAIL: z.preprocess((value) => {
+    if (typeof value === "string" && value.trim() === "") return undefined;
+    return value;
+  }, z.string().email().optional()),
   ADMIN_LOGIN_BYPASS_IPS: z.string().default(""),
   AI_PROVIDER: z.preprocess((value) => {
     // Render/CI UIs sometimes save an empty string; treat it as "unset".
