@@ -575,3 +575,6 @@ pm run smoke:health-readiness.
   5. Changes are pushed to GitHub.
   6. Production deployment is refreshed (Vercel + Render when relevant).
   7. Live verification is executed on production URL: `https://almeaacodax.vercel.app/#/` and relevant API probes.
+  8. Visual + functional verification is executed in the in-app browser on production screens touched by the batch.
+  9. Role-based verification is executed for affected roles (admin/student/teacher/supervisor/parent) with evidence notes.
+  10. Any role not verifiable in-session must be documented explicitly as a pending production check (not silently skipped).
