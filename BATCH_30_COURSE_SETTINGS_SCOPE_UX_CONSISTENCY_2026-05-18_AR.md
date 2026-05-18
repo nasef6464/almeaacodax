@@ -13,38 +13,45 @@
   - إضافة فلترة حسب المسار/المادة عند استدعاء الدروس والاختبارات.
   - إضافة بحث نصي داخل قوائم "استدعاء درس موجود" و"استدعاء اختبار موجود".
   - عرض القوائم بشكل قابل للتمرير لتفادي القطع في أسفل الشاشة عند وجود عناصر كثيرة.
+- رفع التحديثات على GitHub في commit:
+  - `a9cef7d`
 
 ## الملفات المعدلة في هذه الدفعة
 - `dashboards/admin/CourseBuilder.tsx`
 - `dashboards/admin/AdvancedCourseBuilder.tsx`
+- `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
+- `docs/NEXT_SESSION_HANDOVER_AR.md`
+- `docs/SPARK_BATCH_LEDGER_AR.md`
+- `PROJECT_STATUS.md`
 
 ## الملفات التي كانت معدلة مسبقًا ولم يتم لمسها
 - لا ينطبق ضمن نطاق إغلاق هذه الدفعة.
 
 ## الفحوص
 - `npm run smoke:course-builder`: PASS
-- `npm run typecheck`: pending in this finalization step
-- `npm run build`: pending in this finalization step
+- `npm run typecheck`: PASS
+- `npm run build`: PASS
 
 ## فحص الإنتاج
-- مطلوب تحقق حي نهائي داخل لوحة الإدارة على الرابط:
-  - `https://almeaacodax.vercel.app/#/admin-dashboard`
-- الحالة الحالية: Programmatically closed, production verification pending.
+- `https://almeaacodax.vercel.app/`: HTTP 200 ✅
+- `https://almeaacodax-k2ux.onrender.com/api/health`: ready=true ✅
+- ملاحظة: `commit` الظاهر في health يخص backend (`368e31f...`) لأن هذه الدفعة Frontend-first.
+- مطلوب تأكيد بصري نهائي من شاشة admin dashboard بعد اكتمال نشر Vercel لنفس commit.
 
 ## خطوات التحقق اليدوي
-1. فتح منشئ دورة داخل لوحة الإدارة.
-2. اختيار مسار والتأكد من فلترة المواد المرتبطة.
-3. اختيار مادة والتأكد من فلترة المهارات المرتبطة.
-4. تغيير المادة والتأكد أن المهارات السابقة تُصفّر تلقائيًا.
+1. فتح `https://almeaacodax.vercel.app/#/admin-dashboard` بحساب admin.
+2. الدخول إلى منشئ الدورة.
+3. التأكد من وجود حقول المسار + المادة.
+4. التأكد من فلترة المهارات حسب المادة.
 5. في `AdvancedCourseBuilder`:
-   - فتح "استدعاء درس موجود" واختيار مسار/مادة وتجربة البحث.
-   - فتح "استدعاء اختبار موجود" واختيار مسار/مادة وتجربة البحث.
-   - التأكد أن القوائم طويلة المحتوى قابلة للتمرير ولا تُقص.
-6. حفظ الدورة والتأكد من نجاح العملية دون أخطاء.
+   - فتح "استدعاء درس موجود" وتجربة فلترة المسار/المادة + البحث.
+   - فتح "استدعاء اختبار موجود" وتجربة فلترة المسار/المادة + البحث.
+   - التأكد أن القائمة قابلة للتمرير عند كثرة العناصر.
+6. حفظ الدورة والتأكد من نجاح العملية.
 
 ## المخاطر المتبقية
-- يلزم تنفيذ التحقق الإنتاجي الحي النهائي وتوثيق لقطات النجاح.
-- وجود تغييرات كثيرة أخرى في الـworktree خارج نطاق هذه الدفعة؛ يجب عدم خلطها في commit الدفعة.
+- التحقق البصري النهائي على الإنتاج ما زال مطلوبًا لإعلان Fully closed.
+- توجد تغييرات أخرى كثيرة في الـworktree خارج نطاق هذه الدفعة (لم تُضم في commit الحالي).
 
 ## الدفعة التالية المقترحة
 - BATCH 25 — RBAC Scope Audit Batch 2
