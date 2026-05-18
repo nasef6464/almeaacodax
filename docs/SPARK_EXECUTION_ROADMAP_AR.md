@@ -517,3 +517,61 @@ pm run smoke:health-readiness.
 - تم التحقق من عزل الطالب لطلباته فقط.
 - تم اعتماد إغلاق BATCH 05 كـ Fully closed.
 
+
+## Latest Update — 2026-05-18 (BATCH 20ZF)
+- Implemented staged learning bootstrap on `/api/content/bootstrap` with `phase=core|full`.
+- Learning core mode now avoids loading heavy lessons/library payload on the first response.
+- App bootstrap flow was updated to fetch `learning/core` first, then `learning/full` asynchronously.
+- Batch status: Programmatically closed, production verification pending.
+- Next target: BATCH 20ZG (taxonomy bootstrap decomposition + retest).
+
+## Latest Update — 2026-05-18 (BATCH 20ZG)
+- Implemented staged taxonomy bootstrap on `/api/taxonomy/bootstrap` with `phase=core|full`.
+- Public taxonomy `core` mode now reduces first-hop payload by deferring heavy skills data.
+- App learning flow now loads taxonomy core first, then refreshes taxonomy full in background.
+- Smoke contracts now pass again after compatibility alignment.
+- Added course settings data-consistency fix: explicit subject selector linked to selected path and skill options scoped accordingly in advanced course builder.
+- Batch status: Programmatically closed, production verification pending.
+- Next target: BATCH 22 (CSRF Cookie Protection).
+
+## Planned Follow-up (after security priority)
+- BATCH 30 — Course Settings Scope UX Consistency
+  - Ensure all course builders (basic/advanced) expose consistent `path -> subject -> skills` flow.
+  - Add regression smoke for course payload validity (`subjectId/pathId` alignment and skill scope correctness).
+
+## Update 2026-05-18 — Next execution order (confirmed)
+1. BATCH 22 — CSRF Cookie Protection (implemented)
+2. BATCH 26R — Quiz Availability & Integrity General Fix (implemented)
+3. BATCH 30 — Course Settings Scope UX Consistency (implemented)
+4. Next suggested: BATCH 23 — Remove JSON Token From Production Auth Response
+
+## Update 2026-05-18 — Next execution order (extended)
+1. BATCH 22 — CSRF Cookie Protection (implemented)
+2. BATCH 26R — Quiz Availability & Integrity General Fix (implemented)
+3. BATCH 30 — Course Settings Scope UX Consistency (implemented)
+4. BATCH 23 — Remove JSON Token From Production Auth Response (implemented)
+5. Next suggested: BATCH 24 — Platform Integration Secrets Encryption At Rest
+
+## Update 2026-05-18 — BATCH 24
+- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+- Status: Programmatically closed, production verification pending
+- Implemented:
+  - Added encryption helper for integration secrets at rest.
+  - Applied runtime decryption and masked responses in platform integrations endpoints.
+  - Applied encrypted write path in update and history restore flows.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:integrations-runtime` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+- Next suggested: BATCH 25 — RBAC Scope Audit Batch 2
+
+## Governance Rule (mandatory for every next batch)
+- No batch is marked **Fully closed** unless all of the following are done:
+  1. Code implementation is complete.
+  2. Required checks/smokes pass without hidden failures/timeouts.
+  3. Batch report file is created/updated.
+  4. Ledger and project status files are updated.
+  5. Changes are pushed to GitHub.
+  6. Production deployment is refreshed (Vercel + Render when relevant).
+  7. Live verification is executed on production URL: `https://almeaacodax.vercel.app/#/` and relevant API probes.
