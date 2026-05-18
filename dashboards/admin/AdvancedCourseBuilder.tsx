@@ -6,6 +6,7 @@ import { QuizBuilder } from './QuizBuilder';
 import { RichTextEditor } from '../../components/RichTextEditor';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useStore } from '../../store/useStore';
+import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 import { 
   Plus, GripVertical, Trash2, Edit2, Video, FileText, HelpCircle, 
   Settings, BookOpen, Save, X, Youtube, Video as VideoIcon, 
@@ -65,7 +66,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
   const effectiveImportPathId = importPathId || selectedPathId;
   const effectiveImportSubjectId = importSubjectId || selectedSubjectId;
   const getSafeLabel = (value: unknown, fallback: string) => {
-    const text = String(value || '').trim();
+    const text = sanitizeArabicText(String(value || '')).trim();
     if (!text) return fallback;
     if (/^\?+$/.test(text)) return fallback;
     return text;
