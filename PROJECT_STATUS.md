@@ -2,25 +2,22 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 25C-FINAL - Multi-role Live Matrix Verification
-- Status: Fully closed
+- Active Batch: BATCH 27B - Sentry Live Event Proof
+- Status: Programmatically closed, production verification pending
 
 ## Delivered in this update
-- Completed full production runtime role matrix verification.
-- `smoke:operational` now runs with stable production-safe credential strategy and passed all checks.
-- Confirmed end-to-end role behavior for admin/supervisor/teacher/student/parent in one live run.
+- Re-validated monitoring and health readiness contracts successfully.
+- Verified production API health endpoint is ready and up.
+- Audited codebase for actual Sentry runtime wiring and confirmed missing SDK integration path for live event emission.
 
 ## Checks
-- `npm --prefix server run build` PASS
-- `npm run smoke:operational` PASS (`total=71`, `passed=71`, `failed=0`)
-- Existing RBAC contracts remain green:
-  - `npm run smoke:security-rbac-phase6` PASS
-  - `npm run smoke:reports-role` PASS
-  - `npm run smoke:supervisor-dashboard` PASS
-  - `npm run smoke:school-management` PASS
+- `npm run smoke:monitoring` PASS
+- `npm run smoke:health-readiness` PASS
+- `GET https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`)
 
 ## Production Verification
-- Full multi-role runtime verification completed successfully on production.
+- Monitoring readiness is healthy.
+- Sentry live event proof is still pending because no SDK emission path exists yet.
 
 ## Next Suggested Step
-- BATCH 27B — Sentry Live Event Proof
+- BATCH 27C — Sentry SDK Integration + Live Event Closure

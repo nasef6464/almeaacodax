@@ -503,3 +503,18 @@
   - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
 - Next:
   - BATCH 27B — Sentry Live Event Proof
+
+## Update 2026-05-18 — BATCH 27B
+- Batch: BATCH 27B — Sentry Live Event Proof
+- Status: Programmatically closed, production verification pending
+- Checks:
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `GET /api/health` production => 200 (`ready=true`)
+- Finding:
+  - No active Sentry SDK wiring found in runtime code (`@sentry/*`, `Sentry.init`, `captureException` absent).
+  - Therefore live Sentry event proof cannot be produced yet.
+- Report:
+  - `BATCH_27B_SENTRY_LIVE_EVENT_PROOF_2026-05-18_AR.md`
+- Next:
+  - BATCH 27C — Sentry SDK Integration + Live Event Closure
