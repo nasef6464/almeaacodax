@@ -23,6 +23,7 @@ import { AnnouncementAdModel } from "../models/AnnouncementAd.js";
 import { getActivePathIds, isStaffRole } from "../services/visibility.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
+import { decryptIntegrationSecretsForRuntime, encryptIntegrationSecretsAtRest } from "../utils/integrationSecretsCrypto.js";
 
 const topicSchema = z.object({
   id: z.string().optional(),
@@ -252,8 +253,10 @@ type PublicContentBootstrapPayload = {
 type ContentBootstrapCachePayload = PublicContentBootstrapPayload;
 type ContentBootstrapCacheEntry = { expiresAt: number; payload: ContentBootstrapCachePayload };
 const contentBootstrapScopeSchema = z.enum(["full", "learning"]).default("full");
+const contentBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
+const publicContentBootstrapPromise = contentBootstrapPromises;
 let contentBootstrapMinimalCache:
   | {
       expiresAt: number;
@@ -1276,18 +1279,22 @@ contentRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
+    const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
     const canUseFullScope = isStaffRole(req.authUser?.role);
     const scope = requestedScope === "full" && !canUseFullScope ? "learning" : requestedScope;
+    const phase = scope === "learning" ? requestedPhase : "full";
+    const isLearningCore = scope === "learning" && phase === "core";
     const includeOperationalData = scope !== "learning";
-    const includeStudyPlans = scope !== "learning";
+    const includeStudyPlans = scope !== "learning" && phase === "full";
     const isNonStaffAuthedLearning = Boolean(req.authUser) && !canUseFullScope && scope === "learning";
     const canUseSharedCache = !req.authUser || isNonStaffAuthedLearning;
-    const cacheKey = canUseSharedCache ? `scope:${scope}:shared-learning` : "";
+    const cacheKey = canUseSharedCache ? `scope:${scope}:phase:${phase}:shared-learning` : "";
     const cachedEntry = cacheKey ? contentBootstrapCache.get(cacheKey) : null;
     if (cachedEntry && cachedEntry.expiresAt > Date.now()) {
       res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "hit");
       res.setHeader("X-Content-Scope", scope);
+      res.setHeader("X-Content-Phase", phase);
       return res.json(cachedEntry.payload);
     }
 
@@ -1297,6 +1304,7 @@ contentRouter.get(
       res.setHeader("Cache-Control", req.authUser ? "private, max-age=120" : "public, max-age=120, stale-while-revalidate=180");
       res.setHeader("X-Content-Cache", "shared");
       res.setHeader("X-Content-Scope", scope);
+      res.setHeader("X-Content-Phase", phase);
       return res.json(payload);
     }
 
@@ -1322,8 +1330,8 @@ contentRouter.get(
 
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
         TopicModel.find(finalTopicFilter).sort({ subjectId: 1, order: 1 }).lean(),
-        LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
-        LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
+        isLearningCore ? Promise.resolve([]) : LessonModel.find(finalLessonFilter).sort({ createdAt: -1 }).lean(),
+        isLearningCore ? Promise.resolve([]) : LibraryItemModel.find(finalLibraryFilter).sort({ createdAt: -1 }).lean(),
         includeOperationalData
           ? getScopedOperationalData(req.authUser)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
@@ -1357,6 +1365,7 @@ contentRouter.get(
       res.setHeader("X-Content-Cache", "miss");
     }
     res.setHeader("X-Content-Scope", scope);
+    res.setHeader("X-Content-Phase", phase);
     res.json(payload);
   }),
 );
@@ -2046,7 +2055,8 @@ contentRouter.get(
       settings = await PlatformIntegrationSettingsModel.create(defaultPlatformIntegrationSettings);
     }
 
-    const safeSettings = maskSensitiveProviderValues((settings.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const runtimeSettings = decryptIntegrationSecretsForRuntime((settings.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const safeSettings = maskSensitiveProviderValues(runtimeSettings);
     return res.json(safeSettings);
   }),
 );
@@ -2287,7 +2297,10 @@ contentRouter.patch(
   asyncHandler(async (req, res) => {
     const partialPayload = platformIntegrationSettingsPatchSchema.parse(req.body);
     const previous = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
-    const baseSettings = (previous || defaultPlatformIntegrationSettings) as Record<string, any>;
+    const decryptedPrevious = previous
+      ? decryptIntegrationSecretsForRuntime(previous as unknown as Record<string, unknown>)
+      : null;
+    const baseSettings = (decryptedPrevious || defaultPlatformIntegrationSettings) as Record<string, any>;
 
     const nextPayload = {
       ...baseSettings,
@@ -2330,12 +2343,16 @@ contentRouter.patch(
         note: "auto-backup before update",
       });
     }
-    const mergedPayload = mergeSensitiveProviderValues(payload as unknown as Record<string, unknown>, previous as Record<string, unknown> | null);
+    const mergedPayload = mergeSensitiveProviderValues(
+      payload as unknown as Record<string, unknown>,
+      decryptedPrevious as Record<string, unknown> | null,
+    );
+    const encryptedPayload = encryptIntegrationSecretsAtRest(mergedPayload);
     const settings = await PlatformIntegrationSettingsModel.findOneAndUpdate(
       { key: "default" },
       {
         $set: {
-          ...mergedPayload,
+          ...encryptedPayload,
           updatedBy: req.authUser?.id || "",
         },
         $setOnInsert: { key: "default" },
@@ -2343,7 +2360,8 @@ contentRouter.patch(
       { new: true, upsert: true },
     );
 
-    const safeSettings = maskSensitiveProviderValues((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const runtimeSettings = decryptIntegrationSecretsForRuntime((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const safeSettings = maskSensitiveProviderValues(runtimeSettings);
     return res.json(safeSettings);
   }),
 );
@@ -2377,13 +2395,16 @@ contentRouter.get(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+    const runtimeSettings = settings
+      ? decryptIntegrationSecretsForRuntime(settings as unknown as Record<string, unknown>)
+      : null;
     const publicBaseUrl = buildPublicBaseUrl(
-      settings as { seo?: { canonicalBaseUrl?: string } } | null,
+      runtimeSettings as { seo?: { canonicalBaseUrl?: string } } | null,
       `${req.protocol}://${req.get("host") || ""}`,
     );
     const apiBaseUrl = `${normalizeBaseUrl(publicBaseUrl)}/api`;
 
-    const providers = (settings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
+    const providers = (runtimeSettings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
 
     const checks = [
       {
@@ -2511,7 +2532,10 @@ contentRouter.get(
   requireRole(["admin"]),
   asyncHandler(async (_req, res) => {
     const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
-    const providers = (settings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
+    const runtimeSettings = settings
+      ? decryptIntegrationSecretsForRuntime(settings as unknown as Record<string, unknown>)
+      : null;
+    const providers = (runtimeSettings?.providers as Record<string, Record<string, unknown>> | undefined) || {};
 
     const isDbConfigured = {
       google: Boolean(providers.google?.clientId && providers.google?.clientSecret),
@@ -2614,12 +2638,14 @@ contentRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "History snapshot not found." });
     }
 
-    const parsedSnapshot = platformIntegrationSettingsSchema.parse(item.snapshot as Record<string, unknown>);
+    const runtimeSnapshot = decryptIntegrationSecretsForRuntime(item.snapshot as Record<string, unknown>);
+    const parsedSnapshot = platformIntegrationSettingsSchema.parse(runtimeSnapshot as Record<string, unknown>);
+    const encryptedPayload = encryptIntegrationSecretsAtRest(parsedSnapshot as unknown as Record<string, unknown>);
     const settings = await PlatformIntegrationSettingsModel.findOneAndUpdate(
       { key: "default" },
       {
         $set: {
-          ...parsedSnapshot,
+          ...encryptedPayload,
           updatedBy: req.authUser?.id || "",
         },
         $setOnInsert: { key: "default" },
@@ -2634,7 +2660,8 @@ contentRouter.post(
       note: `restore from ${String(req.params.id)}`,
     });
 
-    const safeSettings = maskSensitiveProviderValues((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const runtimeSettings = decryptIntegrationSecretsForRuntime((settings?.toJSON ? settings.toJSON() : settings) as Record<string, unknown>);
+    const safeSettings = maskSensitiveProviderValues(runtimeSettings);
     return res.json({ settings: safeSettings, restoredFrom: req.params.id });
   }),
 );

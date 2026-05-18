@@ -2,36 +2,33 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 20ZE - Minimal Bootstrap Mode
-- Status: Programmatically closed
+- Active Batch: BATCH 25 - RBAC Scope Audit Batch 2
+- Status: BATCH 24 programmatically closed, production verification pending
 
 ## Delivered in this update
-- Implemented a true minimal bootstrap endpoint and wired public announcement hydration to it.
-- Verified major production performance gain for the minimal path at c=300 (zero timeouts).
-- Confirmed heavy learning bootstrap path still needs staged segmentation for full high-burst closure.
+- Closed implementation work for:
+- BATCH 22 � CSRF Cookie Protection
+- BATCH 26R � Quiz Availability & Integrity General Fix
+- BATCH 30 � Course Settings Scope UX Consistency
+- BATCH 23 � Remove JSON Token From Production Auth Response
+- BATCH 24 � Platform Integration Secrets Encryption At Rest
+- Added CSRF middleware + client header flow + `smoke:csrf`.
+- Reduced false "no questions" flash on quiz startup by gating empty-state briefly during question hydration.
+- Unified path/subject/skills flow in CourseBuilder and sanitized skills payload on save.
+- Added encryption-at-rest flow for platform integration secrets with runtime decrypt + masked responses.
 
 ## Checks
 - `npm --prefix server run build` PASS
 - `npm run typecheck` PASS
-- `npm run smoke:production-hardening` PASS
-- `npm run smoke:frontend:strict` PASS
+- `npm run build` PASS
+- `npm run smoke:auth-cookie` PASS
+- `npm run smoke:csrf` PASS
+- `npm run smoke:quiz-integrity-guard` PASS
+- `npm run smoke:course-builder` PASS
+- `npm run smoke:integrations-runtime` PASS
+
+## Production Verification
+- Pending final live verification on production UI/API flows for BATCH 24 and prior pending batches.
 
 ## Next Suggested Step
-- Start BATCH 20ZF - Learning Bootstrap Segmentation (topics/lessons split) + staged rollout.
-
-## Live Incident Note (2026-05-18)
-- During live production verification for quiz journey, a blocking content issue was confirmed:
-  - Some published quizzes reference `questionIds` that currently resolve to zero documents (example: `q_smoke_math_learning_1..3`), which leads to learner-facing "لا توجد أسئلة متاحة".
-  - Some resolved questions have empty `imageUrl` (and in samples empty `text`), causing missing media/content inside attempts.
-- This is a data integrity + content publishing workflow issue, not a UI layout issue.
-- Performance note:
-  - `GET /api/health` is healthy.
-  - Minimal bootstrap is stable, while heavy learning payloads still require staged segmentation for burst traffic.
-
-## Suggested Immediate Batch
-- BATCH 20ZG - Quiz Content Integrity & Media Availability Investigation + Guard Rails (diagnose + safe server-side validation + admin audit report path).
-
-## Progress Update (2026-05-18)
-- Production now serves learner quiz list with integrity guard filtering active.
-- Broken quizzes (missing/invalid question links) are excluded from learner listing to avoid runtime "لا توجد أسئلة متاحة".
-- Remaining work is data repair for affected quizzes/questions in admin content inventory.
+- BATCH 25 � RBAC Scope Audit Batch 2

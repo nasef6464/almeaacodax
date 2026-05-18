@@ -21,8 +21,14 @@ const includes = (source, snippet) => {
 check("platform integrations response masks secrets and preserves old values on partial save", () => {
   includes(contentRoutes, "maskSensitiveProviderValues");
   includes(contentRoutes, "mergeSensitiveProviderValues");
+  includes(contentRoutes, "decryptIntegrationSecretsForRuntime");
+  includes(contentRoutes, "encryptIntegrationSecretsAtRest");
   includes(contentRoutes, "providerSecretState");
   includes(contentRoutes, '"/platform-integrations"');
+});
+
+check("platform integrations route uses encryption helper import", () => {
+  includes(contentRoutes, 'from "../utils/integrationSecretsCrypto.js"');
 });
 
 check("integration history list returns masked secret state only", () => {
@@ -35,6 +41,8 @@ check("integration history list returns masked secret state only", () => {
 
 check("integration restore endpoint returns masked settings", () => {
   includes(contentRoutes, "/platform-integrations/history/:id/restore");
+  includes(contentRoutes, "runtimeSnapshot");
+  includes(contentRoutes, "encryptedPayload");
   includes(contentRoutes, "safeSettings");
   includes(contentRoutes, "return res.json({ settings: safeSettings, restoredFrom");
 });

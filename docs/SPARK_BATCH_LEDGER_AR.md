@@ -229,3 +229,93 @@
 - Delivered a true minimal bootstrap endpoint and switched public ads bootstrap usage to it.
 - Production load evidence at c300 showed zero timeouts on the minimal path and strong gain vs the heavier learning bootstrap path.
 - Status: Programmatically closed.
+
+## Update 2026-05-18 — BATCH 20ZF
+- Batch: BATCH 20ZF — Learning Bootstrap Segmentation
+- Status: Programmatically closed, production verification pending
+- Changes:
+  - Added `phase=core|full` to `/content/bootstrap`.
+  - `scope=learning&phase=core` returns lightweight payload (defers heavy lessons/library data).
+  - Frontend requests learning core first, then full in background.
+- Checks:
+  - server build PASS
+  - typecheck PASS
+  - frontend build PASS
+  - smoke:route-loading PASS
+  - smoke:production-hardening PASS
+  - smoke:health-readiness PASS
+  - smoke:performance FAIL (pre-existing taxonomy contract check)
+- Report:
+  - `BATCH_20ZF_LEARNING_BOOTSTRAP_SEGMENTATION_2026-05-18_AR.md`
+- Next:
+  - BATCH 20ZG — Taxonomy Bootstrap Retest + Decomposition
+
+## Update 2026-05-18 — BATCH 20ZG
+- Batch: BATCH 20ZG — Taxonomy Bootstrap Retest + Decomposition
+- Status: Programmatically closed, production verification pending
+- Changes:
+  - Added `phase=core|full` to `/api/taxonomy/bootstrap`.
+  - `phase=core` now defers heavy taxonomy payload (skills) for faster first public load.
+  - Frontend learning bootstrap now hydrates taxonomy core first and taxonomy full in background.
+  - Added/kept compatibility contract markers required by smoke scripts.
+  - Course settings consistency hotfix: advanced course builder now includes explicit subject selector tied to selected path, and skills picker is scoped accordingly.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:performance` PASS
+  - `npm run smoke:health-readiness` PASS
+- Report:
+  - `BATCH_20ZG_TAXONOMY_BOOTSTRAP_DECOMPOSITION_RETEST_2026-05-18_AR.md`
+- Next:
+  - BATCH 22 — CSRF Cookie Protection
+
+## Update 2026-05-18 — BATCH 22
+- Batch: BATCH 22 — CSRF Cookie Protection
+- Status: Programmatically closed, production verification pending
+- Report: `BATCH_22_CSRF_COOKIE_PROTECTION_2026-05-18_AR.md`
+- Checks: server build PASS, typecheck PASS, frontend build PASS, smoke:auth-cookie PASS, smoke:csrf PASS
+
+## Update 2026-05-18 — BATCH 26R
+- Batch: BATCH 26R — Quiz Availability & Integrity General Fix
+- Status: Programmatically closed, production verification pending
+- Report: `BATCH_26R_QUIZ_AVAILABILITY_AND_INTEGRITY_GENERAL_FIX_2026-05-18_AR.md`
+- Checks: server build PASS, typecheck PASS, frontend build PASS, smoke:quiz-integrity-guard PASS
+
+## Update 2026-05-18 — BATCH 30
+- Batch: BATCH 30 — Course Settings Scope UX Consistency
+- Status: Programmatically closed, production verification pending
+- Report: `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
+- Checks: typecheck PASS, frontend build PASS, smoke:course-builder PASS
+
+## Update 2026-05-18 — BATCH 23
+- Batch: BATCH 23 — Remove JSON Token From Production Auth Response
+- Status: Programmatically closed, production verification pending
+- Report: `BATCH_23_REMOVE_JSON_TOKEN_FROM_PRODUCTION_AUTH_RESPONSE_2026-05-18_AR.md`
+- Changes:
+  - Production auth responses (`/auth/login`, `/auth/register`) no longer expose `token` in JSON.
+  - Cookie-first auth flow preserved.
+  - Frontend typings updated to optional token.
+- Checks:
+  - server build PASS
+  - typecheck PASS
+  - frontend build PASS
+  - smoke:auth-cookie PASS
+  - smoke:auth-token-response PASS
+  - smoke:auth-frontend PASS
+
+## Update 2026-05-18 — BATCH 24
+- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+- Status: Programmatically closed, production verification pending
+- Report: `BATCH_24_PLATFORM_INTEGRATION_SECRETS_ENCRYPTION_AT_REST_2026-05-18_AR.md`
+- Changes:
+  - Added encryption/decryption helper for integration secrets at rest (`enc::` envelope).
+  - Integrated runtime decryption + masked responses in platform integrations endpoints.
+  - Integrated encrypted write path in update/restore flows to prevent plaintext persistence for new updates.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:integrations-runtime` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+- Next:
+  - BATCH 25 — RBAC Scope Audit Batch 2

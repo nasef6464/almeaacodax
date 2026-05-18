@@ -48,6 +48,7 @@ const envSchema = z.object({
     .default(true),
   NOTIFICATION_QUEUE_CONCURRENCY: z.coerce.number().int().min(1).max(25).default(5),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
+  PLATFORM_INTEGRATIONS_SECRET_KEY: z.string().optional().default(""),
   JWT_EXPIRES_IN: z.string().default("7d"),
   GOOGLE_CLIENT_ID: z.string().optional().default(""),
   GOOGLE_CLIENT_SECRET: z.string().optional().default(""),
