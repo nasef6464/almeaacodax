@@ -346,3 +346,24 @@
 - Report:
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 
+
+## Update 2026-05-18 — BATCH 25
+- Batch: BATCH 25 — RBAC Scope Audit Batch 2
+- Status: Programmatically closed, production verification pending
+- Type: Audit-only (no behavior change)
+- Scope reviewed:
+  - `server/src/middleware/auth.ts`
+  - `server/src/routes/content.routes.ts`
+- Confirmed fixed from prior critical findings:
+  - `GET /api/content/schools/:id/report` now enforces `assertSchoolManagementScope`.
+  - `POST /api/content/schools/:id/import-students` now enforces `assertSchoolManagementScope`.
+- Remaining HIGH risk gaps (needs implementation batch):
+  - `PATCH/DELETE /topics/:id`
+  - `PATCH/DELETE /groups/:id`
+  - `PATCH/DELETE /b2b-packages/:id`
+  - `PATCH/DELETE /access-codes/:id`
+  (currently rely on `buildDocumentQuery` without unified ownership/school scope gate).
+- Report:
+  - `BATCH_25_RBAC_SCOPE_AUDIT_BATCH_2_2026-05-18_AR.md`
+- Next:
+  - BATCH 25B — RBAC Scope Hardening for Content CRUD

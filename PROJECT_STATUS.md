@@ -2,24 +2,22 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 30 - Course Settings Scope UX Consistency (Finalization)
+- Active Batch: BATCH 25 - RBAC Scope Audit Batch 2
 - Status: Programmatically closed, production verification pending
 
 ## Delivered in this update
-- Finalized course settings consistency in both builders.
-- Added path/subject scoped filtering when importing existing lessons and quizzes.
-- Added search boxes for large lesson/quiz import lists.
-- Improved long-list usability with scrollable import panels.
-- Refreshed next-session handover file with strict closure workflow.
+- Completed RBAC scope audit pass on content school-sensitive routes and CRUD scope consistency.
+- Confirmed prior critical school-scope gap is now guarded on:
+  - `GET /api/content/schools/:id/report`
+  - `POST /api/content/schools/:id/import-students`
+- Identified remaining HIGH scope gaps in CRUD update/delete for:
+  - `topics`, `groups`, `b2b-packages`, `access-codes`.
 
 ## Checks
-- `npm run smoke:course-builder` PASS
-- `npm run typecheck` PASS
-- `npm run build` PASS
+- Audit-only batch (no code execution changes in this batch).
 
 ## Production Verification
-- Pending final live UI verification on:
-  - `https://almeaacodax.vercel.app/#/admin-dashboard`
+- Pending runtime RBAC role-matrix verification after implementing hardening batch.
 
 ## Next Suggested Step
-- BATCH 25 — RBAC Scope Audit Batch 2
+- BATCH 25B — RBAC Scope Hardening for Content CRUD
