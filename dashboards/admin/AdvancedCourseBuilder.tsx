@@ -24,6 +24,8 @@ interface AdvancedCourseBuilderProps {
 
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
   const { paths, subjects, sections, skills, lessons, quizzes, users } = useStore();
+  const categoryOptions = ['دورة تعليمية', 'برنامج تدريبي', 'مسار تطوير مهارات'] as const;
+  const levelOptions: Array<'Beginner' | 'Intermediate' | 'Advanced'> = ['Beginner', 'Intermediate', 'Advanced'];
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
   const [settingsTab, setSettingsTab] = useState<'basic' | 'pricing' | 'advanced'>('basic');
   
@@ -59,6 +61,12 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
   });
   const selectedPathId = (courseData.pathId || '') as string;
   const selectedSubjectId = (courseData.subjectId || courseData.subject || '') as string;
+  const normalizedCategory = categoryOptions.includes(courseData.category as (typeof categoryOptions)[number])
+    ? (courseData.category as (typeof categoryOptions)[number])
+    : 'دورة تعليمية';
+  const normalizedLevel = levelOptions.includes(courseData.level as 'Beginner' | 'Intermediate' | 'Advanced')
+    ? (courseData.level as 'Beginner' | 'Intermediate' | 'Advanced')
+    : 'Beginner';
   const [importPathId, setImportPathId] = useState<string>('');
   const [importSubjectId, setImportSubjectId] = useState<string>('');
   const [lessonSearch, setLessonSearch] = useState('');
@@ -649,7 +657,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
+                      <div className="hidden">
                         <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
                         <select
                           value={selectedPathId}
@@ -734,11 +742,11 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">التصنيف</label>
                         <select 
-                          value={courseData.category || 'دورة تعليمية'} 
+                          value={normalizedCategory} 
                           onChange={(e) => setCourseData({...courseData, category: e.target.value})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
@@ -775,7 +783,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">المستوى</label>
                         <select 
-                          value={courseData.level || 'Beginner'} 
+                          value={normalizedLevel} 
                           onChange={(e) => setCourseData({...courseData, level: e.target.value as any})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
@@ -786,7 +794,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       </div>
                     </div>
 
-                    <div>
+                    <div className="hidden">
                       <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
                       <select
                         value={selectedSubjectId}

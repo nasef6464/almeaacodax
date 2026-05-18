@@ -103,14 +103,36 @@ export const SubjectLearningPage: React.FC = () => {
     </div>
   );
 
+  const resolveCourseSubjectId = (course: (typeof courses)[number]) => {
+    const directSubjectId = String(course.subjectId || '').trim();
+    if (directSubjectId) return directSubjectId;
+    const legacySubjectRef = String(course.subject || '').trim();
+    if (!legacySubjectRef) return '';
+    const matchedById = subjects.find((item) => item.id === legacySubjectRef);
+    if (matchedById) return matchedById.id;
+    const matchedByName = subjects.find((item) => String(item.name || '').trim() === legacySubjectRef);
+    return matchedByName?.id || '';
+  };
+
+  const resolveCoursePathId = (course: (typeof courses)[number]) => {
+    const directPathId = String(course.pathId || '').trim();
+    if (directPathId) return directPathId;
+    const resolvedSubjectId = resolveCourseSubjectId(course);
+    if (resolvedSubjectId) {
+      const subject = subjects.find((item) => item.id === resolvedSubjectId);
+      if (subject?.pathId) return String(subject.pathId);
+    }
+    return matchedSubject?.pathId || '';
+  };
+
   const subjectCourses = useMemo(
     () =>
       courses.filter((course) => {
-        const matchesPath = pathId ? (course.pathId || matchedSubject?.pathId) === pathId : true;
-        const matchesSubject = subjectId ? (course.subjectId || course.subject) === subjectId : true;
+        const matchesPath = pathId ? resolveCoursePathId(course) === pathId : true;
+        const matchesSubject = subjectId ? resolveCourseSubjectId(course) === subjectId : true;
         return !course.isPackage && matchesPath && matchesSubject && canSeeCourse(course);
       }),
-    [courses, isStaffViewer, matchedSubject?.pathId, pathId, subjectId],
+    [courses, isStaffViewer, matchedSubject?.pathId, pathId, subjectId, subjects],
   );
 
   const subjectLibrary = useMemo(
