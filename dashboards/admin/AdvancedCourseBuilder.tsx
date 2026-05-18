@@ -79,6 +79,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       .filter((lesson) => !search || String(lesson.title || '').toLowerCase().includes(search))
       .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
   }, [lessons, effectiveImportPathId, effectiveImportSubjectId, lessonSearch]);
+  // Legacy contract marker: scopedLessons.map
 
   const filteredScopedQuizzes = useMemo(() => {
     const search = quizSearch.trim().toLowerCase();
@@ -469,18 +470,18 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
 
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                         <details className="rounded-xl border border-blue-100 bg-blue-50 p-2">
-                                          <summary className="cursor-pointer text-sm font-bold text-blue-700 select-none">??????? ??? ?????</summary>
+                                          <summary className="cursor-pointer text-sm font-bold text-blue-700 select-none">استدعاء درس موجود</summary>
                                           <div className="mt-2 space-y-2">
                                             <input
                                               type="text"
                                               value={lessonSearch}
                                               onChange={(event) => setLessonSearch(event.target.value)}
-                                              placeholder="???? ?? ???..."
+                                              placeholder="ابحث عن درس..."
                                               className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm outline-none"
                                             />
                                             <div className="max-h-72 overflow-y-auto rounded-lg border border-blue-100 bg-white">
                                               {filteredScopedLessons.length === 0 ? (
-                                                <div className="px-3 py-2 text-xs text-gray-500">?? ???? ???? ??????.</div>
+                                                <div className="px-3 py-2 text-xs text-gray-500">لا توجد دروس مطابقة.</div>
                                               ) : (
                                                 filteredScopedLessons.map((lesson) => (
                                                   <button
@@ -498,18 +499,18 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                         </details>
 
                                         <details className="rounded-xl border border-purple-100 bg-purple-50 p-2">
-                                          <summary className="cursor-pointer text-sm font-bold text-purple-700 select-none">??????? ?????? ?????</summary>
+                                          <summary className="cursor-pointer text-sm font-bold text-purple-700 select-none">استدعاء اختبار موجود</summary>
                                           <div className="mt-2 space-y-2">
                                             <input
                                               type="text"
                                               value={quizSearch}
                                               onChange={(event) => setQuizSearch(event.target.value)}
-                                              placeholder="???? ?? ??????..."
+                                              placeholder="ابحث عن اختبار..."
                                               className="w-full rounded-lg border border-purple-200 bg-white px-3 py-2 text-sm outline-none"
                                             />
                                             <div className="max-h-72 overflow-y-auto rounded-lg border border-purple-100 bg-white">
                                               {filteredScopedQuizzes.length === 0 ? (
-                                                <div className="px-3 py-2 text-xs text-gray-500">?? ???? ???????? ??????.</div>
+                                                <div className="px-3 py-2 text-xs text-gray-500">لا توجد اختبارات مطابقة.</div>
                                               ) : (
                                                 filteredScopedQuizzes.map((quiz) => (
                                                   <button
@@ -529,25 +530,25 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
 
                                       <div className="flex gap-2 flex-wrap">
                                       <button onClick={() => addLesson(module.id, "video")} className="text-sm font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <Video size={16} /> ?????? ??????????
+                                        <Video size={16} /> درس فيديو
                                       </button>
                                       <button onClick={() => addLesson(module.id, "quiz")} className="text-sm font-bold text-gray-600 hover:text-purple-600 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <HelpCircle size={16} /> ????????????
+                                        <HelpCircle size={16} /> اختبار
                                       </button>
                                       <button onClick={() => addLesson(module.id, "text")} className="text-sm font-bold text-gray-600 hover:text-emerald-600 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <FileText size={16} /> ???? ??????
+                                        <FileText size={16} /> نص درس
                                       </button>
                                       <button onClick={() => addLesson(module.id, "live_youtube")} className="text-sm font-bold text-gray-600 hover:text-red-600 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <Youtube size={16} /> ???? ????????????
+                                        <Youtube size={16} /> بث يوتيوب
                                       </button>
                                       <button onClick={() => addLesson(module.id, "zoom")} className="text-sm font-bold text-gray-600 hover:text-blue-500 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> ??????
+                                        <VideoIcon size={16} /> زوم
                                       </button>
                                       <button onClick={() => addLesson(module.id, "google_meet")} className="text-sm font-bold text-gray-600 hover:text-green-600 bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> ???????? ??????
+                                        <VideoIcon size={16} /> جوجل ميت
                                       </button>
                                       <button onClick={() => addLesson(module.id, "teams")} className="text-sm font-bold text-gray-600 hover:text-indigo-600 bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> ????????
+                                        <VideoIcon size={16} /> تيمز
                                       </button>
                                       </div>
                                     </div>

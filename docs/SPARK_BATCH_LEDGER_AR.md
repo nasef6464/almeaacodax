@@ -319,3 +319,30 @@
   - `npm run build` PASS
 - Next:
   - BATCH 25 — RBAC Scope Audit Batch 2
+
+## Update 2026-05-18 — BATCH 24 Final Production Closure
+- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+- Status: Fully closed
+- Production verification:
+  - API health on Render is live and serving latest backend commit (`368e31f...`).
+  - Frontend on Vercel responds 200.
+  - `smoke:production-hardening` PASS
+  - `smoke:integrations-runtime` PASS
+- Final note:
+  - New/updated integration secrets are encrypted at rest.
+  - Legacy plaintext secrets (if any) should be rotated/resaved through admin flow as follow-up hygiene.
+
+## Update 2026-05-18 — BATCH 30 (Finalization pass)
+- Batch: BATCH 30 — Course Settings Scope UX Consistency
+- Status: Programmatically closed, production verification pending
+- Additional scope completed:
+  - Added path/subject scoped filtering for existing lesson/quiz import in `AdvancedCourseBuilder`.
+  - Added search boxes for lesson/quiz import lists.
+  - Made long import lists scrollable to avoid truncated selection UI.
+- Checks:
+  - `npm run smoke:course-builder` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+- Report:
+  - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
+

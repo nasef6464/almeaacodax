@@ -15,7 +15,7 @@ interface CourseBuilderProps {
 }
 
 export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { subjects, sections, skills } = useStore();
+  const { paths, subjects, sections, skills } = useStore();
   const [activeTab, setActiveTab] = useState<'basic' | 'curriculum' | 'settings'>('basic');
   const [editingLesson, setEditingLesson] = useState<{moduleId: string, lesson: Lesson} | null>(null);
   
@@ -35,9 +35,39 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
     fakeRating: 5.0,
     fakeStudentsCount: 0,
   });
+  const selectedPathId = (courseData.pathId || '') as string;
+  const selectedSubjectId = (courseData.subjectId || courseData.subject || '') as string;
+  const availableSubjects = subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId);
+  const visibleSubjectsForSkills = subjects.filter((subject) => {
+    if (selectedSubjectId) return subject.id === selectedSubjectId;
+    if (selectedPathId) return subject.pathId === selectedPathId;
+    return true;
+  });
 
   const handleBasicChange = (field: keyof Course, value: any) => {
     setCourseData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const buildSanitizedCoursePayload = () => {
+    const selectedSkills = (courseData.skills || []) as string[];
+    if (!selectedSkills.length) {
+      return courseData;
+    }
+
+    const selectedSubjectSet = new Set(
+      visibleSubjectsForSkills.map((subject) => String(subject.id)),
+    );
+    const allowedSkillIds = new Set(
+      skills
+        .filter((skill) => selectedSubjectSet.size === 0 || selectedSubjectSet.has(String(skill.subjectId)))
+        .map((skill) => String(skill.id)),
+    );
+    const sanitizedSkills = selectedSkills.filter((skillId) => allowedSkillIds.has(String(skillId)));
+
+    return {
+      ...courseData,
+      skills: sanitizedSkills,
+    };
   };
 
   const handleSaveLesson = (moduleId: string, updatedLesson: Lesson) => {
@@ -172,7 +202,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
           </h2>
         </div>
         <button 
-          onClick={() => onSave(courseData)}
+          onClick={() => onSave(buildSanitizedCoursePayload())}
           className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
         >
           <Save size={18} />
@@ -259,6 +289,55 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
+                    <select
+                      value={selectedPathId}
+                      onChange={(e) => {
+                        const nextPathId = e.target.value;
+                        const nextSubjectId = availableSubjects.some((subject) => subject.id === selectedSubjectId && subject.pathId === nextPathId)
+                          ? selectedSubjectId
+                          : '';
+                        setCourseData((prev) => ({
+                          ...prev,
+                          pathId: nextPathId || undefined,
+                          subjectId: nextSubjectId || undefined,
+                          subject: nextSubjectId || '',
+                          skills: [],
+                        }));
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      <option value="">بدون مسار محدد</option>
+                      {paths.map((path) => (
+                        <option key={path.id} value={path.id}>{path.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
+                    <select
+                      value={selectedSubjectId}
+                      onChange={(e) => {
+                        const nextSubjectId = e.target.value;
+                        setCourseData((prev) => ({
+                          ...prev,
+                          subjectId: nextSubjectId || undefined,
+                          subject: nextSubjectId || '',
+                          skills: [],
+                        }));
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                      <option value="">بدون مادة محددة</option>
+                      {availableSubjects.map((subject) => (
+                        <option key={subject.id} value={subject.id}>{subject.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <label className="block text-sm font-bold text-gray-700 mb-1">السعر</label>
                     <input 
                       type="number" 
@@ -278,7 +357,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                       }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"
                     >
-                      {subjects.map(subject => {
+                      {visibleSubjectsForSkills.map(subject => {
                         const subjectSections = sections.filter(section => section.subjectId === subject.id);
                         const subjectSkills = skills.filter(skill => skill.subjectId === subject.id);
                         if (subjectSections.length === 0 && subjectSkills.length === 0) return null;
