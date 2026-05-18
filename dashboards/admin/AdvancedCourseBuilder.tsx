@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
@@ -22,7 +22,7 @@ interface AdvancedCourseBuilderProps {
 }
 
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
-  const { subjects, sections, skills, lessons, quizzes, users } = useStore();
+  const { paths, subjects, sections, skills, lessons, quizzes, users } = useStore();
   const [activeTab, setActiveTab] = useState<'curriculum' | 'settings'>('curriculum');
   const [settingsTab, setSettingsTab] = useState<'basic' | 'pricing' | 'advanced'>('basic');
   
@@ -56,6 +56,21 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     const matchesSubject = !courseData.subjectId || !quiz.subjectId || quiz.subjectId === courseData.subjectId;
     return matchesPath && matchesSubject && quiz.showOnPlatform !== false;
   });
+  const selectedPathId = (courseData.pathId || '') as string;
+  const selectedSubjectId = (courseData.subjectId || courseData.subject || '') as string;
+  const availableSubjects = useMemo(
+    () => subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId),
+    [selectedPathId, subjects],
+  );
+  const skillSubjects = useMemo(
+    () =>
+      subjects.filter((subject) => {
+        if (selectedSubjectId) return subject.id === selectedSubjectId;
+        if (selectedPathId) return subject.pathId === selectedPathId;
+        return true;
+      }),
+    [selectedPathId, selectedSubjectId, subjects],
+  );
 
   // --- Curriculum Management ---
   const addModule = () => {
@@ -517,6 +532,55 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المسار</label>
+                        <select
+                          value={selectedPathId}
+                          onChange={(e) => {
+                            const nextPathId = e.target.value;
+                            const nextSubjectId = availableSubjects.some((subject) => subject.id === selectedSubjectId && subject.pathId === nextPathId)
+                              ? selectedSubjectId
+                              : '';
+                            setCourseData({
+                              ...courseData,
+                              pathId: nextPathId || undefined,
+                              subjectId: nextSubjectId || undefined,
+                              subject: nextSubjectId || '',
+                              skills: [],
+                            });
+                          }}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="">بدون مسار محدد</option>
+                          {paths.map((path) => (
+                            <option key={path.id} value={path.id}>{path.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">المادة</label>
+                        <select
+                          value={selectedSubjectId}
+                          onChange={(e) => {
+                            const nextSubjectId = e.target.value;
+                            setCourseData({
+                              ...courseData,
+                              subjectId: nextSubjectId || undefined,
+                              subject: nextSubjectId || '',
+                              skills: [],
+                            });
+                          }}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="">بدون مادة محددة</option>
+                          {availableSubjects.map((subject) => (
+                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1">المدرب / المعلم</label>
                         <select
                           value={courseData.assignedTeacherId || ''}
@@ -552,31 +616,78 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">القسم / المسار</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">?????</label>
                         <select 
-                          value={courseData.category || 'القدرات'} 
+                          value={courseData.category || '??????????????'} 
                           onChange={(e) => setCourseData({...courseData, category: e.target.value})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                          <option value="القدرات">القدرات</option>
-                          <option value="التحصيلي">التحصيلي</option>
-                          <option value="الرخصة المهنية">الرخصة المهنية</option>
+                          <option value="??????????????">??????????????</option>
+                          <option value="????????????????">????????????????</option>
+                          <option value="???????????? ??????????????">???????????? ??????????????</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">المستوى</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">??????</label>
+                        <select
+                          value={selectedPathId}
+                          onChange={(e) => {
+                            const nextPathId = e.target.value;
+                            const nextSubjectId = availableSubjects.some((subject) => subject.id === selectedSubjectId && subject.pathId === nextPathId)
+                              ? selectedSubjectId
+                              : '';
+                            setCourseData((prev) => ({
+                              ...prev,
+                              pathId: nextPathId || undefined,
+                              subjectId: nextSubjectId || undefined,
+                              subject: nextSubjectId || '',
+                              skills: [],
+                            }));
+                          }}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="">???? ???? ????</option>
+                          {paths.map((path) => (
+                            <option key={path.id} value={path.id}>{path.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">??????????????</label>
                         <select 
                           value={courseData.level || 'Beginner'} 
                           onChange={(e) => setCourseData({...courseData, level: e.target.value as any})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
-                          <option value="Beginner">مبتدئ (تأسيس)</option>
-                          <option value="Intermediate">متوسط (تدريب)</option>
-                          <option value="Advanced">متقدم (مكثف)</option>
+                          <option value="Beginner">?????????? (??????????)</option>
+                          <option value="Intermediate">?????????? (??????????)</option>
+                          <option value="Advanced">?????????? (????????)</option>
                         </select>
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">??????</label>
+                      <select
+                        value={selectedSubjectId}
+                        onChange={(e) => {
+                          const nextSubjectId = e.target.value;
+                          setCourseData((prev) => ({
+                            ...prev,
+                            subjectId: nextSubjectId || undefined,
+                            subject: nextSubjectId || '',
+                            skills: [],
+                          }));
+                        }}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      >
+                        <option value="">???? ???? ?????</option>
+                        {availableSubjects.map((subject) => (
+                          <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>
@@ -590,7 +701,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 h-32"
                       >
-                        {subjects.map(subject => {
+                        {skillSubjects.map(subject => {
                           const subjectSections = sections.filter(section => section.subjectId === subject.id);
                           const subjectSkills = skills.filter(skill => skill.subjectId === subject.id);
                           if (subjectSections.length === 0 && subjectSkills.length === 0) return null;
