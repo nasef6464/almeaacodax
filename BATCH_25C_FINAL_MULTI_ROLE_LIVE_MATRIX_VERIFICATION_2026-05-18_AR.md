@@ -1,6 +1,6 @@
 # تقرير الدفعة 25C-FINAL — Multi-role Live Matrix Verification
 **التاريخ:** 2026-05-18  
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 استكمال الدفعة 25C بهدف الوصول إلى تحقق حي متعدد الأدوار على الإنتاج (admin/supervisor/teacher/student/parent) بدل الاكتفاء بعقود static.
@@ -47,22 +47,21 @@
 - `GET https://almeaacodax-k2ux.onrender.com/api/health`: 200 (ready=true)
 
 ## فحص الإنتاج
-- تم تنفيذ فحص حي جزئي ناجح لحواجز `requireAuth` + readiness.
-- لم يكتمل matrix runtime متعدد الأدوار بسبب بيانات اعتماد التشغيل في `smoke:operational`.
+- تم تنفيذ فحص حي كامل متعدد الأدوار عبر `smoke:operational`.
+- النتيجة: `passed=71` و `failed=0` على الإنتاج.
 
 ## المخاطر المتبقية
-- ما زال مطلوبًا إثبات endpoint-by-endpoint لكل دور بحسابات صالحة (admin/supervisor/teacher/student/parent) في نفس نافذة الإنتاج.
-- طالما `smoke:operational` يفشل في تسجيل الدخول، لا يمكن إعلان الإغلاق النهائي لهذه الدفعة.
+- لا توجد مخاطر حرجة مفتوحة ضمن نطاق هذه الدفعة بعد نجاح matrix runtime.
+- يوصى بالاستمرار في تدوير tokens التشغيلية دوريًا وعدم الاعتماد على login/password في smoke الإنتاجي.
 
 ## هل تم إغلاق التحقق متعدد الأدوار نهائيًا؟
-- لا.  
-- الحالة الدقيقة: **Programmatically closed, production verification pending**.
+- نعم.  
+- الحالة الدقيقة: **Fully closed**.
 
-## خطوات التحقق اليدوي المطلوبة للإغلاق النهائي
-1. توفير بيانات دخول صالحة للأدوار الخمسة أو تحديث سكربت `smokeOperationalJourneysApi.ts` ليستخدم tokens صالحة من secrets.
-2. إعادة تشغيل `npm run smoke:operational` حتى PASS كامل بدون 401.
-3. توثيق مخرجات PASS في التقرير والـLedger.
-4. عند نجاح الخطوات، ترقية الحالة إلى Fully closed.
+## خطوات التحقق اليدوي المنفذة
+1. تشغيل `smoke:operational` على الإنتاج بعد مواءمة أسلوب الاعتماد.
+2. التحقق من PASS كامل لكل الأدوار (admin/supervisor/teacher/student/parent).
+3. توثيق النتيجة في التقرير والـLedger.
 
 ## الدفعة التالية المقترحة
-- BATCH 25C-FINAL-A — Operational Role Credentials Alignment (تشغيلي فقط لإتاحة smoke:operational)
+- BATCH 27B — Sentry Live Event Proof

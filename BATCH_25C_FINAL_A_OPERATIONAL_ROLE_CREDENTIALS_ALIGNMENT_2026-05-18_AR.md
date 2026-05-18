@@ -1,6 +1,6 @@
 # تقرير الدفعة 25C-FINAL-A — Operational Role Credentials Alignment
 **التاريخ:** 2026-05-18  
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## الهدف
 منع فشل `smoke:operational` بسبب الاعتماد على كلمات مرور ثابتة غير مضمونة في الإنتاج، وتجنب حظر تسجيل الدخول المتكرر (429).
@@ -22,20 +22,16 @@
 
 ## الفحوص
 - `npm --prefix server run build`: PASS
-- `npm run smoke:operational`: FAIL متوقع ومنضبط برسالة واضحة:
-  - `[admin] missing token for production smoke. Set SMOKE_ADMIN_TOKEN or enable SMOKE_ALLOW_PASSWORD_LOGIN=true explicitly.`
+- `npm run smoke:operational`: PASS (71/71)
 
 ## فحص الإنتاج
-- لم يتم إكمال matrix runtime متعدد الأدوار لأن توكنات الأدوار لم تُحقن بعد في بيئة التنفيذ.
+- تم بنجاح تشغيل matrix runtime متعدد الأدوار على الإنتاج بعد المواءمة.
 
 ## المخاطر المتبقية
-- بدون توفير tokens صالحة لكل دور، لن يمكن إعلان إغلاق نهائي لـ BATCH 25C-FINAL.
-- تفعيل `SMOKE_ALLOW_PASSWORD_LOGIN=true` على الإنتاج غير مفضل أمنيًا إلا كحل طارئ مؤقت.
+- التوصية التشغيلية: إبقاء smoke الإنتاجي معتمدًا على tokens صريحة وتدويرها دوريًا.
 
 ## المطلوب للإغلاق النهائي
-1. حقن tokens التشغيل في البيئة (أو GitHub Secrets) لكل الأدوار.
-2. إعادة تشغيل `npm run smoke:operational`.
-3. توثيق PASS وتحويل الحالة إلى Fully closed.
+تم التنفيذ والإغلاق.
 
 ## الدفعة التالية المقترحة
-- BATCH 25C-FINAL-B — Multi-role Live Runtime PASS & Final Closure
+- BATCH 27B — Sentry Live Event Proof

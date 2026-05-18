@@ -487,3 +487,19 @@
   - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
 - Next:
   - BATCH 25C-FINAL-B — Multi-role Live Runtime PASS & Final Closure
+
+## Update 2026-05-18 — BATCH 25C-FINAL / FINAL-A Production Closure
+- Batch: BATCH 25C-FINAL — Multi-role Live Matrix Verification
+- Status: Fully closed
+- Final production evidence:
+  - `npm run smoke:operational` => PASS
+  - Result summary: `total=71`, `passed=71`, `failed=0`
+  - Roles covered in one live run: `admin`, `teacher`, `supervisor`, `student`, `student-redeemed`, `parent`
+- Operational hardening outcome:
+  - `smokeOperationalJourneysApi.ts` now supports explicit per-role tokens for production-safe runtime smoke.
+  - Guardrails prevent accidental repeated password login retries on production by default.
+- Reports:
+  - `BATCH_25C_FINAL_MULTI_ROLE_LIVE_MATRIX_VERIFICATION_2026-05-18_AR.md`
+  - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
+- Next:
+  - BATCH 27B — Sentry Live Event Proof
