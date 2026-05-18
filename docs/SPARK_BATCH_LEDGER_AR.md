@@ -401,3 +401,18 @@
   - Need live Sentry event evidence (issue/release timestamp) to mark Fully closed.
 - Report:
   - `BATCH_27_SENTRY_PRODUCTION_VERIFICATION_2026-05-18_AR.md`
+
+## Update 2026-05-18 — BATCH 25C
+- Batch: BATCH 25C — Live Role Matrix Verification
+- Status: Programmatically closed, production verification pending
+- Live checks completed:
+  - `npm run smoke:security-rbac-phase6` PASS
+  - `npm run smoke:reports-role` PASS
+  - `npm run smoke:supervisor-dashboard` PASS
+  - `npm run smoke:school-management` PASS
+  - Production unauth probes on critical routes returned `401` as expected.
+  - Production `/api/health` PASS on commit `27e3e8905517`.
+- Remaining:
+  - Full multi-role runtime matrix evidence (admin/supervisor/teacher/student/parent) still pending.
+- Report:
+  - `BATCH_25C_LIVE_ROLE_MATRIX_VERIFICATION_2026-05-18_AR.md`

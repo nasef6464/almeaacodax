@@ -2,22 +2,25 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 27 - Sentry Production Verification
+- Active Batch: BATCH 25C - Live Role Matrix Verification
 - Status: Programmatically closed, production verification pending
 
 ## Delivered in this update
-- Verified monitoring contracts and production health readiness.
-- Confirmed production API health is ready with Redis and DB checks passing.
-- Logged remaining requirement: live Sentry event proof before Fully closed.
+- Completed contract-level RBAC scope verification across security/reports/supervisor/school modules.
+- Confirmed production unauthenticated access is blocked (`401`) on critical school/content endpoints.
+- Confirmed production API health readiness and latest backend commit alignment.
 
 ## Checks
-- `npm run smoke:monitoring` PASS
-- `npm run smoke:health-readiness` PASS
-- `GET /api/health` PASS
+- `npm run smoke:security-rbac-phase6` PASS
+- `npm run smoke:reports-role` PASS
+- `npm run smoke:supervisor-dashboard` PASS
+- `npm run smoke:school-management` PASS
+- production unauth probes PASS (401)
+- production health probe PASS
 
 ## Production Verification
-- Health/readiness probes confirmed on production.
-- Pending Sentry live event evidence.
+- Partial live verification completed.
+- Full multi-role runtime verification remains pending.
 
 ## Next Suggested Step
-- BATCH 25B Live Role Matrix Verification + Sentry event proof
+- BATCH 27B — Sentry Live Event Proof
