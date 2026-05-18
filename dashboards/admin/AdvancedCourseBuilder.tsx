@@ -58,6 +58,37 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
   });
   const selectedPathId = (courseData.pathId || '') as string;
   const selectedSubjectId = (courseData.subjectId || courseData.subject || '') as string;
+  const [importPathId, setImportPathId] = useState<string>('');
+  const [importSubjectId, setImportSubjectId] = useState<string>('');
+  const [lessonSearch, setLessonSearch] = useState('');
+  const [quizSearch, setQuizSearch] = useState('');
+  const effectiveImportPathId = importPathId || selectedPathId;
+  const effectiveImportSubjectId = importSubjectId || selectedSubjectId;
+
+  const importSubjects = useMemo(
+    () => subjects.filter((subject) => !effectiveImportPathId || subject.pathId === effectiveImportPathId),
+    [effectiveImportPathId, subjects],
+  );
+
+  const filteredScopedLessons = useMemo(() => {
+    const search = lessonSearch.trim().toLowerCase();
+    return lessons
+      .filter((lesson) => lesson.showOnPlatform !== false)
+      .filter((lesson) => !effectiveImportPathId || !lesson.pathId || lesson.pathId === effectiveImportPathId)
+      .filter((lesson) => !effectiveImportSubjectId || !lesson.subjectId || lesson.subjectId === effectiveImportSubjectId)
+      .filter((lesson) => !search || String(lesson.title || '').toLowerCase().includes(search))
+      .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
+  }, [lessons, effectiveImportPathId, effectiveImportSubjectId, lessonSearch]);
+
+  const filteredScopedQuizzes = useMemo(() => {
+    const search = quizSearch.trim().toLowerCase();
+    return quizzes
+      .filter((quiz) => quiz.showOnPlatform !== false)
+      .filter((quiz) => !effectiveImportPathId || !quiz.pathId || quiz.pathId === effectiveImportPathId)
+      .filter((quiz) => !effectiveImportSubjectId || !quiz.subjectId || quiz.subjectId === effectiveImportSubjectId)
+      .filter((quiz) => !search || String(quiz.title || '').toLowerCase().includes(search))
+      .sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'ar'));
+  }, [quizzes, effectiveImportPathId, effectiveImportSubjectId, quizSearch]);
   const availableSubjects = useMemo(
     () => subjects.filter((subject) => !selectedPathId || subject.pathId === selectedPathId),
     [selectedPathId, subjects],
@@ -404,54 +435,121 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                     {provided.placeholder}
                                     
                                     {/* Add Lesson Buttons */}
-                                    <div className="pt-4 mt-2 border-t border-gray-100 flex gap-2 flex-wrap">
-                                      <select
-                                        defaultValue=""
-                                        onChange={(event) => {
-                                          attachExistingLesson(module.id, event.target.value);
-                                          event.target.value = '';
-                                        }}
-                                        className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700 outline-none"
-                                      >
-                                        <option value="">استدعاء درس موجود</option>
-                                        {scopedLessons.map((lesson) => (
-                                          <option key={lesson.id} value={lesson.id}>{lesson.title}</option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        defaultValue=""
-                                        onChange={(event) => {
-                                          attachExistingQuiz(module.id, event.target.value);
-                                          event.target.value = '';
-                                        }}
-                                        className="rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-sm font-bold text-purple-700 outline-none"
-                                      >
-                                        <option value="">استدعاء اختبار موجود</option>
-                                        {scopedQuizzes.map((quiz) => (
-                                          <option key={quiz.id} value={quiz.id}>{quiz.title}</option>
-                                        ))}
-                                      </select>
-                                      <button onClick={() => addLesson(module.id, 'video')} className="text-sm font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <Video size={16} /> درس فيديو
+                                    <div className="pt-4 mt-2 border-t border-gray-100 space-y-3">
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <select
+                                          value={importPathId}
+                                          onChange={(event) => {
+                                            const nextPathId = event.target.value;
+                                            setImportPathId(nextPathId);
+                                            setImportSubjectId((prev) => {
+                                              if (!prev) return prev;
+                                              const stillValid = subjects.some((subject) => subject.id === prev && (!nextPathId || subject.pathId === nextPathId));
+                                              return stillValid ? prev : '';
+                                            });
+                                          }}
+                                          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-bold text-gray-700 outline-none"
+                                        >
+                                          <option value="">????? ??????? ?????? ??????</option>
+                                          {paths.map((path) => (
+                                            <option key={path.id} value={path.id}>{path.name}</option>
+                                          ))}
+                                        </select>
+                                        <select
+                                          value={importSubjectId}
+                                          onChange={(event) => setImportSubjectId(event.target.value)}
+                                          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-bold text-gray-700 outline-none"
+                                        >
+                                          <option value="">????? ??????? ??????? ??????</option>
+                                          {importSubjects.map((subject) => (
+                                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                                          ))}
+                                        </select>
+                                      </div>
+
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <details className="rounded-xl border border-blue-100 bg-blue-50 p-2">
+                                          <summary className="cursor-pointer text-sm font-bold text-blue-700 select-none">??????? ??? ?????</summary>
+                                          <div className="mt-2 space-y-2">
+                                            <input
+                                              type="text"
+                                              value={lessonSearch}
+                                              onChange={(event) => setLessonSearch(event.target.value)}
+                                              placeholder="???? ?? ???..."
+                                              className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm outline-none"
+                                            />
+                                            <div className="max-h-72 overflow-y-auto rounded-lg border border-blue-100 bg-white">
+                                              {filteredScopedLessons.length === 0 ? (
+                                                <div className="px-3 py-2 text-xs text-gray-500">?? ???? ???? ??????.</div>
+                                              ) : (
+                                                filteredScopedLessons.map((lesson) => (
+                                                  <button
+                                                    key={lesson.id}
+                                                    type="button"
+                                                    onClick={() => attachExistingLesson(module.id, lesson.id)}
+                                                    className="w-full text-right px-3 py-2 text-sm hover:bg-blue-50 border-b border-blue-50 last:border-b-0"
+                                                  >
+                                                    {lesson.title}
+                                                  </button>
+                                                ))
+                                              )}
+                                            </div>
+                                          </div>
+                                        </details>
+
+                                        <details className="rounded-xl border border-purple-100 bg-purple-50 p-2">
+                                          <summary className="cursor-pointer text-sm font-bold text-purple-700 select-none">??????? ?????? ?????</summary>
+                                          <div className="mt-2 space-y-2">
+                                            <input
+                                              type="text"
+                                              value={quizSearch}
+                                              onChange={(event) => setQuizSearch(event.target.value)}
+                                              placeholder="???? ?? ??????..."
+                                              className="w-full rounded-lg border border-purple-200 bg-white px-3 py-2 text-sm outline-none"
+                                            />
+                                            <div className="max-h-72 overflow-y-auto rounded-lg border border-purple-100 bg-white">
+                                              {filteredScopedQuizzes.length === 0 ? (
+                                                <div className="px-3 py-2 text-xs text-gray-500">?? ???? ???????? ??????.</div>
+                                              ) : (
+                                                filteredScopedQuizzes.map((quiz) => (
+                                                  <button
+                                                    key={quiz.id}
+                                                    type="button"
+                                                    onClick={() => attachExistingQuiz(module.id, quiz.id)}
+                                                    className="w-full text-right px-3 py-2 text-sm hover:bg-purple-50 border-b border-purple-50 last:border-b-0"
+                                                  >
+                                                    {quiz.title}
+                                                  </button>
+                                                ))
+                                              )}
+                                            </div>
+                                          </div>
+                                        </details>
+                                      </div>
+
+                                      <div className="flex gap-2 flex-wrap">
+                                      <button onClick={() => addLesson(module.id, "video")} className="text-sm font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <Video size={16} /> ?????? ??????????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'quiz')} className="text-sm font-bold text-gray-600 hover:text-purple-600 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <HelpCircle size={16} /> اختبار
+                                      <button onClick={() => addLesson(module.id, "quiz")} className="text-sm font-bold text-gray-600 hover:text-purple-600 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <HelpCircle size={16} /> ????????????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'text')} className="text-sm font-bold text-gray-600 hover:text-emerald-600 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <FileText size={16} /> نص درس
+                                      <button onClick={() => addLesson(module.id, "text")} className="text-sm font-bold text-gray-600 hover:text-emerald-600 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <FileText size={16} /> ???? ??????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'live_youtube')} className="text-sm font-bold text-gray-600 hover:text-red-600 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <Youtube size={16} /> بث يوتيوب
+                                      <button onClick={() => addLesson(module.id, "live_youtube")} className="text-sm font-bold text-gray-600 hover:text-red-600 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <Youtube size={16} /> ???? ????????????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'zoom')} className="text-sm font-bold text-gray-600 hover:text-blue-500 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> زوم
+                                      <button onClick={() => addLesson(module.id, "zoom")} className="text-sm font-bold text-gray-600 hover:text-blue-500 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <VideoIcon size={16} /> ??????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'google_meet')} className="text-sm font-bold text-gray-600 hover:text-green-600 bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> جوجل ميت
+                                      <button onClick={() => addLesson(module.id, "google_meet")} className="text-sm font-bold text-gray-600 hover:text-green-600 bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <VideoIcon size={16} /> ???????? ??????
                                       </button>
-                                      <button onClick={() => addLesson(module.id, 'teams')} className="text-sm font-bold text-gray-600 hover:text-indigo-600 bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
-                                        <VideoIcon size={16} /> تيمز
+                                      <button onClick={() => addLesson(module.id, "teams")} className="text-sm font-bold text-gray-600 hover:text-indigo-600 bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-200 px-3 py-2 rounded-xl flex items-center gap-2 transition-all">
+                                        <VideoIcon size={16} /> ????????
                                       </button>
+                                      </div>
                                     </div>
                                   </div>
                                 )}
