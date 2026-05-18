@@ -4,6 +4,7 @@ import { RichTextEditor } from '../../components/RichTextEditor';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useStore } from '../../store/useStore';
+import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 import { Plus, GripVertical, Trash2, Edit2, Video, FileText, HelpCircle, File, Settings, BookOpen, Info, Save, X } from 'lucide-react';
 
 const SortableDraggable = Draggable as any;
@@ -43,6 +44,12 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
     if (selectedPathId) return subject.pathId === selectedPathId;
     return true;
   });
+  const getSafeLabel = (value: unknown, fallback: string) => {
+    const text = sanitizeArabicText(String(value || '')).trim();
+    if (!text) return fallback;
+    if (/^\?+$/.test(text)) return fallback;
+    return text;
+  };
 
   const handleBasicChange = (field: keyof Course, value: any) => {
     setCourseData(prev => ({ ...prev, [field]: value }));
@@ -330,7 +337,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                     >
                       <option value="">بدون مادة محددة</option>
                       {availableSubjects.map((subject) => (
-                        <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        <option key={subject.id} value={subject.id}>{getSafeLabel(subject.name, 'مادة بدون اسم')}</option>
                       ))}
                     </select>
                   </div>
@@ -363,12 +370,12 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                         if (subjectSections.length === 0 && subjectSkills.length === 0) return null;
 
                         return (
-                          <optgroup key={subject.id} label={subject.name}>
+                          <optgroup key={subject.id} label={getSafeLabel(subject.name, 'مادة بدون اسم')}>
                             {subjectSections.map(mainSection => {
                               const subSkills = subjectSkills.filter(skill => skill.sectionId === mainSection.id);
                               return (
                                 <React.Fragment key={mainSection.id}>
-                                  <option disabled>{mainSection.name}</option>
+                                  <option disabled>{getSafeLabel(mainSection.name, 'قسم بدون اسم')}</option>
                                   {subSkills.map(subSkill => (
                                     <option key={subSkill.id} value={subSkill.id}>- {subSkill.name}</option>
                                   ))}
@@ -376,7 +383,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                               );
                             })}
                             {subjectSkills.filter(skill => !skill.sectionId).map(skill => (
-                              <option key={skill.id} value={skill.id}>{skill.name}</option>
+                              <option key={skill.id} value={skill.id}>{getSafeLabel(skill.name, 'مهارة بدون اسم')}</option>
                             ))}
                           </optgroup>
                         );

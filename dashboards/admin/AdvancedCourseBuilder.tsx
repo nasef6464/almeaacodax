@@ -830,15 +830,15 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                 const subSkills = subjectSkills.filter(skill => skill.sectionId === mainSection.id);
                                 return (
                                   <React.Fragment key={mainSection.id}>
-                                    <option disabled>{mainSection.name}</option>
+                                    <option disabled>{getSafeLabel(mainSection.name, 'قسم بدون اسم')}</option>
                                     {subSkills.map(subSkill => (
-                                      <option key={subSkill.id} value={subSkill.id}>- {subSkill.name}</option>
+                                      <option key={subSkill.id} value={subSkill.id}>- {getSafeLabel(subSkill.name, 'مهارة بدون اسم')}</option>
                                     ))}
                                   </React.Fragment>
                                 );
                               })}
                               {subjectSkills.filter(skill => !skill.sectionId).map(skill => (
-                                <option key={skill.id} value={skill.id}>{skill.name}</option>
+                                <option key={skill.id} value={skill.id}>{getSafeLabel(skill.name, 'مهارة بدون اسم')}</option>
                               ))}
                             </optgroup>
                           );
