@@ -16,6 +16,7 @@ import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
+import { issueCsrfToken } from "../middleware/csrf.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -188,6 +189,16 @@ const ensureGoogleOAuthEnabled = (res: any) => {
 
 export const authRouter = Router();
 
+const shouldExposeTokenInAuthResponse = env.NODE_ENV !== "production";
+
+authRouter.get(
+  "/csrf-token",
+  asyncHandler(async (_req, res) => {
+    const token = issueCsrfToken(res);
+    return res.json({ csrfToken: token });
+  }),
+);
+
 authRouter.post(
   "/register",
   asyncHandler(async (req, res) => {
@@ -219,7 +230,7 @@ authRouter.post(
     setAuthCookie(res, token);
 
     return res.status(StatusCodes.CREATED).json({
-      token,
+      ...(shouldExposeTokenInAuthResponse ? { token } : {}),
       user: serializeUser(user),
     });
   }),
@@ -268,7 +279,7 @@ authRouter.post(
     setAuthCookie(res, token);
 
     return res.json({
-      token,
+      ...(shouldExposeTokenInAuthResponse ? { token } : {}),
       user: serializeUser(user),
     });
   }),
