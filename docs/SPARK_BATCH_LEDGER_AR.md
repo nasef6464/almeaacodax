@@ -452,3 +452,23 @@
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 - Next:
   - BATCH 25C-FINAL — Multi-role live matrix verification
+
+## Update 2026-05-18 — BATCH 25C-FINAL
+- Batch: BATCH 25C-FINAL — Multi-role Live Matrix Verification
+- Status: Programmatically closed, production verification pending
+- Completed:
+  - `npm run smoke:security-rbac-phase6` PASS
+  - `npm run smoke:reports-role` PASS
+  - `npm run smoke:supervisor-dashboard` PASS
+  - `npm run smoke:school-management` PASS
+  - Production unauth guards verified:
+    - `/content/schools/:id/report` => 401
+    - `/content/schools/:id/import-students` => 401
+    - `/content/access-codes` => 401
+  - Production readiness health verified: `/api/health` => 200 (`ready=true`, commit `27e3e8905517`)
+- Blocker:
+  - `npm run smoke:operational` failed with `401 Invalid email or password` on `/auth/login`, so full runtime role matrix evidence is still pending.
+- Report:
+  - `BATCH_25C_FINAL_MULTI_ROLE_LIVE_MATRIX_VERIFICATION_2026-05-18_AR.md`
+- Next:
+  - BATCH 25C-FINAL-A — Operational Role Credentials Alignment
