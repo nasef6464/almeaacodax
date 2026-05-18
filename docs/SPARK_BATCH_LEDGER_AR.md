@@ -472,3 +472,18 @@
   - `BATCH_25C_FINAL_MULTI_ROLE_LIVE_MATRIX_VERIFICATION_2026-05-18_AR.md`
 - Next:
   - BATCH 25C-FINAL-A — Operational Role Credentials Alignment
+
+## Update 2026-05-18 — BATCH 25C-FINAL-A
+- Batch: BATCH 25C-FINAL-A — Operational Role Credentials Alignment
+- Status: Programmatically closed, production verification pending
+- Changes:
+  - Hardened `server/src/scripts/smokeOperationalJourneysApi.ts` to accept explicit per-role tokens.
+  - Added production guard to block default password-login retries on remote API unless explicitly allowed.
+  - Failure mode is now controlled and actionable (missing token message) instead of triggering account lock/rate-limit.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:operational` FAIL (expected/controlled): missing `SMOKE_ADMIN_TOKEN`
+- Report:
+  - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
+- Next:
+  - BATCH 25C-FINAL-B — Multi-role Live Runtime PASS & Final Closure

@@ -29,7 +29,10 @@
 - تم إضافة قاعدة عمل ثابتة: عدم الانتقال لدفعة جديدة قبل الإغلاق النهائي للدفعة الحالية.
 - الحالة النشطة الآن: `BATCH 25C-FINAL` (تحقق حي متعدد الأدوار) بحالة:
   - `Programmatically closed, production verification pending`
-  - السبب: `smoke:operational` يفشل حاليًا بـ `401 Invalid email or password` ويحتاج مواءمة بيانات اعتماد smoke.
+  - تم تنفيذ `BATCH 25C-FINAL-A` لتأمين سكربت التشغيل:
+    - السكربت أصبح يعتمد على tokens صريحة لكل دور في الإنتاج.
+    - تم منع login/password الافتراضي على الإنتاج إلا بتفعيل مقصود (`SMOKE_ALLOW_PASSWORD_LOGIN=true`).
+  - المطلوب الآن: حقن `SMOKE_*_TOKEN` للأدوار ثم إعادة تشغيل `smoke:operational`.
 
 ## 3) الدفعة الجاري تثبيتها الآن
 

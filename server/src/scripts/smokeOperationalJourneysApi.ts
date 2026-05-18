@@ -2,6 +2,23 @@ const API_BASE = process.env.SMOKE_API_BASE_URL || process.env.SEED_API_BASE_URL
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "nasef64@gmail.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn0508438250";
 const ADMIN_TOKEN = process.env.SMOKE_ADMIN_TOKEN || process.env.GOLIVE_ADMIN_TOKEN || "";
+const TEACHER_EMAIL = process.env.SMOKE_TEACHER_EMAIL || "teacher.quant@almeaa.local";
+const TEACHER_PASSWORD = process.env.SMOKE_TEACHER_PASSWORD || "Teacher@123";
+const TEACHER_TOKEN = process.env.SMOKE_TEACHER_TOKEN || "";
+const SUPERVISOR_EMAIL = process.env.SMOKE_SUPERVISOR_EMAIL || "supervisor.group@almeaa.local";
+const SUPERVISOR_PASSWORD = process.env.SMOKE_SUPERVISOR_PASSWORD || "Supervisor@123";
+const SUPERVISOR_TOKEN = process.env.SMOKE_SUPERVISOR_TOKEN || "";
+const STUDENT_EMAIL = process.env.SMOKE_STUDENT_EMAIL || "student.a@almeaa.local";
+const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "Student@123";
+const STUDENT_TOKEN = process.env.SMOKE_STUDENT_TOKEN || "";
+const STUDENT_REDEEMED_EMAIL = process.env.SMOKE_STUDENT_REDEEMED_EMAIL || "student.d@almeaa.local";
+const STUDENT_REDEEMED_PASSWORD = process.env.SMOKE_STUDENT_REDEEMED_PASSWORD || "Student@123";
+const STUDENT_REDEEMED_TOKEN = process.env.SMOKE_STUDENT_REDEEMED_TOKEN || "";
+const PARENT_EMAIL = process.env.SMOKE_PARENT_EMAIL || "parent.a@almeaa.local";
+const PARENT_PASSWORD = process.env.SMOKE_PARENT_PASSWORD || "Parent@123";
+const PARENT_TOKEN = process.env.SMOKE_PARENT_TOKEN || "";
+const SMOKE_ALLOW_PASSWORD_LOGIN = String(process.env.SMOKE_ALLOW_PASSWORD_LOGIN || "").toLowerCase() === "true";
+const IS_PRODUCTION_REMOTE_SMOKE = /onrender\.com\/api/i.test(API_BASE);
 
 type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
@@ -95,6 +112,31 @@ async function login(email: string, password: string): Promise<AuthSession> {
 async function sessionFromToken(token: string): Promise<AuthSession> {
   const profile = await request<{ user: any }>("/auth/me", "GET", undefined, token);
   return { token, user: profile.user };
+}
+
+async function resolveSession(label: string, email: string, password: string, token?: string): Promise<AuthSession> {
+  const normalizedToken = String(token || "").trim();
+  if (normalizedToken.length > 0) {
+    try {
+      return await sessionFromToken(normalizedToken);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`[${label}] token session failed: ${message}`);
+    }
+  }
+
+  if (IS_PRODUCTION_REMOTE_SMOKE && !SMOKE_ALLOW_PASSWORD_LOGIN) {
+    throw new Error(
+      `[${label}] missing token for production smoke. Set SMOKE_${label.toUpperCase().replace(/-/g, "_")}_TOKEN or enable SMOKE_ALLOW_PASSWORD_LOGIN=true explicitly.`,
+    );
+  }
+
+  try {
+    return await login(email, password);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`[${label}] login failed for ${email}: ${message}`);
+  }
 }
 
 function pushResult(results: CheckResult[], role: string, check: string, passed: boolean, details: string) {
@@ -212,15 +254,17 @@ async function run() {
   const schoolName = "مدرسة الرياضة - تشغيل";
   const pendingLessonTitle = "مراجعة سريعة على الكسور المركبة";
 
-  const admin =
-    ADMIN_TOKEN.trim().length > 0
-      ? await sessionFromToken(ADMIN_TOKEN.trim())
-      : await login(ADMIN_EMAIL, ADMIN_PASSWORD);
-  const teacher = await login("teacher.quant@almeaa.local", "Teacher@123");
-  const supervisor = await login("supervisor.group@almeaa.local", "Supervisor@123");
-  const student = await login("student.a@almeaa.local", "Student@123");
-  const studentRedeemed = await login("student.d@almeaa.local", "Student@123");
-  const parent = await login("parent.a@almeaa.local", "Parent@123");
+  const admin = await resolveSession("admin", ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_TOKEN);
+  const teacher = await resolveSession("teacher", TEACHER_EMAIL, TEACHER_PASSWORD, TEACHER_TOKEN);
+  const supervisor = await resolveSession("supervisor", SUPERVISOR_EMAIL, SUPERVISOR_PASSWORD, SUPERVISOR_TOKEN);
+  const student = await resolveSession("student", STUDENT_EMAIL, STUDENT_PASSWORD, STUDENT_TOKEN);
+  const studentRedeemed = await resolveSession(
+    "student-redeemed",
+    STUDENT_REDEEMED_EMAIL,
+    STUDENT_REDEEMED_PASSWORD,
+    STUDENT_REDEEMED_TOKEN,
+  );
+  const parent = await resolveSession("parent", PARENT_EMAIL, PARENT_PASSWORD, PARENT_TOKEN);
 
   const [
     adminMe,
