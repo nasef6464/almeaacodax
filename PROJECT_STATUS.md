@@ -18,11 +18,12 @@
 - `npm run smoke:monitoring` PASS
 - `npm run smoke:health-readiness` PASS
 - `npm run smoke:sentry-runtime` PASS
+- `npm run smoke:sentry-live-proof` FAIL (Missing `SMOKE_ADMIN_TOKEN`)
 
 ## Production Verification
 - Monitoring and health contracts are passing.
 - Final live Sentry event proof in production is still pending (`eventId` must be captured from production and matched inside Sentry dashboard).
+- Render health still reports older commit than latest GitHub push, so live proof must run after deploy sync.
 
 ## Next Suggested Step
 - BATCH 27D — Sentry Live Production Event Proof (Final closure evidence)
-

@@ -22,6 +22,18 @@
 
 ممنوع إعلان "Fully closed" بدون تحقق إنتاجي حقيقي.
 
+## 1.1) قاعدة إلزامية جديدة بعد كل دفعة
+
+بعد إغلاق أي دفعة (سواء Programmatic أو Fully closed) يجب تحديث هذا الملف مباشرة دائمًا، ويتضمن:
+1. اسم الدفعة.
+2. الحالة النهائية للدفعة.
+3. آخر commit hash.
+4. أوامر الفحوص التي تم تشغيلها ونتيجتها.
+5. حالة GitHub push.
+6. حالة نشر Vercel/Render.
+7. حالة التحقق الحي من رابط الإنتاج.
+8. أي خطوة متبقية للإغلاق الكامل.
+
 ## 2) الحالة الحالية المختصرة
 
 - تم إغلاق BATCH 24 إغلاقًا نهائيًا (تشفير أسرار التكاملات at-rest + تحقق إنتاجي).
@@ -34,6 +46,8 @@
   - نتائج 27C:
     - build/typecheck/smoke monitoring/health/sentry-runtime: PASS.
     - endpoint جديد: `POST /api/operations/sentry/test-event` (admin only) لإثبات event حي.
+    - سكربت جديد جاهز: `npm run smoke:sentry-live-proof`.
+    - آخر تشغيل للسكربت: FAIL بسبب غياب `SMOKE_ADMIN_TOKEN` في بيئة التنفيذ.
     - ما زال مطلوب توثيق `eventId` حي من إنتاج Sentry لإعلان Fully closed.
 - آخر commit مرفوع قبل 27C كان: `99cf363` (دفعة 27B).
 
@@ -49,6 +63,13 @@
 - نقطة البداية التالية المقترحة:
   - `BATCH 27D — Sentry Live Production Event Proof (final evidence)`
   - لا تبدأها إلا بعد طلب المالك الصريح: **"كمل حسب الخطة"**.
+
+### متطلبات إغلاق 27D بسرعة
+1. التأكد أن Render سحب آخر commit من GitHub.
+2. توفير `SMOKE_ADMIN_TOKEN` صالح في بيئة التشغيل.
+3. تشغيل:
+   - `npm run smoke:sentry-live-proof`
+4. مطابقة `eventId` داخل Sentry Dashboard.
 
 ## 4) تسلسل التشغيل القياسي لأي حساب جديد
 
@@ -69,6 +90,55 @@
 - قد لا يملك الحساب الجديد صلاحيات مباشرة على GitHub/Render/Vercel/MongoDB؛ عندها يجهز الكود والفحوص ويطلب من المالك تنفيذ خطوة الوصول.
 - لا يتم تخزين أو مشاركة أسرار (.env, tokens, keys) داخل المستودع أو التقارير.
 - في حال فشل smoke أو timeout لا تعتبر الدفعة مغلقة نهائيًا.
+
+## 5.1) استراتيجية التشغيل الموحدة (GitHub + Vercel + Render + Mongo)
+
+هذه الاستراتيجية إلزامية لأي حساب جديد حتى يستمر بنفس الطريقة بدون انقطاع:
+
+1. قبل البدء:
+   - قراءة: `PROJECT_STATUS.md` + `docs/SPARK_BATCH_LEDGER_AR.md` + `docs/SPARK_EXECUTION_ROADMAP_AR.md` + هذا الملف.
+   - تشغيل: `git status --short --branch` و `git diff --stat`.
+2. أثناء التنفيذ:
+   - العمل على دفعة واحدة فقط.
+   - عدم توسيع النطاق.
+   - تشغيل الفحوص المطلوبة كاملة.
+3. قبل الإغلاق:
+   - تحديث تقرير الدفعة.
+   - تحديث `PROJECT_STATUS.md`.
+   - تحديث `docs/SPARK_BATCH_LEDGER_AR.md`.
+   - تحديث هذا الملف (`docs/NEXT_SESSION_HANDOVER_AR.md`).
+4. الرفع:
+   - `git add` (ملفات الدفعة فقط)
+   - `git commit`
+   - `git push origin main`
+5. النشر والتحقق:
+   - التأكد من وصول commit إلى GitHub.
+   - متابعة Vercel deployment حتى Ready.
+   - متابعة Render deployment حتى Ready.
+   - التحقق من:
+     - `https://almeaacodax.vercel.app/`
+     - `https://almeaacodax-k2ux.onrender.com/api/health`
+   - تنفيذ فحص حي بصري من المتصفح الداخلي للرابط:
+     - `https://almeaacodax.vercel.app/#/`
+6. قاعدة الأسرار:
+   - يمنع كتابة أي token/secret/password داخل الملفات.
+   - بيانات الربط تبقى في منصات الإدارة (GitHub Secrets / Render Env / Vercel Env / Mongo Atlas) فقط.
+7. إذا تعطل النشر:
+   - لا تعلن Fully closed.
+   - سجل سبب التعطل والخطوة المطلوبة من المالك بوضوح.
+
+## 5.2) بيانات الاستمرارية المطلوبة للحساب التالي (بدون أسرار)
+
+يلزم أن يحتوي هذا الملف دائمًا على:
+1. رابط المستودع GitHub.
+2. رابط Frontend الإنتاجي (Vercel).
+3. رابط API الإنتاجي (Render).
+4. مسار فحص الصحة (`/api/health`).
+5. أوامر الفحص القياسية.
+6. الدفعة النشطة الحالية.
+7. الدفعة التالية المقترحة.
+
+> ملاحظة: لا يتم وضع أي مفاتيح API أو كلمات مرور أو JWT داخل هذا الملف نهائيًا.
 
 ## 6) تعريف نجاح الدفعة
 

@@ -535,6 +535,7 @@
   - `npm run smoke:monitoring` PASS
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:sentry-runtime` PASS
+  - `npm run smoke:sentry-live-proof` FAIL (Missing `SMOKE_ADMIN_TOKEN`)
 - Report:
   - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
 - Next:

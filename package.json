@@ -40,6 +40,7 @@
     "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
     "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
     "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
+    "smoke:sentry-live-proof": "node scripts/smoke-sentry-live-proof.mjs",
     "smoke:database": "node scripts/smoke-database-index-contract.mjs",
     "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
     "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",

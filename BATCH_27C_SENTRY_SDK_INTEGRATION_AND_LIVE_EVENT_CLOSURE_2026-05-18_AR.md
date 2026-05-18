@@ -53,6 +53,7 @@
 - `npm run smoke:monitoring`: PASS
 - `npm run smoke:health-readiness`: PASS
 - `npm run smoke:sentry-runtime`: PASS
+- `npm run smoke:sentry-live-proof`: FAIL (Missing `SMOKE_ADMIN_TOKEN`)
 
 ## فحص الإنتاج
 - تم التحقق البرمجي من readiness/monitoring contracts بنجاح.
@@ -60,6 +61,7 @@
 
 ## المخاطر المتبقية
 - بدون تنفيذ نداء حي على الإنتاج وتوثيق `eventId` من Sentry Dashboard لا يمكن إعلان Fully closed.
+- نشر Render الحالي ما زال على commit أقدم من دمج 27C، لذلك endpoint الجديد يحتاج إكمال دورة deploy أولًا.
 
 ## خطوات التحقق اليدوي (الإنتاج)
 1. تأكد أن `SENTRY_DSN` مضبوط في Render (backend) و`VITE_SENTRY_DSN` في Vercel (frontend).
@@ -72,4 +74,3 @@
 
 ## الدفعة التالية المقترحة
 - BATCH 27D — Sentry Live Production Event Proof (final evidence + closure)
-
