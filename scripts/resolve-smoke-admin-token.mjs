@@ -2,6 +2,8 @@ const API_BASE = String(process.env.SMOKE_API_BASE_URL || "https://almeaacodax-k
 const ADMIN_EMAIL = String(process.env.SMOKE_ADMIN_EMAIL || process.env.GOLIVE_ADMIN_EMAIL || process.env.ADMIN_EMAIL || "").trim();
 const ADMIN_PASSWORD = String(process.env.SMOKE_ADMIN_PASSWORD || process.env.GOLIVE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || "").trim();
 const AUTH_COOKIE_NAME = "almeaa_access_token";
+const CSRF_COOKIE_NAME = "almeaa_csrf_token";
+const CSRF_HEADER_NAME = "x-csrf-token";
 
 if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
   console.error(
@@ -10,10 +12,54 @@ if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
   process.exit(1);
 }
 
+const extractCookieValue = (setCookieHeader, cookieName) => {
+  const cookieMatch = String(setCookieHeader || "").match(new RegExp(`${cookieName}=([^;]+)`));
+  return String(cookieMatch?.[1] || "").trim();
+};
+
+const csrfResponse = await fetch(`${API_BASE}/auth/csrf-token`, {
+  method: "GET",
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+const csrfRawBody = await csrfResponse.text();
+let csrfPayload = null;
+try {
+  csrfPayload = JSON.parse(csrfRawBody);
+} catch {
+  csrfPayload = null;
+}
+
+const csrfHeader = response => response.headers.get("set-cookie") || "";
+const csrfCookie = extractCookieValue(csrfHeader(csrfResponse), CSRF_COOKIE_NAME);
+const csrfToken = String(csrfPayload?.csrfToken || csrfCookie).trim();
+
+if (!csrfResponse.ok || !csrfCookie || !csrfToken) {
+  console.error(
+    JSON.stringify(
+      {
+        ok: false,
+        step: "csrf",
+        status: csrfResponse.status,
+        csrfCookiePresent: Boolean(csrfCookie),
+        csrfTokenPresent: Boolean(csrfToken),
+        body: csrfPayload || csrfRawBody,
+      },
+      null,
+      2,
+    ),
+  );
+  process.exit(1);
+}
+
 const response = await fetch(`${API_BASE}/auth/login`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+    [CSRF_HEADER_NAME]: csrfToken,
+    Cookie: `${CSRF_COOKIE_NAME}=${csrfCookie}`,
   },
   body: JSON.stringify({
     email: ADMIN_EMAIL,
@@ -62,9 +108,7 @@ if (bodyToken) {
   process.exit(0);
 }
 
-const setCookieHeader = response.headers.get("set-cookie") || "";
-const cookieMatch = setCookieHeader.match(new RegExp(`${AUTH_COOKIE_NAME}=([^;]+)`));
-const cookieToken = String(cookieMatch?.[1] || "").trim();
+const cookieToken = extractCookieValue(response.headers.get("set-cookie"), AUTH_COOKIE_NAME);
 
 if (cookieToken) {
   console.log(
