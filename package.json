@@ -26,6 +26,7 @@
     "smoke:results": "node scripts/smoke-results-contract.mjs",
     "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
     "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
+    "smoke:course-visibility": "node scripts/smoke-course-visibility-contract.mjs",
     "smoke:video-questions": "node scripts/smoke-video-questions-contract.mjs",
     "smoke:package-revenue": "node scripts/smoke-package-revenue-contract.mjs",
     "smoke:payment-package": "node scripts/smoke-payment-package-contract.mjs",

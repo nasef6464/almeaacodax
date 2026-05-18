@@ -574,3 +574,27 @@
   - admin token resolver updated for CSRF-protected production login
 - Reports:
   - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
+
+## Update 2026-05-19 — BATCH 30C Final Production Closure
+- Batch: BATCH 30C — Course Visibility Contract (Admin -> Student)
+- Status: Fully closed
+- Delivered:
+  - Added `scripts/smoke-course-visibility-contract.mjs`
+  - Added npm command `smoke:course-visibility`
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-visibility` PASS
+- Production evidence:
+  - `GET /api/content/bootstrap?scope=learning&phase=full` => 200 with zero visibility violations
+  - `GET /api/courses` => 200 with zero visibility violations
+  - Frontend probe => 200
+  - Backend health => 200 (`ready=true`, commit `83832c0426e5`)
+- Visual live evidence (in-app browser):
+  - Learner subject page loaded from production and rendered visible foundation topics.
+  - Topic modal opened and learner content tabs rendered correctly.
+- Report:
+  - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
+- Next:
+  - BATCH 30D — Curriculum Import Scope Guard

@@ -614,3 +614,8 @@ pm run smoke:health-readiness.
   1. BATCH 30C — Course Visibility Contract (Admin -> Student)
   2. BATCH 30D — Curriculum Import Scope Guard
 - Rule: do not start 30D before full closure of 30C.
+
+## Update 2026-05-19 — BATCH 30C Closure Progress
+- BATCH 30C (Course Visibility Contract) completed with full closure evidence (code + checks + production API verification + in-app visual verification).
+- Next execution target remains:
+  1. BATCH 30D — Curriculum Import Scope Guard

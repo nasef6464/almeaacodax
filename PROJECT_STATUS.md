@@ -45,3 +45,27 @@
 
 ## Next Suggested Step
 - Await owner direction for the next batch under single-batch closure mode.
+
+## Update 2026-05-19 - BATCH 30C Final Closure
+- Batch: `BATCH 30C - Course Visibility Contract (Admin -> Student)`
+- Final status: `Fully closed`
+- Implemented:
+  - Added learner visibility smoke contract: `scripts/smoke-course-visibility-contract.mjs`
+  - Added npm script: `smoke:course-visibility`
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-visibility` PASS
+- Production verification:
+  - `GET /api/content/bootstrap?scope=learning&phase=full` => 200, no visibility violations
+  - `GET /api/courses` => 200, no publish/visibility/approval violations
+  - Frontend: `https://almeaacodax.vercel.app/` => 200
+  - Backend health: `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `83832c0426e5`)
+- Live visual verification (in-app browser):
+  - Opened learner subject page on production and verified visible foundation topics render.
+  - Opened topic modal (`???????? ????????`) and confirmed tabs/content (`????????`, `????????? ???????`, `??? ?????`) render correctly.
+- Report:
+  - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
+- Next suggested:
+  - `BATCH 30D — Curriculum Import Scope Guard`

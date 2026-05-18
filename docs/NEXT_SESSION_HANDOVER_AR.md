@@ -315,3 +315,26 @@
   - أين يعتمد الحساب التالي على البيئة المحلية
   - ما هي السكربتات الجاهزة لإعادة الاستخدام
   - ما الذي لا يحتاج إعادة اكتشاف من الصفر
+
+## 13) Update 2026-05-19 — BATCH 30C Final Closure
+- Batch `30C` is now **Fully closed**.
+- Scope completed:
+  - learner visibility contract aligned between API filters and learner UI gates.
+  - dedicated smoke contract added: `scripts/smoke-course-visibility-contract.mjs`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-visibility` PASS
+- Production verification:
+  - `GET /api/content/bootstrap?scope=learning&phase=full` => 200 with no hidden/unapproved leakage.
+  - `GET /api/courses` => 200 with no visibility contract violations.
+  - frontend `https://almeaacodax.vercel.app/` => 200.
+  - backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `83832c0426e5`).
+- Visual verification (in-app browser): PASS
+  - learner subject page rendered correctly.
+  - learner topic modal rendered tabs/content correctly.
+- Report:
+  - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
+- Next proposed batch:
+  - `BATCH 30D — Curriculum Import Scope Guard`
