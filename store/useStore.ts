@@ -647,7 +647,7 @@ export const useStore = create<AppState>()(
                 const newActivity: Activity = {
                     id: Date.now().toString(),
                     type: 'lesson_complete',
-                    title: `Ø£ÙƒÙ…Ù„Øª Ø¯Ø±Ø³: ${lessonTitle}`,
+                    title: `أكملت درس: ${lessonTitle}`,
                     date: new Date().toISOString(),
                     link: `/course/${courseId}`
                 };
@@ -674,7 +674,7 @@ export const useStore = create<AppState>()(
                 const newActivity: Activity = {
                     id: Date.now().toString(),
                     type: 'quiz_complete',
-                    title: `Ø£Ù†Ù‡ÙŠØª Ø§Ø®ØªØ¨Ø§Ø±: ${result.quizTitle} Ø¨Ù†ØªÙŠØ¬Ø© ${result.score}%`,
+                    title: `أنهيت اختبار: ${result.quizTitle} بنتيجة ${result.score}%`,
                     date: new Date().toISOString(),
                     link: `/results`
                 };
