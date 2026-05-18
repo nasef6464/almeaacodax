@@ -305,3 +305,13 @@
   - `https://almeaacodax-k2ux.onrender.com/api/health` => `200`, `ready=true`, commit `83832c0426e5`
 - Remaining step for the next account:
   - no mandatory continuation for BATCH 27C; wait for owner direction before opening the next batch.
+
+## 12) ملف الربط والاستمرارية للحساب التالي
+- يوجد ملف مرجعي إضافي يجب قراءته قبل أي محاولة لإعادة فحص الربط أو إعادة اكتشاف الأسرار/الخدمات:
+  - `docs/CONNECTED_SERVICES_HANDOVER_AR.md`
+- هذا الملف يوضح:
+  - ما هو مربوط فعليًا الآن
+  - ما الذي تم التحقق منه على GitHub / Render / Vercel / MongoDB / Sentry
+  - أين يعتمد الحساب التالي على البيئة المحلية
+  - ما هي السكربتات الجاهزة لإعادة الاستخدام
+  - ما الذي لا يحتاج إعادة اكتشاف من الصفر
