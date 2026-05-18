@@ -41,6 +41,13 @@
 - `npm run smoke:course-builder`: PASS
 - `npm run typecheck`: PASS
 - `npm run build`: PASS
+- `npm run smoke:production-hardening`: PASS
+
+## تأكيد إغلاق إضافي (2026-05-18)
+- إعادة تشغيل smoke contracts بعد آخر إصلاحات النصوص/الفلترة:
+  - `smoke:course-builder`: PASS (4/4)
+  - `smoke:production-hardening`: PASS (5/5)
+- لا يوجد حاليًا ظهور `????` داخل ملفات الباني الأساسية (`CourseBuilder` + `AdvancedCourseBuilder`) بعد التطبيع.
 
 ## فحص الإنتاج
 - `https://almeaacodax.vercel.app/`: HTTP 200 ✅
