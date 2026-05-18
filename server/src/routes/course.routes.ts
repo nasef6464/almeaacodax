@@ -2,6 +2,8 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
+import { LessonModel } from "../models/Lesson.js";
+import { QuizModel } from "../models/Quiz.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
@@ -158,6 +160,118 @@ const buildOwnedCourseQuery = (
   return { $and: [baseQuery, { $or: ownershipConditions }] };
 };
 
+type CurriculumLesson = {
+  id?: string;
+  title?: string;
+  type?: string;
+  quizId?: string;
+  pathId?: string;
+  subjectId?: string;
+};
+
+type CurriculumModule = {
+  id?: string;
+  title?: string;
+  lessons?: CurriculumLesson[];
+};
+
+const getRefIdCandidates = (value?: string) => {
+  const raw = String(value || "").trim();
+  if (!raw) return [];
+
+  // Imported entries keep stable prefixes in the builder, e.g. course_quiz_<id>_<timestamp>.
+  const prefixedMatch = raw.match(/^course_(quiz|lesson)_(.+)_\d+$/);
+  if (prefixedMatch?.[2]) {
+    return [prefixedMatch[2], raw];
+  }
+
+  return [raw];
+};
+
+const isScopeMismatch = (
+  itemPathId: string,
+  itemSubjectId: string,
+  coursePathId: string,
+  courseSubjectId: string,
+) => {
+  if (!coursePathId || !courseSubjectId) return false;
+  if (!itemPathId || !itemSubjectId) return false;
+  return itemPathId !== coursePathId || itemSubjectId !== courseSubjectId;
+};
+
+const assertCurriculumImportScope = async (params: {
+  coursePathId?: string;
+  courseSubjectId?: string;
+  modules?: CurriculumModule[];
+}) => {
+  const coursePathId = String(params.coursePathId || "").trim();
+  const courseSubjectId = String(params.courseSubjectId || "").trim();
+  const modules = Array.isArray(params.modules) ? params.modules : [];
+
+  if (!coursePathId || !courseSubjectId || modules.length === 0) {
+    return;
+  }
+
+  for (const moduleItem of modules) {
+    const lessons = Array.isArray(moduleItem.lessons) ? moduleItem.lessons : [];
+
+    for (const lesson of lessons) {
+      const lessonPathId = String(lesson.pathId || "").trim();
+      const lessonSubjectId = String(lesson.subjectId || "").trim();
+      if (isScopeMismatch(lessonPathId, lessonSubjectId, coursePathId, courseSubjectId)) {
+        throw new Error(`Lesson scope mismatch in module \"${String(moduleItem.title || "")}\"`);
+      }
+
+      const quizId = String(lesson.quizId || "").trim();
+      if (quizId) {
+        const idCandidates = getRefIdCandidates(quizId);
+        const quizDoc = await QuizModel.findOne({
+          $or: [{ id: { $in: idCandidates } }, { _id: { $in: idCandidates } }],
+        })
+          .select("pathId subjectId")
+          .lean();
+
+        if (!quizDoc) {
+          throw new Error(`Referenced quiz not found: ${quizId}`);
+        }
+
+        if (
+          isScopeMismatch(
+            String((quizDoc as { pathId?: string }).pathId || ""),
+            String((quizDoc as { subjectId?: string }).subjectId || ""),
+            coursePathId,
+            courseSubjectId,
+          )
+        ) {
+          throw new Error(`Quiz scope mismatch: ${quizId}`);
+        }
+      }
+
+      const lessonIdCandidates = getRefIdCandidates(String(lesson.id || ""));
+      if (lessonIdCandidates.length > 0) {
+        const lessonDoc = await LessonModel.findOne({
+          $or: [{ id: { $in: lessonIdCandidates } }, { _id: { $in: lessonIdCandidates } }],
+        })
+          .select("pathId subjectId")
+          .lean();
+
+        if (lessonDoc) {
+          if (
+            isScopeMismatch(
+              String((lessonDoc as { pathId?: string }).pathId || ""),
+              String((lessonDoc as { subjectId?: string }).subjectId || ""),
+              coursePathId,
+              courseSubjectId,
+            )
+          ) {
+            throw new Error(`Lesson import scope mismatch: ${String(lesson.id || "")}`);
+          }
+        }
+      }
+    }
+  }
+};
+
 export const courseRouter = Router();
 
 const PUBLIC_COURSE_LIST_CACHE_TTL_MS = 60 * 1000;
@@ -243,6 +357,11 @@ courseRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = courseSchema.parse(req.body);
+    await assertCurriculumImportScope({
+      coursePathId: payload.pathId,
+      courseSubjectId: payload.subjectId,
+      modules: payload.modules as CurriculumModule[],
+    });
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await CourseModel.create({
       ...payload,
@@ -264,9 +383,26 @@ courseRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = courseSchema.partial().parse(req.body);
+    const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!)).lean();
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
+    }
+
+    const nextPathId = String(payload.pathId || (existing as { pathId?: string }).pathId || "").trim();
+    const nextSubjectId = String(payload.subjectId || (existing as { subjectId?: string }).subjectId || "").trim();
+    const nextModules = Array.isArray(payload.modules)
+      ? (payload.modules as CurriculumModule[])
+      : ((existing as { modules?: CurriculumModule[] }).modules || []);
+
+    await assertCurriculumImportScope({
+      coursePathId: nextPathId,
+      courseSubjectId: nextSubjectId,
+      modules: nextModules,
+    });
+
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
     const updated = await CourseModel.findOneAndUpdate(
-      buildOwnedCourseQuery(req.params.id, req.authUser!),
+      { _id: (existing as { _id: string })._id },
       sanitizedPayload,
       { new: true },
     );

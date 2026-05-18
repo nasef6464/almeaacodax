@@ -619,3 +619,11 @@ pm run smoke:health-readiness.
 - BATCH 30C (Course Visibility Contract) completed with full closure evidence (code + checks + production API verification + in-app visual verification).
 - Next execution target remains:
   1. BATCH 30D — Curriculum Import Scope Guard
+
+## Update 2026-05-19 — BATCH 30D Closure Progress
+- BATCH 30D (Curriculum Import Scope Guard) completed and fully closed.
+- Live learning-space verification also covered owner-requested additions:
+  - course visibility
+  - training visibility
+  - exam visibility
+- Next target: await owner direction.

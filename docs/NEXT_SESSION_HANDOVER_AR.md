@@ -338,3 +338,22 @@
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next proposed batch:
   - `BATCH 30D — Curriculum Import Scope Guard`
+
+## 14) Update 2026-05-19 — BATCH 30D Final Closure
+- Batch `30D` is now **Fully closed**.
+- Scope delivered:
+  - enforced server-side curriculum import scope guard in `course.routes`.
+  - prevented cross-scope lesson/quiz import references outside course `pathId/subjectId`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:curriculum-import-scope` PASS
+  - `npm run smoke:course-visibility` PASS
+- Live production verification (owner requested):
+  - added and verified live course in learning space: `30D Visibility Course 1779142597180`.
+  - added and verified live training quiz in `التدريب`: `30D Training Quiz 1779142597180`.
+  - added and verified live mock exam in `الاختبارات`: `30D Mock Quiz 1779142597180`.
+  - in-app browser visual verification passed.
+- Report:
+  - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
+- Next:
+  - await owner direction for the next batch.

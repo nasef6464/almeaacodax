@@ -69,3 +69,26 @@
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next suggested:
   - `BATCH 30D — Curriculum Import Scope Guard`
+
+## Update 2026-05-19 - BATCH 30D Final Closure
+- Batch: `BATCH 30D - Curriculum Import Scope Guard`
+- Final status: `Fully closed`
+- Implemented:
+  - Added server-side curriculum import scope guard in `server/src/routes/course.routes.ts`.
+  - Guard validates module lesson/quiz references stay within course `pathId/subjectId`.
+  - Added smoke contract: `scripts/smoke-curriculum-import-scope-guard-contract.mjs`.
+  - Added npm command: `smoke:curriculum-import-scope`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:curriculum-import-scope` PASS
+  - `npm run smoke:course-visibility` PASS
+- Live production verification (owner request):
+  - Added and verified a live course in learning space: `30D Visibility Course 1779142597180`.
+  - Added and verified a live training quiz in learning space: `30D Training Quiz 1779142597180`.
+  - Added and verified a live mock exam in learning space: `30D Mock Quiz 1779142597180`.
+  - In-app browser visual verification passed for tabs: `???????`, `???????`, `??????????`.
+- Production probes:
+  - Frontend probe => 200
+  - Backend health => 200 (`ready=true`, commit `83832c0426e5`)
+- Report:
+  - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
