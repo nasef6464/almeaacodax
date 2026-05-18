@@ -39,6 +39,7 @@
     "smoke:deployment-cache": "node scripts/smoke-deployment-cache-contract.mjs",
     "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
     "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
+    "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
     "smoke:database": "node scripts/smoke-database-index-contract.mjs",
     "smoke:notifications": "node scripts/smoke-notification-contract.mjs",
     "smoke:notification-phase10": "node scripts/smoke-notification-phase10-contract.mjs",
@@ -47,6 +48,8 @@
     "smoke:auth-frontend": "node scripts/smoke-auth-frontend-contract.mjs",
     "smoke:auth-login-security": "node scripts/smoke-auth-login-security-contract.mjs",
     "smoke:auth-cookie": "node scripts/smoke-auth-cookie-contract.mjs",
+    "smoke:auth-token-response": "node scripts/smoke-auth-token-response-contract.mjs",
+    "smoke:csrf": "node scripts/smoke-csrf-contract.mjs",
     "smoke:api-security": "node scripts/smoke-api-security-contract.mjs",
     "smoke:question-html-security": "node scripts/smoke-question-html-security-contract.mjs",
     "smoke:route-loading": "node scripts/smoke-route-loading-contract.mjs",
@@ -79,6 +82,7 @@
     "restore:learning": "npm --prefix server run restore:learning"
   },
   "dependencies": {
+    "@sentry/react": "^9.18.0",
     "@google/genai": "^1.30.0",
     "@hello-pangea/dnd": "^18.0.1",
     "firebase": "^12.12.0",

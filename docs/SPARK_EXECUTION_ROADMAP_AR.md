@@ -578,3 +578,32 @@ pm run smoke:health-readiness.
   8. Visual + functional verification is executed in the in-app browser on production screens touched by the batch.
   9. Role-based verification is executed for affected roles (admin/student/teacher/supervisor/parent) with evidence notes.
   10. Any role not verifiable in-session must be documented explicitly as a pending production check (not silently skipped).
+
+## Update 2026-05-18 — BATCH 24 Final Production Closure
+- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+- Status: Fully closed
+- Evidence:
+  - Render health endpoint serves latest backend commit (`368e31f...`).
+  - Vercel frontend probe is HTTP 200.
+  - `smoke:production-hardening` PASS.
+- `smoke:integrations-runtime` PASS.
+- Next suggested: BATCH 25 — RBAC Scope Audit Batch 2
+
+## Update 2026-05-18 — BATCH 27C
+- Batch: BATCH 27C — Sentry SDK Integration + Live Event Closure
+- Status: Programmatically closed, production verification pending
+- Implemented:
+  - Backend Sentry runtime integration (`@sentry/node`) with safe init path and capture helpers.
+  - 5xx error capture from global error handler with request context.
+  - Admin-only endpoint to emit test event: `POST /api/operations/sentry/test-event`.
+  - Frontend Sentry runtime init (`@sentry/react`).
+  - Runtime smoke contract: `smoke:sentry-runtime`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:sentry-runtime` PASS
+- Next suggested:
+  - BATCH 27D — Sentry Live Production Event Proof (final closure evidence)

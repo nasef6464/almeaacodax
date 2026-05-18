@@ -518,3 +518,24 @@
   - `BATCH_27B_SENTRY_LIVE_EVENT_PROOF_2026-05-18_AR.md`
 - Next:
   - BATCH 27C — Sentry SDK Integration + Live Event Closure
+
+## Update 2026-05-18 — BATCH 27C
+- Batch: BATCH 27C — Sentry SDK Integration + Live Event Closure
+- Status: Programmatically closed, production verification pending
+- Implemented:
+  - Added backend Sentry runtime integration (`server/src/observability/sentry.ts` + `initSentry()` in app bootstrap).
+  - Added 5xx error capture in backend error handler with request context.
+  - Added admin-only live test endpoint: `POST /api/operations/sentry/test-event`.
+  - Added frontend Sentry init path (`src/observability/sentry.ts` + `index.tsx`).
+  - Added smoke contract: `smoke:sentry-runtime`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:sentry-runtime` PASS
+- Report:
+  - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
+- Next:
+  - BATCH 27D — Sentry Live Production Event Proof (Final evidence)

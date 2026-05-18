@@ -20,6 +20,7 @@ import { runOperationsRepair, type OperationsRepairAction } from "../services/op
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
 import { getRedisHealth, isRedisConfigured } from "../config/redis.js";
+import { captureSentryMessage, isSentryEnabled } from "../observability/sentry.js";
 
 export const operationsRouter = Router();
 
@@ -676,6 +677,33 @@ operationsRouter.post("/repair", requireAuth, requireRole(["admin"]), async (req
     }
 
     res.json(await runOperationsRepair(action, apply));
+  } catch (error) {
+    next(error);
+  }
+});
+
+operationsRouter.post("/sentry/test-event", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    if (!isSentryEnabled()) {
+      return res.status(412).json({
+        ok: false,
+        message: "Sentry is not configured on this environment",
+      });
+    }
+
+    const eventId = captureSentryMessage("Manual Sentry smoke event", {
+      source: "operations-test-endpoint",
+      requestId: req.requestId,
+      adminUserId: req.authUser?.id || "",
+      adminEmail: req.authUser?.email || "",
+      timestamp: new Date().toISOString(),
+    });
+
+    return res.status(202).json({
+      ok: true,
+      eventId: eventId || null,
+      message: "Sentry test event queued",
+    });
   } catch (error) {
     next(error);
   }

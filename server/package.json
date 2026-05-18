@@ -25,6 +25,7 @@
     "restore:learning": "tsx src/scripts/restoreLearningContent.ts"
   },
   "dependencies": {
+    "@sentry/node": "^9.18.0",
     "@socket.io/redis-adapter": "^8.3.0",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.76.8",

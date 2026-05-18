@@ -6,10 +6,12 @@ import helmet from "helmet";
 import { randomUUID } from "node:crypto";
 import { env } from "./config/env.js";
 import { apiRouter } from "./routes/index.js";
+import { csrfGuard } from "./middleware/csrf.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { rejectUnsafeMongoKeys } from "./middleware/mongoSanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { authRateLimiter, globalRateLimiter, sensitiveActionRateLimiter } from "./middleware/rateLimiters.js";
+import { initSentry } from "./observability/sentry.js";
 
 function parseAllowedOrigins() {
   const configuredOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
@@ -34,6 +36,7 @@ function createCorsError() {
 }
 
 export function createApp() {
+  initSentry();
   const app = express();
   app.set("trust proxy", 1);
   const allowedOrigins = parseAllowedOrigins();
@@ -65,6 +68,7 @@ export function createApp() {
   );
   app.use(compression());
   app.use(requestLogger);
+  app.use("/api/auth", express.json({ limit: "100kb" }));
   app.use(globalRateLimiter);
   app.use(
     ["/api/auth/login", "/api/auth/register", "/api/auth/forgot-password", "/api/auth/reset-password"],
@@ -74,11 +78,11 @@ export function createApp() {
     ["/api/quizzes/*/submit", "/api/ai/*", "/api/payments/*", "/api/auth/me/redeem-access-code"],
     sensitiveActionRateLimiter,
   );
-  app.use("/api/auth", express.json({ limit: "100kb" }));
   app.use(["/api/quizzes", "/api/payments", "/api/ai"], express.json({ limit: "1mb" }));
   app.use(express.json({ limit: "5mb" }));
   app.use(rejectUnsafeMongoKeys);
   app.use(cookieParser());
+  app.use("/api", csrfGuard);
 
   app.get("/", (_req, res) => {
     res.json({

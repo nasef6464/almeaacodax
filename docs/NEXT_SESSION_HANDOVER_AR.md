@@ -29,19 +29,25 @@
 - تم إضافة قاعدة عمل ثابتة: عدم الانتقال لدفعة جديدة قبل الإغلاق النهائي للدفعة الحالية.
 - الحالة النشطة الآن:
   - `BATCH 25C-FINAL` تم إغلاقها نهائيًا (`Fully closed`).
-  - `BATCH 27B` نُفذت للتحقق من Sentry live proof.
-  - نتائج 27B:
-    - monitoring/health checks PASS.
-    - لا يوجد تكامل Sentry SDK runtime فعلي، لذلك event proof ما زال pending.
-  - آخر commit مرفوع مرتبط بهذا الإغلاق: `8d8e633`.
+  - `BATCH 27C` تم تنفيذها (Sentry SDK integration) بحالة:
+    - `Programmatically closed, production verification pending`.
+  - نتائج 27C:
+    - build/typecheck/smoke monitoring/health/sentry-runtime: PASS.
+    - endpoint جديد: `POST /api/operations/sentry/test-event` (admin only) لإثبات event حي.
+    - ما زال مطلوب توثيق `eventId` حي من إنتاج Sentry لإعلان Fully closed.
+- آخر commit مرفوع قبل 27C كان: `99cf363` (دفعة 27B).
 
 ## 3) الدفعة الجاري تثبيتها الآن
 
 - BATCH 30 — Course Settings Scope UX Consistency (Fully closed).
 - الإغلاق شمل: فلاتر/بحث استدعاء الدروس والاختبارات + توحيد المسار/المادة/المهارات + إصلاح سلامة النص العربي في البانيين.
 - آخر تحقق حي: Vercel (200) + Admin Dashboard (200) + Render Health (200 ready=true).
+- تحديث إضافي بتاريخ 2026-05-18: إصلاح ترميز النصوص العربية (Mojibake) داخل:
+  - `dashboards/admin/AdvancedCourseBuilder.tsx`
+  - `dashboards/admin/CourseBuilder.tsx`
+  حتى لا تظهر `????` في واجهة باني المناهج.
 - نقطة البداية التالية المقترحة:
-  - `BATCH 27C — Sentry SDK Integration + Live Event Closure`
+  - `BATCH 27D — Sentry Live Production Event Proof (final evidence)`
   - لا تبدأها إلا بعد طلب المالك الصريح: **"كمل حسب الخطة"**.
 
 ## 4) تسلسل التشغيل القياسي لأي حساب جديد

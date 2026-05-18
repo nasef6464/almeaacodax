@@ -2,22 +2,27 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-18
-- Active Batch: BATCH 27B - Sentry Live Event Proof
+- Active Batch: BATCH 27C - Sentry SDK Integration + Live Event Closure
 - Status: Programmatically closed, production verification pending
 
-## Delivered in this update
-- Re-validated monitoring and health readiness contracts successfully.
-- Verified production API health endpoint is ready and up.
-- Audited codebase for actual Sentry runtime wiring and confirmed missing SDK integration path for live event emission.
+## Delivered In This Update
+- Added real Sentry runtime integration in backend (`@sentry/node`) and frontend (`@sentry/react`).
+- Wired backend error handler to report 5xx exceptions to Sentry with request context.
+- Added admin-only test endpoint: `POST /api/operations/sentry/test-event`.
+- Added runtime smoke contract: `npm run smoke:sentry-runtime`.
 
 ## Checks
+- `npm --prefix server run build` PASS
+- `npm run typecheck` PASS
+- `npm run build` PASS
 - `npm run smoke:monitoring` PASS
 - `npm run smoke:health-readiness` PASS
-- `GET https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`)
+- `npm run smoke:sentry-runtime` PASS
 
 ## Production Verification
-- Monitoring readiness is healthy.
-- Sentry live event proof is still pending because no SDK emission path exists yet.
+- Monitoring and health contracts are passing.
+- Final live Sentry event proof in production is still pending (`eventId` must be captured from production and matched inside Sentry dashboard).
 
 ## Next Suggested Step
-- BATCH 27C — Sentry SDK Integration + Live Event Closure
+- BATCH 27D — Sentry Live Production Event Proof (Final closure evidence)
+
