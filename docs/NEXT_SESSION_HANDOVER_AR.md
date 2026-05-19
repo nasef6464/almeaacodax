@@ -632,3 +632,25 @@
   - `BATCH_39_DATABASE_INTEGRATIONS_NOSQL_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 25) Update 2026-05-19 — BATCH 40 Live Dashboard/Learning Verification
+- Batch `40` is now **Programmatically closed**.
+- Scope completed:
+  - dashboard/homepage operational verification
+  - learning/courses/training/tests/results operational verification
+- Checks:
+  - `smoke:homepage-hero` PASS
+  - `smoke:announcement-ads` PASS
+  - `smoke:reports-role` PASS
+  - `smoke:dashboards-phase11` PASS
+  - `smoke:learning-quiz` PASS
+  - `smoke:student-journey` PASS
+  - `smoke:quiz-access` PASS
+  - `smoke:results` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Remaining for fully-visual closure:
+  - direct click-evidence via in-app browser control channel.
+- Report:
+  - `BATCH_40_LIVE_DASHBOARD_AND_LEARNING_VISUAL_EXECUTION_2026-05-19_AR.md`

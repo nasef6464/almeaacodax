@@ -253,3 +253,21 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_39_DATABASE_INTEGRATIONS_NOSQL_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 40 Live Dashboard/Learning Verification
+- Batch: `BATCH 40 - Live Dashboard + Learning Verification`
+- Status: `Programmatically closed (API + Smoke PASS), visual click-evidence pending direct control channel`
+- Checks (all PASS):
+  - `smoke:homepage-hero`
+  - `smoke:announcement-ads`
+  - `smoke:reports-role`
+  - `smoke:dashboards-phase11`
+  - `smoke:learning-quiz`
+  - `smoke:student-journey`
+  - `smoke:quiz-access`
+  - `smoke:results`
+- Production verification:
+  - Frontend => 200
+  - Backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_40_LIVE_DASHBOARD_AND_LEARNING_VISUAL_EXECUTION_2026-05-19_AR.md`
