@@ -88,6 +88,13 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   const handleSaveCourse = async (courseData: Partial<Course>) => {
     setIsSavingCourse(true);
     setSaveError('');
+    const normalizedTitle = String(courseData.title || '').trim();
+    if (!normalizedTitle) {
+      setSaveError('اكتب اسم الدورة أولًا قبل الحفظ.');
+      setIsSavingCourse(false);
+      return;
+    }
+
     const normalizedSubjectId = subjectId || courseData.subjectId || courseData.subject || '';
     const normalizedSubject = normalizedSubjectId || courseData.subject || '';
     const normalizedPathId =
@@ -95,6 +102,8 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
 
     const normalizedCourseData: Partial<Course> = {
       ...courseData,
+      title: normalizedTitle,
+      instructor: String(courseData.instructor || '').trim() || 'فريق المنصة',
       subject: normalizedSubject,
       subjectId: normalizedSubjectId || undefined,
       pathId: normalizedPathId || undefined,

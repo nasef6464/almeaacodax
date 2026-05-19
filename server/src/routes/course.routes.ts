@@ -27,9 +27,12 @@ const nullableNumber = z.preprocess((value) => {
 
 const courseSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1),
+  title: z.string().trim().min(1, "Course title is required"),
   thumbnail: z.string().optional(),
-  instructor: z.string().min(1),
+  instructor: z.preprocess((value) => {
+    const text = typeof value === "string" ? value.trim() : "";
+    return text || "فريق المنصة";
+  }, z.string().min(1)),
   price: numberWithDefault(0),
   currency: z.string().default("SAR"),
   duration: numberWithDefault(0),

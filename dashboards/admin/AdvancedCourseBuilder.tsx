@@ -50,7 +50,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     price: 0,
     currency: 'SAR',
     duration: 0,
-    instructor: '',
+    instructor: 'فريق المنصة',
     thumbnail: '',
     modules: [],
     isPublished: false,
