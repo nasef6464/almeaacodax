@@ -664,3 +664,21 @@
   - Gate 0 direct click evidence inside in-app browser control channel.
 - Report:
   - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`
+
+## 27) Update 2026-05-19 — BATCH 42 Frontend Route/Cache Stability Full Verification
+- Batch `42` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - route loading stability
+  - runtime source-of-truth stability
+  - deployment cache policy stability
+  - health readiness verification
+- Checks:
+  - `smoke:route-loading` PASS
+  - `smoke:runtime-source` PASS
+  - `smoke:deployment-cache` PASS
+  - `smoke:health-readiness` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_42_FRONTEND_ROUTE_CACHE_STABILITY_FULL_VERIFICATION_2026-05-19_AR.md`

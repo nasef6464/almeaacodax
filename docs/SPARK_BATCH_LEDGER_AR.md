@@ -816,3 +816,17 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 42 Frontend Route/Cache Stability Full Verification
+- Batch: BATCH 42 — Frontend Route/Cache Stability Full Verification
+- Status: Fully closed (API + Smoke)
+- Checks:
+  - `smoke:route-loading` PASS
+  - `smoke:runtime-source` PASS
+  - `smoke:deployment-cache` PASS
+  - `smoke:health-readiness` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_42_FRONTEND_ROUTE_CACHE_STABILITY_FULL_VERIFICATION_2026-05-19_AR.md`

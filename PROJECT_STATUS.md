@@ -287,3 +287,17 @@
   - Backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 42 Frontend Route/Cache Stability Full Verification
+- Batch: `BATCH 42 - Frontend Route/Cache Stability Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:route-loading` PASS
+  - `npm run smoke:runtime-source` PASS
+  - `npm run smoke:deployment-cache` PASS
+  - `npm run smoke:health-readiness` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_42_FRONTEND_ROUTE_CACHE_STABILITY_FULL_VERIFICATION_2026-05-19_AR.md`
