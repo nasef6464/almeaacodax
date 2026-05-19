@@ -66,14 +66,20 @@ const getSubjectIcon = (subject: any) => {
 
 export const PathsManager: React.FC = () => {
   const { paths, levels, subjects, courses, questions, lessons, quizzes, libraryItems, topics, addCourse, updateCourse, deleteCourse } = useStore();
-  const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
+  const initialQuery = new URLSearchParams(window.location.hash.includes('?') ? window.location.hash.split('?')[1] : window.location.search);
+  const [selectedPathId, setSelectedPathId] = useState<string | null>(initialQuery.get('path') || null);
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialQuery.get('subject') || null);
   
   // Tabs for Path Overview
   const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'packages' | 'settings'>('subjects');
   // Tabs for Subject Workspace
-  const [subjectTab, setSubjectTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings'>('courses');
+  const requestedSubjectTab = initialQuery.get('subjectTab') || initialQuery.get('courseTab') || initialQuery.get('workspace');
+  const [subjectTab, setSubjectTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings'>(
+    ['courses', 'skills', 'questions', 'exams', 'library', 'settings'].includes(requestedSubjectTab || '')
+      ? requestedSubjectTab as 'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings'
+      : 'courses',
+  );
 
   // Modals state
   const [isPathModalOpen, setIsPathModalOpen] = useState(false);

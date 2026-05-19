@@ -130,7 +130,11 @@ const AdminTabLoading = () => (
 
 const getRequestedAdminTab = () => {
     const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
-    return new URLSearchParams(hashQuery || window.location.search).get('tab');
+    const requestedTab = new URLSearchParams(hashQuery || window.location.search).get('tab');
+    if (requestedTab === 'courses') {
+        return 'paths';
+    }
+    return requestedTab;
 };
 
 export const AdminDashboard: React.FC = () => {
