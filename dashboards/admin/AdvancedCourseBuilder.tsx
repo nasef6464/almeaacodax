@@ -22,6 +22,19 @@ interface AdvancedCourseBuilderProps {
   onCancel: () => void;
 }
 
+const toFiniteNumber = (value: unknown, fallback = 0) => {
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const toOptionalFiniteNumber = (value: unknown) => {
+  if (value === '' || value === null || value === undefined) {
+    return undefined;
+  }
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ initialCourse, onSave, onCancel }) => {
   const { paths, subjects, sections, skills, lessons, quizzes, users } = useStore();
   const categoryOptions = ['دورة تعليمية', 'برنامج تدريبي', 'مسار تطوير مهارات'] as const;
@@ -316,6 +329,22 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     setEditingLesson(null);
   };
 
+  const handleSaveCourse = () => {
+    const sanitizedCourseData: Partial<Course> = {
+      ...courseData,
+      price: toFiniteNumber(courseData.price, 0),
+      duration: toFiniteNumber(courseData.duration, 0),
+      rating: toFiniteNumber(courseData.rating, 0),
+      progress: toFiniteNumber(courseData.progress, 0),
+      fakeStudentsCount: toFiniteNumber(courseData.fakeStudentsCount, 0),
+      fakeRating: toFiniteNumber(courseData.fakeRating, 5),
+      originalPrice: toOptionalFiniteNumber(courseData.originalPrice),
+      revenueSharePercentage: toOptionalFiniteNumber(courseData.revenueSharePercentage),
+    };
+
+    onSave(sanitizedCourseData);
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)]">
       {/* Header */}
@@ -329,7 +358,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
           </h2>
         </div>
         <button 
-          onClick={() => onSave(courseData)}
+          onClick={handleSaveCourse}
           className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
         >
           <Save size={18} />
@@ -686,7 +715,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                           min={0}
                           max={100}
                           value={courseData.revenueSharePercentage ?? ''}
-                          onChange={(e) => setCourseData({...courseData, revenueSharePercentage: e.target.value === '' ? undefined : Number(e.target.value)})}
+                          onChange={(e) => setCourseData({...courseData, revenueSharePercentage: toOptionalFiniteNumber(e.target.value)})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                           placeholder="مثال: 35"
                         />
@@ -851,7 +880,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         <input 
                           type="number" 
                           value={courseData.price || 0} 
-                          onChange={(e) => setCourseData({...courseData, price: Number(e.target.value)})}
+                          onChange={(e) => setCourseData({...courseData, price: toFiniteNumber(e.target.value, 0)})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                       </div>
@@ -860,7 +889,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         <input 
                           type="number" 
                           value={courseData.originalPrice || ''} 
-                          onChange={(e) => setCourseData({...courseData, originalPrice: Number(e.target.value)})}
+                          onChange={(e) => setCourseData({...courseData, originalPrice: toOptionalFiniteNumber(e.target.value)})}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         />
                       </div>
@@ -890,7 +919,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                           <input 
                             type="number" 
                             value={courseData.fakeStudentsCount || 0} 
-                            onChange={(e) => setCourseData({...courseData, fakeStudentsCount: Number(e.target.value)})}
+                            onChange={(e) => setCourseData({...courseData, fakeStudentsCount: toFiniteNumber(e.target.value, 0)})}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                           />
                           <p className="text-xs text-gray-500 mt-1">سيزداد هذا العدد تلقائياً مع التسجيلات الحقيقية.</p>
@@ -901,7 +930,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                             type="number" 
                             step="0.1" max="5" min="1"
                             value={courseData.fakeRating || 5} 
-                            onChange={(e) => setCourseData({...courseData, fakeRating: Number(e.target.value)})}
+                            onChange={(e) => setCourseData({...courseData, fakeRating: toFiniteNumber(e.target.value, 5)})}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                           />
                         </div>

@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 import { captureSentryException, isSentryEnabled } from "../observability/sentry.js";
 
 export function notFoundHandler(req: Request, res: Response) {
@@ -15,6 +16,17 @@ export function errorHandler(
   _next: NextFunction,
 ) {
   const isProduction = process.env.NODE_ENV === "production";
+  if (error instanceof ZodError) {
+    return res.status(400).json({
+      message: "Invalid request payload",
+      issues: error.issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+      })),
+      requestId: _req.requestId,
+    });
+  }
+
   const statusCode = error.statusCode || error.status || 500;
   const message = statusCode >= 500 && isProduction ? "Internal server error" : error.message || "Internal server error";
 

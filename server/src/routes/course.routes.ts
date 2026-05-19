@@ -10,17 +10,32 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
+const numberWithDefault = (defaultValue: number) =>
+  z.preprocess((value) => {
+    if (value === "" || value === null || value === undefined) {
+      return defaultValue;
+    }
+    return value;
+  }, z.coerce.number().finite().default(defaultValue));
+
+const nullableNumber = z.preprocess((value) => {
+  if (value === "" || value === undefined) {
+    return null;
+  }
+  return value;
+}, z.coerce.number().finite().nullable().optional());
+
 const courseSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
   thumbnail: z.string().optional(),
   instructor: z.string().min(1),
-  price: z.number().default(0),
+  price: numberWithDefault(0),
   currency: z.string().default("SAR"),
-  duration: z.number().default(0),
+  duration: numberWithDefault(0),
   level: z.enum(["Beginner", "Intermediate", "Advanced"]).default("Beginner"),
-  rating: z.number().default(0),
-  progress: z.number().default(0),
+  rating: numberWithDefault(0),
+  progress: numberWithDefault(0),
   category: z.string().default(""),
   subject: z.string().default(""),
   pathId: z.string().optional(),
@@ -35,7 +50,7 @@ const courseSchema = z.object({
   isPackage: z.boolean().default(false),
   packageType: z.enum(["courses", "videos", "tests", "membership"]).optional(),
   packageContentTypes: z.array(z.enum(["courses", "foundation", "banks", "tests", "library", "all"])).optional(),
-  originalPrice: z.number().nullable().optional(),
+  originalPrice: nullableNumber,
   includedCourses: z.array(z.string()).optional(),
   prerequisiteCourseIds: z.array(z.string()).optional(),
   dripContentEnabled: z.boolean().optional(),
@@ -47,9 +62,9 @@ const courseSchema = z.object({
   assignedTeacherId: z.string().optional(),
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   approvedBy: z.string().optional(),
-  approvedAt: z.number().nullable().optional(),
+  approvedAt: nullableNumber,
   reviewerNotes: z.string().optional(),
-  revenueSharePercentage: z.number().nullable().optional(),
+  revenueSharePercentage: nullableNumber,
 });
 
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
