@@ -156,6 +156,19 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         // Optionally show a success message or redirect
     };
 
+    const handleLessonClick = (lesson: { type: string; quizId?: string }) => {
+        if (lesson.type === 'quiz' && lesson.quizId) {
+            navigate(
+                buildQuizRouteWithContext(String(lesson.quizId), {
+                    returnTo: `/course/${course.id}`,
+                    source: 'course',
+                }),
+            );
+            return;
+        }
+        onContinue();
+    };
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'description':
@@ -199,7 +212,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                         <div 
                                             key={lesson.id} 
                                             className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group cursor-pointer"
-                                            onClick={onContinue}
+                                            onClick={() => handleLessonClick(lesson)}
                                         >
                                             <div className="flex items-center gap-4">
                                                 <span className="text-xs font-bold text-gray-400 w-4">{lIdx + 1}</span>
