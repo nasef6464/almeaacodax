@@ -886,3 +886,20 @@
   - BATCH 27C remains fully closed per prior production event proof (documented eventId in the original closure report).
 - Report:
   - `BATCH_F1_CLOSURE_REPORT_AR.md`
+
+## Update 2026-05-19 - BATCH F2
+- Batch: `BATCH F2 - Firebase Complete Deletion`
+- Status: `Fully closed`
+- Scope delivered:
+  - removed legacy Firebase sync/fallback runtime path.
+  - removed Firebase files and dependency.
+  - aligned runtime-source smoke to Firebase-removed state.
+- Checks:
+  - `typecheck` PASS
+  - `build` PASS
+  - `smoke:runtime-source` PASS
+  - `smoke:frontend:strict` PASS
+- Production evidence:
+  - frontend strict smoke confirms deployed commit/version `9905ebb`.
+- Report:
+  - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`

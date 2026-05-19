@@ -357,3 +357,22 @@
   - Prior final closure evidence remains valid (live production eventId already documented in 27C report).
 - Report:
   - `BATCH_F1_CLOSURE_REPORT_AR.md`
+
+## Update 2026-05-19 - BATCH F2 Firebase Complete Deletion
+- Batch: `BATCH F2 - Firebase Complete Deletion`
+- Status: `Fully closed`
+- Delivered:
+  - Removed legacy Firebase runtime sync from `App.tsx`.
+  - Removed Firebase fallback writes from `store/useStore.ts`.
+  - Deleted legacy files: `services/firebase.ts`, `services/firebaseSync.ts`, `firebase-applet-config.json`.
+  - Removed `firebase` dependency and updated lockfile.
+  - Updated `smoke:runtime-source` contract to enforce Firebase-removed runtime.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:runtime-source` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Production verification:
+  - `smoke:frontend:strict` confirmed deployed version match: `9905ebb`.
+- Report:
+  - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`

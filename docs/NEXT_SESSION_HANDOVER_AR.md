@@ -748,3 +748,20 @@
   - BATCH 27C يظل مغلقًا نهائيًا حسب دليل eventId الحي الموثق مسبقًا.
 - التالي حسب الخطة:
   - `BATCH F2 — Firebase Complete Deletion`.
+
+## Update 2026-05-19 — BATCH F2 (Firebase Complete Deletion)
+- الحالة: **Fully closed**.
+- المنجز:
+  - إزالة مسار Firebase legacy من `App.tsx` و`store/useStore.ts`.
+  - حذف `services/firebase.ts` و`services/firebaseSync.ts` و`firebase-applet-config.json`.
+  - إزالة dependency `firebase` من المشروع.
+  - تحديث `smoke:runtime-source` ليتحقق من عدم وجود مسار Firebase تشغيلي.
+- الفحوص:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:runtime-source` PASS
+  - `npm run smoke:frontend:strict` PASS
+- التحقق الإنتاجي:
+  - smoke strict أكد تطابق الإصدار المنشور مع commit `9905ebb`.
+- التالي حسب خطة Codex 5.3:
+  - `BATCH F3 — Redis Activation + Verification` (يتطلب تأكيد المالك أن `REDIS_URL` مضاف على Render).
