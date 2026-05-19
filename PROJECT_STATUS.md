@@ -163,3 +163,19 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_33_QA_AND_DEPLOYMENT_HANDOVER_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 34 Auth & CSRF Security Full Verification
+- Batch: `BATCH 34 - Auth + CSRF Security Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:auth-account` PASS
+  - `npm run smoke:auth-login-security` PASS
+  - `npm run smoke:auth-cookie` PASS
+  - `npm run smoke:csrf` PASS
+  - `npm run smoke:auth-token-response` PASS
+  - `npm run smoke:api-security` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_34_AUTH_AND_CSRF_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`

@@ -505,3 +505,27 @@
   - `BATCH_33_QA_AND_DEPLOYMENT_HANDOVER_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 19) Update 2026-05-19 — BATCH 34 Auth & CSRF Security Full Verification
+- Batch `34` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - auth account security verification
+  - login hardening verification
+  - auth cookie contract verification
+  - csrf protection verification
+  - auth token response environment gating verification
+  - API security verification
+- Checks:
+  - `smoke:auth-account` PASS
+  - `smoke:auth-login-security` PASS
+  - `smoke:auth-cookie` PASS
+  - `smoke:csrf` PASS
+  - `smoke:auth-token-response` PASS
+  - `smoke:api-security` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_34_AUTH_AND_CSRF_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.
