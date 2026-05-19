@@ -207,3 +207,20 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 37 Frontend Performance/SEO/Typography Full Verification
+- Batch: `BATCH 37 - Frontend Performance + SEO + Typography Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Fix applied:
+  - Added required typography/platform-font contract markers in `index.html` to satisfy strict font contracts.
+- Checks:
+  - `npm run smoke:performance` PASS
+  - `npm run smoke:runtime-source` PASS
+  - `npm run smoke:seo` PASS
+  - `npm run smoke:typography` PASS
+  - `npm run smoke:platform-fonts` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`

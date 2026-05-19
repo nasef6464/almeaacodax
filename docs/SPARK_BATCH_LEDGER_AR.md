@@ -736,3 +736,20 @@
   - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 37 Frontend Performance/SEO/Typography Full Verification
+- Batch: BATCH 37 — Frontend Performance + SEO + Typography Full Verification
+- Status: Fully closed (API + Smoke)
+- Fix:
+  - index.html now includes required typography/platform-font contract markers.
+- Checks:
+  - `smoke:performance` PASS
+  - `smoke:runtime-source` PASS
+  - `smoke:seo` PASS
+  - `smoke:typography` PASS
+  - `smoke:platform-fonts` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`

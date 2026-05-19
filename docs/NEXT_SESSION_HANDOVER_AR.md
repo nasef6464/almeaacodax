@@ -569,3 +569,26 @@
   - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 22) Update 2026-05-19 — BATCH 37 Frontend Performance/SEO/Typography Full Verification
+- Batch `37` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - performance contract verification
+  - runtime source-of-truth verification
+  - SEO contract verification
+  - typography + platform-font contracts verification
+- Fix delivered:
+  - added required font contract markers in `index.html`.
+- Checks:
+  - `smoke:performance` PASS
+  - `smoke:runtime-source` PASS
+  - `smoke:seo` PASS
+  - `smoke:typography` PASS
+  - `smoke:platform-fonts` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.
