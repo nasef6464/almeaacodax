@@ -33,11 +33,14 @@ const nullableNumber = z.preprocess((value) => {
 
 const courseSchema = z.object({
   id: z.string().optional(),
-  title: z.string().trim().min(1, "Course title is required"),
+  title: z.preprocess((value) => {
+    const text = typeof value === "string" ? value.trim() : "";
+    return text || "Untitled Course";
+  }, z.string().min(1)),
   thumbnail: z.string().optional(),
   instructor: z.preprocess((value) => {
     const text = typeof value === "string" ? value.trim() : "";
-    return text || "فريق المنصة";
+    return text || "Platform Team";
   }, z.string().min(1)),
   price: numberWithDefault(0),
   currency: z.string().default("SAR"),
@@ -461,3 +464,4 @@ courseRouter.delete(
     return res.status(StatusCodes.NO_CONTENT).send();
   }),
 );
+
