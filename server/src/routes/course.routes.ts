@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
@@ -141,7 +142,9 @@ const buildOwnedCourseQuery = (
   id: string,
   authUser: { id: string; role: string; schoolId?: string | null },
 ) => {
-  const baseQuery = { _id: id };
+  const baseQuery = mongoose.Types.ObjectId.isValid(id)
+    ? { $or: [{ _id: id }, { id }] }
+    : { id };
 
   if (authUser.role === "admin") {
     return baseQuery;
@@ -340,8 +343,11 @@ courseRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const identityFilter = mongoose.Types.ObjectId.isValid(req.params.id)
+      ? { $or: [{ _id: req.params.id }, { id: req.params.id }] }
+      : { id: req.params.id };
     const item = await CourseModel.findOne({
-      _id: req.params.id,
+      ...identityFilter,
       ...visibilityFilter,
     });
     if (!item) {

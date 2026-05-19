@@ -11,6 +11,7 @@ import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -421,8 +422,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
 
     // Data Retrieval from Store
     let sectionCourses = courses.filter((course) => {
-        const coursePathId = course.pathId || course.category;
-        const courseSubjectId = course.subjectId || course.subject;
+        const coursePathId = resolveCoursePathId(course, subjects);
+        const courseSubjectId = resolveCourseSubjectId(course, subjects);
         if (course.isPackage) return false;
         if (!canStudentSeeCourse(course)) return false;
         return matchesScopedContent(coursePathId, courseSubjectId);

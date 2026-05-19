@@ -62,6 +62,8 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
   const [editingCourse, setEditingCourse] = useState<Course | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+  const [saveError, setSaveError] = useState('');
+  const [isSavingCourse, setIsSavingCourse] = useState(false);
   const currentSubject = subjectId ? subjects.find((item) => item.id === subjectId) : undefined;
 
   const handleCreateNew = () => {
@@ -83,7 +85,9 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     setIsBuilding(true);
   };
 
-  const handleSaveCourse = (courseData: Partial<Course>) => {
+  const handleSaveCourse = async (courseData: Partial<Course>) => {
+    setIsSavingCourse(true);
+    setSaveError('');
     const normalizedSubjectId = subjectId || courseData.subjectId || courseData.subject || '';
     const normalizedSubject = normalizedSubjectId || courseData.subject || '';
     const normalizedPathId =
@@ -96,18 +100,24 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
       pathId: normalizedPathId || undefined,
     };
 
-    if (editingCourse?.id) {
-      updateCourse(editingCourse.id, normalizedCourseData);
-    } else {
-      const newCourse = {
-        ...normalizedCourseData,
-        id: `course_${Date.now()}`,
-        showOnPlatform: typeof normalizedCourseData.showOnPlatform === 'boolean' ? normalizedCourseData.showOnPlatform : false,
-      } as Course;
-      addCourse(newCourse);
-    }
+    try {
+      if (editingCourse?.id) {
+        await updateCourse(editingCourse.id, normalizedCourseData);
+      } else {
+        const newCourse = {
+          ...normalizedCourseData,
+          id: `course_${Date.now()}`,
+          showOnPlatform: typeof normalizedCourseData.showOnPlatform === 'boolean' ? normalizedCourseData.showOnPlatform : false,
+        } as Course;
+        await addCourse(newCourse);
+      }
 
-    setIsBuilding(false);
+      setIsBuilding(false);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'تعذر حفظ الدورة على الخادم.');
+    } finally {
+      setIsSavingCourse(false);
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -172,7 +182,19 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
 
   if (isBuilding) {
     return (
-      <AdvancedCourseBuilder initialCourse={editingCourse} onSave={handleSaveCourse} onCancel={() => setIsBuilding(false)} />
+      <div className="space-y-4">
+        {saveError ? (
+          <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+            {saveError}
+          </div>
+        ) : null}
+        {isSavingCourse ? (
+          <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700">
+            جارٍ حفظ الدورة على الخادم...
+          </div>
+        ) : null}
+        <AdvancedCourseBuilder initialCourse={editingCourse} onSave={handleSaveCourse} onCancel={() => setIsBuilding(false)} />
+      </div>
     );
   }
 

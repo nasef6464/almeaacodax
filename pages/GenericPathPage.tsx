@@ -9,6 +9,7 @@ import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isMaterialQuizCandidate, isPathMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 
 const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
 const LightweightModalFallback = () => null;
@@ -344,7 +345,15 @@ export const GenericPathPage: React.FC = () => {
             return itemPathId === path.id && itemSubjectId === subjectId;
         };
         const visibleCounts = {
-            courses: courses.filter((course) => !course.isPackage && canStudentSeeContent(course) && matchesSubjectScope(course)).length,
+            courses: courses.filter((course) => {
+                if (course.isPackage || !canStudentSeeContent(course)) return false;
+                const normalizedCourse = {
+                    ...course,
+                    pathId: resolveCoursePathId(course, subjects),
+                    subjectId: resolveCourseSubjectId(course, subjects),
+                };
+                return matchesSubjectScope(normalizedCourse);
+            }).length,
             foundation: topics.filter((topic) => canStudentSeeContent(topic) && matchesSubjectScope(topic)).length,
             banks: getVisibleLearningSlotQuizzes('training', subjectId).length,
             tests: getVisibleLearningSlotQuizzes('tests', subjectId).length,

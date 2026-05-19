@@ -98,8 +98,8 @@ interface AppState {
     toggleUserStatus: (userId: string) => void;
     
     // Course Actions
-    addCourse: (course: Course) => void;
-    updateCourse: (courseId: string, data: Partial<Course>) => void;
+    addCourse: (course: Course) => Promise<Course | null>;
+    updateCourse: (courseId: string, data: Partial<Course>) => Promise<Course | null>;
     deleteCourse: (courseId: string) => void;
 
     // Question Actions
@@ -839,21 +839,43 @@ export const useStore = create<AppState>()(
             }),
 
             // Course Actions
-            addCourse: (course) => {
+            addCourse: async (course) => {
                 const normalizedCourse = {
                     ...course,
                     showOnPlatform: typeof course.showOnPlatform === 'boolean' ? course.showOnPlatform : false,
                 };
-                api.createCourse(normalizedCourse).catch(console.error);
-                set((state) => ({
-                    courses: [normalizedCourse, ...state.courses]
-                }));
+                try {
+                    const created = await api.createCourse(normalizedCourse) as any;
+                    const persistedCourse = {
+                        ...normalizedCourse,
+                        ...created,
+                        id: String(created?.id || created?._id || normalizedCourse.id),
+                    } as Course;
+                    set((state) => ({
+                        courses: [persistedCourse, ...state.courses.filter((item) => item.id !== persistedCourse.id)],
+                    }));
+                    return persistedCourse;
+                } catch (error) {
+                    console.error('Failed to persist course:', error);
+                    throw error;
+                }
             },
-            updateCourse: (courseId, data) => {
-                api.updateCourse(courseId, data).catch(console.error);
-                set((state) => ({
-                    courses: state.courses.map(c => c.id === courseId ? { ...c, ...data } : c)
-                }));
+            updateCourse: async (courseId, data) => {
+                try {
+                    const updated = await api.updateCourse(courseId, data) as any;
+                    const persistedCourse = {
+                        ...data,
+                        ...updated,
+                        id: String(updated?.id || updated?._id || courseId),
+                    } as Course;
+                    set((state) => ({
+                        courses: state.courses.map(c => c.id === courseId ? { ...c, ...persistedCourse } : c)
+                    }));
+                    return persistedCourse;
+                } catch (error) {
+                    console.error('Failed to persist course update:', error);
+                    throw error;
+                }
             },
             deleteCourse: (courseId) => {
                 api.deleteCourse(courseId).catch(console.error);
