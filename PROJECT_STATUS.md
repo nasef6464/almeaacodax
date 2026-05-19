@@ -301,3 +301,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_42_FRONTEND_ROUTE_CACHE_STABILITY_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 43 Auth Frontend & Public UI Full Verification
+- Batch: `BATCH 43 - Auth Frontend + Public UI Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:auth-frontend` PASS
+  - `npm run smoke:frontend-phase5` PASS
+  - `npm run smoke:platform-fonts` PASS
+  - `npm run smoke:seo` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_43_AUTH_FRONTEND_AND_PUBLIC_UI_FULL_VERIFICATION_2026-05-19_AR.md`
