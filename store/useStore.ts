@@ -8,29 +8,7 @@ import { normalizeQuizPlacement } from '../utils/quizPlacement';
 
 const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
 const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
-const ALLOW_LEGACY_FIREBASE_FALLBACK =
-    runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false';
-
 const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API && user?.email && !isDevSessionUser(user));
-
-const writeLegacyFirebaseDoc = async (
-    collectionName: string,
-    id: string,
-    data: Record<string, unknown>,
-    options?: { merge?: boolean },
-) => {
-    if (!ALLOW_LEGACY_FIREBASE_FALLBACK) return;
-
-    try {
-        const [{ doc, setDoc }, { db }] = await Promise.all([
-            import('firebase/firestore'),
-            import('../services/firebase'),
-        ]);
-        await setDoc(doc(db, collectionName, id), data, options);
-    } catch (error) {
-        console.error('Legacy Firebase write failed:', error);
-    }
-};
 
 interface AppState {
     user: User;
@@ -652,17 +630,6 @@ export const useStore = create<AppState>()(
                     link: `/course/${courseId}`
                 };
 
-                // Firebase writes are kept only for the legacy/demo mode.
-                if (!USE_REAL_API && state.user?.id) {
-                    writeLegacyFirebaseDoc('activities', newActivity.id, { ...newActivity, userId: state.user.id });
-                    writeLegacyFirebaseDoc(
-                        'users',
-                        state.user.id,
-                        { completedLessons: [...state.completedLessons, lessonId] },
-                        { merge: true },
-                    );
-                }
-
                 set((state) => ({
                     completedLessons: [...state.completedLessons, lessonId],
                     recentActivity: [newActivity, ...state.recentActivity].slice(0, 10) // Keep last 10
@@ -687,10 +654,6 @@ export const useStore = create<AppState>()(
 
             recordQuestionAttempt: (attempt) => {
                 const state = get();
-                const attemptId = Date.now().toString();
-                if (!USE_REAL_API && state.user?.id) {
-                    writeLegacyFirebaseDoc('questionAttempts', attemptId, { ...attempt, userId: state.user.id });
-                }
                 if (shouldSyncUserToApi(state.user)) {
                     const { isCorrect: _localOnly, ...serverAttempt } = attempt;
                     api.createQuestionAttempt(serverAttempt).catch(console.error);
@@ -738,10 +701,6 @@ export const useStore = create<AppState>()(
                 const state = get();
                 const newActivity = { ...activity, id: Date.now().toString(), date: new Date().toISOString() };
                 
-                if (!USE_REAL_API && state.user?.id) {
-                    writeLegacyFirebaseDoc('activities', newActivity.id, { ...newActivity, userId: state.user.id });
-                }
-
                 set((state) => ({
                     recentActivity: [
                         newActivity,

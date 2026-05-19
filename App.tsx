@@ -437,35 +437,6 @@ const App: React.FC = () => {
   useEffect(() => installGlobalClientTelemetry(), []);
 
   useEffect(() => {
-    const useLegacyFirebaseDevMode = import.meta.env.DEV && import.meta.env.VITE_USE_REAL_API === 'false';
-    const allowLegacyFirebaseSync =
-      useLegacyFirebaseDevMode &&
-      import.meta.env.VITE_ENABLE_FIREBASE_LEGACY_SYNC === 'true';
-
-    if (!allowLegacyFirebaseSync) {
-      return;
-    }
-
-    let cleanup: (() => void) | undefined;
-    let cancelled = false;
-
-    import('./services/firebaseSync')
-      .then((module) => {
-        if (!cancelled) {
-          cleanup = module.startFirebaseSync();
-        }
-      })
-      .catch((error) => {
-        console.warn('Legacy Firebase sync unavailable:', error);
-      });
-
-    return () => {
-      cancelled = true;
-      cleanup?.();
-    };
-  }, []);
-
-  useEffect(() => {
     let mounted = true;
 
     const bootstrapAppData = async (
@@ -491,7 +462,12 @@ const App: React.FC = () => {
         const coursesPromise = profile.loadCourses ? adapter.getCourses() : null;
         const quizzesPromise = profile.loadQuizzes ? adapter.getQuizzes() : null;
         const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;
-        const contentPromise = profile.loadContent ? adapter.getContentBootstrap(profile.contentScope) : null;
+        const taxonomyLoadPromise =
+          profile.loadTaxonomy && profile.contentScope === 'learning'
+            ? adapter.getTaxonomyBootstrap('core')
+            : taxonomyPromise;
+        const contentPhase = profile.contentScope === 'learning' ? 'core' : 'full';
+        const contentPromise = profile.loadContent ? adapter.getContentBootstrap(profile.contentScope, contentPhase) : null;
         const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;
         const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress() : null;
 
@@ -507,7 +483,7 @@ const App: React.FC = () => {
           }
         }).catch((error) => console.warn('Quiz bootstrap unavailable:', error));
 
-        taxonomyPromise?.then((taxonomyResult) => {
+        taxonomyLoadPromise?.then((taxonomyResult) => {
           if (!mounted) return;
           const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
           if (
@@ -528,6 +504,32 @@ const App: React.FC = () => {
             });
           }
         }).catch((error) => console.warn('Taxonomy bootstrap unavailable:', error));
+
+        if (profile.loadTaxonomy && profile.contentScope === 'learning') {
+          void adapter.getTaxonomyBootstrap('full')
+            .then((fullTaxonomyResult) => {
+              if (!mounted) return;
+              const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+              if (
+                [
+                  fullTaxonomyResult.paths,
+                  fullTaxonomyResult.levels,
+                  fullTaxonomyResult.subjects,
+                  fullTaxonomyResult.sections,
+                  fullTaxonomyResult.skills,
+                ].some(hasItems)
+              ) {
+                hydrateTaxonomy({
+                  paths: fullTaxonomyResult.paths as any[],
+                  levels: fullTaxonomyResult.levels as any[],
+                  subjects: fullTaxonomyResult.subjects as any[],
+                  sections: fullTaxonomyResult.sections as any[],
+                  skills: fullTaxonomyResult.skills as any[],
+                });
+              }
+            })
+            .catch((error) => console.warn('Deferred taxonomy bootstrap unavailable:', error));
+        }
 
         contentPromise?.then((contentResult) => {
           if (!mounted) return;
@@ -556,6 +558,22 @@ const App: React.FC = () => {
             });
           }
         }).catch((error) => console.warn('Content bootstrap unavailable:', error));
+
+        if (profile.loadContent && profile.contentScope === 'learning') {
+          void adapter.getContentBootstrap('learning', 'full')
+            .then((extendedContent) => {
+              if (!mounted) return;
+              const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
+              if ([extendedContent.lessons, extendedContent.libraryItems, extendedContent.studyPlans].some(hasItems)) {
+                hydrateContentBootstrap({
+                  lessons: extendedContent.lessons as any[],
+                  libraryItems: extendedContent.libraryItems as any[],
+                  studyPlans: extendedContent.studyPlans as any[],
+                });
+              }
+            })
+            .catch((error) => console.warn('Deferred learning content bootstrap unavailable:', error));
+        }
 
         const [questionsResult, skillProgressResult] = await Promise.allSettled([
           questionsPromise ?? Promise.resolve(null),
@@ -615,7 +633,7 @@ const App: React.FC = () => {
 
     const loadPublicAnnouncementAds = async () => {
       try {
-        const response = await api.getContentBootstrapMinimal();
+        const response = await api.getPublicAnnouncementAds();
 
         if (mounted) {
           hydrateContentBootstrap({
@@ -629,7 +647,7 @@ const App: React.FC = () => {
 
     const loadPublicNavigationBootstrap = async () => {
       try {
-        const taxonomyResult = await adapter.getTaxonomyBootstrap();
+        const taxonomyResult = await adapter.getTaxonomyBootstrap('core');
 
         if (mounted) {
           hydrateTaxonomy({

@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 const appSource = await readFile(new URL("../App.tsx", import.meta.url), "utf8");
 const adapterSource = await readFile(new URL("../services/adapter.ts", import.meta.url), "utf8");
 const storeSource = await readFile(new URL("../store/useStore.ts", import.meta.url), "utf8");
-const firebaseSyncSource = await readFile(new URL("../services/firebaseSync.ts", import.meta.url), "utf8");
 const authMiddlewareSource = await readFile(new URL("../server/src/middleware/auth.ts", import.meta.url), "utf8");
 const envExample = await readFile(new URL("../server/.env.example", import.meta.url), "utf8");
 const readinessSource = await readFile(new URL("../PRODUCTION_READINESS_REPORT.md", import.meta.url), "utf8");
@@ -38,12 +38,16 @@ check("production frontend always uses the real API path", () => {
   assertIncludes(storeSource, "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
 });
 
-check("legacy Firebase sync is development-only", () => {
-  assertIncludes(appSource, "import.meta.env.DEV && import.meta.env.VITE_USE_REAL_API === 'false'");
-  assertIncludes(storeSource, "runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false'");
-  assertIncludes(storeSource, "if (!ALLOW_LEGACY_FIREBASE_FALLBACK) return;");
-  assertIncludes(firebaseSyncSource, "env?.DEV === true && env?.VITE_USE_REAL_API === 'false'");
-  assertIncludes(firebaseSyncSource, "if (!allowLegacyFirebaseSync)");
+check("legacy Firebase path is fully removed from runtime", () => {
+  if (existsSync(new URL("../services/firebaseSync.ts", import.meta.url))) {
+    throw new Error("Unexpected file still exists: services/firebaseSync.ts");
+  }
+  if (existsSync(new URL("../services/firebase.ts", import.meta.url))) {
+    throw new Error("Unexpected file still exists: services/firebase.ts");
+  }
+  assertNotIncludes(appSource, "./services/firebaseSync");
+  assertNotIncludes(storeSource, "firebase/firestore");
+  assertNotIncludes(storeSource, "../services/firebase");
 });
 
 check("local admin bypass is impossible in production", () => {
