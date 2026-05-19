@@ -549,3 +549,23 @@
   - `BATCH_35_MONITORING_AND_NOTIFICATIONS_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 21) Update 2026-05-19 — BATCH 36 Payments & Packages Full Verification
+- Batch `36` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - payment request and package flow verification
+  - provider readiness verification
+  - anti-tampering verification
+  - package/course split verification
+- Checks:
+  - `smoke:payment-package` PASS
+  - `smoke:payment-providers` PASS
+  - `smoke:payment-tampering` PASS
+  - `smoke:package-course-split` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.

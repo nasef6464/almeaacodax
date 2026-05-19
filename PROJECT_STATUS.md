@@ -193,3 +193,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_35_MONITORING_AND_NOTIFICATIONS_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 36 Payments & Packages Full Verification
+- Batch: `BATCH 36 - Payments + Packages Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:payment-package` PASS
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:package-course-split` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
