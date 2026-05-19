@@ -708,3 +708,17 @@
   - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_34_AUTH_AND_CSRF_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 35 Monitoring & Notifications Full Verification
+- Batch: BATCH 35 — Monitoring + Notifications Full Verification
+- Status: Fully closed (API + Smoke)
+- Checks:
+  - `smoke:monitoring` PASS
+  - `smoke:sentry-runtime` PASS
+  - `smoke:notifications` PASS
+  - `smoke:notification-phase10` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_35_MONITORING_AND_NOTIFICATIONS_FULL_VERIFICATION_2026-05-19_AR.md`

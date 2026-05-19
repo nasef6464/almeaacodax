@@ -529,3 +529,23 @@
   - `BATCH_34_AUTH_AND_CSRF_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 20) Update 2026-05-19 — BATCH 35 Monitoring & Notifications Full Verification
+- Batch `35` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - monitoring readiness verification
+  - sentry runtime verification
+  - notification pipeline verification
+  - notification phase10 queue/worker verification
+- Checks:
+  - `smoke:monitoring` PASS
+  - `smoke:sentry-runtime` PASS
+  - `smoke:notifications` PASS
+  - `smoke:notification-phase10` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_35_MONITORING_AND_NOTIFICATIONS_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.
