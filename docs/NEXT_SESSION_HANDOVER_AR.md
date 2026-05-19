@@ -736,3 +736,15 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_45_CORE_PHASE_CONTRACTS_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH F1 (إغلاق التقارير المعلقة)
+- تم تنفيذ `BATCH F1` وإغلاقه بتحديث أدلة التشغيل.
+- النتائج:
+  - فحوص BATCH 40 كاملة: PASS.
+  - صحة الإنتاج: PASS (`status=ok`, `ready=true`, redis ready).
+  - `smoke:sentry-runtime`: PASS.
+  - `smoke:sentry-live-proof`: FAIL بسبب غياب `SMOKE_ADMIN_TOKEN` في بيئة الجلسة.
+- ملاحظة:
+  - BATCH 27C يظل مغلقًا نهائيًا حسب دليل eventId الحي الموثق مسبقًا.
+- التالي حسب الخطة:
+  - `BATCH F2 — Firebase Complete Deletion`.

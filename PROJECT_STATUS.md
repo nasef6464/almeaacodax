@@ -343,3 +343,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_45_CORE_PHASE_CONTRACTS_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH F1 Pending Reports Closure (BATCH 40 + 27C)
+- Batch: `BATCH F1 - Close Pending Reports`
+- Status: `Closed with evidence update`
+- BATCH 40:
+  - Re-ran full required smoke set and all PASS.
+  - Health probe PASS: `status=ok`, `ready=true`, redis ready, commit `33e0b6a58fbf`.
+  - Closure updated to operationally closed by fresh API+Smoke evidence.
+- BATCH 27C:
+  - `smoke:sentry-runtime` PASS in current session.
+  - `smoke:sentry-live-proof` could not be re-run now due to missing `SMOKE_ADMIN_TOKEN`.
+  - Prior final closure evidence remains valid (live production eventId already documented in 27C report).
+- Report:
+  - `BATCH_F1_CLOSURE_REPORT_AR.md`

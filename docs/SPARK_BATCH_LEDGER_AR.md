@@ -872,3 +872,17 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_45_CORE_PHASE_CONTRACTS_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH F1
+- Batch: `BATCH F1 - Close Pending Reports (BATCH 40 + BATCH 27C)`
+- Status: `Closed with evidence update`
+- Revalidation results:
+  - BATCH 40 smoke set: all required checks PASS.
+  - Production health: PASS (`status=ok`, `ready=true`, redis ready, commit `33e0b6a58fbf`).
+  - Sentry runtime: PASS.
+  - Sentry live-proof re-run: blocked by missing `SMOKE_ADMIN_TOKEN` in current environment.
+- Closure note:
+  - BATCH 40 now carries fresh API+Smoke closure evidence.
+  - BATCH 27C remains fully closed per prior production event proof (documented eventId in the original closure report).
+- Report:
+  - `BATCH_F1_CLOSURE_REPORT_AR.md`
