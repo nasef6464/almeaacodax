@@ -539,7 +539,7 @@ export const PathsManager: React.FC = () => {
       });
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!deleteDialog.id) return;
     
     if (deleteDialog.type === 'path') {
@@ -551,7 +551,12 @@ export const PathsManager: React.FC = () => {
       useStore.getState().deleteSubject(deleteDialog.id);
       if (selectedSubjectId === deleteDialog.id) setSelectedSubjectId(null);
     } else if (deleteDialog.type === 'package') {
-      deleteCourse(deleteDialog.id);
+      try {
+        await deleteCourse(deleteDialog.id);
+      } catch (error) {
+        window.alert(error instanceof Error ? error.message : 'تعذر حذف الباقة على الخادم.');
+        return;
+      }
     }
     
     setDeleteDialog({ ...deleteDialog, isOpen: false });

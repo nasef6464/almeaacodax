@@ -129,9 +129,14 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من حذف هذه الدورة نهائيًا؟')) {
-      deleteCourse(id);
+      setSaveError('');
+      try {
+        await deleteCourse(id);
+      } catch (error) {
+        setSaveError(error instanceof Error ? error.message : 'تعذر حذف الدورة على الخادم.');
+      }
     }
   };
 
@@ -209,6 +214,11 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
 
   return (
     <div className="space-y-6">
+      {saveError ? (
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+          {saveError}
+        </div>
+      ) : null}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">إدارة الدورات (LMS)</h2>

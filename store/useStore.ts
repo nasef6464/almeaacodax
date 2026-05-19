@@ -100,7 +100,7 @@ interface AppState {
     // Course Actions
     addCourse: (course: Course) => Promise<Course | null>;
     updateCourse: (courseId: string, data: Partial<Course>) => Promise<Course | null>;
-    deleteCourse: (courseId: string) => void;
+    deleteCourse: (courseId: string) => Promise<void>;
 
     // Question Actions
     addQuestion: (question: Question) => Promise<void>;
@@ -877,11 +877,16 @@ export const useStore = create<AppState>()(
                     throw error;
                 }
             },
-            deleteCourse: (courseId) => {
-                api.deleteCourse(courseId).catch(console.error);
-                set((state) => ({
-                    courses: state.courses.filter(c => c.id !== courseId)
-                }));
+            deleteCourse: async (courseId) => {
+                try {
+                    await api.deleteCourse(courseId);
+                    set((state) => ({
+                        courses: state.courses.filter(c => c.id !== courseId)
+                    }));
+                } catch (error) {
+                    console.error('Failed to delete course:', error);
+                    throw error;
+                }
             },
 
             // Question Actions
