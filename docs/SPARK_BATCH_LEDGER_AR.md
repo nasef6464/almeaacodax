@@ -903,3 +903,17 @@
   - frontend strict smoke confirms deployed commit/version `9905ebb`.
 - Report:
   - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`
+
+## Update 2026-05-19 - BATCH F3
+- Batch: `BATCH F3 - Redis Activation + Verification`
+- Status: `Fully closed`
+- Production readiness evidence:
+  - `/api/health` => `status=ok`, `ready=true`
+  - `redis.rateLimit=ready`
+  - `redis.queue=ready`
+- Smoke checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:notifications` PASS
+  - `smoke:production-hardening` PASS
+- Report:
+  - `BATCH_F3_REDIS_ACTIVATION_AR.md`

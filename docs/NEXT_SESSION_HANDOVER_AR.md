@@ -765,3 +765,18 @@
   - smoke strict أكد تطابق الإصدار المنشور مع commit `9905ebb`.
 - التالي حسب خطة Codex 5.3:
   - `BATCH F3 — Redis Activation + Verification` (يتطلب تأكيد المالك أن `REDIS_URL` مضاف على Render).
+
+## Update 2026-05-19 — BATCH F3 (Redis Activation + Verification)
+- الحالة: **Fully closed**.
+- التحقق الإنتاجي أكد:
+  - `redis.rateLimit=ready`
+  - `redis.queue=ready`
+  - `ready=true`
+- الفحوص:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:notifications` PASS
+  - `npm run smoke:production-hardening` PASS
+- تقرير الدفعة:
+  - `BATCH_F3_REDIS_ACTIVATION_AR.md`
+- التالي حسب الخطة:
+  - `BATCH F4 — Tap Payments Integration` (يتطلب مفاتيح Tap من المالك).

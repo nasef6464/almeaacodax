@@ -376,3 +376,17 @@
   - `smoke:frontend:strict` confirmed deployed version match: `9905ebb`.
 - Report:
   - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`
+
+## Update 2026-05-19 - BATCH F3 Redis Activation + Verification
+- Batch: `BATCH F3 - Redis Activation + Verification`
+- Status: `Fully closed`
+- Live production health confirms Redis is active and ready:
+  - `redis.rateLimit = ready`
+  - `redis.queue = ready`
+  - `ready = true`
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:notifications` PASS
+  - `npm run smoke:production-hardening` PASS
+- Report:
+  - `BATCH_F3_REDIS_ACTIVATION_AR.md`
