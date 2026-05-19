@@ -467,3 +467,23 @@
   - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 17) Update 2026-05-19 — BATCH 32 Production Operations & Security Full Verification
+- Batch `32` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - operational readiness verification
+  - production hardening verification
+  - production audit verification
+  - API security verification
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:production-hardening` PASS
+  - `smoke:production-audit` PASS
+  - `smoke:api-security` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_32_PRODUCTION_OPERATIONS_AND_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.

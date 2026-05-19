@@ -136,3 +136,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `e6621de5f148`)
 - Report:
   - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 32 Production Operations & Security Full Verification
+- Batch: `BATCH 32 - Production Operations + Security Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:production-audit` PASS
+  - `npm run smoke:api-security` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_32_PRODUCTION_OPERATIONS_AND_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`

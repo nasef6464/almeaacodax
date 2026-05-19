@@ -665,3 +665,17 @@
   - backend health => 200 (`ready=true`, commit `e6621de5f148`)
 - Report:
   - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 32 Production Operations & Security Full Verification
+- Batch: BATCH 32 — Production Operations + Security Full Verification
+- Status: Fully closed (API + Smoke)
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:production-hardening` PASS
+  - `smoke:production-audit` PASS
+  - `smoke:api-security` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_32_PRODUCTION_OPERATIONS_AND_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
