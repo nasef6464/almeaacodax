@@ -77,6 +77,7 @@ const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 const SESSION_STORAGE_KEY = "the-hundred-auth-profile";
 const CSRF_COOKIE_NAME = "almeaa_csrf_token";
 const CSRF_HEADER_NAME = "x-csrf-token";
+const CSRF_SESSION_STORAGE_KEY = "almeaa:csrf-token";
 const COOKIE_FIRST_AUTH_ENABLED =
   (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST !== "false";
 
@@ -115,22 +116,53 @@ const getCookieValue = (name: string): string | null => {
   return match ? decodeURIComponent(match[1]) : null;
 };
 
+const getStoredCsrfToken = (): string | null => {
+  try {
+    return typeof sessionStorage !== "undefined" ? sessionStorage.getItem(CSRF_SESSION_STORAGE_KEY) : null;
+  } catch {
+    return null;
+  }
+};
+
+const storeCsrfToken = (token: string | null) => {
+  try {
+    if (typeof sessionStorage === "undefined") {
+      return;
+    }
+    if (token) {
+      sessionStorage.setItem(CSRF_SESSION_STORAGE_KEY, token);
+    } else {
+      sessionStorage.removeItem(CSRF_SESSION_STORAGE_KEY);
+    }
+  } catch {
+    // Storage is best-effort; the API still returns a fresh token when needed.
+  }
+};
+
 const isUnsafeMethod = (method: HttpMethod | undefined) => {
   const normalized = (method || "GET").toUpperCase();
   return normalized !== "GET" && normalized !== "HEAD" && normalized !== "OPTIONS";
 };
 
 const ensureCsrfToken = async () => {
+  const storedToken = getStoredCsrfToken();
+  if (storedToken) {
+    return storedToken;
+  }
+
   const existingToken = getCookieValue(CSRF_COOKIE_NAME);
   if (existingToken) {
+    storeCsrfToken(existingToken);
     return existingToken;
   }
 
-  await request<{ csrfToken: string }>("/auth/csrf-token", { skipCsrf: true, cache: "no-store" });
-  return getCookieValue(CSRF_COOKIE_NAME);
+  const payload = await request<{ csrfToken: string }>("/auth/csrf-token", { skipCsrf: true, cache: "no-store" });
+  const token = payload.csrfToken || getCookieValue(CSRF_COOKIE_NAME);
+  storeCsrfToken(token);
+  return token;
 };
 
-async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function request<T>(path: string, options: RequestOptions = {}, retryingAfterCsrfRefresh = false): Promise<T> {
   const resolvedToken =
     options.token === undefined
       ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
@@ -174,7 +206,18 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     let message = "تعذر تنفيذ الطلب الآن.";
     if (rawError) {
       try {
-        const payload = JSON.parse(rawError) as { message?: string; error?: string };
+        const payload = JSON.parse(rawError) as { message?: string; error?: string; code?: string };
+        if (
+          response.status === 403 &&
+          payload.code === "CSRF_TOKEN_INVALID" &&
+          !options.skipCsrf &&
+          isUnsafeMethod(options.method) &&
+          !retryingAfterCsrfRefresh
+        ) {
+          storeCsrfToken(null);
+          await ensureCsrfToken();
+          return request<T>(path, options, true);
+        }
         message = payload.message || payload.error || message;
       } catch {
         message = rawError.slice(0, 240);
