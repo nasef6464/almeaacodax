@@ -10,6 +10,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 
+const badRequest = (message: string) => {
+  const error = new Error(message) as Error & { statusCode?: number };
+  error.statusCode = 400;
+  return error;
+};
+
 const numberWithDefault = (defaultValue: number) =>
   z.preprocess((value) => {
     if (value === "" || value === null || value === undefined) {
@@ -240,7 +246,7 @@ const assertCurriculumImportScope = async (params: {
       const lessonPathId = String(lesson.pathId || "").trim();
       const lessonSubjectId = String(lesson.subjectId || "").trim();
       if (isScopeMismatch(lessonPathId, lessonSubjectId, coursePathId, courseSubjectId)) {
-        throw new Error(`Lesson scope mismatch in module \"${String(moduleItem.title || "")}\"`);
+        throw badRequest(`Lesson scope mismatch in module \"${String(moduleItem.title || "")}\"`);
       }
 
       const quizId = String(lesson.quizId || "").trim();
@@ -253,7 +259,7 @@ const assertCurriculumImportScope = async (params: {
           .lean();
 
         if (!quizDoc) {
-          throw new Error(`Referenced quiz not found: ${quizId}`);
+          throw badRequest(`Referenced quiz not found: ${quizId}`);
         }
 
         if (
@@ -264,7 +270,7 @@ const assertCurriculumImportScope = async (params: {
             courseSubjectId,
           )
         ) {
-          throw new Error(`Quiz scope mismatch: ${quizId}`);
+          throw badRequest(`Quiz scope mismatch: ${quizId}`);
         }
       }
 
@@ -285,7 +291,7 @@ const assertCurriculumImportScope = async (params: {
               courseSubjectId,
             )
           ) {
-            throw new Error(`Lesson import scope mismatch: ${String(lesson.id || "")}`);
+            throw badRequest(`Lesson import scope mismatch: ${String(lesson.id || "")}`);
           }
         }
       }
