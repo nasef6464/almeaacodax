@@ -780,3 +780,18 @@
   - `BATCH_F3_REDIS_ACTIVATION_AR.md`
 - التالي حسب الخطة:
   - `BATCH F4 — Tap Payments Integration` (يتطلب مفاتيح Tap من المالك).
+
+## Update 2026-05-19 — BATCH F5 (Student Verifiable Certificate QR)
+- الحالة: **Fully closed**.
+- المنجز:
+  - API شهادات: توليد/قائمة شهاداتي/تحقق عام.
+  - صفحة عامة للشهادة عبر `/certificate/:code` مع QR.
+  - زر `شهادتي` في صفحة الدورة عند اكتمال 100% وتفعيل `certificateEnabled`.
+- الفحوص:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+- التقرير:
+  - `BATCH_F5_CERTIFICATES_AR.md`
+- التالي حسب الخطة:
+  - `BATCH F6 — Lesson Discussion Forum`.

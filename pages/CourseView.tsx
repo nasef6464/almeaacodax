@@ -15,6 +15,7 @@ const CourseView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
+    const [certificateCode, setCertificateCode] = useState('');
     const { user, enrolledCourses, hasScopedPackageAccess } = useStore();
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
 
@@ -112,7 +113,34 @@ const CourseView: React.FC = () => {
         if (isPlaying) {
             return <CoursePlayer course={course} onBack={() => setIsPlaying(false)} />;
         }
-        return <CourseOverview course={course} onContinue={() => setIsPlaying(true)} />;
+        return (
+            <div>
+                {course.certificateEnabled && Number(course.progress || 0) >= 100 ? (
+                    <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
+                        <button
+                            onClick={async () => {
+                                try {
+                                    const { api } = await import('../services/api');
+                                    const cert = await api.generateCertificate({ courseId: course.id });
+                                    const code = String(cert?.verificationCode || '');
+                                    if (code) {
+                                        setCertificateCode(code);
+                                        window.location.href = `/certificate/${code}`;
+                                    }
+                                } catch (e) {
+                                    console.warn('Certificate generation failed', e);
+                                }
+                            }}
+                            className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                        >
+                            شهادتي
+                        </button>
+                        {certificateCode ? <p className="mt-2 text-xs text-gray-500">تم إنشاء الشهادة بنجاح.</p> : null}
+                    </div>
+                ) : null}
+                <CourseOverview course={course} onContinue={() => setIsPlaying(true)} />
+            </div>
+        );
     }
 
     return (

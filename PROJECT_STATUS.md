@@ -390,3 +390,18 @@
   - `npm run smoke:production-hardening` PASS
 - Report:
   - `BATCH_F3_REDIS_ACTIVATION_AR.md`
+
+## Update 2026-05-19 - BATCH F5 Student Verifiable Certificate (QR)
+- Batch: `BATCH F5 - Student Verifiable Certificate (QR)`
+- Status: `Fully closed`
+- Delivered:
+  - Added certificate model and verification code flow.
+  - Added certificates API routes (generate/mine/public verify).
+  - Added public certificate page `/certificate/:code` with QR and print/PDF support.
+  - Added `??????` action in course view when certificate is enabled and progress is 100%.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+- Report:
+  - `BATCH_F5_CERTIFICATES_AR.md`

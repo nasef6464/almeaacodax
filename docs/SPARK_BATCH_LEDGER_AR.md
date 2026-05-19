@@ -917,3 +917,17 @@
   - `smoke:production-hardening` PASS
 - Report:
   - `BATCH_F3_REDIS_ACTIVATION_AR.md`
+
+## Update 2026-05-19 - BATCH F5
+- Batch: `BATCH F5 - Student Verifiable Certificate (QR)`
+- Status: `Fully closed`
+- Scope delivered:
+  - certificates backend model + generate/mine/public verify routes.
+  - frontend public certificate page (`/certificate/:code`) with QR + print/PDF.
+  - course-view certificate action for completed learners.
+- Checks:
+  - `server build` PASS
+  - `typecheck` PASS
+  - `frontend build` PASS
+- Report:
+  - `BATCH_F5_CERTIFICATES_AR.md`

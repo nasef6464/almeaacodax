@@ -12,6 +12,7 @@ import { backupRouter } from "./backup.routes.js";
 import { seoRouter } from "./seo.routes.js";
 import { notificationRouter } from "./notification.routes.js";
 import { quizResultsRouter } from "./quizResults.routes.js";
+import { certificateRouter } from "./certificates.routes.js";
 
 export const apiRouter = Router();
 
@@ -28,3 +29,4 @@ apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);
 apiRouter.use("/notifications", notificationRouter);
 apiRouter.use("/", quizResultsRouter);
+apiRouter.use("/certificates", certificateRouter);

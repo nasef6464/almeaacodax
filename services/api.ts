@@ -19,6 +19,7 @@ interface RequestOptions {
   body?: unknown;
   token?: string | null;
   cache?: RequestCache;
+  skipCsrf?: boolean;
 }
 
 interface PaginationOptions {
@@ -74,6 +75,8 @@ const PUBLIC_CACHE_TTL_MS = 2 * 60 * 1000;
 const BOOTSTRAP_CACHE_TTL_MS = 5 * 60 * 1000;
 
 const SESSION_STORAGE_KEY = "the-hundred-auth-profile";
+const CSRF_COOKIE_NAME = "almeaa_csrf_token";
+const CSRF_HEADER_NAME = "x-csrf-token";
 const COOKIE_FIRST_AUTH_ENABLED =
   (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env?.VITE_AUTH_COOKIE_FIRST !== "false";
 
@@ -103,12 +106,41 @@ const getStoredSessionToken = (): string | null => {
   }
 };
 
+const getCookieValue = (name: string): string | null => {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = document.cookie.match(new RegExp(`(?:^|; )${escapedName}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+const isUnsafeMethod = (method: HttpMethod | undefined) => {
+  const normalized = (method || "GET").toUpperCase();
+  return normalized !== "GET" && normalized !== "HEAD" && normalized !== "OPTIONS";
+};
+
+const ensureCsrfToken = async () => {
+  const existingToken = getCookieValue(CSRF_COOKIE_NAME);
+  if (existingToken) {
+    return existingToken;
+  }
+
+  await request<{ csrfToken: string }>("/auth/csrf-token", { skipCsrf: true, cache: "no-store" });
+  return getCookieValue(CSRF_COOKIE_NAME);
+};
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const resolvedToken =
     options.token === undefined
       ? (COOKIE_FIRST_AUTH_ENABLED ? null : getStoredSessionToken())
       : options.token;
   const startedAt = performance.now();
+
+  let csrfToken: string | null = null;
+  if (!options.skipCsrf && isUnsafeMethod(options.method)) {
+    csrfToken = await ensureCsrfToken();
+  }
 
   let response: Response;
   try {
@@ -118,6 +150,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(csrfToken ? { [CSRF_HEADER_NAME]: csrfToken } : {}),
         ...(resolvedToken ? { Authorization: `Bearer ${resolvedToken}` } : {}),
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
@@ -260,12 +293,12 @@ export const api = {
   baseUrl: API_BASE_URL,
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
   login: (email: string, password: string) =>
-    request<{ token: string; user: unknown }>("/auth/login", {
+    request<{ token?: string; user: unknown }>("/auth/login", {
       method: "POST",
       body: { email, password },
     }),
   register: (name: string, email: string, password: string) =>
-    request<{ token: string; user: unknown }>("/auth/register", {
+    request<{ token?: string; user: unknown }>("/auth/register", {
       method: "POST",
       body: { name, email, password },
     }),
@@ -463,10 +496,10 @@ export const api = {
       body: payload,
       token,
     }),
-  getTaxonomyBootstrap: () =>
+  getTaxonomyBootstrap: (phase: "full" | "core" = "full") =>
     requestCached<{ paths: unknown[]; levels: unknown[]; subjects: unknown[]; sections: unknown[]; skills: unknown[] }>(
-      "/taxonomy/bootstrap",
-      "taxonomy-bootstrap",
+      withQuery("/taxonomy/bootstrap", { phase }),
+      `taxonomy-bootstrap:${phase}`,
       BOOTSTRAP_CACHE_TTL_MS,
     ),
   createPath: (payload: unknown, token?: string | null) =>
@@ -565,7 +598,7 @@ export const api = {
       announcementAds: unknown[];
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap", { scope: "full" }), "content-bootstrap:full", BOOTSTRAP_CACHE_TTL_MS),
-  getContentBootstrapByScope: (scope: "full" | "learning" = "full") =>
+  getContentBootstrapByScope: (scope: "full" | "learning" = "full", phase: "full" | "core" = "full") =>
     requestCached<{
       topics: unknown[];
       lessons: unknown[];
@@ -575,7 +608,7 @@ export const api = {
       accessCodes: unknown[];
       announcementAds: unknown[];
       studyPlans: unknown[];
-    }>(withQuery("/content/bootstrap", { scope }), `content-bootstrap:${scope}`, BOOTSTRAP_CACHE_TTL_MS),
+    }>(withQuery("/content/bootstrap", { scope, phase }), `content-bootstrap:${scope}:${phase}`, BOOTSTRAP_CACHE_TTL_MS),
   getContentBootstrapMinimal: () =>
     requestCached<{
       topics: unknown[];
@@ -1389,6 +1422,16 @@ export const api = {
       body: payload,
       token,
     }),
+  generateCertificate: (payload: { courseId: string }, token?: string | null) =>
+    request<any>("/certificates/generate", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  getMyCertificates: (token?: string | null) =>
+    request<{ certificates: any[] }>("/certificates/mine", { token }),
+  getCertificateByCode: (verificationCode: string) =>
+    request<any>(`/certificates/${encodeURIComponent(verificationCode)}`),
 };
 
 export { API_BASE_URL };
