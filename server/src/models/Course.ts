@@ -9,6 +9,19 @@ const moduleSchema = new Schema(
   { _id: false },
 );
 
+const assessmentSchema = new Schema(
+  {
+    id: { type: String, required: true, trim: true },
+    quizId: { type: String, required: true, trim: true },
+    title: { type: String, required: true, trim: true },
+    phase: { type: String, enum: ["pre_course", "during_course", "final_course"], default: "during_course" },
+    access: { type: String, enum: ["free_preview", "enrolled_paid"], default: "enrolled_paid" },
+    showOnPlatform: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+  },
+  { _id: false },
+);
+
 const courseSchema = new Schema(
   {
     _id: { type: String, required: true },
@@ -30,6 +43,7 @@ const courseSchema = new Schema(
     description: { type: String, default: "" },
     instructorBio: { type: String, default: "" },
     modules: { type: [moduleSchema], default: [] },
+    assessments: { type: [assessmentSchema], default: [] },
     isPublished: { type: Boolean, default: false },
     showOnPlatform: { type: Boolean, default: true },
     isPackage: { type: Boolean, default: false },

@@ -72,6 +72,45 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 isLocked: !isEnrolled,
             }));
     }, [canShowQuizInCourse, course.pathId, course.skills, course.subjectId, isEnrolled, quizzes]);
+    const explicitCourseTests = useMemo(() => {
+        const assessments = Array.isArray(course.assessments) ? course.assessments : [];
+        if (assessments.length === 0) return [];
+
+        const quizById = new Map(quizzes.map((quiz) => [String(quiz.id), quiz]));
+        const phaseLabel: Record<string, string> = {
+            pre_course: 'اختبار قبل الدورة',
+            during_course: 'اختبار أثناء الدورة',
+            final_course: 'اختبار نهاية الدورة',
+        };
+
+        return assessments
+            .filter((assessment) => assessment.showOnPlatform !== false)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .map((assessment) => {
+                const quiz = quizById.get(String(assessment.quizId));
+                if (!quiz || !canShowQuizInCourse(quiz)) return null;
+
+                const isLocked = assessment.access === 'enrolled_paid' && !isEnrolled;
+                return {
+                    id: quiz.id,
+                    title: `${phaseLabel[assessment.phase] || 'اختبار الدورة'} - ${assessment.title || quiz.title}`,
+                    duration: `${quiz.settings.timeLimit || 30} دقيقة`,
+                    questions: quiz.questionIds.length,
+                    type: assessment.phase === 'final_course' ? 'comprehensive' : 'trial',
+                    level: assessment.access === 'free_preview' ? 'مجاني' : 'مدفوع',
+                    isLocked,
+                };
+            })
+            .filter(Boolean) as Array<{
+                id: string;
+                title: string;
+                duration: string;
+                questions: number;
+                type: string;
+                level: string;
+                isLocked: boolean;
+            }>;
+    }, [canShowQuizInCourse, course.assessments, isEnrolled, quizzes]);
     const fallbackTests = useMemo(() => {
         const relatedIds = new Set(relatedTests.map((test) => test.id));
 
@@ -194,7 +233,13 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6"
                     >
-                        {relatedTests.length > 0 ? (
+                        {explicitCourseTests.length > 0 ? (
+                            <SimulatedTestExperience
+                                tests={explicitCourseTests}
+                                onLockedClick={() => setShowPaymentModal(true)}
+                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
+                            />
+                        ) : relatedTests.length > 0 ? (
                             <SimulatedTestExperience
                                 tests={relatedTests}
                                 onLockedClick={() => setShowPaymentModal(true)}

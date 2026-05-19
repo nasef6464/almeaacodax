@@ -91,6 +91,19 @@ export interface CourseQA {
     date: string;
 }
 
+export type CourseAssessmentPhase = 'pre_course' | 'during_course' | 'final_course';
+export type CourseAssessmentAccess = 'free_preview' | 'enrolled_paid';
+
+export interface CourseAssessment {
+    id: string;
+    quizId: string;
+    title: string;
+    phase: CourseAssessmentPhase;
+    access: CourseAssessmentAccess;
+    showOnPlatform: boolean;
+    order: number;
+}
+
 export interface Course extends ContentWorkflow {
     id: string;
     title: string;
@@ -123,6 +136,7 @@ export interface Course extends ContentWorkflow {
     previewVideoUrl?: string;
     files?: CourseFile[];
     qa?: CourseQA[];
+    assessments?: CourseAssessment[];
     // Advanced LMS Features
     isPublished?: boolean;
     showOnPlatform?: boolean;

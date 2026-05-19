@@ -31,6 +31,16 @@ const nullableNumber = z.preprocess((value) => {
   return value;
 }, z.coerce.number().finite().nullable().optional());
 
+const assessmentSchema = z.object({
+  id: z.string(),
+  quizId: z.string(),
+  title: z.string(),
+  phase: z.enum(["pre_course", "during_course", "final_course"]).default("during_course"),
+  access: z.enum(["free_preview", "enrolled_paid"]).default("enrolled_paid"),
+  showOnPlatform: z.boolean().default(true),
+  order: z.coerce.number().finite().default(0),
+});
+
 const courseSchema = z.object({
   id: z.string().optional(),
   title: z.preprocess((value) => {
@@ -57,6 +67,7 @@ const courseSchema = z.object({
   description: z.string().optional(),
   instructorBio: z.string().optional(),
   modules: z.array(z.any()).default([]),
+  assessments: z.array(assessmentSchema).optional(),
   isPublished: z.boolean().default(false),
   showOnPlatform: z.boolean().default(true),
   isPackage: z.boolean().default(false),
