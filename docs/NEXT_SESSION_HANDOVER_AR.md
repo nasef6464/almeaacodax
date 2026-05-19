@@ -592,3 +592,25 @@
   - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`
 - Next:
   - await owner direction for next full batch.
+
+## 23) Update 2026-05-19 — BATCH 38 Learning/Quiz/Results Full Verification
+- Batch `38` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - learning quiz journey verification
+  - student learning journey verification
+  - quiz access matrix verification
+  - results contract verification
+- Execution fix:
+  - added missing smoke reference quiz for expected learning quiz id on this environment.
+- Checks:
+  - `smoke:learning-quiz` PASS
+  - `smoke:student-journey` PASS
+  - `smoke:quiz-access` PASS
+  - `smoke:results` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_38_LEARNING_QUIZ_RESULTS_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.

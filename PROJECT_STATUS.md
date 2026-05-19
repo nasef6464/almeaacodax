@@ -224,3 +224,19 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 38 Learning/Quiz/Results Full Verification
+- Batch: `BATCH 38 - Learning + Quiz + Results Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run smoke:student-journey` PASS
+  - `npm run smoke:quiz-access` PASS
+  - `npm run smoke:results` PASS
+- Operational fix during execution:
+  - Added missing environment smoke reference quiz `quiz_smoke_math_training_learning` with 2 resolvable question refs for the expected path/subject smoke context.
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_38_LEARNING_QUIZ_RESULTS_FULL_VERIFICATION_2026-05-19_AR.md`

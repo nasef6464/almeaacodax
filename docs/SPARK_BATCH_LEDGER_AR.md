@@ -753,3 +753,19 @@
   - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
 - Report:
   - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 38 Learning/Quiz/Results Full Verification
+- Batch: BATCH 38 — Learning + Quiz + Results Full Verification
+- Status: Fully closed (API + Smoke)
+- Checks:
+  - `smoke:learning-quiz` PASS
+  - `smoke:student-journey` PASS
+  - `smoke:quiz-access` PASS
+  - `smoke:results` PASS
+- Operational fix:
+  - created missing smoke reference quiz `quiz_smoke_math_training_learning` with 2 question refs for learning-journey contract parity.
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `e6621de5f148`
+- Report:
+  - `BATCH_38_LEARNING_QUIZ_RESULTS_FULL_VERIFICATION_2026-05-19_AR.md`
