@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role } from '../../types';
+import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role, CourseAssessment } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { QuizBuilder } from './QuizBuilder';
@@ -343,6 +343,48 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     };
 
     onSave(sanitizedCourseData);
+  };
+
+  const addCourseAssessment = (quizId: string) => {
+    if (!quizId) return;
+    const selectedQuiz = quizzes.find((quiz) => quiz.id === quizId);
+    if (!selectedQuiz) return;
+
+    const currentAssessments = Array.isArray(courseData.assessments) ? courseData.assessments : [];
+    if (currentAssessments.some((assessment) => assessment.quizId === quizId)) return;
+
+    const nextAssessment: CourseAssessment = {
+      id: `assessment_${Date.now()}`,
+      quizId,
+      title: selectedQuiz.title,
+      phase: 'during_course',
+      access: 'enrolled_paid',
+      showOnPlatform: true,
+      order: currentAssessments.length + 1,
+    };
+
+    setCourseData((prev) => ({
+      ...prev,
+      assessments: [...(prev.assessments || []), nextAssessment],
+    }));
+  };
+
+  const updateCourseAssessment = (assessmentId: string, patch: Partial<CourseAssessment>) => {
+    setCourseData((prev) => ({
+      ...prev,
+      assessments: (prev.assessments || []).map((assessment) =>
+        assessment.id === assessmentId ? { ...assessment, ...patch } : assessment,
+      ),
+    }));
+  };
+
+  const removeCourseAssessment = (assessmentId: string) => {
+    setCourseData((prev) => ({
+      ...prev,
+      assessments: (prev.assessments || [])
+        .filter((assessment) => assessment.id !== assessmentId)
+        .map((assessment, index) => ({ ...assessment, order: index + 1 })),
+    }));
   };
 
   return (
@@ -904,9 +946,53 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         <label htmlFor="pkg1" className="text-sm font-bold text-gray-700">باقة التأسيس الشامل</label>
                       </div>
                     </div>
+
+                    <div className="p-4 bg-white rounded-xl border border-gray-200 space-y-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <h4 className="font-bold text-gray-800">Course Assessments (Pre / During / Final)</h4>
+                        <select
+                          defaultValue=""
+                          onChange={(e) => {
+                            addCourseAssessment(e.target.value);
+                            e.target.value = '';
+                          }}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        >
+                          <option value="">Add assessment from quizzes</option>
+                          {scopedQuizzes.map((quiz) => (
+                            <option key={quiz.id} value={quiz.id}>{getSafeLabel(quiz.title, 'Quiz')}</option>
+                          ))}
+                        </select>
+                      </div>
+                      {(courseData.assessments || []).length === 0 && (
+                        <p className="text-sm text-gray-500">No explicit course assessments added yet.</p>
+                      )}
+                      <div className="space-y-3">
+                        {(courseData.assessments || []).map((assessment) => (
+                          <div key={assessment.id} className="border border-gray-200 rounded-xl p-3 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                            <input type="text" value={assessment.title} onChange={(e) => updateCourseAssessment(assessment.id, { title: e.target.value })} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Assessment title" />
+                            <select value={assessment.phase} onChange={(e) => updateCourseAssessment(assessment.id, { phase: e.target.value as CourseAssessment['phase'] })} className="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                              <option value="pre_course">Pre-course</option>
+                              <option value="during_course">During course</option>
+                              <option value="final_course">Final exam</option>
+                            </select>
+                            <select value={assessment.access} onChange={(e) => updateCourseAssessment(assessment.id, { access: e.target.value as CourseAssessment['access'] })} className="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                              <option value="enrolled_paid">Paid with course</option>
+                              <option value="free_preview">Free preview</option>
+                            </select>
+                            <div className="flex items-center justify-between gap-2">
+                              <label className="text-xs font-bold text-gray-600 flex items-center gap-2">
+                                <input type="checkbox" checked={assessment.showOnPlatform !== false} onChange={(e) => updateCourseAssessment(assessment.id, { showOnPlatform: e.target.checked })} />
+                                Visible
+                              </label>
+                              <button type="button" onClick={() => removeCourseAssessment(assessment.id)} className="text-red-600 text-xs font-bold">Delete</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
-
                 {settingsTab === 'advanced' && (
                   <div className="space-y-6">
                     <h3 className="text-xl font-bold text-gray-800 border-b pb-4">إعدادات متقدمة (Master Settings)</h3>
@@ -990,6 +1076,39 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                             <span className="text-xs text-gray-500">إصدار شهادة عند إكمال الدورة.</span>
                           </div>
                         </label>
+                      </div>
+                    </div>
+
+                    <div className="p-4 border border-gray-200 rounded-xl bg-white space-y-3">
+                      <h4 className="font-bold text-gray-800">Free Preview Lessons</h4>
+                      <p className="text-xs text-gray-500">Allow specific lessons to be public even when course is paid.</p>
+                      <div className="max-h-56 overflow-y-auto space-y-2">
+                        {(courseData.modules || []).flatMap((module) => module.lessons.map((lesson) => ({ module, lesson }))).map(({ module, lesson }) => (
+                          <div key={lesson.id} className="flex items-center justify-between gap-3 border border-gray-100 rounded-lg p-2">
+                            <div className="text-sm text-gray-700">
+                              <span className="font-bold">{getSafeLabel(lesson.title, 'Lesson')}</span>
+                              <span className="text-xs text-gray-500 mr-2">({getSafeLabel(module.title, 'Module')})</span>
+                            </div>
+                            <select
+                              value={lesson.accessControl || 'enrolled'}
+                              onChange={(e) => {
+                                const nextAccess = e.target.value as Lesson['accessControl'];
+                                setCourseData((prev) => ({
+                                  ...prev,
+                                  modules: (prev.modules || []).map((m) =>
+                                    m.id !== module.id
+                                      ? m
+                                      : { ...m, lessons: m.lessons.map((l) => (l.id === lesson.id ? { ...l, accessControl: nextAccess } : l)) },
+                                  ),
+                                }));
+                              }}
+                              className="px-2 py-1 border border-gray-300 rounded text-xs"
+                            >
+                              <option value="enrolled">Paid/Enrolled</option>
+                              <option value="public">Free preview</option>
+                            </select>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
