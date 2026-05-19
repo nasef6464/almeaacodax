@@ -165,13 +165,16 @@ const buildCourseVisibilityFilter = (authUser?: { role?: string; id?: string }) 
   };
 };
 
+const buildCourseIdentityQuery = (id: string) => {
+  const normalizedId = String(id || "").trim();
+  return { $or: [{ _id: normalizedId }, { id: normalizedId }] };
+};
+
 const buildOwnedCourseQuery = (
   id: string,
   authUser: { id: string; role: string; schoolId?: string | null },
 ) => {
-  const baseQuery = mongoose.Types.ObjectId.isValid(id)
-    ? { $or: [{ _id: id }, { id }] }
-    : { id };
+  const baseQuery = buildCourseIdentityQuery(id);
 
   if (authUser.role === "admin") {
     return baseQuery;
@@ -376,9 +379,7 @@ courseRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
-    const identityFilter = mongoose.Types.ObjectId.isValid(req.params.id)
-      ? { $or: [{ _id: req.params.id }, { id: req.params.id }] }
-      : { id: req.params.id };
+    const identityFilter = buildCourseIdentityQuery(req.params.id);
     const item = await CourseModel.findOne({
       $and: [identityFilter, visibilityFilter],
     });
