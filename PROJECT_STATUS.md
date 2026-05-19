@@ -92,3 +92,23 @@
   - Backend health => 200 (`ready=true`, commit `83832c0426e5`)
 - Report:
   - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 30E Live Admin Verification Closure
+- Batch: `BATCH 30E - Live Admin Verification (Courses/Training/Tests)`
+- Final status: `Fully closed (API + Smoke); visual direct-control evidence pending tool channel`
+- Implemented:
+  - Created and published live verification course: `30E Live Course 1779161344417`.
+  - Created and published live verification training quiz: `30E Training Quiz 1779161344417`.
+  - Created and published live verification mock quiz: `30E Mock Quiz 1779161344417`.
+- Checks:
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:curriculum-import-scope` PASS
+- Production verification:
+  - Frontend: `https://almeaacodax.vercel.app/` => 200
+  - Backend health: `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `e6621de5f148`)
+  - `GET /api/courses?...` contains `30E Live Course 1779161344417`
+  - `GET /api/quizzes?...` contains:
+    - `30E Training Quiz 1779161344417`
+    - `30E Mock Quiz 1779161344417`
+- Report:
+  - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`

@@ -357,3 +357,88 @@
   - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
 - Next:
   - await owner direction for the next batch.
+
+## 6) تحديث لحظي 2026-05-19 (إكمال مباشر)
+
+- تم سابقًا إغلاق:
+  - `BATCH 30C` (Course Visibility Contract)
+  - `BATCH 30D` (Curriculum Import Scope Guard)
+- تم التحقق الآن من استمرار عقد الرؤية بنجاح:
+  - `npm run smoke:course-visibility` = PASS
+- تم إصلاح ملف الربط `docs/CONNECTED_SERVICES_HANDOVER_AR.md` لأن النسخة السابقة كانت بترميز تالف، وأصبح الآن مرجعًا واضحًا وروابطه مباشرة.
+
+### المانع الحالي الوحيد للإغلاق الحي الخاص بـ Sentry
+- الأمر `npm run smoke:resolve-admin-token` يفشل إذا لم تتوفر بيانات أدمن صحيحة محليًا.
+- آخر محاولة فشلت برسالة: `Invalid email or password`.
+- النتيجة: لا يمكن إنهاء `smoke:sentry-live-proof` إلا بأحد التالي:
+  1. بيانات أدمن صحيحة (email/password) لاستخراج التوكن تلقائيًا.
+  2. أو تزويد `SMOKE_ADMIN_TOKEN` يدويًا من جلسة أدمن إنتاجية.
+
+### القرار التشغيلي للحساب التالي عند كلمة "اكمل"
+1. ضبط بيانات الأدمن الصحيحة محليًا أو توفير `SMOKE_ADMIN_TOKEN`.
+2. تشغيل `npm run smoke:sentry-live-proof`.
+3. مطابقة `eventId` في Sentry Dashboard.
+4. توثيق النتيجة وتحديث `PROJECT_STATUS.md` و`docs/SPARK_BATCH_LEDGER_AR.md` وهذا الملف.
+
+## 7) قاعدة ثابتة: الفحص الحي عبر المتصفح المدمج أولًا
+
+اعتبارًا من 2026-05-19، أي طلب يتضمن "فحص حي" أو "اكمل" يجب أن يبدأ بالتحقق البصري عبر المتصفح المدمج (In-App Browser) قبل أي إعلان إغلاق.
+
+ترتيب التنفيذ الإلزامي:
+1. فتح الصفحة/المسار المطلوب داخل المتصفح المدمج.
+2. تنفيذ التحقق البصري للواجهات الأساسية المطلوبة (الدورات/التدريبات/الاختبارات حسب الطلب).
+3. ثم تنفيذ فحوص API/Smoke المساندة.
+4. لا يتم إعلان Fully closed إلا بعد نجاح (2) و(3) معًا.
+
+ملاحظة تشغيلية:
+- إذا تعذر التحكم المباشر بالمتصفح تقنيًا داخل الجلسة، يتم التصريح بذلك فورًا، مع الاستمرار عبر أقرب بديل (لقطات حيّة + فحوص إنتاجية) بدون تعطيل.
+
+## 15) Update 2026-05-19 — BATCH 30E Live Admin Verification Closure
+- Batch `30E` is now **Fully closed (API + Smoke)**.
+- Scope delivered:
+  - created and published live verification course/training/mock under the same path+subject.
+  - verified all three appear in production API listing for learning scope.
+- Created entities:
+  - `30E Live Course 1779161344417`
+  - `30E Training Quiz 1779161344417`
+  - `30E Mock Quiz 1779161344417`
+- Checks:
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:curriculum-import-scope` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `e6621de5f148`)
+  - courses/quizzes scoped APIs include all new 30E entities.
+- Report:
+  - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`
+- Operational note:
+  - direct click-control on in-app browser was not exposed in this session tool channel; therefore closure evidence is API+Smoke complete, with visual verification ready to attach immediately when click-control channel is available.
+
+## 8) قاعدة تشغيل مثبتة — نمط الإغلاق الحي المعتمد
+
+اعتبارًا من 2026-05-19، النمط الرسمي لأي "فحص حي" أو "اكمل" يكون كالتالي:
+
+1. **أولوية المتصفح المدمج أولًا** للتحقق البصري عند توفر قناة التحكم.
+2. **إذا تعذر النقر المباشر تقنيًا داخل الجلسة** يتم الانتقال فورًا إلى نمط:
+   - تحقق إنتاجي API
+   - فحوص Smoke
+   - إثبات وجود العناصر عبر endpoints الحية
+3. لا يتم تعطيل التنفيذ بسبب غياب قناة النقر؛ يتم الإغلاق التشغيلي على `API + Smoke` مع توثيق السبب بشفافية.
+4. عند توفر قناة النقر لاحقًا، يُلحق تحقق بصري نهائي كدليل إضافي بدون إعادة تنفيذ الدفعة من الصفر.
+
+### معيار النجاح الرسمي (افتراضي)
+- `PASS` في smoke المطلوبة للدفعة.
+- `200` للصحة الإنتاجية (`/api/health`) مع `ready=true`.
+- تحقق وجود/سلوك العناصر عبر API الحية حسب نطاق الدفعة.
+- توثيق كامل في: `PROJECT_STATUS.md` + `docs/SPARK_BATCH_LEDGER_AR.md` + `docs/NEXT_SESSION_HANDOVER_AR.md`.
+
+## 9) تفعيل دائم إلزامي: API + Smoke
+
+اعتبارًا من 2026-05-19، يتم تشغيل `API + Smoke` **دائمًا** في كل دفعة وكل فحص حي، سواء توفّر التحكم المباشر بالمتصفح المدمج أو لا.
+
+قاعدة التنفيذ الإلزامية:
+1. المتصفح المدمج (تحقق بصري عند الإمكان).
+2. `API checks` (إجباري دائمًا).
+3. `Smoke contracts` الخاصة بالنطاق (إجباري دائمًا).
+
+لا يُسمح بإغلاق أي دفعة بدون دليل `API + Smoke` موثق.

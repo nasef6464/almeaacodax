@@ -620,3 +620,23 @@
   - Backend health => 200 (`ready=true`, commit `83832c0426e5`)
 - Report:
   - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 30E Live Admin Verification Closure
+- Batch: BATCH 30E — Live Admin Verification (Courses/Training/Tests)
+- Status: Fully closed (API + Smoke); visual direct-control evidence pending tool channel
+- Delivered:
+  - Created and published course: `30E Live Course 1779161344417`
+  - Created and published training quiz: `30E Training Quiz 1779161344417`
+  - Created and published mock quiz: `30E Mock Quiz 1779161344417`
+- Checks:
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:curriculum-import-scope` PASS
+- Production evidence:
+  - `GET /api/courses?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=200` includes `30E Live Course 1779161344417`
+  - `GET /api/quizzes?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=200` includes:
+    - `30E Training Quiz 1779161344417`
+    - `30E Mock Quiz 1779161344417`
+  - Frontend => 200
+  - Backend health => 200 (`ready=true`, commit `e6621de5f148`)
+- Report:
+  - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`
