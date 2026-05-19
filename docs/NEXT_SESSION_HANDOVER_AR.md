@@ -442,3 +442,28 @@
 3. `Smoke contracts` الخاصة بالنطاق (إجباري دائمًا).
 
 لا يُسمح بإغلاق أي دفعة بدون دليل `API + Smoke` موثق.
+
+## 16) Update 2026-05-19 — BATCH 31 Homepage & Admin Panel Full Verification
+- Batch `31` is now **Fully closed (API + Smoke)**.
+- Scope verified end-to-end:
+  - homepage management contracts (hero + ads)
+  - admin/supervisor/school dashboard contracts
+  - route-loading and strict frontend production readiness
+- Checks:
+  - `smoke:homepage-hero` PASS
+  - `smoke:announcement-ads` PASS
+  - `smoke:reports-role` PASS
+  - `smoke:supervisor-dashboard` PASS
+  - `smoke:school-management` PASS
+  - `smoke:admin-school-command` PASS
+  - `smoke:school-portal-command` PASS
+  - `smoke:dashboards-phase11` PASS
+  - `smoke:route-loading` PASS
+  - `smoke:frontend:strict` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`)
+- Report:
+  - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
+- Next:
+  - await owner direction for next full batch.

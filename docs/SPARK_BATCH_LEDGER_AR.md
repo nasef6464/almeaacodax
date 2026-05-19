@@ -640,3 +640,28 @@
   - Backend health => 200 (`ready=true`, commit `e6621de5f148`)
 - Report:
   - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 31 Homepage & Admin Panel Full Verification
+- Batch: BATCH 31 — Homepage + Admin Panel Full Verification
+- Status: Fully closed (API + Smoke)
+- Delivered verification coverage:
+  - homepage hero + announcement ads contracts
+  - reports role + supervisor dashboard
+  - school management + admin school command center + school portal command center
+  - dashboards phase11 + route loading + frontend strict
+- Checks:
+  - `smoke:homepage-hero` PASS
+  - `smoke:announcement-ads` PASS
+  - `smoke:reports-role` PASS
+  - `smoke:supervisor-dashboard` PASS
+  - `smoke:school-management` PASS
+  - `smoke:admin-school-command` PASS
+  - `smoke:school-portal-command` PASS
+  - `smoke:dashboards-phase11` PASS
+  - `smoke:route-loading` PASS
+  - `smoke:frontend:strict` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => 200 (`ready=true`, commit `e6621de5f148`)
+- Report:
+  - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`

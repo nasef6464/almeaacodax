@@ -112,3 +112,27 @@
     - `30E Mock Quiz 1779161344417`
 - Report:
   - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 31 Homepage & Admin Panel Full Verification
+- Batch: `BATCH 31 - Homepage + Admin Panel Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Scope verified:
+  - Homepage hero and announcement ads management contracts.
+  - Admin/supervisor/school command-center and dashboard contracts.
+  - Route loading + strict frontend production checks.
+- Checks:
+  - `npm run smoke:homepage-hero` PASS
+  - `npm run smoke:announcement-ads` PASS
+  - `npm run smoke:reports-role` PASS
+  - `npm run smoke:supervisor-dashboard` PASS
+  - `npm run smoke:school-management` PASS
+  - `npm run smoke:admin-school-command` PASS
+  - `npm run smoke:school-portal-command` PASS
+  - `npm run smoke:dashboards-phase11` PASS
+  - `npm run smoke:route-loading` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `e6621de5f148`)
+- Report:
+  - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
