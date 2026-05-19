@@ -315,3 +315,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_43_AUTH_FRONTEND_AND_PUBLIC_UI_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 - BATCH 44 Data Visibility & Security Regression Full Verification
+- Batch: `BATCH 44 - Data Visibility + Security Regression Full Verification`
+- Final status: `Fully closed (API + Smoke)`
+- Checks:
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:csrf` PASS
+  - `npm run smoke:auth-token-response` PASS
+  - `npm run smoke:api-security` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_44_DATA_VISIBILITY_AND_SECURITY_REGRESSION_FULL_VERIFICATION_2026-05-19_AR.md`

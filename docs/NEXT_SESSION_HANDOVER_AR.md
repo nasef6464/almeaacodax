@@ -700,3 +700,21 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_43_AUTH_FRONTEND_AND_PUBLIC_UI_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## 29) Update 2026-05-19 — BATCH 44 Data Visibility & Security Regression Full Verification
+- Batch `44` is now **Fully closed (API + Smoke)**.
+- Scope:
+  - data visibility regression verification
+  - csrf contract verification
+  - auth token response contract verification
+  - api security contract verification
+- Checks:
+  - `smoke:data-visibility-regression` PASS
+  - `smoke:csrf` PASS
+  - `smoke:auth-token-response` PASS
+  - `smoke:api-security` PASS
+- Production verification:
+  - frontend `https://almeaacodax.vercel.app/` => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_44_DATA_VISIBILITY_AND_SECURITY_REGRESSION_FULL_VERIFICATION_2026-05-19_AR.md`

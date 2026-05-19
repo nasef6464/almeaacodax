@@ -844,3 +844,17 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_43_AUTH_FRONTEND_AND_PUBLIC_UI_FULL_VERIFICATION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 44 Data Visibility & Security Regression Full Verification
+- Batch: BATCH 44 — Data Visibility + Security Regression Full Verification
+- Status: Fully closed (API + Smoke)
+- Checks:
+  - `smoke:data-visibility-regression` PASS
+  - `smoke:csrf` PASS
+  - `smoke:auth-token-response` PASS
+  - `smoke:api-security` PASS
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_44_DATA_VISIBILITY_AND_SECURITY_REGRESSION_FULL_VERIFICATION_2026-05-19_AR.md`
