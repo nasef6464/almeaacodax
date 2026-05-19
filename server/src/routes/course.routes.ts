@@ -380,8 +380,7 @@ courseRouter.get(
       ? { $or: [{ _id: req.params.id }, { id: req.params.id }] }
       : { id: req.params.id };
     const item = await CourseModel.findOne({
-      ...identityFilter,
-      ...visibilityFilter,
+      $and: [identityFilter, visibilityFilter],
     });
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
