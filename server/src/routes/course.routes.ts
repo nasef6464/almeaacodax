@@ -215,6 +215,16 @@ const getRefIdCandidates = (value?: string) => {
   return [raw];
 };
 
+const buildRefLookup = (idCandidates: string[]) => {
+  const normalized = idCandidates.map((candidate) => String(candidate || "").trim()).filter(Boolean);
+  const objectIdCandidates = normalized.filter((candidate) => mongoose.Types.ObjectId.isValid(candidate));
+  const clauses: Array<Record<string, unknown>> = [{ id: { $in: normalized } }];
+  if (objectIdCandidates.length > 0) {
+    clauses.push({ _id: { $in: objectIdCandidates } });
+  }
+  return clauses.length === 1 ? clauses[0] : { $or: clauses };
+};
+
 const isScopeMismatch = (
   itemPathId: string,
   itemSubjectId: string,
@@ -252,9 +262,7 @@ const assertCurriculumImportScope = async (params: {
       const quizId = String(lesson.quizId || "").trim();
       if (quizId) {
         const idCandidates = getRefIdCandidates(quizId);
-        const quizDoc = await QuizModel.findOne({
-          $or: [{ id: { $in: idCandidates } }, { _id: { $in: idCandidates } }],
-        })
+        const quizDoc = await QuizModel.findOne(buildRefLookup(idCandidates))
           .select("pathId subjectId")
           .lean();
 
@@ -276,9 +284,7 @@ const assertCurriculumImportScope = async (params: {
 
       const lessonIdCandidates = getRefIdCandidates(String(lesson.id || ""));
       if (lessonIdCandidates.length > 0) {
-        const lessonDoc = await LessonModel.findOne({
-          $or: [{ id: { $in: lessonIdCandidates } }, { _id: { $in: lessonIdCandidates } }],
-        })
+        const lessonDoc = await LessonModel.findOne(buildRefLookup(lessonIdCandidates))
           .select("pathId subjectId")
           .lean();
 
