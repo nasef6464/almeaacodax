@@ -36,9 +36,11 @@ const CustomVideoPlayer = React.lazy(() =>
 interface CoursePlayerProps {
   course: Course;
   onBack?: () => void;
+  initialLessonId?: string;
+  onLessonChange?: (lessonId: string) => void;
 }
 
-export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) => {
+export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, initialLessonId, onLessonChange }) => {
   const navigate = useNavigate();
     const { completedLessons, markLessonComplete, questions } = useStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -56,12 +58,24 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack }) =>
   );
 
   useEffect(() => {
-    const firstModuleWithLessons = course.modules?.find((module) => module.lessons.length > 0);
-    const firstUnlockedLesson = flattenedLessons.find((lesson) => !lesson.isLocked) || flattenedLessons[0] || null;
+    const initialLesson =
+      (initialLessonId ? flattenedLessons.find((lesson) => lesson.id === initialLessonId && !lesson.isLocked) : null) ||
+      flattenedLessons.find((lesson) => !lesson.isLocked) ||
+      flattenedLessons[0] ||
+      null;
+    const firstModuleWithLessons = course.modules?.find((module) =>
+      module.lessons.some((lesson) => lesson.id === initialLesson?.id),
+    ) || course.modules?.find((module) => module.lessons.length > 0);
 
-    setActiveLesson(firstUnlockedLesson);
+    setActiveLesson(initialLesson);
     setExpandedModules(firstModuleWithLessons ? [firstModuleWithLessons.id] : []);
-  }, [course, flattenedLessons]);
+  }, [course, flattenedLessons, initialLessonId]);
+
+  useEffect(() => {
+    if (activeLesson?.id) {
+      onLessonChange?.(activeLesson.id);
+    }
+  }, [activeLesson?.id, onLessonChange]);
 
   const handleMarkComplete = () => {
     if (activeLesson) {
