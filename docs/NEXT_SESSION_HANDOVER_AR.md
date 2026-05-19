@@ -654,3 +654,13 @@
   - direct click-evidence via in-app browser control channel.
 - Report:
   - `BATCH_40_LIVE_DASHBOARD_AND_LEARNING_VISUAL_EXECUTION_2026-05-19_AR.md`
+
+## 26) Update 2026-05-19 — BATCH 41 Browser Execution Gate + Full Operational Verification
+- Batch `41` is now **Programmatically closed**.
+- Completed:
+  - full operational verification for dashboard + learning/training/tests paths
+  - production probes + smoke evidence all PASS
+- Pending for fully visual closure:
+  - Gate 0 direct click evidence inside in-app browser control channel.
+- Report:
+  - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`

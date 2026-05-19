@@ -800,3 +800,19 @@
   - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
 - Report:
   - `BATCH_40_LIVE_DASHBOARD_AND_LEARNING_VISUAL_EXECUTION_2026-05-19_AR.md`
+
+## Update 2026-05-19 — BATCH 41 Browser Execution Gate + Full Operational Verification
+- Batch: BATCH 41 — Browser Execution Gate + Full Operational Verification
+- Status: Programmatically closed (API + Smoke PASS), Gate 0 visual-click pending
+- Checks (PASS):
+  - `smoke:homepage-hero`
+  - `smoke:reports-role`
+  - `smoke:dashboards-phase11`
+  - `smoke:learning-quiz`
+  - `smoke:quiz-access`
+  - `smoke:results`
+- Production probes:
+  - frontend => 200
+  - backend health => `status=ok`, `ready=true`, commit `33e0b6a58fbf`
+- Report:
+  - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`
