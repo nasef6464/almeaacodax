@@ -75,6 +75,14 @@ const mergeHomepageSettings = (settings: HomepageSettings): HomepageSettings => 
     };
 };
 
+const withCacheBust = (value?: string) => {
+    const raw = String(value || '').trim();
+    if (!raw) return raw;
+    if (raw.startsWith('data:')) return raw;
+    const separator = raw.includes('?') ? '&' : '?';
+    return `${raw}${separator}v=${Date.now()}`;
+};
+
 const createEmptyStat = (): HomepageStat => ({
     id: `stat_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     label: '',
@@ -268,23 +276,27 @@ export const HomepageManager: React.FC = () => {
         collection.includes(id) ? collection.filter((item) => item !== id) : [...collection, id];
 
     const handleSave = async () => {
-        if (!user?.token) {
-            setError('انتهت جلسة الإدارة. سجّل الدخول مرة أخرى ثم أعد الحفظ.');
-            return;
-        }
-
         setIsSaving(true);
         setError(null);
         setSuccess(null);
 
         try {
+            if (!user?.token) {
+                throw new Error('Authentication required');
+            }
+            const normalizedTestimonials = settings.testimonials
+                .filter((item) => item.name.trim().length > 0 && item.text.trim().length > 0)
+                .map((item) => ({
+                    ...item,
+                    image: withCacheBust(item.image),
+                }));
             const payload: HomepageSettings = {
                 ...settings,
-                hero: { ...settings.hero },
+                hero: { ...settings.hero, imageUrl: withCacheBust(settings.hero.imageUrl) },
                 sections: { ...settings.sections },
                 typography: { ...defaultHomepageSettings.typography, ...settings.typography },
                 stats: settings.stats.filter((item) => item.label.trim().length > 0),
-                testimonials: settings.testimonials.filter((item) => item.name.trim().length > 0 && item.text.trim().length > 0),
+                testimonials: normalizedTestimonials,
             };
 
             const response = await api.updateHomepageSettings(payload, user.token);
