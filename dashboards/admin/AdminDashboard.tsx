@@ -45,6 +45,7 @@ const LibraryManager = lazyNamed<{ subjectId: string }>(() => import('./LibraryM
 const QuizzesManager = lazyNamed(() => import('./QuizzesManager'), 'QuizzesManager');
 const SkillsTreeManager = lazyNamed(() => import('./SkillsTreeManager'), 'SkillsTreeManager');
 const FinancialManager = lazyNamed(() => import('./FinancialManager'), 'FinancialManager');
+const NotificationsManager = lazyNamed(() => import('./NotificationsManager'), 'NotificationsManager');
 const HomepageManager = lazyNamed(() => import('./HomepageManager'), 'HomepageManager');
 const PlatformFontsManager = lazyNamed(() => import('./PlatformFontsManager'), 'PlatformFontsManager');
 const PlatformIntegrationsManager = lazyNamed(() => import('./PlatformIntegrationsManager'), 'PlatformIntegrationsManager');
@@ -1966,6 +1967,8 @@ export const AdminDashboard: React.FC = () => {
                 return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
             case 'financial':
                 return <FinancialManager />;
+            case 'notifications':
+                return <NotificationsManager />;
             case 'homepage':
                 return <HomepageManager />;
             case 'announcement-ads':

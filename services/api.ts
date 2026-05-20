@@ -771,6 +771,50 @@ export const api = {
         token,
       },
     ),
+  getMyNotifications: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
+    request<unknown>(withQuery("/notifications/me", pagination || {}), { token }),
+  markNotificationRead: (id: string, token?: string | null) =>
+    request<unknown>(`/notifications/${id}/read`, {
+      method: "PATCH",
+      body: {},
+      token,
+    }),
+  getNotificationTemplates: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
+    request<unknown>(withQuery("/notifications/admin/templates", pagination || {}), { token }),
+  upsertNotificationTemplate: (payload: unknown, token?: string | null) =>
+    request<unknown>("/notifications/admin/templates", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  getNotificationDeliveries: (
+    params?: { page?: number; limit?: number; status?: "pending" | "sent" | "failed" | "retrying"; channel?: "in_app" | "email" | "whatsapp" },
+    token?: string | null,
+  ) => request<unknown>(withQuery("/notifications/admin/deliveries", params || {}), { token }),
+  sendNotifications: (
+    payload: {
+      templateKey?: string;
+      title?: string;
+      subject?: string;
+      body?: string;
+      channels: Array<"in_app" | "email" | "whatsapp">;
+      userIds?: string[];
+      roles?: string[];
+      variables?: Record<string, string | number | boolean | null>;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>("/notifications/admin/send", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  processPendingNotifications: (payload?: { limit?: number }, token?: string | null) =>
+    request<unknown>("/notifications/admin/process-pending", {
+      method: "POST",
+      body: payload || {},
+      token,
+    }),
   getPublicContactWidget: () =>
     requestCached<{
       enabled: boolean;

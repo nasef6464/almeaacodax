@@ -219,6 +219,50 @@ type CurriculumModule = {
   lessons?: CurriculumLesson[];
 };
 
+const normalizeCourseModules = (modules: unknown) => {
+  if (!Array.isArray(modules)) return [];
+
+  return modules.map((moduleItem, index) => {
+    const moduleRecord = (moduleItem && typeof moduleItem === "object" ? moduleItem : {}) as Record<string, unknown>;
+    const normalizedLessons = Array.isArray(moduleRecord.lessons) ? moduleRecord.lessons : [];
+    const rawTitle = typeof moduleRecord.title === "string" ? moduleRecord.title.trim() : "";
+    return {
+      ...moduleRecord,
+      title: rawTitle || `قسم ${index + 1}`,
+      order:
+        typeof moduleRecord.order === "number" && Number.isFinite(moduleRecord.order)
+          ? moduleRecord.order
+          : index,
+      lessons: normalizedLessons,
+    };
+  });
+};
+
+const normalizeCourseAssessments = (assessments: unknown) => {
+  if (!Array.isArray(assessments)) return [];
+
+  return assessments
+    .map((assessmentItem, index) => {
+      const item =
+        assessmentItem && typeof assessmentItem === "object"
+          ? (assessmentItem as Record<string, unknown>)
+          : ({} as Record<string, unknown>);
+      const rawId = typeof item.id === "string" ? item.id.trim() : "";
+      const rawQuizId = typeof item.quizId === "string" ? item.quizId.trim() : "";
+      const rawTitle = typeof item.title === "string" ? item.title.trim() : "";
+      if (!rawQuizId) {
+        return null;
+      }
+      return {
+        ...item,
+        id: rawId || `assessment_${Date.now()}_${index}`,
+        quizId: rawQuizId,
+        title: rawTitle || "اختبار الدورة",
+      };
+    })
+    .filter(Boolean);
+};
+
 const getRefIdCandidates = (value?: string) => {
   const raw = String(value || "").trim();
   if (!raw) return [];
@@ -407,21 +451,28 @@ courseRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = courseSchema.parse(req.body);
+    const normalizedPayload = {
+      ...payload,
+      modules: normalizeCourseModules(payload.modules),
+      assessments: normalizeCourseAssessments(payload.assessments),
+      title: String(payload.title || "").trim() || "Untitled Course",
+      instructor: String(payload.instructor || "").trim() || "Platform Team",
+    };
     await assertCurriculumImportScope({
-      coursePathId: payload.pathId,
-      courseSubjectId: payload.subjectId,
-      modules: payload.modules as CurriculumModule[],
+      coursePathId: normalizedPayload.pathId,
+      courseSubjectId: normalizedPayload.subjectId,
+      modules: normalizedPayload.modules as CurriculumModule[],
     });
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const created = await CourseModel.create({
-      ...payload,
+      ...normalizedPayload,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
+          ? normalizedPayload.approvalStatus || workflowDefaults.approvalStatus
           : workflowDefaults.approvalStatus,
-      isPublished: req.authUser?.role === "admin" ? payload.isPublished : false,
-      ...(payload.id ? { _id: payload.id } : {}),
+      isPublished: req.authUser?.role === "admin" ? normalizedPayload.isPublished : false,
+      ...(normalizedPayload.id ? { _id: normalizedPayload.id } : {}),
     });
     res.status(StatusCodes.CREATED).json(created);
   }),
@@ -433,15 +484,24 @@ courseRouter.patch(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = courseSchema.partial().parse(req.body);
+    const normalizedPayload = {
+      ...payload,
+      ...(Object.prototype.hasOwnProperty.call(payload, "modules")
+        ? { modules: normalizeCourseModules(payload.modules) }
+        : {}),
+      ...(Object.prototype.hasOwnProperty.call(payload, "assessments")
+        ? { assessments: normalizeCourseAssessments(payload.assessments) }
+        : {}),
+    } as Record<string, unknown>;
     const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!)).lean();
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
     }
 
-    const nextPathId = String(payload.pathId || (existing as { pathId?: string }).pathId || "").trim();
-    const nextSubjectId = String(payload.subjectId || (existing as { subjectId?: string }).subjectId || "").trim();
-    const nextModules = Array.isArray(payload.modules)
-      ? (payload.modules as CurriculumModule[])
+    const nextPathId = String(normalizedPayload.pathId || (existing as { pathId?: string }).pathId || "").trim();
+    const nextSubjectId = String(normalizedPayload.subjectId || (existing as { subjectId?: string }).subjectId || "").trim();
+    const nextModules = Array.isArray(normalizedPayload.modules)
+      ? (normalizedPayload.modules as CurriculumModule[])
       : ((existing as { modules?: CurriculumModule[] }).modules || []);
 
     await assertCurriculumImportScope({
@@ -450,7 +510,23 @@ courseRouter.patch(
       modules: nextModules,
     });
 
-    const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
+    const sanitizedPayload = sanitizeWorkflowUpdate(normalizedPayload, req.authUser!);
+    if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "title")) {
+      const value = typeof sanitizedPayload.title === "string" ? sanitizedPayload.title.trim() : "";
+      if (value) {
+        sanitizedPayload.title = value;
+      } else {
+        delete sanitizedPayload.title;
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "instructor")) {
+      const value = typeof sanitizedPayload.instructor === "string" ? sanitizedPayload.instructor.trim() : "";
+      if (value) {
+        sanitizedPayload.instructor = value;
+      } else {
+        delete sanitizedPayload.instructor;
+      }
+    }
     const updated = await CourseModel.findOneAndUpdate(
       { _id: (existing as { _id: string })._id },
       sanitizedPayload,
