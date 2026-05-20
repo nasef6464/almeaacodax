@@ -1500,6 +1500,17 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                 ? `لديك ${myCertificates.length} شهادة جاهزة للعرض والتحقق.`
                                 : 'لا توجد شهادات بعد. أكمل دورة بنسبة 100% لإصدار شهادتك.'}
                     </p>
+                    {!certificatesLoading && myCertificates.length > 0 ? (
+                        <div className="mt-3 rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs text-gray-700">
+                            آخر شهادة: <span className="font-bold">{String(myCertificates[0]?.courseName || 'دورة بدون اسم')}</span>
+                            <Link
+                                to={`/certificate/${encodeURIComponent(String(myCertificates[0]?.verificationCode || ''))}`}
+                                className="mr-2 inline-flex rounded-lg bg-emerald-100 px-2 py-1 font-black text-emerald-700 hover:bg-emerald-200"
+                            >
+                                معاينة
+                            </Link>
+                        </div>
+                    ) : null}
                 </div>
                 <Link
                     to="/profile"
