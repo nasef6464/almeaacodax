@@ -539,3 +539,16 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `05f011e1944e`)
 - Report:
   - `FIX_4_REVIEW_IMAGES_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-2 Local QR Revalidation
+- Batch: `FIX-2 - Certificate local QR`
+- Status: `Fully closed`
+- Verified:
+  - `pages/CertificatePage.tsx` uses `QRCodeSVG` from `qrcode.react`.
+  - No dependency on external qr image service for rendering certificate QR.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:results` PASS
+- Report:
+  - `FIX_2_LOCAL_QR_REVALIDATION_2026-05-21_AR.md`

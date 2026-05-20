@@ -884,3 +884,7 @@
 - تم التأكد أن `/api/review/due` يعيد `imageUrl` ضمن payload.
 - فحوص PASS: `typecheck`, `build`, `server build`, `smoke:learning-quiz`, `smoke:results`.
 - تحقق إنتاجي PASS: frontend 200 + backend ready=true.
+
+## Update 2026-05-21 - FIX-2 Fully Closed
+- تم تأكيد أن الشهادات تستخدم QR محليًا (`qrcode.react` / `QRCodeSVG`) بدون خدمة QR خارجية.
+- PASS: `typecheck`, `build`, `smoke:results`.
