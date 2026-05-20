@@ -83,6 +83,7 @@ type ProviderRuntime = {
 type AiRuntimeConfig = {
   provider?: AiProvider;
   providerOrder: string;
+  providerOrderSource: "env" | "admin";
   providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
 };
 
@@ -104,6 +105,7 @@ const readModelHint = (rawValue: unknown, fallback: string) => {
 const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   provider: env.AI_PROVIDER,
   providerOrder: env.AI_PROVIDER_ORDER,
+  providerOrderSource: "env",
   providers: {
     gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
     openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
@@ -156,7 +158,10 @@ const loadRuntimeAiConfig = async () => {
       next.provider = preferredProvider as AiProvider;
     }
     const order = String(global.syncScheduleCron || "").trim();
-    if (order) next.providerOrder = order;
+    if (order) {
+      next.providerOrder = order;
+      next.providerOrderSource = "admin";
+    }
   }
 
   applyExternal("gemini", "ai-gemini", next.providers.gemini.model);
@@ -732,6 +737,7 @@ aiRouter.get(
       geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
       providers,
       providerOrder: providerPriority(),
+      providerOrderSource: runtimeAiConfig.providerOrderSource,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
     });

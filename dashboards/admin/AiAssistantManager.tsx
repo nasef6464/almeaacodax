@@ -10,6 +10,7 @@ type AiStatus = {
     geminiConfigured: boolean;
     providers?: AiProviderStatus[];
     providerOrder?: string[];
+    providerOrderSource?: 'env' | 'admin';
     model: string;
     timeoutMs: number;
 };
@@ -514,6 +515,12 @@ export const AiAssistantManager: React.FC = () => {
                             <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
                                 <p className="text-xs text-gray-500">النموذج</p>
                                 <p className="text-sm font-bold text-gray-900 mt-1 break-words">{status?.model || 'غير محدد'}</p>
+                            </div>
+                            <div className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                                <p className="text-xs text-gray-500">مصدر ترتيب المزودات</p>
+                                <p className="text-sm font-bold text-gray-900 mt-1">
+                                    {status?.providerOrderSource === 'admin' ? 'من ai-global (الإدارة)' : 'من env'}
+                                </p>
                             </div>
                             <p className="text-sm text-gray-600 leading-6">{modeDescription}</p>
                         </div>

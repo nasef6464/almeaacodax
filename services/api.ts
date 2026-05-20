@@ -1171,6 +1171,7 @@ export const api = {
         note: string;
       }>;
       providerOrder?: string[];
+      providerOrderSource?: "env" | "admin";
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
