@@ -507,3 +507,17 @@
   - `npm run smoke:production-hardening` PASS
 - Report:
   - `BATCH_F3_REDIS_ACTIVATION_AR.md`
+
+## Update 2026-05-21 - FIX-3 Revalidation (Production Smoke)
+- Batch: `FIX-3 - Operational + Sentry live smoke revalidation`
+- Status: `Blocked (missing SMOKE_ADMIN_TOKEN)`
+- Production probes:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, `redis.rateLimit=ready`, `redis.queue=ready`, commit `05f011e1944e`)
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:seo` PASS
+  - `npm run smoke:operational` FAIL (missing admin token)
+  - `npm run smoke:sentry-live-proof` FAIL (`Missing SMOKE_ADMIN_TOKEN`)
+- Report:
+  - `FIX_3_REVALIDATION_PRODUCTION_SMOKE_2026-05-21_AR.md`

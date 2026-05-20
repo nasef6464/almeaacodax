@@ -869,3 +869,11 @@
 - Production health confirms Redis ready for both limiter and queue.
 - Report:
   - `BATCH_F3_REDIS_ACTIVATION_AR.md`
+
+## Update 2026-05-21 - FIX-3 Revalidation (Blocked)
+- Frontend probe: 200 on https://almeaacodax.vercel.app/.
+- Backend health: eady=true, redis ready for limiter+queue, commit  5f011e1944e.
+- PASS: smoke:health-readiness, smoke:seo.
+- FAIL: smoke:operational, smoke:sentry-live-proof بسبب غياب SMOKE_ADMIN_TOKEN.
+- الإجراء المطلوب أولًا للجلسة التالية: ضبط SMOKE_ADMIN_TOKEN في GitHub Secrets وRender env ثم إعادة تشغيل نفس فحوص FIX-3 لإغلاقها Fully closed.
+
