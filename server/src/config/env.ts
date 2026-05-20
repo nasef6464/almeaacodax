@@ -103,6 +103,8 @@ const envSchema = z.object({
   }, z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"]).optional()),
   AI_PROVIDER_ORDER: z.string().default(""),
   AI_REQUEST_TIMEOUT_MS: z.coerce.number().default(15000),
+  AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(200000).default(800),
+  AI_PER_USER_DAILY_LIMIT: z.coerce.number().int().min(1).max(20000).default(80),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
   OPENROUTER_API_KEY: z.string().optional(),

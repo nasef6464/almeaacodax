@@ -580,6 +580,24 @@ const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt:
   return callOpenAiCompatible(provider, prompt);
 };
 
+const withinAiBudget = async (userId?: string) => {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const dailyLimit = Math.max(1, Number(env.AI_DAILY_LIMIT || 800));
+  const perUserLimit = Math.max(1, Number(env.AI_PER_USER_DAILY_LIMIT || 80));
+  const [globalCount, userCount] = await Promise.all([
+    AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
+    userId ? AiInteractionModel.countDocuments({ createdAt: { $gte: since }, userId }) : Promise.resolve(0),
+  ]);
+
+  return {
+    allowed: globalCount < dailyLimit && (!userId || userCount < perUserLimit),
+    globalCount,
+    userCount,
+    dailyLimit,
+    perUserLimit,
+  };
+};
+
 export const aiRouter = Router();
 
 aiRouter.get(
@@ -797,6 +815,37 @@ ${studentContext?.summary || "الطالب غير مسجل أو لا توجد ب
 ${message}
 `;
 
+    const budget = await withinAiBudget(req.authUser?.id);
+    if (!budget.allowed) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/chat",
+        audience: req.authUser?.role || "guest",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          budgetExceeded: true,
+          globalCount: budget.globalCount,
+          userCount: budget.userCount,
+          dailyLimit: budget.dailyLimit,
+          perUserLimit: budget.perUserLimit,
+        },
+      });
+      return res.json({
+        text: fallback,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        weaknessesCount: studentContext?.weaknesses.length || 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+      });
+    }
+
     try {
       const result = await callAiWithMeta(prompt);
       const responseText = result.text || fallback;
@@ -893,6 +942,38 @@ ${JSON.stringify({
 سؤال المدير:
 ${message}
 `;
+
+    const budget = await withinAiBudget(req.authUser?.id);
+    if (!budget.allowed) {
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/admin-assistant",
+        audience: "admin",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          budgetExceeded: true,
+          globalCount: budget.globalCount,
+          userCount: budget.userCount,
+          dailyLimit: budget.dailyLimit,
+          perUserLimit: budget.perUserLimit,
+          auditScore: audit.score,
+        },
+      });
+      return res.json({
+        text: fallback,
+        audit: {
+          score: audit.score,
+          totals: audit.totals,
+          priorities: audit.priorities.slice(0, 6),
+        },
+        provider: "none",
+      });
+    }
 
     try {
       const result = await callAiWithMeta(prompt);
