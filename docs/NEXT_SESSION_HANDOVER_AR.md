@@ -795,3 +795,16 @@
   - `BATCH_F5_CERTIFICATES_AR.md`
 - التالي حسب الخطة:
   - `BATCH F6 — Lesson Discussion Forum`.
+
+## تحديث 2026-05-20 — إغلاق تشغيلي نهائي (نطاق التشغيل)
+- الحالة: Fully closed (operational scope).
+- تم إغلاق `smoke:operational` بنجاح 71/71 بعد جعل السكربت متوافقًا مع Cookie-first + CSRF.
+- تم إغلاق فحوص الإنتاج الحرجة (frontend strict + hardening + auth/csrf + monitoring + seo + results + learning journey).
+- الإنتاج حي ومطابق:
+  - Frontend: 200
+  - Backend health: 200, ready=true, redis ready
+- تقرير الإغلاق:
+  - `BATCH_FINAL_OPERATIONAL_AND_PLATFORM_CLOSURE_2026-05-20_AR.md`
+- نقطة الانطلاق للجلسة التالية:
+  - لا توجد دفعة إصلاح حرجة مفتوحة حاليًا.
+  - يبدأ فقط بطلب مالك صريح لدفعة جديدة.

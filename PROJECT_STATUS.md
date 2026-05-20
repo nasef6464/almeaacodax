@@ -405,3 +405,30 @@
   - `npm run build` PASS
 - Report:
   - `BATCH_F5_CERTIFICATES_AR.md`
+
+## Update 2026-05-20 - Final Operational Platform Closure
+- Batch: `FINAL Operational + Platform Closure (post-fixes)`
+- Final status: `Fully closed (operational scope)`
+- Implemented:
+  - Wired admin notifications tab + new manager UI.
+  - Hardened course save/update payload normalization in backend.
+  - Added admin-tab wiring smoke guard (`smoke:admin-tabs`).
+  - Hardened frontend CSRF retry handling.
+  - Stabilized course view refresh/tab behavior and quiz-linked lesson routing.
+  - Updated operational smoke script for cookie-first auth + CSRF handling.
+- Checks:
+  - `npm run smoke:operational` PASS (71/71)
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:auth-cookie` PASS
+  - `npm run smoke:csrf` PASS
+  - `npm run smoke:seo` PASS
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:results` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run smoke:student-journey` PASS
+- Production verification:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `04c5de0a2ff4`)
+- Report:
+  - `BATCH_FINAL_OPERATIONAL_AND_PLATFORM_CLOSURE_2026-05-20_AR.md`

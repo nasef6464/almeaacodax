@@ -931,3 +931,16 @@
   - `frontend build` PASS
 - Report:
   - `BATCH_F5_CERTIFICATES_AR.md`
+
+## Update 2026-05-20 - FINAL Operational Closure
+- Scope: Post-fix closure for admin panel + course stability + operational smoke compatibility.
+- Status: **Fully closed (operational)**.
+- Evidence:
+  - `smoke:operational` => PASS 71/71.
+  - `smoke:frontend:strict` => PASS and production serving expected commit.
+  - Health endpoint => 200, `ready=true`, redis ready.
+- Main technical hardening delivered in this closure:
+  - Cookie-first + CSRF support in operational smoke session/login flow.
+  - Admin tab wiring contract smoke to prevent hidden regressions.
+  - Course view refresh/tab persistence + quiz-linked content navigation stabilization.
+- Report: `BATCH_FINAL_OPERATIONAL_AND_PLATFORM_CLOSURE_2026-05-20_AR.md`
