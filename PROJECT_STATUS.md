@@ -745,3 +745,17 @@
   - `npm run smoke:frontend:strict` FAIL (single check: deployed app version does not match current commit)
 - Production note:
   - Failure is deployment-version mismatch on Vercel, not a certificate code regression.
+
+## Update 2026-05-21 - FIX-9 Infrastructure Scale Verification
+- Batch: `FIX-9 - Infrastructure Upgrade + Load Verification`
+- Final status: `Blocked (infra upgrade + SMOKE_ADMIN_TOKEN required)`
+- Checks this run:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:operational` FAIL (missing `SMOKE_ADMIN_TOKEN`)
+- Prerequisites still required:
+  - MongoDB Atlas M2 upgrade
+  - Render Starter upgrade
+  - `SMOKE_ADMIN_TOKEN` configured for operational smoke and CI
+- Report:
+  - `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`

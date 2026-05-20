@@ -1008,3 +1008,10 @@
   - `smoke:frontend:strict` shows only deploy-version mismatch on production.
 - Action to become fully closed:
   - Wait Vercel deploy sync to current commit then rerun strict smoke.
+
+## Update 2026-05-21 — FIX-9 Scale Verification
+- Status: `Blocked`
+- PASS: health-readiness + production-hardening
+- FAIL: operational smoke (missing `SMOKE_ADMIN_TOKEN`)
+- Owner prerequisites remain: Atlas M2 + Render Starter + admin smoke token.
+- Report: `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`

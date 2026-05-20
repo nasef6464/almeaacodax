@@ -976,3 +976,11 @@
 - Remaining step for fully closed:
   1. Ensure Vercel deploys latest commit.
   2. Re-run `npm run smoke:frontend:strict` and confirm version check PASS.
+
+## Update 2026-05-21 — FIX-9 Scale Verification
+- Status: `Blocked`
+- Remaining before full closure:
+  1. Upgrade Atlas to M2.
+  2. Upgrade Render to Starter.
+  3. Configure `SMOKE_ADMIN_TOKEN`.
+  4. Re-run operational + high concurrency verification.
