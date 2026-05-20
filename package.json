@@ -41,6 +41,7 @@
         "smoke:deployment-cache": "node scripts/smoke-deployment-cache-contract.mjs",
         "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
         "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
+        "smoke:ai-config-bridge": "node scripts/smoke-ai-config-bridge-contract.mjs",
         "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
         "smoke:sentry-live-proof": "node scripts/smoke-sentry-live-proof.mjs",
         "smoke:resolve-admin-token": "node scripts/resolve-smoke-admin-token.mjs",
