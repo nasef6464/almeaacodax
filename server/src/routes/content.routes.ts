@@ -1074,6 +1074,28 @@ const platformIntegrationSettingsPatchSchema = z.object({
   registrationFields: platformIntegrationSettingsSchema.shape.registrationFields.optional(),
 });
 
+const sanitizeAndValidateExternalPlatforms = (input: Array<Record<string, unknown>> | undefined) => {
+  const normalized = (input || []).map((item) => ({
+    ...item,
+    id: String(item.id || "").trim().toLowerCase(),
+    name: String(item.name || "").trim(),
+    baseUrl: String(item.baseUrl || "").trim(),
+  }));
+
+  const emptyId = normalized.find((item) => !item.id);
+  if (emptyId) {
+    throw Object.assign(new Error("externalPlatforms contains empty id"), { statusCode: 400 });
+  }
+
+  const ids = normalized.map((item) => item.id);
+  const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicateIds.length > 0) {
+    throw Object.assign(new Error(`externalPlatforms contains duplicate ids: ${[...new Set(duplicateIds)].join(", ")}`), { statusCode: 400 });
+  }
+
+  return normalized;
+};
+
 const defaultPlatformIntegrationSettings = {
   key: "default",
   auth: {
@@ -2496,6 +2518,10 @@ contentRouter.patch(
     };
 
     const payload = platformIntegrationSettingsSchema.parse(nextPayload);
+    const validatedExternalPlatforms = sanitizeAndValidateExternalPlatforms(
+      payload.externalPlatforms as unknown as Array<Record<string, unknown>>,
+    );
+    (payload as unknown as { externalPlatforms: Array<Record<string, unknown>> }).externalPlatforms = validatedExternalPlatforms;
 
     if (previous) {
       await PlatformIntegrationHistoryModel.create({
