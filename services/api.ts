@@ -1550,6 +1550,20 @@ export const api = {
       body: payload,
       token,
     }),
+  getDiscussionReplies: (threadId: string, token?: string | null) =>
+    request<{ replies: any[] }>(`/discussions/${encodeURIComponent(threadId)}/replies`, { token }),
+  createDiscussionReply: (threadId: string, payload: { body: string }, token?: string | null) =>
+    request<any>(`/discussions/${encodeURIComponent(threadId)}/replies`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  resolveDiscussionThread: (threadId: string, token?: string | null) =>
+    request<any>(`/discussions/${encodeURIComponent(threadId)}/resolve`, {
+      method: "POST",
+      body: {},
+      token,
+    }),
 };
 
 export { API_BASE_URL };

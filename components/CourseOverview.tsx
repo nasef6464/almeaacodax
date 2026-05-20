@@ -33,6 +33,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [discussionLoading, setDiscussionLoading] = useState(false);
     const [discussionPosting, setDiscussionPosting] = useState(false);
     const [discussionError, setDiscussionError] = useState('');
+    const [expandedThreadId, setExpandedThreadId] = useState<string | null>(null);
+    const [repliesByThread, setRepliesByThread] = useState<Record<string, any[]>>({});
+    const [replyDraftByThread, setReplyDraftByThread] = useState<Record<string, string>>({});
+    const [replyingThreadId, setReplyingThreadId] = useState<string | null>(null);
+    const [resolvingThreadId, setResolvingThreadId] = useState<string | null>(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, libraryItems, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
@@ -229,6 +234,65 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         }
     };
 
+    const handleToggleThreadReplies = async (threadId: string) => {
+        if (expandedThreadId === threadId) {
+            setExpandedThreadId(null);
+            return;
+        }
+        setExpandedThreadId(threadId);
+        if (repliesByThread[threadId]) return;
+        try {
+            const payload = await api.getDiscussionReplies(threadId);
+            setRepliesByThread((prev) => ({ ...prev, [threadId]: Array.isArray(payload?.replies) ? payload.replies : [] }));
+        } catch (error) {
+            console.warn('Failed to load thread replies', error);
+            setDiscussionError('تعذر تحميل الردود الآن.');
+        }
+    };
+
+    const handleSendReply = async (threadId: string) => {
+        const body = (replyDraftByThread[threadId] || '').trim();
+        if (!body || replyingThreadId) return;
+        setReplyingThreadId(threadId);
+        setDiscussionError('');
+        try {
+            const created = await api.createDiscussionReply(threadId, { body });
+            setRepliesByThread((prev) => ({
+                ...prev,
+                [threadId]: [...(prev[threadId] || []), created],
+            }));
+            setReplyDraftByThread((prev) => ({ ...prev, [threadId]: '' }));
+            setDiscussionThreads((prev) => prev.map((thread) => {
+                if (String(thread.id) !== String(threadId)) return thread;
+                return {
+                    ...thread,
+                    repliesCount: Number(thread.repliesCount || 0) + 1,
+                    latestReplyBody: String(created?.body || thread.latestReplyBody || ''),
+                };
+            }));
+        } catch (error) {
+            console.warn('Failed to create reply', error);
+            setDiscussionError('تعذر إرسال الرد الآن.');
+        } finally {
+            setReplyingThreadId(null);
+        }
+    };
+
+    const handleResolveThread = async (threadId: string) => {
+        if (resolvingThreadId) return;
+        setResolvingThreadId(threadId);
+        setDiscussionError('');
+        try {
+            const updated = await api.resolveDiscussionThread(threadId);
+            setDiscussionThreads((prev) => prev.map((thread) => String(thread.id) === String(threadId) ? { ...thread, ...updated } : thread));
+        } catch (error) {
+            console.warn('Failed to resolve thread', error);
+            setDiscussionError('تعذر تعليم النقاش كمحلول الآن.');
+        } finally {
+            setResolvingThreadId(null);
+        }
+    };
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'description':
@@ -389,6 +453,26 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                                 </span>
                                             </div>
                                             <p className="text-sm text-gray-700 font-bold mb-4">{item.body || item.title}</p>
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                                <button
+                                                    onClick={() => void handleToggleThreadReplies(String(item.id))}
+                                                    className="text-xs px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100"
+                                                >
+                                                    {expandedThreadId === String(item.id) ? 'إخفاء الردود' : `عرض الردود (${Number(item.repliesCount || 0)})`}
+                                                </button>
+                                                {!item.isResolved && ['admin', 'teacher', 'supervisor'].includes(String(user.role || '')) ? (
+                                                    <button
+                                                        onClick={() => void handleResolveThread(String(item.id))}
+                                                        disabled={resolvingThreadId === String(item.id)}
+                                                        className="text-xs px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100 disabled:opacity-60"
+                                                    >
+                                                        {resolvingThreadId === String(item.id) ? 'جاري...' : 'تعليم كمحلول'}
+                                                    </button>
+                                                ) : null}
+                                                {item.isResolved ? (
+                                                    <span className="text-xs px-3 py-1 rounded-lg bg-emerald-100 text-emerald-700 border border-emerald-200">تم الحل</span>
+                                                ) : null}
+                                            </div>
                                             
                                             {item.latestReplyBody && (
                                                 <div className="bg-white p-4 rounded-xl border border-gray-100 flex gap-3">
@@ -401,6 +485,38 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                                     </div>
                                                 </div>
                                             )}
+
+                                            {expandedThreadId === String(item.id) ? (
+                                                <div className="mt-3 space-y-3">
+                                                    {(repliesByThread[String(item.id)] || []).map((reply) => (
+                                                        <div key={String(reply.id || reply._id)} className="bg-white p-3 rounded-xl border border-gray-100">
+                                                            <div className="flex items-center justify-between mb-1">
+                                                                <span className="text-xs font-bold text-gray-700">{reply.authorName || 'مستخدم'}</span>
+                                                                <span className="text-[10px] text-gray-400">
+                                                                    {reply.createdAt ? new Date(reply.createdAt).toLocaleDateString('ar-SA') : 'الآن'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-700 leading-relaxed">{reply.body}</p>
+                                                        </div>
+                                                    ))}
+                                                    <div className="flex flex-col sm:flex-row gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={replyDraftByThread[String(item.id)] || ''}
+                                                            onChange={(e) => setReplyDraftByThread((prev) => ({ ...prev, [String(item.id)]: e.target.value }))}
+                                                            placeholder="اكتب ردك..."
+                                                            className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                        />
+                                                        <button
+                                                            onClick={() => void handleSendReply(String(item.id))}
+                                                            disabled={replyingThreadId === String(item.id) || !(replyDraftByThread[String(item.id)] || '').trim()}
+                                                            className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 disabled:opacity-60"
+                                                        >
+                                                            {replyingThreadId === String(item.id) ? 'إرسال...' : 'إرسال الرد'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>

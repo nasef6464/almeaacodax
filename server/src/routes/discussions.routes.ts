@@ -151,6 +151,33 @@ discussionRouter.post(
   }),
 );
 
+discussionRouter.get(
+  "/:threadId/replies",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const threadId = String(req.params.threadId || "");
+    const thread = await DiscussionThreadModel.findOne({ id: threadId }).lean();
+    if (!thread) return res.status(StatusCodes.NOT_FOUND).json({ message: "Thread not found" });
+
+    const canAccess = await assertCanAccessEntity(req.authUser!.id, String(thread.entityType), String(thread.entityId), req.authUser!.role);
+    if (!canAccess) return res.status(StatusCodes.FORBIDDEN).json({ message: "Not allowed to view replies for this thread" });
+
+    const replies = await DiscussionReplyModel.find({ threadId }).sort({ createdAt: 1 }).lean();
+    const authorIds = Array.from(new Set(replies.map((reply: any) => String(reply.authorId || "")).filter(Boolean)));
+    const authors = authorIds.length
+      ? await UserModel.find({ _id: { $in: authorIds } }).select("name").lean()
+      : [];
+    const authorById = new Map(authors.map((author: any) => [String(author._id), String(author.name || "")]));
+
+    res.json({
+      replies: replies.map((reply: any) => ({
+        ...reply,
+        authorName: authorById.get(String(reply.authorId || "")) || "",
+      })),
+    });
+  }),
+);
+
 discussionRouter.post(
   "/:threadId/resolve",
   requireAuth,
