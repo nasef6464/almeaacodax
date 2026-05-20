@@ -920,3 +920,8 @@
 ## Update 2026-05-21 - FIX-6 Blocked
 - اختبار OTP الحي على الإنتاج أكد أن مزود واتساب غير مهيأ (`WhatsApp OTP provider is not configured`).
 - لا يمكن إعلان الإغلاق النهائي قبل تفعيل مزود فعلي (`whatsapp_cloud` أو `http`) في Render env.
+
+## Update 2026-05-21 - FIX-7 Blocked
+- فحص الكود أكد غياب API اشتراكات متكررة مكتملة (subscribe/get/cancel).
+- صفحة الباقات موجودة لكن غير مرتبطة بتدفق recurring إنتاجي.
+- لا يمكن الإغلاق النهائي قبل تنفيذ وربط مسار الاشتراك الكامل.

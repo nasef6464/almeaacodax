@@ -643,3 +643,15 @@
   - `npm run smoke:notifications` PASS
 - Report:
   - `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-7 Subscription Flow
+- Status: `Blocked (not implemented yet)`
+- Deep code audit found:
+  - Subscription fields exist in `User` model.
+  - Pricing page exists.
+  - Payment routes exist for purchase requests/review.
+  - Missing recurring subscription API endpoints (`subscribe/get/cancel`) and recurring gateway wiring.
+- Support checks:
+  - `smoke:health-readiness` PASS
+- Report:
+  - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
