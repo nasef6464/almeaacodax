@@ -621,6 +621,52 @@ export const PlatformIntegrationsManager: React.FC = () => {
     return warnings;
   }, [settings.externalPlatforms]);
 
+  const autoFixAiConfig = () => {
+    const allowedOrder = "gemini,openrouter,qwen,deepseek,openai,none";
+    setSettings((prev) => {
+      const next = [...prev.externalPlatforms];
+      const byId = new Map(next.map((item, index) => [item.id.trim().toLowerCase(), index] as const));
+
+      const ensureGlobal = () => {
+        const index = byId.get("ai-global");
+        if (typeof index === "number") {
+          next[index] = {
+            ...next[index],
+            enabled: true,
+            syncScheduleCron: allowedOrder,
+            note: String(next[index].note || "gemini"),
+          };
+          return;
+        }
+        next.push({
+          ...createExternalPlatform(next.length),
+          id: "ai-global",
+          name: "AI Global Routing",
+          enabled: true,
+          platformType: "custom",
+          syncScheduleCron: allowedOrder,
+          note: "gemini",
+        });
+      };
+
+      ensureGlobal();
+
+      for (const template of aiExternalTemplates.filter((t) => t.id !== "ai-global")) {
+        const idx = byId.get(template.id);
+        if (typeof idx !== "number") continue;
+        const item = next[idx];
+        const hasKey = Boolean(String(item.apiKey || item.apiSecret || "").trim());
+        if (!hasKey && !["ai-ollama", "ai-lmstudio"].includes(template.id)) {
+          next[idx] = { ...item, enabled: false };
+        }
+      }
+
+      return { ...prev, externalPlatforms: next };
+    });
+    setStatusType("success");
+    setStatusMessage("تم الإصلاح التلقائي: ضبط ترتيب ai-global وتعطيل المزودات المفعلة بدون مفتاح.");
+  };
+
   const removeExternal = (id: string) => {
     setSettings((prev) => ({
       ...prev,
@@ -820,6 +866,13 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <li key={warning}>{warning}</li>
               ))}
             </ul>
+            <button
+              onClick={autoFixAiConfig}
+              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-black text-amber-800 hover:bg-amber-100"
+            >
+              <RefreshCw size={12} />
+              إصلاح تلقائي للتنبيهات
+            </button>
           </div>
         ) : null}
       </div>
