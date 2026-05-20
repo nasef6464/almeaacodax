@@ -946,3 +946,5 @@
 - Report: `BATCH_FINAL_OPERATIONAL_AND_PLATFORM_CLOSURE_2026-05-20_AR.md`
 
 | FIX-3R | Operational + Sentry Revalidation | Blocked (secret required) | 2026-05-21 | FIX_3_REVALIDATION_PRODUCTION_SMOKE_2026-05-21_AR.md | production probes PASS, operational/sentry-live-proof blocked by missing SMOKE_ADMIN_TOKEN |
+
+| FIX-4R | ReviewSession image display revalidation | Fully closed | 2026-05-21 | FIX_4_REVIEW_IMAGES_REVALIDATION_2026-05-21_AR.md | review image rendering + API payload verified, smoke learning/results PASS |

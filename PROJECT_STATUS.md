@@ -521,3 +521,21 @@
   - `npm run smoke:sentry-live-proof` FAIL (`Missing SMOKE_ADMIN_TOKEN`)
 - Report:
   - `FIX_3_REVALIDATION_PRODUCTION_SMOKE_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-4 ReviewSession Images Revalidation
+- Batch: `FIX-4 - ReviewSession image display`
+- Status: `Fully closed`
+- Code verification:
+  - `pages/ReviewSession.tsx` renders `current.question.imageUrl` when available.
+  - `server/src/routes/review.routes.ts` returns `imageUrl` in `/api/review/due` question payload.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run smoke:results` PASS
+- Production probes:
+  - Frontend `https://almeaacodax.vercel.app/` => 200
+  - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `05f011e1944e`)
+- Report:
+  - `FIX_4_REVIEW_IMAGES_REVALIDATION_2026-05-21_AR.md`

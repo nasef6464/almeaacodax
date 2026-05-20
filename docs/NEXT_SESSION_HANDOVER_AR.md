@@ -877,3 +877,10 @@
 - FAIL: smoke:operational, smoke:sentry-live-proof بسبب غياب SMOKE_ADMIN_TOKEN.
 - الإجراء المطلوب أولًا للجلسة التالية: ضبط SMOKE_ADMIN_TOKEN في GitHub Secrets وRender env ثم إعادة تشغيل نفس فحوص FIX-3 لإغلاقها Fully closed.
 
+
+## Update 2026-05-21 - FIX-4 Fully Closed
+- تم إغلاق FIX-4 نهائيًا بعد إعادة التحقق.
+- تم التأكد أن ReviewSession تعرض صورة السؤال عند وجود `imageUrl`.
+- تم التأكد أن `/api/review/due` يعيد `imageUrl` ضمن payload.
+- فحوص PASS: `typecheck`, `build`, `server build`, `smoke:learning-quiz`, `smoke:results`.
+- تحقق إنتاجي PASS: frontend 200 + backend ready=true.
