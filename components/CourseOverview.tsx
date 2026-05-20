@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Course } from '../types';
 import { 
     PlayCircle, BookOpen, Clock, Star, User, 
@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import { api } from '../services/api';
 
 interface CourseOverviewProps {
     course: Course;
@@ -26,6 +27,10 @@ type TabType = 'description' | 'syllabus' | 'tests' | 'qa' | 'files';
 export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue }) => {
     const [activeTab, setActiveTab] = useState<TabType>('syllabus');
     const [newQuestion, setNewQuestion] = useState('');
+    const [discussionThreads, setDiscussionThreads] = useState<any[]>([]);
+    const [discussionLoading, setDiscussionLoading] = useState(false);
+    const [discussionPosting, setDiscussionPosting] = useState(false);
+    const [discussionError, setDiscussionError] = useState('');
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, libraryItems, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
@@ -38,6 +43,31 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
+
+    useEffect(() => {
+        let mounted = true;
+        const loadThreads = async () => {
+            setDiscussionLoading(true);
+            setDiscussionError('');
+            try {
+                const payload = await api.getDiscussions('course', course.id);
+                if (!mounted) return;
+                setDiscussionThreads(Array.isArray(payload?.threads) ? payload.threads : []);
+            } catch (error) {
+                if (!mounted) return;
+                console.warn('Failed to load course discussions', error);
+                setDiscussionError('تعذر تحميل النقاشات الآن.');
+            } finally {
+                if (mounted) {
+                    setDiscussionLoading(false);
+                }
+            }
+        };
+        void loadThreads();
+        return () => {
+            mounted = false;
+        };
+    }, [course.id]);
     
     // Calculate real progress
     const totalLessons = course.modules?.reduce((acc, mod) => acc + mod.lessons.length, 0) || 1;
@@ -167,6 +197,26 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             return;
         }
         onContinue();
+    };
+
+    const handleCreateDiscussion = async () => {
+        const trimmed = newQuestion.trim();
+        if (!trimmed || discussionPosting) return;
+        setDiscussionPosting(true);
+        setDiscussionError('');
+        try {
+            const created = await api.createDiscussion('course', course.id, {
+                title: trimmed.length > 80 ? `${trimmed.slice(0, 77)}...` : trimmed,
+                body: trimmed,
+            });
+            setDiscussionThreads((prev) => [created, ...prev]);
+            setNewQuestion('');
+        } catch (error) {
+            console.warn('Failed to create course discussion', error);
+            setDiscussionError('تعذر إرسال السؤال الآن.');
+        } finally {
+            setDiscussionPosting(false);
+        }
     };
 
     const renderTabContent = () => {
@@ -300,13 +350,22 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 value={newQuestion}
                                 onChange={(e) => setNewQuestion(e.target.value)}
                             />
-                            <button className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-colors w-full sm:w-auto flex items-center justify-center">
+                            <button
+                                onClick={() => void handleCreateDiscussion()}
+                                disabled={discussionPosting || newQuestion.trim().length === 0}
+                                className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-colors w-full sm:w-auto flex items-center justify-center disabled:opacity-60"
+                            >
                                 <Send size={20} />
                             </button>
                         </div>
+                        {discussionError ? (
+                            <div className="mb-4 rounded-xl border border-rose-100 bg-rose-50 p-3 text-xs font-bold text-rose-700">
+                                {discussionError}
+                            </div>
+                        ) : null}
 
                         <div className="space-y-6">
-                            {course.qa?.map((item) => (
+                            {discussionThreads.map((item) => (
                                 <div key={item.id} className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
                                     <div className="flex items-start gap-4">
                                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
@@ -314,19 +373,21 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center mb-2">
-                                                <span className="font-bold text-gray-900 text-sm">{item.user}</span>
-                                                <span className="text-[10px] text-gray-400">{item.date}</span>
+                                                <span className="font-bold text-gray-900 text-sm">{item.authorName || 'طالب'}</span>
+                                                <span className="text-[10px] text-gray-400">
+                                                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-SA') : 'الآن'}
+                                                </span>
                                             </div>
-                                            <p className="text-sm text-gray-700 font-bold mb-4">{item.question}</p>
+                                            <p className="text-sm text-gray-700 font-bold mb-4">{item.body || item.title}</p>
                                             
-                                            {item.answer && (
+                                            {item.latestReplyBody && (
                                                 <div className="bg-white p-4 rounded-xl border border-gray-100 flex gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
                                                         <MessageSquare size={16} />
                                                     </div>
                                                     <div>
                                                         <p className="text-xs text-gray-400 mb-1">رد المدرس</p>
-                                                        <p className="text-xs text-gray-600 leading-relaxed">{item.answer}</p>
+                                                        <p className="text-xs text-gray-600 leading-relaxed">{item.latestReplyBody}</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -334,7 +395,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     </div>
                                 </div>
                             ))}
-                            {(!course.qa || course.qa.length === 0) && (
+                            {!discussionLoading && discussionThreads.length === 0 && (
                                 <div className="text-center py-12">
                                     <MessageSquare size={48} className="mx-auto text-gray-200 mb-4" />
                                     <p className="text-gray-400">لا توجد أسئلة بعد. كن أول من يسأل!</p>
@@ -622,3 +683,4 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         </div>
     );
 };
+
