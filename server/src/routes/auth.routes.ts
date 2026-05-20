@@ -8,12 +8,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
+import { PhoneOtpModel } from "../models/PhoneOtp.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
 import { grantAccessToUser } from "../services/accessGrantService.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
+import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
 import { issueCsrfToken } from "../middleware/csrf.js";
@@ -29,6 +31,13 @@ const passwordStrengthSchema = z
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1).max(160),
+});
+const whatsappStartSchema = z.object({
+  phone: z.string().min(8).max(24),
+});
+const whatsappVerifySchema = z.object({
+  phone: z.string().min(8).max(24),
+  code: z.string().length(6),
 });
 
 const registerSchema = z.object({
@@ -90,6 +99,10 @@ const preferencesSchema = z.object({
   reviewLater: z.array(z.string()).optional(),
   enrolledPaths: z.array(z.string()).optional(),
 });
+const updateMyProfileSchema = z.object({
+  name: z.string().min(2).max(120).optional(),
+  avatar: z.string().max(2_000_000).optional(),
+});
 
 const redeemAccessCodeSchema = z.object({
   code: z.string().min(4),
@@ -128,10 +141,16 @@ const buildDocumentQuery = (value: string) =>
   mongoose.Types.ObjectId.isValid(value) ? { $or: [{ id: value }, { _id: value }] } : { id: value };
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 const createSecureToken = () => randomBytes(32).toString("hex");
+const normalizePhone = (value: string) => value.replace(/[^\d]/g, "");
+const hashOtpCode = (phone: string, code: string) => hashToken(`${phone}:${code}`);
+const generateOtpCode = () => String(Math.floor(100000 + Math.random() * 900000));
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
 const MAX_FAILED_LOGIN_ATTEMPTS = 5;
 const LOGIN_LOCK_MS = 15 * 60 * 1000;
+const WHATSAPP_OTP_TTL_MS = 10 * 60 * 1000;
+const WHATSAPP_OTP_MAX_ATTEMPTS = 5;
+const WHATSAPP_OTP_MAX_PER_15_MIN = 3;
 const GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
@@ -687,6 +706,160 @@ authRouter.get(
     }
 
     return res.json({
+      user: serializeUser(user),
+    });
+  }),
+);
+
+authRouter.patch(
+  "/me/profile",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = updateMyProfileSchema.parse(req.body || {});
+    const update: Record<string, unknown> = {};
+
+    if (typeof payload.name === "string") {
+      update.name = payload.name.trim();
+    }
+    if (typeof payload.avatar === "string") {
+      update.avatar = payload.avatar.trim();
+    }
+
+    if (Object.keys(update).length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "No profile fields provided",
+      });
+    }
+
+    const user = await UserModel.findByIdAndUpdate(req.authUser?.id, update, { new: true });
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    return res.json({
+      user: serializeUser(user),
+    });
+  }),
+);
+
+authRouter.post(
+  "/whatsapp/start",
+  asyncHandler(async (req, res) => {
+    const payload = whatsappStartSchema.parse(req.body);
+    const phone = normalizePhone(payload.phone);
+    if (phone.length < 8) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid phone number" });
+    }
+
+    const since = new Date(Date.now() - 15 * 60 * 1000);
+    const recentCount = await PhoneOtpModel.countDocuments({
+      phone,
+      createdAt: { $gte: since },
+    });
+    if (recentCount >= WHATSAPP_OTP_MAX_PER_15_MIN) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
+        message: "Too many OTP requests. Try again in 15 minutes.",
+      });
+    }
+
+    const code = generateOtpCode();
+    await PhoneOtpModel.create({
+      phone,
+      codeHash: hashOtpCode(phone, code),
+      expiresAt: Date.now() + WHATSAPP_OTP_TTL_MS,
+      attempts: 0,
+      channel: "whatsapp",
+    });
+
+    const result = await sendExternalNotification({
+      channel: "whatsapp",
+      id: `otp_${phone}_${Date.now()}`,
+      recipientPhone: phone,
+      title: "Almeaa OTP",
+      subject: "Almeaa OTP",
+      body: `رمز الدخول لمنصة المئة هو: ${code}. صالح لمدة 10 دقائق.`,
+    });
+
+    if (!result.ok) {
+      if (process.env.NODE_ENV !== "production") {
+        console.info(`[whatsapp-otp] fallback-code phone=${phone} code=${code}`);
+      }
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "WhatsApp OTP provider is not configured.",
+      });
+    }
+
+    return res.json({
+      message: "OTP sent to WhatsApp.",
+      expiresInSeconds: Math.floor(WHATSAPP_OTP_TTL_MS / 1000),
+    });
+  }),
+);
+
+authRouter.post(
+  "/whatsapp/verify",
+  asyncHandler(async (req, res) => {
+    const payload = whatsappVerifySchema.parse(req.body);
+    const phone = normalizePhone(payload.phone);
+    const code = String(payload.code || "").trim();
+    if (phone.length < 8 || !/^\d{6}$/.test(code)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Invalid phone or code" });
+    }
+
+    const otp = await PhoneOtpModel.findOne({
+      phone,
+      usedAt: null,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!otp || Number(otp.expiresAt || 0) < Date.now()) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "OTP is invalid or expired" });
+    }
+
+    if (Number(otp.attempts || 0) >= WHATSAPP_OTP_MAX_ATTEMPTS) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({ message: "Too many failed attempts" });
+    }
+
+    const otpMatches = hashOtpCode(phone, code) === String(otp.codeHash || "");
+    if (!otpMatches) {
+      await PhoneOtpModel.updateOne({ _id: otp._id }, { $inc: { attempts: 1 } });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid OTP code" });
+    }
+
+    await PhoneOtpModel.updateOne({ _id: otp._id }, { $set: { usedAt: Date.now() } });
+
+    const userEmail = `wa_${phone}@otp.almeaa.local`;
+    let user = await UserModel.findOne({ email: userEmail });
+    if (!user) {
+      const randomPassword = createSecureToken();
+      user = await UserModel.create({
+        name: `طالب واتساب ${phone.slice(-4)}`,
+        email: userEmail,
+        passwordHash: await bcrypt.hash(randomPassword, 10),
+        role: "student",
+        isActive: true,
+        emailVerified: true,
+        emailVerifiedAt: Date.now(),
+      });
+    }
+
+    if (user.isActive === false) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Account is disabled" });
+    }
+
+    const token = signAccessToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
+    setAuthCookie(res, token);
+
+    return res.json({
+      ...(shouldExposeTokenInAuthResponse ? { token } : {}),
       user: serializeUser(user),
     });
   }),

@@ -337,6 +337,16 @@ export const api = {
       method: "POST",
       body: { email, password },
     }),
+  whatsappStartLogin: (phone: string) =>
+    request<{ message: string; expiresInSeconds: number }>("/auth/whatsapp/start", {
+      method: "POST",
+      body: { phone },
+    }),
+  whatsappVerifyLogin: (phone: string, code: string) =>
+    request<{ token?: string; user: unknown }>("/auth/whatsapp/verify", {
+      method: "POST",
+      body: { phone, code },
+    }),
   register: (name: string, email: string, password: string) =>
     request<{ token?: string; user: unknown }>("/auth/register", {
       method: "POST",

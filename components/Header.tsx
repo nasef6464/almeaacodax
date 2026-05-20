@@ -20,6 +20,7 @@ import {
   Gift,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { api } from '../services/api';
 import { useStore } from '../store/useStore';
 import { isPathMockExam } from '../utils/mockExam';
 
@@ -63,6 +64,11 @@ const text = {
   hundred: '\u0627\u0644\u0645\u0626\u0629',
   subtitle: '\u0642\u062f\u0631\u0627\u062a & \u062a\u062d\u0635\u064a\u0644\u064a',
   authFallbackError: '\u062d\u062f\u062b \u062e\u0637\u0623 \u0623\u062b\u0646\u0627\u0621 \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644',
+  continueWithWhatsApp: '\u062a\u0633\u062c\u064a\u0644 \u0628\u0627\u0644\u0648\u0627\u062a\u0633\u0627\u0628',
+  otpPhone: '\u0631\u0642\u0645 \u0627\u0644\u0648\u0627\u062a\u0633\u0627\u0628',
+  otpCode: '\u0631\u0645\u0632 \u0627\u0644\u062a\u062d\u0642\u0642',
+  otpSend: '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0631\u0645\u0632',
+  otpVerify: '\u062a\u062d\u0642\u0642 \u0648\u062f\u062e\u0648\u0644',
 };
 
 export const Header: React.FC = () => {
@@ -74,6 +80,10 @@ export const Header: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [otpPhone, setOtpPhone] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
   const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
 
   const location = useLocation();
@@ -274,6 +284,34 @@ export const Header: React.FC = () => {
     } catch (error) {
       const message = error instanceof Error ? error.message : text.authFallbackError;
       setAuthError(message);
+    }
+  };
+
+  const handleWhatsappStart = async () => {
+    setAuthError('');
+    setOtpLoading(true);
+    try {
+      await api.whatsappStartLogin(otpPhone.trim());
+      setOtpSent(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : text.authFallbackError;
+      setAuthError(message);
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleWhatsappVerify = async () => {
+    setAuthError('');
+    setOtpLoading(true);
+    try {
+      await api.whatsappVerifyLogin(otpPhone.trim(), otpCode.trim());
+      window.location.reload();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : text.authFallbackError;
+      setAuthError(message);
+    } finally {
+      setOtpLoading(false);
     }
   };
 
@@ -586,6 +624,36 @@ export const Header: React.FC = () => {
                 </svg>
                 {text.continueWithGoogle}
               </button>
+
+              <div className="mt-4 space-y-2 rounded-xl border border-emerald-100 bg-emerald-50 p-3">
+                <div className="text-xs font-bold text-emerald-700">{text.continueWithWhatsApp}</div>
+                <input
+                  type="tel"
+                  value={otpPhone}
+                  onChange={(event) => setOtpPhone(event.target.value)}
+                  className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+                  dir="ltr"
+                  placeholder={`${text.otpPhone} (9665xxxxxxx)`}
+                />
+                {otpSent ? (
+                  <input
+                    type="text"
+                    value={otpCode}
+                    onChange={(event) => setOtpCode(event.target.value)}
+                    className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+                    dir="ltr"
+                    placeholder={text.otpCode}
+                  />
+                ) : null}
+                <button
+                  type="button"
+                  disabled={otpLoading || !otpPhone.trim() || (otpSent && otpCode.trim().length !== 6)}
+                  onClick={otpSent ? handleWhatsappVerify : handleWhatsappStart}
+                  className="w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {otpLoading ? '...' : otpSent ? text.otpVerify : text.otpSend}
+                </button>
+              </div>
 
               <div className="mt-6 text-center">
                 <button
