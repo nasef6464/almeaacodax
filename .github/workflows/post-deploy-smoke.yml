@@ -44,3 +44,6 @@ jobs:
 
       - name: Operational smoke
         run: npm run smoke:operational
+
+      - name: Sentry live proof smoke
+        run: npm run smoke:sentry-live-proof
