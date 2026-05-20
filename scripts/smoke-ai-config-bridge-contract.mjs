@@ -41,11 +41,16 @@ check("integrations manager has AI templates and one-click free setup", () => {
   assertIncludes(integrationsSource, "setupFreeAiStack");
   assertIncludes(integrationsSource, "ai-global");
   assertIncludes(integrationsSource, "تهيئة مجانية تلقائية");
+  assertIncludes(integrationsSource, "مسارات جاهزة لترتيب مزودات الذكاء");
+  assertIncludes(integrationsSource, "مجاني موصى به");
+  assertIncludes(integrationsSource, "مجاني Qwen أولًا");
+  assertIncludes(integrationsSource, "متوازن");
 });
 
 check("integrations manager warns/fixes invalid AI config", () => {
   assertIncludes(integrationsSource, "aiConfigWarnings");
   assertIncludes(integrationsSource, "autoFixAiConfig");
+  assertIncludes(integrationsSource, "إصلاح تلقائي للتنبيهات");
 });
 
 check("backend enforces unique non-empty external platform ids", () => {
