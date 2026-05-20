@@ -731,6 +731,31 @@ export const PlatformIntegrationsManager: React.FC = () => {
     setSaving(true);
     setStatusMessage("");
     try {
+      const normalizedExternal = settings.externalPlatforms.map((item) => ({
+        ...item,
+        id: item.id.trim().toLowerCase(),
+        name: item.name.trim(),
+        baseUrl: item.baseUrl.trim(),
+      }));
+
+      const emptyId = normalizedExternal.find((item) => !item.id);
+      if (emptyId) {
+        setStatusType("error");
+        setStatusMessage("يوجد منصة خارجية بدون ID. رجاءً أدخل معرفًا فريدًا لكل منصة.");
+        setSaving(false);
+        return;
+      }
+
+      const duplicateIds = normalizedExternal
+        .map((item) => item.id)
+        .filter((id, idx, arr) => arr.indexOf(id) !== idx);
+      if (duplicateIds.length > 0) {
+        setStatusType("error");
+        setStatusMessage(`يوجد معرفات مكررة في المنصات الخارجية: ${[...new Set(duplicateIds)].join(", ")}`);
+        setSaving(false);
+        return;
+      }
+
       const normalized = {
         ...settings,
         auth: {
@@ -749,11 +774,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
           label: field.label.trim(),
           options: field.options.filter(Boolean),
         })),
-        externalPlatforms: settings.externalPlatforms.map((item) => ({
-          ...item,
-          name: item.name.trim(),
-          baseUrl: item.baseUrl.trim(),
-        })),
+        externalPlatforms: normalizedExternal,
       };
       const updated = (await api.updatePlatformIntegrations(normalized)) as IntegrationSettings;
       setSettings({ ...emptySettings, ...updated });
