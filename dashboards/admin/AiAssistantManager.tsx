@@ -244,23 +244,40 @@ export const AiAssistantManager: React.FC = () => {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900">مساعد الطالب ومساعد المدير</h1>
                     <p className="text-sm text-gray-500 mt-2 max-w-3xl">
-                        هنا تعرف هل الذكاء الاصطناعي مربوط فعلا، وتجرب مساعد المدير الذي يقرأ حالة المنصة ويعطيك خطوات تشغيل واضحة.
+                        هذا التبويب للمتابعة والاختبار فقط. تعديل المفاتيح والإعدادات يتم من تبويب إدارة التكاملات.
                     </p>
                 </div>
-                <button
-                    type="button"
-                    onClick={loadStatus}
-                    disabled={loadingStatus}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-900 text-white font-bold hover:bg-gray-800 disabled:opacity-60"
-                >
-                    {loadingStatus ? <Loader2 size={16} className="animate-spin" /> : <Settings size={16} />}
-                    تحديث الحالة
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.hash = '#/admin-dashboard?tab=platform-integrations';
+                        }}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold hover:bg-indigo-100"
+                    >
+                        <Settings size={16} />
+                        فتح إدارة التكاملات
+                    </button>
+                    <button
+                        type="button"
+                        onClick={loadStatus}
+                        disabled={loadingStatus}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-900 text-white font-bold hover:bg-gray-800 disabled:opacity-60"
+                    >
+                        {loadingStatus ? <Loader2 size={16} className="animate-spin" /> : <Settings size={16} />}
+                        تحديث الحالة
+                    </button>
+                </div>
             </div>
 
             {statusError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{statusError}</div>
             )}
+
+            <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-800">
+                <p className="font-bold">تنظيم الإدارة:</p>
+                <p className="mt-1">تعديل المفاتيح والإعدادات من تبويب إدارة التكاملات. هذا التبويب مخصص للمتابعة الحية، الاختبار، ومراقبة الجودة.</p>
+            </div>
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
                 <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm xl:col-span-1">
@@ -542,11 +559,11 @@ export const AiAssistantManager: React.FC = () => {
                             مزودو الذكاء المتاحون
                         </h2>
                         <p className="text-sm text-gray-500 mt-2 leading-6">
-                            يمكنك الآن ضبط المفاتيح من لوحة الإدارة عبر إدارة التكاملات {" > "} المنصات الخارجية باستخدام المعرفات:
+                            هذا القسم يعرض الحالة الحالية فقط. لإضافة/تعديل المفاتيح: إدارة التكاملات {" > "} ربط المنصات الخارجية باستخدام المعرفات:
                             <span className="block mt-1 font-mono text-xs bg-gray-50 border border-gray-100 rounded-md p-2 text-gray-700">
                                 ai-gemini, ai-openrouter, ai-deepseek, ai-qwen, ai-openai, ai-ollama, ai-lmstudio
                             </span>
-                            وضع model داخل خانة الملاحظة بصيغة <code>model=...</code>، أو الاستمرار على Render Environment Variables. ترتيب المزودات يكون عبر:
+                            وضع model داخل خانة الملاحظة بصيغة <code>model=...</code>. ترتيب المزودات يكون عبر:
                             <span className="block mt-1 font-mono text-xs bg-gray-50 border border-gray-100 rounded-md p-2 text-gray-700">
                                 gemini,openrouter,qwen,deepseek,openai
                             </span>
@@ -569,8 +586,8 @@ export const AiAssistantManager: React.FC = () => {
                                     </div>
                                     <p className="text-xs text-gray-600 leading-5 mt-2">{cleanText(provider.note)}</p>
                                     {provider.envKeys.length > 0 && (
-                                        <p className="text-[11px] text-gray-500 mt-2 font-mono break-words">
-                                            {provider.envKeys.join(' · ')}
+                                        <p className="text-[11px] text-gray-500 mt-2">
+                                            مفاتيح env مدعومة كخيار احتياطي.
                                         </p>
                                     )}
                                     {provider.id !== 'none' && (
@@ -597,12 +614,12 @@ export const AiAssistantManager: React.FC = () => {
                     <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                         <h2 className="font-bold text-gray-900 flex items-center gap-2">
                             <CheckCircle2 size={18} />
-                            ماذا نحتاج للتفعيل الحقيقي؟
+                            حدود هذا التبويب
                         </h2>
                         <div className="mt-4 space-y-3 text-sm text-gray-600 leading-6">
-                            <p>الخيار الأسهل: ربط Gemini بمفتاح API في Render عبر `GEMINI_API_KEY` و `AI_PROVIDER=gemini`.</p>
-                            <p>الخيار المحلي: Ollama أو LM Studio مناسب على جهازك، لكنه لا يكون ثابتا للطلاب على الاستضافة السحابية المجانية.</p>
-                            <p>بدون مفتاح: المساعد يظل يعمل بردود احتياطية، لكنه ليس ذكاء توليديا كاملا.</p>
+                            <p>1) إعداد المفاتيح يتم من إدارة التكاملات (وليس هنا).</p>
+                            <p>2) هنا فقط: متابعة الحالة + اختبار المزود + مراقبة الاستخدام.</p>
+                            <p>3) بدون مفتاح، المساعد يعمل على local-fallback.</p>
                         </div>
                     </div>
 

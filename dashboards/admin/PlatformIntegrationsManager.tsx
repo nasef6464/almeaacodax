@@ -642,6 +642,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
             <p className="mt-1 text-sm text-gray-500">تحكم كامل على نمط WordPress: مفاتيح المشاريع، بوابات الدخول، SEO، ومنصات خارجية.</p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                window.location.hash = "#/admin-dashboard?tab=ai-assistant";
+              }}
+              className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-sm font-black text-indigo-700"
+            >
+              <Link2 size={16} />
+              فتح إدارة المساعد
+            </button>
             <button onClick={() => void loadReadiness()} className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-black text-gray-700">
               <RefreshCw size={16} />
               فحص الجاهزية
@@ -1064,6 +1073,11 @@ export const PlatformIntegrationsManager: React.FC = () => {
             <Plus size={14} />
             إضافة منصة
           </button>
+        </div>
+        <div className="mt-3 rounded-xl border border-indigo-100 bg-indigo-50 p-3 text-xs text-indigo-800">
+          مفاتيح الذكاء الاصطناعي تُدار من هنا عبر IDs ثابتة:
+          <span className="mt-1 block font-mono">ai-gemini, ai-openrouter, ai-deepseek, ai-qwen, ai-openai, ai-ollama, ai-lmstudio</span>
+          ثم تتابع النتيجة وتختبر المزود من تبويب إدارة المساعد.
         </div>
         <div className="mt-4 space-y-3">
           {settings.externalPlatforms.map((platform) => (
