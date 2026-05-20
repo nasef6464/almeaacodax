@@ -1030,3 +1030,11 @@
   - operational smoke fallback login => 401
   - sentry live proof => missing `SMOKE_ADMIN_TOKEN`
 - Closure still requires valid token/credentials.
+
+## Update 2026-05-21 — FEATURE-2 PWA + Offline Mode
+- Status: `Fully closed`
+- Evidence:
+  - PWA plugin + service worker generated.
+  - install banner added.
+  - strict frontend/route/health smokes all PASS.
+- Report: `FEATURE_2_PWA_OFFLINE_MODE_2026-05-21_AR.md`

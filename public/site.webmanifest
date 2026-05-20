@@ -1,10 +1,19 @@
 {
-  "name": "منصة المئة",
-  "short_name": "المئة",
+  "name": "ALMEAA CODAX",
+  "short_name": "ALMEAA",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f9fafb",
-  "theme_color": "#10b981",
-  "icons": []
+  "theme_color": "#4f46e5",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/images/homepage-hero-boy-platform.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
 }
-

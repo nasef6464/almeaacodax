@@ -779,3 +779,20 @@
 - Required to close:
   - Valid `SMOKE_ADMIN_TOKEN` in execution environment/CI.
   - Or valid production admin credentials for fallback login flow.
+
+## Update 2026-05-21 - FEATURE-2 PWA + Offline Mode
+- Batch: `FEATURE-2 - PWA + Offline Mode`
+- Final status: `Fully closed`
+- Implemented:
+  - Added `vite-plugin-pwa` with generated service worker.
+  - Registered SW in frontend entry.
+  - Added install banner component.
+  - Added manifest updates and TS typing support.
+- Checks:
+  - `typecheck` PASS
+  - `build` PASS
+  - `smoke:frontend:strict` PASS
+  - `smoke:route-loading` PASS
+  - `smoke:health-readiness` PASS
+- Report:
+  - `FEATURE_2_PWA_OFFLINE_MODE_2026-05-21_AR.md`

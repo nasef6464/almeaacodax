@@ -2,6 +2,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
     const appVersion =
@@ -23,7 +24,54 @@ export default defineConfig(() => {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react()],
+      plugins: [
+        react(),
+        VitePWA({
+          registerType: 'autoUpdate',
+          includeAssets: ['robots.txt'],
+          manifest: {
+            name: 'ALMEAA CODAX',
+            short_name: 'ALMEAA',
+            description: 'ALMEAA CODAX platform for Qudrat and Tahsili',
+            start_url: '/',
+            scope: '/',
+            display: 'standalone',
+            background_color: '#f9fafb',
+            theme_color: '#4f46e5',
+            lang: 'ar',
+            dir: 'rtl',
+            icons: [
+              {
+                src: '/images/homepage-hero-boy-platform.jpg',
+                sizes: '512x512',
+                type: 'image/jpeg',
+                purpose: 'any',
+              },
+            ],
+          },
+          workbox: {
+            navigateFallback: '/index.html',
+            globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}'],
+            runtimeCaching: [
+              {
+                urlPattern: ({ request }) => request.mode === 'navigate',
+                handler: 'NetworkFirst',
+                options: {
+                  cacheName: 'pages-cache',
+                },
+              },
+              {
+                urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+                handler: 'NetworkFirst',
+                options: {
+                  cacheName: 'api-cache',
+                  networkTimeoutSeconds: 3,
+                },
+              },
+            ],
+          },
+        }),
+      ],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

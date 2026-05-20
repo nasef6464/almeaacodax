@@ -997,3 +997,8 @@
 - Need one of:
   1. `SMOKE_ADMIN_TOKEN` configured.
   2. Valid fallback admin login credentials for smoke operational.
+
+## Update 2026-05-21 — FEATURE-2 PWA
+- Current status: `Fully closed`.
+- Added PWA runtime, install banner, and offline caching baseline.
+- All required checks passed for this batch.

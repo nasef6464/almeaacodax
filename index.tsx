@@ -4,8 +4,10 @@ import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import './styles/main.css';
 import { initFrontendSentry } from './src/observability/sentry';
+import { registerSW } from 'virtual:pwa-register';
 
 initFrontendSentry();
+registerSW({ immediate: true });
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
