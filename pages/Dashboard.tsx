@@ -1303,6 +1303,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     const [reviewStats, setReviewStats] = useState<{ dueToday: number; dueThisWeek: number; totalCards: number } | null>(null);
+    const [myCertificates, setMyCertificates] = useState<any[]>([]);
+    const [certificatesLoading, setCertificatesLoading] = useState(false);
 
     useEffect(() => {
         let mounted = true;
@@ -1312,6 +1314,27 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             })
             .catch((error) => {
                 console.warn('Review stats unavailable:', error);
+            });
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        let mounted = true;
+        setCertificatesLoading(true);
+        api.getMyCertificates()
+            .then((payload) => {
+                if (!mounted) return;
+                setMyCertificates(Array.isArray((payload as any)?.certificates) ? (payload as any).certificates : []);
+            })
+            .catch(() => {
+                if (!mounted) return;
+                setMyCertificates([]);
+            })
+            .finally(() => {
+                if (!mounted) return;
+                setCertificatesLoading(false);
             });
         return () => {
             mounted = false;
@@ -1462,6 +1485,27 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                     className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700"
                 >
                     ابدأ المراجعة
+                </Link>
+            </div>
+        </Card>
+
+        <Card className="p-5 border border-emerald-100 bg-gradient-to-l from-emerald-50 to-white">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="text-right">
+                    <h3 className="text-lg font-bold text-gray-900">شهاداتي</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                        {certificatesLoading
+                            ? 'جاري تحميل الشهادات...'
+                            : myCertificates.length > 0
+                                ? `لديك ${myCertificates.length} شهادة جاهزة للعرض والتحقق.`
+                                : 'لا توجد شهادات بعد. أكمل دورة بنسبة 100% لإصدار شهادتك.'}
+                    </p>
+                </div>
+                <Link
+                    to="/profile"
+                    className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-emerald-700"
+                >
+                    عرض الشهادات
                 </Link>
             </div>
         </Card>
