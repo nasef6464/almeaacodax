@@ -970,3 +970,9 @@
   2. `GET /api/payments/subscription`
   3. `DELETE /api/payments/subscription`
 - Resume when owner approves implementation scope and gateway keys are ready.
+
+## Update 2026-05-21 — FIX-8 Certificate Design
+- Status: `Programmatically closed`
+- Remaining step for fully closed:
+  1. Ensure Vercel deploys latest commit.
+  2. Re-run `npm run smoke:frontend:strict` and confirm version check PASS.

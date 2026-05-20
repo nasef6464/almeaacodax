@@ -731,3 +731,17 @@
   - `npm run smoke:payment-package` PASS
 - Report:
   - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-8 Certificate Professional Design
+- Batch: `FIX-8 - Certificate Professional Design`
+- Final status: `Programmatically closed (deployment sync pending for strict smoke)`
+- Verified in code:
+  - `pages/CertificatePage.tsx` uses local QR via `QRCodeSVG`.
+  - Professional certificate layout and print stylesheet are present.
+  - Certificate preview/entry points exist in Dashboard/Profile/CourseView.
+- Checks this run:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` FAIL (single check: deployed app version does not match current commit)
+- Production note:
+  - Failure is deployment-version mismatch on Vercel, not a certificate code regression.

@@ -999,3 +999,12 @@
   - Recurring subscription APIs are missing in payment routes.
   - Payment smokes (`provider/package`) PASS.
 - Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-8 Certificate Design
+- Status: `Programmatically closed`
+- Evidence:
+  - Certificate code/design present with local QR.
+  - Local checks PASS (`typecheck`, `build`).
+  - `smoke:frontend:strict` shows only deploy-version mismatch on production.
+- Action to become fully closed:
+  - Wait Vercel deploy sync to current commit then rerun strict smoke.
