@@ -1070,6 +1070,11 @@ export const api = {
     extractList(await request<unknown>(withQuery("/quizzes/results", { limit: 100, noTotal: true, ...pagination })), "results"),
   getMyQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
     request<QuizResultsPageResponse>(withQuery("/quiz-results/my", { limit: 100, ...pagination })),
+  getQuizResultDetails: (id: string, token?: string | null) =>
+    request<{ result: unknown; analysis: { weakSkills: unknown[]; strongSkills: unknown[]; recommendations: unknown[] } }>(
+      `/quiz-results/${encodeURIComponent(id)}`,
+      { token },
+    ),
   getAdminQuizResultsPage: (pagination: QuizResultsPaginationOptions = {}) =>
     request<QuizResultsPageResponse>(withQuery("/admin/quiz-results", { limit: 100, ...pagination })),
   getScopedQuizResults: (pagination: QuizResultsPaginationOptions = {}) =>

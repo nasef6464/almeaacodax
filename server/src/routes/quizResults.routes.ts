@@ -2,6 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { QuizResultModel } from "../models/QuizResult.js";
+import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -85,6 +86,33 @@ const buildSort = (query: z.infer<typeof quizResultsQuerySchema>) => {
 };
 
 export const quizResultsRouter = Router();
+
+quizResultsRouter.get(
+  "/quiz-results/:id",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const result = await QuizResultModel.findOne({
+      $or: [{ id: req.params.id }, { _id: req.params.id }],
+    }).lean();
+
+    if (!result) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz result not found" });
+    }
+
+    const authUser = req.authUser!;
+    const ownerId = String((result as any).userId || "");
+    const isAdmin = authUser.role === "admin";
+    if (!isAdmin && ownerId !== String(authUser.id)) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "You can only access your own result" });
+    }
+
+    const analysis = await analyzeWeakSkillsFromQuizResult(result);
+    return res.json({
+      result,
+      analysis,
+    });
+  }),
+);
 
 quizResultsRouter.get(
   "/quiz-results/my",
