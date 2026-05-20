@@ -588,6 +588,39 @@ export const PlatformIntegrationsManager: React.FC = () => {
     });
   }, [settings.externalPlatforms]);
 
+  const aiConfigWarnings = useMemo(() => {
+    const warnings: string[] = [];
+    const byId = new Map(settings.externalPlatforms.map((item) => [item.id.trim().toLowerCase(), item] as const));
+    const global = byId.get("ai-global");
+    const route = String(global?.syncScheduleCron || "").trim();
+
+    if (!global) {
+      warnings.push("عنصر ai-global غير موجود. يُفضّل إضافته لتحديد ترتيب المزودات.");
+    } else if (!route) {
+      warnings.push("ai-global موجود لكن ترتيب المزودات فارغ. أضف مثل: gemini,openrouter,qwen,none");
+    } else {
+      const invalid = route
+        .split(",")
+        .map((x) => x.trim().toLowerCase())
+        .filter(Boolean)
+        .filter((x) => !["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio", "none"].includes(x));
+      if (invalid.length > 0) warnings.push(`ترتيب ai-global يحتوي مزودات غير معروفة: ${invalid.join(", ")}`);
+    }
+
+    aiExternalTemplates
+      .filter((item) => item.id !== "ai-global")
+      .forEach((template) => {
+        const entry = byId.get(template.id);
+        if (!entry || !entry.enabled) return;
+        const hasKey = Boolean(String(entry.apiKey || entry.apiSecret || "").trim());
+        if (!hasKey && !["ai-ollama", "ai-lmstudio"].includes(template.id)) {
+          warnings.push(`${template.id} مفعّل بدون مفتاح API.`);
+        }
+      });
+
+    return warnings;
+  }, [settings.externalPlatforms]);
+
   const removeExternal = (id: string) => {
     setSettings((prev) => ({
       ...prev,
@@ -777,6 +810,16 @@ export const PlatformIntegrationsManager: React.FC = () => {
         {statusMessage ? (
           <div className={`mt-4 rounded-xl px-4 py-3 text-sm ${statusType === "success" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"}`}>
             {statusMessage}
+          </div>
+        ) : null}
+        {aiConfigWarnings.length > 0 ? (
+          <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+            <div className="font-black">تنبيهات إعداد الذكاء:</div>
+            <ul className="mt-1 list-disc space-y-1 pr-4">
+              {aiConfigWarnings.map((warning) => (
+                <li key={warning}>{warning}</li>
+              ))}
+            </ul>
           </div>
         ) : null}
       </div>
