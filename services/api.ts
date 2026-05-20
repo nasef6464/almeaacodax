@@ -1165,6 +1165,7 @@ export const api = {
         label: string;
         model: string;
         configured: boolean;
+        source: "env" | "admin" | "runtime-local" | "fallback";
         category: "free-friendly" | "paid" | "local" | "fallback";
         envKeys: string[];
         note: string;

@@ -19,6 +19,7 @@ type AiProviderStatus = {
     label: string;
     model: string;
     configured: boolean;
+    source: 'env' | 'admin' | 'runtime-local' | 'fallback';
     category: 'free-friendly' | 'paid' | 'local' | 'fallback';
     envKeys: string[];
     note: string;
@@ -110,6 +111,13 @@ const categoryLabel: Record<AiProviderStatus['category'], string> = {
     'free-friendly': 'مناسب للمجاني',
     paid: 'مدفوع / احترافي',
     local: 'محلي',
+    fallback: 'احتياطي',
+};
+
+const sourceLabel: Record<AiProviderStatus['source'], string> = {
+    admin: 'من الإدارة',
+    env: 'من env',
+    'runtime-local': 'محلي وقت التشغيل',
     fallback: 'احتياطي',
 };
 
@@ -602,6 +610,7 @@ export const AiAssistantManager: React.FC = () => {
                                             {provider.configured ? 'مفعل' : 'غير مفعل'}
                                         </span>
                                     </div>
+                                    <p className="mt-2 text-[11px] text-gray-500">المصدر: {sourceLabel[provider.source] || provider.source}</p>
                                     <p className="text-xs text-gray-600 leading-5 mt-2">{cleanText(provider.note)}</p>
                                     {provider.envKeys.length > 0 && (
                                         <p className="text-[11px] text-gray-500 mt-2">

@@ -58,6 +58,7 @@ type ProviderDescriptor = {
   label: string;
   model: string;
   configured: boolean;
+  source: "env" | "admin" | "runtime-local" | "fallback";
   category: "free-friendly" | "paid" | "local" | "fallback";
   envKeys: string[];
   note: string;
@@ -181,6 +182,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "Google Gemini",
     model: runtimeAiConfig.providers.gemini.model,
     configured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
+    source: runtimeAiConfig.providers.gemini.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
     note: "مناسب كبداية مجانية أو منخفضة التكلفة حسب حدود حساب Google AI Studio.",
@@ -190,6 +192,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "OpenRouter",
     model: runtimeAiConfig.providers.openrouter.model,
     configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey),
+    source: runtimeAiConfig.providers.openrouter.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
     note: "يدعم موديلات كثيرة ومنها Qwen وDeepSeek وبعض النماذج المجانية عند توفرها.",
@@ -199,6 +202,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "DeepSeek",
     model: runtimeAiConfig.providers.deepseek.model,
     configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey),
+    source: runtimeAiConfig.providers.deepseek.source,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
     note: "قوي ورخيص عادة، مناسب لمساعد المدير والتحليلات الطويلة.",
@@ -208,6 +212,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "Qwen / Alibaba Model Studio",
     model: runtimeAiConfig.providers.qwen.model,
     configured: Boolean(runtimeAiConfig.providers.qwen.apiKey),
+    source: runtimeAiConfig.providers.qwen.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
     note: "خيار صيني ممتاز، وغالبا مناسب للتجارب والحصص المجانية حسب الحساب.",
@@ -217,6 +222,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "OpenAI",
     model: runtimeAiConfig.providers.openai.model,
     configured: Boolean(runtimeAiConfig.providers.openai.apiKey),
+    source: runtimeAiConfig.providers.openai.source,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
     note: "مناسب عند الحاجة لجودة واستقرار أعلى، وغالبا يكون مدفوعا حسب الاستهلاك.",
@@ -226,6 +232,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "Ollama محلي",
     model: runtimeAiConfig.providers.ollama.model,
     configured: isOllamaExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.ollama.baseUrl && runtimeAiConfig.providers.ollama.model),
+    source: runtimeAiConfig.providers.ollama.source,
     category: "local",
     envKeys: ["AI_PROVIDER_ORDER", "OLLAMA_BASE_URL", "OLLAMA_MODEL"],
     note: "مجاني محليا، لكنه يحتاج جهاز أو خادم دائم متاح للسيرفر.",
@@ -235,6 +242,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "LM Studio محلي",
     model: runtimeAiConfig.providers.lmstudio.model,
     configured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
+    source: runtimeAiConfig.providers.lmstudio.source,
     category: "local",
     envKeys: ["AI_PROVIDER_ORDER", "LM_STUDIO_BASE_URL", "LM_STUDIO_MODEL"],
     note: "مجاني محليا للتجارب، وليس مثاليا لإنتاج Render المجاني.",
@@ -244,6 +252,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     label: "ردود احتياطية داخلية",
     model: "local-fallback",
     configured: true,
+    source: "fallback",
     category: "fallback",
     envKeys: [],
     note: "يضمن أن المساعد لا يتوقف حتى لو تعطلت كل المفاتيح.",
