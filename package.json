@@ -78,6 +78,7 @@
         "smoke:security-rbac-phase6": "node scripts/smoke-security-rbac-phase6-contract.mjs",
         "smoke:exam-payment-phase8": "node scripts/smoke-exam-payment-phase8-contract.mjs",
         "smoke:dashboards-phase11": "node scripts/smoke-dashboards-phase11-contract.mjs",
+        "smoke:admin-tabs": "node scripts/smoke-admin-tabs-contract.mjs",
         "smoke:production-ops-phase14": "node scripts/smoke-production-ops-phase14-contract.mjs",
         "smoke:qa-phase17": "node scripts/smoke-qa-phase17-contract.mjs",
         "smoke:deployment-handover-phase19": "node scripts/smoke-deployment-handover-phase19-contract.mjs",

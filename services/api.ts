@@ -207,13 +207,10 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
     if (rawError) {
       try {
         const payload = JSON.parse(rawError) as { message?: string; error?: string; code?: string };
-        if (
+        const isCsrfFailure =
           response.status === 403 &&
-          payload.code === "CSRF_TOKEN_INVALID" &&
-          !options.skipCsrf &&
-          isUnsafeMethod(options.method) &&
-          !retryingAfterCsrfRefresh
-        ) {
+          (payload.code === "CSRF_TOKEN_INVALID" || /csrf/i.test(String(payload.message || payload.error || "")));
+        if (isCsrfFailure && !options.skipCsrf && isUnsafeMethod(options.method) && !retryingAfterCsrfRefresh) {
           storeCsrfToken(null);
           await ensureCsrfToken();
           return request<T>(path, options, true);
