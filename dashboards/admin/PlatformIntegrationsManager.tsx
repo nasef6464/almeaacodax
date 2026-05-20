@@ -522,6 +522,21 @@ export const PlatformIntegrationsManager: React.FC = () => {
     });
   };
 
+  const aiTemplateStatus = useMemo(() => {
+    const byId = new Map(
+      settings.externalPlatforms.map((item) => [item.id.trim().toLowerCase(), item] as const),
+    );
+    return aiExternalTemplates.map((template) => {
+      const item = byId.get(template.id);
+      return {
+        id: template.id,
+        exists: Boolean(item),
+        enabled: Boolean(item?.enabled),
+        hasKey: Boolean(String(item?.apiKey || item?.apiSecret || "").trim()),
+      };
+    });
+  }, [settings.externalPlatforms]);
+
   const removeExternal = (id: string) => {
     setSettings((prev) => ({
       ...prev,
@@ -1132,6 +1147,24 @@ export const PlatformIntegrationsManager: React.FC = () => {
               <Plus size={12} />
               {item.id}
             </button>
+          ))}
+        </div>
+        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+          {aiTemplateStatus.map((item) => (
+            <div key={item.id} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-xs">
+              <div className="font-mono text-gray-800">{item.id}</div>
+              <div className="mt-1 flex items-center gap-2">
+                <span className={`rounded-full px-2 py-0.5 ${item.exists ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>
+                  {item.exists ? "موجود" : "ناقص"}
+                </span>
+                <span className={`rounded-full px-2 py-0.5 ${item.enabled ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                  {item.enabled ? "مفعّل" : "غير مفعّل"}
+                </span>
+                <span className={`rounded-full px-2 py-0.5 ${item.hasKey ? "bg-indigo-100 text-indigo-700" : "bg-gray-200 text-gray-600"}`}>
+                  {item.hasKey ? "مفتاح موجود" : "بدون مفتاح"}
+                </span>
+              </div>
+            </div>
           ))}
         </div>
         <div className="mt-4 space-y-3">
