@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const moduleSchema = new Schema(
   {
+    id: { type: String, default: "", trim: true },
     title: { type: String, required: true, trim: true },
     order: { type: Number, default: 0 },
     lessons: { type: [Schema.Types.Mixed], default: [] },
@@ -18,6 +19,17 @@ const assessmentSchema = new Schema(
     access: { type: String, enum: ["free_preview", "enrolled_paid"], default: "enrolled_paid" },
     showOnPlatform: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
+  },
+  { _id: false },
+);
+
+const courseFileSchema = new Schema(
+  {
+    id: { type: String, required: true, trim: true },
+    title: { type: String, required: true, trim: true },
+    type: { type: String, default: "pdf", trim: true },
+    url: { type: String, default: "", trim: true },
+    size: { type: String, default: "", trim: true },
   },
   { _id: false },
 );
@@ -44,6 +56,8 @@ const courseSchema = new Schema(
     instructorBio: { type: String, default: "" },
     modules: { type: [moduleSchema], default: [] },
     assessments: { type: [assessmentSchema], default: [] },
+    files: { type: [courseFileSchema], default: [] },
+    qa: { type: [Schema.Types.Mixed], default: [] },
     isPublished: { type: Boolean, default: false },
     showOnPlatform: { type: Boolean, default: true },
     isPackage: { type: Boolean, default: false },

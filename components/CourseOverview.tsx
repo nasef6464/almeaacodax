@@ -201,10 +201,20 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         // Optionally show a success message or redirect
     };
 
-    const handleLessonClick = (lesson: { type: string; quizId?: string }) => {
-        if (lesson.quizId) {
+    const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
+        const directId = String(lesson.quizId || '').trim();
+        if (directId) return directId;
+        const rawId = String(lesson.id || '').trim();
+        const prefixedMatch = rawId.match(/^course_quiz_(.+)_\d+$/);
+        if (prefixedMatch?.[1]) return prefixedMatch[1];
+        return '';
+    };
+
+    const handleLessonClick = (lesson: { id?: string; type: string; quizId?: string }) => {
+        const linkedQuizId = resolveEmbeddedQuizId(lesson);
+        if (lesson.type === 'quiz' && linkedQuizId) {
             navigate(
-                buildQuizRouteWithContext(String(lesson.quizId), {
+                buildQuizRouteWithContext(linkedQuizId, {
                     returnTo: `/course/${course.id}`,
                     source: 'course',
                 }),

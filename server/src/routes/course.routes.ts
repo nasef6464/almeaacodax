@@ -41,6 +41,14 @@ const assessmentSchema = z.object({
   order: z.coerce.number().finite().default(0),
 });
 
+const courseFileSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  type: z.string().default("pdf"),
+  url: z.string().default(""),
+  size: z.string().default(""),
+});
+
 const courseSchema = z.object({
   id: z.string().optional(),
   title: z.preprocess((value) => {
@@ -68,6 +76,8 @@ const courseSchema = z.object({
   instructorBio: z.string().optional(),
   modules: z.array(z.any()).default([]),
   assessments: z.array(assessmentSchema).optional(),
+  files: z.array(courseFileSchema).optional(),
+  qa: z.array(z.any()).optional(),
   isPublished: z.boolean().default(false),
   showOnPlatform: z.boolean().default(true),
   isPackage: z.boolean().default(false),
