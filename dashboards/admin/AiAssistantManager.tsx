@@ -542,7 +542,11 @@ export const AiAssistantManager: React.FC = () => {
                             مزودو الذكاء المتاحون
                         </h2>
                         <p className="text-sm text-gray-500 mt-2 leading-6">
-                            أضف المفاتيح في Render Environment Variables، وضع الترتيب في AI_PROVIDER_ORDER مثل:
+                            يمكنك الآن ضبط المفاتيح من لوحة الإدارة عبر إدارة التكاملات {" > "} المنصات الخارجية باستخدام المعرفات:
+                            <span className="block mt-1 font-mono text-xs bg-gray-50 border border-gray-100 rounded-md p-2 text-gray-700">
+                                ai-gemini, ai-openrouter, ai-deepseek, ai-qwen, ai-openai, ai-ollama, ai-lmstudio
+                            </span>
+                            وضع model داخل خانة الملاحظة بصيغة <code>model=...</code>، أو الاستمرار على Render Environment Variables. ترتيب المزودات يكون عبر:
                             <span className="block mt-1 font-mono text-xs bg-gray-50 border border-gray-100 rounded-md p-2 text-gray-700">
                                 gemini,openrouter,qwen,deepseek,openai
                             </span>

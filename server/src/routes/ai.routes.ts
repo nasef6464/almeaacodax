@@ -3,11 +3,13 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { AiInteractionModel } from "../models/AiInteraction.js";
+import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { UserModel } from "../models/User.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 
 const chatSchema = z.object({
   message: z.string().min(1).max(2000),
@@ -69,17 +71,116 @@ type AiCallResult = {
   errors: string[];
 };
 
+type ProviderRuntime = {
+  apiKey?: string;
+  model: string;
+  baseUrl?: string;
+  enabled?: boolean;
+  source: "env" | "admin";
+};
+
+type AiRuntimeConfig = {
+  provider?: AiProvider;
+  providerOrder: string;
+  providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
+};
+
+const readModelHint = (rawValue: unknown, fallback: string) => {
+  const value = String(rawValue || "").trim();
+  if (!value) return fallback;
+  try {
+    const parsed = JSON.parse(value) as { model?: string };
+    if (parsed?.model && typeof parsed.model === "string") {
+      return parsed.model.trim() || fallback;
+    }
+  } catch {
+    // fallback to key-value parsing
+  }
+  const modelMatch = value.match(/(?:^|[,\s;])model\s*[:=]\s*([A-Za-z0-9_.:/-]+)/i);
+  return modelMatch?.[1]?.trim() || fallback;
+};
+
+const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
+  provider: env.AI_PROVIDER,
+  providerOrder: env.AI_PROVIDER_ORDER,
+  providers: {
+    gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
+    openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
+    deepseek: { apiKey: env.DEEPSEEK_API_KEY, model: env.DEEPSEEK_MODEL, baseUrl: "https://api.deepseek.com", source: "env" },
+    qwen: { apiKey: env.QWEN_API_KEY, model: env.QWEN_MODEL, baseUrl: env.QWEN_BASE_URL, source: "env" },
+    openai: { apiKey: env.OPENAI_API_KEY, model: env.OPENAI_MODEL, baseUrl: "https://api.openai.com/v1", source: "env" },
+    ollama: { model: env.OLLAMA_MODEL, baseUrl: env.OLLAMA_BASE_URL, source: "env" },
+    lmstudio: { model: env.LM_STUDIO_MODEL, baseUrl: env.LM_STUDIO_BASE_URL, source: "env" },
+  },
+});
+
+let runtimeAiConfig: AiRuntimeConfig = defaultAiRuntimeConfig();
+
+const loadRuntimeAiConfig = async () => {
+  const next = defaultAiRuntimeConfig();
+  const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
+  const runtimeSettings = settings
+    ? decryptIntegrationSecretsForRuntime(settings as unknown as Record<string, unknown>)
+    : null;
+  const externalPlatforms = Array.isArray(runtimeSettings?.externalPlatforms)
+    ? (runtimeSettings?.externalPlatforms as Array<Record<string, unknown>>)
+    : [];
+
+  const byId = new Map<string, Record<string, unknown>>();
+  externalPlatforms.forEach((item) => {
+    const id = String(item?.id || "").trim().toLowerCase();
+    if (id) byId.set(id, item);
+  });
+
+  const applyExternal = (provider: Exclude<AiProvider, "none">, externalId: string, fallbackModel: string) => {
+    const item = byId.get(externalId);
+    if (!item || item.enabled !== true) return;
+    const apiKey = String(item.apiKey || item.apiSecret || "").trim();
+    const baseUrl = String(item.baseUrl || "").trim();
+    const model = readModelHint(item.note, fallbackModel);
+    next.providers[provider] = {
+      ...next.providers[provider],
+      ...(apiKey ? { apiKey } : {}),
+      ...(baseUrl ? { baseUrl } : {}),
+      model,
+      enabled: true,
+      source: "admin",
+    };
+  };
+
+  const global = byId.get("ai-global");
+  if (global) {
+    const preferredProvider = String(global.note || "").trim().toLowerCase();
+    if (["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"].includes(preferredProvider)) {
+      next.provider = preferredProvider as AiProvider;
+    }
+    const order = String(global.syncScheduleCron || "").trim();
+    if (order) next.providerOrder = order;
+  }
+
+  applyExternal("gemini", "ai-gemini", next.providers.gemini.model);
+  applyExternal("openrouter", "ai-openrouter", next.providers.openrouter.model);
+  applyExternal("deepseek", "ai-deepseek", next.providers.deepseek.model);
+  applyExternal("qwen", "ai-qwen", next.providers.qwen.model);
+  applyExternal("openai", "ai-openai", next.providers.openai.model);
+  applyExternal("ollama", "ai-ollama", next.providers.ollama.model);
+  applyExternal("lmstudio", "ai-lmstudio", next.providers.lmstudio.model);
+
+  runtimeAiConfig = next;
+  return runtimeAiConfig;
+};
+
 const isOllamaExplicitlyConfigured = () =>
-  Boolean(process.env.AI_PROVIDER === "ollama" || process.env.OLLAMA_BASE_URL || process.env.OLLAMA_MODEL);
+  Boolean(runtimeAiConfig.provider === "ollama" || runtimeAiConfig.providers.ollama.baseUrl || runtimeAiConfig.providers.ollama.model);
 const isLmStudioExplicitlyConfigured = () =>
-  Boolean(process.env.AI_PROVIDER === "lmstudio" || process.env.LM_STUDIO_BASE_URL || process.env.LM_STUDIO_MODEL);
+  Boolean(runtimeAiConfig.provider === "lmstudio" || runtimeAiConfig.providers.lmstudio.baseUrl || runtimeAiConfig.providers.lmstudio.model);
 
 const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "gemini",
     label: "Google Gemini",
-    model: env.GEMINI_MODEL,
-    configured: Boolean(env.GEMINI_API_KEY),
+    model: runtimeAiConfig.providers.gemini.model,
+    configured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
     note: "مناسب كبداية مجانية أو منخفضة التكلفة حسب حدود حساب Google AI Studio.",
@@ -87,8 +188,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "openrouter",
     label: "OpenRouter",
-    model: env.OPENROUTER_MODEL,
-    configured: Boolean(env.OPENROUTER_API_KEY),
+    model: runtimeAiConfig.providers.openrouter.model,
+    configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey),
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
     note: "يدعم موديلات كثيرة ومنها Qwen وDeepSeek وبعض النماذج المجانية عند توفرها.",
@@ -96,8 +197,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "deepseek",
     label: "DeepSeek",
-    model: env.DEEPSEEK_MODEL,
-    configured: Boolean(env.DEEPSEEK_API_KEY),
+    model: runtimeAiConfig.providers.deepseek.model,
+    configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey),
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
     note: "قوي ورخيص عادة، مناسب لمساعد المدير والتحليلات الطويلة.",
@@ -105,8 +206,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "qwen",
     label: "Qwen / Alibaba Model Studio",
-    model: env.QWEN_MODEL,
-    configured: Boolean(env.QWEN_API_KEY),
+    model: runtimeAiConfig.providers.qwen.model,
+    configured: Boolean(runtimeAiConfig.providers.qwen.apiKey),
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
     note: "خيار صيني ممتاز، وغالبا مناسب للتجارب والحصص المجانية حسب الحساب.",
@@ -114,8 +215,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "openai",
     label: "OpenAI",
-    model: env.OPENAI_MODEL,
-    configured: Boolean(env.OPENAI_API_KEY),
+    model: runtimeAiConfig.providers.openai.model,
+    configured: Boolean(runtimeAiConfig.providers.openai.apiKey),
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
     note: "مناسب عند الحاجة لجودة واستقرار أعلى، وغالبا يكون مدفوعا حسب الاستهلاك.",
@@ -123,8 +224,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "ollama",
     label: "Ollama محلي",
-    model: env.OLLAMA_MODEL,
-    configured: isOllamaExplicitlyConfigured() && Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
+    model: runtimeAiConfig.providers.ollama.model,
+    configured: isOllamaExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.ollama.baseUrl && runtimeAiConfig.providers.ollama.model),
     category: "local",
     envKeys: ["AI_PROVIDER_ORDER", "OLLAMA_BASE_URL", "OLLAMA_MODEL"],
     note: "مجاني محليا، لكنه يحتاج جهاز أو خادم دائم متاح للسيرفر.",
@@ -132,8 +233,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
   {
     id: "lmstudio",
     label: "LM Studio محلي",
-    model: env.LM_STUDIO_MODEL,
-    configured: isLmStudioExplicitlyConfigured() && Boolean(env.LM_STUDIO_BASE_URL && env.LM_STUDIO_MODEL),
+    model: runtimeAiConfig.providers.lmstudio.model,
+    configured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
     category: "local",
     envKeys: ["AI_PROVIDER_ORDER", "LM_STUDIO_BASE_URL", "LM_STUDIO_MODEL"],
     note: "مجاني محليا للتجارب، وليس مثاليا لإنتاج Render المجاني.",
@@ -150,10 +251,10 @@ const configuredProviders = (): ProviderDescriptor[] => [
 ];
 
 const providerPriority = () => {
-  const fromEnv = env.AI_PROVIDER_ORDER.split(",")
+  const fromEnv = runtimeAiConfig.providerOrder.split(",")
     .map((value) => value.trim().toLowerCase() as AiProvider)
     .filter(Boolean);
-  const preferred = env.AI_PROVIDER ? [env.AI_PROVIDER] : [];
+  const preferred = runtimeAiConfig.provider ? [runtimeAiConfig.provider] : [];
   const defaults: AiProvider[] = ["gemini", "openrouter", "qwen", "deepseek", "openai", "ollama", "lmstudio", "none"];
   return [...new Set([...preferred, ...fromEnv, ...defaults])].filter((provider) =>
     configuredProviders().some((candidate) => candidate.id === provider),
@@ -393,10 +494,12 @@ const fetchWithTimeout = async (url: string, init: RequestInit) => {
 };
 
 const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
-  if (!env.GEMINI_API_KEY) return "";
+  const apiKey = runtimeAiConfig.providers.gemini.apiKey;
+  const model = runtimeAiConfig.providers.gemini.model;
+  if (!apiKey) return "";
 
   const response = await fetchWithTimeout(
-    `https://generativelanguage.googleapis.com/v1beta/models/${env.GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -419,11 +522,14 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType)
 };
 
 const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
-  const response = await fetchWithTimeout(`${env.OLLAMA_BASE_URL.replace(/\/$/, "")}/api/generate`, {
+  const baseUrl = String(runtimeAiConfig.providers.ollama.baseUrl || "").trim();
+  const model = runtimeAiConfig.providers.ollama.model;
+  if (!baseUrl || !model) return "";
+  const response = await fetchWithTimeout(`${baseUrl.replace(/\/$/, "")}/api/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: env.OLLAMA_MODEL,
+      model,
       prompt,
       stream: false,
       format: responseMimeType === "application/json" ? "json" : undefined,
@@ -439,11 +545,14 @@ const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType)
 };
 
 const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
-  const response = await fetchWithTimeout(`${env.LM_STUDIO_BASE_URL.replace(/\/$/, "")}/chat/completions`, {
+  const baseUrl = String(runtimeAiConfig.providers.lmstudio.baseUrl || "").trim();
+  const model = runtimeAiConfig.providers.lmstudio.model;
+  if (!baseUrl || !model) return "";
+  const response = await fetchWithTimeout(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: env.LM_STUDIO_MODEL,
+      model,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
       response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
@@ -468,28 +577,28 @@ const callOpenAiCompatible = async (
 ) => {
   const settings: Record<typeof provider, { baseUrl: string; apiKey?: string; model: string; headers?: Record<string, string> }> = {
     openrouter: {
-      baseUrl: "https://openrouter.ai/api/v1",
-      apiKey: env.OPENROUTER_API_KEY,
-      model: env.OPENROUTER_MODEL,
+      baseUrl: runtimeAiConfig.providers.openrouter.baseUrl || "https://openrouter.ai/api/v1",
+      apiKey: runtimeAiConfig.providers.openrouter.apiKey,
+      model: runtimeAiConfig.providers.openrouter.model,
       headers: {
         "HTTP-Referer": env.CLIENT_URL,
         "X-Title": "Almeaa Educational Platform",
       },
     },
     deepseek: {
-      baseUrl: "https://api.deepseek.com",
-      apiKey: env.DEEPSEEK_API_KEY,
-      model: env.DEEPSEEK_MODEL,
+      baseUrl: runtimeAiConfig.providers.deepseek.baseUrl || "https://api.deepseek.com",
+      apiKey: runtimeAiConfig.providers.deepseek.apiKey,
+      model: runtimeAiConfig.providers.deepseek.model,
     },
     qwen: {
-      baseUrl: env.QWEN_BASE_URL,
-      apiKey: env.QWEN_API_KEY,
-      model: env.QWEN_MODEL,
+      baseUrl: runtimeAiConfig.providers.qwen.baseUrl || env.QWEN_BASE_URL,
+      apiKey: runtimeAiConfig.providers.qwen.apiKey,
+      model: runtimeAiConfig.providers.qwen.model,
     },
     openai: {
-      baseUrl: "https://api.openai.com/v1",
-      apiKey: env.OPENAI_API_KEY,
-      model: env.OPENAI_MODEL,
+      baseUrl: runtimeAiConfig.providers.openai.baseUrl || "https://api.openai.com/v1",
+      apiKey: runtimeAiConfig.providers.openai.apiKey,
+      model: runtimeAiConfig.providers.openai.model,
     },
   };
   const selected = settings[provider];
@@ -522,6 +631,7 @@ const callOpenAiCompatible = async (
 };
 
 const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType): Promise<AiCallResult> => {
+  await loadRuntimeAiConfig();
   const errors: string[] = [];
 
   for (const provider of providerPriority()) {
@@ -603,13 +713,14 @@ export const aiRouter = Router();
 aiRouter.get(
   "/status",
   asyncHandler(async (_req, res) => {
+    await loadRuntimeAiConfig();
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     res.json({
       provider: activeProvider,
-      ollamaConfigured: isOllamaExplicitlyConfigured() && Boolean(env.OLLAMA_BASE_URL && env.OLLAMA_MODEL),
-      lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(env.LM_STUDIO_BASE_URL && env.LM_STUDIO_MODEL),
-      geminiConfigured: Boolean(env.GEMINI_API_KEY),
+      ollamaConfigured: isOllamaExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.ollama.baseUrl && runtimeAiConfig.providers.ollama.model),
+      lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
+      geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
       providers,
       providerOrder: providerPriority(),
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
@@ -623,6 +734,7 @@ aiRouter.get(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (_req, res) => {
+    await loadRuntimeAiConfig();
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     const configuredRealProviders = providers.filter((provider) => provider.id !== "none" && provider.configured);
@@ -667,7 +779,7 @@ aiRouter.get(
 
     const nextActions = [
       configuredRealProviders.length === 0
-        ? "أضف مفتاح مزود ذكاء واحد على الأقل في Render حتى ينتقل المساعد من الرد الاحتياطي إلى ذكاء توليدي حقيقي."
+        ? "أضف مفتاح مزود ذكاء واحد على الأقل من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render حتى ينتقل المساعد من الرد الاحتياطي إلى ذكاء توليدي حقيقي."
         : "",
       studentsWithResults === 0
         ? "اجعل طالبا يجري اختبارا قصيرا حتى يمتلك المساعد بيانات أداء يبني عليها خطة شخصية."
@@ -761,13 +873,14 @@ aiRouter.post(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
+    await loadRuntimeAiConfig();
     const { provider } = providerTestSchema.parse(req.body);
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured) {
       return res.json({
         ok: false,
         provider,
-        message: "المزود غير مفعل. أضف مفاتيحه في Render Environment Variables ثم أعد النشر.",
+        message: "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
       });
     }
 
