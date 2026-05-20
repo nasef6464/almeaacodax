@@ -1023,3 +1023,10 @@
   - `smoke:health-readiness` PASS
   - production `/api/health` => ready=true
 - Result: deployment sync completed and strict blocking check fully passed.
+
+## Update 2026-05-21 — FIX-3 Revalidation
+- Status: `Blocked (unchanged)`
+- Latest failures:
+  - operational smoke fallback login => 401
+  - sentry live proof => missing `SMOKE_ADMIN_TOKEN`
+- Closure still requires valid token/credentials.

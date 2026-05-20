@@ -769,3 +769,13 @@
   - `GET /api/health` => `ready=true`
 - Closure note:
   - Previous deploy-version mismatch is resolved; production now serves expected commit version.
+
+## Update 2026-05-21 - FIX-3 Operational/Sentry Revalidation
+- Batch: `FIX-3 - smoke operational auth`
+- Status: `Blocked (unchanged)`
+- Revalidation results:
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true npm run smoke:operational` => FAIL (401 invalid email/password for fallback account)
+  - `npm run smoke:sentry-live-proof` => FAIL (`Missing SMOKE_ADMIN_TOKEN`)
+- Required to close:
+  - Valid `SMOKE_ADMIN_TOKEN` in execution environment/CI.
+  - Or valid production admin credentials for fallback login flow.

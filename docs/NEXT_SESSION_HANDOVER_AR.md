@@ -991,3 +991,9 @@
   - `smoke:frontend:strict`
   - `smoke:health-readiness`
   - `/api/health` ready=true
+
+## Update 2026-05-21 — FIX-3 Revalidation
+- Still blocked.
+- Need one of:
+  1. `SMOKE_ADMIN_TOKEN` configured.
+  2. Valid fallback admin login credentials for smoke operational.
