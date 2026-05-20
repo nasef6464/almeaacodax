@@ -37,12 +37,18 @@ type CheckResult = {
 const UNSAFE_METHODS = new Set<HttpMethod>(["POST", "PATCH", "DELETE"]);
 let cachedCsrfToken = "";
 let cachedCsrfCookie = "";
+const AUTH_COOKIE_NAME = "almeaa_access_token";
 
 function parseCookieFromSetCookieHeader(rawHeader: string | null) {
   if (!rawHeader) return "";
   const firstCookie = rawHeader.split(",")[0]?.trim() || "";
   const keyValue = firstCookie.split(";")[0]?.trim() || "";
   return keyValue;
+}
+
+function extractCookieValue(rawHeader: string | null, cookieName: string) {
+  const match = String(rawHeader || "").match(new RegExp(`${cookieName}=([^;]+)`));
+  return String(match?.[1] || "").trim();
 }
 
 async function ensureCsrfContext(forceRefresh = false) {
@@ -154,7 +160,38 @@ async function requestText(path: string): Promise<string> {
 }
 
 async function login(email: string, password: string): Promise<AuthSession> {
-  return request<AuthSession>("/auth/login", "POST", { email, password });
+  const csrf = await ensureCsrfContext();
+  const response = await fetch(`${API_BASE}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-csrf-token": csrf.csrfToken,
+      Cookie: csrf.csrfCookie,
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const rawBody = await response.text();
+  let payload: any = null;
+  try {
+    payload = rawBody ? JSON.parse(rawBody) : null;
+  } catch {
+    payload = null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`POST /auth/login failed (${response.status}): ${rawBody}`);
+  }
+
+  const bodyToken = String(payload?.token || "").trim();
+  const cookieToken = extractCookieValue(response.headers.get("set-cookie"), AUTH_COOKIE_NAME);
+  const token = bodyToken || cookieToken;
+  if (!token) {
+    throw new Error("POST /auth/login succeeded but no token found in JSON or Set-Cookie.");
+  }
+
+  const user = payload?.user || null;
+  return { token, user };
 }
 
 async function sessionFromToken(token: string): Promise<AuthSession> {
