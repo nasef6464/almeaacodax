@@ -796,3 +796,19 @@
   - `smoke:health-readiness` PASS
 - Report:
   - `FEATURE_2_PWA_OFFLINE_MODE_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-3 Dark Mode
+- Batch: `FEATURE-3 - Dark Mode`
+- Final status: `Fully closed`
+- Implemented:
+  - Enabled `darkMode: class` in Tailwind.
+  - Added theme toggle with `localStorage` persistence.
+  - Applied dark styling baseline in header/main layout/body.
+- Checks:
+  - `typecheck` PASS
+  - `build` PASS
+  - `smoke:frontend:strict` PASS
+  - `smoke:route-loading` PASS
+  - `smoke:health-readiness` PASS
+- Report:
+  - `FEATURE_3_DARK_MODE_2026-05-21_AR.md`

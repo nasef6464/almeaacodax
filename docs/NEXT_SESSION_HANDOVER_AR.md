@@ -1002,3 +1002,7 @@
 - Current status: `Fully closed`.
 - Added PWA runtime, install banner, and offline caching baseline.
 - All required checks passed for this batch.
+
+## Update 2026-05-21 — FEATURE-3 Dark Mode
+- Current status: `Fully closed`.
+- Added stable class-based dark mode with persistent user preference.

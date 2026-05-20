@@ -56,7 +56,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }, [contactWidget]);
 
     return (
-        <div className="min-h-screen bg-white font-sans text-gray-900" dir="rtl">
+        <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-950 dark:text-gray-100" dir="rtl">
             <Header />
             
             <main>

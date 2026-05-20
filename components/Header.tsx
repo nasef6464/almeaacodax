@@ -23,6 +23,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { useStore } from '../store/useStore';
 import { isPathMockExam } from '../utils/mockExam';
+import { ThemeToggle } from './ThemeToggle';
 
 const NavIcons: Record<string, React.ReactNode> = {
   home: <Home size={18} />,
@@ -317,7 +318,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm font-sans">
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm font-sans dark:bg-gray-950 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20 gap-3">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -399,11 +400,13 @@ export const Header: React.FC = () => {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <button className="text-gray-500 hover:text-amber-500 transition-colors">
+            <ThemeToggle />
+
+            <button className="text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <Search size={20} />
             </button>
 
-            <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors">
+            <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <ShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 0

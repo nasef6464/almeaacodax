@@ -1038,3 +1038,11 @@
   - install banner added.
   - strict frontend/route/health smokes all PASS.
 - Report: `FEATURE_2_PWA_OFFLINE_MODE_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-3 Dark Mode
+- Status: `Fully closed`
+- Evidence:
+  - Theme toggle added with persisted preference.
+  - Tailwind class-based dark mode enabled.
+  - strict frontend/route/health smokes all PASS.
+- Report: `FEATURE_3_DARK_MODE_2026-05-21_AR.md`
