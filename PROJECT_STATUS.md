@@ -812,3 +812,15 @@
   - `smoke:health-readiness` PASS
 - Report:
   - `FEATURE_3_DARK_MODE_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-7 Leaderboard
+- Batch: `FEATURE-7 - Leaderboard`
+- Final status: `Blocked (not implemented)`
+- Audit result:
+  - No dedicated leaderboard API or explicit leaderboard UI/widget found.
+  - Current rank mentions are local sort helpers, not platform leaderboard.
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`

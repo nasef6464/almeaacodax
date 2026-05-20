@@ -1046,3 +1046,9 @@
   - Tailwind class-based dark mode enabled.
   - strict frontend/route/health smokes all PASS.
 - Report: `FEATURE_3_DARK_MODE_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-7 Leaderboard
+- Status: `Blocked`
+- Reason: feature not implemented yet (no API + no explicit UI/widget).
+- Health/front strict smokes PASS.
+- Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`

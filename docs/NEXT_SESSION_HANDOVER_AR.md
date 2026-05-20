@@ -1006,3 +1006,7 @@
 ## Update 2026-05-21 — FEATURE-3 Dark Mode
 - Current status: `Fully closed`.
 - Added stable class-based dark mode with persistent user preference.
+
+## Update 2026-05-21 — FEATURE-7 Leaderboard
+- Current status: `Blocked`.
+- Missing: leaderboard API + dashboard widget + role-scoped ranking views.
