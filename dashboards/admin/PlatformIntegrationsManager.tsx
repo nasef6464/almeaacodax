@@ -246,6 +246,7 @@ const aiExternalTemplates: Array<{
   baseUrl: string;
   note: string;
 }> = [
+  { id: "ai-global", name: "AI Global Routing", baseUrl: "", note: "gemini" },
   { id: "ai-gemini", name: "AI Gemini Free", baseUrl: "", note: "model=gemini-1.5-flash" },
   { id: "ai-openrouter", name: "AI OpenRouter Free", baseUrl: "https://openrouter.ai/api/v1", note: "model=qwen/qwen3-235b-a22b:free" },
   { id: "ai-qwen", name: "AI Qwen Free", baseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1", note: "model=qwen-plus" },
@@ -520,6 +521,56 @@ export const PlatformIntegrationsManager: React.FC = () => {
         ],
       };
     });
+  };
+
+  const setupFreeAiStack = () => {
+    setSettings((prev) => {
+      const next = [...prev.externalPlatforms];
+      const byId = new Map(next.map((item, index) => [item.id.trim().toLowerCase(), index] as const));
+
+      const upsert = (templateId: string, patch?: Partial<ExternalPlatform>) => {
+        const template = aiExternalTemplates.find((item) => item.id === templateId);
+        if (!template) return;
+        const foundIndex = byId.get(template.id);
+        if (typeof foundIndex === "number") {
+          next[foundIndex] = {
+            ...next[foundIndex],
+            enabled: true,
+            baseUrl: next[foundIndex].baseUrl || template.baseUrl,
+            note: next[foundIndex].note || template.note,
+            ...(patch || {}),
+          };
+          return;
+        }
+        const newItem: ExternalPlatform = {
+          ...createExternalPlatform(next.length),
+          id: template.id,
+          name: template.name,
+          enabled: true,
+          platformType: "custom",
+          baseUrl: template.baseUrl,
+          note: template.note,
+          ...(patch || {}),
+        };
+        next.push(newItem);
+        byId.set(template.id, next.length - 1);
+      };
+
+      upsert("ai-global", {
+        syncScheduleCron: "gemini,openrouter,qwen,deepseek,openai,none",
+        note: "gemini",
+      });
+      upsert("ai-gemini");
+      upsert("ai-openrouter");
+      upsert("ai-qwen");
+
+      return {
+        ...prev,
+        externalPlatforms: next,
+      };
+    });
+    setStatusType("success");
+    setStatusMessage("تمت تهيئة المسار المجاني للذكاء: Gemini ثم OpenRouter ثم Qwen ثم fallback.");
   };
 
   const aiTemplateStatus = useMemo(() => {
@@ -1136,6 +1187,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
           مفاتيح الذكاء الاصطناعي تُدار من هنا عبر IDs ثابتة:
           <span className="mt-1 block font-mono">ai-gemini, ai-openrouter, ai-deepseek, ai-qwen, ai-openai, ai-ollama, ai-lmstudio</span>
           ثم تتابع النتيجة وتختبر المزود من تبويب إدارة المساعد.
+        </div>
+        <div className="mt-3">
+          <button
+            onClick={setupFreeAiStack}
+            className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+          >
+            <RefreshCw size={13} />
+            تهيئة مجانية تلقائية (موصى بها)
+          </button>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {aiExternalTemplates.map((item) => (
