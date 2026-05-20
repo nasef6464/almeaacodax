@@ -1,4 +1,4 @@
-
+﻿
 import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -46,6 +46,7 @@ const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ d
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
+const Pricing = React.lazy(() => import('./pages/Pricing'));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -256,26 +257,31 @@ const SeoRouteMeta: React.FC = () => {
     const isCategory = path.startsWith('/category/');
     const isBlog = path === '/blog';
     const isCourses = path === '/courses' || path.startsWith('/course/');
+    const isPricing = path === '/pricing';
 
     const title = isPrivate
-      ? 'منصة المئة | مساحة الطالب'
+      ? 'Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø© | Ù…Ø³Ø§Ø­Ø© Ø§Ù„Ø·Ø§Ù„Ø¨'
       : isCategory
-        ? 'مسارات القدرات والتحصيلي | منصة المئة'
+        ? 'Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ | Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©'
         : isBlog
-          ? 'مدونة منصة المئة'
+          ? 'Ù…Ø¯ÙˆÙ†Ø© Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©'
           : isCourses
-            ? 'دورات القدرات والتحصيلي | منصة المئة'
-            : 'منصة المئة | قدرات وتحصيلي';
+            ? 'Ø¯ÙˆØ±Ø§Øª Ø§Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ | Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©'
+            : isPricing
+              ? 'Ø¨Ø§Ù‚Ø§Øª Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ | Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©'
+            : 'Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø© | Ù‚Ø¯Ø±Ø§Øª ÙˆØªØ­ØµÙŠÙ„ÙŠ';
 
     const description = isPrivate
-      ? 'مساحة خاصة داخل منصة المئة للطالب أو الإدارة.'
+      ? 'Ù…Ø³Ø§Ø­Ø© Ø®Ø§ØµØ© Ø¯Ø§Ø®Ù„ Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø© Ù„Ù„Ø·Ø§Ù„Ø¨ Ø£Ùˆ Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.'
       : isCategory
-        ? 'استكشف مسارات القدرات والتحصيلي والتأسيس والتدريب والاختبارات داخل منصة المئة.'
+        ? 'Ø§Ø³ØªÙƒØ´Ù Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ ÙˆØ§Ù„ØªØ£Ø³ÙŠØ³ ÙˆØ§Ù„ØªØ¯Ø±ÙŠØ¨ ÙˆØ§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø¯Ø§Ø®Ù„ Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©.'
         : isBlog
-          ? 'مقالات وإرشادات تعليمية من منصة المئة لطلاب القدرات والتحصيلي.'
+          ? 'Ù…Ù‚Ø§Ù„Ø§Øª ÙˆØ¥Ø±Ø´Ø§Ø¯Ø§Øª ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…Ù† Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø© Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ.'
           : isCourses
-            ? 'دورات تعليمية منظمة للقدرات والتحصيلي داخل منصة المئة.'
-            : 'منصة تعليمية عربية للقدرات والتحصيلي، تجمع المسارات التعليمية والدروس والاختبارات والتحليل الذكي في مكان واحد.';
+            ? 'Ø¯ÙˆØ±Ø§Øª ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù…Ù†Ø¸Ù…Ø© Ù„Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ Ø¯Ø§Ø®Ù„ Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø©.'
+            : isPricing
+              ? 'ØªØ¹Ø±Ù Ø¹Ù„Ù‰ Ø¨Ø§Ù‚Ø§Øª Ù…Ù†ØµØ© Ø§Ù„Ù…Ø¦Ø© Ù„Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠ ÙˆØ§Ø®ØªØ± Ø§Ù„Ø®Ø·Ø© Ø§Ù„Ø£Ù†Ø³Ø¨ Ù„Ùƒ.'
+            : 'Ù…Ù†ØµØ© ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ø¹Ø±Ø¨ÙŠØ© Ù„Ù„Ù‚Ø¯Ø±Ø§Øª ÙˆØ§Ù„ØªØ­ØµÙŠÙ„ÙŠØŒ ØªØ¬Ù…Ø¹ Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ© ÙˆØ§Ù„Ø¯Ø±ÙˆØ³ ÙˆØ§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª ÙˆØ§Ù„ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø°ÙƒÙŠ ÙÙŠ Ù…ÙƒØ§Ù† ÙˆØ§Ø­Ø¯.';
 
     const canonicalPath = isPrivate ? '/' : path;
     const canonicalUrl = `${SEO_BASE_URL}${canonicalPath === '/' ? '/' : canonicalPath}`;
@@ -324,8 +330,8 @@ const LoadingFallback = () => {
             <div className="h-4 w-16 animate-pulse rounded-full bg-gray-100" />
           </div>
           <div className="flex items-baseline font-black">
-            <span className="text-blue-900">منصة</span>
-            <span className="mx-1 text-amber-500">المئة</span>
+            <span className="text-blue-900">Ù…Ù†ØµØ©</span>
+            <span className="mx-1 text-amber-500">Ø§Ù„Ù…Ø¦Ø©</span>
           </div>
         </div>
       </div>
@@ -833,6 +839,7 @@ const App: React.FC = () => {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   <Route path="/certificate/:code" element={<CertificatePage />} />
                   <Route path="/review" element={<ReviewSession />} />
                   
@@ -859,3 +866,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
