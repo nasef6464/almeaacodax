@@ -15,6 +15,7 @@ const CourseView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState('');
     const [isPlaying, setIsPlaying] = useState(() => searchParams.get('learn') === '1');
+    const requestedTab = searchParams.get('tab');
     const [certificateCode, setCertificateCode] = useState('');
     const { user, enrolledCourses, hasScopedPackageAccess, courses } = useStore();
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -22,6 +23,13 @@ const CourseView: React.FC = () => {
     useEffect(() => {
         setIsPlaying(searchParams.get('learn') === '1');
     }, [searchParams]);
+
+    const resolveOverviewTab = (value: string | null): 'description' | 'syllabus' | 'tests' | 'qa' | 'files' => {
+        if (value === 'description' || value === 'syllabus' || value === 'tests' || value === 'qa' || value === 'files') {
+            return value;
+        }
+        return 'syllabus';
+    };
 
     const updateLearningUrlState = useCallback((nextPlaying: boolean, lessonId?: string) => {
         const nextParams = new URLSearchParams(searchParams);
@@ -56,7 +64,8 @@ const CourseView: React.FC = () => {
             } catch (error) {
                 console.warn('Unable to load course', error);
                 if (mounted) {
-                    const localCourse = courses.find((item) => item.id === courseId) || null;
+                    const localCourse =
+                        courses.find((item: any) => String(item.id || item._id || '') === String(courseId || '')) || null;
                     if (localCourse) {
                         setCourse(localCourse);
                         setLoadError('');
@@ -174,6 +183,16 @@ const CourseView: React.FC = () => {
                 ) : null}
                 <CourseOverview
                     course={course}
+                    initialTab={resolveOverviewTab(requestedTab)}
+                    onTabChange={(tab) => {
+                        const nextParams = new URLSearchParams(searchParams);
+                        if (tab === 'syllabus') {
+                            nextParams.delete('tab');
+                        } else {
+                            nextParams.set('tab', tab);
+                        }
+                        setSearchParams(nextParams, { replace: true });
+                    }}
                     onContinue={() => {
                         setIsPlaying(true);
                         updateLearningUrlState(true);

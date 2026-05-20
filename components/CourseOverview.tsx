@@ -20,12 +20,14 @@ import { api } from '../services/api';
 interface CourseOverviewProps {
     course: Course;
     onContinue: () => void;
+    initialTab?: TabType;
+    onTabChange?: (tab: TabType) => void;
 }
 
 type TabType = 'description' | 'syllabus' | 'tests' | 'qa' | 'files';
 
-export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue }) => {
-    const [activeTab, setActiveTab] = useState<TabType>('syllabus');
+export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue, initialTab = 'syllabus', onTabChange }) => {
+    const [activeTab, setActiveTab] = useState<TabType>(initialTab);
     const [newQuestion, setNewQuestion] = useState('');
     const [discussionThreads, setDiscussionThreads] = useState<any[]>([]);
     const [discussionLoading, setDiscussionLoading] = useState(false);
@@ -43,6 +45,14 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
+
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [initialTab]);
+
+    useEffect(() => {
+        onTabChange?.(activeTab);
+    }, [activeTab, onTabChange]);
 
     useEffect(() => {
         let mounted = true;
@@ -187,7 +197,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     };
 
     const handleLessonClick = (lesson: { type: string; quizId?: string }) => {
-        if (lesson.type === 'quiz' && lesson.quizId) {
+        if (lesson.quizId) {
             navigate(
                 buildQuizRouteWithContext(String(lesson.quizId), {
                     returnTo: `/course/${course.id}`,
