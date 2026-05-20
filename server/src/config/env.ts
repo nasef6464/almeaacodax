@@ -75,6 +75,14 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().default("Platform Admin"),
   ADMIN_EMAIL: z.string().email().default("admin@example.com"),
   ADMIN_PASSWORD: z.string().min(6).default("change-me"),
+  ADMIN_PASSWORD_SYNC_ON_BOOT: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+      }
+      return value;
+    }, z.boolean())
+    .default(false),
   ADMIN_LOGIN_BYPASS_ENABLED: z
     .preprocess((value) => {
       if (typeof value === "string") {

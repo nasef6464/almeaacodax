@@ -40,6 +40,14 @@ export async function ensureAdminAccount() {
     existing.passwordHash = await bcrypt.hash(env.ADMIN_PASSWORD, 10);
     changed = true;
   }
+  if (existing.passwordHash && env.ADMIN_PASSWORD_SYNC_ON_BOOT) {
+    const matchesConfiguredPassword = await bcrypt.compare(env.ADMIN_PASSWORD, existing.passwordHash).catch(() => false);
+    if (!matchesConfiguredPassword) {
+      existing.passwordHash = await bcrypt.hash(env.ADMIN_PASSWORD, 10);
+      changed = true;
+      console.log(`[admin] Synced admin password from environment for ${email}`);
+    }
+  }
 
   if (existing.name !== env.ADMIN_NAME) {
     existing.name = env.ADMIN_NAME;
