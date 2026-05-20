@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Loader2, MessageCircle, Send, Settings, ShieldCheck, Sparkles, Target, Users, Zap } from 'lucide-react';
+import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Copy, Loader2, MessageCircle, Send, Settings, ShieldCheck, Sparkles, Target, Users, Zap } from 'lucide-react';
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 
@@ -111,6 +111,16 @@ const categoryLabel: Record<AiProviderStatus['category'], string> = {
     paid: 'مدفوع / احترافي',
     local: 'محلي',
     fallback: 'احتياطي',
+};
+
+const providerToIntegrationId: Partial<Record<AiStatus['provider'], string>> = {
+    gemini: 'ai-gemini',
+    openrouter: 'ai-openrouter',
+    deepseek: 'ai-deepseek',
+    qwen: 'ai-qwen',
+    openai: 'ai-openai',
+    ollama: 'ai-ollama',
+    lmstudio: 'ai-lmstudio',
 };
 
 export const AiAssistantManager: React.FC = () => {
@@ -231,6 +241,14 @@ export const AiAssistantManager: React.FC = () => {
             }));
         } finally {
             setTestingProvider(null);
+        }
+    };
+
+    const copyText = async (value: string) => {
+        try {
+            await navigator.clipboard.writeText(value);
+        } catch {
+            // no-op
         }
     };
 
@@ -592,6 +610,29 @@ export const AiAssistantManager: React.FC = () => {
                                     )}
                                     {provider.id !== 'none' && (
                                         <div className="mt-3 flex flex-col gap-2">
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        window.location.hash = '#/admin-dashboard?tab=platform-integrations';
+                                                    }}
+                                                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100"
+                                                >
+                                                    <Settings size={14} />
+                                                    فتح التكاملات
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const integrationId = providerToIntegrationId[provider.id];
+                                                        if (integrationId) void copyText(integrationId);
+                                                    }}
+                                                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100"
+                                                >
+                                                    <Copy size={14} />
+                                                    نسخ AI ID
+                                                </button>
+                                            </div>
                                             <button
                                                 type="button"
                                                 disabled={!provider.configured || testingProvider === provider.id}
