@@ -916,3 +916,7 @@
 - تم إغلاق FIX-8 نهائيًا.
 - شهادة احترافية + QR محلي + نمط طباعة + معاينة في لوحة الطالب.
 - PASS: typecheck/build/frontend strict + تحقق إنتاجي.
+
+## Update 2026-05-21 - FIX-6 Blocked
+- اختبار OTP الحي على الإنتاج أكد أن مزود واتساب غير مهيأ (`WhatsApp OTP provider is not configured`).
+- لا يمكن إعلان الإغلاق النهائي قبل تفعيل مزود فعلي (`whatsapp_cloud` أو `http`) في Render env.

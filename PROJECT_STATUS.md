@@ -630,3 +630,16 @@
   - backend health ready=true
 - Report:
   - `FIX_8_CERTIFICATE_DESIGN_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-6 WhatsApp OTP Real Sending
+- Status: `Blocked (provider not configured)`
+- Live production test (with valid CSRF flow) on `POST /api/auth/whatsapp/start` returned:
+  - `400` with message: `WhatsApp OTP provider is not configured.`
+- Code path verified:
+  - `auth.routes.ts` OTP start/verify endpoints are present.
+  - `notificationProviders.ts` supports `whatsapp_cloud|http|console`, but production real provider is not configured.
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:notifications` PASS
+- Report:
+  - `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`
