@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api";
 
@@ -9,6 +9,7 @@ type ReviewItem = {
     id: string;
     text: string;
     options: string[];
+    imageUrl?: string;
   };
 };
 
@@ -89,6 +90,13 @@ const ReviewSession: React.FC = () => {
       <div className="rounded-2xl border border-gray-100 bg-white p-5">
         <div className="mb-3 text-sm text-gray-500">السؤال {index + 1} من {items.length}</div>
         <h1 className="text-xl font-black text-gray-900">{current?.question?.text || "سؤال مراجعة"}</h1>
+        {current?.question?.imageUrl ? (
+          <img
+            src={current.question.imageUrl}
+            alt="صورة السؤال"
+            className="my-3 mx-auto max-h-64 rounded-lg object-contain"
+          />
+        ) : null}
         {Array.isArray(current?.question?.options) && current?.question?.options.length > 0 ? (
           <ul className="mt-4 space-y-2">
             {current?.question?.options.map((option, i) => (

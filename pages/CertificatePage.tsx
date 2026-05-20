@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../services/api";
+import { QRCodeSVG } from "qrcode.react";
 
 const CertificatePage: React.FC = () => {
   const { code = "" } = useParams<{ code: string }>();
@@ -41,11 +42,9 @@ const CertificatePage: React.FC = () => {
         <p className="mb-2">الدورة: <strong>{certificate.courseName}</strong></p>
         <p className="mb-2">نسبة الإتمام: <strong>{certificate.completionPercentage}%</strong></p>
         <p className="mb-6">رمز التحقق: <code>{certificate.verificationCode}</code></p>
-        <img
-          alt="QR verification"
-          src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(verifyUrl)}`}
-          className="mb-6 rounded-xl border"
-        />
+        <div className="mb-6 inline-flex rounded-xl border border-gray-200 bg-white p-3">
+          <QRCodeSVG value={verifyUrl} size={220} />
+        </div>
         <button onClick={() => window.print()} className="rounded-xl bg-indigo-600 px-4 py-2 font-bold text-white">
           طباعة / حفظ PDF
         </button>
@@ -55,4 +54,3 @@ const CertificatePage: React.FC = () => {
 };
 
 export default CertificatePage;
-
