@@ -911,3 +911,8 @@
 - ملفات Firebase القديمة غير موجودة.
 - PASS: `typecheck`, `build`, `smoke:runtime-source`, `smoke:frontend:strict`.
 - تحقق إنتاجي PASS (frontend 200 + backend ready=true).
+
+## Update 2026-05-21 - FIX-8 Fully Closed
+- تم إغلاق FIX-8 نهائيًا.
+- شهادة احترافية + QR محلي + نمط طباعة + معاينة في لوحة الطالب.
+- PASS: typecheck/build/frontend strict + تحقق إنتاجي.

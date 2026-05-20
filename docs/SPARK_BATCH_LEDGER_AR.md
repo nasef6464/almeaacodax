@@ -958,3 +958,5 @@
 | BATCH-F1 | Close pending reports (BATCH_40 + BATCH_27C) | Fully closed | 2026-05-21 | BATCH_F1_CLOSURE_REPORT_2026-05-21_AR.md | full smoke revalidation for BATCH_40 + sentry runtime pass and recorded live event evidence for BATCH_27C |
 
 | BATCH-F2R | Firebase final deletion revalidation | Fully closed | 2026-05-21 | BATCH_F2_FIREBASE_FINAL_DELETION_REVALIDATION_2026-05-21_AR.md | firebase files absent + runtime/front strict smoke PASS |
+
+| FIX-8R | Certificate professional design revalidation | Fully closed | 2026-05-21 | FIX_8_CERTIFICATE_DESIGN_REVALIDATION_2026-05-21_AR.md | professional cert page + dashboard preview verified with strict frontend smoke PASS |

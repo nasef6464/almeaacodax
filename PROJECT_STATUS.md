@@ -613,3 +613,20 @@
   - backend ready=true
 - Report:
   - `BATCH_F2_FIREBASE_FINAL_DELETION_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-8 Certificate Design Revalidation
+- Status: `Fully closed`
+- Verified professional certificate page structure in `CertificatePage.tsx`:
+  - local QR
+  - official verification text
+  - print style
+- Verified dashboard certificate preview integration.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Production probes:
+  - certificate route 200
+  - backend health ready=true
+- Report:
+  - `FIX_8_CERTIFICATE_DESIGN_REVALIDATION_2026-05-21_AR.md`
