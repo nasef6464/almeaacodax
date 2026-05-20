@@ -1378,6 +1378,46 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <input type="checkbox" checked={platform.syncOrders} onChange={(e) => updateExternal(platform.id, { syncOrders: e.target.checked })} />
                 طلبات
               </label>
+              {platform.id.trim().toLowerCase() === "ai-global" ? (
+                <div className="rounded-lg border border-indigo-100 bg-indigo-50 px-2 py-2 text-xs md:col-span-12">
+                  <div className="font-black text-indigo-800">مسارات جاهزة لترتيب مزودات الذكاء</div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      onClick={() =>
+                        updateExternal(platform.id, {
+                          syncScheduleCron: "gemini,openrouter,qwen,deepseek,openai,none",
+                          note: "gemini",
+                        })
+                      }
+                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
+                    >
+                      مجاني موصى به
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateExternal(platform.id, {
+                          syncScheduleCron: "qwen,openrouter,gemini,deepseek,openai,none",
+                          note: "qwen",
+                        })
+                      }
+                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
+                    >
+                      مجاني Qwen أولًا
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateExternal(platform.id, {
+                          syncScheduleCron: "openrouter,gemini,qwen,deepseek,openai,none",
+                          note: "openrouter",
+                        })
+                      }
+                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
+                    >
+                      متوازن
+                    </button>
+                  </div>
+                </div>
+              ) : null}
             </div>
           ))}
           {settings.externalPlatforms.length === 0 ? (
