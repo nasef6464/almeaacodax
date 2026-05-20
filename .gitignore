@@ -19,6 +19,9 @@ server-dev.log
 local-mongodb/
 *.bundle
 backups/
+tmp/
+tmp_*
+load-tests/results/*.jsonl
 
 # Editor directories and files
 .vscode/*
