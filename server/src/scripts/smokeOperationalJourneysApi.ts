@@ -34,18 +34,66 @@ type CheckResult = {
   details: string;
 };
 
+const UNSAFE_METHODS = new Set<HttpMethod>(["POST", "PATCH", "DELETE"]);
+let cachedCsrfToken = "";
+let cachedCsrfCookie = "";
+
+function parseCookieFromSetCookieHeader(rawHeader: string | null) {
+  if (!rawHeader) return "";
+  const firstCookie = rawHeader.split(",")[0]?.trim() || "";
+  const keyValue = firstCookie.split(";")[0]?.trim() || "";
+  return keyValue;
+}
+
+async function ensureCsrfContext(forceRefresh = false) {
+  if (!forceRefresh && cachedCsrfToken && cachedCsrfCookie) {
+    return { csrfToken: cachedCsrfToken, csrfCookie: cachedCsrfCookie };
+  }
+
+  const response = await fetch(`${API_BASE}/auth/csrf-token`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(`GET /auth/csrf-token failed (${response.status}): ${text}`);
+  }
+
+  const payload = (await response.json().catch(() => ({}))) as { csrfToken?: string };
+  const cookie = parseCookieFromSetCookieHeader(response.headers.get("set-cookie"));
+  const token = String(payload?.csrfToken || "").trim();
+  if (!token || !cookie) {
+    throw new Error("Failed to resolve CSRF context (missing token or cookie).");
+  }
+
+  cachedCsrfToken = token;
+  cachedCsrfCookie = cookie;
+  return { csrfToken: token, csrfCookie: cookie };
+}
+
 async function request<T>(path: string, method: HttpMethod = "GET", body?: unknown, token?: string): Promise<T> {
   let response: Response | null = null;
   let lastError: unknown = null;
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+
+      if (UNSAFE_METHODS.has(method)) {
+        const csrf = await ensureCsrfContext(attempt > 1);
+        headers["x-csrf-token"] = csrf.csrfToken;
+        headers["Cookie"] = csrf.csrfCookie;
+      }
+
       response = await fetch(`${API_BASE}${path}`, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
+        headers,
         body: body === undefined ? undefined : JSON.stringify(body),
       });
       break;
