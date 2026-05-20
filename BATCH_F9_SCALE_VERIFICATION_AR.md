@@ -37,3 +37,21 @@
 - الكود جاهز.
 - الإنتاج جاهز تعاقديًا/أمنيًا.
 - المتبقي لإغلاق F9 نهائيًا: اعتماد أدمن صالح (SMOKE_ADMIN_TOKEN أو كلمة مرور صحيحة) + ترقية البنية إذا سنجري حمل 500/1000 كامل.
+
+## تحديث 2026-05-20 (تشغيل حي متعدد الأدوار)
+- تم إنشاء حسابات smoke للأدوار عبر API الأدمن:
+  - teacher.quant@almeaa.local
+  - supervisor.group@almeaa.local
+  - student.a@almeaa.local
+  - student.d@almeaa.local
+  - parent.a@almeaa.local
+- تم تفعيل ربط الصلاحيات/العلاقات (managed scopes + linked student).
+- نتيجة `npm run smoke:operational`:
+  - PASS: 70
+  - FAIL: 1
+  - الملاحظة الوحيدة المتبقية:
+    - `supervisor -> school report available` = `classes=1, packages=0`
+
+### التقييم
+- هذا ليس فشل كود؛ هو فجوة بيانات نطاق مدرسة/حزم في البيئة الحية.
+- المسار التقني للإغلاق النهائي أصبح واضحًا: إسناد حزمة مدرسية مرتبطة بنفس school scope الخاص بالمشرف.
