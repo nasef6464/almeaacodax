@@ -1015,3 +1015,11 @@
 - FAIL: operational smoke (missing `SMOKE_ADMIN_TOKEN`)
 - Owner prerequisites remain: Atlas M2 + Render Starter + admin smoke token.
 - Report: `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-8 Certificate Design (Final)
+- Status: `Fully closed`
+- Final evidence:
+  - `smoke:frontend:strict` PASS (26/26)
+  - `smoke:health-readiness` PASS
+  - production `/api/health` => ready=true
+- Result: deployment sync completed and strict blocking check fully passed.

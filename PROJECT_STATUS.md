@@ -759,3 +759,13 @@
   - `SMOKE_ADMIN_TOKEN` configured for operational smoke and CI
 - Report:
   - `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-8 Certificate Professional Design (Final Production Closure)
+- Batch: `FIX-8 - Certificate Professional Design`
+- Final status: `Fully closed`
+- Production verification (final):
+  - `npm run smoke:frontend:strict` PASS (26/26)
+  - `npm run smoke:health-readiness` PASS
+  - `GET /api/health` => `ready=true`
+- Closure note:
+  - Previous deploy-version mismatch is resolved; production now serves expected commit version.

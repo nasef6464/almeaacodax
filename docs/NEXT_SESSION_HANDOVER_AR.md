@@ -984,3 +984,10 @@
   2. Upgrade Render to Starter.
   3. Configure `SMOKE_ADMIN_TOKEN`.
   4. Re-run operational + high concurrency verification.
+
+## Update 2026-05-21 — FIX-8 Certificate Design (Final)
+- Status moved to: `Fully closed`.
+- Final production checks passed:
+  - `smoke:frontend:strict`
+  - `smoke:health-readiness`
+  - `/api/health` ready=true
