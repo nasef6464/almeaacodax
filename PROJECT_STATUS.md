@@ -700,3 +700,18 @@
   - Missing confirmed live charge-initiation + webhook capture proof + sandbox transaction ID.
 - Report:
   - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-6 WhatsApp OTP Real Sending
+- Batch: `FIX-6 - WhatsApp OTP Real Sending`
+- Final status: `Blocked (provider env not configured on production)`
+- Verified this run:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:notifications` PASS
+  - `GET /api/health` => `ready=true`, `redis.rateLimit=ready`, `redis.queue=ready`
+- Production blocker:
+  - WhatsApp provider env is not configured for real OTP sending.
+- Required owner env (choose one):
+  - Option A (Meta Cloud): `WHATSAPP_PROVIDER=whatsapp_cloud`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
+  - Option B (HTTP): `WHATSAPP_PROVIDER=http`, `WHATSAPP_WEBHOOK_URL` (+ optional token)
+- Report:
+  - `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`

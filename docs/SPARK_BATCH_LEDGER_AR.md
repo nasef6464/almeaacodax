@@ -980,3 +980,13 @@
   - Render env vars: `TAP_API_KEY`, `TAP_SECRET_KEY`, `TAP_WEBHOOK_SECRET`
   - Live Tap charge + webhook capture proof + sandbox transaction id
 - Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-6 WhatsApp OTP Real Sending
+- Status: `Blocked (Owner env required)`
+- PASS checks:
+  - `smoke:health-readiness`
+  - `smoke:notifications`
+  - production `/api/health` => ready=true
+- Missing for closure:
+  - Configure WhatsApp provider env on Render (cloud or http).
+- Report: `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`

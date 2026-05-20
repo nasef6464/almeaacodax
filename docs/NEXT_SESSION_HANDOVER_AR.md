@@ -949,3 +949,16 @@
   2. Verify webhook signature/capture.
   3. Record sandbox transaction ID.
   4. Re-run payment smokes and close as Fully closed.
+
+## Update 2026-05-21 — FIX-6 WhatsApp OTP
+- Current status: `Blocked`
+- Why blocked:
+  - Production WhatsApp provider env not configured for real OTP send.
+- Verified now:
+  - `smoke:health-readiness` PASS
+  - `smoke:notifications` PASS
+  - `/api/health` ready=true
+- Resume steps after owner action:
+  1. Set provider env in Render.
+  2. Test `POST /api/auth/whatsapp/start` with CSRF and real phone.
+  3. Close batch as Fully closed.
