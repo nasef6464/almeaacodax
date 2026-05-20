@@ -452,3 +452,8 @@
 - Quality gates: closed by smoke evidence (operational/hardening/frontend/security/learning/results).
 - F9 remains deferred pending infra upgrades (Atlas M2 + Render Starter).
 - Launch stance: production-operational ready on free tier, scale certification pending.
+
+## Update 2026-05-20 - Free Tier Final Validation Run
+- Re-validated final critical smoke suite on free tier: PASS.
+- Only remaining blocker for full operational rerun in this session: admin auth secret (`SMOKE_ADMIN_TOKEN` or valid admin login password).
+- Added report: `FINAL_FREE_TIER_VALIDATION_2026-05-20_AR.md`.
