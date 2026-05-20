@@ -850,3 +850,9 @@
   - Build/typecheck/runtime-source smoke passed.
 - Report:
   - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`
+
+## 2026-05-20 Update - BATCH F3 (Redis Activation) Closed
+- Status: Fully closed.
+- Production health confirms Redis ready for both limiter and queue.
+- Report:
+  - `BATCH_F3_REDIS_ACTIVATION_AR.md`

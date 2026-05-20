@@ -495,3 +495,15 @@
   - `npm run smoke:runtime-source` PASS
 - Report:
   - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`
+
+## Update 2026-05-20 - BATCH F3 Redis Activation + Verification
+- Batch: `BATCH F3 - Redis Activation`
+- Final status: `Fully closed`
+- Production proof:
+  - `GET https://almeaacodax-k2ux.onrender.com/api/health` => redis.rateLimit=`ready`, redis.queue=`ready`, summary.redisConfiguredForScale=`true`.
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:notifications` PASS
+  - `npm run smoke:production-hardening` PASS
+- Report:
+  - `BATCH_F3_REDIS_ACTIVATION_AR.md`

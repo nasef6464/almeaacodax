@@ -1,45 +1,37 @@
-﻿# BATCH F3 - Redis Activation + Verification
+# BATCH_F3_REDIS_ACTIVATION_AR
+???????: 2026-05-20
+??????: Fully closed
 
-التاريخ: 2026-05-19
-الحالة: Fully closed
+## ??????
+?? ????? ????? Redis ??? ??????? ????? ??? ?? rate limiting ?notification queue? ?? ?????? ????? ?? `/api/health`.
 
-## الهدف
-تأكيد تفعيل Redis فعليًا في الإنتاج لمسارين:
-1) Rate limiting
-2) Notification queue (BullMQ)
-
-## فحص الكود (Code Verification)
-- `server/src/config/redis.ts`
-  - `isRedisConfigured()` يعتمد على وجود `REDIS_URL`.
-  - `getRedisHealth()` ينفذ `PING` ويعيد حالة readiness موثقة.
-- `server/src/middleware/rateLimiters.ts`
-  - عند توفر Redis يتم استخدام `RedisStore` مع `express-rate-limit`.
-- `server/src/queues/notificationQueue.ts`
-  - تفعيل Queue/Worker مشروط بـ `NOTIFICATION_QUEUE_ENABLED && isRedisConfigured()`.
-
-## التحقق الإنتاجي (Health Before/After)
-> تم التحقق من `/api/health` على الإنتاج:
-
+## ?????? ?????????
+- Endpoint: `https://almeaacodax-k2ux.onrender.com/api/health`
+- ????????? (?????):
 ```json
 {
   "status": "ok",
   "ready": true,
-  "database": "connected",
   "redis": { "rateLimit": "ready", "queue": "ready" },
-  "checks": { "database": "pass", "redisRateLimit": "pass", "redisQueue": "pass" },
-  "summary": { "failedCriticalChecks": 0, "warnings": 0, "redisConfiguredForScale": true },
-  "commit": "33e0b6a58fbf"
+  "checks": { "redisRateLimit": "pass", "redisQueue": "pass" },
+  "summary": { "redisConfiguredForScale": true }
 }
 ```
+- commit ??? health ??? ??????: `5ea57d5dbae0`
 
-- Before (historical pending state in plan): Redis كان متوقعًا `memory/not_ready` عند غياب `REDIS_URL`.
-- After (current live state): Redis أصبح `ready/ready` للمسارين.
+## ???? ????? (F3 scope)
+- `server/src/config/redis.ts`:
+  - `isRedisConfigured()` ????? ??? `REDIS_URL`.
+  - `getRedisHealth(...)` ???? readiness probe.
+- `server/src/middleware/rateLimiters.ts`:
+  - ?????? `RedisStore` ??? ???? Redis.
+- `server/src/queues/notificationQueue.ts`:
+  - ????? BullMQ worker ??? `NOTIFICATION_QUEUE_ENABLED=true` ????? Redis.
 
-## نتائج الفحوص
-- `npm run smoke:health-readiness` => PASS
-- `npm run smoke:notifications` => PASS
-- `npm run smoke:production-hardening` => PASS
+## ?????? ???????
+- `npm run smoke:health-readiness` PASS
+- `npm run smoke:notifications` PASS
+- `npm run smoke:production-hardening` PASS
 
-## القرار
-- **BATCH F3 مغلق نهائيًا**.
-- Redis مفعل فعليًا في الإنتاج ومتحقق عبر health + smoke.
+## ???????
+- F3 (Redis Activation + Verification): **Fully closed**.
