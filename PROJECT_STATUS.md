@@ -655,3 +655,17 @@
   - `smoke:health-readiness` PASS
 - Report:
   - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-9 Scale Verification
+- Status: `Blocked (infra + token prerequisites)`
+- Current health is ready (`ready=true`, redis ready), and smokes:
+  - `smoke:health-readiness` PASS
+  - `smoke:production-hardening` PASS
+  - `smoke:operational` FAIL (missing `SMOKE_ADMIN_TOKEN`)
+- Existing load reports show targets not met at 500/1000 concurrency (high errors/timeouts, p99 above target).
+- Required before closure:
+  - Atlas M2 + Render Starter confirmation
+  - valid `SMOKE_ADMIN_TOKEN`
+  - rerun target load verification.
+- Report:
+  - `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`

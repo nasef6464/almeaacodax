@@ -964,3 +964,5 @@
 | FIX-6 | WhatsApp OTP real sending | Blocked | 2026-05-21 | FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md | live OTP start returns provider not configured; requires whatsapp_cloud/http env setup |
 
 | FIX-7 | Subscription flow completion | Blocked | 2026-05-21 | FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md | recurring subscription endpoints/gateway flow are not implemented yet |
+
+| FIX-9 | Scale verification | Blocked | 2026-05-21 | FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md | load targets unmet in existing 500/1000 reports + missing SMOKE_ADMIN_TOKEN + infra upgrade prerequisite |
