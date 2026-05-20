@@ -480,3 +480,18 @@
   - `npm run build` PASS
 - Final closure report:
   - `docs/AI_INTEGRATIONS_ADMIN_BRIDGE_CLOSURE_2026-05-20_AR.md`
+
+## Update 2026-05-20 - BATCH F2 Firebase Final Deletion Closure
+- Batch: `BATCH F2 - Firebase Complete Deletion`
+- Final status: `Fully closed`
+- Verification summary:
+  - `services/firebase.ts` missing
+  - `services/firebaseSync.ts` missing
+  - `firebase-applet-config.json` missing
+  - no runtime firebase references in code search
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:runtime-source` PASS
+- Report:
+  - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`

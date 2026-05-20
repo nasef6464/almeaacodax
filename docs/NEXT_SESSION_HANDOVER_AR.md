@@ -842,3 +842,11 @@
   - `docs/AI_INTEGRATIONS_ADMIN_BRIDGE_CLOSURE_2026-05-20_AR.md`
 - Next session start command:
   - `npm run smoke:ai-admin-closure`
+
+## 2026-05-20 Update - BATCH F2 (Firebase Final Deletion) Closed
+- Status: Fully closed.
+- Evidence:
+  - Firebase runtime files are absent (`services/firebase.ts`, `services/firebaseSync.ts`, `firebase-applet-config.json`).
+  - Build/typecheck/runtime-source smoke passed.
+- Report:
+  - `BATCH_F2_FIREBASE_FINAL_DELETION_AR.md`
