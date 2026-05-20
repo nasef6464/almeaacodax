@@ -240,6 +240,21 @@ const createExternalPlatform = (index: number): ExternalPlatform => ({
   note: "",
 });
 
+const aiExternalTemplates: Array<{
+  id: string;
+  name: string;
+  baseUrl: string;
+  note: string;
+}> = [
+  { id: "ai-gemini", name: "AI Gemini Free", baseUrl: "", note: "model=gemini-1.5-flash" },
+  { id: "ai-openrouter", name: "AI OpenRouter Free", baseUrl: "https://openrouter.ai/api/v1", note: "model=qwen/qwen3-235b-a22b:free" },
+  { id: "ai-qwen", name: "AI Qwen Free", baseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1", note: "model=qwen-plus" },
+  { id: "ai-deepseek", name: "AI DeepSeek", baseUrl: "https://api.deepseek.com", note: "model=deepseek-chat" },
+  { id: "ai-openai", name: "AI OpenAI", baseUrl: "https://api.openai.com/v1", note: "model=gpt-4.1-mini" },
+  { id: "ai-ollama", name: "AI Ollama Local", baseUrl: "http://127.0.0.1:11434", note: "model=gemma3:4b" },
+  { id: "ai-lmstudio", name: "AI LM Studio Local", baseUrl: "http://127.0.0.1:1234/v1", note: "model=local-model" },
+];
+
 const providerLabels: Array<{ key: keyof IntegrationSettings["providers"]; label: string }> = [
   { key: "google", label: "Google Login" },
   { key: "facebook", label: "Facebook Login" },
@@ -477,6 +492,34 @@ export const PlatformIntegrationsManager: React.FC = () => {
       ...prev,
       externalPlatforms: [...prev.externalPlatforms, createExternalPlatform(prev.externalPlatforms.length)],
     }));
+  };
+
+  const addExternalTemplate = (templateId: string) => {
+    const template = aiExternalTemplates.find((item) => item.id === templateId);
+    if (!template) return;
+
+    setSettings((prev) => {
+      if (prev.externalPlatforms.some((item) => item.id.trim().toLowerCase() === template.id)) {
+        setStatusType("error");
+        setStatusMessage(`المعرف ${template.id} موجود بالفعل.`);
+        return prev;
+      }
+      return {
+        ...prev,
+        externalPlatforms: [
+          ...prev.externalPlatforms,
+          {
+            ...createExternalPlatform(prev.externalPlatforms.length),
+            id: template.id,
+            name: template.name,
+            enabled: true,
+            platformType: "custom",
+            baseUrl: template.baseUrl,
+            note: template.note,
+          },
+        ],
+      };
+    });
   };
 
   const removeExternal = (id: string) => {
@@ -1078,6 +1121,18 @@ export const PlatformIntegrationsManager: React.FC = () => {
           مفاتيح الذكاء الاصطناعي تُدار من هنا عبر IDs ثابتة:
           <span className="mt-1 block font-mono">ai-gemini, ai-openrouter, ai-deepseek, ai-qwen, ai-openai, ai-ollama, ai-lmstudio</span>
           ثم تتابع النتيجة وتختبر المزود من تبويب إدارة المساعد.
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {aiExternalTemplates.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => addExternalTemplate(item.id)}
+              className="inline-flex items-center gap-1 rounded-lg border border-indigo-200 bg-white px-2.5 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
+            >
+              <Plus size={12} />
+              {item.id}
+            </button>
+          ))}
         </div>
         <div className="mt-4 space-y-3">
           {settings.externalPlatforms.map((platform) => (
