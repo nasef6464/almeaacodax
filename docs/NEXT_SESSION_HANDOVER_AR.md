@@ -888,3 +888,8 @@
 ## Update 2026-05-21 - FIX-2 Fully Closed
 - تم تأكيد أن الشهادات تستخدم QR محليًا (`qrcode.react` / `QRCodeSVG`) بدون خدمة QR خارجية.
 - PASS: `typecheck`, `build`, `smoke:results`.
+
+## Update 2026-05-21 - FIX-1 Fully Closed
+- تم إغلاق FIX-1 نهائيًا.
+- `/api/health` يؤكد Redis جاهز في limiter + queue.
+- PASS: `smoke:health-readiness` و `smoke:production-hardening`.

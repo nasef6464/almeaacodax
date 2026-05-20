@@ -552,3 +552,18 @@
   - `npm run smoke:results` PASS
 - Report:
   - `FIX_2_LOCAL_QR_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-1 Redis Activation Revalidation
+- Batch: `FIX-1 - Redis activation verification`
+- Status: `Fully closed`
+- Production health (`/api/health`) confirms:
+  - `ready=true`
+  - `redis.rateLimit=ready`
+  - `redis.queue=ready`
+  - `redisConfiguredForScale=true`
+  - live commit `05f011e1944e`
+- Checks:
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+- Report:
+  - `FIX_1_REDIS_ACTIVATION_REVALIDATION_2026-05-21_AR.md`

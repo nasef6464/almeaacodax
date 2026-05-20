@@ -950,3 +950,5 @@
 | FIX-4R | ReviewSession image display revalidation | Fully closed | 2026-05-21 | FIX_4_REVIEW_IMAGES_REVALIDATION_2026-05-21_AR.md | review image rendering + API payload verified, smoke learning/results PASS |
 
 | FIX-2R | Certificate local QR revalidation | Fully closed | 2026-05-21 | FIX_2_LOCAL_QR_REVALIDATION_2026-05-21_AR.md | QRCodeSVG local rendering verified, external QR dependency removed |
+
+| FIX-1R | Redis activation revalidation | Fully closed | 2026-05-21 | FIX_1_REDIS_ACTIVATION_REVALIDATION_2026-05-21_AR.md | health shows redis limiter/queue ready + hardening/readiness smoke PASS |
