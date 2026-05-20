@@ -23,6 +23,7 @@
 - `npm run smoke:integrations-runtime`
 - `npm run smoke:monitoring`
 - `npm run smoke:admin-tabs`
+- `npm run smoke:ai-admin-closure`
 - `npm run typecheck`
 - `npm --prefix server run build`
 
