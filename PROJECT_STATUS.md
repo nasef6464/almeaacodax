@@ -669,3 +669,34 @@
   - rerun target load verification.
 - Report:
   - `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-5 Tap Integration
+- Status: `Blocked (real Tap integration not implemented)`
+- Deep audit result:
+  - Payment hardening contracts are passing.
+  - Current implementation is request/review + generic webhook hardening, not a live Tap charge flow.
+  - Missing direct Tap charge initiation and sandbox E2E proof.
+- Checks:
+  - `smoke:payment-providers` PASS
+  - `smoke:payment-tampering` PASS
+  - `smoke:payment-package` PASS
+- Production health: ready=true.
+- Report:
+  - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-5 Tap Payment Integration
+- Batch: `FIX-5 - Tap Payment Integration`
+- Final status: `Blocked (owner keys required + live Tap flow not wired yet)`
+- Current verified state:
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:payment-package` PASS
+  - Production health: `https://almeaacodax-k2ux.onrender.com/api/health` => `ready=true`
+- Gap to close FIX-5:
+  - Required Render env vars are not configured for real Tap wiring:
+    - `TAP_API_KEY`
+    - `TAP_SECRET_KEY`
+    - `TAP_WEBHOOK_SECRET`
+  - Missing confirmed live charge-initiation + webhook capture proof + sandbox transaction ID.
+- Report:
+  - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`

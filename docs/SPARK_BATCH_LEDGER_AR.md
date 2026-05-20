@@ -966,3 +966,17 @@
 | FIX-7 | Subscription flow completion | Blocked | 2026-05-21 | FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md | recurring subscription endpoints/gateway flow are not implemented yet |
 
 | FIX-9 | Scale verification | Blocked | 2026-05-21 | FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md | load targets unmet in existing 500/1000 reports + missing SMOKE_ADMIN_TOKEN + infra upgrade prerequisite |
+
+| FIX-5 | Tap payments integration | Blocked | 2026-05-21 | FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md | payment hardening PASS but real Tap charge initiation/webhook E2E not implemented yet |
+
+## Update 2026-05-21 — FIX-5 Tap Payment Integration
+- Status: `Blocked (Owner action required)`
+- Evidence:
+  - `smoke:payment-providers` PASS
+  - `smoke:payment-tampering` PASS
+  - `smoke:payment-package` PASS
+  - Production health ready=true
+- Missing to close:
+  - Render env vars: `TAP_API_KEY`, `TAP_SECRET_KEY`, `TAP_WEBHOOK_SECRET`
+  - Live Tap charge + webhook capture proof + sandbox transaction id
+- Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`

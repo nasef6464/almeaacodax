@@ -930,3 +930,22 @@
 - فحوص الجاهزية الأساسية PASS، لكن التحقق النهائي للأحمال لا يزال محجوبًا.
 - تقارير 500/1000 concurrent الحالية لا تحقق أهداف p99 ونسبة الأخطاء.
 - يلزم تأكيد ترقية Atlas/Render + توفير SMOKE_ADMIN_TOKEN ثم إعادة الاختبارات لإغلاق FIX-9.
+
+## Update 2026-05-21 - FIX-5 Blocked
+- فحوص حماية الدفع الحالية PASS، لكن تكامل Tap الحقيقي (initiate charge + sandbox proof) غير منفذ بعد.
+- لا يمكن إعلان الإغلاق النهائي قبل تنفيذ ربط Tap الفعلي واختبار sandbox transaction.
+
+## Update 2026-05-21 — FIX-5 Tap Payment Integration
+- Batch status: `Blocked`
+- Completed checks this run:
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:payment-package` PASS
+  - Production health: ready=true
+- Remaining owner action:
+  - Add Tap keys in Render env: `TAP_API_KEY`, `TAP_SECRET_KEY`, `TAP_WEBHOOK_SECRET`.
+- Continuation after keys:
+  1. Wire real Tap charge initiate endpoint.
+  2. Verify webhook signature/capture.
+  3. Record sandbox transaction ID.
+  4. Re-run payment smokes and close as Fully closed.
