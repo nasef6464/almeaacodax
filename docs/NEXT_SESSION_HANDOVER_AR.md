@@ -1010,3 +1010,7 @@
 ## Update 2026-05-21 — FEATURE-7 Leaderboard
 - Current status: `Blocked`.
 - Missing: leaderboard API + dashboard widget + role-scoped ranking views.
+
+## Update 2026-05-21 — FEATURE-4 Full-Text Search
+- Current status: `Blocked`.
+- Missing: unified API `/api/search` + search modal + Cmd/Ctrl+K shortcut.

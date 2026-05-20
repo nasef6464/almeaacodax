@@ -1052,3 +1052,9 @@
 - Reason: feature not implemented yet (no API + no explicit UI/widget).
 - Health/front strict smokes PASS.
 - Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-4 Full-Text Search
+- Status: `Blocked`
+- Reason: unified search API + modal/shortcut not implemented.
+- Health/front strict checks PASS.
+- Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`

@@ -824,3 +824,16 @@
   - `smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-4 Full-Text Search
+- Batch: `FEATURE-4 - Full-Text Search`
+- Final status: `Blocked (not implemented)`
+- Audit result:
+  - No unified `/api/search` endpoint with scope/type controls.
+  - No keyboard search modal (`Cmd/Ctrl+K`) with grouped results.
+  - Existing searches are fragmented per module.
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`
