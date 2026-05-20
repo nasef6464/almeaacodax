@@ -15,11 +15,13 @@ import { SkillModel } from "../models/Skill.js";
 import { SubjectModel } from "../models/Subject.js";
 import { SectionModel } from "../models/Section.js";
 import { TopicModel } from "../models/Topic.js";
+import { ReviewCardModel } from "../models/ReviewCard.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
+import { sm2 } from "../services/spacedRepetition.js";
 
 const questionBaseSchema = z.object({
   id: z.string().optional(),
@@ -891,6 +893,56 @@ const updateSkillProgressFromQuestionAttempt = async (attempt: any, userId: stri
       );
     }),
   );
+};
+
+const qualityFromAttempt = (selectedOptionIndex?: number, isCorrect?: boolean) => {
+  if (selectedOptionIndex === undefined || selectedOptionIndex < 0) return 1;
+  return isCorrect ? 4 : 2;
+};
+
+const upsertReviewCardsFromQuestionReview = async (args: {
+  userId: string;
+  questionReview: Array<{
+    questionId: string;
+    selectedOptionIndex?: number;
+    isCorrect?: boolean;
+  }>;
+  questionById: Map<string, any>;
+}) => {
+  const { userId, questionReview, questionById } = args;
+  const operations = questionReview
+    .map((item) => {
+      const question = questionById.get(String(item.questionId || ""));
+      if (!question) return null;
+      const skillId = Array.isArray(question.skillIds) && question.skillIds.length > 0 ? String(question.skillIds[0]) : "";
+      const quality = qualityFromAttempt(item.selectedOptionIndex, item.isCorrect);
+      const previous = sm2({ easeFactor: 2.5, interval: 1, repetitions: 0 }, quality);
+      return {
+        updateOne: {
+          filter: { userId, questionId: String(item.questionId || "") },
+          update: {
+            $setOnInsert: {
+              userId,
+              questionId: String(item.questionId || ""),
+              skillId,
+            },
+            $set: {
+              skillId,
+              easeFactor: previous.easeFactor,
+              interval: previous.interval,
+              repetitions: previous.repetitions,
+              nextReviewDate: previous.nextReviewDate,
+              lastQuality: quality,
+            },
+          },
+          upsert: true,
+        },
+      };
+    })
+    .filter(Boolean);
+
+  if (operations.length === 0) return;
+  await ReviewCardModel.bulkWrite(operations as any[], { ordered: false });
 };
 
 const matchesManagedScope = (
@@ -2142,6 +2194,16 @@ quizRouter.post(
     }
 
     await updateSkillProgressFromResult(result, req.authUser!.id);
+    await upsertReviewCardsFromQuestionReview({
+      userId: req.authUser!.id,
+      questionReview: questionReview.map((item) => ({
+        questionId: String(item.questionId || ""),
+        selectedOptionIndex:
+          typeof item.selectedOptionIndex === "number" ? Number(item.selectedOptionIndex) : undefined,
+        isCorrect: Boolean(item.isCorrect),
+      })),
+      questionById,
+    });
     clearQuizResultsCache();
     return res.status(StatusCodes.CREATED).json(result);
   }),

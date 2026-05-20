@@ -1302,6 +1302,21 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    const [reviewStats, setReviewStats] = useState<{ dueToday: number; dueThisWeek: number; totalCards: number } | null>(null);
+
+    useEffect(() => {
+        let mounted = true;
+        api.getReviewStats()
+            .then((stats) => {
+                if (mounted) setReviewStats(stats);
+            })
+            .catch((error) => {
+                console.warn('Review stats unavailable:', error);
+            });
+        return () => {
+            mounted = false;
+        };
+    }, []);
     
     // Debugging logs as requested
     // Get full course objects for enrolled courses
@@ -1431,6 +1446,25 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 <span className="md:hidden">حجز حصة</span>
             </Link>
         </div>
+
+        <Card className="p-5 border border-indigo-100 bg-gradient-to-l from-indigo-50 to-white">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="text-right">
+                    <h3 className="text-lg font-bold text-gray-900">المراجعة اليومية</h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                        {reviewStats
+                            ? `لديك ${reviewStats.dueToday} سؤال للمراجعة اليوم، و${reviewStats.dueThisWeek} خلال الأسبوع.`
+                            : 'نعمل على تحميل حالة المراجعة اليومية الآن...'}
+                    </p>
+                </div>
+                <Link
+                    to="/review"
+                    className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700"
+                >
+                    ابدأ المراجعة
+                </Link>
+            </div>
+        </Card>
 
         <ParentFollowUpPanel setActiveTab={setActiveTab} />
 

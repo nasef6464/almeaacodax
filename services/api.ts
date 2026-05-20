@@ -402,6 +402,12 @@ export const api = {
     }),
   getCurrentUser: () =>
     request<{ user: unknown }>("/auth/me"),
+  updateMyProfile: (payload: { name?: string; avatar?: string }, token?: string | null) =>
+    request<{ user: unknown }>("/auth/me/profile", {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[] }, token?: string | null) =>
     request<{ user: unknown }>("/auth/me/preferences", {
       method: "PATCH",
@@ -1475,6 +1481,29 @@ export const api = {
     request<{ certificates: any[] }>("/certificates/mine", { token }),
   getCertificateByCode: (verificationCode: string) =>
     request<any>(`/certificates/${encodeURIComponent(verificationCode)}`),
+  getReviewDue: (limit = 20, token?: string | null) =>
+    request<{ dueCount: number; items: any[] }>(withQuery("/review/due", { limit }), { token }),
+  answerReviewCard: (cardId: string, quality: number, token?: string | null) =>
+    request<{ success: boolean; card: any }>(`/review/${encodeURIComponent(cardId)}/answer`, {
+      method: "POST",
+      body: { quality },
+      token,
+    }),
+  getReviewStats: (token?: string | null) =>
+    request<{ dueToday: number; dueThisWeek: number; totalCards: number }>("/review/stats", { token }),
+  getDiscussions: (entityType: "lesson" | "quiz" | "course", entityId: string, token?: string | null) =>
+    request<{ threads: any[] }>(`/discussions/${entityType}/${encodeURIComponent(entityId)}`, { token }),
+  createDiscussion: (
+    entityType: "lesson" | "quiz" | "course",
+    entityId: string,
+    payload: { title: string; body: string },
+    token?: string | null,
+  ) =>
+    request<any>(`/discussions/${entityType}/${encodeURIComponent(entityId)}`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
 };
 
 export { API_BASE_URL };
