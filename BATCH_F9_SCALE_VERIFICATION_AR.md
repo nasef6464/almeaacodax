@@ -25,3 +25,15 @@
    - `npm run smoke:health-readiness`
    - `npm run smoke:production-hardening`
 4. توثيق p99 قبل/بعد وإغلاق F9 رسميًا.
+
+## تحديث 2026-05-20 (متابعة تلقائية)
+- محاولة تشغيل `smoke:operational` بنمط `SMOKE_ALLOW_PASSWORD_LOGIN=true` فشلت بسبب اعتماد الأدمن:
+  - `POST /auth/login` => 401 (`Invalid email or password`)
+- فحوص إضافية ناجحة:
+  - `npm run smoke:production-hardening` => PASS (5/5)
+  - `npm run smoke:frontend:strict` => PASS (26/26)
+
+### الحالة الحالية الدقيقة
+- الكود جاهز.
+- الإنتاج جاهز تعاقديًا/أمنيًا.
+- المتبقي لإغلاق F9 نهائيًا: اعتماد أدمن صالح (SMOKE_ADMIN_TOKEN أو كلمة مرور صحيحة) + ترقية البنية إذا سنجري حمل 500/1000 كامل.
