@@ -446,3 +446,9 @@
   4) F9 Scale verification (after infra upgrade)
   5) F10 Final launch declaration
 - Payments batch (F4) stays deferred per owner instruction.
+
+## Update 2026-05-20 - V10-LC (Free Tier Launch Candidate)
+- Current release state: **V10-LC** approved on free infrastructure.
+- Quality gates: closed by smoke evidence (operational/hardening/frontend/security/learning/results).
+- F9 remains deferred pending infra upgrades (Atlas M2 + Render Starter).
+- Launch stance: production-operational ready on free tier, scale certification pending.
