@@ -824,3 +824,21 @@
   1) الحفاظ على الاستقرار التشغيلي الحالي.
   2) تنفيذ أي تحسينات دون كسر نتائج smoke الحرجة.
   3) عند الترقية فقط: تنفيذ F9 ثم إصدار إعلان 100% Scale Ready.
+
+## 2026-05-20 Update - AI Integrations/Admin Bridge (Fully Closed)
+- Status: Fully closed.
+- New closure smoke command:
+  - `npm run smoke:ai-admin-closure`
+- Included checks:
+  - `smoke:ai-config-bridge`
+  - `smoke:integrations-runtime`
+  - `smoke:monitoring`
+  - `smoke:admin-tabs`
+- Key operational outcome:
+  - AI keys are managed from Integrations.
+  - AI Assistant tab is monitor/test focused.
+  - Routing source and provider source are visible in admin UI.
+- Reference report:
+  - `docs/AI_INTEGRATIONS_ADMIN_BRIDGE_CLOSURE_2026-05-20_AR.md`
+- Next session start command:
+  - `npm run smoke:ai-admin-closure`

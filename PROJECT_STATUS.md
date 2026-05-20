@@ -457,3 +457,26 @@
 - Re-validated final critical smoke suite on free tier: PASS.
 - Only remaining blocker for full operational rerun in this session: admin auth secret (`SMOKE_ADMIN_TOKEN` or valid admin login password).
 - Added report: `FINAL_FREE_TIER_VALIDATION_2026-05-20_AR.md`.
+
+## Update 2026-05-20 - AI Integrations/Admin Bridge Full Closure
+- Batch: `AI Integrations + AI Assistant Admin Bridge`
+- Final status: `Fully closed (Code + Smoke + Handover)`
+- Delivered:
+  - Clear responsibility split between `PlatformIntegrationsManager` (config) and `AiAssistantManager` (observe/test).
+  - Two-way navigation buttons between integrations and AI assistant tabs.
+  - One-click AI templates (`ai-gemini`, `ai-openrouter`, `ai-qwen`, `ai-deepseek`, `ai-openai`, `ai-ollama`, `ai-lmstudio`).
+  - One-click free AI stack setup + ai-global routing presets.
+  - AI config warnings + auto-fix action for routing and missing keys.
+  - UI + backend guards for external platform IDs (non-empty + unique).
+  - Provider source visibility in AI status (`admin/env/fallback`) + provider-order source (`ai-global` vs `env`).
+  - New smoke contract: `smoke:ai-config-bridge`.
+  - New one-command closure smoke: `smoke:ai-admin-closure`.
+- Closure checks:
+  - `npm run smoke:ai-admin-closure` PASS
+  - `npm run smoke:ai-config-bridge` PASS
+  - `npm run smoke:integrations-runtime` PASS
+  - `npm run smoke:monitoring` PASS
+  - `npm run smoke:admin-tabs` PASS
+  - `npm run build` PASS
+- Final closure report:
+  - `docs/AI_INTEGRATIONS_ADMIN_BRIDGE_CLOSURE_2026-05-20_AR.md`
