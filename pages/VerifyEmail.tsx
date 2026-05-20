@@ -44,7 +44,7 @@ const VerifyEmail: React.FC = () => {
     setMessage('');
     setIsResending(true);
     try {
-      const response = await api.resendEmailVerification(user?.token);
+      const response = await api.resendEmailVerification();
       setMessage(response.message || 'تم إرسال رمز تحقق جديد.');
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'سجل الدخول أولا لإعادة إرسال رمز التحقق.');
@@ -100,7 +100,7 @@ const VerifyEmail: React.FC = () => {
         <button
           type="button"
           onClick={resend}
-          disabled={isResending || !user?.token}
+          disabled={isResending || !user}
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isResending ? <Loader2 size={18} className="animate-spin" /> : null}

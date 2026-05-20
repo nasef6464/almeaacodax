@@ -100,7 +100,7 @@ const createEmptyTestimonial = (): HomepageTestimonial => ({
 });
 
 export const HomepageManager: React.FC = () => {
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
     const { paths, courses, lessons, subjects } = useStore();
     const [settings, setSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [isLoading, setIsLoading] = useState(true);
@@ -281,9 +281,6 @@ export const HomepageManager: React.FC = () => {
         setSuccess(null);
 
         try {
-            if (!user?.token) {
-                throw new Error('Authentication required');
-            }
             const normalizedTestimonials = settings.testimonials
                 .filter((item) => item.name.trim().length > 0 && item.text.trim().length > 0)
                 .map((item) => ({
@@ -299,7 +296,7 @@ export const HomepageManager: React.FC = () => {
                 testimonials: normalizedTestimonials,
             };
 
-            const response = await api.updateHomepageSettings(payload, user.token);
+            const response = await api.updateHomepageSettings(payload);
             setSettings(mergeHomepageSettings(response as HomepageSettings));
             setSuccess('تم حفظ إعدادات الصفحة الرئيسية بنجاح.');
         } catch (saveError) {

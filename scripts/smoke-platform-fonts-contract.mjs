@@ -12,7 +12,7 @@ const checks = [
   ['services/api.ts', ['getPlatformFontSettings', 'updatePlatformFontSettings']],
   ['utils/platformFonts.ts', ['DEFAULT_PLATFORM_FONT_SETTINGS', 'applyPlatformFontSettings', '--platform-font-body', '--platform-font-navigation', '--platform-font-button']],
   ['components/PlatformFontBootstrap.tsx', ['getPlatformFontSettings', 'PLATFORM_FONT_SETTINGS_UPDATED']],
-  ['dashboards/admin/PlatformFontsManager.tsx', ['FONT_TARGETS', 'إعدادات الخطوط المتقدمة', 'مكتبة الخطوط الجاهزة', 'updatePlatformFontSettings(settings, user.token)', 'رفع خط مخصص', '500KB']],
+  ['dashboards/admin/PlatformFontsManager.tsx', ['FONT_TARGETS', 'إعدادات الخطوط المتقدمة', 'مكتبة الخطوط الجاهزة', 'updatePlatformFontSettings(settings)', 'رفع خط مخصص', '500KB']],
   ['dashboards/admin/AdminDashboard.tsx', ['PlatformFontsManager', 'platform-fonts', 'Type size={20}']],
   ['index.html', ['--platform-font-body', '--platform-font-heading', 'var(--platform-font-body)', 'platform-heading-font']],
 ];
@@ -27,3 +27,4 @@ for (const [file, needles] of checks) {
 }
 
 console.log('Platform fonts contract passed: advanced admin-managed global fonts are wired end to end.');
+

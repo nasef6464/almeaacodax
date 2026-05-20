@@ -188,7 +188,7 @@ export const PlatformFontsManager: React.FC = () => {
         setError(null);
         setSuccess(null);
 
-        if (!user?.token) {
+        if (!user) {
             setError('انتهت جلسة الإدارة. سجل الدخول كمدير ثم أعد المحاولة.');
             logout();
             return;
@@ -196,7 +196,7 @@ export const PlatformFontsManager: React.FC = () => {
 
         setIsSaving(true);
         try {
-            const response = await api.updatePlatformFontSettings(settings, user.token);
+            const response = await api.updatePlatformFontSettings(settings);
             const savedSettings = normalizePlatformFontSettings(response as PlatformFontSettings);
             setSettings(savedSettings);
             applyPlatformFontSettings(savedSettings);
