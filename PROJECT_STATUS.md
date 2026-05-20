@@ -432,3 +432,17 @@
   - Backend health `https://almeaacodax-k2ux.onrender.com/api/health` => 200 (`ready=true`, commit `04c5de0a2ff4`)
 - Report:
   - `BATCH_FINAL_OPERATIONAL_AND_PLATFORM_CLOSURE_2026-05-20_AR.md`
+
+## Update 2026-05-20 - Session Continuation (Codex 5.3)
+- Current state: Operational closure remains PASS and stable.
+- Verified baseline for continuation:
+  - smoke:operational = PASS (71/71)
+  - smoke:production-hardening = PASS
+  - smoke:frontend:strict = PASS
+- Open product work queue (owner-approved sequence):
+  1) F6 Discussion Forum
+  2) F7 Weakness Engine
+  3) F8 Spaced Repetition
+  4) F9 Scale verification (after infra upgrade)
+  5) F10 Final launch declaration
+- Payments batch (F4) stays deferred per owner instruction.
