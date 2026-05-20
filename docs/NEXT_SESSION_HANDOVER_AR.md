@@ -899,3 +899,9 @@
 - `smoke:operational` فشل 401 (admin login invalid).
 - `resolve-smoke-admin-token` فشل بسبب غياب بيانات اعتماد صالحة.
 - المتطلب الحاسم قبل أي إعادة محاولة: توفير `SMOKE_ADMIN_TOKEN` صالح أو بيانات إدمن إنتاجية صحيحة.
+
+## Update 2026-05-21 - BATCH-F1 Fully Closed
+- تم إغلاق BATCH-F1 نهائيًا.
+- BATCH_40: PASS كامل لجميع فحوص الرحلة المطلوبة + health ready=true.
+- BATCH_27C: PASS runtime monitoring + دليل event إنتاجي موثق سابقًا.
+- التقرير: `BATCH_F1_CLOSURE_REPORT_2026-05-21_AR.md`.

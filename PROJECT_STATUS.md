@@ -578,3 +578,21 @@
   - Requires valid `SMOKE_ADMIN_TOKEN` OR valid production admin credentials to generate it.
 - Report:
   - `FIX_3_FINAL_BLOCKER_VERIFICATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - BATCH-F1 Backlog Closure (BATCH_40 + BATCH_27C)
+- Status: `Fully closed`
+- BATCH_40 revalidation smokes:
+  - `smoke:homepage-hero` PASS
+  - `smoke:announcement-ads` PASS
+  - `smoke:reports-role` PASS
+  - `smoke:dashboards-phase11` PASS
+  - `smoke:learning-quiz` PASS
+  - `smoke:student-journey` PASS
+  - `smoke:quiz-access` PASS
+  - `smoke:results` PASS
+- Production health: `status=ok`, `ready=true` on Render health endpoint.
+- BATCH_27C monitoring check:
+  - `smoke:sentry-runtime` PASS
+  - live evidence already verified in production record (`eventId=39a8881844724be6844dd2f7fd63c88c`).
+- Report:
+  - `BATCH_F1_CLOSURE_REPORT_2026-05-21_AR.md`
