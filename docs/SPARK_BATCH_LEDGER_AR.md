@@ -952,3 +952,5 @@
 | FIX-2R | Certificate local QR revalidation | Fully closed | 2026-05-21 | FIX_2_LOCAL_QR_REVALIDATION_2026-05-21_AR.md | QRCodeSVG local rendering verified, external QR dependency removed |
 
 | FIX-1R | Redis activation revalidation | Fully closed | 2026-05-21 | FIX_1_REDIS_ACTIVATION_REVALIDATION_2026-05-21_AR.md | health shows redis limiter/queue ready + hardening/readiness smoke PASS |
+
+| FIX-3F | Operational/sentry final blocker verification | Blocked | 2026-05-21 | FIX_3_FINAL_BLOCKER_VERIFICATION_2026-05-21_AR.md | password-login fallback failed with 401; valid SMOKE_ADMIN_TOKEN or correct admin creds required |

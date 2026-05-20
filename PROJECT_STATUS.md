@@ -567,3 +567,14 @@
   - `npm run smoke:production-hardening` PASS
 - Report:
   - `FIX_1_REDIS_ACTIVATION_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-3 Final Blocker Verification
+- Batch: `FIX-3 - Operational + Sentry live proof`
+- Status: `Blocked (credentials/token)`
+- Latest execution:
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true npm run smoke:operational` => FAIL (`401 Invalid email or password` for admin login)
+  - `node scripts/resolve-smoke-admin-token.mjs` => FAIL (missing valid admin credentials in env)
+- Conclusion:
+  - Requires valid `SMOKE_ADMIN_TOKEN` OR valid production admin credentials to generate it.
+- Report:
+  - `FIX_3_FINAL_BLOCKER_VERIFICATION_2026-05-21_AR.md`

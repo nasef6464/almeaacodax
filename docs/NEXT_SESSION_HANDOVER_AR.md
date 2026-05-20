@@ -893,3 +893,9 @@
 - تم إغلاق FIX-1 نهائيًا.
 - `/api/health` يؤكد Redis جاهز في limiter + queue.
 - PASS: `smoke:health-readiness` و `smoke:production-hardening`.
+
+## Update 2026-05-21 - FIX-3 remains Blocked
+- تم تنفيذ محاولة إغلاق جديدة لـ FIX-3.
+- `smoke:operational` فشل 401 (admin login invalid).
+- `resolve-smoke-admin-token` فشل بسبب غياب بيانات اعتماد صالحة.
+- المتطلب الحاسم قبل أي إعادة محاولة: توفير `SMOKE_ADMIN_TOKEN` صالح أو بيانات إدمن إنتاجية صحيحة.
