@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Save, User, Mail, Phone, CreditCard, School, ChevronDown, ChevronUp, Eye, EyeOff, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
+import { api } from '../services/api';
 
 const Profile: React.FC = () => {
     const user = useStore((state) => state.user);
@@ -31,6 +32,9 @@ const Profile: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [certificates, setCertificates] = useState<any[]>([]);
+    const [certificatesLoading, setCertificatesLoading] = useState(false);
+    const [certificatesError, setCertificatesError] = useState<string | null>(null);
     
     // Animation state for progress bar
     const [animatedCompletionRate, setAnimatedCompletionRate] = useState(0);
@@ -62,6 +66,30 @@ const Profile: React.FC = () => {
         });
     }, [firstName, lastName, user]);
 
+    useEffect(() => {
+        let mounted = true;
+        setCertificatesLoading(true);
+        setCertificatesError(null);
+        api.getMyCertificates()
+            .then((response) => {
+                if (!mounted) return;
+                const rows = Array.isArray((response as any)?.certificates) ? (response as any).certificates : [];
+                setCertificates(rows);
+            })
+            .catch(() => {
+                if (!mounted) return;
+                setCertificatesError('تعذر تحميل الشهادات الآن.');
+            })
+            .finally(() => {
+                if (!mounted) return;
+                setCertificatesLoading(false);
+            });
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
     // Handlers
     const handleImageClick = () => {
         fileInputRef.current?.click();
@@ -70,9 +98,14 @@ const Profile: React.FC = () => {
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Create local preview URL
-            const imageUrl = URL.createObjectURL(file);
-            setAvatar(imageUrl);
+            const reader = new FileReader();
+            reader.onload = () => {
+                const result = typeof reader.result === 'string' ? reader.result : '';
+                if (result) {
+                    setAvatar(result);
+                }
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -81,14 +114,32 @@ const Profile: React.FC = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsSaving(true);
-        // Simulate API Call
-        setTimeout(() => {
+        setSaveSuccess(false);
+        try {
+            const fullName = [formData.firstName.trim(), formData.lastName.trim()].filter(Boolean).join(' ').trim();
+            const response = await api.updateMyProfile({
+                name: fullName || user?.name || '',
+                avatar,
+            });
+            const updatedUser = (response as any)?.user || {};
+            useStore.setState((state) => ({
+                user: {
+                    ...state.user,
+                    ...updatedUser,
+                    name: String((updatedUser as any)?.name || fullName || state.user.name),
+                    avatar: String((updatedUser as any)?.avatar || avatar),
+                },
+            }));
             setIsSaving(false);
             setSaveSuccess(true);
             setTimeout(() => setSaveSuccess(false), 3000);
-        }, 1500);
+        } catch (error) {
+            setIsSaving(false);
+            const message = error instanceof Error ? error.message : 'تعذر حفظ التغييرات الآن.';
+            alert(message);
+        }
     };
 
     return (
@@ -149,6 +200,45 @@ const Profile: React.FC = () => {
                 
                 <h2 className="mt-4 text-xl font-bold text-gray-800">{formData.firstName} {formData.lastName}</h2>
                 <p className="text-gray-500 text-sm">طالب متميز</p>
+            </Card>
+
+            <Card className="p-5 sm:p-6 border-t-4 border-t-emerald-500">
+                <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-lg font-bold text-gray-800">شهاداتي</h3>
+                    <span className="text-xs text-gray-500">{certificates.length} شهادة</span>
+                </div>
+
+                {certificatesLoading ? (
+                    <p className="mt-3 text-sm text-gray-500">جاري تحميل الشهادات...</p>
+                ) : certificatesError ? (
+                    <p className="mt-3 text-sm text-red-500">{certificatesError}</p>
+                ) : certificates.length === 0 ? (
+                    <p className="mt-3 text-sm text-gray-500">لا توجد شهادات بعد. أكمل دورة بنسبة 100% لإصدار شهادة.</p>
+                ) : (
+                    <div className="mt-4 space-y-3">
+                        {certificates.map((certificate) => (
+                            <div key={String(certificate.verificationCode || certificate._id)} className="rounded-lg border border-gray-200 p-3 flex items-center justify-between gap-3">
+                                <div className="min-w-0">
+                                    <p className="font-semibold text-gray-800 truncate">{String(certificate.courseName || 'دورة بدون اسم')}</p>
+                                    <p className="text-xs text-gray-500">
+                                        نسبة الإتمام: {Number(certificate.completionPercentage || 0)}% - رمز: {String(certificate.verificationCode || '')}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const code = String(certificate.verificationCode || '').trim();
+                                        if (!code) return;
+                                        window.location.href = `/certificate/${encodeURIComponent(code)}`;
+                                    }}
+                                    className="px-3 py-2 rounded-md bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors whitespace-nowrap"
+                                >
+                                    عرض الشهادة
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </Card>
 
             {/* Main Form matching Screenshot */}
