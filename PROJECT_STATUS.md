@@ -596,3 +596,20 @@
   - live evidence already verified in production record (`eventId=39a8881844724be6844dd2f7fd63c88c`).
 - Report:
   - `BATCH_F1_CLOSURE_REPORT_2026-05-21_AR.md`
+
+## Update 2026-05-21 - BATCH-F2 Firebase Final Deletion Revalidation
+- Status: `Fully closed`
+- Verified missing files:
+  - `services/firebase.ts`
+  - `services/firebaseSync.ts`
+  - `firebase-applet-config.json`
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:runtime-source` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Production probes:
+  - frontend 200
+  - backend ready=true
+- Report:
+  - `BATCH_F2_FIREBASE_FINAL_DELETION_REVALIDATION_2026-05-21_AR.md`

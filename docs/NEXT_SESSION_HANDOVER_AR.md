@@ -905,3 +905,9 @@
 - BATCH_40: PASS كامل لجميع فحوص الرحلة المطلوبة + health ready=true.
 - BATCH_27C: PASS runtime monitoring + دليل event إنتاجي موثق سابقًا.
 - التقرير: `BATCH_F1_CLOSURE_REPORT_2026-05-21_AR.md`.
+
+## Update 2026-05-21 - BATCH-F2 Fully Closed
+- تم إغلاق BATCH-F2 نهائيًا.
+- ملفات Firebase القديمة غير موجودة.
+- PASS: `typecheck`, `build`, `smoke:runtime-source`, `smoke:frontend:strict`.
+- تحقق إنتاجي PASS (frontend 200 + backend ready=true).
