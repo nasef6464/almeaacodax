@@ -990,3 +990,12 @@
 - Missing for closure:
   - Configure WhatsApp provider env on Render (cloud or http).
 - Report: `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-7 Subscription Flow Completion
+- Status: `Blocked`
+- Evidence:
+  - Pricing page exists.
+  - Subscription fields exist on user model.
+  - Recurring subscription APIs are missing in payment routes.
+  - Payment smokes (`provider/package`) PASS.
+- Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`

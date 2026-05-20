@@ -962,3 +962,11 @@
   1. Set provider env in Render.
   2. Test `POST /api/auth/whatsapp/start` with CSRF and real phone.
   3. Close batch as Fully closed.
+
+## Update 2026-05-21 — FIX-7 Subscription Flow
+- Current status: `Blocked`
+- Missing implementation:
+  1. `POST /api/payments/subscribe`
+  2. `GET /api/payments/subscription`
+  3. `DELETE /api/payments/subscription`
+- Resume when owner approves implementation scope and gateway keys are ready.

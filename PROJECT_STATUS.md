@@ -715,3 +715,19 @@
   - Option B (HTTP): `WHATSAPP_PROVIDER=http`, `WHATSAPP_WEBHOOK_URL` (+ optional token)
 - Report:
   - `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FIX-7 Subscription Flow Completion
+- Batch: `FIX-7 - Subscription Flow Completion`
+- Final status: `Blocked (recurring subscription APIs not implemented yet)`
+- Verified in code:
+  - Subscription fields exist in `User` model.
+  - `/pricing` page exists.
+  - Missing subscription management endpoints in payment routes:
+    - `POST /api/payments/subscribe`
+    - `GET /api/payments/subscription`
+    - `DELETE /api/payments/subscription`
+- Checks this run:
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-package` PASS
+- Report:
+  - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
