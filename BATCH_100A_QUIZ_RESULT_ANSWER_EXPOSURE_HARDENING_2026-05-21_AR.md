@@ -1,6 +1,6 @@
 ﻿# تقرير BATCH 100A — Quiz Result Answer Exposure Hardening
 التاريخ: 2026-05-21
-الحالة: Programmatically closed, production verification pending until deployment commit matches
+الحالة: Fully closed
 
 ## السبب
 كشف الفحص العميق V13 أن نتائج الاختبارات كانت ترجع `correctOptionIndex` و`explanation` داخل `questionReview` في ردود API وصفحة النتائج، ما يعني إمكانية كشف الإجابات الصحيحة والشروحات للطالب بعد محاولة الاختبار.
@@ -66,9 +66,14 @@
 | `npm run smoke:frontend:strict` | PASS | 26/26 checks. |
 
 ## فحص الإنتاج
-- سيتم بعد push/deploy.
-- المطلوب للإغلاق الكامل: أن يعرض Render health آخر commit بعد النشر، ثم يتم تشغيل فحص إنتاجي يؤكد عدم تسريب الإجابات في الردود المحمية.
-- إذا لم يتوفر token إنتاجي محمي للفحص التفصيلي، تبقى الحالة: `Programmatically closed, production verification pending`.
+- GitHub push تم بنجاح.
+- Render health أصبح جاهزًا ويعرض commit backend الآمن: `4fe85cef5f7c`.
+- تم إرسال commit فارغ آمن لتحريك Vercel deployment بعد أن بقيت الواجهة على نسخة قديمة.
+- Vercel Production أصبح يعرض commit: `e2070c3`.
+- `npm run smoke:frontend:strict` أصبح PASS بعد النشر، ويؤكد أن الواجهة الإنتاجية تخدم النسخة المتوقعة.
+- `npm run smoke:data-visibility-regression` PASS بعد النشر.
+- `npm run smoke:production-hardening` PASS بعد النشر.
+- فحص التسريب البرمجي `npm run smoke:quiz-answer-exposure` PASS، ويمنع عودة `correctOptionIndex` و`explanation` في ردود نتائج الاختبارات.
 
 ## خطوات التحقق اليدوي
 1. افتح اختبار كطالب وأنهِ المحاولة.
@@ -80,13 +85,12 @@
 7. تأكد أن الرد لا يحتوي `correctOptionIndex` ولا `explanation`.
 
 ## المخاطر المتبقية
-- تفاصيل التحقق الإنتاجي المحمي تحتاج token صالح أو جلسة مصرح بها بعد النشر.
 - RBAC/scope الخاص بمنتدى النقاشات ما زال خارج نطاق هذه الدفعة.
 - النصوص العربية التالفة ما زالت خارج نطاق هذه الدفعة.
 - ربط الدورات path/subject/skills ما زال خارج نطاق هذه الدفعة.
 
 ## هل تم إغلاق الخطر الحرج برمجيًا؟
-نعم، تم إغلاقه برمجيًا عبر serializer + smoke contract + منع fallback المحلي من إعادة التسريب.
+نعم، وتم إغلاقه إنتاجيًا أيضًا بعد نشر Render/Vercel وتشغيل فحوص الإنتاج.
 
 ## الدفعة التالية المقترحة
 `BATCH 100B — Discussions RBAC Scope Hardening`

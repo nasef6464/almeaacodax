@@ -2,12 +2,12 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100A - Quiz Result Answer Exposure Hardening (closure/push/deploy verification)
-- Status: Programmatically closed locally; GitHub push and production deployment verification in progress
+- Active Batch: None (last closed: BATCH 100A - Quiz Result Answer Exposure Hardening)
+- Status: BATCH 100A fully closed; next suggested: BATCH 100B - Discussions RBAC Scope Hardening
 
 ## Update 2026-05-21 - BATCH 100A Quiz Result Answer Exposure Hardening
 - Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending until pushed deployment is confirmed`
+- Status: `Fully closed`
 - Security impact: learner-facing quiz result responses no longer expose `correctOptionIndex` or `explanation`.
 - Delivered:
   - Added learner-safe quiz result serializer.
@@ -28,6 +28,18 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
 - Next suggested: `BATCH 100B - Discussions RBAC Scope Hardening`
+
+## Production Closure 2026-05-21 - BATCH 100A
+- GitHub commit with fix: `4fe85ce`.
+- Frontend redeploy trigger commit: `e2070c3`.
+- Render health: `ready=true`, commit `4fe85cef5f7c`.
+- Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `e2070c3`.
+- Post-deploy checks:
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:health-readiness` PASS
+- Final status: `Fully closed`.
 
 ## Update 2026-05-21 — PLAN 100 Readiness Audit & Execution Plan
 - Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`

@@ -1337,3 +1337,20 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   - لا تحفظ أي token أو secret في الملفات.
   - الشجرة فيها تعديلات قديمة كثيرة؛ لا تستخدم `git reset --hard` ولا تعمل `git add .`.
   - عند staging، أضف ملفات الدفعة فقط، وخصوصًا `pages/QuizPage.tsx` يجب أن يتم staged له فقط hunk إزالة fallback الخاص بـ `questionReview` وليس أي تعديلات قديمة أخرى.
+
+---
+
+## تحديث إغلاق نهائي — BATCH 100A — 2026-05-21
+
+- الحالة النهائية: `Fully closed`.
+- commit الإصلاح: `4fe85ce`.
+- commit تحريك Vercel: `e2070c3`.
+- Render health: `ready=true` ويعرض backend commit `4fe85cef5f7c`.
+- Vercel Production: `npm run smoke:frontend:strict` PASS ويعرض commit `e2070c3`.
+- فحوص ما بعد النشر:
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:health-readiness` PASS
+- النتيجة: تم إغلاق خطر تسريب إجابات نتائج الاختبارات برمجيًا وإنتاجيًا.
+- التالي المقترح فقط: `BATCH 100B — Discussions RBAC Scope Hardening`، ولا يبدأ إلا بطلب صريح من المالك.
