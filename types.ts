@@ -616,8 +616,16 @@ export interface HomepageTypography {
     headingWeight?: HomepageHeadingWeight;
 }
 
+export interface HomepageBrandSettings {
+    logoUrl?: string;
+    logoAlt?: string;
+    logoText?: string;
+    logoAccentText?: string;
+}
+
 export interface HomepageSettings {
     key: string;
+    brand?: HomepageBrandSettings;
     hero: HomepageHeroSettings;
     stats: HomepageStat[];
     testimonials: HomepageTestimonial[];

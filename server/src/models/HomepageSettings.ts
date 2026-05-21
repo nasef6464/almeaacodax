@@ -53,6 +53,16 @@ const homepageHeroSchema = new Schema(
   { _id: false },
 );
 
+const homepageBrandSchema = new Schema(
+  {
+    logoUrl: { type: String, default: "" },
+    logoAlt: { type: String, default: "" },
+    logoText: { type: String, default: "" },
+    logoAccentText: { type: String, default: "" },
+  },
+  { _id: false },
+);
+
 const homepageSectionsSchema = new Schema(
   {
     featuredCoursesTitle: { type: String, default: "" },
@@ -79,6 +89,7 @@ const homepageTypographySchema = new Schema(
 const homepageSettingsSchema = new Schema(
   {
     key: { type: String, required: true, unique: true, default: "default" },
+    brand: { type: homepageBrandSchema, default: () => ({}) },
     hero: { type: homepageHeroSchema, default: () => ({}) },
     stats: { type: [homepageStatSchema], default: [] },
     testimonials: { type: [homepageTestimonialSchema], default: [] },

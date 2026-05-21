@@ -1538,3 +1538,18 @@
 - Browser verification: PASS, homepage, admin homepage settings, and production course page opened in the in-app browser without visible errors.
 - Notes: third Hero button and course lesson icons are optional and become visible only after admin saves values.
 - Next suggested: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
+
+## Update 2026-05-21 - BATCH 100K
+- Batch: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: homepage logo/admin settings functional sweep, preview link fix, full searchable featured course/article selectors.
+- Key changes:
+  - `HomepageSettings.brand` added across frontend types, Mongo model, and backend validation.
+  - `HomepageManager` now includes a `شعار المنصة` section with logo upload/text controls.
+  - `Header` reads public homepage settings and displays admin-controlled logo/text.
+  - Homepage preview button now opens `/` cleanly.
+  - Featured courses/articles lists are searchable and no longer capped to first 30 items.
+- Checks PASS: `smoke:batch100k-homepage-admin-sweep`, server build, typecheck after longer rerun, frontend build, homepage hero smoke, frontend strict smoke for current production, health readiness.
+- Known note: global `git diff --check` still fails because of a pre-existing dirty report file outside this batch; scoped diff check for BATCH 100K files passes.
+- Production verification: pending until push/deploy/browser closure.
+- Next suggested: `BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`.

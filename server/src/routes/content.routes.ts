@@ -892,6 +892,14 @@ const homepageTestimonialSchema = z.object({
 });
 
 const homepageSettingsSchema = z.object({
+  brand: z
+    .object({
+      logoUrl: z.string().optional(),
+      logoAlt: z.string().optional(),
+      logoText: z.string().optional(),
+      logoAccentText: z.string().optional(),
+    })
+    .optional(),
   hero: z
     .object({
       badgeText: z.string().optional(),
@@ -949,6 +957,12 @@ const homepageSettingsSchema = z.object({
 
 const defaultHomepageSettings = {
   key: "default",
+  brand: {
+    logoUrl: "",
+    logoAlt: "\u0634\u0639\u0627\u0631 \u0645\u0646\u0635\u0629 \u0627\u0644\u0645\u0626\u0629",
+    logoText: "\u0645\u0646\u0635\u0629",
+    logoAccentText: "\u0627\u0644\u0645\u0626\u0629",
+  },
   hero: {
     badgeText: "المنصة الأولى للقدرات والتحصيلي",
     titlePrefix: "حقق",

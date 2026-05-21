@@ -1826,3 +1826,67 @@ eady=true, redis ready for limiter+queue, commit 5f011e1944e.
 - Course lesson start/end icons are supported in schema/API/builders/player/overview; they display only when an admin saves values on a course.
 - Do not stage unrelated existing dirty files in the next batch.
 - Next suggested batch: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100K Programmatic Closure
+
+### الحالة الحالية
+- الدفعة الحالية: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+- لم يتم إعلان Fully closed بعد؛ يجب إكمال push/deploy/browser verification.
+
+### ما تم في BATCH 100K
+- إضافة إعدادات `brand` للصفحة الرئيسية في:
+  - `types.ts`
+  - `server/src/models/HomepageSettings.ts`
+  - `server/src/routes/content.routes.ts`
+- إضافة قسم `شعار المنصة` في `dashboards/admin/HomepageManager.tsx` مع رفع شعار صغير ونص الشعار.
+- ربط `components/Header.tsx` بإعدادات الشعار العامة.
+- إصلاح زر `معاينة الصفحة` ليستخدم `/` بدل `#/`.
+- إزالة حد أول 30 عنصرًا من اختيارات الدورات والمقالات المميزة، وإضافة بحث بدل الحد.
+- إضافة smoke: `npm run smoke:batch100k-homepage-admin-sweep`.
+
+### الفحوص المنجزة
+- `npm run smoke:batch100k-homepage-admin-sweep`: PASS بعد فشل أول متوقع قبل الإصلاح.
+- `npm --prefix server run build`: PASS.
+- `npm run typecheck`: PASS بعد rerun بمهلة أطول؛ أول تشغيل 120s timeout ولم يُحسب.
+- `npm run build`: PASS.
+- `npm run smoke:homepage-hero`: PASS.
+- `npm run smoke:frontend:strict`: PASS على الإنتاج الحالي قبل push.
+- `npm run smoke:health-readiness`: PASS.
+- `git diff --check -- <BATCH 100K files>`: PASS.
+- `git diff --check` العام: FAIL بسبب تقرير قديم خارج نطاق الدفعة `BATCH_02R...` به trailing whitespace؛ لا تلمسه إلا في دفعة تنظيف مستقلة.
+
+### ملفات BATCH 100K فقط
+- `types.ts`
+- `server/src/models/HomepageSettings.ts`
+- `server/src/routes/content.routes.ts`
+- `dashboards/admin/HomepageManager.tsx`
+- `components/Header.tsx`
+- `package.json`
+- `scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs`
+- `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR.md`
+- `PROJECT_STATUS.md`
+- `docs/SPARK_BATCH_LEDGER_AR.md`
+- `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+- `docs/NEXT_SESSION_HANDOVER_AR.md`
+
+### خطوات الإغلاق النهائي المطلوبة للحساب التالي أو نفس الجلسة
+1. Stage صريح لملفات BATCH 100K فقط. لا تستخدم `git add .`.
+2. Commit برسالة واضحة مثل: `feat: complete homepage admin functional sweep`.
+3. Push إلى `origin/main`.
+4. انتظر Vercel/Render حتى يخدما commit الجديد.
+5. شغّل:
+   - `npm run smoke:frontend:strict`
+   - `npm run smoke:health-readiness`
+6. افتح المتصفح الداخلي وتحقق بصريًا من:
+   - `https://almeaacodax.vercel.app/?verify=100k-final-<commit>`
+   - `https://almeaacodax.vercel.app/admin-dashboard?tab=homepage&verify=100k-final-<commit>`
+7. بعد نجاح التحقق، حدّث تقرير BATCH 100K و`PROJECT_STATUS.md` وLedger وRoadmap وملف التسليم إلى `Fully closed`.
+
+### قاعدة العمل الثابتة
+- كلمة `اكمل` تعني الاستمرار حتى إغلاق الدفعة بالكامل: تنفيذ + فحوص + توثيق + push + نشر + تحقق حي.
+- لا يتم حفظ أسرار في المستودع.
+- لا يتم لمس الملفات المتسخة القديمة غير التابعة للدفعة.
+- أدوات الربط الخارجية GitHub/Vercel/Render/Mongo تعمل عبر المنصات/الأسرار الموجودة، لكن لا تكتب أي token داخل الملفات.

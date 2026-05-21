@@ -22,7 +22,9 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { useStore } from '../store/useStore';
+import type { HomepageSettings } from '../types';
 import { isPathMockExam } from '../utils/mockExam';
+import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
 
@@ -88,6 +90,7 @@ export const Header: React.FC = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [homepageBrandSettings, setHomepageBrandSettings] = useState<HomepageSettings['brand'] | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -272,6 +275,31 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    api.getHomepageSettings()
+      .then((settings) => {
+        if (!cancelled) {
+          setHomepageBrandSettings(sanitizeHomepageSettings(settings as HomepageSettings).brand || null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setHomepageBrandSettings(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const brandLogoUrl = String(homepageBrandSettings?.logoUrl || '').trim();
+  const brandLogoAlt = String(homepageBrandSettings?.logoAlt || 'منصة المئة').trim();
+  const brandLogoText = String(homepageBrandSettings?.logoText || text.platform).trim();
+  const brandLogoAccentText = String(homepageBrandSettings?.logoAccentText || text.hundred).trim();
+
   const handleEmailAuth = async (event: React.FormEvent) => {
     event.preventDefault();
     setAuthError('');
@@ -343,9 +371,16 @@ export const Header: React.FC = () => {
             </button>
 
             <Link to="/" className="flex items-center gap-2 min-w-0">
+              {brandLogoUrl ? (
+                <img
+                  src={brandLogoUrl}
+                  alt={brandLogoAlt}
+                  className="h-9 w-9 sm:h-11 sm:w-11 rounded-full object-contain bg-white border border-amber-100 shadow-sm"
+                />
+              ) : null}
               <div className="text-lg sm:text-2xl font-black text-amber-500 flex items-baseline min-w-0">
-                <span className="text-blue-900">{text.platform}</span>
-                <span className="mx-1">{text.hundred}</span>
+                <span className="text-blue-900">{brandLogoText}</span>
+                <span className="mx-1">{brandLogoAccentText}</span>
                 <span className="hidden sm:block text-xs font-normal text-gray-400 -mt-2">{text.subtitle}</span>
               </div>
             </Link>

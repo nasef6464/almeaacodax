@@ -96,7 +96,8 @@
         "smoke:batch100g-school-student-pagination": "node scripts/smoke-batch100g-school-student-pagination-contract.mjs",
         "smoke:batch100h-group-create-scope": "node scripts/smoke-batch100h-group-create-scope-contract.mjs",
         "smoke:batch100i-admin-dashboard-functional-qa": "node scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs",
-        "smoke:batch100j-homepage-branding-course-icons": "node scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs"
+        "smoke:batch100j-homepage-branding-course-icons": "node scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs",
+        "smoke:batch100k-homepage-admin-sweep": "node scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",

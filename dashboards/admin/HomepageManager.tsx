@@ -11,6 +11,12 @@ const DEFAULT_HERO_BOY_IMAGE =
 
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
+    brand: {
+        logoUrl: '',
+        logoAlt: 'شعار منصة المئة',
+        logoText: 'منصة',
+        logoAccentText: 'المئة',
+    },
     hero: {
         badgeText: 'المنصة الأولى للقدرات والتحصيلي',
         titlePrefix: 'حقق',
@@ -74,6 +80,7 @@ const mergeHomepageSettings = (settings: HomepageSettings): HomepageSettings => 
     return {
         ...defaultHomepageSettings,
         ...sanitized,
+        brand: { ...defaultHomepageSettings.brand, ...sanitized.brand },
         hero: { ...defaultHomepageSettings.hero, ...sanitized.hero },
         sections: { ...defaultHomepageSettings.sections, ...sanitized.sections },
         typography: { ...defaultHomepageSettings.typography, ...sanitized.typography },
@@ -117,6 +124,8 @@ export const HomepageManager: React.FC = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [courseSearch, setCourseSearch] = useState('');
+    const [articleSearch, setArticleSearch] = useState('');
 
     useEffect(() => {
         let cancelled = false;
@@ -170,6 +179,33 @@ export const HomepageManager: React.FC = () => {
         [courses],
     );
 
+    const filteredFeaturedCourses = useMemo(() => {
+        const query = courseSearch.trim().toLowerCase();
+        if (!query) {
+            return availableCourses;
+        }
+
+        return availableCourses.filter((course) =>
+            [course.title, course.description, course.category]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query)),
+        );
+    }, [availableCourses, courseSearch]);
+
+    const filteredFeaturedArticleLessons = useMemo(() => {
+        const query = articleSearch.trim().toLowerCase();
+        if (!query) {
+            return availableArticleLessons;
+        }
+
+        return availableArticleLessons.filter((lesson) => {
+            const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name || '';
+            return [lesson.title, lesson.content, subjectName]
+                .filter(Boolean)
+                .some((value) => String(value).toLowerCase().includes(query));
+        });
+    }, [articleSearch, availableArticleLessons, subjects]);
+
     const homepageSummary = useMemo(() => {
         const featuredPathsCount = settings.featuredPathIds.length > 0 ? settings.featuredPathIds.length : availablePaths.length;
         const featuredCoursesCount = settings.featuredCourseIds.length > 0 ? settings.featuredCourseIds.length : Math.min(availableCourses.length, 3);
@@ -195,6 +231,42 @@ export const HomepageManager: React.FC = () => {
                 [field]: value,
             },
         }));
+    };
+
+    const updateBrandField = (field: keyof NonNullable<HomepageSettings['brand']>, value: string) => {
+        setSettings((prev) => ({
+            ...prev,
+            brand: {
+                ...defaultHomepageSettings.brand,
+                ...prev.brand,
+                [field]: value,
+            },
+        }));
+    };
+
+    const handleBrandLogoUpload = (file?: File | null) => {
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            setError('اختر ملف صورة فقط.');
+            return;
+        }
+
+        if (file.size > 300 * 1024) {
+            setError('حجم الشعار كبير. الأفضل ضغطه إلى أقل من 300KB قبل الرفع حتى لا يبطئ الهيدر.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            updateBrandField('logoUrl', String(reader.result || ''));
+            setError(null);
+            setSuccess('تم تحميل الشعار داخل الإعدادات. اضغط حفظ التعديلات لنشره.');
+        };
+        reader.onerror = () => setError('تعذر قراءة الشعار. جرّب صورة أخرى.');
+        reader.readAsDataURL(file);
     };
 
     const handleHeroImageUpload = (file?: File | null) => {
@@ -299,6 +371,7 @@ export const HomepageManager: React.FC = () => {
                 }));
             const payload: HomepageSettings = {
                 ...settings,
+                brand: { ...defaultHomepageSettings.brand, ...settings.brand, logoUrl: withCacheBust(settings.brand?.logoUrl) },
                 hero: { ...settings.hero, imageUrl: withCacheBust(settings.hero.imageUrl) },
                 sections: { ...settings.sections },
                 typography: { ...defaultHomepageSettings.typography, ...settings.typography },
@@ -340,7 +413,7 @@ export const HomepageManager: React.FC = () => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                     <a
-                        href="#/"
+                        href="/"
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-amber-100 bg-white text-amber-700 font-bold hover:bg-amber-50 transition-colors"
@@ -364,6 +437,48 @@ export const HomepageManager: React.FC = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 space-y-6">
+                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <ImageIcon size={18} />
+                            </div>
+                            <div>
+                                <h2 className="font-bold text-gray-900">شعار المنصة</h2>
+                                <p className="text-sm text-gray-500">يتحكم في شعار الهيدر ونصه بدون تغيير مكانه أو تصميمه.</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="md:col-span-2 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 space-y-3">
+                                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">صورة الشعار</label>
+                                        <p className="text-xs leading-6 text-gray-500">
+                                            الأفضل PNG/WebP شفاف أقل من 300KB. اتركها فارغة لو أردت استخدام شعار النص الحالي فقط.
+                                        </p>
+                                    </div>
+                                    <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-blue-700 border border-blue-100 hover:bg-blue-50">
+                                        <Upload size={16} />
+                                        رفع شعار
+                                        <input
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                            className="hidden"
+                                            onChange={(event) => handleBrandLogoUpload(event.target.files?.[0])}
+                                        />
+                                    </label>
+                                </div>
+                                <TextField label="رابط الشعار أو الصورة المرفوعة" value={settings.brand?.logoUrl || ''} onChange={(value) => updateBrandField('logoUrl', value)} />
+                                <TextField label="وصف الشعار" value={settings.brand?.logoAlt || ''} onChange={(value) => updateBrandField('logoAlt', value)} />
+                                {settings.brand?.logoUrl ? (
+                                    <img src={settings.brand.logoUrl} alt="" className="h-16 max-w-[220px] rounded-2xl object-contain border border-white bg-white p-2 shadow-sm" />
+                                ) : null}
+                            </div>
+                            <TextField label="نص الشعار الأول" value={settings.brand?.logoText || ''} onChange={(value) => updateBrandField('logoText', value)} />
+                            <TextField label="نص الشعار المميز" value={settings.brand?.logoAccentText || ''} onChange={(value) => updateBrandField('logoAccentText', value)} />
+                        </div>
+                    </section>
+
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -641,8 +756,9 @@ export const HomepageManager: React.FC = () => {
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-bold text-gray-900">الدورات المميزة</h2>
                         <p className="text-sm text-gray-500">حدد الدورات التي تريد إبرازها أولًا في الواجهة العامة.</p>
+                        <TextField label="بحث في الدورات" value={courseSearch} onChange={setCourseSearch} />
                         <div className="space-y-2 max-h-72 overflow-y-auto">
-                            {availableCourses.slice(0, 30).map((course) => (
+                            {filteredFeaturedCourses.map((course) => (
                                 <label key={course.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -658,14 +774,20 @@ export const HomepageManager: React.FC = () => {
                                     <span className="font-medium text-gray-800">{course.title}</span>
                                 </label>
                             ))}
+                            {filteredFeaturedCourses.length === 0 ? (
+                                <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">
+                                    لا توجد دورات مطابقة للبحث الحالي.
+                                </div>
+                            ) : null}
                         </div>
                     </section>
 
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-bold text-gray-900">المقالات المميزة</h2>
                         <p className="text-sm text-gray-500">اختر المقالات أو الشروحات النصية التي تريد إبرازها للزائر في الصفحة الرئيسية.</p>
+                        <TextField label="بحث في المقالات والدروس النصية" value={articleSearch} onChange={setArticleSearch} />
                         <div className="space-y-2 max-h-72 overflow-y-auto">
-                            {availableArticleLessons.slice(0, 30).map((lesson) => {
+                            {filteredFeaturedArticleLessons.map((lesson) => {
                                 const subjectName = subjects.find((subject) => subject.id === lesson.subjectId)?.name;
                                 return (
                                     <label key={lesson.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
@@ -687,6 +809,11 @@ export const HomepageManager: React.FC = () => {
                                     </label>
                                 );
                             })}
+                            {filteredFeaturedArticleLessons.length === 0 ? (
+                                <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">
+                                    لا توجد مقالات أو دروس نصية مطابقة للبحث الحالي.
+                                </div>
+                            ) : null}
                         </div>
                     </section>
                 </div>

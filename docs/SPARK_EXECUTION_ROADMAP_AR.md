@@ -756,3 +756,19 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Render health: PASS, `ready=true`, commit `6bd2ae640f72`.
   - In-app browser: PASS for homepage, admin homepage settings, and course page.
 - Next proposed batch remains focused: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
+
+## Update 2026-05-21 - After BATCH 100K Programmatic Closure
+- `BATCH 100K - Homepage Admin Functional Sweep` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Homepage `brand` settings persisted through TypeScript, Mongo model, and backend validation.
+  2. Admin homepage manager includes logo upload/text controls.
+  3. Header displays admin-controlled logo/text from public homepage settings.
+  4. Homepage preview link opens the clean root route `/`.
+  5. Featured course/article selectors are searchable and no longer capped to first 30 items.
+- Required final closure steps:
+  1. Push BATCH 100K commit to GitHub.
+  2. Verify Vercel frontend deployment and Render health.
+  3. Run production smoke checks.
+  4. Verify visually in the in-app browser at homepage and admin homepage settings.
+- Next suggested after final closure:
+  `BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`.

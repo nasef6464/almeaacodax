@@ -2,10 +2,34 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None
+- Active Batch: BATCH 100K - Homepage Admin Functional Sweep
 - Last Closed Batch: BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
 
+
+## Update 2026-05-21 - BATCH 100K Homepage Admin Functional Sweep
+- Batch: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Scope: homepage admin logo/settings sweep, preview link, and uncapped searchable featured course/article selectors.
+- Delivered:
+  - Added `brand` settings to homepage settings types/model/API.
+  - Added logo upload and logo text controls to `HomepageManager`.
+  - Header now reads homepage brand settings and displays admin-controlled logo/text.
+  - Fixed homepage preview link from admin panel to open `/` instead of `#/`.
+  - Replaced first-30 item caps in featured courses/articles with search filters over the full available lists.
+  - Added `npm run smoke:batch100k-homepage-admin-sweep`.
+- Checks:
+  - `npm run smoke:batch100k-homepage-admin-sweep` PASS after expected initial fail
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS after rerun with longer timeout; first 120s run timed out and was not counted
+  - `npm run build` PASS
+  - `npm run smoke:homepage-hero` PASS
+  - `npm run smoke:frontend:strict` PASS for currently deployed previous commit before push
+  - `npm run smoke:health-readiness` PASS
+  - `git diff --check -- <batch files>` PASS; global `git diff --check` is blocked by an old unrelated report file
+- Production verification: pending until GitHub push, Vercel/Render deployment, production smoke, and in-app browser visual check.
+- Report: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR.md`
+- Next suggested after final closure: `BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`
 ## Update 2026-05-21 - BATCH 100J Homepage Branding + Course Lesson Icons
 - Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`
 - Status: `Fully closed`
@@ -89,7 +113,7 @@
 - Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
 - Scope: audit-only functional relationship verification for schools, classes, groups, supervisors, students, parents, and scoped reports.
 - Delivered:
   - Added `scripts/smoke-batch100f-relationship-audit-contract.mjs`.
@@ -1525,3 +1549,4 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - In-app browser: PASS, admin dashboard opened and `مركز الأسئلة` showed 63 questions with `إضافة سؤال جديد`, no visible fatal errors.
 - Main bug closed: admin question bank no longer appears empty because `/api/quizzes/questions?paginate=true` now returns `{ data, pagination }` and the UI refreshes after mutations.
 - Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
+
