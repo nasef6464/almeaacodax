@@ -663,3 +663,15 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   2. فحص سبب عدم ظهور الدورة المطلوبة في صفحة التعلم رغم وجودها في شاشة الإدارة عند المالك.
   3. فحص علاقات المجموعات/المدارس/المشرفين/المعلمين/الطلاب/الأهالي كدفعة مستقلة.
 - لا تبدأ أي تعديل واسع في العلاقات أو البيانات قبل قراءة تقرير 100D وحالة الإنتاج.
+
+## Update 2026-05-21 - After BATCH 100E
+- `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry` is fully closed.
+- The missing production course `course_current_p_1777779639431_sub_1777779748206_foundation` has been restored through a safe targeted repair, not a broad seed/reset.
+- The next roadmap priority is:
+  1. `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`
+     - Audit and verify every relationship flow: school -> supervisor -> teacher -> group -> student -> parent.
+     - Include API + frontend + role checks + browser verification.
+     - Do not change UI unless a confirmed functional bug requires a minimal fix in a later hardening batch.
+  2. Remaining unrelated follow-ups:
+     - Orphan learning lesson `l_1777839591839_copy` data review.
+     - Quiz shells with empty `questionIds` should not be treated as student-ready assessments until populated or hidden by content policy.

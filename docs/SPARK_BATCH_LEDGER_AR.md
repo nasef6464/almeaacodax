@@ -1391,3 +1391,32 @@
   - لذلك ظهور `الدورة غير متاحة حاليًا` سببه بيانات/نشر/معرّف إنتاجي يحتاج دفعة منفصلة.
 - التقرير: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`.
 - التالي المقترح: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
+
+## Update 2026-05-21 - BATCH 100E Production Course Data Visibility Repair
+- Status: `Fully closed`.
+- Scope: repaired the confirmed production data gap where `course_current_p_1777779639431_sub_1777779748206_foundation` returned 404 despite an existing current lesson.
+- Safety: created learning-content backup before data repair: `backups/learning-content-2026-05-21T12-09-40-854Z.json` (gitignored).
+- Delivered:
+  - `server/src/scripts/repairMissingCurrentCourseVisibility.ts`
+  - `scripts/smoke-batch100e-course-data-repair-contract.mjs`
+  - npm scripts: `repair:current-course-visibility`, `smoke:batch100e-course-data-repair`
+- Production data action:
+  - Repaired only `pathId=p_1777779639431`, `subjectId=sub_1777779748206`.
+  - Created/restored course/topic/quiz links while preserving lesson title `جمع`.
+- Checks PASS:
+  - `npm --prefix server run audit:learning` (WARN only for unrelated orphan `l_1777839591839_copy`)
+  - `npm run smoke:batch100e-course-data-repair`
+  - `npm --prefix server run build`
+  - `npm run smoke:course-visibility`
+  - `npm run smoke:school-management`
+  - `npm run smoke:admin-school-command`
+  - `npm run smoke:school-portal-command`
+  - `npm run typecheck`
+  - `npm run smoke:health-readiness`
+  - `npm run build`
+- Live verification:
+  - Course API now returns 200.
+  - Public courses list includes the restored course.
+  - In-app browser shows the restored course in learning page and course page with lesson `جمع`.
+- Report: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`.

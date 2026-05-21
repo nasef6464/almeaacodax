@@ -1513,3 +1513,48 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - Vercel: PASS عبر smoke:frontend:strict ويخدم commit الجديد.
 - Render: PASS عبر smoke:health-readiness، ولا يوجد تغيير backend وظيفي في هذه الدفعة.
 - المتبقي: فحص بيانات الدورة غير الظاهرة ضمن BATCH 100E.
+
+---
+
+## تحديث 2026-05-21 بعد BATCH 100E
+
+- الدفعة المغلقة: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
+- الحالة: `Fully closed` بعد تحقق API إنتاجي وتحقق بصري من المتصفح الداخلي.
+- التقرير: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`.
+- المشكلة التي أغلقت: الدورة `course_current_p_1777779639431_sub_1777779748206_foundation` كانت ترجع 404 ولا تظهر في صفحة التعلم، رغم وجود الدرس الحالي `lesson_current_p_1777779639431_sub_1777779748206_intro`.
+- النسخة الاحتياطية قبل الإصلاح: `backups/learning-content-2026-05-21T12-09-40-854Z.json`، ولا ترفع إلى Git لأن `backups/` مستثنى.
+- ما تم إضافته:
+  - `server/src/scripts/repairMissingCurrentCourseVisibility.ts`
+  - `scripts/smoke-batch100e-course-data-repair-contract.mjs`
+  - `npm run smoke:batch100e-course-data-repair`
+  - `npm --prefix server run repair:current-course-visibility`
+- الإصلاح الإنتاجي الذي تم تشغيله:
+  - `npm --prefix server run repair:current-course-visibility -- --pathId p_1777779639431 --subjectId sub_1777779748206`
+- نتيجة التحقق:
+  - API الدورة أصبح 200.
+  - صفحة التعلم تعرض `تأسيس الكمي: العمليات والمهارات الأساسية`.
+  - صفحة الدورة تعرض الدرس `جمع` ولا تعرض `الدورة غير متاحة حاليًا`.
+- فحوص 100E الناجحة:
+  - `npm --prefix server run audit:learning` PASS مع WARN غير مانع للدرس orphan `l_1777839591839_copy`.
+  - `npm run smoke:batch100e-course-data-repair` PASS.
+  - `npm --prefix server run build` PASS.
+  - `npm run smoke:course-visibility` PASS.
+  - `npm run smoke:school-management` PASS.
+  - `npm run smoke:admin-school-command` PASS.
+  - `npm run smoke:school-portal-command` PASS.
+  - `npm run typecheck` PASS.
+  - `npm run smoke:health-readiness` PASS.
+  - `npm run build` PASS.
+  - `npm run smoke:frontend:strict` PASS قبل push وكان الإنتاج ما زال يخدم commit `8297d72`.
+- ملفات 100E التي يجب stage/push فقط:
+  - `server/src/scripts/repairMissingCurrentCourseVisibility.ts`
+  - `scripts/smoke-batch100e-course-data-repair-contract.mjs`
+  - `package.json`
+  - `server/package.json`
+  - `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+- الدفعة التالية المقترحة: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`.
+- تنبيه مهم للحساب التالي: لا تستخدم `git add .` لأن هناك ملفات قديمة معدلة/غير متتبعة خارج نطاق 100E.

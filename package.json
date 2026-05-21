@@ -90,7 +90,8 @@
         "smoke:quiz-answer-exposure": "node scripts/smoke-quiz-answer-exposure-contract.mjs",
         "smoke:discussions-rbac-scope": "node scripts/smoke-discussions-rbac-scope-contract.mjs",
         "smoke:arabic-mojibake": "node scripts/smoke-arabic-mojibake-guard.mjs",
-        "smoke:batch100d-admin-course-flow": "node scripts/smoke-batch100d-admin-course-flow.mjs"
+        "smoke:batch100d-admin-course-flow": "node scripts/smoke-batch100d-admin-course-flow.mjs",
+        "smoke:batch100e-course-data-repair": "node scripts/smoke-batch100e-course-data-repair-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",
