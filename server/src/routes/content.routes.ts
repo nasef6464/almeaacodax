@@ -738,6 +738,99 @@ const hasSchoolIdManagementScope = async (
   return scopedSchoolIds.includes(String(schoolId || ""));
 };
 
+type GroupCreatePayload = z.infer<typeof groupSchema>;
+
+type ScopedGroupCreateResult =
+  | { ok: true; payload: GroupCreatePayload }
+  | { ok: false; statusCode: number; message: string };
+
+const buildScopedGroupCreatePayload = async (
+  authUser: { id: string; role: string },
+  payload: GroupCreatePayload,
+): Promise<ScopedGroupCreateResult> => {
+  if (authUser.role === "admin") {
+    return { ok: true, payload };
+  }
+
+  if (payload.type === "SCHOOL") {
+    return {
+      ok: false,
+      statusCode: StatusCodes.FORBIDDEN,
+      message: "Only admins can create schools",
+    };
+  }
+
+  const parentId = String(payload.parentId || "");
+  if (!parentId) {
+    return {
+      ok: false,
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: "Group parent is required",
+    };
+  }
+
+  const parentGroup = await GroupModel.findOne(buildDocumentQuery(parentId));
+  if (!parentGroup) {
+    return {
+      ok: false,
+      statusCode: StatusCodes.NOT_FOUND,
+      message: "Parent group not found",
+    };
+  }
+
+  if (payload.type === "CLASS" && parentGroup.type !== "SCHOOL") {
+    return {
+      ok: false,
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: "Classes must belong to a school",
+    };
+  }
+
+  if (payload.type === "PRIVATE_GROUP" && parentGroup.type !== "SCHOOL" && parentGroup.type !== "CLASS") {
+    return {
+      ok: false,
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: "Private groups must belong to a school or class",
+    };
+  }
+
+  const parentSchoolId =
+    parentGroup.type === "SCHOOL"
+      ? String(parentGroup.id || parentGroup._id || "")
+      : String(parentGroup.parentId || "");
+
+  if (!parentSchoolId) {
+    return {
+      ok: false,
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: "Parent school could not be resolved",
+    };
+  }
+
+  const canCreateUnderSchool = await hasSchoolIdManagementScope(authUser, parentSchoolId);
+  if (!canCreateUnderSchool) {
+    return {
+      ok: false,
+      statusCode: StatusCodes.FORBIDDEN,
+      message: "You cannot create a group under this school",
+    };
+  }
+
+  return {
+    ok: true,
+    payload: {
+      name: payload.name,
+      type: payload.type,
+      parentId,
+      ownerId: String(authUser.id),
+      supervisorIds: uniqueStrings([String(authUser.id)]),
+      studentIds: [],
+      courseIds: [],
+      metadata: payload.metadata || {},
+    },
+  };
+};
+
 const studyPlanSchema = z.object({
   id: z.string().min(1),
   userId: z.string().optional(),
@@ -1698,7 +1791,12 @@ contentRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = groupSchema.parse(req.body);
-    const created = await GroupModel.create(payload);
+    const createScope = await buildScopedGroupCreatePayload(req.authUser!, payload);
+    if (createScope.ok === false) {
+      return res.status(createScope.statusCode).json({ message: createScope.message });
+    }
+
+    const created = await GroupModel.create(createScope.payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
 );

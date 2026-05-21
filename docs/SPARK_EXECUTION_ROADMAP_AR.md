@@ -705,3 +705,9 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - Commit pushed: `6d977e4`.
 - Verification completed: GitHub push, Vercel frontend strict, Render health/readiness, and in-app browser visual check.
 - The current next suggested batch is `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
+
+## Update 2026-05-21 - BATCH 100H
+- Status: `Programmatically closed, production verification pending`.
+- Completed scope: secure group creation server-side for `/api/content/groups`.
+- Acceptance evidence: non-admin top-level school creation denied, parent school resolved from DB, school scope enforced, frontend escalation fields ignored for non-admin.
+- Next batch: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.

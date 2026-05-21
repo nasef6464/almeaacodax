@@ -1481,3 +1481,11 @@
 - المتصفح الداخلي: PASS بعد hard refresh؛ تم فتح لوحة الإدارة وتبويب `المجموعات والمدارس` وظهرت بطاقات الجاهزية وقائمة المدارس بدون أخطاء ظاهرة.
 - النتيجة: تم إغلاق خطر إخفاء الطلاب بعد أول 80 طالبًا في واجهة علاقات المدرسة.
 - التالي: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
+
+## Update 2026-05-21 - BATCH 100H
+- Batch: `BATCH_100H_GROUP_CREATE_SCOPE_HARDENING_E2E_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Summary: hardened `POST /api/content/groups` so non-admin creation is scoped to a server-verified parent school and ignores frontend relationship escalation fields.
+- Evidence: `npm run smoke:batch100h-group-create-scope` PASS, relationship/school/RBAC smokes PASS, server build PASS, typecheck PASS, frontend build PASS.
+- Production verification: pending until GitHub push and deploy verification complete.
+- Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.
