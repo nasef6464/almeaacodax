@@ -1078,3 +1078,8 @@
   - `smoke:health-readiness`
   - `smoke:frontend:strict`
 - Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-1 Pricing Page (Revalidation)
+- Status: `Fully closed`.
+- Re-check confirms route, nav, sitemap/SEO wiring and smoke stability are all PASS.
+- Report: `FEATURE_1_PRICING_PAGE_2026-05-21_AR.md`.

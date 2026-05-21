@@ -1034,3 +1034,8 @@
 
 ## Next Batch
 - FEATURE-1 Pricing Page (تنفيذ فعلي بدل تدقيق فقط)، ثم إغلاقها مع Smoke + تحديثات الحالة.
+
+## Update 2026-05-21 — Revalidation Notes
+- FEATURE-1: fully closed and revalidated this run.
+- FIX-4: already implemented in codebase (`ReviewSession` renders `imageUrl`, review API returns `imageUrl`).
+- Next executable without owner keys: continue product-level hardening audits and documentation closure only.

@@ -876,3 +876,18 @@
   - `smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-1 Pricing Page Revalidation
+- Batch: `FEATURE-1 - Pricing Page`
+- Final status: `Fully closed (revalidated)`
+- Evidence rechecked:
+  - `/pricing` route exists in `App.tsx`
+  - Header contains pricing navigation entry
+  - SEO/sitemap include `/pricing`
+- Checks this run:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:seo` PASS
+  - `npm run smoke:health-readiness` PASS
+- Report:
+  - `FEATURE_1_PRICING_PAGE_2026-05-21_AR.md`
