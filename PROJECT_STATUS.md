@@ -1,10 +1,17 @@
 # PROJECT STATUS
 
 - Project: ALMEAA CODAX
-- Last Update: 2026-05-19
-- Active Batch: None (awaiting owner direction)
-- Status: BATCH 27C fully closed; production Sentry live proof verified
+- Last Update: 2026-05-21
+- Active Batch: None (next suggested: BATCH 100A - Full Dashboard & Role Functional Audit)
+- Status: Plan-to-100 reconciliation completed; no runtime code changed in this planning pass
 
+## Update 2026-05-21 — PLAN 100 Readiness Audit & Execution Plan
+- Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`
+- Status: `Fully closed (documentation/reconciliation only)`
+- Created current 100% readiness plan: `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
+- Created external dependency register: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
+- Key conclusion: project is strong for controlled pilot, but 100% readiness still requires dashboard-wide functional audit, smoke secrets, Tap live/sandbox proof, WhatsApp provider proof if required, backup/restore proof, and scale retest after Render/Mongo upgrades.
+- Next suggested batch: `BATCH 100A — Full Dashboard & Role Functional Audit`.
 ## Delivered In This Update
 - Added real Sentry runtime integration in backend (`@sentry/node`) and frontend (`@sentry/react`).
 - Wired backend error handler to report 5xx exceptions to Sentry with request context.
@@ -68,7 +75,7 @@
 - Report:
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next suggested:
-  - `BATCH 30D � Curriculum Import Scope Guard`
+  - `BATCH 30D — Curriculum Import Scope Guard`
 
 ## Update 2026-05-19 - BATCH 30D Final Closure
 - Batch: `BATCH 30D - Curriculum Import Scope Guard`
@@ -956,7 +963,7 @@
 - Report:
   - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank (Closed)
+## Update 2026-05-21 â€” FEATURE-8 Previous Years Question Bank (Closed)
 - Current status: `Fully closed`.
 - Delivered now:
   1. Backend contract for previous-years classification in questions (`examType`, `source`, `year`).
@@ -971,7 +978,7 @@
 - Report:
   - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-7 Subscription Flow Completion (Closed)
+## Update 2026-05-21 â€” FIX-7 Subscription Flow Completion (Closed)
 - Current status: `Fully closed`.
 - Delivered:
   1. New subscription APIs (create/status/cancel).
@@ -988,7 +995,7 @@
 - Report:
   - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-6R WhatsApp OTP Revalidation
+## Update 2026-05-21 â€” FIX-6R WhatsApp OTP Revalidation
 - Current status: `Blocked (Owner env required)`.
 - Verified now:
   - OTP code path ready in server routes/services.
@@ -997,7 +1004,7 @@
 - Report:
   - `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-5 Tap Payment Integration
+## Update 2026-05-21 â€” FIX-5 Tap Payment Integration
 - Current status: `Programmatically closed (live key dependent)`.
 - Delivered now:
   1. Real Tap charge initiation endpoint.
@@ -1008,7 +1015,7 @@
 - Report:
   - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-3A Smoke Auth Automation Hardening
+## Update 2026-05-21 â€” FIX-3A Smoke Auth Automation Hardening
 - Current status: `Programmatically closed (secret dependent)`.
 - Delivered now:
   1. smoke auto-auth wrappers for operational + sentry live proof.
@@ -1018,7 +1025,7 @@
 - Report:
   - `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-9A Scale Revalidation
+## Update 2026-05-21 â€” FIX-9A Scale Revalidation
 - Current status: `Blocked (infra + secrets prerequisites)`.
 - Revalidated with current production evidence:
   - hardening/readiness pass
@@ -1027,7 +1034,7 @@
 - Report:
   - `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 — ADMIN OPS Health Endpoint
+## Update 2026-05-21 â€” ADMIN OPS Health Endpoint
 - Current status: `Fully closed`.
 - Delivered now:
   1. `/api/operations/health` no longer returns 404.
@@ -1041,7 +1048,7 @@
 - Report:
   - `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`
 
-## Update 2026-05-21 � FIX Admin Course Save (CSRF Retry Hardening)
+## Update 2026-05-21 — FIX Admin Course Save (CSRF Retry Hardening)
 - Current status: `Fully closed`.
 - Delivered:
   1. Hardened frontend API retry path for raw-text 403 CSRF failures.
@@ -1055,7 +1062,7 @@
 - Report:
   - `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`
 
-## Update 2026-05-21 � Admin Course Identity Stability
+## Update 2026-05-21 — Admin Course Identity Stability
 - Current status: `Fully closed`.
 - Delivered:
   1. Unified course identity resolution (`id/_id`) in store lifecycle.
@@ -1069,7 +1076,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`
 
-## Update 2026-05-21 � Course Player Quiz ID Fallback
+## Update 2026-05-21 — Course Player Quiz ID Fallback
 - Current status: `Fully closed`.
 - Delivered:
   1. Added fallback resolver for embedded course quiz ids in `CoursePlayer`.
@@ -1082,7 +1089,7 @@
 - Report:
   - `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 � Course Overview Navigation + Files Actions
+## Update 2026-05-21 — Course Overview Navigation + Files Actions
 - Current status: `Fully closed`.
 - Delivered:
   1. Fixed lesson navigation to open the exact clicked lesson.
@@ -1095,7 +1102,7 @@
 - Report:
   - `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`
 
-## Update 2026-05-21 � Admin Course Actions Await/Error Handling
+## Update 2026-05-21 — Admin Course Actions Await/Error Handling
 - Current status: `Fully closed`.
 - Delivered:
   1. Awaited admin course mutations for approve/reject/publish/visibility flows.
@@ -1108,7 +1115,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`
 
-## Update 2026-05-21 � Course Files Tab Runtime Fixes
+## Update 2026-05-21 — Course Files Tab Runtime Fixes
 - Current status: `Fully closed`.
 - Delivered:
   1. Dynamic file type label in course files tab.

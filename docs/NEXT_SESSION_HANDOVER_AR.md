@@ -1,4 +1,4 @@
-﻿# ملف تسليم الجلسة التالية (مرجع إلزامي)
+# ملف تسليم الجلسة التالية (مرجع إلزامي)
 
 آخر تحديث: 2026-05-20 (تحديث تسليم شامل للحساب التالي)
 
@@ -7,8 +7,8 @@
 ## 1) قاعدة العمل الإلزامية
 
 عند قول المالك "اكمل" يتم العمل على دفعة واحدة فقط حتى الإغلاق الكامل، ولا يتم بدء دفعة جديدة قبل الإغلاق النهائي للدفعة الحالية.
-  
-قاعدة تشغيل حاكمة (إلزامية):  
+
+قاعدة تشغيل حاكمة (إلزامية):
 **كلمة "اكمل" = استمرار تلقائي بدون توقف حتى إغلاق الدفعة بالكامل (تنفيذ + فحوص + توثيق + رفع + نشر + تحقق حي).**
 
 الإغلاق الكامل لأي دفعة يعني:
@@ -69,7 +69,7 @@
 
 ## 2.2) ما تم تنفيذه في إصلاح الدورات (Pending deploy verification)
 
-1. **إصلاح فلترة عرض الدورات في صفحة التعلّم**  
+1. **إصلاح فلترة عرض الدورات في صفحة التعلّم**
    ملف: `pages/SubjectLearningPage.tsx`
    - إضافة دوال تطبيع:
      - `resolveCourseSubjectId(...)`
@@ -79,7 +79,7 @@
      - `subject` النصي القديم (اسم/معرّف).
    - النتيجة المتوقعة: الدورة لا تختفي من صفحة التعلّم إذا كانت محفوظة بصيغة قديمة.
 
-2. **تقليل ازدواج حقول إعدادات الدورة**  
+2. **تقليل ازدواج حقول إعدادات الدورة**
    ملف: `dashboards/admin/AdvancedCourseBuilder.tsx`
    - معالجة التكرار في واجهة الإعدادات بحيث لا تظهر حقول المسار/المادة مكررة.
    - إضافة تطبيع آمن لقيم:
@@ -213,11 +213,11 @@
 
 هذه البيانات يجب أن تبقى دائمًا واضحة للحساب التالي (بدون إدراج أي مفاتيح):
 
-1. **GitHub Repo**  
+1. **GitHub Repo**
    - `https://github.com/nasef6464/almeaacodax`
-2. **Frontend Production (Vercel)**  
+2. **Frontend Production (Vercel)**
    - `https://almeaacodax.vercel.app/`
-3. **Backend Production (Render API base)**  
+3. **Backend Production (Render API base)**
    - `https://almeaacodax-k2ux.onrender.com/api`
 4. **Health Endpoint**
    - `https://almeaacodax-k2ux.onrender.com/api/health`
@@ -1218,3 +1218,54 @@
 - GitHub push: pending this closure commit
 - Vercel/Render deploy: pending push trigger
 - Live verification: pending deployment completion
+---
+
+## تحديث 2026-05-21 — خطة الوصول إلى 100% بعد مصالحة الحساب السابق
+
+### الحالة الحالية
+- لا توجد دفعة تنفيذية مفتوحة الآن.
+- تم إنشاء خطة محدثة للوصول إلى جاهزية 100%:
+  - `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
+- تم فصل البنود التي تحتاج دفع/ربط خارجي في ملف مستقل:
+  - `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
+
+### أول دفعة تالية مقترحة
+`BATCH 100A — Full Dashboard & Role Functional Audit`
+
+### هدف BATCH 100A
+فحص عميق لكل اللوحات والأدوار والوظائف بدون إصلاحات داخل نفس الدفعة:
+- Admin
+- Student
+- Teacher
+- Supervisor
+- Parent
+- Public website
+- Course builder / curriculum builder / course player
+- Payments / subscriptions / access
+- Notifications / integrations / reports / health
+
+### قاعدة العمل الإلزامية
+عندما يقول المالك “اكمل” داخل دفعة مفتوحة:
+- الاستمرار حتى الإغلاق الكامل للدفعة الحالية فقط.
+- عدم فتح دفعة ثانية.
+- تشغيل الفحوص المطلوبة.
+- تحديث report + ledger + `PROJECT_STATUS.md` + هذا handover.
+- رفع GitHub عند وجود تغييرات مقصودة.
+- انتظار نشر Vercel/Render عند الحاجة.
+- فحص الرابط الإنتاجي `https://almeaacodax.vercel.app/` والمتصفح الداخلي للصفحات المتأثرة.
+- أي تحقق لا يمكن عمله بسبب أسرار/مفاتيح/اشتراك خارجي يوثق كـ Blocked ولا يُحسب Fully closed.
+
+### بنود خارجية مفصولة
+راجع دائمًا:
+`EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
+
+أهمها:
+- Render paid upgrade قبل load retest الكبير.
+- MongoDB Atlas M2 أو أعلى قبل 500/1000 users readiness.
+- GitHub smoke secrets لإغلاق post-deploy automation.
+- Tap sandbox/live keys لإثبات الدفع الحي.
+- WhatsApp provider env لإثبات OTP حي.
+- Backup/restore drill قبل launch عام.
+
+### تنبيه مهم للحساب القادم
+يوجد worktree dirty قبل هذه المصالحة. لا تعمل reset/revert. افصل أي دفعة جديدة عن التعديلات القديمة، واذكر الملفات المعدلة مسبقًا في تقرير كل دفعة.

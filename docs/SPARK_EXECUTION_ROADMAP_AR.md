@@ -1,4 +1,4 @@
-﻿# ????? ????? SPARK (?????? ???????)
+# ????? ????? SPARK (?????? ???????)
 
 ## ?????
 
@@ -360,12 +360,12 @@
 - Batch 14 (Content Bootstrap Split Plan) completed as a planning-only batch.
 - Created report: CONTENT_BOOTSTRAP_SPLIT_PLAN_2026-05-14_AR.md.
 - Confirmed current bootstrap architecture and documented phased split approach for Batch 15 without runtime risk.
-- Validation passed: 
-pm --prefix server run build, 
-pm run typecheck, 
-pm run build, 
-pm run smoke:data-visibility-regression, 
-pm run smoke:performance, 
+- Validation passed:
+pm --prefix server run build,
+pm run typecheck,
+pm run build,
+pm run smoke:data-visibility-regression,
+pm run smoke:performance,
 pm run smoke:health-readiness.
 - Batch 14 status is now **Fully closed**.
 
@@ -382,11 +382,11 @@ pm run smoke:health-readiness.
 - Completed auth-cookie migration planning batch from actual code state.
 - Captured phased rollout (prepare -> transition -> removal -> hardening) with rollback criteria.
 - No runtime/auth behavior changes were applied in this batch.
-- Checks passed: 
-pm --prefix server run build, 
-pm run typecheck, 
-pm run build, 
-pm run smoke:auth-cookie, 
+- Checks passed:
+pm --prefix server run build,
+pm run typecheck,
+pm run build,
+pm run smoke:auth-cookie,
 pm run smoke:health-readiness.
 - Batch 16 status is now **Fully closed**.
 
@@ -403,11 +403,11 @@ pm run smoke:health-readiness.
 - Completed SEO BrowserRouter migration planning batch from actual code state.
 - Captured phased safe migration path (prepare -> switch router -> update seo artifacts -> hardening).
 - Confirmed current HashRouter + hash-based sitemap behavior and existing Vercel rewrites readiness.
-- Validation passed: 
-pm --prefix server run build, 
-pm run typecheck, 
-pm run build, 
-pm run smoke:seo, 
+- Validation passed:
+pm --prefix server run build,
+pm run typecheck,
+pm run build,
+pm run smoke:seo,
 pm run smoke:health-readiness.
 - Batch 18 status is now **Fully closed**.
 
@@ -627,3 +627,28 @@ pm run smoke:health-readiness.
   - training visibility
   - exam visibility
 - Next target: await owner direction.
+
+## Update 2026-05-21 — Roadmap To 100% Readiness
+
+### Next Required Sequence
+1. `BATCH 100A — Full Dashboard & Role Functional Audit`
+   - Audit only, no fixes.
+   - Inspect every dashboard and role: admin/student/teacher/supervisor/parent/public.
+   - Include course builder/curriculum builder/course player linkage audit.
+2. `BATCH 100B — Course Builder & Course Player Linkage Closure`
+   - Fix only issues proven by 100A around path/subject/skills duplication, lesson/quiz import filtering, and student course visibility/player flow.
+3. `BATCH 100C — Smoke Secrets & Post-Deploy Automation Closure`
+   - Close GitHub/post-deploy admin-auth smoke dependency.
+4. `BATCH 100D — Tap Sandbox Transaction Closure`
+   - Close payment live/sandbox proof after owner provides Tap keys.
+5. `BATCH 100E — WhatsApp OTP Live Closure`
+   - Close WhatsApp OTP only after provider credentials exist.
+6. `BATCH 100F — Backup/Restore Production Drill`
+   - Prove safe backup/restore path.
+7. `BATCH 100G — Scale Upgrade & Load Retest`
+   - Run after Render/Mongo upgrades and smoke auth secrets.
+8. `BATCH 100H — Final Launch Readiness Decision`
+   - Produce final Pilot/Paid Beta/Public Launch decision.
+
+### External Dependency Register
+Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/owner-config prerequisites. Do not mix these blockers with code defects.
