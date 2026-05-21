@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Activity,
     Bell,
@@ -227,6 +227,14 @@ export const AdminDashboard: React.FC = () => {
         }, 600);
         return () => window.clearTimeout(timer);
     }, [activeTab, user.role]);
+
+    const setActiveAdminTab = useCallback((tabId: string) => {
+        setActiveTab(tabId);
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tabId);
+        window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    }, []);
 
     const librarySubjectOptions = useMemo(
         () =>
@@ -803,7 +811,7 @@ export const AdminDashboard: React.FC = () => {
             value: supervisorScopeSummary.followUpCount,
             hint: 'استخدمه لقياس فصل أو مدرسة أو طلاب محددين.',
             actionLabel: 'توجيه اختبار',
-            action: () => setActiveTab('quizzes'),
+            action: () => setActiveAdminTab('quizzes'),
             tone: 'emerald',
         },
         {
@@ -811,7 +819,7 @@ export const AdminDashboard: React.FC = () => {
             value: supervisorScopeSummary.groupCount,
             hint: 'راجع الفصول والطلاب المرتبطين بحسابك.',
             actionLabel: 'بوابة المدرسة',
-            action: () => setActiveTab('school-portal'),
+            action: () => setActiveAdminTab('school-portal'),
             tone: 'indigo',
         },
         {
@@ -819,7 +827,7 @@ export const AdminDashboard: React.FC = () => {
             value: supervisorScopeSummary.studentCount,
             hint: 'جهز قائمة الطلاب من التقرير ثم أرسل تنبيهًا مناسبًا.',
             actionLabel: 'قائمة الطلاب',
-            action: () => setActiveTab('school-portal'),
+            action: () => setActiveAdminTab('school-portal'),
             tone: 'amber',
         },
     ], [supervisorScopeSummary.followUpCount, supervisorScopeSummary.groupCount, supervisorScopeSummary.studentCount, supervisorScopeSummary.weakStudentsCount]);
@@ -956,7 +964,7 @@ export const AdminDashboard: React.FC = () => {
             {enhancedMenuItems.map((item) => (
                 <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => setActiveAdminTab(item.id)}
                     className={`w-full flex items-center gap-3 px-6 py-3 transition-colors ${
                         activeTab === item.id
                             ? 'bg-amber-50 text-amber-600 font-bold border-r-4 border-amber-500'
@@ -1059,7 +1067,7 @@ export const AdminDashboard: React.FC = () => {
                                 </div>
                                 <p className="min-h-[48px] text-right text-xs leading-6 text-gray-500">{item.description}</p>
                                 <button
-                                    onClick={() => setActiveTab(item.tab)}
+                                    onClick={() => setActiveAdminTab(item.tab)}
                                     className="mt-4 w-full rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
                                 >
                                     {item.actionLabel}
@@ -1177,16 +1185,16 @@ export const AdminDashboard: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <button onClick={() => setActiveTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                            <button onClick={() => setActiveAdminTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                 المدارس والمجموعات
                             </button>
                             <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
                                 التقارير
                             </a>
-                            <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
+                            <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
                                 توجيه اختبار
                             </button>
-                            <button onClick={() => setActiveTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
+                            <button onClick={() => setActiveAdminTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
                                 رسالة أو إعلان
                             </button>
                         </div>
@@ -1219,7 +1227,7 @@ export const AdminDashboard: React.FC = () => {
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
                                 <h4 className="text-sm font-black text-gray-900">مدارس تحتاج ضبط</h4>
-                                <button onClick={() => setActiveTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
+                                <button onClick={() => setActiveAdminTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
                                     إدارة المدارس
                                 </button>
                             </div>
@@ -1484,10 +1492,10 @@ export const AdminDashboard: React.FC = () => {
                                 <a href="#/reports" className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                     التقارير
                                 </a>
-                                <button onClick={() => setActiveTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
+                                <button onClick={() => setActiveAdminTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
                                     الطلاب والمجموعات
                                 </button>
-                                <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
+                                <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
                                     توجيه اختبار
                                 </button>
                             </div>
@@ -1561,7 +1569,7 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                                     <div className="mb-3 flex items-center justify-between">
                                         <h4 className="text-sm font-black text-gray-900">أضعف المهارات</h4>
-                                        <button onClick={() => setActiveTab('skills')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">المهارات</button>
+                                        <button onClick={() => setActiveAdminTab('skills')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">المهارات</button>
                                     </div>
                                     <div className="space-y-3">
                                         {supervisorScopeSummary.weakestSkills.length ? supervisorScopeSummary.weakestSkills.map((skill) => (
@@ -1586,7 +1594,7 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                                     <div className="mb-3 flex items-center justify-between">
                                         <h4 className="text-sm font-black text-gray-900">المجموعات</h4>
-                                        <button onClick={() => setActiveTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
+                                        <button onClick={() => setActiveAdminTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
                                     </div>
                                     <div className="space-y-3">
                                         {supervisorScopeSummary.groupSnapshots.length ? supervisorScopeSummary.groupSnapshots.map((group) => (

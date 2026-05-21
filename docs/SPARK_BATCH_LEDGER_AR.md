@@ -1599,3 +1599,13 @@
 - Render/API: PASS, health readiness smoke passed.
 - Browser verification: PASS, live pre-save preview exists in production admin homepage settings after cache cleanup.
 - Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+
+## Update 2026-05-21 - BATCH 100N
+- Batch: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: admin dashboard tab/action navigation only.
+- Key change: admin tab buttons now persist target tab in URL query via `setActiveAdminTab`, making deep-link/browser verification reliable.
+- Checks PASS: `npm run smoke:batch100n-admin-tab-e2e`, `npm run typecheck`, `npm --prefix server run build`, `npm run build`, `npm run smoke:batch100m-homepage-live-preview`, `npm run smoke:batch100k-homepage-admin-sweep`.
+- Production verification: pending push/deploy/browser closure.
+- Next suggested: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.

@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None
+- Active Batch: BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep
 - Last Closed Batch: BATCH 100M - Homepage Live Preview Before Save
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
 
 
 
@@ -1603,3 +1603,14 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Browser verification: PASS, admin homepage settings contain the live pre-save preview text after cache/service-worker cleanup.
 - Report: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+
+## Update 2026-05-21 - BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep
+- Batch: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: admin dashboard tab/action navigation only; no UI redesign and no unrelated feature work.
+- Delivered: `setActiveAdminTab` now updates both React state and URL `?tab=...`; sidebar/action shortcuts use URL-aware navigation; added `npm run smoke:batch100n-admin-tab-e2e`.
+- Checks PASS: batch100n smoke, typecheck, server build, frontend build, BATCH 100M regression smoke, BATCH 100K regression smoke.
+- Production verification: pending until GitHub push, Vercel strict smoke, Render health, and in-app browser verification.
+- Report: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR.md`.
+- Next suggested after final closure: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.

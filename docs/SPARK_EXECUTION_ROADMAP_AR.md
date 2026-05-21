@@ -804,3 +804,11 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - `BATCH 100M - Homepage Live Preview Before Save`: Fully closed.
 - Production evidence: GitHub commit `9dfb923`, Vercel retrigger commit `c2001fd`, Vercel strict smoke PASS, Render health PASS, in-app browser PASS.
 - Recommended next: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+
+## Update 2026-05-21 - After BATCH 100N Programmatic Closure
+- `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep` is programmatically closed and awaits production verification.
+- Implemented: URL-aware admin tab/action navigation using `?tab=...` plus a dedicated contract smoke.
+- Required final closure: push, Vercel strict smoke, Render health, and in-app browser verification of admin tab navigation.
+- Next suggested after closure: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
+- Owner requests queued for future scoped batches: course visibility/linkage in learning pages, lesson/quiz recall filters, question bank add/list verification, and homepage/course-player visual settings QA.
