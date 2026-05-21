@@ -1269,3 +1269,40 @@
 
 ### تنبيه مهم للحساب القادم
 يوجد worktree dirty قبل هذه المصالحة. لا تعمل reset/revert. افصل أي دفعة جديدة عن التعديلات القديمة، واذكر الملفات المعدلة مسبقًا في تقرير كل دفعة.
+
+---
+
+# تحديث تسليم إلزامي — Deep Audit V13 — 2026-05-21
+
+## الحالة الحالية بعد الفحص
+- تم تنفيذ فحص عميق شامل Audit only بدون تغيير كود الإنتاج.
+- النتيجة الفعلية: `79%`.
+- ملفات الحقيقة الجديدة التي يجب قراءتها أولاً في أي حساب قادم:
+  1. `DEEP_AUDIT_REPORT_AR.md`
+  2. `UPDATED_PLAN_TO_100_AR.md`
+  3. `BUGS_FOUND_AR.md`
+  4. `PROJECT_STATUS.md`
+  5. `docs/SPARK_BATCH_LEDGER_AR.md`
+
+## قاعدة العمل المستمرة
+- عندما يقول المالك "اكمل"، لا تتوقف حتى إغلاق الدفعة الحالية بالكامل.
+- الإغلاق الكامل يعني: قراءة الحالة، فحص git، تنفيذ دفعة واحدة فقط، تشغيل build/smoke، تحديث التقارير، commit/push، ثم تحقق حي من Vercel وRender عند وجود تغيير كود.
+- لا تكتب `Fully closed` إذا لم ينجح التحقق الإنتاجي المطلوب.
+
+## أول دفعة تنفيذية بعد هذا الفحص
+`BATCH 100A — Quiz Result Answer Exposure Hardening`
+
+السبب:
+- `server/src/routes/quiz.routes.ts` يخزن ويرجع `correctOptionIndex` و`explanation` ضمن `questionReview`.
+- `server/src/routes/quizResults.routes.ts` يرجع تفاصيل النتيجة raw.
+- `pages/Results.tsx` يعرض الإجابة الصحيحة والشرح.
+- هذا خطر أمني أعلى من أي تحسين UX.
+
+## ملاحظات إنتاجية مهمة
+- أثناء الفحص، health الإنتاج كان جاهزًا وRedis ready.
+- لكن commit الذي ظهر من Render لم يطابق آخر `origin/main` وقت الفحص، لذلك أي دفعة تنفيذية قادمة يجب أن تتحقق من تطابق النشر قبل إعلان `Fully closed`.
+- فحوص `smoke:operational` و`sentry-live-proof` تحتاج `SMOKE_ADMIN_TOKEN` صالح في البيئة التي تشغلها. لا تكتب التوكن في ملفات المشروع.
+
+## ملفات خارجية/مدفوعة
+- البنود التي تحتاج دفع أو ربط خارجي موجودة في: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`.
+- لا تخلط هذه البنود مع إصلاحات الكود الداخلية.

@@ -1143,3 +1143,18 @@
   - `npm run smoke:course-visibility` PASS
 - Report:
   - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
+
+## فحص عميق شامل — 2026-05-21
+- Batch/Audit: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`
+- Status: `Audit completed - no feature code changed`
+- المنهجية: 9 مراحل فحص (handover/status + structure + smoke suite + models + routes + frontend + security + flows + performance/CI).
+- النتيجة الفعلية بعد الفحص: `79%`.
+- أبرز اكتشاف حرج: نتائج الاختبارات ما زالت تكشف `correctOptionIndex` و`explanation` في ردود الطالب/تفاصيل النتيجة، ويجب بدء `BATCH 100A` قبل أي تطوير تجميلي.
+- فحوص أساسية: 18/18 PASS.
+- فحوص إضافية فاشلة بسبب secret محلي مفقود: `smoke:operational`, `smoke:sentry-live-proof`.
+- إنتاج Render: health جاهز وRedis ready، لكن commit الإنتاج الذي ظهر في health لا يطابق آخر `origin/main` وقت الفحص.
+- ملفات التقرير:
+  - `DEEP_AUDIT_REPORT_AR.md`
+  - `UPDATED_PLAN_TO_100_AR.md`
+  - `BUGS_FOUND_AR.md`
+- الدفعة التالية المقترحة: `BATCH 100A — Quiz Result Answer Exposure Hardening`.

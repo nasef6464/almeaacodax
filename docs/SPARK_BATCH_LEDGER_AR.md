@@ -1278,3 +1278,22 @@
 - Report: `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
 - External blockers file: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
 - Next suggested: `BATCH 100A — Full Dashboard & Role Functional Audit`.
+
+## جلسة فحص عميق شامل V13 — 2026-05-21
+- الاسم: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`.
+- النوع: Audit only، بدون إصلاح كود أو تغيير UI.
+- الحالة: `Audit completed`.
+- النتيجة: `79%` جاهزية فعلية بعد الفحص.
+- البنية المرصودة: 237 TS/TSX، 41 model، 20 route file، 74 smoke script.
+- الفحوص الأساسية: 18/18 PASS.
+- الفحوص الإضافية: `smoke:operational` و`smoke:sentry-live-proof` FAIL بسبب غياب `SMOKE_ADMIN_TOKEN` في البيئة المحلية.
+- أهم الأخطاء المؤكدة:
+  1. تسريب `correctOptionIndex/explanation` في نتائج الاختبارات.
+  2. RBAC/scope واسع في `discussions.routes.ts` للمعلم/المشرف.
+  3. نصوص عربية تالفة في `App.tsx`, `pages/CourseView.tsx`, `server/src/routes/payment.routes.ts`.
+  4. عدم تطابق commit الإنتاج مع آخر GitHub main وقت الفحص.
+- ملفات التسليم:
+  - `DEEP_AUDIT_REPORT_AR.md`
+  - `UPDATED_PLAN_TO_100_AR.md`
+  - `BUGS_FOUND_AR.md`
+- القرار: لا تبدأ إصلاحات متفرقة. أول دفعة تنفيذية مقترحة هي `BATCH 100A — Quiz Result Answer Exposure Hardening`.
