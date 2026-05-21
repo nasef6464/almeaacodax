@@ -1107,3 +1107,16 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`
+
+## Update 2026-05-21 — Course Files Tab Runtime Fixes
+- Current status: `Fully closed`.
+- Delivered:
+  1. Dynamic file type label in course files tab.
+  2. Real download action instead of open-only behavior.
+- Verification (this run):
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:course-visibility` PASS
+- Report:
+  - `BATCH_COURSE_FILES_TAB_RUNTIME_FIXES_2026-05-21_AR.md`

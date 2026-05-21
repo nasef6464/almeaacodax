@@ -1190,3 +1190,12 @@
 
 ## Next Batch
 - تدقيق شامل لمسار "إدارة ملفات الدورة" و"اختبارات الدورة" داخل الباني مع سيناريو حفظ-تحديث-حذف-refresh للتأكد من الثبات الكامل.
+
+## Update 2026-05-21 — Course Files Tab Runtime Fixes
+- الحالة: `Fully closed`.
+- تم إصلاح تبويب ملفات الدورة: نوع الملف ديناميكي + زر تحميل فعلي.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:frontend:strict`, `smoke:course-visibility`).
+- التقرير: `BATCH_COURSE_FILES_TAB_RUNTIME_FIXES_2026-05-21_AR.md`.
+
+## Next Batch
+- تدقيق عميق لمسارات إدارة الدورات بصريًا (اعتماد/نشر/إظهار/تحديث) مع إعادة فحص ما بعد refresh على سيناريوهات متعددة.

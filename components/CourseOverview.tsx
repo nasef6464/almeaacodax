@@ -201,6 +201,27 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         // Optionally show a success message or redirect
     };
 
+    const getFileTypeLabel = (type?: string) => {
+        const normalized = String(type || '').toLowerCase();
+        if (!normalized) return 'FILE';
+        if (normalized === 'pdf') return 'PDF';
+        if (normalized === 'doc' || normalized === 'docx') return 'DOC';
+        if (normalized === 'image' || normalized === 'jpg' || normalized === 'jpeg' || normalized === 'png' || normalized === 'webp') return 'IMAGE';
+        return normalized.toUpperCase();
+    };
+
+    const triggerFileDownload = (url: string, fileName?: string) => {
+        if (!url) return;
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        if (fileName) {
+            anchor.download = fileName;
+        }
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.click();
+    };
+
     const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
         const directId = String(lesson.quizId || '').trim();
         if (directId) return directId;
@@ -555,7 +576,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">{file.title}</p>
-                                        <p className="text-[10px] text-gray-400">{file.size} • PDF</p>
+                                        <p className="text-[10px] text-gray-400">{file.size} - {getFileTypeLabel(file.type)}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -567,7 +588,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                         <Eye size={18} />
                                     </button>
                                     <button
-                                        onClick={() => file.url && openExternalUrl(file.url)}
+                                        onClick={() => file.url && triggerFileDownload(file.url, file.title)}
                                         disabled={!file.url}
                                         className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                     >
@@ -827,4 +848,6 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         </div>
     );
 };
+
+
 
