@@ -1118,3 +1118,20 @@
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX-7 Subscription Flow Completion (Final)
+- Status: `Fully closed`.
+- Implemented:
+  - Added `POST /api/payments/subscribe`.
+  - Added `GET /api/payments/subscription`.
+  - Added `DELETE /api/payments/subscription`.
+  - Added subscription request type in payment model/flow and activation on approved payment review.
+- Verification:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`.

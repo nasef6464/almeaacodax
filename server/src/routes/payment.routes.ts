@@ -60,6 +60,14 @@ const paymentRequestCreateSchema = z.object({
   notes: z.string().optional(),
 });
 
+const subscriptionPlanSchema = z.enum(["basic", "premium", "annual"]);
+
+const subscriptionRequestSchema = z.object({
+  plan: subscriptionPlanSchema,
+  paymentMethod: z.enum(["card", "transfer", "wallet"]).default("card"),
+  notes: z.string().max(300).optional(),
+});
+
 const paymentRequestReviewSchema = z.object({
   status: z.enum(["approved", "rejected", "cancelled"]),
   reviewerNotes: z.string().optional(),
@@ -214,6 +222,12 @@ const PAYMENT_ERRORS = {
   discountApprovalFailedDuringReview: "تعذر اعتماد كود الخصم أثناء المراجعة",
   discountNoLongerAvailableForApproval: "كود الخصم لم يعد متاحًا للاعتماد",
 } as const;
+
+const SUBSCRIPTION_PLANS: Record<z.infer<typeof subscriptionPlanSchema>, { label: string; amount: number; currency: string; durationDays: number; userPlan: "free" | "premium" }> = {
+  basic: { label: "Basic Monthly", amount: 49, currency: "SAR", durationDays: 30, userPlan: "premium" },
+  premium: { label: "Premium Monthly", amount: 99, currency: "SAR", durationDays: 30, userPlan: "premium" },
+  annual: { label: "Annual", amount: 799, currency: "SAR", durationDays: 365, userPlan: "premium" },
+};
 
 const sanitizeSettingsForPublic = (settings: any) => ({
   key: settings.key,
@@ -539,6 +553,31 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
   gatewayProvider?: string;
   gatewayTransactionId?: string;
 }) => {
+  if (updatedRequest.itemType === "subscription") {
+    const plan = String(updatedRequest.itemId || "").replace(/^subscription_/, "") as z.infer<typeof subscriptionPlanSchema>;
+    const selectedPlan = SUBSCRIPTION_PLANS[plan];
+    if (!selectedPlan) {
+      const user = await UserModel.findById(updatedRequest.userId).lean();
+      return { user, grant: null };
+    }
+    const existingUser = await UserModel.findById(updatedRequest.userId).select("subscription.expiresAt").lean();
+    const now = Date.now();
+    const currentExpiry = Number(new Date((existingUser as any)?.subscription?.expiresAt || 0).getTime()) || 0;
+    const base = currentExpiry > now ? currentExpiry : now;
+    const expiresAt = new Date(base + selectedPlan.durationDays * 24 * 60 * 60 * 1000);
+    const user = await UserModel.findByIdAndUpdate(
+      updatedRequest.userId,
+      {
+        $set: {
+          "subscription.plan": selectedPlan.userPlan,
+          "subscription.expiresAt": expiresAt,
+        },
+      },
+      { new: true },
+    ).lean();
+    return { user, grant: null };
+  }
+
   const packageId = updatedRequest.packageId || (updatedRequest.itemType === "package" ? updatedRequest.itemId : undefined);
   const courseIds = [
     ...(updatedRequest.itemType === "course" ? [updatedRequest.itemId] : []),
@@ -577,6 +616,131 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
 };
 
 export const paymentRouter = Router();
+
+paymentRouter.get(
+  "/subscription",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const user = await UserModel.findById(req.authUser?.id).select("subscription").lean();
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+    const latestRequests = await PaymentRequestModel.find({
+      userId: String(req.authUser?.id),
+      itemType: "subscription",
+    })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
+
+    return res.json({
+      subscription: user.subscription || { plan: "free", expiresAt: null },
+      plans: SUBSCRIPTION_PLANS,
+      requests: latestRequests,
+    });
+  }),
+);
+
+paymentRouter.post(
+  "/subscribe",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = subscriptionRequestSchema.parse(req.body);
+    const user = await UserModel.findById(req.authUser?.id).select("name email subscription").lean();
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    const pendingExisting = await PaymentRequestModel.findOne({
+      userId: String(req.authUser?.id),
+      itemType: "subscription",
+      itemId: `subscription_${payload.plan}`,
+      status: "pending",
+    }).lean();
+    if (pendingExisting) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "يوجد طلب اشتراك معلق بالفعل لنفس الخطة",
+        request: pendingExisting,
+      });
+    }
+
+    const planDef = SUBSCRIPTION_PLANS[payload.plan];
+    const created = await PaymentRequestModel.create({
+      id: `subreq_${Date.now()}`,
+      userId: String(req.authUser?.id),
+      userName: user.name || "",
+      userEmail: user.email || "",
+      itemType: "subscription",
+      itemId: `subscription_${payload.plan}`,
+      itemName: `Subscription - ${planDef.label}`,
+      packageId: "",
+      includedCourseIds: [],
+      currency: planDef.currency,
+      paymentMethod: payload.paymentMethod,
+      transferReference: "",
+      walletNumber: "",
+      receiptUrl: "",
+      paymentProviderCode: "subscription_manual",
+      paymentGatewayMode: "manual_review",
+      paymentCountry: "",
+      notes: payload.notes || "",
+      originalAmount: planDef.amount,
+      discountAmount: 0,
+      discountCodeId: "",
+      amount: planDef.amount,
+      discountCode: "",
+      status: "pending",
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      request: created,
+      plan: payload.plan,
+      currentSubscription: user.subscription || { plan: "free", expiresAt: null },
+    });
+  }),
+);
+
+paymentRouter.delete(
+  "/subscription",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const user = await UserModel.findByIdAndUpdate(
+      req.authUser?.id,
+      {
+        $set: {
+          "subscription.plan": "free",
+          "subscription.expiresAt": null,
+        },
+      },
+      { new: true },
+    ).select("subscription").lean();
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    await PaymentRequestModel.updateMany(
+      {
+        userId: String(req.authUser?.id),
+        itemType: "subscription",
+        status: "pending",
+      },
+      {
+        $set: {
+          status: "cancelled",
+          reviewerNotes: "Cancelled by user",
+          reviewedBy: req.authUser?.id || "",
+          reviewedAt: Date.now(),
+        },
+      },
+    );
+
+    return res.json({
+      ok: true,
+      subscription: user.subscription || { plan: "free", expiresAt: null },
+    });
+  }),
+);
 
 paymentRouter.get(
   "/settings",

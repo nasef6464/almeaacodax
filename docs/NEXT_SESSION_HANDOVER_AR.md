@@ -1087,3 +1087,21 @@
 
 ## Next Batch
 - الرجوع إلى أول FIX/FEATURE ما يزال `Blocked` بسبب مفاتيح/ترقيات مالك (مثل FIX-3/FIX-5/FIX-6/FIX-9)، أو نبدأ دفعة تحسينات لوحة الإدارة بحسب أولوياتك.
+
+## Update 2026-05-21 — FIX-7 (Subscription Flow)
+- الحالة: `Fully closed`.
+- ما تم إغلاقه:
+  1. API إنشاء/قراءة/إلغاء الاشتراك.
+  2. ربط حالة الاشتراك مع دورة اعتماد الدفع الحالية.
+  3. تحديث تلقائي للخطة وتاريخ الانتهاء عند اعتماد الطلب.
+- فحوص الدفعة: PASS
+  - server build
+  - typecheck
+  - frontend build
+  - smoke:payment-providers
+  - smoke:payment-tampering
+  - smoke:health-readiness
+  - smoke:frontend:strict
+
+## Next Batch
+- FIX-6 WhatsApp OTP real sending (يتطلب إعداد مزود في البيئة الإنتاجية) أو FIX-5 Tap integration إذا وفرت المفاتيح.

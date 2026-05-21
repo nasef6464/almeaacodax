@@ -6,7 +6,7 @@ const paymentRequestSchema = new Schema(
     userId: { type: String, required: true, index: true },
     userName: { type: String, default: "" },
     userEmail: { type: String, default: "" },
-    itemType: { type: String, enum: ["course", "package", "skill", "test"], required: true },
+    itemType: { type: String, enum: ["course", "package", "skill", "test", "subscription"], required: true },
     itemId: { type: String, required: true },
     itemName: { type: String, required: true },
     packageId: { type: String, default: "" },

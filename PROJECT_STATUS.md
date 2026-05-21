@@ -970,3 +970,20 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-7 Subscription Flow Completion (Closed)
+- Current status: `Fully closed`.
+- Delivered:
+  1. New subscription APIs (create/status/cancel).
+  2. Subscription payment request path integrated into existing payment approval lifecycle.
+  3. Automatic subscription activation after approval with expiry extension.
+- Verification (this run):
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
