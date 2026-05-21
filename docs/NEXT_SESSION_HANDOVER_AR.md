@@ -1105,3 +1105,13 @@
 
 ## Next Batch
 - FIX-6 WhatsApp OTP real sending (يتطلب إعداد مزود في البيئة الإنتاجية) أو FIX-5 Tap integration إذا وفرت المفاتيح.
+
+## Update 2026-05-21 — FIX-6R (WhatsApp OTP)
+- الحالة: `Blocked (Owner env required)`.
+- ملخص: المسار البرمجي جاهز بالكامل، والإغلاق النهائي متوقف فقط على تفعيل مفاتيح مزود واتساب في Render.
+- فحوص الدفعة: PASS
+  - smoke:health-readiness
+  - smoke:notifications
+
+## Next Batch
+- FIX-5 Tap integration (تنفيذ/إغلاق برمجي) ثم انتظار مفاتيح Tap للتحقق الحي النهائي.

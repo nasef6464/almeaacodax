@@ -1135,3 +1135,13 @@
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX-6R WhatsApp OTP Revalidation
+- Status: `Blocked (Owner env required)`.
+- Revalidated:
+  - OTP routes exist and are wired.
+  - Provider infrastructure exists (cloud/http/console).
+  - `smoke:health-readiness` PASS
+  - `smoke:notifications` PASS
+- Remaining blocker: production WhatsApp provider env credentials.
+- Report: `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`.
