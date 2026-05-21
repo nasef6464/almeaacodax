@@ -26,6 +26,11 @@ interface CourseOverviewProps {
 
 type TabType = 'description' | 'syllabus' | 'tests' | 'qa' | 'files';
 
+const resolveCourseIconColor = (value: string | undefined, fallback: string) => {
+    const trimmed = String(value || '').trim();
+    return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed) ? trimmed : fallback;
+};
+
 export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContinue, initialTab = 'syllabus', onTabChange }) => {
     const [activeTab, setActiveTab] = useState<TabType>(initialTab);
     const [newQuestion, setNewQuestion] = useState('');
@@ -245,6 +250,22 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         onContinue(String(lesson.id || ''));
     };
 
+    const renderCourseLessonEdgeIcon = (position: 'start' | 'end') => {
+        const icon = String(position === 'start' ? course.lessonStartIcon || '' : course.lessonEndIcon || '').trim();
+        if (!icon) return null;
+
+        const color = resolveCourseIconColor(
+            position === 'start' ? course.lessonStartIconColor : course.lessonEndIconColor,
+            position === 'start' ? '#4f46e5' : '#f59e0b',
+        );
+
+        return (
+            <span className="inline-flex shrink-0 items-center justify-center text-sm font-black" style={{ color }}>
+                {icon}
+            </span>
+        );
+    };
+
     const handleCreateDiscussion = async () => {
         const trimmed = newQuestion.trim();
         if (!trimmed || discussionPosting) return;
@@ -375,7 +396,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                                     {lesson.type === 'quiz' ? <BarChart size={16} /> : <PlayCircle size={16} />}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-gray-700">{lesson.title}</p>
+                                                    <p className="text-sm font-bold text-gray-700 inline-flex items-center gap-1">
+                                                        {renderCourseLessonEdgeIcon('start')}
+                                                        <span>{lesson.title}</span>
+                                                        {renderCourseLessonEdgeIcon('end')}
+                                                    </p>
                                                     <p className="text-[10px] text-gray-400">{lesson.type === 'quiz' ? 'اختبار محاكي' : 'درس فيديو'}</p>
                                                 </div>
                                             </div>

@@ -2,9 +2,31 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Question Bank + Groups
-- Status: Fully closed after GitHub push, Vercel/Render production smoke, and in-app browser verification
+- Active Batch: BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings
+- Status: Programmatically closed, production verification pending
 
+## Update 2026-05-21 - BATCH 100J Homepage Branding + Course Lesson Icons
+- Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Scope: homepage Hero colors/third button + course lesson before/after icons with colors.
+- Delivered:
+  - Added optional Hero color fields and optional third CTA fields to frontend types, Mongo model, and backend validation.
+  - Added admin controls in `HomepageManager` for Hero colors and third button.
+  - Landing page now applies safe HEX colors and renders the third button only when configured.
+  - Added course-level lesson start/end icons and colors to Course schema/validation and both course builders.
+  - Course player and course overview now display configured lesson edge icons without changing layout direction.
+  - Added `npm run smoke:batch100j-homepage-branding-course-icons`.
+- Checks:
+  - `npm run smoke:batch100j-homepage-branding-course-icons` PASS after expected initial fail
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:homepage-hero` PASS
+  - `npm run smoke:batch100d-admin-course-flow` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run typecheck` PASS after standalone rerun with longer timeout; first parallel attempt timed out and was not counted
+- Production verification: pending until GitHub push, Vercel/Render deployment, frontend strict smoke, health smoke, and in-app browser verification.
+- Report: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR.md`
+- Next suggested after final closure: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`
 ## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
 - Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`
 - Status: `Fully closed`

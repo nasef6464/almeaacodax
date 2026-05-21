@@ -35,6 +35,10 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
     isPublished: false,
     fakeRating: 5.0,
     fakeStudentsCount: 0,
+    lessonStartIcon: '',
+    lessonStartIconColor: '',
+    lessonEndIcon: '',
+    lessonEndIconColor: '',
   });
   const selectedPathId = (courseData.pathId || '') as string;
   const selectedSubjectId = (courseData.subjectId || courseData.subject || '') as string;
@@ -392,6 +396,53 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                       })}
                     </select>
                     <p className="text-xs text-gray-500 mt-1">هذه المهارات تستخدم في التحليل والتوصيات، ولا تختلط بموضوعات التأسيس.</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">أيقونات الدروس في مشغل الدورة</h3>
+                  <p className="text-xs text-gray-500 mb-4">اكتب رمزًا اختياريًا قبل اسم الدرس وبعده، وحدد لون كل رمز بصيغة HEX مثل #4f46e5.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">أيقونة قبل اسم الدرس</label>
+                      <input
+                        type="text"
+                        value={courseData.lessonStartIcon || ''}
+                        onChange={(e) => handleBasicChange('lessonStartIcon', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="مثال: ▶"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">لون أيقونة البداية</label>
+                      <input
+                        type="text"
+                        value={courseData.lessonStartIconColor || ''}
+                        onChange={(e) => handleBasicChange('lessonStartIconColor', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="#4f46e5"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">أيقونة بعد اسم الدرس</label>
+                      <input
+                        type="text"
+                        value={courseData.lessonEndIcon || ''}
+                        onChange={(e) => handleBasicChange('lessonEndIcon', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="مثال: ★"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">لون أيقونة النهاية</label>
+                      <input
+                        type="text"
+                        value={courseData.lessonEndIconColor || ''}
+                        onChange={(e) => handleBasicChange('lessonEndIconColor', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="#f59e0b"
+                      />
+                    </div>
                   </div>
                 </div>
 

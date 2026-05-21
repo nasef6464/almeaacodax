@@ -1773,3 +1773,44 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - Do not stage unrelated existing dirty files in the next batch.
 - Next suggested batch: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
 - BATCH 100J scope requested by owner: homepage text/item colors, logo controls, optional third hero button, and before/after lesson icons with colors in courses.
+
+## Handover Update 2026-05-21 - BATCH 100J Programmatic Closure
+- Current batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`.
+- Current status: `Programmatically closed, production verification pending`.
+- Implemented:
+  - Homepage Hero optional colors and third button fields.
+  - Homepage model/validation/type updates.
+  - Admin HomepageManager controls for colors and third button.
+  - Course lesson start/end icon fields and colors.
+  - CourseBuilder and AdvancedCourseBuilder controls.
+  - CoursePlayer and CourseOverview rendering.
+  - New smoke command: `npm run smoke:batch100j-homepage-branding-course-icons`.
+- Local checks completed:
+  - `npm run smoke:batch100j-homepage-branding-course-icons` PASS after expected initial fail.
+  - `npm --prefix server run build` PASS.
+  - `npm run smoke:homepage-hero` PASS.
+  - `npm run smoke:batch100d-admin-course-flow` PASS.
+  - `npm run typecheck` PASS after rerun; first parallel run timed out.
+  - `npm run build` PASS.
+  - `npm run smoke:health-readiness` PASS.
+- Files to stage for this batch only:
+  - `types.ts`
+  - `server/src/models/HomepageSettings.ts`
+  - `server/src/routes/content.routes.ts`
+  - `server/src/models/Course.ts`
+  - `server/src/routes/course.routes.ts`
+  - `dashboards/admin/HomepageManager.tsx`
+  - `pages/Landing.tsx`
+  - `dashboards/admin/AdvancedCourseBuilder.tsx`
+  - `dashboards/admin/CourseBuilder.tsx`
+  - `components/CoursePlayer.tsx`
+  - `components/CourseOverview.tsx`
+  - `scripts/smoke-batch100j-homepage-branding-course-icons-contract.mjs`
+  - `package.json`
+  - `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR.md`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+- Do not stage unrelated dirty files already present in the worktree.
+- Final closure still requires: commit, push, Vercel/Render deploy verification, production smoke, in-app browser visual verification, then final closure docs update.

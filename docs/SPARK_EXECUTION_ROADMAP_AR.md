@@ -732,3 +732,18 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Optional third hero button beside existing two buttons.
   - Course lesson icon before/after lesson with configurable color.
   - No broad redesign and no unrelated dashboard changes.
+
+## Update 2026-05-21 - After BATCH 100J Programmatic Closure
+- `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Homepage Hero color fields and optional third CTA.
+  2. Backend persistence/validation for the new homepage fields.
+  3. Course-level lesson start/end icons and colors.
+  4. Rendering in CoursePlayer and CourseOverview.
+- Required final closure steps:
+  1. Push BATCH 100J commit to GitHub.
+  2. Verify Vercel frontend deployment and Render health.
+  3. Run production smoke checks.
+  4. Verify visually in the in-app browser.
+- Next suggested after final closure:
+  `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.

@@ -1519,3 +1519,11 @@
 - Browser verification: PASS, admin question bank opened and displayed 63 questions, with add button visible and no fatal error.
 - Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
 
+
+## Update 2026-05-21 - BATCH 100J
+- Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: homepage Hero color controls, optional third CTA, and course lesson edge icons/colors.
+- Evidence: new contract smoke PASS, homepage hero smoke PASS, course flow smoke PASS, server build PASS, typecheck PASS after rerun, frontend build PASS, health readiness PASS.
+- Production verification: pending until push/deploy/browser closure.
+- Next suggested: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.

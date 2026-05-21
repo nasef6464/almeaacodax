@@ -145,6 +145,10 @@ export interface Course extends ContentWorkflow {
     certificateEnabled?: boolean;
     fakeRating?: number;
     fakeStudentsCount?: number;
+    lessonStartIcon?: string;
+    lessonStartIconColor?: string;
+    lessonEndIcon?: string;
+    lessonEndIconColor?: string;
     skills?: string[]; // Array of skill IDs
 }
 
@@ -558,6 +562,16 @@ export interface HomepageHeroSettings {
     primaryCtaLink?: string;
     secondaryCtaLabel?: string;
     secondaryCtaLink?: string;
+    tertiaryCtaLabel?: string;
+    tertiaryCtaLink?: string;
+    badgeTextColor?: string;
+    titlePrefixColor?: string;
+    titleHighlightColor?: string;
+    titleSuffixColor?: string;
+    descriptionColor?: string;
+    primaryCtaColor?: string;
+    secondaryCtaColor?: string;
+    tertiaryCtaColor?: string;
     imageUrl?: string;
     imageAlt?: string;
     floatingCardTitle?: string;

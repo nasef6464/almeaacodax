@@ -21,6 +21,16 @@ const defaultHomepageSettings: HomepageSettings = {
         primaryCtaLink: '/dashboard',
         secondaryCtaLabel: 'تصفح الدورات',
         secondaryCtaLink: '/courses',
+        tertiaryCtaLabel: '',
+        tertiaryCtaLink: '',
+        badgeTextColor: '',
+        titlePrefixColor: '',
+        titleHighlightColor: '',
+        titleSuffixColor: '',
+        descriptionColor: '',
+        primaryCtaColor: '',
+        secondaryCtaColor: '',
+        tertiaryCtaColor: '',
         imageUrl: DEFAULT_HERO_BOY_IMAGE,
         imageAlt: 'طالب يستخدم منصة المئة',
         floatingCardTitle: 'منصة المئة',
@@ -404,13 +414,23 @@ export const HomepageManager: React.FC = () => {
                             <TextField label="مقدمة العنوان" value={settings.hero.titlePrefix || ''} onChange={(value) => updateHeroField('titlePrefix', value)} />
                             <TextField label="الكلمة المميزة" value={settings.hero.titleHighlight || ''} onChange={(value) => updateHeroField('titleHighlight', value)} />
                             <TextField label="نهاية العنوان" value={settings.hero.titleSuffix || ''} onChange={(value) => updateHeroField('titleSuffix', value)} />
+                            <TextField label="لون الشارة" value={settings.hero.badgeTextColor || ''} onChange={(value) => updateHeroField('badgeTextColor', value)} />
+                            <TextField label="لون مقدمة العنوان" value={settings.hero.titlePrefixColor || ''} onChange={(value) => updateHeroField('titlePrefixColor', value)} />
+                            <TextField label="لون الكلمة المميزة" value={settings.hero.titleHighlightColor || ''} onChange={(value) => updateHeroField('titleHighlightColor', value)} />
+                            <TextField label="لون نهاية العنوان" value={settings.hero.titleSuffixColor || ''} onChange={(value) => updateHeroField('titleSuffixColor', value)} />
+                            <TextField label="لون الوصف الرئيسي" value={settings.hero.descriptionColor || ''} onChange={(value) => updateHeroField('descriptionColor', value)} />
                             <TextField label="عنوان البطاقة العائمة" value={settings.hero.floatingCardTitle || ''} onChange={(value) => updateHeroField('floatingCardTitle', value)} />
                             <TextField label="وصف البطاقة العائمة" value={settings.hero.floatingCardSubtitle || ''} onChange={(value) => updateHeroField('floatingCardSubtitle', value)} />
                             <TextField label="نص نسبة التقدم" value={settings.hero.floatingCardProgressValue || ''} onChange={(value) => updateHeroField('floatingCardProgressValue', value)} />
                             <TextField label="زر البداية" value={settings.hero.primaryCtaLabel || ''} onChange={(value) => updateHeroField('primaryCtaLabel', value)} />
                             <TextField label="رابط زر البداية" value={settings.hero.primaryCtaLink || ''} onChange={(value) => updateHeroField('primaryCtaLink', value)} />
+                            <TextField label="لون زر البداية" value={settings.hero.primaryCtaColor || ''} onChange={(value) => updateHeroField('primaryCtaColor', value)} />
                             <TextField label="زر ثانوي" value={settings.hero.secondaryCtaLabel || ''} onChange={(value) => updateHeroField('secondaryCtaLabel', value)} />
                             <TextField label="رابط الزر الثانوي" value={settings.hero.secondaryCtaLink || ''} onChange={(value) => updateHeroField('secondaryCtaLink', value)} />
+                            <TextField label="لون الزر الثانوي" value={settings.hero.secondaryCtaColor || ''} onChange={(value) => updateHeroField('secondaryCtaColor', value)} />
+                            <TextField label="زر ثالث" value={settings.hero.tertiaryCtaLabel || ''} onChange={(value) => updateHeroField('tertiaryCtaLabel', value)} />
+                            <TextField label="رابط الزر الثالث" value={settings.hero.tertiaryCtaLink || ''} onChange={(value) => updateHeroField('tertiaryCtaLink', value)} />
+                            <TextField label="لون الزر الثالث" value={settings.hero.tertiaryCtaColor || ''} onChange={(value) => updateHeroField('tertiaryCtaColor', value)} />
                         </div>
 
                         <TextAreaField label="الوصف الرئيسي" value={settings.hero.description || ''} onChange={(value) => updateHeroField('description', value)} rows={4} />

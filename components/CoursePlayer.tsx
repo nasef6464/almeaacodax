@@ -33,6 +33,11 @@ const CustomVideoPlayer = React.lazy(() =>
   import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
 );
 
+const resolveIconColor = (value: string | undefined, fallback: string) => {
+  const trimmed = String(value || '').trim();
+  return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed) ? trimmed : fallback;
+};
+
 interface CoursePlayerProps {
   course: Course;
   onBack?: () => void;
@@ -56,6 +61,21 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     () => flattenedLessons.findIndex((lesson) => lesson.id === activeLesson?.id),
     [activeLesson?.id, flattenedLessons],
   );
+  const renderLessonEdgeIcon = (position: 'start' | 'end') => {
+    const icon = String(position === 'start' ? course.lessonStartIcon || '' : course.lessonEndIcon || '').trim();
+    if (!icon) return null;
+
+    const color = resolveIconColor(
+      position === 'start' ? course.lessonStartIconColor : course.lessonEndIconColor,
+      position === 'start' ? '#4f46e5' : '#f59e0b',
+    );
+
+    return (
+      <span className="inline-flex shrink-0 items-center justify-center text-sm font-black" style={{ color }}>
+        {icon}
+      </span>
+    );
+  };
 
   useEffect(() => {
     const initialLesson =
@@ -271,7 +291,11 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       </span>
                       <span className="text-xs text-gray-500 font-bold">{activeLesson.duration}</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight break-words">{activeLesson.title}</h2>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black leading-tight break-words inline-flex items-center gap-2">
+                      {renderLessonEdgeIcon('start')}
+                      <span>{activeLesson.title}</span>
+                      {renderLessonEdgeIcon('end')}
+                    </h2>
                   </div>
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                     <button
@@ -389,8 +413,10 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                                   {isCompleted ? <CheckCircle size={18} /> : lesson.type === 'video' ? <PlayCircle size={18} /> : <HelpCircle size={18} />}
                                 </div>
                                 <div className="text-right">
-                                  <p className={`text-xs font-bold leading-snug ${activeLesson?.id === lesson.id ? 'text-indigo-600' : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}>
-                                    {lesson.title}
+                                  <p className={`text-xs font-bold leading-snug inline-flex items-center gap-1 ${activeLesson?.id === lesson.id ? 'text-indigo-600' : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}>
+                                    {renderLessonEdgeIcon('start')}
+                                    <span>{lesson.title}</span>
+                                    {renderLessonEdgeIcon('end')}
                                   </p>
                                   <p className="text-[10px] text-gray-400 mt-0.5">{lesson.duration}</p>
                                 </div>

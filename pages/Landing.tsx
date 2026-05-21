@@ -47,6 +47,16 @@ const defaultHomepageSettings: HomepageSettings = {
         primaryCtaLink: '/dashboard',
         secondaryCtaLabel: 'تصفح الدورات',
         secondaryCtaLink: '/courses',
+        tertiaryCtaLabel: '',
+        tertiaryCtaLink: '',
+        badgeTextColor: '',
+        titlePrefixColor: '',
+        titleHighlightColor: '',
+        titleSuffixColor: '',
+        descriptionColor: '',
+        primaryCtaColor: '',
+        secondaryCtaColor: '',
+        tertiaryCtaColor: '',
         imageUrl: DEFAULT_HERO_BOY_IMAGE,
         imageAlt: 'طالب يستخدم منصة المئة',
         floatingCardTitle: 'منصة المئة',
@@ -117,6 +127,11 @@ const resolveColor = (value?: string) => {
         return { soft: `${value}18`, text: value, base: value, border: `${value}33` };
     }
     return colorMap[value] || colorMap.indigo;
+};
+
+const resolveHeroColor = (value: string | undefined, fallback: string) => {
+    const trimmed = String(value || '').trim();
+    return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed) ? trimmed : fallback;
 };
 
 export const Landing: React.FC = () => {
@@ -298,6 +313,18 @@ export const Landing: React.FC = () => {
     const headingFontClass = fontClassByChoice[homepageTypography.headingFont || 'tajawal'];
     const bodyFontClass = fontClassByChoice[homepageTypography.bodyFont || 'tajawal'];
     const headingWeightClass = homepageTypography.headingWeight === 'bold' ? 'font-bold' : 'font-black';
+    const heroColors = {
+        badgeTextColor: resolveHeroColor(homepageSettings.hero.badgeTextColor, '#2563eb'),
+        titlePrefixColor: resolveHeroColor(homepageSettings.hero.titlePrefixColor, '#111827'),
+        titleHighlightColor: resolveHeroColor(homepageSettings.hero.titleHighlightColor, '#2563eb'),
+        titleSuffixColor: resolveHeroColor(homepageSettings.hero.titleSuffixColor, '#111827'),
+        descriptionColor: resolveHeroColor(homepageSettings.hero.descriptionColor, '#4b5563'),
+        primaryCtaColor: resolveHeroColor(homepageSettings.hero.primaryCtaColor, '#f59e0b'),
+        secondaryCtaColor: resolveHeroColor(homepageSettings.hero.secondaryCtaColor, '#374151'),
+        tertiaryCtaColor: resolveHeroColor(homepageSettings.hero.tertiaryCtaColor, '#4f46e5'),
+    };
+    const tertiaryCtaLabel = String(homepageSettings.hero.tertiaryCtaLabel || '').trim();
+    const tertiaryCtaLink = String(homepageSettings.hero.tertiaryCtaLink || '').trim() || '/courses';
 
     return (
         <div className={`bg-white ${bodyFontClass}`}>
@@ -311,7 +338,7 @@ export const Landing: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12">
                         <div className="lg:w-1/2 text-center lg:text-right">
-                            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-blue-100 shadow-sm">
+                            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-blue-100 shadow-sm" style={{ color: heroColors.badgeTextColor }}>
                                 <span className="relative flex h-3 w-3">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
@@ -320,15 +347,15 @@ export const Landing: React.FC = () => {
                             </div>
 
                             <h1 className={`text-4xl sm:text-5xl lg:text-7xl ${headingWeightClass} ${headingFontClass} text-gray-900 leading-tight mb-6`}>
-                                {homepageSettings.hero.titlePrefix || defaultHomepageSettings.hero.titlePrefix}{' '}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                                <span style={{ color: heroColors.titlePrefixColor }}>{homepageSettings.hero.titlePrefix || defaultHomepageSettings.hero.titlePrefix}</span>{' '}
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600" style={{ color: heroColors.titleHighlightColor, backgroundImage: 'none' }}>
                                     {homepageSettings.hero.titleHighlight || defaultHomepageSettings.hero.titleHighlight}
                                 </span>
                                 <br />
-                                {homepageSettings.hero.titleSuffix || defaultHomepageSettings.hero.titleSuffix}
+                                <span style={{ color: heroColors.titleSuffixColor }}>{homepageSettings.hero.titleSuffix || defaultHomepageSettings.hero.titleSuffix}</span>
                             </h1>
 
-                            <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0" style={{ color: heroColors.descriptionColor }}>
                                 {homepageSettings.hero.description || defaultHomepageSettings.hero.description}
                             </p>
 
@@ -336,6 +363,7 @@ export const Landing: React.FC = () => {
                                 <Link
                                     to={homepageSettings.hero.primaryCtaLink || defaultHomepageSettings.hero.primaryCtaLink || '/dashboard'}
                                     className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-lg font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    style={{ backgroundColor: heroColors.primaryCtaColor }}
                                 >
                                     <Zap size={20} fill="currentColor" />
                                     {homepageSettings.hero.primaryCtaLabel || defaultHomepageSettings.hero.primaryCtaLabel}
@@ -343,10 +371,21 @@ export const Landing: React.FC = () => {
                                 <Link
                                     to={homepageSettings.hero.secondaryCtaLink || defaultHomepageSettings.hero.secondaryCtaLink || '/courses'}
                                     className="w-full sm:w-auto bg-white text-gray-700 border border-gray-200 text-lg font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+                                    style={{ color: heroColors.secondaryCtaColor }}
                                 >
                                     <BookOpen size={20} />
                                     {homepageSettings.hero.secondaryCtaLabel || defaultHomepageSettings.hero.secondaryCtaLabel}
                                 </Link>
+                                {tertiaryCtaLabel ? (
+                                    <Link
+                                        to={tertiaryCtaLink}
+                                        className="w-full sm:w-auto bg-white border border-indigo-100 text-lg font-bold px-8 py-4 rounded-xl hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                                        style={{ color: heroColors.tertiaryCtaColor }}
+                                    >
+                                        <ArrowDown size={20} />
+                                        {tertiaryCtaLabel}
+                                    </Link>
+                                ) : null}
                             </div>
 
                             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-gray-500 font-medium">
