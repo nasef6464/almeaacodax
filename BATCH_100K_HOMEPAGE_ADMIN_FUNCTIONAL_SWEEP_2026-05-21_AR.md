@@ -2,7 +2,7 @@
 
 **التاريخ:** 2026-05-21  
 **اسم الدفعة:** BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR  
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 طلب المالك فحص لوحة الإدارة بدقة لأن بعض أزرار/إعدادات الصفحة الرئيسية لا يظهر أثرها فعليًا، وخاصة تغيير الصورة/الشعار من إعدادات الصفحة الرئيسية، مع وجود قوائم محدودة عند اختيار الدورات/المقالات المميزة.
@@ -70,8 +70,10 @@
 | `git diff --check -- <ملفات الدفعة>` | PASS | لا توجد مشاكل whitespace في ملفات BATCH 100K |
 
 ## فحص الإنتاج
-- لم يتم بعد في لحظة الإغلاق البرمجي.
-- المطلوب قبل `Fully closed`: push إلى GitHub، انتظار Vercel/Render، تشغيل `smoke:frontend:strict` و`smoke:health-readiness`، ثم فحص بصري من المتصفح الداخلي.
+- GitHub push: PASS، commit `655e3d4`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `655e3d4`.
+- Render/API: PASS، `/api/health` أعاد `ready=true` وcommit `655e3d453dee`.
+- المتصفح الداخلي: PASS، تم فتح الصفحة الرئيسية ولوحة إعدادات الصفحة الرئيسية، وظهر قسم `شعار المنصة` وحقول البحث والمعاينة بعد اكتمال التحميل.
 
 ## خطوات التحقق اليدوي
 1. افتح `https://almeaacodax.vercel.app/admin-dashboard?tab=homepage` بحساب مدير.
@@ -87,7 +89,8 @@
 - `git diff --check` العام يبقى متأثرًا بملف قديم خارج نطاق الدفعة.
 
 ## هل تم إغلاق الخطر؟
-نعم برمجيًا: تم ربط إعدادات الشعار فعليًا بالهيدر، وتم إصلاح المعاينة وإزالة حد أول 30 عنصرًا. الإغلاق النهائي ينتظر التحقق الإنتاجي بعد النشر.
+نعم، تم الإغلاق نهائيًا بعد التنفيذ والفحوص والرفع والتحقق الإنتاجي والبصري.
 
 ## الدفعة التالية المقترحة
 BATCH 100L — Admin Dashboard Remaining Buttons Deep E2E Sweep
+

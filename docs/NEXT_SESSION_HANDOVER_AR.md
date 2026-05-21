@@ -1890,3 +1890,32 @@ eady=true, redis ready for limiter+queue, commit 5f011e1944e.
 - لا يتم حفظ أسرار في المستودع.
 - لا يتم لمس الملفات المتسخة القديمة غير التابعة للدفعة.
 - أدوات الربط الخارجية GitHub/Vercel/Render/Mongo تعمل عبر المنصات/الأسرار الموجودة، لكن لا تكتب أي token داخل الملفات.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100K Fully Closed
+
+### الإغلاق النهائي
+- الدفعة: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR`.
+- الحالة: `Fully closed`.
+- Commit: `655e3d4`.
+- GitHub push: PASS.
+- Vercel: PASS، الإنتاج يخدم commit `655e3d4` حسب `npm run smoke:frontend:strict`.
+- Render/API: PASS، health/readiness أعاد `ready=true` وcommit `655e3d453dee`.
+- المتصفح الداخلي: PASS، تم فحص الصفحة الرئيسية ولوحة `إدارة الصفحة الرئيسية` وظهرت عناصر الشعار والبحث والمعاينة.
+
+### ما تم إغلاقه
+- شعار المنصة أصبح قابلًا للإدارة من لوحة `إدارة الصفحة الرئيسية` ويظهر في الهيدر.
+- رابط `معاينة الصفحة` أصبح يفتح الصفحة الرئيسية النظيفة `/`.
+- قوائم الدورات والمقالات المميزة لم تعد محدودة بأول 30 عنصرًا، وتمت إضافة بحث.
+- تم تحديث التقرير وLedger وRoadmap وPROJECT_STATUS.
+
+### الدفعة التالية المقترحة
+`BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+### تذكير للحساب القادم
+- لا تستخدم `git add .`.
+- ابدأ دائمًا بـ `git status --short --branch` و`git diff --stat`.
+- افصل الملفات المتسخة القديمة عن ملفات الدفعة.
+- لا تحفظ مفاتيح/أسرار في الملفات.
+- كلمة `اكمل` تعني: تنفيذ + فحوص + توثيق + commit + push + Vercel/Render + browser verification حتى الإغلاق النهائي.
