@@ -1762,3 +1762,14 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   6. Verify visually in the in-app browser on `https://almeaacodax.vercel.app/admin-dashboard?verify=100i-<commit>`.
 - Owner requested future UI settings and they are recorded as next batch, not part of 100I:
   `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
+
+## Final Closure Handover 2026-05-21 - BATCH 100I
+- Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`.
+- Final status: `Fully closed`.
+- Commit pushed: `6b32430`.
+- Vercel: PASS, `smoke:frontend:strict` confirmed deployed commit `6b32430`.
+- Render: PASS, health returned `ready=true` and commit `6b324303a4bd`.
+- Browser verification: PASS, admin dashboard and question bank opened; 63 questions displayed and `إضافة سؤال جديد` visible.
+- Do not stage unrelated existing dirty files in the next batch.
+- Next suggested batch: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
+- BATCH 100J scope requested by owner: homepage text/item colors, logo controls, optional third hero button, and before/after lesson icons with colors in courses.

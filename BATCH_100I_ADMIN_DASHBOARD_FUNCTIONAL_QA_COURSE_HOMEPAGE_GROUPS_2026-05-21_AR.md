@@ -2,7 +2,7 @@
 
 **التاريخ:** 2026-05-21  
 **اسم الدفعة:** `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`  
-**الحالة قبل النشر:** Programmatically closed, production verification pending  
+**الحالة:** Fully closed  
 **النطاق:** إصلاح/تثبيت وظائف موجودة فقط بدون تغيير تصميم عام.
 
 ## سبب الدفعة
@@ -62,13 +62,11 @@
 | `npm run smoke:health-readiness` | PASS | عقد الصحة والجاهزية |
 
 ## فحص الإنتاج
-- لم يتم بعد في لحظة إنشاء التقرير الأولية.
-- المطلوب بعد push:
-  1. انتظار Vercel/Render.
-  2. تشغيل `npm run smoke:frontend:strict`.
-  3. تشغيل `npm run smoke:health-readiness`.
-  4. فحص بصري من المتصفح الداخلي على `https://almeaacodax.vercel.app/admin-dashboard?verify=100i-<commit>`.
-  5. التأكد من أن مركز الأسئلة لا يظهر فارغًا بسبب عقد pagination.
+- GitHub push: PASS، commit `6b32430`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `6b32430`.
+- Render/API: PASS، `/api/health` رجع `ready=true` و commit `6b324303a4bd`.
+- المتصفح الداخلي: PASS على `https://almeaacodax.vercel.app/admin-dashboard?verify=100i-6b32430`.
+- مركز الأسئلة: PASS بصريًا، ظهر إجمالي `63` سؤالًا مع زر `إضافة سؤال جديد`، ولم تعد الشاشة فارغة بسبب عقد pagination.
 
 ## المخاطر المتبقية
 - لم يتم إنشاء/حذف سؤال إنتاجي أثناء الفحص لتجنب تغيير بيانات حقيقية دون إذن صريح.
@@ -96,3 +94,4 @@
 - إتاحة زر ثالث بجانب الزرين الحاليين في hero.
 - إعداد أيقونة/لون قبل الدرس وبعد الدرس داخل الدورة/مشغل الدورة.
 - عدم تغيير التصميم العام، فقط إضافة إعدادات قابلة للتحكم من الإدارة.
+

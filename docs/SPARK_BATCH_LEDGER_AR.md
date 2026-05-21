@@ -1501,7 +1501,7 @@
 
 ## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
 - Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`.
-- Status: `Programmatically closed, production verification pending`.
+- Status: `Fully closed`.
 - Scope: homepage settings, course builder/player, question bank pagination/add visibility, group/school contract regression.
 - Key fix: `/api/quizzes/questions?paginate=true` now returns `{ data, pagination }`; admin question bank refreshes after mutations so newly added questions are visible.
 - Additional guard: course builder labels reject broken question-mark placeholders and use safe fallbacks.
@@ -1509,3 +1509,13 @@
 - Future owner request recorded, not implemented in 100I: homepage text colors/logo/third hero button and course lesson icons before/after lesson with colors.
 - Report: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
+
+## Final Closure 2026-05-21 - BATCH 100I
+- Status: `Fully closed`.
+- Commit: `6b32430`.
+- GitHub push: PASS.
+- Vercel: `smoke:frontend:strict` PASS and production serves commit `6b32430`.
+- Render/API: `smoke:health-readiness` PASS and `/api/health` returned `ready=true`, commit `6b324303a4bd`.
+- Browser verification: PASS, admin question bank opened and displayed 63 questions, with add button visible and no fatal error.
+- Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
+

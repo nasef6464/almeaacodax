@@ -3,11 +3,11 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Question Bank + Groups
-- Status: Programmatically closed, production verification pending
+- Status: Fully closed after GitHub push, Vercel/Render production smoke, and in-app browser verification
 
 ## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
 - Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending`
+- Status: `Fully closed`
 - Scope: homepage settings contract, course builder/player linkage, question bank pagination/add visibility, group/school contracts.
 - Delivered:
   - Fixed `/api/quizzes/questions?paginate=true` to return `{ data, pagination }` for the admin question bank.
@@ -1488,3 +1488,13 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 
 
+
+## Final Closure 2026-05-21 - BATCH 100I
+- Commit pushed: `6b32430`.
+- Status: `Fully closed`.
+- GitHub push: PASS.
+- Vercel production: PASS, `smoke:frontend:strict` confirmed deployed commit `6b32430`.
+- Render production: PASS, `/api/health` returned `ready=true` and commit `6b324303a4bd`.
+- In-app browser: PASS, admin dashboard opened and `مركز الأسئلة` showed 63 questions with `إضافة سؤال جديد`, no visible fatal errors.
+- Main bug closed: admin question bank no longer appears empty because `/api/quizzes/questions?paginate=true` now returns `{ data, pagination }` and the UI refreshes after mutations.
+- Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
