@@ -304,6 +304,19 @@ const mergeQuizResultsForStore = (
         .slice(0, 250);
 };
 
+const resolveEntityId = (entity: { id?: unknown; _id?: unknown }, fallback = '') =>
+    String(entity?.id || entity?._id || fallback || '');
+
+const normalizeCourseForStore = (course: any) => {
+    const normalizedId = resolveEntityId(course);
+    return {
+        ...course,
+        id: normalizedId,
+        _id: normalizedId,
+        showOnPlatform: typeof course?.showOnPlatform === 'boolean' ? course.showOnPlatform : false,
+    } as Course;
+};
+
 export const useStore = create<AppState>()(
     persist(
         (set, get) => ({
@@ -367,7 +380,9 @@ export const useStore = create<AppState>()(
             })),
 
             hydrateCourses: (courses) => set(() => ({
-                courses
+                courses: (courses || [])
+                    .map((course: any) => normalizeCourseForStore(course))
+                    .filter((course: Course) => Boolean(course.id))
             })),
 
             hydrateQuestions: (questions) => set(() => ({
@@ -840,19 +855,19 @@ export const useStore = create<AppState>()(
 
             // Course Actions
             addCourse: async (course) => {
-                const normalizedCourse = {
-                    ...course,
-                    showOnPlatform: typeof course.showOnPlatform === 'boolean' ? course.showOnPlatform : false,
-                };
+                const normalizedCourse = normalizeCourseForStore(course);
                 try {
                     const created = await api.createCourse(normalizedCourse) as any;
-                    const persistedCourse = {
+                    const persistedCourse = normalizeCourseForStore({
                         ...normalizedCourse,
                         ...created,
-                        id: String(created?.id || created?._id || normalizedCourse.id),
-                    } as Course;
+                        id: resolveEntityId(created, normalizedCourse.id),
+                    });
                     set((state) => ({
-                        courses: [persistedCourse, ...state.courses.filter((item) => item.id !== persistedCourse.id)],
+                        courses: [
+                            persistedCourse,
+                            ...state.courses.filter((item: any) => resolveEntityId(item) !== persistedCourse.id),
+                        ],
                     }));
                     return persistedCourse;
                 } catch (error) {
@@ -863,13 +878,15 @@ export const useStore = create<AppState>()(
             updateCourse: async (courseId, data) => {
                 try {
                     const updated = await api.updateCourse(courseId, data) as any;
-                    const persistedCourse = {
+                    const persistedCourse = normalizeCourseForStore({
                         ...data,
                         ...updated,
-                        id: String(updated?.id || updated?._id || courseId),
-                    } as Course;
+                        id: resolveEntityId(updated, courseId),
+                    });
                     set((state) => ({
-                        courses: state.courses.map(c => c.id === courseId ? { ...c, ...persistedCourse } : c)
+                        courses: state.courses.map((c: any) =>
+                            resolveEntityId(c) === String(courseId) ? { ...c, ...persistedCourse } : c
+                        )
                     }));
                     return persistedCourse;
                 } catch (error) {
@@ -881,7 +898,7 @@ export const useStore = create<AppState>()(
                 try {
                     await api.deleteCourse(courseId);
                     set((state) => ({
-                        courses: state.courses.filter(c => c.id !== courseId)
+                        courses: state.courses.filter((c: any) => resolveEntityId(c) !== String(courseId))
                     }));
                 } catch (error) {
                     console.error('Failed to delete course:', error);

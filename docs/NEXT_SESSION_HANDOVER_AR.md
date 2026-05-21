@@ -1154,3 +1154,12 @@
 
 ## Next Batch
 - فحص شامل عميق لمسارات إدارة الدورات (create/update/delete/publish) مع عقود smoke إضافية عند الحاجة، ثم الإغلاق بنفس قاعدة العمل.
+
+## Update 2026-05-21 — Admin Course Identity Stability
+- الحالة: `Fully closed`.
+- تم حل عدم اتساق `id/_id` في الدورات داخل المتجر، وهو سبب اختفاء/عدم ثبات بعض الدورات بعد refresh.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:course-visibility`, `smoke:frontend:strict`).
+- التقرير: `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`.
+
+## Next Batch
+- تدقيق مسار إدارة اختبارات الدورة وملفات الدورة داخل الباني (Course assessments/files) وربطها بالإدارة بشكل ثابت مع نفس دورة الإغلاق.

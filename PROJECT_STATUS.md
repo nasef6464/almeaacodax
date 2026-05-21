@@ -1054,3 +1054,17 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`
+
+## Update 2026-05-21 — Admin Course Identity Stability
+- Current status: `Fully closed`.
+- Delivered:
+  1. Unified course identity resolution (`id/_id`) in store lifecycle.
+  2. Normalized course hydration to prevent post-refresh mismatch/disappearance.
+  3. Hardened add/update/delete course flows against mixed backend identifiers.
+- Verification (this run):
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`
