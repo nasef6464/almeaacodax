@@ -1064,3 +1064,9 @@
 - Existing parent dashboard is available, but missing required backend contract and automation flows.
 - PASS checks: health-readiness + frontend-strict.
 - Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-6 AI Mock Exams
+- Status: `Blocked`
+- Reason: required generation API + persistence + student trigger flow are missing.
+- PASS checks: health-readiness + frontend-strict.
+- Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`

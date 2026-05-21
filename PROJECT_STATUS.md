@@ -851,3 +851,15 @@
   - Missing explicit parent notification trigger on child course completion/certificate issuance.
 - Report:
   - `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-6 AI-Generated Mock Exams
+- Batch: `FEATURE-6 - AI-Generated Mock Exams`
+- Final status: `Blocked (not implemented)`
+- Audit result:
+  - No dedicated `POST /api/ai/generate-mock-exam` endpoint.
+  - No end-to-end flow from weak-skills analysis to persisted generated mock exam.
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`

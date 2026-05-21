@@ -1021,3 +1021,7 @@
   1. `GET /api/parent/children-progress`
   2. weekly parent email report
   3. child completion notification trigger for parent
+
+## Update 2026-05-21 — FEATURE-6 AI Mock Exams
+- Current status: `Blocked`.
+- Missing: generate-mock endpoint, persistence flow, and student trigger UI flow.
