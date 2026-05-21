@@ -1025,3 +1025,12 @@
 ## Update 2026-05-21 — FEATURE-6 AI Mock Exams
 - Current status: `Blocked`.
 - Missing: generate-mock endpoint, persistence flow, and student trigger UI flow.
+
+## Update 2026-05-21 — FEATURE-8 (Previous Years Question Bank)
+- الحالة: Blocked.
+- السبب: البنية العامة لبنك الأسئلة موجودة، لكن وسم/تصنيف أسئلة السنوات السابقة بعقد واضح (`year/source/examType`) غير مكتمل.
+- الفحوص: PASS (`smoke:health-readiness`, `smoke:frontend:strict`).
+- التقرير: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`.
+
+## Next Batch
+- FEATURE-1 Pricing Page (تنفيذ فعلي بدل تدقيق فقط)، ثم إغلاقها مع Smoke + تحديثات الحالة.

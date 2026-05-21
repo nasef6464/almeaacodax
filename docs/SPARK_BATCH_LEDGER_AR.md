@@ -1070,3 +1070,11 @@
 - Reason: required generation API + persistence + student trigger flow are missing.
 - PASS checks: health-readiness + frontend-strict.
 - Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank
+- Status: `Blocked`
+- Reason: previous-years content tagging contract is incomplete in question schema and flows (`year`, `source=official_exam`, `examType`).
+- PASS checks:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+- Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`

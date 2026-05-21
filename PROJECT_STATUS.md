@@ -863,3 +863,16 @@
   - `smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-8 Previous Years Question Bank
+- Batch: `FEATURE-8 - Previous Years Question Bank (content)`
+- Final status: `Blocked (partially available infra, missing required tagging contract)`
+- Audit result:
+  - Question bank infrastructure exists.
+  - Required explicit previous-years classification is missing in question data contract (`year`, `source=official_exam`, `examType`).
+  - No complete closure flow yet for "????? ?????????? ???????" with those tags.
+- Checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
