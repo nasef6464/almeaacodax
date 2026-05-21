@@ -1309,6 +1309,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         top: Array<{ rank: number; name: string; avgScore: number; points: number }>;
         currentUserRank: null | { rank: number; avgScore: number; points: number };
     } | null>(null);
+    const [mockExamGenerating, setMockExamGenerating] = useState(false);
+    const [mockExamMessage, setMockExamMessage] = useState('');
 
     useEffect(() => {
         let mounted = true;
@@ -1522,6 +1524,34 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 >
                     ابدأ المراجعة
                 </Link>
+            </div>
+        </Card>
+
+        <Card className="p-5 border border-fuchsia-100 bg-gradient-to-l from-fuchsia-50 to-white">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="text-right">
+                    <h3 className="text-lg font-bold text-gray-900">اختبار مخصص لي</h3>
+                    <p className="text-sm text-gray-600 mt-1">توليد اختبار محاكي تلقائي بناء على نقاط الضعف لديك.</p>
+                    {mockExamMessage ? <p className="mt-2 text-xs font-bold text-fuchsia-700">{mockExamMessage}</p> : null}
+                </div>
+                <button
+                    onClick={async () => {
+                        setMockExamGenerating(true);
+                        setMockExamMessage('');
+                        try {
+                            const generated = await api.aiGenerateMockExam({ examType: 'qudurat' });
+                            setMockExamMessage(`تم إنشاء الاختبار بنجاح (${generated.questionCount} سؤال).`);
+                        } catch (error) {
+                            setMockExamMessage(error instanceof Error ? error.message : 'تعذر إنشاء الاختبار الآن.');
+                        } finally {
+                            setMockExamGenerating(false);
+                        }
+                    }}
+                    disabled={mockExamGenerating}
+                    className="inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-fuchsia-700 disabled:opacity-60"
+                >
+                    {mockExamGenerating ? 'جاري التوليد...' : 'إنشاء اختبار مخصص'}
+                </button>
             </div>
         </Card>
 

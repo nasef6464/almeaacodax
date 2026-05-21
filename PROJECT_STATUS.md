@@ -939,3 +939,19 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-6 AI-Generated Mock Exams (Implemented)
+- Batch: `FEATURE-6 - AI-Generated Mock Exams`
+- Final status: `Fully closed`
+- Implemented:
+  - `POST /api/ai/generate-mock-exam`
+  - Student-personalized weak-skill weighted question selection.
+  - Dashboard CTA to generate personalized mock exam.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`

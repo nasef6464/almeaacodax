@@ -1100,3 +1100,8 @@
 - Added parent children-progress API + weekly report trigger + certificate completion notification for parents.
 - Verification: server build/typecheck/build + readiness/frontend strict smoke all PASS.
 - Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FEATURE-6 AI Mock Exams
+- Status: `Fully closed`.
+- Delivered generate-mock-exam endpoint + dashboard trigger and validated full build/smoke pass.
+- Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`.

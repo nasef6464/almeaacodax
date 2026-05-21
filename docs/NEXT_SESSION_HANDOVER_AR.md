@@ -1063,3 +1063,11 @@
 
 ## Next Batch
 - FEATURE-6 AI Mock Exams (تنفيذ endpoint التوليد + حفظ الاختبار + ربط زر الطالب).
+
+## Update 2026-05-21 — FEATURE-6 Closed
+- تم إغلاق FEATURE-6 بالكامل.
+- المتاح الآن: توليد اختبار مخصص للطالب من نقاط الضعف عبر `/api/ai/generate-mock-exam` + زر مباشر في Dashboard.
+- الفحوص: PASS (server build, typecheck, build, health-readiness, frontend-strict).
+
+## Next Batch
+- FEATURE-8 Previous Years Question Bank (تنفيذ وسم المحتوى year/source/examType بعد موافقة schema change).

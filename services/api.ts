@@ -1529,6 +1529,23 @@ export const api = {
       body: payload,
       token,
     }),
+  aiGenerateMockExam: (
+    payload: { studentId?: string; examType: "qudurat" | "tahsili"; weakSkills?: string[] },
+    token?: string | null,
+  ) =>
+    request<{
+      ok: boolean;
+      quizId: string;
+      title: string;
+      examType: "qudurat" | "tahsili";
+      questionCount: number;
+      weakSkillsUsed: string[];
+      targetStudentId: string;
+    }>("/ai/generate-mock-exam", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   generateCertificate: (payload: { courseId: string }, token?: string | null) =>
     request<any>("/certificates/generate", {
       method: "POST",

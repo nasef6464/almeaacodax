@@ -7,6 +7,8 @@ import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationS
 import { QuizResultModel } from "../models/QuizResult.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { UserModel } from "../models/User.js";
+import { QuizModel } from "../models/Quiz.js";
+import { QuestionModel } from "../models/Question.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
@@ -42,6 +44,12 @@ const questionSchema = z.object({
 
 const courseSummarySchema = z.object({
   courseTitle: z.string().min(1).max(500),
+});
+
+const generateMockExamSchema = z.object({
+  studentId: z.string().optional(),
+  examType: z.enum(["qudurat", "tahsili"]).default("qudurat"),
+  weakSkills: z.array(z.string().min(1).max(120)).default([]),
 });
 
 type AiResponseMimeType = "application/json";
@@ -1160,6 +1168,154 @@ ${message}
         provider: "none",
       });
     }
+  }),
+);
+
+aiRouter.post(
+  "/generate-mock-exam",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = generateMockExamSchema.parse(req.body || {});
+    const authUser = req.authUser!;
+    const targetStudentId = String(payload.studentId || authUser.id);
+
+    if (authUser.role === "student" && targetStudentId !== String(authUser.id)) {
+      return res.status(403).json({ message: "Students can only generate exams for themselves." });
+    }
+
+    const student = await UserModel.findById(targetStudentId).select("id name role").lean();
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    const sourceResults = await QuizResultModel.find({ userId: targetStudentId })
+      .select("skillsAnalysis createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+
+    const detectedWeakSkillIds = Array.from(
+      new Set(
+        sourceResults
+          .flatMap((result: any) => (Array.isArray(result.skillsAnalysis) ? result.skillsAnalysis : []))
+          .filter((row: any) => Number(row.mastery || 0) < 75 || String(row.status || "") === "weak")
+          .map((row: any) => String(row.skillId || "").trim())
+          .filter(Boolean),
+      ),
+    );
+
+    const requestedWeakSkills = payload.weakSkills.map((skill) => String(skill).trim()).filter(Boolean);
+    const weakSkills = Array.from(new Set([...requestedWeakSkills, ...detectedWeakSkillIds])).slice(0, 12);
+
+    const examPathId = payload.examType === "tahsili" ? "p_tahsili" : "p_qudrat";
+    const defaultSubjects = payload.examType === "tahsili" ? ["sub_math"] : ["sub_quant", "sub_verbal"];
+
+    const skillQuery =
+      weakSkills.length > 0
+        ? {
+            $or: [{ skillIds: { $in: weakSkills } }, { id: { $in: weakSkills } }],
+          }
+        : {};
+
+    const candidateQuestions = await QuestionModel.find({
+      approvalStatus: "approved",
+      pathId: examPathId,
+      ...skillQuery,
+    })
+      .select("id skillIds subject")
+      .limit(400)
+      .lean();
+
+    const fallbackQuestions =
+      candidateQuestions.length >= 20
+        ? candidateQuestions
+        : await QuestionModel.find({
+            approvalStatus: "approved",
+            pathId: examPathId,
+            subject: { $in: defaultSubjects },
+          })
+            .select("id skillIds subject")
+            .limit(500)
+            .lean();
+
+    if (fallbackQuestions.length < 12) {
+      return res.status(400).json({ message: "Not enough approved questions to build a mock exam yet." });
+    }
+
+    const weighted = [...fallbackQuestions].sort((a: any, b: any) => {
+      const aBoost = Array.isArray(a.skillIds) && a.skillIds.some((sid: string) => weakSkills.includes(String(sid))) ? 1 : 0;
+      const bBoost = Array.isArray(b.skillIds) && b.skillIds.some((sid: string) => weakSkills.includes(String(sid))) ? 1 : 0;
+      return bBoost - aBoost;
+    });
+
+    const selectedQuestionIds = Array.from(
+      new Set(
+        weighted
+          .slice(0, 80)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 40)
+          .map((question: any) => String(question.id || question._id))
+          .filter(Boolean),
+      ),
+    );
+
+    const now = Date.now();
+    const quizId = `quiz_ai_mock_${now}`;
+    const title =
+      payload.examType === "tahsili"
+        ? `اختبار مخصص لي - تحصيلي ${now}`
+        : `اختبار مخصص لي - قدرات ${now}`;
+
+    const generatedQuiz = await QuizModel.create({
+      id: quizId,
+      title,
+      description: "اختبار مولد آليًا بناءً على المهارات الأضعف وأحدث نتائج الطالب.",
+      pathId: examPathId,
+      subjectId: defaultSubjects[0] || "",
+      sectionId: "",
+      type: "quiz",
+      placement: "mock",
+      showInTraining: false,
+      showInMock: true,
+      mode: "regular",
+      settings: {
+        showExplanations: true,
+        showAnswers: true,
+        showResultsReport: true,
+        returnToSourceOnFinish: true,
+        maxAttempts: 3,
+        passingScore: 60,
+        timeLimit: 60,
+        randomizeQuestions: true,
+        showProgressBar: true,
+        requireAnswerBeforeNext: false,
+        allowQuestionReview: true,
+        optionLayout: "auto",
+      },
+      access: { type: "free", price: 0, allowedGroupIds: [] },
+      questionIds: selectedQuestionIds,
+      skillIds: weakSkills,
+      targetGroupIds: [],
+      targetUserIds: [targetStudentId],
+      dueDate: null,
+      isPublished: true,
+      showOnPlatform: true,
+      ownerType: "platform",
+      ownerId: "",
+      createdBy: String(authUser.id),
+      approvalStatus: "approved",
+      approvedBy: String(authUser.id),
+      approvedAt: now,
+      reviewerNotes: "AI personalized mock exam generation",
+    });
+
+    return res.status(201).json({
+      ok: true,
+      quizId: String(generatedQuiz.id || generatedQuiz._id),
+      title: generatedQuiz.title,
+      examType: payload.examType,
+      questionCount: selectedQuestionIds.length,
+      weakSkillsUsed: weakSkills,
+      targetStudentId,
+    });
   }),
 );
 
