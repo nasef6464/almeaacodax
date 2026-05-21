@@ -1047,3 +1047,11 @@
 
 ## Next Batch
 - FEATURE-4 Full-Text Search (تنفيذ endpoint موحد + واجهة بحث سريعة + اختصار لوحة مفاتيح).
+
+## Update 2026-05-21 — FEATURE-4 Closed
+- تم إغلاق FEATURE-4 بالكامل.
+- المتاح الآن: بحث موحد API + نافذة بحث من الهيدر + اختصار Ctrl/Cmd+K.
+- الفحوص: PASS (server build/typecheck/frontend build/health/front strict).
+
+## Next Batch
+- FEATURE-5 Parent Dashboard Enhancements (إكمال العقد الناقصة: children-progress + weekly report + completion trigger).

@@ -24,6 +24,7 @@ import { api } from '../services/api';
 import { useStore } from '../store/useStore';
 import { isPathMockExam } from '../utils/mockExam';
 import { ThemeToggle } from './ThemeToggle';
+import { SearchModal } from './SearchModal';
 
 const NavIcons: Record<string, React.ReactNode> = {
   home: <Home size={18} />,
@@ -86,6 +87,7 @@ export const Header: React.FC = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -259,6 +261,17 @@ export const Header: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [paths.length, user]);
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   const handleEmailAuth = async (event: React.FormEvent) => {
     event.preventDefault();
     setAuthError('');
@@ -402,7 +415,12 @@ export const Header: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <ThemeToggle />
 
-            <button className="text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300"
+              title="بحث (Ctrl+K)"
+              aria-label="فتح البحث"
+            >
               <Search size={20} />
             </button>
 
@@ -674,6 +692,7 @@ export const Header: React.FC = () => {
           </div>
         </div>
       ) : null}
+      <SearchModal open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </header>
   );
 };

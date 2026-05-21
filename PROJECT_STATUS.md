@@ -907,3 +907,19 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-4 Full-Text Search (Implemented)
+- Batch: `FEATURE-4 - Full-Text Search`
+- Final status: `Fully closed`
+- Implemented:
+  - Unified endpoint: `/api/search` with `q`, `type`, `limit`.
+  - Header search modal + keyboard shortcut `Ctrl/Cmd+K`.
+  - Grouped results: courses, lessons, questions.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`

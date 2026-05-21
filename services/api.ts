@@ -1549,6 +1549,19 @@ export const api = {
     }),
   getReviewStats: (token?: string | null) =>
     request<{ dueToday: number; dueThisWeek: number; totalCards: number }>("/review/stats", { token }),
+  search: (
+    params: { q: string; type?: "all" | "lesson" | "question" | "course"; limit?: number },
+    token?: string | null,
+  ) =>
+    request<{
+      q: string;
+      type: "all" | "lesson" | "question" | "course";
+      results: {
+        courses: Array<{ id: string; title: string; subtitle: string; route: string }>;
+        lessons: Array<{ id: string; title: string; subtitle: string; route: string }>;
+        questions: Array<{ id: string; title: string; subtitle: string; route: string }>;
+      };
+    }>(withQuery("/search", params), { token }),
   getLeaderboard: (
     params: { scope?: "global" | "group" | "school"; period?: "week" | "month" | "all"; limit?: number } = {},
     token?: string | null,

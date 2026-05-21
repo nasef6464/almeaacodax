@@ -1088,3 +1088,9 @@
 - Status: `Fully closed`.
 - Delivered API + UI widget + rank contract, with full build/type/smoke PASS.
 - Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FEATURE-4 Full-Text Search
+- Status: `Fully closed`.
+- Delivered unified search endpoint + header modal + keyboard shortcut.
+- Verification: server build + typecheck + build + health/front strict smoke all PASS.
+- Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`.
