@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep
-- Last Closed Batch: BATCH 100M - Homepage Live Preview Before Save
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep
+- Status: Fully closed
 
 
 
@@ -1614,3 +1614,15 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Production verification: pending until GitHub push, Vercel strict smoke, Render health, and in-app browser verification.
 - Report: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR.md`.
 - Next suggested after final closure: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
+
+
+## Final Closure 2026-05-21 - BATCH 100N
+- Batch: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `027a33a`.
+- GitHub: PASS.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves `027a33a`.
+- Render/API: PASS, `npm run smoke:health-readiness` passed.
+- Browser verification: PASS, admin dashboard tab click changed URL to `tab=homepage` and the homepage admin screen rendered without visible errors.
+- Report: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
