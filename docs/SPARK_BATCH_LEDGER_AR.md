@@ -1058,3 +1058,9 @@
 - Reason: unified search API + modal/shortcut not implemented.
 - Health/front strict checks PASS.
 - Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-5 Parent Dashboard Enhancements
+- Status: `Partially closed (blocked)`
+- Existing parent dashboard is available, but missing required backend contract and automation flows.
+- PASS checks: health-readiness + frontend-strict.
+- Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`

@@ -837,3 +837,17 @@
   - `smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-5 Parent Dashboard Enhancements
+- Batch: `FEATURE-5 - Parent Dashboard Enhancements`
+- Final status: `Partially closed (blocked)`
+- Verified existing:
+  - Parent dashboard UI and scoped parent analytics are present.
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+- Remaining blockers:
+  - Missing dedicated `GET /api/parent/children-progress` contract.
+  - Missing weekly email report flow for parents.
+  - Missing explicit parent notification trigger on child course completion/certificate issuance.
+- Report:
+  - `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`

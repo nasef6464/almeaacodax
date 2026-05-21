@@ -1014,3 +1014,10 @@
 ## Update 2026-05-21 — FEATURE-4 Full-Text Search
 - Current status: `Blocked`.
 - Missing: unified API `/api/search` + search modal + Cmd/Ctrl+K shortcut.
+
+## Update 2026-05-21 — FEATURE-5 Parent Dashboard
+- Current status: `Partially closed / Blocked`.
+- Needed to finish:
+  1. `GET /api/parent/children-progress`
+  2. weekly parent email report
+  3. child completion notification trigger for parent
