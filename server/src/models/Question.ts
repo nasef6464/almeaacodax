@@ -13,6 +13,9 @@ const questionSchema = new Schema(
     pathId: { type: String, default: null },
     subject: { type: String, required: true, index: true },
     sectionId: { type: String, default: null },
+    examType: { type: String, enum: ["qudurat", "tahsili", "general"], default: "general", index: true },
+    source: { type: String, enum: ["internal", "official_exam", "mock", "imported"], default: "internal", index: true },
+    year: { type: Number, default: null, index: true },
     difficulty: { type: String, enum: ["Easy", "Medium", "Hard"], default: "Medium" },
     type: { type: String, enum: ["mcq", "true_false", "essay"], default: "mcq" },
     ownerType: { type: String, enum: ["platform", "teacher", "school"], default: "platform" },
@@ -33,5 +36,6 @@ const questionSchema = new Schema(
 questionSchema.index({ pathId: 1, subject: 1, sectionId: 1, approvalStatus: 1 });
 questionSchema.index({ skillIds: 1, difficulty: 1 });
 questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
+questionSchema.index({ examType: 1, source: 1, year: -1, approvalStatus: 1 });
 
 export const QuestionModel = mongoose.model("Question", questionSchema);

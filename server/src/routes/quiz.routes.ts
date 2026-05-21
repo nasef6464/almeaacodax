@@ -35,6 +35,9 @@ const questionBaseSchema = z.object({
   pathId: z.string().min(1),
   subject: z.string().min(1),
   sectionId: z.string().optional(),
+  examType: z.enum(["qudurat", "tahsili", "general"]).optional().default("general"),
+  source: z.enum(["internal", "official_exam", "mock", "imported"]).optional().default("internal"),
+  year: z.number().int().min(1990).max(2100).nullable().optional(),
   difficulty: z.enum(["Easy", "Medium", "Hard"]).default("Medium"),
   type: z.enum(["mcq", "true_false", "essay"]).default("mcq"),
   ownerType: z.enum(["platform", "teacher", "school"]).optional(),
@@ -64,6 +67,9 @@ const questionListQuerySchema = z.object({
   subject: z.string().trim().optional(),
   sectionId: z.string().trim().optional(),
   skillId: z.string().trim().optional(),
+  examType: z.enum(["qudurat", "tahsili", "general"]).optional(),
+  source: z.enum(["internal", "official_exam", "mock", "imported"]).optional(),
+  year: z.coerce.number().int().min(1990).max(2100).optional(),
   approvalStatus: z.enum(["draft", "pending_review", "approved", "rejected"]).optional(),
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
@@ -1134,6 +1140,9 @@ quizRouter.get(
     if (query.subject) scopeFilter.subject = query.subject;
     if (query.sectionId) scopeFilter.sectionId = query.sectionId;
     if (query.skillId) scopeFilter.skillIds = query.skillId;
+    if (query.examType) scopeFilter.examType = query.examType;
+    if (query.source) scopeFilter.source = query.source;
+    if (typeof query.year === "number") scopeFilter.year = query.year;
     if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
     if (query.search) {
       scopeFilter.$or = [
@@ -1153,7 +1162,7 @@ quizRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id text imageUrl skillIds pathId subject sectionId difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id text imageUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const [rawItems, total] = await Promise.all([

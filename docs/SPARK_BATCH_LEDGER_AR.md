@@ -1105,3 +1105,16 @@
 - Status: `Fully closed`.
 - Delivered generate-mock-exam endpoint + dashboard trigger and validated full build/smoke pass.
 - Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank (Final)
+- Status: `Fully closed`.
+- Implemented:
+  - Added question classification contract (`examType`, `source`, `year`) in backend schema.
+  - Added list/query filters and projection support for those fields in quiz question APIs.
+- Verification:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`.

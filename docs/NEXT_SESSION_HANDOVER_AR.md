@@ -1071,3 +1071,19 @@
 
 ## Next Batch
 - FEATURE-8 Previous Years Question Bank (تنفيذ وسم المحتوى year/source/examType بعد موافقة schema change).
+
+## Update 2026-05-21 — FEATURE-8 (Previous Years Question Bank)
+- الحالة: `Fully closed`.
+- ما أُغلق الآن:
+  1. اعتماد حقول تصنيف أسئلة السنوات السابقة في نموذج الأسئلة (`examType`, `source`, `year`).
+  2. دعم فلترة/إظهار هذه الحقول في API الأسئلة.
+  3. توثيق الإغلاق في تقرير مستقل مع جميع أدلة PASS.
+- فحوص الدفعة: PASS
+  - server build
+  - typecheck
+  - frontend build
+  - smoke:health-readiness
+  - smoke:frontend:strict
+
+## Next Batch
+- الرجوع إلى أول FIX/FEATURE ما يزال `Blocked` بسبب مفاتيح/ترقيات مالك (مثل FIX-3/FIX-5/FIX-6/FIX-9)، أو نبدأ دفعة تحسينات لوحة الإدارة بحسب أولوياتك.

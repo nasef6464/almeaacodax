@@ -955,3 +955,18 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank (Closed)
+- Current status: `Fully closed`.
+- Delivered now:
+  1. Backend contract for previous-years classification in questions (`examType`, `source`, `year`).
+  2. Query-level filtering support for these fields in question list APIs.
+  3. Stable projection to expose classification metadata in admin/content flows.
+- Verification (this run):
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
