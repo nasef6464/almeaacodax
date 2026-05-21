@@ -50,6 +50,9 @@ export default defineConfig(() => {
             ],
           },
           workbox: {
+            cleanupOutdatedCaches: true,
+            skipWaiting: true,
+            clientsClaim: true,
             navigateFallback: '/index.html',
             globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}'],
             runtimeCaching: [
@@ -57,7 +60,7 @@ export default defineConfig(() => {
                 urlPattern: ({ request }) => request.mode === 'navigate',
                 handler: 'NetworkFirst',
                 options: {
-                  cacheName: 'pages-cache',
+                  cacheName: `pages-cache-${appVersion}`,
                 },
               },
               {

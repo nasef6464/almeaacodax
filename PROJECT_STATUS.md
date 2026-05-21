@@ -3,24 +3,25 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100C - Arabic Mojibake Cleanup + Regression Guard
-- Status: BATCH 100C programmatically closed; production verification pending
+- Status: BATCH 100C programmatically closed; production verification pending after PWA freshness fix
 
 ## Update 2026-05-21 - BATCH 100C Arabic Mojibake Cleanup + Regression Guard
 - Batch: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR`
 - Status: `Programmatically closed, production verification pending`
-- Scope: fixed confirmed Arabic mojibake in runtime SEO title/meta, backend SEO status/manifest, and CourseView user-facing fallback/error labels.
+- Scope: fixed confirmed Arabic mojibake in runtime SEO title/meta, backend SEO status/manifest, CourseView fallback/error labels, and added PWA freshness guard after browser verification found stale cached app shell.
 - Delivered:
   - Replaced corrupted Arabic strings in `App.tsx` route metadata and loading brand.
   - Replaced corrupted Arabic strings in `server/src/routes/seo.routes.ts` sitemap/status/manifest payloads.
   - Replaced question-mark placeholders in `pages/CourseView.tsx` error/unavailable/certificate labels.
   - Added `smoke:arabic-mojibake` regression guard.
+  - Added Service Worker/PWA freshness guard to reduce stale cached assets after deployment.
 - Checks:
   - `npm run smoke:arabic-mojibake` PASS
   - `npm --prefix server run build` PASS
   - `npm run typecheck` PASS
   - `npm run build` PASS
   - `npm run smoke:seo` PASS
-  - `npm run smoke:frontend:strict` PASS before push
+  - `npm run smoke:frontend:strict` PASS before first push; production re-check pending after PWA freshness push
 - Report: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR.md`
 - Next suggested after production closure: `BATCH 100D - Course Builder Lesson/Quiz Picker Filtering + Learner Course Visibility Audit`
 - Large follow-up requested by owner: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`

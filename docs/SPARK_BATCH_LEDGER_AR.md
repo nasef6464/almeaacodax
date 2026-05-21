@@ -1353,3 +1353,12 @@
 - Report: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100D - Course Builder Lesson/Quiz Picker Filtering + Learner Course Visibility Audit`.
 - Owner-requested large follow-up: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`.
+
+## Update 2026-05-21 - BATCH 100C PWA Freshness Addendum
+- Status: `Programmatically closed, production verification pending after PWA freshness push`.
+- Finding: in-app browser production verification showed old cached JS asset after Vercel/Render were already updated.
+- Action: added Service Worker update flow in `index.tsx` and Workbox freshness guards in `vite.config.ts`.
+- Regression guard: `npm run smoke:arabic-mojibake` now checks Arabic text and PWA freshness snippets.
+- Checks PASS after addendum: `smoke:arabic-mojibake`, server build, typecheck, frontend build, `smoke:seo`.
+- Next required before Fully closed: commit/push, wait for Vercel/Render, run `smoke:frontend:strict`, and verify visually/practically in the in-app browser.
+- Owner-requested next large audit remains queued: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`.

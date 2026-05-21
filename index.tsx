@@ -7,7 +7,24 @@ import { initFrontendSentry } from './src/observability/sentry';
 import { registerSW } from 'virtual:pwa-register';
 
 initFrontendSentry();
-registerSW({ immediate: true });
+
+let updateServiceWorker: ReturnType<typeof registerSW> | undefined;
+updateServiceWorker = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    void updateServiceWorker?.(true);
+  },
+  onRegisteredSW(_swUrl, registration) {
+    if (!registration) {
+      return;
+    }
+
+    void registration.update();
+    window.setInterval(() => {
+      void registration.update();
+    }, 60 * 60 * 1000);
+  },
+});
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

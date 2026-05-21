@@ -5,6 +5,8 @@ const root = process.cwd();
 
 const checkedFiles = [
   'App.tsx',
+  'index.tsx',
+  'vite.config.ts',
   'pages/CourseView.tsx',
   'server/src/routes/seo.routes.ts',
 ];
@@ -21,6 +23,15 @@ const expectedArabicSnippets = [
   { file: 'pages/CourseView.tsx', text: 'إصدار الشهادة' },
   { file: 'server/src/routes/seo.routes.ts', text: 'الصفحة الرئيسية' },
   { file: 'server/src/routes/seo.routes.ts', text: 'منصة المئة' },
+];
+
+const expectedPwaFreshnessSnippets = [
+  { file: 'index.tsx', text: 'onNeedRefresh' },
+  { file: 'index.tsx', text: 'registration.update()' },
+  { file: 'vite.config.ts', text: 'cleanupOutdatedCaches: true' },
+  { file: 'vite.config.ts', text: 'skipWaiting: true' },
+  { file: 'vite.config.ts', text: 'clientsClaim: true' },
+  { file: 'vite.config.ts', text: 'pages-cache-${appVersion}' },
 ];
 
 const failures = [];
@@ -45,6 +56,13 @@ for (const { file, text } of expectedArabicSnippets) {
   }
 }
 
+for (const { file, text } of expectedPwaFreshnessSnippets) {
+  const source = fs.readFileSync(path.join(root, file), 'utf8');
+  if (!source.includes(text)) {
+    failures.push(`${file} is missing expected PWA freshness guard: ${text}`);
+  }
+}
+
 if (failures.length > 0) {
   console.error(JSON.stringify({ total: failures.length, failures }, null, 2));
   process.exit(1);
@@ -55,4 +73,5 @@ console.log(JSON.stringify({
   passed: checkedFiles.length,
   checkedFiles,
   expectedArabicSnippets: expectedArabicSnippets.length,
+  expectedPwaFreshnessSnippets: expectedPwaFreshnessSnippets.length,
 }, null, 2));
