@@ -1379,3 +1379,19 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   - `npm run smoke:data-visibility-regression` PASS
 - قبل بدء أي دفعة جديدة يجب إكمال: commit/push ثم انتظار Vercel/Render ثم `smoke:frontend:strict` وفحص المتصفح المدمج.
 - التالي المقترح فقط بعد الإغلاق الإنتاجي: `BATCH 100C — Arabic Mojibake Cleanup + Regression Guard`.
+
+---
+
+## تحديث إغلاق نهائي — BATCH 100B — 2026-05-21
+
+- الحالة النهائية: `Fully closed`.
+- commit الإصلاح: `e1c07ba`.
+- Vercel Production: `npm run smoke:frontend:strict` PASS ويعرض commit `e1c07ba`.
+- Render health: `ready=true` ويعرض backend commit `e1c07bac7771`.
+- فحوص ما بعد النشر:
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+- النتيجة: تم إغلاق خطر نطاق صلاحيات النقاشات للمعلم/المشرف برمجيًا وإنتاجيًا.
+- التالي المقترح فقط: `BATCH 100C — Arabic Mojibake Cleanup + Regression Guard`، ولا يبدأ إلا بطلب صريح من المالك.

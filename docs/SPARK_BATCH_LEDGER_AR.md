@@ -1335,3 +1335,11 @@
 - Checks PASS: server build, `smoke:discussions-rbac-scope`, `smoke:security-rbac-phase6`, typecheck, frontend build, health-readiness, production-hardening, data-visibility-regression.
 - Report: `BATCH_100B_DISCUSSIONS_RBAC_SCOPE_HARDENING_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100C - Arabic Mojibake Cleanup + Regression Guard`.
+
+## Update 2026-05-21 - BATCH 100B Final Production Closure
+- Status: `Fully closed`.
+- Fix commit: `e1c07ba`.
+- Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `e1c07ba`.
+- Render health: `ready=true`, backend commit `e1c07bac7771`.
+- Post-deploy checks: `smoke:frontend:strict`, `smoke:health-readiness`, `smoke:production-hardening`, and `smoke:data-visibility-regression` all PASS.
+- Final result: discussions RBAC/scope hardening closed in code and verified in production deployment.

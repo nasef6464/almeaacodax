@@ -1,7 +1,7 @@
 ﻿# تقرير الدفعة 100B — تضييق RBAC لنطاق النقاشات
 
 **التاريخ:** 2026-05-21
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## سبب الدفعة
 كشف الفحص العميق أن `server/src/routes/discussions.routes.ts` كان يسمح لأي `teacher` أو `supervisor` بالوصول إلى أي نقاش أو حله بمجرد معرفة المعرف، بدون ربط واضح بنطاق الدورة/المدرسة/المادة.
@@ -54,12 +54,10 @@
 | `npm run smoke:data-visibility-regression` | PASS | 28/28 checks |
 
 ## فحص الإنتاج
-- الحالة الحالية: لم يتم بعد رفع commit هذه الدفعة وقت كتابة التقرير، لذلك الحالة `production verification pending`.
-- بعد الرفع يجب التحقق من:
-  - GitHub push.
-  - Render `/api/health` ready.
-  - Vercel `smoke:frontend:strict` يطابق commit الأخير.
-  - فتح `https://almeaacodax.vercel.app/` في المتصفح المدمج.
+- GitHub push: PASS، commit الإصلاح `e1c07ba`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `e1c07ba`.
+- Render: PASS، `/api/health` رجع `ready=true` وcommit `e1c07bac7771`.
+- المتصفح المدمج: PASS، تم فتح الإنتاج والتحقق من أن الواجهة تعمل بدون أخطاء console ظاهرة.
 
 ## خطوات التحقق اليدوي
 1. تسجيل الدخول كـ admin: يجب أن يستطيع قراءة/حل أي نقاش.
@@ -77,7 +75,7 @@
 - لا تزال هناك تعديلات قديمة في worktree خارج نطاق هذه الدفعة.
 
 ## هل تم إغلاق الخطر؟
-نعم برمجيًا: تم إلغاء bypass العام وإضافة scope check قبل القراءة/الرد/الحل. يصبح `Fully closed` فقط بعد push/deploy/live verification.
+نعم. تم إلغاء bypass العام وإضافة scope check قبل القراءة/الرد/الحل، ثم تم إثبات النشر على Vercel وRender.
 
 ## الدفعة التالية المقترحة
 BATCH 100C — Arabic Mojibake Cleanup + Regression Guard
