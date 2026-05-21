@@ -1590,3 +1590,12 @@
 - Scope: added live pre-save preview to admin homepage settings.
 - Evidence: local smokes/builds passed; production verification pending.
 - Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+## Final Closure 2026-05-21 - BATCH 100M
+- Batch: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR`.
+- Status: `Fully closed`.
+- GitHub: PASS, commits `9dfb923` and `c2001fd` pushed.
+- Vercel: PASS, strict frontend smoke confirmed commit `c2001fd`.
+- Render/API: PASS, health readiness smoke passed.
+- Browser verification: PASS, live pre-save preview exists in production admin homepage settings after cache cleanup.
+- Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.

@@ -2,19 +2,19 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100M - Homepage Live Preview Before Save
-- Last Closed Batch: BATCH 100L - Homepage Color Picker Controls
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100M - Homepage Live Preview Before Save
+- Status: Fully closed
 
 
 
 ## Update 2026-05-21 - BATCH 100M - Homepage Live Preview Before Save
 - Batch: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR`.
-- Status: `Programmatically closed, production verification pending`.
+- Status: `Fully closed`.
 - Scope: live pre-save Hero preview inside admin homepage settings.
 - Delivered: added `HeroLivePreview` connected to current Hero text, colors, buttons, and image; added `npm run smoke:batch100m-homepage-live-preview`.
 - Checks PASS: batch100m live-preview smoke, typecheck, homepage hero smoke, BATCH 100L regression smoke, frontend build, server build, BATCH 100K regression smoke.
-- Production verification: pending until push/deploy/browser closure.
+- Production verification: GitHub PASS (`9dfb923` + redeploy trigger `c2001fd`), Vercel strict PASS, Render health PASS, in-app browser PASS.
 - Report: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR.md`.
 - Next suggested after final closure: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
 
@@ -1593,3 +1593,13 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Render/API: PASS, `npm run smoke:health-readiness` PASS and `/api/health` returned `ready=true` with Redis ready.
 - Browser verification: PASS, admin homepage settings show visual color pickers with 8 native color inputs and 192 swatch buttons.
 - Next suggested: `BATCH 100M - Homepage Live Preview Before Save`.
+
+## Final Closure 2026-05-21 - BATCH 100M - Homepage Live Preview Before Save
+- Batch: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR`.
+- Status: `Fully closed`.
+- GitHub: PASS, code commit `9dfb923` and Vercel retrigger commit `c2001fd` pushed to `origin/main`.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves `c2001fd`.
+- Render/API: PASS, `npm run smoke:health-readiness` passed.
+- Browser verification: PASS, admin homepage settings contain the live pre-save preview text after cache/service-worker cleanup.
+- Report: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.

@@ -799,3 +799,8 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - Implemented: live pre-save preview for homepage Hero settings, including colors, buttons, text, and image.
 - Required final closure: push, Vercel strict smoke, Render health, and in-app browser verification for admin homepage settings.
 - Next suggested after closure: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+## Final Closure 2026-05-21 - BATCH 100M
+- `BATCH 100M - Homepage Live Preview Before Save`: Fully closed.
+- Production evidence: GitHub commit `9dfb923`, Vercel retrigger commit `c2001fd`, Vercel strict smoke PASS, Render health PASS, in-app browser PASS.
+- Recommended next: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
