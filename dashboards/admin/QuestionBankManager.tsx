@@ -208,6 +208,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const [pagedPagination, setPagedPagination] = useState<QuestionPaginationMeta | null>(null);
   const [pagedQuestionsError, setPagedQuestionsError] = useState<string | null>(null);
   const [isLoadingPagedQuestions, setIsLoadingPagedQuestions] = useState(false);
+  const [questionsRefreshKey, setQuestionsRefreshKey] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     text: '',
     options: ['', '', '', ''],
@@ -313,9 +314,10 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     return () => {
       active = false;
     };
-  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId]);
+  }, [currentPage, searchTerm, selectedPathId, selectedSectionId, selectedSkillId, selectedSubjectId, subjectId, questionsRefreshKey]);
 
   const displayedQuestions = pagedQuestions ?? filteredQuestions;
+  const refreshPagedQuestions = () => setQuestionsRefreshKey((key) => key + 1);
 
   const questionCoverageSummary = useMemo(() => {
     const mainSkillCount = new Set(displayedQuestions.map((question) => question.sectionId).filter(Boolean) as string[]).size;
@@ -364,6 +366,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const handleDelete = (id: string) => {
     if (confirm('هل أنت متأكد من حذف هذا السؤال نهائيًا؟')) {
       deleteQuestion(id);
+      refreshPagedQuestions();
     }
   };
 
@@ -375,6 +378,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         text: question.text ? `${question.text} (نسخة)` : question.text,
         approvalStatus: 'draft',
       });
+      refreshPagedQuestions();
       setImportMessage('تم نسخ السؤال بنجاح.');
       setImportError(null);
     } catch (error) {
@@ -432,6 +436,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
   const handleSave = async (savedQuestion: Partial<Question>) => {
     if (currentQuestion.id) {
       updateQuestion(currentQuestion.id, { ...savedQuestion, id: currentQuestion.id } as Question);
+      refreshPagedQuestions();
     } else {
       try {
         await addQuestion({
@@ -442,6 +447,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           createdBy: savedQuestion.createdBy || user.id,
           approvalStatus: savedQuestion.approvalStatus || (user.role === 'admin' ? 'approved' : 'pending_review'),
         } as Question);
+        setCurrentPage(1);
+        refreshPagedQuestions();
       } catch (error) {
         setImportError(error instanceof Error ? error.message : 'تعذر حفظ السؤال الآن.');
         return;
@@ -610,6 +617,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       for (const question of pendingImportBatch.importedQuestions) {
         await addQuestion(question);
       }
+      setCurrentPage(1);
+      refreshPagedQuestions();
 
       setImportSummary({
         imported: pendingImportBatch.importedQuestions.length,
@@ -812,12 +821,14 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       approvalStatus: 'approved',
       approvedAt: Date.now(),
     });
+    refreshPagedQuestions();
   };
 
   const handleReject = (question: Question) => {
     updateQuestion(question.id, {
       approvalStatus: 'rejected',
     });
+    refreshPagedQuestions();
   };
 
   if (isEditing) {

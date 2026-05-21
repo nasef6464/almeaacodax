@@ -1,11 +1,34 @@
-# PROJECT STATUS
+﻿# PROJECT STATUS
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100H - Group Create Scope Hardening + E2E Verification
-- Status: Fully closed after GitHub push, Vercel/Render production smoke, and in-app browser verification
+- Active Batch: BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Question Bank + Groups
+- Status: Programmatically closed, production verification pending
 
-
+## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
+- Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Scope: homepage settings contract, course builder/player linkage, question bank pagination/add visibility, group/school contracts.
+- Delivered:
+  - Fixed `/api/quizzes/questions?paginate=true` to return `{ data, pagination }` for the admin question bank.
+  - Refreshed the question bank paginated list after create/update/delete/import/approve/reject actions.
+  - Hardened course builder labels so broken `????` data does not render as question-mark labels.
+  - Added `npm run smoke:batch100i-admin-dashboard-functional-qa`.
+  - Added future plan item `BATCH 100J` for homepage colors/logo/third button and course lesson icons.
+- Checks:
+  - `npm run smoke:batch100i-admin-dashboard-functional-qa` PASS
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:batch100d-admin-course-flow` PASS
+  - `npm run smoke:homepage-hero` PASS
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:batch100h-group-create-scope` PASS
+  - `npm run smoke:school-management` PASS
+  - `npm run smoke:health-readiness` PASS
+- Production verification: pending until GitHub push, Vercel/Render deployment, frontend strict smoke, health smoke, and in-app browser verification.
+- Report: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR.md`
+- Next suggested after final closure: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`
 ## Update 2026-05-21 - BATCH 100H Group Create Scope Hardening
 - Batch: `BATCH_100H_GROUP_CREATE_SCOPE_HARDENING_E2E_2026-05-21_AR`
 - Status: `Fully closed`
@@ -35,7 +58,7 @@
   - GitHub push PASS: `5338714`.
   - Vercel PASS: production served commit `5338714`.
   - Render PASS: health commit `5338714f2cc7`, ready=true.
-  - In-app browser PASS: admin dashboard and `المجموعات والمدارس` tab visible with no visible errors.
+  - In-app browser PASS: admin dashboard and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab visible with no visible errors.
 - Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
@@ -79,7 +102,7 @@
   - Added server command `npm --prefix server run repair:current-course-visibility`.
   - Added regression smoke `npm run smoke:batch100e-course-data-repair`.
   - Repaired production data only for `pathId=p_1777779639431` and `subjectId=sub_1777779748206`.
-  - Preserved the existing lesson title `جمع` and linked it into the restored course.
+  - Preserved the existing lesson title `Ø¬Ù…Ø¹` and linked it into the restored course.
 - Checks:
   - `npm --prefix server run audit:learning` PASS with non-blocking WARN for unrelated orphan `l_1777839591839_copy`
   - `npm run smoke:batch100e-course-data-repair` PASS
@@ -94,8 +117,8 @@
 - Production verification:
   - `GET /api/courses/course_current_p_1777779639431_sub_1777779748206_foundation` changed from `404` to `200`.
   - `GET /api/courses?limit=200` now includes the restored course.
-  - In-app browser verified learning page shows `تأسيس الكمي: العمليات والمهارات الأساسية`.
-  - In-app browser verified course page no longer shows `الدورة غير متاحة حاليًا` and shows lesson `جمع`.
+  - In-app browser verified learning page shows `ØªØ£Ø³ÙŠØ³ Ø§Ù„ÙƒÙ…ÙŠ: Ø§Ù„Ø¹Ù…Ù„ÙŠØ§Øª ÙˆØ§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©`.
+  - In-app browser verified course page no longer shows `Ø§Ù„Ø¯ÙˆØ±Ø© ØºÙŠØ± Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§` and shows lesson `Ø¬Ù…Ø¹`.
 - Report: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`
 - Next suggested: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`
 ## Update 2026-05-21 - BATCH 100D Admin Dashboard + Course Player Verification
@@ -115,8 +138,8 @@
   - `npm run smoke:course-visibility` PASS
   - `npm run smoke:homepage-hero` PASS
 - Production finding:
-  - Learning page for `p_1777779639431/sub_1777779748206` currently shows courses `Ø­Ù…ÙƒØ´Ø©` and `Ø¨ Ø§Ù„`.
-  - Target course `course_current_p_1777779639431_sub_1777779748206_foundation` returns `404 Course not found` from production API and therefore the course player shows `Ø§Ù„Ø¯ÙˆØ±Ø© ØºÙŠØ± Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§`.
+  - Learning page for `p_1777779639431/sub_1777779748206` currently shows courses `Ã˜Â­Ã™â€¦Ã™Æ’Ã˜Â´Ã˜Â©` and `Ã˜Â¨ Ã˜Â§Ã™â€ž`.
+  - Target course `course_current_p_1777779639431_sub_1777779748206_foundation` returns `404 Course not found` from production API and therefore the course player shows `Ã˜Â§Ã™â€žÃ˜Â¯Ã™Ë†Ã˜Â±Ã˜Â© Ã˜ÂºÃ™Å Ã˜Â± Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â­Ã˜Â© Ã˜Â­Ã˜Â§Ã™â€žÃ™Å Ã™â€¹Ã˜Â§`.
   - This is a confirmed production data/publishing/id mismatch follow-up, not a direct CoursePlayer rendering failure.
 - Report: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`
 - Next suggested: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`
@@ -211,13 +234,13 @@
   - `npm run smoke:health-readiness` PASS
 - Final Status: Programmatically closed, production verification pending
 
-## Update 2026-05-21 â€” PLAN 100 Readiness Audit & Execution Plan
+## Update 2026-05-21 Ã¢â‚¬â€ PLAN 100 Readiness Audit & Execution Plan
 - Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`
 - Status: Programmatically closed, production verification pending
 - Created current 100% readiness plan: `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
 - Created external dependency register: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
 - Key conclusion: project is strong for controlled pilot, but 100% readiness still requires dashboard-wide functional audit, smoke secrets, Tap live/sandbox proof, WhatsApp provider proof if required, backup/restore proof, and scale retest after Render/Mongo upgrades.
-- Next suggested batch: `BATCH 100A â€” Full Dashboard & Role Functional Audit`.
+- Next suggested batch: `BATCH 100A Ã¢â‚¬â€ Full Dashboard & Role Functional Audit`.
 ## Delivered In This Update
 - Added real Sentry runtime integration in backend (`@sentry/node`) and frontend (`@sentry/react`).
 - Wired backend error handler to report 5xx exceptions to Sentry with request context.
@@ -281,7 +304,7 @@
 - Report:
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next suggested:
-  - `BATCH 30D â€” Curriculum Import Scope Guard`
+  - `BATCH 30D Ã¢â‚¬â€ Curriculum Import Scope Guard`
 
 ## Update 2026-05-19 - BATCH 30D Final Closure
 - Batch: `BATCH 30D - Curriculum Import Scope Guard`
@@ -1169,7 +1192,7 @@
 - Report:
   - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FEATURE-8 Previous Years Question Bank (Closed)
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FEATURE-8 Previous Years Question Bank (Closed)
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. Backend contract for previous-years classification in questions (`examType`, `source`, `year`).
@@ -1184,7 +1207,7 @@
 - Report:
   - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX-7 Subscription Flow Completion (Closed)
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-7 Subscription Flow Completion (Closed)
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. New subscription APIs (create/status/cancel).
@@ -1201,7 +1224,7 @@
 - Report:
   - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX-6R WhatsApp OTP Revalidation
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-6R WhatsApp OTP Revalidation
 - Current Status: Programmatically closed, production verification pending
 - Verified now:
   - OTP code path ready in server routes/services.
@@ -1210,7 +1233,7 @@
 - Report:
   - `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX-5 Tap Payment Integration
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-5 Tap Payment Integration
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. Real Tap charge initiation endpoint.
@@ -1221,7 +1244,7 @@
 - Report:
   - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX-3A Smoke Auth Automation Hardening
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-3A Smoke Auth Automation Hardening
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. smoke auto-auth wrappers for operational + sentry live proof.
@@ -1231,7 +1254,7 @@
 - Report:
   - `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX-9A Scale Revalidation
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-9A Scale Revalidation
 - Current Status: Programmatically closed, production verification pending
 - Revalidated with current production evidence:
   - hardening/readiness pass
@@ -1240,7 +1263,7 @@
 - Report:
   - `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ ADMIN OPS Health Endpoint
+## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ADMIN OPS Health Endpoint
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. `/api/operations/health` no longer returns 404.
@@ -1254,7 +1277,7 @@
 - Report:
   - `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” FIX Admin Course Save (CSRF Retry Hardening)
+## Update 2026-05-21 Ã¢â‚¬â€ FIX Admin Course Save (CSRF Retry Hardening)
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Hardened frontend API retry path for raw-text 403 CSRF failures.
@@ -1268,7 +1291,7 @@
 - Report:
   - `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” Admin Course Identity Stability
+## Update 2026-05-21 Ã¢â‚¬â€ Admin Course Identity Stability
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Unified course identity resolution (`id/_id`) in store lifecycle.
@@ -1282,7 +1305,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” Course Player Quiz ID Fallback
+## Update 2026-05-21 Ã¢â‚¬â€ Course Player Quiz ID Fallback
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Added fallback resolver for embedded course quiz ids in `CoursePlayer`.
@@ -1295,7 +1318,7 @@
 - Report:
   - `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” Course Overview Navigation + Files Actions
+## Update 2026-05-21 Ã¢â‚¬â€ Course Overview Navigation + Files Actions
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Fixed lesson navigation to open the exact clicked lesson.
@@ -1308,7 +1331,7 @@
 - Report:
   - `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” Admin Course Actions Await/Error Handling
+## Update 2026-05-21 Ã¢â‚¬â€ Admin Course Actions Await/Error Handling
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Awaited admin course mutations for approve/reject/publish/visibility flows.
@@ -1321,7 +1344,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`
 
-## Update 2026-05-21 â€” Course Files Tab Runtime Fixes
+## Update 2026-05-21 Ã¢â‚¬â€ Course Files Tab Runtime Fixes
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Dynamic file type label in course files tab.
@@ -1350,22 +1373,22 @@
 - Report:
   - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
 
-## ÙØ­Øµ Ø¹Ù…ÙŠÙ‚ Ø´Ø§Ù…Ù„ â€” 2026-05-21
+## Ã™ÂÃ˜Â­Ã˜Âµ Ã˜Â¹Ã™â€¦Ã™Å Ã™â€š Ã˜Â´Ã˜Â§Ã™â€¦Ã™â€ž Ã¢â‚¬â€ 2026-05-21
 - Batch/Audit: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`
 - Status: Programmatically closed, production verification pending
-- Ø§Ù„Ù…Ù†Ù‡Ø¬ÙŠØ©: 9 Ù…Ø±Ø§Ø­Ù„ ÙØ­Øµ (handover/status + structure + smoke suite + models + routes + frontend + security + flows + performance/CI).
-- Ø§Ù„Ù†ØªÙŠØ¬Ø© Ø§Ù„ÙØ¹Ù„ÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„ÙØ­Øµ: `79%`.
-- Ø£Ø¨Ø±Ø² Ø§ÙƒØªØ´Ø§Ù Ø­Ø±Ø¬: Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ù…Ø§ Ø²Ø§Ù„Øª ØªÙƒØ´Ù `correctOptionIndex` Ùˆ`explanation` ÙÙŠ Ø±Ø¯ÙˆØ¯ Ø§Ù„Ø·Ø§Ù„Ø¨/ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù†ØªÙŠØ¬Ø©ØŒ ÙˆÙŠØ¬Ø¨ Ø¨Ø¯Ø¡ `BATCH 100A` Ù‚Ø¨Ù„ Ø£ÙŠ ØªØ·ÙˆÙŠØ± ØªØ¬Ù…ÙŠÙ„ÙŠ.
-- ÙØ­ÙˆØµ Ø£Ø³Ø§Ø³ÙŠØ©: 18/18 PASS.
-- ÙØ­ÙˆØµ Ø¥Ø¶Ø§ÙÙŠØ© ÙØ§Ø´Ù„Ø© Ø¨Ø³Ø¨Ø¨ secret Ù…Ø­Ù„ÙŠ Ù…ÙÙ‚ÙˆØ¯: `smoke:operational`, `smoke:sentry-live-proof`.
-- Ø¥Ù†ØªØ§Ø¬ Render: health Ø¬Ø§Ù‡Ø² ÙˆRedis readyØŒ Ù„ÙƒÙ† commit Ø§Ù„Ø¥Ù†ØªØ§Ø¬ Ø§Ù„Ø°ÙŠ Ø¸Ù‡Ø± ÙÙŠ health Ù„Ø§ ÙŠØ·Ø§Ø¨Ù‚ Ø¢Ø®Ø± `origin/main` ÙˆÙ‚Øª Ø§Ù„ÙØ­Øµ.
-- Ù…Ù„ÙØ§Øª Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
+- Ã˜Â§Ã™â€žÃ™â€¦Ã™â€ Ã™â€¡Ã˜Â¬Ã™Å Ã˜Â©: 9 Ã™â€¦Ã˜Â±Ã˜Â§Ã˜Â­Ã™â€ž Ã™ÂÃ˜Â­Ã˜Âµ (handover/status + structure + smoke suite + models + routes + frontend + security + flows + performance/CI).
+- Ã˜Â§Ã™â€žÃ™â€ Ã˜ÂªÃ™Å Ã˜Â¬Ã˜Â© Ã˜Â§Ã™â€žÃ™ÂÃ˜Â¹Ã™â€žÃ™Å Ã˜Â© Ã˜Â¨Ã˜Â¹Ã˜Â¯ Ã˜Â§Ã™â€žÃ™ÂÃ˜Â­Ã˜Âµ: `79%`.
+- Ã˜Â£Ã˜Â¨Ã˜Â±Ã˜Â² Ã˜Â§Ã™Æ’Ã˜ÂªÃ˜Â´Ã˜Â§Ã™Â Ã˜Â­Ã˜Â±Ã˜Â¬: Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¦Ã˜Â¬ Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â®Ã˜ÂªÃ˜Â¨Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â§ Ã˜Â²Ã˜Â§Ã™â€žÃ˜Âª Ã˜ÂªÃ™Æ’Ã˜Â´Ã™Â `correctOptionIndex` Ã™Ë†`explanation` Ã™ÂÃ™Å  Ã˜Â±Ã˜Â¯Ã™Ë†Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â§Ã™â€žÃ˜Â¨/Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã˜Â§Ã™â€žÃ™â€ Ã˜ÂªÃ™Å Ã˜Â¬Ã˜Â©Ã˜Å’ Ã™Ë†Ã™Å Ã˜Â¬Ã˜Â¨ Ã˜Â¨Ã˜Â¯Ã˜Â¡ `BATCH 100A` Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â£Ã™Å  Ã˜ÂªÃ˜Â·Ã™Ë†Ã™Å Ã˜Â± Ã˜ÂªÃ˜Â¬Ã™â€¦Ã™Å Ã™â€žÃ™Å .
+- Ã™ÂÃ˜Â­Ã™Ë†Ã˜Âµ Ã˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å Ã˜Â©: 18/18 PASS.
+- Ã™ÂÃ˜Â­Ã™Ë†Ã˜Âµ Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ™Å Ã˜Â© Ã™ÂÃ˜Â§Ã˜Â´Ã™â€žÃ˜Â© Ã˜Â¨Ã˜Â³Ã˜Â¨Ã˜Â¨ secret Ã™â€¦Ã˜Â­Ã™â€žÃ™Å  Ã™â€¦Ã™ÂÃ™â€šÃ™Ë†Ã˜Â¯: `smoke:operational`, `smoke:sentry-live-proof`.
+- Ã˜Â¥Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¬ Render: health Ã˜Â¬Ã˜Â§Ã™â€¡Ã˜Â² Ã™Ë†Redis readyÃ˜Å’ Ã™â€žÃ™Æ’Ã™â€  commit Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¬ Ã˜Â§Ã™â€žÃ˜Â°Ã™Å  Ã˜Â¸Ã™â€¡Ã˜Â± Ã™ÂÃ™Å  health Ã™â€žÃ˜Â§ Ã™Å Ã˜Â·Ã˜Â§Ã˜Â¨Ã™â€š Ã˜Â¢Ã˜Â®Ã˜Â± `origin/main` Ã™Ë†Ã™â€šÃ˜Âª Ã˜Â§Ã™â€žÃ™ÂÃ˜Â­Ã˜Âµ.
+- Ã™â€¦Ã™â€žÃ™ÂÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜ÂªÃ™â€šÃ˜Â±Ã™Å Ã˜Â±:
   - `DEEP_AUDIT_REPORT_AR.md`
   - `UPDATED_PLAN_TO_100_AR.md`
   - `BUGS_FOUND_AR.md`
-- Ø§Ù„Ø¯ÙØ¹Ø© Ø§Ù„ØªØ§Ù„ÙŠØ© Ø§Ù„Ù…Ù‚ØªØ±Ø­Ø©: `BATCH 100A â€” Quiz Result Answer Exposure Hardening`.
+- Ã˜Â§Ã™â€žÃ˜Â¯Ã™ÂÃ˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â§Ã™â€žÃ™Å Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã™â€šÃ˜ÂªÃ˜Â±Ã˜Â­Ã˜Â©: `BATCH 100A Ã¢â‚¬â€ Quiz Result Answer Exposure Hardening`.
 
-## Update 2026-05-21 â€” BATCH 100A Quiz Result Answer Exposure Hardening
+## Update 2026-05-21 Ã¢â‚¬â€ BATCH 100A Quiz Result Answer Exposure Hardening
 - Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`
 - Status: Programmatically closed, production verification pending
 - Delivered:
@@ -1386,7 +1409,7 @@
   - `npm run smoke:data-visibility-regression` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
-- Next suggested: `BATCH 100B â€” Discussions RBAC Scope Hardening`
+- Next suggested: `BATCH 100B Ã¢â‚¬â€ Discussions RBAC Scope Hardening`
 
 ## Production Closure 2026-05-21 - BATCH 100C
 - Final Status: Programmatically closed, production verification pending
@@ -1413,7 +1436,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - GitHub push: PASS.
 - Render health: `ready=true`, commit `9047a47420e5`.
 - Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `9047a47`.
-- Browser verification: PASS for learning page and course page; restored course and lesson `جمع` are visible.
+- Browser verification: PASS for learning page and course page; restored course and lesson `Ø¬Ù…Ø¹` are visible.
 - Final result: production course data visibility issue is closed and deployed.
 
 ## Production Closure 2026-05-21 - BATCH 100F
@@ -1421,7 +1444,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Implementation and final closure documentation were pushed to `main`.
 - Vercel verified: `npm run smoke:frontend:strict` PASS and production serves the expected pushed version.
 - Render/readiness verified: `npm run smoke:health-readiness` PASS.
-- In-app browser verified: admin dashboard opens and `المجموعات والمدارس` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
+- In-app browser verified: admin dashboard opens and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
 - Remaining risks intentionally moved to next batch: `slice(0, 80)` school-students cap and full click-by-click school relationship E2E.
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
 
@@ -1460,6 +1483,8 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Commit pushed: `6d977e4`.
 - Vercel: `npm run smoke:frontend:strict` PASS and production serves commit `6d977e4` with asset `index-D6_Q_6mk.js`.
 - Render/API: `npm run smoke:health-readiness` PASS.
-- In-app browser: PASS after hard refresh; admin dashboard opened and `المجموعات والمدارس` tab showed school readiness cards and school rows without visible errors.
+- In-app browser: PASS after hard refresh; admin dashboard opened and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab showed school readiness cards and school rows without visible errors.
 - Final result: the school-student table no longer hides students beyond the first 80; pagination is in place and verified.
 - Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
+
+

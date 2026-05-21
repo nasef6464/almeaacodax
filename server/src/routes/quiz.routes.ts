@@ -75,6 +75,7 @@ const questionListQuerySchema = z.object({
   search: z.string().trim().max(120).optional(),
   summary: z.coerce.boolean().default(false),
   noTotal: z.coerce.boolean().default(false),
+  paginate: z.coerce.boolean().default(false),
 });
 
 const dashboardAnalyticsQuerySchema = z.object({
@@ -1199,6 +1200,22 @@ quizRouter.get(
       res.setHeader("Cache-Control", "private, max-age=30");
       res.setHeader("X-Question-Summary-Cache", "miss");
     }
+    if (query.paginate) {
+      const resolvedTotal = total ?? skip + limitedItems.length + (hasMore ? 1 : 0);
+      const totalPages = Math.max(1, Math.ceil(resolvedTotal / Math.max(query.limit, 1)));
+      return res.json({
+        data: items,
+        pagination: {
+          total: resolvedTotal,
+          page: query.page,
+          limit: query.limit,
+          totalPages,
+          hasNext: query.noTotal ? hasMore : query.page < totalPages,
+          hasPrev: query.page > 1,
+        },
+      });
+    }
+
     res.json(items);
   }),
 );

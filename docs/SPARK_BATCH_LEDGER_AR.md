@@ -1498,3 +1498,14 @@
 - Render production: PASS, `/api/health` returned `ready=true` and commit `5338714f2cc7`.
 - In-app browser: PASS, admin dashboard opened and `المجموعات والمدارس` tab displayed readiness/cards with no visible errors.
 - Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.
+
+## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
+- Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: homepage settings, course builder/player, question bank pagination/add visibility, group/school contract regression.
+- Key fix: `/api/quizzes/questions?paginate=true` now returns `{ data, pagination }`; admin question bank refreshes after mutations so newly added questions are visible.
+- Additional guard: course builder labels reject broken question-mark placeholders and use safe fallbacks.
+- Checks PASS: `smoke:batch100i-admin-dashboard-functional-qa`, server build, typecheck, frontend build, homepage/course/group/school smokes, health readiness.
+- Future owner request recorded, not implemented in 100I: homepage text colors/logo/third hero button and course lesson icons before/after lesson with colors.
+- Report: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.

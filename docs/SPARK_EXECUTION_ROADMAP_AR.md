@@ -716,3 +716,19 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - Status: `Fully closed`.
 - Production evidence: GitHub commit `5338714`, Vercel strict smoke PASS, Render health PASS with commit `5338714f2cc7`, in-app browser admin/groups visual PASS.
 - Next: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.
+
+## Update 2026-05-21 - After BATCH 100I
+- `BATCH 100I - Admin Dashboard Functional QA` is the current closure batch.
+- Confirmed implementation scope:
+  1. Question bank paginated API response contract.
+  2. Question bank refresh after question mutations.
+  3. Safe labels for course builder fields that may contain corrupted question-mark text.
+  4. Regression smoke for homepage/course/player/question-bank/group contracts.
+- Next proposed batch after final production closure:
+  `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`
+- BATCH 100J must be UI-settings focused only:
+  - Homepage text/item color controls.
+  - Logo setting controls.
+  - Optional third hero button beside existing two buttons.
+  - Course lesson icon before/after lesson with configurable color.
+  - No broad redesign and no unrelated dashboard changes.

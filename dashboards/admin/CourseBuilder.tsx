@@ -47,7 +47,9 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
   const getSafeLabel = (value: unknown, fallback: string) => {
     const text = sanitizeArabicText(String(value || '')).trim();
     if (!text) return fallback;
-    if (/^\?+$/.test(text)) return fallback;
+    const questionMarkOnly = text.replace(/[\s؟?.,،:;()_\-–—]/g, '');
+    const questionMarkCount = (text.match(/\?/g) || []).length;
+    if (/^\?+$/.test(questionMarkOnly) || questionMarkCount >= Math.max(3, Math.ceil(text.length * 0.4))) return fallback;
     return text;
   };
 
@@ -316,7 +318,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                     >
                       <option value="">بدون مسار محدد</option>
                       {paths.map((path) => (
-                        <option key={path.id} value={path.id}>{path.name}</option>
+                        <option key={path.id} value={path.id}>{getSafeLabel(path.name, 'مسار بدون اسم')}</option>
                       ))}
                     </select>
                   </div>
@@ -377,7 +379,7 @@ export const CourseBuilder: React.FC<CourseBuilderProps> = ({ initialCourse, onS
                                 <React.Fragment key={mainSection.id}>
                                   <option disabled>{getSafeLabel(mainSection.name, 'قسم بدون اسم')}</option>
                                   {subSkills.map(subSkill => (
-                                    <option key={subSkill.id} value={subSkill.id}>- {subSkill.name}</option>
+                                    <option key={subSkill.id} value={subSkill.id}>- {getSafeLabel(subSkill.name, 'مهارة بدون اسم')}</option>
                                   ))}
                                 </React.Fragment>
                               );

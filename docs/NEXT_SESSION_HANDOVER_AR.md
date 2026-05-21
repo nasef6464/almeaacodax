@@ -1720,3 +1720,45 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - Browser verification: PASS, opened admin dashboard and `المجموعات والمدارس` tab inside in-app browser; readiness cards and school list visible, no visible errors.
 - Do not stage unrelated existing dirty files in the next batch.
 - Next suggested batch: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.
+
+## Handover Update 2026-05-21 - BATCH 100I
+- Current batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`.
+- Current status: `Programmatically closed, production verification pending` until push/deploy/browser verification is completed.
+- Working rule for all next accounts: when owner says `اكمل`, continue the active batch until full closure: implementation/audit, tests, report, ledger/status/roadmap/handover, explicit git stage of batch files only, commit, push, wait for Vercel/Render, production smoke, and in-app browser verification.
+- Do not use `git add .`; the repo has many old unrelated dirty files.
+- Files touched by BATCH 100I only:
+  - `server/src/routes/quiz.routes.ts`
+  - `dashboards/admin/QuestionBankManager.tsx`
+  - `dashboards/admin/AdvancedCourseBuilder.tsx`
+  - `dashboards/admin/CourseBuilder.tsx`
+  - `scripts/smoke-batch100i-admin-dashboard-functional-qa-contract.mjs`
+  - `package.json`
+  - `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR.md`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+- Important implementation notes:
+  - `/api/quizzes/questions?paginate=true` must return `{ data, pagination }` for `QuestionBankManager`.
+  - `QuestionBankManager` uses `questionsRefreshKey` to reload the paginated list after create/update/delete/import/approve/reject.
+  - Course builder safe label guards are intentionally defensive for corrupted `????` records.
+- Checks already passed locally:
+  - `npm run smoke:batch100i-admin-dashboard-functional-qa`
+  - `npm --prefix server run build`
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run smoke:batch100d-admin-course-flow`
+  - `npm run smoke:homepage-hero`
+  - `npm run smoke:course-visibility`
+  - `npm run smoke:batch100h-group-create-scope`
+  - `npm run smoke:school-management`
+  - `npm run smoke:health-readiness`
+- Production closure still requires:
+  1. Stage only BATCH 100I files.
+  2. Commit and push to `origin/main`.
+  3. Wait for Vercel/Render.
+  4. Run `npm run smoke:frontend:strict` until it confirms the pushed commit.
+  5. Run `npm run smoke:health-readiness`.
+  6. Verify visually in the in-app browser on `https://almeaacodax.vercel.app/admin-dashboard?verify=100i-<commit>`.
+- Owner requested future UI settings and they are recorded as next batch, not part of 100I:
+  `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
