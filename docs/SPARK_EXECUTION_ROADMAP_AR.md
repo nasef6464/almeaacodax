@@ -675,3 +675,21 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   2. Remaining unrelated follow-ups:
      - Orphan learning lesson `l_1777839591839_copy` data review.
      - Quiz shells with empty `questionIds` should not be treated as student-ready assessments until populated or hidden by content policy.
+
+## Update 2026-05-21 - After BATCH 100F
+- `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit` added repeatable relationship audit coverage.
+- Relationship model/API/frontend flow is confirmed structurally working for:
+  - school -> classes
+  - school/class -> supervisors
+  - school/class -> students
+  - parent -> linked students
+  - supervisor portal scoped results and targeted quizzes
+- Next execution priority:
+  1. `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`
+     - Remove or replace the `visibleSchoolStudents.slice(0, 80)` cap safely.
+     - Add/verify pagination or virtualized list for large schools without changing design direction.
+     - Use the in-app browser to test every relationship action in the school management UI.
+  2. `BATCH 100H - Group Create Scope Hardening`
+     - Ensure teacher/supervisor-created groups cannot escape their allowed school/group scope.
+  3. `BATCH 100I - Admin Dashboard Full Button E2E Sweep`
+     - Test the remaining admin dashboard tabs/buttons, including homepage image settings and course builder/player flows.

@@ -2,8 +2,40 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry
-- Status: Fully closed after production API and in-app browser verification
+- Active Batch: BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit
+- Status: Programmatically closed, production verification pending after deploy
+
+## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
+- Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending after deploy`
+- Scope: audit-only functional relationship verification for schools, classes, groups, supervisors, students, parents, and scoped reports.
+- Delivered:
+  - Added `scripts/smoke-batch100f-relationship-audit-contract.mjs`.
+  - Added npm command `npm run smoke:batch100f-relationship-audit`.
+  - Verified model, route, frontend, store, supervisor portal, and existing school/report smoke coverage.
+- Confirmed working:
+  - `Group` model supports `SCHOOL`, `CLASS`, `PRIVATE_GROUP`, `parentId`, `supervisorIds`, `studentIds`, and `courseIds`.
+  - `User` model supports `schoolId`, `groupIds`, and `linkedStudentIds`.
+  - `/content/schools/:id/relations`, `/report`, and `/import-students` reuse server-side school scope checks.
+  - Admin UI uses `api.applySchoolRelations` and hydrates users/groups from server response.
+- Confirmed risks:
+  - School students table is capped at `visibleSchoolStudents.slice(0, 80)` and needs a separate UI pagination/virtual-list batch.
+  - Group creation allows admin/teacher/supervisor roles to submit a full group payload and needs a focused create-scope hardening pass.
+  - A broader in-app browser E2E pass is still needed for every school relationship button.
+- Checks:
+  - `npm run smoke:batch100f-relationship-audit` PASS with 1 warning
+  - `npm run smoke:school-management` PASS
+  - `npm run smoke:admin-school-command` PASS
+  - `npm run smoke:school-portal-command` PASS
+  - `npm run smoke:supervisor-dashboard` PASS
+  - `npm run smoke:reports-role` PASS
+  - `npm run smoke:security-rbac-phase6` PASS
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS after rerun with longer timeout
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+- Report: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR.md`
+- Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`
 
 ## Update 2026-05-21 - BATCH 100E Production Course Data Visibility Repair
 - Batch: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR`

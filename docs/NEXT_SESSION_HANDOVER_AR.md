@@ -1564,3 +1564,60 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - Render: `ready=true`, commit `9047a47420e5`.
 - Vercel: `smoke:frontend:strict` PASS on commit `9047a47`.
 - Browser: restored course is visible and course page opens with lesson `جمع`.
+
+---
+
+## تسليم عاجل للحساب التالي - بعد BATCH 100F - 2026-05-21
+
+### قاعدة العمل الثابتة
+- كلمة المالك `اكمل` تعني: أكمل الدفعة الحالية حتى الإغلاق النهائي قدر الإمكان، ولا تتوقف عند منتصف الفحص.
+- كل دفعة يجب أن تنتهي بـ: report + ledger + PROJECT_STATUS + handover + checks + commit/push + انتظار deploy + production smoke + in-app browser verification.
+- لا تستخدم `git add .` بسبب وجود ملفات قديمة معدلة/untracked خارج نطاق الدفعات.
+- لا تحفظ secrets في repo أو في ملف التسليم. استخدم أسماء المتغيرات فقط.
+
+### حالة آخر دفعة
+- آخر دفعة: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`.
+- الحالة قبل إغلاق النشر: `Programmatically closed, production verification pending after deploy`.
+- ملفات الدفعة:
+  - `scripts/smoke-batch100f-relationship-audit-contract.mjs`
+  - `package.json`
+  - `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR.md`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+
+### نتائج الفحص المهمة
+- علاقات المدارس/الفصول/المشرفين/الطلاب/الأهالي مثبتة برمجيًا عبر smoke جديد.
+- أكبر مخاطرة مؤكدة: جدول طلاب المدرسة يستخدم `visibleSchoolStudents.slice(0, 80)` في `dashboards/admin/SchoolsManager.tsx`، وهذا يخفي الطلاب بعد أول 80 إذا لم يتم الوصول لهم بالبحث/الفلترة.
+- مخاطرة أخرى: إنشاء group جديد في backend يسمح لـ admin/teacher/supervisor بإرسال payload كامل؛ التعديل والحذف محميان بـ scope guard، لكن الإنشاء يحتاج دفعة hardening مستقلة.
+
+### أوامر يجب تشغيلها عند استلام الدفعة أو قبل الإغلاق النهائي
+- `git status --short --branch`
+- `npm run smoke:batch100f-relationship-audit`
+- `npm run smoke:school-management`
+- `npm run smoke:admin-school-command`
+- `npm run smoke:school-portal-command`
+- `npm run smoke:supervisor-dashboard`
+- `npm run smoke:reports-role`
+- `npm run smoke:security-rbac-phase6`
+- `npm --prefix server run build`
+- `npm run typecheck`
+- `npm run build`
+- `npm run smoke:health-readiness`
+
+### الرفع والنشر
+- GitHub remote: `origin/main`.
+- بعد كل commit/push، انتظر Vercel وRender.
+- تحقق من frontend production عبر `npm run smoke:frontend:strict`.
+- تحقق من backend readiness عبر `npm run smoke:health-readiness`.
+- تحقق بصريًا من المتصفح المدمج على: `https://almeaacodax.vercel.app/admin-dashboard`.
+- لا تكتب أو تنشر أي مفاتيح Render/Vercel/Mongo/Redis في أي ملف.
+
+### الدفعة التالية المقترحة
+`BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`
+
+نطاقها المقترح:
+- معالجة حد 80 طالبًا في إدارة المدرسة بدون تغيير التصميم العام.
+- إضافة pagination أو virtual-list أو “إظهار المزيد” آمن لقوائم الطلاب الكبيرة.
+- فحص عملي من المتصفح المدمج لكل أزرار العلاقات: ربط مشرف مدرسة، ربط مشرف فصل، نقل طالب، ربط ولي أمر، تصدير/تقرير.

@@ -1427,3 +1427,28 @@
 - Render health verified: `ready=true`, commit `9047a47420e5`.
 - Vercel verified: `npm run smoke:frontend:strict` PASS and production serves commit `9047a47`.
 - In-app browser final verification PASS: restored course appears in learning page and opens without unavailable message.
+
+## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Deep Functional Audit
+- Status: `Programmatically closed, production verification pending after deploy`.
+- Scope: audit-only verification of schools/classes/groups/supervisors/students/parents relationships and scoped school/report flows.
+- Delivered:
+  - Added `scripts/smoke-batch100f-relationship-audit-contract.mjs`.
+  - Added npm script `smoke:batch100f-relationship-audit`.
+  - Created report `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR.md`.
+- Checks PASS:
+  - `npm run smoke:batch100f-relationship-audit` (10/10, one warning about 80-student UI cap)
+  - `npm run smoke:school-management`
+  - `npm run smoke:admin-school-command`
+  - `npm run smoke:school-portal-command`
+  - `npm run smoke:supervisor-dashboard`
+  - `npm run smoke:reports-role`
+  - `npm run smoke:security-rbac-phase6`
+  - `npm --prefix server run build`
+  - `npm run typecheck` after rerun with longer timeout
+  - `npm run build`
+  - `npm run smoke:health-readiness`
+- Confirmed risks for next batches:
+  - `dashboards/admin/SchoolsManager.tsx` caps visible school students at `slice(0, 80)`.
+  - Group create route accepts full payload for `admin/teacher/supervisor`; update/delete are scope-guarded, create needs a focused scope hardening pass.
+  - Full in-app browser E2E for every school relationship button is still required.
+- Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
