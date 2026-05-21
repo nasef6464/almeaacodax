@@ -19,7 +19,7 @@ import { api } from '../services/api';
 
 interface CourseOverviewProps {
     course: Course;
-    onContinue: () => void;
+    onContinue: (lessonId?: string) => void;
     initialTab?: TabType;
     onTabChange?: (tab: TabType) => void;
 }
@@ -221,7 +221,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             );
             return;
         }
-        onContinue();
+        onContinue(String(lesson.id || ''));
     };
 
     const handleCreateDiscussion = async () => {
@@ -559,10 +559,18 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                                    <button
+                                        onClick={() => file.url && openExternalUrl(file.url)}
+                                        disabled={!file.url}
+                                        className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    >
                                         <Eye size={18} />
                                     </button>
-                                    <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                                    <button
+                                        onClick={() => file.url && openExternalUrl(file.url)}
+                                        disabled={!file.url}
+                                        className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                    >
                                         <Download size={18} />
                                     </button>
                                 </div>
@@ -739,7 +747,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 
                                 {isEnrolled ? (
                                     <button 
-                                        onClick={onContinue}
+                                        onClick={() => onContinue()}
                                         className="w-full bg-[#1e293b] text-white py-4 rounded-2xl font-black text-lg hover:bg-slate-800 transition-all shadow-lg mb-4 flex items-center justify-center gap-2"
                                     >
                                         استمر

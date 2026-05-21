@@ -193,9 +193,9 @@ const CourseView: React.FC = () => {
                         }
                         setSearchParams(nextParams, { replace: true });
                     }}
-                    onContinue={() => {
+                    onContinue={(lessonId?: string) => {
                         setIsPlaying(true);
-                        updateLearningUrlState(true);
+                        updateLearningUrlState(true, lessonId);
                     }}
                 />
             </div>

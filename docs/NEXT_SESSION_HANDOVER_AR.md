@@ -1172,3 +1172,12 @@
 
 ## Next Batch
 - تدقيق تبويب "ملفات الدورة" و"اختبارات الدورة" داخل الإدارة لضمان ظهور/تحرير العناصر في نفس شاشة الباني بدون فقد بعد الحفظ.
+
+## Update 2026-05-21 — Course Overview Navigation + Files Actions
+- الحالة: `Fully closed`.
+- تم إصلاح فتح الدرس الصحيح من المحتوى، وتم تفعيل أزرار المعاينة/التحميل لملفات الدورة.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:learning-quiz`, `smoke:frontend:strict`).
+- التقرير: `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`.
+
+## Next Batch
+- تدقيق عميق لتبويب إدارة الدورة داخل لوحة المدير (التصنيفات/الاعتماد/العرض/النشر) مع اختبارات حفظ متتالية بعد refresh.

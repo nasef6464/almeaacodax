@@ -1227,3 +1227,13 @@
   - `npm run smoke:learning-quiz` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — Course Overview Navigation + Files Actions
+- Status: `Fully closed`.
+- Implemented exact lesson-id navigation from syllabus and enabled files tab actions for direct file open.
+- Verification:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`.
