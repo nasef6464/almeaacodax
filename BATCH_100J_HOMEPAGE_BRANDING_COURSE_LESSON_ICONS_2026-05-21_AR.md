@@ -1,7 +1,7 @@
 ﻿# BATCH 100J — Homepage Branding Controls + Course Lesson Icons Settings
 
 **التاريخ:** 2026-05-21
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 طلب المالك إضافة تحكم أدق في ألوان وخيارات الصفحة الرئيسية، وإمكانية زر ثالث بجوار زري البداية الحاليين، وإضافة أيقونات قبل/بعد اسم الدرس داخل الدورة مع لون لكل أيقونة، مع الالتزام بعدم تغيير التصميم العام أو فتح دفعة أخرى.
@@ -66,8 +66,15 @@
 | `npm run typecheck` | TIMEOUT ثم PASS | أول تشغيل بمهلة 120s انتهى timeout؛ إعادة التشغيل منفردًا بمهلة 300s نجحت |
 
 ## فحص الإنتاج
-- لم يتم بعد وقت كتابة هذا التقرير الأولي.
-- الحالة الحالية: بانتظار GitHub push ثم نشر Vercel/Render ثم smoke production + in-app browser.
+- GitHub push: PASS على commit `6bd2ae6`.
+- Vercel: PASS بعد إعادة الفحص؛ `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `6bd2ae6`.
+- Render: PASS؛ `/api/health` رجع `ready=true` وcommit `6bd2ae640f72`.
+- Browser visual verification: PASS على:
+  - `https://almeaacodax.vercel.app/?verify=100j-6bd2ae6`
+  - `https://almeaacodax.vercel.app/admin-dashboard?tab=homepage&verify=100j-6bd2ae6`
+  - `https://almeaacodax.vercel.app/course/course_current_p_1777779639431_sub_1777779748206_foundation?verify=100j-6bd2ae6`
+- تم التأكد بصريًا من ظهور حقول إعدادات Hero الجديدة: لون الشارة، لون مقدمة العنوان، لون الكلمة المميزة، لون الوصف، لون زر البداية، لون الزر الثانوي، زر ثالث، رابط الزر الثالث، لون الزر الثالث.
+- صفحة الدورة فتحت بدون أخطاء ظاهرة.
 
 ## التحقق اليدوي المطلوب بعد النشر
 1. فتح `https://almeaacodax.vercel.app/?verify=100j-COMMIT` والتأكد أن الصفحة الرئيسية تعمل بدون أخطاء.
@@ -81,8 +88,7 @@
 - توجد تعديلات قديمة غير مرتبطة في الشجرة يجب عدم خلطها مع هذه الدفعة.
 
 ## هل أغلقت الدفعة؟
-- برمجيًا: نعم.
-- إنتاجيًا: بانتظار الرفع والنشر والتحقق الحي.
+- نعم، تم إغلاق BATCH 100J بالكامل بعد الرفع والنشر وفحوص الإنتاج والتحقق البصري.
 
 ## الدفعة التالية المقترحة
 `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`

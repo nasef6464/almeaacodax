@@ -1527,3 +1527,14 @@
 - Evidence: new contract smoke PASS, homepage hero smoke PASS, course flow smoke PASS, server build PASS, typecheck PASS after rerun, frontend build PASS, health readiness PASS.
 - Production verification: pending until push/deploy/browser closure.
 - Next suggested: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
+
+## Final Closure 2026-05-21 - BATCH 100J
+- Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `6bd2ae6`.
+- GitHub: PASS, pushed to `origin/main`.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production commit `6bd2ae6`.
+- Render: PASS, `/api/health` returned `ready=true` and commit `6bd2ae640f72`.
+- Browser verification: PASS, homepage, admin homepage settings, and production course page opened in the in-app browser without visible errors.
+- Notes: third Hero button and course lesson icons are optional and become visible only after admin saves values.
+- Next suggested: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.

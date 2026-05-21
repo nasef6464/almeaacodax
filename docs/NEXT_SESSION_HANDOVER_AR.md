@@ -873,7 +873,7 @@
 ## Update 2026-05-21 - FIX-3 Revalidation (Blocked)
 - Frontend probe: 200 on https://almeaacodax.vercel.app/.
 - Backend health:
-eady=true, redis ready for limiter+queue, commit  5f011e1944e.
+eady=true, redis ready for limiter+queue, commit 5f011e1944e.
 - PASS: smoke:health-readiness, smoke:seo.
 - FAIL: smoke:operational, smoke:sentry-live-proof Ø¨Ø³Ø¨Ø¨ ØºÙŠØ§Ø¨ SMOKE_ADMIN_TOKEN.
 - Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ Ø£ÙˆÙ„Ù‹Ø§ Ù„Ù„Ø¬Ù„Ø³Ø© Ø§Ù„ØªØ§Ù„ÙŠØ©: Ø¶Ø¨Ø· SMOKE_ADMIN_TOKEN ÙÙŠ GitHub Secrets ÙˆRender env Ø«Ù… Ø¥Ø¹Ø§Ø¯Ø© ØªØ´ØºÙŠÙ„ Ù†ÙØ³ ÙØ­ÙˆØµ FIX-3 Ù„Ø¥ØºÙ„Ø§Ù‚Ù‡Ø§ Fully closed.
@@ -1814,3 +1814,15 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   - `docs/NEXT_SESSION_HANDOVER_AR.md`
 - Do not stage unrelated dirty files already present in the worktree.
 - Final closure still requires: commit, push, Vercel/Render deploy verification, production smoke, in-app browser visual verification, then final closure docs update.
+
+## Final Closure Handover 2026-05-21 - BATCH 100J
+- Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`.
+- Final status: `Fully closed`.
+- Commit pushed: `6bd2ae6`.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves commit `6bd2ae6`.
+- Render: PASS, `/api/health` returned `ready=true` and commit `6bd2ae640f72`.
+- Browser verification: PASS, checked homepage, admin homepage settings, and course page inside the in-app browser.
+- Verified new admin homepage controls: badge color, title intro color, highlight color, description color, primary/secondary colors, third button label/link/color.
+- Course lesson start/end icons are supported in schema/API/builders/player/overview; they display only when an admin saves values on a course.
+- Do not stage unrelated existing dirty files in the next batch.
+- Next suggested batch: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.

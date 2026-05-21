@@ -2,12 +2,13 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings
+- Status: Fully closed
 
 ## Update 2026-05-21 - BATCH 100J Homepage Branding + Course Lesson Icons
 - Batch: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending`
+- Status: `Fully closed`
 - Scope: homepage Hero colors/third button + course lesson before/after icons with colors.
 - Delivered:
   - Added optional Hero color fields and optional third CTA fields to frontend types, Mongo model, and backend validation.
@@ -24,9 +25,13 @@
   - `npm run build` PASS
   - `npm run smoke:health-readiness` PASS
   - `npm run typecheck` PASS after standalone rerun with longer timeout; first parallel attempt timed out and was not counted
-- Production verification: pending until GitHub push, Vercel/Render deployment, frontend strict smoke, health smoke, and in-app browser verification.
+- Production verification:
+  - GitHub push PASS: `6bd2ae6`.
+  - Vercel PASS: `npm run smoke:frontend:strict` confirmed production serves commit `6bd2ae6`.
+  - Render PASS: `/api/health` returned `ready=true` and commit `6bd2ae640f72`.
+  - In-app browser PASS: homepage, admin homepage settings, and course page opened without visible errors; new homepage color/third-button controls were visible.
 - Report: `BATCH_100J_HOMEPAGE_BRANDING_COURSE_LESSON_ICONS_2026-05-21_AR.md`
-- Next suggested after final closure: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`
+- Next suggested: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`
 ## Update 2026-05-21 - BATCH 100I Admin Dashboard Functional QA
 - Batch: `BATCH_100I_ADMIN_DASHBOARD_FUNCTIONAL_QA_COURSE_HOMEPAGE_GROUPS_2026-05-21_AR`
 - Status: `Fully closed`

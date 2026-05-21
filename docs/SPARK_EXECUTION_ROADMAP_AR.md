@@ -747,3 +747,12 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   4. Verify visually in the in-app browser.
 - Next suggested after final closure:
   `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
+
+## Final Closure 2026-05-21 - After BATCH 100J
+- `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings` is now Fully closed.
+- Production evidence:
+  - GitHub commit pushed: `6bd2ae6`.
+  - Vercel strict frontend smoke: PASS and serving commit `6bd2ae6`.
+  - Render health: PASS, `ready=true`, commit `6bd2ae640f72`.
+  - In-app browser: PASS for homepage, admin homepage settings, and course page.
+- Next proposed batch remains focused: `BATCH 100K - Admin Dashboard Full Functional Sweep: Homepage Logo Upload + Remaining Broken Buttons`.
