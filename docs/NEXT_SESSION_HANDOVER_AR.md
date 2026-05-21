@@ -1115,3 +1115,12 @@
 
 ## Next Batch
 - FIX-5 Tap integration (تنفيذ/إغلاق برمجي) ثم انتظار مفاتيح Tap للتحقق الحي النهائي.
+
+## Update 2026-05-21 — FIX-5 (Tap)
+- الحالة: `Programmatically closed (live key dependent)`.
+- تم تنفيذ التكامل برمجيًا بالكامل مع مسار initiate + webhook + اعتماد الوصول عند CAPTURED.
+- جميع فحوص الدفعة PASS.
+- المتبقي: مفاتيح Tap فقط لإثبات sandbox transaction وإغلاق حي نهائي.
+
+## Next Batch
+- العودة إلى FIX-3 (SMOKE_ADMIN_TOKEN) أو FIX-9 (Scale) حسب المفاتيح/الترقيات المتاحة.

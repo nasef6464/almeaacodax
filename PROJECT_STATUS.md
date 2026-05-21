@@ -996,3 +996,14 @@
 - Blocker remains external-only: WhatsApp provider env values on production.
 - Report:
   - `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-5 Tap Payment Integration
+- Current status: `Programmatically closed (live key dependent)`.
+- Delivered now:
+  1. Real Tap charge initiation endpoint.
+  2. Tap webhook endpoint with signature guard and captured->grant flow.
+  3. Full smoke/type/build pass after implementation.
+- Remaining for full live closure:
+  - Add Tap env keys and run sandbox transaction proof.
+- Report:
+  - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`

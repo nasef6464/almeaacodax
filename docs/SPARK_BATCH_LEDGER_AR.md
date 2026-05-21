@@ -1145,3 +1145,18 @@
   - `smoke:notifications` PASS
 - Remaining blocker: production WhatsApp provider env credentials.
 - Report: `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX-5 Tap Integration (Programmatic Closure)
+- Status: `Programmatically closed (live key dependent)`.
+- Implemented:
+  - `POST /api/payments/initiate` (Tap charge creation + redirect URL return)
+  - `POST /api/payments/webhooks/tap` (signature verification + CAPTURED approval flow)
+  - Maintained anti-tampering trusted amount model.
+- Verification:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:payment-providers` PASS
+  - `npm run smoke:payment-tampering` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`.

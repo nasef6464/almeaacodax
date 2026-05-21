@@ -85,6 +85,15 @@ const paymentWebhookSchema = z.object({
   occurredAt: z.number().optional(),
 });
 
+const tapInitiateSchema = z.object({
+  itemType: z.enum(["course", "package", "skill", "test"]),
+  itemId: z.string().min(1),
+  packageId: z.string().optional(),
+  discountCode: z.string().max(80).optional(),
+  paymentCountry: z.string().max(3).optional(),
+  notes: z.string().max(300).optional(),
+});
+
 const paymentRequestListQuerySchema = z.object({
   status: z.enum(["pending", "approved", "rejected", "cancelled", "all"]).optional(),
   search: z.string().max(120).optional(),
@@ -328,6 +337,52 @@ const verifyPaymentWebhookSignature = (secret: string, payload: unknown, signatu
 
   return expectedBuffer.length === providedBuffer.length && crypto.timingSafeEqual(expectedBuffer, providedBuffer);
 };
+
+const getTapApiConfig = () => {
+  const apiKey = String(process.env.TAP_API_KEY || "").trim();
+  const secretKey = String(process.env.TAP_SECRET_KEY || "").trim();
+  const webhookSecret = String(process.env.TAP_WEBHOOK_SECRET || "").trim();
+  const mode = String(process.env.TAP_MODE || "test").trim().toLowerCase();
+  return {
+    apiKey,
+    secretKey,
+    webhookSecret,
+    mode,
+    configured: Boolean(apiKey || secretKey),
+  };
+};
+
+const resolveTapAuthToken = () => {
+  const { apiKey, secretKey } = getTapApiConfig();
+  return apiKey || secretKey;
+};
+
+const buildTapSignaturePayload = (payload: unknown) => JSON.stringify(payload);
+
+const verifyTapWebhookSignature = (payload: unknown, signatureHeader?: string | string[]) => {
+  const { webhookSecret } = getTapApiConfig();
+  if (!webhookSecret) return false;
+  const provided = String(Array.isArray(signatureHeader) ? signatureHeader[0] : signatureHeader || "")
+    .replace(/^sha256=/i, "")
+    .trim();
+  if (!provided) return false;
+  const computed = crypto
+    .createHmac("sha256", webhookSecret)
+    .update(buildTapSignaturePayload(payload))
+    .digest("hex");
+  const expected = Buffer.from(computed);
+  const actual = Buffer.from(provided);
+  return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+};
+
+const extractTapTransactionUrl = (tapResponse: any) =>
+  String(
+    tapResponse?.transaction?.url ||
+      tapResponse?.source?.url ||
+      tapResponse?.redirect?.url ||
+      tapResponse?.url ||
+      "",
+  ).trim();
 
 const userAlreadyOwnsPurchase = (
   user: any,
@@ -700,6 +755,162 @@ paymentRouter.post(
   }),
 );
 
+paymentRouter.post(
+  "/initiate",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload: z.infer<typeof tapInitiateSchema> = tapInitiateSchema.parse(req.body);
+    const user = await UserModel.findById(req.authUser?.id).select("_id name email role subscription enrolledCourses").lean();
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    const tapAuthToken = resolveTapAuthToken();
+    if (!tapAuthToken) {
+      return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({
+        message: "Tap provider is not configured",
+        required: ["TAP_API_KEY or TAP_SECRET_KEY", "TAP_WEBHOOK_SECRET"],
+      });
+    }
+
+    const trustedTarget = await buildTrustedPaymentTarget({
+      ...payload,
+      paymentMethod: "card",
+      transferReference: "",
+      walletNumber: "",
+      receiptUrl: "",
+      paymentProviderCode: "tap",
+      paymentGatewayMode: "webhook",
+      notes: payload.notes || "",
+    });
+
+    if (!trustedTarget.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: trustedTarget.error });
+    }
+
+    if (userAlreadyOwnsPurchase(user, {
+      itemType: payload.itemType,
+      itemId: payload.itemId,
+      packageId: trustedTarget.packageId || "",
+      includedCourseIds: trustedTarget.includedCourseIds || [],
+    })) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "المستخدم يملك هذا المحتوى بالفعل" });
+    }
+
+    const normalizedDiscountCode = normalizeDiscountCode(payload.discountCode);
+    let discountAmount = 0;
+    let discountCodeId = "";
+    if (normalizedDiscountCode) {
+      const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode }).lean();
+      if (!isDiscountCodeActive(discountCode)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير صالح أو منتهي" });
+      }
+      if (!discountAppliesToPayload(discountCode, trustedTarget.originalAmount, {
+        itemType: payload.itemType,
+        itemId: payload.itemId,
+        packageId: payload.packageId,
+      }, trustedTarget.packageItem)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير مطابق لهذا المنتج" });
+      }
+      discountAmount = calculateDiscountAmount(discountCode, trustedTarget.originalAmount);
+      discountCodeId = String(discountCode?._id || "");
+    }
+
+    const finalAmount = Math.max(0, trustedTarget.originalAmount - discountAmount);
+
+    const requestRecord = await PaymentRequestModel.create({
+      id: `tapreq_${Date.now()}`,
+      userId: String(user._id),
+      userName: user.name || "",
+      userEmail: user.email || "",
+      itemType: payload.itemType,
+      itemId: payload.itemId,
+      itemName: trustedTarget.itemName,
+      packageId: trustedTarget.packageId || "",
+      includedCourseIds: trustedTarget.includedCourseIds || [],
+      currency: trustedTarget.currency,
+      paymentMethod: "card",
+      transferReference: "",
+      walletNumber: "",
+      receiptUrl: "",
+      paymentProviderCode: "tap",
+      paymentGatewayMode: "webhook",
+      paymentCountry: payload.paymentCountry || "SA",
+      notes: payload.notes || "",
+      originalAmount: trustedTarget.originalAmount,
+      discountAmount,
+      discountCodeId,
+      amount: finalAmount,
+      discountCode: normalizedDiscountCode,
+      status: "pending",
+    });
+
+    const frontendBase = String(process.env.CLIENT_URL || process.env.APP_BASE_URL || "").trim();
+    const redirectUrl = frontendBase
+      ? `${frontendBase.replace(/\/+$/, "")}/#/payment/success?request=${encodeURIComponent(String(requestRecord.id || requestRecord._id))}`
+      : undefined;
+
+    const tapPayload: any = {
+      amount: finalAmount,
+      currency: trustedTarget.currency || "SAR",
+      customer: {
+        first_name: String(user.name || "Student").slice(0, 40),
+        email: String(user.email || "").slice(0, 120),
+      },
+      source: { id: "src_all" },
+      description: `ALMEAA ${payload.itemType}:${payload.itemId}`,
+      reference: {
+        transaction: String(requestRecord.id || requestRecord._id),
+        order: String(requestRecord.id || requestRecord._id),
+      },
+      post: {
+        url: String(process.env.TAP_WEBHOOK_URL || "").trim() || undefined,
+      },
+      redirect: redirectUrl ? { url: redirectUrl } : undefined,
+    };
+
+    const tapResponse = await fetch("https://api.tap.company/v2/charges", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tapAuthToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tapPayload),
+    });
+
+    const tapData = await tapResponse.json().catch(() => ({}));
+    if (!tapResponse.ok) {
+      await PaymentRequestModel.findByIdAndUpdate(requestRecord._id, {
+        $set: {
+          reviewerNotes: `tap_error:${tapResponse.status}`,
+          notes: `${requestRecord.notes || ""}\n[tap-error] ${JSON.stringify(tapData).slice(0, 500)}`.trim(),
+        },
+      });
+      return res.status(StatusCodes.BAD_GATEWAY).json({
+        message: "تعذر إنشاء عملية Tap",
+        tapStatus: tapResponse.status,
+      });
+    }
+
+    const chargeId = String(tapData?.id || "").trim();
+    const chargeUrl = extractTapTransactionUrl(tapData);
+    await PaymentRequestModel.findByIdAndUpdate(requestRecord._id, {
+      $set: {
+        gatewayProvider: "tap",
+        gatewayTransactionId: chargeId,
+      },
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      requestId: String(requestRecord.id || requestRecord._id),
+      chargeId,
+      redirectUrl: chargeUrl,
+      provider: "tap",
+      mode: getTapApiConfig().mode,
+    });
+  }),
+);
+
 paymentRouter.delete(
   "/subscription",
   requireAuth,
@@ -739,6 +950,97 @@ paymentRouter.delete(
       ok: true,
       subscription: user.subscription || { plan: "free", expiresAt: null },
     });
+  }),
+);
+
+paymentRouter.post(
+  "/webhooks/tap",
+  asyncHandler(async (req, res) => {
+    const payload = req.body || {};
+    const signatureHeader = req.headers["x-signature"] || req.headers["x-tap-signature"];
+    const signatureOk = verifyTapWebhookSignature(payload, signatureHeader);
+    if (!signatureOk) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid Tap webhook signature" });
+    }
+
+    const eventType = String(payload?.object || payload?.event || "").toUpperCase();
+    const chargeId = String(payload?.id || payload?.data?.id || "").trim();
+    const chargeStatus = String(payload?.status || payload?.data?.status || "").toUpperCase();
+    const transactionRef = String(payload?.reference?.transaction || payload?.reference?.order || "").trim();
+    const requestLookupId = transactionRef || chargeId;
+
+    if (!requestLookupId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing payment request reference" });
+    }
+
+    const requestDoc = await PaymentRequestModel.findOne({
+      $or: [
+        ...buildPaymentRequestLookup(requestLookupId).$or,
+        { gatewayTransactionId: chargeId },
+      ],
+    });
+
+    if (!requestDoc) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    }
+
+    if (requestDoc.status === "approved") {
+      return res.json({ ok: true, duplicate: true, requestId: String(requestDoc.id || requestDoc._id) });
+    }
+
+    const isCaptured = eventType.includes("CHARGE") && chargeStatus === "CAPTURED";
+    if (!isCaptured) {
+      const failStatus = chargeStatus === "CANCELLED" ? "cancelled" : "rejected";
+      await PaymentRequestModel.findByIdAndUpdate(requestDoc._id, {
+        $set: {
+          status: failStatus,
+          reviewerNotes: `tap_${chargeStatus || "FAILED"}`,
+          gatewayProvider: "tap",
+          gatewayTransactionId: chargeId || requestDoc.gatewayTransactionId || "",
+          gatewayEventId: String(payload?.id || requestDoc.gatewayEventId || ""),
+          reviewedBy: "webhook:tap",
+          reviewedAt: Date.now(),
+        },
+      });
+      return res.json({ ok: true, status: failStatus });
+    }
+
+    const approved = await completeApprovedPaymentRequest(requestDoc, {
+      reviewedBy: "webhook:tap",
+      reviewerNotes: "tap charge captured",
+      approvalEvidence: `tap:${chargeId}`,
+      gatewayProvider: "tap",
+      gatewayTransactionId: chargeId,
+      gatewayEventId: String(payload?.id || ""),
+      gatewayPaidAt: Date.now(),
+    });
+
+    if (approved.duplicate || !approved.request) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
+    }
+
+    const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
+    if (!discountReserved) {
+      await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
+        $set: {
+          status: "pending",
+          reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
+          approvalEvidence: "",
+          reviewedBy: "",
+          reviewedAt: null,
+        },
+      });
+      return res.status(StatusCodes.CONFLICT).json({ message: PAYMENT_ERRORS.discountApprovalFailedDuringReview });
+    }
+
+    await grantApprovedPaymentAccess(approved.request, {
+      reviewedBy: "webhook:tap",
+      gatewayProvider: "tap",
+      gatewayTransactionId: chargeId,
+      gatewayEventId: String(payload?.id || ""),
+    });
+
+    return res.json({ ok: true, status: "approved", requestId: String(approved.request.id || approved.request._id) });
   }),
 );
 
