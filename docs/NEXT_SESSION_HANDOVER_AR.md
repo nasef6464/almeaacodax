@@ -1710,3 +1710,13 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - Important rule: do not stage unrelated dirty files. Use explicit `git add` paths only.
 - Production closure still requires push, deploy wait, `smoke:health-readiness`, `smoke:frontend:strict`, and in-app browser verification on `https://almeaacodax.vercel.app/#/`.
 - Next suggested batch after final closure: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.
+
+## Final Closure Handover 2026-05-21 - BATCH 100H
+- Batch: `BATCH_100H_GROUP_CREATE_SCOPE_HARDENING_E2E_2026-05-21_AR`.
+- Final status: `Fully closed`.
+- Commit pushed: `5338714`.
+- Vercel: PASS, `smoke:frontend:strict` confirmed deployed commit `5338714`.
+- Render: PASS, health returned `ready=true` and commit `5338714f2cc7`.
+- Browser verification: PASS, opened admin dashboard and `المجموعات والمدارس` tab inside in-app browser; readiness cards and school list visible, no visible errors.
+- Do not stage unrelated existing dirty files in the next batch.
+- Next suggested batch: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`.

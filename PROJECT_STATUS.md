@@ -3,12 +3,12 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100H - Group Create Scope Hardening + E2E Verification
-- Status: Programmatically closed, production verification pending
+- Status: Fully closed after GitHub push, Vercel/Render production smoke, and in-app browser verification
 
 
 ## Update 2026-05-21 - BATCH 100H Group Create Scope Hardening
 - Batch: `BATCH_100H_GROUP_CREATE_SCOPE_HARDENING_E2E_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending`
+- Status: `Fully closed`
 - Scope: hardened `POST /api/content/groups` only.
 - Delivered:
   - Non-admin users can no longer create top-level `SCHOOL` groups.
@@ -28,12 +28,18 @@
   - `npm run typecheck` PASS after rerun standalone; first parallel run timed out and was not counted
   - `npm run build` PASS
   - `npm run smoke:health-readiness` PASS
-  - `npm run smoke:frontend:strict` PASS against previous production commit before this push
+  - `npm run smoke:frontend:strict` PASS after deployment and production served commit `5338714`
+  - `GET /api/health` PASS after deployment with Render commit `5338714f2cc7`
 - Report: `BATCH_100H_GROUP_CREATE_SCOPE_HARDENING_E2E_2026-05-21_AR.md`
+- Production verification:
+  - GitHub push PASS: `5338714`.
+  - Vercel PASS: production served commit `5338714`.
+  - Render PASS: health commit `5338714f2cc7`, ready=true.
+  - In-app browser PASS: admin dashboard and `المجموعات والمدارس` tab visible with no visible errors.
 - Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
-- Status: Programmatically closed, production verification pending
+- Status: Fully closed
 - Scope: audit-only functional relationship verification for schools, classes, groups, supervisors, students, parents, and scoped reports.
 - Delivered:
   - Added `scripts/smoke-batch100f-relationship-audit-contract.mjs`.

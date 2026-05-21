@@ -1,7 +1,7 @@
 ﻿# BATCH 100H - Group Create Scope Hardening + E2E Verification
 
 التاريخ: 2026-05-21
-الحالة: Programmatically closed, production verification pending
+الحالة: Fully closed
 
 ## السبب
 دفعة BATCH 100F كشفت أن مسار إنشاء المجموعات `POST /api/content/groups` كان محمياً بالمصادقة والدور، لكنه كان يقبل payload كامل من الواجهة ويكتبه مباشرة في MongoDB، بما يشمل `ownerId` و`supervisorIds` و`studentIds` و`courseIds`. هذا يترك خطراً أن ينشئ مستخدم غير أدمن مجموعة أو فصلًا خارج نطاق مدرسته أو بحقوق علاقات غير موثقة من السيرفر.
@@ -65,15 +65,23 @@
 | `npm run typecheck` منفردًا | PASS | `tsc --noEmit` |
 | `npm run build` | PASS | Vite production build |
 | `npm run smoke:health-readiness` | PASS | health/readiness contract |
-| `npm run smoke:frontend:strict` | PASS | production currently serving previous commit قبل push هذه الدفعة |
+| `npm run smoke:frontend:strict` قبل الرفع | PASS | production كان يخدم commit سابقًا قبل هذه الدفعة |
+| `npm run smoke:frontend:strict` بعد النشر | PASS | Vercel يخدم commit `5338714` وasset `index-BPTquocB.js` |
+| `GET /api/health` بعد النشر | PASS | Render جاهز `ready=true` وcommit `5338714f2cc7` |
+| `npm run smoke:health-readiness` بعد النشر | PASS | Render/Vercel readiness aligned |
+| `npm run smoke:batch100h-group-create-scope` بعد النشر | PASS | 8/8 |
 
 ## فحص الإنتاج
-- قبل الرفع: لم يتم بعد.
-- الحالة الحالية: بانتظار GitHub push ثم Vercel/Render deploy ثم إعادة فحص production.
+- GitHub push: PASS، commit `5338714`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `5338714`.
+- Render: PASS، `/api/health` أكد `ready=true` وcommit `5338714f2cc7`.
+- smoke بعد النشر: PASS.
 
 ## التحقق الحي من المتصفح الداخلي
-- بانتظار النشر.
-- سيتم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100h-<commit>` والتحقق من لوحة `المجموعات والمدارس` بصريًا بدون تنفيذ عمليات تغيّر بيانات إنتاجية حقيقية.
+- PASS: تم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100h-5338714` داخل المتصفح الداخلي.
+- PASS: تم فتح تبويب `المجموعات والمدارس` من لوحة الإدارة.
+- PASS: ظهرت بطاقات جاهزية المدارس وقائمة المدارس بدون أخطاء ظاهرة.
+- لم يتم تنفيذ mutation من المتصفح على بيانات إنتاجية حقيقية لتجنب تعديل بيانات المدارس دون تأكيد مباشر.
 
 ## المخاطر المتبقية
 - لم يتم تنفيذ mutation E2E حقيقي من UI على بيانات المدارس الإنتاجية حتى لا نغيّر بيانات حقيقية بدون تأكيد مالك مباشر.
@@ -82,7 +90,7 @@
 
 ## هل تم إغلاق خطر إنشاء المجموعات خارج النطاق؟
 برمجيًا: نعم.
-إنتاجيًا: بانتظار النشر والتحقق.
+إنتاجيًا: نعم، بعد تحقق Vercel/Render والمتصفح الداخلي.
 
 ## الدفعة التالية المقترحة
 BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons
