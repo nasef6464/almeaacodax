@@ -693,3 +693,9 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
      - Ensure teacher/supervisor-created groups cannot escape their allowed school/group scope.
   3. `BATCH 100I - Admin Dashboard Full Button E2E Sweep`
      - Test the remaining admin dashboard tabs/buttons, including homepage image settings and course builder/player flows.
+
+## Update 2026-05-21 - After BATCH 100G
+- Closed scope programmatically: school-student relationship table pagination.
+- Next production-closure step: push BATCH 100G, verify Vercel/Render, and in-app browser.
+- Next suggested batch after final closure: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
+- Reason: group create scope remains the next confirmed relationship/RBAC risk after BATCH 100F/100G.

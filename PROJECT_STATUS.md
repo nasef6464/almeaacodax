@@ -2,8 +2,8 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit
-- Status: Fully closed after GitHub push, production smoke, and in-app browser verification
+- Active Batch: BATCH 100G - School Relationship UI Pagination + E2E Browser Verification
+- Status: Programmatically closed, production verification pending
 
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
@@ -1394,4 +1394,31 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
 
 
+
+
+## Update 2026-05-21 - BATCH 100G School Relationship UI Pagination
+- Batch: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: removed the silent `visibleSchoolStudents.slice(0, 80)` cap from school student relationship table and added safe in-place pagination without UI redesign.
+- Delivered:
+  - `dashboards/admin/SchoolsManager.tsx` now derives `pagedVisibleSchoolStudents` and resets page on school/search/class filter changes.
+  - `scripts/smoke-batch100g-school-student-pagination-contract.mjs`.
+  - `npm run smoke:batch100g-school-student-pagination`.
+- Checks PASS:
+  - `npm run smoke:batch100g-school-student-pagination`
+  - `npm run smoke:batch100f-relationship-audit`
+  - `npm run smoke:school-management`
+  - `npm run smoke:admin-school-command`
+  - `npm run smoke:school-portal-command`
+  - `npm run smoke:supervisor-dashboard`
+  - `npm run smoke:reports-role`
+  - `npm run smoke:security-rbac-phase6`
+  - `npm --prefix server run build`
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` before push (served previous commit)
+- Report: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR.md`.
+- Next required before Fully closed: push to GitHub, wait deployment, rerun production smokes, and verify from in-app browser.
+- Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 

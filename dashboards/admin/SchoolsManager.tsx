@@ -625,6 +625,8 @@ export const SchoolsManager: React.FC = () => {
     const [managementNotice, setManagementNotice] = useState<string | null>(null);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
+    const [schoolStudentPage, setSchoolStudentPage] = useState(1);
+    const schoolStudentPageSize = 80;
     const [newCodeMaxUses, setNewCodeMaxUses] = useState('50');
     const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
     const [bulkClassNames, setBulkClassNames] = useState('');
@@ -817,6 +819,10 @@ export const SchoolsManager: React.FC = () => {
                 : (packages[0]?.id || '')
         ));
     }, [selectedSchool, b2bPackages]);
+
+    useEffect(() => {
+        setSchoolStudentPage(1);
+    }, [selectedSchool?.id, studentSearch, selectedClassFilter]);
 
     useEffect(() => {
         let cancelled = false;
@@ -1191,6 +1197,11 @@ export const SchoolsManager: React.FC = () => {
             }
             return (student.groupIds || []).includes(selectedClassFilter);
         });
+        const schoolStudentTotalPages = Math.max(1, Math.ceil(visibleSchoolStudents.length / schoolStudentPageSize));
+        const safeSchoolStudentPage = Math.min(schoolStudentPage, schoolStudentTotalPages);
+        const schoolStudentStartIndex = (safeSchoolStudentPage - 1) * schoolStudentPageSize;
+        const schoolStudentEndIndex = Math.min(schoolStudentStartIndex + schoolStudentPageSize, visibleSchoolStudents.length);
+        const pagedVisibleSchoolStudents = visibleSchoolStudents.slice(schoolStudentStartIndex, schoolStudentEndIndex);
         const readinessChecks = [
             {
                 label: 'فصول دراسية',
@@ -2722,7 +2733,7 @@ export const SchoolsManager: React.FC = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-100 bg-white text-sm">
-                                                {visibleSchoolStudents.slice(0, 80).map((student) => {
+                                                {pagedVisibleSchoolStudents.map((student) => {
                                                     const currentClass = schoolClasses.find((classroom) => (student.groupIds || []).includes(classroom.id));
                                                     return (
                                                         <tr key={student.id}>
@@ -2757,6 +2768,34 @@ export const SchoolsManager: React.FC = () => {
                                                 })}
                                             </tbody>
                                         </table>
+                                        {schoolStudentTotalPages > 1 && (
+                                            <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 px-4 py-3 text-xs font-bold text-gray-600 sm:flex-row sm:items-center sm:justify-between">
+                                                <span>
+                                                    عرض {schoolStudentStartIndex + 1}-{schoolStudentEndIndex} من {visibleSchoolStudents.length} طالب
+                                                </span>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        disabled={safeSchoolStudentPage <= 1}
+                                                        onClick={() => setSchoolStudentPage((page) => Math.max(1, page - 1))}
+                                                        className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        السابق
+                                                    </button>
+                                                    <span className="rounded-xl bg-white px-3 py-2 text-gray-500">
+                                                        صفحة {safeSchoolStudentPage} / {schoolStudentTotalPages}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        disabled={safeSchoolStudentPage >= schoolStudentTotalPages}
+                                                        onClick={() => setSchoolStudentPage((page) => Math.min(schoolStudentTotalPages, page + 1))}
+                                                        className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        التالي
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>

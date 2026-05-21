@@ -1626,3 +1626,63 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - تم رفع commit `3aa746a` والتحقق من Vercel/Render والمتصفح المدمج.
 - عند بدء الحساب التالي، اعتبر BATCH 100F مغلقة بالكامل.
 - ابدأ فقط إذا قال المالك `اكمل` بالدفعة التالية المقترحة: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
+
+---
+
+## تسليم عاجل للحساب التالي - بعد BATCH 100G - 2026-05-21
+
+### قاعدة العمل الملزمة
+- كلمة المالك `اكمل` تعني الاستمرار داخل الدفعة الحالية حتى الإغلاق الكامل: تنفيذ + فحوص + تقرير + Ledger/Status/Handover + commit/push + انتظار النشر + smoke إنتاج + تحقق بصري من المتصفح الداخلي.
+- لا تستخدم `git add .` لأن الشجرة تحتوي تعديلات قديمة كثيرة خارج نطاق الدفعات.
+- لا تحفظ أي secrets أو tokens في التقارير أو ملفات التسليم.
+- تحقق دائمًا من `https://almeaacodax.vercel.app/` و`https://almeaacodax-k2ux.onrender.com/api/health` بعد كل push.
+
+### حالة BATCH 100G
+- الدفعة: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR`.
+- الحالة الحالية: `Programmatically closed, production verification pending` قبل push النهائي.
+- ما تم:
+  - إزالة حد `visibleSchoolStudents.slice(0, 80)` من `dashboards/admin/SchoolsManager.tsx`.
+  - إضافة `schoolStudentPage`, `schoolStudentPageSize`, `pagedVisibleSchoolStudents`, `schoolStudentTotalPages`.
+  - إضافة أزرار `السابق/التالي` ونص نطاق العرض عند تعدد الصفحات.
+  - تصفير الصفحة عند تغيير المدرسة أو البحث أو فلتر الفصل.
+  - إضافة smoke: `npm run smoke:batch100g-school-student-pagination`.
+
+### الفحوص التي نجحت قبل الرفع
+- `npm run smoke:batch100g-school-student-pagination` PASS
+- `npm run smoke:batch100f-relationship-audit` PASS, warnings=0
+- `npm run smoke:school-management` PASS
+- `npm run smoke:admin-school-command` PASS
+- `npm run smoke:school-portal-command` PASS
+- `npm run smoke:supervisor-dashboard` PASS
+- `npm run smoke:reports-role` PASS
+- `npm run smoke:security-rbac-phase6` PASS
+- `npm --prefix server run build` PASS
+- `npm run typecheck` PASS
+- `npm run build` PASS
+- `npm run smoke:health-readiness` PASS
+- `npm run smoke:frontend:strict` PASS قبل push، لكنه كان يخدم commit سابق.
+
+### ملفات الدفعة التي يجب رفعها فقط
+- `dashboards/admin/SchoolsManager.tsx` (يفضل stage جزئي/محدد إن وجدت تغييرات قديمة في نفس الملف)
+- `scripts/smoke-batch100g-school-student-pagination-contract.mjs`
+- `package.json`
+- `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR.md`
+- `PROJECT_STATUS.md`
+- `docs/SPARK_BATCH_LEDGER_AR.md`
+- `docs/SPARK_EXECUTION_ROADMAP_AR.md`
+- `docs/NEXT_SESSION_HANDOVER_AR.md`
+
+### المتبقي للإغلاق الكامل
+1. Stage ملفات BATCH 100G فقط.
+2. Commit + push إلى `origin/main`.
+3. انتظار Vercel/Render.
+4. تشغيل:
+   - `npm run smoke:frontend:strict`
+   - `npm run smoke:health-readiness`
+5. تحقق بصري من المتصفح الداخلي على `https://almeaacodax.vercel.app/admin-dashboard` وفتح تبويب `المجموعات والمدارس`.
+6. تحديث تقرير BATCH 100G إلى `Fully closed` إذا نجحت خطوات الإنتاج.
+
+### التالي المقترح بعد الإغلاق النهائي
+`BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`
+
+سبب التالي: بعد إزالة حد الـ 80 طالبًا، يبقى خطر مؤكد من BATCH 100F وهو أن إنشاء group جديد يحتاج تضييق scope للـ teacher/supervisor، مع فحص زر-بزر لعلاقات المدارس في المتصفح الداخلي.

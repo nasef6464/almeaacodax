@@ -1463,3 +1463,11 @@
 
 
 
+
+## Update 2026-05-21 - BATCH 100G School Relationship UI Pagination
+- الحالة: `Programmatically closed, production verification pending`.
+- النطاق: إزالة حد عرض أول 80 طالبًا في جدول طلاب المدرسة داخل `SchoolsManager` وإضافة ترقيم آمن بدون تغيير التصميم.
+- الملفات: `dashboards/admin/SchoolsManager.tsx`, `scripts/smoke-batch100g-school-student-pagination-contract.mjs`, `package.json`, تقرير الدفعة.
+- الفحوص: school pagination smoke، relationship audit، school management، admin/school portal/supervisor/report/RBAC smokes، server build، typecheck، frontend build، health readiness، frontend strict قبل push — كلها PASS.
+- التقرير: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR.md`.
+- التالي: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
