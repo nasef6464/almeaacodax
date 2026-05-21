@@ -9,6 +9,33 @@ import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.jpg?v=20260512';
 
+const COLOR_SWATCHES = [
+    '#111827',
+    '#374151',
+    '#64748b',
+    '#ffffff',
+    '#2563eb',
+    '#1d4ed8',
+    '#4f46e5',
+    '#7c3aed',
+    '#9333ea',
+    '#db2777',
+    '#e11d48',
+    '#dc2626',
+    '#ea580c',
+    '#f59e0b',
+    '#ca8a04',
+    '#84cc16',
+    '#16a34a',
+    '#059669',
+    '#0d9488',
+    '#0891b2',
+    '#0284c7',
+    '#0f172a',
+    '#78350f',
+    '#14532d',
+];
+
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
     brand: {
@@ -98,6 +125,11 @@ const withCacheBust = (value?: string) => {
     if (raw.startsWith('data:')) return raw;
     const separator = raw.includes('?') ? '&' : '?';
     return `${raw}${separator}v=${Date.now()}`;
+};
+
+const normalizeColorPickerValue = (value: string, fallback = '#2563eb') => {
+    const raw = String(value || '').trim();
+    return /^#([0-9a-f]{6})$/i.test(raw) ? raw : fallback;
 };
 
 const createEmptyStat = (): HomepageStat => ({
@@ -529,23 +561,23 @@ export const HomepageManager: React.FC = () => {
                             <TextField label="مقدمة العنوان" value={settings.hero.titlePrefix || ''} onChange={(value) => updateHeroField('titlePrefix', value)} />
                             <TextField label="الكلمة المميزة" value={settings.hero.titleHighlight || ''} onChange={(value) => updateHeroField('titleHighlight', value)} />
                             <TextField label="نهاية العنوان" value={settings.hero.titleSuffix || ''} onChange={(value) => updateHeroField('titleSuffix', value)} />
-                            <TextField label="لون الشارة" value={settings.hero.badgeTextColor || ''} onChange={(value) => updateHeroField('badgeTextColor', value)} />
-                            <TextField label="لون مقدمة العنوان" value={settings.hero.titlePrefixColor || ''} onChange={(value) => updateHeroField('titlePrefixColor', value)} />
-                            <TextField label="لون الكلمة المميزة" value={settings.hero.titleHighlightColor || ''} onChange={(value) => updateHeroField('titleHighlightColor', value)} />
-                            <TextField label="لون نهاية العنوان" value={settings.hero.titleSuffixColor || ''} onChange={(value) => updateHeroField('titleSuffixColor', value)} />
-                            <TextField label="لون الوصف الرئيسي" value={settings.hero.descriptionColor || ''} onChange={(value) => updateHeroField('descriptionColor', value)} />
+                            <ColorField label="لون الشارة" value={settings.hero.badgeTextColor || ''} fallback="#2563eb" onChange={(value) => updateHeroField('badgeTextColor', value)} />
+                            <ColorField label="لون مقدمة العنوان" value={settings.hero.titlePrefixColor || ''} fallback="#111827" onChange={(value) => updateHeroField('titlePrefixColor', value)} />
+                            <ColorField label="لون الكلمة المميزة" value={settings.hero.titleHighlightColor || ''} fallback="#2563eb" onChange={(value) => updateHeroField('titleHighlightColor', value)} />
+                            <ColorField label="لون نهاية العنوان" value={settings.hero.titleSuffixColor || ''} fallback="#111827" onChange={(value) => updateHeroField('titleSuffixColor', value)} />
+                            <ColorField label="لون الوصف الرئيسي" value={settings.hero.descriptionColor || ''} fallback="#4b5563" onChange={(value) => updateHeroField('descriptionColor', value)} />
                             <TextField label="عنوان البطاقة العائمة" value={settings.hero.floatingCardTitle || ''} onChange={(value) => updateHeroField('floatingCardTitle', value)} />
                             <TextField label="وصف البطاقة العائمة" value={settings.hero.floatingCardSubtitle || ''} onChange={(value) => updateHeroField('floatingCardSubtitle', value)} />
                             <TextField label="نص نسبة التقدم" value={settings.hero.floatingCardProgressValue || ''} onChange={(value) => updateHeroField('floatingCardProgressValue', value)} />
                             <TextField label="زر البداية" value={settings.hero.primaryCtaLabel || ''} onChange={(value) => updateHeroField('primaryCtaLabel', value)} />
                             <TextField label="رابط زر البداية" value={settings.hero.primaryCtaLink || ''} onChange={(value) => updateHeroField('primaryCtaLink', value)} />
-                            <TextField label="لون زر البداية" value={settings.hero.primaryCtaColor || ''} onChange={(value) => updateHeroField('primaryCtaColor', value)} />
+                            <ColorField label="لون زر البداية" value={settings.hero.primaryCtaColor || ''} fallback="#f59e0b" onChange={(value) => updateHeroField('primaryCtaColor', value)} />
                             <TextField label="زر ثانوي" value={settings.hero.secondaryCtaLabel || ''} onChange={(value) => updateHeroField('secondaryCtaLabel', value)} />
                             <TextField label="رابط الزر الثانوي" value={settings.hero.secondaryCtaLink || ''} onChange={(value) => updateHeroField('secondaryCtaLink', value)} />
-                            <TextField label="لون الزر الثانوي" value={settings.hero.secondaryCtaColor || ''} onChange={(value) => updateHeroField('secondaryCtaColor', value)} />
+                            <ColorField label="لون الزر الثانوي" value={settings.hero.secondaryCtaColor || ''} fallback="#374151" onChange={(value) => updateHeroField('secondaryCtaColor', value)} />
                             <TextField label="زر ثالث" value={settings.hero.tertiaryCtaLabel || ''} onChange={(value) => updateHeroField('tertiaryCtaLabel', value)} />
                             <TextField label="رابط الزر الثالث" value={settings.hero.tertiaryCtaLink || ''} onChange={(value) => updateHeroField('tertiaryCtaLink', value)} />
-                            <TextField label="لون الزر الثالث" value={settings.hero.tertiaryCtaColor || ''} onChange={(value) => updateHeroField('tertiaryCtaColor', value)} />
+                            <ColorField label="لون الزر الثالث" value={settings.hero.tertiaryCtaColor || ''} fallback="#4f46e5" onChange={(value) => updateHeroField('tertiaryCtaColor', value)} />
                         </div>
 
                         <TextAreaField label="الوصف الرئيسي" value={settings.hero.description || ''} onChange={(value) => updateHeroField('description', value)} rows={4} />
@@ -838,6 +870,60 @@ const TextField: React.FC<{
         />
     </label>
 );
+
+const ColorField: React.FC<{
+    label: string;
+    value: string;
+    fallback: string;
+    onChange: (value: string) => void;
+}> = ({ label, value, fallback, onChange }) => {
+    const pickerValue = normalizeColorPickerValue(value, fallback);
+
+    return (
+        <label className="block">
+            <span className="block text-sm font-bold text-gray-700 mb-2">{label}</span>
+            <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2 focus-within:ring-2 focus-within:ring-amber-200">
+                <input
+                    type="color"
+                    value={pickerValue}
+                    onChange={(event) => onChange(event.target.value)}
+                    className="h-10 w-12 cursor-pointer rounded-lg border border-gray-200 bg-white p-1"
+                    aria-label={label}
+                />
+                <input
+                    value={value}
+                    onChange={(event) => onChange(event.target.value)}
+                    dir="ltr"
+                    placeholder={fallback}
+                    className="min-w-0 flex-1 bg-transparent px-2 py-2 text-sm outline-none"
+                />
+                <button
+                    type="button"
+                    onClick={() => onChange('')}
+                    className="rounded-lg px-2 py-2 text-xs font-bold text-gray-500 hover:bg-gray-100"
+                >
+                    افتراضي
+                </button>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5" aria-label={`${label} خيارات ألوان جاهزة`}>
+                {COLOR_SWATCHES.map((color) => (
+                    <button
+                        key={`${label}-${color}`}
+                        type="button"
+                        onClick={() => onChange(color)}
+                        className={`h-7 w-7 rounded-full border shadow-sm transition-transform hover:scale-110 ${
+                            value.toLowerCase() === color.toLowerCase() ? 'border-gray-900 ring-2 ring-amber-300' : 'border-gray-200'
+                        }`}
+                        style={{ backgroundColor: color }}
+                        aria-label={`${label} ${color}`}
+                        title={color}
+                    />
+                ))}
+            </div>
+            <p className="mt-1 text-[11px] text-gray-400">اختر من اللوحة أو استخدم مربع اللون، وسيظهر كود اللون هنا للحفظ.</p>
+        </label>
+    );
+};
 
 const TextAreaField: React.FC<{
     label: string;

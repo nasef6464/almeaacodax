@@ -2,11 +2,25 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None
+- Active Batch: BATCH 100L - Homepage Color Picker Controls
 - Last Closed Batch: BATCH 100K - Homepage Admin Functional Sweep
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
 
 
+
+## Update 2026-05-21 - BATCH 100L Homepage Color Picker Controls
+- Batch: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: visual color picker controls for homepage Hero color fields.
+- Delivered:
+  - Added reusable `ColorField` in `HomepageManager`.
+  - Added native color picker, visible HEX field, default reset, and 24 quick color swatches.
+  - Applied it to all homepage Hero color fields.
+  - Added `npm run smoke:batch100l-homepage-color-picker`.
+- Checks PASS: color picker smoke, server build, typecheck, homepage hero smoke, BATCH 100K regression smoke, frontend build.
+- Production verification: pending until push/deploy/browser closure.
+- Report: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR.md`.
+- Next suggested after final closure: `BATCH 100M - Homepage Live Preview Before Save`.
 ## Update 2026-05-21 - BATCH 100K Homepage Admin Functional Sweep
 - Batch: `BATCH_100K_HOMEPAGE_ADMIN_FUNCTIONAL_SWEEP_2026-05-21_AR`
 - Status: `Fully closed`

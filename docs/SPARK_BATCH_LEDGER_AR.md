@@ -1563,3 +1563,12 @@
 - Render/API: PASS, `smoke:health-readiness` PASS and `/api/health` returned `ready=true`, commit `655e3d453dee`.
 - Browser verification: PASS, homepage and admin homepage settings were checked; `شعار المنصة`, `بحث في الدورات`, `بحث في المقالات`, and `معاينة الصفحة` are visible after load.
 - Next suggested: `BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+## Update 2026-05-21 - BATCH 100L
+- Batch: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: visual color picker controls for homepage Hero color fields.
+- Key changes: native color input, HEX field, 24 color swatches, default reset, selected-color highlight.
+- Checks PASS: `smoke:batch100l-homepage-color-picker`, server build, typecheck, homepage hero smoke, BATCH 100K regression smoke, frontend build.
+- Production verification: pending until push/deploy/browser closure.
+- Next suggested: `BATCH 100M - Homepage Live Preview Before Save`.

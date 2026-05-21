@@ -781,3 +781,9 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Render health: PASS, `ready=true`, commit `655e3d453dee`.
   - In-app browser: PASS for homepage and admin homepage settings.
 - Next proposed batch: `BATCH 100L - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
+
+## Update 2026-05-21 - After BATCH 100L Programmatic Closure
+- `BATCH 100L - Homepage Color Picker Controls` is programmatically closed and awaits production verification.
+- Implemented: visible color picker controls with 24 quick swatches for all homepage Hero color fields.
+- Required final closure: push, Vercel strict smoke, Render health, and in-app browser verification for admin homepage settings.
+- Next suggested after closure: `BATCH 100M - Homepage Live Preview Before Save`.

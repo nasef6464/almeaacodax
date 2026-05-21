@@ -1919,3 +1919,33 @@ eady=true, redis ready for limiter+queue, commit 5f011e1944e.
 - افصل الملفات المتسخة القديمة عن ملفات الدفعة.
 - لا تحفظ مفاتيح/أسرار في الملفات.
 - كلمة `اكمل` تعني: تنفيذ + فحوص + توثيق + commit + push + Vercel/Render + browser verification حتى الإغلاق النهائي.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100L Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- إضافة Color Picker فعلي داخل `إدارة الصفحة الرئيسية` لكل حقول ألوان Hero.
+- إضافة 24 لونًا جاهزًا مع تمييز اللون المختار.
+- إضافة زر `افتراضي` لإزالة اللون والرجوع للفallback.
+- إضافة smoke: `npm run smoke:batch100l-homepage-color-picker`.
+
+### الفحوص
+- `npm run smoke:batch100l-homepage-color-picker`: PASS.
+- `npm --prefix server run build`: PASS.
+- `npm run typecheck`: PASS.
+- `npm run smoke:homepage-hero`: PASS.
+- `npm run smoke:batch100k-homepage-admin-sweep`: PASS.
+- `npm run build`: PASS.
+
+### المطلوب للإغلاق النهائي
+1. Stage ملفات BATCH 100L فقط.
+2. Commit + push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص بصري من المتصفح الداخلي لقسم ألوان الصفحة الرئيسية.
+6. تحديث التقرير والLedger وPROJECT_STATUS إلى `Fully closed`.
