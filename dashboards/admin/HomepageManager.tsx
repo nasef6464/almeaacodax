@@ -702,6 +702,8 @@ export const HomepageManager: React.FC = () => {
                 </div>
 
                 <div className="space-y-6">
+                    <HeroLivePreview settings={settings} />
+
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-bold text-gray-900">ملخص الواجهة الحالية</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -851,6 +853,72 @@ export const HomepageManager: React.FC = () => {
                 </div>
             </div>
         </div>
+    );
+};
+
+const HeroLivePreview: React.FC<{ settings: HomepageSettings }> = ({ settings }) => {
+    const hero = { ...defaultHomepageSettings.hero, ...settings.hero };
+    const badgeTextColor = normalizeColorPickerValue(hero.badgeTextColor || '', '#2563eb');
+    const titlePrefixColor = normalizeColorPickerValue(hero.titlePrefixColor || '', '#111827');
+    const titleHighlightColor = normalizeColorPickerValue(hero.titleHighlightColor || '', '#2563eb');
+    const titleSuffixColor = normalizeColorPickerValue(hero.titleSuffixColor || '', '#111827');
+    const descriptionColor = normalizeColorPickerValue(hero.descriptionColor || '', '#4b5563');
+    const primaryCtaColor = normalizeColorPickerValue(hero.primaryCtaColor || '', '#f59e0b');
+    const secondaryCtaColor = normalizeColorPickerValue(hero.secondaryCtaColor || '', '#374151');
+    const tertiaryCtaColor = normalizeColorPickerValue(hero.tertiaryCtaColor || '', '#4f46e5');
+    const tertiaryLabel = hero.tertiaryCtaLabel?.trim();
+
+    return (
+        <section className="bg-white rounded-2xl border border-amber-100 shadow-sm p-6 space-y-4">
+            <div>
+                <h2 className="font-bold text-gray-900">معاينة حية قبل الحفظ</h2>
+                <p className="text-sm text-gray-500 mt-1">جرّب النصوص والألوان هنا أولًا، ثم احفظ عندما تكون النتيجة مناسبة.</p>
+            </div>
+
+            <div className="rounded-3xl border border-gray-100 bg-gradient-to-br from-white via-amber-50/40 to-blue-50/50 p-5 overflow-hidden">
+                <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white/80 px-3 py-2 text-xs font-bold shadow-sm" style={{ color: badgeTextColor }}>
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: badgeTextColor }} />
+                    {hero.badgeText || defaultHomepageSettings.hero.badgeText}
+                </div>
+
+                <h3 className="mt-4 text-3xl font-black leading-tight">
+                    <span style={{ color: titlePrefixColor }}>{hero.titlePrefix || defaultHomepageSettings.hero.titlePrefix}</span>{' '}
+                    <span style={{ color: titleHighlightColor }}>{hero.titleHighlight || defaultHomepageSettings.hero.titleHighlight}</span>{' '}
+                    <span style={{ color: titleSuffixColor }}>{hero.titleSuffix || defaultHomepageSettings.hero.titleSuffix}</span>
+                </h3>
+
+                <p className="mt-3 text-sm leading-7" style={{ color: descriptionColor }}>
+                    {hero.description || defaultHomepageSettings.hero.description}
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                    <span className="rounded-xl px-4 py-3 text-sm font-bold text-white shadow-sm" style={{ backgroundColor: primaryCtaColor }}>
+                        {hero.primaryCtaLabel || defaultHomepageSettings.hero.primaryCtaLabel}
+                    </span>
+                    <span className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold" style={{ color: secondaryCtaColor }}>
+                        {hero.secondaryCtaLabel || defaultHomepageSettings.hero.secondaryCtaLabel}
+                    </span>
+                    {tertiaryLabel ? (
+                        <span className="rounded-xl px-4 py-3 text-sm font-bold text-white shadow-sm" style={{ backgroundColor: tertiaryCtaColor }}>
+                            {tertiaryLabel}
+                        </span>
+                    ) : null}
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_120px] sm:items-end">
+                    <div className="rounded-2xl border border-white bg-white/85 p-4 shadow-sm">
+                        <div className="text-sm font-bold text-gray-900">{hero.floatingCardTitle || defaultHomepageSettings.hero.floatingCardTitle}</div>
+                        <div className="mt-1 text-xs text-gray-500">{hero.floatingCardSubtitle || defaultHomepageSettings.hero.floatingCardSubtitle}</div>
+                        <div className="mt-3 h-2 rounded-full bg-gray-100">
+                            <div className="h-2 rounded-full" style={{ width: hero.floatingCardProgressValue || '75%', backgroundColor: primaryCtaColor }} />
+                        </div>
+                    </div>
+                    {hero.imageUrl ? (
+                        <img src={hero.imageUrl} alt="" className="h-28 w-full rounded-2xl border border-white object-cover shadow-sm sm:h-32" />
+                    ) : null}
+                </div>
+            </div>
+        </section>
     );
 };
 

@@ -2,10 +2,21 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None
+- Active Batch: BATCH 100M - Homepage Live Preview Before Save
 - Last Closed Batch: BATCH 100L - Homepage Color Picker Controls
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
 
+
+
+## Update 2026-05-21 - BATCH 100M - Homepage Live Preview Before Save
+- Batch: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: live pre-save Hero preview inside admin homepage settings.
+- Delivered: added `HeroLivePreview` connected to current Hero text, colors, buttons, and image; added `npm run smoke:batch100m-homepage-live-preview`.
+- Checks PASS: batch100m live-preview smoke, typecheck, homepage hero smoke, BATCH 100L regression smoke, frontend build, server build, BATCH 100K regression smoke.
+- Production verification: pending until push/deploy/browser closure.
+- Report: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR.md`.
+- Next suggested after final closure: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
 
 
 ## Update 2026-05-21 - BATCH 100L Homepage Color Picker Controls

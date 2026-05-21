@@ -793,3 +793,9 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - Homepage Hero colors now have visual color picker controls with quick swatches, HEX inputs, and reset-to-default controls.
 - Production verified on GitHub/Vercel/Render and in-app browser.
 - Recommended next: `BATCH 100M - Homepage Live Preview Before Save`.
+
+## Update 2026-05-21 - After BATCH 100M Programmatic Closure
+- `BATCH 100M - Homepage Live Preview Before Save` is programmatically closed and awaits production verification.
+- Implemented: live pre-save preview for homepage Hero settings, including colors, buttons, text, and image.
+- Required final closure: push, Vercel strict smoke, Render health, and in-app browser verification for admin homepage settings.
+- Next suggested after closure: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.

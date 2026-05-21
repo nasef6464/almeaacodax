@@ -1583,3 +1583,10 @@
 - Browser verification: PASS, `إدارة الصفحة الرئيسية` contains color picker controls, HEX inputs, default buttons, and 192 quick color swatches.
 - Report: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100M - Homepage Live Preview Before Save`.
+
+## Update 2026-05-21 - BATCH 100M - Homepage Live Preview Before Save
+- Batch: `BATCH_100M_HOMEPAGE_LIVE_PREVIEW_BEFORE_SAVE_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: added live pre-save preview to admin homepage settings.
+- Evidence: local smokes/builds passed; production verification pending.
+- Next suggested: `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep`.
