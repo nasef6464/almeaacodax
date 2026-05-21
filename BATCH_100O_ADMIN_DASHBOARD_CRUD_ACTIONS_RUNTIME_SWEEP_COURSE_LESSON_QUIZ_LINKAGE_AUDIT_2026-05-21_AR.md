@@ -1,7 +1,7 @@
 ﻿# BATCH 100O — Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
 
 **التاريخ:** 2026-05-21  
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 هذه الدفعة جاءت بعد ملاحظات المالك أن بعض الدورات تظهر في الإدارة ولا تظهر بوضوح في صفحة التعلم، وأن ربط الدورة/المادة/الدروس/الاختبارات يحتاج فحصًا عمليًا، مع الحفاظ على نظام الدفعات وعدم خلط تحسينات تصميمية واسعة.
@@ -72,13 +72,15 @@
 | `npm run smoke:batch100k-homepage-admin-sweep` | PASS | Regression homepage/admin |
 
 ## فحص الإنتاج
-- الحالة الحالية: Pending حتى يتم push وانتظار Vercel/Render ثم تشغيل smoke إنتاجي.
-- المطلوب بعد النشر:
-  - `npm run smoke:frontend:strict`
-  - `npm run smoke:health-readiness`
-  - فحص `/api/courses?pathId=...&subjectId=...`
-  - فحص `/api/quizzes?pathId=...&subjectId=...`
-  - فحص رابط صفحة التعلم في الإنتاج.
+- GitHub push: PASS، commit `1cb434a` تم رفعه إلى `origin/main`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `1cb434a`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` وcommit `1cb434a7be04`.
+- Production scoped courses API: PASS، `/api/courses?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=20` أعاد `total=3` وفيه `تأسيس الكمي: العمليات والمهارات الأساسية`.
+- Production scoped quizzes API: PASS، `/api/quizzes?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=20` أعاد `total=9`.
+- Production questions API: PASS، `/api/quizzes/questions?paginate=true&page=1&limit=20&pathId=p_1777779639431&subject=sub_1777779748206` أعاد `total=37`.
+- المتصفح الداخلي: PASS، صفحة التعلم على `category/p_1777779639431?subject=sub_1777779748206&tab=courses&verify=100o-final` عرضت الدورة المطلوبة ولم تعرض `لا توجد دورات` أو `لا توجد أسئلة` أو خطأ عام.
+- المتصفح الداخلي: PASS، `admin-dashboard?tab=questions&verify=100o-final` عرض مركز الأسئلة وزر `إضافة سؤال جديد` وعداد `62` ولم يعرض `لا توجد أسئلة مطابقة للبحث`.
+- ملاحظة متصفح: `admin-dashboard?tab=courses` يوجه إلى تبويب المسارات حسب منطق موجود مسبقًا في `AdminDashboard`، لذلك فحص منشئ الدورة التفصيلي يبقى ضمن دفعة Runtime أعمق لاحقة.
 
 ## التحقق اليدوي المطلوب
 1. افتح `https://almeaacodax.vercel.app/category/p_1777779639431?subject=sub_1777779748206&tab=courses&verify=100o`.
@@ -95,7 +97,7 @@
 
 ## هل تم إغلاق الخطر؟
 برمجيًا: نعم، تم إغلاق خطر الكاش/الفلترة العامة الذي يمنع ربط صفحة التعلم بالدورات والاختبارات الصحيحة.  
-إنتاجيًا: قيد الانتظار حتى يتم push/deploy والتحقق.
+إنتاجيًا: نعم، تم التحقق من GitHub/Vercel/Render/API والمتصفح الداخلي كما هو موثق أعلاه.
 
 ## الدفعة التالية المقترحة
 `BATCH 100P — Admin Question Bank Runtime CRUD + Production Browser Verification`

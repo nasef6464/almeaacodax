@@ -2137,3 +2137,26 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 
 ### الدفعة التالية المقترحة
 `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100O Fully Closed
+
+### الإغلاق النهائي
+- الدفعة: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.
+- الحالة: `Fully closed`.
+- Commit: `1cb434a`.
+- GitHub push: PASS.
+- Vercel: PASS، الإنتاج يخدم commit `1cb434a` حسب `npm run smoke:frontend:strict`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` وcommit `1cb434a7be04`.
+- API الإنتاج: PASS، الدورات scoped `total=3`، الاختبارات scoped `total=9`، الأسئلة scoped `total=37`.
+- المتصفح الداخلي: PASS، صفحة التعلم تعرض الدورة `تأسيس الكمي: العمليات والمهارات الأساسية` ولا تعرض empty state، ومركز الأسئلة يعرض `62` سؤالًا وزر `إضافة سؤال جديد`.
+
+### ملاحظات مهمة للحساب التالي
+- لا تستخدم `git add .` بسبب وجود ملفات dirty/untracked قديمة خارج نطاق الدفعات.
+- لا ترفع أي أسرار أو ملفات `.env`.
+- كلمة `اكمل` تعني إغلاق الدفعة بالكامل: تنفيذ + فحوص + تقرير + Ledger/Status/Handover + commit + push + انتظار Vercel/Render + فحص إنتاج + فحص المتصفح الداخلي قدر الإمكان.
+- `admin-dashboard?tab=courses` حاليًا يوجه إلى `paths` حسب منطق موجود في `AdminDashboard`، وليس فشلًا جديدًا في 100O. إذا أراد المالك فحص منشئ الدورة وأزراره تفصيليًا، افتح دفعة مستقلة.
+
+### الدفعة التالية المقترحة
+`BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
