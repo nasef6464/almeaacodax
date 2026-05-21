@@ -28,6 +28,8 @@ interface PaginationOptions {
   search?: string;
   role?: string;
   isActive?: boolean;
+  pathId?: string;
+  subjectId?: string;
 }
 
 interface QuizResultsPaginationOptions extends PaginationOptions {
@@ -1072,8 +1074,16 @@ export const api = {
   getCourses: async (pagination: PaginationOptions = {}) => {
     const query = { limit: 200, ...pagination };
     const path = withQuery("/courses", query);
+    const cacheKey = [
+      "courses",
+      query.page || 1,
+      query.limit,
+      query.pathId || "all-paths",
+      query.subjectId || "all-subjects",
+      query.search || "",
+    ].join(":");
     const payload = canUsePublicLearningCache()
-      ? await requestCached<unknown>(path, `courses-${query.page || 1}-${query.limit}`, BOOTSTRAP_CACHE_TTL_MS)
+      ? await requestCached<unknown>(path, cacheKey, BOOTSTRAP_CACHE_TTL_MS)
       : await request<unknown>(path);
     return extractList(payload, "courses");
   },

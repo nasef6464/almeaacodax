@@ -2084,3 +2084,56 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - ??????? ???????: PASS? ?? ????? ??? `????? ?????? ????????` ?? ???? ??????? ????? ?????? ????? `tab=homepage`.
 - ?????? ??????? ???????? ???: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
 - ??????? ?????? ???????: ???? ????? CRUD ??????? ?? ???? ???????? ??? ??????? ????? ??????? ??????? ??????/?????????? ?? ??? ??????? ?????? ???? ??????? ??? ???????. ?? ?????? ??? ???? ??????.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100O Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- تم إصلاح ربط صفحة التعلم بالدورات والاختبارات حسب المسار/المادة بشكل عام، وليس كإصلاح خاص لدورة واحدة.
+- `/api/courses` أصبح يدعم `pathId`, `subjectId`, و`search` مع visibility rules.
+- `/api/quizzes` أصبح يدعم `pathId/subjectId` مع cache key scoped.
+- `LearningSection` يجلب الدورات والاختبارات الخاصة بالمسار/المادة عند نقص بيانات store.
+- تمت إضافة smoke: `npm run smoke:batch100o-admin-crud-course-linkage`.
+
+### الفحوص التي نجحت
+- `npm run smoke:batch100o-admin-crud-course-linkage`: PASS.
+- `npm --prefix server run build`: PASS.
+- `npm run typecheck`: PASS بعد إعادة تشغيل أطول؛ أول محاولة timeout ولم تُحسب.
+- `npm run build`: PASS.
+- `npm run smoke:course-visibility`: PASS.
+- `npm run smoke:learning-quiz`: PASS.
+- `npm run smoke:student-journey`: PASS.
+- `npm run smoke:quiz-integrity-guard`: PASS.
+- `npm run smoke:batch100n-admin-tab-e2e`: PASS.
+- `npm run smoke:batch100k-homepage-admin-sweep`: PASS.
+
+### خطوات الإغلاق النهائي المطلوبة الآن
+1. Stage صريح لملفات BATCH 100O فقط، ولا تستخدم `git add .`.
+2. Commit برسالة مثل: `fix: scope learning course and quiz linkage`.
+3. Push إلى GitHub `origin/main`.
+4. انتظار Vercel/Render.
+5. تشغيل:
+   - `npm run smoke:frontend:strict`
+   - `npm run smoke:health-readiness`
+6. فحص API الإنتاج:
+   - `https://almeaacodax-k2ux.onrender.com/api/courses?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=20`
+   - `https://almeaacodax-k2ux.onrender.com/api/quizzes?pathId=p_1777779639431&subjectId=sub_1777779748206&page=1&limit=20`
+7. فحص بصري/عملي من المتصفح الداخلي عندما تكون أداة المتصفح متاحة:
+   - `https://almeaacodax.vercel.app/category/p_1777779639431?subject=sub_1777779748206&tab=courses&verify=100o-final`
+   - `https://almeaacodax.vercel.app/admin-dashboard?tab=courses&verify=100o-final`
+   - `https://almeaacodax.vercel.app/admin-dashboard?tab=questions&verify=100o-final`
+8. تحديث التقرير وLedger وPROJECT_STATUS إلى `Fully closed` إذا نجح النشر والتحقق.
+
+### قاعدة العمل للحساب القادم
+- كلمة `اكمل` تعني الاستمرار حتى الإغلاق الكامل: تنفيذ، فحوص، توثيق، commit، push، انتظار Vercel/Render، فحص إنتاج، وفحص المتصفح الداخلي قدر الإمكان.
+- لا تستخدم `git add .` بسبب وجود ملفات dirty قديمة كثيرة خارج نطاق الدفعة.
+- لا تحفظ أسرار GitHub/Vercel/Render/Mongo/Redis داخل الملفات.
+- أي طلب UI أو CRUD واسع جديد يجب أن يدخل دفعة مستقلة بعد إغلاق 100O.
+
+### الدفعة التالية المقترحة
+`BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.

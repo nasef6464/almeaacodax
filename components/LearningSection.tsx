@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
 import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package, CreditCard } from 'lucide-react';
@@ -12,6 +12,7 @@ import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
+import { api } from '../services/api';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -72,7 +73,7 @@ const resolveThemePalette = (value?: string) => {
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     const theme = resolveThemePalette(colorTheme);
@@ -411,6 +412,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     };
 
     const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
+    const scopedLearningBootstrapRef = useRef('');
 
     useEffect(() => {
         const previewPackageId = searchParams.get('package');
@@ -428,6 +430,44 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         if (!canStudentSeeCourse(course)) return false;
         return matchesScopedContent(coursePathId, courseSubjectId);
     });
+
+    useEffect(() => {
+        if (!category || !subject) return;
+
+        const scopeKey = `${category}:${subject}`;
+        if (scopedLearningBootstrapRef.current === scopeKey) return;
+
+        const hasScopedCourses = courses.some((course) => {
+            if (course.isPackage) return false;
+            return matchesScopedContent(resolveCoursePathId(course, subjects), resolveCourseSubjectId(course, subjects));
+        });
+        const hasScopedQuizzes = quizzes.some((quiz) => matchesScopedContent(quiz.pathId, quiz.subjectId));
+        if (hasScopedCourses && hasScopedQuizzes) return;
+
+        scopedLearningBootstrapRef.current = scopeKey;
+        void Promise.allSettled([
+            api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
+            api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
+        ]).then(([coursesResult, quizzesResult]) => {
+            if (coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) && coursesResult.value.length > 0) {
+                const mergedCourses = new Map<string, any>();
+                [...courses, ...(coursesResult.value as any[])].forEach((course) => {
+                    const id = String(course?.id || course?._id || '');
+                    if (id) mergedCourses.set(id, course);
+                });
+                hydrateCourses(Array.from(mergedCourses.values()));
+            }
+
+            if (quizzesResult.status === 'fulfilled' && Array.isArray(quizzesResult.value) && quizzesResult.value.length > 0) {
+                const mergedQuizzes = new Map<string, any>();
+                [...quizzes, ...(quizzesResult.value as any[])].forEach((quiz) => {
+                    const id = String(quiz?.id || quiz?._id || '');
+                    if (id) mergedQuizzes.set(id, quiz);
+                });
+                hydrateQuizzes(Array.from(mergedQuizzes.values()));
+            }
+        });
+    }, [category, subject, courses, quizzes, subjects, hydrateCourses, hydrateQuizzes]);
 
     const topicList = useStore(state => state.topics);
     const quizList = useStore(state => state.quizzes);

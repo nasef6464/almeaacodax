@@ -2,9 +2,24 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None
+- Active Batch: BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
 - Last Closed Batch: BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-21 - BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
+- Batch: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: scoped course/quiz linkage for learning pages plus admin course-builder lesson/quiz import search contract.
+- Delivered:
+  - `/api/courses` now validates and applies `pathId`, `subjectId`, and `search` filters while preserving learner visibility rules.
+  - `/api/quizzes` now applies `pathId/subjectId` filters and uses scoped public cache keys.
+  - Frontend course cache keys include path/subject/search.
+  - `LearningSection` backfills scoped courses/quizzes for the current path and subject when store data is incomplete.
+  - Added `npm run smoke:batch100o-admin-crud-course-linkage`.
+- Checks PASS: batch100o smoke, server build, typecheck after rerun, frontend build, course visibility, learning quiz, student journey, quiz integrity, BATCH 100N regression, BATCH 100K regression.
+- Production verification: pending until GitHub push, Vercel/Render deployment, production smokes, and browser/HTTP verification.
+- Report: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR.md`.
+- Next suggested after final closure: `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
 
 
 

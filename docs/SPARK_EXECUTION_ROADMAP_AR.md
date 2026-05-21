@@ -818,3 +818,20 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - `BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep` is now Fully closed.
 - Production evidence: GitHub commit `027a33a`, Vercel strict smoke PASS, Render health PASS, and in-app browser PASS for URL-aware admin tab navigation.
 - Next proposed batch: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
+
+## Update 2026-05-21 - After BATCH 100O Programmatic Closure
+- `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Scoped `/api/courses` filters by `pathId`, `subjectId`, and `search`.
+  2. Scoped `/api/quizzes` filters and cache keys by `pathId/subjectId`.
+  3. Frontend scoped course cache and adapter params.
+  4. Learning page scoped backfill for courses/quizzes when initial store payload is incomplete.
+  5. Contract guard for course-builder lesson/quiz import search and scrollable selectors.
+- Required final closure:
+  1. Push BATCH 100O commit to GitHub.
+  2. Wait for Vercel and Render deployment.
+  3. Run production `smoke:frontend:strict` and `smoke:health-readiness`.
+  4. Verify production course/quiz scoped API responses.
+  5. Verify learning/admin pages from the in-app browser when the browser tool is available.
+- Next suggested after closure: `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
+- Queued owner requests for later scoped batches: full question-bank CRUD runtime, full course player E2E, homepage visual settings refinements, and broader dashboard tab-by-tab CRUD sweep.

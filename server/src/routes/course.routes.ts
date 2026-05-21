@@ -104,6 +104,14 @@ const courseSchema = z.object({
   revenueSharePercentage: nullableNumber,
 });
 
+const courseListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(200).optional(),
+  pathId: z.string().trim().optional(),
+  subjectId: z.string().trim().optional(),
+  search: z.string().trim().max(120).optional(),
+});
+
 const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: string | null }) => {
   if (!authUser) {
     return {};
@@ -410,8 +418,15 @@ courseRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const isStaffViewer = isStaffRole(req.authUser?.role);
-    const pagination = resolvePagination(req.query, { limit: 200 });
-    const cacheKey = `${pagination.page}:${pagination.limit}`;
+    const query = courseListQuerySchema.parse(req.query);
+    const pagination = resolvePagination(query, { limit: 200 });
+    const cacheKey = [
+      pagination.page,
+      pagination.limit,
+      query.pathId || "all-paths",
+      query.subjectId || "all-subjects",
+      query.search || "",
+    ].join(":");
 
     if (!isStaffViewer && publicCourseListCache?.key === cacheKey && publicCourseListCache.expiresAt > Date.now()) {
       res.setHeader("Cache-Control", "private, max-age=60");
@@ -419,7 +434,27 @@ courseRouter.get(
       return res.json(publicCourseListCache.payload);
     }
 
-    const filter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const scopedFilter: Record<string, unknown> = {};
+    if (query.pathId) scopedFilter.pathId = query.pathId;
+    if (query.subjectId) {
+      scopedFilter.$or = [{ subjectId: query.subjectId }, { subject: query.subjectId }];
+    }
+    if (query.search) {
+      const safeSearch = query.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      scopedFilter.$and = [
+        ...((scopedFilter.$and as Record<string, unknown>[] | undefined) || []),
+        {
+          $or: [
+            { title: { $regex: safeSearch, $options: "i" } },
+            { description: { $regex: safeSearch, $options: "i" } },
+          ],
+        },
+      ];
+    }
+
+    const visibilityFilter = await withLearnerVisiblePaths(buildCourseVisibilityFilter(req.authUser), req.authUser);
+    const filterParts = [visibilityFilter, scopedFilter].filter((item) => Object.keys(item).length > 0);
+    const filter = filterParts.length > 1 ? { $and: filterParts } : filterParts[0] || {};
     const [items, total] = await Promise.all([
       CourseModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
       CourseModel.countDocuments(filter),

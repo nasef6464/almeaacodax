@@ -100,7 +100,8 @@
         "smoke:batch100k-homepage-admin-sweep": "node scripts/smoke-batch100k-homepage-admin-functional-sweep-contract.mjs",
         "smoke:batch100l-homepage-color-picker": "node scripts/smoke-batch100l-homepage-color-picker-contract.mjs",
         "smoke:batch100m-homepage-live-preview": "node scripts/smoke-batch100m-homepage-live-preview-contract.mjs",
-        "smoke:batch100n-admin-tab-e2e": "node scripts/smoke-batch100n-admin-tab-e2e-contract.mjs"
+        "smoke:batch100n-admin-tab-e2e": "node scripts/smoke-batch100n-admin-tab-e2e-contract.mjs",
+        "smoke:batch100o-admin-crud-course-linkage": "node scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",

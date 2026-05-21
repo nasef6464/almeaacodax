@@ -1620,3 +1620,19 @@
 - Render/API: PASS, health readiness smoke passed.
 - In-app browser: PASS, clicking `????? ?????? ????????` updated production URL to include `tab=homepage` and rendered the admin homepage settings.
 - Next suggested: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
+
+## Update 2026-05-21 - BATCH 100O
+- Batch: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: scoped course/quiz linkage for learning pages and admin course-builder lesson/quiz import search contract.
+- Root cause: `content/bootstrap?scope=learning` does not carry courses/quizzes, while `/courses` and `/quizzes` were not safely scoped by path/subject and public course/quiz caches could return broad/stale data.
+- Key changes:
+  - `/api/courses` validates `page/limit/pathId/subjectId/search` and applies scoped filters with learner visibility.
+  - `/api/quizzes` applies scoped path/subject filters and scoped public cache key.
+  - Frontend API/adapter supports scoped course/quiz fetches.
+  - `LearningSection` backfills current path/subject courses and quizzes if store data is incomplete.
+  - Added `smoke:batch100o-admin-crud-course-linkage`.
+- Checks PASS: `smoke:batch100o-admin-crud-course-linkage`, server build, typecheck after rerun, frontend build, course visibility, learning quiz, student journey, quiz integrity, BATCH 100N regression, BATCH 100K regression.
+- Production verification: pending push/deploy/browser closure.
+- Report: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.

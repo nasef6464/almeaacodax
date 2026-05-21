@@ -107,6 +107,7 @@ const QUIZ_RESULTS_CACHE_MAX_ENTRIES = 300;
 
 let publicQuizListCache:
   | {
+      key: string;
       expiresAt: number;
       payload: unknown;
     }
@@ -1285,7 +1286,23 @@ quizRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const canUsePublicCache = !isStaffRole(req.authUser?.role);
-    if (canUsePublicCache && publicQuizListCache && publicQuizListCache.expiresAt > Date.now()) {
+    const requestedPathId = typeof req.query.pathId === "string" ? req.query.pathId.trim() : "";
+    const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
+    const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
+    const requestedLimit = typeof req.query.limit === "string" ? req.query.limit.trim() : "200";
+    const publicQuizListCacheKey = [
+      requestedPage || "1",
+      requestedLimit || "200",
+      requestedPathId || "all-paths",
+      requestedSubjectId || "all-subjects",
+    ].join(":");
+
+    if (
+      canUsePublicCache &&
+      publicQuizListCache &&
+      publicQuizListCache.key === publicQuizListCacheKey &&
+      publicQuizListCache.expiresAt > Date.now()
+    ) {
       res.setHeader("Cache-Control", "private, max-age=30");
       res.setHeader("X-Quiz-List-Cache", "hit");
       return res.json(publicQuizListCache.payload);
@@ -1298,7 +1315,12 @@ quizRouter.get(
           showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
-    const filter = await withLearnerVisiblePaths(baseFilter, req.authUser);
+    const scopeFilter: Record<string, unknown> = {};
+    if (requestedPathId) scopeFilter.pathId = requestedPathId;
+    if (requestedSubjectId) scopeFilter.subjectId = requestedSubjectId;
+    const visibleFilter = await withLearnerVisiblePaths(baseFilter, req.authUser);
+    const filterParts = [visibleFilter, scopeFilter].filter((item) => Object.keys(item).length > 0);
+    const filter = filterParts.length > 1 ? { $and: filterParts } : filterParts[0] || {};
     const pagination = resolvePagination(req.query, { limit: 200 });
     const [items, total] = await Promise.all([
       QuizModel.find(filter).sort({ createdAt: -1 }).skip(pagination.skip).limit(pagination.limit).lean(),
@@ -1333,6 +1355,7 @@ quizRouter.get(
     };
     if (canUsePublicCache) {
       publicQuizListCache = {
+        key: publicQuizListCacheKey,
         expiresAt: Date.now() + PUBLIC_QUIZ_LIST_CACHE_TTL_MS,
         payload,
       };

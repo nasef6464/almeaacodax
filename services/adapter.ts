@@ -411,13 +411,13 @@ const normalizeQuiz = (quiz: any): Quiz => ({
 });
 
 export const adapter = {
-  async getCourses() {
+  async getCourses(params?: { page?: number; limit?: number; pathId?: string; subjectId?: string; search?: string }) {
     if (!USE_REAL_API) {
       return [];
     }
 
     try {
-      const data = await api.getCourses();
+      const data = await api.getCourses(params);
       const normalized = Array.isArray(data) ? data.map(normalizeCourse).filter((course) => course.id) : [];
       return normalized;
     } catch (error) {
@@ -540,13 +540,13 @@ export const adapter = {
     }
   },
 
-  async getQuizzes(): Promise<Quiz[]> {
+  async getQuizzes(params?: { page?: number; limit?: number; pathId?: string; subjectId?: string; search?: string }): Promise<Quiz[]> {
     if (!USE_REAL_API) {
       return [];
     }
 
     try {
-      const data = await api.getQuizzes();
+      const data = await api.getQuizzes(params);
       return Array.isArray(data) ? data.map(normalizeQuiz).filter((quiz) => quiz.id && quiz.title) : [];
     } catch (error) {
       console.warn("Falling back to existing in-memory quizzes:", error);
