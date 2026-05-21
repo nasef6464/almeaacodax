@@ -1163,3 +1163,12 @@
 
 ## Next Batch
 - تدقيق مسار إدارة اختبارات الدورة وملفات الدورة داخل الباني (Course assessments/files) وربطها بالإدارة بشكل ثابت مع نفس دورة الإغلاق.
+
+## Update 2026-05-21 — Course Player Quiz ID Fallback
+- الحالة: `Fully closed`.
+- تم تثبيت فتح اختبارات الدورة من `CoursePlayer` حتى عند الاعتماد على id المضمّن بصيغة `course_quiz_*`.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:learning-quiz`, `smoke:frontend:strict`).
+- التقرير: `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`.
+
+## Next Batch
+- تدقيق تبويب "ملفات الدورة" و"اختبارات الدورة" داخل الإدارة لضمان ظهور/تحرير العناصر في نفس شاشة الباني بدون فقد بعد الحفظ.

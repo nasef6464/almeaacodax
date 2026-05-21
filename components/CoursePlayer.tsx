@@ -104,9 +104,20 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     setActiveLesson(targetLesson);
   };
 
+  const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
+    const directId = String(lesson.quizId || '').trim();
+    if (directId) return directId;
+    const rawId = String(lesson.id || '').trim();
+    const prefixedMatch = rawId.match(/^course_quiz_(.+)_\d+$/);
+    if (prefixedMatch?.[1]) return prefixedMatch[1];
+    return '';
+  };
+
   const handleOpenLessonQuiz = () => {
-    if (!activeLesson?.quizId) return;
-    navigate(buildQuizRouteWithContext(activeLesson.quizId, { returnTo: `/course/${course.id}`, source: 'course' }));
+    if (!activeLesson) return;
+    const resolvedQuizId = resolveEmbeddedQuizId(activeLesson);
+    if (!resolvedQuizId) return;
+    navigate(buildQuizRouteWithContext(resolvedQuizId, { returnTo: `/course/${course.id}`, source: 'course' }));
   };
 
   const handleOpenLessonFile = (mode: 'preview' | 'download') => {
@@ -214,7 +225,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       <p className="text-indigo-100 mb-8 max-w-md">هذا الاختبار سيساعدك على قياس فهمك للمحتوى المرتبط بهذه الدورة قبل متابعة الدروس التالية.</p>
                       <button
                         onClick={handleOpenLessonQuiz}
-                        disabled={!activeLesson.quizId}
+                        disabled={!resolveEmbeddedQuizId(activeLesson)}
                         className="bg-white text-indigo-600 px-6 sm:px-10 py-4 rounded-2xl font-black text-base sm:text-lg hover:bg-indigo-50 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                       >
                         ابدأ الاختبار الآن

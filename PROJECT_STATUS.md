@@ -1068,3 +1068,16 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`
+
+## Update 2026-05-21 — Course Player Quiz ID Fallback
+- Current status: `Fully closed`.
+- Delivered:
+  1. Added fallback resolver for embedded course quiz ids in `CoursePlayer`.
+  2. Unified start-quiz behavior for both direct `quizId` and prefixed lesson id format.
+- Verification (this run):
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`
