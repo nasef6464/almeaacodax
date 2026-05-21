@@ -117,29 +117,18 @@ export const toQuestionReviewFromBank = (
   sourceQuestion: Question,
   savedReview?: QuizQuestionReview,
 ): QuizQuestionReview => {
-  const correctOptionIndex =
-    typeof savedReview?.correctOptionIndex === 'number'
-      ? savedReview.correctOptionIndex
-      : sourceQuestion.correctOptionIndex;
   const selectedOptionIndex = savedReview?.selectedOptionIndex;
-
-  const computedIsCorrect =
-    typeof selectedOptionIndex === 'number' && selectedOptionIndex === correctOptionIndex;
 
   return {
     questionId: savedReview?.questionId || sourceQuestion.id,
     text: savedReview?.text || sourceQuestion.text,
     options: savedReview?.options?.length ? savedReview.options : sourceQuestion.options,
-    correctOptionIndex,
     selectedOptionIndex,
-    explanation: savedReview?.explanation || sourceQuestion.explanation,
     videoUrl: savedReview?.videoUrl || sourceQuestion.videoUrl,
     imageUrl: savedReview?.imageUrl || sourceQuestion.imageUrl,
     isCorrect:
-      typeof selectedOptionIndex === 'number'
-        ? computedIsCorrect
-        : typeof savedReview?.isCorrect === 'boolean'
-          ? savedReview.isCorrect
-          : false,
+      typeof savedReview?.isCorrect === 'boolean'
+        ? savedReview.isCorrect
+        : false,
   };
 };

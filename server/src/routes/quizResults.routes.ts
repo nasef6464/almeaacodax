@@ -5,6 +5,7 @@ import { QuizResultModel } from "../models/QuizResult.js";
 import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 
 const quizResultsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -108,7 +109,7 @@ quizResultsRouter.get(
 
     const analysis = await analyzeWeakSkillsFromQuizResult(result);
     return res.json({
-      result,
+      result: serializeQuizResultForLearner(result),
       analysis,
     });
   }),
@@ -137,7 +138,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data,
+      data: serializeQuizResultsForLearner(data),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),
@@ -161,7 +162,7 @@ quizResultsRouter.get(
     ]);
 
     return res.json({
-      data,
+      data: serializeQuizResultsForLearner(data),
       pagination: buildPaginationPayload(page, limit, total),
     });
   }),

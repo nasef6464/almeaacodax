@@ -86,7 +86,8 @@
         "smoke:deployment-handover-phase19": "node scripts/smoke-deployment-handover-phase19-contract.mjs",
         "smoke:handover-current": "node scripts/smoke-current-handover-contract.mjs",
         "backup:learning": "npm --prefix server run backup:learning",
-        "restore:learning": "npm --prefix server run restore:learning"
+        "restore:learning": "npm --prefix server run restore:learning",
+        "smoke:quiz-answer-exposure": "node scripts/smoke-quiz-answer-exposure-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",

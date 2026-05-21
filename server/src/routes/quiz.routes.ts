@@ -19,6 +19,7 @@ import { ReviewCardModel } from "../models/ReviewCard.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
+import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { sm2 } from "../services/spacedRepetition.js";
@@ -1789,7 +1790,7 @@ quizRouter.get(
     if (projection) {
       resultsQuery.select(projection);
     }
-    const items = await resultsQuery.lean();
+    const items = serializeQuizResultsForLearner(await resultsQuery.lean());
     const total = query.noTotal
       ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
       : await QuizResultModel.countDocuments(filter);
@@ -1874,7 +1875,7 @@ quizRouter.get(
       if (projection) {
         scopedResultsQuery.select(projection);
       }
-      results = await scopedResultsQuery.lean();
+      results = serializeQuizResultsForLearner(await scopedResultsQuery.lean());
     }
     const total = selectedStudentIds.length
       ? (query.noTotal
@@ -1985,7 +1986,7 @@ quizRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "No quiz results found" });
     }
 
-    return res.json(item);
+    return res.json(serializeQuizResultForLearner(item));
   }),
 );
 
@@ -2214,7 +2215,7 @@ quizRouter.post(
       questionById,
     });
     clearQuizResultsCache();
-    return res.status(StatusCodes.CREATED).json(result);
+    return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));
   }),
 );
 

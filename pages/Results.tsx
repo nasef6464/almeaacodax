@@ -1517,16 +1517,7 @@ const ReviewSolutions = ({
     const quiz = quizzes.find((item) => item.id === result.quizId);
     const quizQuestionIds = quiz ? flattenMockExamQuestionIds(quiz) : [];
 
-    const normalizeSavedReview = (question: QuizQuestionReview): QuizQuestionReview => {
-      if (typeof question.selectedOptionIndex !== 'number' || typeof question.correctOptionIndex !== 'number') {
-        return question;
-      }
-
-      return {
-        ...question,
-        isCorrect: question.selectedOptionIndex === question.correctOptionIndex,
-      };
-    };
+    const normalizeSavedReview = (question: QuizQuestionReview): QuizQuestionReview => question;
 
     if (quizQuestionIds.length === 0 || (result.questionReview || []).length >= quizQuestionIds.length) {
       return (result.questionReview || []).map(normalizeSavedReview);
@@ -1642,7 +1633,6 @@ const ReviewSolutions = ({
 
           <div className={`grid ${getQuizOptionGridClass(q.options, reviewOptionLayout)} gap-2 sm:gap-3 mb-5 sm:mb-8`}>
             {q.options.map((option, i) => {
-              const isCorrect = i === q.correctOptionIndex;
               const isUser = i === q.selectedOptionIndex;
 
               let borderClass = 'border-gray-200 text-gray-400';
@@ -1650,11 +1640,11 @@ const ReviewSolutions = ({
               let helperLabel = '';
 
               if (showExplanation) {
-                if (isCorrect) {
+                if (isUser && q.isCorrect) {
                   borderClass = 'border-emerald-500 text-emerald-600';
                   bgClass = 'bg-emerald-50';
-                  helperLabel = 'الإجابة الصحيحة';
-                } else if (isUser && !isCorrect) {
+                  helperLabel = 'اختيارك صحيح';
+                } else if (isUser) {
                   borderClass = 'border-red-500 text-red-600';
                   bgClass = 'bg-red-50';
                   helperLabel = 'اختيارك';
@@ -1681,7 +1671,7 @@ const ReviewSolutions = ({
                   {helperLabel ? (
                     <span
                       className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${
-                        isCorrect
+                        isUser && q.isCorrect
                           ? 'bg-emerald-100 text-emerald-700'
                           : showExplanation && isUser
                             ? 'bg-rose-100 text-rose-700'
@@ -1757,7 +1747,7 @@ const ReviewSolutions = ({
               }`}
             >
               <Eye size={15} />
-              {showExplanation ? 'إخفاء الحل' : 'إظهار الحل'}
+              {showExplanation ? 'إخفاء التقييم' : 'إظهار التقييم'}
             </button>
             <button
               onClick={() => {
@@ -1802,22 +1792,11 @@ const ReviewSolutions = ({
               ) : (
                 <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700">لم تُجب عن هذا السؤال</span>
               )}
-              <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
-                الإجابة الصحيحة: {displayText(q.options[q.correctOptionIndex]).replace(/<[^>]*>/g, ' ')}
-              </span>
             </div>
 
-            {q.explanation ? (
-              <div>
-                <h4 className="font-bold text-emerald-800 mb-3 flex items-center gap-2">
-                  <CheckCircle2 size={20} />
-                  توضيح الحل
-                </h4>
-                <div className="text-gray-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.explanation) }} />
-              </div>
-            ) : (
-              <p className="text-gray-600 leading-relaxed">لا يوجد شرح نصي محفوظ لهذا السؤال.</p>
-            )}
+            <p className="text-gray-600 leading-relaxed">
+              تم إخفاء الإجابة الصحيحة والشرح التفصيلي حفاظًا على أمن بنك الأسئلة. يمكنك مراجعة اختيارك وحالة الإجابة فقط.
+            </p>
           </Card>
         </div>
       ) : null}

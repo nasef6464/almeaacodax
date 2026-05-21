@@ -2,8 +2,32 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None (next suggested: BATCH 100A - Full Dashboard & Role Functional Audit)
-- Status: Plan-to-100 reconciliation completed; no runtime code changed in this planning pass
+- Active Batch: BATCH 100A - Quiz Result Answer Exposure Hardening (closure/push/deploy verification)
+- Status: Programmatically closed locally; GitHub push and production deployment verification in progress
+
+## Update 2026-05-21 - BATCH 100A Quiz Result Answer Exposure Hardening
+- Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending until pushed deployment is confirmed`
+- Security impact: learner-facing quiz result responses no longer expose `correctOptionIndex` or `explanation`.
+- Delivered:
+  - Added learner-safe quiz result serializer.
+  - Applied safe serialization to quiz submit/results/latest/list/scoped/detail flows.
+  - Prevented `QuizPage` local fallback from re-injecting answer-key review data.
+  - Updated Results review UI to show selected answer/status only without correct-answer disclosure.
+  - Added `smoke:quiz-answer-exposure` contract.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:quiz-answer-exposure` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:results` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run build` PASS
+  - `npm run smoke:quiz-client-security` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
+- Next suggested: `BATCH 100B - Discussions RBAC Scope Hardening`
 
 ## Update 2026-05-21 — PLAN 100 Readiness Audit & Execution Plan
 - Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`
@@ -1158,3 +1182,26 @@
   - `UPDATED_PLAN_TO_100_AR.md`
   - `BUGS_FOUND_AR.md`
 - الدفعة التالية المقترحة: `BATCH 100A — Quiz Result Answer Exposure Hardening`.
+
+## Update 2026-05-21 — BATCH 100A Quiz Result Answer Exposure Hardening
+- Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Delivered:
+  - Added learner-safe quiz result serializer.
+  - Stopped returning `correctOptionIndex` and `explanation` in quiz result API responses.
+  - Prevented client fallback from re-injecting local answer keys.
+  - Updated Results review UI to show selected answer/status only, without correct answer or explanation disclosure.
+  - Added `npm run smoke:quiz-answer-exposure`.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:quiz-answer-exposure` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:results` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run build` PASS
+  - `npm run smoke:quiz-client-security` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
+- Next suggested: `BATCH 100B — Discussions RBAC Scope Hardening`

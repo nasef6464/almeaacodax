@@ -872,7 +872,8 @@
 
 ## Update 2026-05-21 - FIX-3 Revalidation (Blocked)
 - Frontend probe: 200 on https://almeaacodax.vercel.app/.
-- Backend health: eady=true, redis ready for limiter+queue, commit  5f011e1944e.
+- Backend health:
+eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - PASS: smoke:health-readiness, smoke:seo.
 - FAIL: smoke:operational, smoke:sentry-live-proof بسبب غياب SMOKE_ADMIN_TOKEN.
 - الإجراء المطلوب أولًا للجلسة التالية: ضبط SMOKE_ADMIN_TOKEN في GitHub Secrets وRender env ثم إعادة تشغيل نفس فحوص FIX-3 لإغلاقها Fully closed.
@@ -1306,3 +1307,33 @@
 ## ملفات خارجية/مدفوعة
 - البنود التي تحتاج دفع أو ربط خارجي موجودة في: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`.
 - لا تخلط هذه البنود مع إصلاحات الكود الداخلية.
+
+---
+
+## تحديث عربي واضح — BATCH 100A — 2026-05-21
+
+- الدفعة: `BATCH 100A — Quiz Result Answer Exposure Hardening`.
+- الحالة الحالية: `Programmatically closed, production verification pending until pushed deployment is confirmed`.
+- الهدف: منع تسريب مفاتيح الإجابة (`correctOptionIndex`) وشروحات الحل (`explanation`) من نتائج الاختبارات في API والواجهة.
+- ما تم:
+  1. إضافة serializer آمن لنتائج الاختبارات.
+  2. تطبيق serializer على submit/detail/list/latest/scoped results.
+  3. منع `QuizPage` من إعادة حقن مراجعة محلية تحتوي مفاتيح الإجابة.
+  4. تعديل `Results` لعرض اختيار الطالب وحالة الإجابة فقط دون الإجابة الصحيحة أو الشرح.
+  5. إضافة smoke جديد: `npm run smoke:quiz-answer-exposure`.
+- الفحوص المحلية المؤكدة:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:quiz-answer-exposure` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:results` PASS
+  - `npm run smoke:learning-quiz` PASS
+  - `npm run build` PASS
+  - `npm run smoke:quiz-client-security` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+  - `npm run smoke:frontend:strict` PASS
+- تنبيه مهم للحساب القادم:
+  - لا تبدأ `BATCH 100B` قبل التأكد من أن commit هذه الدفعة وصل إلى GitHub وتم نشره على Render/Vercel أو قبل توثيق سبب بقاء التحقق الإنتاجي pending.
+  - لا تحفظ أي token أو secret في الملفات.
+  - الشجرة فيها تعديلات قديمة كثيرة؛ لا تستخدم `git reset --hard` ولا تعمل `git add .`.
+  - عند staging، أضف ملفات الدفعة فقط، وخصوصًا `pages/QuizPage.tsx` يجب أن يتم staged له فقط hunk إزالة fallback الخاص بـ `questionReview` وليس أي تعديلات قديمة أخرى.

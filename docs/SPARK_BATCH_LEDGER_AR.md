@@ -1297,3 +1297,23 @@
   - `UPDATED_PLAN_TO_100_AR.md`
   - `BUGS_FOUND_AR.md`
 - القرار: لا تبدأ إصلاحات متفرقة. أول دفعة تنفيذية مقترحة هي `BATCH 100A — Quiz Result Answer Exposure Hardening`.
+
+## BATCH 100A — Quiz Result Answer Exposure Hardening — 2026-05-21
+- الحالة: `Programmatically closed, production verification pending`.
+- الهدف: منع تسريب الإجابات الصحيحة والشروحات من نتائج الاختبارات.
+- ما تم:
+  - serializer آمن لنتائج الاختبار.
+  - حماية submit/detail/list/scoped/latest من إرسال `correctOptionIndex/explanation`.
+  - منع fallback المحلي في `QuizPage` من إعادة حقن مفاتيح الإجابة.
+  - منع صفحة النتائج من عرض الإجابة الصحيحة أو الشرح.
+  - smoke جديد: `smoke:quiz-answer-exposure`.
+- الفحوص: backend build/typecheck/frontend build/security/result/learning/frontend strict كلها PASS.
+- التقرير: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`.
+- التالي: `BATCH 100B — Discussions RBAC Scope Hardening`.
+
+## Update 2026-05-21 - BATCH 100A Quiz Result Answer Exposure Hardening
+- Status: `Programmatically closed, production verification pending until pushed deployment is confirmed`.
+- Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`.
+- Delivered: safe quiz-result serialization, no learner-facing `correctOptionIndex/explanation`, client fallback hardening, Results page disclosure hardening, and `smoke:quiz-answer-exposure`.
+- Checks: server build, typecheck, frontend build, results/learning/security/data-visibility/frontend-strict smokes all PASS.
+- Next suggested: `BATCH 100B - Discussions RBAC Scope Hardening`.

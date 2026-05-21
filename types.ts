@@ -297,7 +297,7 @@ export interface QuizQuestionReview {
     questionId: string;
     text: string;
     options: string[];
-    correctOptionIndex: number;
+    correctOptionIndex?: number;
     selectedOptionIndex?: number;
     explanation?: string;
     videoUrl?: string;
