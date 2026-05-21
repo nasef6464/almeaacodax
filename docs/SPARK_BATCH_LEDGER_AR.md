@@ -1193,3 +1193,15 @@
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX Admin Course Save (CSRF Retry Hardening)
+- Status: `Fully closed`.
+- Implemented:
+  - Added raw 403 CSRF text detection + one-shot token refresh/retry in `services/api.ts`.
+  - Preserved existing JSON error retry path and unified behavior for both response shapes.
+- Verification:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`.

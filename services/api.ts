@@ -204,6 +204,13 @@ async function request<T>(path: string, options: RequestOptions = {}, retryingAf
   if (!response.ok) {
     const rawError = await response.text().catch(() => "");
     let message = "تعذر تنفيذ الطلب الآن.";
+    const rawCsrfFailure =
+      response.status === 403 && /csrf|invalid csrf token|CSRF_TOKEN_INVALID/i.test(String(rawError || ""));
+    if (rawCsrfFailure && !options.skipCsrf && isUnsafeMethod(options.method) && !retryingAfterCsrfRefresh) {
+      storeCsrfToken(null);
+      await ensureCsrfToken();
+      return request<T>(path, options, true);
+    }
     if (rawError) {
       try {
         const payload = JSON.parse(rawError) as { message?: string; error?: string; code?: string };

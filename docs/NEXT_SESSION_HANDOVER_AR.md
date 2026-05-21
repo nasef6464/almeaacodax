@@ -1145,3 +1145,12 @@
 
 ## Next Batch
 - دفعة تدقيق عميق لوحدات لوحة الإدارة (save/update flows) وحل أي أخطاء تشغيلية متبقية.
+
+## Update 2026-05-21 — FIX Admin Course Save (CSRF Retry Hardening)
+- الحالة: `Fully closed`.
+- تم علاج سبب فقدان الحفظ بعد refresh عندما يرجع السيرفر 403 بنص خام لـ CSRF.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:health-readiness`, `smoke:frontend:strict`).
+- التقرير: `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`.
+
+## Next Batch
+- فحص شامل عميق لمسارات إدارة الدورات (create/update/delete/publish) مع عقود smoke إضافية عند الحاجة، ثم الإغلاق بنفس قاعدة العمل.
