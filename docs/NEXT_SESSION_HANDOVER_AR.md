@@ -1507,3 +1507,9 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 
 ### تحذير حالة المستودع
 - توجد تعديلات قديمة كثيرة قبل 100D؛ لا تعمل revert لها ولا stage لها إلا إذا دخلت صراحة في نطاق دفعة جديدة.
+
+### إغلاق نشر 100D
+- commit: 755a96.
+- Vercel: PASS عبر smoke:frontend:strict ويخدم commit الجديد.
+- Render: PASS عبر smoke:health-readiness، ولا يوجد تغيير backend وظيفي في هذه الدفعة.
+- المتبقي: فحص بيانات الدورة غير الظاهرة ضمن BATCH 100E.

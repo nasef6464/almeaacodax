@@ -88,3 +88,13 @@
 
 ## الدفعة التالية المقترحة
 `BATCH 100E — Production Course Data Visibility Repair + Groups/Relationships Audit Entry`
+
+## إغلاق النشر بعد GitHub/Vercel
+- Commit المرفوع: 755a96.
+- GitHub push: تم إلى origin/main.
+- Vercel production: 
+pm run smoke:frontend:strict PASS في المحاولة الثانية ويخدم commit 755a96.
+- Render health: 
+pm run smoke:health-readiness PASS، و/api/health يرجع status=ok وeady=true. لم تتغير خدمة backend وظيفيًا في هذه الدفعة.
+- فحص الدورة الإنتاجية بعد النشر: ما زالت course_current_p_1777779639431_sub_1777779748206_foundation ترجع 404، وهذا مؤكد كمتابعة بيانات/نشر في BATCH 100E.
+- وقت التحديث: 2026-05-21 14:58:47.
