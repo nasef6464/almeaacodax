@@ -1549,6 +1549,41 @@ export const api = {
     }),
   getReviewStats: (token?: string | null) =>
     request<{ dueToday: number; dueThisWeek: number; totalCards: number }>("/review/stats", { token }),
+  getLeaderboard: (
+    params: { scope?: "global" | "group" | "school"; period?: "week" | "month" | "all"; limit?: number } = {},
+    token?: string | null,
+  ) =>
+    request<{
+      scope: "global" | "group" | "school";
+      period: "week" | "month" | "all";
+      total: number;
+      top: Array<{
+        rank: number;
+        userId: string;
+        name: string;
+        avatar: string;
+        role: string;
+        avgScore: number;
+        attempts: number;
+        bestScore: number;
+        completedLessons: number;
+        points: number;
+        compositeScore: number;
+      }>;
+      currentUserRank: null | {
+        rank: number;
+        userId: string;
+        name: string;
+        avatar: string;
+        role: string;
+        avgScore: number;
+        attempts: number;
+        bestScore: number;
+        completedLessons: number;
+        points: number;
+        compositeScore: number;
+      };
+    }>(withQuery("/leaderboard", params), { token }),
   getDiscussions: (entityType: "lesson" | "quiz" | "course", entityId: string, token?: string | null) =>
     request<{ threads: any[] }>(`/discussions/${entityType}/${encodeURIComponent(entityId)}`, { token }),
   createDiscussion: (

@@ -1083,3 +1083,8 @@
 - Status: `Fully closed`.
 - Re-check confirms route, nav, sitemap/SEO wiring and smoke stability are all PASS.
 - Report: `FEATURE_1_PRICING_PAGE_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FEATURE-7 Leaderboard
+- Status: `Fully closed`.
+- Delivered API + UI widget + rank contract, with full build/type/smoke PASS.
+- Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`.

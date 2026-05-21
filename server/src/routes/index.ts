@@ -15,6 +15,7 @@ import { quizResultsRouter } from "./quizResults.routes.js";
 import { certificateRouter } from "./certificates.routes.js";
 import { discussionRouter } from "./discussions.routes.js";
 import { reviewRouter } from "./review.routes.js";
+import { leaderboardRouter } from "./leaderboard.routes.js";
 
 export const apiRouter = Router();
 
@@ -34,3 +35,4 @@ apiRouter.use("/", quizResultsRouter);
 apiRouter.use("/certificates", certificateRouter);
 apiRouter.use("/discussions", discussionRouter);
 apiRouter.use("/review", reviewRouter);
+apiRouter.use("/leaderboard", leaderboardRouter);

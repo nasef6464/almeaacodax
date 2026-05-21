@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
-    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star,
+    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, Trophy,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
@@ -1305,6 +1305,10 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const [reviewStats, setReviewStats] = useState<{ dueToday: number; dueThisWeek: number; totalCards: number } | null>(null);
     const [myCertificates, setMyCertificates] = useState<any[]>([]);
     const [certificatesLoading, setCertificatesLoading] = useState(false);
+    const [leaderboard, setLeaderboard] = useState<{
+        top: Array<{ rank: number; name: string; avgScore: number; points: number }>;
+        currentUserRank: null | { rank: number; avgScore: number; points: number };
+    } | null>(null);
 
     useEffect(() => {
         let mounted = true;
@@ -1335,6 +1339,38 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             .finally(() => {
                 if (!mounted) return;
                 setCertificatesLoading(false);
+            });
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        let mounted = true;
+        api.getLeaderboard({ scope: 'global', period: 'month', limit: 10 })
+            .then((payload) => {
+                if (!mounted) return;
+                setLeaderboard({
+                    top: Array.isArray(payload.top)
+                        ? payload.top.map((row) => ({
+                            rank: Number(row.rank || 0),
+                            name: String(row.name || 'طالب'),
+                            avgScore: Number(row.avgScore || 0),
+                            points: Number(row.points || 0),
+                        }))
+                        : [],
+                    currentUserRank: payload.currentUserRank
+                        ? {
+                            rank: Number(payload.currentUserRank.rank || 0),
+                            avgScore: Number(payload.currentUserRank.avgScore || 0),
+                            points: Number(payload.currentUserRank.points || 0),
+                        }
+                        : null,
+                });
+            })
+            .catch((error) => {
+                console.warn('Leaderboard unavailable:', error);
+                if (mounted) setLeaderboard({ top: [], currentUserRank: null });
             });
         return () => {
             mounted = false;
@@ -1518,6 +1554,34 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 >
                     عرض الشهادات
                 </Link>
+            </div>
+        </Card>
+
+        <Card className="p-5 border border-amber-100 bg-gradient-to-l from-amber-50 to-white">
+            <div className="flex items-center justify-between gap-4">
+                <div className="text-right">
+                    <h3 className="text-lg font-bold text-gray-900 inline-flex items-center gap-2">
+                        <Trophy size={18} className="text-amber-600" />
+                        لوحة المتصدرين
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">أفضل 10 طلاب هذا الشهر بناءً على الأداء والنشاط.</p>
+                </div>
+                {leaderboard?.currentUserRank ? (
+                    <div className="rounded-xl border border-amber-200 bg-white px-3 py-2 text-xs font-black text-amber-700">
+                        ترتيبك: #{leaderboard.currentUserRank.rank}
+                    </div>
+                ) : null}
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
+                {(leaderboard?.top || []).slice(0, 10).map((row) => (
+                    <div key={`${row.rank}-${row.name}`} className="flex items-center justify-between rounded-xl bg-white px-3 py-2 border border-gray-100">
+                        <div className="font-black text-sm text-gray-800">#{row.rank} {row.name}</div>
+                        <div className="text-xs font-bold text-gray-500">متوسط {row.avgScore}% · {row.points} نقطة</div>
+                    </div>
+                ))}
+                {leaderboard && leaderboard.top.length === 0 ? (
+                    <div className="text-sm text-gray-500">لا توجد بيانات كافية لعرض المتصدرين الآن.</div>
+                ) : null}
             </div>
         </Card>
 

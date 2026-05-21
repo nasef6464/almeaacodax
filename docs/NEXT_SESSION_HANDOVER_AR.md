@@ -1039,3 +1039,11 @@
 - FEATURE-1: fully closed and revalidated this run.
 - FIX-4: already implemented in codebase (`ReviewSession` renders `imageUrl`, review API returns `imageUrl`).
 - Next executable without owner keys: continue product-level hardening audits and documentation closure only.
+
+## Update 2026-05-21 — FEATURE-7 Closed
+- تم تنفيذ وإغلاق FEATURE-7 (Leaderboard) بالكامل.
+- المتاح الآن: API leaderboard + ويدجت Dashboard مع ترتيب المستخدم الحالي.
+- الفحوص: server build + typecheck + frontend build + health/front strict smoke كلها PASS.
+
+## Next Batch
+- FEATURE-4 Full-Text Search (تنفيذ endpoint موحد + واجهة بحث سريعة + اختصار لوحة مفاتيح).

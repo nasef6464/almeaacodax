@@ -891,3 +891,19 @@
   - `npm run smoke:health-readiness` PASS
 - Report:
   - `FEATURE_1_PRICING_PAGE_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-7 Leaderboard (Implemented)
+- Batch: `FEATURE-7 - Leaderboard`
+- Final status: `Fully closed`
+- Implemented:
+  - New API: `GET /api/leaderboard` with `scope` + `period` + `limit`.
+  - Top 10 + current user rank contract.
+  - Dashboard widget for leaderboard in overview tab.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`
