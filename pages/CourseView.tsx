@@ -71,7 +71,7 @@ const CourseView: React.FC = () => {
                         setLoadError('');
                     } else {
                         setCourse(null);
-                        setLoadError('???? ????? ?????? ????. ???? ?? ?????? ?????? ?? ???? ??? ???? ??? ?????.');
+                        setLoadError('تعذر تحميل الدورة حاليًا. تأكد من الرابط أو جرّب مرة أخرى بعد قليل.');
                     }
                 }
             } finally {
@@ -103,13 +103,13 @@ const CourseView: React.FC = () => {
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600">
                         <AlertCircle size={32} />
                     </div>
-                    <h1 className="mb-3 text-xl sm:text-2xl font-black leading-tight text-gray-900">?? ????? ??? ??????</h1>
+                    <h1 className="mb-3 text-xl sm:text-2xl font-black leading-tight text-gray-900">لم نتمكن من فتح الدورة</h1>
                     <p className="mb-6 text-sm leading-7 text-gray-500">{loadError}</p>
                     <button
                         onClick={() => window.history.back()}
                         className="w-full rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white hover:bg-indigo-700 sm:w-auto"
                     >
-                        ?????? ?????
+                        العودة للخلف
                     </button>
                 </div>
             </div>
@@ -125,12 +125,12 @@ const CourseView: React.FC = () => {
     if (!course || (!isStaffViewer && !courseIsVisibleToStudent)) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">?????? ??? ????? ??????</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 leading-tight">الدورة غير متاحة حاليًا</h1>
                 <button 
                     onClick={() => window.history.back()}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold w-full sm:w-auto"
                 >
-                    ?????? ?????
+                    العودة للخلف
                 </button>
             </div>
         );
@@ -176,9 +176,9 @@ const CourseView: React.FC = () => {
                             }}
                             className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700"
                         >
-                            ??????
+                            إصدار الشهادة
                         </button>
-                        {certificateCode ? <p className="mt-2 text-xs text-gray-500">?? ????? ??????? ?????.</p> : null}
+                        {certificateCode ? <p className="mt-2 text-xs text-gray-500">تم إنشاء الشهادة بنجاح.</p> : null}
                     </div>
                 ) : null}
                 <CourseOverview

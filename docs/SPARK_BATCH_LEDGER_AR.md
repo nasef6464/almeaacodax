@@ -1343,3 +1343,13 @@
 - Render health: `ready=true`, backend commit `e1c07bac7771`.
 - Post-deploy checks: `smoke:frontend:strict`, `smoke:health-readiness`, `smoke:production-hardening`, and `smoke:data-visibility-regression` all PASS.
 - Final result: discussions RBAC/scope hardening closed in code and verified in production deployment.
+
+
+## Update 2026-05-21 - BATCH 100C Arabic Mojibake Cleanup + Regression Guard
+- Status: `Programmatically closed, production verification pending`.
+- Scope: cleaned confirmed Arabic mojibake in `App.tsx`, `server/src/routes/seo.routes.ts`, and `pages/CourseView.tsx`.
+- Added smoke: `npm run smoke:arabic-mojibake`.
+- Checks PASS: `smoke:arabic-mojibake`, server build, typecheck, frontend build, `smoke:seo`, `smoke:frontend:strict` before push.
+- Report: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100D - Course Builder Lesson/Quiz Picker Filtering + Learner Course Visibility Audit`.
+- Owner-requested large follow-up: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`.

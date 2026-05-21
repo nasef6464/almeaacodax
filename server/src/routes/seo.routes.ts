@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 import { env } from "../config/env.js";
 import { PathModel } from "../models/Path.js";
 import { SubjectModel } from "../models/Subject.js";
@@ -44,21 +44,21 @@ async function buildSeoEntries(): Promise<SeoEntry[]> {
       priority: "1.0",
       changefreq: "daily",
       lastmod: new Date().toISOString(),
-      title: "Ã˜Â§Ã™â€žÃ˜ÂµÃ™ÂÃ˜Â­Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â¦Ã™Å Ã˜Â³Ã™Å Ã˜Â©",
+      title: "الصفحة الرئيسية",
     },
     {
       loc: routeUrl(baseUrl, "/blog"),
       priority: "0.5",
       changefreq: "weekly",
       lastmod: new Date().toISOString(),
-      title: "Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¯Ã™Ë†Ã™â€ Ã˜Â©",
+      title: "المدونة",
     },
     {
       loc: routeUrl(baseUrl, "/quizzes"),
       priority: "0.6",
       changefreq: "weekly",
       lastmod: new Date().toISOString(),
-      title: "Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â®Ã˜ÂªÃ˜Â¨Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª",
+      title: "الاختبارات",
     },
     {
       loc: routeUrl(baseUrl, "/pricing"),
@@ -114,7 +114,7 @@ seoRouter.get("/status", async (_req, res, next) => {
       paths: pathEntries.length,
       subjects: subjectEntries.length,
       warnings: [
-        "Ã˜Â±Ã™Ë†Ã˜Â§Ã˜Â¨Ã˜Â· SEO Ã˜ÂªÃ˜Â¹Ã™â€¦Ã™â€ž Ã˜Â¨Ã˜ÂµÃ™Å Ã˜ÂºÃ˜Â© Ã™â€ Ã˜Â¸Ã™Å Ã™ÂÃ˜Â© Ã˜Â¨Ã˜Â¯Ã™Ë†Ã™â€  hashÃ˜Å’ Ã™â€¦Ã˜Â¹ Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã˜ÂªÃ™â€¦Ã˜Â±Ã˜Â§Ã˜Â± Ã™ÂÃ™Å  Ã˜Â­Ã™â€¦Ã˜Â§Ã™Å Ã˜Â© Ã™â€¦Ã˜Â³Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¨Ã™Å Ã™â€š Ã˜Â§Ã™â€žÃ˜Â®Ã˜Â§Ã˜ÂµÃ˜Â© Ã™â€¦Ã™â€  Ã˜Â§Ã™â€žÃ™ÂÃ™â€¡Ã˜Â±Ã˜Â³Ã˜Â©.",
+        "روابط SEO تعمل بصيغة نظيفة بدون hash، مع استمرار حماية مسارات التطبيق الخاصة من الفهرسة.",
       ],
       sampleRoutes: entries.slice(0, 8).map((entry) => ({ title: entry.title, loc: entry.loc })),
     });
@@ -167,9 +167,9 @@ seoRouter.get("/manifest.json", async (_req, res) => {
   res.setHeader("Content-Type", "application/manifest+json; charset=utf-8");
   res.setHeader("Cache-Control", "public, max-age=300");
   res.json({
-    name: "Ã™â€¦Ã™â€ Ã˜ÂµÃ˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¦Ã˜Â©",
-    short_name: "Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â¦Ã˜Â©",
-    description: "Ã™â€¦Ã™â€ Ã˜ÂµÃ˜Â© Ã˜ÂªÃ˜Â¹Ã™â€žÃ™Å Ã™â€¦Ã™Å Ã˜Â© Ã™â€žÃ™â€žÃ™â€šÃ˜Â¯Ã˜Â±Ã˜Â§Ã˜Âª Ã™Ë†Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â­Ã˜ÂµÃ™Å Ã™â€žÃ™Å  Ã™Ë†Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â¯Ã˜Â±Ã™Å Ã˜Â¨ Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã™Å .",
+    name: "منصة المئة",
+    short_name: "المئة",
+    description: "منصة تعليمية للقدرات والتحصيلي والتدريب الذكي.",
     start_url: `${baseUrl}/`,
     scope: `${baseUrl}/`,
     display: "standalone",

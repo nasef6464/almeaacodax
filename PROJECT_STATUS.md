@@ -2,8 +2,28 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None (last closed: BATCH 100B - Discussions RBAC Scope Hardening)
-- Status: BATCH 100B fully closed; next suggested: BATCH 100C - Arabic Mojibake Cleanup + Regression Guard
+- Active Batch: BATCH 100C - Arabic Mojibake Cleanup + Regression Guard
+- Status: BATCH 100C programmatically closed; production verification pending
+
+## Update 2026-05-21 - BATCH 100C Arabic Mojibake Cleanup + Regression Guard
+- Batch: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Scope: fixed confirmed Arabic mojibake in runtime SEO title/meta, backend SEO status/manifest, and CourseView user-facing fallback/error labels.
+- Delivered:
+  - Replaced corrupted Arabic strings in `App.tsx` route metadata and loading brand.
+  - Replaced corrupted Arabic strings in `server/src/routes/seo.routes.ts` sitemap/status/manifest payloads.
+  - Replaced question-mark placeholders in `pages/CourseView.tsx` error/unavailable/certificate labels.
+  - Added `smoke:arabic-mojibake` regression guard.
+- Checks:
+  - `npm run smoke:arabic-mojibake` PASS
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:seo` PASS
+  - `npm run smoke:frontend:strict` PASS before push
+- Report: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR.md`
+- Next suggested after production closure: `BATCH 100D - Course Builder Lesson/Quiz Picker Filtering + Learner Course Visibility Audit`
+- Large follow-up requested by owner: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`
 
 ## Update 2026-05-21 - BATCH 100B Discussions RBAC Scope Hardening
 - Batch: `BATCH_100B_DISCUSSIONS_RBAC_SCOPE_HARDENING_2026-05-21_AR`
