@@ -2,7 +2,7 @@
 
 **التاريخ:** 2026-05-21  
 **اسم الدفعة:** BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR  
-**الحالة:** Programmatically closed, production verification pending after deploy  
+**الحالة:** Fully closed  
 **نوع الدفعة:** فحص عميق + smoke regression، بدون تغيير UI أو سلوك إنتاجي.
 
 ## سبب الدفعة
@@ -78,8 +78,10 @@
 | `npm run smoke:health-readiness` | PASS | readiness contract aligned. |
 
 ## فحص الإنتاج
-- قبل النشر: لم يتم بعد، لأن الدفعة لا تزال تحتاج commit/push/deploy verification.
-- المطلوب بعد الرفع: انتظار Vercel/Render ثم تشغيل `npm run smoke:frontend:strict` وفحص المتصفح المدمج على لوحة الإدارة.
+- GitHub: تم رفع commit `3aa746a` إلى `origin/main`.
+- Vercel: `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `3aa746a` والملف `index-CVBxWCzD.js`.
+- Render/API readiness: `npm run smoke:health-readiness` نجح بعد الرفع.
+- المتصفح المدمج: تم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100f-3aa746a`، ثم فتح تبويب `المجموعات والمدارس` بصريًا، وظهرت مؤشرات المدارس/الفصول/المشرفين/الطلاب.
 
 ## خطوات التحقق اليدوي المقترحة
 1. افتح `https://almeaacodax.vercel.app/admin-dashboard` بحساب admin.
@@ -93,8 +95,9 @@
 9. إذا كان عدد الطلاب أكثر من 80، تحقق هل القائمة تخفي بقية الطلاب بدون pagination.
 
 ## قرار الإغلاق
-- كفحص برمجي: مغلقة برمجيًا.
-- كفحص إنتاجي نهائي: معلق حتى النشر والتحقق من المتصفح المدمج.
+- كفحص برمجي: مغلقة.
+- كفحص إنتاجي: مغلقة بعد GitHub push وVercel/Render smoke وفحص المتصفح المدمج.
+- ملاحظة: E2E كامل لكل زر داخل تفاصيل المدرسة مؤجل عمدًا إلى BATCH 100G حتى لا نخلط فحص العلاقات مع إصلاح pagination/virtual list.
 
 ## الدفعة التالية المقترحة
 `BATCH 100G — School Relationship UI Pagination + E2E Browser Verification`
@@ -103,3 +106,4 @@
 - إزالة حد `slice(0, 80)` بطريقة آمنة لا تغير التصميم.
 - إضافة pagination/بحث واضح لقوائم الطلاب داخل المدرسة.
 - تشغيل تحقق حي من كل وظائف علاقات المدرسة في المتصفح المدمج.
+

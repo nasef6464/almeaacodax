@@ -3,11 +3,11 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit
-- Status: Programmatically closed, production verification pending after deploy
+- Status: Fully closed after GitHub push, production smoke, and in-app browser verification
 
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending after deploy`
+- Status: `Fully closed`
 - Scope: audit-only functional relationship verification for schools, classes, groups, supervisors, students, parents, and scoped reports.
 - Delivered:
   - Added `scripts/smoke-batch100f-relationship-audit-contract.mjs`.
@@ -1383,3 +1383,12 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `9047a47`.
 - Browser verification: PASS for learning page and course page; restored course and lesson `جمع` are visible.
 - Final result: production course data visibility issue is closed and deployed.
+
+## Production Closure 2026-05-21 - BATCH 100F
+- Status: `Fully closed`.
+- GitHub commit: `3aa746a` pushed to `main`.
+- Vercel verified: `npm run smoke:frontend:strict` PASS and production serves commit `3aa746a` with `index-CVBxWCzD.js`.
+- Render/readiness verified: `npm run smoke:health-readiness` PASS.
+- In-app browser verified: admin dashboard opens and `المجموعات والمدارس` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
+- Remaining risks intentionally moved to next batch: `slice(0, 80)` school-students cap and full click-by-click school relationship E2E.
+- Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.

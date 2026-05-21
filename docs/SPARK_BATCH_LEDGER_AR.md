@@ -1452,3 +1452,11 @@
   - Group create route accepts full payload for `admin/teacher/supervisor`; update/delete are scope-guarded, create needs a focused scope hardening pass.
   - Full in-app browser E2E for every school relationship button is still required.
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
+
+## Production Closure 2026-05-21 - BATCH 100F
+- Status: `Fully closed`.
+- GitHub commit: `3aa746a` pushed to `main`.
+- Vercel: `npm run smoke:frontend:strict` PASS, production commit `3aa746a`, asset `index-CVBxWCzD.js`.
+- Render/API: `npm run smoke:health-readiness` PASS.
+- In-app browser: PASS for admin dashboard and `المجموعات والمدارس` tab visibility with school readiness and relationship signals.
+- Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
