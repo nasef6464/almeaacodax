@@ -3,11 +3,11 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100C - Arabic Mojibake Cleanup + Regression Guard
-- Status: BATCH 100C programmatically closed; production verification pending after PWA freshness fix
+- Status: BATCH 100C fully closed
 
 ## Update 2026-05-21 - BATCH 100C Arabic Mojibake Cleanup + Regression Guard
 - Batch: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR`
-- Status: `Programmatically closed, production verification pending`
+- Status: `Fully closed`
 - Scope: fixed confirmed Arabic mojibake in runtime SEO title/meta, backend SEO status/manifest, CourseView fallback/error labels, and added PWA freshness guard after browser verification found stale cached app shell.
 - Delivered:
   - Replaced corrupted Arabic strings in `App.tsx` route metadata and loading brand.
@@ -23,7 +23,7 @@
   - `npm run smoke:seo` PASS
   - `npm run smoke:frontend:strict` PASS before first push; production re-check pending after PWA freshness push
 - Report: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR.md`
-- Next suggested after production closure: `BATCH 100D - Course Builder Lesson/Quiz Picker Filtering + Learner Course Visibility Audit`
+- Next suggested: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Builder Filtering`
 - Large follow-up requested by owner: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`
 
 ## Update 2026-05-21 - BATCH 100B Discussions RBAC Scope Hardening
@@ -1271,3 +1271,13 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
 - Next suggested: `BATCH 100B — Discussions RBAC Scope Hardening`
+
+## Production Closure 2026-05-21 - BATCH 100C
+- Final status: `Fully closed`.
+- First fix commit: `3a8450f`.
+- PWA freshness commit: `d137d75`.
+- Vercel Production: `npm run smoke:frontend:strict` PASS and serving commit `d137d75` with asset `index-DP1Viu3u.js`.
+- Render/readiness: `npm run smoke:health-readiness` PASS. Backend commit stayed at previous backend deploy because the second commit changed frontend/PWA only.
+- SEO production contract: `npm run smoke:seo` PASS.
+- In-app browser verification: PASS. `https://almeaacodax.vercel.app/#/my-quizzes` displayed clean Arabic title/description/body and no old mojibake asset.
+- Owner-reported next audit item: homepage/admin settings image replacement does not work and must be included in BATCH 100D.

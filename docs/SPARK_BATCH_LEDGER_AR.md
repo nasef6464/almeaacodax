@@ -1362,3 +1362,14 @@
 - Checks PASS after addendum: `smoke:arabic-mojibake`, server build, typecheck, frontend build, `smoke:seo`.
 - Next required before Fully closed: commit/push, wait for Vercel/Render, run `smoke:frontend:strict`, and verify visually/practically in the in-app browser.
 - Owner-requested next large audit remains queued: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`.
+
+## Update 2026-05-21 - BATCH 100C Final Production Closure
+- Status: `Fully closed`.
+- Fix commits: `3a8450f` and `d137d75`.
+- Vercel Production: `smoke:frontend:strict` PASS, commit `d137d75`, asset `index-DP1Viu3u.js`.
+- Render/readiness: `smoke:health-readiness` PASS; backend commit remains previous because the final addendum was frontend/PWA only.
+- SEO: `smoke:seo` PASS.
+- In-app browser: PASS, no mojibake in title/meta/body and no stale `index-B0atJwqh.js` asset.
+- Final result: Arabic mojibake cleanup and PWA stale-shell guard closed in code and verified in production.
+- Next suggested: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Builder Filtering`.
+- Owner note for next batch: homepage hero/boy image replacement from admin homepage settings appears broken and must be tested first.
