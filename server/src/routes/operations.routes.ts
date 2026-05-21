@@ -92,6 +92,134 @@ const OPERATIONS_STATUS_LIBRARY_SELECT = "_id id title name pathId subjectId sho
 let cachedOperationsStatus: { expiresAt: number; payload: unknown } | null = null;
 let pendingOperationsStatus: Promise<unknown> | null = null;
 
+async function buildIntegrationsReadinessSnapshot() {
+  const redisHealth = await getRedisHealth("queue", { required: true, timeoutMs: 1200 });
+  const redisRequiredByQueue = env.NOTIFICATION_QUEUE_ENABLED;
+  const redisRequiredByRateLimit = env.RATE_LIMIT_REDIS_ENABLED;
+
+  const googleConfigured =
+    Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_ID.trim()) &&
+    Boolean(env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CLIENT_SECRET.trim()) &&
+    Boolean(env.GOOGLE_REDIRECT_URI && env.GOOGLE_REDIRECT_URI.trim());
+
+  const emailProvider = String(process.env.EMAIL_PROVIDER || "").trim().toLowerCase();
+  const emailConfigured =
+    emailProvider === "console" ||
+    (emailProvider === "resend" &&
+      Boolean(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim()) &&
+      Boolean(process.env.EMAIL_FROM && process.env.EMAIL_FROM.trim())) ||
+    (emailProvider === "http" && Boolean(process.env.EMAIL_WEBHOOK_URL && process.env.EMAIL_WEBHOOK_URL.trim()));
+
+  const whatsappProvider = String(process.env.WHATSAPP_PROVIDER || "").trim().toLowerCase();
+  const whatsappConfigured =
+    whatsappProvider === "console" ||
+    (whatsappProvider === "whatsapp_cloud" &&
+      Boolean(process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_ACCESS_TOKEN.trim()) &&
+      Boolean(process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.WHATSAPP_PHONE_NUMBER_ID.trim())) ||
+    (whatsappProvider === "http" && Boolean(process.env.WHATSAPP_WEBHOOK_URL && process.env.WHATSAPP_WEBHOOK_URL.trim()));
+
+  const sentryConfigured = Boolean(env.SENTRY_DSN && env.SENTRY_DSN.trim());
+
+  const checks = [
+    {
+      id: "google_oauth",
+      title: "Google OAuth",
+      status: env.GOOGLE_OAUTH_ENABLED ? (googleConfigured ? "pass" : "fail") : "warning",
+      detail: env.GOOGLE_OAUTH_ENABLED
+        ? googleConfigured
+          ? "Google OAuth environment variables are configured."
+          : "Google OAuth is enabled but one or more required variables are missing."
+        : "Google OAuth is currently disabled by configuration.",
+      requiredEnv: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI", "GOOGLE_OAUTH_ENABLED=true"],
+    },
+    {
+      id: "email_provider",
+      title: "Email Provider",
+      status: emailConfigured ? "pass" : "fail",
+      detail: emailConfigured
+        ? `Email provider "${emailProvider || "unknown"}" is configured.`
+        : "Email provider credentials are incomplete or provider is not selected.",
+      requiredEnv: [
+        "EMAIL_PROVIDER=resend|http|console",
+        "EMAIL_FROM (for resend)",
+        "RESEND_API_KEY (for resend)",
+        "EMAIL_WEBHOOK_URL (for http provider)",
+      ],
+    },
+    {
+      id: "whatsapp_provider",
+      title: "WhatsApp Provider",
+      status: whatsappConfigured ? "pass" : "warning",
+      detail: whatsappConfigured
+        ? `WhatsApp provider "${whatsappProvider || "unknown"}" is configured.`
+        : "WhatsApp provider is optional now but not fully configured.",
+      requiredEnv: [
+        "WHATSAPP_PROVIDER=whatsapp_cloud|http|console",
+        "WHATSAPP_ACCESS_TOKEN (for whatsapp_cloud)",
+        "WHATSAPP_PHONE_NUMBER_ID (for whatsapp_cloud)",
+        "WHATSAPP_WEBHOOK_URL (for http provider)",
+      ],
+    },
+    {
+      id: "sentry",
+      title: "Sentry",
+      status: sentryConfigured ? "pass" : "warning",
+      detail: sentryConfigured
+        ? "Sentry DSN is configured. Runtime SDK wiring can send production errors."
+        : "Sentry DSN is not configured yet.",
+      requiredEnv: ["SENTRY_DSN", "SENTRY_ENVIRONMENT", "SENTRY_TRACES_SAMPLE_RATE"],
+    },
+    {
+      id: "managed_redis",
+      title: "Managed Redis",
+      status: redisHealth.ok ? "pass" : redisRequiredByQueue || redisRequiredByRateLimit ? "fail" : "warning",
+      detail: redisHealth.ok
+        ? `Redis is reachable (${redisHealth.latencyMs ?? "?"} ms).`
+        : isRedisConfigured()
+        ? `Redis configured but unhealthy: ${redisHealth.error || redisHealth.status}`
+        : "REDIS_URL is not configured.",
+      requiredEnv: ["REDIS_URL", "REDIS_KEY_PREFIX", "NOTIFICATION_QUEUE_ENABLED", "RATE_LIMIT_REDIS_ENABLED"],
+    },
+  ];
+
+  const failed = checks.filter((item) => item.status === "fail").length;
+  const warnings = checks.filter((item) => item.status === "warning").length;
+  const score = Math.max(0, Math.min(100, Math.round(100 - failed * 22 - warnings * 8)));
+
+  return {
+    checkedAt: new Date().toISOString(),
+    score,
+    status: failed > 0 ? "blocked" : warnings > 0 ? "ready_with_notes" : "ready",
+    checks,
+    summary: {
+      failed,
+      warnings,
+      passed: checks.filter((item) => item.status === "pass").length,
+    },
+    meta: {
+      whatsappProvider: whatsappProvider || "unknown",
+      emailProvider: emailProvider || "unknown",
+      redisConfigured: isRedisConfigured(),
+      redisHealthy: redisHealth.ok,
+    },
+  };
+}
+
+operationsRouter.get("/health", optionalAuth, async (_req, res, next) => {
+  try {
+    const snapshot = await buildIntegrationsReadinessSnapshot();
+    return res.json({
+      checkedAt: snapshot.checkedAt,
+      status: snapshot.status,
+      score: snapshot.score,
+      summary: snapshot.summary,
+      meta: snapshot.meta,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 operationsRouter.get("/status", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
     if (cachedOperationsStatus && cachedOperationsStatus.expiresAt > Date.now()) {
@@ -402,110 +530,8 @@ operationsRouter.get("/delivery-readiness", requireAuth, requireRole(["admin"]),
 
 operationsRouter.get("/integrations-readiness", requireAuth, requireRole(["admin"]), async (_req, res, next) => {
   try {
-    const redisHealth = await getRedisHealth("queue", { required: true, timeoutMs: 1200 });
-    const redisRequiredByQueue = env.NOTIFICATION_QUEUE_ENABLED;
-    const redisRequiredByRateLimit = env.RATE_LIMIT_REDIS_ENABLED;
-
-    const googleConfigured =
-      Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_ID.trim()) &&
-      Boolean(env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CLIENT_SECRET.trim()) &&
-      Boolean(env.GOOGLE_REDIRECT_URI && env.GOOGLE_REDIRECT_URI.trim());
-
-    const emailProvider = String(process.env.EMAIL_PROVIDER || "").trim().toLowerCase();
-    const emailConfigured =
-      emailProvider === "console" ||
-      (emailProvider === "resend" &&
-        Boolean(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim()) &&
-        Boolean(process.env.EMAIL_FROM && process.env.EMAIL_FROM.trim())) ||
-      (emailProvider === "http" && Boolean(process.env.EMAIL_WEBHOOK_URL && process.env.EMAIL_WEBHOOK_URL.trim()));
-
-    const whatsappProvider = String(process.env.WHATSAPP_PROVIDER || "").trim().toLowerCase();
-    const whatsappConfigured =
-      whatsappProvider === "console" ||
-      (whatsappProvider === "whatsapp_cloud" &&
-        Boolean(process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_ACCESS_TOKEN.trim()) &&
-        Boolean(process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.WHATSAPP_PHONE_NUMBER_ID.trim())) ||
-      (whatsappProvider === "http" && Boolean(process.env.WHATSAPP_WEBHOOK_URL && process.env.WHATSAPP_WEBHOOK_URL.trim()));
-
-    const sentryConfigured = Boolean(env.SENTRY_DSN && env.SENTRY_DSN.trim());
-
-    const checks = [
-      {
-        id: "google_oauth",
-        title: "Google OAuth",
-        status: env.GOOGLE_OAUTH_ENABLED ? (googleConfigured ? "pass" : "fail") : "warning",
-        detail: env.GOOGLE_OAUTH_ENABLED
-          ? googleConfigured
-            ? "Google OAuth environment variables are configured."
-            : "Google OAuth is enabled but one or more required variables are missing."
-          : "Google OAuth is currently disabled by configuration.",
-        requiredEnv: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI", "GOOGLE_OAUTH_ENABLED=true"],
-      },
-      {
-        id: "email_provider",
-        title: "Email Provider",
-        status: emailConfigured ? "pass" : "fail",
-        detail: emailConfigured
-          ? `Email provider "${emailProvider || "unknown"}" is configured.`
-          : "Email provider credentials are incomplete or provider is not selected.",
-        requiredEnv: [
-          "EMAIL_PROVIDER=resend|http|console",
-          "EMAIL_FROM (for resend)",
-          "RESEND_API_KEY (for resend)",
-          "EMAIL_WEBHOOK_URL (for http provider)",
-        ],
-      },
-      {
-        id: "whatsapp_provider",
-        title: "WhatsApp Provider",
-        status: whatsappConfigured ? "pass" : "warning",
-        detail: whatsappConfigured
-          ? `WhatsApp provider "${whatsappProvider || "unknown"}" is configured.`
-          : "WhatsApp provider is optional now but not fully configured.",
-        requiredEnv: [
-          "WHATSAPP_PROVIDER=whatsapp_cloud|http|console",
-          "WHATSAPP_ACCESS_TOKEN (for whatsapp_cloud)",
-          "WHATSAPP_PHONE_NUMBER_ID (for whatsapp_cloud)",
-          "WHATSAPP_WEBHOOK_URL (for http provider)",
-        ],
-      },
-      {
-        id: "sentry",
-        title: "Sentry",
-        status: sentryConfigured ? "pass" : "warning",
-        detail: sentryConfigured
-          ? "Sentry DSN is configured. Runtime SDK wiring can send production errors."
-          : "Sentry DSN is not configured yet.",
-        requiredEnv: ["SENTRY_DSN", "SENTRY_ENVIRONMENT", "SENTRY_TRACES_SAMPLE_RATE"],
-      },
-      {
-        id: "managed_redis",
-        title: "Managed Redis",
-        status: redisHealth.ok ? "pass" : redisRequiredByQueue || redisRequiredByRateLimit ? "fail" : "warning",
-        detail: redisHealth.ok
-          ? `Redis is reachable (${redisHealth.latencyMs ?? "?"} ms).`
-          : isRedisConfigured()
-          ? `Redis configured but unhealthy: ${redisHealth.error || redisHealth.status}`
-          : "REDIS_URL is not configured.",
-        requiredEnv: ["REDIS_URL", "REDIS_KEY_PREFIX", "NOTIFICATION_QUEUE_ENABLED", "RATE_LIMIT_REDIS_ENABLED"],
-      },
-    ];
-
-    const failed = checks.filter((item) => item.status === "fail").length;
-    const warnings = checks.filter((item) => item.status === "warning").length;
-    const score = Math.max(0, Math.min(100, Math.round(100 - failed * 22 - warnings * 8)));
-
-    return res.json({
-      checkedAt: new Date().toISOString(),
-      score,
-      status: failed > 0 ? "blocked" : warnings > 0 ? "ready_with_notes" : "ready",
-      checks,
-      summary: {
-        failed,
-        warnings,
-        passed: checks.filter((item) => item.status === "pass").length,
-      },
-    });
+    const snapshot = await buildIntegrationsReadinessSnapshot();
+    return res.json(snapshot);
   } catch (error) {
     next(error);
   }

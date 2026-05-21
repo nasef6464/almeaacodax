@@ -1026,3 +1026,17 @@
   - 500/1000 load targets still not met on current infra profile
 - Report:
   - `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`
+
+## Update 2026-05-21 — ADMIN OPS Health Endpoint
+- Current status: `Fully closed`.
+- Delivered now:
+  1. `/api/operations/health` no longer returns 404.
+  2. Public-safe operational summary endpoint added.
+  3. Admin detailed readiness endpoint now uses unified snapshot builder.
+- Verification (this run):
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`

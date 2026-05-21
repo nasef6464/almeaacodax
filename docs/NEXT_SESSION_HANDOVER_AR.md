@@ -1138,3 +1138,10 @@
 
 ## Next Batch
 - الانتقال إلى دفعة تدقيق عميق لوحات الإدارة (Admin deep audit) وإغلاق bugs قابلة للتنفيذ بدون مفاتيح خارجية.
+
+## Update 2026-05-21 — ADMIN OPS Health Endpoint
+- الحالة: `Fully closed`.
+- تم إنهاء مشكلة 404 لمسار operations health بإضافة endpoint صحي موحد وآمن.
+
+## Next Batch
+- دفعة تدقيق عميق لوحدات لوحة الإدارة (save/update flows) وحل أي أخطاء تشغيلية متبقية.

@@ -1180,3 +1180,16 @@
   - `smoke:operational` FAIL (missing active auth secret context)
 - Load evidence still confirms 500/1000 targets unmet on current infra.
 - Report: `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — ADMIN OPS Health Endpoint
+- Status: `Fully closed`.
+- Implemented:
+  - Added public-safe `GET /api/operations/health` endpoint.
+  - Refactored integrations readiness snapshot into a shared builder.
+  - Reused shared snapshot in admin-only `GET /api/operations/integrations-readiness`.
+- Verification:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`.
