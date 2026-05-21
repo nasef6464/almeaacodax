@@ -294,6 +294,32 @@ const writePublicCache = <T>(key: string, value: T, ttlMs: number) => {
   }
 };
 
+const clearPublicCache = (key?: string) => {
+  const storage = getPublicCacheStorage();
+  if (!storage) {
+    return;
+  }
+
+  try {
+    if (key) {
+      storage.removeItem(`${PUBLIC_CACHE_PREFIX}${key}`);
+      return;
+    }
+
+    const keysToRemove: string[] = [];
+    for (let index = 0; index < storage.length; index += 1) {
+      const itemKey = storage.key(index);
+      if (itemKey?.startsWith(PUBLIC_CACHE_PREFIX)) {
+        keysToRemove.push(itemKey);
+      }
+    }
+
+    keysToRemove.forEach((itemKey) => storage.removeItem(itemKey));
+  } catch {
+    // Cache invalidation is best-effort and must never block a successful mutation.
+  }
+};
+
 const requestCached = async <T>(path: string, cacheKey: string, ttlMs = PUBLIC_CACHE_TTL_MS): Promise<T> => {
   const cached = readPublicCache<T>(cacheKey);
   if (cached) {
@@ -692,12 +718,16 @@ export const api = {
       : requestCached<unknown>("/content/homepage-settings", "homepage-settings", PUBLIC_CACHE_TTL_MS),
   getPublicAnnouncementAds: () =>
     requestCached<{ announcementAds: unknown[] }>("/content/announcement-ads", "announcement-ads", PUBLIC_CACHE_TTL_MS),
-  updateHomepageSettings: (payload: unknown, token?: string | null) =>
-    request<unknown>("/content/homepage-settings", {
+  updateHomepageSettings: async (payload: unknown, token?: string | null) => {
+    const response = await request<unknown>("/content/homepage-settings", {
       method: "PATCH",
       body: payload,
       token,
-    }),
+    });
+    clearPublicCache("homepage-settings");
+    writePublicCache("homepage-settings", response, PUBLIC_CACHE_TTL_MS);
+    return response;
+  },
   getPlatformFontSettings: (token?: string | null) =>
     request<unknown>("/content/platform-font-settings", {
       token,

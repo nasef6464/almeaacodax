@@ -652,3 +652,14 @@ pm run smoke:health-readiness.
 
 ### External Dependency Register
 Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/owner-config prerequisites. Do not mix these blockers with code defects.
+
+---
+
+## تحديث 2026-05-21 - بعد BATCH 100D
+
+- تم تثبيت دفعة `BATCH 100D` لإصلاح كاش إعدادات الصفحة الرئيسية وإضافة حراسة لمنشئ الدورات ومشغل الدورة.
+- أولوية الخطة التالية أصبحت:
+  1. `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
+  2. فحص سبب عدم ظهور الدورة المطلوبة في صفحة التعلم رغم وجودها في شاشة الإدارة عند المالك.
+  3. فحص علاقات المجموعات/المدارس/المشرفين/المعلمين/الطلاب/الأهالي كدفعة مستقلة.
+- لا تبدأ أي تعديل واسع في العلاقات أو البيانات قبل قراءة تقرير 100D وحالة الإنتاج.

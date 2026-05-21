@@ -2,8 +2,31 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: BATCH 100C - Arabic Mojibake Cleanup + Regression Guard
-- Status: BATCH 100C fully closed
+- Active Batch: BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Player Verification
+- Status: BATCH 100D programmatically closed; production data follow-up required
+
+## Update 2026-05-21 - BATCH 100D Admin Dashboard + Course Player Verification
+- Batch: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR`
+- Status: `Programmatically closed, production data follow-up required`
+- Scope: fixed stale public cache after homepage settings updates, added contract coverage for course builder import filters/course settings/course player, and performed live production browser/API verification.
+- Delivered:
+  - `services/api.ts` now clears and refreshes `homepage-settings` public cache after admin save.
+  - Added `smoke:batch100d-admin-course-flow`.
+  - Verified builder contracts for path/subject import filters, search, subject selection, skill reset, and course player lesson types.
+- Checks:
+  - `npm run smoke:batch100d-admin-course-flow` PASS after fix
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-builder` PASS
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:homepage-hero` PASS
+- Production finding:
+  - Learning page for `p_1777779639431/sub_1777779748206` currently shows courses `حمكشة` and `ب ال`.
+  - Target course `course_current_p_1777779639431_sub_1777779748206_foundation` returns `404 Course not found` from production API and therefore the course player shows `الدورة غير متاحة حاليًا`.
+  - This is a confirmed production data/publishing/id mismatch follow-up, not a direct CoursePlayer rendering failure.
+- Report: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`
+- Next suggested: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`
 
 ## Update 2026-05-21 - BATCH 100C Arabic Mojibake Cleanup + Regression Guard
 - Batch: `BATCH_100C_ARABIC_MOJIBAKE_CLEANUP_REGRESSION_GUARD_2026-05-21_AR`

@@ -1464,3 +1464,46 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 - ??? ??? ?? BATCH 100D: ??? ??? ??? ??? ????? ???? ?????/hero image ?? ??????? ?????? ???????? ?? ???? ???????.
 - ??? BATCH 100D ?????: ??? ??????? ??????????? ??????? ??????/??????????? ???????? ????? ??????? ??????.
 - ???? ????? ????? ??????: `BATCH 100E - Groups, Schools, Parents, Supervisors Relationships Deep Audit`.
+
+---
+
+## تسليم للحساب التالي - BATCH 100D - 2026-05-21
+
+### قاعدة العمل المعتمدة
+- عند قول المالك `اكمل`: استمر داخل الدفعة الحالية حتى الإغلاق البرمجي + الفحوص + التقرير + ledger + handover + push + تحقق إنتاجي قدر الإمكان.
+- لا تستخدم `git add .` بسبب وجود تعديلات قديمة كثيرة خارج نطاق الدفعة.
+- لا تغير التصميم أو الألوان أو الخطوط أو layout إلا إذا طلب المالك صراحة.
+- بعد كل دفعة، تحقق من `https://almeaacodax.vercel.app` والمتصفح الداخلي إن أمكن.
+- لا تحفظ أسرار أو مفاتيح في المستودع أو ملفات التسليم.
+
+### ما تم في 100D
+- تم إصلاح كاش إعدادات الصفحة الرئيسية في `services/api.ts` عبر تفريغ `homepage-settings` بعد PATCH.
+- تم إضافة smoke جديد: `scripts/smoke-batch100d-admin-course-flow.mjs` وتشغيله عبر `npm run smoke:batch100d-admin-course-flow`.
+- الفحوص الناجحة:
+  - `npm run smoke:batch100d-admin-course-flow`
+  - `npm --prefix server run build`
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run smoke:course-builder`
+  - `npm run smoke:course-visibility`
+  - `npm run smoke:homepage-hero`
+
+### اكتشاف إنتاجي مهم
+- رابط الدورة `https://almeaacodax.vercel.app/course/course_current_p_1777779639431_sub_1777779748206_foundation` يعرض `الدورة غير متاحة حاليًا`.
+- API الإنتاجي `/api/courses/course_current_p_1777779639431_sub_1777779748206_foundation` يرجع 404.
+- API الإنتاجي `/api/courses?limit=200` لا يحتوي على هذه الدورة، ويعرض بدلًا منها دورات مثل `حمكشة` و`ب ال` للمادة نفسها.
+- هذا يحتاج دفعة مستقلة لفحص بيانات MongoDB/نشر الدورة/الاعتماد/المعرّف/المسار/المادة، وليس تغييرًا عشوائيًا في مشغل الدورة.
+
+### التالي المقترح
+`BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`
+
+### ملفات يجب الانتباه لها
+- `services/api.ts`
+- `dashboards/admin/AdvancedCourseBuilder.tsx`
+- `components/CoursePlayer.tsx`
+- `components/LearningSection.tsx`
+- `pages/CourseView.tsx`
+- `server/src/routes/course.routes.ts`
+
+### تحذير حالة المستودع
+- توجد تعديلات قديمة كثيرة قبل 100D؛ لا تعمل revert لها ولا stage لها إلا إذا دخلت صراحة في نطاق دفعة جديدة.

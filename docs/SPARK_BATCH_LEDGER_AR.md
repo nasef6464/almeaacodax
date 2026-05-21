@@ -1373,3 +1373,21 @@
 - Final result: Arabic mojibake cleanup and PWA stale-shell guard closed in code and verified in production.
 - Next suggested: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Builder Filtering`.
 - Owner note for next batch: homepage hero/boy image replacement from admin homepage settings appears broken and must be tested first.
+
+---
+
+## تحديث الدفعة - BATCH 100D - 2026-05-21
+
+- الدفعة: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Player Verification`.
+- الحالة: `Programmatically closed, production data follow-up required`.
+- ما تم:
+  1. إصلاح كاش إعدادات الصفحة الرئيسية بعد حفظ صورة/إعدادات البطل.
+  2. إضافة `smoke:batch100d-admin-course-flow` لإثبات عقود منشئ الدورات والاستدعاء ومشغل الدورة.
+  3. تشغيل build/typecheck/smokes الأساسية بنجاح.
+  4. فحص إنتاج حي لصفحة التعلم ومشغل الدورة.
+- نتيجة الإنتاج:
+  - صفحة التعلم للمسار `p_1777779639431` والمادة `sub_1777779748206` تعرض `حمكشة` و`ب ال`.
+  - الدورة `course_current_p_1777779639431_sub_1777779748206_foundation` غير موجودة في API العام وترجع 404.
+  - لذلك ظهور `الدورة غير متاحة حاليًا` سببه بيانات/نشر/معرّف إنتاجي يحتاج دفعة منفصلة.
+- التقرير: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`.
+- التالي المقترح: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
