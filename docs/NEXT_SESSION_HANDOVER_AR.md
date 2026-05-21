@@ -1686,3 +1686,11 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
 `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`
 
 سبب التالي: بعد إزالة حد الـ 80 طالبًا، يبقى خطر مؤكد من BATCH 100F وهو أن إنشاء group جديد يحتاج تضييق scope للـ teacher/supervisor، مع فحص زر-بزر لعلاقات المدارس في المتصفح الداخلي.
+
+### Final Closure Note - BATCH 100G
+- تم رفع commit `6d977e4` إلى GitHub.
+- Vercel تحقق بنجاح عبر `npm run smoke:frontend:strict` ويخدم commit `6d977e4`.
+- Render/API تحقق بنجاح عبر `npm run smoke:health-readiness`.
+- المتصفح الداخلي تحقق بصريًا بعد hard refresh: لوحة الإدارة تعمل وتبويب `المجموعات والمدارس` يظهر بطاقات جاهزية المدارس وقوائم المدارس بدون أخطاء ظاهرة.
+- اعتبر BATCH 100G مغلقة بالكامل.
+- لا تبدأ التالي إلا عند طلب المالك. التالي المقترح: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.

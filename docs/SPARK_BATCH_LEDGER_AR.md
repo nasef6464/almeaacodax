@@ -1471,3 +1471,13 @@
 - الفحوص: school pagination smoke، relationship audit، school management، admin/school portal/supervisor/report/RBAC smokes، server build، typecheck، frontend build، health readiness، frontend strict قبل push — كلها PASS.
 - التقرير: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR.md`.
 - التالي: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
+
+## Production Closure 2026-05-21 - BATCH 100G
+- الحالة: `Fully closed`.
+- Commit: `6d977e4`.
+- GitHub push: PASS.
+- Vercel: `smoke:frontend:strict` PASS ويخدم commit `6d977e4`.
+- Render/API: `smoke:health-readiness` PASS.
+- المتصفح الداخلي: PASS بعد hard refresh؛ تم فتح لوحة الإدارة وتبويب `المجموعات والمدارس` وظهرت بطاقات الجاهزية وقائمة المدارس بدون أخطاء ظاهرة.
+- النتيجة: تم إغلاق خطر إخفاء الطلاب بعد أول 80 طالبًا في واجهة علاقات المدرسة.
+- التالي: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.

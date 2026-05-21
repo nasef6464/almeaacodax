@@ -699,3 +699,9 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
 - Next production-closure step: push BATCH 100G, verify Vercel/Render, and in-app browser.
 - Next suggested batch after final closure: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 - Reason: group create scope remains the next confirmed relationship/RBAC risk after BATCH 100F/100G.
+
+## Production Closure 2026-05-21 - BATCH 100G
+- Final status: `Fully closed`.
+- Commit pushed: `6d977e4`.
+- Verification completed: GitHub push, Vercel frontend strict, Render health/readiness, and in-app browser visual check.
+- The current next suggested batch is `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.

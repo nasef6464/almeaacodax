@@ -1,7 +1,7 @@
 ﻿# BATCH 100G — School Relationship UI Pagination + E2E Browser Verification
 
 التاريخ: 2026-05-21
-الحالة: Programmatically closed, production verification pending
+الحالة: Fully closed
 
 ## السبب
 دفعة BATCH 100F أثبتت أن علاقات المدارس/الفصول/المشرفين/الطلاب/أولياء الأمور تعمل برمجياً، لكنها كشفت خطرًا عمليًا في واجهة إدارة المدرسة: جدول طلاب المدرسة كان يستخدم `visibleSchoolStudents.slice(0, 80)` مما يخفي أي طالب بعد أول 80 نتيجة إذا لم يصل له المستخدم بالبحث أو الفلترة.
@@ -62,8 +62,11 @@
 | `npm run smoke:frontend:strict` | PASS | الإنتاج الحالي قبل push ما زال يخدم commit السابق `c6ab7f0` |
 
 ## فحص الإنتاج
-- قبل الرفع: `smoke:frontend:strict` نجح على الإنتاج الحالي لكنه كان يخدم commit سابق، لذلك لا يكفي لإغلاق BATCH 100G نهائيًا.
-- المطلوب قبل Fully closed: commit/push، انتظار Vercel/Render، ثم إعادة `smoke:frontend:strict` و`smoke:health-readiness`، وفحص بصري من المتصفح الداخلي.
+- GitHub push: PASS، commit `6d977e4` وصل إلى `origin/main`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `6d977e4` والملف `assets/index-D6_Q_6mk.js`.
+- Render/API: PASS، `npm run smoke:health-readiness` أكد أن health/readiness تعمل.
+- المتصفح الداخلي: PASS بعد hard refresh؛ تم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100g-6d977e4`، ثم فتح تبويب `المجموعات والمدارس` بصريًا، وظهر مركز جاهزية المدارس وقائمة المدارس بدون أخطاء ظاهرة.
+- ملاحظة تشغيلية: المتصفح الداخلي بدأ أولًا بملف PWA قديم، وبعد hard refresh ظهر asset الصحيح. هذا يؤكد أهمية hard refresh عند التحقق البصري بعد النشر.
 
 ## التحقق اليدوي المطلوب بعد النشر
 1. افتح `https://almeaacodax.vercel.app/admin-dashboard`.
@@ -79,7 +82,14 @@
 - ما زال مطلوبًا فحص زر-بزر لعلاقات المدرسة في المتصفح الداخلي كدفعة E2E أوسع.
 
 ## هل تم إغلاق خطر حد 80 طالبًا؟
-نعم برمجيًا: تمت إزالة القطع الصامت لأول 80 طالبًا واستبداله بترقيم واضح ومثبت بـ smoke. الإغلاق النهائي ينتظر النشر والتحقق الحي.
+نعم نهائيًا: تمت إزالة القطع الصامت لأول 80 طالبًا، واستبداله بترقيم واضح، وتم إثباته بـ smoke محلي، ثم تم رفعه والتحقق من Vercel/Render والمتصفح الداخلي.
 
 ## الدفعة التالية المقترحة
 BATCH 100H — Group Create Scope Hardening + School Relationship Button E2E
+
+## إغلاق الإنتاج النهائي
+- الحالة النهائية: Fully closed.
+- Commit: `6d977e4`.
+- Production frontend: PASS عبر `smoke:frontend:strict` ويخدم commit `6d977e4`.
+- Production API/readiness: PASS عبر `smoke:health-readiness`.
+- In-app browser: PASS على لوحة الإدارة وتبويب `المجموعات والمدارس`.

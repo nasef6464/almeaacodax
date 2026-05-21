@@ -3,7 +3,7 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
 - Active Batch: BATCH 100G - School Relationship UI Pagination + E2E Browser Verification
-- Status: Programmatically closed, production verification pending
+- Status: Fully closed after GitHub push, production smoke, and in-app browser verification
 
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
@@ -1422,3 +1422,12 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Next required before Fully closed: push to GitHub, wait deployment, rerun production smokes, and verify from in-app browser.
 - Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 
+
+## Production Closure 2026-05-21 - BATCH 100G
+- Status: `Fully closed`.
+- Commit pushed: `6d977e4`.
+- Vercel: `npm run smoke:frontend:strict` PASS and production serves commit `6d977e4` with asset `index-D6_Q_6mk.js`.
+- Render/API: `npm run smoke:health-readiness` PASS.
+- In-app browser: PASS after hard refresh; admin dashboard opened and `المجموعات والمدارس` tab showed school readiness cards and school rows without visible errors.
+- Final result: the school-student table no longer hides students beyond the first 80; pagination is in place and verified.
+- Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
