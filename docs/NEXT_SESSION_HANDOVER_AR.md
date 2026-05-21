@@ -1131,3 +1131,10 @@
 
 ## Next Batch
 - FIX-9 Scale Verification (blocked by infra upgrades + secrets) أو الانتقال لدفعة تدقيق/تحسين لوحات الإدارة.
+
+## Update 2026-05-21 — FIX-9A (Scale)
+- الحالة: `Blocked (infra + secrets prerequisites)`.
+- تم تحديث حزمة الأدلة بالكامل؛ الإغلاق النهائي ينتظر ترقية البنية + أسرار التشغيل.
+
+## Next Batch
+- الانتقال إلى دفعة تدقيق عميق لوحات الإدارة (Admin deep audit) وإغلاق bugs قابلة للتنفيذ بدون مفاتيح خارجية.

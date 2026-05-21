@@ -1171,3 +1171,12 @@
   - `npm run typecheck` PASS
   - operational/sentry smokes still blocked without secrets in current environment.
 - Report: `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX-9A Scale Revalidation Evidence Pack
+- Status: `Blocked (infra + secrets prerequisites)`.
+- Verified now:
+  - `smoke:production-hardening` PASS (5/5)
+  - `smoke:health-readiness` PASS
+  - `smoke:operational` FAIL (missing active auth secret context)
+- Load evidence still confirms 500/1000 targets unmet on current infra.
+- Report: `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`.

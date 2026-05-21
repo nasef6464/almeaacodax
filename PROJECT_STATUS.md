@@ -1017,3 +1017,12 @@
   - runtime secrets not present in current environment.
 - Report:
   - `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-9A Scale Revalidation
+- Current status: `Blocked (infra + secrets prerequisites)`.
+- Revalidated with current production evidence:
+  - hardening/readiness pass
+  - operational secret dependency still blocks full closure
+  - 500/1000 load targets still not met on current infra profile
+- Report:
+  - `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`
