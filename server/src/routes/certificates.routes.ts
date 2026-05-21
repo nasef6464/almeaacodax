@@ -7,6 +7,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { CertificateModel } from "../models/Certificate.js";
 import { CourseModel } from "../models/Course.js";
 import { UserModel } from "../models/User.js";
+import { createNotificationDeliveries } from "../services/notificationService.js";
+import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
 
 export const certificateRouter = Router();
 
@@ -57,6 +59,27 @@ certificateRouter.post(
       courseName: String(course.title || "Course"),
       completionPercentage,
     });
+
+    const linkedParents = await UserModel.find({
+      role: "parent",
+      linkedStudentIds: { $in: [String(userId)] },
+      isActive: { $ne: false },
+    })
+      .select("id _id")
+      .lean();
+    const parentUserIds = linkedParents.map((parent: any) => String(parent.id || parent._id)).filter(Boolean);
+    if (parentUserIds.length > 0) {
+      const delivery = await createNotificationDeliveries({
+        title: "إشعار إنجاز جديد",
+        subject: "إصدار شهادة جديدة لأحد الأبناء",
+        body: `تم إصدار شهادة جديدة للطالب ${String(user.name || "طالب")} في دورة ${String(course.title || "دورة")} بنسبة إنجاز ${completionPercentage}%.`,
+        channels: ["in_app", "email"],
+        userIds: parentUserIds,
+        createdBy: String(req.authUser!.id),
+      });
+      await enqueueNotificationDeliveries(delivery.deliveryIds || []);
+    }
+
     return res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -78,4 +101,3 @@ certificateRouter.get(
     res.json(item);
   }),
 );
-

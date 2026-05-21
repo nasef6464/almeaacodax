@@ -923,3 +923,19 @@
   - `npm run smoke:frontend:strict` PASS
 - Report:
   - `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`
+
+## Update 2026-05-21 - FEATURE-5 Parent Dashboard Enhancements (Implemented)
+- Batch: `FEATURE-5 - Parent Dashboard Enhancements`
+- Final status: `Fully closed`
+- Implemented:
+  - `GET /api/parent/children-progress`
+  - `POST /api/parent/weekly-report/send`
+  - Parent notification trigger on certificate generation.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report:
+  - `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`

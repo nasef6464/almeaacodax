@@ -1094,3 +1094,9 @@
 - Delivered unified search endpoint + header modal + keyboard shortcut.
 - Verification: server build + typecheck + build + health/front strict smoke all PASS.
 - Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FEATURE-5 Parent Dashboard Enhancements
+- Status: `Fully closed`.
+- Added parent children-progress API + weekly report trigger + certificate completion notification for parents.
+- Verification: server build/typecheck/build + readiness/frontend strict smoke all PASS.
+- Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`.

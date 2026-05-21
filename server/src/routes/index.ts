@@ -17,6 +17,7 @@ import { discussionRouter } from "./discussions.routes.js";
 import { reviewRouter } from "./review.routes.js";
 import { leaderboardRouter } from "./leaderboard.routes.js";
 import { searchRouter } from "./search.routes.js";
+import { parentRouter } from "./parent.routes.js";
 
 export const apiRouter = Router();
 
@@ -38,3 +39,4 @@ apiRouter.use("/discussions", discussionRouter);
 apiRouter.use("/review", reviewRouter);
 apiRouter.use("/leaderboard", leaderboardRouter);
 apiRouter.use("/search", searchRouter);
+apiRouter.use("/parent", parentRouter);

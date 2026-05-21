@@ -1599,6 +1599,24 @@ export const api = {
     }>(withQuery("/leaderboard", params), { token }),
   getDiscussions: (entityType: "lesson" | "quiz" | "course", entityId: string, token?: string | null) =>
     request<{ threads: any[] }>(`/discussions/${entityType}/${encodeURIComponent(entityId)}`, { token }),
+  getParentChildrenProgress: (token?: string | null) =>
+    request<{
+      children: Array<{
+        id: string;
+        name: string;
+        weeklyStudyMinutes: number;
+        lastQuizScore: number;
+        weakSkills: string[];
+        coursesInProgress: string[];
+      }>;
+      summary: { count: number; weakSkills: number };
+    }>("/parent/children-progress", { token }),
+  sendParentWeeklyReport: (token?: string | null) =>
+    request<{ ok: boolean; campaignId: string; recipients: number; created: number }>("/parent/weekly-report/send", {
+      method: "POST",
+      body: {},
+      token,
+    }),
   createDiscussion: (
     entityType: "lesson" | "quiz" | "course",
     entityId: string,

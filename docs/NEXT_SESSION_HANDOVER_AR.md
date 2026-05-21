@@ -1055,3 +1055,11 @@
 
 ## Next Batch
 - FEATURE-5 Parent Dashboard Enhancements (إكمال العقد الناقصة: children-progress + weekly report + completion trigger).
+
+## Update 2026-05-21 — FEATURE-5 Closed
+- تم إغلاق FEATURE-5 بالكامل.
+- المتاح الآن: API متابعة الأبناء + إرسال تقرير أسبوعي + إشعار ولي الأمر عند إصدار الشهادة.
+- الفحوص: PASS (server build, typecheck, build, health-readiness, frontend-strict).
+
+## Next Batch
+- FEATURE-6 AI Mock Exams (تنفيذ endpoint التوليد + حفظ الاختبار + ربط زر الطالب).
