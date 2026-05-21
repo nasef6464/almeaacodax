@@ -1326,3 +1326,12 @@
 - Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `e2070c3`.
 - Post-deploy checks: `smoke:frontend:strict`, `smoke:data-visibility-regression`, `smoke:production-hardening`, and `smoke:health-readiness` all PASS.
 - Final result: quiz result answer exposure risk closed in code and verified in production deployment.
+
+## Update 2026-05-21 - BATCH 100B Discussions RBAC Scope Hardening
+- Status: `Programmatically closed, production verification pending`.
+- Scope: hardened `server/src/routes/discussions.routes.ts` only for discussion RBAC/scope.
+- Result: teacher/supervisor no longer have blanket discussion access; course/lesson/quiz discussions are traced to course scope.
+- Added smoke: `npm run smoke:discussions-rbac-scope`.
+- Checks PASS: server build, `smoke:discussions-rbac-scope`, `smoke:security-rbac-phase6`, typecheck, frontend build, health-readiness, production-hardening, data-visibility-regression.
+- Report: `BATCH_100B_DISCUSSIONS_RBAC_SCOPE_HARDENING_2026-05-21_AR.md`.
+- Next suggested: `BATCH 100C - Arabic Mojibake Cleanup + Regression Guard`.

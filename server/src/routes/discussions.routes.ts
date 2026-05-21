@@ -23,26 +23,85 @@ const replyBodySchema = z.object({
 
 const allowedEntityTypes = new Set(["lesson", "quiz", "course"]);
 
-async function assertCanAccessEntity(userId: string, entityType: string, entityId: string, role: string) {
-  if (["admin", "teacher", "supervisor"].includes(role)) return true;
-  const user = await UserModel.findById(userId).select("enrolledCourses");
-  if (!user) return false;
+const uniqueStrings = (values: unknown[]) =>
+  Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
+
+const getCourseIdentityValues = (course: any) => uniqueStrings([course?._id, course?.id]);
+
+const findCoursesForDiscussionEntity = async (entityType: string, entityId: string) => {
+  const safeEntityId = String(entityId || "").trim();
+  if (!safeEntityId) return [];
+
+  const projection = "_id id pathId subjectId ownerId createdBy assignedTeacherId modules assessments isPublished showOnPlatform approvalStatus";
+
   if (entityType === "course") {
-    return (user.enrolledCourses || []).map(String).includes(String(entityId));
+    return CourseModel.find({ $or: [{ _id: safeEntityId }, { id: safeEntityId }] }).select(projection).lean();
   }
-  // For lesson/quiz, allow student if enrolled in at least one visible course that contains references.
+
+  if (entityType === "lesson") {
+    return CourseModel.find({
+      $or: [
+        { "modules.lessons.id": safeEntityId },
+        { "modules.lessons._id": safeEntityId },
+      ],
+    }).select(projection).lean();
+  }
+
+  if (entityType === "quiz") {
+    return CourseModel.find({
+      $or: [
+        { "modules.lessons.quizId": safeEntityId },
+        { "assessments.quizId": safeEntityId },
+        { "assessments.id": safeEntityId },
+      ],
+    }).select(projection).lean();
+  }
+
+  return [];
+};
+
+const canStaffAccessCourseDiscussion = (user: any, course: any) => {
+  const role = String(user?.role || "");
+  if (role === "admin") return true;
+  if (!["teacher", "supervisor"].includes(role)) return false;
+
+  const userIds = uniqueStrings([user?._id, user?.id]);
+  const schoolId = String(user?.schoolId || "").trim();
+  const managedPathIds = Array.isArray(user?.managedPathIds) ? user.managedPathIds.map(String) : [];
+  const managedSubjectIds = Array.isArray(user?.managedSubjectIds) ? user.managedSubjectIds.map(String) : [];
+  const courseOwnerValues = uniqueStrings([course?.ownerId, course?.createdBy, course?.assignedTeacherId]);
+  const coursePathId = String(course?.pathId || "");
+  const courseSubjectId = String(course?.subjectId || "");
+
+  if (userIds.some((id) => courseOwnerValues.includes(id))) return true;
+  if (schoolId && courseOwnerValues.includes(schoolId)) return true;
+  if (coursePathId && managedPathIds.includes(coursePathId)) return true;
+  if (courseSubjectId && managedSubjectIds.includes(courseSubjectId)) return true;
+
+  return false;
+};
+
+async function assertCanAccessEntity(userId: string, entityType: string, entityId: string, role: string) {
+  if (role === "admin") return true;
+  const user = await UserModel.findById(userId)
+    .select("role enrolledCourses schoolId groupIds linkedStudentIds managedPathIds managedSubjectIds")
+    .lean();
+  if (!user) return false;
+
+  const effectiveRole = String(user.role || role);
+  const courses = await findCoursesForDiscussionEntity(entityType, entityId);
+  if (!courses.length) return false;
+
+  if (["teacher", "supervisor"].includes(effectiveRole)) {
+    return courses.some((course) => canStaffAccessCourseDiscussion(user, course));
+  }
+
+  if (effectiveRole !== "student") return false;
+
   const enrolledSet = new Set((user.enrolledCourses || []).map(String));
   if (!enrolledSet.size) return false;
-  const courses = await CourseModel.find({ _id: { $in: Array.from(enrolledSet) } }).select("modules");
-  for (const course of courses as any[]) {
-    for (const mod of course.modules || []) {
-      for (const lesson of mod.lessons || []) {
-        if (entityType === "lesson" && String(lesson?.id || lesson?._id) === entityId) return true;
-        if (entityType === "quiz" && String(lesson?.quizId || "") === entityId) return true;
-      }
-    }
-  }
-  return false;
+
+  return courses.some((course) => getCourseIdentityValues(course).some((id) => enrolledSet.has(id)));
 }
 
 discussionRouter.get(
@@ -186,12 +245,17 @@ discussionRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "Only instructor/admin can resolve threads" });
     }
     const threadId = String(req.params.threadId || "");
+    const thread = await DiscussionThreadModel.findOne({ id: threadId }).lean();
+    if (!thread) return res.status(StatusCodes.NOT_FOUND).json({ message: "Thread not found" });
+
+    const canAccess = await assertCanAccessEntity(req.authUser!.id, String(thread.entityType), String(thread.entityId), req.authUser!.role);
+    if (!canAccess) return res.status(StatusCodes.FORBIDDEN).json({ message: "Not allowed to resolve this thread" });
+
     const updated = await DiscussionThreadModel.findOneAndUpdate(
       { id: threadId },
       { $set: { isResolved: true, updatedAt: Date.now() } },
       { new: true },
     ).lean();
-    if (!updated) return res.status(StatusCodes.NOT_FOUND).json({ message: "Thread not found" });
     res.json(updated);
   }),
 );

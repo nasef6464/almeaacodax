@@ -2,8 +2,30 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-21
-- Active Batch: None (last closed: BATCH 100A - Quiz Result Answer Exposure Hardening)
-- Status: BATCH 100A fully closed; next suggested: BATCH 100B - Discussions RBAC Scope Hardening
+- Active Batch: None (last closed: BATCH 100B - Discussions RBAC Scope Hardening)
+- Status: BATCH 100B fully closed locally; production deployment verification pending until pushed commit is confirmed live
+
+## Update 2026-05-21 - BATCH 100B Discussions RBAC Scope Hardening
+- Batch: `BATCH_100B_DISCUSSIONS_RBAC_SCOPE_HARDENING_2026-05-21_AR`
+- Status: `Programmatically closed, production verification pending`
+- Security impact: teacher/supervisor discussion access is no longer a blanket bypass; staff access is scoped through course ownership, assignment, school, managed path, or managed subject.
+- Delivered:
+  - Replaced unconditional teacher/supervisor allow in `server/src/routes/discussions.routes.ts`.
+  - Added discussion entity-to-course resolver for course/lesson/quiz discussions.
+  - Added staff course-scope helper for assigned teacher, owner, school, managed paths, and managed subjects.
+  - Rechecked thread scope before resolving discussion threads.
+  - Added `smoke:discussions-rbac-scope` contract.
+- Checks:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:discussions-rbac-scope` PASS
+  - `npm run smoke:security-rbac-phase6` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+- Report: `BATCH_100B_DISCUSSIONS_RBAC_SCOPE_HARDENING_2026-05-21_AR.md`
+- Next suggested: `BATCH 100C - Arabic Mojibake Cleanup + Regression Guard`
 
 ## Update 2026-05-21 - BATCH 100A Quiz Result Answer Exposure Hardening
 - Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`

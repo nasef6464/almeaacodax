@@ -1354,3 +1354,28 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   - `npm run smoke:health-readiness` PASS
 - النتيجة: تم إغلاق خطر تسريب إجابات نتائج الاختبارات برمجيًا وإنتاجيًا.
 - التالي المقترح فقط: `BATCH 100B — Discussions RBAC Scope Hardening`، ولا يبدأ إلا بطلب صريح من المالك.
+
+---
+
+## تحديث تسليم — BATCH 100B — 2026-05-21
+
+- الدفعة: `BATCH 100B — Discussions RBAC Scope Hardening`.
+- الحالة الحالية: `Programmatically closed, production verification pending`.
+- الهدف: منع teacher/supervisor من قراءة/الرد/حل نقاشات خارج نطاقهم.
+- ما تم:
+  1. إزالة bypass عام للمعلم/المشرف في `discussions.routes.ts`.
+  2. ربط نقاشات `course/lesson/quiz` بالدورة المالكة قبل السماح.
+  3. دعم نطاقات staff عبر `assignedTeacherId`, `ownerId`, `createdBy`, `schoolId`, `managedPathIds`, `managedSubjectIds`.
+  4. إعادة فحص نطاق thread قبل `resolve`.
+  5. إضافة `npm run smoke:discussions-rbac-scope`.
+- الفحوص المحلية المؤكدة:
+  - `npm --prefix server run build` PASS
+  - `npm run smoke:discussions-rbac-scope` PASS
+  - `npm run smoke:security-rbac-phase6` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:data-visibility-regression` PASS
+- قبل بدء أي دفعة جديدة يجب إكمال: commit/push ثم انتظار Vercel/Render ثم `smoke:frontend:strict` وفحص المتصفح المدمج.
+- التالي المقترح فقط بعد الإغلاق الإنتاجي: `BATCH 100C — Arabic Mojibake Cleanup + Regression Guard`.

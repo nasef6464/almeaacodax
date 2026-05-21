@@ -87,7 +87,8 @@
         "smoke:handover-current": "node scripts/smoke-current-handover-contract.mjs",
         "backup:learning": "npm --prefix server run backup:learning",
         "restore:learning": "npm --prefix server run restore:learning",
-        "smoke:quiz-answer-exposure": "node scripts/smoke-quiz-answer-exposure-contract.mjs"
+        "smoke:quiz-answer-exposure": "node scripts/smoke-quiz-answer-exposure-contract.mjs",
+        "smoke:discussions-rbac-scope": "node scripts/smoke-discussions-rbac-scope-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",
