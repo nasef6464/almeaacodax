@@ -140,35 +140,44 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
     }
   };
 
-  const handleApprove = (course: Course) => {
-    updateCourse(course.id, {
+  const applyCourseMutation = async (courseId: string, patch: Partial<Course>) => {
+    setSaveError('');
+    try {
+      await updateCourse(courseId, patch);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'تعذر تحديث حالة الدورة على الخادم.');
+    }
+  };
+
+  const handleApprove = async (course: Course) => {
+    await applyCourseMutation(course.id, {
       approvalStatus: 'approved',
       isPublished: true,
       approvedAt: Date.now(),
     });
   };
 
-  const handleReject = (course: Course) => {
-    updateCourse(course.id, {
+  const handleReject = async (course: Course) => {
+    await applyCourseMutation(course.id, {
       approvalStatus: 'rejected',
       isPublished: false,
     });
   };
 
-  const handleTogglePlatformVisibility = (course: Course) => {
-    updateCourse(course.id, {
+  const handleTogglePlatformVisibility = async (course: Course) => {
+    await applyCourseMutation(course.id, {
       showOnPlatform: course.showOnPlatform === false,
     });
   };
 
-  const handleToggleRepositoryPublish = (course: Course) => {
-    updateCourse(course.id, {
+  const handleToggleRepositoryPublish = async (course: Course) => {
+    await applyCourseMutation(course.id, {
       isPublished: course.isPublished === false,
     });
   };
 
-  const handlePrepareForLearner = (course: Course) => {
-    updateCourse(course.id, {
+  const handlePrepareForLearner = async (course: Course) => {
+    await applyCourseMutation(course.id, {
       approvalStatus: 'approved',
       isPublished: true,
       showOnPlatform: true,

@@ -1181,3 +1181,12 @@
 
 ## Next Batch
 - تدقيق عميق لتبويب إدارة الدورة داخل لوحة المدير (التصنيفات/الاعتماد/العرض/النشر) مع اختبارات حفظ متتالية بعد refresh.
+
+## Update 2026-05-21 — Admin Course Actions Await/Error Handling
+- الحالة: `Fully closed`.
+- تم جعل إجراءات إدارة الدورة السريعة await + error handling، لمنع نجاح شكلي بدون حفظ فعلي.
+- الفحوص: PASS (`typecheck`, `build`, `smoke:course-visibility`, `smoke:frontend:strict`).
+- التقرير: `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`.
+
+## Next Batch
+- تدقيق شامل لمسار "إدارة ملفات الدورة" و"اختبارات الدورة" داخل الباني مع سيناريو حفظ-تحديث-حذف-refresh للتأكد من الثبات الكامل.

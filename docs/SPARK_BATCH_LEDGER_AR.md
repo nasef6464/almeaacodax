@@ -1237,3 +1237,13 @@
   - `npm run smoke:learning-quiz` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — Admin Course Actions Await/Error Handling
+- Status: `Fully closed`.
+- Implemented awaited mutation flow and centralized error handling for admin course quick actions.
+- Verification:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:course-visibility` PASS
+  - `npm run smoke:frontend:strict` PASS
+- Report: `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`.
