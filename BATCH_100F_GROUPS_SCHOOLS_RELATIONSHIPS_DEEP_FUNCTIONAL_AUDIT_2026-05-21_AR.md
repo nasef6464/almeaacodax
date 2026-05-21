@@ -78,10 +78,10 @@
 | `npm run smoke:health-readiness` | PASS | readiness contract aligned. |
 
 ## فحص الإنتاج
-- GitHub: تم رفع commit `3aa746a` إلى `origin/main`.
-- Vercel: `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `3aa746a` والملف `index-CVBxWCzD.js`.
+- GitHub: تم رفع كود الفحص ثم رفع توثيق الإغلاق النهائي إلى `origin/main`.
+- Vercel: `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم النسخة المتوقعة بعد الرفع النهائي.
 - Render/API readiness: `npm run smoke:health-readiness` نجح بعد الرفع.
-- المتصفح المدمج: تم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100f-3aa746a`، ثم فتح تبويب `المجموعات والمدارس` بصريًا، وظهرت مؤشرات المدارس/الفصول/المشرفين/الطلاب.
+- المتصفح المدمج: تم فتح `https://almeaacodax.vercel.app/admin-dashboard?verify=100f-final`، ثم فتح تبويب `المجموعات والمدارس` بصريًا، وظهرت مؤشرات المدارس/الفصول/المشرفين/الطلاب.
 
 ## خطوات التحقق اليدوي المقترحة
 1. افتح `https://almeaacodax.vercel.app/admin-dashboard` بحساب admin.
@@ -106,4 +106,6 @@
 - إزالة حد `slice(0, 80)` بطريقة آمنة لا تغير التصميم.
 - إضافة pagination/بحث واضح لقوائم الطلاب داخل المدرسة.
 - تشغيل تحقق حي من كل وظائف علاقات المدرسة في المتصفح المدمج.
+
+
 

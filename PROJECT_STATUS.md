@@ -1386,9 +1386,12 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 
 ## Production Closure 2026-05-21 - BATCH 100F
 - Status: `Fully closed`.
-- GitHub commit: `3aa746a` pushed to `main`.
-- Vercel verified: `npm run smoke:frontend:strict` PASS and production serves commit `3aa746a` with `index-CVBxWCzD.js`.
+- Implementation and final closure documentation were pushed to `main`.
+- Vercel verified: `npm run smoke:frontend:strict` PASS and production serves the expected pushed version.
 - Render/readiness verified: `npm run smoke:health-readiness` PASS.
 - In-app browser verified: admin dashboard opens and `المجموعات والمدارس` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
 - Remaining risks intentionally moved to next batch: `slice(0, 80)` school-students cap and full click-by-click school relationship E2E.
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
+
+
+
