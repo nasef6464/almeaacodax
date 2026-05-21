@@ -2,7 +2,7 @@
 
 **التاريخ:** 2026-05-21
 **اسم الدفعة:** BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 طلب المالك أن تكون ألوان الصفحة الرئيسية قابلة للاختيار بصريًا من لوحة الإدارة بدل كتابة كود اللون يدويًا، مع خيارات كثيرة واضحة وفحص فعاليتها.
@@ -68,8 +68,11 @@
 | `git diff --check -- <BATCH 100L files>` | PASS | لا توجد whitespace errors في ملفات الدفعة |
 
 ## فحص الإنتاج
-- لم يتم بعد في لحظة الإغلاق البرمجي.
-- المطلوب قبل `Fully closed`: push إلى GitHub، انتظار Vercel/Render، تشغيل smoke production، ثم فحص بصري من المتصفح الداخلي.
+- GitHub push: PASS، commit `59753ac`.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم commit `59753ac`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` وRedis ready. ملاحظة: health يعرض commit backend `655e3d453dee` لأن هذه الدفعة واجهة/توثيق ولم تغيّر كود السيرفر.
+- المتصفح الداخلي: PASS على `https://almeaacodax.vercel.app/admin-dashboard?tab=homepage&verify=100l-final-59753ac&fresh=1`.
+- تحقق DOM/بصري: 8 حقول `input[type=color]`، و8 حقول HEX، و192 زر لون جاهز، وأزرار `افتراضي` ظاهرة، ونص المساعدة `اختر من اللوحة` ظاهر.
 
 ## خطوات التحقق اليدوي
 1. افتح `https://almeaacodax.vercel.app/admin-dashboard?tab=homepage` بحساب مدير.
@@ -89,3 +92,11 @@
 
 ## الدفعة التالية المقترحة
 BATCH 100M — Homepage Live Preview Before Save
+
+## إغلاق إنتاجي نهائي — 2026-05-21
+- الحالة النهائية: `Fully closed`.
+- Commit المرفوع: `59753ac`.
+- فحص Vercel: `npm run smoke:frontend:strict` PASS ويؤكد commit `59753ac`.
+- فحص Render/API: `npm run smoke:health-readiness` PASS و`/api/health` أعاد `ready=true`.
+- فحص المتصفح الداخلي: PASS، لوحة الألوان ظاهرة داخل إعدادات الصفحة الرئيسية.
+- أرقام التحقق العملي: `colorInputs=8`, `colorHexInputs=8`, `swatches=192`, `defaultButtons=9`.

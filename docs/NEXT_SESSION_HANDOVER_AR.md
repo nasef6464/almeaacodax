@@ -1949,3 +1949,25 @@ eady=true, redis ready for limiter+queue, commit 5f011e1944e.
 4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
 5. فحص بصري من المتصفح الداخلي لقسم ألوان الصفحة الرئيسية.
 6. تحديث التقرير والLedger وPROJECT_STATUS إلى `Fully closed`.
+
+---
+
+## تحديث تسليم 2026-05-21 — BATCH 100L Fully Closed
+
+### الإغلاق النهائي
+- الدفعة: `BATCH_100L_HOMEPAGE_COLOR_PICKER_CONTROLS_2026-05-21_AR`.
+- الحالة: `Fully closed`.
+- Commit: `59753ac`.
+- GitHub push: PASS.
+- Vercel: PASS، الإنتاج يخدم commit `59753ac` حسب `npm run smoke:frontend:strict`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true`.
+- المتصفح الداخلي: PASS، صفحة `إدارة الصفحة الرئيسية` تعرض اختيار ألوان فعلي: 8 color inputs، و8 HEX inputs، و192 swatches، وأزرار افتراضي.
+
+### قاعدة العمل للحساب القادم
+- كلمة `اكمل` تعني الاستمرار حتى الإغلاق الكامل: تنفيذ/فحص/توثيق/commit/push/انتظار Vercel وRender/فحص إنتاج/فحص المتصفح الداخلي.
+- لا تستخدم `git add .` بسبب وجود ملفات dirty قديمة خارج نطاق الدفعات.
+- لا تحفظ أسرار GitHub/Vercel/Render/Mongo/Redis داخل المستودع أو ملفات التسليم.
+- تحقق دائمًا من `https://almeaacodax.vercel.app/` أو رابط لوحة الإدارة في المتصفح الداخلي بعد النشر.
+
+### الدفعة التالية المقترحة
+`BATCH 100M - Homepage Live Preview Before Save`، ثم متابعة فحص أزرار لوحة الإدارة العميق حسب الأولوية.
