@@ -1342,3 +1342,12 @@ pm run smoke:frontend:strict PASS and serving 755a96.
 pm run smoke:health-readiness PASS; backend is ready/connected, with no backend code change in this batch.
 - Remaining blocker is production data visibility for course_current_p_1777779639431_sub_1777779748206_foundation, scheduled for BATCH 100E.
 
+
+## Production Closure 2026-05-21 - BATCH 100E
+- Status: `Fully closed`.
+- GitHub commit: `9047a47`.
+- GitHub push: PASS.
+- Render health: `ready=true`, commit `9047a47420e5`.
+- Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `9047a47`.
+- Browser verification: PASS for learning page and course page; restored course and lesson `جمع` are visible.
+- Final result: production course data visibility issue is closed and deployed.

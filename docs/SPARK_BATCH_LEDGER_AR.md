@@ -1420,3 +1420,10 @@
   - In-app browser shows the restored course in learning page and course page with lesson `جمع`.
 - Report: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`.
+
+## Production Closure 2026-05-21 - BATCH 100E
+- Status: `Fully closed`.
+- GitHub commit: `9047a47` pushed to `main`.
+- Render health verified: `ready=true`, commit `9047a47420e5`.
+- Vercel verified: `npm run smoke:frontend:strict` PASS and production serves commit `9047a47`.
+- In-app browser final verification PASS: restored course appears in learning page and opens without unavailable message.

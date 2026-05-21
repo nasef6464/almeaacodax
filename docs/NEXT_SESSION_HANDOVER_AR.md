@@ -1558,3 +1558,9 @@ eady=true, redis ready for limiter+queue, commit  5f011e1944e.
   - `docs/NEXT_SESSION_HANDOVER_AR.md`
 - الدفعة التالية المقترحة: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`.
 - تنبيه مهم للحساب التالي: لا تستخدم `git add .` لأن هناك ملفات قديمة معدلة/غير متتبعة خارج نطاق 100E.
+
+## BATCH 100E Final Closure Note
+- Commit pushed: `9047a47`.
+- Render: `ready=true`, commit `9047a47420e5`.
+- Vercel: `smoke:frontend:strict` PASS on commit `9047a47`.
+- Browser: restored course is visible and course page opens with lesson `جمع`.

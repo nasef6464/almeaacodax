@@ -118,3 +118,14 @@
 `BATCH 100F — Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`
 
 السبب: المالك طلب فحصًا عميقًا لإدارة المجموعات والعلاقات. هذه الدفعة يجب أن تكون Audit + functional verification واسعة، ولا تخلط مع إصلاح بيانات الدورة الحالي.
+
+## Addendum - Final Production Closure After Push
+- GitHub commit: `9047a47`.
+- GitHub push: PASS (`main -> origin/main`).
+- Render health after deploy: `ready=true`, commit `9047a47420e5`.
+- Vercel frontend strict smoke after deploy: PASS, production serving commit `9047a47`, entry asset `index-DqUmP0f0.js`.
+- Final in-app browser verification after deploy:
+  - Learning page contains the restored course and a direct link to `course_current_p_1777779639431_sub_1777779748206_foundation`.
+  - Course page contains `تأسيس الكمي: العمليات والمهارات الأساسية` and lesson `جمع`.
+  - `الدورة غير متاحة حاليًا` count is 0.
+- Final status: `Fully closed`.
