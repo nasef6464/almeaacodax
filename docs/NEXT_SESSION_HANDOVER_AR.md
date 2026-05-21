@@ -1124,3 +1124,10 @@
 
 ## Next Batch
 - العودة إلى FIX-3 (SMOKE_ADMIN_TOKEN) أو FIX-9 (Scale) حسب المفاتيح/الترقيات المتاحة.
+
+## Update 2026-05-21 — FIX-3A (Smoke Auth Automation)
+- الحالة: `Programmatically closed (secret dependent)`.
+- تم إغلاق الأتمتة بالكامل؛ التشغيل الحي ينتظر توفير الأسرار فقط.
+
+## Next Batch
+- FIX-9 Scale Verification (blocked by infra upgrades + secrets) أو الانتقال لدفعة تدقيق/تحسين لوحات الإدارة.

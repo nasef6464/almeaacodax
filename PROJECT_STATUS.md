@@ -1007,3 +1007,13 @@
   - Add Tap env keys and run sandbox transaction proof.
 - Report:
   - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
+
+## Update 2026-05-21 — FIX-3A Smoke Auth Automation Hardening
+- Current status: `Programmatically closed (secret dependent)`.
+- Delivered now:
+  1. smoke auto-auth wrappers for operational + sentry live proof.
+  2. post-deploy workflow fallback path using admin credentials.
+- Remaining blocker:
+  - runtime secrets not present in current environment.
+- Report:
+  - `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`

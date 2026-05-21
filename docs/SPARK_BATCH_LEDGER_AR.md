@@ -1160,3 +1160,14 @@
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — FIX-3A Smoke Auth Automation Hardening
+- Status: `Programmatically closed (secret dependent)`.
+- Implemented:
+  - Auto resolver wrapper for operational smoke.
+  - Auto resolver wrapper for sentry-live-proof smoke.
+  - CI workflow now accepts either direct token or admin email/password fallback.
+- Verification:
+  - `npm run typecheck` PASS
+  - operational/sentry smokes still blocked without secrets in current environment.
+- Report: `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`.

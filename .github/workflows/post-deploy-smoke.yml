@@ -12,6 +12,9 @@ jobs:
     timeout-minutes: 25
     env:
       SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD }}
+      SMOKE_ALLOW_PASSWORD_LOGIN: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,11 +37,11 @@ jobs:
       - name: Production hardening smoke
         run: npm run smoke:production-hardening
 
-      - name: Ensure operational token exists
+      - name: Ensure operational auth material exists
         run: |
-          if [ -z "$SMOKE_ADMIN_TOKEN" ]; then
-            echo "SMOKE_ADMIN_TOKEN GitHub secret is missing."
-            echo "Add it in: Settings -> Secrets and variables -> Actions."
+          if [ -z "$SMOKE_ADMIN_TOKEN" ] && { [ -z "$SMOKE_ADMIN_EMAIL" ] || [ -z "$SMOKE_ADMIN_PASSWORD" ]; }; then
+            echo "Operational smoke auth material is missing."
+            echo "Provide either SMOKE_ADMIN_TOKEN or both SMOKE_ADMIN_EMAIL + SMOKE_ADMIN_PASSWORD in GitHub Secrets."
             exit 1
           fi
 
