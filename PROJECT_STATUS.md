@@ -1120,3 +1120,19 @@
   - `npm run smoke:course-visibility` PASS
 - Report:
   - `BATCH_COURSE_FILES_TAB_RUNTIME_FIXES_2026-05-21_AR.md`
+
+## Update 2026-05-21 - BATCH Course Related Files Actions Parity
+- Batch: `BATCH Course Related Files Actions Parity`
+- Final status: `Fully closed`
+- Implemented:
+  - Unified fallback file actions in `components/CourseOverview.tsx` for `relatedFiles`.
+  - Preview now uses guarded `openExternalUrl(file.url)`.
+  - Download now uses guarded `triggerFileDownload(file.url, file.title)`.
+  - Disabled preview/download when URL is missing.
+- Checks:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:course-visibility` PASS
+- Report:
+  - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`

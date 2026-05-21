@@ -621,14 +621,16 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                             </div>
                                             <div className="flex gap-2">
                                                 <button
-                          onClick={() => openExternalUrl(file.url)}
-                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                                                    onClick={() => file.url && openExternalUrl(file.url)}
+                                                    disabled={!file.url}
+                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                                 >
                                                     <Eye size={18} />
                                                 </button>
                                                 <button
-                          onClick={() => openExternalUrl(file.url)}
-                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                                                    onClick={() => file.url && triggerFileDownload(file.url, file.title)}
+                                                    disabled={!file.url}
+                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                                                 >
                                                     <Download size={18} />
                                                 </button>

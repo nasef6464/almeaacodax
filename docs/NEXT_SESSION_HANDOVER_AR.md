@@ -1199,3 +1199,22 @@
 
 ## Next Batch
 - تدقيق عميق لمسارات إدارة الدورات بصريًا (اعتماد/نشر/إظهار/تحديث) مع إعادة فحص ما بعد refresh على سيناريوهات متعددة.
+
+## Update 2026-05-21 — BATCH Course Related Files Actions Parity (Closed)
+- Batch name: `BATCH Course Related Files Actions Parity`
+- Final status: `Fully closed`
+- Last commit hash: pending this closure commit
+- Files changed:
+  - `components/CourseOverview.tsx`
+  - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+- Checks executed:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:course-visibility` PASS
+- GitHub push: pending this closure commit
+- Vercel/Render deploy: pending push trigger
+- Live verification: pending deployment completion

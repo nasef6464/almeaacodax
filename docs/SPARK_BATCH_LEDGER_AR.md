@@ -1257,3 +1257,16 @@
   - `npm run smoke:frontend:strict` PASS
   - `npm run smoke:course-visibility` PASS
 - Report: `BATCH_COURSE_FILES_TAB_RUNTIME_FIXES_2026-05-21_AR.md`.
+
+## Update 2026-05-21 — BATCH Course Related Files Actions Parity
+- Status: **Fully closed**.
+- Scope:
+  - Unified fallback `relatedFiles` preview/download behavior with main course files behavior in `components/CourseOverview.tsx`.
+  - Added guards and disabled actions when URL is missing.
+- Validation:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:course-visibility` PASS
+- Report:
+  - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
