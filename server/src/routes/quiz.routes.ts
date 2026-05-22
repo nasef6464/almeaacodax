@@ -1148,11 +1148,12 @@ quizRouter.get(
     if (typeof query.year === "number") scopeFilter.year = query.year;
     if (query.approvalStatus && isStaffRole(req.authUser?.role)) scopeFilter.approvalStatus = query.approvalStatus;
     if (query.search) {
+      const safeSearch = escapeRegex(query.search);
       scopeFilter.$or = [
         ...(Array.isArray(scopeFilter.$or) ? scopeFilter.$or : []),
-        { text: { $regex: query.search, $options: "i" } },
-        { explanation: { $regex: query.search, $options: "i" } },
-        { id: { $regex: query.search, $options: "i" } },
+        { text: { $regex: safeSearch, $options: "i" } },
+        { explanation: { $regex: safeSearch, $options: "i" } },
+        { id: { $regex: safeSearch, $options: "i" } },
       ];
     }
 

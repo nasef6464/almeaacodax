@@ -2160,3 +2160,50 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 
 ### الدفعة التالية المقترحة
 `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100P Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- تم تثبيت await/error handling في مركز الأسئلة لعمليات الإضافة، التعديل، الحذف، الاعتماد، والرفض.
+- تمت إضافة smoke: `npm run smoke:batch100p-question-bank-crud`.
+- تم إصلاح بحث `/api/quizzes/questions` بحيث يستخدم `escapeRegex(query.search)` قبل Mongo `$regex`.
+- لا يوجد تغيير تصميمي.
+
+### الفحوص التي نجحت
+- `npm run smoke:batch100p-question-bank-crud`: PASS.
+- `npm --prefix server run build`: PASS.
+- `npm run typecheck`: PASS.
+- `npm run build`: PASS.
+- `npm run smoke:batch100i-admin-dashboard-functional-qa`: PASS.
+- `npm run smoke:batch100o-admin-crud-course-linkage`: PASS.
+- `npm run smoke:health-readiness`: PASS.
+- `npm run smoke:frontend:strict`: PASS قبل push وكان الإنتاج يخدم commit السابق `cd285f5`.
+
+### فحص الإنتاج والمتصفح قبل النشر
+- Browser فتح `admin-dashboard?tab=questions` وظهر مركز الأسئلة وزر الإضافة والفلاتر وأزرار اعتماد/رفض/تعديل/حذف.
+- تمت إضافة سؤال اختبار `BATCH 100P runtime CRUD test ...` وظهر مباشرة بعد الحفظ، والعداد ارتفع من 63 إلى 64.
+- تم تعديل السؤال وظهر النص مع `EDITED`.
+- ظهر زر الرفض والحذف على صف السؤال.
+- Browser/CDP تعطل أثناء confirm الحذف، لذلك يجب إعادة فحص cleanup بعد النشر.
+- الإنتاج الحالي قبل نشر 100P يعيد 500 عند search=`(` أو search=`???`; الإصلاح موجود محليًا وينتظر النشر.
+
+### المطلوب للإغلاق النهائي
+1. Stage صريح لملفات 100P فقط، ولا تستخدم `git add .`.
+2. Commit ثم push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص production API:
+   - `/api/quizzes/questions?paginate=true&page=1&limit=5&summary=true&search=%28`
+   - `/api/quizzes/questions?paginate=true&page=1&limit=5&summary=true&search=%3F%3F%3F`
+   ويجب ألا تعود 500 بعد Render deploy.
+6. فتح Browser على `https://almeaacodax.vercel.app/admin-dashboard?tab=questions&verify=100p-final` والتأكد من ظهور مركز الأسئلة، ثم البحث عن `BATCH 100P runtime CRUD test` وحذفه إن بقي.
+
+### قاعدة العمل للحساب التالي
+- لا تستخدم `git add .`.
+- لا تلمس dirty files القديمة خارج نطاق 100P.
+- إن بقي سؤال الاختبار ظاهرًا، افتح دفعة cleanup صغيرة أو أتم الحذف ضمن إغلاق 100P إذا كان Browser مستقرًا.

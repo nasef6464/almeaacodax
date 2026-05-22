@@ -846,3 +846,19 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - In-app browser: PASS for learning page course visibility and admin question-bank visibility.
 - Next proposed batch: `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
 - Keep separate future batches for course-builder runtime deep testing, full course-player E2E, and any extra homepage visual setting refinements.
+
+## Update 2026-05-22 - After BATCH 100P Programmatic Closure
+- `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Runtime await/error handling for question-bank create/update/delete/review actions.
+  2. Dedicated contract smoke for question bank CRUD and filters.
+  3. Backend search hardening for question search regex metacharacters.
+  4. Browser proof that add/appear/edit paths work in production before deploy.
+- Required final closure:
+  1. Stage BATCH 100P files explicitly; do not use `git add .`.
+  2. Commit and push.
+  3. Wait for Vercel and Render deployment.
+  4. Rerun `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
+  5. Verify production question search with `(` and `???` no longer returns 500.
+  6. Re-open `admin-dashboard?tab=questions` in Browser and confirm question-bank visibility/cleanup state.
+- Next suggested after closure: `BATCH 100Q - Admin Question Bank Cleanup + Authenticated Browser Delete Confirmation` only if cleanup remains needed; otherwise continue with the owner's next priority.

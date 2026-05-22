@@ -1648,3 +1648,16 @@
 - In-app browser: PASS, learning page for `p_1777779639431/sub_1777779748206` showed `تأسيس الكمي: العمليات والمهارات الأساسية` with no empty-state flash in the captured state; admin question bank showed `62` questions and `إضافة سؤال جديد`.
 - Remaining note: `admin-dashboard?tab=courses` maps to `paths` by existing dashboard logic; detailed course-builder runtime button testing is deferred to a focused follow-up.
 - Next suggested: `BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification`.
+
+## Update 2026-05-22 - BATCH 100P
+- Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: admin question bank runtime CRUD, filters, review actions, and production Browser/API verification only.
+- Key changes:
+  - `QuestionBankManager` awaits create/update/delete/approve/reject mutations and refreshes the paginated list after each action.
+  - `/api/quizzes/questions` now escapes search regex metacharacters before Mongo `$regex`.
+  - Added `npm run smoke:batch100p-question-bank-crud`.
+- Checks PASS: `smoke:batch100p-question-bank-crud`, server build, typecheck, frontend build, BATCH 100I regression, BATCH 100O regression, health readiness.
+- Production evidence before deploy: Browser opened مركز الأسئلة; add question worked and appeared immediately; edit persisted; filters/actions were visible. Existing production search with `(`/`???` fails until backend deploy.
+- Browser note: Browser/CDP hung during delete confirmation; cleanup/recheck remains required after deployment.
+- Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.

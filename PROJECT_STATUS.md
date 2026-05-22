@@ -1,10 +1,24 @@
 ﻿# PROJECT STATUS
 
 - Project: ALMEAA CODAX
-- Last Update: 2026-05-21
-- Active Batch: None
+- Last Update: 2026-05-22
+- Active Batch: BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
 - Last Closed Batch: BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-22 - BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
+- Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: admin question bank runtime CRUD and production browser/API verification only; no design changes.
+- Delivered:
+  - Question bank create/update/delete/review handlers await backend mutations and refresh the paginated list.
+  - Added `npm run smoke:batch100p-question-bank-crud`.
+  - Fixed `/api/quizzes/questions` search to escape regex metacharacters before Mongo `$regex`.
+- Checks PASS: batch100p smoke, server build, typecheck, frontend build, BATCH 100I regression, BATCH 100O regression, health readiness, frontend strict pre-push for previous production commit.
+- Production/browser evidence before deploy: admin question bank opened in Browser, filters/actions were visible, a test question was added and appeared immediately, edit persisted with `EDITED`, and production API pagination worked. Production search with regex characters currently fails before deploy and will be rechecked after push.
+- Browser note: the Browser/CDP connection hung during delete confirmation; follow-up verification after deploy must confirm cleanup/deletion state.
+- Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.
+- Next required for final closure: explicit stage for 100P files only, commit, push, wait Vercel/Render, rerun production smokes, verify search `(`/`???`, and re-open Browser question bank.
 
 ## Update 2026-05-21 - BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
 - Batch: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.

@@ -363,10 +363,14 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     setIsEditing(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من حذف هذا السؤال نهائيًا؟')) {
-      deleteQuestion(id);
-      refreshPagedQuestions();
+      try {
+        await deleteQuestion(id);
+        refreshPagedQuestions();
+      } catch (error) {
+        setImportError(error instanceof Error ? error.message : 'تعذر حذف السؤال الآن.');
+      }
     }
   };
 
@@ -435,8 +439,13 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
   const handleSave = async (savedQuestion: Partial<Question>) => {
     if (currentQuestion.id) {
-      updateQuestion(currentQuestion.id, { ...savedQuestion, id: currentQuestion.id } as Question);
-      refreshPagedQuestions();
+      try {
+        await updateQuestion(currentQuestion.id, { ...savedQuestion, id: currentQuestion.id } as Question);
+        refreshPagedQuestions();
+      } catch (error) {
+        setImportError(error instanceof Error ? error.message : 'تعذر حفظ التعديلات الآن.');
+        return;
+      }
     } else {
       try {
         await addQuestion({
@@ -816,19 +825,27 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
     }
   };
 
-  const handleApprove = (question: Question) => {
-    updateQuestion(question.id, {
-      approvalStatus: 'approved',
-      approvedAt: Date.now(),
-    });
-    refreshPagedQuestions();
+  const handleApprove = async (question: Question) => {
+    try {
+      await updateQuestion(question.id, {
+        approvalStatus: 'approved',
+        approvedAt: Date.now(),
+      });
+      refreshPagedQuestions();
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر اعتماد السؤال الآن.');
+    }
   };
 
-  const handleReject = (question: Question) => {
-    updateQuestion(question.id, {
-      approvalStatus: 'rejected',
-    });
-    refreshPagedQuestions();
+  const handleReject = async (question: Question) => {
+    try {
+      await updateQuestion(question.id, {
+        approvalStatus: 'rejected',
+      });
+      refreshPagedQuestions();
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'تعذر رفض السؤال الآن.');
+    }
   };
 
   if (isEditing) {
