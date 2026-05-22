@@ -1,7 +1,7 @@
 # BATCH 100S - Security Contracts & Governance Backfill - 2026-05-22
 
 ## الحالة
-- الحالة: Programmatically closed, production verification pending.
+- الحالة: Fully closed.
 - النطاق: إدخال عقود أمن/حوكمة غير مضافة رسميًا في الشجرة، مع توحيد وثائق أمنية تاريخية مرتبطة.
 - بدون تغييرات تصميم.
 
@@ -30,9 +30,9 @@
 - `npm run typecheck`: PASS.
 - `npm --prefix server run build`: PASS.
 
-## المطلوب للإغلاق النهائي
-1. Stage صريح لملفات 100S فقط.
-2. Commit + push.
-3. انتظار Vercel/Render.
-4. تشغيل `smoke:frontend:strict` و`smoke:health-readiness`.
-5. فحص Browser على الإنتاج.
+## الإغلاق النهائي
+- Commit: `6efcc45`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `6efcc45`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true`.
+- Browser: PASS، فتح `/` و`/#/login` على الإنتاج بدون client errors ملتقطة.
