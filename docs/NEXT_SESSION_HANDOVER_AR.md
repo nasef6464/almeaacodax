@@ -2527,7 +2527,7 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 
 - الدفعة: `BATCH_100AB_PRODUCTION_RELIABILITY_RECHECK_2026-05-22_AR`.
 - الحالة: `Fully closed`.
-- Commit: `pending`.
+- Commit: `497c583`.
 - GitHub push: PASS.
 - Vercel: PASS (`smoke:frontend:strict`) على `b5cf7f7`.
 - Render/API: PASS (`smoke:health-readiness`).

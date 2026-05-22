@@ -1832,7 +1832,7 @@
 ## Final Closure 2026-05-22 - BATCH 100AB
 - Batch: `BATCH_100AB_PRODUCTION_RELIABILITY_RECHECK_2026-05-22_AR`.
 - Status: `Fully closed`.
-- Commit pushed: `pending`.
+- Commit pushed: `497c583`.
 - GitHub: PASS.
 - Vercel: PASS, `smoke:frontend:strict` confirmed production serves `b5cf7f7`.
 - Render/API: PASS, `smoke:health-readiness` passed.
