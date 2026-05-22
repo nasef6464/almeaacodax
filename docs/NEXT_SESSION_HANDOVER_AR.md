@@ -2588,3 +2588,19 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - فحص التبعيات: `npm audit --omit=dev` و `npm --prefix server audit --omit=dev` فشلوا بسبب advisories معروفة يجب التعامل معها كدفعة تبعيات منفصلة.
 - لا تعلن readiness كاملة إلا بعد أسرار المالك وفحص live payment/email/WhatsApp/AI/VPS ومعالجة قرار dependency audit.
 - لا تستخدم `git add .` ولا تلمس الملفات القديمة غير المتتبعة خارج نطاق BATCH 102.
+## بدء BATCH 103 - 2026-05-22
+
+- الدفعة الجديدة بدأت بعد إغلاق BATCH 102.
+- النطاق: dependency audit blockers + speed warnings فقط.
+- ملف المتابعة الرئيسي: `BATCH_103_DEPENDENCY_AUDIT_AND_SPEED_BLOCKERS_CLOSURE_2026-05-22_AR.md`.
+- لا تغييرات كاسرة، ولا `git add .`.
+
+## إغلاق BATCH 103 - 2026-05-22
+
+- تم تنفيذ `npm audit fix` للواجهة و`npm --prefix server audit fix` للسيرفر.
+- نتيجة backend audit: `0 vulnerabilities`.
+- نتيجة frontend audit المتبقية:
+  - `quill` يحتاج مسار force/breaking.
+  - `xlsx` بدون fix متاح حاليًا.
+- جميع checks/smokes الأساسية نجحت بعد التحديث.
+- `smoke:production-speed` تحسن من 4 warnings إلى 1 warning.

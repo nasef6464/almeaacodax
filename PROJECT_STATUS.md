@@ -3,10 +3,21 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion
-- Status: BATCH 102 closed with documented external blockers
-- Next Required Batch: dependency audit remediation and live VPS/payment/provider verification after owner secrets
+- Last Closed Batch: BATCH 103 - Dependency Audit and Speed Blockers Closure
+- Status: BATCH 103 closed with residual frontend advisories documented
+- Next Required Batch: evaluate safe replacement strategy for `quill` and `xlsx` advisories, then re-run full production verification
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
+
+## BATCH 103 Start 2026-05-22
+- Focus: dependency audit remediation + speed warning reduction without breaking production.
+- Primary report: `BATCH_103_DEPENDENCY_AUDIT_AND_SPEED_BLOCKERS_CLOSURE_2026-05-22_AR.md`.
+- Safety: no destructive git commands, no secret exposure, no broad refactor.
+
+## BATCH 103 Closure 2026-05-22
+- Frontend `npm audit --omit=dev`: reduced to `quill` (breaking-only fix path) and `xlsx` (no fix available).
+- Backend `npm --prefix server audit --omit=dev`: PASS `0 vulnerabilities`.
+- Builds/checks/smokes: PASS.
+- Speed smoke improved to one warning only.
 
 ## BATCH 102 Update 2026-05-22
 - Package/path/course bug: FIXED in `pages/GenericPathPage.tsx`; packages no longer fallback to `/course/${pkg.id}`.

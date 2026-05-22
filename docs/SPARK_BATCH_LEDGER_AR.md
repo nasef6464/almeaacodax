@@ -1865,3 +1865,12 @@
 - Production after push: PASS، `smoke:frontend:strict` أكد أن Vercel يخدم رأس BATCH 102 بعد انتظار deploy، و`smoke:health-readiness` نجح.
 - الحكم الحالي: جاهزية جزئية للاستخدام الحقيقي حتى توفير أسرار المالك، معالجة قرار dependency audit، وتنفيذ فحص VPS/Payment live dry-run.
 - تحذير: لا تستخدم `git add .`؛ توجد ملفات تاريخية dirty/untracked خارج نطاق الدفعة.
+## BATCH 103 - Dependency Audit and Speed Blockers Closure - 2026-05-22
+- الحالة: مغلقة.
+- الهدف: معالجة بلوكرز `npm audit` وتحسين تحذيرات السرعة بشكل آمن بدون كسر الإنتاج.
+- مرجع التنفيذ: `BATCH_103_DEPENDENCY_AUDIT_AND_SPEED_BLOCKERS_CLOSURE_2026-05-22_AR.md`.
+- قيود: ممنوع `git add .`، وممنوع تغييرات كاسرة في API/routes/schema.
+- نتيجة التدقيق:
+  - Backend audit: `0 vulnerabilities`.
+  - Frontend audit المتبقي: `quill` (يتطلب مسار breaking) و`xlsx` (لا يوجد patch متاح حاليًا).
+- السرعة: التحذيرات انخفضت من 4 إلى 1.
