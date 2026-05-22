@@ -3,7 +3,7 @@ import { Lesson, LessonType } from '../../types';
 import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
-import { loadXlsx } from '../../utils/xlsxLoader';
+import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 
 interface LessonsManagerProps {
   subjectId?: string;
@@ -565,11 +565,12 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
 
     try {
       const XLSX = await loadXlsx();
+      registerXlsxRuntime(XLSX);
       const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: 'array' });
+      const workbook = await readWorkbookFromBuffer(buffer);
       const firstSheetName = workbook.SheetNames[0];
       const firstSheet = workbook.Sheets[firstSheetName];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, { defval: '' });
+      const rows = sheetToSafeObjects<Record<string, unknown>>(firstSheet, '');
       const batch = parseImportWorkbook(rows, file.name);
       setPendingImportBatch(batch);
       setImportMessage(

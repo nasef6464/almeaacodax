@@ -21,7 +21,7 @@ import {
 import { useStore } from '../../store/useStore';
 import { Group, Role, User, PackageContentType } from '../../types';
 import { api } from '../../services/api';
-import { loadXlsx } from '../../utils/xlsxLoader';
+import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeRows } from '../../utils/xlsxLoader';
 
 type ImportRow = {
     name: string;
@@ -424,15 +424,16 @@ const parseImportRows = (rows: unknown[][]): ImportRow[] => {
 const parseImportFile = async (file: File): Promise<ImportRow[]> => {
     if (/\.(xlsx|xls)$/i.test(file.name)) {
         const XLSX = await loadXlsx();
+        registerXlsxRuntime(XLSX);
         const buffer = await file.arrayBuffer();
-        const workbook = XLSX.read(buffer, { type: 'array' });
+        const workbook = await readWorkbookFromBuffer(buffer);
         const firstSheetName = workbook.SheetNames[0];
         if (!firstSheetName) {
             return [];
         }
 
         const worksheet = workbook.Sheets[firstSheetName];
-        return parseImportRows(XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' }) as unknown[][]);
+        return parseImportRows(sheetToSafeRows(worksheet, ''));
     }
 
     const raw = await file.text();
@@ -520,15 +521,16 @@ const parseRelationRows = (rows: unknown[][]): RelationImportRow[] => {
 const parseRelationFile = async (file: File): Promise<RelationImportRow[]> => {
     if (/\.(xlsx|xls)$/i.test(file.name)) {
         const XLSX = await loadXlsx();
+        registerXlsxRuntime(XLSX);
         const buffer = await file.arrayBuffer();
-        const workbook = XLSX.read(buffer, { type: 'array' });
+        const workbook = await readWorkbookFromBuffer(buffer);
         const firstSheetName = workbook.SheetNames[0];
         if (!firstSheetName) {
             return [];
         }
 
         const worksheet = workbook.Sheets[firstSheetName];
-        return parseRelationRows(XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' }) as unknown[][]);
+        return parseRelationRows(sheetToSafeRows(worksheet, ''));
     }
 
     const raw = await file.text();

@@ -3,10 +3,19 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 103 - Dependency Audit and Speed Blockers Closure
-- Status: BATCH 103 closed with residual frontend advisories documented
-- Next Required Batch: evaluate safe replacement strategy for `quill` and `xlsx` advisories, then re-run full production verification
+- Last Closed Batch: BATCH 104 - Frontend Audit Remediation Strategy
+- Status: BATCH 104 closed with import hardening mitigations
+- Next Required Batch: optional replacement path for `react-quill-new` and long-term `xlsx` strategy
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
+
+## BATCH 104 Start 2026-05-22
+- Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
+- Primary report: `BATCH_104_FRONTEND_AUDIT_REMEDIATION_STRATEGY_2026-05-22_AR.md`.
+
+## BATCH 104 Closure 2026-05-22
+- Implemented XLSX import hardening in admin import surfaces.
+- Builds and performance smoke passed after changes.
+- Residual frontend advisories remain (`quill` breaking-only path, `xlsx` no upstream fix currently).
 
 ## BATCH 103 Start 2026-05-22
 - Focus: dependency audit remediation + speed warning reduction without breaking production.

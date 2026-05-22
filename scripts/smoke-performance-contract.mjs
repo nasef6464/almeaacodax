@@ -107,7 +107,8 @@ for (const file of [
   'dashboards/admin/LessonsManager.tsx',
   'dashboards/admin/GroupsManager.tsx',
 ]) {
-  assertIncludes(file, "import { loadXlsx } from '../../utils/xlsxLoader';");
+  assertIncludes(file, "from '../../utils/xlsxLoader';");
+  assertIncludes(file, 'loadXlsx');
   assertNotIncludes(file, "import * as XLSX from 'xlsx';");
 }
 

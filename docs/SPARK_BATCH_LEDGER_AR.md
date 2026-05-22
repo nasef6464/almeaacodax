@@ -1874,3 +1874,10 @@
   - Backend audit: `0 vulnerabilities`.
   - Frontend audit المتبقي: `quill` (يتطلب مسار breaking) و`xlsx` (لا يوجد patch متاح حاليًا).
 - السرعة: التحذيرات انخفضت من 4 إلى 1.
+## BATCH 104 - Frontend Audit Remediation Strategy - 2026-05-22
+- الحالة: مغلقة.
+- الهدف: معالجة/تحجيم مخاطر `quill` و`xlsx` بدون كسر الإنتاج.
+- مرجع التنفيذ: `BATCH_104_FRONTEND_AUDIT_REMEDIATION_STRATEGY_2026-05-22_AR.md`.
+- التنفيذ: تحصين استيراد XLSX في `SchoolsManager` و`LessonsManager` و`QuestionBankManager` عبر helper آمن مركزي.
+- الفحوص: typecheck/build/smoke:performance PASS.
+- المتبقي: تحذيرات `quill` و`xlsx` كما هي بسبب قيود upstream/breaking path.

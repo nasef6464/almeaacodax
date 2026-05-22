@@ -4,7 +4,7 @@ import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
-import { loadXlsx } from '../../utils/xlsxLoader';
+import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
 
 interface QuestionBankManagerProps {
@@ -801,11 +801,12 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
     try {
       const XLSX = await loadXlsx();
+      registerXlsxRuntime(XLSX);
       const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: 'array' });
+      const workbook = await readWorkbookFromBuffer(buffer);
       const firstSheetName = workbook.SheetNames[0];
       const firstSheet = workbook.Sheets[firstSheetName];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, { defval: '' });
+      const rows = sheetToSafeObjects<Record<string, unknown>>(firstSheet, '');
       const batch = parseImportWorkbook(rows, file.name);
       setPendingImportBatch(batch);
       setImportSummary({

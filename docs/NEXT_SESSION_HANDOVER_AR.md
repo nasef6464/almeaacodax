@@ -2604,3 +2604,15 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `xlsx` بدون fix متاح حاليًا.
 - جميع checks/smokes الأساسية نجحت بعد التحديث.
 - `smoke:production-speed` تحسن من 4 warnings إلى 1 warning.
+## بدء BATCH 104 - 2026-05-22
+
+- تم بدء دفعة جديدة بعد إغلاق BATCH 103.
+- النطاق: استراتيجية معالجة المخاطر المتبقية في frontend audit (`quill`, `xlsx`) بشكل آمن.
+- ملف المتابعة: `BATCH_104_FRONTEND_AUDIT_REMEDIATION_STRATEGY_2026-05-22_AR.md`.
+
+## إغلاق BATCH 104 - 2026-05-22
+
+- تم تنفيذ hardening لاستيراد ملفات XLSX عبر sanitize آمن في مسارات الاستيراد الإدارية.
+- تم تحديث smoke contract ليتوافق مع نمط loader الآمن.
+- PASS: typecheck, build, smoke:performance.
+- بقيت advisories frontend (`quill` مسار breaking، و`xlsx` بدون patch متاح).
