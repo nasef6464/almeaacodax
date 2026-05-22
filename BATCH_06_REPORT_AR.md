@@ -1,7 +1,7 @@
 ﻿# تقرير الدفعة 06 — ترقيم نتائج الكويز
 **التاريخ:** 2026-05-16
 **الموديل:** GPT-5.3-Codex / High
-**الحالة:** مكتملة جزئياً ⚠️
+**الحالة:** مكتملة ✅
 
 ## ما تم
 - إضافة endpoint آمن ومُرقّم للطالب: `GET /api/quiz-results/my`.
@@ -177,3 +177,22 @@ BATCH-07 — ترقيم كودات الوصول (Access Codes Pagination)
 - تم التحقق من وجود `pagination` في الردود.
 - تم التحقق من عدم تسريب الحقول الحساسة (`correctAnswer`, `correctIndex`, `correctOptionIndex`, `explanation`).
 - الحالة النهائية للدفعة: **مكتملة ✅ (Fully closed)**.
+
+## تحديث إغلاق نهائي إضافي (2026-05-16)
+- تمت إعادة تشغيل الفحوص الرسمية لنفس الدفعة للتأكيد النهائي:
+  - `npm --prefix server run build` ✅
+  - `npm run typecheck` ✅ (المحاولة الأولى timeout ثم نجاح بعد زيادة المهلة)
+  - `npm run build` ✅
+  - `npm run smoke:quiz` ❌ (غير موجود)
+  - `npm run smoke:results` ✅
+  - `npm run smoke:quiz-client-security` ✅
+  - `npm run smoke:auth-cookie` ✅
+  - `npm run smoke:health-readiness` ✅
+- إعادة تحقق حي على الإنتاج:
+  - `GET /api/quiz-results/my` بدون auth => `401`
+  - `GET /api/admin/quiz-results` بدون auth => `401`
+  - `GET /api/quizzes/results` بدون auth => `401`
+- فحص بصري حي إضافي عبر تشغيل محلي:
+  - `tmp/batch06-visual-pass8/desktop-home.png`
+  - `tmp/batch06-visual-pass8/mobile-home.png`
+  - النتيجة: لا يوجد كسر بصري ضمن الصفحات المفحوصة.

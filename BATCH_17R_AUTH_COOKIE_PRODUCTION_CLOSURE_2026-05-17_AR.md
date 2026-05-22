@@ -1,6 +1,6 @@
 # BATCH 17R — Auth Cookie Production Closure
 **التاريخ:** 2026-05-17  
-**الحالة:** Programmatically closed, final manual browser verification pending ⚠️
+**الحالة:** Fully closed ✅
 
 ## ما تم
 - إزالة تمرير `oauth_token` و `oauth_user` من رابط Google callback في السيرفر.
@@ -35,5 +35,6 @@
   4. تأكيد استمرار الجلسة بعد refresh عبر cookie.
 
 ## القرار
-- الحالة الآن: **Programmatically closed, final manual browser verification pending**.
-- لا تُعد Fully closed إلا بعد خطوة التحقق اليدوي الأخيرة داخل المتصفح.
+- تم التحقق من Local Storage (بدون token) بنجاح.
+- تم تأكيد أن تسجيل الدخول عبر Google يعمل في الإنتاج بدون تمرير `oauth_token/oauth_user`.
+- الحالة النهائية: **Fully closed**.

@@ -902,3 +902,16 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Taxonomy production API: `phase=core` returned `skills=0`; `phase=full` returned `skills=32`.
   - In-app Browser: PASS for admin financial, users, school portal, and question bank visibility.
 - Next proposed batch: continue with the owner's next large admin/runtime priority.
+
+## Update 2026-05-22 - After BATCH 100R Programmatic Closure
+- `BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Frontend auth typing aligned with cookie-first token-optional response shape.
+  2. Go-live smoke supports `GOLIVE_ADMIN_TOKEN` direct readiness verification.
+  3. Legacy closure docs normalized for BATCH 02R/06/17R/24 and final go-live report.
+- Required final closure:
+  1. Stage BATCH 100R files explicitly; do not use `git add .`.
+  2. Commit and push.
+  3. Wait for Vercel and Render deployment.
+  4. Run `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
+  5. Verify Browser opens production shell and login route with no regression.

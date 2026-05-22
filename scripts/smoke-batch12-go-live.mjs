@@ -6,6 +6,7 @@ const FRONTEND_URL = process.env.GOLIVE_FRONTEND_URL || "https://almeaacodax.ver
 const API_BASE = (process.env.GOLIVE_API_BASE || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
 const ADMIN_EMAIL = process.env.GOLIVE_ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.GOLIVE_ADMIN_PASSWORD || "";
+const ADMIN_TOKEN = process.env.GOLIVE_ADMIN_TOKEN || "";
 
 function runStep(name, command) {
   try {
@@ -39,10 +40,39 @@ async function checkUrl(url) {
 }
 
 async function tryAdminReadiness() {
+  if (ADMIN_TOKEN) {
+    try {
+      const readinessResponse = await fetch(`${API_BASE}/operations/integrations-readiness`, {
+        method: "GET",
+        headers: { authorization: `Bearer ${ADMIN_TOKEN}` },
+      });
+      const readinessJson = await readinessResponse.json().catch(() => ({}));
+      if (!readinessResponse.ok) {
+        return {
+          status: "fail",
+          note: `Admin token readiness check failed (${readinessResponse.status}).`,
+          readiness: readinessJson,
+        };
+      }
+
+      return {
+        status: "pass",
+        note: "Admin integrations readiness endpoint checked successfully via GOLIVE_ADMIN_TOKEN.",
+        readiness: readinessJson,
+      };
+    } catch (error) {
+      return {
+        status: "fail",
+        note: String(error?.message || error),
+        readiness: null,
+      };
+    }
+  }
+
   if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
     return {
       status: "external_pending",
-      note: "Missing GOLIVE_ADMIN_EMAIL / GOLIVE_ADMIN_PASSWORD; readiness endpoint auth check skipped.",
+      note: "Missing GOLIVE_ADMIN_TOKEN or GOLIVE_ADMIN_EMAIL / GOLIVE_ADMIN_PASSWORD; readiness endpoint auth check skipped.",
       readiness: null,
     };
   }

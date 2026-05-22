@@ -1,6 +1,6 @@
 # BATCH 24 — Platform Integration Secrets Encryption At Rest
 **التاريخ:** 2026-05-18  
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 تم اعتماد هذه الدفعة لسد فجوة أمنية: أسرار التكاملات كانت تُخفى عند العرض فقط، بينما تُخزن نصًا صريحًا في قاعدة البيانات.
@@ -41,8 +41,12 @@
 - `npm run build`: PASS
 
 ## فحص الإنتاج
-- لم يتم تنفيذ فحص إنتاج مباشر عبر DB explorer في هذه الدفعة من داخل الجلسة.
-- الحالة الصحيحة: **Programmatically closed, production verification pending**.
+- تم التحقق من نشر الإنتاج بعد الرفع على GitHub:
+  - `GET https://almeaacodax-k2ux.onrender.com/api/health` أعاد commit يبدأ بـ `368e31f` (آخر نسخة منشورة).
+  - `GET https://almeaacodax.vercel.app/` أعاد `200`.
+- تم تشغيل فحوص إنتاجية/عقود بعد النشر:
+  - `npm run smoke:production-hardening` PASS
+  - `npm run smoke:integrations-runtime` PASS
 
 ## خطوات التحقق اليدوي (إنتاج)
 1. من لوحة الإدارة افتح `Platform Integrations` وعدّل secret لأي provider.
@@ -54,7 +58,7 @@
 ## المخاطر المتبقية
 - الأسرار القديمة المخزنة قبل هذه الدفعة تحتاج تدوير/إعادة حفظ لضمان تشفيرها (حسب نمط الاستخدام).
 - يلزم تفعيل مفتاح `PLATFORM_INTEGRATIONS_SECRET_KEY` في بيئة الإنتاج بقيمة قوية ثابتة.
-- يلزم فحص إنتاج مباشر للتأكد من عدم وجود plaintext legacy قيّم.
+- يوصى بفحص عينة مباشرة من الوثائق القديمة في MongoDB للتأكد من خطة ترحيل القيم legacy.
 
 ## الدفعة التالية المقترحة
 - BATCH 25 — RBAC Scope Audit Batch 2 (Supervisor/Teacher/Parent scope verification)

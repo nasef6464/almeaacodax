@@ -2,7 +2,7 @@
 
 - اسم الدفعة: BATCH 06 — Quiz Results Pagination
 - التاريخ: 2026-05-16
-- الحالة: مكتملة جزئياً ⚠️ (تنفيذ وفحوص محلية مكتملة، وتحقق حي على الإنتاج ينتظر النشر)
+- الحالة: مكتملة ✅ (Fully closed بعد تحقق حي إضافي على الإنتاج)
 
 ## ما تم
 - إضافة endpoint طالب مُرقّم وآمن: `GET /api/quiz-results/my`.
@@ -105,3 +105,22 @@
 - المسارات الجديدة للدفعة 06 أصبحت فعالة وتُرجع صلاحيات صحيحة (401/403/200 حسب الدور).
 - تم التحقق من hard cap (`limit=100`) ومنع تسريب بيانات الإجابات الصحيحة.
 - الحالة النهائية: **Fully closed**.
+
+## تحديث إضافي — تشغيل حي + فحص بصري (2026-05-16)
+- إعادة تشغيل الفحوص الأساسية تمت بنجاح:
+  - `npm --prefix server run build` ✅
+  - `npm run typecheck` ✅ (بعد إعادة التشغيل بمهلة أطول)
+  - `npm run build` ✅
+  - `npm run smoke:results` ✅
+  - `npm run smoke:quiz-client-security` ✅
+  - `npm run smoke:auth-cookie` ✅
+  - `npm run smoke:health-readiness` ✅
+  - `npm run smoke:quiz` غير موجود (موثّق)
+- تحقق حي على الإنتاج:
+  - `GET /api/quiz-results/my` بدون auth => `401`
+  - `GET /api/admin/quiz-results` بدون auth => `401`
+  - `GET /api/quizzes/results` بدون auth => `401`
+- فحص بصري محلي إضافي عبر المتصفح الداخلي:
+  - `tmp/batch06-visual-pass8/desktop-home.png`
+  - `tmp/batch06-visual-pass8/mobile-home.png`
+  - النتيجة: لا يوجد كسر بصري ضمن الصفحات المفحوصة.

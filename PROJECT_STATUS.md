@@ -2,9 +2,21 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: None
+- Active Batch: BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
 - Last Closed Batch: BATCH 100Q - Operational Admin Runtime Scale Sweep
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-22 - BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
+- Batch: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: auth cookie tokenless compatibility + go-live smoke token path + legacy closure docs normalization.
+- Delivered:
+  - `contexts/AuthContext.tsx` now accepts optional `token` in login/register response typing.
+  - `scripts/smoke-batch12-go-live.mjs` now supports `GOLIVE_ADMIN_TOKEN` readiness verification path.
+  - Updated legacy closure docs for BATCH 02R/06/17R/24 and final go-live report consistency.
+- Checks PASS: typecheck, server build, auth-token-response smoke, batch12-golive smoke.
+- Report: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR.md`.
+- Next required for final closure: stage 100R files explicitly, commit, push, wait Vercel/Render, production smokes, browser verification.
 
 ## Final Closure 2026-05-22 - BATCH 100Q
 - Batch: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.

@@ -334,7 +334,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithEmail = async (email: string, password: string) => {
     const response = (await api.login(email, password)) as {
-      token: string;
+      token?: string;
       user: BackendAuthUser;
     };
 
@@ -346,7 +346,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUpWithEmail = async (email: string, password: string) => {
     const inferredName = email.split('@')[0] || 'Student';
     const response = (await api.register(inferredName, email, password)) as {
-      token: string;
+      token?: string;
       user: BackendAuthUser;
     };
 

@@ -2286,3 +2286,29 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - لا تستخدم `git add .` لأن الشجرة ما زالت تحتوي dirty/untracked قديمة خارج نطاق 100Q.
 - لا توجد دفعة نشطة الآن.
 - الدفعة التالية تكون حسب أولوية المالك التالية.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100R Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- تحديث typing في `contexts/AuthContext.tsx` ليقبل `token` اختياري في login/register.
+- تحديث `scripts/smoke-batch12-go-live.mjs` لدعم `GOLIVE_ADMIN_TOKEN` لمسار readiness مباشر.
+- تحديث وإغلاق تقارير تاريخية متعلقة (BATCH 02R/06/17R/24 + تقرير go-live النهائي) لتوحيد الحالة النهائية والأدلة.
+
+### الفحوص التي نجحت
+- `npm run typecheck`: PASS.
+- `npm --prefix server run build`: PASS.
+- `npm run smoke:auth-token-response`: PASS.
+- `npm run smoke:batch12-golive`: PASS.
+
+### المطلوب للإغلاق النهائي
+1. Stage صريح لملفات 100R فقط، ولا تستخدم `git add .`.
+2. Commit ثم push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص Browser على الإنتاج (`/` و`/#/login`) للتأكد من عدم وجود regression بصري/وظيفي.

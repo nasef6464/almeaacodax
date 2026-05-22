@@ -1699,3 +1699,14 @@
 - Render/API: PASS, health readiness passed and `/api/health` returned `ready=true`, commit `3cdb01e0a581`.
 - Production API: PASS, taxonomy `phase=core` returned `skills=0`, taxonomy `phase=full` returned `skills=32`, and both returned matching `X-Taxonomy-Phase` headers.
 - In-app Browser: PASS, financial, users, school portal, and question bank admin tabs opened after deploy with no captured client errors.
+
+## Update 2026-05-22 - BATCH 100R
+- Batch: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: auth cookie tokenless compatibility + go-live smoke token path + legacy closure docs consistency.
+- Key changes:
+  - `AuthContext` login/register typing now allows optional `token`.
+  - `smoke-batch12-go-live` supports `GOLIVE_ADMIN_TOKEN` readiness path.
+  - Legacy closure reports updated for BATCH 02R/06/17R/24 and final go-live report consistency.
+- Checks PASS: `typecheck`, `server build`, `smoke:auth-token-response`, `smoke:batch12-golive`.
+- Report: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR.md`.
