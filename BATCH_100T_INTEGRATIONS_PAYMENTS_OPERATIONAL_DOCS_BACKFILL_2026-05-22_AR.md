@@ -1,7 +1,7 @@
 # BATCH 100T - Integrations & Payments Operational Docs Backfill - 2026-05-22
 
 ## الحالة
-- الحالة: Programmatically closed, production verification pending.
+- الحالة: Fully closed.
 - النطاق: إدخال حزمة وثائق تشغيلية غير متتبعة تخص التكاملات/المدفوعات/الجاهزية الإنتاجية.
 - بدون تغييرات تصميم أو منطق runtime جديد.
 
@@ -40,9 +40,9 @@
 - `npm run smoke:batch12-golive`: PASS.
 - `npm run typecheck`: PASS.
 
-## المطلوب للإغلاق النهائي
-1. Stage صريح لملفات 100T فقط.
-2. Commit + push.
-3. انتظار Vercel/Render.
-4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
-5. فحص Browser على الإنتاج.
+## الإغلاق النهائي
+- Commit: `5f3fe54`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `5f3fe54`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true`.
+- Browser: PASS، فتح `/` على الإنتاج بدون client errors ملتقطة.
