@@ -1861,5 +1861,7 @@
 - تم إصلاح: منع فتح الباقة كـ `/course/${pkg.id}` داخل `pages/GenericPathPage.tsx`.
 - تم إضافة: `scripts/smoke-package-path-navigation-contract.mjs` و `scripts/smoke-real-usage-readiness-contract.mjs`.
 - تم إضافة: ملفات `deploy/hostinger/`، Docker، env examples، backup/restore.
+- Commit pushed: `2d65643`.
+- Production after push: PASS، `smoke:frontend:strict` أكد أن Vercel يخدم `2d65643` و`smoke:health-readiness` نجح.
 - الحكم الحالي: جاهزية جزئية للاستخدام الحقيقي حتى توفير أسرار المالك، معالجة قرار dependency audit، وتنفيذ فحص VPS/Payment live dry-run.
 - تحذير: لا تستخدم `git add .`؛ توجد ملفات تاريخية dirty/untracked خارج نطاق الدفعة.

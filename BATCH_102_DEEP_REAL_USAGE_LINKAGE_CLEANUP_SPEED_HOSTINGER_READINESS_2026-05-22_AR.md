@@ -78,3 +78,9 @@ Date: 2026-05-22
 - Frontend dependency audit reports vulnerable `protobufjs`, `quill` through `react-quill-new`, `ws`, and `xlsx`; `xlsx` has no fix available in the current audit output.
 - Server audit reports `ws` through Socket.IO dependencies.
 - `smoke:production-speed` completed but warned on frontend shell, API health, course list, and announcement ads timing.
+
+## Post-Push Production Verification
+
+- Commit pushed: `2d65643`.
+- PASS: `npm run smoke:frontend:strict` confirmed production serves `2d65643`.
+- PASS: `npm run smoke:health-readiness` after push.
