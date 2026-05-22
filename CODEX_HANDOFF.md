@@ -4,6 +4,28 @@ Last updated: 2026-05-22
 
 ## Current Session Summary
 
+`BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion` is closed with documented external blockers.
+
+Current BATCH 102 status:
+
+- Package/path/course bug fixed in `pages/GenericPathPage.tsx`.
+- `smoke:package-path-navigation` added and expected to guard the package route contract.
+- Runtime API hardcoding to the old Render URL removed from `services/api.ts`.
+- Runtime SEO base hardcoding to the old Vercel URL removed from `App.tsx`.
+- Old Render preconnect/dns-prefetch removed from `index.html`.
+- Hostinger deployment templates added under `deploy/hostinger/`.
+- Docker templates added.
+- Env examples/docs and backup/restore scripts/docs added.
+- Audit docs added for linkage, performance, cleanup, unused files, feature activation, and security.
+- Remaining blockers before real go-live: owner domain/VPS IP, MongoDB URI, optional Redis URL, payment/email/WhatsApp/AI/Sentry secrets, payment dry-run, VPS smoke, and browser verification after deployment.
+- Verification so far: package/path, package split, real usage readiness, performance contract, frontend typecheck/build, server check/build, strict production frontend, payment package, health readiness, and docker compose config passed.
+- Known failures/blockers: `npm audit --omit=dev` and `npm --prefix server audit --omit=dev` report dependency advisories; `smoke:production-speed` passes with timing warnings.
+- Docker note: `docker compose config` can print locally supplied env values; do not paste secrets into reports.
+
+Do not use `git add .`. Stage only explicit BATCH 102 files.
+
+## Previous Planning Summary
+
 The owner asked whether to continue with small repeated production recheck batches or switch to a stronger plan. The correct next move is to stop the tiny recheck-only batches and start:
 
 `BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion`

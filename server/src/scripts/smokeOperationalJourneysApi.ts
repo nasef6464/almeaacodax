@@ -1,6 +1,6 @@
-const API_BASE = process.env.SMOKE_API_BASE_URL || process.env.SEED_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "nasef64@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn0508438250";
+const API_BASE = process.env.SMOKE_API_BASE_URL || process.env.SEED_API_BASE_URL || "http://localhost:4000/api";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const ADMIN_TOKEN = process.env.SMOKE_ADMIN_TOKEN || process.env.GOLIVE_ADMIN_TOKEN || "";
 const TEACHER_EMAIL = process.env.SMOKE_TEACHER_EMAIL || "teacher.quant@almeaa.local";
 const TEACHER_PASSWORD = process.env.SMOKE_TEACHER_PASSWORD || "Teacher@123";

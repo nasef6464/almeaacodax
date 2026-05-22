@@ -122,3 +122,8 @@ This endpoint returns per-integration status (`pass`, `warning`, `fail`) and req
 - Run measured load tests against 100, 500, and 1000 concurrent users before any 10k-user claim.
 - Add queue-backed notification delivery before bulk messaging.
 - Keep production secrets in Vercel/Render only, never in Git.
+# BATCH 102 Deployment Addendum - 2026-05-22
+
+For Hostinger/generic VPS deployment, use `deploy/hostinger/README.md`.
+For Docker deployment, use `Dockerfile.frontend`, `Dockerfile.backend`, `docker-compose.yml`, and `deploy/docker/nginx.conf`.
+Runtime URLs must be set through env variables: `VITE_API_URL`, `VITE_PUBLIC_SITE_URL`, `CLIENT_URL`, and `CORS_ALLOWED_ORIGINS`.

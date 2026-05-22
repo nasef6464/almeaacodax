@@ -745,7 +745,7 @@ export const GenericPathPage: React.FC = () => {
                                                     navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                                     return;
                                                 }
-                                                navigate(`/course/${pkg.id}`);
+                                                navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
                                             }}
                                             className={`w-full rounded-xl py-3 font-bold transition-all ${
                                                 packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`
@@ -870,7 +870,7 @@ export const GenericPathPage: React.FC = () => {
                                              navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
                                              return;
                                          }
-                                         navigate(`/course/${pkg.id}`);
+                                         navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
                                      }}
                                      className={`w-full rounded-xl py-3 font-bold transition-all ${
                                          packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`

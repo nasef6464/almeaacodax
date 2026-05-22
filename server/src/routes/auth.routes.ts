@@ -334,7 +334,7 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
   const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
   const oauthError = typeof req.query.error === "string" ? req.query.error : "";
 
-  const fallbackRedirect = `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_error=google`;
+  const fallbackRedirect = `${env.CLIENT_URL}/#/login?oauth_error=google`;
   if (oauthError || !code) {
     return res.redirect(fallbackRedirect);
   }
@@ -432,7 +432,7 @@ const handleGoogleCallback = asyncHandler(async (req, res) => {
 
   const returnUrl = encodeURIComponent(returnTo || "/");
   return res.redirect(
-    `${env.CLIENT_URL || "https://almeaacodax.vercel.app"}/#/login?oauth_provider=google&oauth_return=${returnUrl}`,
+    `${env.CLIENT_URL}/#/login?oauth_provider=google&oauth_return=${returnUrl}`,
   );
 });
 

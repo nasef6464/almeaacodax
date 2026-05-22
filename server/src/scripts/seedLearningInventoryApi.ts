@@ -1,6 +1,6 @@
-const API_BASE = process.env.SEED_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "nasef64@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Nn@0120110367";
+const API_BASE = process.env.SEED_API_BASE_URL || "http://localhost:4000/api";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const SAMPLE_VIDEO_URL = process.env.SEED_SAMPLE_VIDEO_URL || "https://www.youtube.com/watch?v=2BoPkKAm6uc";
 const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 

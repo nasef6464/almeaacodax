@@ -68,3 +68,11 @@ Use a staged rollout:
 3. 100-student pilot.
 4. Load test and observe bottlenecks.
 5. Production launch after reports are clean.
+# BATCH 102 Readiness Addendum - 2026-05-22
+
+Current verdict after BATCH 102 source work: PARTIAL.
+
+- Package/path/course navigation bug is fixed in source and guarded by smoke tests.
+- Hostinger/VPS and Docker deployment files now exist.
+- Runtime source is no longer locked to the old Render/Vercel URLs.
+- Full real-user readiness still requires owner-provided secrets, live payment dry-run, final domain/CORS/cookie verification, and VPS production browser checks.

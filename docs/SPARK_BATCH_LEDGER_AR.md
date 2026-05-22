@@ -1855,3 +1855,11 @@
 - Vercel: PASS, `smoke:frontend:strict` confirmed production serves `e2efcfd`.
 - Render/API: PASS, `smoke:health-readiness` passed.
 - Report: `BATCH_100AD_PRODUCTION_STABILITY_CONTINUATION_RECHECK_2026-05-22_AR.md`.
+## BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness - 2026-05-22
+- الحالة: مغلقة مع blockers خارجية موثقة.
+- الهدف: إصلاح ربط الباقات بالمسارات، إزالة قفل Render/Vercel من runtime، وتجهيز Hostinger/Docker/env/backup والتقارير.
+- تم إصلاح: منع فتح الباقة كـ `/course/${pkg.id}` داخل `pages/GenericPathPage.tsx`.
+- تم إضافة: `scripts/smoke-package-path-navigation-contract.mjs` و `scripts/smoke-real-usage-readiness-contract.mjs`.
+- تم إضافة: ملفات `deploy/hostinger/`، Docker، env examples، backup/restore.
+- الحكم الحالي: جاهزية جزئية للاستخدام الحقيقي حتى توفير أسرار المالك، معالجة قرار dependency audit، وتنفيذ فحص VPS/Payment live dry-run.
+- تحذير: لا تستخدم `git add .`؛ توجد ملفات تاريخية dirty/untracked خارج نطاق الدفعة.

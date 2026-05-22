@@ -2572,3 +2572,17 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Vercel: PASS (`smoke:frontend:strict`) على `e2efcfd`.
 - Render/API: PASS (`smoke:health-readiness`).
 - لا توجد دفعة نشطة الآن.
+## تسليم BATCH 102 - 2026-05-22
+
+- اقرأ `CODEX_HANDOFF.md` أولًا.
+- تم إصلاح خطأ الباقات: لا يوجد fallback من package إلى `/course/${pkg.id}` في `pages/GenericPathPage.tsx`.
+- المسار الآمن للباقات الآن: `/category/${path.id}?tab=packages&package=${pkg.id}`، ومع المادة: `/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`.
+- تم إضافة فحصين: `npm run smoke:package-path-navigation` و `npm run smoke:real-usage-readiness`.
+- تم تجهيز Hostinger/PM2/Nginx في `deploy/hostinger/`.
+- تم تجهيز Docker في `Dockerfile.frontend`, `Dockerfile.backend`, `docker-compose.yml`, `deploy/docker/nginx.conf`.
+- تم تجهيز env docs/examples و backup/restore docs/scripts.
+- الفحوص الناجحة: `smoke:package-path-navigation`, `smoke:package-course-split`, `smoke:real-usage-readiness`, `smoke:performance`, `typecheck`, `build`, `server:check`, `server:build`, `smoke:frontend:strict`, `smoke:payment-package`, `smoke:health-readiness`, `docker compose config`.
+- فحص السرعة: `smoke:production-speed` نجح وظيفيًا مع 4 timing warnings.
+- فحص التبعيات: `npm audit --omit=dev` و `npm --prefix server audit --omit=dev` فشلوا بسبب advisories معروفة يجب التعامل معها كدفعة تبعيات منفصلة.
+- لا تعلن readiness كاملة إلا بعد أسرار المالك وفحص live payment/email/WhatsApp/AI/VPS ومعالجة قرار dependency audit.
+- لا تستخدم `git add .` ولا تلمس الملفات القديمة غير المتتبعة خارج نطاق BATCH 102.

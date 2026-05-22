@@ -3,10 +3,21 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 100AD - Production Stability Continuation Recheck
-- Status: Fully closed
-- Next Required Batch: BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion
-- Handoff: read `CODEX_HANDOFF.md` before starting; stop small recheck-only batches unless the owner explicitly asks for them.
+- Last Closed Batch: BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion
+- Status: BATCH 102 closed with documented external blockers
+- Next Required Batch: dependency audit remediation and live VPS/payment/provider verification after owner secrets
+- Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
+
+## BATCH 102 Update 2026-05-22
+- Package/path/course bug: FIXED in `pages/GenericPathPage.tsx`; packages no longer fallback to `/course/${pkg.id}`.
+- Runtime URL lock-in: FIXED in source; frontend API uses `VITE_API_URL`, runtime override, same-origin `/api`, or localhost for dev.
+- Hostinger readiness: files added under `deploy/hostinger/`.
+- Docker readiness: Dockerfiles, compose file, and docker Nginx config added.
+- Environment readiness: root/server production examples and `docs/ENVIRONMENT.md` added.
+- Backup/restore: MongoDB and uploads scripts/docs added.
+- New smokes: `smoke:package-path-navigation`, `smoke:real-usage-readiness`.
+- Verification: frontend/server builds and source smokes passed; production strict and health smokes passed; production speed passed with timing warnings; npm audits still report dependency advisories.
+- Current verdict before final production deploy: PARTIAL real-user readiness until owner secrets, dependency audit decision, and live payment/email/WhatsApp/AI/VPS checks are supplied.
 
 ## Next Planned Work 2026-05-22 - BATCH 102
 - Status: `Not started in code`.
