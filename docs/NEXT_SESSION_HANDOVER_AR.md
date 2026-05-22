@@ -2418,3 +2418,26 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - يوجد ملف خارج نطاق 100T تم تحديثه أثناء تشغيل smoke go-live: `docs/BATCH_1_2_FINAL_GO_LIVE_2026-05-14_AR.md` (غير مُدرج في commits 100T).
 - لا تستخدم `git add .` بسبب وجود ملفات untracked قديمة خارج النطاق.
 - لا توجد دفعة نشطة الآن.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100U Fully Closed
+
+### الإغلاق النهائي
+- الدفعة: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR`.
+- الحالة: `Fully closed`.
+- Commit: `fd111fe`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `f7ed2c5`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح.
+- Production Question API: PASS لقيم البحث `(` و`???` و`جمع` و`BATCH 100P runtime CRUD test` (كلها `200`).
+- Runtime contract: PASS عبر `npm run smoke:batch100p-question-bank-crud`.
+
+### ملاحظة تشغيلية
+- إعادة تسجيل الدخول الإداري الحي من هذا السياق المحلي اصطدمت بـ `429` (rate-limit) بعد محاولة اعتمادات غير صحيحة، لذلك لم تتم إعادة تنفيذ CRUD اليدوي من الصفر ضمن هذه الدفعة.
+- لا يوجد تغيير تصميم أو كود مطلوب لهذه الدفعة.
+
+### ملاحظة للحساب التالي
+- لا تستخدم `git add .`.
+- لا تلمس الملفات القديمة خارج نطاق الدفعات.
+- لو طُلب replay يدوي كامل لـ CRUD من المتصفح، نفّذه فقط بعد توفر اعتماد إداري صالح أو بعد فك rate-limit.

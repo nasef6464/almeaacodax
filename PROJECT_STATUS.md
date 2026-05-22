@@ -3,8 +3,20 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 100T - Integrations & Payments Operational Docs Backfill
+- Last Closed Batch: BATCH 100U - Admin Question Bank Production Verification Sweep
 - Status: Fully closed
+
+## Final Closure 2026-05-22 - BATCH 100U
+- Batch: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `fd111fe`.
+- GitHub: PASS.
+- Vercel: PASS, strict frontend smoke confirmed production serves `f7ed2c5`.
+- Render/API: PASS, health readiness smoke passed.
+- Production question API: PASS for `search=(`, `search=???`, `search=جمع`, and `search=BATCH 100P runtime CRUD test` (all returned `200`).
+- In-app Browser: production route already open on `https://almeaacodax.vercel.app/?verify=100t-final-5f3fe54`; no blocking frontend regression detected in strict smoke.
+- Operational note: direct admin live-login replay from this local context hit auth rate-limit `429` after failed credential attempt; no code fix required.
+- Report: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR.md`.
 
 ## Final Closure 2026-05-22 - BATCH 100T
 - Batch: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR`.
