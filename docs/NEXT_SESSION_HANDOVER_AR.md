@@ -2582,8 +2582,8 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - تم تجهيز Docker في `Dockerfile.frontend`, `Dockerfile.backend`, `docker-compose.yml`, `deploy/docker/nginx.conf`.
 - تم تجهيز env docs/examples و backup/restore docs/scripts.
 - الفحوص الناجحة: `smoke:package-path-navigation`, `smoke:package-course-split`, `smoke:real-usage-readiness`, `smoke:performance`, `typecheck`, `build`, `server:check`, `server:build`, `smoke:frontend:strict`, `smoke:payment-package`, `smoke:health-readiness`, `docker compose config`.
-- تم الدفع على `main`: commit `2d65643`.
-- بعد الدفع: `smoke:frontend:strict` أكد أن الإنتاج يخدم `2d65643`، و`smoke:health-readiness` نجح.
+- تم الدفع على `main`: source commit `2d65643` ثم addendum توثيقي.
+- بعد الدفع: `smoke:frontend:strict` أكد أن الإنتاج يخدم رأس BATCH 102 بعد انتظار deploy، و`smoke:health-readiness` نجح.
 - فحص السرعة: `smoke:production-speed` نجح وظيفيًا مع 4 timing warnings.
 - فحص التبعيات: `npm audit --omit=dev` و `npm --prefix server audit --omit=dev` فشلوا بسبب advisories معروفة يجب التعامل معها كدفعة تبعيات منفصلة.
 - لا تعلن readiness كاملة إلا بعد أسرار المالك وفحص live payment/email/WhatsApp/AI/VPS ومعالجة قرار dependency audit.

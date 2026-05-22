@@ -19,7 +19,7 @@ Current BATCH 102 status:
 - Audit docs added for linkage, performance, cleanup, unused files, feature activation, and security.
 - Remaining blockers before real go-live: owner domain/VPS IP, MongoDB URI, optional Redis URL, payment/email/WhatsApp/AI/Sentry secrets, payment dry-run, VPS smoke, and browser verification after deployment.
 - Verification so far: package/path, package split, real usage readiness, performance contract, frontend typecheck/build, server check/build, strict production frontend, payment package, health readiness, and docker compose config passed.
-- Commit `2d65643` was pushed to `main`; post-push production strict smoke confirmed Vercel serves `2d65643`, and health readiness passed.
+- Source commit `2d65643` was pushed to `main`, followed by a documentation addendum; post-push production strict smoke confirmed Vercel serves the latest BATCH 102 head after deploy catch-up, and health readiness passed.
 - Known failures/blockers: `npm audit --omit=dev` and `npm --prefix server audit --omit=dev` report dependency advisories; `smoke:production-speed` passes with timing warnings.
 - Docker note: `docker compose config` can print locally supplied env values; do not paste secrets into reports.
 

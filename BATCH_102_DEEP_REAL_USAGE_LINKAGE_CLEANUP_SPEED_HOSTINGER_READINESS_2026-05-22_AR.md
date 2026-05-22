@@ -81,6 +81,6 @@ Date: 2026-05-22
 
 ## Post-Push Production Verification
 
-- Commit pushed: `2d65643`.
-- PASS: `npm run smoke:frontend:strict` confirmed production serves `2d65643`.
+- Source commit pushed: `2d65643`; final documentation addendum was pushed after it.
+- PASS: `npm run smoke:frontend:strict` confirmed production served the pushed BATCH 102 source commit, and the final addendum was rechecked after Vercel caught up.
 - PASS: `npm run smoke:health-readiness` after push.
