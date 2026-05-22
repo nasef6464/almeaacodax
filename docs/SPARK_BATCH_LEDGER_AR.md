@@ -1661,3 +1661,14 @@
 - Production evidence before deploy: Browser opened مركز الأسئلة; add question worked and appeared immediately; edit persisted; filters/actions were visible. Existing production search with `(`/`???` fails until backend deploy.
 - Browser note: Browser/CDP hung during delete confirmation; cleanup/recheck remains required after deployment.
 - Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.
+
+## Final Closure 2026-05-22 - BATCH 100P
+- Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `4e294eb`.
+- GitHub: PASS.
+- Vercel: PASS, strict frontend smoke confirmed `4e294eb`.
+- Render/API: PASS, health readiness passed and `/api/health` returned `ready=true`, commit `4e294ebda105`.
+- Production API: PASS, question search with `(` and `???` returns `200` instead of the pre-fix `500`.
+- In-app Browser: PASS, admin question bank opened and showed the title, add button, and search field after deploy.
+- Cleanup: PASS, direct Mongo check for `BATCH 100P runtime CRUD test` returned `matched=0`.

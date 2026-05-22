@@ -1,7 +1,7 @@
 # BATCH 100P — Admin Question Bank Runtime CRUD + Production Browser Verification
 
 **التاريخ:** 2026-05-22
-**الحالة:** Programmatically closed, production verification pending
+**الحالة:** Fully closed
 
 ## السبب
 هذه الدفعة جاءت بعد إغلاق 100O، والهدف كان فحص مركز الأسئلة عمليًا من لوحة الإدارة والإنتاج: الإضافة، الظهور بعد الإضافة، الفلاتر، التعديل، والحذف/الرفض/الاعتماد حسب المتاح، بدون تغيير التصميم.
@@ -80,9 +80,21 @@
 - يجب إعادة فتح Browser بعد النشر وتأكيد أن مركز الأسئلة لا يزال يفتح وأن السؤال الاختباري غير ظاهر في البحث الإداري أو يتم حذفه إن ظهر.
 - توجد تحذيرات non-critical في Console من bootstrap/session hydration سابقة خارج نطاق 100P.
 
+## الإغلاق النهائي
+- GitHub push: PASS، commit `4e294eb` تم رفعه إلى `origin/main`.
+- Vercel: PASS، `npm run smoke:frontend:strict` نجح في المحاولة الثانية وأكد أن الإنتاج يخدم `4e294eb`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح، و`/api/health` أعاد `ready=true` وcommit `4e294ebda105`.
+- Production API بعد deploy:
+  - search=`(` أعاد `200`, `total=0`.
+  - search=`???` أعاد `200`, `total=0`.
+  - search=`جمع` أعاد `200`, `total=0`.
+  - search=`BATCH 100P runtime CRUD test` أعاد `200`, `total=0`.
+- Browser بعد deploy: فتح مركز الأسئلة وأظهر `مركز الأسئلة` و`إضافة سؤال جديد` و`ابحث في نص السؤال...` بلا أخطاء console.
+- Cleanup: فحص Mongo المباشر المحدود على `text=/BATCH 100P runtime CRUD test/` أعاد `matched=0`، لذلك لا يوجد سجل اختبار متبق في قاعدة الإنتاج.
+
 ## حالة الإغلاق الحالية
-برمجيًا: تم إغلاق نطاق 100P محليًا مع فحوص PASS.
-إنتاجيًا: pending حتى push وانتظار Vercel/Render وإعادة فحص API والمتصفح.
+برمجيًا: مغلق بفحوص PASS.
+إنتاجيًا: Fully closed بعد GitHub/Vercel/Render/API/Browser cleanup verification.
 
 ## الدفعة التالية المقترحة
-`BATCH 100Q — Admin Question Bank Cleanup + Authenticated Browser Delete Confirmation` إذا بقي أثر سؤال الاختبار أو احتاج الحذف المؤكد دفعة متابعة، وإلا الانتقال إلى أولوية المالك التالية.
+الانتقال إلى أولوية المالك التالية. لا توجد دفعة cleanup مطلوبة حاليًا لأن فحص قاعدة الإنتاج أعاد `matched=0` لسؤال الاختبار.

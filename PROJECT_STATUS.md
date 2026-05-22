@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
-- Last Closed Batch: BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
+- Status: Fully closed
 
 ## Update 2026-05-22 - BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
 - Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
@@ -19,6 +19,18 @@
 - Browser note: the Browser/CDP connection hung during delete confirmation; follow-up verification after deploy must confirm cleanup/deletion state.
 - Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.
 - Next required for final closure: explicit stage for 100P files only, commit, push, wait Vercel/Render, rerun production smokes, verify search `(`/`???`, and re-open Browser question bank.
+
+## Final Closure 2026-05-22 - BATCH 100P
+- Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `4e294eb`.
+- GitHub: PASS.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves `4e294eb` after first attempt still saw the previous asset.
+- Render/API: PASS, `npm run smoke:health-readiness` passed and `/api/health` returned `ready=true`, commit `4e294ebda105`.
+- Production question search: PASS, search values `(`, `???`, `جمع`, and `BATCH 100P runtime CRUD test` all returned `200` after deploy.
+- In-app Browser: PASS, admin question bank opened after deploy and showed `مركز الأسئلة`, `إضافة سؤال جديد`, and `ابحث في نص السؤال...` with no error logs.
+- Cleanup: PASS, direct Mongo check for `text=/BATCH 100P runtime CRUD test/` returned `matched=0`, so no test question remains in production DB.
+- Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.
 
 ## Update 2026-05-21 - BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit
 - Batch: `BATCH_100O_ADMIN_DASHBOARD_CRUD_ACTIONS_RUNTIME_SWEEP_COURSE_LESSON_QUIZ_LINKAGE_AUDIT_2026-05-21_AR`.
