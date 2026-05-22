@@ -2,9 +2,20 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: BATCH 100Q - Operational Admin Runtime Scale Sweep
-- Last Closed Batch: BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100Q - Operational Admin Runtime Scale Sweep
+- Status: Fully closed
+
+## Final Closure 2026-05-22 - BATCH 100Q
+- Batch: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `3cdb01e`.
+- GitHub: PASS.
+- Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves `3cdb01e` after an initial retry still saw the previous asset.
+- Render/API: PASS, `npm run smoke:health-readiness` passed and `/api/health` returned `ready=true`, commit `3cdb01e0a581`.
+- Production taxonomy API: PASS, `phase=core` returned `skills=0` with `X-Taxonomy-Phase=core`; `phase=full` returned `skills=32` with `X-Taxonomy-Phase=full`.
+- In-app Browser: PASS, production admin financial, users, school portal, and question bank tabs opened after deploy with no captured client errors.
+- Report: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR.md`.
 
 ## Update 2026-05-22 - BATCH 100Q - Operational Admin Runtime Scale Sweep
 - Batch: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.

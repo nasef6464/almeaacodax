@@ -1,7 +1,7 @@
 # BATCH 100Q - Operational Admin Runtime Scale Sweep - 2026-05-22
 
 ## الحالة
-- الحالة: Programmatically closed, production verification pending.
+- الحالة: Fully closed.
 - النطاق: تجميع تشغيلي كبير للتغييرات الموجودة في لوحة الإدارة ومسارات runtime بدون تغيير تصميمي.
 - قاعدة العمل: staging صريح فقط، ولا استخدام لـ `git add .`.
 
@@ -30,10 +30,10 @@
 - Browser baseline على الإنتاج الحالي: `admin-dashboard?tab=questions`.
 - ظهر `مركز الأسئلة`، وزر `إضافة سؤال جديد`، وحقل البحث، وعدّاد الأسئلة.
 
-## المطلوب للإغلاق النهائي
-1. Stage صريح لملفات 100Q فقط.
-2. Commit و push إلى `origin/main`.
-3. انتظار Vercel/Render.
-4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
-5. فحص إنتاج API لمسارات taxonomy/payment/health.
-6. فحص Browser بعد النشر لتبويبات الإدارة المتأثرة.
+## الإغلاق النهائي
+- Commit: `3cdb01e`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `3cdb01e`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` وcommit `3cdb01e0a581`.
+- Taxonomy API: PASS، `phase=core` أعاد `skills=0` و`phase=full` أعاد `skills=32`.
+- Browser بعد النشر: PASS لتبويبات المالية، المستخدمين، بوابة المدرسة، ومركز الأسئلة، بدون client errors ملتقطة.

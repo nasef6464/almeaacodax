@@ -2267,3 +2267,22 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
 5. فحص API الإنتاج لمسارات health/taxonomy.
 6. فتح Browser على تبويبات الإدارة المتأثرة بعد النشر.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100Q Fully Closed
+
+### الإغلاق النهائي
+- الدفعة: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.
+- الحالة: `Fully closed`.
+- Commit: `3cdb01e`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `3cdb01e`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` وcommit `3cdb01e0a581`.
+- Taxonomy API: PASS، `phase=core` أعاد `skills=0` و`phase=full` أعاد `skills=32`.
+- Browser: PASS، ظهرت تبويبات المالية، المستخدمين، بوابة المدرسة، ومركز الأسئلة بعد النشر بدون client errors ملتقطة.
+
+### ملاحظات للحساب التالي
+- لا تستخدم `git add .` لأن الشجرة ما زالت تحتوي dirty/untracked قديمة خارج نطاق 100Q.
+- لا توجد دفعة نشطة الآن.
+- الدفعة التالية تكون حسب أولوية المالك التالية.
