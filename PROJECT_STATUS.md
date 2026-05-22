@@ -5,6 +5,16 @@
 - Active Batch: None
 - Last Closed Batch: BATCH 100AD - Production Stability Continuation Recheck
 - Status: Fully closed
+- Next Required Batch: BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion
+- Handoff: read `CODEX_HANDOFF.md` before starting; stop small recheck-only batches unless the owner explicitly asks for them.
+
+## Next Planned Work 2026-05-22 - BATCH 102
+- Status: `Not started in code`.
+- Purpose: deep real-readiness audit and completion, not another production smoke recheck.
+- First fix required: package/path/course navigation bug where packages may open as `/course/${pkg.id}` instead of staying in package/path context.
+- First files to inspect: `PROJECT_STATUS.md`, `docs/NEXT_SESSION_HANDOVER_AR.md`, `docs/SPARK_BATCH_LEDGER_AR.md`, `CODEX_HANDOFF.md`, `pages/GenericPathPage.tsx`, package/course/payment route helpers.
+- First expected outputs: `BATCH_102_DEEP_REAL_USAGE_LINKAGE_CLEANUP_SPEED_HOSTINGER_READINESS_2026-05-22_AR.md`, `scripts/smoke-package-path-navigation-contract.mjs`, `docs/FUNCTIONAL_LINKAGE_AUDIT.md`, and updated `CODEX_HANDOFF.md`.
+- Safety: do not use `git add .`; do not remove Vercel/Render support; do not commit secrets; do not delete old reports.
 
 ## Final Closure 2026-05-22 - BATCH 100AD
 - Batch: `BATCH_100AD_PRODUCTION_STABILITY_CONTINUATION_RECHECK_2026-05-22_AR`.

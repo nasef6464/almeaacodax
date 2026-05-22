@@ -2487,6 +2487,22 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 
 ---
 
+## تسليم مهم للحساب التالي - BATCH 102 Planned
+
+- القرار الحالي: لا تكمل بدفعات recheck صغيرة جديدة إلا لو المالك طلب ذلك صراحة.
+- الدفعة التالية المطلوبة: `BATCH 102 - Deep Real Usage, Linkage, Cleanup, Speed, and Hostinger Readiness Completion`.
+- اقرأ أولًا: `CODEX_HANDOFF.md`.
+- الهدف: فحص عميق للكود وتجهيز الاستخدام الحقيقي والنقل إلى Hostinger/VPS بدون كسر Vercel/Render.
+- أول إصلاح مطلوب: منع الباقات من الفتح كأنها course player عبر `/course/${pkg.id}`.
+- الملف المشتبه أولًا: `pages/GenericPathPage.tsx`.
+- المسار الآمن للباقات: `/category/${path.id}?tab=packages&package=${pkg.id}`، ومع المادة: `/category/${path.id}?tab=packages&subject=${subjectId}&package=${pkg.id}`.
+- أول smoke مطلوب: `scripts/smoke-package-path-navigation-contract.mjs` مع script `smoke:package-path-navigation`.
+- لا تستخدم `git add .`.
+- لا تلمس الملفات القديمة dirty/untracked خارج نطاق BATCH 102.
+- لا تعلن readiness إلا بعد تشغيل الفحوص وتوثيق PASS/FAIL بصدق.
+
+---
+
 ## تحديث تسليم 2026-05-22 - BATCH 100Y Fully Closed
 
 - الدفعة: `BATCH_100Y_PRODUCTION_RUNTIME_STABILITY_CONFIRMATION_2026-05-22_AR`.
