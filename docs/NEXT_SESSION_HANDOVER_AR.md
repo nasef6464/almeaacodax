@@ -2227,3 +2227,43 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - لا توجد دفعة cleanup مطلوبة حاليًا.
 - لا تستخدم `git add .` لأن الشجرة ما زالت تحتوي ملفات dirty/untracked قديمة خارج نطاق 100P.
 - الدفعة التالية تكون حسب أولوية المالك التالية.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100Q Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- ربط بانر تثبيت PWA داخل التطبيق وتصحيح النص العربي.
+- تثبيت promise-returning question mutations في `store/useStore.ts` حتى تتزامن عمليات CRUD مع backend.
+- توسيع لوحة المالية: فلاتر طلبات الدفع، pagination، summary، وcountry presets.
+- توسيع لوحة المستخدمين: بحث/دور/pagination من الخادم.
+- توسيع تقارير بوابة المدارس: نطاق مدرسة/فصل ونوع تقرير.
+- تقليل payload `taxonomy/bootstrap` عبر `phase=core` مع cache منفصل لكل phase.
+- إضافة endpoint اختبار تسليم الإشعارات من الإدارة مع حفظ رقم المستلم.
+- تأخير empty-state في صفحة الاختبار أثناء hydrate الأسئلة المرتبطة.
+- إضافة smoke: `npm run smoke:batch100q-operational-admin-runtime`.
+
+### الفحوص التي نجحت
+- `npm run smoke:batch100q-operational-admin-runtime`: PASS.
+- `npm run typecheck`: PASS.
+- `npm --prefix server run build`: PASS.
+- `npm run build`: PASS.
+- `npm run smoke:payment-providers`: PASS.
+- `npm run smoke:notification-phase10`: PASS.
+- `npm run smoke:performance`: PASS.
+
+### فحص Browser قبل النشر
+- الإنتاج الحالي فتح `admin-dashboard?tab=questions`.
+- ظهر `مركز الأسئلة`، `إضافة سؤال جديد`، حقل البحث، وعدّاد الأسئلة.
+
+### المطلوب للإغلاق النهائي
+1. Stage صريح لملفات 100Q فقط، ولا تستخدم `git add .`.
+2. Commit ثم push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص API الإنتاج لمسارات health/taxonomy.
+6. فتح Browser على تبويبات الإدارة المتأثرة بعد النشر.

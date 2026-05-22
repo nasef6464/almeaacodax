@@ -102,7 +102,8 @@
         "smoke:batch100m-homepage-live-preview": "node scripts/smoke-batch100m-homepage-live-preview-contract.mjs",
         "smoke:batch100n-admin-tab-e2e": "node scripts/smoke-batch100n-admin-tab-e2e-contract.mjs",
         "smoke:batch100o-admin-crud-course-linkage": "node scripts/smoke-batch100o-admin-crud-course-linkage-contract.mjs",
-        "smoke:batch100p-question-bank-crud": "node scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs"
+        "smoke:batch100p-question-bank-crud": "node scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs",
+        "smoke:batch100q-operational-admin-runtime": "node scripts/smoke-batch100q-operational-admin-runtime-contract.mjs"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",

@@ -2,9 +2,28 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: None
+- Active Batch: BATCH 100Q - Operational Admin Runtime Scale Sweep
 - Last Closed Batch: BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-22 - BATCH 100Q - Operational Admin Runtime Scale Sweep
+- Batch: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: operational admin runtime scale sweep; no design changes.
+- Delivered:
+  - PWA install banner wiring with corrected Arabic copy.
+  - Question store mutations now await create/update/delete and return persisted records for runtime CRUD flows.
+  - Admin finance payment requests gained server filters, pagination, summary counters, and country presets.
+  - Admin users gained server-backed search, role filtering, and pagination controls.
+  - School portal reports gained school/class/report-mode scoping.
+  - Public taxonomy bootstrap gained `phase=core|full` with phase-aware cache and smaller core payload.
+  - Admin notification test-delivery endpoint added with phone persistence in delivery records.
+  - Quiz page now delays empty-state while referenced questions hydrate.
+  - Added `npm run smoke:batch100q-operational-admin-runtime`.
+- Checks PASS: batch100q smoke, typecheck, server build, frontend build, payment providers smoke, notification phase10 smoke, performance smoke.
+- Browser baseline before deploy: production admin question bank opened and showed title, add button, search field, and question count.
+- Report: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR.md`.
+- Next required for final closure: explicit stage for 100Q files only, commit, push, wait Vercel/Render, run production smokes, and re-open Browser on impacted admin tabs.
 
 ## Update 2026-05-22 - BATCH 100P - Admin Question Bank Runtime CRUD + Production Browser Verification
 - Batch: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR`.

@@ -10,6 +10,7 @@ export type NotificationChannel = "in_app" | "email" | "whatsapp";
 type NotificationRecipient = {
   id: string;
   email?: string;
+  phone?: string;
   role?: string;
   name?: string;
 };
@@ -48,18 +49,19 @@ async function resolveRecipients(input: Pick<CreateNotificationInput, "userIds" 
   }
 
   const users = await UserModel.find(filters.length === 1 ? filters[0] : { $or: filters })
-    .select("_id id name email role")
+    .select("_id id name email role phone")
     .limit(MAX_RECIPIENTS_PER_REQUEST + 1)
     .lean();
 
   const unique = new Map<string, NotificationRecipient>();
   for (const user of users) {
-    const rawUser = user as { id?: string; _id?: unknown; email?: string; role?: string; name?: string };
+    const rawUser = user as { id?: string; _id?: unknown; email?: string; role?: string; name?: string; phone?: string };
     const id = String(rawUser.id || rawUser._id);
     if (!unique.has(id)) {
       unique.set(id, {
         id,
         email: rawUser.email || "",
+        phone: rawUser.phone || "",
         role: rawUser.role || "",
         name: rawUser.name || "",
       });
@@ -114,6 +116,7 @@ export async function createNotificationDeliveries(input: CreateNotificationInpu
       body: message.body,
       recipientUserId: recipient.id,
       recipientEmail: recipient.email || "",
+      recipientPhone: recipient.phone || "",
       recipientRole: recipient.role || "",
       provider: channel === "in_app" ? "internal" : "",
       sentAt: channel === "in_app" ? now : null,

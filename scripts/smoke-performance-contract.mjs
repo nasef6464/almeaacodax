@@ -130,8 +130,8 @@ assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
 assertIncludes('App.tsx', 'shouldStartBootstrapForPath(path)');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
 assertAnyIncludes('App.tsx', [
-  'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 120 });',
-  'const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 120 }) : null;',
+  'const questionsPromise = options.deferQuestions ? null : adapter.getQuestions({ page: 1, limit: 100 });',
+  'const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;',
 ]);
 assertAnyIncludes('App.tsx', [
   'const taxonomyPromise = adapter.getTaxonomyBootstrap();',
@@ -150,7 +150,7 @@ assertIncludes('services/api.ts', 'const productionApiBaseUrl = "https://almeaac
 assertIncludes('services/api.ts', 'runtimeHostname === "almeaacodax.vercel.app" || runtimeHostname.endsWith(".vercel.app")');
 assertIncludes('services/api.ts', 'summary?: boolean');
 assertIncludes('services/api.ts', 'noTotal?: boolean');
-assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(200).default(80)');
+assertIncludes('server/src/routes/quiz.routes.ts', 'limit: z.coerce.number().int().min(1).max(100).default(80)');
 assertIncludes('server/src/routes/quiz.routes.ts', 'res.setHeader("X-Total-Count", String(total));');
 assertIncludes('server/src/routes/quiz.routes.ts', 'if (query.summary) {');
 assertIncludes('server/src/routes/quiz.routes.ts', 'toQuestionSummaryText(item.text)');
@@ -222,7 +222,11 @@ assertIncludes('services/api.ts', 'globalThis.sessionStorage');
 assertIncludes('services/api.ts', 'taxonomy-bootstrap');
 assertIncludes('services/api.ts', 'content-bootstrap');
 assertIncludes('services/api.ts', 'canUsePublicLearningCache');
-assertIncludes('services/api.ts', '`courses-${query.page || 1}-${query.limit}`');
+assertIncludes('services/api.ts', 'const cacheKey = [');
+assertIncludes('services/api.ts', '"courses",');
+assertIncludes('services/api.ts', 'query.pathId || "all-paths"');
+assertIncludes('services/api.ts', 'query.subjectId || "all-subjects"');
+assertIncludes('services/api.ts', '].join(":");');
 assertIncludes('services/api.ts', 'homepage-settings');
 assertIncludes('services/api.ts', 'announcement-ads');
 assertIncludes('components/PlatformFontBootstrap.tsx', 'requestIdle(() =>');
@@ -247,7 +251,7 @@ assertIncludes('server/src/server.ts', 'server.listen(env.PORT');
 assertNotIncludes('server/src/server.ts', 'await ensureSkillTaxonomy();\n  await ensureAdminAccount();');
 
 assertIncludes('store/useStore.ts', "runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false'");
-assertIncludes('store/useStore.ts', "runtimeEnv?.DEV === true && runtimeEnv?.VITE_USE_REAL_API === 'false'");
+assertIncludes('store/useStore.ts', 'const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API');
 assertNotIncludes('vite.config.ts', "return 'firebase';");
 assertNotIncludes('vite.config.ts', "return 'video-dash';");
 assertNotIncludes('vite.config.ts', "return 'video-hls';");

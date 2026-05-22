@@ -125,6 +125,9 @@ export const SchoolPortalManager: React.FC = () => {
         accessCodes,
     } = useStore();
     const [actionFeedback, setActionFeedback] = useState('');
+    const [selectedSchoolId, setSelectedSchoolId] = useState('all');
+    const [selectedClassId, setSelectedClassId] = useState('all');
+    const [reportMode, setReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
 
     const scope = useMemo(() => {
         const userGroupIds = new Set(user.groupIds || []);
@@ -201,7 +204,59 @@ export const SchoolPortalManager: React.FC = () => {
         })
     ), [scope.classes, scope.results, scope.students]);
 
-    const watchList = studentSummaries
+    const reportClasses = useMemo(() => {
+        if (selectedClassId !== 'all') {
+            return scope.classes.filter((classroom) => classroom.id === selectedClassId);
+        }
+        if (selectedSchoolId === 'all') {
+            return scope.classes;
+        }
+        return scope.classes.filter((classroom) => classroom.parentId === selectedSchoolId);
+    }, [scope.classes, selectedClassId, selectedSchoolId]);
+
+    const reportStudents = useMemo(() => {
+        if (selectedClassId !== 'all') {
+            const classGroup = scope.classes.find((classroom) => classroom.id === selectedClassId);
+            if (!classGroup) return [];
+            return scope.students.filter((student) =>
+                classGroup.studentIds.includes(student.id) || (student.groupIds || []).includes(classGroup.id),
+            );
+        }
+        if (selectedSchoolId === 'all') {
+            return scope.students;
+        }
+        const classIds = new Set(scope.classes.filter((classroom) => classroom.parentId === selectedSchoolId).map((classroom) => classroom.id));
+        return scope.students.filter((student) =>
+            student.schoolId === selectedSchoolId || (student.groupIds || []).some((groupId) => classIds.has(groupId)),
+        );
+    }, [scope.classes, scope.students, selectedClassId, selectedSchoolId]);
+
+    const reportStudentIds = useMemo(() => new Set(reportStudents.map((student) => student.id)), [reportStudents]);
+    const reportStudentSummaries = useMemo(
+        () => studentSummaries.filter((summary) => reportStudentIds.has(summary.student.id)),
+        [reportStudentIds, studentSummaries],
+    );
+
+    const reportPackages = useMemo(() => {
+        if (selectedSchoolId === 'all') return scope.packages;
+        return scope.packages.filter((pkg) => pkg.schoolId === selectedSchoolId);
+    }, [scope.packages, selectedSchoolId]);
+
+    const reportCodes = useMemo(() => {
+        if (selectedSchoolId === 'all') return scope.codes;
+        return scope.codes.filter((code) => code.schoolId === selectedSchoolId);
+    }, [scope.codes, selectedSchoolId]);
+
+    const reportFollowUpQuizzes = useMemo(() => {
+        const reportClassIds = new Set(reportClasses.map((classroom) => classroom.id));
+        return scope.followUpQuizzes.filter((quiz) => {
+            const groupMatch = (quiz.targetGroupIds || []).some((groupId) => reportClassIds.has(groupId));
+            const userMatch = (quiz.targetUserIds || []).some((studentId) => reportStudentIds.has(studentId));
+            return groupMatch || userMatch;
+        });
+    }, [reportClasses, reportStudentIds, scope.followUpQuizzes]);
+
+    const watchList = reportStudentSummaries
         .filter((summary) => summary.results.length === 0 || summary.average < 60 || summary.weakSkills.length > 0)
         .sort((a, b) => a.average - b.average);
     const interventionPlan = [
@@ -209,36 +264,36 @@ export const SchoolPortalManager: React.FC = () => {
             id: 'not-started',
             title: 'لم يبدأوا القياس',
             tone: 'amber',
-            students: studentSummaries.filter((summary) => summary.results.length === 0),
+            students: reportStudentSummaries.filter((summary) => summary.results.length === 0),
             action: 'ابدأ باختبار قياس قصير موجه للمجموعة، ثم أرسل تنبيه دخول للطالب وولي الأمر.',
         },
         {
             id: 'low-average',
             title: 'متوسط منخفض',
             tone: 'rose',
-            students: studentSummaries.filter((summary) => summary.results.length > 0 && summary.average < 60),
+            students: reportStudentSummaries.filter((summary) => summary.results.length > 0 && summary.average < 60),
             action: 'وجّه تدريبًا علاجيًا قصيرًا ثم اختبار متابعة بعد 48 ساعة.',
         },
         {
             id: 'weak-skills',
             title: 'ضعف مهاري واضح',
             tone: 'indigo',
-            students: studentSummaries.filter((summary) => summary.weakSkills.length > 0 && summary.average >= 60),
+            students: reportStudentSummaries.filter((summary) => summary.weakSkills.length > 0 && summary.average >= 60),
             action: 'اجمع الطلاب حسب المهارة الضعيفة وأرسل اختبارًا موجها على نفس المهارة.',
         },
         {
             id: 'stable',
             title: 'مستقرون',
             tone: 'emerald',
-            students: studentSummaries.filter((summary) => summary.results.length > 0 && summary.average >= 75 && summary.weakSkills.length === 0),
+            students: reportStudentSummaries.filter((summary) => summary.results.length > 0 && summary.average >= 75 && summary.weakSkills.length === 0),
             action: 'اكتف بتقرير أسبوعي وتحفيز، ولا تزحمهم برسائل علاجية.',
         },
     ];
     const priorityIntervention = interventionPlan
         .filter((item) => item.id !== 'stable')
         .sort((a, b) => b.students.length - a.students.length)[0];
-    const classActionPlan = scope.classes.map((classroom) => {
-        const classroomStudents = studentSummaries.filter((summary) =>
+    const classActionPlan = reportClasses.map((classroom) => {
+        const classroomStudents = reportStudentSummaries.filter((summary) =>
             classroom.studentIds.includes(summary.student.id) || (summary.student.groupIds || []).includes(classroom.id),
         );
         const classroomAverage = averageScore(classroomStudents.flatMap((item) => item.results));
@@ -266,14 +321,14 @@ export const SchoolPortalManager: React.FC = () => {
         };
     }).sort((a, b) => b.watchCount - a.watchCount || a.average - b.average);
 
-    const totalSeats = scope.packages
+    const totalSeats = reportPackages
         .filter((pkg) => pkg.status === 'active')
         .reduce((sum, pkg) => sum + (pkg.maxStudents || 0), 0);
-    const usedSeats = scope.codes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
-    const activeCodes = scope.codes.filter((code) => code.expiresAt > Date.now());
-    const average = averageScore(scope.results);
+    const usedSeats = reportCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
+    const activeCodes = reportCodes.filter((code) => code.expiresAt > Date.now());
+    const average = averageScore(reportStudentSummaries.flatMap((item) => item.results));
     const schoolTitle = scope.schools.map((school) => school.name).join('، ') || 'نطاق الإشراف الحالي';
-    const primaryTargetGroupId = scope.classes[0]?.id || scope.schools[0]?.id || '';
+    const primaryTargetGroupId = reportClasses[0]?.id || scope.schools.find((school) => school.id === selectedSchoolId)?.id || scope.schools[0]?.id || '';
     const followUpEmails = watchList
         .map((summary) => summary.student.email)
         .filter(Boolean)
@@ -281,7 +336,7 @@ export const SchoolPortalManager: React.FC = () => {
     const followUpMessage = [
         `تقرير متابعة ${schoolTitle}`,
         '',
-        `عدد الطلاب داخل النطاق: ${scope.students.length}`,
+        `عدد الطلاب داخل النطاق: ${reportStudents.length}`,
         `طلاب يحتاجون متابعة: ${watchList.length}`,
         `متوسط الأداء: ${average}%`,
         '',
@@ -311,12 +366,14 @@ export const SchoolPortalManager: React.FC = () => {
     ];
     const supervisorBrief = [
         `ملخص إشراف ${schoolTitle}`,
-        `الطلاب داخل النطاق: ${scope.students.length}`,
+        `الطلاب داخل النطاق: ${reportStudents.length}`,
         `يحتاجون متابعة: ${watchList.length}`,
         `متوسط الأداء: ${average}%`,
         `أفضل إجراء الآن: ${watchList.length ? 'اختبار قصير ثم رسالة متابعة' : 'تقرير أسبوعي للإدارة'}`,
-        `نطاق الاختبار المقترح: ${scope.classes[0]?.name || scope.schools[0]?.name || 'نطاق الإشراف الحالي'}`,
+        `نطاق الاختبار المقترح: ${reportClasses[0]?.name || scope.schools[0]?.name || 'نطاق الإشراف الحالي'}`,
     ].join('\n');
+    const showAggregatedSections = reportMode === 'combined' || reportMode === 'aggregated';
+    const showIndividualSections = reportMode === 'combined' || reportMode === 'individual';
 
     const openTargetedQuiz = () => {
         const params = new URLSearchParams({
@@ -456,12 +513,12 @@ export const SchoolPortalManager: React.FC = () => {
                     ['البند', 'القيمة'],
                     ['النطاق', schoolTitle],
                     ['عدد المدارس', scope.schools.length],
-                    ['عدد الفصول', scope.classes.length],
-                    ['عدد الطلاب', scope.students.length],
+                    ['عدد الفصول', reportClasses.length],
+                    ['عدد الطلاب', reportStudents.length],
                     ['متوسط الأداء', `${average}%`],
                     ['طلاب يحتاجون متابعة', watchList.length],
-                    ['اختبارات متابعة', scope.followUpQuizzes.length],
-                    ['باقات نشطة', scope.packages.filter((pkg) => pkg.status === 'active').length],
+                    ['اختبارات متابعة', reportFollowUpQuizzes.length],
+                    ['باقات نشطة', reportPackages.filter((pkg) => pkg.status === 'active').length],
                     ['أكواد فعالة', activeCodes.length],
                 ],
             },
@@ -469,7 +526,7 @@ export const SchoolPortalManager: React.FC = () => {
                 name: 'students',
                 rows: [
                     ['الطالب', 'البريد', 'الفصل', 'المحاولات', 'متوسط الأداء', 'آخر اختبار', 'أضعف مهارات'],
-                    ...studentSummaries.map((summary) => [
+                    ...reportStudentSummaries.map((summary) => [
                         summary.student.name,
                         summary.student.email || '',
                         summary.classNames,
@@ -484,9 +541,9 @@ export const SchoolPortalManager: React.FC = () => {
                 name: 'classes',
                 rows: [
                     ['الفصل', 'الطلاب', 'الدورات', 'المشرفون'],
-                    ...scope.classes.map((classroom) => [
+                    ...reportClasses.map((classroom) => [
                         classroom.name,
-                        studentSummaries.filter((summary) => (summary.student.groupIds || []).includes(classroom.id) || classroom.studentIds.includes(summary.student.id)).length,
+                        reportStudentSummaries.filter((summary) => (summary.student.groupIds || []).includes(classroom.id) || classroom.studentIds.includes(summary.student.id)).length,
                         classroom.courseIds.length,
                         classroom.supervisorIds.length,
                     ]),
@@ -534,11 +591,11 @@ export const SchoolPortalManager: React.FC = () => {
                 name: 'packages',
                 rows: [
                     ['الباقة', 'الحالة', 'المقاعد', 'الأكواد'],
-                    ...scope.packages.map((pkg) => [
+                    ...reportPackages.map((pkg) => [
                         pkg.name,
                         pkg.status === 'active' ? 'نشطة' : 'موقوفة',
                         pkg.maxStudents || 0,
-                        scope.codes.filter((code) => code.packageId === pkg.id).length,
+                        reportCodes.filter((code) => code.packageId === pkg.id).length,
                     ]),
                 ],
             },
@@ -553,12 +610,12 @@ export const SchoolPortalManager: React.FC = () => {
                 <p class="muted">${escapeHtml(new Date().toLocaleString('ar-SA'))}</p>
             </section>
             <section class="metrics">
-                <div class="metric"><span>الطلاب</span><strong>${scope.students.length}</strong></div>
-                <div class="metric"><span>الفصول</span><strong>${scope.classes.length}</strong></div>
+                <div class="metric"><span>الطلاب</span><strong>${reportStudents.length}</strong></div>
+                <div class="metric"><span>الفصول</span><strong>${reportClasses.length}</strong></div>
                 <div class="metric"><span>متوسط الأداء</span><strong>${average}%</strong></div>
                 <div class="metric"><span>يحتاجون متابعة</span><strong>${watchList.length}</strong></div>
-                <div class="metric"><span>اختبارات متابعة</span><strong>${scope.followUpQuizzes.length}</strong></div>
-                <div class="metric"><span>باقات نشطة</span><strong>${scope.packages.filter((pkg) => pkg.status === 'active').length}</strong></div>
+                <div class="metric"><span>اختبارات متابعة</span><strong>${reportFollowUpQuizzes.length}</strong></div>
+                <div class="metric"><span>باقات نشطة</span><strong>${reportPackages.filter((pkg) => pkg.status === 'active').length}</strong></div>
                 <div class="metric"><span>أكواد فعالة</span><strong>${activeCodes.length}</strong></div>
                 <div class="metric"><span>المقاعد</span><strong>${usedSeats}/${totalSeats}</strong></div>
             </section>
@@ -576,9 +633,9 @@ export const SchoolPortalManager: React.FC = () => {
             <h2>الفصول</h2>
             ${renderPrintTable(
                 ['الفصل', 'الطلاب', 'الدورات', 'المشرفون'],
-                scope.classes.map((classroom) => [
+                reportClasses.map((classroom) => [
                     classroom.name,
-                    studentSummaries.filter((summary) => (summary.student.groupIds || []).includes(classroom.id) || classroom.studentIds.includes(summary.student.id)).length,
+                    reportStudentSummaries.filter((summary) => (summary.student.groupIds || []).includes(classroom.id) || classroom.studentIds.includes(summary.student.id)).length,
                     classroom.courseIds.length,
                     classroom.supervisorIds.length,
                 ]),
@@ -634,8 +691,8 @@ export const SchoolPortalManager: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {[
-                    { label: 'الطلاب داخل النطاق', value: scope.students.length, icon: <Users size={22} />, color: 'blue' },
-                    { label: 'الفصول المرتبطة', value: scope.classes.length, icon: <GraduationCap size={22} />, color: 'purple' },
+                    { label: 'الطلاب داخل النطاق', value: reportStudents.length, icon: <Users size={22} />, color: 'blue' },
+                    { label: 'الفصول المرتبطة', value: reportClasses.length, icon: <GraduationCap size={22} />, color: 'purple' },
                     { label: 'متوسط الأداء', value: `${average}%`, icon: <CheckCircle2 size={22} />, color: 'emerald' },
                     { label: 'يحتاجون متابعة', value: watchList.length, icon: <AlertTriangle size={22} />, color: 'amber' },
                 ].map((item) => (
@@ -656,6 +713,58 @@ export const SchoolPortalManager: React.FC = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <label className="text-xs font-black text-gray-600">
+                        نطاق المدرسة
+                        <select
+                            value={selectedSchoolId}
+                            onChange={(event) => {
+                                setSelectedSchoolId(event.target.value);
+                                setSelectedClassId('all');
+                            }}
+                            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700"
+                        >
+                            <option value="all">كل المدارس في نطاقي</option>
+                            {scope.schools.map((school) => (
+                                <option key={school.id} value={school.id}>
+                                    {school.name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                    <label className="text-xs font-black text-gray-600">
+                        نطاق الفصل
+                        <select
+                            value={selectedClassId}
+                            onChange={(event) => setSelectedClassId(event.target.value)}
+                            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700"
+                        >
+                            <option value="all">كل الفصول</option>
+                            {scope.classes
+                                .filter((classroom) => selectedSchoolId === 'all' || classroom.parentId === selectedSchoolId)
+                                .map((classroom) => (
+                                    <option key={classroom.id} value={classroom.id}>
+                                        {classroom.name}
+                                    </option>
+                                ))}
+                        </select>
+                    </label>
+                    <label className="text-xs font-black text-gray-600">
+                        نوع التقرير
+                        <select
+                            value={reportMode}
+                            onChange={(event) => setReportMode(event.target.value as 'combined' | 'aggregated' | 'individual')}
+                            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700"
+                        >
+                            <option value="combined">تقرير شامل</option>
+                            <option value="aggregated">مجمّع فقط</option>
+                            <option value="individual">مفرد فقط</option>
+                        </select>
+                    </label>
+                </div>
             </div>
 
             <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
@@ -744,13 +853,14 @@ export const SchoolPortalManager: React.FC = () => {
                     <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                         <div className="text-xs font-black text-gray-500">نطاق الاختبار التالي</div>
                         <div className="mt-2 truncate text-sm font-black text-gray-900">
-                            {scope.classes[0]?.name || scope.schools[0]?.name || 'لم يحدد بعد'}
+                            {reportClasses[0]?.name || scope.schools[0]?.name || 'لم يحدد بعد'}
                         </div>
                         <p className="mt-1 text-xs text-gray-500">يمكن تغيير النطاق من مركز الاختبارات.</p>
                     </div>
                 </div>
             </div>
 
+            {showAggregatedSections && (
             <div className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
                 <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
@@ -809,7 +919,9 @@ export const SchoolPortalManager: React.FC = () => {
                     ))}
                 </div>
             </div>
+            )}
 
+            {showAggregatedSections && (
             <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
                 <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
@@ -864,7 +976,9 @@ export const SchoolPortalManager: React.FC = () => {
                     </table>
                 </div>
             </div>
+            )}
 
+            {showIndividualSections && (
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <div className="xl:col-span-2 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                     <div className="mb-5 flex items-center justify-between gap-3">
@@ -934,12 +1048,14 @@ export const SchoolPortalManager: React.FC = () => {
                         </div>
                         <div className="rounded-xl bg-amber-50 p-4">
                             <div className="text-xs font-bold text-amber-700">اختبارات متابعة موجهة</div>
-                            <div className="mt-1 text-2xl font-black text-amber-800">{scope.followUpQuizzes.length}</div>
+                            <div className="mt-1 text-2xl font-black text-amber-800">{reportFollowUpQuizzes.length}</div>
                         </div>
                     </div>
                 </div>
             </div>
+            )}
 
+            {showAggregatedSections && (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                     <div className="mb-5 flex items-center gap-2">
@@ -947,8 +1063,8 @@ export const SchoolPortalManager: React.FC = () => {
                         <h2 className="text-lg font-black text-gray-900">الفصول</h2>
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
-                        {scope.classes.map((classroom) => {
-                            const classroomStudents = studentSummaries.filter((summary) =>
+                        {reportClasses.map((classroom) => {
+                            const classroomStudents = reportStudentSummaries.filter((summary) =>
                                 classroom.studentIds.includes(summary.student.id) || (summary.student.groupIds || []).includes(classroom.id),
                             );
                             return (
@@ -980,17 +1096,17 @@ export const SchoolPortalManager: React.FC = () => {
                         <h2 className="text-lg font-black text-gray-900">الدورات والباقات</h2>
                     </div>
                     <div className="space-y-3">
-                        {scope.packages.length === 0 ? (
+                        {reportPackages.length === 0 ? (
                             <div className="rounded-xl border border-dashed border-gray-200 p-5 text-sm font-bold text-gray-500">
                                 لا توجد باقات مدرسية ظاهرة داخل نطاقك حتى الآن.
                             </div>
-                        ) : scope.packages.map((pkg) => (
+                        ) : reportPackages.map((pkg) => (
                             <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                                 <div className="flex items-center justify-between gap-3">
                                     <div>
                                         <div className="font-black text-gray-900">{pkg.name}</div>
                                         <div className="mt-1 text-xs text-gray-500">
-                                            {pkg.courseIds.length} دورة · {scope.codes.filter((code) => code.packageId === pkg.id).length} كود
+                                            {pkg.courseIds.length} دورة · {reportCodes.filter((code) => code.packageId === pkg.id).length} كود
                                         </div>
                                     </div>
                                     <span className={`rounded-full px-3 py-1 text-xs font-black ${
@@ -1010,6 +1126,7 @@ export const SchoolPortalManager: React.FC = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 };

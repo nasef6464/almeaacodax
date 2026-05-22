@@ -1672,3 +1672,20 @@
 - Production API: PASS, question search with `(` and `???` returns `200` instead of the pre-fix `500`.
 - In-app Browser: PASS, admin question bank opened and showed the title, add button, and search field after deploy.
 - Cleanup: PASS, direct Mongo check for `BATCH 100P runtime CRUD test` returned `matched=0`.
+
+## Update 2026-05-22 - BATCH 100Q
+- Batch: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: operational admin runtime scale sweep without design changes.
+- Key changes:
+  - PWA install prompt wiring and corrected Arabic banner text.
+  - Persisted question store mutations now await backend create/update/delete.
+  - Admin finance requests now have server filters, pagination, summaries, and country presets.
+  - Admin users now have server-backed search, role filters, and pagination.
+  - School portal reports now support school/class/report-mode scoping.
+  - Public taxonomy bootstrap now supports `phase=core|full` with phase cache.
+  - Notification admin test-delivery endpoint added with recipient phone persistence.
+  - Quiz empty-state is delayed while scoped question hydration is still in-flight.
+- Checks PASS: `smoke:batch100q-operational-admin-runtime`, typecheck, server build, frontend build, payment providers, notification phase10, performance.
+- Browser baseline: production question bank visible before deploy.
+- Report: `BATCH_100Q_OPERATIONAL_ADMIN_RUNTIME_SCALE_SWEEP_2026-05-22_AR.md`.

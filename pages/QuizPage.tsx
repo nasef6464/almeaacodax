@@ -131,6 +131,7 @@ export const QuizPage: React.FC = () => {
   const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
   const [quizScopedQuestions, setQuizScopedQuestions] = useState<Question[]>([]);
   const [isResolvingScopedQuestions, setIsResolvingScopedQuestions] = useState(false);
+  const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
   const activeQuizLoadKeyRef = useRef('');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -162,6 +163,11 @@ export const QuizPage: React.FC = () => {
     if (sourceParam === 'mock-exam') return 'العودة للاختبارات المحاكية';
     return safeReturnTo ? 'العودة للمكان السابق' : 'الرجوع';
   }, [safeReturnTo, sourceParam]);
+  const referencedQuestionCount = useMemo(() => (quiz ? flattenMockExamQuestionIds(quiz).length : 0), [quiz]);
+  const shouldDelayEmptyState = referencedQuestionCount > 0 && quizQuestions.length === 0 && !isFinished;
+  const waitingForQuestionHydration =
+    shouldDelayEmptyState && questionHydrationStartedAt !== null && Date.now() - questionHydrationStartedAt < 3000;
+
   const buildReturnToSourcePath = () => {
     if (!safeReturnTo) return '';
     const [path, query = ''] = safeReturnTo.split('?');
@@ -262,6 +268,7 @@ export const QuizPage: React.FC = () => {
     }
 
     setQuiz(foundQuiz);
+    setQuestionHydrationStartedAt(Date.now());
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
     setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -382,6 +389,9 @@ export const QuizPage: React.FC = () => {
         : shuffleQuestions(loadedQuestions);
 
     setQuizQuestions(nextQuestions);
+    if (nextQuestions.length > 0) {
+      setQuestionHydrationStartedAt(null);
+    }
     setDraftRestored(canRestoreProgress);
 
     if (canRestoreProgress && savedProgress) {
@@ -417,6 +427,12 @@ export const QuizPage: React.FC = () => {
 
     window.localStorage.setItem(`${QUIZ_PAGE_PROGRESS_PREFIX}${quiz.id}`, JSON.stringify(draft));
   }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
+
+  useEffect(() => {
+    if (quizQuestions.length > 0) {
+      setQuestionHydrationStartedAt(null);
+    }
+  }, [quizQuestions.length]);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !isFinished && !isSubmittingResult) {
@@ -825,6 +841,10 @@ export const QuizPage: React.FC = () => {
   }
 
   if (isResolvingScopedQuestions) {
+    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
+  }
+
+  if (waitingForQuestionHydration) {
     return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
   }
 

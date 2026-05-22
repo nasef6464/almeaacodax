@@ -103,9 +103,9 @@ interface AppState {
     deleteCourse: (courseId: string) => Promise<void>;
 
     // Question Actions
-    addQuestion: (question: Question) => Promise<void>;
-    updateQuestion: (questionId: string, data: Partial<Question>) => void;
-    deleteQuestion: (questionId: string) => void;
+    addQuestion: (question: Question) => Promise<Question>;
+    updateQuestion: (questionId: string, data: Partial<Question>) => Promise<Question>;
+    deleteQuestion: (questionId: string) => Promise<void>;
 
     // Quiz Actions
     addQuiz: (quiz: Quiz) => void;
@@ -912,19 +912,27 @@ export const useStore = create<AppState>()(
                 const normalizedQuestion = {
                     ...question,
                     id: String(created?.id || created?._id || question.id),
-                };
+                    ...created,
+                } as Question;
                 set((state) => ({
                     questions: [normalizedQuestion, ...state.questions.filter((item) => item.id !== normalizedQuestion.id)]
                 }));
+                return normalizedQuestion;
             },
-            updateQuestion: (questionId, data) => {
-                api.updateQuestion(questionId, data).catch(console.error);
+            updateQuestion: async (questionId, data) => {
+                const updated = await api.updateQuestion(questionId, data) as any;
+                const persistedQuestion = {
+                    ...data,
+                    ...updated,
+                    id: String(updated?.id || updated?._id || questionId),
+                } as Question;
                 set((state) => ({
-                    questions: state.questions.map(q => q.id === questionId ? { ...q, ...data } : q)
+                    questions: state.questions.map(q => q.id === questionId ? { ...q, ...persistedQuestion } : q)
                 }));
+                return persistedQuestion;
             },
-            deleteQuestion: (questionId) => {
-                api.deleteQuestion(questionId).catch(console.error);
+            deleteQuestion: async (questionId) => {
+                await api.deleteQuestion(questionId);
                 set((state) => ({
                     questions: state.questions.filter(q => q.id !== questionId)
                 }));

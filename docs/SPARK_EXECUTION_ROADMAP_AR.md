@@ -873,3 +873,22 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - In-app Browser: PASS for admin question-bank visibility after deploy.
   - Cleanup: direct Mongo check found `matched=0` for the BATCH 100P test question.
 - Next proposed batch: owner's next priority; no cleanup batch is required right now.
+
+## Update 2026-05-22 - After BATCH 100Q Programmatic Closure
+- `BATCH 100Q - Operational Admin Runtime Scale Sweep` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. PWA install banner wiring and corrected Arabic copy.
+  2. Question store mutation promises for create/update/delete.
+  3. Admin finance payment request filters, pagination, summaries, and country presets.
+  4. Admin users server-backed search/role/pagination controls.
+  5. School portal report scoping by school/class/report mode.
+  6. Taxonomy bootstrap `phase=core|full` with phase-aware public cache.
+  7. Admin notification test delivery endpoint and recipient phone persistence.
+  8. Quiz empty-state hydration delay for referenced questions.
+- Required final closure:
+  1. Stage BATCH 100Q files explicitly; do not use `git add .`.
+  2. Commit and push to `origin/main`.
+  3. Wait for Vercel and Render deployment.
+  4. Run `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
+  5. Verify production API health/taxonomy and impacted admin pages in Browser.
+- Next suggested after closure: continue with the owner's next runtime/admin priority.

@@ -12,6 +12,7 @@ import {
   processPendingNotifications,
 } from "../services/notificationService.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
+import { sendExternalNotification } from "../services/notificationProviders.js";
 
 export const notificationRouter = Router();
 
@@ -41,6 +42,15 @@ const sendNotificationSchema = z.object({
 
 const processPendingSchema = z.object({
   limit: z.number().int().min(1).max(50).optional().default(25),
+});
+
+const integrationTestSchema = z.object({
+  channel: z.enum(["email", "whatsapp"]),
+  recipientEmail: z.string().email().optional().default(""),
+  recipientPhone: z.string().min(8).max(30).optional().default(""),
+  subject: z.string().max(220).optional().default("اختبار التكامل"),
+  title: z.string().min(2).max(220).optional().default("اختبار التكامل"),
+  body: z.string().min(2).max(1000).optional().default("هذه رسالة اختبار من منصة المئة."),
 });
 
 const adminListSchema = z.object({
@@ -191,5 +201,43 @@ notificationRouter.post("/admin/process-pending", requireAuth, requireRole(["adm
     res.json({ mode: "inline-fallback", ...result });
   } catch (error) {
     next(error);
+  }
+});
+
+notificationRouter.post("/admin/test-delivery", requireAuth, requireRole(["admin"]), async (req, res, next) => {
+  try {
+    const payload = integrationTestSchema.parse(req.body || {});
+    if (payload.channel === "email" && !payload.recipientEmail) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "recipientEmail is required for email test." });
+    }
+    if (payload.channel === "whatsapp" && !payload.recipientPhone) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "recipientPhone is required for whatsapp test." });
+    }
+
+    const result = await sendExternalNotification({
+      channel: payload.channel,
+      id: `integration-test-${Date.now()}`,
+      recipientEmail: payload.recipientEmail,
+      recipientPhone: payload.recipientPhone,
+      subject: payload.subject,
+      title: payload.title,
+      body: payload.body,
+    });
+
+    if (!result.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        ok: false,
+        provider: result.provider,
+        failureReason: result.failureReason || "provider_error",
+      });
+    }
+
+    return res.json({
+      ok: true,
+      provider: result.provider,
+      providerMessageId: result.providerMessageId || "",
+    });
+  } catch (error) {
+    return next(error);
   }
 });

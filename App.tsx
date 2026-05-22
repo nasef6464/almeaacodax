@@ -13,6 +13,7 @@ import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
 import { PlatformFontBootstrap } from './components/PlatformFontBootstrap';
 import { APP_VERSION } from './utils/appVersion';
 import { installGlobalClientTelemetry } from './services/clientTelemetry';
+import { PwaInstallBanner } from './components/PwaInstallBanner';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
 
@@ -859,6 +860,7 @@ const App: React.FC = () => {
         </BootstrapRouteGate>
         </AppErrorBoundary>
         <AnnouncementAdsOverlay />
+        <PwaInstallBanner />
         {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
       </Suspense>
     </Router>

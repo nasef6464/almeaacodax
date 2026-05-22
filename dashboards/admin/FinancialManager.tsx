@@ -88,8 +88,16 @@ export const FinancialManager: React.FC = () => {
     const [settings, setSettings] = useState<PaymentSettings>(defaultSettings);
     const [loading, setLoading] = useState(false);
     const [requestActionLoading, setRequestActionLoading] = useState<string | null>(null);
+    const [requestsLoading, setRequestsLoading] = useState(false);
     const [requestStatusFilter, setRequestStatusFilter] = useState<PaymentRequestStatus | 'all'>('pending');
+    const [requestCountryFilter, setRequestCountryFilter] = useState<'all' | 'SA' | 'EG'>('all');
+    const [requestMethodFilter, setRequestMethodFilter] = useState<'all' | 'card' | 'transfer' | 'wallet'>('all');
     const [requestSearchTerm, setRequestSearchTerm] = useState('');
+    const [requestsPage, setRequestsPage] = useState(1);
+    const [requestsTotal, setRequestsTotal] = useState(0);
+    const [requestsTotalPages, setRequestsTotalPages] = useState(1);
+    const [requestsSummary, setRequestsSummary] = useState<{ all: number; pending: number; approved: number; rejected: number; cancelled: number } | null>(null);
+    const [summaryLoading, setSummaryLoading] = useState(false);
     const [discountForm, setDiscountForm] = useState<DiscountCode>({
         code: '',
         label: '',
@@ -112,19 +120,13 @@ export const FinancialManager: React.FC = () => {
             setLoading(true);
             setError(null);
             try {
-                const [settingsResponse, requestsResponse, discountCodesResponse] = await Promise.all([
+                const [settingsResponse, discountCodesResponse] = await Promise.all([
                     api.getPaymentSettings(),
-                    api.getPaymentRequests(),
                     api.getDiscountCodes(),
                 ]);
 
                 if (cancelled) return;
                 setSettings(settingsResponse as PaymentSettings);
-                setPaymentRequests(((requestsResponse as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
-                    ...request,
-                    id: String(request.id),
-                    userId: String(request.userId),
-                })));
                 setDiscountCodes(((discountCodesResponse as { codes?: DiscountCode[] })?.codes || []).map((code) => ({
                     ...code,
                     code: String(code.code || '').toUpperCase(),
@@ -145,6 +147,53 @@ export const FinancialManager: React.FC = () => {
             cancelled = true;
         };
     }, []);
+
+    useEffect(() => {
+        setRequestsPage(1);
+    }, [requestStatusFilter, requestSearchTerm, requestCountryFilter, requestMethodFilter]);
+
+    useEffect(() => {
+        let cancelled = false;
+        const timer = window.setTimeout(async () => {
+            setRequestsLoading(true);
+            try {
+                const response = await api.getPaymentRequests(undefined, {
+                    page: requestsPage,
+                    limit: 50,
+                    status: requestStatusFilter,
+                    search: requestSearchTerm.trim() || undefined,
+                    paymentCountry: requestCountryFilter === 'all' ? undefined : requestCountryFilter,
+                    paymentMethod: requestMethodFilter === 'all' ? undefined : requestMethodFilter,
+                });
+                if (cancelled) return;
+                const payload = response as {
+                    requests?: PaymentRequest[];
+                    pagination?: { page?: number; total?: number; totalPages?: number };
+                };
+                const normalizedRequests = (payload.requests || []).map((request) => ({
+                    ...request,
+                    id: String(request.id),
+                    userId: String(request.userId),
+                }));
+                setPaymentRequests(normalizedRequests);
+                setRequestsTotal(Number(payload.pagination?.total || normalizedRequests.length));
+                setRequestsTotalPages(Math.max(1, Number(payload.pagination?.totalPages || 1)));
+            } catch (loadRequestsError) {
+                if (!cancelled) {
+                    setError(loadRequestsError instanceof Error ? loadRequestsError.message : 'تعذر تحميل طلبات الدفع.');
+                }
+            } finally {
+                if (!cancelled) {
+                    setRequestsLoading(false);
+                }
+            }
+        }, 250);
+
+        return () => {
+            cancelled = true;
+            window.clearTimeout(timer);
+        };
+    }, [requestStatusFilter, requestSearchTerm, requestCountryFilter, requestMethodFilter, requestsPage]);
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const teachers = useMemo(() => users.filter((currentUser) => currentUser.role === Role.TEACHER), [users]);
@@ -185,20 +234,22 @@ export const FinancialManager: React.FC = () => {
     const averageCustomerValue = users.length > 0 ? Math.round(estimatedTotalRevenue / users.length) : 0;
 
     const pendingRequestsCount = paymentRequests.filter((request) => request.status === 'pending').length;
+    const pendingRequestsCountGlobal = requestsSummary?.pending ?? pendingRequestsCount;
+    const requestsAllCountGlobal = requestsSummary?.all ?? requestsTotal;
 
     const kpis = [
         {
             label: 'الإيرادات المثبتة + التقديرية',
             value: `${settings.currency} ${estimatedTotalRevenue.toLocaleString('en-US')}`,
-            trend: `${pendingRequestsCount} طلب بانتظار المراجعة`,
+            trend: `${pendingRequestsCountGlobal} طلب بانتظار المراجعة`,
             isPositive: true,
             icon: <DollarSign size={24} />,
         },
         {
             label: 'إجمالي طلبات الدفع المعلقة',
-            value: `${pendingRequestsCount}`,
+            value: `${pendingRequestsCountGlobal}`,
             trend: `${settings.currency} ${pendingRevenue.toLocaleString('en-US')} قيد المراجعة`,
-            isPositive: pendingRequestsCount > 0,
+            isPositive: pendingRequestsCountGlobal > 0,
             icon: <CreditCard size={24} />,
         },
         {
@@ -293,37 +344,21 @@ export const FinancialManager: React.FC = () => {
     ].filter(Boolean).join(' | ');
 
     const paymentRequestStatusCounts = useMemo(() => ({
-        all: paymentRequests.length,
-        pending: paymentRequests.filter((request) => request.status === 'pending').length,
-        approved: paymentRequests.filter((request) => request.status === 'approved').length,
-        rejected: paymentRequests.filter((request) => request.status === 'rejected').length,
-        cancelled: paymentRequests.filter((request) => request.status === 'cancelled').length,
-    }), [paymentRequests]);
+        all: requestsSummary?.all ?? paymentRequests.length,
+        pending: requestsSummary?.pending ?? paymentRequests.filter((request) => request.status === 'pending').length,
+        approved: requestsSummary?.approved ?? paymentRequests.filter((request) => request.status === 'approved').length,
+        rejected: requestsSummary?.rejected ?? paymentRequests.filter((request) => request.status === 'rejected').length,
+        cancelled: requestsSummary?.cancelled ?? paymentRequests.filter((request) => request.status === 'cancelled').length,
+    }), [paymentRequests, requestsSummary]);
 
     const visiblePaymentRequests = useMemo(() => {
-        const normalizedSearch = requestSearchTerm.trim().toLowerCase();
-
         return paymentRequests
-            .filter((request) => requestStatusFilter === 'all' || request.status === requestStatusFilter)
-            .filter((request) => {
-                if (!normalizedSearch) return true;
-                return [
-                    request.id,
-                    request.userName,
-                    request.userEmail,
-                    request.itemName,
-                    request.transferReference,
-                    request.walletNumber,
-                    request.notes,
-                    request.reviewerNotes,
-                ].some((value) => String(value || '').toLowerCase().includes(normalizedSearch));
-            })
             .sort((a, b) => {
                 const statusWeight = (request: PaymentRequest) => request.status === 'pending' ? 0 : request.status === 'approved' ? 1 : 2;
                 return statusWeight(a) - statusWeight(b)
                     || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
             });
-    }, [paymentRequests, requestSearchTerm, requestStatusFilter]);
+    }, [paymentRequests]);
 
     const recentTransactions = useMemo<TransactionRow[]>(() => {
         const requestTransactions = paymentRequests.slice(0, 8).map((request) => ({
@@ -546,7 +581,7 @@ export const FinancialManager: React.FC = () => {
 
     const exportPaymentRequests = () => {
         downloadCsv('payment-requests.csv', [
-            ['رقم الطلب', 'الطالب', 'البريد', 'العنصر', 'نوع العنصر', 'طريقة الدفع', 'المبلغ قبل الخصم', 'الخصم', 'المبلغ النهائي', 'العملة', 'كود الخصم', 'الحالة', 'مرجع التحويل', 'رقم المحفظة', 'الإيصال', 'ملاحظات', 'تاريخ الإنشاء'],
+            ['رقم الطلب', 'الطالب', 'البريد', 'العنصر', 'نوع العنصر', 'طريقة الدفع', 'الدولة', 'مزود الدفع', 'المبلغ قبل الخصم', 'الخصم', 'المبلغ النهائي', 'العملة', 'كود الخصم', 'الحالة', 'مرجع التحويل', 'رقم المحفظة', 'الإيصال', 'ملاحظات', 'تاريخ الإنشاء'],
             ...paymentRequests.map((request) => [
                 request.id,
                 request.userName || 'طالب',
@@ -554,6 +589,8 @@ export const FinancialManager: React.FC = () => {
                 request.itemName || '',
                 request.itemType || '',
                 request.paymentMethod || '',
+                paymentCountryLabel(request.paymentCountry),
+                request.paymentProviderCode || '',
                 request.originalAmount ?? request.amount ?? 0,
                 request.discountAmount || 0,
                 request.amount || 0,
@@ -911,11 +948,92 @@ export const FinancialManager: React.FC = () => {
             if (updatedRequest) {
                 setPaymentRequests((current) => current.map((request) => (request.id === updatedRequest.id ? updatedRequest : request)));
             }
+            await Promise.all([
+                loadRequestsSummary(),
+                api.getPaymentRequests(undefined, {
+                    page: requestsPage,
+                    limit: 50,
+                    status: requestStatusFilter,
+                    search: requestSearchTerm.trim() || undefined,
+                    paymentCountry: requestCountryFilter === 'all' ? undefined : requestCountryFilter,
+                    paymentMethod: requestMethodFilter === 'all' ? undefined : requestMethodFilter,
+                }).then((result) => {
+                    const payload = result as {
+                        requests?: PaymentRequest[];
+                        pagination?: { total?: number; totalPages?: number };
+                    };
+                    const normalizedRequests = (payload.requests || []).map((item) => ({
+                        ...item,
+                        id: String(item.id),
+                        userId: String(item.userId),
+                    }));
+                    setPaymentRequests(normalizedRequests);
+                    setRequestsTotal(Number(payload.pagination?.total || normalizedRequests.length));
+                    setRequestsTotalPages(Math.max(1, Number(payload.pagination?.totalPages || 1)));
+                }),
+            ]);
             setFeedback(status === 'approved' ? 'تم اعتماد الطلب وتفعيل الوصول على الحساب.' : 'تم تحديث حالة الطلب.');
         } catch (reviewError) {
             setError(reviewError instanceof Error ? reviewError.message : 'تعذر تحديث حالة الطلب.');
         } finally {
             setRequestActionLoading(null);
+        }
+    };
+
+    const loadRequestsSummary = async () => {
+        setSummaryLoading(true);
+        try {
+            const response = await api.getPaymentRequestsSummary();
+            const totals = (response as { totals?: { all?: number; pending?: number; approved?: number; rejected?: number; cancelled?: number } }).totals;
+            setRequestsSummary({
+                all: Number(totals?.all || 0),
+                pending: Number(totals?.pending || 0),
+                approved: Number(totals?.approved || 0),
+                rejected: Number(totals?.rejected || 0),
+                cancelled: Number(totals?.cancelled || 0),
+            });
+        } catch (summaryError) {
+            setError(summaryError instanceof Error ? summaryError.message : 'تعذر تحميل ملخص الطلبات.');
+        } finally {
+            setSummaryLoading(false);
+        }
+    };
+
+    const resetRequestFilters = () => {
+        setRequestStatusFilter('pending');
+        setRequestCountryFilter('all');
+        setRequestMethodFilter('all');
+        setRequestSearchTerm('');
+        setRequestsPage(1);
+    };
+
+    const paymentCountryLabel = (country?: string) => {
+        if (country === 'SA') return 'السعودية';
+        if (country === 'EG') return 'مصر';
+        return country || '-';
+    };
+
+    useEffect(() => {
+        if (activeTab !== 'requests') return;
+        void loadRequestsSummary();
+    }, [activeTab]);
+
+    useEffect(() => {
+        void loadRequestsSummary();
+    }, []);
+
+    const applyCountryPreset = async (country: 'SA' | 'EG') => {
+        setLoading(true);
+        setError(null);
+        setFeedback(null);
+        try {
+            const updated = await api.applyPaymentCountryPreset(country);
+            setSettings(updated as PaymentSettings);
+            setFeedback(country === 'SA' ? 'تم تطبيق إعدادات السعودية بنجاح.' : 'تم تطبيق إعدادات مصر بنجاح.');
+        } catch (presetError) {
+            setError(presetError instanceof Error ? presetError.message : 'تعذر تطبيق الإعداد الجاهز.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -1140,9 +1258,49 @@ export const FinancialManager: React.FC = () => {
                                 <Download size={14} />
                                 تصدير الطلبات
                             </button>
-                            <span className="text-sm text-gray-500">{pendingRequestsCount} بانتظار المراجعة / {paymentRequests.length} إجمالي</span>
+                            <button
+                                onClick={() => void loadRequestsSummary()}
+                                disabled={summaryLoading}
+                                className="inline-flex items-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 disabled:opacity-50"
+                            >
+                                <TrendingUp size={14} />
+                                {summaryLoading ? 'جارِ التحديث...' : 'تحديث ملخص الطلبات'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={resetRequestFilters}
+                                className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50"
+                            >
+                                مسح الفلاتر
+                            </button>
+                            <span className="text-sm text-gray-500">{pendingRequestsCountGlobal} بانتظار المراجعة / {requestsAllCountGlobal} إجمالي</span>
                         </div>
                     </div>
+
+                    {requestsSummary && (
+                        <div className="grid gap-3 md:grid-cols-5">
+                            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-center">
+                                <div className="text-[11px] font-bold text-slate-500">الإجمالي</div>
+                                <div className="mt-1 text-lg font-black text-slate-900">{requestsSummary.all}</div>
+                            </div>
+                            <div className="rounded-xl border border-amber-100 bg-amber-50 p-3 text-center">
+                                <div className="text-[11px] font-bold text-amber-700">معلقة</div>
+                                <div className="mt-1 text-lg font-black text-amber-800">{requestsSummary.pending}</div>
+                            </div>
+                            <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-center">
+                                <div className="text-[11px] font-bold text-emerald-700">معتمدة</div>
+                                <div className="mt-1 text-lg font-black text-emerald-800">{requestsSummary.approved}</div>
+                            </div>
+                            <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-center">
+                                <div className="text-[11px] font-bold text-red-700">مرفوضة</div>
+                                <div className="mt-1 text-lg font-black text-red-800">{requestsSummary.rejected}</div>
+                            </div>
+                            <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-center">
+                                <div className="text-[11px] font-bold text-gray-600">ملغية</div>
+                                <div className="mt-1 text-lg font-black text-gray-800">{requestsSummary.cancelled}</div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="grid gap-3 xl:grid-cols-[1.3fr_2fr]">
                         <div className="relative">
@@ -1154,7 +1312,26 @@ export const FinancialManager: React.FC = () => {
                                 className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pr-11 pl-4 text-sm outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-100"
                             />
                         </div>
-                        <div className="flex gap-2 overflow-x-auto pb-1">
+                        <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-1">
+                            <select
+                                value={requestCountryFilter}
+                                onChange={(event) => setRequestCountryFilter(event.target.value as 'all' | 'SA' | 'EG')}
+                                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700"
+                            >
+                                <option value="all">كل الدول</option>
+                                <option value="SA">السعودية</option>
+                                <option value="EG">مصر</option>
+                            </select>
+                            <select
+                                value={requestMethodFilter}
+                                onChange={(event) => setRequestMethodFilter(event.target.value as 'all' | 'card' | 'transfer' | 'wallet')}
+                                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700"
+                            >
+                                <option value="all">كل الوسائل</option>
+                                <option value="card">بطاقة</option>
+                                <option value="transfer">تحويل</option>
+                                <option value="wallet">محفظة</option>
+                            </select>
                             {([
                                 ['pending', 'بانتظار المراجعة', paymentRequestStatusCounts.pending],
                                 ['all', 'كل الطلبات', paymentRequestStatusCounts.all],
@@ -1182,11 +1359,11 @@ export const FinancialManager: React.FC = () => {
 
                     <div className="grid gap-3 md:grid-cols-3">
                         <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-                            <div className="text-xs font-bold text-amber-700">قيمة معلقة للمراجعة</div>
+                            <div className="text-xs font-bold text-amber-700">القيمة المعلقة (حسب الفلاتر الحالية)</div>
                             <div className="mt-2 text-2xl font-black text-amber-800">{settings.currency} {pendingRevenue.toLocaleString('en-US')}</div>
                         </div>
                         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                            <div className="text-xs font-bold text-emerald-700">إيراد معتمد</div>
+                            <div className="text-xs font-bold text-emerald-700">الإيراد المعتمد (حسب الفلاتر الحالية)</div>
                             <div className="mt-2 text-2xl font-black text-emerald-800">{settings.currency} {approvedRevenue.toLocaleString('en-US')}</div>
                         </div>
                         <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
@@ -1230,6 +1407,9 @@ export const FinancialManager: React.FC = () => {
                                         </td>
                                         <td className="p-4 text-gray-600">
                                             <div className="font-bold text-gray-800">{requestMethodLabel(request.paymentMethod)}</div>
+                                            <div className="mt-1 text-[11px] text-gray-500">
+                                                {paymentCountryLabel(request.paymentCountry)} {request.paymentProviderCode ? `• ${request.paymentProviderCode}` : ''}
+                                            </div>
                                             {riskNotes.length > 0 && (
                                                 <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-700">
                                                     <AlertTriangle size={12} />
@@ -1302,6 +1482,29 @@ export const FinancialManager: React.FC = () => {
                             </tbody>
                         </table>
                     </div>
+                    <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="text-xs font-bold text-gray-500">
+                            {requestsLoading ? 'جارِ تحميل الطلبات...' : `إجمالي الطلبات: ${requestsTotal} • الصفحة ${requestsPage} من ${requestsTotalPages}`}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setRequestsPage((current) => Math.max(1, current - 1))}
+                                disabled={requestsLoading || requestsPage <= 1}
+                                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-black text-gray-700 disabled:opacity-50"
+                            >
+                                السابق
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setRequestsPage((current) => Math.min(requestsTotalPages, current + 1))}
+                                disabled={requestsLoading || requestsPage >= requestsTotalPages}
+                                className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-black text-gray-700 disabled:opacity-50"
+                            >
+                                التالي
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -1341,6 +1544,33 @@ export const FinancialManager: React.FC = () => {
                                     className="h-5 w-5"
                                 />
                             </label>
+                        </div>
+
+                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <p className="text-sm font-black text-indigo-800">إعدادات جاهزة حسب الدولة</p>
+                                    <p className="text-xs text-indigo-700 mt-1">تطبيق مباشر لإعدادات مزودي الدفع والدول المدعومة بدون تغيير التصميم.</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => void applyCountryPreset('SA')}
+                                        disabled={loading}
+                                        className="rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 border border-indigo-200 hover:bg-indigo-100 disabled:opacity-50"
+                                    >
+                                        تطبيق Preset السعودية
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => void applyCountryPreset('EG')}
+                                        disabled={loading}
+                                        className="rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 border border-indigo-200 hover:bg-indigo-100 disabled:opacity-50"
+                                    >
+                                        تطبيق Preset مصر
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {([
