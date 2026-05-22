@@ -2,9 +2,19 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
-- Last Closed Batch: BATCH 100Q - Operational Admin Runtime Scale Sweep
-- Status: Programmatically closed, production verification pending
+- Active Batch: None
+- Last Closed Batch: BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
+- Status: Fully closed
+
+## Final Closure 2026-05-22 - BATCH 100R
+- Batch: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `b4e3c70`.
+- GitHub: PASS.
+- Vercel: PASS, strict frontend smoke confirmed `b4e3c70`.
+- Render/API: PASS, health readiness passed and `/api/health` returned `ready=true` (server commit remained `3cdb01e0a581` because 100R carried no runtime server-code delta).
+- In-app Browser: PASS, production home and login routes opened without captured client errors.
+- Report: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR.md`.
 
 ## Update 2026-05-22 - BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
 - Batch: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.

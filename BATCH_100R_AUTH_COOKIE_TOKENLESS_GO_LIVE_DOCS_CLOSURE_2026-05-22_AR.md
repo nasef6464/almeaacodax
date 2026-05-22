@@ -1,7 +1,7 @@
 # BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure - 2026-05-22
 
 ## الحالة
-- الحالة: Programmatically closed, production verification pending.
+- الحالة: Fully closed.
 - النطاق: تثبيت التوافق مع auth cookie tokenless في الواجهة، وتوسيع go-live smoke، وإغلاق توثيق دفعات تاريخية مرتبطة.
 - بدون تغييرات تصميم.
 
@@ -22,8 +22,9 @@
 - `npm run smoke:auth-token-response`: PASS.
 - `npm run smoke:batch12-golive`: PASS.
 
-## المطلوب للإغلاق النهائي
-1. Commit + push لملفات الدفعة فقط.
-2. انتظار Vercel/Render.
-3. `npm run smoke:frontend:strict` و `npm run smoke:health-readiness`.
-4. فحص Browser على الإنتاج.
+## الإغلاق النهائي
+- Commit: `b4e3c70`.
+- GitHub push: PASS.
+- Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `b4e3c70`.
+- Render/API: PASS، `npm run smoke:health-readiness` نجح و`/api/health` أعاد `ready=true` (server commit ظل `3cdb01e0a581` لأن دفعة 100R لا تحتوي تغييرات خادم تشغيلية).
+- Browser: PASS، فتح الإنتاج على `/` و`/#/login` بدون client errors ملتقطة.

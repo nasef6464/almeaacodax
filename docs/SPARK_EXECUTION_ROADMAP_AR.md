@@ -915,3 +915,12 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   3. Wait for Vercel and Render deployment.
   4. Run `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
   5. Verify Browser opens production shell and login route with no regression.
+
+## Final Closure 2026-05-22 - BATCH 100R
+- `BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure` is now Fully closed.
+- Production evidence:
+  - GitHub commit pushed: `b4e3c70`.
+  - Vercel strict frontend smoke: PASS and serving commit `b4e3c70`.
+  - Render health: PASS, `ready=true` (server commit remained `3cdb01e0a581` since the batch had no server runtime-code changes).
+  - In-app Browser: PASS for production home and login routes.
+- Next proposed batch: continue with the owner's next priority.
