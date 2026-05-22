@@ -1763,7 +1763,7 @@
 ## Final Closure 2026-05-22 - BATCH 100U
 - Batch: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR`.
 - Status: `Fully closed`.
-- Commit pushed: `fd111fe`.
+- Commit pushed: `649ef92`.
 - GitHub: PASS.
 - Vercel: PASS, `smoke:frontend:strict` confirmed production serves `f7ed2c5`.
 - Render/API: PASS, `smoke:health-readiness` passed.

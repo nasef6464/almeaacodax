@@ -2426,7 +2426,7 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 ### الإغلاق النهائي
 - الدفعة: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR`.
 - الحالة: `Fully closed`.
-- Commit: `fd111fe`.
+- Commit: `649ef92`.
 - GitHub push: PASS.
 - Vercel: PASS، `npm run smoke:frontend:strict` أكد أن الإنتاج يخدم `f7ed2c5`.
 - Render/API: PASS، `npm run smoke:health-readiness` نجح.
