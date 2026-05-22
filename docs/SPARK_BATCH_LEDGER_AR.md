@@ -1771,3 +1771,15 @@
 - Runtime contract check: PASS, `smoke:batch100p-question-bank-crud`.
 - Operational note: local admin live-login replay hit `429` rate-limit after failed credential attempt; no runtime regression/code change required in this batch.
 - Report: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR.md`.
+
+## Final Closure 2026-05-22 - BATCH 100V
+- Batch: `BATCH_100V_PRODUCTION_RUNTIME_REVALIDATION_SWEEP_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `pending`.
+- GitHub: PASS.
+- Vercel: PASS, `smoke:frontend:strict` confirmed production serves `448898c`.
+- Render/API: PASS, `smoke:health-readiness` passed.
+- Runtime contract: PASS, `smoke:batch100q-operational-admin-runtime`.
+- Production question API spot checks: PASS for `search=(`, `search=???`, `search=جمع` (all `200`).
+- In-app browser target stayed on production URL during the sweep.
+- Report: `BATCH_100V_PRODUCTION_RUNTIME_REVALIDATION_SWEEP_2026-05-22_AR.md`.
