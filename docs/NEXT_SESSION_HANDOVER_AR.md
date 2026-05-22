@@ -2329,3 +2329,31 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 ### ملاحظات للحساب التالي
 - لا تستخدم `git add .` لأن الشجرة ما زالت تحتوي dirty/untracked قديمة خارج نطاق 100R.
 - لا توجد دفعة نشطة الآن.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100S Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- إضافة script `smoke:rbac-school-scope` في `package.json`.
+- إدخال عقود smoke الأمنية غير المتتبعة: auth-token-response, csrf, data-visibility-regression, rbac-school-scope.
+- إدخال وثائق أمن/حوكمة تاريخية غير متتبعة (auth-cookie/RBAC/CSRF/token-response/data-visibility) ضمن الشجرة الرسمية.
+
+### الفحوص التي نجحت
+- `npm run smoke:auth-token-response`: PASS.
+- `npm run smoke:csrf`: PASS.
+- `npm run smoke:data-visibility-regression`: PASS.
+- `npm run smoke:rbac-school-scope`: PASS.
+- `npm run typecheck`: PASS.
+- `npm --prefix server run build`: PASS.
+
+### المطلوب للإغلاق النهائي
+1. Stage صريح لملفات 100S فقط، ولا تستخدم `git add .`.
+2. Commit ثم push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص Browser على الإنتاج.

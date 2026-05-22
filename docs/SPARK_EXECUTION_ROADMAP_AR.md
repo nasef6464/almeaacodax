@@ -924,3 +924,16 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Render health: PASS, `ready=true` (server commit remained `3cdb01e0a581` since the batch had no server runtime-code changes).
   - In-app Browser: PASS for production home and login routes.
 - Next proposed batch: continue with the owner's next priority.
+
+## Update 2026-05-22 - After BATCH 100S Programmatic Closure
+- `BATCH 100S - Security Contracts & Governance Backfill` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Added `smoke:rbac-school-scope` script to package commands.
+  2. Added tracked security smoke contracts: auth-token, csrf, data-visibility, and rbac school-scope.
+  3. Added tracked historical security governance docs (auth-cookie migration, RBAC audit/plans, CSRF/token hardening, data-visibility regression).
+- Required final closure:
+  1. Stage BATCH 100S files explicitly; do not use `git add .`.
+  2. Commit and push.
+  3. Wait for Vercel and Render deployment.
+  4. Run `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
+  5. Verify Browser production shell routes.

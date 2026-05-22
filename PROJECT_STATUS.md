@@ -2,9 +2,21 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: None
+- Active Batch: BATCH 100S - Security Contracts & Governance Backfill
 - Last Closed Batch: BATCH 100R - Auth Cookie Tokenless Go-Live + Legacy Docs Closure
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-22 - BATCH 100S - Security Contracts & Governance Backfill
+- Batch: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: security contract backfill + governance/security docs backfill.
+- Delivered:
+  - Added `smoke:rbac-school-scope` script.
+  - Added four security contract smoke files (auth-token/csrf/data-visibility/rbac-school-scope).
+  - Added tracked historical security governance docs (auth cookie migration, RBAC audit/plans, CSRF/token-response, data-visibility).
+- Checks PASS: auth-token-response smoke, csrf smoke, data-visibility smoke, rbac-school-scope smoke, typecheck, server build.
+- Report: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR.md`.
+- Next required for final closure: explicit stage, commit, push, production smokes, browser verification.
 
 ## Final Closure 2026-05-22 - BATCH 100R
 - Batch: `BATCH_100R_AUTH_COOKIE_TOKENLESS_GO_LIVE_DOCS_CLOSURE_2026-05-22_AR`.

@@ -1719,3 +1719,14 @@
 - Vercel: PASS, strict frontend smoke confirmed `b4e3c70`.
 - Render/API: PASS, health readiness passed and `/api/health` returned `ready=true` (server commit stayed `3cdb01e0a581` because no server runtime delta in 100R).
 - In-app Browser: PASS, production home and login routes loaded with no captured client errors.
+
+## Update 2026-05-22 - BATCH 100S
+- Batch: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: security contracts/governance backfill into tracked repo state.
+- Key changes:
+  - Added package script: `smoke:rbac-school-scope`.
+  - Added tracked security smoke contracts: auth-token-response, csrf, data-visibility-regression, rbac-school-scope.
+  - Added tracked security governance docs for auth-cookie migration, RBAC audit/plans, CSRF/token-response hardening, and data-visibility regression.
+- Checks PASS: `smoke:auth-token-response`, `smoke:csrf`, `smoke:data-visibility-regression`, `smoke:rbac-school-scope`, `typecheck`, server build.
+- Report: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR.md`.
