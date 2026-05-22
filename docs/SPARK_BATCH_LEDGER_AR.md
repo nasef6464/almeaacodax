@@ -1739,3 +1739,14 @@
 - Vercel: PASS, strict frontend smoke confirmed `6efcc45`.
 - Render/API: PASS, health readiness passed and `/api/health` returned `ready=true`.
 - In-app Browser: PASS, production home/login routes loaded with no captured client errors.
+
+## Update 2026-05-22 - BATCH 100T
+- Batch: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: integrations/payments operational docs backfill.
+- Key changes:
+  - Added integrations docs (runtime audit/guard, history restore, checklist, secret hardening, test-delivery, callback alias).
+  - Added payments docs (country presets, request filters, server pagination, global summary reset, admin presets).
+  - Added supporting readiness docs and selected historical operational evidence files + load-test summaries.
+- Checks PASS: `smoke:integrations-runtime`, `smoke:payment-providers`, `smoke:batch12-golive`, `typecheck`.
+- Report: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR.md`.

@@ -2374,3 +2374,29 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 ### ملاحظات للحساب التالي
 - لا تستخدم `git add .` بسبب وجود ملفات untracked قديمة خارج نطاق أي دفعة جارية.
 - لا توجد دفعة نشطة الآن.
+
+---
+
+## تحديث تسليم 2026-05-22 - BATCH 100T Programmatic Closure
+
+### الحالة الحالية
+- الدفعة: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR`.
+- الحالة: `Programmatically closed, production verification pending`.
+
+### ما تم
+- إدخال حزمة وثائق التكاملات التشغيلية غير المتتبعة (runtime audit/guard/history/checklist/secret hardening/test delivery/callback alias).
+- إدخال حزمة وثائق المدفوعات التشغيلية غير المتتبعة (country presets/filters/pagination/global summary/admin presets).
+- إدخال وثائق مساندة للجاهزية التشغيلية وملفات نتائج load-test مختارة.
+
+### الفحوص التي نجحت
+- `npm run smoke:integrations-runtime`: PASS.
+- `npm run smoke:payment-providers`: PASS.
+- `npm run smoke:batch12-golive`: PASS.
+- `npm run typecheck`: PASS.
+
+### المطلوب للإغلاق النهائي
+1. Stage صريح لملفات 100T فقط، ولا تستخدم `git add .`.
+2. Commit ثم push.
+3. انتظار Vercel/Render.
+4. تشغيل `npm run smoke:frontend:strict` و`npm run smoke:health-readiness`.
+5. فحص Browser على الإنتاج.

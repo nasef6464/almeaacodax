@@ -946,3 +946,16 @@ Use `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md` for all paid/ow
   - Render health: PASS, `ready=true`.
   - In-app Browser: PASS for production home and login routes.
 - Next proposed batch: continue with the owner's next priority.
+
+## Update 2026-05-22 - After BATCH 100T Programmatic Closure
+- `BATCH 100T - Integrations & Payments Operational Docs Backfill` is programmatically closed and awaits production verification.
+- Implemented scope:
+  1. Backfilled integrations operational docs (runtime audit/guard, history restore, checklist, secret hardening, test delivery, callback alias).
+  2. Backfilled payments operational docs (country presets, request filters, pagination, global summaries, admin UI presets).
+  3. Backfilled selected historical readiness evidence docs and load-test summaries.
+- Required final closure:
+  1. Stage BATCH 100T files explicitly; do not use `git add .`.
+  2. Commit and push.
+  3. Wait for Vercel and Render deployment.
+  4. Run `npm run smoke:frontend:strict` and `npm run smoke:health-readiness`.
+  5. Verify Browser production shell routes.

@@ -2,9 +2,22 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
-- Active Batch: None
+- Active Batch: BATCH 100T - Integrations & Payments Operational Docs Backfill
 - Last Closed Batch: BATCH 100S - Security Contracts & Governance Backfill
-- Status: Fully closed
+- Status: Programmatically closed, production verification pending
+
+## Update 2026-05-22 - BATCH 100T - Integrations & Payments Operational Docs Backfill
+- Batch: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR`.
+- Status: `Programmatically closed, production verification pending`.
+- Scope: integrations/payment operational docs backfill into tracked repo.
+- Delivered:
+  - Added integrations runtime/test-delivery/history/checklist backfill docs.
+  - Added payments presets/filters/pagination/summary backfill docs.
+  - Added readiness/supporting docs for role acceptance/supervisor reports/deep audit continuity.
+  - Added selected historical operational closure evidence files + load-test summaries.
+- Checks PASS: integrations-runtime smoke, payment-providers smoke, batch12-golive smoke, typecheck.
+- Report: `BATCH_100T_INTEGRATIONS_PAYMENTS_OPERATIONAL_DOCS_BACKFILL_2026-05-22_AR.md`.
+- Next required for final closure: explicit stage, commit, push, production smokes, browser verification.
 
 ## Final Closure 2026-05-22 - BATCH 100S
 - Batch: `BATCH_100S_SECURITY_CONTRACTS_GOVERNANCE_BACKFILL_2026-05-22_AR`.
