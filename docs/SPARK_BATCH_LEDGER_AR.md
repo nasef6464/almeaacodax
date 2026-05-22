@@ -1783,3 +1783,12 @@
 - Production question API spot checks: PASS for `search=(`, `search=???`, `search=جمع` (all `200`).
 - In-app browser target stayed on production URL during the sweep.
 - Report: `BATCH_100V_PRODUCTION_RUNTIME_REVALIDATION_SWEEP_2026-05-22_AR.md`.
+
+## Final Closure 2026-05-22 - BATCH 100W
+- Batch: `BATCH_100W_PRODUCTION_STABILITY_RECHECK_2026-05-22_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `e4aabcc`.
+- GitHub: PASS.
+- Vercel: PASS, `smoke:frontend:strict` confirmed production serves `a116ff1`.
+- Render/API: PASS, `smoke:health-readiness` passed.
+- Report: `BATCH_100W_PRODUCTION_STABILITY_RECHECK_2026-05-22_AR.md`.
