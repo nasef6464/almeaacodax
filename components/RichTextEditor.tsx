@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 if (typeof window !== 'undefined') {
   (window as any).katex = katex;
@@ -57,7 +58,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
       <ReactQuill
         theme="snow"
         value={value}
-        onChange={onChange}
+        onChange={(nextValue) => onChange(normalizeQuestionHtml(nextValue))}
         modules={modules}
         formats={formats}
         placeholder={placeholder || 'اكتب هنا... يدعم العربية والإنجليزية والمعادلات الرياضية مثل x^2 + y^2 = z^2'}

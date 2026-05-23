@@ -1881,3 +1881,10 @@
 - التنفيذ: تحصين استيراد XLSX في `SchoolsManager` و`LessonsManager` و`QuestionBankManager` عبر helper آمن مركزي.
 - الفحوص: typecheck/build/smoke:performance PASS.
 - المتبقي: تحذيرات `quill` و`xlsx` كما هي بسبب قيود upstream/breaking path.
+## BATCH 105 - React Quill Replacement Feasibility - 2026-05-22
+- الحالة: مغلقة.
+- الهدف: مسار آمن لمعالجة مخاطر `react-quill-new` بدون كسر واجهات التحرير.
+- مرجع التنفيذ: `BATCH_105_REACT_QUILL_REPLACEMENT_FEASIBILITY_2026-05-22_AR.md`.
+- التنفيذ: إضافة sanitize عند onChange داخل `RichTextEditor`.
+- الفحوص: typecheck/build/smoke:performance PASS.
+- المتبقي: advisories frontend نفسها بسبب قيود upstream.

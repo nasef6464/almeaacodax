@@ -2616,3 +2616,14 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - تم تحديث smoke contract ليتوافق مع نمط loader الآمن.
 - PASS: typecheck, build, smoke:performance.
 - بقيت advisories frontend (`quill` مسار breaking، و`xlsx` بدون patch متاح).
+## بدء BATCH 105 - 2026-05-22
+
+- تم بدء دفعة جديدة بعد إغلاق BATCH 104.
+- النطاق: تقييم وتنفيذ مسار آمن لمتبقي `react-quill-new`.
+- ملف المتابعة: `BATCH_105_REACT_QUILL_REPLACEMENT_FEASIBILITY_2026-05-22_AR.md`.
+
+## إغلاق BATCH 105 - 2026-05-22
+
+- تم تطبيق containment آمن غير كاسر في `RichTextEditor` عبر sanitize HTML قبل الحفظ.
+- PASS: typecheck/build/smoke:performance.
+- بقيت advisories frontend كما هي بسبب قيود upstream (breaking/no patch).

@@ -3,9 +3,9 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 104 - Frontend Audit Remediation Strategy
-- Status: BATCH 104 closed with import hardening mitigations
-- Next Required Batch: optional replacement path for `react-quill-new` and long-term `xlsx` strategy
+- Last Closed Batch: BATCH 105 - React Quill Replacement Feasibility
+- Status: BATCH 105 closed with safe containment
+- Next Required Batch: controlled editor replacement study or formal risk acceptance
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
 ## BATCH 104 Start 2026-05-22
@@ -16,6 +16,15 @@
 - Implemented XLSX import hardening in admin import surfaces.
 - Builds and performance smoke passed after changes.
 - Residual frontend advisories remain (`quill` breaking-only path, `xlsx` no upstream fix currently).
+
+## BATCH 105 Start 2026-05-22
+- Focus: feasibility and safe execution path for `react-quill-new` residual advisory.
+- Primary report: `BATCH_105_REACT_QUILL_REPLACEMENT_FEASIBILITY_2026-05-22_AR.md`.
+
+## BATCH 105 Closure 2026-05-22
+- Added non-breaking sanitization containment in `components/RichTextEditor.tsx`.
+- Build/typecheck/performance smokes passed.
+- Residual advisories remain due to upstream constraints (`quill` breaking path, `xlsx` no patch).
 
 ## BATCH 103 Start 2026-05-22
 - Focus: dependency audit remediation + speed warning reduction without breaking production.
