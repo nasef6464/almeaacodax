@@ -1894,3 +1894,5 @@
 - مرجع التنفيذ: `BATCH_106_OPERATIONAL_READINESS_DEEPENING_2026-05-23_AR.md`.
 - الفحوص: PASS (`frontend:strict`, `health-readiness`, `production-speed`, `batch100q-operational-admin-runtime`).
 - ملاحظة الأداء: `production-speed` بدون warnings في هذه الدفعة.
+
+| 107 | Cross-Session Continuity Playbook Closure | Fully closed | 2026-05-23 | BATCH_107_CROSS_SESSION_CONTINUITY_PLAYBOOK_2026-05-23_AR.md | Added mandatory cross-session playbook and locked continue rule for new accounts. |
