@@ -2839,3 +2839,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - smoke:frontend:strict had initial deploy-lag mismatch, rerun PASS and confirmed production commit 7fd1ef6.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 129 Update - 2026-05-24
+- Batch: BATCH_129_PACKAGE_PATH_OPERATIONAL_CONTINUITY_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:package-path-navigation, smoke:batch100q-operational-admin-runtime, smoke:health-readiness.
+- smoke:frontend:strict had initial deploy-lag mismatch, rerun PASS and confirmed production commit 7207ddd.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+

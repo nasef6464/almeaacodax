@@ -1938,3 +1938,5 @@
 | 127 | Real Usage Operational Prod Alignment | Fully closed | 2026-05-24 | BATCH_127_REAL_USAGE_OPERATIONAL_PROD_ALIGNMENT_2026-05-24_AR.md | Revalidated real-usage and operational runtime contracts with strict production PASS on 0945350. |
 
 | 128 | Question Bank Split Continuity | Fully closed | 2026-05-24 | BATCH_128_QUESTION_BANK_SPLIT_CONTINUITY_2026-05-24_AR.md | Revalidated question-bank and package/course split contracts; strict passed after deploy-lag rerun on 7fd1ef6. |
+
+| 129 | Package Path Operational Continuity | Fully closed | 2026-05-24 | BATCH_129_PACKAGE_PATH_OPERATIONAL_CONTINUITY_2026-05-24_AR.md | Revalidated package-path and operational runtime contracts; strict passed after deploy-lag rerun on 7207ddd. |
