@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-23
 - Active Batch: None
-- Last Closed Batch: BATCH 111 - Real Usage and Split Guard Recheck
-- Status: BATCH 111 closed
+- Last Closed Batch: BATCH 112 - Performance and Speed Stability Recheck
+- Status: BATCH 112 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -48,6 +48,14 @@
 ## BATCH 111 Closure 2026-05-23
 - PASS: `smoke:real-usage-readiness`, `smoke:package-course-split`, `smoke:batch100q-operational-admin-runtime`, `smoke:health-readiness`, `smoke:frontend:strict`.
 - Production strict verification confirmed serving commit `6b8b0f2`.
+
+## BATCH 112 Start 2026-05-23
+- Focus: performance and production-speed continuity recheck with strict production alignment.
+- Primary report: `BATCH_112_PERFORMANCE_AND_SPEED_STABILITY_RECHECK_2026-05-23_AR.md`.
+
+## BATCH 112 Closure 2026-05-23
+- PASS: `smoke:performance`, `smoke:production-speed`, `smoke:health-readiness`, `smoke:frontend:strict`.
+- `smoke:production-speed` showed one deploy-lag warning initially; strict smoke confirmed production commit `02df954`.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
