@@ -1930,3 +1930,5 @@
 | 123 | Real Usage Split Continuity | Fully closed | 2026-05-24 | BATCH_123_REAL_USAGE_SPLIT_CONTINUITY_2026-05-24_AR.md | Revalidated real-usage and package/course split contracts with strict production PASS on e3aa7cf. |
 
 | 124 | Question Bank Package Path Continuity | Fully closed | 2026-05-24 | BATCH_124_QUESTION_BANK_PACKAGE_PATH_CONTINUITY_2026-05-24_AR.md | Revalidated question-bank and package-path contracts with strict production PASS on e4ddb3d. |
+
+| 125 | Real Usage Operational Speed Continuity | Fully closed | 2026-05-24 | BATCH_125_REAL_USAGE_OPERATIONAL_SPEED_CONTINUITY_2026-05-24_AR.md | Revalidated real-usage/operational contracts and strict production; speed passed with one non-blocking course-list warning. |

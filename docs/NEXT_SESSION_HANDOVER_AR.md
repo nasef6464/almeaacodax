@@ -2802,3 +2802,13 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit e4ddb3d.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 125 Update - 2026-05-24
+- Batch: BATCH_125_REAL_USAGE_OPERATIONAL_SPEED_CONTINUITY_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:real-usage-readiness, smoke:batch100q-operational-admin-runtime, smoke:production-speed, smoke:frontend:strict.
+- Note: speed smoke had one non-blocking course-list timing warning in this run.
+- Strict smoke confirmed production commit 0087679.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+
