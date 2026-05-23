@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-23
 - Active Batch: None
-- Last Closed Batch: BATCH 110 - Question Bank and Package Route Stability
-- Status: BATCH 110 closed
+- Last Closed Batch: BATCH 111 - Real Usage and Split Guard Recheck
+- Status: BATCH 111 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -40,6 +40,14 @@
 ## BATCH 110 Closure 2026-05-23
 - PASS: `smoke:batch100p-question-bank-crud`, `smoke:package-path-navigation`, `smoke:health-readiness`, `smoke:frontend:strict`.
 - Production strict verification confirmed serving commit `1788200`.
+
+## BATCH 111 Start 2026-05-23
+- Focus: deep continuity recheck for real usage readiness and package/course split guardrails.
+- Primary report: `BATCH_111_REAL_USAGE_AND_SPLIT_GUARD_RECHECK_2026-05-23_AR.md`.
+
+## BATCH 111 Closure 2026-05-23
+- PASS: `smoke:real-usage-readiness`, `smoke:package-course-split`, `smoke:batch100q-operational-admin-runtime`, `smoke:health-readiness`, `smoke:frontend:strict`.
+- Production strict verification confirmed serving commit `6b8b0f2`.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
