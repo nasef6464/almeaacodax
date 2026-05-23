@@ -2766,3 +2766,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - speed smoke had one non-blocking initial commit-alignment warning; strict smoke confirmed production commit 3216c43.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 121 Update - 2026-05-24
+- Batch: BATCH_121_QUESTION_BANK_REAL_USAGE_CONTINUITY_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:batch100p-question-bank-crud, smoke:real-usage-readiness, smoke:health-readiness.
+- smoke:frontend:strict had initial deploy-lag mismatch, rerun PASS and confirmed production commit b156f23.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+
