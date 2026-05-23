@@ -1936,3 +1936,5 @@
 | 126 | Question Bank Package Path Prod Verify | Fully closed | 2026-05-24 | BATCH_126_QUESTION_BANK_PACKAGE_PATH_PROD_VERIFY_2026-05-24_AR.md | Revalidated question-bank and package-path contracts with strict production PASS on 383694f. |
 
 | 127 | Real Usage Operational Prod Alignment | Fully closed | 2026-05-24 | BATCH_127_REAL_USAGE_OPERATIONAL_PROD_ALIGNMENT_2026-05-24_AR.md | Revalidated real-usage and operational runtime contracts with strict production PASS on 0945350. |
+
+| 128 | Question Bank Split Continuity | Fully closed | 2026-05-24 | BATCH_128_QUESTION_BANK_SPLIT_CONTINUITY_2026-05-24_AR.md | Revalidated question-bank and package/course split contracts; strict passed after deploy-lag rerun on 7fd1ef6. |

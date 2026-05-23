@@ -4,6 +4,14 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
+`BATCH 128 - Question Bank Split Continuity` is closed.
+
+Outcome:
+- revalidated question-bank runtime CRUD and package/course split contracts,
+- revalidated health readiness contract,
+- strict frontend needed one rerun due to deploy lag then passed with production commit `7fd1ef6`,
+- continuity docs updated for immediate next-batch startup.
+
 `BATCH 127 - Real Usage Operational Prod Alignment` is closed.
 
 Outcome:

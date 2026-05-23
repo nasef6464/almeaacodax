@@ -2830,3 +2830,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit 0945350.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 128 Update - 2026-05-24
+- Batch: BATCH_128_QUESTION_BANK_SPLIT_CONTINUITY_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:batch100p-question-bank-crud, smoke:package-course-split, smoke:health-readiness.
+- smoke:frontend:strict had initial deploy-lag mismatch, rerun PASS and confirmed production commit 7fd1ef6.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+
