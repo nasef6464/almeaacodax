@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-23
 - Active Batch: None
-- Last Closed Batch: BATCH 113 - Operational Runtime and Speed Recheck
-- Status: BATCH 113 closed
+- Last Closed Batch: BATCH 114 - Real Usage Navigation Continuity Recheck
+- Status: BATCH 114 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -64,6 +64,14 @@
 ## BATCH 113 Closure 2026-05-23
 - PASS: `smoke:batch100p-question-bank-crud`, `smoke:batch100q-operational-admin-runtime`, `smoke:health-readiness`, `smoke:frontend:strict`, `smoke:production-speed`.
 - `smoke:production-speed` recorded one non-blocking timing warning on `course list` in this run.
+
+## BATCH 114 Start 2026-05-23
+- Focus: real-usage and package-path navigation continuity verification.
+- Primary report: `BATCH_114_REAL_USAGE_NAVIGATION_CONTINUITY_RECHECK_2026-05-23_AR.md`.
+
+## BATCH 114 Closure 2026-05-23
+- PASS: `smoke:real-usage-readiness`, `smoke:package-path-navigation`, `smoke:health-readiness`.
+- `smoke:frontend:strict` first run had deploy lag mismatch; rerun passed and confirmed production commit `ac1700b`.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
