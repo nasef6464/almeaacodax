@@ -1912,3 +1912,5 @@
 | 114 | Real Usage Navigation Continuity Recheck | Fully closed | 2026-05-23 | BATCH_114_REAL_USAGE_NAVIGATION_CONTINUITY_RECHECK_2026-05-23_AR.md | Revalidated real-usage and package-path contracts; strict frontend passed after deploy-lag rerun on ac1700b. |
 
 | 115 | Admin Runtime Continuity Recheck | Fully closed | 2026-05-23 | BATCH_115_ADMIN_RUNTIME_CONTINUITY_RECHECK_2026-05-23_AR.md | Revalidated question-bank/admin runtime and readiness; strict frontend passed after deploy-lag rerun on ea3c5cb. |
+
+| 116 | Real Usage Split and Prod Alignment | Fully closed | 2026-05-23 | BATCH_116_REAL_USAGE_SPLIT_AND_PROD_ALIGNMENT_2026-05-23_AR.md | Revalidated real usage and package/course split contracts with strict production PASS on 904360e. |
