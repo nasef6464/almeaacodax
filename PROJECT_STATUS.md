@@ -3,9 +3,9 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-22
 - Active Batch: None
-- Last Closed Batch: BATCH 105 - React Quill Replacement Feasibility
-- Status: BATCH 105 closed with safe containment
-- Next Required Batch: controlled editor replacement study or formal risk acceptance
+- Last Closed Batch: BATCH 106 - Operational Readiness Deepening
+- Status: BATCH 106 closed
+- Next Required Batch: start next expansion batch as requested by owner
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
 ## BATCH 104 Start 2026-05-22
@@ -25,6 +25,14 @@
 - Added non-breaking sanitization containment in `components/RichTextEditor.tsx`.
 - Build/typecheck/performance smokes passed.
 - Residual advisories remain due to upstream constraints (`quill` breaking path, `xlsx` no patch).
+
+## BATCH 106 Start 2026-05-23
+- Focus: deep operational readiness revalidation and safe guardrail tightening.
+- Primary report: `BATCH_106_OPERATIONAL_READINESS_DEEPENING_2026-05-23_AR.md`.
+
+## BATCH 106 Closure 2026-05-23
+- PASS: `smoke:frontend:strict`, `smoke:health-readiness`, `smoke:production-speed`, `smoke:batch100q-operational-admin-runtime`.
+- Production speed warnings in this pass: `0`.
 
 ## BATCH 103 Start 2026-05-22
 - Focus: dependency audit remediation + speed warning reduction without breaking production.

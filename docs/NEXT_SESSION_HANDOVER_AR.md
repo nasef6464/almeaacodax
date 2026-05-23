@@ -2627,3 +2627,14 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - تم تطبيق containment آمن غير كاسر في `RichTextEditor` عبر sanitize HTML قبل الحفظ.
 - PASS: typecheck/build/smoke:performance.
 - بقيت advisories frontend كما هي بسبب قيود upstream (breaking/no patch).
+## بدء BATCH 106 - 2026-05-23
+
+- تم بدء دفعة جديدة بعد إغلاق BATCH 105.
+- النطاق: تعميق جاهزية التشغيل الفعلي مع إعادة تحقق كامل.
+- ملف المتابعة: `BATCH_106_OPERATIONAL_READINESS_DEEPENING_2026-05-23_AR.md`.
+
+## إغلاق BATCH 106 - 2026-05-23
+
+- تم تنفيذ حزمة تحقق تشغيلية عميقة كاملة.
+- PASS: `smoke:frontend:strict`, `smoke:health-readiness`, `smoke:production-speed`, `smoke:batch100q-operational-admin-runtime`.
+- `smoke:production-speed` ظهر بدون warnings في هذه الجولة.
