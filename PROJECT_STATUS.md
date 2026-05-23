@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
 - Active Batch: None
-- Last Closed Batch: BATCH 130 - Question Bank Real Usage Prod Verify
-- Status: BATCH 130 closed
+- Last Closed Batch: BATCH 131 - Package Path Operational Prod Verify
+- Status: BATCH 131 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -201,6 +201,14 @@
 ## BATCH 130 Closure 2026-05-24
 - PASS: `smoke:batch100p-question-bank-crud`, `smoke:real-usage-readiness`, `smoke:health-readiness`, `smoke:frontend:strict`.
 - Strict frontend verification confirmed production commit `cfac5e9`.
+
+## BATCH 131 Start 2026-05-24
+- Focus: package-path + operational runtime continuity verification with strict production alignment on live URL.
+- Primary report: `BATCH_131_PACKAGE_PATH_OPERATIONAL_PROD_VERIFY_2026-05-24_AR.md`.
+
+## BATCH 131 Closure 2026-05-24
+- PASS: `smoke:package-path-navigation`, `smoke:batch100q-operational-admin-runtime`, `smoke:health-readiness`, `smoke:frontend:strict`.
+- Strict frontend verification confirmed production commit `91a7bcb`.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
