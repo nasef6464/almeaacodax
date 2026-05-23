@@ -1920,3 +1920,5 @@
 | 118 | Question Bank Package Path Readiness | Fully closed | 2026-05-23 | BATCH_118_QUESTION_BANK_PACKAGE_PATH_READINESS_2026-05-23_AR.md | Revalidated question-bank and package-path contracts with strict production PASS on 4fea125. |
 
 | 119 | Real Usage Operational Alignment | Fully closed | 2026-05-24 | BATCH_119_REAL_USAGE_OPERATIONAL_ALIGNMENT_2026-05-24_AR.md | Revalidated real-usage and operational runtime contracts with strict production PASS on 74e80c6. |
+
+| 120 | Package Split Speed Strict Recheck | Fully closed | 2026-05-24 | BATCH_120_PACKAGE_SPLIT_SPEED_STRICT_RECHECK_2026-05-24_AR.md | Revalidated package/course split plus speed/readiness/strict; strict production matched 3216c43. |

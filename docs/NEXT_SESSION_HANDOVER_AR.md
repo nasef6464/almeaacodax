@@ -2757,3 +2757,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit 74e80c6.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 120 Update - 2026-05-24
+- Batch: BATCH_120_PACKAGE_SPLIT_SPEED_STRICT_RECHECK_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:package-course-split, smoke:production-speed, smoke:health-readiness, smoke:frontend:strict.
+- speed smoke had one non-blocking initial commit-alignment warning; strict smoke confirmed production commit 3216c43.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+
