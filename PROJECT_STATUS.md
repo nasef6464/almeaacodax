@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-23
 - Active Batch: None
-- Last Closed Batch: BATCH 109 - Post-Deploy Runtime Alignment
-- Status: BATCH 109 closed
+- Last Closed Batch: BATCH 110 - Question Bank and Package Route Stability
+- Status: BATCH 110 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -32,6 +32,14 @@
 ## BATCH 109 Closure 2026-05-23
 - PASS: `smoke:health-readiness`, `smoke:batch100p-question-bank-crud`.
 - `smoke:frontend:strict`: first attempt failed due to deploy lag, rerun passed and confirmed production commit `553cbda`.
+
+## BATCH 110 Start 2026-05-23
+- Focus: continuity verification for question bank runtime CRUD and package path routing stability.
+- Primary report: `BATCH_110_QUESTION_BANK_AND_PACKAGE_ROUTE_STABILITY_2026-05-23_AR.md`.
+
+## BATCH 110 Closure 2026-05-23
+- PASS: `smoke:batch100p-question-bank-crud`, `smoke:package-path-navigation`, `smoke:health-readiness`, `smoke:frontend:strict`.
+- Production strict verification confirmed serving commit `1788200`.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
