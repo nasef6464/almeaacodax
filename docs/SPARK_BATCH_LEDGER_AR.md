@@ -1896,3 +1896,5 @@
 - ملاحظة الأداء: `production-speed` بدون warnings في هذه الدفعة.
 
 | 107 | Cross-Session Continuity Playbook Closure | Fully closed | 2026-05-23 | BATCH_107_CROSS_SESSION_CONTINUITY_PLAYBOOK_2026-05-23_AR.md | Added mandatory cross-session playbook and locked continue rule for new accounts. |
+
+| 108 | Admin Question Bank Continuity Recheck | Fully closed | 2026-05-23 | BATCH_108_ADMIN_QUESTION_BANK_CONTINUITY_RECHECK_2026-05-23_AR.md | Revalidated question bank CRUD + admin operational runtime + strict frontend and health readiness. |

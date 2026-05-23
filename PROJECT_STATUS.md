@@ -3,8 +3,8 @@
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-23
 - Active Batch: None
-- Last Closed Batch: BATCH 107 - Cross-Session Continuity Playbook Closure
-- Status: BATCH 107 closed
+- Last Closed Batch: BATCH 108 - Admin Question Bank Continuity Recheck
+- Status: BATCH 108 closed
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -16,6 +16,14 @@
 - Added `docs/CROSS_SESSION_CONTINUITY_PLAYBOOK_AR.md` as mandatory continuity playbook.
 - Updated status/handover/ledger to enforce `اكمل => continue or auto-start next batch`.
 - PASS: `smoke:health-readiness`, `smoke:frontend:strict`, `smoke:batch100q-operational-admin-runtime`.
+
+## BATCH 108 Start 2026-05-23
+- Focus: question bank runtime continuity recheck + operational readiness stability confirmation.
+- Primary report: `BATCH_108_ADMIN_QUESTION_BANK_CONTINUITY_RECHECK_2026-05-23_AR.md`.
+
+## BATCH 108 Closure 2026-05-23
+- PASS: `smoke:batch100p-question-bank-crud`, `smoke:batch100q-operational-admin-runtime`, `smoke:health-readiness`, `smoke:frontend:strict`.
+- No runtime/design code changes in this batch; documentation and closure tracking only.
 
 ## BATCH 104 Start 2026-05-22
 - Focus: residual frontend advisory strategy (`quill`, `xlsx`) with production-safe mitigation.
