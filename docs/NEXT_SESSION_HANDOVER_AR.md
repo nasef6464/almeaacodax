@@ -2784,3 +2784,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit 35706ce.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 123 Update - 2026-05-24
+- Batch: BATCH_123_REAL_USAGE_SPLIT_CONTINUITY_2026-05-24_AR
+- Status: Fully closed.
+- Checks PASS: smoke:real-usage-readiness, smoke:package-course-split, smoke:health-readiness, smoke:frontend:strict.
+- Strict smoke confirmed production commit e3aa7cf.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+

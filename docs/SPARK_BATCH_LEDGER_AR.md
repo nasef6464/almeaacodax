@@ -1926,3 +1926,5 @@
 | 121 | Question Bank Real Usage Continuity | Fully closed | 2026-05-24 | BATCH_121_QUESTION_BANK_REAL_USAGE_CONTINUITY_2026-05-24_AR.md | Revalidated question-bank and real-usage contracts; strict passed after deploy-lag rerun on b156f23. |
 
 | 122 | Package Path Operational Continuity | Fully closed | 2026-05-24 | BATCH_122_PACKAGE_PATH_OPERATIONAL_CONTINUITY_2026-05-24_AR.md | Revalidated package-path and operational runtime contracts with strict production PASS on 35706ce. |
+
+| 123 | Real Usage Split Continuity | Fully closed | 2026-05-24 | BATCH_123_REAL_USAGE_SPLIT_CONTINUITY_2026-05-24_AR.md | Revalidated real-usage and package/course split contracts with strict production PASS on e3aa7cf. |
