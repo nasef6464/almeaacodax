@@ -2730,3 +2730,12 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit 904360e.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 117 Update - 2026-05-23
+- Batch: BATCH_117_READINESS_STRICT_SPEED_RECHECK_2026-05-23_AR
+- Status: Fully closed.
+- Checks PASS: smoke:health-readiness, smoke:frontend:strict, smoke:production-speed.
+- strict/frontend first run had deploy-lag mismatch, rerun PASS and confirmed production commit 55f5017.
+- Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
+

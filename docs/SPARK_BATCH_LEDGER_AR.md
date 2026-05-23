@@ -1914,3 +1914,5 @@
 | 115 | Admin Runtime Continuity Recheck | Fully closed | 2026-05-23 | BATCH_115_ADMIN_RUNTIME_CONTINUITY_RECHECK_2026-05-23_AR.md | Revalidated question-bank/admin runtime and readiness; strict frontend passed after deploy-lag rerun on ea3c5cb. |
 
 | 116 | Real Usage Split and Prod Alignment | Fully closed | 2026-05-23 | BATCH_116_REAL_USAGE_SPLIT_AND_PROD_ALIGNMENT_2026-05-23_AR.md | Revalidated real usage and package/course split contracts with strict production PASS on 904360e. |
+
+| 117 | Readiness Strict Speed Recheck | Fully closed | 2026-05-23 | BATCH_117_READINESS_STRICT_SPEED_RECHECK_2026-05-23_AR.md | Revalidated readiness/strict/speed; strict passed after deploy-lag rerun on 55f5017. |

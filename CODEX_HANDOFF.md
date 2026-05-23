@@ -4,6 +4,14 @@ Last updated: 2026-05-23
 
 ## Current Session Summary
 
+`BATCH 117 - Readiness Strict Speed Recheck` is closed.
+
+Outcome:
+- revalidated health readiness contract,
+- strict frontend required one rerun due to deploy lag then passed with production commit `55f5017`,
+- production speed check passed with initial commit-alignment warning only,
+- continuity tracking updated for immediate next batch start.
+
 `BATCH 116 - Real Usage Split and Prod Alignment` is closed.
 
 Outcome:
