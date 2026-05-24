@@ -132,6 +132,7 @@
   - avoids opaque downstream login/async assertion failures on empty env.
 - Verified:
   - `npm run smoke:operational` now fails fast with clear remediation message.
+  - Runbook added: `docs/OPERATIONAL_SMOKE_RUNBOOK_AR.md`.
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
