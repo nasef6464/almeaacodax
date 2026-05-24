@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 140 - Post-Sweep Operational Revalidation
+- Active Batch: BATCH 141 - Drift Check Continuation
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136/137 closed, BATCH 138/139/140 revalidation PASS
+- Status: BATCH 136/137 closed, BATCH 138/139/140 pass; BATCH 141 running with secret-gated operational step
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -48,6 +48,14 @@
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` => 26/26
 - Outcome: full operational stability remains intact after continuation cycles.
+
+## BATCH 141 Start 2026-05-24
+- Focus: drift-check continuation after repeated closure cycles.
+- PASS:
+  - `npm run smoke:real-usage-readiness` (6/6)
+  - `npm run smoke:health-readiness`
+- BLOCKED (secret-gated in current shell):
+  - `npm run smoke:operational` requires admin auth context env/token.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
