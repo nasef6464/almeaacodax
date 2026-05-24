@@ -14,6 +14,9 @@
 - Inputs: BATCH 136 fixes and runtime findings + owner-priority tracks (users/schools/relations/payments/student-journey).
 - Goal: authenticated runtime evidence + operational smoke closure + final status/ledger/handover sign-off.
 - Remaining blocker: credential-gated `smoke:operational` auth env.
+- Latest execution cycle:
+  - PASS: `typecheck`, `build`, `server build`, `smoke:batch136-admin-users-schools-parent-payment`, `smoke:student-learning-journey`, `smoke:payment-package`, `smoke:batch100f-relationship-audit`, `smoke:school-management`, `smoke:real-usage-readiness`, `smoke:health-readiness`, `smoke:frontend:strict`.
+  - FAIL (expected): `smoke:operational` due to missing admin auth env.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.

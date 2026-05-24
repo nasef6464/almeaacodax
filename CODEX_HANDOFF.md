@@ -20,6 +20,9 @@ Current outcome:
 - validated core contracts: `typecheck` PASS and `smoke:batch100q-operational-admin-runtime` PASS,
 - created dedicated batch report `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`,
 - pending: authenticated browser verification and completion matrix for users/schools/parent-link/payment gateways.
+- BATCH 137 execution cycle was run end-to-end and is green except secret-gated operational smoke:
+  - PASS: typecheck/build/server build + batch136/payment/relationship/schools/real-usage/health/frontend-strict/student-learning-journey.
+  - FAIL (expected): `smoke:operational` because admin auth env is not present in current shell.
 
 Immediate next action for any new account:
 1. Open admin runtime with valid credentials.
