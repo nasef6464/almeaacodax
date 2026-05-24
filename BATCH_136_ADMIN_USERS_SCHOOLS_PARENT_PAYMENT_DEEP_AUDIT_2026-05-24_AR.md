@@ -105,6 +105,15 @@
   - `npm run smoke:health-readiness` -> PASS
   - `npm run smoke:frontend:strict` -> PASS (production serving commit `eb3e5c3`)
 
+## Operational Smoke Guardrail Improvement
+- File: `scripts/smoke-operational-auto.mjs`
+- Improvement: added explicit pre-check for admin auth context before launching operational API smoke.
+- Behavior now:
+  - if no `SMOKE_ADMIN_TOKEN` and no admin credentials envs are present, the script exits early with actionable instructions.
+  - avoids opaque downstream login/async assertion failures on empty env.
+- Verified:
+  - `npm run smoke:operational` now fails fast with clear remediation message.
+
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
 - Schools list cards had a similar UX/runtime gap: three-dots existed without actionable flow.

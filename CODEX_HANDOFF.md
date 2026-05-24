@@ -12,6 +12,7 @@ Current outcome:
 - implemented admin users deletion flow end-to-end (`DELETE /auth/admin/users/:id` + frontend API + UI action) with protections for current admin and last-admin account,
 - fixed admin school command-center action linkage so school-command smoke contract passes again,
 - revalidated extended relationship/schools/payments readiness set (relationship audit, school portal command center, RBAC school scope, payment tampering, package-path and real-usage contracts, plus strict production frontend),
+- hardened `smoke:operational` entrypoint with explicit admin-auth env precheck and actionable failure output when credentials/token are missing,
 - validated core contracts: `typecheck` PASS and `smoke:batch100q-operational-admin-runtime` PASS,
 - created dedicated batch report `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`,
 - pending: authenticated browser verification and completion matrix for users/schools/parent-link/payment gateways.

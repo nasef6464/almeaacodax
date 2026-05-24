@@ -33,6 +33,20 @@ if (!hasToken && hasCreds) {
   }
 }
 
+if (!String(env.SMOKE_ADMIN_TOKEN || "").trim() && !hasCreds) {
+  console.error(
+    [
+      "Operational smoke requires admin auth context.",
+      "Provide one of the following:",
+      "1) SMOKE_ADMIN_TOKEN",
+      "2) SMOKE_ADMIN_EMAIL + SMOKE_ADMIN_PASSWORD",
+      "3) GOLIVE_ADMIN_EMAIL + GOLIVE_ADMIN_PASSWORD",
+      "4) ADMIN_EMAIL + ADMIN_PASSWORD",
+    ].join("\n"),
+  );
+  process.exit(1);
+}
+
 const operational = run("npm", ["--prefix", "server", "run", "smoke:operational:api"], { env });
 if (operational.status !== 0) {
   process.exit(operational.status ?? 1);
