@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 145 - Continuous Publish Cycle 3
+- Active Batch: BATCH 146 - Continuous Publish Cycle 4
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136/137 closed, BATCH 138-144 stable, BATCH 145 continuous publish in progress
+- Status: BATCH 136/137 closed, BATCH 138-145 stable, BATCH 146 continuous publish in progress
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -86,6 +86,14 @@
   - run post-deploy smoke checks.
 
 ## BATCH 145 Start 2026-05-24
+- Focus: continuous publish cycle (repeat deploy + verify).
+- Actions:
+  - push latest status snapshot to `main`.
+  - run Vercel production deploy and confirm alias.
+  - trigger Render deploy.
+  - run post-deploy smoke checks.
+
+## BATCH 146 Start 2026-05-24
 - Focus: continuous publish cycle (repeat deploy + verify).
 - Actions:
   - push latest status snapshot to `main`.
