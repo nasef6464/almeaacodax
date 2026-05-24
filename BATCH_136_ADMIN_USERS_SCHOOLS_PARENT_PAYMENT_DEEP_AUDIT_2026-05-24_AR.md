@@ -201,6 +201,13 @@
   - `school supervisor management actions are wired`
   - validates school-level and class-level supervisor add/remove action wiring and relations-tab navigation presence.
 
+## Regression Guard Improvement (payment review wiring)
+- File: `scripts/smoke-payment-package-contract.mjs`
+- Added explicit checks to ensure admin payment request review flow remains wired:
+  - Financial manager approve/reject action handlers,
+  - frontend API `/payments/requests/:id/review`,
+  - backend review route and audit action marker.
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`

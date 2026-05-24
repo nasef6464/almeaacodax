@@ -63,6 +63,12 @@ check('manual payment approval requires review evidence before unlocking access'
   assertIncludes(paymentRoutesSource, 'buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence)');
   assertIncludes(financialManagerSource, 'buildApprovalEvidence(request)');
   assertIncludes(financialManagerSource, "const canApprove = request.status === 'pending' && riskNotes.length === 0;");
+  assertIncludes(financialManagerSource, "onClick={() => void reviewRequest(request, 'approved')}");
+  assertIncludes(financialManagerSource, "onClick={() => void reviewRequest(request, 'rejected')}");
+  assertIncludes(apiSource, 'reviewPaymentRequest: (id: string, payload: unknown, token?: string | null)');
+  assertIncludes(apiSource, '`/payments/requests/${id}/review`');
+  assertIncludes(paymentRoutesSource, '"/requests/:id/review"');
+  assertIncludes(paymentRoutesSource, 'payment.request.review');
 });
 
 check('verified payment webhook can approve requests without trusting the browser', () => {
