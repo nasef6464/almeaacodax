@@ -2043,3 +2043,8 @@
 - Noted warnings:
   - `smoke:production-speed` completed with 2 non-blocking timing warnings.
   - npm audits still report known dependency advisories (`quill`, `xlsx`, `qs` chain).
+- Publish closure:
+  - Commit pushed: `d57cd4b`
+  - Vercel production: PASS (alias verified at `https://almeaacodax.vercel.app`)
+  - Render deploy trigger: PASS (`dep-d89mj27avr4c73cpi19g`)
+  - Post-deploy: `smoke:health-readiness` PASS, `smoke:frontend:strict` PASS (26/26, commit match `d57cd4b`)

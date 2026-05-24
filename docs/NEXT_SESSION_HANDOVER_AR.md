@@ -3017,3 +3017,8 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   1. inject admin auth env for operational smoke,
   2. rerun `npm run smoke:operational`,
   3. if PASS, mark BATCH 148 fully closed and run one final publish verification cycle.
+- Latest publish cycle for this batch is already complete:
+  - commit `d57cd4b` pushed to `main`,
+  - Vercel production alias verified,
+  - Render deploy triggered (`dep-d89mj27avr4c73cpi19g`),
+  - post-deploy strict/health checks passed.

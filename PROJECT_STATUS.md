@@ -2307,3 +2307,10 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:production-speed` passed with 2 timing warnings.
   - `npm run smoke:operational` blocked (missing admin auth env token/credentials).
   - `npm audit --omit=dev` and `npm --prefix server audit --omit=dev` report known dependency advisories.
+- Publish/Verification:
+  - GitHub push: PASS (`d57cd4b` to `main`)
+  - Vercel production deploy: PASS (alias `https://almeaacodax.vercel.app`)
+  - Render deploy trigger: PASS (`dep-d89mj27avr4c73cpi19g`)
+  - Post-deploy checks: PASS
+    - `npm run smoke:health-readiness`
+    - `npm run smoke:frontend:strict` (26/26, production commit match `d57cd4b`)

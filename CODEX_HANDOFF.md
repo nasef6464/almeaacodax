@@ -777,3 +777,11 @@ Next exact task:
 1. Provide admin auth env.
 2. Rerun `npm run smoke:operational`.
 3. If PASS, mark BATCH 148 fully closed and execute final publish verification loop.
+
+Publish verification loop executed for BATCH 148:
+- GitHub push PASS (`d57cd4b`).
+- Vercel production deploy PASS (alias `https://almeaacodax.vercel.app`).
+- Render deploy trigger PASS (`dep-d89mj27avr4c73cpi19g`).
+- Post-deploy PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit `d57cd4b`).
