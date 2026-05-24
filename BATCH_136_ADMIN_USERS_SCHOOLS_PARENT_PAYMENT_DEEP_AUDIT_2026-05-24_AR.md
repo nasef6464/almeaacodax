@@ -41,18 +41,28 @@
    - No route/data-shape/schema changes.
    - No design refactor.
 
+2. **SchoolsManager: activate school card three-dots actions**
+   - File: `dashboards/admin/SchoolsManager.tsx`
+   - Added functional actions menu per school card:
+     - فتح الإدارة
+     - ربط المشرفين
+   - Added safe outside-click close overlay.
+   - No design refactor and no schema/API shape change.
+
 ## Verified Commands
 - `npm run typecheck` -> PASS
 - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
+- Schools list cards had a similar UX/runtime gap: three-dots existed without actionable flow.
 - Parent linkage flow exists in code (`linkedStudentIds` in users + `parent.routes.ts`) but needs browser-authenticated runtime verification with admin + parent test accounts.
 - Schools and portal managers are feature-heavy and need a focused execution pass to classify each action into:
   - working
   - partial
   - non-functional
 - Payment routes are extensive and include provider/webhook safety logic; functional runtime matrix still pending against real configured env keys.
+- User deletion is currently missing as a dedicated backend endpoint (`POST/GET/PATCH /auth/admin/users` exist; no `DELETE /auth/admin/users/:id`), so current safe operational path is deactivate.
 
 ## Blockers / Pending for Final Closure
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).

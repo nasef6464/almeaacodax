@@ -605,6 +605,7 @@ export const SchoolsManager: React.FC = () => {
     } = useStore();
 
     const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
+    const [activeSchoolActionsId, setActiveSchoolActionsId] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'relations' | 'import' | 'reports'>('overview');
     const [schoolSearch, setSchoolSearch] = useState('');
     const [isImporting, setIsImporting] = useState(false);
@@ -646,6 +647,14 @@ export const SchoolsManager: React.FC = () => {
     const [pagedAccessCodesPagination, setPagedAccessCodesPagination] = useState<AccessCodesPagination | null>(null);
     const [isLoadingPagedAccessCodes, setIsLoadingPagedAccessCodes] = useState(false);
     const [pagedAccessCodesError, setPagedAccessCodesError] = useState<string | null>(null);
+
+    const toggleSchoolActions = (schoolId: string) => {
+        setActiveSchoolActionsId((current) => (current === schoolId ? null : schoolId));
+    };
+
+    const closeSchoolActions = () => {
+        setActiveSchoolActionsId(null);
+    };
 
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
@@ -3831,6 +3840,14 @@ export const SchoolsManager: React.FC = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
+            {activeSchoolActionsId && (
+                <button
+                    type="button"
+                    className="fixed inset-0 z-10 cursor-default"
+                    onClick={closeSchoolActions}
+                    aria-label="Close school actions menu"
+                />
+            )}
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">المدارس والجهات (B2B)</h1>
@@ -3956,13 +3973,44 @@ export const SchoolsManager: React.FC = () => {
 
                     return (
                         <div key={school.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
-                            <div className="flex justify-between items-start mb-4">
+                            <div className="relative flex justify-between items-start mb-4">
                                 <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                                     <Building2 size={24} />
                                 </div>
-                                <button className="text-gray-400 hover:text-gray-600">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSchoolActions(school.id)}
+                                    className="text-gray-400 hover:text-gray-600"
+                                    title="More actions"
+                                >
                                     <MoreVertical size={18} />
                                 </button>
+                                {activeSchoolActionsId === school.id && (
+                                    <div className="absolute z-20 mt-2 min-w-[170px] rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                closeSchoolActions();
+                                                setSelectedSchool(school);
+                                                setActiveTab('overview');
+                                            }}
+                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                        >
+                                            فتح الإدارة
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                closeSchoolActions();
+                                                setSelectedSchool(school);
+                                                setActiveTab('relations');
+                                            }}
+                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                        >
+                                            ربط المشرفين
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
                             <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
