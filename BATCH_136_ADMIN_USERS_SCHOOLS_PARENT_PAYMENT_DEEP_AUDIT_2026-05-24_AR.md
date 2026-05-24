@@ -249,6 +249,15 @@
 - Production alignment:
   - strict smoke confirmed production serving commit `e952d11`.
 
+## Verification Cycle (strict production alignment - latest 2)
+- Date: 2026-05-24
+- PASS:
+  - `npm run smoke:frontend:strict`
+- Production alignment:
+  - strict smoke confirmed production serving commit `0bf2582`.
+- Remaining blocker:
+  - `npm run smoke:operational` still credential-gated until admin auth env is provided.
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`

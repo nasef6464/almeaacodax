@@ -43,6 +43,9 @@ Immediate next action for any new account:
 9. Latest strict production alignment update:
    - `smoke:health-readiness` PASS.
    - `smoke:frontend:strict` PASS with production serving commit `e952d11` (after deploy-lag rerun).
+10. Latest strict production alignment update 2:
+   - `smoke:frontend:strict` PASS with production serving commit `0bf2582`.
+   - operational blocker unchanged: admin auth env still required for `smoke:operational`.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
