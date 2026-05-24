@@ -87,6 +87,11 @@ Immediate next action for any new account:
 19. Next mandatory closure target remains:
    - authenticated browser E2E evidence for purchase -> admin approve -> learner unlock,
    - authenticated browser evidence for users/schools relation persistence after reload.
+20. Latest closure smoke cycle status:
+   - `smoke:exam-payment-phase8` PASS
+   - `smoke:health-readiness` PASS
+   - `smoke:frontend:strict` PASS after one deploy-lag rerun
+   - production confirmed serving commit/version `8e3d2bb`.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

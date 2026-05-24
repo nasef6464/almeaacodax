@@ -368,3 +368,12 @@
   2) schools relation-import conflict scenarios,
   3) payment approval -> learner unlock visibility in real session,
   4) course-player discussions/resources/favorite/share behavior under production auth states.
+
+## Verification Cycle (closure pass - latest)
+- Date: 2026-05-24
+- PASS:
+  - `npm run smoke:exam-payment-phase8`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (passed after one deploy-lag rerun)
+- Note:
+  - first strict run failed only on expected-version check due to deploy lag; second run confirmed production now serves commit `8e3d2bb`.
