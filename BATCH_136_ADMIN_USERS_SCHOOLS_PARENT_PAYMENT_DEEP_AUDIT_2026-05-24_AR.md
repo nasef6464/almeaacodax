@@ -58,10 +58,22 @@
      - prevent deleting the last remaining admin account.
      - cleanup references from `linkedStudentIds` and group `studentIds/supervisorIds` before deletion.
 
+4. **Admin school command center linkage compatibility**
+   - File: `dashboards/admin/AdminDashboard.tsx`
+   - Aligned school command-center action buttons to shared tab-switch function (`setActiveTab`) for:
+     - `groups`
+     - `quizzes`
+     - `announcement-ads`
+   - Result: `smoke:admin-school-command` now passes.
+
 ## Verified Commands
 - `npm run typecheck` -> PASS
 - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
 - `npm --prefix server run build` -> PASS
+- `npm run smoke:school-management` -> PASS
+- `npm run smoke:admin-school-command` -> PASS (after linkage fix)
+- `npm run smoke:payment-providers` -> PASS
+- `npm run smoke:payment-package` -> PASS
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
@@ -77,9 +89,9 @@
 ## Blockers / Pending for Final Closure
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).
 2. End-to-end parent account verification for linked children data.
-3. Confirm owner policy for user deletion:
-   - soft-delete/deactivate-only
-   - or hard delete endpoint.
+3. Full operational API smoke (`npm run smoke:operational`) requires owner-provided admin credentials via env:
+   - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`
+   - or `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
 
 ## Next Exact Tasks
 1. Complete deep runtime verification in browser for:
