@@ -32,6 +32,8 @@ assertAllIncludes("dashboards/admin/UsersManager.tsx", [
   "allStudentsForLinking",
   "linkableStudents",
   "parentCandidates = linkableStudents.filter",
+  "options={linkableStudents.map((student) => ({ value: student.id, label: student.name }))}",
+  "const linkedStudent = linkableStudents.find((student) => student.id === studentId);",
 ]);
 
 assertAllIncludes("services/api.ts", [

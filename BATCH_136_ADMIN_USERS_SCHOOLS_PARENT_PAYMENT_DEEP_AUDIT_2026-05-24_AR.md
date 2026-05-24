@@ -92,6 +92,7 @@
 - `npm run smoke:batch100f-relationship-audit` -> PASS (10/10)
 - `npm run smoke:rbac-school-scope` -> PASS (4/4)
 - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
+- `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS (regression guard extended for parent-create linking source)
 - `npm run typecheck` -> PASS (post latest parent-link consistency fix)
 - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS (post latest fix)
 - `npm run smoke:batch100f-relationship-audit` -> PASS (post latest fix)
@@ -187,6 +188,12 @@
 - No `git add .`
 - Keep existing dirty historical files untouched.
 - No breaking API/model/env changes.
+
+## Regression Guard Improvement (latest)
+- File: `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs`
+- Added explicit checks to prevent regression in parent-create linking flow:
+  - create-parent linked-students selector must use `linkableStudents`.
+  - parent school-change filter must resolve students from `linkableStudents`.
 
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
