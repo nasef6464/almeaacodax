@@ -2957,3 +2957,14 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Remaining mandatory runtime closure:
   - authenticated browser E2E for student purchase -> admin approval -> unlocked access,
   - deep runtime matrix for users/schools relations (parent-child and supervisor flows) with PASS/FAIL evidence.
+## BATCH 137 Handover Pointer - 2026-05-24
+- Active closure plan file:
+  - `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`
+- Use this when a new account/session starts and owner says `اكمل`.
+- Mandatory sequence:
+  1. read `PROJECT_STATUS.md`, `CODEX_HANDOFF.md`, BATCH 136 report, BATCH 137 plan.
+  2. run closure smoke set from BATCH 137 plan.
+  3. execute authenticated admin browser matrix (users/schools/relations/payments/student-journey).
+  4. update status + ledger + handoff with exact PASS/FAIL evidence.
+- Current hard blocker is secret-gated only:
+  - authenticated `smoke:operational` requires admin token or admin credentials env.

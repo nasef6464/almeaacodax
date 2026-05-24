@@ -4,9 +4,12 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
-`BATCH 136 - Admin Users/Schools/Payments Deep Audit and Fixes` is in progress.
+`BATCH 137 - Final Closure Execution` is now active.
 
 Current outcome:
+- opened cross-session reusable closure plan:
+  - `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`
+- BATCH 136 core fixes are complete and preserved; BATCH 137 is dedicated to closure execution and authenticated runtime evidence.
 - implemented safe runtime fix for admin users actions menu: three-dots button is now functional in `dashboards/admin/UsersManager.tsx`,
 - implemented safe runtime fix for schools cards actions menu: three-dots button is now functional in `dashboards/admin/SchoolsManager.tsx`,
 - implemented admin users deletion flow end-to-end (`DELETE /auth/admin/users/:id` + frontend API + UI action) with protections for current admin and last-admin account,

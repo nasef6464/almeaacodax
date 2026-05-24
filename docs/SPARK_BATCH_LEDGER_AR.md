@@ -1953,3 +1953,9 @@
 
 | 135 | Package Split Prod Alignment | Fully closed | 2026-05-24 | BATCH_135_PACKAGE_SPLIT_PROD_ALIGNMENT_2026-05-24_AR.md | Revalidated package/course split contract with health+strict production PASS on 5c609d5. |
 | 136 | Admin Users/Schools/Parent/Payment Deep Audit | In progress | 2026-05-24 | BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md | Started deep runtime audit from owner feedback; fixed non-functional three-dots actions in users/schools; added safe user delete flow (API+UI); fixed admin school command-center linkage; hardened parent-linking student candidates beyond current users page; PASS: typecheck, server build, school-management, school-portal-command, admin-school-command, payment-provider/package/tampering, relationship-audit (10/10), RBAC-school-scope (4/4), package-path, real-usage, health, strict frontend, and batch136 contract; authenticated browser matrix and credential-gated operational smoke pending. |
+## Update BATCH 137 - 2026-05-24
+- Title: Final Closure Execution.
+- Status: In progress.
+- Plan file: `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`.
+- Purpose: make final closure executable by any new account with exact commands, runtime matrix, and blocker mapping.
+- Depends on: completed BATCH 136 fixes and existing production deploy state.

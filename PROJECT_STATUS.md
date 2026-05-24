@@ -2,11 +2,18 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 136 - Admin Users/Schools/Payments Deep Audit and Fixes
+- Active Batch: BATCH 137 - Final Closure Execution
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136 in progress
+- Status: BATCH 136 fixes complete, BATCH 137 closure execution in progress
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
+
+## BATCH 137 Start 2026-05-24
+- Focus: final closure execution plan reusable by any new account/session.
+- Primary plan: `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`.
+- Inputs: BATCH 136 fixes and runtime findings + owner-priority tracks (users/schools/relations/payments/student-journey).
+- Goal: authenticated runtime evidence + operational smoke closure + final status/ledger/handover sign-off.
+- Remaining blocker: credential-gated `smoke:operational` auth env.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
