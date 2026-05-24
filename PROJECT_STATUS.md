@@ -2259,3 +2259,14 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Browser verification: PASS, admin dashboard tab click changed URL to `tab=homepage` and the homepage admin screen rendered without visible errors.
 - Report: `BATCH_100N_ADMIN_DASHBOARD_REMAINING_BUTTONS_DEEP_E2E_SWEEP_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100O - Admin Dashboard CRUD Actions Runtime Sweep + Course/Lesson/Quiz Linkage Audit`.
+
+## Final Closure 2026-05-24 - BATCH 146
+- Batch: `BATCH_146_CONTINUOUS_PUBLISH_CYCLE_4_2026-05-24_AR`.
+- Status: `Fully closed`.
+- Commit pushed: `60babec` to `origin/main`.
+- Vercel: PASS, production deploy succeeded and alias is live at `https://almeaacodax.vercel.app`.
+- Render: PASS, deploy triggered successfully with id `dep-d89m5njbc2fs73fcenq0` on commit `60babec`.
+- Runtime checks: PASS
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `60babec`)
+- Notes: corrected Render service id usage during trigger and reran deploy against active service `srv-d7qtcr9o3t8c73cs32sg`.

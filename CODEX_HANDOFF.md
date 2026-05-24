@@ -682,3 +682,26 @@ Start BATCH 102 by reading the current state files first, then fix the package/p
 - `npm run smoke:package-course-split`
 
 Then continue through the BATCH 102 phases.
+
+## Session Update 2026-05-24 - BATCH 146 Continuous Publish Cycle 4
+
+Summary:
+- Completed a full publish cycle closure after prior handoff compaction.
+
+What was done:
+- Verified local/main divergence and pushed commit `60babec` to `origin/main`.
+- Deployed frontend to Vercel production and verified alias at `https://almeaacodax.vercel.app`.
+- Triggered backend deploy on Render using active service `srv-d7qtcr9o3t8c73cs32sg` (deploy id `dep-d89m5njbc2fs73fcenq0`).
+- Ran production-facing verification:
+  - `npm run smoke:health-readiness` -> PASS
+  - `npm run smoke:frontend:strict` -> PASS (26/26, production commit `60babec`).
+
+Blockers:
+- No blocking failures in this cycle.
+
+Warnings for next session:
+- Keep using the active Render service id above; legacy id `srv-d6muvvqdbo4c73fuak60` returns not found.
+- Continue explicit staging only (`git add <files>`), never `git add .`.
+
+Rollback:
+- If any regression appears, rollback to previous known-good commit `13554c3`, redeploy Vercel/Render, then rerun strict + health smokes.

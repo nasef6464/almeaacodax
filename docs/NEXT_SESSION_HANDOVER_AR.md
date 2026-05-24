@@ -2968,3 +2968,16 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   4. update status + ledger + handoff with exact PASS/FAIL evidence.
 - Current hard blocker is secret-gated only:
   - authenticated `smoke:operational` requires admin token or admin credentials env.
+
+## BATCH 146 Closure Handover - 2026-05-24
+- Closed batch: `BATCH_146_CONTINUOUS_PUBLISH_CYCLE_4_2026-05-24_AR`.
+- GitHub:
+  - commit `60babec` pushed to `main`.
+- Deploy:
+  - Vercel production deploy completed and aliased to `https://almeaacodax.vercel.app`.
+  - Render deploy triggered successfully with `dep-d89m5njbc2fs73fcenq0`.
+- PASS checks:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (production commit match `60babec`).
+- Important continuity note:
+  - Render trigger must target active service id `srv-d7qtcr9o3t8c73cs32sg` (old id returns not found).
