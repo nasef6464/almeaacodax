@@ -168,6 +168,10 @@
 - Payment/package contracts are passing; still requires authenticated UI matrix to confirm admin approval unlocks expected package/user scope end-to-end.
 
 ## Blockers / Pending for Final Closure
+0. Owner-reported runtime blockers newly added to execution plan:
+   - course player tabs `المصادر` / `المناقشات` not working,
+   - course player actions `المفضلة` / `المشاركة` not working,
+   - payment admin `اعتماد` button not working in runtime.
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).
 2. End-to-end parent account verification for linked children data.
 3. Full operational API smoke (`npm run smoke:operational`) requires owner-provided admin credentials via env:
@@ -175,6 +179,16 @@
    - or `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
 
 ## Next Exact Tasks
+0. Execute mandatory runtime track from plan for learning player:
+   - inspect/fix `المصادر` / `المناقشات` tabs wiring,
+   - inspect/fix `المفضلة` / `المشاركة` actions wiring and persistence.
+0.1 Execute P0 payment blocker track:
+   - inspect/fix admin `اعتماد` button in payment requests table.
+0.2 Execute student end-to-end journey track:
+   - student purchase request -> admin review/approval -> learner unlock verification.
+0.3 Execute deep users-management and relationships runtime track:
+   - users CRUD runtime behavior,
+   - parent/supervisor/student relationships persistence and scope impact.
 1. Complete deep runtime verification in browser for:
    - add/edit/filter user
    - parent linkage edit/save/reload

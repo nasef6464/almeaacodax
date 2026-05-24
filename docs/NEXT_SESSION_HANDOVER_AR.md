@@ -2926,3 +2926,15 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Remaining final blocker:
   - `smoke:operational` cannot run without admin auth env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
 
+## BATCH 136 Mandatory Runtime Additions - 2026-05-24
+- Owner-required tracks added to canonical BATCH 136 plan:
+  - learning player tabs/actions runtime:
+    - `المصادر` / `المناقشات`
+    - `المفضلة` / `المشاركة`
+  - payment admin P0 blocker:
+    - `زر الاعتماد` in payment requests table not working.
+  - full student journey validation:
+    - from purchase request to admin approval to learner unlock.
+  - deep users-management and relationship validation:
+    - CRUD + parent/supervisor/student relationship persistence and scope impact.
+

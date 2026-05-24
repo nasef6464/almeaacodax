@@ -45,6 +45,12 @@ Execute a deep runtime audit from Admin Panel with focus on:
 - verify no disabled-looking control without handler.
 - verify confirmation/rollback behavior on destructive actions.
 
+6. Student End-to-End Journey (Mandatory)
+- verify student journey from paid item selection to payment request submission.
+- verify payment request appears in admin financial manager queue.
+- verify admin approve/reject updates request lifecycle correctly.
+- verify access unlock reaches the correct learner scope after approval.
+
 ## Execution Matrix (Next Run)
 
 1. Authenticated Browser Runtime (admin)
@@ -91,6 +97,24 @@ Execute a deep runtime audit from Admin Panel with focus on:
 - ability to add/manage school supervisors.
 - payment portal readiness and runtime behavior.
 
+## New Owner-Reported Runtime Issues (added 2026-05-24)
+
+1. Course player tabs issue:
+- `المصادر` and `المناقشات` inside the learning player are not functioning as expected in runtime.
+
+2. Course player quick actions issue:
+- `المفضلة` and `المشاركة` actions are not functioning as expected.
+
+3. Payment proof UX gap:
+- student needs an easier proof-of-payment flow:
+  - attach receipt image,
+  - or provide receipt link,
+  - with clear review-ready payload for admin approval.
+
+4. Payment admin action blocker:
+- `زر الاعتماد` في جدول طلبات الدفع لا يعمل في runtime (owner-reported with screenshot evidence).
+- Treat as P0 blocker for batch closure.
+
 ## Expanded Admin Deep Checklist (requested by owner)
 
 ### A) Users Relationships
@@ -126,16 +150,68 @@ Execute a deep runtime audit from Admin Panel with focus on:
   - provider/mode/country presets save and reload correctly.
 - payment requests:
   - approve/reject flow updates status and audit trail.
+  - approve button click must execute review API path and mutate status.
 - package purchases:
   - item type remains package for package flows,
   - unlock grant applies to correct user/package.
 - anti-tampering:
   - server-calculated totals and approval guards remain enforced.
+- receipt proof capture:
+  - verify student can submit receipt link cleanly,
+  - verify ability to attach receipt image/file (if supported),
+  - if image upload is missing, classify as gap and implement safe minimal upload path plan.
+- lifecycle closure:
+  - verify `pending -> approved/rejected` transitions,
+  - verify approved request produces learner-visible unlock.
 
 ### D) Critical Runtime Outcomes
 - no dead icon buttons in admin tables/cards.
 - no relation edit that appears saved but is lost after refresh.
 - no payment approval that unlocks wrong scope.
+- no dead `اعتماد` action in admin payment requests table.
+- learning player tabs/actions (`sources/discussions/favorite/share`) must be actionable and non-dead.
+
+### E) Learning Player Runtime (new mandatory track)
+- verify `الوصف` / `المصادر` / `المناقشات` tabs behavior in real runtime.
+- verify favorite toggle persists and reflects current state.
+- verify share action has a working output path (copy/share intent) without silent fail.
+- verify these actions across:
+  - direct course route `/course/:id`,
+  - category route launch with lesson query params.
+
+### F) Payment Approval Button (P0)
+- runtime inspect admin payment table approve button path:
+  - disabled-state conditions,
+  - click handler execution,
+  - payload validity (approval evidence),
+  - API response handling and UI refresh.
+- expected behavior:
+  - pending request + valid evidence => approved status update + access grant feedback.
+- if failing:
+  - capture exact fail mode:
+    - button disabled unexpectedly,
+    - handler not firing,
+    - API request failing,
+    - response handling bug.
+
+### G) Users Management and Relationships (Deep Mandatory)
+- verify users CRUD runtime integrity for supported roles:
+  - create/edit/delete/activate/deactivate.
+- verify relationship wiring:
+  - parent-child links,
+  - supervisor school/class assignment,
+  - student school/class assignment.
+- verify persistence after save/reload for relationship updates.
+- verify relationship changes affect downstream scopes correctly.
+
+### H) Student Journey Checklist (purchase -> admin approval -> access)
+1. student opens paid item and submits payment request.
+2. student submits proof (receipt link and/or image if supported).
+3. request appears to admin with correct metadata.
+4. admin approves request from payment table.
+5. request status and audit trail update correctly.
+6. learner account gets correct access unlock.
+7. learner reopens content and confirms unlocked state.
 
 ## Static Findings To Verify First In Runtime
 

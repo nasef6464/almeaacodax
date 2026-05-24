@@ -46,6 +46,15 @@ Immediate next action for any new account:
 10. Latest strict production alignment update 2:
    - `smoke:frontend:strict` PASS with production serving commit `0bf2582`.
    - operational blocker unchanged: admin auth env still required for `smoke:operational`.
+11. New owner-reported runtime blockers were added as mandatory tracks:
+   - learning player: `المصادر` / `المناقشات` tabs not working,
+   - learning player: `المفضلة` / `المشاركة` actions not working,
+   - admin payments: `اعتماد` button not working.
+   - canonical plan reference:
+     - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
+12. Owner requested explicit deep runtime coverage additions:
+   - full student journey verification (purchase -> admin approval -> access unlock),
+   - deep users-management and relationships runtime verification.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
