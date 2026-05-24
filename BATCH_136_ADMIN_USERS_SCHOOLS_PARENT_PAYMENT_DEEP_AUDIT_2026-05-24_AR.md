@@ -66,6 +66,12 @@
      - `announcement-ads`
    - Result: `smoke:admin-school-command` now passes.
 
+5. **Parent-student linking candidate source hardening**
+   - File: `dashboards/admin/UsersManager.tsx`
+   - Root cause addressed: parent linking options were tied to currently loaded users page, so children list could appear empty in runtime even when students exist.
+   - Fix: load full student candidates (paginated API sweep) for linking workflow and use that source in parent candidate dropdown and linked-students export names.
+   - Result: parent linkage list is no longer limited to current users table page.
+
 ## Verified Commands
 - `npm run typecheck` -> PASS
 - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
@@ -74,6 +80,7 @@
 - `npm run smoke:admin-school-command` -> PASS (after linkage fix)
 - `npm run smoke:payment-providers` -> PASS
 - `npm run smoke:payment-package` -> PASS
+- `npm run smoke:school-management` -> PASS (re-run after parent-link candidate fix)
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.

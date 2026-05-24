@@ -135,6 +135,7 @@ export const UsersManager: React.FC = () => {
     const [isUsersLoading, setIsUsersLoading] = useState(false);
     const [usersLoadError, setUsersLoadError] = useState('');
     const [activeActionsUserId, setActiveActionsUserId] = useState<string | null>(null);
+    const [allStudentsForLinking, setAllStudentsForLinking] = useState<User[]>([]);
     const [createError, setCreateError] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
@@ -149,6 +150,13 @@ export const UsersManager: React.FC = () => {
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
     const students = useMemo(() => users.filter((user) => user.role === Role.STUDENT), [users]);
+    const linkableStudents = useMemo(() => {
+        const byId = new Map<string, User>();
+        [...allStudentsForLinking, ...students].forEach((student) => {
+            byId.set(student.id, student);
+        });
+        return Array.from(byId.values());
+    }, [allStudentsForLinking, students]);
     const pathOptions = useMemo(() => paths.map((path) => ({ value: path.id, label: path.name })), [paths]);
     const teacherSubjectOptions = useMemo(() => {
         return resolveTeacherSubjects(newUser.managedPathIds, subjects).map((subject) => ({
@@ -224,6 +232,42 @@ export const UsersManager: React.FC = () => {
         };
 
     }, [hydrateUsers, searchTerm, roleFilter, usersPage, usersLimit]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadAllStudentsForLinking = async () => {
+            try {
+                const firstPage = await api.getAdminUsers({ role: Role.STUDENT, page: 1, limit: 100 });
+                const firstPageUsers = (firstPage.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT);
+                const totalPages = Math.max(1, Number(firstPage.pagination?.totalPages || 1));
+                const nextPages = Array.from({ length: totalPages - 1 }, (_, index) => index + 2);
+                const remaining = await Promise.all(
+                    nextPages.map((page) => api.getAdminUsers({ role: Role.STUDENT, page, limit: 100 })),
+                );
+
+                const combined = [
+                    ...firstPageUsers,
+                    ...remaining.flatMap((response) => (response.users || []).map(buildStoreUser).filter((user) => user.role === Role.STUDENT)),
+                ];
+
+                if (isMounted) {
+                    setAllStudentsForLinking(combined);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    console.error('Failed to load students list for parent linking:', error);
+                    setAllStudentsForLinking([]);
+                }
+            }
+        };
+
+        void loadAllStudentsForLinking();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     const handleSearchTermChange = (value: string) => {
         setUsersPage(1);
@@ -325,7 +369,7 @@ export const UsersManager: React.FC = () => {
                     .map((group) => group.name)
                     .join('، ');
                 const { pathNames, subjectNames } = resolveTeacherScope(currentUser);
-                const linkedStudents = users
+                const linkedStudents = linkableStudents
                     .filter((student) => currentUser.linkedStudentIds?.includes(student.id))
                     .map((student) => student.name)
                     .join('، ');
@@ -866,7 +910,7 @@ export const UsersManager: React.FC = () => {
                                 const availableClasses = classes.filter((group) => !currentSchoolId || group.parentId === currentSchoolId);
                                 const currentClassId = classes.find((group) => currentUser.groupIds?.includes(group.id))?.id || '';
                                 const currentSupervisorGroupIds = currentUser.groupIds || [];
-                                const parentCandidates = students.filter((student) => !currentSchoolId || student.schoolId === currentSchoolId);
+                                const parentCandidates = linkableStudents.filter((student) => !currentSchoolId || student.schoolId === currentSchoolId);
 
                                 return (
                                     <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
