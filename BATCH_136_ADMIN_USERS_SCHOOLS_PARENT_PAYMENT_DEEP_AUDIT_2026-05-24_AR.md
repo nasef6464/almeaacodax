@@ -112,6 +112,12 @@
   - `npm run smoke:school-portal-command` -> PASS (8 checks)
   - `npm run smoke:real-usage-readiness` -> PASS (6/6)
 
+## Verification Cycle (deploy alignment)
+- Date: 2026-05-24
+- Deploy alignment pass set:
+  - `npm run smoke:health-readiness` -> PASS
+  - `npm run smoke:frontend:strict` -> PASS (production serving commit `a23a6a6`)
+
 ## Operational Smoke Guardrail Improvement
 - File: `scripts/smoke-operational-auto.mjs`
 - Improvement: added explicit pre-check for admin auth context before launching operational API smoke.
