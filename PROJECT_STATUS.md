@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 142 - Publish Snapshot Closure
+- Active Batch: BATCH 143 - Continuous Publish Cycle
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136/137 closed, BATCH 138/139/140/141 pass, BATCH 142 publish snapshot in progress
+- Status: BATCH 136/137 closed, BATCH 138-142 stable, BATCH 143 continuous publish in progress
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -67,7 +67,15 @@
   - `smoke:operational` PASS (71/71).
   - `smoke:health-readiness` PASS.
   - `smoke:frontend:strict` PASS (26/26).
-  - Render health endpoint reports `status=ok`, `ready=true`, `database=connected`, `redis=ready`.
+- Render health endpoint reports `status=ok`, `ready=true`, `database=connected`, `redis=ready`.
+
+## BATCH 143 Start 2026-05-24
+- Focus: continuous publish cycle with revalidation.
+- Actions:
+  - push latest continuity update to `main`.
+  - run Vercel production deploy and alias verification.
+  - trigger Render deploy.
+  - execute post-deploy checks.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
