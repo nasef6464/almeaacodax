@@ -4,9 +4,14 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
-`BATCH 139 - Deep Admin Runtime Sweep` is now active.
+`BATCH 140 - Post-Sweep Operational Revalidation` is now active.
 
 Current outcome:
+- BATCH 140 revalidation cycle PASS:
+  - operational smoke: 71/71
+  - health readiness: PASS
+  - strict frontend: PASS (26/26)
+- stability remains preserved after repeated continuation runs.
 - BATCH 139 continuation sweep executed and PASS:
   - `smoke:batch136-admin-users-schools-parent-payment`
   - `smoke:payment-package`

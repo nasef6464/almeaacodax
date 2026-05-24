@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 139 - Deep Admin Runtime Sweep
+- Active Batch: BATCH 140 - Post-Sweep Operational Revalidation
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136/137 closed, BATCH 138/139 sweep PASS
+- Status: BATCH 136/137 closed, BATCH 138/139/140 revalidation PASS
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -40,6 +40,14 @@
   - `npm run smoke:payment-package`
   - `npm run smoke:batch100f-relationship-audit`
 - Outcome: admin/relations/payments source-contract health remains stable.
+
+## BATCH 140 Start 2026-05-24
+- Focus: post-sweep operational revalidation to ensure stability holds.
+- PASS:
+  - `npm run smoke:operational` => 71/71
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` => 26/26
+- Outcome: full operational stability remains intact after continuation cycles.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
