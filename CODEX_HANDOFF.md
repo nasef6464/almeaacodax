@@ -23,6 +23,11 @@ Current outcome:
 - BATCH 137 execution cycle was run end-to-end and is green except secret-gated operational smoke:
   - PASS: typecheck/build/server build + batch136/payment/relationship/schools/real-usage/health/frontend-strict/student-learning-journey.
   - FAIL (expected): `smoke:operational` because admin auth env is not present in current shell.
+ - Additional operational retry against production API was executed:
+   - base: `https://almeaacodax-k2ux.onrender.com/api`
+   - result: FAIL with `429 Too many login attempts` on `POST /auth/login`.
+ - Fastest final-closure route now:
+   - provide fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (bypasses password-login rate limit path).
 
 Immediate next action for any new account:
 1. Open admin runtime with valid credentials.
