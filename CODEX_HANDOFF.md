@@ -92,6 +92,14 @@ Immediate next action for any new account:
    - `smoke:health-readiness` PASS
    - `smoke:frontend:strict` PASS after one deploy-lag rerun
    - production confirmed serving commit/version `8e3d2bb`.
+21. Authenticated operational closure remains secret-gated:
+   - `npm run smoke:operational` fails fast by design when admin auth context is missing.
+   - required one-of:
+     - `SMOKE_ADMIN_TOKEN`
+     - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`
+     - `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
+     - `ADMIN_EMAIL` + `ADMIN_PASSWORD`
+   - treat as owner-secret blocker, not application regression.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

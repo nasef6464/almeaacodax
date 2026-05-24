@@ -377,3 +377,19 @@
   - `npm run smoke:frontend:strict` (passed after one deploy-lag rerun)
 - Note:
   - first strict run failed only on expected-version check due to deploy lag; second run confirmed production now serves commit `8e3d2bb`.
+
+## Operational Closure Blocker (Authenticated E2E)
+- Command:
+  - `npm run smoke:operational`
+- Result:
+  - FAIL (expected credential gate, not code regression).
+- Exact blocker:
+  - missing admin auth context for operational authenticated smoke.
+  - requires one of:
+    1. `SMOKE_ADMIN_TOKEN`
+    2. `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`
+    3. `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
+    4. `ADMIN_EMAIL` + `ADMIN_PASSWORD`
+- Closure impact:
+  - source/runtime contracts are green,
+  - final authenticated E2E closure remains **blocked by secrets only**.
