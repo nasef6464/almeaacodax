@@ -105,6 +105,13 @@
   - `npm run smoke:health-readiness` -> PASS
   - `npm run smoke:frontend:strict` -> PASS (production serving commit `eb3e5c3`)
 
+## Verification Cycle (admin surfaces)
+- Date: 2026-05-24
+- Admin-surface pass set:
+  - `npm run smoke:admin-tabs` -> PASS (2/2)
+  - `npm run smoke:school-portal-command` -> PASS (8 checks)
+  - `npm run smoke:real-usage-readiness` -> PASS (6/6)
+
 ## Operational Smoke Guardrail Improvement
 - File: `scripts/smoke-operational-auto.mjs`
 - Improvement: added explicit pre-check for admin auth context before launching operational API smoke.
