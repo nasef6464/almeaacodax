@@ -4,7 +4,7 @@
 - Last Update: 2026-05-24
 - Active Batch: BATCH 137 - Final Closure Execution
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136 fixes complete, BATCH 137 closure execution in progress
+- Status: BATCH 136 fixes complete, BATCH 137 operational closure PASS (71/71)
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -23,10 +23,8 @@
 - Immediate closure path:
   - set fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (token path avoids password-login rate limit).
 - Latest operational execution with token:
-  - `smoke:operational` ran successfully through full matrix: `70/71`.
-  - Remaining failed check is data-link integrity:
-    - `published topic quiz links resolve for learners`
-    - missing `quiz_current_p_1777779639431_sub_1777779748206_practice` under topic `topic_current_p_1777779639431_sub_1777779748206_foundation`.
+  - `smoke:operational` final run PASS: `71/71`.
+  - Production data link repaired for foundation topic quiz mapping (`quiz_current_p_1777779639431_sub_1777779748206_practice`).
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.

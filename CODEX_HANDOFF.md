@@ -28,13 +28,12 @@ Current outcome:
   - result: FAIL with `429 Too many login attempts` on `POST /auth/login`.
 - Fastest final-closure route now:
   - provide fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (bypasses password-login rate limit path).
-- Operational token-run executed:
-  - full `smoke:operational` matrix ran to completion with `70/71` PASS.
-  - only failed assertion is content-link data integrity:
-    - missing topic->quiz reference:
-      - `topic_current_p_1777779639431_sub_1777779748206_foundation`
-      - `quiz_current_p_1777779639431_sub_1777779748206_practice`
-  - this is now the single remaining closure blocker.
+ - Operational token-run executed and finalized:
+  - full `smoke:operational` matrix PASS `71/71`.
+  - fixed production content-link integrity by updating quiz
+    `quiz_current_p_1777779639431_sub_1777779748206_practice`
+    with a valid published question reference.
+  - prior single blocker is resolved.
 
 Immediate next action for any new account:
 1. Open admin runtime with valid credentials.

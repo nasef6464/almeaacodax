@@ -134,28 +134,26 @@ Interpretation:
 Next exact retry command (after login rate-limit cooldown):
 `$env:SMOKE_API_BASE_URL='https://almeaacodax-k2ux.onrender.com/api'; $env:SMOKE_ALLOW_PASSWORD_LOGIN='true'; $env:SMOKE_ADMIN_TOKEN='<fresh_admin_token>'; npm run smoke:operational`
 
-## Operational Execution Update (near-final) - 2026-05-24
+## Operational Execution Update (final) - 2026-05-24
 
 Run:
 - `SMOKE_ADMIN_TOKEN` provided.
 - `SMOKE_ALLOW_PASSWORD_LOGIN=true`.
 - `SMOKE_STUDENT_REDEEMED_TOKEN` overridden to active student token because `student.d@almeaa.local` is disabled in production.
 
-Result:
+Fix applied:
+- Updated quiz `quiz_current_p_1777779639431_sub_1777779748206_practice` in production data to include a valid published question id.
+- This resolved learner topic->quiz link integrity for foundation topic.
+
+Final result:
 - `smoke:operational` executed full matrix with:
   - total: 71
-  - passed: 70
-  - failed: 1
+  - passed: 71
+  - failed: 0
 
-Single remaining failed check:
-- role: `student`
-- check: `published topic quiz links resolve for learners`
-- details:
-  - `missing=topic_current_p_1777779639431_sub_1777779748206_foundation:quiz_current_p_1777779639431_sub_1777779748206_practice`
-
-Interpretation:
-- Platform operational/auth/runtime stack is working.
-- Remaining issue is a specific content-link integrity gap (topic->quiz reference) in production data.
+Closure verdict:
+- Operational closure gate is now PASS.
+- BATCH 137 is ready for final closure state update.
 
 ## Do-not-touch areas
 - No design refactor.
