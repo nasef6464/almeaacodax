@@ -3,28 +3,26 @@
 آخر تحديث: 2026-05-24
 
 ## الهدف
-تشغيل `npm run smoke:operational` بنجاح بطريقة ثابتة، وتجنب فشل تسجيل الدخول بسبب متغيرات بيئة ناقصة.
+تشغيل `npm run smoke:operational` بنجاح بطريقة ثابتة، وتجنب فشل التشغيل بسبب نقص متغيرات البيئة.
 
 ## المتطلبات
-واحد فقط من المسارين:
+وفّر واحدًا فقط من المسارات التالية:
 
-1) **Token مباشر**
+1. Token مباشر:
 - `SMOKE_ADMIN_TOKEN`
 
-أو
-
-2) **بيانات دخول Admin**
+2. أو بيانات دخول أدمن:
 - `SMOKE_ADMIN_EMAIL`
 - `SMOKE_ADMIN_PASSWORD`
 
-بدائل مقبولة بدل `SMOKE_ADMIN_EMAIL/SMOKE_ADMIN_PASSWORD`:
+بدائل مقبولة:
 - `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
 - `ADMIN_EMAIL` + `ADMIN_PASSWORD`
 
 ## ملاحظة مهمة
-تم تحصين `scripts/smoke-operational-auto.mjs` ليعمل **fail-fast** برسالة واضحة إذا لا يوجد token ولا credentials.
+سكريبت `scripts/smoke-operational-auto.mjs` يعمل الآن Fail-Fast برسالة واضحة إذا لم يجد token أو credentials.
 
-## أوامر Windows PowerShell (جلسة مؤقتة)
+## أوامر Windows PowerShell
 
 ### خيار A: Token
 ```powershell
@@ -39,7 +37,7 @@ $env:SMOKE_ADMIN_PASSWORD = "<ADMIN_PASSWORD>"
 npm run smoke:operational
 ```
 
-## أوامر Linux/macOS (جلسة مؤقتة)
+## أوامر Linux/macOS
 
 ### خيار A: Token
 ```bash
@@ -56,23 +54,32 @@ npm run smoke:operational
 
 ## عند الفشل
 
-### 1) رسالة: Missing/Requires admin auth context
-المعنى: لا يوجد token ولا credentials.
-الحل: طبق أحد المسارين أعلاه.
+1. `Missing/Requires admin auth context`
+- السبب: لا يوجد token ولا credentials.
+- الحل: استخدم أحد المسارات أعلاه.
 
-### 2) 400 Invalid request payload (email/password)
-المعنى: القيم فارغة أو غير صالحة.
-الحل:
-- تأكد من عدم وجود مسافات/قيم فارغة.
-- جرب token مباشر.
+2. `400 Invalid request payload`
+- السبب: قيم ناقصة/فارغة.
+- الحل: تأكد من القيم وجرب token مباشر.
 
-### 3) 401/403
-المعنى: الحساب غير صحيح أو لا يملك الصلاحية.
-الحل:
-- استخدم حساب Admin صالح للإنتاج.
-- تحقق من البيئة المستهدفة (`SMOKE_API_BASE_URL` إذا كنت تستخدم API غير الافتراضي).
+3. `401/403`
+- السبب: الحساب غير صالح أو لا يملك صلاحية كافية.
+- الحل: استخدم حساب Admin صالح للإنتاج.
 
 ## التحقق بعد النجاح
-- حفظ مخرجات PASS في تقرير الدفعة.
-- إعادة `npm run smoke:health-readiness`.
-- إعادة `npm run smoke:frontend:strict` للتأكد من محاذاة النشر.
+- احفظ PASS في تقرير الدفعة.
+- شغّل:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+
+## Fast Closure Path (next session)
+بعد ضبط بيانات الأدمن في البيئة، شغّل بالترتيب:
+
+1. `npm run smoke:operational`
+2. `npm run smoke:health-readiness`
+3. `npm run smoke:frontend:strict`
+
+إذا كلها PASS:
+- اعتبر blocker الخاص بـ BATCH 136 محلول.
+- حدّث `PROJECT_STATUS.md` و `CODEX_HANDOFF.md`.
+- أعلن الإقفال النهائي للدفعة بمصفوفة PASS/FAIL النهائية.
