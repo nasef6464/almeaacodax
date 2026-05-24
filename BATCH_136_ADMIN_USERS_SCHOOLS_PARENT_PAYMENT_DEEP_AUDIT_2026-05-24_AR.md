@@ -332,3 +332,39 @@
 - Added script alias:
   - `smoke:student-learning-journey` -> `node scripts/smoke-student-learning-journey.mjs`
 - Reason: avoid cross-session naming mismatch and keep command discoverability stable.
+
+## Admin Runtime Matrix (Code-Level Deep Pass)
+
+### Users Manager (`dashboards/admin/UsersManager.tsx`)
+- PASS: users search/filter/pagination wired to server (`getAdminUsers`).
+- PASS: create user flow wired (`createAdminUser`) with role-aware payload.
+- PASS: row actions menu (three-dots) wired (`Edit / Activate|Deactivate / Delete`).
+- PASS: safe delete path wired (`deleteAdminUser`) with guard handling in UI.
+- PASS: parent-child linking wired in create/edit using full `linkableStudents` source.
+- PASS: supervisor school/class assignment wired via group relation actions.
+- PARTIAL (runtime-auth check pending): final UX validation of bulk operations and edge-role transitions under real admin accounts.
+
+### Schools Manager (`dashboards/admin/SchoolsManager.tsx`)
+- PASS: school cards actions menu wired (`فتح الإدارة` / `ربط المشرفين`).
+- PASS: school command-center/open-management navigation wired.
+- PASS: class creation/deletion and student assignment controls are wired.
+- PASS: supervisor add/remove (school/class scope) is wired.
+- PASS: relation import path (student-parent-supervisor links) is wired.
+- PASS: package/code management actions are wired (create/update/toggle/delete flows).
+- PARTIAL (runtime-auth check pending): operator-level validation for large-school datasets and conflict edge cases.
+
+### Financial Manager (`dashboards/admin/FinancialManager.tsx`)
+- PASS: payment requests listing/filtering/pagination wired to backend.
+- PASS: approve/reject actions wired to `/payments/requests/:id/review`.
+- PASS: approve button gating fixed (pending status only; risk notes as warning).
+- PASS: receipt link is visible in admin request details (`فتح الإيصال`).
+- PASS: payment settings/provider-country controls are wired.
+- PASS: discount CRUD and exports are wired.
+- PARTIAL (runtime-auth check pending): full real E2E proof for student request -> admin approve -> unlock confirmation on learner account.
+
+## Newly Confirmed Non-Breaking Gaps (Put In Next Runtime Plan)
+- Need authenticated browser evidence matrix for:
+  1) users relationship changes persistence after hard reload,
+  2) schools relation-import conflict scenarios,
+  3) payment approval -> learner unlock visibility in real session,
+  4) course-player discussions/resources/favorite/share behavior under production auth states.

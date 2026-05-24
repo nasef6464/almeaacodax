@@ -80,6 +80,13 @@ Immediate next action for any new account:
 17. Cross-session command continuity improvement:
    - `package.json` now includes alias `smoke:student-learning-journey`.
    - both names now run the same journey smoke script.
+18. Added deep code-level admin runtime matrix in BATCH 136 report:
+   - UsersManager: PASS on CRUD/actions/relations wiring (runtime-auth evidence still pending for edge flows).
+   - SchoolsManager: PASS on card actions, class/supervisor/relations wiring (large-data runtime evidence pending).
+   - FinancialManager: PASS on review wiring and approve gating fix; end-to-end unlock proof still marked pending runtime-auth evidence.
+19. Next mandatory closure target remains:
+   - authenticated browser E2E evidence for purchase -> admin approve -> learner unlock,
+   - authenticated browser evidence for users/schools relation persistence after reload.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
