@@ -1959,3 +1959,10 @@
 - Plan file: `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`.
 - Purpose: make final closure executable by any new account with exact commands, runtime matrix, and blocker mapping.
 - Depends on: completed BATCH 136 fixes and existing production deploy state.
+## Update BATCH 138 - 2026-05-24
+- Title: Post-Closure Stability Sweep.
+- Status: In progress.
+- Purpose: quick production stability confirmation after BATCH 137 final closure.
+- PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (commit match `4e3ef12`)

@@ -4,9 +4,13 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
-`BATCH 137 - Final Closure Execution` is now active.
+`BATCH 138 - Post-Closure Stability Sweep` is now active.
 
 Current outcome:
+- BATCH 138 opened as post-closure verification sweep.
+- stability checks PASS after BATCH 137 closure:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS (production commit match `4e3ef12`)
 - opened cross-session reusable closure plan:
   - `BATCH_137_FINAL_CLOSURE_EXECUTION_PLAN_2026-05-24_AR.md`
 - BATCH 136 core fixes are complete and preserved; BATCH 137 is dedicated to closure execution and authenticated runtime evidence.
