@@ -40,6 +40,9 @@ Immediate next action for any new account:
    - payment package + tampering smokes PASS,
    - health readiness PASS,
    - strict frontend PASS with production serving commit `af16784` after deploy-lag rerun.
+9. Latest strict production alignment update:
+   - `smoke:health-readiness` PASS.
+   - `smoke:frontend:strict` PASS with production serving commit `e952d11` (after deploy-lag rerun).
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

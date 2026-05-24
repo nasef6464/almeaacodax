@@ -241,6 +241,14 @@
     - `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
     - `ADMIN_EMAIL` + `ADMIN_PASSWORD`
 
+## Verification Cycle (strict production alignment - latest)
+- Date: 2026-05-24
+- PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (after one deploy-lag rerun)
+- Production alignment:
+  - strict smoke confirmed production serving commit `e952d11`.
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
