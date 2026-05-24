@@ -17,11 +17,16 @@
 - Latest execution cycle:
   - PASS: `typecheck`, `build`, `server build`, `smoke:batch136-admin-users-schools-parent-payment`, `smoke:student-learning-journey`, `smoke:payment-package`, `smoke:batch100f-relationship-audit`, `smoke:school-management`, `smoke:real-usage-readiness`, `smoke:health-readiness`, `smoke:frontend:strict`.
   - FAIL (expected): `smoke:operational` due to missing admin auth env.
- - Latest retry on production API:
-   - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api npm run smoke:operational`
-   - FAIL: `POST /auth/login` returned `429 Too many login attempts`.
- - Immediate closure path:
-   - set fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (token path avoids password-login rate limit).
+- Latest retry on production API:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api npm run smoke:operational`
+  - FAIL: `POST /auth/login` returned `429 Too many login attempts`.
+- Immediate closure path:
+  - set fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (token path avoids password-login rate limit).
+- Latest operational execution with token:
+  - `smoke:operational` ran successfully through full matrix: `70/71`.
+  - Remaining failed check is data-link integrity:
+    - `published topic quiz links resolve for learners`
+    - missing `quiz_current_p_1777779639431_sub_1777779748206_practice` under topic `topic_current_p_1777779639431_sub_1777779748206_foundation`.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.

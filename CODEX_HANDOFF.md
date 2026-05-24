@@ -23,11 +23,18 @@ Current outcome:
 - BATCH 137 execution cycle was run end-to-end and is green except secret-gated operational smoke:
   - PASS: typecheck/build/server build + batch136/payment/relationship/schools/real-usage/health/frontend-strict/student-learning-journey.
   - FAIL (expected): `smoke:operational` because admin auth env is not present in current shell.
- - Additional operational retry against production API was executed:
-   - base: `https://almeaacodax-k2ux.onrender.com/api`
-   - result: FAIL with `429 Too many login attempts` on `POST /auth/login`.
- - Fastest final-closure route now:
-   - provide fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (bypasses password-login rate limit path).
+- Additional operational retry against production API was executed:
+  - base: `https://almeaacodax-k2ux.onrender.com/api`
+  - result: FAIL with `429 Too many login attempts` on `POST /auth/login`.
+- Fastest final-closure route now:
+  - provide fresh `SMOKE_ADMIN_TOKEN` and rerun `npm run smoke:operational` (bypasses password-login rate limit path).
+- Operational token-run executed:
+  - full `smoke:operational` matrix ran to completion with `70/71` PASS.
+  - only failed assertion is content-link data integrity:
+    - missing topic->quiz reference:
+      - `topic_current_p_1777779639431_sub_1777779748206_foundation`
+      - `quiz_current_p_1777779639431_sub_1777779748206_practice`
+  - this is now the single remaining closure blocker.
 
 Immediate next action for any new account:
 1. Open admin runtime with valid credentials.
