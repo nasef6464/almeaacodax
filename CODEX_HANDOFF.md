@@ -9,6 +9,7 @@ Last updated: 2026-05-24
 Current outcome:
 - implemented safe runtime fix for admin users actions menu: three-dots button is now functional in `dashboards/admin/UsersManager.tsx`,
 - implemented safe runtime fix for schools cards actions menu: three-dots button is now functional in `dashboards/admin/SchoolsManager.tsx`,
+- implemented admin users deletion flow end-to-end (`DELETE /auth/admin/users/:id` + frontend API + UI action) with protections for current admin and last-admin account,
 - validated core contracts: `typecheck` PASS and `smoke:batch100q-operational-admin-runtime` PASS,
 - created dedicated batch report `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`,
 - pending: authenticated browser verification and completion matrix for users/schools/parent-link/payment gateways.

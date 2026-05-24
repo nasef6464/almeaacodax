@@ -460,6 +460,29 @@ export const UsersManager: React.FC = () => {
         updateUser(userId, { managedSubjectIds });
     };
 
+    const handleDeleteUser = async (user: User) => {
+        const confirmed = window.confirm(`حذف المستخدم "${user.name}"؟ لا يمكن التراجع عن هذه العملية.`);
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await api.deleteAdminUser(user.id);
+            hydrateUsers(users.filter((item) => item.id !== user.id));
+            if (editingUserId === user.id) {
+                setEditingUserId(null);
+            }
+            setNameDrafts((current) => {
+                const next = { ...current };
+                delete next[user.id];
+                return next;
+            });
+            closeActionsMenu();
+        } catch (error) {
+            window.alert(error instanceof Error ? error.message : 'تعذر حذف المستخدم الآن.');
+        }
+    };
+
     const setFilteredUsersStatus = (active: boolean) => {
         if (manageableFilteredUsers.length === 0) {
             return;
@@ -1015,6 +1038,15 @@ export const UsersManager: React.FC = () => {
                                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                                         >
                                                             {currentUser.isActive ? 'Deactivate user' : 'Activate user'}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                void handleDeleteUser(currentUser);
+                                                            }}
+                                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-red-600 hover:bg-red-50"
+                                                        >
+                                                            Delete user
                                                         </button>
                                                     </div>
                                                 )}

@@ -440,6 +440,11 @@ export const api = {
       body: payload,
       token,
     }),
+  deleteAdminUser: (id: string, token?: string | null) =>
+    request<{ ok: boolean }>(`/auth/admin/users/${id}`, {
+      method: "DELETE",
+      token,
+    }),
   getCurrentUser: () =>
     request<{ user: unknown }>("/auth/me"),
   updateMyProfile: (payload: { name?: string; avatar?: string }, token?: string | null) =>

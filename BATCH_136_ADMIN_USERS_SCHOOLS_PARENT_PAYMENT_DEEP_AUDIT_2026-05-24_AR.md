@@ -49,9 +49,19 @@
    - Added safe outside-click close overlay.
    - No design refactor and no schema/API shape change.
 
+3. **Admin users deletion path (safe)**
+   - Backend: added `DELETE /auth/admin/users/:id` in `server/src/routes/auth.routes.ts`.
+   - Frontend API: added `deleteAdminUser(...)` in `services/api.ts`.
+   - Users UI: added "Delete user" action inside users three-dots menu in `dashboards/admin/UsersManager.tsx`.
+   - Safety guards:
+     - prevent deleting current logged-in admin account.
+     - prevent deleting the last remaining admin account.
+     - cleanup references from `linkedStudentIds` and group `studentIds/supervisorIds` before deletion.
+
 ## Verified Commands
 - `npm run typecheck` -> PASS
 - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
+- `npm --prefix server run build` -> PASS
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
@@ -62,7 +72,7 @@
   - partial
   - non-functional
 - Payment routes are extensive and include provider/webhook safety logic; functional runtime matrix still pending against real configured env keys.
-- User deletion is currently missing as a dedicated backend endpoint (`POST/GET/PATCH /auth/admin/users` exist; no `DELETE /auth/admin/users/:id`), so current safe operational path is deactivate.
+- User deletion path is now implemented with safe guards and relation cleanup.
 
 ## Blockers / Pending for Final Closure
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).

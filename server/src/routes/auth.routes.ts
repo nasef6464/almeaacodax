@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
+import { GroupModel } from "../models/Group.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { PhoneOtpModel } from "../models/PhoneOtp.js";
@@ -741,6 +742,58 @@ authRouter.patch(
     return res.json({
       user: serializeUser(user),
     });
+  }),
+);
+
+authRouter.delete(
+  "/admin/users/:id",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const targetId = String(req.params.id || "").trim();
+    if (!targetId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "User id is required" });
+    }
+
+    if (String(req.authUser?.id || "") === targetId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "You cannot delete your current account." });
+    }
+
+    const target = await UserModel.findById(targetId);
+    if (!target) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    }
+
+    if (String(target.role || "") === "admin") {
+      const adminsCount = await UserModel.countDocuments({ role: "admin" });
+      if (adminsCount <= 1) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "Cannot delete the last admin account." });
+      }
+    }
+
+    const targetUserId = String(target.id || target._id);
+
+    await Promise.all([
+      UserModel.updateMany({ linkedStudentIds: targetUserId }, { $pull: { linkedStudentIds: targetUserId } }),
+      GroupModel.updateMany(
+        { $or: [{ studentIds: targetUserId }, { supervisorIds: targetUserId }] },
+        { $pull: { studentIds: targetUserId, supervisorIds: targetUserId } },
+      ),
+    ]);
+
+    await UserModel.findByIdAndDelete(target._id);
+
+    await recordAdminAuditLog(req, {
+      action: "auth.admin_user.delete",
+      resourceType: "user",
+      resourceId: targetUserId,
+      metadata: {
+        targetEmail: target.email,
+        targetRole: target.role,
+      },
+    });
+
+    return res.json({ ok: true });
   }),
 );
 
