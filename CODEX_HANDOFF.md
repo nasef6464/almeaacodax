@@ -34,6 +34,12 @@ Immediate next action for any new account:
    - create-parent linked-students options now use full `linkableStudents` source.
    - parent school-change linked-student filtering also uses `linkableStudents`.
    - keep runtime verification as remaining closure step.
+8. Latest consolidated verification cycle is green (except credential-gated operational smoke):
+   - batch136 central smoke PASS,
+   - school management smoke PASS,
+   - payment package + tampering smokes PASS,
+   - health readiness PASS,
+   - strict frontend PASS with production serving commit `af16784` after deploy-lag rerun.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

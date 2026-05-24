@@ -215,6 +215,16 @@
   - payment review approve/reject wiring (Financial manager),
   - API and backend review route markers for `/payments/requests/:id/review`.
 
+## Verification Cycle (latest - consolidated)
+- Date: 2026-05-24
+- PASS:
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:school-management`
+  - `npm run smoke:payment-package`
+  - `npm run smoke:payment-tampering`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (after one deploy-lag rerun; production serving commit `af16784`)
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
