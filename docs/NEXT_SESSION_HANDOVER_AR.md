@@ -2914,3 +2914,15 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - schools management and supervisors,
   - payment portals/runtime checks.
 
+
+
+## BATCH 136 Execution Update - 2026-05-24
+- Added and consolidated regression guards for:
+  - users parent-linking (create/edit source consistency),
+  - schools supervisors wiring (school/class add/remove),
+  - payments review wiring (approve/reject + review route markers).
+- Latest strict production alignment:
+  - `smoke:frontend:strict` PASS after deploy-lag rerun.
+- Remaining final blocker:
+  - `smoke:operational` cannot run without admin auth env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
+

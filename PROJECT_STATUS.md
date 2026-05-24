@@ -16,6 +16,9 @@
 - Extended validation PASS: relationship audit, school portal command center, RBAC school scope, payment tampering, package-path, real-usage readiness, health, and strict production frontend checks.
 - Operational closure runbook: `docs/OPERATIONAL_SMOKE_RUNBOOK_AR.md` (required to finish credential-gated `smoke:operational`).
 - Deep admin runtime plan (users/schools/relationships/payments): `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`.
+- Latest consolidated verification PASS set recorded; strict production aligned after deploy-lag rerun (production commit alignment confirmed in batch report).
+- Current closure blocker remains credential-gated:
+  - `npm run smoke:operational` requires admin auth env (`SMOKE_ADMIN_TOKEN` or admin email/password env pair).
 
 ## BATCH 107 Start 2026-05-23
 - Focus: make continuation/handover process executable by any new chat/account with no context loss.
