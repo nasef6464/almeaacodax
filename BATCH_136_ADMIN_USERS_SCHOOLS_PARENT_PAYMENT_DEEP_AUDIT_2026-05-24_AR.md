@@ -225,6 +225,22 @@
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (after one deploy-lag rerun; production serving commit `af16784`)
 
+## Verification Cycle (pre-closure snapshot)
+- Date: 2026-05-24
+- PASS:
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:school-management`
+  - `npm run smoke:payment-package`
+  - `npm run smoke:payment-tampering`
+  - `npm run smoke:health-readiness`
+- BLOCKED (credentials required):
+  - `npm run smoke:operational`
+  - requires one of:
+    - `SMOKE_ADMIN_TOKEN`
+    - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`
+    - `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
+    - `ADMIN_EMAIL` + `ADMIN_PASSWORD`
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
