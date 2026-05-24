@@ -306,9 +306,20 @@
   - `المفضلة` action is now wired with safe local persistence per user.
 - Design kept unchanged (wiring/runtime only).
 
+## Fix Applied (Payment Receipt UX)
+- File: `components/PaymentModal.tsx`
+- Added student-friendly receipt proof options in payment details:
+  - keep existing `receiptUrl` link input,
+  - add direct receipt image upload (optional),
+  - local preview + remove action before submit,
+  - basic safety validation (image-only, max 2MB).
+- No API contract or schema change:
+  - backend still receives trusted `receiptUrl` string field.
+
 ## Verification Cycle (player wiring)
 - Date: 2026-05-24
 - PASS:
   - `npm run typecheck`
   - `npm run smoke:batch136-admin-users-schools-parent-payment`
   - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:payment-package`

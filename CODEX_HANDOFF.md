@@ -66,6 +66,13 @@ Immediate next action for any new account:
    - `المناقشات` now loads lesson threads and supports creating a new thread.
    - `المفضلة` and `المشاركة` actions are now wired (local persistence + share utility).
    - validated by `typecheck`, `smoke:batch136-admin-users-schools-parent-payment`, and `smoke:real-usage-readiness`.
+15. Payment receipt UX was expanded without schema changes:
+   - file: `components/PaymentModal.tsx`
+   - student can now submit receipt proof via:
+     - link field (`receiptUrl`) OR
+     - direct receipt image upload (preview/remove before submit).
+   - safety constraints: image-only, max 2MB.
+   - verified by `typecheck`, `smoke:payment-package`, and `smoke:batch136-admin-users-schools-parent-payment`.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

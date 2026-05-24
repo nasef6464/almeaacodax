@@ -109,6 +109,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const [transferReference, setTransferReference] = useState('');
     const [walletNumber, setWalletNumber] = useState('');
     const [receiptUrl, setReceiptUrl] = useState('');
+    const [receiptAttachmentName, setReceiptAttachmentName] = useState('');
     const [notes, setNotes] = useState('');
     const [discountCode, setDiscountCode] = useState('');
     const [discountPreview, setDiscountPreview] = useState<DiscountPreview | null>(null);
@@ -149,6 +150,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         setTransferReference('');
         setWalletNumber('');
         setReceiptUrl('');
+        setReceiptAttachmentName('');
         setNotes('');
         setDiscountCode('');
         setDiscountPreview(null);
@@ -400,6 +402,40 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         }
     };
 
+    const handleReceiptFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            setActionError('حجم ملف الإيصال يجب ألا يتجاوز 2MB.');
+            event.currentTarget.value = '';
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            setActionError('يرجى رفع صورة إيصال بصيغة صورة فقط.');
+            event.currentTarget.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const result = typeof reader.result === 'string' ? reader.result : '';
+            if (!result) {
+                setActionError('تعذر قراءة ملف الإيصال. حاول مرة أخرى.');
+                return;
+            }
+            setReceiptUrl(result);
+            setReceiptAttachmentName(file.name);
+            setActionError(null);
+        };
+        reader.onerror = () => {
+            setActionError('تعذر قراءة ملف الإيصال. حاول مرة أخرى.');
+        };
+        reader.readAsDataURL(file);
+        event.currentTarget.value = '';
+    };
+
     const handleRedeemAccessCode = async () => {
         if (!accessCode.trim()) {
             setActionError('أدخل كود التفعيل أولًا.');
@@ -635,7 +671,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                         {settings.transfer.accountNumber && <InfoRow label="رقم الحساب" value={settings.transfer.accountNumber} />}
                     </div>
                     <input value={transferReference} onChange={(event) => setTransferReference(event.target.value)} placeholder="رقم مرجع التحويل أو العملية" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
-                    <input value={receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال التحويل (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                    <input value={receiptUrl.startsWith('data:image/') ? '' : receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال التحويل (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
             )}
 
@@ -653,9 +689,38 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                         </div>
                     )}
                     <input value={walletNumber} onChange={(event) => setWalletNumber(event.target.value)} placeholder="رقم المحفظة / الجوال" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
-                    <input value={receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال الدفع (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                    <input value={receiptUrl.startsWith('data:image/') ? '' : receiptUrl} onChange={(event) => setReceiptUrl(event.target.value)} placeholder="رابط إيصال الدفع (اختياري)" className="w-full p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
             )}
+
+            <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p className="text-sm font-bold text-gray-700">إرفاق إيصال الدفع (اختياري)</p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors">
+                        رفع صورة إيصال
+                        <input type="file" accept="image/*" onChange={handleReceiptFileChange} className="hidden" />
+                    </label>
+                    {receiptAttachmentName ? (
+                        <span className="text-xs font-bold text-emerald-700">تم رفع: {receiptAttachmentName}</span>
+                    ) : null}
+                    {receiptUrl ? (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setReceiptUrl('');
+                                setReceiptAttachmentName('');
+                            }}
+                            className="text-xs font-bold text-rose-600 hover:text-rose-700"
+                        >
+                            إزالة الإيصال
+                        </button>
+                    ) : null}
+                </div>
+                {receiptUrl.startsWith('data:image/') ? (
+                    <img src={receiptUrl} alt="receipt preview" className="max-h-36 w-auto rounded-lg border border-gray-200 bg-white p-1 object-contain" />
+                ) : null}
+                <p className="text-[11px] text-gray-500">يمكنك إضافة رابط الإيصال أو رفع صورة مباشرة.</p>
+            </div>
 
             <input
                 value={discountCode}
