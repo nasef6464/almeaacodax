@@ -72,6 +72,14 @@
    - Fix: load full student candidates (paginated API sweep) for linking workflow and use that source in parent candidate dropdown and linked-students export names.
    - Result: parent linkage list is no longer limited to current users table page.
 
+6. **Parent linking consistency in new-user flow**
+   - File: `dashboards/admin/UsersManager.tsx`
+   - Confirmed issue: new parent creation used `students` list source (can be limited by current paginated users payload).
+   - Fix:
+     - switched create-parent linked-children options to `linkableStudents` (full linking source),
+     - switched parent school-change linked-student filter to `linkableStudents` for consistency.
+   - Result: parent-child linking is consistent across edit and create flows.
+
 ## Verified Commands
 - `npm run typecheck` -> PASS
 - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
@@ -84,6 +92,9 @@
 - `npm run smoke:batch100f-relationship-audit` -> PASS (10/10)
 - `npm run smoke:rbac-school-scope` -> PASS (4/4)
 - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
+- `npm run typecheck` -> PASS (post latest parent-link consistency fix)
+- `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS (post latest fix)
+- `npm run smoke:batch100f-relationship-audit` -> PASS (post latest fix)
 
 ## Verification Cycle (latest)
 - Date: 2026-05-24
@@ -150,6 +161,11 @@
   - supervisor scope guardrails,
   - school report/import/relations RBAC scope.
 
+### Additional static-risk notes (latest pass)
+- Potential source mismatch to verify: parent linking in *new user creation* path may rely on `students` source while edit flow uses broader linkable source; must be runtime-verified for full-list behavior.
+- Schools actions are wired at card level, but full “add supervisors” discoverability/coverage must be validated in runtime matrix.
+- Payment/package contracts are passing; still requires authenticated UI matrix to confirm admin approval unlocks expected package/user scope end-to-end.
+
 ## Blockers / Pending for Final Closure
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).
 2. End-to-end parent account verification for linked children data.
@@ -171,3 +187,13 @@
 - No `git add .`
 - Keep existing dirty historical files untouched.
 - No breaking API/model/env changes.
+
+## Plan Extension From Latest Owner Request (2026-05-24)
+- Added canonical deep execution plan:
+  - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
+- Scope extension explicitly includes:
+  - deep user relationships runtime matrix,
+  - deep schools/supervisors runtime matrix,
+  - payment portals runtime matrix,
+  - identification of any remaining non-functional admin controls before fix phase.
+- This extension is planning-first and does not force immediate risky edits.

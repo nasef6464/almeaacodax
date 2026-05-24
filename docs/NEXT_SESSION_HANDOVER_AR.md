@@ -2902,3 +2902,15 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Strict smoke confirmed production commit 5c609d5.
 - Continuity rule unchanged: owner '????' => start next batch directly if no active batch.
 
+
+
+## BATCH 136 Plan Pointer - 2026-05-24
+- Batch: BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR
+- Status: In progress.
+- Canonical deep admin plan for next account/session:
+  - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
+- Priority matrix in plan:
+  - users relationships,
+  - schools management and supervisors,
+  - payment portals/runtime checks.
+

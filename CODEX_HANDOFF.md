@@ -23,6 +23,17 @@ Immediate next action for any new account:
 2. Execute users/schools/parent/payment manual matrix from BATCH 136 report.
 3. Apply only confirmed safe fixes.
 4. Close batch with explicit PASS/FAIL evidence and push.
+5. Follow the dedicated deep plan file:
+   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
+   - this is the canonical checklist for extra relationship/schools/payment gaps requested by owner.
+6. Execute newly added static-risk checks first:
+   - new-parent linking source completeness,
+   - schools supervisor-flow discoverability,
+   - payment approval -> unlock scope runtime mapping.
+7. New-parent linking source completeness is now fixed in code:
+   - create-parent linked-students options now use full `linkableStudents` source.
+   - parent school-change linked-student filtering also uses `linkableStudents`.
+   - keep runtime verification as remaining closure step.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

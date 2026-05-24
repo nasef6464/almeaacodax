@@ -474,7 +474,7 @@ export const UsersManager: React.FC = () => {
 
     const handleParentSchoolChange = (user: User, nextSchoolId: string) => {
         const nextLinkedStudents = (user.linkedStudentIds || []).filter((studentId) => {
-            const linkedStudent = students.find((student) => student.id === studentId);
+            const linkedStudent = linkableStudents.find((student) => student.id === studentId);
             return !nextSchoolId || linkedStudent?.schoolId === nextSchoolId;
         });
 
@@ -798,7 +798,7 @@ export const UsersManager: React.FC = () => {
                             <label className="block text-sm font-bold text-gray-700 mb-2">الأبناء المرتبطون</label>
                             <MultiSelectField
                                 value={newUser.linkedStudentIds}
-                                options={students.map((student) => ({ value: student.id, label: student.name }))}
+                                options={linkableStudents.map((student) => ({ value: student.id, label: student.name }))}
                                 placeholder="اختر الطلاب المرتبطين بولي الأمر"
                                 onChange={(linkedStudentIds) => setNewUser((current) => ({ ...current, linkedStudentIds }))}
                             />

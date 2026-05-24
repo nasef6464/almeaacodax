@@ -15,6 +15,7 @@
 - Validation PASS: `npm run typecheck`, `npm run smoke:batch100q-operational-admin-runtime`.
 - Extended validation PASS: relationship audit, school portal command center, RBAC school scope, payment tampering, package-path, real-usage readiness, health, and strict production frontend checks.
 - Operational closure runbook: `docs/OPERATIONAL_SMOKE_RUNBOOK_AR.md` (required to finish credential-gated `smoke:operational`).
+- Deep admin runtime plan (users/schools/relationships/payments): `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`.
 
 ## BATCH 107 Start 2026-05-23
 - Focus: make continuation/handover process executable by any new chat/account with no context loss.
