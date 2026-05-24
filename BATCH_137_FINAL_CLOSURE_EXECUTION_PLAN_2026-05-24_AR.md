@@ -111,6 +111,29 @@ Current readiness snapshot:
 - Production shell/version alignment: PASS.
 - Remaining closure gate: authenticated operational smoke only.
 
+## Operational Closure Attempt Log (2026-05-24)
+
+Attempt A (local API):
+- base: `http://localhost:4000/api`
+- result: FAIL
+- failure:
+  - admin login returned 500 due to database monitor connection close:
+  - `"connection <monitor> to 159.143.85.4:27017 closed"`
+
+Attempt B (production API):
+- base: `https://almeaacodax-k2ux.onrender.com/api`
+- result: FAIL (temporary gate)
+- failure:
+  - admin login rate-limited:
+  - `429 Too many login attempts. Try again later.`
+
+Interpretation:
+- This is not a route/linkage regression in app logic.
+- Remaining gate is operational auth/rate-limit/database-session conditions for admin login path.
+
+Next exact retry command (after login rate-limit cooldown):
+`$env:SMOKE_API_BASE_URL='https://almeaacodax-k2ux.onrender.com/api'; $env:SMOKE_ALLOW_PASSWORD_LOGIN='true'; $env:SMOKE_ADMIN_TOKEN='<fresh_admin_token>'; npm run smoke:operational`
+
 ## Do-not-touch areas
 - No design refactor.
 - No route/schema breaking changes.
