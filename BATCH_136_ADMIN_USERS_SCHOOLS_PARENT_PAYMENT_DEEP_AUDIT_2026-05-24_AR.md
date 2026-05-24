@@ -421,3 +421,23 @@
    - run backup scripts before any infra switch:
      - `scripts/backup-db.sh`
      - `scripts/backup-uploads.sh`
+
+## Additional Verification (Security/Server/Speed)
+- `npm run server:check` -> PASS
+- `npm audit --omit=dev` -> FAIL (dependency advisories):
+  - `quill` XSS advisory (transitive via `react-quill-new`), fix requires breaking upgrade path.
+  - `xlsx` advisories (prototype pollution/ReDoS), currently no upstream fix available in installed track.
+- `npm --prefix server audit --omit=dev` -> FAIL (moderate):
+  - `qs` advisory via `express/body-parser`, fix path available via dependency update.
+- `npm run smoke:production-speed` -> PASS with 1 warning:
+  - frontend shell timing above strict threshold (non-blocking),
+  - note remains: Redis config recommended for multi-instance high-scale readiness.
+
+## Owner Action Required (to complete hard closure)
+1. Provide operational admin smoke credentials (for authenticated E2E closure).
+2. Provide Vercel auth token/login context for production deploy execution.
+3. Trigger Render backend redeploy path (dashboard/deploy hook/API token or CLI setup).
+4. Decide dependency policy for:
+   - `react-quill-new` breaking upgrade path,
+   - `xlsx` risk acceptance or replacement strategy,
+   - server `qs` patch update via lockfile refresh.

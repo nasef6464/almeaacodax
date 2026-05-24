@@ -109,6 +109,16 @@ Immediate next action for any new account:
    - provide Vercel credentials/token and run production deploy,
    - trigger Render backend redeploy (dashboard/deploy hook/API token path),
    - keep Mongo secrets owner-managed and run backup scripts before infra changes.
+24. Additional verification state:
+   - `server:check` PASS.
+   - `smoke:production-speed` PASS with one non-blocking frontend-shell timing warning.
+   - `npm audit --omit=dev` reports known frontend dependency advisories:
+     - `quill` (breaking upgrade path through editor package),
+     - `xlsx` (no direct upstream fix in current track).
+   - `npm --prefix server audit --omit=dev` reports moderate `qs` advisory via express/body-parser chain.
+25. Remaining hard blockers are now exclusively:
+   - owner secrets/auth for operational authenticated smoke,
+   - owner deployment credentials/path for Vercel/Render publish execution.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
