@@ -13,6 +13,7 @@
 - Primary report: `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`.
 - Implemented now: activated non-functional three-dots user actions menu in `dashboards/admin/UsersManager.tsx` (edit + activate/deactivate).
 - Validation PASS: `npm run typecheck`, `npm run smoke:batch100q-operational-admin-runtime`.
+- Extended validation PASS: relationship audit, school portal command center, RBAC school scope, payment tampering, package-path, real-usage readiness, health, and strict production frontend checks.
 
 ## BATCH 107 Start 2026-05-23
 - Focus: make continuation/handover process executable by any new chat/account with no context loss.

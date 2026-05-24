@@ -93,6 +93,18 @@
   - `npm run smoke:payment-providers` -> PASS
   - `npm run smoke:payment-package` -> PASS
 
+## Verification Cycle (extended)
+- Date: 2026-05-24
+- Extended pass set:
+  - `npm run smoke:batch100f-relationship-audit` -> PASS (10/10)
+  - `npm run smoke:school-portal-command` -> PASS (8 checks)
+  - `npm run smoke:rbac-school-scope` -> PASS (4/4)
+  - `npm run smoke:payment-tampering` -> PASS (9/9)
+  - `npm run smoke:package-path-navigation` -> PASS (7/7)
+  - `npm run smoke:real-usage-readiness` -> PASS (6/6)
+  - `npm run smoke:health-readiness` -> PASS
+  - `npm run smoke:frontend:strict` -> PASS (production serving commit `eb3e5c3`)
+
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
 - Schools list cards had a similar UX/runtime gap: three-dots existed without actionable flow.
