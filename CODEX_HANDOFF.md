@@ -73,6 +73,13 @@ Immediate next action for any new account:
      - direct receipt image upload (preview/remove before submit).
    - safety constraints: image-only, max 2MB.
    - verified by `typecheck`, `smoke:payment-package`, and `smoke:batch136-admin-users-schools-parent-payment`.
+16. Student-journey and relationship deep smokes were revalidated:
+   - `smoke:student-journey` PASS
+   - `smoke:batch100f-relationship-audit` PASS
+   - `smoke:school-management` PASS
+17. Cross-session command continuity improvement:
+   - `package.json` now includes alias `smoke:student-learning-journey`.
+   - both names now run the same journey smoke script.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

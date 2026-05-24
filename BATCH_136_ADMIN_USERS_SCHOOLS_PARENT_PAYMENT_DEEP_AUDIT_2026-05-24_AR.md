@@ -323,3 +323,12 @@
   - `npm run smoke:batch136-admin-users-schools-parent-payment`
   - `npm run smoke:real-usage-readiness`
   - `npm run smoke:payment-package`
+  - `npm run smoke:student-journey`
+  - `npm run smoke:batch100f-relationship-audit`
+  - `npm run smoke:school-management`
+
+## Tooling Continuity Improvement
+- File: `package.json`
+- Added script alias:
+  - `smoke:student-learning-journey` -> `node scripts/smoke-student-learning-journey.mjs`
+- Reason: avoid cross-session naming mismatch and keep command discoverability stable.
