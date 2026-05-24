@@ -85,6 +85,14 @@
 - `npm run smoke:rbac-school-scope` -> PASS (4/4)
 - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
 
+## Verification Cycle (latest)
+- Date: 2026-05-24
+- Re-run pass set:
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
+  - `npm run smoke:batch100q-operational-admin-runtime` -> PASS
+  - `npm run smoke:payment-providers` -> PASS
+  - `npm run smoke:payment-package` -> PASS
+
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
 - Schools list cards had a similar UX/runtime gap: three-dots existed without actionable flow.
