@@ -2005,3 +2005,17 @@
 - Verification PASS:
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, production commit match `60babec`).
+
+## Update BATCH 147 - 2026-05-24
+- Title: Continuous Publish Cycle 5.
+- Status: Fully closed.
+- Commit baseline:
+  - `bfaf95c` (already on `main` at publish time).
+- Publish:
+  - Vercel production deploy: PASS (aliased to `https://almeaacodax.vercel.app`).
+  - Render deploy trigger: PASS (`dep-d89m8o28qa3s73e5l9b0` on service `srv-d7qtcr9o3t8c73cs32sg`).
+- Verification PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `bfaf95c`).
+- Continuity:
+  - Next execution batch prepared as deep final-delivery audit plan (`BATCH_148_FINAL_DELIVERY_DEEP_AUDIT_PLAN_2026-05-24_AR.md`).

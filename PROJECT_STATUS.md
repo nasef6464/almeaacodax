@@ -2270,3 +2270,15 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, commit match `60babec`)
 - Notes: corrected Render service id usage during trigger and reran deploy against active service `srv-d7qtcr9o3t8c73cs32sg`.
+
+## Final Closure 2026-05-24 - BATCH 147
+- Batch: `BATCH_147_CONTINUOUS_PUBLISH_CYCLE_5_2026-05-24_AR`.
+- Status: `Fully closed`.
+- Commit used in production verification: `bfaf95c`.
+- GitHub: PASS (`main` already up to date, no pending local commits for push).
+- Vercel: PASS, production deploy completed and alias confirmed at `https://almeaacodax.vercel.app`.
+- Render: PASS, deploy triggered successfully with id `dep-d89m8o28qa3s73e5l9b0` on service `srv-d7qtcr9o3t8c73cs32sg`.
+- Runtime checks: PASS
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `bfaf95c`)
+- Next planned track: `BATCH 148 - Full Delivery Readiness Deep Audit (roles/routes/forms/api/security/browser runtime)` with strict design-preservation and regression-safe minimal fixes.

@@ -2981,3 +2981,23 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `npm run smoke:frontend:strict` (production commit match `60babec`).
 - Important continuity note:
   - Render trigger must target active service id `srv-d7qtcr9o3t8c73cs32sg` (old id returns not found).
+
+## BATCH 147 Closure Handover - 2026-05-24
+- Closed batch: `BATCH_147_CONTINUOUS_PUBLISH_CYCLE_5_2026-05-24_AR`.
+- Baseline commit in production checks: `bfaf95c`.
+- Deploy:
+  - Vercel production deploy completed and aliased to `https://almeaacodax.vercel.app`.
+  - Render deploy triggered successfully with `dep-d89m8o28qa3s73e5l9b0`.
+- PASS checks:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `bfaf95c`).
+
+## Next Active Goal - BATCH 148
+- Goal: deep final-delivery readiness audit with real browser runtime execution across roles/routes/forms/api/security, while preserving current design and avoiding risky refactors.
+- Canonical execution plan file:
+  - `BATCH_148_FINAL_DELIVERY_DEEP_AUDIT_PLAN_2026-05-24_AR.md`
+- Mandatory startup order for any new account/session:
+  1. read `PROJECT_STATUS.md`
+  2. read `docs/NEXT_SESSION_HANDOVER_AR.md`
+  3. read `CODEX_HANDOFF.md`
+  4. execute plan from `BATCH_148_FINAL_DELIVERY_DEEP_AUDIT_PLAN_2026-05-24_AR.md`
