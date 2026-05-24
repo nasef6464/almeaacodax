@@ -100,6 +100,15 @@ Immediate next action for any new account:
      - `GOLIVE_ADMIN_EMAIL` + `GOLIVE_ADMIN_PASSWORD`
      - `ADMIN_EMAIL` + `ADMIN_PASSWORD`
    - treat as owner-secret blocker, not application regression.
+22. Deployment tooling/credentials status from this environment:
+   - GitHub push: available and completed.
+   - Vercel CLI: installed, but not authenticated (`vercel whoami` failed: no credentials/token).
+   - Render CLI: not installed (`render` command not found).
+   - MongoDB connectivity: production health smoke indicates DB connected; no secret rotation performed in this batch.
+23. To complete publish step:
+   - provide Vercel credentials/token and run production deploy,
+   - trigger Render backend redeploy (dashboard/deploy hook/API token path),
+   - keep Mongo secrets owner-managed and run backup scripts before infra changes.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

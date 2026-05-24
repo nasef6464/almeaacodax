@@ -393,3 +393,31 @@
 - Closure impact:
   - source/runtime contracts are green,
   - final authenticated E2E closure remains **blocked by secrets only**.
+
+## Deployment Status (GitHub / Vercel / Render / MongoDB)
+- GitHub:
+  - PASS (all batch commits pushed to `main`).
+- Vercel:
+  - CLI exists (`Vercel CLI 50.3.1`) but deployment credentials are missing in this environment.
+  - `vercel whoami` -> `No existing credentials found`.
+  - blocker type: owner token/login required.
+- Render:
+  - Render CLI not installed in this environment (`render` command not found).
+  - blocker type: tooling + service credential/setup required.
+- MongoDB:
+  - application health checks report database connected in production smoke cycles.
+  - no direct Mongo Atlas/VPS credential rotation was performed in this batch (owner-managed secret scope).
+
+## Exact Owner Deployment Commands (after providing secrets)
+1. Vercel (frontend):
+   - `vercel login` (or set `VERCEL_TOKEN`)
+   - `vercel pull --yes --environment=production`
+   - `vercel deploy --prod --yes`
+2. Render (backend):
+   - use Render dashboard deploy hook or Render API token workflow for service redeploy.
+   - if CLI is preferred, install/configure Render CLI first, then trigger deploy for backend service.
+3. MongoDB:
+   - keep current `MONGODB_URI` in production env.
+   - run backup scripts before any infra switch:
+     - `scripts/backup-db.sh`
+     - `scripts/backup-uploads.sh`
