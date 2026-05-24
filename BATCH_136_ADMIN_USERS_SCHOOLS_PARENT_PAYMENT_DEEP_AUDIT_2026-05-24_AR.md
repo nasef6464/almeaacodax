@@ -81,6 +81,9 @@
 - `npm run smoke:payment-providers` -> PASS
 - `npm run smoke:payment-package` -> PASS
 - `npm run smoke:school-management` -> PASS (re-run after parent-link candidate fix)
+- `npm run smoke:batch100f-relationship-audit` -> PASS (10/10)
+- `npm run smoke:rbac-school-scope` -> PASS (4/4)
+- `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
 
 ## Findings (Deep Audit - Current Snapshot)
 - Users table had a real UX/runtime gap: action menu button existed but had no behavior.
@@ -92,6 +95,11 @@
   - non-functional
 - Payment routes are extensive and include provider/webhook safety logic; functional runtime matrix still pending against real configured env keys.
 - User deletion path is now implemented with safe guards and relation cleanup.
+- Relationship integrity is currently PASS on source-contract coverage across:
+  - school/class/group relationships,
+  - parent-student linking flows,
+  - supervisor scope guardrails,
+  - school report/import/relations RBAC scope.
 
 ## Blockers / Pending for Final Closure
 1. Authenticated production browser verification for admin users/schools/payment screens (requires valid admin credentials).
