@@ -4,9 +4,17 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
-`BATCH 140 - Post-Sweep Operational Revalidation` is now active.
+`BATCH 142 - Publish Snapshot Closure` is now active.
 
 Current outcome:
+- BATCH 142 publish snapshot executed:
+  - GitHub push completed.
+  - Vercel production deploy completed and alias confirmed (`almeaacodax.vercel.app`).
+  - Render deploy trigger executed (`dep-d89lshq8qa3s73e5d7dg`).
+- Post-publish checks are green:
+  - `smoke:operational` PASS (71/71)
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS (26/26)
 - BATCH 140 revalidation cycle PASS:
   - operational smoke: 71/71
   - health readiness: PASS

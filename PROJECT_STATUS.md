@@ -2,9 +2,9 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: BATCH 141 - Drift Check Continuation
+- Active Batch: BATCH 142 - Publish Snapshot Closure
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 136/137 closed, BATCH 138/139/140 pass; BATCH 141 running with secret-gated operational step
+- Status: BATCH 136/137 closed, BATCH 138/139/140/141 pass, BATCH 142 publish snapshot in progress
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
@@ -56,6 +56,18 @@
   - `npm run smoke:health-readiness`
 - BLOCKED (secret-gated in current shell):
   - `npm run smoke:operational` requires admin auth context env/token.
+
+## BATCH 142 Start 2026-05-24
+- Focus: publish snapshot closure after push + Vercel deploy + Render trigger.
+- Publish actions:
+  - GitHub push completed (`main`).
+  - Vercel production deploy completed and aliased to `https://almeaacodax.vercel.app`.
+  - Render deploy triggered: `dep-d89lshq8qa3s73e5d7dg`.
+- Post-publish verification:
+  - `smoke:operational` PASS (71/71).
+  - `smoke:health-readiness` PASS.
+  - `smoke:frontend:strict` PASS (26/26).
+  - Render health endpoint reports `status=ok`, `ready=true`, `database=connected`, `redis=ready`.
 
 ## BATCH 136 Start 2026-05-24
 - Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
