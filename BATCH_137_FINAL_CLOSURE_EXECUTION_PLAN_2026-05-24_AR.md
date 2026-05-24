@@ -87,6 +87,30 @@ Status: In progress (execution plan ready for any new account)
 - Explicit commit + push recorded.
 - Production URLs verified after latest push/deploy.
 
+## Execution Update (2026-05-24)
+
+PASS:
+1. `npm run typecheck`
+2. `npm run build`
+3. `npm --prefix server run build`
+4. `npm run smoke:batch136-admin-users-schools-parent-payment`
+5. `npm run smoke:student-learning-journey`
+6. `npm run smoke:payment-package`
+7. `npm run smoke:batch100f-relationship-audit`
+8. `npm run smoke:school-management`
+9. `npm run smoke:real-usage-readiness`
+10. `npm run smoke:health-readiness`
+11. `npm run smoke:frontend:strict` (production serving expected commit `a3fcf8f`)
+
+FAIL (expected, secret-gated):
+1. `npm run smoke:operational`
+   - reason: missing admin auth env in current shell.
+
+Current readiness snapshot:
+- Code/runtime contracts: PASS.
+- Production shell/version alignment: PASS.
+- Remaining closure gate: authenticated operational smoke only.
+
 ## Do-not-touch areas
 - No design refactor.
 - No route/schema breaking changes.
