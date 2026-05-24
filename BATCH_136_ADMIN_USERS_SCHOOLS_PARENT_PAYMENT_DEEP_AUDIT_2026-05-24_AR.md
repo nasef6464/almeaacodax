@@ -422,6 +422,18 @@
      - `scripts/backup-db.sh`
      - `scripts/backup-uploads.sh`
 
+## Deployment Execution Update (Completed)
+- Date: 2026-05-24
+- Vercel:
+  - production deploy executed successfully via Vercel CLI.
+  - alias confirmed: `https://almeaacodax.vercel.app`
+- Render:
+  - backend deploy triggered via Render API for service `srv-d7qtcr9o3t8c73cs32sg`.
+  - latest deploy `dep-d89fm88jo6nc73dq5of0` reached `live` status.
+- Post-deploy verification:
+  - `npm run smoke:health-readiness` -> PASS
+  - `npm run smoke:frontend:strict` -> PASS
+
 ## Additional Verification (Security/Server/Speed)
 - `npm run server:check` -> PASS
 - `npm audit --omit=dev` -> FAIL (dependency advisories):

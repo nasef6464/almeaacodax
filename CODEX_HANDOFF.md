@@ -119,6 +119,13 @@ Immediate next action for any new account:
 25. Remaining hard blockers are now exclusively:
    - owner secrets/auth for operational authenticated smoke,
    - owner deployment credentials/path for Vercel/Render publish execution.
+26. Deployment execution completed in this session:
+   - Vercel production deploy succeeded and alias is active: `https://almeaacodax.vercel.app`.
+   - Render backend deploy triggered by API and reached `live` state (`dep-d89fm88jo6nc73dq5of0`).
+   - post-deploy checks:
+     - `smoke:health-readiness` PASS
+     - `smoke:frontend:strict` PASS
+27. Final remaining blocker now narrowed to authenticated operational smoke credentials only.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
