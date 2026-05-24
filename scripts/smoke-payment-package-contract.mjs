@@ -62,7 +62,7 @@ check('manual payment approval requires review evidence before unlocking access'
   assertIncludes(paymentRoutesSource, 'hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)');
   assertIncludes(paymentRoutesSource, 'buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence)');
   assertIncludes(financialManagerSource, 'buildApprovalEvidence(request)');
-  assertIncludes(financialManagerSource, "const canApprove = request.status === 'pending' && riskNotes.length === 0;");
+  assertIncludes(financialManagerSource, "const canApprove = request.status === 'pending';");
   assertIncludes(financialManagerSource, "onClick={() => void reviewRequest(request, 'approved')}");
   assertIncludes(financialManagerSource, "onClick={() => void reviewRequest(request, 'rejected')}");
   assertIncludes(apiSource, 'reviewPaymentRequest: (id: string, payload: unknown, token?: string | null)');

@@ -55,6 +55,10 @@ Immediate next action for any new account:
 12. Owner requested explicit deep runtime coverage additions:
    - full student journey verification (purchase -> admin approval -> access unlock),
    - deep users-management and relationships runtime verification.
+13. P0 payment approve-button blocker was fixed:
+   - `dashboards/admin/FinancialManager.tsx`
+   - approve is no longer hard-blocked by `riskNotes` presence; warnings remain visible.
+   - validated by `typecheck`, `smoke:payment-package`, and `smoke:batch136-admin-users-schools-parent-payment`.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

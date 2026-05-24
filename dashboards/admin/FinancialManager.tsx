@@ -1389,7 +1389,7 @@ export const FinancialManager: React.FC = () => {
                             <tbody className="divide-y divide-gray-100">
                                 {visiblePaymentRequests.map((request) => {
                                     const riskNotes = requestRiskNotes(request);
-                                    const canApprove = request.status === 'pending' && riskNotes.length === 0;
+                                    const canApprove = request.status === 'pending';
                                     return (
                                     <tr key={request.id} className="hover:bg-gray-50 transition-colors align-top">
                                         <td className="p-4">
@@ -1455,7 +1455,7 @@ export const FinancialManager: React.FC = () => {
                                                 <button
                                                     onClick={() => void reviewRequest(request, 'approved')}
                                                     disabled={requestActionLoading === request.id || !canApprove}
-                                                    title={!canApprove && request.status === 'pending' ? 'يحتاج الطلب إلى مرجع أو إيصال قبل الاعتماد' : undefined}
+                                                    title={riskNotes.length > 0 ? `تنبيه قبل الاعتماد: ${riskNotes.join('، ')}` : undefined}
                                                     className="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 disabled:opacity-50"
                                                 >
                                                     اعتماد

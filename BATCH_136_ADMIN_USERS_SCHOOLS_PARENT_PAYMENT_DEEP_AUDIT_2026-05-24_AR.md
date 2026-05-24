@@ -281,3 +281,17 @@
   - payment portals runtime matrix,
   - identification of any remaining non-functional admin controls before fix phase.
 - This extension is planning-first and does not force immediate risky edits.
+
+## Fix Applied (P0 Payment Approve Button)
+- File: `dashboards/admin/FinancialManager.tsx`
+- Root cause:
+  - approve action was disabled whenever `riskNotes.length > 0`, which blocked valid manual-review approvals in runtime.
+- Fix:
+  - approval enablement now depends on pending status only (`request.status === 'pending'`),
+  - risk notes remain visible as warning tooltip before approve.
+- Regression alignment:
+  - updated `scripts/smoke-payment-package-contract.mjs` assertion for new approve gating rule.
+- Verification:
+  - `npm run typecheck` PASS
+  - `npm run smoke:payment-package` PASS
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` PASS
