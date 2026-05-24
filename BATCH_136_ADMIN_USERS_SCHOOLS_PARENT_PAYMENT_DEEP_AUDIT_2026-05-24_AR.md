@@ -118,6 +118,12 @@
   - `npm run smoke:health-readiness` -> PASS
   - `npm run smoke:frontend:strict` -> PASS (production serving commit `a23a6a6`)
 
+## Verification Cycle (deploy alignment - latest)
+- Date: 2026-05-24
+- Latest deploy alignment pass set:
+  - `npm run smoke:health-readiness` -> PASS
+  - `npm run smoke:frontend:strict` -> PASS (production serving commit `82ab0de`)
+
 ## Operational Smoke Guardrail Improvement
 - File: `scripts/smoke-operational-auto.mjs`
 - Improvement: added explicit pre-check for admin auth context before launching operational API smoke.
