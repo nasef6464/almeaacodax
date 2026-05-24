@@ -87,6 +87,14 @@ check("school list has portfolio readiness command center", () => {
   assertIncludes(files.schools, "أولوية المتابعة");
 });
 
+check("school supervisor management actions are wired", () => {
+  assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
+  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");
+  assertIncludes(files.schools, "assignSupervisorToGroup(value, classroom.id)");
+  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, classroom.id)");
+  assertIncludes(files.schools, "setActiveTab('relations')");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 

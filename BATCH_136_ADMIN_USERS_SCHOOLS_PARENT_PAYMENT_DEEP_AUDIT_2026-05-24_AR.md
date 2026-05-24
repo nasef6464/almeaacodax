@@ -195,6 +195,12 @@
   - create-parent linked-students selector must use `linkableStudents`.
   - parent school-change filter must resolve students from `linkableStudents`.
 
+## Regression Guard Improvement (schools supervisors)
+- File: `scripts/smoke-school-management-contract.mjs`
+- Added explicit check:
+  - `school supervisor management actions are wired`
+  - validates school-level and class-level supervisor add/remove action wiring and relations-tab navigation presence.
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
