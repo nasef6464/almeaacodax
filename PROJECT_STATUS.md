@@ -2314,3 +2314,13 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - Post-deploy checks: PASS
     - `npm run smoke:health-readiness`
     - `npm run smoke:frontend:strict` (26/26, production commit match `d57cd4b`)
+
+## Update 2026-05-25 - BATCH 148 Progressive Security/Route Revalidation
+- Status: `In progress (operational-secret blocker unchanged)`.
+- Additional PASS checks:
+  - `npm run smoke:route-loading`
+  - `npm run smoke:auth-cookie`
+  - `npm run smoke:api-security`
+  - `npm run smoke:csrf`
+- Outcome: route-loading/auth-cookie/csrf/api-security contracts remain stable in production-readiness cycle.
+- Remaining single blocker: authenticated `smoke:operational` requires valid admin auth env.

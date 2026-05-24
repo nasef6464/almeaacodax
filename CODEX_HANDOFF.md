@@ -785,3 +785,12 @@ Publish verification loop executed for BATCH 148:
 - Post-deploy PASS:
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, production commit `d57cd4b`).
+
+Progressive revalidation (2026-05-25) PASS:
+- `npm run smoke:route-loading`
+- `npm run smoke:auth-cookie`
+- `npm run smoke:api-security`
+- `npm run smoke:csrf`
+
+Blocker remains singular:
+- operational authenticated smoke still needs valid admin auth context (`SMOKE_ADMIN_TOKEN` or admin credentials env).

@@ -3022,3 +3022,13 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - Vercel production alias verified,
   - Render deploy triggered (`dep-d89mj27avr4c73cpi19g`),
   - post-deploy strict/health checks passed.
+
+## BATCH 148 Revalidation Addendum - 2026-05-25
+- PASS added:
+  - `smoke:route-loading`
+  - `smoke:auth-cookie`
+  - `smoke:api-security`
+  - `smoke:csrf`
+- No new runtime regressions detected.
+- Remaining blocker unchanged:
+  - `smoke:operational` still requires valid admin auth env/token.

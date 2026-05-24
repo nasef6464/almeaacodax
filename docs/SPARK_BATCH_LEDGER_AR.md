@@ -2048,3 +2048,13 @@
   - Vercel production: PASS (alias verified at `https://almeaacodax.vercel.app`)
   - Render deploy trigger: PASS (`dep-d89mj27avr4c73cpi19g`)
   - Post-deploy: `smoke:health-readiness` PASS, `smoke:frontend:strict` PASS (26/26, commit match `d57cd4b`)
+
+## Update BATCH 148 - 2026-05-25 Progressive Revalidation
+- Added PASS evidence:
+  - `smoke:route-loading`
+  - `smoke:auth-cookie`
+  - `smoke:api-security`
+  - `smoke:csrf`
+- Result:
+  - security and route-loading contracts remain green.
+  - closure blocker remains only secret-gated `smoke:operational`.
