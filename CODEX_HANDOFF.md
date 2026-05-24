@@ -4,6 +4,20 @@ Last updated: 2026-05-24
 
 ## Current Session Summary
 
+`BATCH 136 - Admin Users/Schools/Payments Deep Audit and Fixes` is in progress.
+
+Current outcome:
+- implemented safe runtime fix for admin users actions menu: three-dots button is now functional in `dashboards/admin/UsersManager.tsx`,
+- validated core contracts: `typecheck` PASS and `smoke:batch100q-operational-admin-runtime` PASS,
+- created dedicated batch report `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`,
+- pending: authenticated browser verification and completion matrix for users/schools/parent-link/payment gateways.
+
+Immediate next action for any new account:
+1. Open admin runtime with valid credentials.
+2. Execute users/schools/parent/payment manual matrix from BATCH 136 report.
+3. Apply only confirmed safe fixes.
+4. Close batch with explicit PASS/FAIL evidence and push.
+
 `BATCH 135 - Package Split Prod Alignment` is closed.
 
 Outcome:

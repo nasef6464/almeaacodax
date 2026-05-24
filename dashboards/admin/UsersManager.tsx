@@ -134,6 +134,7 @@ export const UsersManager: React.FC = () => {
     const [usersTotal, setUsersTotal] = useState(0);
     const [isUsersLoading, setIsUsersLoading] = useState(false);
     const [usersLoadError, setUsersLoadError] = useState('');
+    const [activeActionsUserId, setActiveActionsUserId] = useState<string | null>(null);
     const [createError, setCreateError] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
@@ -263,6 +264,14 @@ export const UsersManager: React.FC = () => {
             delete next[user.id];
             return next;
         });
+    };
+
+    const toggleActionsMenu = (userId: string) => {
+        setActiveActionsUserId((current) => (current === userId ? null : userId));
+    };
+
+    const closeActionsMenu = () => {
+        setActiveActionsUserId(null);
     };
 
     const handleCreateUser = async () => {
@@ -543,6 +552,14 @@ export const UsersManager: React.FC = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
+            {activeActionsUserId && (
+                <button
+                    type="button"
+                    className="fixed inset-0 z-10 cursor-default"
+                    onClick={closeActionsMenu}
+                    aria-label="Close actions menu"
+                />
+            )}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">إدارة المستخدمين</h1>
@@ -959,7 +976,7 @@ export const UsersManager: React.FC = () => {
                                             </button>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
+                                            <div className="relative flex items-center gap-2">
                                                 <button
                                                     onClick={() => (isEditing ? stopEditingUser(currentUser) : startEditingUser(currentUser))}
                                                     className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
@@ -967,9 +984,40 @@ export const UsersManager: React.FC = () => {
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>
-                                                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleActionsMenu(currentUser.id)}
+                                                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                                    title="More actions"
+                                                >
                                                     <MoreVertical size={18} />
                                                 </button>
+                                                {activeActionsUserId === currentUser.id && (
+                                                    <div className="absolute right-0 top-10 z-20 min-w-[170px] rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                closeActionsMenu();
+                                                                if (!isEditing) {
+                                                                    startEditingUser(currentUser);
+                                                                }
+                                                            }}
+                                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                                        >
+                                                            Edit user
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                closeActionsMenu();
+                                                                toggleUserStatus(currentUser.id);
+                                                            }}
+                                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                                        >
+                                                            {currentUser.isActive ? 'Deactivate user' : 'Activate user'}
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

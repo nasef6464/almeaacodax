@@ -1952,3 +1952,4 @@
 | 134 | Question Bank Real Usage Prod Verify | Fully closed | 2026-05-24 | BATCH_134_QUESTION_BANK_REAL_USAGE_PROD_VERIFY_2026-05-24_AR.md | Revalidated question-bank and real-usage contracts with strict production PASS on aa7862e. |
 
 | 135 | Package Split Prod Alignment | Fully closed | 2026-05-24 | BATCH_135_PACKAGE_SPLIT_PROD_ALIGNMENT_2026-05-24_AR.md | Revalidated package/course split contract with health+strict production PASS on 5c609d5. |
+| 136 | Admin Users/Schools/Parent/Payment Deep Audit | In progress | 2026-05-24 | BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md | Started deep runtime audit from owner feedback; fixed non-functional users three-dots actions menu; typecheck + operational admin smoke PASS; authenticated browser matrix pending. |

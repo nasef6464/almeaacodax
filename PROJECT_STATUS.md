@@ -2,11 +2,17 @@
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
-- Active Batch: None
+- Active Batch: BATCH 136 - Admin Users/Schools/Payments Deep Audit and Fixes
 - Last Closed Batch: BATCH 135 - Package Split Prod Alignment
-- Status: BATCH 135 closed
+- Status: BATCH 136 in progress
 - Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
+
+## BATCH 136 Start 2026-05-24
+- Focus: deep functional audit for admin users management, schools management, parent-student linkage, and payment gateways based on owner runtime feedback.
+- Primary report: `BATCH_136_ADMIN_USERS_SCHOOLS_PARENT_PAYMENT_DEEP_AUDIT_2026-05-24_AR.md`.
+- Implemented now: activated non-functional three-dots user actions menu in `dashboards/admin/UsersManager.tsx` (edit + activate/deactivate).
+- Validation PASS: `npm run typecheck`, `npm run smoke:batch100q-operational-admin-runtime`.
 
 ## BATCH 107 Start 2026-05-23
 - Focus: make continuation/handover process executable by any new chat/account with no context loss.
