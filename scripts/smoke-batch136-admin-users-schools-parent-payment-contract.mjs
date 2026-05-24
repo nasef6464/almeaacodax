@@ -70,4 +70,28 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
   "verifyPaymentWebhookSignature",
 ]);
 
+assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
+  "assignSupervisorToGroup(value, selectedSchool.id)",
+  "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)",
+  "assignSupervisorToGroup(value, classroom.id)",
+  "removeSupervisorFromGroup(currentUser.id, classroom.id)",
+  "setActiveTab('relations')",
+]);
+
+assertAllIncludes("dashboards/admin/FinancialManager.tsx", [
+  "onClick={() => void reviewRequest(request, 'approved')}",
+  "onClick={() => void reviewRequest(request, 'rejected')}",
+  "api.reviewPaymentRequest(request.id, {",
+]);
+
+assertAllIncludes("services/api.ts", [
+  "reviewPaymentRequest: (id: string, payload: unknown, token?: string | null)",
+  "`/payments/requests/${id}/review`",
+]);
+
+assertAllIncludes("server/src/routes/payment.routes.ts", [
+  "\"/requests/:id/review\"",
+  "payment.request.review",
+]);
+
 console.log("Batch 136 admin/users/schools/parent/payment contract passed.");

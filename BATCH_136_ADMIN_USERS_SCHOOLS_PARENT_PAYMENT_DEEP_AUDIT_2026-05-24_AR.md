@@ -208,6 +208,13 @@
   - frontend API `/payments/requests/:id/review`,
   - backend review route and audit action marker.
 
+## Regression Guard Consolidation (central batch smoke)
+- File: `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs`
+- Extended central batch smoke to include:
+  - school supervisor add/remove wiring (school + class level),
+  - payment review approve/reject wiring (Financial manager),
+  - API and backend review route markers for `/payments/requests/:id/review`.
+
 ## Plan Extension From Latest Owner Request (2026-05-24)
 - Added canonical deep execution plan:
   - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
