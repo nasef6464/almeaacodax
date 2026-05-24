@@ -295,3 +295,20 @@
   - `npm run typecheck` PASS
   - `npm run smoke:payment-package` PASS
   - `npm run smoke:batch136-admin-users-schools-parent-payment` PASS
+
+## Fix Applied (Learning Player Runtime Wiring)
+- File: `components/CoursePlayer.tsx`
+- Owner-reported blockers resolved in player runtime:
+  - tabs `الوصف` / `المصادر` / `المناقشات` are now interactive (state-driven),
+  - `المصادر` tab now renders lesson/course resources and supports preview/download,
+  - `المناقشات` tab now loads lesson discussions and allows posting new discussion,
+  - `المشاركة` action is now wired (share API/WhatsApp fallback via shared utility),
+  - `المفضلة` action is now wired with safe local persistence per user.
+- Design kept unchanged (wiring/runtime only).
+
+## Verification Cycle (player wiring)
+- Date: 2026-05-24
+- PASS:
+  - `npm run typecheck`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:real-usage-readiness`

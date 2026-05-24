@@ -59,6 +59,13 @@ Immediate next action for any new account:
    - `dashboards/admin/FinancialManager.tsx`
    - approve is no longer hard-blocked by `riskNotes` presence; warnings remain visible.
    - validated by `typecheck`, `smoke:payment-package`, and `smoke:batch136-admin-users-schools-parent-payment`.
+14. Learning player runtime blockers were fixed:
+   - file: `components/CoursePlayer.tsx`
+   - `الوصف / المصادر / المناقشات` tabs are now wired and rendered by active state.
+   - `المصادر` now has real preview/download actions from lesson/course resources.
+   - `المناقشات` now loads lesson threads and supports creating a new thread.
+   - `المفضلة` and `المشاركة` actions are now wired (local persistence + share utility).
+   - validated by `typecheck`, `smoke:batch136-admin-users-schools-parent-payment`, and `smoke:real-usage-readiness`.
 
 `BATCH 135 - Package Split Prod Alignment` is closed.
 

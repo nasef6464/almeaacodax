@@ -2938,3 +2938,22 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - deep users-management and relationship validation:
     - CRUD + parent/supervisor/student relationship persistence and scope impact.
 
+## Update 2026-05-24 - BATCH 136 Runtime Progress (Player + Payments)
+
+- Completed in code:
+  - `components/CoursePlayer.tsx`
+    - wired tabs `الوصف / المصادر / المناقشات` with active state and rendered content,
+    - wired `المصادر` preview/download actions from lesson/course resources,
+    - wired `المناقشات` load + create thread flow at lesson scope,
+    - wired `المفضلة` + `المشاركة` actions (local persistence + share utility).
+  - `dashboards/admin/FinancialManager.tsx`
+    - fixed P0 approve blocker: pending requests can now be approved even when risk notes exist (risk remains warning, not hard disable).
+
+- Verification:
+  - `npm run typecheck` -> PASS
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS
+  - `npm run smoke:real-usage-readiness` -> PASS
+
+- Remaining mandatory runtime closure:
+  - authenticated browser E2E for student purchase -> admin approval -> unlocked access,
+  - deep runtime matrix for users/schools relations (parent-child and supervisor flows) with PASS/FAIL evidence.
