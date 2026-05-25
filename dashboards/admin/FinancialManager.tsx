@@ -335,13 +335,17 @@ export const FinancialManager: React.FC = () => {
         request.amount <= 0 ? 'المبلغ غير محدد' : '',
     ].filter(Boolean);
 
-    const buildApprovalEvidence = (request: PaymentRequest) => [
-        request.paymentMethod ? `method:${request.paymentMethod}` : '',
-        request.transferReference ? `transfer:${request.transferReference}` : '',
-        request.walletNumber ? `wallet:${request.walletNumber}` : '',
-        request.receiptUrl ? `receipt:${request.receiptUrl}` : '',
-        request.notes ? `notes:${request.notes}` : '',
-    ].filter(Boolean).join(' | ') || 'admin:manual-review';
+    const buildApprovalEvidence = (request: PaymentRequest) => {
+        const raw = [
+            request.paymentMethod ? `method:${request.paymentMethod}` : '',
+            request.transferReference ? `transfer:${request.transferReference}` : '',
+            request.walletNumber ? `wallet:${request.walletNumber}` : '',
+            request.receiptUrl ? `receipt:${request.receiptUrl}` : '',
+            request.notes ? `notes:${request.notes}` : '',
+        ].filter(Boolean).join(' | ') || 'admin:manual-review';
+
+        return raw.slice(0, 480);
+    };
 
     const paymentRequestStatusCounts = useMemo(() => ({
         all: requestsSummary?.all ?? paymentRequests.length,
