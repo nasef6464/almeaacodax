@@ -801,3 +801,11 @@ Final closure update (2026-05-25):
 - BATCH 148 can be treated as fully closed.
 - Operational run note:
   - production default redeemed account `student.d@almeaa.local` is disabled; final run used active fallback learner credentials for redeemed-track validation.
+
+Post-closure cycle update (BATCH 149 - 2026-05-25):
+- PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit `ee8212b`)
+  - `npm run smoke:real-usage-readiness`
+- Outcome:
+  - production remains stable after BATCH 148 closure.

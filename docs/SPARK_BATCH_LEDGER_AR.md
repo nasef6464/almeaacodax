@@ -2068,3 +2068,13 @@
   - valid admin token provided
   - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
   - redeemed-track runtime used active learner credentials because default `student.d@almeaa.local` account is disabled in production.
+
+## Update BATCH 149 - 2026-05-25
+- Title: Post-Closure Stability Cycle.
+- Status: Fully closed.
+- PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, commit `ee8212b`)
+  - `smoke:real-usage-readiness`
+- Outcome:
+  - production stability remains intact after BATCH 148 closure.

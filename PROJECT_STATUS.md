@@ -2332,3 +2332,13 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Closure note:
   - operational run used production API base and valid admin token, with password-login fallback enabled for role sessions.
   - `student-redeemed` default account was disabled, so runtime used active learner credentials for redeemed-track validation in this final run.
+
+## Final Closure 2026-05-25 - BATCH 149
+- Batch: `BATCH_149_POST_CLOSURE_STABILITY_CYCLE_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Goal: post-closure production stability confirmation after BATCH 148 final sign-off.
+- PASS checks:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `ee8212b`)
+  - `npm run smoke:real-usage-readiness`
+- Result: production remains stable with no new regressions after final BATCH 148 closure.

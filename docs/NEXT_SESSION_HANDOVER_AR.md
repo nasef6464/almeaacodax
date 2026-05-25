@@ -3039,3 +3039,13 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Important runtime note for future operational runs:
   - default `student-redeemed` smoke account (`student.d@almeaa.local`) is disabled on production.
   - use active fallback credentials/env for redeemed-track checks or provide explicit `SMOKE_STUDENT_REDEEMED_TOKEN`.
+
+## BATCH 149 Closure - 2026-05-25
+- Batch: `BATCH_149_POST_CLOSURE_STABILITY_CYCLE_2026-05-25_AR`.
+- Status: Fully closed.
+- Verified PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, production commit `ee8212b`)
+  - `smoke:real-usage-readiness`
+- Next rule stays active:
+  - on owner command `اكمل`, start next batch directly and close end-to-end with explicit evidence.
