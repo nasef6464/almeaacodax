@@ -874,7 +874,15 @@ export const useStore = create<AppState>()(
             })),
 
             updateUser: (userId, data) => set((state) => {
-                api.updateAdminUser(userId, data).catch(console.error);
+                const previousUsers = state.users;
+                const previousCurrentUser = state.user;
+                api.updateAdminUser(userId, data).catch((error) => {
+                    console.error(error);
+                    set({
+                        users: previousUsers,
+                        user: previousCurrentUser,
+                    });
+                });
                 return {
                     users: state.users.map(u => u.id === userId ? { ...u, ...data } : u),
                     // Also update current user if it's the same
