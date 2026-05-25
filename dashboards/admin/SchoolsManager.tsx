@@ -2432,6 +2432,16 @@ export const SchoolsManager: React.FC = () => {
                                             const value = event.target.value;
                                             if (!value) return;
                                             assignSupervisorToGroup(value, selectedSchool.id);
+                                            setSelectedSchool((current) =>
+                                                current
+                                                    ? {
+                                                          ...current,
+                                                          supervisorIds: current.supervisorIds.includes(value)
+                                                              ? current.supervisorIds
+                                                              : [...current.supervisorIds, value],
+                                                      }
+                                                    : current,
+                                            );
                                             event.target.value = '';
                                         }}
                                     >
@@ -2448,7 +2458,17 @@ export const SchoolsManager: React.FC = () => {
                                         ) : schoolSupervisors.map((currentUser) => (
                                             <button
                                                 key={currentUser.id}
-                                                onClick={() => removeSupervisorFromGroup(currentUser.id, selectedSchool.id)}
+                                                onClick={() => {
+                                                    removeSupervisorFromGroup(currentUser.id, selectedSchool.id);
+                                                    setSelectedSchool((current) =>
+                                                        current
+                                                            ? {
+                                                                  ...current,
+                                                                  supervisorIds: current.supervisorIds.filter((id) => id !== currentUser.id),
+                                                              }
+                                                            : current,
+                                                    );
+                                                }}
                                                 className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
                                             >
                                                 {currentUser.name} ×
@@ -2469,6 +2489,16 @@ export const SchoolsManager: React.FC = () => {
                                             const value = event.target.value;
                                             if (!value) return;
                                             assignCourseToGroup(value, selectedSchool.id);
+                                            setSelectedSchool((current) =>
+                                                current
+                                                    ? {
+                                                          ...current,
+                                                          courseIds: current.courseIds.includes(value)
+                                                              ? current.courseIds
+                                                              : [...current.courseIds, value],
+                                                      }
+                                                    : current,
+                                            );
                                             event.target.value = '';
                                         }}
                                     >
@@ -2485,7 +2515,17 @@ export const SchoolsManager: React.FC = () => {
                                         ) : schoolCourses.map((course) => (
                                             <button
                                                 key={course.id}
-                                                onClick={() => removeCourseFromGroup(course.id, selectedSchool.id)}
+                                                onClick={() => {
+                                                    removeCourseFromGroup(course.id, selectedSchool.id);
+                                                    setSelectedSchool((current) =>
+                                                        current
+                                                            ? {
+                                                                  ...current,
+                                                                  courseIds: current.courseIds.filter((id) => id !== course.id),
+                                                              }
+                                                            : current,
+                                                    );
+                                                }}
                                                 className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
                                             >
                                                 {course.title} ×
