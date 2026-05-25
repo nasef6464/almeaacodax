@@ -2406,3 +2406,18 @@
   - no patch required; all gates remained green.
 - Note:
   - browser automation tool not callable in this shell session; live production verification was covered by strict/runtime smoke gates.
+
+## Update BATCH 162 - 2026-05-25
+- Title: Full Gate + Locked Real-User Validation Protocol.
+- Status: Command gate passed; visual multi-role validation blocked externally.
+- PASS suite:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, commit match `ce95aa69`)
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:operational` (71/71)
+- External blocker:
+  - in-app browser automation tool was not callable in this session, so mandatory visual multi-role user-journey evidence is pending.

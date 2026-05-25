@@ -3454,3 +3454,22 @@ pm run smoke:operational PASS (71/71).
   - لا تُعتبر الدفعة مغلقة إلا عند اجتماع:
     - PASS كامل للبوابة التشغيلية.
     - PASS موثق للتحقق الحي متعدد الأدوار.
+
+## BATCH 162 Handover - 2026-05-25
+- Current state:
+  - Command gate PASS بالكامل.
+  - الإغلاق النهائي حسب القاعدة الملزمة ما زال pending حتى إتمام التحقق البصري متعدد الأدوار.
+- PASS:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26) مع `commit match = ce95aa69`
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:operational` (71/71)
+- External blocker:
+  - عدم توفر أداة browser automation القابلة للاستدعاء في هذه الجلسة، وبالتالي تعذر إنتاج دليل بصري حي متعدد الأدوار.
+- Next exact action:
+  1. تنفيذ رحلات `admin/student/teacher/parent` بصريًا عبر أداة المتصفح عندما تكون متاحة.
+  2. تسجيل الدليل ثم إعلان الإغلاق الكامل للدفعة.

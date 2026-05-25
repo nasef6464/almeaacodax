@@ -2766,3 +2766,26 @@ pm run smoke:frontend:strict (26/26)
 - Batch closure is not considered complete unless both are present:
   1. Full command gate PASS.
   2. Multi-role real-user journey evidence PASS.
+
+## Batch Update 2026-05-25 - BATCH 162
+- Batch: `BATCH_162_FULL_GATE_WITH_LIVE_USER_VALIDATION_PROTOCOL_2026-05-25_AR`.
+- Status: `Command Gate PASS / Visual Live Validation BLOCKED (external tooling)`.
+- Baseline:
+  - started from `HEAD=ce95aa69`.
+- Full command gate PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `ce95aa69`)
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)
+- External blocker:
+  - visual multi-role real-user journey evidence could not be executed via in-app browser automation because the browser tool was not callable in this shell session.
+- Next exact task (to truly close per locked rule):
+  1. run visual live multi-role journeys (`admin/student/teacher/parent`) using callable in-app browser automation.
+  2. record PASS/FAIL evidence and then mark batch fully closed.
