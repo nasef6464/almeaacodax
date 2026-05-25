@@ -3059,3 +3059,14 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:health-readiness`
   - `smoke:frontend:strict` (commit `5daacc6`)
   - `smoke:real-usage-readiness`
+
+## BATCH 151 Closure - 2026-05-25
+- Batch: `BATCH_151_LARGE_CONTINUOUS_AUDIT_AND_PUBLISH_VERIFY_2026-05-25_AR`.
+- Status: Fully closed.
+- Publish + verify PASS:
+  - Vercel deploy + alias
+  - Render trigger (`dep-d89qci0jo6nc73e3ev50`)
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (commit `5daacc6`)
+  - `smoke:real-usage-readiness`

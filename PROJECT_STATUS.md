@@ -2355,3 +2355,20 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:frontend:strict` (26/26, production commit match `5daacc6`)
   - `npm run smoke:real-usage-readiness`
 - Result: production stability and publish verification remain green.
+
+## Final Closure 2026-05-25 - BATCH 151
+- Batch: `BATCH_151_LARGE_CONTINUOUS_AUDIT_AND_PUBLISH_VERIFY_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Publish:
+  - GitHub sync: PASS (`main` up-to-date before deploy cycle).
+  - Vercel production deploy: PASS (alias `https://almeaacodax.vercel.app`).
+  - Render deploy trigger: PASS (`dep-d89qci0jo6nc73e3ev50`).
+- PASS checks:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `5daacc6`)
+  - `npm run smoke:real-usage-readiness`
+- Result: large-cycle production validation remains fully green after repeated publish verification.
