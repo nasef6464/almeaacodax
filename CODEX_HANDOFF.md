@@ -1170,3 +1170,29 @@ Blockers:
 Next exact task:
 1. Keep same closure protocol for next batch on owner command ????.
 2. Optional hygiene: refresh local VERCEL_TOKEN to restore CLI deploy parity in this shell.
+
+## Session Update 2026-05-25 - BATCH 158 Operational Auth Closure + Live Verification
+
+Summary:
+- Completed a full new batch to close the operational auth blocker and verify live runtime contracts end-to-end.
+
+What was done:
+- Used provided admin JWT as session-only SMOKE_ADMIN_TOKEN.
+- First operational run failed only on disabled default redeemed identity (student.d@almeaa.local).
+- Re-ran with approved fallback redeemed credentials (student.a@almeaa.local) and achieved full PASS.
+- smoke:operational final result: PASS (71/71).
+- Additional verification PASS:
+  - 	ypecheck, uild, server:check, server:build
+  - smoke:real-usage-readiness
+  - smoke:batch136-admin-users-schools-parent-payment
+  - smoke:payment-package
+  - smoke:payment-tampering
+  - smoke:health-readiness
+  - smoke:frontend:strict (26/26)
+
+Blockers:
+- No unresolved runtime blockers in this batch.
+
+Next exact task:
+1. Continue with next owner-directed batch immediately on command ????.
+2. Rotate/revoke temporary JWT secret used in this batch.

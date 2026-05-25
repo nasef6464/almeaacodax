@@ -2320,3 +2320,20 @@
   - smoke:frontend:strict (26/26, commit match b9f161).
 - Next exact task:
   - continue next owner batch immediately on اكمل; keep explicit staging only and preserve package/payment scope contracts.
+
+## Update BATCH 158 - 2026-05-25
+- Title: Operational Auth Closure + Live Revalidation.
+- Status: Fully closed.
+- Completed:
+  - closed smoke:operational blocker using provided admin JWT + approved redeemed fallback identity.
+  - smoke:operational PASS (71/71).
+- Live checks PASS:
+  - 	ypecheck, uild, server:check, server:build
+  - smoke:real-usage-readiness
+  - smoke:batch136-admin-users-schools-parent-payment
+  - smoke:payment-package
+  - smoke:payment-tampering
+  - smoke:health-readiness
+  - smoke:frontend:strict (26/26)
+- Continuity note:
+  - default redeemed smoke account remains disabled; keep student.a@almeaa.local fallback or dedicated redeemed token for future operational runs.

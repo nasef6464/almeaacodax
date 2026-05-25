@@ -3319,3 +3319,27 @@ pm run smoke:operational still needs admin auth context env.
 - Next exact action:
   1. (Optional) refresh local VERCEL_TOKEN for CLI parity.
   2. on owner command ????, start next batch directly with same closure protocol.
+
+## BATCH 158 Handover - 2026-05-25
+- Closed:
+  - operational auth blocker is resolved in this batch.
+- Operational run context:
+  - SMOKE_ADMIN_TOKEN=<provided JWT>
+  - SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api
+  - SMOKE_ALLOW_PASSWORD_LOGIN=true
+  - redeemed fallback:
+    - SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local
+    - SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123
+- Result:
+  - 
+pm run smoke:operational PASS (71/71).
+- Additional live PASS:
+  - 	ypecheck, uild, server:check, server:build
+  - smoke:real-usage-readiness
+  - smoke:batch136-admin-users-schools-parent-payment
+  - smoke:payment-package
+  - smoke:payment-tampering
+  - smoke:health-readiness
+  - smoke:frontend:strict
+- Next exact action:
+  1. start next batch directly on owner command ????.

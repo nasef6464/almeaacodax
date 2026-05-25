@@ -2624,3 +2624,41 @@ pm run smoke:frontend:strict (26/26, production commit match b9f161).
 - Next exact task:
   1. Rotate/fix local VERCEL_TOKEN for CLI deploy parity (optional, non-blocking while Git integration is healthy).
   2. Continue next batch directly on owner command اكمل with same single-batch closure protocol.
+
+## Final Closure 2026-05-25 - BATCH 158
+- Batch: BATCH_158_OPERATIONAL_AUTH_CLOSURE_AND_LIVE_REVALIDATION_2026-05-25_AR.
+- Status: Fully closed.
+- Goal:
+  - close operational auth blocker using provided admin JWT and complete full live verification cycle.
+- Operational auth execution:
+  - initial run with admin JWT succeeded for admin session but failed on disabled default redeemed account (student.d@almeaa.local).
+  - rerun with approved fallback redeemed identity:
+    - SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local
+    - SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123
+  - result: 
+pm run smoke:operational PASS (71/71).
+- Live verification PASS:
+  - 
+pm run typecheck
+  - 
+pm run build
+  - 
+pm run server:check
+  - 
+pm run server:build
+  - 
+pm run smoke:real-usage-readiness
+  - 
+pm run smoke:batch136-admin-users-schools-parent-payment
+  - 
+pm run smoke:payment-package
+  - 
+pm run smoke:payment-tampering
+  - 
+pm run smoke:health-readiness
+  - 
+pm run smoke:frontend:strict (26/26)
+- Security note:
+  - admin JWT was treated as session-only smoke secret; rotate/revoke after batch closure.
+- Next exact task:
+  1. continue next owner batch immediately on command اكمل.
