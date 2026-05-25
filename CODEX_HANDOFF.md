@@ -809,3 +809,11 @@ Post-closure cycle update (BATCH 149 - 2026-05-25):
   - `npm run smoke:real-usage-readiness`
 - Outcome:
   - production remains stable after BATCH 148 closure.
+
+Continuous publish-verify update (BATCH 150 - 2026-05-25):
+- Vercel production deploy PASS and alias verified.
+- Render deploy trigger PASS (`dep-d89qci0jo6nc73e3ev50`).
+- PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit `5daacc6`)
+  - `npm run smoke:real-usage-readiness`

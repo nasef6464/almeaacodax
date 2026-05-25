@@ -3049,3 +3049,13 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:real-usage-readiness`
 - Next rule stays active:
   - on owner command `اكمل`, start next batch directly and close end-to-end with explicit evidence.
+
+## BATCH 150 Closure - 2026-05-25
+- Batch: `BATCH_150_CONTINUOUS_PRODUCTION_STABILITY_AND_PUBLISH_VERIFY_2026-05-25_AR`.
+- Status: Fully closed.
+- Publish + verify PASS:
+  - Vercel deploy + alias
+  - Render trigger (`dep-d89qci0jo6nc73e3ev50`)
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (commit `5daacc6`)
+  - `smoke:real-usage-readiness`
