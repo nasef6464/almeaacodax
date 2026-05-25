@@ -3142,3 +3142,18 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:health-readiness`
   - `smoke:frontend:strict`
   - `smoke:real-usage-readiness`
+
+## BATCH 156 Closure - 2026-05-25
+- Batch: `BATCH_156_LARGE_CONTINUOUS_PUBLISH_VERIFY_CYCLE_2026-05-25_AR`.
+- Status: Fully closed.
+- Publish + verify PASS:
+  - Vercel inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/9uQkK1EsVZLUvDeeyRmyYTfsXSMR`
+  - Vercel alias: `https://almeaacodax.vercel.app`
+  - Render deploy: `dep-d89r7v8jo6nc73e43l30` (`live`)
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit `e83da47`)
+  - `npm run smoke:real-usage-readiness`

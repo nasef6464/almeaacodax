@@ -905,3 +905,20 @@ Payment scope hardening closure (BATCH 155 - 2026-05-25):
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict`
   - `npm run smoke:real-usage-readiness`
+
+Large publish/verify closure (BATCH 156 - 2026-05-25):
+- Vercel production deploy PASS:
+  - inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/9uQkK1EsVZLUvDeeyRmyYTfsXSMR`
+  - alias verified: `https://almeaacodax.vercel.app`
+- Render deploy trigger PASS:
+  - service: `srv-d7qtcr9o3t8c73cs32sg`
+  - deploy id: `dep-d89r7v8jo6nc73e43l30`
+  - status reached: `live`
+- PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit `e83da47`)
+  - `npm run smoke:real-usage-readiness`
