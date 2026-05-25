@@ -3518,3 +3518,26 @@ pm run smoke:operational PASS (71/71).
   - `smoke:operational` (71/71)
 - External blocker:
   - الدليل البصري متعدد الأدوار ما زال pending لعدم توفر أداة browser automation القابلة للاستدعاء في هذه الجلسة.
+
+## BATCH 166 Handover - 2026-05-25
+- Closed:
+  - runtime critical fix shipped + production commit-match restored.
+- Fixes shipped:
+  - `server/src/routes/quiz.routes.ts`: safe fallback for auth ids that are not Mongo ObjectId.
+  - `server/src/routes/ai.routes.ts`: same safe fallback in student AI context lookup.
+  - commit: `68b534d6` (pushed to `main`).
+- Deploy/verification:
+  - Vercel production deploy completed and aliased.
+  - PASS: `smoke:health-readiness`.
+  - PASS: `smoke:frontend:strict` (26/26, commit match `68b534d6`).
+  - PASS: `smoke:operational` (71/71) with production API:
+    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+    - `SMOKE_ADMIN_TOKEN=<session-only>`
+    - redeemed fallback:
+      - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+      - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- External blocker:
+  - Render trigger unavailable in this shell (missing `RENDER_API_KEY`/`RENDER_DEPLOY_HOOK_URL`).
+- Next exact task:
+  1. When Render credentials are available in env, trigger service `srv-d7qtcr9o3t8c73cs32sg`.
+  2. Re-run `smoke:health-readiness` + `smoke:frontend:strict` and record deploy id.

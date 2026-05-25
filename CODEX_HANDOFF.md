@@ -1280,3 +1280,36 @@ This rule is mandatory for all future batches:
 Batch closure criteria (both required):
 1. Full command/runtime gate PASS.
 2. Multi-role real-user journey PASS evidence.
+
+## Session Update 2026-05-25 - BATCH 166 Runtime Gate Closure
+
+Summary:
+- Closed a full batch with a real runtime fix, production deploy, and commit-match verification.
+
+What was done:
+- Fixed critical runtime 500 path caused by non-ObjectId auth ids in local-admin-bypass contexts.
+- Files fixed:
+  - `server/src/routes/quiz.routes.ts`
+  - `server/src/routes/ai.routes.ts`
+- Commit pushed:
+  - `68b534d6` on `main`.
+
+Deploy and verification:
+- Vercel production deploy completed and aliased to `https://almeaacodax.vercel.app`.
+- PASS: `npm run smoke:health-readiness`.
+- PASS: `npm run smoke:frontend:strict` (26/26, commit match `68b534d6`).
+- PASS: `npm run smoke:operational` (71/71) when run against production API context:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<session-only>`
+  - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+
+Important runtime note:
+- Localhost operational runs can be misleading under `DEV_LOCAL_ADMIN_BYPASS`; final closure evidence must use production API context for role-accurate journeys.
+
+Blocker:
+- Render trigger not executed in this shell due to missing `RENDER_API_KEY` / `RENDER_DEPLOY_HOOK_URL`.
+
+Next exact task:
+1. Trigger Render deploy for `srv-d7qtcr9o3t8c73cs32sg` once env credentials are present.
+2. Re-run post-deploy `smoke:health-readiness` and `smoke:frontend:strict` and log deploy id in handover.

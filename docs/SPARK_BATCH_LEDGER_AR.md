@@ -2460,3 +2460,25 @@
   - `smoke:payment-package` (8/8)
   - `smoke:payment-tampering` (9/9)
   - `smoke:operational` (71/71)
+
+## Update BATCH 166 - 2026-05-25
+- Title: Runtime gate closure + production commit-match recovery.
+- Status: Fully closed.
+- Code fix:
+  - resolved runtime 500 for non-ObjectId auth ids (`local-dev-admin` context) with minimal safe guards in:
+    - `server/src/routes/quiz.routes.ts`
+    - `server/src/routes/ai.routes.ts`
+  - commit pushed to `main`: `68b534d6`.
+- Deploy:
+  - Vercel production deployed and aliased to `almeaacodax.vercel.app`.
+  - Render trigger blocked by missing shell envs: `RENDER_API_KEY` / `RENDER_DEPLOY_HOOK_URL`.
+- Verification PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, commit match `68b534d6`)
+  - `smoke:operational` (71/71) with production API context:
+    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+    - `SMOKE_ADMIN_TOKEN=<session-only>`
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Runtime note:
+  - localhost operational smoke can be distorted by local admin bypass; final closure must use production API context for role-accurate results.

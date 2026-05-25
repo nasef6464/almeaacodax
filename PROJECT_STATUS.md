@@ -2845,3 +2845,25 @@ pm run smoke:frontend:strict (26/26)
   - `npm run smoke:payment-package` (8/8)
   - `npm run smoke:payment-tampering` (9/9)
   - `npm run smoke:operational` (71/71)
+
+## Final Closure 2026-05-25 - BATCH 166
+- Batch: `BATCH_166_RUNTIME_GATE_AND_PROD_MATCH_CLOSURE_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Code fixes applied (minimal safe patches):
+  - fixed non-ObjectId auth id handling to prevent runtime 500 in:
+    - `server/src/routes/quiz.routes.ts`
+    - `server/src/routes/ai.routes.ts`
+  - commit: `68b534d6` (pushed to `main`).
+- Deploy:
+  - Vercel production deploy completed and aliased to `https://almeaacodax.vercel.app`.
+  - Render trigger: `BLOCKED` (missing `RENDER_API_KEY`/`RENDER_DEPLOY_HOOK_URL` in this shell).
+- Post-deploy PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `68b534d6`)
+- Operational deep runtime result:
+  - `npm run smoke:operational` PASS (71/71) using:
+    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+    - session `SMOKE_ADMIN_TOKEN`
+    - redeemed fallback `student.a@almeaa.local`
+- Root-cause note:
+  - localhost smoke can be misleading under `DEV_LOCAL_ADMIN_BYPASS`; production API context is mandatory for role-accurate operational closure.
