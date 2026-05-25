@@ -2161,3 +2161,24 @@
   - `npm run smoke:frontend:strict` (26/26, production commit `efa9ce7`)
   - `npm run smoke:real-usage-readiness`
   - `npm run smoke:health-readiness`
+
+## Update BATCH 155 - 2026-05-25
+- Title: Payment Scope Hardening + Payment Text Fix.
+- Status: Fully closed.
+- Root issue fixed:
+  - after admin approval for transfer/manual payment, access grant is now scoped to purchased target only (course/package scope), preventing accidental broad unlock.
+- Data contract update (non-breaking additive):
+  - Payment request stores `contentTypes`, `pathIds`, `subjectIds` for deterministic scoped grant.
+- Text fix:
+  - replaced garbled payment labels/messages with readable Arabic in payment API paths/settings responses.
+- Files:
+  - `server/src/routes/payment.routes.ts`
+  - `server/src/models/PaymentRequest.ts`
+- Verification PASS:
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:payment-package`
+  - `npm run typecheck`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`

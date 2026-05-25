@@ -883,4 +883,25 @@ Targeted runtime fix closure (BATCH 154 - 2026-05-25):
   - Vercel inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/HugMmLoJ3no8ZUrSEo6ghA99zn3X`
   - alias verified: `https://almeaacodax.vercel.app`
   - Render deploy id: `dep-d89qsoj7uimc739qr5qg` (`live`) on `srv-d7qtcr9o3t8c73cs32sg`
-  - PASS: `typecheck`, `smoke:health-readiness`, `smoke:frontend:strict` (26/26, commit `efa9ce7`), `smoke:real-usage-readiness`
+- PASS: `typecheck`, `smoke:health-readiness`, `smoke:frontend:strict` (26/26, commit `efa9ce7`), `smoke:real-usage-readiness`
+
+Payment scope hardening closure (BATCH 155 - 2026-05-25):
+- Owner reported critical bug: approving one manual transfer could unlock broad content beyond purchased target.
+- Implemented hardening:
+  - payment request persistence now includes scoped fields:
+    - `contentTypes`, `pathIds`, `subjectIds`
+  - approval grant (`grantApprovedPaymentAccess`) now forwards these fields to `grantAccessToUser`.
+  - this prevents fallback broad grant behavior in scoped purchases.
+- Also fixed payment text quality:
+  - replaced garbled labels/messages in payment route responses/settings with readable Arabic.
+- Changed:
+  - `server/src/routes/payment.routes.ts`
+  - `server/src/models/PaymentRequest.ts`
+- PASS:
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:payment-package`
+  - `npm run typecheck`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`

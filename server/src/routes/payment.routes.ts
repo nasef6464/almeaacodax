@@ -60,6 +60,15 @@ const paymentRequestCreateSchema = z.object({
   notes: z.string().optional(),
 });
 
+const normalizeScopeIds = (values: unknown): string[] =>
+  Array.from(
+    new Set(
+      (Array.isArray(values) ? values : [])
+        .map((value) => String(value || "").trim())
+        .filter(Boolean),
+    ),
+  );
+
 const subscriptionPlanSchema = z.enum(["basic", "premium", "annual"]);
 
 const subscriptionRequestSchema = z.object({
@@ -136,7 +145,7 @@ const defaultSettings = {
   webhookSecret: "",
   card: {
     enabled: false,
-    label: "????? ?????",
+    label: "بطاقة بنكية",
     providerName: "Tap / MyFatoorah / HyperPay / Paymob / Fawry",
     providerCode: "manual_card",
     gatewayMode: "manual_review",
@@ -145,7 +154,7 @@ const defaultSettings = {
   },
   transfer: {
     enabled: true,
-    label: "????? ????",
+    label: "تحويل بنكي",
     bankName: "",
     accountName: "",
     accountNumber: "",
@@ -159,7 +168,7 @@ const defaultSettings = {
   },
   wallet: {
     enabled: true,
-    label: "????? ?????????",
+    label: "محفظة إلكترونية",
     providerName: "",
     providerCode: "manual_wallet",
     gatewayMode: "manual_review",
@@ -244,7 +253,7 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   manualReviewRequired: settings.manualReviewRequired,
   card: {
     enabled: Boolean(settings.card?.enabled),
-    label: settings.card?.label || "????? ?????",
+    label: settings.card?.label || "بطاقة بنكية",
     providerName: settings.card?.publishDetailsToStudents === false ? "" : (settings.card?.providerName || ""),
     providerCode: settings.card?.providerCode || "manual_card",
     gatewayMode: settings.card?.gatewayMode || "manual_review",
@@ -253,7 +262,7 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   },
   transfer: {
     enabled: Boolean(settings.transfer?.enabled),
-    label: settings.transfer?.label || "????? ????",
+    label: settings.transfer?.label || "تحويل بنكي",
     bankName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.bankName || ""),
     accountName: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountName || ""),
     accountNumber: settings.transfer?.publishDetailsToStudents === false ? "" : (settings.transfer?.accountNumber || ""),
@@ -266,7 +275,7 @@ const sanitizeSettingsForPublic = (settings: any) => ({
   },
   wallet: {
     enabled: Boolean(settings.wallet?.enabled),
-    label: settings.wallet?.label || "????? ?????????",
+    label: settings.wallet?.label || "محفظة إلكترونية",
     providerName: settings.wallet?.publishDetailsToStudents === false ? "" : (settings.wallet?.providerName || ""),
     providerCode: settings.wallet?.providerCode || "manual_wallet",
     gatewayMode: settings.wallet?.gatewayMode || "manual_review",
@@ -467,7 +476,7 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
   if (!primaryTarget) {
     return {
       ok: false as const,
-      error: "?????? ??????? ??? ????? ?? ?? ????",
+      error: "العنصر المطلوب غير موجود أو تم حذفه",
     };
   }
 
@@ -485,7 +494,7 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
     if (!foundPackage || foundPackage.isPackage !== true) {
       return {
         ok: false as const,
-        error: "?????? ???????? ???? ????? ??? ?????.",
+        error: "الباقة المحددة غير صالحة لهذا الطلب.",
       };
     }
     packageItem = foundPackage;
@@ -498,6 +507,21 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
     ? packageItem.includedCourses.filter(Boolean).map((id: any) => String(id))
     : [];
   const resolvedPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
+  const packageContentTypes = normalizeScopeIds((packageItem as any)?.packageContentTypes);
+  const packagePathIds = normalizeScopeIds((packageItem as any)?.pathIds);
+  const packageSubjectIds = normalizeScopeIds((packageItem as any)?.subjectIds);
+  const explicitPathId = String(packageItem?.pathId || primaryTarget?.pathId || primaryTarget?.category || "").trim();
+  const explicitSubjectId = String(packageItem?.subjectId || primaryTarget?.subjectId || primaryTarget?.subject || "").trim();
+  const resolvedPathIds = packagePathIds.length ? packagePathIds : (explicitPathId ? [explicitPathId] : []);
+  const resolvedSubjectIds = packageSubjectIds.length ? packageSubjectIds : (explicitSubjectId ? [explicitSubjectId] : []);
+  const resolvedContentTypes =
+    payload.itemType === "course"
+      ? ["courses"]
+      : payload.itemType === "skill"
+        ? ["foundation"]
+        : payload.itemType === "test"
+          ? ["tests"]
+          : (packageContentTypes.length ? packageContentTypes : ["courses"]);
 
   return {
     ok: true as const,
@@ -507,6 +531,9 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
     itemName: String(primaryTarget.title || ""),
     originalAmount: resolvedAmount,
     includedCourseIds: resolvedIncludedCourseIds,
+    contentTypes: resolvedContentTypes,
+    pathIds: resolvedPathIds,
+    subjectIds: resolvedSubjectIds,
     currency,
   };
 };
@@ -646,6 +673,9 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
       : String(updatedRequest.id || updatedRequest._id),
     packageId,
     courseIds,
+    contentTypes: Array.isArray(updatedRequest.contentTypes) ? updatedRequest.contentTypes.map(String) : [],
+    pathIds: Array.isArray(updatedRequest.pathIds) ? updatedRequest.pathIds.map(String) : [],
+    subjectIds: Array.isArray(updatedRequest.subjectIds) ? updatedRequest.subjectIds.map(String) : [],
     grantedBy: review.reviewedBy,
     idempotencyKey: review.gatewayEventId
       ? `payment_webhook:${String(updatedRequest.id || updatedRequest._id)}:${review.gatewayEventId}`
@@ -828,6 +858,9 @@ paymentRouter.post(
       itemName: trustedTarget.itemName,
       packageId: trustedTarget.packageId || "",
       includedCourseIds: trustedTarget.includedCourseIds || [],
+      contentTypes: trustedTarget.contentTypes || [],
+      pathIds: trustedTarget.pathIds || [],
+      subjectIds: trustedTarget.subjectIds || [],
       currency: trustedTarget.currency,
       paymentMethod: "card",
       transferReference: "",
@@ -1085,8 +1118,8 @@ paymentRouter.get(
     return res.json({
       presets: paymentCountryPresets,
       countries: [
-        { code: "SA", label: "????????" },
-        { code: "EG", label: "???" },
+        { code: "SA", label: "السعودية" },
+        { code: "EG", label: "مصر" },
       ],
     });
   }),
@@ -1263,7 +1296,7 @@ paymentRouter.post(
       )) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         valid: false,
-        message: "??? ????? ??? ???? ???? ?????",
+        message: "كود الخصم غير صالح أو منتهي",
         originalAmount,
         discountAmount: 0,
         finalAmount: originalAmount,
@@ -1361,7 +1394,7 @@ paymentRouter.post(
     }
 
     if (!isPaymentMethodEnabled(settings, payload.paymentMethod)) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "????? ????? ??? ????? ??????" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير مفعلة حاليًا" });
     }
 
     if (
@@ -1375,7 +1408,7 @@ paymentRouter.post(
 
     if (!hasManualPaymentEvidence(payload)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "???? ???? ??? ?? ??????? ?????? ??? ???? ?????? ????? ??????",
+        message: "يرجى إدخال مرجع التحويل أو رقم المحفظة أو رابط/صورة إيصال قبل إرسال الطلب",
       });
     }
 
@@ -1391,7 +1424,7 @@ paymentRouter.post(
       includedCourseIds: trustedTarget.includedCourseIds || [],
     })) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "??? ??????? ???? ?????? ??? ?????",
+        message: "هذا المحتوى مفتوح لديك بالفعل",
       });
     }
 
@@ -1404,7 +1437,7 @@ paymentRouter.post(
 
     if (pendingDuplicate) {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "???? ??? ??? ??? ???????? ???? ??????? ??????",
+        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
         request: pendingDuplicate,
       });
     }
@@ -1428,14 +1461,14 @@ paymentRouter.post(
         },
         trustedTarget.target,
       )) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: "??? ????? ??? ???? ???? ?????" });
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير صالح أو منتهي" });
       }
       discountAmount = calculateDiscountAmount(discountCode, originalAmount);
       finalAmount = Math.max(0, originalAmount - discountAmount);
       discountCodeId = String(discountCode._id);
     }
 
-        const created = await PaymentRequestModel.create({
+    const created = await PaymentRequestModel.create({
       id: `payreq_${Date.now()}`,
       userId: String(user._id),
       userName: user.name,
@@ -1445,6 +1478,9 @@ paymentRouter.post(
       itemName: trustedTarget.itemName,
       packageId: trustedTarget.packageId || "",
       includedCourseIds: trustedTarget.includedCourseIds || [],
+      contentTypes: trustedTarget.contentTypes || [],
+      pathIds: trustedTarget.pathIds || [],
+      subjectIds: trustedTarget.subjectIds || [],
       currency: trustedTarget.currency,
       paymentMethod: payload.paymentMethod,
       transferReference: payload.transferReference || "",
@@ -1516,7 +1552,7 @@ paymentRouter.post(
         {
           $set: {
             status: payload.status === "cancelled" ? "cancelled" : "rejected",
-            reviewerNotes: `????? ?????: ${payload.status}`,
+            reviewerNotes: `تحديث حالة الدفع: ${payload.status}`,
             reviewedBy: `webhook:${payload.provider}`,
             reviewedAt: Date.now(),
             gatewayProvider: payload.provider,
@@ -1539,7 +1575,7 @@ paymentRouter.post(
 
     const approved = await completeApprovedPaymentRequest(requestDoc, {
       reviewedBy: `webhook:${payload.provider}`,
-      reviewerNotes: "?? ???????? ????? ?? ????? ?????",
+      reviewerNotes: "تم اعتماد الدفع عبر webhook",
       approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
       gatewayProvider: payload.provider,
       gatewayTransactionId: payload.transactionId || "",
@@ -1561,7 +1597,7 @@ paymentRouter.post(
           reviewedAt: null,
         },
       });
-      return res.status(StatusCodes.CONFLICT).json({ message: "??? ????? ?? ??? ?????? ????????" });
+      return res.status(StatusCodes.CONFLICT).json({ message: "لا يمكن اعتماد طلب غير معلق" });
     }
 
     const access = await grantApprovedPaymentAccess(approved.request, {
@@ -1602,7 +1638,7 @@ paymentRouter.patch(
 
     if (requestDoc.status === "approved" && payload.status === "approved") {
       return res.status(StatusCodes.CONFLICT).json({
-        message: "??? ????? ????? ??????",
+        message: "تم اعتماد هذا الطلب مسبقًا",
         request: requestDoc,
       });
     }
@@ -1615,7 +1651,7 @@ paymentRouter.patch(
 
       if (!hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "?? ???? ?????? ??? ??? ???? ???? ?? ????? ?? ???? ?????? ????",
+          message: "لا يمكن الاعتماد بدون إثبات تحويل/محفظة/إيصال صالح",
         });
       }
 
@@ -1631,7 +1667,7 @@ paymentRouter.patch(
 
       if (approved.duplicate || !approved.request) {
         return res.status(StatusCodes.CONFLICT).json({
-          message: "??? ????? ?? ??? ??? ????????",
+          message: "تمت معالجة الطلب مسبقًا بواسطة عملية أخرى",
           request: await PaymentRequestModel.findById(requestDoc._id),
         });
       }

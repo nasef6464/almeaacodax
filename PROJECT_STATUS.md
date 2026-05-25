@@ -2432,3 +2432,27 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:real-usage-readiness`
   - `npm run smoke:health-readiness`
 - Result: requested course files/actions regression is fixed without design changes and production remains green.
+
+## Final Closure 2026-05-25 - BATCH 155
+- Batch: `BATCH_155_PAYMENT_SCOPE_HARDENING_AND_PAYMENT_TEXT_FIX_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Critical fix from owner runtime report:
+  - hardened manual/webhook payment approval grant scope so approved purchase unlocks only its intended scope (course/package scope), not broad open access.
+  - payment request now persists explicit scope fields:
+    - `contentTypes`
+    - `pathIds`
+    - `subjectIds`
+  - approval grant passes those fields to `grantAccessToUser` instead of default broad fallback.
+- Payment UX text hygiene:
+  - replaced multiple garbled payment labels/messages with readable Arabic in payment routes/public settings/errors.
+- Changed files:
+  - `server/src/routes/payment.routes.ts`
+  - `server/src/models/PaymentRequest.ts`
+- Verification PASS:
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:payment-package`
+  - `npm run typecheck`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`

@@ -3122,3 +3122,23 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `npm run smoke:health-readiness` PASS
   - `npm run smoke:frontend:strict` PASS (26/26, commit `efa9ce7`)
   - `npm run smoke:real-usage-readiness` PASS
+
+## BATCH 155 Closure - 2026-05-25
+- Batch: `BATCH_155_PAYMENT_SCOPE_HARDENING_AND_PAYMENT_TEXT_FIX_2026-05-25_AR`.
+- Status: Fully closed.
+- Why:
+  - owner reported severe runtime bug where approving one transfer request unlocked broad content.
+- Fix:
+  - payment request now stores explicit grant scope (`contentTypes/pathIds/subjectIds`),
+  - grant step on approval/webhook now forwards stored scope to access grant service,
+  - cleaned payment garbled strings in API labels/messages.
+- Files:
+  - `server/src/routes/payment.routes.ts`
+  - `server/src/models/PaymentRequest.ts`
+- Verification PASS:
+  - `server:check`, `server:build`
+  - `smoke:payment-package`
+  - `typecheck`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:real-usage-readiness`
