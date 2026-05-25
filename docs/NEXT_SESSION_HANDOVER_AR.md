@@ -3088,3 +3088,21 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `npm run smoke:real-usage-readiness`
 - Next rule:
   - on owner command `اكمل`, start next batch directly and close end-to-end with explicit evidence, explicit staging, and production publish verification.
+
+## BATCH 153 Closure - 2026-05-25
+- Batch: `BATCH_153_LARGE_CONTINUOUS_CLOSURE_AND_PUBLISH_VERIFY_2026-05-25_AR`.
+- Status: Fully closed.
+- Publish + verify PASS:
+  - Vercel deploy + alias:
+    - inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/Fcp8uDY7nF9uLTYEERbKGpMhSaHJ`
+    - alias: `https://almeaacodax.vercel.app`
+  - Render trigger: `dep-d89qm7mgvqtc73c8grhg` on `srv-d7qtcr9o3t8c73cs32sg` (reached `live`)
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit `d6dde8d`)
+  - `npm run smoke:real-usage-readiness`
+- Next rule stays active:
+  - on owner command `اكمل`, open next batch immediately and close end-to-end with explicit PASS/FAIL evidence and continuity docs.
