@@ -140,6 +140,15 @@ const serializeUser = (user: any) => {
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const buildDocumentQuery = (value: string) =>
   mongoose.Types.ObjectId.isValid(value) ? { $or: [{ id: value }, { _id: value }] } : { id: value };
+const buildDocumentsQuery = (values: string[]) => {
+  const normalized = Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
+  if (!normalized.length) return { id: "__none__" };
+  return {
+    $or: normalized.flatMap((value) =>
+      mongoose.Types.ObjectId.isValid(value) ? [{ id: value }, { _id: value }] : [{ id: value }],
+    ),
+  };
+};
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 const createSecureToken = () => randomBytes(32).toString("hex");
 const normalizePhone = (value: string) => value.replace(/[^\d]/g, "");
@@ -579,6 +588,15 @@ authRouter.post(
     const payload = adminCreateUserSchema.parse(req.body);
     const email = payload.email.toLowerCase();
     const passwordHash = await bcrypt.hash(payload.password, 10);
+    const isParentRole = payload.role === "parent";
+    const linkedStudentCandidates = isParentRole ? (payload.linkedStudentIds || []).map(String) : [];
+    const linkedStudents = linkedStudentCandidates.length
+      ? await UserModel.find({
+          ...buildDocumentsQuery(linkedStudentCandidates),
+          role: "student",
+        }).select("id _id")
+      : [];
+    const normalizedLinkedStudentIds = linkedStudents.map((student: any) => String(student.id || student._id || ""));
 
     const user = await UserModel.findOneAndUpdate(
       { email },
@@ -590,7 +608,7 @@ authRouter.post(
         isActive: true,
         schoolId: payload.schoolId || null,
         groupIds: payload.groupIds || [],
-        linkedStudentIds: payload.linkedStudentIds || [],
+        linkedStudentIds: normalizedLinkedStudentIds,
         managedPathIds: payload.managedPathIds || [],
         managedSubjectIds: payload.managedSubjectIds || [],
       },
@@ -672,7 +690,28 @@ authRouter.patch(
       });
     }
 
-    const updated = await UserModel.findOneAndUpdate(buildDocumentQuery(targetId), payload, { new: true });
+    const targetUser = await UserModel.findOne(buildDocumentQuery(targetId)).select("role");
+    if (!targetUser) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    const nextPayload: Record<string, unknown> = { ...payload };
+    const effectiveRole = String(payload.role || targetUser.role || "").trim();
+    if (Array.isArray(payload.linkedStudentIds)) {
+      if (effectiveRole !== "parent") {
+        nextPayload.linkedStudentIds = [];
+      } else {
+        const linkedStudents = await UserModel.find({
+          ...buildDocumentsQuery(payload.linkedStudentIds.map(String)),
+          role: "student",
+        }).select("id _id");
+        nextPayload.linkedStudentIds = linkedStudents.map((student: any) => String(student.id || student._id || ""));
+      }
+    }
+
+    const updated = await UserModel.findOneAndUpdate(buildDocumentQuery(targetId), nextPayload, { new: true });
 
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({
