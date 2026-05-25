@@ -164,6 +164,9 @@ const parseDateFilter = (value?: string) => {
   return parsed;
 };
 
+const resolveAuthUserByAuthId = async (authId: string) =>
+  mongoose.isValidObjectId(authId) ? UserModel.findById(authId) : UserModel.findOne({ id: authId });
+
 const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySchema>) =>
   JSON.stringify({
     page: query.page,
@@ -1372,7 +1375,8 @@ quizRouter.get(
   requireAuth,
   asyncHandler(async (req, res) => {
     const query = dashboardAnalyticsQuerySchema.parse(req.query);
-    const authUser = await UserModel.findById(req.authUser!.id);
+    const authUserId = String(req.authUser!.id || "");
+    const authUser = await resolveAuthUserByAuthId(authUserId);
 
     if (!authUser) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
@@ -1855,7 +1859,7 @@ quizRouter.get(
   requireAuth,
   asyncHandler(async (req, res) => {
     const query = quizResultsListQuerySchema.parse(req.query);
-    const authUser = await UserModel.findById(req.authUser!.id);
+    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
 
     if (!authUser) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
@@ -2081,7 +2085,7 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
 
-    const authUser = await UserModel.findById(req.authUser!.id);
+    const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
     if (!authUser) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }

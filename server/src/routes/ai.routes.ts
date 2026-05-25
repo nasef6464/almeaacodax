@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import { z } from "zod";
 import { env } from "../config/env.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
@@ -365,14 +366,19 @@ const buildTutorFallback = (message: string) => {
 
 const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiContext | null> => {
   if (!userId) return null;
+  const normalizedUserId = String(userId);
 
   const [user, weaknesses, recentResults] = await Promise.all([
-    UserModel.findById(userId).select("name role subscription completedLessons enrolledPaths").lean(),
-    SkillProgressModel.find({ userId, status: { $in: ["weak", "average"] } })
+    (mongoose.isValidObjectId(normalizedUserId)
+      ? UserModel.findById(normalizedUserId)
+      : UserModel.findOne({ id: normalizedUserId }))
+      .select("id name role subscription completedLessons enrolledPaths")
+      .lean(),
+    SkillProgressModel.find({ userId: normalizedUserId, status: { $in: ["weak", "average"] } })
       .sort({ mastery: 1, lastAttemptAt: -1 })
       .limit(6)
       .lean(),
-    QuizResultModel.find({ userId }).sort({ createdAt: -1 }).limit(3).lean(),
+    QuizResultModel.find({ userId: normalizedUserId }).sort({ createdAt: -1 }).limit(3).lean(),
   ]);
 
   if (!user || user.role !== "student") return null;
