@@ -2560,3 +2560,19 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - course player actions/tabs contracts remain healthy under strict/runtime smokes,
   - payment scope integrity and package/course unlock guards remain green,
   - admin users/schools/parent/payment linkage contracts remain green.
+
+## Interim Update 2026-05-25 - BATCH 151
+- Batch: `BATCH_151_RUNTIME_LOGGING_CONTINUITY_AND_PAYMENT_TAMPERING_HARDENING_2026-05-25_AR`.
+- Status: `In progress (documented + critical fix completed)`.
+- What was done in this session:
+  - detected a new critical contract failure in `smoke:payment-tampering`:
+    - `approval flow grants access from stored server-verified request only` failed.
+  - applied safe server-side fix in `server/src/routes/payment.routes.ts`:
+    - access grant now explicitly derives `includedCourseIds` from the stored approved request path while keeping package-only scope.
+  - re-verified:
+    - `npm run server:build` PASS
+    - `npm run smoke:payment-tampering` PASS (9/9)
+    - `npm run smoke:payment-package` PASS (8/8)
+- Continuity note for next account:
+  - continue from this exact state (do not repeat previous 149/150 loops),
+  - complete final publish/verify cycle for this increment, then close BATCH 151 docs.

@@ -3241,6 +3241,34 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
 - Note:
   - default redeemed smoke identity is still disabled in production and should be replaced by a dedicated active smoke account/token for future runs.
+
+## BATCH 151 Handover - 2026-05-25 (Ready for next account)
+- What is completed now:
+  - identified and fixed a critical payment tampering contract regression in approval access grant path.
+  - fix location:
+    - `server/src/routes/payment.routes.ts`
+  - verified immediately after fix:
+    - `server:build` PASS
+    - `smoke:payment-tampering` PASS
+    - `smoke:payment-package` PASS
+- Data/linkage state to keep:
+  - payment grant fields must remain server-driven from approved request (`itemType/itemId/packageId/includedCourseIds/contentTypes/pathIds/subjectIds`).
+  - parent-student linkage hardening and school linkage sync from BATCH 149.10 are still valid and must not be reverted.
+- Next exact actions for next account:
+  1. run full gate again:
+     - `typecheck`, `build`, `server:build`,
+     - `smoke:health-readiness`,
+     - `smoke:frontend:strict`,
+     - `smoke:real-usage-readiness`,
+     - `smoke:batch136-admin-users-schools-parent-payment`,
+     - `smoke:payment-package`,
+     - `smoke:payment-tampering`,
+     - `smoke:operational` (with production env context).
+  2. push + deploy verify cycle:
+     - GitHub push,
+     - Render trigger,
+     - strict smoke commit-match confirmation on production.
+  3. finalize BATCH 151 closure docs.
 - Next exact action:
   - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.
 

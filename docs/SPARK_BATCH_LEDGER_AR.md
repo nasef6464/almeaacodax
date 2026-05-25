@@ -2279,3 +2279,18 @@
   - used valid `SMOKE_ADMIN_TOKEN`,
   - enabled `SMOKE_ALLOW_PASSWORD_LOGIN=true`,
   - used active fallback for redeemed leg (`SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`) because default redeemed smoke account is disabled on production.
+
+## Update BATCH 151 - 2026-05-25 (Interim)
+- Title: Runtime Logging Continuity + Payment Tampering Hardening.
+- Status: In progress (critical fix done, closure cycle pending).
+- New finding:
+  - `smoke:payment-tampering` failed at approval-grant derivation contract.
+- Fix:
+  - updated `grantApprovedPaymentAccess` in `server/src/routes/payment.routes.ts` to derive stored approved-request included courses explicitly, with package-only scope preserved.
+- Verification PASS after fix:
+  - `npm run server:build`
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:payment-package` (8/8)
+- Handover-ready data/linkage context:
+  - payment access grant is server-owned from approved request fields (not client payload),
+  - parent-student and school relationships remain guarded by prior batch contracts (`smoke:batch136-admin-users-schools-parent-payment`).

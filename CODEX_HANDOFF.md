@@ -1103,3 +1103,37 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   - users/schools/parent linkage safety contracts remained intact.
 - Remaining known note:
   - production default redeemed smoke account (`student.d@almeaa.local`) remains disabled and should not be used as default in future operational runs.
+
+### BATCH 151 Interim Continuity Log (2026-05-25)
+- Current session summary:
+  - started next batch with targeted runtime hardening and continuity logging for cross-account handoff.
+- New bug found:
+  - `smoke:payment-tampering` failed one critical check:
+    - "approval flow grants access from stored server-verified request only".
+- Root cause:
+  - access grant derivation shape in `grantApprovedPaymentAccess` did not satisfy the strict stored-approved-request tampering contract.
+- Fix applied:
+  - `server/src/routes/payment.routes.ts`:
+    - introduced explicit `derivedIncludedCourseIds` derived from stored request field,
+    - preserved package-only scoping before passing to grant service.
+- Commands run:
+  - `npm run smoke:discussions-rbac-scope` PASS
+  - `npm run smoke:auth-frontend` PASS
+  - `npm run smoke:payment-tampering` FAIL -> fixed -> PASS
+  - `npm run server:build` PASS
+  - `npm run smoke:payment-package` PASS
+- Files changed in this session:
+  - `server/src/routes/payment.routes.ts`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+  - `CODEX_HANDOFF.md`
+- Data/linkage continuity notes:
+  - payment access scope must remain server-owned and derived from approved request.
+  - parent-student linking validation remains parent-only + student-only.
+  - school relation state sync and user relation rollback protections remain required behavior.
+- Next exact task:
+  1. run full BATCH 151 gate (type/build/smokes including operational),
+  2. commit/push explicit files,
+  3. trigger Render deploy and verify production commit-match via strict smoke,
+  4. close BATCH 151 in all handover/status docs.
