@@ -2502,3 +2502,26 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:package-course-split`
 - Runtime Deep Discovery note:
   - `npm run smoke:operational` is blocked unless admin auth context is provided via env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
+
+## Final Closure 2026-05-25 - BATCH 149.10
+- Batch: `BATCH_149_RUNTIME_HARDENING_INCREMENTAL_10_2026-05-25_AR`.
+- Status: `Incremental hardening closed (code + verification), one external operational-auth blocker remains`.
+- Implemented hotfixes in this increment:
+  - `auth.routes`: id-safe admin update/delete/me profile lookup with mixed `id/_id` support.
+  - `SchoolsManager`: immediate `selectedSchool` local-state sync after link/unlink actions.
+  - `UsersManager`: actions menu clipping fix (`overflow-visible`) so 3-dots actions remain usable.
+  - `store/useStore`: optimistic `updateUser` rollback on API failure (prevents fake-success UI in relations).
+  - `auth.routes`: parent `linkedStudentIds` validation/hardening (parent-only + student-only targets).
+  - `FinancialManager`: approval evidence payload cap to avoid oversized review submission failures.
+  - extended regression contract in `smoke:batch136-admin-users-schools-parent-payment`.
+- Verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `3afcabc`)
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+- External blocker:
+  - `npm run smoke:operational` still needs admin auth env/token:
+    - `SMOKE_ADMIN_TOKEN` OR (`SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`).

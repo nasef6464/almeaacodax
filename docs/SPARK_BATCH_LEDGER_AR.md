@@ -2222,3 +2222,26 @@
   - `npm run smoke:package-course-split`
 - Blocker:
   - `npm run smoke:operational` requires admin auth context (`SMOKE_ADMIN_TOKEN` or admin auth envs).
+
+## Update BATCH 149.10 - 2026-05-25
+- Title: Runtime Hardening Incremental 10 (Users/Schools/Auth/Payment Admin Review).
+- Status: Closed (implementation + verification).
+- Commits included:
+  - `a55d83e` id-safe admin update/delete and me profile reads.
+  - `60abc1e` schools relation UI state sync.
+  - `5cd8ca8` users actions menu clipping fix.
+  - `6f9ddb2` optimistic relation update rollback on API failure.
+  - `3129d4d` parent linked students validation (student-only, parent-only).
+  - `18d8f38` regression contract extension.
+  - `3afcabc` admin review evidence cap to prevent payload overflow failures.
+- Verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit `3afcabc`)
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+- Remaining external blocker:
+  - `npm run smoke:operational` requires admin auth env:
+    - `SMOKE_ADMIN_TOKEN` or (`SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`).

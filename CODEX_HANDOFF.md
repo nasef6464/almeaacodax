@@ -1024,3 +1024,36 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
 - Verification:
   - `npm run server:build` PASS
   - `npm run smoke:real-usage-readiness` PASS (new guard included)
+
+### Incremental Hardening Update (BATCH 149.10 - 2026-05-25)
+- Current session summary:
+  - closed a multi-step runtime hardening increment focused on admin users/schools/payment-review operational stability.
+- Bugs found:
+  1. Admin profile/update/delete could fail on mixed `id/_id` documents.
+  2. Schools relation actions looked non-functional due to stale selected-school state.
+  3. Users table 3-dots actions clipped by container overflow.
+  4. Optimistic relation updates could show fake success if API later failed.
+  5. Parent relation payload accepted invalid non-student linked ids.
+  6. Admin payment review could fail on oversized evidence payload.
+- Fixes made:
+  - `server/src/routes/auth.routes.ts`: id-safe lookups + parent linked-student validation hardening.
+  - `dashboards/admin/SchoolsManager.tsx`: selected-school sync after relation updates.
+  - `dashboards/admin/UsersManager.tsx`: actions column overflow fix.
+  - `store/useStore.ts`: rollback optimistic `updateUser` mutation on failure.
+  - `dashboards/admin/FinancialManager.tsx`: cap review evidence payload.
+  - `scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs`: added regression assertions for these fixes.
+- Commands run and results:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run server:build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS (26/26, commit `3afcabc`)
+  - `npm run smoke:real-usage-readiness` PASS
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` PASS
+  - `npm run smoke:operational` FAIL (external blocker: missing admin auth env).
+- Remaining blocker:
+  - provide `SMOKE_ADMIN_TOKEN` or (`SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`) to run operational smoke.
+- Next exact task:
+  1. inject admin smoke auth env,
+  2. run `smoke:operational`,
+  3. continue publish/post-deploy verify cycle.

@@ -3176,6 +3176,30 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:package-course-split`
 - External blocker:
   - `smoke:operational` needs admin auth env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
+
+## BATCH 149.10 Handover - 2026-05-25
+- Completed in latest increment:
+  - Fixed admin user id-lookup safety for mixed `id/_id` records.
+  - Fixed schools manager relation actions appearing stale by syncing `selectedSchool` instantly.
+  - Fixed users manager actions menu clipping so 3-dots controls remain accessible.
+  - Added rollback for optimistic user relation updates when API fails.
+  - Hardened parent-student linking validation server-side (parent-only + student-only).
+  - Prevented oversized admin approval evidence payloads causing review failure.
+  - Extended regression smoke contract for admin/users/schools/payment relations.
+- Verification now green:
+  - `typecheck`, `build`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:real-usage-readiness`
+  - `smoke:batch136-admin-users-schools-parent-payment`
+- Remaining blocker (external credentials):
+  - `smoke:operational` requires:
+    - `SMOKE_ADMIN_TOKEN`, or
+    - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`.
+- Next exact action:
+  1. export admin smoke auth env.
+  2. run `npm run smoke:operational`.
+  3. if PASS, continue publish cycle + post-deploy strict/health verify evidence.
 - Next exact action:
   - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.
 
