@@ -40,6 +40,11 @@ check('package payment and context fields are preserved', () => {
   includes('pages/GenericPathPage.tsx', 'subjectIds: packageSubjectId ? [packageSubjectId] : []');
 });
 
+check('single-course approval cannot unlock package course bundle', () => {
+  includes('server/src/routes/payment.routes.ts', 'payload.itemType === "package" && Array.isArray(packageItem?.includedCourses)');
+  includes('server/src/routes/payment.routes.ts', 'updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)');
+});
+
 check('runtime URLs are migration-friendly', () => {
   includes('services/api.ts', 'runtimeEnv?.VITE_API_URL');
   includes('services/api.ts', '? "/api"');

@@ -3178,3 +3178,14 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:operational` needs admin auth env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
 - Next exact action:
   - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.
+
+## BATCH 149.1 Hotfix - 2026-05-25
+- Fixed a critical payment-access integrity gap:
+  - `includedCourseIds` is now trusted and granted only for `package` purchases.
+  - single-course approval can no longer unlock bundled package courses by mistake.
+- Files:
+  - `server/src/routes/payment.routes.ts`
+  - `scripts/smoke-real-usage-readiness-contract.mjs`
+- Verification:
+  - `npm run server:build` PASS
+  - `npm run smoke:real-usage-readiness` PASS

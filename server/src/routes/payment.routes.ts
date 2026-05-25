@@ -516,9 +516,10 @@ const buildTrustedPaymentTarget = async (payload: z.infer<typeof paymentRequestC
   const currency = String((primaryTarget.currency || packageItem.currency || "SAR")).trim() || "SAR";
   const rawAmount = primaryTarget.originalPrice ?? primaryTarget.price ?? 0;
   const resolvedAmount = Number.isFinite(rawAmount) ? Math.max(0, Number(rawAmount)) : 0;
-  const resolvedIncludedCourseIds = Array.isArray(packageItem?.includedCourses)
-    ? packageItem.includedCourses.filter(Boolean).map((id: any) => String(id))
-    : [];
+  const resolvedIncludedCourseIds =
+    payload.itemType === "package" && Array.isArray(packageItem?.includedCourses)
+      ? packageItem.includedCourses.filter(Boolean).map((id: any) => String(id))
+      : [];
   const resolvedPackageId = payload.packageId || (payload.itemType === "package" ? payload.itemId : "");
   const packageContentTypes = normalizeScopeIds((packageItem as any)?.packageContentTypes);
   const packagePathIds = normalizeScopeIds((packageItem as any)?.pathIds);
@@ -676,7 +677,9 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
   const packageId = updatedRequest.packageId || (updatedRequest.itemType === "package" ? updatedRequest.itemId : undefined);
   const courseIds = [
     ...(updatedRequest.itemType === "course" ? [updatedRequest.itemId] : []),
-    ...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : []),
+    ...(updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)
+      ? updatedRequest.includedCourseIds.map(String)
+      : []),
   ];
   const grantResult = await grantAccessToUser({
     userId: updatedRequest.userId,

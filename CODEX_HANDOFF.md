@@ -1011,3 +1011,16 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
    - `smoke:health-readiness`
    - `smoke:frontend:strict`
    - `smoke:real-usage-readiness`
+
+### Incremental Hardening Update (BATCH 149.1 - 2026-05-25)
+- Root cause found for over-unlock risk after payment approval:
+  - `includedCourseIds` could be propagated into grants outside true package purchases.
+- Safe fix applied:
+  - `includedCourseIds` are now trusted and granted only when `itemType === "package"`.
+  - Course purchase approvals now unlock only the purchased course id.
+- Files changed:
+  - `server/src/routes/payment.routes.ts`
+  - `scripts/smoke-real-usage-readiness-contract.mjs`
+- Verification:
+  - `npm run server:build` PASS
+  - `npm run smoke:real-usage-readiness` PASS (new guard included)
