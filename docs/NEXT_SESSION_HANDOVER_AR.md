@@ -3106,3 +3106,19 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `npm run smoke:real-usage-readiness`
 - Next rule stays active:
   - on owner command `اكمل`, open next batch immediately and close end-to-end with explicit PASS/FAIL evidence and continuity docs.
+
+## BATCH 154 Closure - 2026-05-25
+- Batch: `BATCH_154_COURSE_FILES_FALLBACK_AND_OVERVIEW_ACTIONS_FIX_2026-05-25_AR`.
+- Status: Fully closed.
+- Runtime issue resolved from owner report:
+  - in course files tab, removed related-files fallback display when course has no direct files,
+  - in course overview card, wired `المفضلة` and `مشاركة` actions to working handlers.
+- Deploy + verify PASS:
+  - commit on `main`: `efa9ce7`
+  - Vercel inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/HugMmLoJ3no8ZUrSEo6ghA99zn3X`
+  - Vercel alias: `https://almeaacodax.vercel.app`
+  - Render deploy: `dep-d89qsoj7uimc739qr5qg` on `srv-d7qtcr9o3t8c73cs32sg` (`live`)
+  - `npm run typecheck` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS (26/26, commit `efa9ce7`)
+  - `npm run smoke:real-usage-readiness` PASS

@@ -867,3 +867,20 @@ Large-cycle closure/publish update (BATCH 153 - 2026-05-25):
   - `npm run smoke:real-usage-readiness`
 - Continuity:
   - updated closure docs to keep instant next-batch startup when owner says `اكمل`.
+
+Targeted runtime fix closure (BATCH 154 - 2026-05-25):
+- Owner issue addressed in course runtime:
+  - files tab was showing fallback related files even when no direct course files were uploaded,
+  - overview favorite/share buttons were visible but non-functional.
+- Fix applied in:
+  - `components/CourseOverview.tsx`
+- Behavior after fix:
+  - if `course.files` is empty, page now shows empty-state message only (no alternative files list),
+  - overview `المفضلة` persists per-user in local storage,
+  - overview `مشاركة` executes share flow through shared utility.
+- Deploy and verification:
+  - commit: `efa9ce7` pushed to `main`
+  - Vercel inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/HugMmLoJ3no8ZUrSEo6ghA99zn3X`
+  - alias verified: `https://almeaacodax.vercel.app`
+  - Render deploy id: `dep-d89qsoj7uimc739qr5qg` (`live`) on `srv-d7qtcr9o3t8c73cs32sg`
+  - PASS: `typecheck`, `smoke:health-readiness`, `smoke:frontend:strict` (26/26, commit `efa9ce7`), `smoke:real-usage-readiness`

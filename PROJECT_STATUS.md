@@ -2409,3 +2409,26 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:frontend:strict` (26/26, production commit match `d6dde8d`)
   - `npm run smoke:real-usage-readiness`
 - Result: production publish/verify cycle remains fully green with no new regressions.
+
+## Final Closure 2026-05-25 - BATCH 154
+- Batch: `BATCH_154_COURSE_FILES_FALLBACK_AND_OVERVIEW_ACTIONS_FIX_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Root issue fixed:
+  - removed fallback rendering of related/alternative files in course files tab when course has no direct files (to prevent showing materials the owner did not upload to that course),
+  - wired overview card actions:
+    - `المفضلة` now toggles and persists per user in local storage,
+    - `مشاركة` now executes share flow via `shareTextSummary`.
+- Code change:
+  - `components/CourseOverview.tsx`
+- Publish:
+  - GitHub push: PASS (`efa9ce7` to `main`)
+  - Vercel production deploy: PASS
+    - inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/HugMmLoJ3no8ZUrSEo6ghA99zn3X`
+    - alias verified: `https://almeaacodax.vercel.app`
+  - Render deploy trigger: PASS (`dep-d89qsoj7uimc739qr5qg`) on `srv-d7qtcr9o3t8c73cs32sg` (status `live`)
+- PASS checks:
+  - `npm run typecheck`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `efa9ce7`)
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:health-readiness`
+- Result: requested course files/actions regression is fixed without design changes and production remains green.
