@@ -341,7 +341,7 @@ export const FinancialManager: React.FC = () => {
         request.walletNumber ? `wallet:${request.walletNumber}` : '',
         request.receiptUrl ? `receipt:${request.receiptUrl}` : '',
         request.notes ? `notes:${request.notes}` : '',
-    ].filter(Boolean).join(' | ');
+    ].filter(Boolean).join(' | ') || 'admin:manual-review';
 
     const paymentRequestStatusCounts = useMemo(() => ({
         all: requestsSummary?.all ?? paymentRequests.length,

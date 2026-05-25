@@ -373,6 +373,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             setActionError('سجل دخولك أولاً لإرسال طلب شراء.');
             return;
         }
+        if (Number(getPrice() || 0) <= 0) {
+            setActionError('لا يمكن إرسال طلب شراء لهذا العنصر لأن السعر غير متاح حاليًا.');
+            return;
+        }
 
         if (method === 'transfer' && !transferReference.trim() && !receiptUrl.trim()) {
             setActionError('أدخل رقم مرجع التحويل أو رابط الإيصال حتى نراجع الطلب.');
@@ -430,6 +434,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const handleAddToCart = () => {
         if (isGuestUser) {
             setActionError('سجل دخولك أولاً ثم أضف العناصر إلى السلة.');
+            return;
+        }
+        if (Number(getPrice() || 0) <= 0) {
+            setActionError('لا يمكن إضافة عنصر بلا سعر إلى السلة.');
             return;
         }
         addToCart(buildCartItem());

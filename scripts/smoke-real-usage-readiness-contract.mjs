@@ -45,6 +45,11 @@ check('single-course approval cannot unlock package course bundle', () => {
   includes('server/src/routes/payment.routes.ts', 'updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)');
 });
 
+check('payment request amount must be positive', () => {
+  includes('server/src/routes/payment.routes.ts', 'if (resolvedAmount <= 0) {');
+  includes('components/PaymentModal.tsx', 'لا يمكن إرسال طلب شراء لهذا العنصر لأن السعر غير متاح حاليًا.');
+});
+
 check('runtime URLs are migration-friendly', () => {
   includes('services/api.ts', 'runtimeEnv?.VITE_API_URL');
   includes('services/api.ts', '? "/api"');
