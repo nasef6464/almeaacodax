@@ -3391,3 +3391,29 @@ pm run smoke:operational PASS (71/71).
   - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
 - Outcome:
   - لا يوجد regression في الدفع/الصلاحيات/العلاقات/رحلات الاستخدام بعد تعديل نطاق العضويات في `/pricing`.
+
+## BATCH 160 Handover - 2026-05-25
+- Closed:
+  - تم تنفيذ بوابة تحقق كاملة من البداية للنهاية بدون أي فشل.
+- PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26) مع `commit match = bbb4545`
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)
+- Runtime context:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<session-only>`
+  - redeemed fallback:
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Result:
+  - لا توجد إصلاحات مطلوبة في هذه الدفعة؛ الاستقرار التشغيلي مستمر.
+- Next exact action:
+  1. بدء الدفعة التالية مباشرة بأمر المالك مع نفس بروتوكول الإغلاق.

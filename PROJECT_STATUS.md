@@ -2706,3 +2706,26 @@ pm run smoke:frontend:strict (26/26)
   - `npm run smoke:operational` PASS (71/71) with admin token + redeemed fallback context.
 - Conclusion:
   - no regression detected in payment integrity, role scope, relationships, or operational journeys after pricing membership wording/scope update.
+
+## Final Closure 2026-05-25 - BATCH 160
+- Batch: `BATCH_160_FULL_GATE_RUNTIME_REVALIDATION_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Baseline:
+  - started from `HEAD=bbb4545`.
+- Full gate PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `bbb4545`)
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)
+- Runtime context:
+  - operational smoke used admin token session context + redeemed fallback `student.a@almeaa.local`.
+- Delivery outcome:
+  - no code fixes were required in this batch.
+  - no new runtime regressions detected across payment/permissions/relationships/learning paths.

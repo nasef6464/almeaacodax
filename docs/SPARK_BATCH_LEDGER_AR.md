@@ -2374,3 +2374,18 @@
   - `smoke:operational` (71/71) باستخدام admin token + redeemed fallback.
 - Outcome:
   - pricing memberships clarification did not introduce runtime/payment/permissions regressions.
+
+## Update BATCH 160 - 2026-05-25
+- Title: Full Gate + Runtime Revalidation.
+- Status: Fully closed.
+- PASS suite:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, commit match `bbb4545`)
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:operational` (71/71)
+- Outcome:
+  - no fixes needed; platform remained stable under full operational/runtime gate.
