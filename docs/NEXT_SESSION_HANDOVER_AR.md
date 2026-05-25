@@ -3220,6 +3220,27 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `smoke:health-readiness` PASS
   - `smoke:frontend:strict` PASS
   - `smoke:real-usage-readiness` PASS
+
+## BATCH 150 Handover - 2026-05-25
+- Closed:
+  - BATCH 150 final runtime stabilization verification completed green without design changes.
+  - all requested critical gates passed including operational role smoke.
+- PASS gate:
+  - `typecheck`, `build`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:real-usage-readiness`
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package`
+  - `smoke:operational` (`71/71`)
+- Operational env context used:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<valid>`
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
+  - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Note:
+  - default redeemed smoke identity is still disabled in production and should be replaced by a dedicated active smoke account/token for future runs.
 - Next exact action:
   - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.
 

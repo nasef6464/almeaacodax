@@ -2260,3 +2260,22 @@
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict`
   - `npm run smoke:real-usage-readiness`
+
+## Update BATCH 150 - 2026-05-25
+- Title: Final Runtime Stabilization + Publish Closure (Design-Preserved).
+- Status: Fully closed.
+- Verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package`
+  - `npm run smoke:operational` (`71/71`) on production API.
+- Runtime smoke env note:
+  - used `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`,
+  - used valid `SMOKE_ADMIN_TOKEN`,
+  - enabled `SMOKE_ALLOW_PASSWORD_LOGIN=true`,
+  - used active fallback for redeemed leg (`SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`) because default redeemed smoke account is disabled on production.

@@ -1076,3 +1076,30 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
 - Vercel note:
   - `vercel --prod` CLI encountered local transport error (`ECONNREFUSED 127.0.0.1:9`) in this environment.
   - strict frontend smoke remained PASS on public production URL after push, so frontend runtime stayed healthy.
+
+### BATCH 150 Final Runtime Stabilization Closure (2026-05-25)
+- Session summary:
+  - executed full BATCH 150 verification gate on current production/runtime contracts and kept design-preserved behavior unchanged.
+- Commands run:
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - `npm run server:build` PASS
+  - `npm run smoke:health-readiness` PASS
+  - `npm run smoke:frontend:strict` PASS
+  - `npm run smoke:real-usage-readiness` PASS
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` PASS
+  - `npm run smoke:payment-package` PASS
+  - `npm run smoke:operational` PASS (`71/71`)
+- Operational smoke context:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<valid>`
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
+  - fallback redeemed identity:
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Findings:
+  - no new critical/high regressions discovered in runtime contracts.
+  - payment scope/access guards remained intact after recheck.
+  - users/schools/parent linkage safety contracts remained intact.
+- Remaining known note:
+  - production default redeemed smoke account (`student.d@almeaa.local`) remains disabled and should not be used as default in future operational runs.

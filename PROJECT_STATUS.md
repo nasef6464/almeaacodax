@@ -2542,3 +2542,21 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict`
   - `npm run smoke:real-usage-readiness`
+
+## Final Closure 2026-05-25 - BATCH 150
+- Batch: `BATCH_150_FINAL_RUNTIME_STABILIZATION_PUBLISH_CLOSURE_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Runtime and contracts verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package`
+  - `npm run smoke:operational` (`71/71`) with production smoke env + redeemed fallback account override.
+- Key runtime safety confirmation:
+  - course player actions/tabs contracts remain healthy under strict/runtime smokes,
+  - payment scope integrity and package/course unlock guards remain green,
+  - admin users/schools/parent/payment linkage contracts remain green.
