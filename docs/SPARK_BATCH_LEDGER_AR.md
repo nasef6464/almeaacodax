@@ -2389,3 +2389,20 @@
   - `smoke:operational` (71/71)
 - Outcome:
   - no fixes needed; platform remained stable under full operational/runtime gate.
+
+## Update BATCH 161 - 2026-05-25
+- Title: Full Gate End-to-End Closure.
+- Status: Fully closed.
+- PASS suite:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26, commit match `3b793bd`)
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:operational` (71/71)
+- Outcome:
+  - no patch required; all gates remained green.
+- Note:
+  - browser automation tool not callable in this shell session; live production verification was covered by strict/runtime smoke gates.

@@ -3417,3 +3417,40 @@ pm run smoke:operational PASS (71/71).
   - لا توجد إصلاحات مطلوبة في هذه الدفعة؛ الاستقرار التشغيلي مستمر.
 - Next exact action:
   1. بدء الدفعة التالية مباشرة بأمر المالك مع نفس بروتوكول الإغلاق.
+
+## BATCH 161 Handover - 2026-05-25
+- Closed:
+  - تم تنفيذ الدفعة كاملة end-to-end مع PASS كامل لكل البوابات.
+- PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26) مع `commit match = 3b793bd`
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)
+- Runtime context:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<session-only>`
+  - fallback redeemed account:
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Note:
+  - أداة فحص المتصفح الداخلي لم تكن قابلة للاستدعاء من هذه الجلسة؛ تم توثيق التحقق الحي عبر strict/runtime smokes على الإنتاج.
+- Next exact action:
+  1. متابعة الدفعة التالية بنفس بروتوكول الإغلاق الكامل.
+
+## قاعدة ملزمة دائمة - التحقق كمستخدم فعلي (2026-05-25)
+- من الآن كل دفعة يجب أن تتضمن تحققًا حيًا بصريًا وسلوكيًا كأننا مستخدمون فعليون من الخارج، وليس فقط `smoke`/`build`.
+- الحد الأدنى الإلزامي لكل دفعة:
+  1. تسجيل دخول فعلي بأدوار متعددة (`admin` + `student` + `teacher` + `parent/supervisor` عند التوفر).
+  2. تنفيذ رحلات أساسية كاملة لكل دور (دخول، تنقل، وصول/منع، إرسال/حفظ، رجوع/تحديث الصفحة).
+  3. تسجيل أي عطل بصيغة bug tracking ثم إصلاحه وإعادة الاختبار.
+- شرط الإغلاق:
+  - لا تُعتبر الدفعة مغلقة إلا عند اجتماع:
+    - PASS كامل للبوابة التشغيلية.
+    - PASS موثق للتحقق الحي متعدد الأدوار.

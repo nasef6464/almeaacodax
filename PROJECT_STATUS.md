@@ -2729,3 +2729,40 @@ pm run smoke:frontend:strict (26/26)
 - Delivery outcome:
   - no code fixes were required in this batch.
   - no new runtime regressions detected across payment/permissions/relationships/learning paths.
+
+## Final Closure 2026-05-25 - BATCH 161
+- Batch: `BATCH_161_FULL_GATE_END_TO_END_CLOSURE_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Baseline:
+  - started from `HEAD=3b793bd`.
+- Full gate PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `3b793bd`)
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)
+- Runtime context:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - session admin token used for operational smoke.
+  - redeemed fallback: `student.a@almeaa.local`.
+- Delivery outcome:
+  - no code fixes required.
+  - full runtime/contracts pass maintained.
+- Visual-live note:
+  - in this shell session, in-app browser automation tool was unavailable; live runtime verification was completed through strict/prod smoke contracts.
+
+## Permanent QA Rule (Locked) - 2026-05-25
+- Every upcoming batch must include real external-like user validation, not only script-based checks.
+- Mandatory per-batch runtime UX sweep:
+  - login and journey checks with real role sessions (`admin`, `student`, `teacher`, `parent/supervisor` when available),
+  - visual navigation checks across key pages (load states, error states, redirects, protected routes),
+  - action checks (forms/buttons/payment requests/access guards) as an actual user would use them.
+- Batch closure is not considered complete unless both are present:
+  1. Full command gate PASS.
+  2. Multi-role real-user journey evidence PASS.

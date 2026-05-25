@@ -1268,3 +1268,15 @@ Verification PASS:
 
 Outcome:
 - Platform remains stable across runtime, payment, permission, and relationship contracts.
+
+## Locked Execution Rule - Real User Validation Required (2026-05-25)
+
+This rule is mandatory for all future batches:
+- Do not close any batch on command checks alone.
+- Execute real user-style journeys with actual role logins (`admin`, `student`, `teacher`, and `parent/supervisor` when available).
+- Validate visual/runtime behavior (page load, protected routes, actions, forms, payment-access flow, refresh/back behavior).
+- Record findings and fixes before closure.
+
+Batch closure criteria (both required):
+1. Full command/runtime gate PASS.
+2. Multi-role real-user journey PASS evidence.
