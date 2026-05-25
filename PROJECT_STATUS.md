@@ -2695,3 +2695,14 @@ pm run smoke:frontend:strict (26/26)
   - Git push: `main` -> `8efc128`
   - Vercel: production updated via Git integration (strict commit-match PASS).
   - Render trigger: blocked this session due to missing local `RENDER_API_KEY` (external credentials blocker, not code regression).
+
+## Post-Closure Revalidation 2026-05-25 - BATCH 159.1
+- Status: `PASS`.
+- Extended runtime/security checks after membership scope alignment:
+  - `npm run smoke:real-usage-readiness` PASS (8/8)
+  - `npm run smoke:payment-package` PASS (8/8)
+  - `npm run smoke:payment-tampering` PASS (9/9)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` PASS
+  - `npm run smoke:operational` PASS (71/71) with admin token + redeemed fallback context.
+- Conclusion:
+  - no regression detected in payment integrity, role scope, relationships, or operational journeys after pricing membership wording/scope update.

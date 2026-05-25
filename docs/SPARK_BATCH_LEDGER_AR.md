@@ -2362,3 +2362,15 @@
   - Vercel production served latest commit through Git integration (verified by strict smoke).
 - External blocker:
   - Render deploy API trigger not executed in this shell due to missing `RENDER_API_KEY` env.
+
+## Update BATCH 159.1 - 2026-05-25
+- Title: Post-closure runtime/security revalidation.
+- Status: Fully closed.
+- PASS evidence:
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:operational` (71/71) باستخدام admin token + redeemed fallback.
+- Outcome:
+  - pricing memberships clarification did not introduce runtime/payment/permissions regressions.

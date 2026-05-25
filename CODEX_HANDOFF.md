@@ -1232,3 +1232,18 @@ Publish:
 
 Blockers:
 - Render API trigger from this shell requires `RENDER_API_KEY` which is currently missing (external credentials blocker).
+
+## Session Update 2026-05-25 - BATCH 159.1 Post-Closure Revalidation
+
+Summary:
+- Ran an extra deep runtime/security revalidation cycle after BATCH 159 closure.
+
+Verification:
+- PASS: `npm run smoke:real-usage-readiness` (8/8)
+- PASS: `npm run smoke:payment-package` (8/8)
+- PASS: `npm run smoke:payment-tampering` (9/9)
+- PASS: `npm run smoke:batch136-admin-users-schools-parent-payment`
+- PASS: `npm run smoke:operational` (71/71) using session admin token and redeemed fallback identity.
+
+Outcome:
+- No regression detected in payment integrity, role boundaries, relationship scope, or operational user journeys after pricing memberships clarification.

@@ -3374,3 +3374,20 @@ pm run smoke:operational PASS (71/71).
 - Next exact action:
   1. عند توفير `RENDER_API_KEY` محليًا: تنفيذ trigger على `srv-d7qtcr9o3t8c73cs32sg` وتسجيل deploy id.
   2. بدء الدفعة التالية مباشرة بأمر المالك.
+
+## BATCH 159.1 Revalidation Handover - 2026-05-25
+- Closed:
+  - تم تنفيذ إعادة تحقق تشغيلية/أمنية موسعة بعد إغلاق BATCH 159.
+- PASS:
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:operational` (71/71)
+- Runtime context used for operational:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<session-only>`
+  - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Outcome:
+  - لا يوجد regression في الدفع/الصلاحيات/العلاقات/رحلات الاستخدام بعد تعديل نطاق العضويات في `/pricing`.
