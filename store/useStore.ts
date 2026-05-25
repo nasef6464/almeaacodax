@@ -549,7 +549,7 @@ export const useStore = create<AppState>()(
             })),
 
             hydrateQuestionAttempts: (attempts) => set(() => ({
-                questionAttempts: attempts
+                questionAttempts: (Array.isArray(attempts) ? attempts : [])
                     .map((attempt: any) => ({
                         questionId: String(attempt?.questionId || ''),
                         selectedOptionIndex: Number(attempt?.selectedOptionIndex ?? -1),
@@ -561,7 +561,7 @@ export const useStore = create<AppState>()(
             })),
 
             hydrateSkillProgress: (items) => set(() => ({
-                skillProgress: items
+                skillProgress: (Array.isArray(items) ? items : [])
                     .map((item: any) => ({
                         ...item,
                         id: String(item?.id || item?._id || ''),
