@@ -2827,3 +2827,21 @@ pm run smoke:frontend:strict (26/26)
   - `npm run smoke:payment-package` (8/8)
   - `npm run smoke:payment-tampering` (9/9)
   - `npm run smoke:operational` (71/71)
+
+## Batch Update 2026-05-25 - BATCH 165
+- Batch: `BATCH_165_END_TO_END_GATE_RECHECK_2026-05-25_AR`.
+- Status: `Command Gate PASS / Visual Live Validation BLOCKED (external tooling)`.
+- Baseline:
+  - started from `HEAD=2dfb85a8`.
+- Full command gate PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, commit match `2dfb85a8`)
+  - `npm run smoke:real-usage-readiness` (8/8)
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:payment-package` (8/8)
+  - `npm run smoke:payment-tampering` (9/9)
+  - `npm run smoke:operational` (71/71)

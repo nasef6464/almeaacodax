@@ -3503,3 +3503,18 @@ pm run smoke:operational PASS (71/71).
   - `smoke:operational` (71/71)
 - External blocker:
   - الدليل البصري متعدد الأدوار ما زال pending لعدم توفر أداة browser automation القابلة للاستدعاء في هذه الجلسة.
+
+## BATCH 165 Handover - 2026-05-25
+- Current state:
+  - Command gate PASS بالكامل مع إعادة تحقق جديدة.
+- PASS:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` (26/26) مع `commit match = 2dfb85a8`
+  - `smoke:real-usage-readiness` (8/8)
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:payment-package` (8/8)
+  - `smoke:payment-tampering` (9/9)
+  - `smoke:operational` (71/71)
+- External blocker:
+  - الدليل البصري متعدد الأدوار ما زال pending لعدم توفر أداة browser automation القابلة للاستدعاء في هذه الجلسة.
