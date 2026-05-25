@@ -829,3 +829,21 @@ Large-cycle publish-verify update (BATCH 151 - 2026-05-25):
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, production commit `5daacc6`)
   - `npm run smoke:real-usage-readiness`
+
+Large-cycle closure/publish update (BATCH 152 - 2026-05-25):
+- Vercel production deploy PASS:
+  - inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/6uySiDi2Hdzb3VE6mBMSdy9gefzQ`
+  - alias verified: `https://almeaacodax.vercel.app`
+- Render deploy trigger PASS:
+  - service: `srv-d7qtcr9o3t8c73cs32sg`
+  - deploy id: `dep-d89qi9ek1jcs73faige0`
+- PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit `62b26fe`)
+  - `npm run smoke:real-usage-readiness`
+- Continuity:
+  - closure docs updated for immediate next-batch execution when owner says `اكمل`.
