@@ -2673,3 +2673,25 @@ pm run smoke:frontend:strict (26/26)
   - verify admin CRUD for global memberships separately from learning packages.
   - verify `/pricing` renders memberships only and checkout maps to membership scope.
   - verify Learning Arena package tab continues to operate independently without regression.
+
+## Final Closure 2026-05-25 - BATCH 159
+- Batch: `BATCH_159_MEMBERSHIP_LABEL_SCOPE_ALIGNMENT_AND_LIVE_VERIFY_2026-05-25_AR`.
+- Status: `Fully closed`.
+- Implementation:
+  - updated pricing page copy/model to represent platform memberships (not learning arena packages).
+  - added explicit UX note that Learning Arena packages are managed separately.
+- Files:
+  - `pages/Pricing.tsx`
+  - `PROJECT_STATUS.md`
+  - `docs/SPARK_BATCH_LEDGER_AR.md`
+  - `docs/NEXT_SESSION_HANDOVER_AR.md`
+  - `CODEX_HANDOFF.md`
+- Verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26, production commit match `8efc128`)
+- Publish:
+  - Git push: `main` -> `8efc128`
+  - Vercel: production updated via Git integration (strict commit-match PASS).
+  - Render trigger: blocked this session due to missing local `RENDER_API_KEY` (external credentials blocker, not code regression).

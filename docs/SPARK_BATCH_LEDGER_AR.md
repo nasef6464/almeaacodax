@@ -2345,3 +2345,20 @@
   - memberships/package-path handling exists in `dashboards/admin/PathsManager.tsx`.
 - Next-batch verification requirement:
   - validate memberships management and checkout scope independently, while preserving Learning Arena package contracts with no regression.
+
+## Update BATCH 159 - 2026-05-25
+- Title: Membership Label Scope Alignment + Live Verification.
+- Status: Fully closed.
+- Completed:
+  - pricing page terminology and structure aligned to platform memberships.
+  - explicit separation note kept for Learning Arena packages scope.
+- Verification PASS:
+  - `typecheck`
+  - `build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` with production commit match `8efc128`.
+- Publish:
+  - commit pushed to `main`: `8efc128`.
+  - Vercel production served latest commit through Git integration (verified by strict smoke).
+- External blocker:
+  - Render deploy API trigger not executed in this shell due to missing `RENDER_API_KEY` env.

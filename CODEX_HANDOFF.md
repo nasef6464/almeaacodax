@@ -1209,3 +1209,26 @@ Mandatory checks in next batch:
 1. Verify membership CRUD in admin as a separate scope.
 2. Verify `/pricing` checkout maps to membership scope.
 3. Verify Learning Arena package flows remain separate and regression-free.
+
+## Session Update 2026-05-25 - BATCH 159 Membership Scope Alignment
+
+Summary:
+- Completed the requested pricing scope clarification and closed a full live verification cycle.
+
+What was done:
+- Updated `pages/Pricing.tsx` wording/model from generic packages to platform memberships.
+- Added explicit in-page separation note for Learning Arena packages.
+- Kept design/layout structure intact (copy-level and semantic alignment only).
+
+Verification:
+- PASS: `npm run typecheck`
+- PASS: `npm run build`
+- PASS: `npm run smoke:health-readiness`
+- PASS: `npm run smoke:frontend:strict` with production commit match `8efc128`.
+
+Publish:
+- Commit pushed to `main`: `8efc128`.
+- Vercel production is serving `8efc128` (strict smoke proof).
+
+Blockers:
+- Render API trigger from this shell requires `RENDER_API_KEY` which is currently missing (external credentials blocker).

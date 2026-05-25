@@ -3355,3 +3355,22 @@ pm run smoke:operational PASS (71/71).
   1. التحقق من CRUD العضويات ككيان مستقل في الأدمن.
   2. التحقق أن صفحة التسعير تعرض/تشتري عضويات المنصة فقط.
   3. التحقق أن باقات ساحة التعلم لا تتأثر (No regression) في العرض/الشراء/فتح المحتوى.
+
+## BATCH 159 Handover - 2026-05-25
+- Closed:
+  - تم تنفيذ فصل المصطلح والنطاق في صفحة التسعير: عضويات المنصة مقابل باقات ساحة التعلم.
+- Implementation:
+  - `pages/Pricing.tsx` تم تحويله إلى نموذج/نص عضويات مع تنبيه واضح أن باقات ساحة التعلم منفصلة.
+- Verification PASS:
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict` (26/26) مع `production commit match = 8efc128`.
+- Publish:
+  - push على `main` إلى commit `8efc128`.
+  - Vercel production محدثة ومطابقة للـcommit حسب strict smoke.
+- External blocker:
+  - Trigger Render غير متاح من هذه الجلسة لغياب `RENDER_API_KEY` محليًا.
+- Next exact action:
+  1. عند توفير `RENDER_API_KEY` محليًا: تنفيذ trigger على `srv-d7qtcr9o3t8c73cs32sg` وتسجيل deploy id.
+  2. بدء الدفعة التالية مباشرة بأمر المالك.
