@@ -682,7 +682,7 @@ const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
 
   const packageId = updatedRequest.packageId || (updatedRequest.itemType === "package" ? updatedRequest.itemId : undefined);
   const derivedIncludedCourseIds =
-    updatedRequest.itemType === "package"
+    updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)
       ? [
           ...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : []),
         ]
