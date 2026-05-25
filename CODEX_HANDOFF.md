@@ -794,3 +794,10 @@ Progressive revalidation (2026-05-25) PASS:
 
 Blocker remains singular:
 - operational authenticated smoke still needs valid admin auth context (`SMOKE_ADMIN_TOKEN` or admin credentials env).
+
+Final closure update (2026-05-25):
+- Operational smoke completed successfully:
+  - `npm run smoke:operational` => PASS (71/71).
+- BATCH 148 can be treated as fully closed.
+- Operational run note:
+  - production default redeemed account `student.d@almeaa.local` is disabled; final run used active fallback learner credentials for redeemed-track validation.

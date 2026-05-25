@@ -2058,3 +2058,13 @@
 - Result:
   - security and route-loading contracts remain green.
   - closure blocker remains only secret-gated `smoke:operational`.
+
+## Final Closure BATCH 148 - 2026-05-25
+- Status: Fully closed.
+- Final blocker resolved:
+  - `smoke:operational` PASS (71/71) on production API.
+- Execution context for final operational pass:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - valid admin token provided
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
+  - redeemed-track runtime used active learner credentials because default `student.d@almeaa.local` account is disabled in production.

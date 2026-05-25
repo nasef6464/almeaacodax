@@ -3032,3 +3032,10 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - No new runtime regressions detected.
 - Remaining blocker unchanged:
   - `smoke:operational` still requires valid admin auth env/token.
+
+## BATCH 148 Final Closure Addendum - 2026-05-25
+- `smoke:operational` is now PASS (71/71).
+- BATCH 148 is fully closed.
+- Important runtime note for future operational runs:
+  - default `student-redeemed` smoke account (`student.d@almeaa.local`) is disabled on production.
+  - use active fallback credentials/env for redeemed-track checks or provide explicit `SMOKE_STUDENT_REDEEMED_TOKEN`.
