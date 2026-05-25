@@ -2201,3 +2201,24 @@
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, commit `e83da47`)
   - `npm run smoke:real-usage-readiness`
+## Update BATCH 149 - 2026-05-25
+- Title: Deep Runtime Stability + Payment Integrity + Cart Activation.
+- Status: Closed with one external runtime smoke blocker (missing admin auth env for `smoke:operational`).
+- Core changes:
+  - logout now revokes local paid access state instantly.
+  - guest blocked from purchase/cart/code activation actions.
+  - cart activated end-to-end (`/cart`, cart state/actions, dynamic header badge, add-to-cart path from payment modal).
+  - server-owned payment request id strengthened.
+  - student pending request edit endpoint added (`PATCH /payments/requests/:id`) with ownership + pending-only + safe validation.
+  - request id surfaced in student requests and payment success message.
+- PASS checks:
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:package-path-navigation`
+  - `npm run smoke:package-course-split`
+- Blocker:
+  - `npm run smoke:operational` requires admin auth context (`SMOKE_ADMIN_TOKEN` or admin auth envs).

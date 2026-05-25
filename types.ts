@@ -714,6 +714,40 @@ export interface B2BPackage {
     createdAt: number;
 }
 
+export interface CartItem {
+    id: string;
+    type: 'course' | 'package' | 'skill' | 'test' | 'bank';
+    title: string;
+    price: number;
+    currency: string;
+    packageId?: string;
+    purchaseType?: string;
+    contentTypes?: string[];
+    packageContentTypes?: string[];
+    pathIds?: string[];
+    subjectIds?: string[];
+    includedCourseIds?: string[];
+    courseIds?: string[];
+    accessContext?: string;
+    isPackage?: boolean;
+    packageOptions?: Array<{
+        id: string;
+        title: string;
+        price?: number;
+        currency?: string;
+        packageId?: string;
+        purchaseType?: string;
+        contentTypes?: string[];
+        packageContentTypes?: string[];
+        pathIds?: string[];
+        subjectIds?: string[];
+        includedCourseIds?: string[];
+        courseIds?: string[];
+        accessContext?: string;
+        isPackage?: boolean;
+    }>;
+}
+
 export type AnnouncementAudience = 'all' | 'guest' | 'student' | 'parent' | 'staff';
 export type AnnouncementDisplayMode = 'modal' | 'top-banner';
 export type AnnouncementFrequency = 'always' | 'session' | 'once';

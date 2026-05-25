@@ -83,6 +83,16 @@ const paymentRequestReviewSchema = z.object({
   approvalEvidence: z.string().max(500).optional(),
 });
 
+const paymentRequestStudentUpdateSchema = z.object({
+  paymentMethod: z.enum(["card", "transfer", "wallet"]).optional(),
+  transferReference: z.string().max(180).optional(),
+  walletNumber: z.string().max(80).optional(),
+  receiptUrl: z.string().max(1500).optional(),
+  notes: z.string().max(500).optional(),
+  discountCode: z.string().max(80).optional(),
+  paymentCountry: z.string().max(3).optional(),
+});
+
 const paymentWebhookSchema = z.object({
   provider: z.string().min(1).max(40).default("gateway"),
   eventId: z.string().min(1).max(160),
@@ -430,6 +440,9 @@ const buildPaymentRequestLookup = (id: string) => ({
     ...(Types.ObjectId.isValid(id) ? [{ _id: id }] : []),
   ],
 });
+
+const createPaymentRequestId = () =>
+  `payreq_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
 
 const normalizeDiscountCode = (code?: string) => String(code || "").trim().toUpperCase().replace(/\s+/g, "");
 
@@ -1469,7 +1482,7 @@ paymentRouter.post(
     }
 
     const created = await PaymentRequestModel.create({
-      id: `payreq_${Date.now()}`,
+      id: createPaymentRequestId(),
       userId: String(user._id),
       userName: user.name,
       userEmail: user.email,
@@ -1499,6 +1512,133 @@ paymentRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({ request: created });
+  }),
+);
+
+paymentRouter.patch(
+  "/requests/:id",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const payload = paymentRequestStudentUpdateSchema.parse(req.body);
+    const requestDoc = await PaymentRequestModel.findOne(buildPaymentRequestLookup(req.params.id));
+
+    if (!requestDoc) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    }
+
+    const authUserId = String(req.authUser?.id || "");
+    if (requestDoc.userId !== authUserId) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "غير مسموح بتعديل طلب مستخدم آخر" });
+    }
+
+    if (requestDoc.status !== "pending") {
+      return res.status(StatusCodes.CONFLICT).json({ message: "يمكن تعديل الطلبات المعلقة فقط" });
+    }
+
+    const settings = await getOrCreateSettings();
+    const nextPaymentMethod = payload.paymentMethod || requestDoc.paymentMethod;
+    const selectedMethodSettings = ((settings as any)[nextPaymentMethod] || {}) as {
+      supportedCountries?: string[];
+    };
+
+    if (!isPaymentMethodEnabled(settings, nextPaymentMethod)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "وسيلة الدفع غير مفعلة حاليًا" });
+    }
+
+    const nextCountry = payload.paymentCountry !== undefined ? payload.paymentCountry : requestDoc.paymentCountry;
+    if (
+      nextCountry &&
+      Array.isArray(selectedMethodSettings.supportedCountries) &&
+      selectedMethodSettings.supportedCountries.length > 0 &&
+      !selectedMethodSettings.supportedCountries.includes(nextCountry)
+    ) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: PAYMENT_ERRORS.paymentMethodUnavailableForCountry });
+    }
+
+    const nextSnapshot = {
+      paymentMethod: nextPaymentMethod,
+      transferReference: payload.transferReference !== undefined ? payload.transferReference : requestDoc.transferReference,
+      walletNumber: payload.walletNumber !== undefined ? payload.walletNumber : requestDoc.walletNumber,
+      receiptUrl: payload.receiptUrl !== undefined ? payload.receiptUrl : requestDoc.receiptUrl,
+      notes: payload.notes !== undefined ? payload.notes : requestDoc.notes,
+    };
+
+    if (!hasManualPaymentEvidence(nextSnapshot)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "يرجى إدخال مرجع التحويل أو رقم المحفظة أو رابط/صورة إيصال قبل حفظ الطلب",
+      });
+    }
+
+    const normalizedDiscountCode = normalizeDiscountCode(
+      payload.discountCode !== undefined ? payload.discountCode : requestDoc.discountCode,
+    );
+
+    let discountAmount = Number(requestDoc.discountAmount || 0);
+    let discountCodeId = String(requestDoc.discountCodeId || "");
+    let finalAmount = Number(requestDoc.originalAmount || requestDoc.amount || 0);
+    const originalAmount = Number(requestDoc.originalAmount || requestDoc.amount || 0);
+
+    if (normalizedDiscountCode) {
+      const trustedPayload: any = {
+        itemType: requestDoc.itemType,
+        itemId: requestDoc.itemId,
+        packageId: requestDoc.packageId || undefined,
+      };
+      const trustedTarget = await buildTrustedPaymentTarget(trustedPayload);
+      if (!trustedTarget.ok) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: trustedTarget.error });
+      }
+      const discountCode = await DiscountCodeModel.findOne({ code: normalizedDiscountCode });
+      if (
+        !discountCode ||
+        !isDiscountCodeActive(discountCode) ||
+        !discountAppliesToPayload(
+          discountCode,
+          originalAmount,
+          {
+            itemType: requestDoc.itemType as any,
+            itemId: requestDoc.itemId,
+            packageId: requestDoc.packageId || "",
+            includedCourseIds: requestDoc.includedCourseIds || [],
+          },
+          trustedTarget.target,
+        )
+      ) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "كود الخصم غير صالح أو منتهي" });
+      }
+      discountAmount = calculateDiscountAmount(discountCode, originalAmount);
+      finalAmount = Math.max(0, originalAmount - discountAmount);
+      discountCodeId = String(discountCode._id);
+    } else {
+      discountAmount = 0;
+      discountCodeId = "";
+      finalAmount = originalAmount;
+    }
+
+    const updated = await PaymentRequestModel.findOneAndUpdate(
+      { _id: requestDoc._id, status: "pending" },
+      {
+        $set: {
+          paymentMethod: nextPaymentMethod,
+          transferReference: nextSnapshot.transferReference || "",
+          walletNumber: nextSnapshot.walletNumber || "",
+          receiptUrl: nextSnapshot.receiptUrl || "",
+          notes: nextSnapshot.notes || "",
+          discountCode: normalizedDiscountCode,
+          discountCodeId,
+          discountAmount,
+          amount: finalAmount,
+          paymentCountry: nextCountry || "",
+        },
+      },
+      { new: true },
+    );
+
+    if (!updated) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "تعذر تعديل الطلب لأنه لم يعد معلقًا" });
+    }
+
+    return res.json({ request: updated });
   }),
 );
 

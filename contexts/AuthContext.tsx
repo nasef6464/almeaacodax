@@ -182,6 +182,10 @@ const resetStoreUser = () => {
     favorites: [],
     reviewLater: [],
     recentActivity: [],
+    enrolledCourses: [],
+    enrolledPaths: [],
+    completedLessons: [],
+    cartItems: [],
   });
 };
 

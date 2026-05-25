@@ -565,6 +565,12 @@ export const api = {
       body: payload,
       token,
     }),
+  updateMyPaymentRequest: (id: string, payload: unknown, token?: string | null) =>
+    request<{ request: unknown }>(`/payments/requests/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   getPaymentRequestsSummary: (token?: string | null) =>
     request<unknown>("/payments/requests/summary", {
       token,

@@ -48,6 +48,7 @@ const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
 const Pricing = React.lazy(() => import('./pages/Pricing'));
+const Cart = React.lazy(() => import('./pages/Cart'));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -857,6 +858,7 @@ const App: React.FC = () => {
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/cart" element={<Cart />} />
                   <Route path="/certificate/:code" element={<CertificatePage />} />
                   <Route path="/review" element={<ReviewSession />} />
                   

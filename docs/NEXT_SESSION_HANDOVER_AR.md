@@ -3157,3 +3157,24 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, commit `e83da47`)
   - `npm run smoke:real-usage-readiness`
+## BATCH 149 Handover - 2026-05-25
+- Completed:
+  - Payment/cart/auth hardening implementation finished.
+  - Cart route and page activated (`/cart`) with add/remove/clear + direct purchase handoff.
+  - Guest purchase/cart/code actions are now blocked from payment modal.
+  - Logout clears local paid-access state to prevent post-logout content leakage.
+  - Payment request IDs are now server-generated with random suffix.
+  - Student pending payment request edit endpoint added and wired in UI (`MyRequests`).
+  - Student now sees request number in requests list and payment success message.
+- Verification PASS:
+  - `build`, `server:build`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:real-usage-readiness`
+  - `smoke:batch136-admin-users-schools-parent-payment`
+  - `smoke:package-path-navigation`
+  - `smoke:package-course-split`
+- External blocker:
+  - `smoke:operational` needs admin auth env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).
+- Next exact action:
+  - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.

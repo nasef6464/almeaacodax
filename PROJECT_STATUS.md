@@ -2474,3 +2474,31 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
   - `npm run smoke:frontend:strict` (26/26, production commit match `e83da47`)
   - `npm run smoke:real-usage-readiness`
 - Result: full production publish/verify cycle remains stable and green.
+
+## Final Closure 2026-05-25 - BATCH 149
+- Batch: `BATCH_149_DEEP_RUNTIME_STABILITY_PAYMENT_INTEGRITY_CART_ACTIVATION_2026-05-25_AR`.
+- Status: `Closed (implementation + verification), runtime operational smoke partially blocked by missing admin auth env`.
+- Implemented:
+  - Hardened logout contract to clear paid-access local state immediately (`enrolledCourses/enrolledPaths/completedLessons/cartItems`).
+  - Guest purchase hardening in `PaymentModal` (no buy/no code activation/no cart mutation for guest).
+  - Activated cart flow end-to-end:
+    - `/cart` route and `pages/Cart.tsx`,
+    - dynamic cart badge in header,
+    - add-to-cart action from payment modal + direct buy preserved.
+  - Payment integrity:
+    - server-generated request IDs hardened (`payreq_<timestamp>_<random>`),
+    - student-side pending request update endpoint added (`PATCH /payments/requests/:id`) with ownership+pending-only guards and safe field validation,
+    - request number shown in student requests page and payment success message.
+  - Student requests UX:
+    - pending requests can be edited from `MyRequests` (receipt/reference/notes).
+- Verification PASS:
+  - `npm run build`
+  - `npm run server:build`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`
+  - `npm run smoke:package-path-navigation`
+  - `npm run smoke:package-course-split`
+- Runtime Deep Discovery note:
+  - `npm run smoke:operational` is blocked unless admin auth context is provided via env (`SMOKE_ADMIN_TOKEN` or admin credentials envs).

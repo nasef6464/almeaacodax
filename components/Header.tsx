@@ -94,7 +94,7 @@ export const Header: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels, quizzes } = useStore();
+  const { paths, subjects, levels, quizzes, cartItems } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null) => {
@@ -462,7 +462,7 @@ export const Header: React.FC = () => {
             <Link to="/cart" className="relative text-gray-500 hover:text-amber-500 transition-colors dark:text-gray-300">
               <ShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                0
+                {cartItems.length}
               </span>
             </Link>
 

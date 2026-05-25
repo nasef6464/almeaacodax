@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, ChevronLeft, CreditCard, Landmark, Lock, ShieldCheck, Wallet, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
-import { PaymentMethodKey, PaymentSettings } from '../types';
+import { CartItem, PaymentMethodKey, PaymentSettings } from '../types';
 
 interface PaymentModalProps {
     isOpen: boolean;
@@ -115,7 +115,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const [discountPreview, setDiscountPreview] = useState<DiscountPreview | null>(null);
     const [discountPreviewLoading, setDiscountPreviewLoading] = useState(false);
     const [selectedPackageId, setSelectedPackageId] = useState('');
-    const { redeemAccessCode } = useStore();
+    const { user, redeemAccessCode, addToCart } = useStore();
+    const isGuestUser = !user?.email || user.id === 'guest';
 
     const packageOptions = useMemo<PaymentPackageOption[]>(() => {
         if (!Array.isArray(item?.packageOptions)) return [];
@@ -368,6 +369,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     const handlePayment = async () => {
         if (!method) return;
+        if (isGuestUser) {
+            setActionError('سجل دخولك أولاً لإرسال طلب شراء.');
+            return;
+        }
 
         if (method === 'transfer' && !transferReference.trim() && !receiptUrl.trim()) {
             setActionError('أدخل رقم مرجع التحويل أو رابط الإيصال حتى نراجع الطلب.');
@@ -388,11 +393,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         setActionError(null);
 
         try {
-            await api.createPaymentRequest(buildPaymentRequestPayload());
+            const response = await api.createPaymentRequest(buildPaymentRequestPayload()) as { request?: { id?: string; _id?: string } };
+            const requestId = String(response?.request?.id || response?.request?._id || '').trim();
             setSuccessMessage(
                 settings.manualReviewRequired
-                    ? `تم إرسال طلب الدفع الخاص بـ ${getItemName()} بنجاح، وسيتم مراجعته من الإدارة ثم تفعيل الوصول على حسابك.`
-                    : `تم تسجيل طلب الدفع الخاص بـ ${getItemName()} بنجاح.`,
+                    ? `تم إرسال طلب الدفع الخاص بـ ${getItemName()} بنجاح${requestId ? ` (رقم الطلب: ${requestId})` : ''}، وسيتم مراجعته من الإدارة ثم تفعيل الوصول على حسابك.`
+                    : `تم تسجيل طلب الدفع الخاص بـ ${getItemName()} بنجاح${requestId ? ` (رقم الطلب: ${requestId})` : ''}.`,
             );
             setStep('success');
         } catch (error) {
@@ -400,6 +406,35 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
         } finally {
             setLoading(false);
         }
+    };
+
+    const buildCartItem = (): CartItem => ({
+        id: String(purchaseItem.id || ''),
+        type,
+        title: String(getItemName()),
+        price: Number(getPrice() || 0),
+        currency: String(getCurrency() || 'SAR'),
+        packageId: purchaseItem.packageId,
+        purchaseType: purchaseItem.purchaseType,
+        contentTypes: Array.isArray(purchaseItem.contentTypes) ? purchaseItem.contentTypes : undefined,
+        packageContentTypes: Array.isArray(purchaseItem.packageContentTypes) ? purchaseItem.packageContentTypes : undefined,
+        pathIds: Array.isArray(purchaseItem.pathIds) ? purchaseItem.pathIds : undefined,
+        subjectIds: Array.isArray(purchaseItem.subjectIds) ? purchaseItem.subjectIds : undefined,
+        includedCourseIds: Array.isArray(purchaseItem.includedCourseIds) ? purchaseItem.includedCourseIds : undefined,
+        courseIds: Array.isArray(purchaseItem.courseIds) ? purchaseItem.courseIds : undefined,
+        accessContext: typeof purchaseItem.accessContext === 'string' ? purchaseItem.accessContext : undefined,
+        isPackage: Boolean(purchaseItem.isPackage),
+        packageOptions: Array.isArray(purchaseItem.packageOptions) ? purchaseItem.packageOptions : undefined,
+    });
+
+    const handleAddToCart = () => {
+        if (isGuestUser) {
+            setActionError('سجل دخولك أولاً ثم أضف العناصر إلى السلة.');
+            return;
+        }
+        addToCart(buildCartItem());
+        setSuccessMessage(`تمت إضافة ${getItemName()} إلى سلة المشتريات.`);
+        setStep('success');
     };
 
     const handleReceiptFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -437,6 +472,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     };
 
     const handleRedeemAccessCode = async () => {
+        if (isGuestUser) {
+            setActionError('سجل دخولك أولاً لتفعيل الكود.');
+            return;
+        }
         if (!accessCode.trim()) {
             setActionError('أدخل كود التفعيل أولًا.');
             return;
@@ -457,6 +496,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     };
 
     const selectMethod = (selectedMethod: PaymentMethodKey) => {
+        if (isGuestUser) {
+            setActionError('سجل دخولك أولاً ثم أكمل الشراء.');
+            return;
+        }
         setActionError(null);
         setMethod(selectedMethod);
         setStep('details');
@@ -550,6 +593,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     className="flex-1 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
                 >
                     عرض طرق الدفع والتفعيل
+                </button>
+                <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="rounded-2xl border border-indigo-200 px-5 py-3 text-sm font-black text-indigo-700 transition-all hover:bg-indigo-50"
+                >
+                    إضافة للسلة
                 </button>
                 <button
                     type="button"

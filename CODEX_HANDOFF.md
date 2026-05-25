@@ -922,3 +922,92 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   - `npm run smoke:health-readiness`
   - `npm run smoke:frontend:strict` (26/26, commit `e83da47`)
   - `npm run smoke:real-usage-readiness`
+## Session: BATCH 149 - Deep Runtime Stability + Payment Integrity + Cart Activation (2026-05-25)
+
+### Current Session Summary
+- Implemented auth/access hardening, cart activation, and payment request integrity updates.
+- Added student pending-payment-request edit flow and request-number visibility.
+- Preserved existing UI design and route contracts.
+
+### Previous State Found
+- Header cart icon existed as UI stub only (`/cart` route/page missing).
+- Guest could reach purchase action points in payment modal.
+- Payment request ID was generated without random suffix.
+- Student request edit path for pending manual requests was absent.
+
+### Files Inspected
+- `components/PaymentModal.tsx`
+- `pages/MyRequests.tsx`
+- `store/useStore.ts`
+- `contexts/AuthContext.tsx`
+- `App.tsx`
+- `components/Header.tsx`
+- `services/api.ts`
+- `server/src/routes/payment.routes.ts`
+- `types.ts`
+
+### Bugs Found
+1. Logout leakage risk for local paid access state.
+2. Cart flow incomplete (dead route / non-functional cart journey).
+3. Guest purchase mutation points existed in payment modal actions.
+4. Missing student self-edit for pending payment request.
+5. Payment request id generation not sufficiently robust.
+
+### Fixes Made
+- Logout now clears: `enrolledCourses`, `enrolledPaths`, `completedLessons`, `cartItems`.
+- Added cart state/actions + cart item type, new `/cart` page, route wiring, and header badge binding.
+- Blocked guest on payment modal buy/add-to-cart/redeem-code/method-select actions.
+- Added `PATCH /payments/requests/:id`:
+  - owner-only,
+  - pending-only,
+  - safe editable fields with validation and country/provider checks.
+- Switched request id creation to `payreq_<timestamp>_<randomHex>`.
+- UI now shows request number and allows editing pending request rows in `MyRequests`.
+- Payment success now includes request number when available.
+
+### Skipped Items
+- Full `smoke:operational` runtime flow could not run without admin auth env context.
+
+### Commands Run
+- `npm run build` (PASS)
+- `npm run server:build` (PASS)
+- `npm run smoke:health-readiness` (PASS)
+- `npm run smoke:frontend:strict` (PASS)
+- `npm run smoke:real-usage-readiness` (PASS)
+- `npm run smoke:batch136-admin-users-schools-parent-payment` (PASS)
+- `npm run smoke:package-path-navigation` (PASS)
+- `npm run smoke:package-course-split` (PASS)
+- `npm run smoke:operational` (BLOCKED: requires admin auth env)
+
+### Pass/Fail Results
+- PASS: Build + server build + strict/readiness/navigation/package split contracts.
+- BLOCKED (external input): operational smoke requiring admin auth env.
+
+### Remaining Blockers
+- Provide one of:
+  - `SMOKE_ADMIN_TOKEN`, or
+  - admin credentials env pair for operational smoke.
+
+### Next Exact Task
+1. Run `npm run smoke:operational` with admin auth context.
+2. Perform deploy cycle (GitHub push, Vercel prod deploy, Render trigger).
+3. Execute post-deploy strict + health checks and attach evidence links.
+
+### Warnings for Next Session
+- Do not use `git add .`; stage explicit files only.
+- Do not revert unrelated tracked edits (`.gitignore`, docs legacy deltas) unless explicitly requested.
+- Keep package/course route split contract unchanged.
+
+### Do-Not-Touch Areas
+- Existing approval/review admin contract on `/payments/requests/:id/review`.
+- Route names and public response shapes outside added student update endpoint.
+- Existing learning UI design and layout.
+
+### Rollback Plan
+1. Revert this batch commit only.
+2. Redeploy previous stable commit on Vercel alias.
+3. Trigger Render deploy for previous stable commit.
+4. Re-run:
+   - `smoke:health-readiness`
+   - `smoke:frontend:strict`
+   - `smoke:real-usage-readiness`

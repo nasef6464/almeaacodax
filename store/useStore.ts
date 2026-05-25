@@ -1,7 +1,7 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
-import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, AnnouncementAd, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress } from '../types';
+import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, AnnouncementAd, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress, CartItem } from '../types';
 import { normalizeIdList } from '../utils/entityIds';
 import { isDevSessionUser } from '../utils/devSession';
 import { normalizeQuizPlacement } from '../utils/quizPlacement';
@@ -47,6 +47,7 @@ interface AppState {
     recentActivity: Activity[];
     studyPlans: StudyPlan[];
     skillProgress: SkillProgress[];
+    cartItems: CartItem[];
     
     // Actions
     hydrateUsers: (users: User[]) => void;
@@ -83,6 +84,10 @@ interface AppState {
     toggleFavorite: (questionId: string) => void;
     toggleReviewLater: (questionId: string) => void;
     addActivity: (activity: Omit<Activity, 'id' | 'date'>) => void;
+    addToCart: (item: CartItem) => void;
+    removeFromCart: (itemId: string, itemType?: CartItem['type']) => void;
+    clearCart: () => void;
+    cartCount: () => number;
     checkAccess: (contentId: string, isPremiumContent: boolean) => boolean;
     hasScopedPackageAccess: (contentType: PackageContentType, pathId?: string, subjectId?: string) => boolean;
     getMatchingPackage: (contentType: PackageContentType, pathId?: string, subjectId?: string) => B2BPackage | null;
@@ -374,6 +379,7 @@ export const useStore = create<AppState>()(
             recentActivity: [],
             studyPlans: [],
             skillProgress: [],
+            cartItems: [],
 
             hydrateUsers: (users) => set(() => ({
                 users
@@ -722,6 +728,38 @@ export const useStore = create<AppState>()(
                         ...state.recentActivity
                     ].slice(0, 10)
                 }));
+            },
+            addToCart: (item) => set((state) => {
+                const normalized: CartItem = {
+                    ...item,
+                    id: String(item?.id || ''),
+                    title: String(item?.title || ''),
+                    type: item?.type || 'course',
+                    price: Number(item?.price || 0),
+                    currency: String(item?.currency || 'SAR'),
+                };
+
+                if (!normalized.id || !normalized.title) {
+                    return state;
+                }
+
+                const nextItems = state.cartItems.filter(
+                    (existing) => !(existing.id === normalized.id && existing.type === normalized.type),
+                );
+
+                return { cartItems: [...nextItems, normalized] };
+            }),
+            removeFromCart: (itemId, itemType) => set((state) => ({
+                cartItems: state.cartItems.filter((item) => {
+                    if (item.id !== itemId) return true;
+                    if (!itemType) return false;
+                    return item.type !== itemType;
+                }),
+            })),
+            clearCart: () => set(() => ({ cartItems: [] })),
+            cartCount: () => {
+                const state = get();
+                return state.cartItems.length;
             },
 
             checkAccess: (contentId, isPremiumContent) => {

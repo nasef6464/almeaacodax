@@ -10,6 +10,7 @@ type RequestStatus = 'completed' | 'pending' | 'cancelled';
 
 interface RequestRow {
   id: string;
+  requestNumber?: string;
   itemName: string;
   status: RequestStatus;
   orderDate: string;
@@ -17,6 +18,7 @@ interface RequestRow {
   price: number;
   paymentMethod: string;
   typeLabel: string;
+  paymentRequest?: PaymentRequest;
 }
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
@@ -41,10 +43,19 @@ const contentTypeLabel = (type: string) => {
 export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+  const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
+
+  const loadRequests = async () => {
+    const response = await api.getPaymentRequests();
+    setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
+      ...request,
+      id: String(request.id),
+    })));
+  };
 
   useEffect(() => {
     let cancelled = false;
-    const loadRequests = async () => {
+    const run = async () => {
       try {
         const response = await api.getPaymentRequests();
         if (!cancelled) {
@@ -60,11 +71,32 @@ export const MyRequests: React.FC = () => {
       }
     };
 
-    void loadRequests();
+    void run();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const handleEditPendingRequest = async (request: PaymentRequest) => {
+    const transferReference = window.prompt('مرجع التحويل (اختياري)', request.transferReference || '') ?? '';
+    const receiptUrl = window.prompt('رابط الإيصال (اختياري)', request.receiptUrl || '') ?? '';
+    const notes = window.prompt('ملاحظات إضافية (اختياري)', request.notes || '') ?? '';
+
+    try {
+      setUpdatingRequestId(String(request.id));
+      await api.updateMyPaymentRequest(String(request.id), {
+        transferReference,
+        receiptUrl,
+        notes,
+      });
+      await loadRequests();
+      window.alert('تم تحديث الطلب بنجاح.');
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'تعذر تحديث الطلب الآن.');
+    } finally {
+      setUpdatingRequestId('');
+    }
+  };
 
   const rows = useMemo<RequestRow[]>(() => {
     const purchasedCourseIds = user.subscription?.purchasedCourses || [];
@@ -153,6 +185,7 @@ export const MyRequests: React.FC = () => {
 
     const paymentRows = paymentRequests.map((request) => ({
       id: `payreq_${request.id}`,
+      requestNumber: String(request.id || ''),
       itemName: request.itemName,
       status:
         request.status === 'approved'
@@ -170,6 +203,7 @@ export const MyRequests: React.FC = () => {
             ? 'طلب دفع بمحفظة إلكترونية'
             : 'طلب دفع بالبطاقة',
       typeLabel: 'طلب دفع',
+      paymentRequest: request,
     }));
 
     return [...paymentRows, ...sessionRows, ...packageRows, ...courseRows].sort(
@@ -224,6 +258,11 @@ export const MyRequests: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-1">{req.paymentMethod}</p>
+                {req.requestNumber ? (
+                  <p className="text-xs text-gray-400 mb-1">
+                    رقم الطلب: <span className="font-black text-gray-600">{req.requestNumber}</span>
+                  </p>
+                ) : null}
                 <div className="flex items-center gap-4 text-xs text-gray-400 flex-wrap">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} />
@@ -237,6 +276,16 @@ export const MyRequests: React.FC = () => {
                 <div className="text-lg font-black text-gray-800">
                   {req.price === 0 ? 'تم التفعيل' : `${req.price} ر.س`}
                 </div>
+                {req.paymentRequest && req.paymentRequest.status === 'pending' ? (
+                  <button
+                    type="button"
+                    disabled={updatingRequestId === String(req.paymentRequest.id)}
+                    onClick={() => void handleEditPendingRequest(req.paymentRequest as PaymentRequest)}
+                    className="mt-2 rounded-lg border border-indigo-200 px-3 py-1 text-xs font-black text-indigo-700 hover:bg-indigo-50 disabled:opacity-60"
+                  >
+                    {updatingRequestId === String(req.paymentRequest.id) ? 'جارٍ الحفظ...' : 'تعديل الطلب'}
+                  </button>
+                ) : null}
               </div>
             </Card>
           ))}
@@ -245,3 +294,4 @@ export const MyRequests: React.FC = () => {
     </div>
   );
 };
+
