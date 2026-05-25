@@ -49,6 +49,9 @@ assertAllIncludes("server/src/routes/auth.routes.ts", [
   "Cannot delete the last admin account.",
   "auth.admin_user.delete",
   "GroupModel.updateMany(",
+  "buildDocumentsQuery",
+  "role: \"student\"",
+  "nextPayload.linkedStudentIds = linkedStudents.map",
 ]);
 
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
@@ -76,6 +79,11 @@ assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "assignSupervisorToGroup(value, classroom.id)",
   "removeSupervisorFromGroup(currentUser.id, classroom.id)",
   "setActiveTab('relations')",
+  "setSelectedSchool((current) =>",
+]);
+
+assertAllIncludes("dashboards/admin/UsersManager.tsx", [
+  "overflow-visible",
 ]);
 
 assertAllIncludes("dashboards/admin/FinancialManager.tsx", [
