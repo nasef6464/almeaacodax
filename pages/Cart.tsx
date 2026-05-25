@@ -30,7 +30,7 @@ const Cart: React.FC = () => {
           <h1 className="text-xl font-black text-gray-900">سلة المشتريات فارغة</h1>
           <p className="mt-2 text-sm font-bold text-gray-500">أضف دورة أو باقة من صفحة الشراء أولاً.</p>
           <Link to="/pricing" className="mt-5 inline-flex rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700">
-            تصفح الباقات
+            تصفح العضويات
           </Link>
         </div>
       </div>

@@ -241,7 +241,7 @@ export const Header: React.FC = () => {
       });
     }
 
-    menu.push({ id: 'pricing', label: 'الباقات', link: '/pricing', iconName: 'gift' });
+    menu.push({ id: 'pricing', label: 'العضويات', link: '/pricing', iconName: 'gift' });
     menu.push({ id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' });
 
     return menu;

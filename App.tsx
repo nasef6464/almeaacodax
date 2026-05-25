@@ -286,7 +286,7 @@ const SeoRouteMeta: React.FC = () => {
           : isCourses
             ? 'دورات القدرات والتحصيلي | منصة المئة'
             : isPricing
-              ? 'باقات الاشتراك | منصة المئة'
+              ? 'عضويات المنصة | منصة المئة'
             : 'منصة المئة | قدرات وتحصيلي';
 
     const description = isPrivate
