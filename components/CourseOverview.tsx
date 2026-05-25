@@ -16,6 +16,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
+import { shareTextSummary } from '../utils/shareText';
 
 interface CourseOverviewProps {
     course: Course;
@@ -44,8 +45,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [replyingThreadId, setReplyingThreadId] = useState<string | null>(null);
     const [resolvingThreadId, setResolvingThreadId] = useState<string | null>(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
-    const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, libraryItems, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isSharing, setIsSharing] = useState(false);
+    const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
+    const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
     const matchedCoursePackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
     const canShowQuizInCourse = (quiz: (typeof quizzes)[number]) =>
@@ -187,19 +191,19 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 isLocked: !isEnrolled,
             }));
     }, [canShowQuizInCourse, course.pathId, course.subjectId, isEnrolled, quizzes, relatedTests]);
-    const relatedFiles = useMemo(() => {
-        const courseSkillIds = new Set(course.skills || []);
-
-        return libraryItems
-            .filter((item) => {
-                const sameSubject = item.subjectId && course.subjectId && item.subjectId === course.subjectId;
-                const samePath = item.pathId && course.pathId && item.pathId === course.pathId;
-                const hasSharedSkill = (item.skillIds || []).some((skillId) => courseSkillIds.has(skillId));
-
-                return Boolean(item.url && ((sameSubject && samePath) || hasSharedSkill));
-            })
-            .slice(0, 4);
-    }, [course.pathId, course.skills, course.subjectId, libraryItems]);
+    useEffect(() => {
+        const raw = localStorage.getItem(favoriteStorageKey);
+        if (!raw) {
+            setIsFavorite(false);
+            return;
+        }
+        try {
+            const ids = JSON.parse(raw) as string[];
+            setIsFavorite(Array.isArray(ids) && ids.includes(course.id));
+        } catch {
+            setIsFavorite(false);
+        }
+    }, [course.id, favoriteStorageKey]);
 
     const handleEnroll = () => {
         enrollCourse(course.id);
@@ -225,6 +229,30 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
         anchor.click();
+    };
+
+    const handleToggleFavorite = () => {
+        const raw = localStorage.getItem(favoriteStorageKey);
+        let ids: string[] = [];
+        try {
+            ids = raw ? JSON.parse(raw) : [];
+        } catch {
+            ids = [];
+        }
+        const nextIds = isFavorite ? ids.filter((id) => id !== course.id) : Array.from(new Set([...ids, course.id]));
+        localStorage.setItem(favoriteStorageKey, JSON.stringify(nextIds));
+        setIsFavorite(!isFavorite);
+    };
+
+    const handleShareCourse = async () => {
+        if (isSharing) return;
+        setIsSharing(true);
+        try {
+            const shareBody = `دورة: ${course.title}\n${window.location.href}`;
+            await shareTextSummary(`مشاركة دورة ${course.title}`, shareBody);
+        } finally {
+            setIsSharing(false);
+        }
     };
 
     const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
@@ -624,48 +652,12 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         ))}
                         {(!course.files || course.files.length === 0) && (
                             <div className="col-span-2 bg-gray-50 rounded-3xl border border-dashed border-gray-200 overflow-hidden">
-                                <div className="text-center py-10 px-4 border-b border-gray-100 bg-white">
+                                <div className="text-center py-10 px-4 bg-white">
                                     <FileText size={48} className="mx-auto text-gray-200 mb-4" />
                                     <p className="text-gray-700 font-bold mb-2">لا توجد ملفات مرفوعة مباشرة لهذه الدورة حاليًا</p>
                                     <p className="text-sm text-gray-500 max-w-md mx-auto">
-                                        هذه أقرب ملفات مراجعة من نفس المادة أو المهارات المرتبطة بالدورة.
+                                        لن تظهر ملفات بديلة من مواد أخرى حتى يتم رفع ملفات الدورة نفسها.
                                     </p>
-                                </div>
-
-                                <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {relatedFiles.length > 0 ? relatedFiles.map((file) => (
-                                        <div key={file.id} className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between group hover:bg-indigo-50 transition-colors">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-rose-500 shadow-sm">
-                                                    <FileText size={24} />
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">{file.title}</p>
-                                                    <p className="text-[10px] text-gray-400">{file.size}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => file.url && openExternalUrl(file.url)}
-                                                    disabled={!file.url}
-                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                                >
-                                                    <Eye size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => file.url && triggerFileDownload(file.url, file.title)}
-                                                    disabled={!file.url}
-                                                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                                >
-                                                    <Download size={18} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )) : (
-                                        <div className="col-span-2 text-center py-8 text-sm text-gray-500">
-                                            لا توجد ملفات بديلة من نفس المادة حاليًا.
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         )}
@@ -810,11 +802,18 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 )}
 
                                 <div className="flex flex-col sm:flex-row gap-4">
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 border border-gray-200 rounded-xl text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors">
-                                        <Heart size={14} /> المفضلة
+                                    <button
+                                        onClick={handleToggleFavorite}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2 border rounded-xl text-[10px] font-bold transition-colors ${isFavorite ? 'border-rose-200 bg-rose-50 text-rose-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                                    >
+                                        <Heart size={14} fill={isFavorite ? 'currentColor' : 'none'} /> {isFavorite ? 'في المفضلة' : 'المفضلة'}
                                     </button>
-                                    <button className="flex items-center justify-center gap-2 py-2 px-4 border border-gray-200 rounded-xl text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors w-full sm:w-auto">
-                                        <Share2 size={14} /> مشاركة
+                                    <button
+                                        onClick={handleShareCourse}
+                                        disabled={isSharing}
+                                        className="flex items-center justify-center gap-2 py-2 px-4 border border-gray-200 rounded-xl text-[10px] font-bold text-gray-600 hover:bg-gray-50 transition-colors w-full sm:w-auto disabled:opacity-60"
+                                    >
+                                        <Share2 size={14} /> {isSharing ? 'جارٍ المشاركة...' : 'مشاركة'}
                                     </button>
                                 </div>
                             </div>
