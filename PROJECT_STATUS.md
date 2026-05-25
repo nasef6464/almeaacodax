@@ -2662,3 +2662,14 @@ pm run smoke:frontend:strict (26/26)
   - admin JWT was treated as session-only smoke secret; rotate/revoke after batch closure.
 - Next exact task:
   1. continue next owner batch immediately on command اكمل.
+
+## Plan Addendum 2026-05-25 - Memberships vs Learning Packages Separation
+- Clarification added for next batch planning:
+  - items shown in `/pricing` are **platform memberships** (global purchase scope), not the same entity as learning-area path packages.
+  - learning-area packages under the Learning Arena remain a separate scope and must keep their current unlock contracts.
+- Admin management location (current implementation):
+  - global memberships and package/path relations are managed in admin paths manager flow (`dashboards/admin/PathsManager.tsx`) under package management context.
+- Mandatory verification in next batch:
+  - verify admin CRUD for global memberships separately from learning packages.
+  - verify `/pricing` renders memberships only and checkout maps to membership scope.
+  - verify Learning Arena package tab continues to operate independently without regression.

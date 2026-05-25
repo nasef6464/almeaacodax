@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-type Plan = {
+type MembershipPlan = {
   id: 'free' | 'basic' | 'premium';
   name: string;
   price: string;
@@ -12,10 +12,10 @@ type Plan = {
   ctaLink: string;
 };
 
-const plans: Plan[] = [
+const membershipPlans: MembershipPlan[] = [
   {
     id: 'free',
-    name: 'مجاني',
+    name: 'عضوية مجانية',
     price: '0 ر.س',
     period: 'مدى الحياة',
     features: [
@@ -28,29 +28,29 @@ const plans: Plan[] = [
   },
   {
     id: 'basic',
-    name: 'أساسي',
+    name: 'عضوية أساسية',
     price: '49 ر.س',
     period: 'شهريًا',
     features: [
       'فتح الدورات الأساسية الكاملة',
-      'تدريبات واختبارات أكثر',
+      'تدريبات واختبارات إضافية',
       'تحليل أداء أسبوعي',
     ],
-    cta: 'اشترك في الأساسي',
+    cta: 'اشترك في الأساسية',
     ctaLink: '/courses',
   },
   {
     id: 'premium',
-    name: 'متميز',
+    name: 'عضوية مميزة',
     price: '99 ر.س',
     period: 'شهريًا',
     highlight: true,
     features: [
       'كل محتوى المنصة بدون قيود',
       'اختبارات محاكية متقدمة',
-      'شهادات + تحليلات ذكية كاملة',
+      'شهادات وتحليلات ذكية كاملة',
     ],
-    cta: 'اشترك في المتميز',
+    cta: 'اشترك في المميزة',
     ctaLink: '/courses',
   },
 ];
@@ -60,14 +60,14 @@ const Pricing: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
-          <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">خطط الاشتراك</h1>
+          <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات المنصة</h1>
           <p className="mt-3 text-sm text-gray-600 sm:text-base">
-            اختر الخطة المناسبة لك وابدأ رحلة تعليمية أقوى في منصة المئة.
+            اختر العضوية المناسبة لك وابدأ رحلة تعليمية أقوى في منصة المئوية.
           </p>
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {plans.map((plan) => (
+          {membershipPlans.map((plan) => (
             <div
               key={plan.id}
               className={`rounded-3xl border p-6 shadow-sm transition-all ${
@@ -109,7 +109,7 @@ const Pricing: React.FC = () => {
         </div>
 
         <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
-          الدفع والاشتراكات الفعلية تُفعّل عند ربط بوابة الدفع رسميًا. حاليًا هذه الصفحة توضح الباقات التجارية المعتمدة.
+          هذه الصفحة خاصة بعضويات المنصة العامة. باقات ساحة التعلم تُدار بشكل مستقل داخل المسارات وساحة التعلم.
         </div>
       </div>
     </div>
@@ -117,4 +117,3 @@ const Pricing: React.FC = () => {
 };
 
 export default Pricing;
-

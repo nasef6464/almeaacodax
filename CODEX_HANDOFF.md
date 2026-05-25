@@ -1196,3 +1196,16 @@ Blockers:
 Next exact task:
 1. Continue with next owner-directed batch immediately on command ????.
 2. Rotate/revoke temporary JWT secret used in this batch.
+
+## Plan Addendum 2026-05-25 - Pricing Memberships vs Learning Packages
+
+Summary:
+- Pricing page entries are treated as platform memberships (global scope), not the same entity as Learning Arena packages.
+
+Admin management location:
+- Current management flow is in `dashboards/admin/PathsManager.tsx` (packages/memberships context, including global membership handling).
+
+Mandatory checks in next batch:
+1. Verify membership CRUD in admin as a separate scope.
+2. Verify `/pricing` checkout maps to membership scope.
+3. Verify Learning Arena package flows remain separate and regression-free.

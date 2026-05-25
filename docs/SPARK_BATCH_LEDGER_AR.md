@@ -2337,3 +2337,11 @@
   - smoke:frontend:strict (26/26)
 - Continuity note:
   - default redeemed smoke account remains disabled; keep student.a@almeaa.local fallback or dedicated redeemed token for future operational runs.
+
+## Addendum 2026-05-25 - Pricing Memberships Scope Clarification
+- Clarification recorded for next execution batch:
+  - `/pricing` artifacts are platform memberships and must be handled as a separate business scope from Learning Arena packages.
+- Admin management pointer:
+  - memberships/package-path handling exists in `dashboards/admin/PathsManager.tsx`.
+- Next-batch verification requirement:
+  - validate memberships management and checkout scope independently, while preserving Learning Arena package contracts with no regression.
