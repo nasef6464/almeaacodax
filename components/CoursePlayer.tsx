@@ -64,6 +64,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   const [discussionPosting, setDiscussionPosting] = useState(false);
   const [discussionError, setDiscussionError] = useState('');
   const [discussionDraft, setDiscussionDraft] = useState('');
+  const [actionFeedback, setActionFeedback] = useState('');
 
   const flattenedLessons = useMemo(() => course.modules?.flatMap((module) => module.lessons) || [], [course.modules]);
   const totalLessons = flattenedLessons.length || 1;
@@ -161,7 +162,12 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
       setDiscussionLoading(true);
       setDiscussionError('');
       try {
-        const payload = await api.getDiscussions('lesson', activeLesson.id);
+        let payload: any;
+        try {
+          payload = await api.getDiscussions('lesson', activeLesson.id);
+        } catch {
+          payload = await api.getDiscussions('course', course.id);
+        }
         if (!mounted) return;
         setDiscussionThreads(Array.isArray(payload?.threads) ? payload.threads : []);
       } catch {
@@ -175,7 +181,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     return () => {
       mounted = false;
     };
-  }, [activeLesson?.id, activeTab]);
+  }, [activeLesson?.id, activeTab, course.id]);
 
   const handleMarkComplete = () => {
     if (activeLesson) {
@@ -255,6 +261,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     const nextIds = isFavorite ? ids.filter((id) => id !== course.id) : Array.from(new Set([...ids, course.id]));
     localStorage.setItem(favoriteStorageKey, JSON.stringify(nextIds));
     setIsFavorite(!isFavorite);
+    setActionFeedback(isFavorite ? 'تمت إزالة الدورة من المفضلة.' : 'تمت إضافة الدورة إلى المفضلة.');
   };
 
   const handleShareCourse = async () => {
@@ -263,6 +270,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     try {
       const shareBody = `دورة: ${course.title}\nالدرس: ${activeLesson?.title || ''}\n${window.location.href}`;
       await shareTextSummary(`مشاركة دورة ${course.title}`, shareBody);
+      setActionFeedback('تم تجهيز المشاركة.');
     } finally {
       setIsSharing(false);
     }
@@ -274,10 +282,18 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     setDiscussionPosting(true);
     setDiscussionError('');
     try {
-      const created = await api.createDiscussion('lesson', activeLesson.id, {
-        title: body.length > 80 ? `${body.slice(0, 77)}...` : body,
-        body,
-      });
+      let created: any;
+      try {
+        created = await api.createDiscussion('lesson', activeLesson.id, {
+          title: body.length > 80 ? `${body.slice(0, 77)}...` : body,
+          body,
+        });
+      } catch {
+        created = await api.createDiscussion('course', course.id, {
+          title: body.length > 80 ? `${body.slice(0, 77)}...` : body,
+          body,
+        });
+      }
       setDiscussionThreads((prev) => [created, ...prev]);
       setDiscussionDraft('');
     } catch {
@@ -449,6 +465,11 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 </div>
 
                 <div className="pt-8">
+                  {actionFeedback ? (
+                    <div className={`mb-4 rounded-xl border px-3 py-2 text-xs font-bold ${isDarkMode ? 'border-emerald-700/40 bg-emerald-900/30 text-emerald-200' : 'border-emerald-100 bg-emerald-50 text-emerald-700'}`}>
+                      {actionFeedback}
+                    </div>
+                  ) : null}
                   <div className={`flex overflow-x-auto border-b ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} mb-8`}>
                     <button
                       onClick={() => setActiveTab('description')}
