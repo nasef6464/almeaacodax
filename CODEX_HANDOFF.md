@@ -1137,3 +1137,36 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   2. commit/push explicit files,
   3. trigger Render deploy and verify production commit-match via strict smoke,
   4. close BATCH 151 in all handover/status docs.
+
+## Session Update 2026-05-25 - BATCH 157 Continuous Runtime Gate + Publish Verify
+
+Summary:
+- Continued from post-BATCH-156 baseline and executed full verification gate.
+- Fixed one strict payment contract mismatch with smallest safe change, then completed publish verification.
+
+What was done:
+- Baseline anchored from latest state; local pre-run HEAD was 8ab1a42.
+- Gate executed:
+  - PASS: 	ypecheck, uild, server:check, server:build, smoke:health-readiness, smoke:batch136-admin-users-schools-parent-payment, smoke:payment-package.
+  - First strict run failed on expected production commit mismatch before deploy.
+  - smoke:real-usage-readiness initially failed on package-bundle unlock guard string contract.
+- Safe fix applied:
+  - server/src/routes/payment.routes.ts
+  - kept package-only included-course derivation and aligned with both strict real-usage and tampering contract checks.
+- Revalidation after fix:
+  - PASS: smoke:real-usage-readiness, smoke:payment-tampering, server:build.
+- Git/publish:
+  - commit: b9f161 pushed to main.
+  - Vercel CLI deploy command returned invalid token in this shell (external credential blocker).
+  - Render deploy triggered via API on srv-d7qtcr9o3t8c73cs32sg, deploy dep-d8a208aiu9rc73dhsqeg reached live.
+- Post-publish checks:
+  - PASS: smoke:health-readiness
+  - PASS: smoke:frontend:strict (26/26, production commit match b9f161).
+
+Blockers:
+- smoke:operational still requires admin auth env context.
+- Local Vercel CLI token invalid; frontend production still updated through Git integration and verified by strict smoke.
+
+Next exact task:
+1. Keep same closure protocol for next batch on owner command ????.
+2. Optional hygiene: refresh local VERCEL_TOKEN to restore CLI deploy parity in this shell.

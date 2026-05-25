@@ -3282,3 +3282,40 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
 - Verification:
   - `npm run server:build` PASS
   - `npm run smoke:real-usage-readiness` PASS
+
+## BATCH 157 Handover - 2026-05-25
+- Closed:
+  - Executed full runtime gate after BATCH 156 baseline.
+  - Applied one minimal safe server-side fix in payment access derivation contract.
+- Commit pushed:
+  - b9f161 on main.
+- Verification PASS:
+  - 
+pm run typecheck
+  - 
+pm run build
+  - 
+pm run server:check
+  - 
+pm run server:build
+  - 
+pm run smoke:health-readiness
+  - 
+pm run smoke:real-usage-readiness
+  - 
+pm run smoke:batch136-admin-users-schools-parent-payment
+  - 
+pm run smoke:payment-package
+  - 
+pm run smoke:payment-tampering
+  - 
+pm run smoke:frontend:strict (26/26, production commit match b9f161).
+- External blocker noted:
+  - 
+pm run smoke:operational still needs admin auth context env.
+- Deploy summary:
+  - Render deploy trigger succeeded on srv-d7qtcr9o3t8c73cs32sg with deploy id dep-d8a208aiu9rc73dhsqeg (live).
+  - Vercel CLI token is invalid in this local shell, but production frontend is already serving latest commit via integration.
+- Next exact action:
+  1. (Optional) refresh local VERCEL_TOKEN for CLI parity.
+  2. on owner command ????, start next batch directly with same closure protocol.

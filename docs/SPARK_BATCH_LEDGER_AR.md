@@ -2294,3 +2294,29 @@
 - Handover-ready data/linkage context:
   - payment access grant is server-owned from approved request fields (not client payload),
   - parent-student and school relationships remain guarded by prior batch contracts (`smoke:batch136-admin-users-schools-parent-payment`).
+
+## Update BATCH 157 - 2026-05-25
+- Title: Continuous Runtime Gate + Publish Verify.
+- Status: Fully closed.
+- Baseline: continued after BATCH 156 closure from local commit 8ab1a42.
+- Gate PASS:
+  - 	ypecheck, uild, server:check, server:build
+  - smoke:health-readiness
+  - smoke:real-usage-readiness
+  - smoke:batch136-admin-users-schools-parent-payment
+  - smoke:payment-package
+  - smoke:payment-tampering
+- External blocker observed:
+  - smoke:operational requires admin auth env (SMOKE_ADMIN_TOKEN or admin credentials pair).
+- Fix delivered:
+  - server/src/routes/payment.routes.ts updated to preserve package-only access scope and satisfy strict readiness/tampering guard contracts.
+- Publish state:
+  - GitHub push PASS on main with commit b9f161.
+  - Vercel CLI deploy command failed in this shell due to invalid token (external credential issue).
+  - Strict smoke confirms production frontend is serving commit b9f161.
+  - Render deploy API trigger PASS on active service srv-d7qtcr9o3t8c73cs32sg, deploy dep-d8a208aiu9rc73dhsqeg reached live.
+- Post-publish PASS:
+  - smoke:health-readiness
+  - smoke:frontend:strict (26/26, commit match b9f161).
+- Next exact task:
+  - continue next owner batch immediately on اكمل; keep explicit staging only and preserve package/payment scope contracts.
