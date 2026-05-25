@@ -665,11 +665,14 @@ authRouter.patch(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = adminUpdateUserSchema.parse(req.body);
-    const updated = await UserModel.findByIdAndUpdate(
-      req.params.id,
-      payload,
-      { new: true },
-    );
+    const targetId = String(req.params.id || "").trim();
+    if (!targetId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "User id is required",
+      });
+    }
+
+    const updated = await UserModel.findOneAndUpdate(buildDocumentQuery(targetId), payload, { new: true });
 
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -698,7 +701,14 @@ authRouter.get(
   "/me",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const user = await UserModel.findById(req.authUser?.id);
+    const authId = String(req.authUser?.id || "").trim();
+    if (!authId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Authentication required",
+      });
+    }
+
+    const user = await UserModel.findOne(buildDocumentQuery(authId));
 
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -732,7 +742,14 @@ authRouter.patch(
       });
     }
 
-    const user = await UserModel.findByIdAndUpdate(req.authUser?.id, update, { new: true });
+    const authId = String(req.authUser?.id || "").trim();
+    if (!authId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Authentication required",
+      });
+    }
+
+    const user = await UserModel.findOneAndUpdate(buildDocumentQuery(authId), update, { new: true });
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "User not found",
@@ -759,7 +776,7 @@ authRouter.delete(
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "You cannot delete your current account." });
     }
 
-    const target = await UserModel.findById(targetId);
+    const target = await UserModel.findOne(buildDocumentQuery(targetId));
     if (!target) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
@@ -781,7 +798,7 @@ authRouter.delete(
       ),
     ]);
 
-    await UserModel.findByIdAndDelete(target._id);
+    await UserModel.findOneAndDelete(buildDocumentQuery(targetUserId));
 
     await recordAdminAuditLog(req, {
       action: "auth.admin_user.delete",
