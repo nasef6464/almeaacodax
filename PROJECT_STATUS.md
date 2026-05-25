@@ -2525,3 +2525,20 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - External blocker:
   - `npm run smoke:operational` still needs admin auth env/token:
     - `SMOKE_ADMIN_TOKEN` OR (`SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`).
+
+## Final Closure 2026-05-25 - BATCH 149.11
+- Batch: `BATCH_149_RUNTIME_OPERATIONAL_CLOSURE_AND_RENDER_VERIFY_2026-05-25_AR`.
+- Status: `Operational runtime closure achieved`.
+- Runtime operational smoke:
+  - `npm run smoke:operational` PASS (`71/71`) on production API after setting:
+    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+    - `SMOKE_ADMIN_TOKEN=<valid>`
+    - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local` (fallback because default redeemed smoke account is disabled in production).
+- Deployment:
+  - Render deploy trigger PASS on active service `srv-d7qtcr9o3t8c73cs32sg`:
+    - deploy id: `dep-d8a0o1navr4c73d23qlg` -> status `live` on commit `fceeac3`.
+- Post-deploy verification PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`

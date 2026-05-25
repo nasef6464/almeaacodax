@@ -3200,6 +3200,26 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   1. export admin smoke auth env.
   2. run `npm run smoke:operational`.
   3. if PASS, continue publish cycle + post-deploy strict/health verify evidence.
+
+## BATCH 149.11 Handover - 2026-05-25
+- Closed:
+  - `smoke:operational` is now PASS (`71/71`) on production API.
+  - Render deploy trigger executed on active service and reached `live`.
+- Runtime env used for operational smoke:
+  - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
+  - `SMOKE_ADMIN_TOKEN=<valid>`
+  - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
+  - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Why override redeemed account:
+  - default `student.d@almeaa.local` is disabled in production (403), so operational smoke redeemed leg must use an active fallback identity or dedicated redeemed token.
+- Deploy verification:
+  - Render service: `srv-d7qtcr9o3t8c73cs32sg`
+  - deploy id: `dep-d8a0o1navr4c73d23qlg` (`live`)
+- Post-deploy checks:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS
+  - `smoke:real-usage-readiness` PASS
 - Next exact action:
   - run `smoke:operational` with admin auth env, then do production deploy cycle and attach runtime evidence snapshots.
 

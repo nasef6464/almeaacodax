@@ -1057,3 +1057,22 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   1. inject admin smoke auth env,
   2. run `smoke:operational`,
   3. continue publish/post-deploy verify cycle.
+
+### Incremental Runtime Closure Update (BATCH 149.11 - 2026-05-25)
+- Completed:
+  - executed operational runtime smoke against production API and achieved full PASS (`71/71`).
+  - triggered Render deploy on active service id and confirmed deploy reached `live`.
+- Commands + results:
+  - `npm run smoke:operational` -> PASS with explicit env context.
+  - `npm run smoke:health-readiness` -> PASS.
+  - `npm run smoke:frontend:strict` -> PASS.
+  - `npm run smoke:real-usage-readiness` -> PASS.
+  - Render trigger API -> `dep-d8a0o1navr4c73d23qlg` (`live`) for commit `fceeac3`.
+- Operational smoke context note:
+  - default redeemed smoke identity (`student.d@almeaa.local`) is disabled in production.
+  - fallback run used:
+    - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+- Vercel note:
+  - `vercel --prod` CLI encountered local transport error (`ECONNREFUSED 127.0.0.1:9`) in this environment.
+  - strict frontend smoke remained PASS on public production URL after push, so frontend runtime stayed healthy.

@@ -2245,3 +2245,18 @@
 - Remaining external blocker:
   - `npm run smoke:operational` requires admin auth env:
     - `SMOKE_ADMIN_TOKEN` or (`SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`).
+
+## Update BATCH 149.11 - 2026-05-25
+- Title: Runtime Operational Closure + Render Verify.
+- Status: Fully closed.
+- Operational smoke:
+  - `npm run smoke:operational` PASS (`71/71`) against production API using explicit smoke env.
+  - note: default redeemed smoke account is disabled in production; fallback run used active student account override for redeemed track.
+- Deploy:
+  - Render trigger PASS on `srv-d7qtcr9o3t8c73cs32sg`
+  - deploy id: `dep-d8a0o1navr4c73d23qlg` -> `live`
+  - commit: `fceeac3`
+- Post-verify PASS:
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:real-usage-readiness`
