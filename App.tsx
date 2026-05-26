@@ -49,6 +49,7 @@ const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
 const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
 const Pricing = React.lazy(() => import('./pages/Pricing'));
 const Cart = React.lazy(() => import('./pages/Cart'));
+const MyRequests = React.lazy(() => import('./pages/MyRequests').then(module => ({ default: module.MyRequests })));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -85,6 +86,7 @@ const DATA_BOOTSTRAP_START_PREFIXES = [
   '/quizzes',
   '/mock-exams',
   '/my-quizzes',
+  '/my-requests',
   '/reports',
   '/favorites',
   '/plan',
@@ -844,6 +846,7 @@ const App: React.FC = () => {
                   <Route path="/quizzes" element={<Quizzes />} />
                   <Route path="/mock-exams" element={<MockExams />} />
                   <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
+                  <Route path="/my-requests" element={<MyRequests />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/favorites" element={<Favorites />} />
                   <Route path="/plan" element={<Plan />} />

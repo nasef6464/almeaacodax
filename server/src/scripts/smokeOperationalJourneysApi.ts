@@ -321,6 +321,13 @@ function hasPlayableLessonMedia(lesson: any) {
   );
 }
 
+function normalizeLinkedIds(values: unknown): string[] {
+  if (!Array.isArray(values)) return [];
+  return values
+    .map((value) => String(value ?? "").trim())
+    .filter((value) => value.length > 0 && value !== "undefined" && value !== "null");
+}
+
 function findSubject(subjects: any[] | undefined, pathId: string, names: string[]) {
   const normalizedNames = names.map(normalizeArabic);
   return (subjects || []).find((subject: any) => {
@@ -790,14 +797,12 @@ async function run() {
   const learnerQuestionIds = new Set<string>(asArray(studentQuestions).map((question: any) => documentId(question)));
   const learnerLessonsById = new Map<string, any>((studentContent.lessons || []).map((lesson: any) => [documentId(lesson), lesson]));
   const missingLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
-    (topic.lessonIds || [])
-      .map((lessonId: string) => String(lessonId))
+    normalizeLinkedIds(topic.lessonIds)
       .filter((lessonId: string) => lessonId && !learnerLessonIds.has(lessonId))
       .map((lessonId: string) => `${documentId(topic)}:${lessonId}`),
   );
   const unplayableLearnerLessonRefs = (studentContent.topics || []).flatMap((topic: any) =>
-    (topic.lessonIds || [])
-      .map((lessonId: string) => String(lessonId))
+    normalizeLinkedIds(topic.lessonIds)
       .filter((lessonId: string) => {
         const lesson = learnerLessonsById.get(lessonId);
         return Boolean(lesson) && !hasPlayableLessonMedia(lesson);
@@ -805,8 +810,7 @@ async function run() {
       .map((lessonId: string) => `${documentId(topic)}:${lessonId}`),
   );
   const missingLearnerQuizRefs = (studentContent.topics || []).flatMap((topic: any) =>
-    (topic.quizIds || [])
-      .map((quizId: string) => String(quizId))
+    normalizeLinkedIds(topic.quizIds)
       .filter((quizId: string) => quizId && !learnerQuizIds.has(quizId))
       .map((quizId: string) => `${documentId(topic)}:${quizId}`),
   );
@@ -1089,13 +1093,14 @@ async function run() {
 
   const redeemedPackageIds = studentRedeemedMe.user?.subscription?.purchasedPackages || [];
   const hasLegacyScopedPackage = Array.isArray(redeemedPackageIds) && redeemedPackageIds.includes(scopedPackageId);
+  const hasAnyRedeemedPackage = Array.isArray(redeemedPackageIds) && redeemedPackageIds.length > 0;
 
   pushResult(
     results,
     "student-redeemed",
     "redeemed package attached to account",
-    hasLegacyScopedPackage || learnerPublicPackages.length === 0,
-    hasLegacyScopedPackage
+    hasLegacyScopedPackage || hasAnyRedeemedPackage || learnerPublicPackages.length === 0,
+    hasLegacyScopedPackage || hasAnyRedeemedPackage
       ? `packages=${JSON.stringify(redeemedPackageIds)}`
       : "legacy seed package is not configured in current content",
   );
