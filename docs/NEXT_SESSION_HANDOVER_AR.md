@@ -3541,3 +3541,11 @@ pm run smoke:operational PASS (71/71).
 - Next exact task:
   1. When Render credentials are available in env, trigger service `srv-d7qtcr9o3t8c73cs32sg`.
   2. Re-run `smoke:health-readiness` + `smoke:frontend:strict` and record deploy id.
+
+## BATCH 167 Handover - 2026-05-26
+- تم إصلاح مسار العضويات العامة في `/pricing` بحيث لا يذهب المستخدم إلى `/courses` عند طلب العضوية المدفوعة.
+- تم توضيح مكان إدارة العضويات العامة للمدير داخل إدارة المسارات/الباقات الشاملة.
+- تم إضافة `smoke:membership-pricing` لحماية هذا السلوك.
+- PASS: `typecheck`, `build`, `server:check`, `server:build`, `smoke:membership-pricing`, `smoke:real-usage-readiness`, `smoke:payment-package`, `smoke:health-readiness`, `smoke:frontend:strict`, `smoke:operational` (71/71 production API).
+- الدليل البصري المحلي عبر Browser: صفحة العضويات تعرض النص الصحيح ولا تحتوي رابط `/courses` في CTA المدفوع.
+- التالي بدقة: commit/push ثم تحقق إنتاجي بعد نشر Vercel، ثم فحص admin بصري بعد تحديث الإنتاج.

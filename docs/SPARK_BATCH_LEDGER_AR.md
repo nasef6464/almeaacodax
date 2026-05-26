@@ -2482,3 +2482,21 @@
     - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
 - Runtime note:
   - localhost operational smoke can be distorted by local admin bypass; final closure must use production API context for role-accurate results.
+
+## Update BATCH 167 - 2026-05-26
+- Title: Membership Visual Audit + Scope Fix.
+- Status: Implementation and local visual verification completed; production publish closure pending.
+- Fix:
+  - `/pricing` paid membership CTA no longer routes to `/courses`.
+  - Admin paths manager labels now clearly expose global membership management.
+  - Added `smoke:membership-pricing` contract.
+- PASS:
+  - `typecheck`, `build`, `server:check`, `server:build`
+  - `smoke:membership-pricing`
+  - `smoke:real-usage-readiness`
+  - `smoke:payment-package`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:operational` (71/71 on production API).
+- Visual:
+  - in-app Browser confirmed local `/pricing` CTA no longer points to courses and paid CTA resolves to WhatsApp membership request.

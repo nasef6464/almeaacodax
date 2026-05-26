@@ -1309,9 +1309,9 @@ export const PathsManager: React.FC = () => {
                       <Package size={32} />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2">إدارة الباقات والعروض العامة</h3>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-2">إدارة العضويات العامة وباقات المسارات</h3>
                       <p className="text-gray-500 max-w-2xl leading-7">
-                        هذه الباقات تظهر للطالب المستقل داخل صفحة المسار بجانب المواد عند تفعيلها. باقات المدارس منفصلة وتدار من المدارس/المالية ولا تظهر هنا كعرض شراء عام.
+                        هنا تدار عضويات المنصة العامة وباقات المسارات للطلاب المستقلين. لا تخلط هذه الإدارة مع باقات المدارس/السناتر؛ ولإنشاء عضوية عامة فعّل خيار "عضوية عامة تفتح كل المنصة" داخل نموذج الإنشاء.
                       </p>
                     </div>
                   </div>
@@ -1320,14 +1320,14 @@ export const PathsManager: React.FC = () => {
                     className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors inline-flex items-center gap-2 justify-center"
                   >
                     <Plus size={18} />
-                    إنشاء باقة جديدة
+                    إنشاء عضوية/باقة
                   </button>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
-                  <div className="text-sm font-bold text-amber-700">إجمالي الباقات</div>
+                  <div className="text-sm font-bold text-amber-700">إجمالي العضويات والباقات</div>
                   <div className="mt-2 text-3xl font-black text-amber-700">{pathPackages.length}</div>
                 </div>
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
@@ -1349,14 +1349,14 @@ export const PathsManager: React.FC = () => {
                   <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Package size={40} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">لا توجد باقات لهذا المسار بعد</h3>
-                  <p className="text-gray-500 max-w-md mx-auto mb-6">ابدأ بإنشاء باقة عامة تظهر للطلاب المستقلين داخل صفحة المسار عند تفعيلها.</p>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">لا توجد عضويات أو باقات لهذا المسار بعد</h3>
+                  <p className="text-gray-500 max-w-md mx-auto mb-6">ابدأ بإنشاء عضوية عامة للمنصة أو باقة مسار تظهر للطلاب المستقلين عند تفعيلها.</p>
                   <button
                     onClick={() => openPackageModal()}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors inline-flex items-center gap-2"
                   >
                     <Plus size={18} />
-                    إنشاء أول باقة
+                    إنشاء أول عضوية/باقة
                   </button>
                 </div>
               ) : (
@@ -1754,8 +1754,8 @@ export const PathsManager: React.FC = () => {
             <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
                 <div>
-                  <h3 className="font-bold text-lg text-gray-800">{editingPackage ? 'تعديل باقة عامة' : 'إنشاء باقة عامة جديدة'}</h3>
-                  <p className="text-xs text-gray-500 mt-1">هذه الباقة تخص المسار الحالي وتظهر للطلاب المستقلين فقط عند تفعيل الظهور.</p>
+                  <h3 className="font-bold text-lg text-gray-800">{editingPackage ? 'تعديل عضوية أو باقة عامة' : 'إنشاء عضوية أو باقة عامة'}</h3>
+                  <p className="text-xs text-gray-500 mt-1">استخدم هذا النموذج لباقات المسار، أو فعّل خيار "عضوية عامة تفتح كل المنصة" لإنشاء عضوية عامة منفصلة عن باقات التعلم.</p>
                 </div>
                 <button
                   onClick={() => {
@@ -1769,7 +1769,7 @@ export const PathsManager: React.FC = () => {
               </div>
               <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">اسم الباقة</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">اسم العضوية/الباقة</label>
                   <input
                     type="text"
                     value={packageTitle}
@@ -1784,7 +1784,7 @@ export const PathsManager: React.FC = () => {
                     value={packageDescription}
                     onChange={(e) => setPackageDescription(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none min-h-[90px]"
-                    placeholder="اكتب وصفًا واضحًا لما تحتويه الباقة."
+                    placeholder="اكتب وصفًا واضحًا لما تحتويه العضوية أو الباقة."
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1810,7 +1810,7 @@ export const PathsManager: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">رابط صورة الباقة</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">رابط صورة العضوية/الباقة</label>
                     <input
                       type="url"
                       value={packageThumbnail}
@@ -1821,7 +1821,7 @@ export const PathsManager: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">نطاق الباقة داخل المسار</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">نطاق العضوية/الباقة</label>
                   <select
                     value={packageSubjectId}
                     onChange={(e) => setPackageSubjectId(e.target.value)}
@@ -1858,7 +1858,7 @@ export const PathsManager: React.FC = () => {
                   </span>
                 </label>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">مزايا الباقة</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">مزايا العضوية/الباقة</label>
                   <textarea
                     value={packageFeaturesText}
                     onChange={(e) => setPackageFeaturesText(e.target.value)}
@@ -1956,7 +1956,7 @@ export const PathsManager: React.FC = () => {
                   onClick={handleSavePathPackage}
                   className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors"
                 >
-                  {editingPackage ? 'حفظ التعديلات' : 'إنشاء الباقة'}
+                  {editingPackage ? 'حفظ التعديلات' : 'إنشاء العضوية/الباقة'}
                 </button>
               </div>
             </div>

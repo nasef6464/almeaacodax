@@ -2867,3 +2867,38 @@ pm run smoke:frontend:strict (26/26)
     - redeemed fallback `student.a@almeaa.local`
 - Root-cause note:
   - localhost smoke can be misleading under `DEV_LOCAL_ADMIN_BYPASS`; production API context is mandatory for role-accurate operational closure.
+
+## Final Closure Pending 2026-05-26 - BATCH 167
+- Batch: `BATCH_167_MEMBERSHIP_VISUAL_AUDIT_AND_SCOPE_FIX_2026-05-26_AR`.
+- Status: `Implementation + local visual verification + runtime gate PASS; production push/deploy closure pending`.
+- Focus:
+  - عمليًا فحصنا مشكلة `/pricing`: العضويات كانت تقود إلى `/courses` وتخلط عضويات المنصة مع باقات ساحة التعلم.
+  - تم فصل سلوك العضويات العامة عن باقات التعلم، وتوضيح مكان إدارتها في لوحة المدير.
+- Fixes:
+  - `pages/Pricing.tsx`: أزرار العضويات المدفوعة أصبحت طلب عضوية عام عبر WhatsApp بدل `/courses`، والعضوية المجانية تذهب لمسار الحساب.
+  - `dashboards/admin/PathsManager.tsx`: توضيح أن القسم يدير `إدارة العضويات العامة وباقات المسارات` مع خيار `عضوية عامة تفتح كل المنصة`.
+  - `scripts/smoke-membership-pricing-contract.mjs` + `package.json`: smoke جديد يمنع رجوع الخلط بين العضويات والكورسات.
+- Visual evidence:
+  - in-app Browser confirmed local preview `/pricing` shows membership wording and no `/courses` CTA.
+  - clicking paid membership CTA keeps current page and resolves to WhatsApp membership request URL.
+  - guest direct admin dashboard attempt redirects away, confirming protected admin access.
+- Verification PASS:
+  - `npm run smoke:membership-pricing`
+  - `npm run typecheck`
+  - `npm run build`
+  - `npm run server:check`
+  - `npm run server:build`
+  - `npm run smoke:real-usage-readiness`
+  - `npm run smoke:payment-package`
+  - `npm run smoke:health-readiness`
+  - `npm run smoke:frontend:strict`
+  - `npm run smoke:operational` on production API => `71/71`.
+- Notes:
+  - build/server build initially hit local `EPERM` restrictions and passed after elevated rerun.
+  - first operational run on localhost was discarded as invalid closure evidence; accepted run used production API context.
+- Report:
+  - `BATCH_167_MEMBERSHIP_VISUAL_AUDIT_AND_SCOPE_FIX_2026-05-26_AR.md`.
+- Next exact task:
+  1. Commit/push explicit changed files only.
+  2. Verify production commit-match after Vercel update.
+  3. Run logged-in admin visual check on production membership management labels.

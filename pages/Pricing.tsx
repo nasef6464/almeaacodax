@@ -1,5 +1,7 @@
 import React from 'react';
+import { ExternalLink, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useStore } from '../store/useStore';
 
 type MembershipPlan = {
   id: 'free' | 'basic' | 'premium';
@@ -9,8 +11,10 @@ type MembershipPlan = {
   highlight?: boolean;
   features: string[];
   cta: string;
-  ctaLink: string;
+  action: 'internal' | 'whatsapp';
 };
+
+const WHATSAPP_PHONE = '00966508438250';
 
 const membershipPlans: MembershipPlan[] = [
   {
@@ -24,7 +28,7 @@ const membershipPlans: MembershipPlan[] = [
       'لوحة طالب أساسية',
     ],
     cta: 'ابدأ الآن',
-    ctaLink: '/courses',
+    action: 'internal',
   },
   {
     id: 'basic',
@@ -36,8 +40,8 @@ const membershipPlans: MembershipPlan[] = [
       'تدريبات واختبارات إضافية',
       'تحليل أداء أسبوعي',
     ],
-    cta: 'اشترك في الأساسية',
-    ctaLink: '/courses',
+    cta: 'اطلب العضوية الأساسية',
+    action: 'whatsapp',
   },
   {
     id: 'premium',
@@ -50,19 +54,37 @@ const membershipPlans: MembershipPlan[] = [
       'اختبارات محاكية متقدمة',
       'شهادات وتحليلات ذكية كاملة',
     ],
-    cta: 'اشترك في المميزة',
-    ctaLink: '/courses',
+    cta: 'اطلب العضوية المميزة',
+    action: 'whatsapp',
   },
 ];
 
+const buildMembershipRequestUrl = (plan: MembershipPlan) => {
+  const message = [
+    'مرحبًا، أريد الاشتراك في عضوية منصة المئة.',
+    `العضوية: ${plan.name}`,
+    `السعر: ${plan.price} / ${plan.period}`,
+    'هذه عضوية عامة للمنصة وليست باقة مسار تعلم.',
+  ].join('\n');
+
+  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+};
+
 const Pricing: React.FC = () => {
+  const { user } = useStore();
+  const freeMembershipLink = user ? '/dashboard' : '/login';
+  const isAdmin = user?.role === 'admin';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
           <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات المنصة</h1>
           <p className="mt-3 text-sm text-gray-600 sm:text-base">
-            اختر العضوية المناسبة لك وابدأ رحلة تعليمية أقوى في منصة المئوية.
+            اختر العضوية المناسبة لك وابدأ رحلة تعليمية أقوى في منصة المئة.
+          </p>
+          <p className="mx-auto mt-3 max-w-2xl rounded-full bg-indigo-50 px-4 py-2 text-xs font-bold text-indigo-700">
+            العضويات هنا اشتراك عام للمنصة، وليست باقات ساحة التعلم داخل المسارات.
           </p>
         </div>
 
@@ -96,21 +118,59 @@ const Pricing: React.FC = () => {
                 ))}
               </ul>
 
-              <Link
-                to={plan.ctaLink}
-                className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-2 text-sm font-black text-white ${
-                  plan.highlight ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'
-                }`}
-              >
-                {plan.cta}
-              </Link>
+              {plan.action === 'internal' ? (
+                <Link
+                  to={freeMembershipLink}
+                  className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-2 text-sm font-black text-white ${
+                    plan.highlight ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              ) : (
+                <a
+                  href={buildMembershipRequestUrl(plan)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black text-white ${
+                    plan.highlight ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'
+                  }`}
+                >
+                  {plan.cta}
+                  <ExternalLink size={16} />
+                </a>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800">
-          هذه الصفحة خاصة بعضويات المنصة العامة. باقات ساحة التعلم تُدار بشكل مستقل داخل المسارات وساحة التعلم.
+        <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-emerald-800">
+          هذه الصفحة خاصة بعضويات المنصة العامة. باقات ساحة التعلم تدار بشكل مستقل داخل المسارات وساحة التعلم.
         </div>
+
+        {isAdmin ? (
+          <div className="mt-4 rounded-2xl border border-indigo-100 bg-white p-4 text-sm leading-7 text-gray-700 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <span className="mt-1 rounded-full bg-indigo-50 p-2 text-indigo-600">
+                  <ShieldCheck size={18} />
+                </span>
+                <div>
+                  <div className="font-black text-gray-900">إدارة العضويات العامة للمدير</div>
+                  <div className="text-gray-600">
+                    من لوحة المدير افتح إدارة المسارات ثم تبويب الباقات الشاملة، وفعل خيار "عضوية عامة تفتح كل المنصة".
+                  </div>
+                </div>
+              </div>
+              <Link
+                to="/admin-dashboard?tab=paths"
+                className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
+              >
+                فتح إدارة العضويات
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

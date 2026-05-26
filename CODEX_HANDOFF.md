@@ -1313,3 +1313,28 @@ Blocker:
 Next exact task:
 1. Trigger Render deploy for `srv-d7qtcr9o3t8c73cs32sg` once env credentials are present.
 2. Re-run post-deploy `smoke:health-readiness` and `smoke:frontend:strict` and log deploy id in handover.
+
+## BATCH 167 Handover - 2026-05-26
+- Current state:
+  - Membership/package confusion track fixed and locally visually verified.
+- Changed behavior:
+  - `/pricing` is now platform memberships only.
+  - Paid membership CTAs no longer navigate to `/courses`; they open a WhatsApp membership request.
+  - Free membership CTA stays in account flow (`/dashboard` or `/login`).
+  - Admin membership management is explicitly documented in Paths Manager text: `إدارة العضويات العامة وباقات المسارات` and `عضوية عامة تفتح كل المنصة`.
+- PASS:
+  - `smoke:membership-pricing`
+  - `typecheck`
+  - `build`
+  - `server:check`
+  - `server:build`
+  - `smoke:real-usage-readiness`
+  - `smoke:payment-package`
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+  - `smoke:operational` (`71/71`) on production API.
+- Visual evidence:
+  - Browser checked local preview `/pricing` after fix.
+  - Verified no `/courses` href in membership page and paid CTA resolves to WhatsApp.
+- Remaining closure step:
+  - Commit/push/deploy and then repeat production `health-readiness` + `frontend:strict` with commit match.

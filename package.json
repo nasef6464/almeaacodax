@@ -32,6 +32,7 @@
         "smoke:video-questions": "node scripts/smoke-video-questions-contract.mjs",
         "smoke:package-revenue": "node scripts/smoke-package-revenue-contract.mjs",
         "smoke:payment-package": "node scripts/smoke-payment-package-contract.mjs",
+        "smoke:membership-pricing": "node scripts/smoke-membership-pricing-contract.mjs",
         "smoke:package-course-split": "node scripts/smoke-package-course-split-contract.mjs",
         "smoke:package-path-navigation": "node scripts/smoke-package-path-navigation-contract.mjs",
         "smoke:real-usage-readiness": "node scripts/smoke-real-usage-readiness-contract.mjs",
