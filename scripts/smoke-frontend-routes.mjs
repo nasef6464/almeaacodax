@@ -13,8 +13,10 @@ const STRICT_VERSION = process.env.SMOKE_STRICT_VERSION === '1';
 
 const baseRoutes = [
   '/',
+  '/pricing',
   '/#/quizzes',
   '/#/my-quizzes',
+  '/#/my-requests',
   '/#/mock-exams',
   '/#/reports',
   '/#/login',
@@ -167,6 +169,25 @@ await check('entry asset loads', async () => {
   entryAssetText = await response.text();
   if (entryAssetText.length < 1000) throw new Error(`asset too small: ${entryAssetText.length}`);
   return `${assetUrl} (${Math.round(entryAssetText.length / 1024)} KB)`;
+});
+
+await check('pricing page stays in membership scope', async () => {
+  const result = await fetchText(`${FRONTEND_URL}/pricing?smoke=${Date.now()}`);
+  const html = result.text;
+  if (!html.includes('<div id="root"')) throw new Error('root element missing');
+  if (!html.includes('عضويات')) {
+    return {
+      status: 'warn',
+      details: 'pricing shell loaded, but membership marker text not found in server HTML (expected for SPA hydration-only rendering).',
+    };
+  }
+  if (html.includes('/courses')) {
+    return {
+      status: 'warn',
+      details: 'pricing HTML includes /courses reference; verify CTA behavior in live browser.',
+    };
+  }
+  return 'membership route shell loaded';
 });
 
 if (EXPECTED_VERSION) {
