@@ -309,6 +309,9 @@ const mergeQuizResultsForStore = (
         .slice(0, 250);
 };
 
+const isRegisteredUser = (user?: User | null) =>
+    Boolean(user && user.id && user.id !== 'guest' && user.email);
+
 const resolveEntityId = (entity: { id?: unknown; _id?: unknown }, fallback = '') =>
     String(entity?.id || entity?._id || fallback || '');
 
@@ -765,6 +768,7 @@ export const useStore = create<AppState>()(
             checkAccess: (contentId, isPremiumContent) => {
                 const state = get();
                 if (!isPremiumContent) return true;
+                if (!isRegisteredUser(state.user)) return false;
                 if (state.user.subscription.plan === 'premium') return true;
                 if (state.enrolledCourses.includes(contentId)) return true;
                 if (state.user.subscription.purchasedCourses.includes(contentId)) return true;
@@ -773,6 +777,7 @@ export const useStore = create<AppState>()(
             },
             hasScopedPackageAccess: (contentType, pathId, subjectId) => {
                 const state = get();
+                if (!isRegisteredUser(state.user)) return false;
                 if (state.user.subscription.plan === 'premium') return true;
 
                 const purchasedPackageIds = new Set(state.user.subscription?.purchasedPackages || []);

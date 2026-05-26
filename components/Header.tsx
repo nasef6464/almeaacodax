@@ -119,6 +119,16 @@ export const Header: React.FC = () => {
     setActiveDropdown(null);
   }, [location]);
 
+  useEffect(() => {
+    const authParam = new URLSearchParams(location.search).get('auth');
+    const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
+    const shouldOpen = isAuthRoute || authParam === 'login' || authParam === 'signup';
+    if (!shouldOpen) return;
+
+    setIsSignUp(location.pathname === '/signup' || authParam === 'signup');
+    setIsLoginModalOpen(true);
+  }, [location.pathname, location.search]);
+
   const navigationMenu = useMemo(() => {
     const menu: Array<Record<string, any>> = [
       { id: '1', label: text.main, link: '/', iconName: 'home' },

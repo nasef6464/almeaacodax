@@ -860,6 +860,8 @@ const App: React.FC = () => {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/login" element={<Navigate replace to="/?auth=login" />} />
+                  <Route path="/signup" element={<Navigate replace to="/?auth=signup" />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/certificate/:code" element={<CertificatePage />} />
