@@ -54,6 +54,19 @@ interface AuthContextType {
 }
 
 const SESSION_STORAGE_KEY = 'the-hundred-auth-profile';
+const AUTH_BOOTSTRAP_PRIVATE_PREFIXES = [
+  '/dashboard',
+  '/admin-dashboard',
+  '/instructor-dashboard',
+  '/supervisor-dashboard',
+  '/parent-dashboard',
+  '/my-quizzes',
+  '/my-requests',
+  '/reports',
+  '/plan',
+  '/profile',
+  '/favorites',
+];
 
 const roleMap: Record<BackendRole, Role> = {
   admin: Role.ADMIN,
@@ -230,6 +243,18 @@ const restoreInitialSession = (): SessionUser | null => {
   }
 };
 
+const getCurrentRoutePath = () => {
+  const pathname = window.location.pathname || '/';
+  const hashPath = window.location.hash.replace(/^#/, '');
+  if ((pathname === '/' || !pathname) && hashPath.startsWith('/')) {
+    return hashPath.split(/[?#]/)[0];
+  }
+  return pathname;
+};
+
+const shouldBootstrapAuthForPath = (path: string) =>
+  AUTH_BOOTSTRAP_PRIVATE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<SessionUser | null>(() => restoreInitialSession());
   const loading = false;
@@ -244,6 +269,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (user) {
+      return;
+    }
+
+    const currentPath = getCurrentRoutePath();
+    if (!shouldBootstrapAuthForPath(currentPath)) {
       return;
     }
 

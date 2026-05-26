@@ -145,6 +145,9 @@ const SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES = [
 const shouldDeferSkillProgressBootstrap = (path: string) =>
   SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
+const isRegisteredUser = (user?: { id?: string; email?: string }) =>
+  Boolean(user && user.id && user.id !== 'guest' && user.email);
+
 type BootstrapProfile = {
   loadCourses: boolean;
   loadQuizzes: boolean;
@@ -486,7 +489,10 @@ const App: React.FC = () => {
         }
 
         const shouldLoadQuestions = profile.loadQuestions && !options.deferQuestions;
-        const shouldLoadSkillProgress = profile.loadSkillProgress && !options.deferSkillProgress;
+        const shouldLoadSkillProgress =
+          profile.loadSkillProgress &&
+          !options.deferSkillProgress &&
+          isRegisteredUser(user);
         const coursesPromise = profile.loadCourses ? adapter.getCourses() : null;
         const quizzesPromise = profile.loadQuizzes ? adapter.getQuizzes() : null;
         const taxonomyPromise = profile.loadTaxonomy ? adapter.getTaxonomyBootstrap() : null;
@@ -639,7 +645,7 @@ const App: React.FC = () => {
             });
         }
 
-        if (profile.loadSkillProgress && options.deferSkillProgress) {
+        if (profile.loadSkillProgress && options.deferSkillProgress && isRegisteredUser(user)) {
           void api.getSkillProgress()
             .then((skillProgress) => {
               if (mounted) {
