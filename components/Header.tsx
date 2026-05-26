@@ -384,6 +384,7 @@ export const Header: React.FC = () => {
             <button
               className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
               onClick={() => setIsMobileMenuOpen((value) => !value)}
+              aria-label={isMobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -564,6 +565,7 @@ export const Header: React.FC = () => {
                 <div key={`mobile-nav-${item.id}-${index}`} className="mb-4">
                   <Link
                     to={item.link || '#'}
+                    data-mobile-nav={String(item.id || '')}
                     className="flex items-center gap-3 font-bold text-lg text-gray-800 mb-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
