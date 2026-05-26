@@ -250,8 +250,16 @@ async function buildOperationsAudit(): Promise<OperationsAuditResult> {
     ...questions.filter((item: any) => item.approvalStatus === "pending_review"),
     ...libraryItems.filter((item: any) => item.approvalStatus === "pending_review"),
   ];
-  const teachersWithoutScope = users.filter((user: any) => user.role === "teacher" && (user.managedPathIds || []).length === 0 && (user.managedSubjectIds || []).length === 0);
-  const parentsWithoutChildren = users.filter((user: any) => user.role === "parent" && (user.linkedStudentIds || []).length === 0);
+  const teachersWithoutScope = users.filter(
+    (user: any) =>
+      user.isActive !== false &&
+      user.role === "teacher" &&
+      (user.managedPathIds || []).length === 0 &&
+      (user.managedSubjectIds || []).length === 0,
+  );
+  const parentsWithoutChildren = users.filter(
+    (user: any) => user.isActive !== false && user.role === "parent" && (user.linkedStudentIds || []).length === 0,
+  );
   const inactiveUsers = users.filter((user: any) => user.isActive === false);
   const pendingPayments = paymentRequests.filter((request: any) => request.status === "pending");
   const activeSchoolPackagesWithoutStudents = b2bPackages.filter((item: any) => item.status === "active" && item.maxStudents <= 0);
