@@ -44,8 +44,13 @@ export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
   const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
+  const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
 
   const loadRequests = async () => {
+    if (!isRegisteredUser) {
+      setPaymentRequests([]);
+      return;
+    }
     const response = await api.getPaymentRequests();
     setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
       ...request,
@@ -54,6 +59,11 @@ export const MyRequests: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!isRegisteredUser) {
+      setPaymentRequests([]);
+      return;
+    }
+
     let cancelled = false;
     const run = async () => {
       try {
@@ -75,7 +85,7 @@ export const MyRequests: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isRegisteredUser]);
 
   const handleEditPendingRequest = async (request: PaymentRequest) => {
     const transferReference = window.prompt('مرجع التحويل (اختياري)', request.transferReference || '') ?? '';
@@ -294,4 +304,3 @@ export const MyRequests: React.FC = () => {
     </div>
   );
 };
-
