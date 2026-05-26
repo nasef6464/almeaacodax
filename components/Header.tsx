@@ -84,6 +84,7 @@ export const Header: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
   const [otpPhone, setOtpPhone] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -302,17 +303,22 @@ export const Header: React.FC = () => {
 
   const handleEmailAuth = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (isAuthSubmitting) return;
     setAuthError('');
+    setIsAuthSubmitting(true);
 
     if (isSignUp && !isStrongPassword(password)) {
       setAuthError('كلمة المرور يجب أن تكون 8 أحرف على الأقل وتحتوي على حرف ورقم.');
+      setIsAuthSubmitting(false);
       return;
     }
 
     try {
+      const normalizedEmail = email.trim().toLowerCase();
+      const normalizedPassword = password.trim();
       const sessionUser = isSignUp
-        ? await signUpWithEmail(email, password)
-        : await signInWithEmail(email, password);
+        ? await signUpWithEmail(normalizedEmail, normalizedPassword)
+        : await signInWithEmail(normalizedEmail, normalizedPassword);
 
       const nextPath = getDashboardPathForRole(sessionUser.role);
 
@@ -327,6 +333,8 @@ export const Header: React.FC = () => {
     } catch (error) {
       const message = error instanceof Error ? error.message : text.authFallbackError;
       setAuthError(message);
+    } finally {
+      setIsAuthSubmitting(false);
     }
   };
 
@@ -637,9 +645,10 @@ export const Header: React.FC = () => {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors"
+                  disabled={isAuthSubmitting}
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {isSignUp ? text.signUp : text.signIn}
+                  {isAuthSubmitting ? '...' : isSignUp ? text.signUp : text.signIn}
                 </button>
               </form>
 
