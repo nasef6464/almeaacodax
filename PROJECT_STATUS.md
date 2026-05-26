@@ -2902,3 +2902,24 @@ pm run smoke:frontend:strict (26/26)
   1. Commit/push explicit changed files only.
   2. Verify production commit-match after Vercel update.
   3. Run logged-in admin visual check on production membership management labels.
+
+## Final Closure 2026-05-26 - BATCH 167
+- Batch: `BATCH_167_MEMBERSHIP_VISUAL_AUDIT_AND_SCOPE_FIX_2026-05-26_AR`.
+- Status: `Fully closed`.
+- Commit pushed:
+  - `3e9cc4f9` on `main`.
+- Production verification after push:
+  - `npm run smoke:health-readiness` PASS.
+  - `npm run smoke:frontend:strict` PASS; production loaded new entry asset `index-BCzZEn2H.js` after Vercel Git integration update.
+- Browser production verification:
+  - `/pricing` title: `عضويات المنصة | منصة المئة`.
+  - membership separation note present.
+  - no `/courses` href found in membership CTA markup.
+  - `اطلب العضوية الأساسية` href points to WhatsApp membership request.
+- Tool note:
+  - screenshot capture timed out in the Browser tool after DOM verification; DOM/URL evidence passed and page state was verified through the in-app Browser.
+- Result:
+  - membership/package confusion track is closed without regression in payment/package/operational gates.
+- Next exact task:
+  1. Continue broader multi-role visual audit on admin/student/teacher/parent journeys.
+  2. Specifically verify admin CRUD for creating/editing a global membership on production with a logged-in admin session.

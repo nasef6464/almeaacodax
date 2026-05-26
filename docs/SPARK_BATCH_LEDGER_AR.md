@@ -2500,3 +2500,15 @@
   - `smoke:operational` (71/71 on production API).
 - Visual:
   - in-app Browser confirmed local `/pricing` CTA no longer points to courses and paid CTA resolves to WhatsApp membership request.
+
+## Final Update BATCH 167 - 2026-05-26
+- Status: Fully closed.
+- Commit pushed: `3e9cc4f9`.
+- Production verification PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+- Browser production check PASS:
+  - `/pricing` membership title and separation note present.
+  - paid membership CTA no longer points to `/courses` and resolves to WhatsApp membership request.
+- Next:
+  - Continue multi-role browser audit and admin membership CRUD verification.

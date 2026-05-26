@@ -3549,3 +3549,15 @@ pm run smoke:operational PASS (71/71).
 - PASS: `typecheck`, `build`, `server:check`, `server:build`, `smoke:membership-pricing`, `smoke:real-usage-readiness`, `smoke:payment-package`, `smoke:health-readiness`, `smoke:frontend:strict`, `smoke:operational` (71/71 production API).
 - الدليل البصري المحلي عبر Browser: صفحة العضويات تعرض النص الصحيح ولا تحتوي رابط `/courses` في CTA المدفوع.
 - التالي بدقة: commit/push ثم تحقق إنتاجي بعد نشر Vercel، ثم فحص admin بصري بعد تحديث الإنتاج.
+
+## BATCH 167 Final Handover - 2026-05-26
+- تم إغلاق الدفعة على commit `3e9cc4f9` ودفعه إلى `main`.
+- تحقق الإنتاج بعد النشر PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict`
+- تحقق المتصفح على الإنتاج:
+  - `/pricing` تعرض `عضويات المنصة`.
+  - أزرار العضويات المدفوعة لا تذهب إلى `/courses`.
+  - زر العضوية الأساسية يشير إلى طلب WhatsApp للعضوية.
+- ملاحظة: التقاط screenshot من الأداة timed out، لكن تحقق DOM/URL داخل المتصفح نجح.
+- التالي: فحص بصري متعدد الأدوار، والبدء تحديدًا من CRUD العضويات العامة للمدير داخل `admin-dashboard?tab=paths`.

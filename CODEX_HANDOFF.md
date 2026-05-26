@@ -1338,3 +1338,16 @@ Next exact task:
   - Verified no `/courses` href in membership page and paid CTA resolves to WhatsApp.
 - Remaining closure step:
   - Commit/push/deploy and then repeat production `health-readiness` + `frontend:strict` with commit match.
+
+## BATCH 167 Final Handover - 2026-05-26
+- Closed on commit `3e9cc4f9` pushed to `main`.
+- Production post-push PASS:
+  - `smoke:health-readiness`
+  - `smoke:frontend:strict` with updated production asset `index-BCzZEn2H.js`.
+- Browser production facts:
+  - `/pricing` shows `عضويات المنصة`.
+  - paid membership CTA does not route to `/courses`.
+  - paid membership CTA resolves to WhatsApp membership request URL.
+- Screenshot capture timed out, but DOM/URL/browser-state verification completed.
+- Next exact task:
+  - Continue logged-in multi-role visual audit, starting with admin membership CRUD in `admin-dashboard?tab=paths`.
