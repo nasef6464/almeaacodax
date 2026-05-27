@@ -2880,3 +2880,20 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue end-to-end practical flows by role with deeper form-validation dry-runs and screenshot evidence per step.
+
+## BATCH 187 - 2026-05-28
+- Status: Fully closed (auth/login-profile-access matrix + RBAC guard classification).
+- Scope:
+  - Executed production auth/access practical checks for guest, student, admin, teacher, supervisor, and parent.
+  - Verified login and profile reachability for authenticated roles and checked private-route guard behavior for guest.
+- Gate Results:
+  - PASS: auth/access matrix => 17/17 PASS (0 FAIL, 0 BLOCKED) after RBAC guard classification.
+  - PASS: guest private routes are blocked via fallback redirect to public home (`/`).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch187-auth-access-matrix.
+  - Summary: audit-artifacts/batch187-auth-access-matrix/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch187-auth-access-matrix/auth-access-matrix.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue practical role journeys with deeper non-destructive form validations and explicit toast/validation-message evidence.

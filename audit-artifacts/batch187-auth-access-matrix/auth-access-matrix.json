@@ -1,0 +1,111 @@
+{
+  "generatedAt": "2026-05-27T22:48:29.438Z",
+  "total": 17,
+  "pass": 17,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "guest",
+      "step": "guard_/admin-dashboard",
+      "status": "PASS",
+      "note": "RBAC guard via public fallback redirect to home (/)."
+    },
+    {
+      "role": "guest",
+      "step": "guard_/parent-dashboard",
+      "status": "PASS",
+      "note": "RBAC guard via public fallback redirect to home (/)."
+    },
+    {
+      "role": "student",
+      "step": "login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/dashboard"
+    },
+    {
+      "role": "student",
+      "step": "profile_after_login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "student",
+      "step": "logout_guard_check",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/dashboard"
+    },
+    {
+      "role": "admin",
+      "step": "login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "admin",
+      "step": "profile_after_login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "admin",
+      "step": "logout_guard_check",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "teacher",
+      "step": "login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "teacher",
+      "step": "profile_after_login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "teacher",
+      "step": "logout_guard_check",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "supervisor",
+      "step": "login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "supervisor",
+      "step": "profile_after_login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "supervisor",
+      "step": "logout_guard_check",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "parent",
+      "step": "login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/parent-dashboard"
+    },
+    {
+      "role": "parent",
+      "step": "profile_after_login",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "parent",
+      "step": "logout_guard_check",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/parent-dashboard"
+    }
+  ]
+}
