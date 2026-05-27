@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+﻿import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { PaymentModal } from '../components/PaymentModal';
@@ -16,6 +16,7 @@ const typeLabel: Record<CartItem['type'], string> = {
 const Cart: React.FC = () => {
   const { cartItems, removeFromCart, clearCart } = useStore();
   const [activeItem, setActiveItem] = useState<CartItem | null>(null);
+  const navigate = useNavigate();
 
   const total = useMemo(
     () => cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0),
@@ -29,9 +30,13 @@ const Cart: React.FC = () => {
           <ShoppingCart className="mx-auto mb-3 text-gray-400" size={32} />
           <h1 className="text-xl font-black text-gray-900">سلة المشتريات فارغة</h1>
           <p className="mt-2 text-sm font-bold text-gray-500">أضف دورة أو باقة من صفحة الشراء أولاً.</p>
-          <Link to="/pricing" className="mt-5 inline-flex rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700">
+          <button
+            type="button"
+            onClick={() => navigate('/pricing')}
+            className="mt-5 inline-flex rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700"
+          >
             تصفح العضويات
-          </Link>
+          </button>
         </div>
       </div>
     );
