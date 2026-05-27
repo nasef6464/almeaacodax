@@ -3656,3 +3656,19 @@ pm run smoke:operational PASS (71/71).
   - None.
 - Next exact task:
   1. Expand to role-specific form submission dry-runs (validation errors/success messages) without destructive writes, and keep screenshot evidence per step.
+
+## BATCH 186 - 2026-05-28
+- Status: Fully closed (teacher/supervisor/parent role controls production validation).
+- Scope:
+  - Verified production report-control and role-center access for teacher, supervisor, and parent roles.
+  - Confirmed each role can access allowed areas and interact with visible report controls according to RBAC.
+- Gate Results:
+  - PASS: role report controls validation => 14/14 PASS (0 FAIL, 0 BLOCKED).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch186-role-report-controls.
+  - Summary: audit-artifacts/batch186-role-report-controls/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch186-role-report-controls/role-report-controls.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue end-to-end practical flows by role with deeper form-validation dry-runs and screenshot evidence per step.

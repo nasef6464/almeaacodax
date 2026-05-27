@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-05-27T22:43:28.968Z",
+  "total": 14,
+  "pass": 14,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "teacher",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "step": "reports_control_click",
+      "status": "PASS",
+      "note": "controls=4"
+    },
+    {
+      "role": "teacher",
+      "step": "open_library_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "step": "open_quizzes_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "step": "reports_control_click",
+      "status": "PASS",
+      "note": "RBAC may hide controls"
+    },
+    {
+      "role": "supervisor",
+      "step": "open_library_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "step": "open_quizzes_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "step": "reports_control_click",
+      "status": "PASS",
+      "note": "controls=1"
+    },
+    {
+      "role": "parent",
+      "step": "open_parent_dashboard",
+      "status": "PASS",
+      "note": ""
+    }
+  ]
+}
