@@ -2929,3 +2929,27 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue role-by-role practical verification with broader page interactions and explicit UI state assertions (visibility/disabled/error toast) per step.
+
+## BATCH 190 - 2026-05-28
+- Status: Fully closed (full command-gate revalidation on production).
+- Scope:
+  - Completed full command-gate revalidation cycle including build/type/server checks and core smoke suites.
+  - Confirmed production operational matrix still green with explicit auth context.
+- Gate Results:
+  - PASS: npm run typecheck.
+  - PASS: npm run build.
+  - PASS: npm run server:check.
+  - PASS: npm run server:build.
+  - PASS: npm run smoke:health-readiness.
+  - PASS: npm run smoke:frontend:strict.
+  - PASS: npm run smoke:real-usage-readiness.
+  - PASS: npm run smoke:payment-package.
+  - PASS: npm run smoke:payment-tampering.
+  - PASS: npm run smoke:operational => 71/71 on production API.
+- Deploy/Commit Evidence:
+  - Operational run used production API base: https://almeaacodax-k2ux.onrender.com/api.
+  - Auth context: ADMIN_EMAIL/ADMIN_PASSWORD + redeemed fallback student credentials in-session.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue practical visual role-by-role interaction depth while keeping full command-gate closure in each new batch.
