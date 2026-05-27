@@ -3705,3 +3705,19 @@ pm run smoke:operational PASS (71/71).
   - None.
 - Next exact task:
   1. Continue mixed role end-to-end practical flows with non-destructive form validation and explicit success/error-state evidence.
+
+## BATCH 189 - 2026-05-28
+- Status: Fully closed (form-validation dry-run practical checks across roles).
+- Scope:
+  - Executed non-destructive form-validation dry-runs for student/admin/parent on production profile and reports controls.
+  - Verified role-specific control behavior in reports and safe search dry-run on admin users tab.
+- Gate Results:
+  - PASS: form validation dry-run matrix => 10/10 PASS (0 FAIL, 0 BLOCKED).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch189-form-validation-dryrun.
+  - Summary: audit-artifacts/batch189-form-validation-dryrun/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch189-form-validation-dryrun/form-validation-dryrun.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue role-by-role practical verification with broader page interactions and explicit UI state assertions (visibility/disabled/error toast) per step.

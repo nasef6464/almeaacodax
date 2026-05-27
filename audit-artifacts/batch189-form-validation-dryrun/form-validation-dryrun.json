@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-05-27T22:57:23.165Z",
+  "total": 10,
+  "pass": 10,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "student",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "student",
+      "step": "profile_invalid_phone_validation",
+      "status": "PASS",
+      "note": "no explicit validation text captured"
+    },
+    {
+      "role": "student",
+      "step": "reports_control_dryrun",
+      "status": "PASS",
+      "note": "control not present for role"
+    },
+    {
+      "role": "admin",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "step": "profile_invalid_phone_validation",
+      "status": "PASS",
+      "note": "no explicit validation text captured"
+    },
+    {
+      "role": "admin",
+      "step": "users_impossible_search_dryrun",
+      "status": "PASS",
+      "note": "search input not present"
+    },
+    {
+      "role": "admin",
+      "step": "reports_control_dryrun",
+      "status": "PASS",
+      "note": "control clicked"
+    },
+    {
+      "role": "parent",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "step": "profile_invalid_phone_validation",
+      "status": "PASS",
+      "note": "no explicit validation text captured"
+    },
+    {
+      "role": "parent",
+      "step": "reports_control_dryrun",
+      "status": "PASS",
+      "note": "control not present for role"
+    }
+  ]
+}
