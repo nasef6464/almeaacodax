@@ -1621,3 +1621,21 @@ Regression risk: low
   - None.
 - Next exact task:
   1. For every next batch: apply change -> run gates -> push branch -> deploy/challenge -> record URLs/commit/deployment id in handover files.
+
+## BATCH 182 - 2026-05-28
+- Status: Fully closed (production visual retest of agreed 13 failures + push/challenge discipline).
+- Scope:
+  - Executed production visual retest focused on the original 13 failed UX items from the agreed checklist.
+  - Verified role coverage in the retest: guest, student, admin, supervisor, teacher.
+- Gate Results:
+  - PASS: target13 production visual retest => 13/13 PASS (0 FAIL, 0 BLOCKED).
+  - PASS: npm run smoke:health-readiness.
+  - PASS: npm run smoke:frontend:strict (production commit/version match = 2b8ec7bb after deploy propagation).
+- Deploy/Commit Evidence:
+  - Retest evidence folder: audit-artifacts/batch182-visual-retest-target13.
+  - Summary: audit-artifacts/batch182-visual-retest-target13/SUMMARY.md.
+  - Detailed result: audit-artifacts/batch182-visual-retest-target13/target13-retest.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue full role-by-role production visual matrix beyond the focused 13 items, keeping bug-template logging for any confirmed issue.
