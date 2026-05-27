@@ -3353,3 +3353,19 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue practical visual role-by-role interaction depth while keeping full command-gate closure in each new batch.
+
+## BATCH 191 - 2026-05-28
+- Status: Fully closed (production report-actions practical validation).
+- Scope:
+  - Executed practical role-based report action validation for admin/teacher/supervisor/parent.
+  - Verified presence and clickability of available report actions and documented RBAC/UI-variant hidden actions.
+- Gate Results:
+  - PASS: report actions matrix => 24/24 PASS (0 FAIL, 0 BLOCKED).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch191-report-actions.
+  - Summary: audit-artifacts/batch191-report-actions/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch191-report-actions/report-actions.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue end-to-end practical validation with deeper per-role interaction depth and explicit expected-state assertions per action.
