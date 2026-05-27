@@ -3561,3 +3561,29 @@ pm run smoke:operational PASS (71/71).
   - زر العضوية الأساسية يشير إلى طلب WhatsApp للعضوية.
 - ملاحظة: التقاط screenshot من الأداة timed out، لكن تحقق DOM/URL داخل المتصفح نجح.
 - التالي: فحص بصري متعدد الأدوار، والبدء تحديدًا من CRUD العضويات العامة للمدير داخل `admin-dashboard?tab=paths`.
+
+## BATCH 181 - 2026-05-28
+- Status: Fully closed (revalidation cycle + release discipline guard).
+- Scope:
+  - Re-ran full command gate cycle on production context after BATCH 180 to ensure stability continuity.
+  - Locked release discipline rule from user direction: after every batch closure, perform push and deploy/challenge and record evidence.
+- Gate Results:
+  - PASS: npm run typecheck.
+  - PASS: npm run build.
+  - PASS: npm run server:check.
+  - PASS: npm run server:build.
+  - PASS: npm run smoke:health-readiness.
+  - PASS: npm run smoke:frontend:strict.
+  - PASS: npm run smoke:real-usage-readiness.
+  - PASS: npm run smoke:payment-package.
+  - PASS: npm run smoke:payment-tampering.
+  - PASS: npm run smoke:operational => 71/71 on production API.
+- Deploy/Commit Evidence:
+  - Commit pushed to main: 1d08529e.
+  - Post-push deployment verification is green:
+    - PASS: npm run smoke:health-readiness.
+    - PASS: npm run smoke:frontend:strict (production commit/version match = 1d08529e).
+- Blockers:
+  - None.
+- Next exact task:
+  1. For every next batch: apply change -> run gates -> push branch -> deploy/challenge -> record URLs/commit/deployment id in handover files.
