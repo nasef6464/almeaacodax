@@ -2848,3 +2848,19 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue per-role CRUD-level checks inside admin tabs (users/schools/payments/paths) with non-destructive create/edit/view verification evidence.
+
+## BATCH 185 - 2026-05-28
+- Status: Fully closed (admin CRUD non-destructive visual validation on production).
+- Scope:
+  - Executed non-destructive admin workflow checks inside key dashboard tabs and reports export trigger.
+  - Verified open/access behavior for paths/users/schools/payments/library/quizzes plus reports export action.
+- Gate Results:
+  - PASS: admin non-destructive CRUD visual checks => 9/9 PASS (0 FAIL, 0 BLOCKED).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch185-admin-crud-nondestructive.
+  - Summary: audit-artifacts/batch185-admin-crud-nondestructive/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch185-admin-crud-nondestructive/admin-crud-nondestructive.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Expand to role-specific form submission dry-runs (validation errors/success messages) without destructive writes, and keep screenshot evidence per step.
