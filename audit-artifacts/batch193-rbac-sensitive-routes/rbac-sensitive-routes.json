@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-05-27T23:21:45.335Z",
+  "total": 28,
+  "pass": 28,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "admin",
+      "route": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=users",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=payments",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=schools",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=paths",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=library",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=quizzes",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "teacher",
+      "route": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=users",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=users"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=payments",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=payments"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=schools",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=schools"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=paths",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=paths"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=library",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/admin-dashboard?tab=library"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard?tab=quizzes",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/admin-dashboard?tab=quizzes"
+    },
+    {
+      "role": "supervisor",
+      "route": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=users",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=users"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=payments",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=payments"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=schools",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=schools"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=paths",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/admin-dashboard?tab=paths"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=library",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/admin-dashboard?tab=library"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard?tab=quizzes",
+      "status": "PASS",
+      "note": "expected=true; url=https://almeaacodax.vercel.app/admin-dashboard?tab=quizzes"
+    },
+    {
+      "role": "parent",
+      "route": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=users",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=payments",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=schools",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=paths",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=library",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    },
+    {
+      "role": "parent",
+      "route": "/admin-dashboard?tab=quizzes",
+      "status": "PASS",
+      "note": "expected=false; url=https://almeaacodax.vercel.app/"
+    }
+  ]
+}
