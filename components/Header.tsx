@@ -592,6 +592,23 @@ export const Header: React.FC = () => {
                 </div>
               );
             })}
+
+            {!user ? (
+              <div className="mt-6 border-t border-gray-100 pt-4">
+                <button
+                  type="button"
+                  data-mobile-login="true"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsLoginModalOpen(true);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-3 font-bold text-white transition-colors hover:bg-emerald-600"
+                >
+                  <LogIn size={18} />
+                  <span>{text.login}</span>
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
