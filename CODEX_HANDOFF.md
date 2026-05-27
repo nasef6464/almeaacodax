@@ -1656,3 +1656,21 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue deep click-level matrix per role (forms/buttons CRUD-level) in the same production evidence format.
+
+## BATCH 184 - 2026-05-28
+- Status: Fully closed (deep production visual workflows + RBAC classification).
+- Scope:
+  - Executed deeper production visual workflows across roles with page-level function checks (tabs, reports, export controls, guarded access).
+  - Roles covered: guest, student, admin, teacher, supervisor, parent.
+- Gate Results:
+  - PASS: deep visual workflows => 21/21 PASS (0 FAIL, 0 BLOCKED) after RBAC classification.
+  - PASS: admin reports export visibility/action confirmed.
+  - PASS: student reports export controls hidden as expected by RBAC.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch184-visual-deep-workflows.
+  - Summary: audit-artifacts/batch184-visual-deep-workflows/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch184-visual-deep-workflows/deep-workflows.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue per-role CRUD-level checks inside admin tabs (users/schools/payments/paths) with non-destructive create/edit/view verification evidence.

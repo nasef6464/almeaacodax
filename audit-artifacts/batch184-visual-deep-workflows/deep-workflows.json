@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-05-27T22:35:13.367Z",
+  "total": 21,
+  "pass": 21,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "guest",
+      "flow": "public",
+      "step": "home_load",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "guest",
+      "flow": "public",
+      "step": "pricing_load",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "guest",
+      "flow": "access-control",
+      "step": "reports_guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/reports"
+    },
+    {
+      "role": "student",
+      "flow": "dashboard",
+      "step": "load",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "student",
+      "flow": "courses",
+      "step": "open_qudrat",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "student",
+      "flow": "exams",
+      "step": "open_mock_exams",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "student",
+      "flow": "reports",
+      "step": "export_controls_visible",
+      "status": "PASS",
+      "note": "RBAC expected: student has no export controls; admin export is verified PASS."
+    },
+    {
+      "role": "admin",
+      "flow": "admin-dashboard",
+      "step": "open_tab_paths",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "flow": "admin-dashboard",
+      "step": "open_tab_users",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "flow": "admin-dashboard",
+      "step": "open_tab_schools",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "flow": "admin-dashboard",
+      "step": "open_tab_payments",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "admin",
+      "flow": "reports",
+      "step": "export_students_button",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "flow": "admin-dashboard",
+      "step": "open_library_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "flow": "admin-dashboard",
+      "step": "open_quizzes_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "teacher",
+      "flow": "reports",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "flow": "admin-dashboard",
+      "step": "open_library_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "flow": "admin-dashboard",
+      "step": "open_quizzes_tab",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "supervisor",
+      "flow": "reports",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "flow": "parent-dashboard",
+      "step": "load",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "flow": "reports",
+      "step": "open_reports",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "flow": "profile",
+      "step": "open_profile",
+      "status": "PASS",
+      "note": ""
+    }
+  ]
+}
