@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-05-27T23:14:58.756Z",
+  "total": 13,
+  "pass": 13,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "student",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "student",
+      "step": "open_/dashboard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/dashboard"
+    },
+    {
+      "role": "student",
+      "step": "open_/category/p_qudrat",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/category/p_1777779639431"
+    },
+    {
+      "role": "student",
+      "step": "open_/mock-exams",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/mock-exams"
+    },
+    {
+      "role": "student",
+      "step": "open_/my-quizzes",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/my-quizzes"
+    },
+    {
+      "role": "student",
+      "step": "open_/results",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/results"
+    },
+    {
+      "role": "student",
+      "step": "open_/favorites",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/favorites"
+    },
+    {
+      "role": "student",
+      "step": "open_/reports",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/reports"
+    },
+    {
+      "role": "student",
+      "step": "open_/profile",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    },
+    {
+      "role": "parent",
+      "step": "login",
+      "status": "PASS",
+      "note": ""
+    },
+    {
+      "role": "parent",
+      "step": "open_/parent-dashboard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/parent-dashboard"
+    },
+    {
+      "role": "parent",
+      "step": "open_/reports",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/reports"
+    },
+    {
+      "role": "parent",
+      "step": "open_/profile",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/profile"
+    }
+  ]
+}
