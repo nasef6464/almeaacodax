@@ -1845,3 +1845,21 @@ Regression risk: low
 - Next exact task:
   1. Validate logout via explicit UI control per role and confirm protected API/route access denial after logout.
 
+
+## BATCH 195 - 2026-05-28
+- Status: Partial (target-13 retest improved, but 3 confirmed FAIL + 1 missing mapping remain).
+- Scope:
+  - Re-ran production practical retest for historical `13 FAIL` baseline from `2026-05-26T19-39-23-050Z`.
+  - Mapped current retest outcomes role-by-role and preserved artifact evidence.
+- Gate Results:
+  - PASS: baseline-13 retest mapping => 9 PASS.
+  - FAIL: 3 items remain (`supervisor` library center, `supervisor` test center, `teacher` export students).
+  - MISSING: 1 item (`student /plan WhatsApp contact`) absent in current retest mapping dataset.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch195-retest-target13-prod.
+  - Summary: audit-artifacts/batch195-retest-target13-prod/SUMMARY.md.
+  - Detailed NDJSON: audit-artifacts/batch195-retest-target13-prod/ui-audit-retest.ndjson.
+- Blockers:
+  - external blocker: production role/action visibility mismatch remains for supervisor library/tests controls and teacher export control until product-owner confirms expected RBAC for these actions.
+- Next exact task:
+  1. Execute targeted single-case visual rechecks for the 4 remaining baseline items using role-scoped direct selectors, then classify each as PASS or confirmed RBAC expectation with screenshot proof.
