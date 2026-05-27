@@ -191,6 +191,7 @@ const Blog: React.FC = () => {
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                     type="text"
+                    aria-label="بحث في المقالات"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                     placeholder="ابحث في عناوين المقالات أو المواد..."
