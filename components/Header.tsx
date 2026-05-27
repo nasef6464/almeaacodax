@@ -637,6 +637,7 @@ export const Header: React.FC = () => {
                   <label className="block text-sm font-bold text-gray-700 mb-1">{text.email}</label>
                   <input
                     type="email"
+                    aria-label="Email"
                     required
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -660,6 +661,7 @@ export const Header: React.FC = () => {
                   </div>
                   <input
                     type="password"
+                    aria-label="Password"
                     required
                     minLength={isSignUp ? 8 : undefined}
                     value={password}
@@ -724,6 +726,7 @@ export const Header: React.FC = () => {
                 <div className="text-xs font-bold text-emerald-700">{text.continueWithWhatsApp}</div>
                 <input
                   type="tel"
+                  aria-label="WhatsApp phone"
                   value={otpPhone}
                   onChange={(event) => setOtpPhone(event.target.value)}
                   className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
@@ -733,6 +736,7 @@ export const Header: React.FC = () => {
                 {otpSent ? (
                   <input
                     type="text"
+                    aria-label="OTP code"
                     value={otpCode}
                     onChange={(event) => setOtpCode(event.target.value)}
                     className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"

@@ -69,12 +69,14 @@ export const SearchModal: React.FC<{ open: boolean; onClose: () => void }> = ({ 
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search query"
             placeholder="ابحث عن درس أو سؤال أو دورة..."
             className="flex-1 bg-transparent text-sm outline-none"
           />
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value as SearchType)}
+            aria-label="Search type"
             className="rounded-lg border border-gray-200 px-2 py-1 text-xs"
           >
             <option value="all">الكل</option>
@@ -82,7 +84,7 @@ export const SearchModal: React.FC<{ open: boolean; onClose: () => void }> = ({ 
             <option value="lesson">الدروس</option>
             <option value="question">الأسئلة</option>
           </select>
-          <button onClick={onClose} className="rounded-lg p-1 text-gray-500 hover:bg-gray-100">
+          <button aria-label="Close search" onClick={onClose} className="rounded-lg p-1 text-gray-500 hover:bg-gray-100">
             <X size={18} />
           </button>
         </div>

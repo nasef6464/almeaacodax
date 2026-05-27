@@ -48,8 +48,9 @@ const ForgotPassword: React.FC = () => {
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-bold text-gray-700">البريد الإلكتروني</label>
+            <label htmlFor="forgot-email" className="mb-1 block text-sm font-bold text-gray-700">البريد الإلكتروني</label>
             <input
+              id="forgot-email"
               type="email"
               required
               value={email}
