@@ -1,0 +1,20 @@
+[
+  {
+    "id": "supervisor-library-center",
+    "status": "FAIL",
+    "actual": "no text match in clickable controls",
+    "evidence": "C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\supervisor-library-center\\before.png | C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\supervisor-library-center\\after.png"
+  },
+  {
+    "id": "supervisor-tests-center",
+    "status": "FAIL",
+    "actual": "no text match in clickable controls",
+    "evidence": "C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\supervisor-tests-center\\before.png | C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\supervisor-tests-center\\after.png"
+  },
+  {
+    "id": "teacher-export-students",
+    "status": "FAIL",
+    "actual": "no text match in clickable controls",
+    "evidence": "C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\teacher-export-students\\before.png | C:\\ALMEAA MAY - codax\\audit-artifacts\\batch196-targeted-role-actions\\recheck-js-click\\teacher-export-students\\after.png"
+  }
+]

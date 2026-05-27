@@ -3829,3 +3829,22 @@ pm run smoke:operational PASS (71/71).
   - external blocker: production role/action visibility mismatch remains for supervisor library/tests controls and teacher export control until product-owner confirms expected RBAC for these actions.
 - Next exact task:
   1. Execute targeted single-case visual rechecks for the 4 remaining baseline items using role-scoped direct selectors, then classify each as PASS or confirmed RBAC expectation with screenshot proof.
+
+## BATCH 196 - 2026-05-28
+- Status: Partial (targeted production recheck confirms remaining actionability gaps).
+- Scope:
+  - Executed focused production practical recheck for the 4 residual baseline items from BATCH 195.
+  - Ran two passes: locator-based check + JS click by textContent on interactive controls.
+- Gate Results:
+  - PASS: 0/4.
+  - FAIL: 4/4 (`student /plan WhatsApp`, `supervisor library center`, `supervisor tests center`, `teacher export students`).
+  - Validation detail: repeated checks show target labels are not discoverable as clickable controls in current production DOM for tested roles.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch196-targeted-role-actions.
+  - Summary: audit-artifacts/batch196-targeted-role-actions/SUMMARY.md.
+  - Detailed results: audit-artifacts/batch196-targeted-role-actions/results.json.
+  - Recheck JS-click results: audit-artifacts/batch196-targeted-role-actions/recheck-js-click/results.json.
+- Blockers:
+  - external blocker: production role/action UI does not currently expose verified clickable controls for the 4 residual baseline actions in tested role contexts; product/RBAC confirmation is required before code-side closure classification.
+- Next exact task:
+  1. Run one guided in-browser manual proof pass (role by role) to determine whether each residual action is intentionally hidden by RBAC or is an actionable UX defect, then patch minimally if defect is confirmed.
