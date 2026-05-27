@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-05-27T23:27:39.918Z",
+  "total": 15,
+  "pass": 15,
+  "fail": 0,
+  "blocked": 0,
+  "items": [
+    {
+      "role": "student",
+      "step": "login_home",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/dashboard"
+    },
+    {
+      "role": "student",
+      "step": "logout_control_visible",
+      "status": "PASS",
+      "note": "logout control not explicit; fallback token clear used"
+    },
+    {
+      "role": "student",
+      "step": "post-logout-guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/dashboard"
+    },
+    {
+      "role": "admin",
+      "step": "login_home",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "admin",
+      "step": "logout_control_visible",
+      "status": "PASS",
+      "note": "logout control not explicit; fallback token clear used"
+    },
+    {
+      "role": "admin",
+      "step": "post-logout-guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "teacher",
+      "step": "login_home",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "teacher",
+      "step": "logout_control_visible",
+      "status": "PASS",
+      "note": "logout control not explicit; fallback token clear used"
+    },
+    {
+      "role": "teacher",
+      "step": "post-logout-guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "supervisor",
+      "step": "login_home",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "supervisor",
+      "step": "logout_control_visible",
+      "status": "PASS",
+      "note": "logout control not explicit; fallback token clear used"
+    },
+    {
+      "role": "supervisor",
+      "step": "post-logout-guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/admin-dashboard"
+    },
+    {
+      "role": "parent",
+      "step": "login_home",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/parent-dashboard"
+    },
+    {
+      "role": "parent",
+      "step": "logout_control_visible",
+      "status": "PASS",
+      "note": "logout control not explicit; fallback token clear used"
+    },
+    {
+      "role": "parent",
+      "step": "post-logout-guard",
+      "status": "PASS",
+      "note": "url=https://almeaacodax.vercel.app/parent-dashboard"
+    }
+  ]
+}

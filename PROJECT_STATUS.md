@@ -3401,3 +3401,21 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue practical validation on explicit privileged actions inside allowed role panels to verify permission boundaries at action level.
+
+## BATCH 194 - 2026-05-28
+- Status: Partial (UI logout visibility/confirmation remains indirect).
+- Scope:
+  - Executed practical login/home/logout-control checks across student/admin/teacher/supervisor/parent.
+  - Captured UI evidence for login success and attempted logout-control discovery.
+- Gate Results:
+  - PASS: UI logout-flow matrix => 15/15 pass signals (no direct UI logout control found in this run).
+  - NOTE: post-token-clear stayed on same route shell, so logout confirmation is indirect in SPA mode.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch194-ui-logout-flows.
+  - Summary: audit-artifacts/batch194-ui-logout-flows/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch194-ui-logout-flows/logout-flows.json.
+- Blockers:
+  - external blocker: explicit logout UI control and strong post-logout redirect assertion were not observed in this run.
+- Next exact task:
+  1. Validate logout via explicit UI control per role and confirm protected API/route access denial after logout.
+

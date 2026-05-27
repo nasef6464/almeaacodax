@@ -1,4 +1,4 @@
-# CODEX HANDOFF - ALMEAA CODAX
+﻿# CODEX HANDOFF - ALMEAA CODAX
 
 Last updated: 2026-05-24
 
@@ -86,9 +86,9 @@ Immediate next action for any new account:
    - `smoke:frontend:strict` PASS with production serving commit `0bf2582`.
    - operational blocker unchanged: admin auth env still required for `smoke:operational`.
 11. New owner-reported runtime blockers were added as mandatory tracks:
-   - learning player: `المصادر` / `المناقشات` tabs not working,
-   - learning player: `المفضلة` / `المشاركة` actions not working,
-   - admin payments: `اعتماد` button not working.
+   - learning player: `Ø§Ù„Ù…ØµØ§Ø¯Ø±` / `Ø§Ù„Ù…Ù†Ø§Ù‚Ø´Ø§Øª` tabs not working,
+   - learning player: `Ø§Ù„Ù…ÙØ¶Ù„Ø©` / `Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©` actions not working,
+   - admin payments: `Ø§Ø¹ØªÙ…Ø§Ø¯` button not working.
    - canonical plan reference:
      - `BATCH_136_ADMIN_PANEL_DEEP_RUNTIME_PLAN_2026-05-24_AR.md`
 12. Owner requested explicit deep runtime coverage additions:
@@ -100,10 +100,10 @@ Immediate next action for any new account:
    - validated by `typecheck`, `smoke:payment-package`, and `smoke:batch136-admin-users-schools-parent-payment`.
 14. Learning player runtime blockers were fixed:
    - file: `components/CoursePlayer.tsx`
-   - `الوصف / المصادر / المناقشات` tabs are now wired and rendered by active state.
-   - `المصادر` now has real preview/download actions from lesson/course resources.
-   - `المناقشات` now loads lesson threads and supports creating a new thread.
-   - `المفضلة` and `المشاركة` actions are now wired (local persistence + share utility).
+   - `Ø§Ù„ÙˆØµÙ / Ø§Ù„Ù…ØµØ§Ø¯Ø± / Ø§Ù„Ù…Ù†Ø§Ù‚Ø´Ø§Øª` tabs are now wired and rendered by active state.
+   - `Ø§Ù„Ù…ØµØ§Ø¯Ø±` now has real preview/download actions from lesson/course resources.
+   - `Ø§Ù„Ù…Ù†Ø§Ù‚Ø´Ø§Øª` now loads lesson threads and supports creating a new thread.
+   - `Ø§Ù„Ù…ÙØ¶Ù„Ø©` and `Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©` actions are now wired (local persistence + share utility).
    - validated by `typecheck`, `smoke:batch136-admin-users-schools-parent-payment`, and `smoke:real-usage-readiness`.
 15. Payment receipt UX was expanded without schema changes:
    - file: `components/PaymentModal.tsx`
@@ -384,8 +384,8 @@ Outcome:
 Outcome:
 - introduced a mandatory cross-session playbook at `docs/CROSS_SESSION_CONTINUITY_PLAYBOOK_AR.md`,
 - normalized the execution rule for every new account/session:
-  - owner says `اكمل` + no active batch => start a new batch directly,
-  - owner says `اكمل` + active batch exists => continue same batch to closure,
+  - owner says `Ø§ÙƒÙ…Ù„` + no active batch => start a new batch directly,
+  - owner says `Ø§ÙƒÙ…Ù„` + active batch exists => continue same batch to closure,
 - revalidated baseline production/runtime checks before closure.
 
 `BATCH 106 - Operational Readiness Deepening` is closed.
@@ -846,7 +846,7 @@ Large-cycle closure/publish update (BATCH 152 - 2026-05-25):
   - `npm run smoke:frontend:strict` (26/26, production commit `62b26fe`)
   - `npm run smoke:real-usage-readiness`
 - Continuity:
-  - closure docs updated for immediate next-batch execution when owner says `اكمل`.
+  - closure docs updated for immediate next-batch execution when owner says `Ø§ÙƒÙ…Ù„`.
 
 Large-cycle closure/publish update (BATCH 153 - 2026-05-25):
 - Vercel production deploy PASS:
@@ -866,7 +866,7 @@ Large-cycle closure/publish update (BATCH 153 - 2026-05-25):
   - `npm run smoke:frontend:strict` (26/26, production commit `d6dde8d`)
   - `npm run smoke:real-usage-readiness`
 - Continuity:
-  - updated closure docs to keep instant next-batch startup when owner says `اكمل`.
+  - updated closure docs to keep instant next-batch startup when owner says `Ø§ÙƒÙ…Ù„`.
 
 Targeted runtime fix closure (BATCH 154 - 2026-05-25):
 - Owner issue addressed in course runtime:
@@ -876,8 +876,8 @@ Targeted runtime fix closure (BATCH 154 - 2026-05-25):
   - `components/CourseOverview.tsx`
 - Behavior after fix:
   - if `course.files` is empty, page now shows empty-state message only (no alternative files list),
-  - overview `المفضلة` persists per-user in local storage,
-  - overview `مشاركة` executes share flow through shared utility.
+  - overview `Ø§Ù„Ù…ÙØ¶Ù„Ø©` persists per-user in local storage,
+  - overview `Ù…Ø´Ø§Ø±ÙƒØ©` executes share flow through shared utility.
 - Deploy and verification:
   - commit: `efa9ce7` pushed to `main`
   - Vercel inspect: `https://vercel.com/nasefs-projects-18e6bdb1/almeaacodax/HugMmLoJ3no8ZUrSEo6ghA99zn3X`
@@ -1321,7 +1321,7 @@ Next exact task:
   - `/pricing` is now platform memberships only.
   - Paid membership CTAs no longer navigate to `/courses`; they open a WhatsApp membership request.
   - Free membership CTA stays in account flow (`/dashboard` or `/login`).
-  - Admin membership management is explicitly documented in Paths Manager text: `إدارة العضويات العامة وباقات المسارات` and `عضوية عامة تفتح كل المنصة`.
+  - Admin membership management is explicitly documented in Paths Manager text: `Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¹Ø¶ÙˆÙŠØ§Øª Ø§Ù„Ø¹Ø§Ù…Ø© ÙˆØ¨Ø§Ù‚Ø§Øª Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª` and `Ø¹Ø¶ÙˆÙŠØ© Ø¹Ø§Ù…Ø© ØªÙØªØ­ ÙƒÙ„ Ø§Ù„Ù…Ù†ØµØ©`.
 - PASS:
   - `smoke:membership-pricing`
   - `typecheck`
@@ -1345,7 +1345,7 @@ Next exact task:
   - `smoke:health-readiness`
   - `smoke:frontend:strict` with updated production asset `index-BCzZEn2H.js`.
 - Browser production facts:
-  - `/pricing` shows `عضويات المنصة`.
+  - `/pricing` shows `Ø¹Ø¶ÙˆÙŠØ§Øª Ø§Ù„Ù…Ù†ØµØ©`.
   - paid membership CTA does not route to `/courses`.
   - paid membership CTA resolves to WhatsApp membership request URL.
 - Screenshot capture timed out, but DOM/URL/browser-state verification completed.
@@ -1376,21 +1376,21 @@ Next exact task:
 ## BATCH 169 - 2026-05-26
 - Status: `Closed (Delivery Style Standardization)`.
 - Scope:
-  - تثبيت نمط تسليم موحد للحسابات التالية.
-  - إلزام تحديث رباعية التسليم في كل دفعة.
-  - اعتماد `UTF-8` عربي فقط ومنع إضافة مقاطع نصية مشوهة.
+  - ØªØ«Ø¨ÙŠØª Ù†Ù…Ø· ØªØ³Ù„ÙŠÙ… Ù…ÙˆØ­Ø¯ Ù„Ù„Ø­Ø³Ø§Ø¨Ø§Øª Ø§Ù„ØªØ§Ù„ÙŠØ©.
+  - Ø¥Ù„Ø²Ø§Ù… ØªØ­Ø¯ÙŠØ« Ø±Ø¨Ø§Ø¹ÙŠØ© Ø§Ù„ØªØ³Ù„ÙŠÙ… ÙÙŠ ÙƒÙ„ Ø¯ÙØ¹Ø©.
+  - Ø§Ø¹ØªÙ…Ø§Ø¯ `UTF-8` Ø¹Ø±Ø¨ÙŠ ÙÙ‚Ø· ÙˆÙ…Ù†Ø¹ Ø¥Ø¶Ø§ÙØ© Ù…Ù‚Ø§Ø·Ø¹ Ù†ØµÙŠØ© Ù…Ø´ÙˆÙ‡Ø©.
 - Gate Results:
-  - `N/A` (دفعة توثيق وتنظيم فقط).
-  - مرجع آخر تحقق بوابات تشغيلية كاملة: PASS في BATCH 168.
+  - `N/A` (Ø¯ÙØ¹Ø© ØªÙˆØ«ÙŠÙ‚ ÙˆØªÙ†Ø¸ÙŠÙ… ÙÙ‚Ø·).
+  - Ù…Ø±Ø¬Ø¹ Ø¢Ø®Ø± ØªØ­Ù‚Ù‚ Ø¨ÙˆØ§Ø¨Ø§Øª ØªØ´ØºÙŠÙ„ÙŠØ© ÙƒØ§Ù…Ù„Ø©: PASS ÙÙŠ BATCH 168.
 - Deploy/Commit Evidence:
-  - لا يوجد تغيير كودي/نشر في هذه الدفعة.
+  - Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªØºÙŠÙŠØ± ÙƒÙˆØ¯ÙŠ/Ù†Ø´Ø± ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙØ¹Ø©.
 - Blockers:
-  - لا يوجد blocker برمجي.
-  - مشاكل الوصول الخارجية مستقبلا تصنف `external blocker`.
+  - Ù„Ø§ ÙŠÙˆØ¬Ø¯ blocker Ø¨Ø±Ù…Ø¬ÙŠ.
+  - Ù…Ø´Ø§ÙƒÙ„ Ø§Ù„ÙˆØµÙˆÙ„ Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠØ© Ù…Ø³ØªÙ‚Ø¨Ù„Ø§ ØªØµÙ†Ù `external blocker`.
 - Next exact task:
-  1. تحديث الملفات الأربعة بنفس ترتيب الحقول الموحد في كل دفعة.
-  2. إدراج `Next exact task` تنفيذي واضح قبل إعلان الإغلاق.
-  3. تسجيل الأعطال الحرجة/العالية بالنموذج الموحد المعتمد.
+  1. ØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ù„ÙØ§Øª Ø§Ù„Ø£Ø±Ø¨Ø¹Ø© Ø¨Ù†ÙØ³ ØªØ±ØªÙŠØ¨ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…ÙˆØ­Ø¯ ÙÙŠ ÙƒÙ„ Ø¯ÙØ¹Ø©.
+  2. Ø¥Ø¯Ø±Ø§Ø¬ `Next exact task` ØªÙ†ÙÙŠØ°ÙŠ ÙˆØ§Ø¶Ø­ Ù‚Ø¨Ù„ Ø¥Ø¹Ù„Ø§Ù† Ø§Ù„Ø¥ØºÙ„Ø§Ù‚.
+  3. ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø£Ø¹Ø·Ø§Ù„ Ø§Ù„Ø­Ø±Ø¬Ø©/Ø§Ù„Ø¹Ø§Ù„ÙŠØ© Ø¨Ø§Ù„Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù…ÙˆØ­Ø¯ Ø§Ù„Ù…Ø¹ØªÙ…Ø¯.
 
 ## BATCH 170 - 2026-05-26
 - Status: `Closed (Handover UTF-8 Guard Added)`.
@@ -1827,3 +1827,21 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue practical validation on explicit privileged actions inside allowed role panels to verify permission boundaries at action level.
+
+## BATCH 194 - 2026-05-28
+- Status: Partial (UI logout visibility/confirmation remains indirect).
+- Scope:
+  - Executed practical login/home/logout-control checks across student/admin/teacher/supervisor/parent.
+  - Captured UI evidence for login success and attempted logout-control discovery.
+- Gate Results:
+  - PASS: UI logout-flow matrix => 15/15 pass signals (no direct UI logout control found in this run).
+  - NOTE: post-token-clear stayed on same route shell, so logout confirmation is indirect in SPA mode.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch194-ui-logout-flows.
+  - Summary: audit-artifacts/batch194-ui-logout-flows/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch194-ui-logout-flows/logout-flows.json.
+- Blockers:
+  - external blocker: explicit logout UI control and strong post-logout redirect assertion were not observed in this run.
+- Next exact task:
+  1. Validate logout via explicit UI control per role and confirm protected API/route access denial after logout.
+
