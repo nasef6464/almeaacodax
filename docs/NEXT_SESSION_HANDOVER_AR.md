@@ -3904,3 +3904,21 @@ pm run smoke:operational PASS (71/71).
   - external blocker: production still serving previous commit at probe time; post-deploy revalidation required.
 - Next exact task:
   1. Push this fix to production and rerun role-by-role logout matrix until explicit logout + protected-route denial pass.
+
+## BATCH 200 - 2026-05-28
+- Status: Fully closed (production logout UX role matrix is now passing).
+- Scope:
+  - Re-tested production logout flow after explicit logout controls + private-route auth guard rollout.
+  - Validated role-by-role for `student`, `admin`, `teacher`, `supervisor`, `parent`.
+- Gate Results:
+  - PASS: logout role matrix => 5/5 PASS, 0 FAIL, 0 BLOCKED.
+  - PASS condition per role: explicit logout control clickable + protected route no longer stays on role-protected path after logout.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch200-logout-ux-postdeploy-retest.
+  - Summary: audit-artifacts/batch200-logout-ux-postdeploy-retest/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch200-logout-ux-postdeploy-retest/logout-postdeploy.json.
+  - Implemented files: `components/auth/RequireAuth.tsx`, `App.tsx`, `components/Header.tsx`, `pages/Dashboard.tsx`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue full practical production sweep across all roles for non-destructive action depth and final signoff packaging.
