@@ -3075,3 +3075,20 @@ Regression risk: low
   - None for residual target-13 set.
 - Next exact task:
   1. Continue practical production validation with explicit logout UX confirmation per role (visible control + post-logout protected-route denial) to close remaining non-target13 quality gap.
+
+## BATCH 198 - 2026-05-28
+- Status: Partial (explicit logout UX gap confirmed on production across all authenticated roles).
+- Scope:
+  - Executed focused production logout validation for `student`, `admin`, `teacher`, `supervisor`, `parent`.
+  - Required condition per role: explicit logout control discoverable + protected route denied after logout.
+- Gate Results:
+  - FAIL: logout explicit UX matrix => 0/5 PASS, 5/5 FAIL.
+  - Observed for all roles: menu discovery failed, logout control not found, and protected route remained accessible in-session (`denied=false`).
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch198-logout-ux-explicit.
+  - Summary: audit-artifacts/batch198-logout-ux-explicit/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch198-logout-ux-explicit/logout-validation.json.
+- Blockers:
+  - external blocker: production currently lacks verifiable explicit logout interaction path per role in automated practical flow, and post-logout protected-route denial cannot be proven without that control.
+- Next exact task:
+  1. Implement minimal explicit logout control path (header/account menu trigger + logout action) and re-run role-by-role logout denial validation on production.
