@@ -3445,3 +3445,20 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue post-deploy delta-only maintenance cadence.
+
+## BATCH 221 - 2026-05-28
+- Status: Fully closed (auth hotfix production closure).
+- Scope:
+  - Fixed Google OAuth return session bootstrap on public routes.
+  - Removed intrusive explicit red logout button from header while preserving logout action from user menu.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:auth-frontend` (6 checks).
+  - PASS: `npm run smoke:frontend:strict` (All 28 blocking checks).
+- Deploy/Commit Evidence:
+  - Fix commit: `02853347`.
+  - Files: `contexts/AuthContext.tsx`, `components/Header.tsx`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Visual confirm in production: Google login redirects into authenticated session and header no longer shows intrusive logout button.
