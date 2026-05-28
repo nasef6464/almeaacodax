@@ -3184,3 +3184,26 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep recurring production regression sweeps after each deploy/release and append delta evidence only.
+
+## BATCH 205 - 2026-05-28
+- Status: Fully closed (full command-gate closure documented).
+- Scope:
+  - Documented complete command-gate execution from latest run.
+  - Consolidated runtime proof for build/type/server/smoke pipelines including operational matrix.
+- Gate Results:
+  - PASS: `npm run typecheck`.
+  - PASS: `npm run build`.
+  - PASS: `npm run server:check`.
+  - PASS: `npm run server:build`.
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:real-usage-readiness`.
+  - PASS: `npm run smoke:payment-package`.
+  - PASS: `npm run smoke:payment-tampering`.
+  - PASS: `npm run smoke:operational` => 71/71 on production API.
+- Deploy/Commit Evidence:
+  - Operational API base used: `https://almeaacodax-k2ux.onrender.com/api`.
+  - Auth context: ADMIN_EMAIL/ADMIN_PASSWORD + `SMOKE_ALLOW_PASSWORD_LOGIN=true` in-session.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Maintain release-cycle regression cadence: run role visual sweep + command gates after each deploy and append delta evidence only.
