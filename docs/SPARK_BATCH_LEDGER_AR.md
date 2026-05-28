@@ -3849,3 +3849,19 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous practical validation cadence.
+
+## BATCH 240 - Addendum 4 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification continuation with no code changes.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (29/29).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-CoCTVxiA.js`.
+  - Version match check: production serving expected build `00665278`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue autonomous practical verification cadence.

@@ -2667,3 +2667,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep autonomous close-after-each-batch execution.
+
+## BATCH 240 - Addendum 4 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification continuation without business-logic changes.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: frontend strict (29/29).
+  - PASS: auth frontend (6/6).
+- Deploy/Commit Evidence:
+  - Strict asset: `index-CoCTVxiA.js`; version check aligned with `00665278`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous batch-by-batch closure cadence.

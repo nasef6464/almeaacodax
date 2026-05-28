@@ -4232,3 +4232,19 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous production visual-role sweep and closure cadence.
+
+## BATCH 240 - Addendum 4 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Autonomous production verification cycle while continuing visual role-by-role execution context.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (29/29).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-CoCTVxiA.js`.
+  - Frontend strict confirms deployed app version matches `00665278`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue autonomous visual production sweep and close with push after each verified cycle.
