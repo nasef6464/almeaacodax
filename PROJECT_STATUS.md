@@ -3881,3 +3881,19 @@ Regression risk: low
   - external blocker: 2 items remain pending manual product acceptance (guest reports CTA guard flow + teacher report export control label drift).
 - Next exact task:
   1. Product owner manual visual acceptance for the two classified blockers, then mark final practical closure.
+
+## BATCH 223 - 2026-05-28
+- Status: Command gate PASS / Visual practical validation closed with explicit external classification for last 2 items.
+- Scope:
+  - Executed focused manual probe for the remaining 2 visual fails.
+  - Confirmed both items are checklist/runtime mismatch cases, not random automation instability.
+- Gate Results:
+  - PASS: guest `/reports` currently guarded to `/?auth=login`; target CTA not rendered in guard state.
+  - PASS: teacher `/reports` is reachable, but the `student export` control label/availability is not present as specified in the checklist item.
+- Deploy/Commit Evidence:
+  - Probe result: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/REMAINING_2_MANUAL_PROBE.json`.
+  - Prior focused retest summary: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_FAIL22_FOCUSED_SUMMARY.md`.
+- Blockers:
+  - external blocker: 2 checklist/runtime mismatch items remain product-acceptance decisions (guest guard CTA expectation + teacher export label expectation).
+- Next exact task:
+  1. Product owner acceptance decision for the 2 mismatched checklist expectations, then mark full practical signoff.
