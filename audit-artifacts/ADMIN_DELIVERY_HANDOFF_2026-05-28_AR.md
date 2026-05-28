@@ -4,7 +4,7 @@
 - الموقع الأمامي: `https://almeaacodax.vercel.app/`
 - API الإنتاجي: `https://almeaacodax-k2ux.onrender.com/api`
 - تم فحص لوحة المدير كجلسة مدير حقيقية باستخدام حساب موجود محليًا في `audit-artifacts/ROLE_CREDENTIALS.env` بدون تدوين أي كلمة مرور أو رمز دخول في هذا الملف.
-- قبل نشر إصلاح الخلفية ظهر عطل إنتاجي متكرر في `/quiz-results/my` بسبب ترتيب المسارات. تم إصلاحه في الكود بإعلان `/quiz-results/my` قبل `/quiz-results/:id`.
+- قبل نشر إصلاح الخلفية ظهر عطل إنتاجي متكرر في `/quiz-results/my` بسبب ترتيب المسارات. تم إصلاحه في الكود بإعلان `/quiz-results/my` قبل `/quiz-results/:id`، وتم تأكيد الإصلاح بعد النشر.
 
 ## التحديثات المهمة
 - إصلاح أزرار اختصارات لوحة المدير حتى تستخدم `setActiveAdminTab(...)` وتحافظ على رابط التبويب بدل تغيير الحالة فقط.
@@ -22,13 +22,19 @@
 - `npm run smoke:batch136-admin-users-schools-parent-payment`: نجح.
 - `npm run smoke:admin-school-command`: نجح.
 - `npm run smoke:health-readiness`: نجح.
+- `npm run smoke:frontend:strict`: نجح بعد النشر، 29/29.
 - `node scripts/smoke-quiz-results-route-order-contract.mjs`: نجح.
+- فحص مباشر لـ `/quiz-results/my`: نجح 200 وأرجع `data` و`pagination`.
+- صحة Render بعد النشر: `ready=true` و`scaleReady=true` والـ commit `ddd5b53674f7`.
 
 ## فحص لوحة المدير الحي
-- آخر فحص حي قبل نشر إصلاح الخلفية:
+- آخر فحص حي بعد النشر:
+  - المسار: `audit-artifacts/admin-live-handoff/2026-05-28-admin-tabs-live-handoff-postdeploy/SUMMARY.md`
+  - النتيجة: 22/22 PASS، بدون أخطاء console أو 500 في تبويبات لوحة المدير.
+- فحص حي قبل نشر إصلاح الخلفية، محفوظ للمقارنة:
   - المسار: `audit-artifacts/admin-live-handoff/2026-05-28-admin-tabs-live-handoff-v4/SUMMARY.md`
   - النتيجة: التبويبات دخلت وعرضت عناصر تفاعلية، لكن 21 تبويبًا تأثرت بنفس عطل API القديم `/quiz-results/my` قبل النشر.
-- بعد نشر إصلاح Render يجب إعادة تشغيل:
+- أمر إعادة الفحص:
   - `ADMIN_AUDIT_RUN_ID=2026-05-28-admin-tabs-live-handoff-postdeploy node scripts/admin-panel-live-handoff-audit.mjs`
 
 ## طريقة متابعة الحساب التالي
@@ -44,7 +50,9 @@
    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
 
 ## ملاحظات النشر
-- GitHub متاح من هذه الجلسة.
+- تم الدفع إلى GitHub على `main` في commit `ddd5b536`.
+- Vercel خدم commit `ddd5b536` بعد النشر التلقائي، وتم تأكيده بفحص الواجهة الصارم.
+- Render خدم commit `ddd5b53674f7` بعد النشر التلقائي، وتم تأكيد الصحة والجاهزية.
 - Vercel CLI غير مسجل دخول في هذه الجلسة، لذلك النشر اليدوي عبر CLI يحتاج `vercel login` أو `--token`.
-- Render API/Deploy Hook غير موجودين في متغيرات هذه الجلسة. إذا كان GitHub مربوطًا بـ Render/Vercel فالدفع إلى `main` هو طريق النشر التلقائي المتوقع.
+- Render API/Deploy Hook غير موجودين في متغيرات هذه الجلسة، لكن النشر التلقائي من GitHub عمل لهذه الدفعة.
 - MongoDB متغير الاتصال موجود محليًا، ولم يتم تغيير مخطط قاعدة البيانات في هذه الدفعة.
