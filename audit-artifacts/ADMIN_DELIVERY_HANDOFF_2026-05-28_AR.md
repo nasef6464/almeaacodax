@@ -22,7 +22,7 @@
 - `npm run smoke:batch136-admin-users-schools-parent-payment`: نجح.
 - `npm run smoke:admin-school-command`: نجح.
 - `npm run smoke:health-readiness`: نجح.
-- `npm run smoke:frontend:strict`: نجح بعد النشر، 29/29.
+- `npm run smoke:frontend:strict`: نجح بعد النشر، 29/29، والواجهة تخدم commit `ed6e3fcf`.
 - `node scripts/smoke-quiz-results-route-order-contract.mjs`: نجح.
 - فحص مباشر لـ `/quiz-results/my`: نجح 200 وأرجع `data` و`pagination`.
 - صحة Render بعد النشر: `ready=true` و`scaleReady=true` والـ commit `ddd5b53674f7`.
@@ -50,9 +50,9 @@
    - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
 
 ## ملاحظات النشر
-- تم الدفع إلى GitHub على `main` في commit `ddd5b536`.
-- Vercel خدم commit `ddd5b536` بعد النشر التلقائي، وتم تأكيده بفحص الواجهة الصارم.
-- Render خدم commit `ddd5b53674f7` بعد النشر التلقائي، وتم تأكيد الصحة والجاهزية.
+- تم الدفع إلى GitHub على `main` حتى commit `ed6e3fcf`.
+- Vercel خدم commit `ed6e3fcf` بعد النشر التلقائي، وتم تأكيده بفحص الواجهة الصارم.
+- Render خدم commit الكود `ddd5b53674f7` بعد النشر التلقائي، وتم تأكيد الصحة والجاهزية. Commit `ed6e3fcf` توثيقي لإثبات ما بعد النشر ولا يغير كود الخلفية.
 - Vercel CLI غير مسجل دخول في هذه الجلسة، لذلك النشر اليدوي عبر CLI يحتاج `vercel login` أو `--token`.
 - Render API/Deploy Hook غير موجودين في متغيرات هذه الجلسة، لكن النشر التلقائي من GitHub عمل لهذه الدفعة.
 - MongoDB متغير الاتصال موجود محليًا، ولم يتم تغيير مخطط قاعدة البيانات في هذه الدفعة.
