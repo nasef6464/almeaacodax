@@ -1,4 +1,4 @@
-# ??? ????? Spark
+﻿# ??? ????? Spark
 
 | ??? ?????? | ??? ?????? | ?????? ??? ???????? | ??? ????? | ??????? ??????? | ??????? ???????? |
 |---|---|---|---|---|---|
@@ -25,18 +25,18 @@
 | 20 | Load Testing Scripts | Programmatically closed (script+evidence ready), scale hardening pending | 2026-05-17 | BATCH_20R_LOAD_TESTING_SCALE_HARDENING_CLOSURE_2026-05-17_AR.md | Revalidated contracts/build; production evidence still shows 500+ not ready without infra hardening window. |
 | 21 | Final Production Readiness Report | Fully closed | 2026-05-17 | BATCH_21B_PRODUCTION_HARDENING_CONTRACT_ALIGNMENT_2026-05-17_AR.md | ?? ?????? ??? hardening ?? middleware ??????? ?????? ????? ??????? ???? ???? ??????? ???????? PASS. |
 
-## ????? BATCH 02R — 2026-05-17
+## ????? BATCH 02R â€” 2026-05-17
 - ??? ??????: `BATCH_02R_PAYMENT_AMOUNT_TAMPERING_PRODUCTION_CLOSURE_2026-05-16_AR`.
 - ?? ????? ????? tampering ???? ???????? ?? ?????? ??????? ?? ??????? (`amount/itemName/includedCourseIds`) ?? create schema.
 - ??? tampering ??? (9/9).
 - ?????? ???????? ?????? 02 ?? ????: `Programmatically closed, production verification pending`.
 
-## ????? BATCH 09 — 2026-05-17 (Audit Only)
+## ????? BATCH 09 â€” 2026-05-17 (Audit Only)
 - ????? ??????: `BATCH_09_RBAC_AUDIT_AR.md`.
 - ??????: ????? ?????? ??? ????? ????? `server/src/routes/` ???? ?? ????? ???.
 - ????????: ???? endpoint-by-endpoint (method/path/middleware/access/risk) + ????? ??????.
 
-## ????? BATCH 12R — 2026-05-17
+## ????? BATCH 12R â€” 2026-05-17
 - ????? ??????: `BATCH_12R_REDIS_QUEUE_PRODUCTION_VERIFICATION_CLOSURE_2026-05-17_AR.md`.
 - ????? ??????:
   - `npm --prefix server run build`: PASS
@@ -48,7 +48,7 @@
   - `npm run smoke:batch12-golive`: PASS (?? Admin readiness ??? token)
 - ?????? ????????: `Programmatically closed, production verification pending`.
 
-## ????? BATCH 12R — 2026-05-17 (??? ?????)
+## ????? BATCH 12R â€” 2026-05-17 (??? ?????)
 - `smoke:batch12-golive` ??? ??:
   - frontend probe = 200
   - API health = 200
@@ -57,7 +57,7 @@
 - `managed_redis` ???? PASS (`Redis is reachable`).
 - ?????? ???????? ???????? ????? 12: **Fully closed**.
 
-## ????? BATCH 02R — 2026-05-17 (Production Reality Check)
+## ????? BATCH 02R â€” 2026-05-17 (Production Reality Check)
 - ?? ????? ???? ?? end-to-end ??? ??????? ???????? tampering.
 - ???????: **FAIL (Critical)**.
 - ?? ????? ?? ????? ??????? ???? ??? `amount/itemName/includedCourseIds` ??????? ???????? ??? access grant ??? approval.
@@ -65,14 +65,14 @@
 - ??????? ??????: `BATCH 02R-FIX` ?????? ?????? ??????? ?? ????? ?????? ????.
 
 
-## ????? BATCH 02R — 2026-05-17 (Production Verification PASS)
+## ????? BATCH 02R â€” 2026-05-17 (Production Verification PASS)
 - ?? ??? ??????? ??? ??????? (commit: e1129da).
 - ???? End-to-End ???? ??? ???????.
 - ?????? ???????? ???????? ????? 02: **Fully closed**.
 
 
 
-## ????? BATCH 03R — 2026-05-17 (Production Check)
+## ????? BATCH 03R â€” 2026-05-17 (Production Check)
 - GET /content/platform-integrations: PASS (masked).
 - PATCH /content/platform-integrations: FAIL (500).
 - history/runtime-audit/setup-checklist: FAIL (404).
@@ -80,24 +80,24 @@
 
 
 
-## ????? BATCH 03R Final Closure — 2026-05-17
+## ????? BATCH 03R Final Closure â€” 2026-05-17
 - ?? ?????? ???? ????? ??? ???????.
 - ?????? ????????: **Fully closed**.
 
 
 
-## ????? BATCH 05R Final Closure — 2026-05-17
+## ????? BATCH 05R Final Closure â€” 2026-05-17
 - ?? ?????? ???? ??? ??????? ????? ????? ????? ????? paginated.
 - ?????? ????????: **Fully closed**.
 
 
 
-## ????? BATCH 10R Production Risk Check — 2026-05-17
+## ????? BATCH 10R Production Risk Check â€” 2026-05-17
 - ??????? ??????: ?????? ?????? ?????? ?????? ??? report/import/relations ?????? ???????? (??? RBAC).
 - ?? ????? ????? scope ?????? ?? content.routes.ts ??? ???? ?????.
 - ??????: Programmatically closed, production verification pending.
 
-## ????? BATCH 10R Final Closure — 2026-05-17
+## ????? BATCH 10R Final Closure â€” 2026-05-17
 - ?? ??? ??????? ??? ??????? (commit: `67b662d`).
 - ?????? ???? ??????? PASS:
   - admin report = 200
@@ -105,7 +105,7 @@
   - student report = 403
 - ?????? ????????: **Fully closed**.
 
-## ????? BATCH 17R — 2026-05-17
+## ????? BATCH 17R â€” 2026-05-17
 - ????? `oauth_token/oauth_user` ?? redirect ????? ?? Google callback.
 - ????? ????? ?????? ?? localStorage ??????? (???????? ??? HttpOnly cookie + sessionStorage ??????? ??? ?????).
 - ?????? ???????? ???? PASS.
@@ -115,16 +115,16 @@
 
 
 
-## ????? ????? ?????? ???? — 2026-05-17
+## ????? ????? ?????? ???? â€” 2026-05-17
 - ?? ?????? ??????? ???????: `docs/FINAL_LIVE_VERIFICATION_SUMMARY_2026-05-17_AR.md`.
 - ?????? ???? ??? ?????: API health ???? + Frontend live ??? `https://almeaacodax.vercel.app/#/`.
 - `smoke:frontend:strict` PASS? `smoke:production-hardening` PASS? `smoke:operational` PASS (???????? `SMOKE_ADMIN_TOKEN`).
 
-## ????? ????? ?? ??? ??????? — 2026-05-17 (Final)
+## ????? ????? ?? ??? ??????? â€” 2026-05-17 (Final)
 - ?? ????? ?????? ?????? ?????? `smoke:operational` ????? ???? (71/71).
 - ?????? ???????? ??? ???????: **Fully closed**.
 
-## ????? BATCH 22 — 2026-05-17
+## ????? BATCH 22 â€” 2026-05-17
 - ?????: Production Guardrails and CI Secrets.
 - ??????: **Fully closed**.
 - ?? ????? workflow ????: `.github/workflows/post-deploy-smoke.yml`.
@@ -133,105 +133,105 @@
 - ???????: `BATCH_22_PRODUCTION_GUARDRAILS_AND_CI_SECRETS_2026-05-17_AR.md`.
 
 
-## Update BATCH 15R — 2026-05-17
+## Update BATCH 15R â€” 2026-05-17
 - Forced /api/content/bootstrap non-staff requests to learning scope even when scope=full is requested.
 - Live production check passed with header x-content-scope: learning and zero operational payload for guest requests.
 - Batch 15 status moved to **Fully closed**.
 
 
 
-## Update BATCH 16R — 2026-05-17
+## Update BATCH 16R â€” 2026-05-17
 - Verified cookie-first auth outcome (VITE_AUTH_COOKIE_FIRST) and cleanup of legacy localStorage auth session key.
 - Verified production auth guard (/api/auth/me => 401 unauthenticated) and OAuth start redirect with state-based flow only.
 - Batch 16 moved to **Fully closed**.
 
 
 
-## Update BATCH 20R — 2026-05-17
+## Update BATCH 20R â€” 2026-05-17
 - Re-ran load-test contracts and core builds successfully.
 - Kept status evidence-based: 20 ready, 100 conditional, 500+ pending infra hardening.
 - Batch remains programmatically closed until scale execution window completes.
 
 
 
-## Update BATCH 20S — 2026-05-17
+## Update BATCH 20S â€” 2026-05-17
 - Executed safe live quick load window on production (20/100) for /health and /content/bootstrap with all-200 responses and zero timeouts/errors.
 - Updated LOAD_TEST_REPORT.md with fresh evidence and kept 500+ status pending infrastructure tuning/retest window.
 - Status: Programmatically closed, production scale hardening pending.
 
 
 
-## Update BATCH 20T — 2026-05-17
+## Update BATCH 20T â€” 2026-05-17
 - Added env-level rate-limit tuning keys and wired middleware to consume them for production tuning readiness.
 - Build + readiness + auth-cookie smokes passed after change.
 - Status: Programmatically closed.
 
 
 
-## Update BATCH 20U — 2026-05-17
+## Update BATCH 20U â€” 2026-05-17
 - Executed short 500/1000 production retest window for /health and /content/bootstrap with 200-only responses and no timeouts/errors.
 - Captured evidence files under load-tests/results/prod_retest_* and appended report section in LOAD_TEST_REPORT.md.
 - Status: Programmatically closed, full-journey 500+ closure pending.
 
 
 
-## Update BATCH 20V — 2026-05-17
+## Update BATCH 20V â€” 2026-05-17
 - Executed high-concurrency journey edge retest for uth/login and unauthenticated quizzes/results at 500/1000.
 - Captured report + artifacts under load-tests/results/prod_journey_* with expected 401/429 behavior and no transport-level timeouts.
 - Status: Programmatically closed, authenticated/write-path expansion pending.
 
 
 
-## Update BATCH 20W — 2026-05-17
+## Update BATCH 20W â€” 2026-05-17
 - Attempted authenticated 500+/1000 retest for results/write-light paths.
 - Blocked by auth limiter (429) during token acquisition from /api/auth/login in production.
 - Status: Programmatically closed with blocker documentation; continuation requires dedicated load token.
 
 
 
-## Update BATCH 20X — 2026-05-17
+## Update BATCH 20X â€” 2026-05-17
 - Executed authenticated probe with corrected Authorization header at c=50 and confirmed 200 responses.
 - Prior authenticated 500+/1000 outputs remained inconclusive in parts, so full authenticated high-concurrency closure is still pending controlled retest with infra metrics.
 - Status: Programmatically closed (continuation), final 500+ authenticated closure pending.
 
 
-## Update BATCH 20Y — 2026-05-17
+## Update BATCH 20Y â€” 2026-05-17
 - Executed controlled authenticated production retest at 500/1000 using direct bearer token on `/quizzes/results` and `/auth/me/preferences`.
 - Evidence confirms authenticated high-concurrency is still not production-closed: heavy timeout/non2xx at 500+, full collapse on some 1000 runs.
 - Status: Programmatically closed (execution documented), final authenticated 500+/1000 closure pending hardening.
 
-## Update BATCH 20Z — 2026-05-17
+## Update BATCH 20Z â€” 2026-05-17
 - Added safe `noTotal` mode in quiz results endpoints and enabled it by default in client list fetches.
 - Ran authenticated production retest at 500/1000 with `noTotal=true`; results still showed heavy timeouts at both levels.
 - Status: Partially closed (hardening step done, final authenticated 500+ closure pending).
 
-## Update BATCH 20ZA — 2026-05-17
+## Update BATCH 20ZA â€” 2026-05-17
 - Added 5s short-lived cache for authenticated `/quizzes/results` (only with `noTotal=true` and without review payload), plus submit-triggered cache invalidation.
 - Production retest improved markedly: c500 (`2xx=428`, `timeouts=197`) and c1000 (`2xx=330`, `timeouts=678`) vs prior no-cache run.
 - Status: Partially closed (material improvement delivered, final 500+/1000 closure still pending).
 
-## Update BATCH 20ZB — 2026-05-17
+## Update BATCH 20ZB â€” 2026-05-17
 - Ran a mixed production load window (public + authenticated) and captured dedicated evidence/summary artifacts.
 - Authenticated quiz-results path showed sustained improvement vs pre-cache baselines, while bootstrap/taxonomy remained the current pressure points.
 - Status: Programmatically closed, full production 500+/1000 closure still pending.
 
-## Update BATCH 20ZC — 2026-05-17
+## Update BATCH 20ZC â€” 2026-05-17
 - Tested cache TTL/SWR-only hardening on bootstrap/taxonomy and executed fresh c=300 production probes.
 - Outcome: no reliable gain; bootstrap path showed worse timeout profile in this run window.
 - Status: Partially closed, deeper payload/query decomposition required next.
 
-## Update BATCH 20ZD — 2026-05-18
+## Update BATCH 20ZD â€” 2026-05-18
 - Extended learning-scope bootstrap cache sharing to authenticated non-staff and validated deployment.
 - c300 burst retests remained unstable, while lower-load probes confirmed service health outside collapse windows.
 - Status: Partially closed; deeper payload decomposition required.
 
-## Update BATCH 20ZE — 2026-05-18
+## Update BATCH 20ZE â€” 2026-05-18
 - Delivered a true minimal bootstrap endpoint and switched public ads bootstrap usage to it.
 - Production load evidence at c300 showed zero timeouts on the minimal path and strong gain vs the heavier learning bootstrap path.
 - Status: Programmatically closed.
 
-## Update 2026-05-18 — BATCH 20ZF
-- Batch: BATCH 20ZF — Learning Bootstrap Segmentation
+## Update 2026-05-18 â€” BATCH 20ZF
+- Batch: BATCH 20ZF â€” Learning Bootstrap Segmentation
 - Status: Programmatically closed, production verification pending
 - Changes:
   - Added `phase=core|full` to `/content/bootstrap`.
@@ -248,10 +248,10 @@
 - Report:
   - `BATCH_20ZF_LEARNING_BOOTSTRAP_SEGMENTATION_2026-05-18_AR.md`
 - Next:
-  - BATCH 20ZG — Taxonomy Bootstrap Retest + Decomposition
+  - BATCH 20ZG â€” Taxonomy Bootstrap Retest + Decomposition
 
-## Update 2026-05-18 — BATCH 20ZG
-- Batch: BATCH 20ZG — Taxonomy Bootstrap Retest + Decomposition
+## Update 2026-05-18 â€” BATCH 20ZG
+- Batch: BATCH 20ZG â€” Taxonomy Bootstrap Retest + Decomposition
 - Status: Programmatically closed, production verification pending
 - Changes:
   - Added `phase=core|full` to `/api/taxonomy/bootstrap`.
@@ -268,28 +268,28 @@
 - Report:
   - `BATCH_20ZG_TAXONOMY_BOOTSTRAP_DECOMPOSITION_RETEST_2026-05-18_AR.md`
 - Next:
-  - BATCH 22 — CSRF Cookie Protection
+  - BATCH 22 â€” CSRF Cookie Protection
 
-## Update 2026-05-18 — BATCH 22
-- Batch: BATCH 22 — CSRF Cookie Protection
+## Update 2026-05-18 â€” BATCH 22
+- Batch: BATCH 22 â€” CSRF Cookie Protection
 - Status: Programmatically closed, production verification pending
 - Report: `BATCH_22_CSRF_COOKIE_PROTECTION_2026-05-18_AR.md`
 - Checks: server build PASS, typecheck PASS, frontend build PASS, smoke:auth-cookie PASS, smoke:csrf PASS
 
-## Update 2026-05-18 — BATCH 26R
-- Batch: BATCH 26R — Quiz Availability & Integrity General Fix
+## Update 2026-05-18 â€” BATCH 26R
+- Batch: BATCH 26R â€” Quiz Availability & Integrity General Fix
 - Status: Programmatically closed, production verification pending
 - Report: `BATCH_26R_QUIZ_AVAILABILITY_AND_INTEGRITY_GENERAL_FIX_2026-05-18_AR.md`
 - Checks: server build PASS, typecheck PASS, frontend build PASS, smoke:quiz-integrity-guard PASS
 
-## Update 2026-05-18 — BATCH 30
-- Batch: BATCH 30 — Course Settings Scope UX Consistency
+## Update 2026-05-18 â€” BATCH 30
+- Batch: BATCH 30 â€” Course Settings Scope UX Consistency
 - Status: Programmatically closed, production verification pending
 - Report: `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 - Checks: typecheck PASS, frontend build PASS, smoke:course-builder PASS
 
-## Update 2026-05-18 — BATCH 23
-- Batch: BATCH 23 — Remove JSON Token From Production Auth Response
+## Update 2026-05-18 â€” BATCH 23
+- Batch: BATCH 23 â€” Remove JSON Token From Production Auth Response
 - Status: Programmatically closed, production verification pending
 - Report: `BATCH_23_REMOVE_JSON_TOKEN_FROM_PRODUCTION_AUTH_RESPONSE_2026-05-18_AR.md`
 - Changes:
@@ -304,8 +304,8 @@
   - smoke:auth-token-response PASS
   - smoke:auth-frontend PASS
 
-## Update 2026-05-18 — BATCH 24
-- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+## Update 2026-05-18 â€” BATCH 24
+- Batch: BATCH 24 â€” Platform Integration Secrets Encryption At Rest
 - Status: Programmatically closed, production verification pending
 - Report: `BATCH_24_PLATFORM_INTEGRATION_SECRETS_ENCRYPTION_AT_REST_2026-05-18_AR.md`
 - Changes:
@@ -318,10 +318,10 @@
   - `npm run typecheck` PASS
   - `npm run build` PASS
 - Next:
-  - BATCH 25 — RBAC Scope Audit Batch 2
+  - BATCH 25 â€” RBAC Scope Audit Batch 2
 
-## Update 2026-05-18 — BATCH 24 Final Production Closure
-- Batch: BATCH 24 — Platform Integration Secrets Encryption At Rest
+## Update 2026-05-18 â€” BATCH 24 Final Production Closure
+- Batch: BATCH 24 â€” Platform Integration Secrets Encryption At Rest
 - Status: Fully closed
 - Production verification:
   - API health on Render is live and serving latest backend commit (`368e31f...`).
@@ -332,8 +332,8 @@
   - New/updated integration secrets are encrypted at rest.
   - Legacy plaintext secrets (if any) should be rotated/resaved through admin flow as follow-up hygiene.
 
-## Update 2026-05-18 — BATCH 30 (Finalization pass)
-- Batch: BATCH 30 — Course Settings Scope UX Consistency
+## Update 2026-05-18 â€” BATCH 30 (Finalization pass)
+- Batch: BATCH 30 â€” Course Settings Scope UX Consistency
 - Status: Programmatically closed, production verification pending
 - Additional scope completed:
   - Added path/subject scoped filtering for existing lesson/quiz import in `AdvancedCourseBuilder`.
@@ -347,8 +347,8 @@
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 
 
-## Update 2026-05-18 — BATCH 25
-- Batch: BATCH 25 — RBAC Scope Audit Batch 2
+## Update 2026-05-18 â€” BATCH 25
+- Batch: BATCH 25 â€” RBAC Scope Audit Batch 2
 - Status: Programmatically closed, production verification pending
 - Type: Audit-only (no behavior change)
 - Scope reviewed:
@@ -366,10 +366,10 @@
 - Report:
   - `BATCH_25_RBAC_SCOPE_AUDIT_BATCH_2_2026-05-18_AR.md`
 - Next:
-  - BATCH 25B — RBAC Scope Hardening for Content CRUD
+  - BATCH 25B â€” RBAC Scope Hardening for Content CRUD
 
-## Update 2026-05-18 — BATCH 25B
-- Batch: BATCH 25B — RBAC Scope Hardening for Content CRUD
+## Update 2026-05-18 â€” BATCH 25B
+- Batch: BATCH 25B â€” RBAC Scope Hardening for Content CRUD
 - Status: Programmatically closed, production verification pending
 - Implemented hardening on:
   - `PATCH/DELETE /topics/:id` (managed path/subject scope)
@@ -390,8 +390,8 @@
 - Report:
   - `BATCH_25B_RBAC_SCOPE_HARDENING_FOR_CONTENT_CRUD_2026-05-18_AR.md`
 
-## Update 2026-05-18 — BATCH 27
-- Batch: BATCH 27 — Sentry Production Verification
+## Update 2026-05-18 â€” BATCH 27
+- Batch: BATCH 27 â€” Sentry Production Verification
 - Status: Programmatically closed, production verification pending
 - Checks:
   - `npm run smoke:monitoring` PASS
@@ -402,8 +402,8 @@
 - Report:
   - `BATCH_27_SENTRY_PRODUCTION_VERIFICATION_2026-05-18_AR.md`
 
-## Update 2026-05-18 — BATCH 25C
-- Batch: BATCH 25C — Live Role Matrix Verification
+## Update 2026-05-18 â€” BATCH 25C
+- Batch: BATCH 25C â€” Live Role Matrix Verification
 - Status: Programmatically closed, production verification pending
 - Live checks completed:
   - `npm run smoke:security-rbac-phase6` PASS
@@ -417,8 +417,8 @@
 - Report:
   - `BATCH_25C_LIVE_ROLE_MATRIX_VERIFICATION_2026-05-18_AR.md`
 
-## Update 2026-05-18 — BATCH 30 (Arabic text integrity pass)
-- Batch: BATCH 30 — Course Settings Scope UX Consistency
+## Update 2026-05-18 â€” BATCH 30 (Arabic text integrity pass)
+- Batch: BATCH 30 â€” Course Settings Scope UX Consistency
 - Status: Programmatically closed, production verification pending
 - Added:
   - Safe label rendering + mojibake sanitization for subject/section/skill labels in both `CourseBuilder` and `AdvancedCourseBuilder`.
@@ -433,8 +433,8 @@
 - Report:
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 
-## Update 2026-05-18 — BATCH 30 Final Production Closure
-- Batch: BATCH 30 — Course Settings Scope UX Consistency
+## Update 2026-05-18 â€” BATCH 30 Final Production Closure
+- Batch: BATCH 30 â€” Course Settings Scope UX Consistency
 - Status: Fully closed
 - Final verification:
   - `npm run typecheck` PASS
@@ -451,10 +451,10 @@
 - Report:
   - `BATCH_30_COURSE_SETTINGS_SCOPE_UX_CONSISTENCY_2026-05-18_AR.md`
 - Next:
-  - BATCH 25C-FINAL — Multi-role live matrix verification
+  - BATCH 25C-FINAL â€” Multi-role live matrix verification
 
-## Update 2026-05-18 — BATCH 25C-FINAL
-- Batch: BATCH 25C-FINAL — Multi-role Live Matrix Verification
+## Update 2026-05-18 â€” BATCH 25C-FINAL
+- Batch: BATCH 25C-FINAL â€” Multi-role Live Matrix Verification
 - Status: Programmatically closed, production verification pending
 - Completed:
   - `npm run smoke:security-rbac-phase6` PASS
@@ -471,10 +471,10 @@
 - Report:
   - `BATCH_25C_FINAL_MULTI_ROLE_LIVE_MATRIX_VERIFICATION_2026-05-18_AR.md`
 - Next:
-  - BATCH 25C-FINAL-A — Operational Role Credentials Alignment
+  - BATCH 25C-FINAL-A â€” Operational Role Credentials Alignment
 
-## Update 2026-05-18 — BATCH 25C-FINAL-A
-- Batch: BATCH 25C-FINAL-A — Operational Role Credentials Alignment
+## Update 2026-05-18 â€” BATCH 25C-FINAL-A
+- Batch: BATCH 25C-FINAL-A â€” Operational Role Credentials Alignment
 - Status: Programmatically closed, production verification pending
 - Changes:
   - Hardened `server/src/scripts/smokeOperationalJourneysApi.ts` to accept explicit per-role tokens.
@@ -486,10 +486,10 @@
 - Report:
   - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
 - Next:
-  - BATCH 25C-FINAL-B — Multi-role Live Runtime PASS & Final Closure
+  - BATCH 25C-FINAL-B â€” Multi-role Live Runtime PASS & Final Closure
 
-## Update 2026-05-18 — BATCH 25C-FINAL / FINAL-A Production Closure
-- Batch: BATCH 25C-FINAL — Multi-role Live Matrix Verification
+## Update 2026-05-18 â€” BATCH 25C-FINAL / FINAL-A Production Closure
+- Batch: BATCH 25C-FINAL â€” Multi-role Live Matrix Verification
 - Status: Fully closed
 - Final production evidence:
   - `npm run smoke:operational` => PASS
@@ -502,10 +502,10 @@
   - `BATCH_25C_FINAL_MULTI_ROLE_LIVE_MATRIX_VERIFICATION_2026-05-18_AR.md`
   - `BATCH_25C_FINAL_A_OPERATIONAL_ROLE_CREDENTIALS_ALIGNMENT_2026-05-18_AR.md`
 - Next:
-  - BATCH 27B — Sentry Live Event Proof
+  - BATCH 27B â€” Sentry Live Event Proof
 
-## Update 2026-05-18 — BATCH 27B
-- Batch: BATCH 27B — Sentry Live Event Proof
+## Update 2026-05-18 â€” BATCH 27B
+- Batch: BATCH 27B â€” Sentry Live Event Proof
 - Status: Programmatically closed, production verification pending
 - Checks:
   - `npm run smoke:monitoring` PASS
@@ -517,10 +517,10 @@
 - Report:
   - `BATCH_27B_SENTRY_LIVE_EVENT_PROOF_2026-05-18_AR.md`
 - Next:
-  - BATCH 27C — Sentry SDK Integration + Live Event Closure
+  - BATCH 27C â€” Sentry SDK Integration + Live Event Closure
 
-## Update 2026-05-18 — BATCH 27C
-- Batch: BATCH 27C — Sentry SDK Integration + Live Event Closure
+## Update 2026-05-18 â€” BATCH 27C
+- Batch: BATCH 27C â€” Sentry SDK Integration + Live Event Closure
 - Status: Programmatically closed, production verification pending
 - Implemented:
   - Added backend Sentry runtime integration (`server/src/observability/sentry.ts` + `initSentry()` in app bootstrap).
@@ -539,9 +539,9 @@
 - Report:
   - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
 - Next:
-  - BATCH 27D — Sentry Live Production Event Proof (Final evidence)
+  - BATCH 27D â€” Sentry Live Production Event Proof (Final evidence)
 
-## Update 2026-05-18 — BATCH 30B
+## Update 2026-05-18 â€” BATCH 30B
 - Batch: Course Builder Arabic Encoding & Field Canonicalization.
 - Status: Programmatically closed, production verification pending.
 - Scope delivered:
@@ -554,10 +554,10 @@
   - `npm run build` PASS
   - `npm run smoke:health-readiness` PASS
 - Report: `BATCH_30B_COURSE_BUILDER_ARABIC_ENCODING_AND_FIELD_CANONICALIZATION_2026-05-18_AR.md`
-- Next: `BATCH 30C — Course Visibility Contract (Admin -> Student)`
+- Next: `BATCH 30C â€” Course Visibility Contract (Admin -> Student)`
 
-## Update 2026-05-19 — BATCH 27C Final Production Closure
-- Batch: BATCH 27C — Sentry SDK Integration + Live Event Closure
+## Update 2026-05-19 â€” BATCH 27C Final Production Closure
+- Batch: BATCH 27C â€” Sentry SDK Integration + Live Event Closure
 - Status: Fully closed
 - Final production evidence:
   - `npm run smoke:sentry-live-proof` PASS
@@ -575,8 +575,8 @@
 - Reports:
   - `BATCH_27C_SENTRY_SDK_INTEGRATION_AND_LIVE_EVENT_CLOSURE_2026-05-18_AR.md`
 
-## Update 2026-05-19 — BATCH 30C Final Production Closure
-- Batch: BATCH 30C — Course Visibility Contract (Admin -> Student)
+## Update 2026-05-19 â€” BATCH 30C Final Production Closure
+- Batch: BATCH 30C â€” Course Visibility Contract (Admin -> Student)
 - Status: Fully closed
 - Delivered:
   - Added `scripts/smoke-course-visibility-contract.mjs`
@@ -597,10 +597,10 @@
 - Report:
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next:
-  - BATCH 30D — Curriculum Import Scope Guard
+  - BATCH 30D â€” Curriculum Import Scope Guard
 
-## Update 2026-05-19 — BATCH 30D Final Production Closure
-- Batch: BATCH 30D — Curriculum Import Scope Guard
+## Update 2026-05-19 â€” BATCH 30D Final Production Closure
+- Batch: BATCH 30D â€” Curriculum Import Scope Guard
 - Status: Fully closed
 - Delivered:
   - Server-side import scope guard in `server/src/routes/course.routes.ts`
@@ -611,9 +611,9 @@
   - `npm run smoke:curriculum-import-scope` PASS
   - `npm run smoke:course-visibility` PASS
 - Live production verification (visual + functional):
-  - Course added and visible in learning tab `الدورات`: `30D Visibility Course 1779142597180`
-  - Training quiz added and visible in learning tab `التدريب`: `30D Training Quiz 1779142597180`
-  - Mock exam added and visible in learning tab `الاختبارات`: `30D Mock Quiz 1779142597180`
+  - Course added and visible in learning tab `Ø§Ù„Ø¯ÙˆØ±Ø§Øª`: `30D Visibility Course 1779142597180`
+  - Training quiz added and visible in learning tab `Ø§Ù„ØªØ¯Ø±ÙŠØ¨`: `30D Training Quiz 1779142597180`
+  - Mock exam added and visible in learning tab `Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª`: `30D Mock Quiz 1779142597180`
   - Verified through in-app browser as a real learner-flow view.
 - Production probes:
   - Frontend => 200
@@ -621,8 +621,8 @@
 - Report:
   - `BATCH_30D_CURRICULUM_IMPORT_SCOPE_GUARD_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 30E Live Admin Verification Closure
-- Batch: BATCH 30E — Live Admin Verification (Courses/Training/Tests)
+## Update 2026-05-19 â€” BATCH 30E Live Admin Verification Closure
+- Batch: BATCH 30E â€” Live Admin Verification (Courses/Training/Tests)
 - Status: Fully closed (API + Smoke); visual direct-control evidence pending tool channel
 - Delivered:
   - Created and published course: `30E Live Course 1779161344417`
@@ -641,8 +641,8 @@
 - Report:
   - `BATCH_30E_LIVE_ADMIN_VISUAL_API_CLOSURE_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 31 Homepage & Admin Panel Full Verification
-- Batch: BATCH 31 — Homepage + Admin Panel Full Verification
+## Update 2026-05-19 â€” BATCH 31 Homepage & Admin Panel Full Verification
+- Batch: BATCH 31 â€” Homepage + Admin Panel Full Verification
 - Status: Fully closed (API + Smoke)
 - Delivered verification coverage:
   - homepage hero + announcement ads contracts
@@ -666,8 +666,8 @@
 - Report:
   - `BATCH_31_HOMEPAGE_AND_ADMIN_PANEL_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 32 Production Operations & Security Full Verification
-- Batch: BATCH 32 — Production Operations + Security Full Verification
+## Update 2026-05-19 â€” BATCH 32 Production Operations & Security Full Verification
+- Batch: BATCH 32 â€” Production Operations + Security Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:health-readiness` PASS
@@ -680,8 +680,8 @@
 - Report:
   - `BATCH_32_PRODUCTION_OPERATIONS_AND_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 33 QA & Deployment Handover Full Verification
-- Batch: BATCH 33 — QA + Deployment Handover Full Verification
+## Update 2026-05-19 â€” BATCH 33 QA & Deployment Handover Full Verification
+- Batch: BATCH 33 â€” QA + Deployment Handover Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:qa-phase17` PASS
@@ -693,8 +693,8 @@
 - Report:
   - `BATCH_33_QA_AND_DEPLOYMENT_HANDOVER_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 34 Auth & CSRF Security Full Verification
-- Batch: BATCH 34 — Auth + CSRF Security Full Verification
+## Update 2026-05-19 â€” BATCH 34 Auth & CSRF Security Full Verification
+- Batch: BATCH 34 â€” Auth + CSRF Security Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:auth-account` PASS
@@ -709,8 +709,8 @@
 - Report:
   - `BATCH_34_AUTH_AND_CSRF_SECURITY_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 35 Monitoring & Notifications Full Verification
-- Batch: BATCH 35 — Monitoring + Notifications Full Verification
+## Update 2026-05-19 â€” BATCH 35 Monitoring & Notifications Full Verification
+- Batch: BATCH 35 â€” Monitoring + Notifications Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:monitoring` PASS
@@ -723,8 +723,8 @@
 - Report:
   - `BATCH_35_MONITORING_AND_NOTIFICATIONS_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 36 Payments & Packages Full Verification
-- Batch: BATCH 36 — Payments + Packages Full Verification
+## Update 2026-05-19 â€” BATCH 36 Payments & Packages Full Verification
+- Batch: BATCH 36 â€” Payments + Packages Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:payment-package` PASS
@@ -737,8 +737,8 @@
 - Report:
   - `BATCH_36_PAYMENTS_AND_PACKAGES_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 37 Frontend Performance/SEO/Typography Full Verification
-- Batch: BATCH 37 — Frontend Performance + SEO + Typography Full Verification
+## Update 2026-05-19 â€” BATCH 37 Frontend Performance/SEO/Typography Full Verification
+- Batch: BATCH 37 â€” Frontend Performance + SEO + Typography Full Verification
 - Status: Fully closed (API + Smoke)
 - Fix:
   - index.html now includes required typography/platform-font contract markers.
@@ -754,8 +754,8 @@
 - Report:
   - `BATCH_37_FRONTEND_PERFORMANCE_SEO_TYPOGRAPHY_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 38 Learning/Quiz/Results Full Verification
-- Batch: BATCH 38 — Learning + Quiz + Results Full Verification
+## Update 2026-05-19 â€” BATCH 38 Learning/Quiz/Results Full Verification
+- Batch: BATCH 38 â€” Learning + Quiz + Results Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:learning-quiz` PASS
@@ -770,8 +770,8 @@
 - Report:
   - `BATCH_38_LEARNING_QUIZ_RESULTS_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 39 Database/Integrations/NoSQL Full Verification
-- Batch: BATCH 39 — Database + Integrations + NoSQL Full Verification
+## Update 2026-05-19 â€” BATCH 39 Database/Integrations/NoSQL Full Verification
+- Batch: BATCH 39 â€” Database + Integrations + NoSQL Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:database` PASS
@@ -783,8 +783,8 @@
 - Report:
   - `BATCH_39_DATABASE_INTEGRATIONS_NOSQL_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 40 Live Dashboard/Learning Verification
-- Batch: BATCH 40 — Live Dashboard + Learning Verification
+## Update 2026-05-19 â€” BATCH 40 Live Dashboard/Learning Verification
+- Batch: BATCH 40 â€” Live Dashboard + Learning Verification
 - Status: Programmatically closed (API + Smoke PASS), visual click evidence pending direct browser-control channel
 - Checks (PASS):
   - `smoke:homepage-hero`
@@ -801,8 +801,8 @@
 - Report:
   - `BATCH_40_LIVE_DASHBOARD_AND_LEARNING_VISUAL_EXECUTION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 41 Browser Execution Gate + Full Operational Verification
-- Batch: BATCH 41 — Browser Execution Gate + Full Operational Verification
+## Update 2026-05-19 â€” BATCH 41 Browser Execution Gate + Full Operational Verification
+- Batch: BATCH 41 â€” Browser Execution Gate + Full Operational Verification
 - Status: Programmatically closed (API + Smoke PASS), Gate 0 visual-click pending
 - Checks (PASS):
   - `smoke:homepage-hero`
@@ -817,8 +817,8 @@
 - Report:
   - `BATCH_41_BROWSER_EXECUTION_GATE_AND_FULL_OPERATIONAL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 42 Frontend Route/Cache Stability Full Verification
-- Batch: BATCH 42 — Frontend Route/Cache Stability Full Verification
+## Update 2026-05-19 â€” BATCH 42 Frontend Route/Cache Stability Full Verification
+- Batch: BATCH 42 â€” Frontend Route/Cache Stability Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:route-loading` PASS
@@ -831,8 +831,8 @@
 - Report:
   - `BATCH_42_FRONTEND_ROUTE_CACHE_STABILITY_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 43 Auth Frontend & Public UI Full Verification
-- Batch: BATCH 43 — Auth Frontend + Public UI Full Verification
+## Update 2026-05-19 â€” BATCH 43 Auth Frontend & Public UI Full Verification
+- Batch: BATCH 43 â€” Auth Frontend + Public UI Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:auth-frontend` PASS
@@ -845,8 +845,8 @@
 - Report:
   - `BATCH_43_AUTH_FRONTEND_AND_PUBLIC_UI_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 44 Data Visibility & Security Regression Full Verification
-- Batch: BATCH 44 — Data Visibility + Security Regression Full Verification
+## Update 2026-05-19 â€” BATCH 44 Data Visibility & Security Regression Full Verification
+- Batch: BATCH 44 â€” Data Visibility + Security Regression Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:data-visibility-regression` PASS
@@ -859,8 +859,8 @@
 - Report:
   - `BATCH_44_DATA_VISIBILITY_AND_SECURITY_REGRESSION_FULL_VERIFICATION_2026-05-19_AR.md`
 
-## Update 2026-05-19 — BATCH 45 Core Phase Contracts Full Verification
-- Batch: BATCH 45 — Core Phase Contracts Full Verification
+## Update 2026-05-19 â€” BATCH 45 Core Phase Contracts Full Verification
+- Batch: BATCH 45 â€” Core Phase Contracts Full Verification
 - Status: Fully closed (API + Smoke)
 - Checks:
   - `smoke:api-phase4` PASS
@@ -969,7 +969,7 @@
 
 | FIX-5 | Tap payments integration | Blocked | 2026-05-21 | FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md | payment hardening PASS but real Tap charge initiation/webhook E2E not implemented yet |
 
-## Update 2026-05-21 — FIX-5 Tap Payment Integration
+## Update 2026-05-21 â€” FIX-5 Tap Payment Integration
 - Status: `Blocked (Owner action required)`
 - Evidence:
   - `smoke:payment-providers` PASS
@@ -981,7 +981,7 @@
   - Live Tap charge + webhook capture proof + sandbox transaction id
 - Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-6 WhatsApp OTP Real Sending
+## Update 2026-05-21 â€” FIX-6 WhatsApp OTP Real Sending
 - Status: `Blocked (Owner env required)`
 - PASS checks:
   - `smoke:health-readiness`
@@ -991,7 +991,7 @@
   - Configure WhatsApp provider env on Render (cloud or http).
 - Report: `FIX_6_WHATSAPP_OTP_REAL_SENDING_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-7 Subscription Flow Completion
+## Update 2026-05-21 â€” FIX-7 Subscription Flow Completion
 - Status: `Blocked`
 - Evidence:
   - Pricing page exists.
@@ -1000,7 +1000,7 @@
   - Payment smokes (`provider/package`) PASS.
 - Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-8 Certificate Design
+## Update 2026-05-21 â€” FIX-8 Certificate Design
 - Status: `Programmatically closed`
 - Evidence:
   - Certificate code/design present with local QR.
@@ -1009,14 +1009,14 @@
 - Action to become fully closed:
   - Wait Vercel deploy sync to current commit then rerun strict smoke.
 
-## Update 2026-05-21 — FIX-9 Scale Verification
+## Update 2026-05-21 â€” FIX-9 Scale Verification
 - Status: `Blocked`
 - PASS: health-readiness + production-hardening
 - FAIL: operational smoke (missing `SMOKE_ADMIN_TOKEN`)
 - Owner prerequisites remain: Atlas M2 + Render Starter + admin smoke token.
 - Report: `FIX_9_SCALE_VERIFICATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FIX-8 Certificate Design (Final)
+## Update 2026-05-21 â€” FIX-8 Certificate Design (Final)
 - Status: `Fully closed`
 - Final evidence:
   - `smoke:frontend:strict` PASS (26/26)
@@ -1024,14 +1024,14 @@
   - production `/api/health` => ready=true
 - Result: deployment sync completed and strict blocking check fully passed.
 
-## Update 2026-05-21 — FIX-3 Revalidation
+## Update 2026-05-21 â€” FIX-3 Revalidation
 - Status: `Blocked (unchanged)`
 - Latest failures:
   - operational smoke fallback login => 401
   - sentry live proof => missing `SMOKE_ADMIN_TOKEN`
 - Closure still requires valid token/credentials.
 
-## Update 2026-05-21 — FEATURE-2 PWA + Offline Mode
+## Update 2026-05-21 â€” FEATURE-2 PWA + Offline Mode
 - Status: `Fully closed`
 - Evidence:
   - PWA plugin + service worker generated.
@@ -1039,7 +1039,7 @@
   - strict frontend/route/health smokes all PASS.
 - Report: `FEATURE_2_PWA_OFFLINE_MODE_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-3 Dark Mode
+## Update 2026-05-21 â€” FEATURE-3 Dark Mode
 - Status: `Fully closed`
 - Evidence:
   - Theme toggle added with persisted preference.
@@ -1047,31 +1047,31 @@
   - strict frontend/route/health smokes all PASS.
 - Report: `FEATURE_3_DARK_MODE_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-7 Leaderboard
+## Update 2026-05-21 â€” FEATURE-7 Leaderboard
 - Status: `Blocked`
 - Reason: feature not implemented yet (no API + no explicit UI/widget).
 - Health/front strict smokes PASS.
 - Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-4 Full-Text Search
+## Update 2026-05-21 â€” FEATURE-4 Full-Text Search
 - Status: `Blocked`
 - Reason: unified search API + modal/shortcut not implemented.
 - Health/front strict checks PASS.
 - Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-5 Parent Dashboard Enhancements
+## Update 2026-05-21 â€” FEATURE-5 Parent Dashboard Enhancements
 - Status: `Partially closed (blocked)`
 - Existing parent dashboard is available, but missing required backend contract and automation flows.
 - PASS checks: health-readiness + frontend-strict.
 - Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-6 AI Mock Exams
+## Update 2026-05-21 â€” FEATURE-6 AI Mock Exams
 - Status: `Blocked`
 - Reason: required generation API + persistence + student trigger flow are missing.
 - PASS checks: health-readiness + frontend-strict.
 - Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank
+## Update 2026-05-21 â€” FEATURE-8 Previous Years Question Bank
 - Status: `Blocked`
 - Reason: previous-years content tagging contract is incomplete in question schema and flows (`year`, `source=official_exam`, `examType`).
 - PASS checks:
@@ -1079,34 +1079,34 @@
   - `smoke:frontend:strict`
 - Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
 
-## Update 2026-05-21 — FEATURE-1 Pricing Page (Revalidation)
+## Update 2026-05-21 â€” FEATURE-1 Pricing Page (Revalidation)
 - Status: `Fully closed`.
 - Re-check confirms route, nav, sitemap/SEO wiring and smoke stability are all PASS.
 - Report: `FEATURE_1_PRICING_PAGE_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FEATURE-7 Leaderboard
+## Update 2026-05-21 â€” FEATURE-7 Leaderboard
 - Status: `Fully closed`.
 - Delivered API + UI widget + rank contract, with full build/type/smoke PASS.
 - Report: `FEATURE_7_LEADERBOARD_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FEATURE-4 Full-Text Search
+## Update 2026-05-21 â€” FEATURE-4 Full-Text Search
 - Status: `Fully closed`.
 - Delivered unified search endpoint + header modal + keyboard shortcut.
 - Verification: server build + typecheck + build + health/front strict smoke all PASS.
 - Report: `FEATURE_4_FULL_TEXT_SEARCH_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FEATURE-5 Parent Dashboard Enhancements
+## Update 2026-05-21 â€” FEATURE-5 Parent Dashboard Enhancements
 - Status: `Fully closed`.
 - Added parent children-progress API + weekly report trigger + certificate completion notification for parents.
 - Verification: server build/typecheck/build + readiness/frontend strict smoke all PASS.
 - Report: `FEATURE_5_PARENT_DASHBOARD_ENHANCEMENTS_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FEATURE-6 AI Mock Exams
+## Update 2026-05-21 â€” FEATURE-6 AI Mock Exams
 - Status: `Fully closed`.
 - Delivered generate-mock-exam endpoint + dashboard trigger and validated full build/smoke pass.
 - Report: `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FEATURE-8 Previous Years Question Bank (Final)
+## Update 2026-05-21 â€” FEATURE-8 Previous Years Question Bank (Final)
 - Status: `Fully closed`.
 - Implemented:
   - Added question classification contract (`examType`, `source`, `year`) in backend schema.
@@ -1119,7 +1119,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX-7 Subscription Flow Completion (Final)
+## Update 2026-05-21 â€” FIX-7 Subscription Flow Completion (Final)
 - Status: `Fully closed`.
 - Implemented:
   - Added `POST /api/payments/subscribe`.
@@ -1136,7 +1136,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX-6R WhatsApp OTP Revalidation
+## Update 2026-05-21 â€” FIX-6R WhatsApp OTP Revalidation
 - Status: `Blocked (Owner env required)`.
 - Revalidated:
   - OTP routes exist and are wired.
@@ -1146,7 +1146,7 @@
 - Remaining blocker: production WhatsApp provider env credentials.
 - Report: `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX-5 Tap Integration (Programmatic Closure)
+## Update 2026-05-21 â€” FIX-5 Tap Integration (Programmatic Closure)
 - Status: `Programmatically closed (live key dependent)`.
 - Implemented:
   - `POST /api/payments/initiate` (Tap charge creation + redirect URL return)
@@ -1161,7 +1161,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX-3A Smoke Auth Automation Hardening
+## Update 2026-05-21 â€” FIX-3A Smoke Auth Automation Hardening
 - Status: `Programmatically closed (secret dependent)`.
 - Implemented:
   - Auto resolver wrapper for operational smoke.
@@ -1172,7 +1172,7 @@
   - operational/sentry smokes still blocked without secrets in current environment.
 - Report: `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX-9A Scale Revalidation Evidence Pack
+## Update 2026-05-21 â€” FIX-9A Scale Revalidation Evidence Pack
 - Status: `Blocked (infra + secrets prerequisites)`.
 - Verified now:
   - `smoke:production-hardening` PASS (5/5)
@@ -1181,7 +1181,7 @@
 - Load evidence still confirms 500/1000 targets unmet on current infra.
 - Report: `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — ADMIN OPS Health Endpoint
+## Update 2026-05-21 â€” ADMIN OPS Health Endpoint
 - Status: `Fully closed`.
 - Implemented:
   - Added public-safe `GET /api/operations/health` endpoint.
@@ -1194,7 +1194,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — FIX Admin Course Save (CSRF Retry Hardening)
+## Update 2026-05-21 â€” FIX Admin Course Save (CSRF Retry Hardening)
 - Status: `Fully closed`.
 - Implemented:
   - Added raw 403 CSRF text detection + one-shot token refresh/retry in `services/api.ts`.
@@ -1206,7 +1206,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — Admin Course Identity Stability
+## Update 2026-05-21 â€” Admin Course Identity Stability
 - Status: `Fully closed`.
 - Implemented:
   - Store-level course id normalization (`id/_id`) via `resolveEntityId` and `normalizeCourseForStore`.
@@ -1218,7 +1218,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — Course Player Quiz ID Fallback
+## Update 2026-05-21 â€” Course Player Quiz ID Fallback
 - Status: `Fully closed`.
 - Implemented fallback quiz-id resolution for embedded curriculum quiz lessons in `CoursePlayer`.
 - Verification:
@@ -1228,7 +1228,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — Course Overview Navigation + Files Actions
+## Update 2026-05-21 â€” Course Overview Navigation + Files Actions
 - Status: `Fully closed`.
 - Implemented exact lesson-id navigation from syllabus and enabled files tab actions for direct file open.
 - Verification:
@@ -1238,7 +1238,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — Admin Course Actions Await/Error Handling
+## Update 2026-05-21 â€” Admin Course Actions Await/Error Handling
 - Status: `Fully closed`.
 - Implemented awaited mutation flow and centralized error handling for admin course quick actions.
 - Verification:
@@ -1248,7 +1248,7 @@
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — Course Files Tab Runtime Fixes
+## Update 2026-05-21 â€” Course Files Tab Runtime Fixes
 - Status: `Fully closed`.
 - Implemented dynamic file type rendering and proper file download behavior in student course files tab.
 - Verification:
@@ -1258,7 +1258,7 @@
   - `npm run smoke:course-visibility` PASS
 - Report: `BATCH_COURSE_FILES_TAB_RUNTIME_FIXES_2026-05-21_AR.md`.
 
-## Update 2026-05-21 — BATCH Course Related Files Actions Parity
+## Update 2026-05-21 â€” BATCH Course Related Files Actions Parity
 - Status: **Fully closed**.
 - Scope:
   - Unified fallback `relatedFiles` preview/download behavior with main course files behavior in `components/CourseOverview.tsx`.
@@ -1271,45 +1271,45 @@
 - Report:
   - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
 
-## Update 2026-05-21 — PLAN 100 Readiness Audit & Execution Plan
+## Update 2026-05-21 â€” PLAN 100 Readiness Audit & Execution Plan
 - Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`
 - Status: `Fully closed (documentation/reconciliation only)`
 - Scope: Reconciled current project state, separated external paid/owner-config blockers, and defined next execution roadmap toward 100% readiness.
 - Report: `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
 - External blockers file: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
-- Next suggested: `BATCH 100A — Full Dashboard & Role Functional Audit`.
+- Next suggested: `BATCH 100A â€” Full Dashboard & Role Functional Audit`.
 
-## جلسة فحص عميق شامل V13 — 2026-05-21
-- الاسم: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`.
-- النوع: Audit only، بدون إصلاح كود أو تغيير UI.
-- الحالة: `Audit completed`.
-- النتيجة: `79%` جاهزية فعلية بعد الفحص.
-- البنية المرصودة: 237 TS/TSX، 41 model، 20 route file، 74 smoke script.
-- الفحوص الأساسية: 18/18 PASS.
-- الفحوص الإضافية: `smoke:operational` و`smoke:sentry-live-proof` FAIL بسبب غياب `SMOKE_ADMIN_TOKEN` في البيئة المحلية.
-- أهم الأخطاء المؤكدة:
-  1. تسريب `correctOptionIndex/explanation` في نتائج الاختبارات.
-  2. RBAC/scope واسع في `discussions.routes.ts` للمعلم/المشرف.
-  3. نصوص عربية تالفة في `App.tsx`, `pages/CourseView.tsx`, `server/src/routes/payment.routes.ts`.
-  4. عدم تطابق commit الإنتاج مع آخر GitHub main وقت الفحص.
-- ملفات التسليم:
+## Ø¬Ù„Ø³Ø© ÙØ­Øµ Ø¹Ù…ÙŠÙ‚ Ø´Ø§Ù…Ù„ V13 â€” 2026-05-21
+- Ø§Ù„Ø§Ø³Ù…: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`.
+- Ø§Ù„Ù†ÙˆØ¹: Audit onlyØŒ Ø¨Ø¯ÙˆÙ† Ø¥ØµÙ„Ø§Ø­ ÙƒÙˆØ¯ Ø£Ùˆ ØªØºÙŠÙŠØ± UI.
+- Ø§Ù„Ø­Ø§Ù„Ø©: `Audit completed`.
+- Ø§Ù„Ù†ØªÙŠØ¬Ø©: `79%` Ø¬Ø§Ù‡Ø²ÙŠØ© ÙØ¹Ù„ÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„ÙØ­Øµ.
+- Ø§Ù„Ø¨Ù†ÙŠØ© Ø§Ù„Ù…Ø±ØµÙˆØ¯Ø©: 237 TS/TSXØŒ 41 modelØŒ 20 route fileØŒ 74 smoke script.
+- Ø§Ù„ÙØ­ÙˆØµ Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©: 18/18 PASS.
+- Ø§Ù„ÙØ­ÙˆØµ Ø§Ù„Ø¥Ø¶Ø§ÙÙŠØ©: `smoke:operational` Ùˆ`smoke:sentry-live-proof` FAIL Ø¨Ø³Ø¨Ø¨ ØºÙŠØ§Ø¨ `SMOKE_ADMIN_TOKEN` ÙÙŠ Ø§Ù„Ø¨ÙŠØ¦Ø© Ø§Ù„Ù…Ø­Ù„ÙŠØ©.
+- Ø£Ù‡Ù… Ø§Ù„Ø£Ø®Ø·Ø§Ø¡ Ø§Ù„Ù…Ø¤ÙƒØ¯Ø©:
+  1. ØªØ³Ø±ÙŠØ¨ `correctOptionIndex/explanation` ÙÙŠ Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª.
+  2. RBAC/scope ÙˆØ§Ø³Ø¹ ÙÙŠ `discussions.routes.ts` Ù„Ù„Ù…Ø¹Ù„Ù…/Ø§Ù„Ù…Ø´Ø±Ù.
+  3. Ù†ØµÙˆØµ Ø¹Ø±Ø¨ÙŠØ© ØªØ§Ù„ÙØ© ÙÙŠ `App.tsx`, `pages/CourseView.tsx`, `server/src/routes/payment.routes.ts`.
+  4. Ø¹Ø¯Ù… ØªØ·Ø§Ø¨Ù‚ commit Ø§Ù„Ø¥Ù†ØªØ§Ø¬ Ù…Ø¹ Ø¢Ø®Ø± GitHub main ÙˆÙ‚Øª Ø§Ù„ÙØ­Øµ.
+- Ù…Ù„ÙØ§Øª Ø§Ù„ØªØ³Ù„ÙŠÙ…:
   - `DEEP_AUDIT_REPORT_AR.md`
   - `UPDATED_PLAN_TO_100_AR.md`
   - `BUGS_FOUND_AR.md`
-- القرار: لا تبدأ إصلاحات متفرقة. أول دفعة تنفيذية مقترحة هي `BATCH 100A — Quiz Result Answer Exposure Hardening`.
+- Ø§Ù„Ù‚Ø±Ø§Ø±: Ù„Ø§ ØªØ¨Ø¯Ø£ Ø¥ØµÙ„Ø§Ø­Ø§Øª Ù…ØªÙØ±Ù‚Ø©. Ø£ÙˆÙ„ Ø¯ÙØ¹Ø© ØªÙ†ÙÙŠØ°ÙŠØ© Ù…Ù‚ØªØ±Ø­Ø© Ù‡ÙŠ `BATCH 100A â€” Quiz Result Answer Exposure Hardening`.
 
-## BATCH 100A — Quiz Result Answer Exposure Hardening — 2026-05-21
-- الحالة: `Programmatically closed, production verification pending`.
-- الهدف: منع تسريب الإجابات الصحيحة والشروحات من نتائج الاختبارات.
-- ما تم:
-  - serializer آمن لنتائج الاختبار.
-  - حماية submit/detail/list/scoped/latest من إرسال `correctOptionIndex/explanation`.
-  - منع fallback المحلي في `QuizPage` من إعادة حقن مفاتيح الإجابة.
-  - منع صفحة النتائج من عرض الإجابة الصحيحة أو الشرح.
-  - smoke جديد: `smoke:quiz-answer-exposure`.
-- الفحوص: backend build/typecheck/frontend build/security/result/learning/frontend strict كلها PASS.
-- التقرير: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`.
-- التالي: `BATCH 100B — Discussions RBAC Scope Hardening`.
+## BATCH 100A â€” Quiz Result Answer Exposure Hardening â€” 2026-05-21
+- Ø§Ù„Ø­Ø§Ù„Ø©: `Programmatically closed, production verification pending`.
+- Ø§Ù„Ù‡Ø¯Ù: Ù…Ù†Ø¹ ØªØ³Ø±ÙŠØ¨ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ø§Ù„ØµØ­ÙŠØ­Ø© ÙˆØ§Ù„Ø´Ø±ÙˆØ­Ø§Øª Ù…Ù† Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª.
+- Ù…Ø§ ØªÙ…:
+  - serializer Ø¢Ù…Ù† Ù„Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±.
+  - Ø­Ù…Ø§ÙŠØ© submit/detail/list/scoped/latest Ù…Ù† Ø¥Ø±Ø³Ø§Ù„ `correctOptionIndex/explanation`.
+  - Ù…Ù†Ø¹ fallback Ø§Ù„Ù…Ø­Ù„ÙŠ ÙÙŠ `QuizPage` Ù…Ù† Ø¥Ø¹Ø§Ø¯Ø© Ø­Ù‚Ù† Ù…ÙØ§ØªÙŠØ­ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø©.
+  - Ù…Ù†Ø¹ ØµÙØ­Ø© Ø§Ù„Ù†ØªØ§Ø¦Ø¬ Ù…Ù† Ø¹Ø±Ø¶ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© Ø§Ù„ØµØ­ÙŠØ­Ø© Ø£Ùˆ Ø§Ù„Ø´Ø±Ø­.
+  - smoke Ø¬Ø¯ÙŠØ¯: `smoke:quiz-answer-exposure`.
+- Ø§Ù„ÙØ­ÙˆØµ: backend build/typecheck/frontend build/security/result/learning/frontend strict ÙƒÙ„Ù‡Ø§ PASS.
+- Ø§Ù„ØªÙ‚Ø±ÙŠØ±: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`.
+- Ø§Ù„ØªØ§Ù„ÙŠ: `BATCH 100B â€” Discussions RBAC Scope Hardening`.
 
 ## Update 2026-05-21 - BATCH 100A Quiz Result Answer Exposure Hardening
 - Status: `Programmatically closed, production verification pending until pushed deployment is confirmed`.
@@ -1376,21 +1376,21 @@
 
 ---
 
-## تحديث الدفعة - BATCH 100D - 2026-05-21
+## ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¯ÙØ¹Ø© - BATCH 100D - 2026-05-21
 
-- الدفعة: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Player Verification`.
-- الحالة: `Programmatically closed, production data follow-up required`.
-- ما تم:
-  1. إصلاح كاش إعدادات الصفحة الرئيسية بعد حفظ صورة/إعدادات البطل.
-  2. إضافة `smoke:batch100d-admin-course-flow` لإثبات عقود منشئ الدورات والاستدعاء ومشغل الدورة.
-  3. تشغيل build/typecheck/smokes الأساسية بنجاح.
-  4. فحص إنتاج حي لصفحة التعلم ومشغل الدورة.
-- نتيجة الإنتاج:
-  - صفحة التعلم للمسار `p_1777779639431` والمادة `sub_1777779748206` تعرض `حمكشة` و`ب ال`.
-  - الدورة `course_current_p_1777779639431_sub_1777779748206_foundation` غير موجودة في API العام وترجع 404.
-  - لذلك ظهور `الدورة غير متاحة حاليًا` سببه بيانات/نشر/معرّف إنتاجي يحتاج دفعة منفصلة.
-- التقرير: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`.
-- التالي المقترح: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
+- Ø§Ù„Ø¯ÙØ¹Ø©: `BATCH 100D - Admin Dashboard Functional Audit + Homepage Media Settings + Course Player Verification`.
+- Ø§Ù„Ø­Ø§Ù„Ø©: `Programmatically closed, production data follow-up required`.
+- Ù…Ø§ ØªÙ…:
+  1. Ø¥ØµÙ„Ø§Ø­ ÙƒØ§Ø´ Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ø¨Ø¹Ø¯ Ø­ÙØ¸ ØµÙˆØ±Ø©/Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø¨Ø·Ù„.
+  2. Ø¥Ø¶Ø§ÙØ© `smoke:batch100d-admin-course-flow` Ù„Ø¥Ø«Ø¨Ø§Øª Ø¹Ù‚ÙˆØ¯ Ù…Ù†Ø´Ø¦ Ø§Ù„Ø¯ÙˆØ±Ø§Øª ÙˆØ§Ù„Ø§Ø³ØªØ¯Ø¹Ø§Ø¡ ÙˆÙ…Ø´ØºÙ„ Ø§Ù„Ø¯ÙˆØ±Ø©.
+  3. ØªØ´ØºÙŠÙ„ build/typecheck/smokes Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­.
+  4. ÙØ­Øµ Ø¥Ù†ØªØ§Ø¬ Ø­ÙŠ Ù„ØµÙØ­Ø© Ø§Ù„ØªØ¹Ù„Ù… ÙˆÙ…Ø´ØºÙ„ Ø§Ù„Ø¯ÙˆØ±Ø©.
+- Ù†ØªÙŠØ¬Ø© Ø§Ù„Ø¥Ù†ØªØ§Ø¬:
+  - ØµÙØ­Ø© Ø§Ù„ØªØ¹Ù„Ù… Ù„Ù„Ù…Ø³Ø§Ø± `p_1777779639431` ÙˆØ§Ù„Ù…Ø§Ø¯Ø© `sub_1777779748206` ØªØ¹Ø±Ø¶ `Ø­Ù…ÙƒØ´Ø©` Ùˆ`Ø¨ Ø§Ù„`.
+  - Ø§Ù„Ø¯ÙˆØ±Ø© `course_current_p_1777779639431_sub_1777779748206_foundation` ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ API Ø§Ù„Ø¹Ø§Ù… ÙˆØªØ±Ø¬Ø¹ 404.
+  - Ù„Ø°Ù„Ùƒ Ø¸Ù‡ÙˆØ± `Ø§Ù„Ø¯ÙˆØ±Ø© ØºÙŠØ± Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§` Ø³Ø¨Ø¨Ù‡ Ø¨ÙŠØ§Ù†Ø§Øª/Ù†Ø´Ø±/Ù…Ø¹Ø±Ù‘Ù Ø¥Ù†ØªØ§Ø¬ÙŠ ÙŠØ­ØªØ§Ø¬ Ø¯ÙØ¹Ø© Ù…Ù†ÙØµÙ„Ø©.
+- Ø§Ù„ØªÙ‚Ø±ÙŠØ±: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`.
+- Ø§Ù„ØªØ§Ù„ÙŠ Ø§Ù„Ù…Ù‚ØªØ±Ø­: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`.
 
 ## Update 2026-05-21 - BATCH 100E Production Course Data Visibility Repair
 - Status: `Fully closed`.
@@ -1402,7 +1402,7 @@
   - npm scripts: `repair:current-course-visibility`, `smoke:batch100e-course-data-repair`
 - Production data action:
   - Repaired only `pathId=p_1777779639431`, `subjectId=sub_1777779748206`.
-  - Created/restored course/topic/quiz links while preserving lesson title `جمع`.
+  - Created/restored course/topic/quiz links while preserving lesson title `Ø¬Ù…Ø¹`.
 - Checks PASS:
   - `npm --prefix server run audit:learning` (WARN only for unrelated orphan `l_1777839591839_copy`)
   - `npm run smoke:batch100e-course-data-repair`
@@ -1417,7 +1417,7 @@
 - Live verification:
   - Course API now returns 200.
   - Public courses list includes the restored course.
-  - In-app browser shows the restored course in learning page and course page with lesson `جمع`.
+  - In-app browser shows the restored course in learning page and course page with lesson `Ø¬Ù…Ø¹`.
 - Report: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`.
 - Next suggested: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`.
 
@@ -1458,7 +1458,7 @@
 - Implementation and final closure documentation were pushed to `main`.
 - Vercel: `npm run smoke:frontend:strict` PASS and production serves the expected pushed version.
 - Render/API: `npm run smoke:health-readiness` PASS.
-- In-app browser: PASS for admin dashboard and `المجموعات والمدارس` tab visibility with school readiness and relationship signals.
+- In-app browser: PASS for admin dashboard and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab visibility with school readiness and relationship signals.
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
 
 
@@ -1468,7 +1468,7 @@
 - ??????: `Programmatically closed, production verification pending`.
 - ??????: ????? ?? ??? ??? 80 ?????? ?? ???? ???? ??????? ???? `SchoolsManager` ?????? ????? ??? ???? ????? ???????.
 - ???????: `dashboards/admin/SchoolsManager.tsx`, `scripts/smoke-batch100g-school-student-pagination-contract.mjs`, `package.json`, ????? ??????.
-- ??????: school pagination smoke? relationship audit? school management? admin/school portal/supervisor/report/RBAC smokes? server build? typecheck? frontend build? health readiness? frontend strict ??? push � ???? PASS.
+- ??????: school pagination smoke? relationship audit? school management? admin/school portal/supervisor/report/RBAC smokes? server build? typecheck? frontend build? health readiness? frontend strict ??? push — ???? PASS.
 - ???????: `BATCH_100G_SCHOOL_RELATIONSHIP_UI_PAGINATION_E2E_2026-05-21_AR.md`.
 - ??????: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 
@@ -3769,3 +3769,53 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous post-deploy delta-only cadence and append evidence each cycle.
+
+## BATCH 241 - ???? ???? ?????? (2026-05-28)
+- ?? ????? ???? ???? ?????? ????? ???? ?? ????? ?????.
+- ???????:
+  - `smoke:health-readiness` PASS
+  - `smoke:frontend:strict` PASS (28/28)
+  - `smoke:auth-frontend` PASS (6/6)
+- ??????: ?? ???????? ?????? ??? ??? ??????.
+
+## BATCH 242 Verification (2026-05-28)
+- Status: Fully closed (autonomous production verification loop).
+- Scope:
+  - Re-ran production readiness and frontend/auth strict contracts without logic changes.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (28/28).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Blockers:
+  - None.
+
+## BATCH 243 Verification (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Re-ran production verification contracts without code changes.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (28/28).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-CeAHKvIP.js`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue autonomous visual role-by-role production retest.
+
+## BATCH 240 - Addendum (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Consistency addendum to align canonical batch id across delivery files.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (28/28).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-CeAHKvIP.js`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous production verification cadence.
+

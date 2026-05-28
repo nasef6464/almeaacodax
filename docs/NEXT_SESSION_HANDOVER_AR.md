@@ -4561,3 +4561,22 @@ pm run smoke:operational PASS (71/71).
   - None.
 - Next exact task:
   1. Continue autonomous post-deploy delta-only cadence and append evidence each cycle.
+
+## NEXT SESSION START POINT (BATCH 241)
+- Start URL: `https://almeaacodax.vercel.app/?auth=login`
+- Last verified gates on 2026-05-28:
+  - health-readiness PASS
+  - frontend:strict PASS
+  - auth-frontend PASS
+- Continue from practical visual role sweep on production while preserving no-wide-change policy.
+
+## NEXT SESSION START POINT (BATCH 242)
+- Start URL: `https://almeaacodax.vercel.app/?auth=login`
+- Last gates: health PASS, frontend strict PASS, auth frontend PASS.
+- Continue autonomous visual role sweep + delta-only closure.
+
+## NEXT SESSION START POINT (BATCH 243)
+- Status: Ready.
+- Scope: Continue production visual role sweep from login route.
+- Gate Results: health PASS, frontend strict PASS, auth frontend PASS.
+- Next exact task: complete role-by-role visual continuation and record evidence.
