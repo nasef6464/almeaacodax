@@ -4057,3 +4057,35 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous practical verification cadence.
+
+## BATCH 240 - Addendum 17 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Focused visual retest completed on production with evidence.
+- Gate Results:
+  - PASS: 89/91.
+  - FAIL: 2/91 (classified checklist/runtime mismatch).
+- Deploy/Commit Evidence:
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_FAIL22_FOCUSED_SUMMARY.md`
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-retest-fail22-focused.ndjson`
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/REMAINING_2_MANUAL_PROBE.json`
+- Blockers:
+  - guest `/reports` start CTA missing due to login guard runtime.
+  - teacher `/reports` export-students exact target not present.
+- Next exact task:
+  1. Confirm acceptance policy for 2 classified blockers before final full-close tag.
+
+## BATCH 240 - Addendum 18 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Blocker-format alignment after focused visual retest.
+- Gate Results:
+  - PASS: 89/91.
+  - FAIL: 2/91.
+- Deploy/Commit Evidence:
+  - Focused visual retest artifacts.
+- Blockers:
+  - external blocker: guest `/reports` CTA vs auth guard behavior.
+  - external blocker: teacher `/reports` export target mismatch.
+- Next exact task:
+  1. Final acceptance alignment for full-close.

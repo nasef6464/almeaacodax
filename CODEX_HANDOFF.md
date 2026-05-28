@@ -2862,3 +2862,33 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep autonomous batch closure cadence with post-push verification.
+
+## BATCH 240 - Addendum 17 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Visual production retest executed and evidenced.
+- Gate Results:
+  - PASS: 89/91 focused visual items.
+  - FAIL: 2/91 classified as checklist/runtime mismatch.
+- Deploy/Commit Evidence:
+  - Focused retest summary + ndjson + remaining-2 probe JSON updated.
+- Blockers:
+  - guest reports CTA under auth guard.
+  - teacher reports export control exact-target mismatch.
+- Next exact task:
+  1. Final sign-off decision on 2 classified blockers.
+
+## BATCH 240 - Addendum 18 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Handover blocker-format alignment for visual retest result.
+- Gate Results:
+  - PASS: 89/91 focused visual items.
+  - FAIL: 2/91.
+- Deploy/Commit Evidence:
+  - Focused retest artifacts updated.
+- Blockers:
+  - external blocker: guest reports CTA mismatch under auth guard.
+  - external blocker: teacher export control exact-target mismatch.
+- Next exact task:
+  1. Acceptance decision for 2 external blockers.

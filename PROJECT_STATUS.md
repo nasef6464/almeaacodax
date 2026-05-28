@@ -4440,3 +4440,38 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous practical visual sweep and close each verified cycle.
+
+## BATCH 240 - Addendum 17 (2026-05-28)
+- Status: Partially closed (visual retest executed; 2 checklist mismatches remain classified).
+- Scope:
+  - Executed focused visual production retest for historical FAIL set.
+  - Classified remaining fails with full bug template and evidence links.
+- Gate Results:
+  - PASS: Focused visual retest execution completed.
+  - PASS: 89/91 focused retest items.
+  - FAIL: 2/91 (classified external/checklist mismatch).
+- Deploy/Commit Evidence:
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_FAIL22_FOCUSED_SUMMARY.md`
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-retest-fail22-focused.ndjson`
+  - `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/REMAINING_2_MANUAL_PROBE.json`
+- Blockers:
+  - guest `/reports` start-first-quiz CTA not present under login guard runtime.
+  - teacher `/reports` export-students control label/scope mismatch vs checklist target.
+- Next exact task:
+  1. Resolve acceptance decision: update checklist expectation or adjust runtime labels/role scope for the 2 mismatches.
+
+## BATCH 240 - Addendum 18 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Formal handover alignment for focused visual retest outcome.
+- Gate Results:
+  - PASS: focused visual retest executed.
+  - PASS: 89/91.
+  - FAIL: 2/91.
+- Deploy/Commit Evidence:
+  - Focused summary + ndjson + remaining-2 probe JSON.
+- Blockers:
+  - external blocker: guest `/reports` CTA expectation differs from auth-guard runtime.
+  - external blocker: teacher `/reports` export target label/scope differs from checklist target.
+- Next exact task:
+  1. Approve checklist/runtime alignment for full-close.

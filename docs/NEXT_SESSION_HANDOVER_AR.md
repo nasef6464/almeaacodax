@@ -4775,3 +4775,33 @@ pm run smoke:operational PASS (71/71).
   - None.
 - Next exact task:
   1. Continue autonomous execution with close-after-each-cycle behavior.
+
+## BATCH 240 - Addendum 17 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue from visual retest closure state (89 PASS / 2 classified blockers).
+- Gate Results:
+  - PASS: focused visual retest execution complete.
+  - FAIL: 2 classified checklist/runtime mismatches pending sign-off policy.
+- Deploy/Commit Evidence:
+  - Remaining-2 probe JSON updated.
+- Blockers:
+  - guest reports CTA mismatch.
+  - teacher export target mismatch.
+- Next exact task:
+  1. Apply acceptance decision and mark full-close accordingly.
+
+## BATCH 240 - Addendum 18 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue from focused visual retest state.
+- Gate Results:
+  - PASS: 89/91.
+  - FAIL: 2/91 classified.
+- Deploy/Commit Evidence:
+  - Focused retest artifacts present.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher export-target mismatch.
+- Next exact task:
+  1. Final sign-off decision for 2 external blockers.
