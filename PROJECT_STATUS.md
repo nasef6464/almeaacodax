@@ -4508,3 +4508,21 @@ Regression risk: low
   - external blocker: teacher reports export target mismatch.
 - Next exact task:
   1. Final acceptance decision for external blockers.
+
+## BATCH 240 - Addendum 21 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Final operational closure update after production deep smoke.
+- Gate Results:
+  - PASS: `smoke:health-readiness`.
+  - PASS: `smoke:auth-frontend` (6/6).
+  - PASS: `smoke:frontend:strict` (29/29).
+  - PASS: `smoke:operational` (71/71) on `https://almeaacodax.vercel.app/api`.
+- Deploy/Commit Evidence:
+  - Production version matched `59f812bd`.
+  - Operational run summary: total=71, passed=71, failed=0.
+- Blockers:
+  - external blocker: guest reports CTA checklist mismatch.
+  - external blocker: teacher reports export-target checklist mismatch.
+- Next exact task:
+  1. Product acceptance sign-off for the 2 external blockers (non-runtime regressions).

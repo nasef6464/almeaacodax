@@ -4835,3 +4835,17 @@ pm run smoke:operational PASS (71/71).
   - external blocker: teacher reports export mismatch.
 - Next exact task:
   1. Final acceptance sign-off for blockers.
+
+## BATCH 240 - Addendum 21 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue from fully-verified production state.
+- Gate Results:
+  - PASS: health readiness, auth frontend, frontend strict, operational 71/71.
+- Deploy/Commit Evidence:
+  - Deep operational run passed with zero failures.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher export-target mismatch.
+- Next exact task:
+  1. Final product sign-off on external blockers.

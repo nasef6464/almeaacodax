@@ -4120,3 +4120,21 @@ Regression risk: low
   - external blocker: teacher export mismatch.
 - Next exact task:
   1. Final acceptance alignment for full close.
+
+## BATCH 240 - Addendum 21 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Final production deep operational verification update.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: auth frontend (6/6).
+  - PASS: frontend strict (29/29).
+  - PASS: operational (71/71).
+- Deploy/Commit Evidence:
+  - Production app served commit `59f812bd` during strict run.
+  - Operational summary: total 71, passed 71, failed 0.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher export-target mismatch.
+- Next exact task:
+  1. Final acceptance sign-off for external blockers.
