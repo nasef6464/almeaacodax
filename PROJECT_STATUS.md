@@ -4202,3 +4202,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous production visual-role sweep and append delta-only closure evidence.
+
+## BATCH 240 - Addendum 2 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Autonomous production verification cycle with no logic/UI code changes.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (28/28).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-M5lHP1yV.js`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue production visual-role sweep from login route and keep delta-only closure.

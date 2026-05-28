@@ -2637,3 +2637,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Commit and push this handover batch, then run post-push verification gates.
+
+## BATCH 240 - Addendum 2 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification continuation; no business-logic changes.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: frontend strict (28/28).
+  - PASS: auth frontend (6/6).
+- Deploy/Commit Evidence:
+  - Ready for commit/push of addendum update.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous close-each-batch cadence.
