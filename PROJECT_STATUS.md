@@ -4424,3 +4424,19 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue autonomous practical visual sweep and close each verified cycle.
+
+## BATCH 240 - Addendum 16 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Post-propagation production verification cycle with stable role-sweep context.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (29/29).
+  - PASS: `npm run smoke:auth-frontend` (6/6).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-B7DGxH8U.js`.
+  - Version check confirms production serving `278f3f10`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue autonomous practical visual sweep and close each verified cycle.
