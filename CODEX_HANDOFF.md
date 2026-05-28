@@ -2697,3 +2697,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep autonomous batch-by-batch closure cadence.
+
+## BATCH 240 - Addendum 6 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification after propagation; no business-logic changes.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: frontend strict (29/29).
+  - PASS: auth frontend (6/6).
+- Deploy/Commit Evidence:
+  - Strict asset: `index-AzCpTw41.js`; version match `7cfb5f39`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous batch closure cadence with post-push verification.
