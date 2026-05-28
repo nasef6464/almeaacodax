@@ -4593,3 +4593,16 @@ pm run smoke:operational PASS (71/71).
   - None.
 - Next exact task:
   1. Continue autonomous close-after-each-batch execution.
+
+## BATCH 240 - Addendum 3 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue production visual role sweep from `/?auth=login`.
+- Gate Results:
+  - PASS: health readiness, frontend strict, auth frontend.
+- Deploy/Commit Evidence:
+  - Awaiting this cycle commit hash.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue autonomous cycle execution.

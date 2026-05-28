@@ -2652,3 +2652,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep autonomous close-each-batch cadence.
+
+## BATCH 240 - Addendum 3 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification continuation with no code changes.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: frontend strict (28/28).
+  - PASS: auth frontend (6/6).
+- Deploy/Commit Evidence:
+  - Ready for commit/push of this addendum.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous close-after-each-batch execution.
