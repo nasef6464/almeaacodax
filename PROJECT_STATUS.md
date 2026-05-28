@@ -1,11 +1,11 @@
-﻿# PROJECT STATUS
+# PROJECT STATUS
 
 - Project: ALMEAA CODAX
 - Last Update: 2026-05-24
 - Active Batch: BATCH 148 - Full Production Readiness and Final Delivery Audit
 - Last Closed Batch: BATCH 147 - Continuous Publish Cycle 5
 - Status: BATCH 148 deep audit executed with broad PASS coverage; final closure is programmatic with secret-gated operational smoke blocker documented.
-- Next Required Batch: on owner command `اكمل`, start next batch directly per cross-session playbook
+- Next Required Batch: on owner command `????`, start next batch directly per cross-session playbook
 - Handoff: read `CODEX_HANDOFF.md` before starting; do not use `git add .`; keep dirty historical files out of the batch.
 
 ## BATCH 137 Start 2026-05-24
@@ -119,7 +119,7 @@
 
 ## BATCH 107 Closure 2026-05-23
 - Added `docs/CROSS_SESSION_CONTINUITY_PLAYBOOK_AR.md` as mandatory continuity playbook.
-- Updated status/handover/ledger to enforce `اكمل => continue or auto-start next batch`.
+- Updated status/handover/ledger to enforce `???? => continue or auto-start next batch`.
 - PASS: `smoke:health-readiness`, `smoke:frontend:strict`, `smoke:batch100q-operational-admin-runtime`.
 
 ## BATCH 108 Start 2026-05-23
@@ -485,7 +485,7 @@
 - Vercel: PASS, `smoke:frontend:strict` confirmed production serves `448898c`.
 - Render/API: PASS, `smoke:health-readiness` passed.
 - Runtime contract: PASS, `smoke:batch100q-operational-admin-runtime`.
-- Production question API spot checks: PASS for `search=(`, `search=???`, `search=جمع` (all `200`).
+- Production question API spot checks: PASS for `search=(`, `search=???`, `search=???` (all `200`).
 - In-app Browser: production URL remained open during the sweep.
 - Report: `BATCH_100V_PRODUCTION_RUNTIME_REVALIDATION_SWEEP_2026-05-22_AR.md`.
 
@@ -496,7 +496,7 @@
 - GitHub: PASS.
 - Vercel: PASS, strict frontend smoke confirmed production serves `f7ed2c5`.
 - Render/API: PASS, health readiness smoke passed.
-- Production question API: PASS for `search=(`, `search=???`, `search=جمع`, and `search=BATCH 100P runtime CRUD test` (all returned `200`).
+- Production question API: PASS for `search=(`, `search=???`, `search=???`, and `search=BATCH 100P runtime CRUD test` (all returned `200`).
 - In-app Browser: production route already open on `https://almeaacodax.vercel.app/?verify=100t-final-5f3fe54`; no blocking frontend regression detected in strict smoke.
 - Operational note: direct admin live-login replay from this local context hit auth rate-limit `429` after failed credential attempt; no code fix required.
 - Report: `BATCH_100U_ADMIN_QUESTION_BANK_PRODUCTION_VERIFICATION_SWEEP_2026-05-22_AR.md`.
@@ -619,8 +619,8 @@
 - GitHub: PASS.
 - Vercel: PASS, `npm run smoke:frontend:strict` confirmed production serves `4e294eb` after first attempt still saw the previous asset.
 - Render/API: PASS, `npm run smoke:health-readiness` passed and `/api/health` returned `ready=true`, commit `4e294ebda105`.
-- Production question search: PASS, search values `(`, `???`, `جمع`, and `BATCH 100P runtime CRUD test` all returned `200` after deploy.
-- In-app Browser: PASS, admin question bank opened after deploy and showed `مركز الأسئلة`, `إضافة سؤال جديد`, and `ابحث في نص السؤال...` with no error logs.
+- Production question search: PASS, search values `(`, `???`, `???`, and `BATCH 100P runtime CRUD test` all returned `200` after deploy.
+- In-app Browser: PASS, admin question bank opened after deploy and showed `???? ???????`, `????? ???? ????`, and `???? ?? ?? ??????...` with no error logs.
 - Cleanup: PASS, direct Mongo check for `text=/BATCH 100P runtime CRUD test/` returned `matched=0`, so no test question remains in production DB.
 - Report: `BATCH_100P_ADMIN_QUESTION_BANK_RUNTIME_CRUD_PRODUCTION_BROWSER_VERIFICATION_2026-05-22_AR.md`.
 
@@ -767,7 +767,7 @@
   - GitHub push PASS: `5338714`.
   - Vercel PASS: production served commit `5338714`.
   - Render PASS: health commit `5338714f2cc7`, ready=true.
-  - In-app browser PASS: admin dashboard and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab visible with no visible errors.
+  - In-app browser PASS: admin dashboard and `المجموعات والمدارس` tab visible with no visible errors.
 - Next suggested: `BATCH 100I - Admin Dashboard Functional QA: Homepage Settings + Course Player + Group Buttons`
 ## Update 2026-05-21 - BATCH 100F Groups/Schools Relationship Audit
 - Batch: `BATCH_100F_GROUPS_SCHOOLS_RELATIONSHIPS_DEEP_FUNCTIONAL_AUDIT_2026-05-21_AR`
@@ -811,7 +811,7 @@
   - Added server command `npm --prefix server run repair:current-course-visibility`.
   - Added regression smoke `npm run smoke:batch100e-course-data-repair`.
   - Repaired production data only for `pathId=p_1777779639431` and `subjectId=sub_1777779748206`.
-  - Preserved the existing lesson title `Ø¬Ù…Ø¹` and linked it into the restored course.
+  - Preserved the existing lesson title `جمع` and linked it into the restored course.
 - Checks:
   - `npm --prefix server run audit:learning` PASS with non-blocking WARN for unrelated orphan `l_1777839591839_copy`
   - `npm run smoke:batch100e-course-data-repair` PASS
@@ -826,8 +826,8 @@
 - Production verification:
   - `GET /api/courses/course_current_p_1777779639431_sub_1777779748206_foundation` changed from `404` to `200`.
   - `GET /api/courses?limit=200` now includes the restored course.
-  - In-app browser verified learning page shows `ØªØ£Ø³ÙŠØ³ Ø§Ù„ÙƒÙ…ÙŠ: Ø§Ù„Ø¹Ù…Ù„ÙŠØ§Øª ÙˆØ§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©`.
-  - In-app browser verified course page no longer shows `Ø§Ù„Ø¯ÙˆØ±Ø© ØºÙŠØ± Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§` and shows lesson `Ø¬Ù…Ø¹`.
+  - In-app browser verified learning page shows `تأسيس الكمي: العمليات والمهارات الأساسية`.
+  - In-app browser verified course page no longer shows `الدورة غير متاحة حاليًا` and shows lesson `جمع`.
 - Report: `BATCH_100E_PRODUCTION_COURSE_DATA_VISIBILITY_REPAIR_GROUP_RELATIONS_AUDIT_2026-05-21_AR.md`
 - Next suggested: `BATCH 100F - Groups/Schools/Parents/Supervisors Relationship Deep Functional Audit`
 ## Update 2026-05-21 - BATCH 100D Admin Dashboard + Course Player Verification
@@ -847,8 +847,8 @@
   - `npm run smoke:course-visibility` PASS
   - `npm run smoke:homepage-hero` PASS
 - Production finding:
-  - Learning page for `p_1777779639431/sub_1777779748206` currently shows courses `Ã˜Â­Ã™â€¦Ã™Æ’Ã˜Â´Ã˜Â©` and `Ã˜Â¨ Ã˜Â§Ã™â€ž`.
-  - Target course `course_current_p_1777779639431_sub_1777779748206_foundation` returns `404 Course not found` from production API and therefore the course player shows `Ã˜Â§Ã™â€žÃ˜Â¯Ã™Ë†Ã˜Â±Ã˜Â© Ã˜ÂºÃ™Å Ã˜Â± Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â­Ã˜Â© Ã˜Â­Ã˜Â§Ã™â€žÃ™Å Ã™â€¹Ã˜Â§`.
+  - Learning page for `p_1777779639431/sub_1777779748206` currently shows courses `Ø­Ù…ÙƒØ´Ø©` and `Ø¨ Ø§Ù„`.
+  - Target course `course_current_p_1777779639431_sub_1777779748206_foundation` returns `404 Course not found` from production API and therefore the course player shows `Ø§Ù„Ø¯ÙˆØ±Ø© ØºÙŠØ± Ù…ØªØ§Ø­Ø© Ø­Ø§Ù„ÙŠÙ‹Ø§`.
   - This is a confirmed production data/publishing/id mismatch follow-up, not a direct CoursePlayer rendering failure.
 - Report: `BATCH_100D_ADMIN_DASHBOARD_COURSE_PLAYER_FUNCTIONAL_CLOSURE_2026-05-21_AR.md`
 - Next suggested: `BATCH 100E - Production Course Data Visibility Repair + Groups/Relationships Audit Entry`
@@ -943,13 +943,13 @@
   - `npm run smoke:health-readiness` PASS
 - Final Status: Programmatically closed, production verification pending
 
-## Update 2026-05-21 Ã¢â‚¬â€ PLAN 100 Readiness Audit & Execution Plan
+## Update 2026-05-21 â€” PLAN 100 Readiness Audit & Execution Plan
 - Batch: `PLAN_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR`
 - Status: Fully closed
 - Created current 100% readiness plan: `PROJECT_100_READINESS_AUDIT_AND_EXECUTION_PLAN_2026-05-21_AR.md`
 - Created external dependency register: `EXTERNAL_PAID_SERVICES_AND_OWNER_BLOCKERS_2026-05-21_AR.md`
 - Key conclusion: project is strong for controlled pilot, but 100% readiness still requires dashboard-wide functional audit, smoke secrets, Tap live/sandbox proof, WhatsApp provider proof if required, backup/restore proof, and scale retest after Render/Mongo upgrades.
-- Next suggested batch: `BATCH 100A Ã¢â‚¬â€ Full Dashboard & Role Functional Audit`.
+- Next suggested batch: `BATCH 100A â€” Full Dashboard & Role Functional Audit`.
 ## Delivered In This Update
 - Added real Sentry runtime integration in backend (`@sentry/node`) and frontend (`@sentry/react`).
 - Wired backend error handler to report 5xx exceptions to Sentry with request context.
@@ -1013,7 +1013,7 @@
 - Report:
   - `BATCH_30C_COURSE_VISIBILITY_CONTRACT_ADMIN_TO_STUDENT_2026-05-19_AR.md`
 - Next suggested:
-  - `BATCH 30D Ã¢â‚¬â€ Curriculum Import Scope Guard`
+  - `BATCH 30D â€” Curriculum Import Scope Guard`
 
 ## Update 2026-05-19 - BATCH 30D Final Closure
 - Batch: `BATCH 30D - Curriculum Import Scope Guard`
@@ -1901,7 +1901,7 @@
 - Report:
   - `FEATURE_6_AI_GENERATED_MOCK_EXAMS_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FEATURE-8 Previous Years Question Bank (Closed)
+## Update 2026-05-21 Ã¢â‚¬â€ FEATURE-8 Previous Years Question Bank (Closed)
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. Backend contract for previous-years classification in questions (`examType`, `source`, `year`).
@@ -1916,7 +1916,7 @@
 - Report:
   - `FEATURE_8_PREVIOUS_YEARS_QUESTION_BANK_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-7 Subscription Flow Completion (Closed)
+## Update 2026-05-21 Ã¢â‚¬â€ FIX-7 Subscription Flow Completion (Closed)
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. New subscription APIs (create/status/cancel).
@@ -1933,7 +1933,7 @@
 - Report:
   - `FIX_7_SUBSCRIPTION_FLOW_COMPLETION_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-6R WhatsApp OTP Revalidation
+## Update 2026-05-21 Ã¢â‚¬â€ FIX-6R WhatsApp OTP Revalidation
 - Current Status: Programmatically closed, production verification pending
 - Verified now:
   - OTP code path ready in server routes/services.
@@ -1942,7 +1942,7 @@
 - Report:
   - `FIX_6R_WHATSAPP_OTP_REVALIDATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-5 Tap Payment Integration
+## Update 2026-05-21 Ã¢â‚¬â€ FIX-5 Tap Payment Integration
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. Real Tap charge initiation endpoint.
@@ -1953,7 +1953,7 @@
 - Report:
   - `FIX_5_TAP_PAYMENT_INTEGRATION_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-3A Smoke Auth Automation Hardening
+## Update 2026-05-21 Ã¢â‚¬â€ FIX-3A Smoke Auth Automation Hardening
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. smoke auto-auth wrappers for operational + sentry live proof.
@@ -1963,7 +1963,7 @@
 - Report:
   - `FIX_3A_SMOKE_AUTH_AUTOMATION_HARDENING_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â FIX-9A Scale Revalidation
+## Update 2026-05-21 Ã¢â‚¬â€ FIX-9A Scale Revalidation
 - Current Status: Programmatically closed, production verification pending
 - Revalidated with current production evidence:
   - hardening/readiness pass
@@ -1972,7 +1972,7 @@
 - Report:
   - `FIX_9A_SCALE_REVALIDATION_EVIDENCE_PACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ADMIN OPS Health Endpoint
+## Update 2026-05-21 Ã¢â‚¬â€ ADMIN OPS Health Endpoint
 - Current Status: Programmatically closed, production verification pending
 - Delivered now:
   1. `/api/operations/health` no longer returns 404.
@@ -1986,7 +1986,7 @@
 - Report:
   - `BATCH_ADMIN_OPS_HEALTH_ENDPOINT_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ FIX Admin Course Save (CSRF Retry Hardening)
+## Update 2026-05-21 â€” FIX Admin Course Save (CSRF Retry Hardening)
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Hardened frontend API retry path for raw-text 403 CSRF failures.
@@ -2000,7 +2000,7 @@
 - Report:
   - `FIX_ADMIN_COURSE_SAVE_CSRF_RETRY_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ Admin Course Identity Stability
+## Update 2026-05-21 â€” Admin Course Identity Stability
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Unified course identity resolution (`id/_id`) in store lifecycle.
@@ -2014,7 +2014,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_IDENTITY_STABILITY_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ Course Player Quiz ID Fallback
+## Update 2026-05-21 â€” Course Player Quiz ID Fallback
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Added fallback resolver for embedded course quiz ids in `CoursePlayer`.
@@ -2027,7 +2027,7 @@
 - Report:
   - `BATCH_COURSE_PLAYER_QUIZ_ID_FALLBACK_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ Course Overview Navigation + Files Actions
+## Update 2026-05-21 â€” Course Overview Navigation + Files Actions
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Fixed lesson navigation to open the exact clicked lesson.
@@ -2040,7 +2040,7 @@
 - Report:
   - `BATCH_COURSE_OVERVIEW_NAV_AND_FILES_ACTIONS_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ Admin Course Actions Await/Error Handling
+## Update 2026-05-21 â€” Admin Course Actions Await/Error Handling
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Awaited admin course mutations for approve/reject/publish/visibility flows.
@@ -2053,7 +2053,7 @@
 - Report:
   - `BATCH_ADMIN_COURSE_ACTIONS_AWAIT_AND_ERROR_HANDLING_2026-05-21_AR.md`
 
-## Update 2026-05-21 Ã¢â‚¬â€ Course Files Tab Runtime Fixes
+## Update 2026-05-21 â€” Course Files Tab Runtime Fixes
 - Current Status: Programmatically closed, production verification pending
 - Delivered:
   1. Dynamic file type label in course files tab.
@@ -2082,22 +2082,22 @@
 - Report:
   - `BATCH_COURSE_RELATED_FILES_ACTIONS_PARITY_2026-05-21_AR.md`
 
-## Ã™ÂÃ˜Â­Ã˜Âµ Ã˜Â¹Ã™â€¦Ã™Å Ã™â€š Ã˜Â´Ã˜Â§Ã™â€¦Ã™â€ž Ã¢â‚¬â€ 2026-05-21
+## ÙØ­Øµ Ø¹Ù…ÙŠÙ‚ Ø´Ø§Ù…Ù„ â€” 2026-05-21
 - Batch/Audit: `DEEP_AUDIT_V13_FULL_PLATFORM_INSPECTION_2026-05-21_AR`
 - Status: Fully closed
-- Ã˜Â§Ã™â€žÃ™â€¦Ã™â€ Ã™â€¡Ã˜Â¬Ã™Å Ã˜Â©: 9 Ã™â€¦Ã˜Â±Ã˜Â§Ã˜Â­Ã™â€ž Ã™ÂÃ˜Â­Ã˜Âµ (handover/status + structure + smoke suite + models + routes + frontend + security + flows + performance/CI).
-- Ã˜Â§Ã™â€žÃ™â€ Ã˜ÂªÃ™Å Ã˜Â¬Ã˜Â© Ã˜Â§Ã™â€žÃ™ÂÃ˜Â¹Ã™â€žÃ™Å Ã˜Â© Ã˜Â¨Ã˜Â¹Ã˜Â¯ Ã˜Â§Ã™â€žÃ™ÂÃ˜Â­Ã˜Âµ: `79%`.
-- Ã˜Â£Ã˜Â¨Ã˜Â±Ã˜Â² Ã˜Â§Ã™Æ’Ã˜ÂªÃ˜Â´Ã˜Â§Ã™Â Ã˜Â­Ã˜Â±Ã˜Â¬: Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¦Ã˜Â¬ Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â®Ã˜ÂªÃ˜Â¨Ã˜Â§Ã˜Â±Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â§ Ã˜Â²Ã˜Â§Ã™â€žÃ˜Âª Ã˜ÂªÃ™Æ’Ã˜Â´Ã™Â `correctOptionIndex` Ã™Ë†`explanation` Ã™ÂÃ™Å  Ã˜Â±Ã˜Â¯Ã™Ë†Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â§Ã™â€žÃ˜Â¨/Ã˜ÂªÃ™ÂÃ˜Â§Ã˜ÂµÃ™Å Ã™â€ž Ã˜Â§Ã™â€žÃ™â€ Ã˜ÂªÃ™Å Ã˜Â¬Ã˜Â©Ã˜Å’ Ã™Ë†Ã™Å Ã˜Â¬Ã˜Â¨ Ã˜Â¨Ã˜Â¯Ã˜Â¡ `BATCH 100A` Ã™â€šÃ˜Â¨Ã™â€ž Ã˜Â£Ã™Å  Ã˜ÂªÃ˜Â·Ã™Ë†Ã™Å Ã˜Â± Ã˜ÂªÃ˜Â¬Ã™â€¦Ã™Å Ã™â€žÃ™Å .
-- Ã™ÂÃ˜Â­Ã™Ë†Ã˜Âµ Ã˜Â£Ã˜Â³Ã˜Â§Ã˜Â³Ã™Å Ã˜Â©: 18/18 PASS.
-- Ã™ÂÃ˜Â­Ã™Ë†Ã˜Âµ Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ™Å Ã˜Â© Ã™ÂÃ˜Â§Ã˜Â´Ã™â€žÃ˜Â© Ã˜Â¨Ã˜Â³Ã˜Â¨Ã˜Â¨ secret Ã™â€¦Ã˜Â­Ã™â€žÃ™Å  Ã™â€¦Ã™ÂÃ™â€šÃ™Ë†Ã˜Â¯: `smoke:operational`, `smoke:sentry-live-proof`.
-- Ã˜Â¥Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¬ Render: health Ã˜Â¬Ã˜Â§Ã™â€¡Ã˜Â² Ã™Ë†Redis readyÃ˜Å’ Ã™â€žÃ™Æ’Ã™â€  commit Ã˜Â§Ã™â€žÃ˜Â¥Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¬ Ã˜Â§Ã™â€žÃ˜Â°Ã™Å  Ã˜Â¸Ã™â€¡Ã˜Â± Ã™ÂÃ™Å  health Ã™â€žÃ˜Â§ Ã™Å Ã˜Â·Ã˜Â§Ã˜Â¨Ã™â€š Ã˜Â¢Ã˜Â®Ã˜Â± `origin/main` Ã™Ë†Ã™â€šÃ˜Âª Ã˜Â§Ã™â€žÃ™ÂÃ˜Â­Ã˜Âµ.
-- Ã™â€¦Ã™â€žÃ™ÂÃ˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜ÂªÃ™â€šÃ˜Â±Ã™Å Ã˜Â±:
+- Ø§Ù„Ù…Ù†Ù‡Ø¬ÙŠØ©: 9 Ù…Ø±Ø§Ø­Ù„ ÙØ­Øµ (handover/status + structure + smoke suite + models + routes + frontend + security + flows + performance/CI).
+- Ø§Ù„Ù†ØªÙŠØ¬Ø© Ø§Ù„ÙØ¹Ù„ÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„ÙØ­Øµ: `79%`.
+- Ø£Ø¨Ø±Ø² Ø§ÙƒØªØ´Ø§Ù Ø­Ø±Ø¬: Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ù…Ø§ Ø²Ø§Ù„Øª ØªÙƒØ´Ù `correctOptionIndex` Ùˆ`explanation` ÙÙŠ Ø±Ø¯ÙˆØ¯ Ø§Ù„Ø·Ø§Ù„Ø¨/ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù†ØªÙŠØ¬Ø©ØŒ ÙˆÙŠØ¬Ø¨ Ø¨Ø¯Ø¡ `BATCH 100A` Ù‚Ø¨Ù„ Ø£ÙŠ ØªØ·ÙˆÙŠØ± ØªØ¬Ù…ÙŠÙ„ÙŠ.
+- ÙØ­ÙˆØµ Ø£Ø³Ø§Ø³ÙŠØ©: 18/18 PASS.
+- ÙØ­ÙˆØµ Ø¥Ø¶Ø§ÙÙŠØ© ÙØ§Ø´Ù„Ø© Ø¨Ø³Ø¨Ø¨ secret Ù…Ø­Ù„ÙŠ Ù…ÙÙ‚ÙˆØ¯: `smoke:operational`, `smoke:sentry-live-proof`.
+- Ø¥Ù†ØªØ§Ø¬ Render: health Ø¬Ø§Ù‡Ø² ÙˆRedis readyØŒ Ù„ÙƒÙ† commit Ø§Ù„Ø¥Ù†ØªØ§Ø¬ Ø§Ù„Ø°ÙŠ Ø¸Ù‡Ø± ÙÙŠ health Ù„Ø§ ÙŠØ·Ø§Ø¨Ù‚ Ø¢Ø®Ø± `origin/main` ÙˆÙ‚Øª Ø§Ù„ÙØ­Øµ.
+- Ù…Ù„ÙØ§Øª Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
   - `DEEP_AUDIT_REPORT_AR.md`
   - `UPDATED_PLAN_TO_100_AR.md`
   - `BUGS_FOUND_AR.md`
-- Ã˜Â§Ã™â€žÃ˜Â¯Ã™ÂÃ˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â§Ã™â€žÃ™Å Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã™â€šÃ˜ÂªÃ˜Â±Ã˜Â­Ã˜Â©: `BATCH 100A Ã¢â‚¬â€ Quiz Result Answer Exposure Hardening`.
+- Ø§Ù„Ø¯ÙØ¹Ø© Ø§Ù„ØªØ§Ù„ÙŠØ© Ø§Ù„Ù…Ù‚ØªØ±Ø­Ø©: `BATCH 100A â€” Quiz Result Answer Exposure Hardening`.
 
-## Update 2026-05-21 Ã¢â‚¬â€ BATCH 100A Quiz Result Answer Exposure Hardening
+## Update 2026-05-21 â€” BATCH 100A Quiz Result Answer Exposure Hardening
 - Batch: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR`
 - Status: Fully closed
 - Delivered:
@@ -2118,7 +2118,7 @@
   - `npm run smoke:data-visibility-regression` PASS
   - `npm run smoke:frontend:strict` PASS
 - Report: `BATCH_100A_QUIZ_RESULT_ANSWER_EXPOSURE_HARDENING_2026-05-21_AR.md`
-- Next suggested: `BATCH 100B Ã¢â‚¬â€ Discussions RBAC Scope Hardening`
+- Next suggested: `BATCH 100B â€” Discussions RBAC Scope Hardening`
 
 ## Production Closure 2026-05-21 - BATCH 100C
 - Final Status: Programmatically closed, production verification pending
@@ -2145,7 +2145,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - GitHub push: PASS.
 - Render health: `ready=true`, commit `9047a47420e5`.
 - Vercel Production: `smoke:frontend:strict` PASS and serving expected commit `9047a47`.
-- Browser verification: PASS for learning page and course page; restored course and lesson `Ø¬Ù…Ø¹` are visible.
+- Browser verification: PASS for learning page and course page; restored course and lesson `جمع` are visible.
 - Final result: production course data visibility issue is closed and deployed.
 
 ## Production Closure 2026-05-21 - BATCH 100F
@@ -2153,7 +2153,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Implementation and final closure documentation were pushed to `main`.
 - Vercel verified: `npm run smoke:frontend:strict` PASS and production serves the expected pushed version.
 - Render/readiness verified: `npm run smoke:health-readiness` PASS.
-- In-app browser verified: admin dashboard opens and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
+- In-app browser verified: admin dashboard opens and `المجموعات والمدارس` tab shows school portfolio, readiness cards, school rows, supervisor/class/student signals.
 - Remaining risks intentionally moved to next batch: `slice(0, 80)` school-students cap and full click-by-click school relationship E2E.
 - Next suggested: `BATCH 100G - School Relationship UI Pagination + E2E Browser Verification`.
 
@@ -2192,7 +2192,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Commit pushed: `6d977e4`.
 - Vercel: `npm run smoke:frontend:strict` PASS and production serves commit `6d977e4` with asset `index-D6_Q_6mk.js`.
 - Render/API: `npm run smoke:health-readiness` PASS.
-- In-app browser: PASS after hard refresh; admin dashboard opened and `Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª ÙˆØ§Ù„Ù…Ø¯Ø§Ø±Ø³` tab showed school readiness cards and school rows without visible errors.
+- In-app browser: PASS after hard refresh; admin dashboard opened and `المجموعات والمدارس` tab showed school readiness cards and school rows without visible errors.
 - Final result: the school-student table no longer hides students beyond the first 80; pagination is in place and verified.
 - Next suggested: `BATCH 100H - Group Create Scope Hardening + School Relationship Button E2E`.
 
@@ -2204,7 +2204,7 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - GitHub push: PASS.
 - Vercel production: PASS, `smoke:frontend:strict` confirmed deployed commit `6b32430`.
 - Render production: PASS, `/api/health` returned `ready=true` and commit `6b324303a4bd`.
-- In-app browser: PASS, admin dashboard opened and `مركز الأسئلة` showed 63 questions with `إضافة سؤال جديد`, no visible fatal errors.
+- In-app browser: PASS, admin dashboard opened and `???? ???????` showed 63 questions with `????? ???? ????`, no visible fatal errors.
 - Main bug closed: admin question bank no longer appears empty because `/api/quizzes/questions?paginate=true` now returns `{ data, pagination }` and the UI refreshes after mutations.
 - Next suggested: `BATCH 100J - Homepage Branding Controls + Course Lesson Icons Settings`.
 
@@ -2416,8 +2416,8 @@ pm run smoke:health-readiness PASS; backend is ready/connected, with no backend 
 - Root issue fixed:
   - removed fallback rendering of related/alternative files in course files tab when course has no direct files (to prevent showing materials the owner did not upload to that course),
   - wired overview card actions:
-    - `المفضلة` now toggles and persists per user in local storage,
-    - `مشاركة` now executes share flow via `shareTextSummary`.
+    - `???????` now toggles and persists per user in local storage,
+    - `??????` now executes share flow via `shareTextSummary`.
 - Code change:
   - `components/CourseOverview.tsx`
 - Publish:
@@ -2623,7 +2623,7 @@ pm run smoke:health-readiness
 pm run smoke:frontend:strict (26/26, production commit match b9f161).
 - Next exact task:
   1. Rotate/fix local VERCEL_TOKEN for CLI deploy parity (optional, non-blocking while Git integration is healthy).
-  2. Continue next batch directly on owner command اكمل with same single-batch closure protocol.
+  2. Continue next batch directly on owner command ???? with same single-batch closure protocol.
 
 ## Final Closure 2026-05-25 - BATCH 158
 - Batch: BATCH_158_OPERATIONAL_AUTH_CLOSURE_AND_LIVE_REVALIDATION_2026-05-25_AR.
@@ -2661,7 +2661,7 @@ pm run smoke:frontend:strict (26/26)
 - Security note:
   - admin JWT was treated as session-only smoke secret; rotate/revoke after batch closure.
 - Next exact task:
-  1. continue next owner batch immediately on command اكمل.
+  1. continue next owner batch immediately on command ????.
 
 ## Plan Addendum 2026-05-25 - Memberships vs Learning Packages Separation
 - Clarification added for next batch planning:
@@ -2872,12 +2872,12 @@ pm run smoke:frontend:strict (26/26)
 - Batch: `BATCH_167_MEMBERSHIP_VISUAL_AUDIT_AND_SCOPE_FIX_2026-05-26_AR`.
 - Status: `Implementation + local visual verification + runtime gate PASS; production push/deploy closure pending`.
 - Focus:
-  - عمليًا فحصنا مشكلة `/pricing`: العضويات كانت تقود إلى `/courses` وتخلط عضويات المنصة مع باقات ساحة التعلم.
-  - تم فصل سلوك العضويات العامة عن باقات التعلم، وتوضيح مكان إدارتها في لوحة المدير.
+  - ?????? ????? ????? `/pricing`: ???????? ???? ???? ??? `/courses` ????? ?????? ?????? ?? ????? ???? ??????.
+  - ?? ??? ???? ???????? ?????? ?? ????? ??????? ?????? ???? ??????? ?? ???? ??????.
 - Fixes:
-  - `pages/Pricing.tsx`: أزرار العضويات المدفوعة أصبحت طلب عضوية عام عبر WhatsApp بدل `/courses`، والعضوية المجانية تذهب لمسار الحساب.
-  - `dashboards/admin/PathsManager.tsx`: توضيح أن القسم يدير `إدارة العضويات العامة وباقات المسارات` مع خيار `عضوية عامة تفتح كل المنصة`.
-  - `scripts/smoke-membership-pricing-contract.mjs` + `package.json`: smoke جديد يمنع رجوع الخلط بين العضويات والكورسات.
+  - `pages/Pricing.tsx`: ????? ???????? ???????? ????? ??? ????? ??? ??? WhatsApp ??? `/courses`? ???????? ???????? ???? ????? ??????.
+  - `dashboards/admin/PathsManager.tsx`: ????? ?? ????? ???? `????? ???????? ?????? ?????? ????????` ?? ???? `????? ???? ???? ?? ??????`.
+  - `scripts/smoke-membership-pricing-contract.mjs` + `package.json`: smoke ???? ???? ???? ????? ??? ???????? ?????????.
 - Visual evidence:
   - in-app Browser confirmed local preview `/pricing` shows membership wording and no `/courses` CTA.
   - clicking paid membership CTA keeps current page and resolves to WhatsApp membership request URL.
@@ -2912,10 +2912,10 @@ pm run smoke:frontend:strict (26/26)
   - `npm run smoke:health-readiness` PASS.
   - `npm run smoke:frontend:strict` PASS; production loaded new entry asset `index-BCzZEn2H.js` after Vercel Git integration update.
 - Browser production verification:
-  - `/pricing` title: `عضويات المنصة | منصة المئة`.
+  - `/pricing` title: `?????? ?????? | ???? ?????`.
   - membership separation note present.
   - no `/courses` href found in membership CTA markup.
-  - `اطلب العضوية الأساسية` href points to WhatsApp membership request.
+  - `???? ??????? ????????` href points to WhatsApp membership request.
 - Tool note:
   - screenshot capture timed out in the Browser tool after DOM verification; DOM/URL evidence passed and page state was verified through the in-app Browser.
 - Result:
@@ -2949,21 +2949,21 @@ pm run smoke:frontend:strict (26/26)
 ## BATCH 169 - 2026-05-26
 - Status: `Closed (Delivery Style Standardization)`.
 - Scope:
-  - توحيد أسلوب التسليم الإلزامي بين الحسابات التالية.
-  - اعتماد رباعية التسليم كمتطلب إغلاق لكل دفعة.
-  - تثبيت قاعدة `UTF-8` للملفات العربية ومنع أي نص مشوّه جديد.
+  - ????? ????? ??????? ???????? ??? ???????? ???????.
+  - ?????? ?????? ??????? ?????? ????? ??? ????.
+  - ????? ????? `UTF-8` ??????? ??????? ???? ?? ?? ????? ????.
 - Gate Results:
-  - `N/A` (دفعة توثيق تنظيمي).
-  - مرجع آخر بوابة تشغيلية كاملة: PASS في BATCH 168 (`health` + `strict` + `operational`).
+  - `N/A` (???? ????? ??????).
+  - ???? ??? ????? ??????? ?????: PASS ?? BATCH 168 (`health` + `strict` + `operational`).
 - Deploy/Commit Evidence:
-  - لا يوجد كود/نشر جديد ضمن هذه الدفعة.
+  - ?? ???? ???/??? ???? ??? ??? ??????.
 - Blockers:
-  - لا يوجد blocker برمجي.
-  - أي تعذر وصول خارجي لاحقًا يسجل `external blocker`.
+  - ?? ???? blocker ?????.
+  - ?? ???? ???? ????? ?????? ???? `external blocker`.
 - Next exact task:
-  1. تحديث `PROJECT_STATUS.md` + `CODEX_HANDOFF.md` + `docs/SPARK_BATCH_LEDGER_AR.md` + `docs/NEXT_SESSION_HANDOVER_AR.md` في كل دفعة قادمة.
-  2. توثيق أي Critical/High bug بالنموذج الموحد: `Bug / Location / Role / Steps / Expected / Actual / Root cause / Fix / Files / Retest / Risk`.
-  3. عدم إغلاق أي دفعة قبل تحقق اتساق النتائج بين الملفات الأربعة.
+  1. ????? `PROJECT_STATUS.md` + `CODEX_HANDOFF.md` + `docs/SPARK_BATCH_LEDGER_AR.md` + `docs/NEXT_SESSION_HANDOVER_AR.md` ?? ?? ???? ?????.
+  2. ????? ?? Critical/High bug ???????? ??????: `Bug / Location / Role / Steps / Expected / Actual / Root cause / Fix / Files / Retest / Risk`.
+  3. ??? ????? ?? ???? ??? ???? ????? ??????? ??? ??????? ???????.
 
 ## BATCH 170 - 2026-05-26
 - Status: Closed (Handover UTF-8 Guard Added).
@@ -3464,8 +3464,8 @@ Regression risk: low
   - Cross-checked role visibility against current dashboard role menu logic.
 - Gate Results:
   - PASS: `student /plan` includes `WhatsApp contact` interactive action.
-  - PASS (RBAC-expected): supervisor does not expose `library` tab and does not expose `quizzes` tab in current role menu, so `فتح مركز المكتبة` and `فتح مركز الاختبارات` are not required clickable actions for supervisor in this build.
-  - PASS (state-expected): teacher reports include `تصدير الطلاب` control but current state is `disabled=true` (data/scope dependent), not missing control.
+  - PASS (RBAC-expected): supervisor does not expose `library` tab and does not expose `quizzes` tab in current role menu, so `??? ???? ???????` and `??? ???? ??????????` are not required clickable actions for supervisor in this build.
+  - PASS (state-expected): teacher reports include `????? ??????` control but current state is `disabled=true` (data/scope dependent), not missing control.
 - Deploy/Commit Evidence:
   - Evidence folder: audit-artifacts/batch197-rbac-classification.
   - Summary: audit-artifacts/batch197-rbac-classification/SUMMARY.md.
@@ -3641,3 +3641,21 @@ Regression risk: low
   - Remaining visual FAIL set requires targeted classification/fix loop before marking fully closed.
 - Next exact task:
   1. Run targeted triage on remaining visual FAIL items, classify each as fixable or external blocker, apply minimal-safe fixes, and rerun affected path checks.
+
+## BATCH 208 - 2026-05-28
+- Status: Fully closed (visual retest reconciled; no confirmed FAIL remains).
+- Scope:
+  - Resolved data-source mismatch between `RETEST_SUMMARY.md` and final checklist dataset.
+  - Validated source-of-truth from final production checklist artifact.
+  - Confirmed post-push readiness gates remain green.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (29/29) after deploy propagation.
+  - PASS: production visual checklist final dataset => 529 total / 522 PASS / 0 FAIL / 7 BLOCKED.
+- Deploy/Commit Evidence:
+  - Source of truth: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-checklist-final.json`.
+  - Reconciled note: legacy `RETEST_SUMMARY.md` fail count is not the final truth source.
+- Blockers:
+  - external blocker: 7 items remain BLOCKED (not FAIL) and stay explicitly classified with reason/evidence.
+- Next exact task:
+  1. Produce targeted blocker register (7/7) in approved bug template and close any unblockable item with minimal-safe fix.
