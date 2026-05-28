@@ -3862,3 +3862,22 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Visual confirm in production: Google login redirects into authenticated session and header no longer shows intrusive logout button.
+
+## BATCH 222 - 2026-05-28
+- Status: Command gate PASS / Visual practical validation nearly closed (20/22 pass in focused retest).
+- Scope:
+  - Executed focused practical retest for the 22 remaining visual fails from latest production run.
+  - Reduced open fails from 22 to 2 with fresh evidence snapshots.
+- Gate Results:
+  - PASS: focused retest => 20 PASS / 2 FAIL.
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:auth-frontend`.
+  - PASS: `npm run smoke:frontend:strict`.
+- Deploy/Commit Evidence:
+  - Summary: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_FAIL22_FOCUSED_SUMMARY.md`.
+  - Detailed: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-retest-fail22-focused.ndjson`.
+  - Remaining-2 classification: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/FINAL_REMAINING_2_CLASSIFICATION.md`.
+- Blockers:
+  - external blocker: 2 items remain pending manual product acceptance (guest reports CTA guard flow + teacher report export control label drift).
+- Next exact task:
+  1. Product owner manual visual acceptance for the two classified blockers, then mark final practical closure.
