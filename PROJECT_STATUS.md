@@ -3675,3 +3675,21 @@ Regression risk: low
   - external blocker: 7 items remain blocked and are now individually documented with evidence and retest intent.
 - Next exact task:
   1. Execute targeted per-item visual rerun for the 7 blocked cases and close each as PASS or persistent external blocker.
+
+## BATCH 210 - 2026-05-28
+- Status: Fully closed (targeted blocked retest reduced open blockers).
+- Scope:
+  - Added dedicated blocked-retest runner to cover previously untested BLOCKED items.
+  - Executed practical production rerun for all 7 blocked cases with improved Arabic label matching.
+- Gate Results:
+  - PASS: blocked retest executed for 7/7.
+  - PASS: 3 items migrated from BLOCKED to PASS.
+  - PASS/EXTERNAL: 4 items remain BLOCKED with explicit evidence.
+- Deploy/Commit Evidence:
+  - Runner script: `scripts/ui-audit-retest-blocked.mjs`.
+  - Retest summary: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_BLOCKED_SUMMARY.md`.
+  - Detailed retest: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-retest-blocked.ndjson`.
+- Blockers:
+  - external blocker: 4 blocked items remain (supervisor/teacher profile-dashboard interactions) due to role-session/selector instability in production retest flow.
+- Next exact task:
+  1. Execute credential/session stabilization pass for supervisor/teacher roles and rerun the remaining 4 blocked items only.
