@@ -3310,3 +3310,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep release-cycle maintenance only: rerun strict gates and compact visual delta after each production deploy.
+
+## BATCH 212 - 2026-05-28
+- Status: Fully closed (post-closure production maintenance pass).
+- Scope:
+  - Executed recurring production strict maintenance checks after latest closure cycle.
+  - Confirmed deployment shell/routes and readiness probes remain green.
+- Gate Results:
+  - PASS: `npm run smoke:health-readiness`.
+  - PASS: `npm run smoke:frontend:strict` (All 28 blocking checks).
+- Deploy/Commit Evidence:
+  - Strict entry asset observed: `https://almeaacodax.vercel.app/assets/index-BfNfoXoY.js`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue delta-only maintenance after each deploy: strict gates + compact visual spot-check.
