@@ -4089,3 +4089,34 @@ Regression risk: low
   - external blocker: teacher `/reports` export target mismatch.
 - Next exact task:
   1. Final acceptance alignment for full-close.
+
+## BATCH 240 - Addendum 19 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Manual visual reconfirmation for remaining 2 blockers.
+- Gate Results:
+  - PASS: consistency of observed runtime behavior.
+  - FAIL: 2 expected checklist targets remain unavailable.
+- Deploy/Commit Evidence:
+  - guest `/reports` -> `/?auth=login`, CTA count 0.
+  - teacher `/reports` -> export exact 0, export-like controls 0.
+- Blockers:
+  - external blocker: guest CTA mismatch.
+  - external blocker: teacher export target mismatch.
+- Next exact task:
+  1. Apply acceptance policy for full close.
+
+## BATCH 240 - Addendum 20 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - UTF-8 safe sync for latest visual blocker reconfirmation.
+- Gate Results:
+  - PASS: manual recheck complete.
+  - FAIL: 2 external/checklist mismatches remain.
+- Deploy/Commit Evidence:
+  - guest guard redirect and teacher export target absence reconfirmed.
+- Blockers:
+  - external blocker: guest CTA mismatch.
+  - external blocker: teacher export mismatch.
+- Next exact task:
+  1. Final acceptance alignment for full close.

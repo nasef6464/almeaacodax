@@ -4475,3 +4475,36 @@ Regression risk: low
   - external blocker: teacher `/reports` export target label/scope differs from checklist target.
 - Next exact task:
   1. Approve checklist/runtime alignment for full-close.
+
+## BATCH 240 - Addendum 19 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Manual visual re-check for the 2 remaining blockers on production.
+- Gate Results:
+  - PASS: guest `/reports` guard behavior reproduced consistently.
+  - PASS: teacher `/reports` route reachable.
+  - FAIL: expected checklist targets still missing (2/2).
+- Deploy/Commit Evidence:
+  - Guest check: redirected to `/?auth=login`, `???? ??? ??????` found=0.
+  - Teacher check: `/reports` reachable, `????? ??????` exact=0, any export controls=0.
+- Blockers:
+  - external blocker: guest reports CTA mismatch with guard runtime.
+  - external blocker: teacher export target mismatch with runtime scope/label.
+- Next exact task:
+  1. Final product decision: update checklist expectation or implement UI behavior/label change.
+
+## BATCH 240 - Addendum 20 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - UTF-8 safe handover sync after manual visual reconfirmation.
+- Gate Results:
+  - PASS: manual visual recheck repeated for 2 blockers.
+  - FAIL: 2 checklist/runtime mismatches remain.
+- Deploy/Commit Evidence:
+  - guest /reports redirects to /?auth=login and target CTA count is 0.
+  - teacher /reports reachable and export target count is 0.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher reports export target mismatch.
+- Next exact task:
+  1. Final acceptance decision for external blockers.

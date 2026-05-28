@@ -4805,3 +4805,33 @@ pm run smoke:operational PASS (71/71).
   - external blocker: teacher export-target mismatch.
 - Next exact task:
   1. Final sign-off decision for 2 external blockers.
+
+## BATCH 240 - Addendum 19 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue from reconfirmed 2 external blockers state.
+- Gate Results:
+  - PASS: manual visual reconfirmation complete.
+  - FAIL: 2 checklist/runtime mismatches still open.
+- Deploy/Commit Evidence:
+  - Guest/Teacher manual probe rerun completed.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher reports export mismatch.
+- Next exact task:
+  1. Final acceptance sign-off for external blockers.
+
+## BATCH 240 - Addendum 20 (2026-05-28)
+- Status: Ready.
+- Scope:
+  - Continue from reconfirmed 2 external blockers state.
+- Gate Results:
+  - PASS: manual visual reconfirmation complete.
+  - FAIL: 2 mismatches still open.
+- Deploy/Commit Evidence:
+  - Latest manual probe confirms unchanged behavior.
+- Blockers:
+  - external blocker: guest reports CTA mismatch.
+  - external blocker: teacher reports export mismatch.
+- Next exact task:
+  1. Final acceptance sign-off for blockers.

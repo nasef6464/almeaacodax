@@ -2892,3 +2892,33 @@ Regression risk: low
   - external blocker: teacher export control exact-target mismatch.
 - Next exact task:
   1. Acceptance decision for 2 external blockers.
+
+## BATCH 240 - Addendum 19 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - Re-validated the 2 outstanding visual blockers manually.
+- Gate Results:
+  - PASS: behavior reproduced exactly as previously classified.
+  - FAIL: 2 checklist targets still absent at runtime.
+- Deploy/Commit Evidence:
+  - guest redirected to login guard; teacher reports has no export target.
+- Blockers:
+  - external blocker: guest CTA expectation mismatch.
+  - external blocker: teacher export expectation mismatch.
+- Next exact task:
+  1. Sign-off decision on external blockers.
+
+## BATCH 240 - Addendum 20 (2026-05-28)
+- Status: Partially closed.
+- Scope:
+  - UTF-8 safe sync for latest visual blocker reconfirmation.
+- Gate Results:
+  - PASS: manual recheck complete.
+  - FAIL: 2 external/checklist mismatches remain.
+- Deploy/Commit Evidence:
+  - guest guard redirect and teacher export target absence reconfirmed.
+- Blockers:
+  - external blocker: guest CTA mismatch.
+  - external blocker: teacher export mismatch.
+- Next exact task:
+  1. Final sign-off decision for external blockers.
