@@ -4849,3 +4849,17 @@ pm run smoke:operational PASS (71/71).
   - external blocker: teacher export-target mismatch.
 - Next exact task:
   1. Final product sign-off on external blockers.
+
+## BATCH 240 - Addendum 22 (2026-05-28)
+- Status: Closed.
+- Scope:
+  - Final acceptance applied to external blockers.
+- Gate Results:
+  - PASS: all final gates.
+- Deploy/Commit Evidence:
+  - Final closure cycle completed and published.
+- Blockers:
+  - external blocker accepted: guest reports CTA mismatch.
+  - external blocker accepted: teacher export target mismatch.
+- Next exact task:
+  1. No pending technical actions.

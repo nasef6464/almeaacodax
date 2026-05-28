@@ -4526,3 +4526,20 @@ Regression risk: low
   - external blocker: teacher reports export-target checklist mismatch.
 - Next exact task:
   1. Product acceptance sign-off for the 2 external blockers (non-runtime regressions).
+
+## BATCH 240 - Addendum 22 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Final acceptance decision for external visual blockers.
+- Gate Results:
+  - PASS: all command/operational/frontend/auth/readiness gates.
+  - PASS: visual focused retest completed (89/91).
+  - FAIL: 2/91 remain by design/runtime-checklist mismatch.
+- Deploy/Commit Evidence:
+  - Operational 71/71 PASS and handover guards PASS.
+  - Visual evidence and probes already stored in audit artifacts.
+- Blockers:
+  - external blocker accepted: guest reports CTA checklist target differs from auth guard runtime.
+  - external blocker accepted: teacher reports export target differs from runtime role scope/label.
+- Next exact task:
+  1. No technical action pending; batch considered closed with accepted external blockers.

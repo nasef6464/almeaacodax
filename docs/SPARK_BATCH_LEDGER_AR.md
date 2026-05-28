@@ -4138,3 +4138,18 @@ Regression risk: low
   - external blocker: teacher export-target mismatch.
 - Next exact task:
   1. Final acceptance sign-off for external blockers.
+
+## BATCH 240 - Addendum 22 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Final acceptance of the two external visual blockers.
+- Gate Results:
+  - PASS: all required gates and guards.
+  - PASS: visual retest documented.
+- Deploy/Commit Evidence:
+  - Final operational/frontend/auth/readiness and handover guard passes.
+- Blockers:
+  - external blocker accepted: guest reports CTA mismatch.
+  - external blocker accepted: teacher export target mismatch.
+- Next exact task:
+  1. None; full closure completed.
