@@ -42,17 +42,20 @@ async function login(page, role) {
   if (role === 'guest') return true;
   const creds = roleCreds[role] || [];
   for (const cred of creds) {
-    await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle', timeout: 60000 });
-    const email = page.locator('input[type="email"]').first();
-    const pass = page.locator('input[type="password"]').first();
-    if (!(await email.count()) || !(await pass.count())) continue;
-    await email.fill(cred.email).catch(() => {});
-    await pass.fill(cred.password).catch(() => {});
-    const submit = page.locator('form button[type="submit"]').first();
-    if (await submit.count()) await submit.click({ timeout: 5000 }).catch(() => {});
-    await page.waitForTimeout(2200);
-    await page.goto(`${BASE_URL}/profile`, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
-    if (!page.url().includes('/login')) return true;
+    for (const authUrl of [`${BASE_URL}/login`, `${BASE_URL}/?auth=login`]) {
+      await page.goto(authUrl, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+      const email = page.locator('input[type="email"]').first();
+      const pass = page.locator('input[type="password"]').first();
+      if (!(await email.count()) || !(await pass.count())) continue;
+      await email.fill(cred.email).catch(() => {});
+      await pass.fill(cred.password).catch(() => {});
+      const submit = page.locator('form button[type="submit"]').first();
+      if (await submit.count()) await submit.click({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(2500);
+      await page.goto(`${BASE_URL}/profile`, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+      const u = page.url();
+      if (!u.includes('/login') && !u.includes('auth=login')) return true;
+    }
   }
   return false;
 }

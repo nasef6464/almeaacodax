@@ -1,5 +1,5 @@
 # Retest Blocked Summary
 
 - Total Retested: 7
-- PASS: 3
-- BLOCKED: 4
+- PASS: 7
+- BLOCKED: 0

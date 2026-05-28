@@ -2119,3 +2119,20 @@ Regression risk: low
   - external blocker: 4 blocked items remain (supervisor/teacher profile-dashboard interactions) due to role-session/selector instability in production retest flow.
 - Next exact task:
   1. Execute credential/session stabilization pass for supervisor/teacher roles and rerun the remaining 4 blocked items only.
+
+## BATCH 211 - 2026-05-28
+- Status: Fully closed (blocked set fully resolved).
+- Scope:
+  - Strengthened blocked-retest auth flow to handle both `/login` and `/?auth=login` entry points.
+  - Re-executed targeted production retest for all previously blocked 7 items.
+- Gate Results:
+  - PASS: blocked retest summary => 7/7 PASS, 0 BLOCKED.
+  - PASS: no remaining blocked item in targeted blocked-retest dataset.
+- Deploy/Commit Evidence:
+  - Updated script: `scripts/ui-audit-retest-blocked.mjs`.
+  - Updated summary: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/RETEST_BLOCKED_SUMMARY.md`.
+  - Updated detailed results: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-retest-blocked.ndjson`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep release-cycle maintenance only: rerun strict gates and compact visual delta after each production deploy.
