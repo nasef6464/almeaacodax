@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
-    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, Trophy,
+    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, Trophy, LogOut,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
@@ -13,6 +13,7 @@ import { SmartLearningPath } from '../components/SmartLearningPath';
 import { useStore } from '../store/useStore';
 import { QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -653,6 +654,7 @@ const Dashboard: React.FC = () => {
     const { user } = useStore();
     const location = useLocation();
     const isParentDashboard = user.role === Role.PARENT;
+    const { logout } = useAuth();
 
     const studentMenuItems = [
         { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
@@ -769,6 +771,20 @@ const Dashboard: React.FC = () => {
                             </button>
                         ))}
                     </nav>
+                    <div className="mt-6 border-t border-gray-100 pt-4">
+                        <button
+                            type="button"
+                            data-logout-explicit="true"
+                            onClick={async () => {
+                                await logout();
+                                window.location.assign('/?auth=login');
+                            }}
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
+                        >
+                            <LogOut size={16} />
+                            تسجيل الخروج
+                        </button>
+                    </div>
                 </div>
             </aside>
 
