@@ -1882,3 +1882,22 @@ Regression risk: low
   - external blocker: production role/action UI does not currently expose verified clickable controls for the 4 residual baseline actions in tested role contexts; product/RBAC confirmation is required before code-side closure classification.
 - Next exact task:
   1. Run one guided in-browser manual proof pass (role by role) to determine whether each residual action is intentionally hidden by RBAC or is an actionable UX defect, then patch minimally if defect is confirmed.
+
+## BATCH 197 - 2026-05-28
+- Status: Fully closed (residual target-13 classification resolved with production + RBAC evidence).
+- Scope:
+  - Executed production DOM classification pass for remaining residual items from BATCH 196.
+  - Cross-checked role visibility against current dashboard role menu logic.
+- Gate Results:
+  - PASS: `student /plan` includes `WhatsApp contact` interactive action.
+  - PASS (RBAC-expected): supervisor does not expose `library` tab and does not expose `quizzes` tab in current role menu, so `فتح مركز المكتبة` and `فتح مركز الاختبارات` are not required clickable actions for supervisor in this build.
+  - PASS (state-expected): teacher reports include `تصدير الطلاب` control but current state is `disabled=true` (data/scope dependent), not missing control.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch197-rbac-classification.
+  - Summary: audit-artifacts/batch197-rbac-classification/SUMMARY.md.
+  - Detailed classification: audit-artifacts/batch197-rbac-classification/classification.json.
+  - Code evidence: dashboards/admin/AdminDashboard.tsx role menu filter for supervisor excludes `library` and `quizzes` tabs.
+- Blockers:
+  - None for residual target-13 set.
+- Next exact task:
+  1. Continue practical production validation with explicit logout UX confirmation per role (visible control + post-logout protected-route denial) to close remaining non-target13 quality gap.

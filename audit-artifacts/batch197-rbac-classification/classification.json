@@ -1,0 +1,226 @@
+{
+  "generatedAt": "2026-05-28T00:01:10.076Z",
+  "checks": [
+    {
+      "id": "supervisor-tabs-and-actions",
+      "hasLibraryTab": false,
+      "hasQuizzesTab": false,
+      "hasLibraryActionText": false,
+      "hasTestsActionText": false,
+      "sidebarLinks": []
+    },
+    {
+      "id": "teacher-reports-export",
+      "exportCandidates": [],
+      "sampleButtons": [
+        {
+          "tag": "a",
+          "text": "منصةالمئةقدرات & تحصيلي",
+          "disabled": false,
+          "href": "/"
+        },
+        {
+          "tag": "a",
+          "text": "الرئيسية",
+          "disabled": false,
+          "href": "/"
+        },
+        {
+          "tag": "a",
+          "text": "القدرات",
+          "disabled": false,
+          "href": "/category/p_1777779639431"
+        },
+        {
+          "tag": "a",
+          "text": "التحصيلي",
+          "disabled": false,
+          "href": "/category/p_1777779653351"
+        },
+        {
+          "tag": "a",
+          "text": "اختبارت نافس",
+          "disabled": false,
+          "href": "/category/p_1777779688079"
+        },
+        {
+          "tag": "a",
+          "text": "اختبارات محاكية",
+          "disabled": false,
+          "href": "/mock-exams"
+        },
+        {
+          "tag": "a",
+          "text": "العضويات",
+          "disabled": false,
+          "href": "/pricing"
+        },
+        {
+          "tag": "a",
+          "text": "المدونة",
+          "disabled": false,
+          "href": "/blog"
+        },
+        {
+          "tag": "a",
+          "text": "0",
+          "disabled": false,
+          "href": "/cart"
+        },
+        {
+          "tag": "button",
+          "text": "حسابيأ. ريم الكمي",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "PDF",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "Excel",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "نسخ",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "مشاركة",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "عرض كامل",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "تقرير مجمّع",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "تقرير مفرد",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "a",
+          "text": "توجيه اختبار",
+          "disabled": false,
+          "href": "/admin-dashboard?tab=quizzes&source=reports&mode=central"
+        },
+        {
+          "tag": "button",
+          "text": "نسخ تنبيه",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "a",
+          "text": "إدارة النطاق",
+          "disabled": false,
+          "href": "/admin-dashboard?tab=quizzes"
+        },
+        {
+          "tag": "button",
+          "text": "تصدير الطلاب",
+          "disabled": true,
+          "href": ""
+        },
+        {
+          "tag": "a",
+          "text": "فتح مركز التنبيهات",
+          "disabled": false,
+          "href": "/reports"
+        },
+        {
+          "tag": "button",
+          "text": "Excel",
+          "disabled": true,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "Excel",
+          "disabled": true,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "نسخ",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "مشاركة",
+          "disabled": false,
+          "href": ""
+        },
+        {
+          "tag": "button",
+          "text": "اقتراح",
+          "disabled": true,
+          "href": ""
+        }
+      ]
+    },
+    {
+      "id": "student-plan-whatsapp",
+      "hasWhats": true,
+      "samples": [
+        "فتح القائمة",
+        "منصةالمئةقدرات & تحصيلي",
+        "الرئيسية",
+        "القدرات",
+        "التحصيلي",
+        "اختبارات محاكية",
+        "العضويات",
+        "المدونة",
+        "تفعيل الوضع الداكن",
+        "فتح البحث",
+        "0",
+        "حسابيسلمان أحمد",
+        "طبّقها على النموذج",
+        "نسخ الخطة",
+        "مشاركة",
+        "1اليومراجع النتيجةحل اختبارًا تشخيصيًا أولًا حتى تظهر لك نقطة البداية.",
+        "2اليوم 1-2افهم المهارةابدأ بشرح قصير عن أضعف مهارة ظهرت في آخر اختبار.",
+        "3اليوم 3-4تدرب وقِسحل تدريبًا قصيرًا ثم أعد القياس على نفس المهارة.",
+        "4نهاية الأسبوعتابع التحسنافتح التقرير وشاهد هل ارتفعت المهارة بعد الشرح والتدريب.",
+        "القدرات",
+        "التحصيلي",
+        "الكميمادة داخل القدرات",
+        "اللفظيمادة داخل القدرات",
+        "تأسيس الكمي: العمليات والمهارات الأساسيةمنصة المئة",
+        "حمكشةفريق المنصة",
+        "ب الفريق المنصة",
+        "باقة القدرات الشاملةمنصة المئة",
+        "تأسيس اللفظي: فهم المقروءمنصة المئة",
+        "السبتSat",
+        "الأحدSun",
+        "الإثنينMon",
+        "الثلاثاءTue",
+        "الأربعاءWed",
+        "الخميسThu",
+        "الجمعةFri",
+        "إنشاء الخطة الدراسية",
+        "إعادة تعيين / إلغاء",
+        "فتح المساعد الذكي",
+        "WhatsApp contact"
+      ]
+    }
+  ]
+}
