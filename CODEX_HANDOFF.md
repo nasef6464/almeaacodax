@@ -2832,3 +2832,18 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Keep autonomous batch closure cadence with post-push verification.
+
+## BATCH 240 - Addendum 15 (2026-05-28)
+- Status: Fully closed.
+- Scope:
+  - Production verification continuation after propagation confirmation.
+- Gate Results:
+  - PASS: health readiness.
+  - PASS: frontend strict (29/29).
+  - PASS: auth frontend (6/6).
+- Deploy/Commit Evidence:
+  - Strict asset: `index-B-Uu0UN7.js`; version match `b7454fb1`.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Keep autonomous batch closure cadence with post-push verification.
