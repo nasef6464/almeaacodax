@@ -490,6 +490,7 @@ export const Header: React.FC = () => {
                 <>
                   <button
                     type="button"
+                    data-logout-explicit="true"
                     aria-label={text.logout}
                     title={text.logout}
                     onClick={async () => {
