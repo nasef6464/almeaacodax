@@ -24,9 +24,9 @@ const checks = [
   {
     name: "school command center links to operational actions",
     ok:
-      adminDashboard.includes("setActiveTab('groups')") &&
-      adminDashboard.includes("setActiveTab('quizzes')") &&
-      adminDashboard.includes("setActiveTab('announcement-ads')") &&
+      adminDashboard.includes("setActiveAdminTab('groups')") &&
+      adminDashboard.includes("setActiveAdminTab('quizzes')") &&
+      adminDashboard.includes("setActiveAdminTab('announcement-ads')") &&
       adminDashboard.includes("#/reports"),
   },
   {

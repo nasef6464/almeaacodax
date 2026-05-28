@@ -1185,16 +1185,16 @@ export const AdminDashboard: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <button onClick={() => setActiveTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                            <button onClick={() => setActiveAdminTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                 المدارس والمجموعات
                             </button>
                             <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
                                 التقارير
                             </a>
-                            <button onClick={() => setActiveTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
+                            <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
                                 توجيه اختبار
                             </button>
-                            <button onClick={() => setActiveTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
+                            <button onClick={() => setActiveAdminTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
                                 رسالة أو إعلان
                             </button>
                         </div>
@@ -1227,7 +1227,7 @@ export const AdminDashboard: React.FC = () => {
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
                                 <h4 className="text-sm font-black text-gray-900">مدارس تحتاج ضبط</h4>
-                                <button onClick={() => setActiveTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
+                                <button onClick={() => setActiveAdminTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
                                     إدارة المدارس
                                 </button>
                             </div>

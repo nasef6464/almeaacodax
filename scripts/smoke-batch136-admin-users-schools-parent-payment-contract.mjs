@@ -62,9 +62,9 @@ assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
-  "setActiveTab('groups')",
-  "setActiveTab('quizzes')",
-  "setActiveTab('announcement-ads')",
+  "setActiveAdminTab('groups')",
+  "setActiveAdminTab('quizzes')",
+  "setActiveAdminTab('announcement-ads')",
 ]);
 
 assertAllIncludes("server/src/routes/payment.routes.ts", [
