@@ -54,6 +54,7 @@ interface AuthContextType {
 }
 
 const SESSION_STORAGE_KEY = 'the-hundred-auth-profile';
+const OAUTH_BOOTSTRAP_FLAG_KEY = 'almeaa:oauth-bootstrap-pending';
 const AUTH_BOOTSTRAP_PRIVATE_PREFIXES = [
   '/dashboard',
   '/admin-dashboard',
@@ -207,6 +208,9 @@ const restoreInitialSession = (): SessionUser | null => {
       const params = new URLSearchParams(hash.slice(queryIndex + 1));
       const oauthReturn = decodeURIComponent(params.get('oauth_return') || '/');
       if (params.get('oauth_provider') || params.get('oauth_error')) {
+        if (params.get('oauth_provider')) {
+          sessionStorage.setItem(OAUTH_BOOTSTRAP_FLAG_KEY, '1');
+        }
         window.location.hash = oauthReturn.startsWith('/') ? `#${oauthReturn}` : '#/';
       }
     }
@@ -270,7 +274,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const currentPath = getCurrentRoutePath();
-    if (!shouldBootstrapAuthForPath(currentPath)) {
+    const hasPendingOauthBootstrap = sessionStorage.getItem(OAUTH_BOOTSTRAP_FLAG_KEY) === '1';
+    if (!shouldBootstrapAuthForPath(currentPath) && !hasPendingOauthBootstrap) {
       return;
     }
 
@@ -282,9 +287,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!backendUser?.email || !backendUser?.role) return;
         const sessionUser = buildSessionUser(backendUser);
         persistSession(sessionUser, backendUser);
+        sessionStorage.removeItem(OAUTH_BOOTSTRAP_FLAG_KEY);
       })
       .catch(() => {
         // No active cookie session; keep guest state.
+        sessionStorage.removeItem(OAUTH_BOOTSTRAP_FLAG_KEY);
       });
 
     return () => {
