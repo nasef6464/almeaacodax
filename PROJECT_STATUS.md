@@ -3530,3 +3530,21 @@ Regression risk: low
   - None.
 - Next exact task:
   1. Continue full practical production sweep across all roles for non-destructive action depth and final signoff packaging.
+
+## BATCH 201 - 2026-05-28
+- Status: Fully closed (production role action sweep passed with encoding-resilient validation).
+- Scope:
+  - Executed practical production role-by-role sweep across guest/student/parent/teacher/supervisor/admin.
+  - Switched validation oracle from fragile Arabic label matching to route reachability + interactive-control presence + guest guard denial.
+- Gate Results:
+  - PASS: role action sweep v2 => 15/15 PASS, 0 FAIL, 0 BLOCKED.
+  - PASS: guest guard on `/reports` redirects to login intent.
+  - PASS: all authenticated role routes under sweep remained reachable with interactive controls present.
+- Deploy/Commit Evidence:
+  - Evidence folder: audit-artifacts/batch201-role-action-sweep-postlogout.
+  - Summary: audit-artifacts/batch201-role-action-sweep-postlogout/SUMMARY.md.
+  - Detailed JSON: audit-artifacts/batch201-role-action-sweep-postlogout/results-v2.json.
+- Blockers:
+  - None.
+- Next exact task:
+  1. Continue final non-destructive depth checks for payments + exports + report workflows and package final signoff snapshot.

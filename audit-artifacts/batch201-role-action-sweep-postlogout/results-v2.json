@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-05-28T02:29:20.374Z",
+  "total": 15,
+  "pass": 15,
+  "fail": 0,
+  "blocked": 0,
+  "rows": [
+    {
+      "role": "guest",
+      "route": "/",
+      "type": "public",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/; guarded=false; interactive=21"
+    },
+    {
+      "role": "guest",
+      "route": "/pricing",
+      "type": "public",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/pricing; guarded=false; interactive=17"
+    },
+    {
+      "role": "guest",
+      "route": "/reports",
+      "type": "guard",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/?auth=login; guarded=true; interactive=27"
+    },
+    {
+      "role": "student",
+      "route": "/dashboard",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/dashboard; guarded=false; interactive=37"
+    },
+    {
+      "role": "student",
+      "route": "/plan",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/plan; guarded=false; interactive=41"
+    },
+    {
+      "role": "student",
+      "route": "/my-quizzes",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/my-quizzes; guarded=false; interactive=19"
+    },
+    {
+      "role": "parent",
+      "route": "/parent-dashboard",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/parent-dashboard; guarded=false; interactive=11"
+    },
+    {
+      "role": "parent",
+      "route": "/reports",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/reports; guarded=false; interactive=23"
+    },
+    {
+      "role": "teacher",
+      "route": "/admin-dashboard",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/admin-dashboard; guarded=false; interactive=27"
+    },
+    {
+      "role": "teacher",
+      "route": "/reports",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/reports; guarded=false; interactive=33"
+    },
+    {
+      "role": "supervisor",
+      "route": "/admin-dashboard",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/admin-dashboard; guarded=false; interactive=36"
+    },
+    {
+      "role": "supervisor",
+      "route": "/reports",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/reports; guarded=false; interactive=33"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/admin-dashboard; guarded=false; interactive=48"
+    },
+    {
+      "role": "admin",
+      "route": "/admin-dashboard?tab=paths",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/admin-dashboard?tab=paths; guarded=false; interactive=48"
+    },
+    {
+      "role": "admin",
+      "route": "/reports",
+      "type": "private",
+      "status": "PASS",
+      "actual": "url=https://almeaacodax.vercel.app/reports; guarded=false; interactive=63"
+    }
+  ]
+}
