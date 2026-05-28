@@ -3659,3 +3659,19 @@ Regression risk: low
   - external blocker: 7 items remain BLOCKED (not FAIL) and stay explicitly classified with reason/evidence.
 - Next exact task:
   1. Produce targeted blocker register (7/7) in approved bug template and close any unblockable item with minimal-safe fix.
+
+## BATCH 209 - 2026-05-28
+- Status: Fully closed (blocked register packaged and handover-guarded).
+- Scope:
+  - Produced explicit blocker register for all remaining 7 BLOCKED visual items using approved bug template fields.
+  - Kept classification strict: no confirmed FAIL remains in final visual checklist.
+- Gate Results:
+  - PASS: blocker register generated for 7/7 blocked items.
+  - PASS: final visual source remains 529 total / 522 PASS / 0 FAIL / 7 BLOCKED.
+- Deploy/Commit Evidence:
+  - Blocker register: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/BLOCKED_REGISTER_BATCH_209.md`.
+  - Source checklist: `audit-artifacts/ui-audit-exhaustive/2026-05-26-full-audit/ui-audit-checklist-final.json`.
+- Blockers:
+  - external blocker: 7 items remain blocked and are now individually documented with evidence and retest intent.
+- Next exact task:
+  1. Execute targeted per-item visual rerun for the 7 blocked cases and close each as PASS or persistent external blocker.
