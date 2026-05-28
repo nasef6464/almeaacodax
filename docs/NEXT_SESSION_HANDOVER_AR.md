@@ -3884,3 +3884,23 @@ pm run smoke:operational PASS (71/71).
   - external blocker: production currently lacks verifiable explicit logout interaction path per role in automated practical flow, and post-logout protected-route denial cannot be proven without that control.
 - Next exact task:
   1. Implement minimal explicit logout control path (header/account menu trigger + logout action) and re-run role-by-role logout denial validation on production.
+
+## BATCH 199 - 2026-05-28
+- Status: Partial (logout/auth fix implemented; production verification pending deployment propagation).
+- Scope:
+  - Added explicit visible logout action in header for authenticated users.
+  - Added auth gate wrapper for private user routes to enforce redirect to login when session is missing.
+  - Re-ran typecheck and executed pre-deploy production probe script.
+- Gate Results:
+  - PASS: `npm run typecheck`.
+  - PASS: code-level fix in `components/Header.tsx` and new `components/auth/RequireAuth.tsx`, wired into `App.tsx` private routes.
+  - FAIL (expected pre-deploy): production logout matrix still 0/5 before new commit propagates.
+- Deploy/Commit Evidence:
+  - New auth gate file: `components/auth/RequireAuth.tsx`.
+  - Route wiring: `App.tsx`.
+  - Explicit logout button: `components/Header.tsx`.
+  - Probe artifact: `audit-artifacts/batch199-logout-ux-postfix-local-proof/`.
+- Blockers:
+  - external blocker: production still serving previous commit at probe time; post-deploy revalidation required.
+- Next exact task:
+  1. Push this fix to production and rerun role-by-role logout matrix until explicit logout + protected-route denial pass.

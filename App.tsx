@@ -7,6 +7,7 @@ import { adapter } from './services/adapter';
 import { api } from './services/api';
 import { useStore } from './store/useStore';
 import { RequireRole } from './components/auth/RequireRole';
+import { RequireAuth } from './components/auth/RequireAuth';
 import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
@@ -846,20 +847,20 @@ const App: React.FC = () => {
               <Suspense fallback={<LoadingFallback />}>
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/course/:courseId" element={<CourseView />} />
                   <Route path="/quizzes" element={<Quizzes />} />
                   <Route path="/mock-exams" element={<MockExams />} />
-                  <Route path="/my-quizzes" element={<Quizzes view="attempts" />} />
-                  <Route path="/my-requests" element={<MyRequests />} />
-                  <Route path="/reports" element={<Reports />} />
-                  <Route path="/favorites" element={<Favorites />} />
-                  <Route path="/plan" element={<Plan />} />
-                  <Route path="/qa" element={<QA />} />
-                  <Route path="/book-session" element={<BookSession />} />
-                  <Route path="/live-sessions" element={<LiveSessions />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/my-quizzes" element={<RequireAuth><Quizzes view="attempts" /></RequireAuth>} />
+                  <Route path="/my-requests" element={<RequireAuth><MyRequests /></RequireAuth>} />
+                  <Route path="/reports" element={<RequireAuth><Reports /></RequireAuth>} />
+                  <Route path="/favorites" element={<RequireAuth><Favorites /></RequireAuth>} />
+                  <Route path="/plan" element={<RequireAuth><Plan /></RequireAuth>} />
+                  <Route path="/qa" element={<RequireAuth><QA /></RequireAuth>} />
+                  <Route path="/book-session" element={<RequireAuth><BookSession /></RequireAuth>} />
+                  <Route path="/live-sessions" element={<RequireAuth><LiveSessions /></RequireAuth>} />
+                  <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
                   <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
                   <Route path="/achievements" element={<Achievements />} />
                   <Route path="/blog" element={<Blog />} />
@@ -870,8 +871,9 @@ const App: React.FC = () => {
                   <Route path="/signup" element={<Navigate replace to="/?auth=signup" />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Cart />} />
                   <Route path="/certificate/:code" element={<CertificatePage />} />
-                  <Route path="/review" element={<ReviewSession />} />
+                  <Route path="/review" element={<RequireAuth><ReviewSession /></RequireAuth>} />
                   
                   {/* Old Hardcoded Routes mapped to generic or kept if needed. The new pattern replaces old Nafes */}
                   <Route path="/category/:pathId" element={<GenericPathPage />} />

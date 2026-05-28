@@ -489,6 +489,20 @@ export const Header: React.FC = () => {
               {user ? (
                 <>
                   <button
+                    type="button"
+                    aria-label={text.logout}
+                    title={text.logout}
+                    onClick={async () => {
+                      await logout();
+                      setIsUserMenuOpen(false);
+                      navigate('/?auth=login', { replace: true });
+                    }}
+                    className="hidden md:inline-flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
+                  >
+                    <LogOut size={16} />
+                    <span>{text.logout}</span>
+                  </button>
+                  <button
                     onClick={() => setIsUserMenuOpen((value) => !value)}
                     className="flex items-center gap-2 hover:bg-gray-50 p-1 sm:pr-3 rounded-full border border-transparent hover:border-gray-100 transition-all"
                   >
