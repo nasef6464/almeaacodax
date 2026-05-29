@@ -146,7 +146,7 @@ async function run() {
     await snap(page, "school-home");
     addCheck("school portal open", "PASS", "loaded");
 
-    const schoolAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة", "العلاقات"]);
+    const schoolAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة", "فتح إدارة المدارس", "العلاقات"]);
     await snap(page, "school-action");
     addCheck("school portal entry action", schoolAction ? "PASS" : "REVIEW", schoolAction || "no clear entry button");
 

@@ -652,6 +652,18 @@ export const SchoolPortalManager: React.FC = () => {
                     <h1 className="text-2xl font-black text-gray-900">بوابة المدرسة</h1>
                     <p className="mt-2 text-sm text-gray-500">لم يتم ربط حسابك بمدرسة أو فصل حتى الآن. اطلب من المدير ربطك بالمدرسة أو الفصل المناسب.</p>
                 </div>
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.hash = '#/admin-dashboard?tab=groups';
+                        }}
+                        className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
+                    >
+                        <Users size={16} />
+                        فتح إدارة المدارس
+                    </button>
+                </div>
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-amber-800">
                     <div className="flex items-center gap-3 font-black">
                         <AlertTriangle size={22} />
@@ -672,6 +684,16 @@ export const SchoolPortalManager: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.hash = '#/admin-dashboard?tab=groups';
+                        }}
+                        className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
+                    >
+                        <Users size={16} />
+                        فتح إدارة المدارس
+                    </button>
                     <button
                         onClick={printPortalReport}
                         className="inline-flex items-center gap-2 rounded-xl bg-indigo-50 px-4 py-2.5 text-sm font-black text-indigo-700 hover:bg-indigo-100"
