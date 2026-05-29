@@ -279,3 +279,18 @@
 - Sentry live proof:
   - `status=202`
   - `eventId=b9f7ab0783eb46fa8dc13b782258919a`
+
+## متابعة لاحقة 12 (Runtime + Observability Snapshot)
+
+- تاريخ المتابعة: 2026-05-30
+- فحوص runtime:
+  - `smoke:integrations-runtime`: `PASS` (10 checks)
+  - `smoke:health-readiness`: `PASS`
+  - `smoke:sentry-runtime`: `PASS` (5 checks)
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_37hZzo2yGoBk1MMhAkSxtiSYJhr4`
+  - URL: `https://almeaacodax-nvr511mqq-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=3784d1bba28042aea5afa5674fabca0d`
