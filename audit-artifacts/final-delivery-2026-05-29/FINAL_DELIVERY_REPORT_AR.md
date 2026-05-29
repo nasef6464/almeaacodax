@@ -91,3 +91,22 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-29-admin-deep-groups-schools/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-29-admin-deep-groups-schools/admin-deep-groups-schools-audit.json`
+
+## متابعة لاحقة 3 (Internal Safe Flow)
+
+- تاريخ المتابعة: 2026-05-29
+- النطاق: `groups` + `school-portal` + `users`
+- نوع الفحص: عملي داخلي آمن (فتح نموذج/فحص حقول/حالة أزرار الحفظ بدون تنفيذ حفظ إنتاجي)
+- النتيجة:
+  - `PASS: 7`
+  - `REVIEW: 2`
+  - `FAIL: 0`
+  - `Console errors: 0`
+  - `Network 5xx: 0`
+- أهم الخلاصة:
+  - `groups`: فتح نموذج إضافة + حقول ظاهرة + زر حفظ متاح (`PASS`)
+  - `users`: فتح نموذج إضافة + حقول ظاهرة + زر حفظ متاح (`PASS`)
+  - `school-portal`: لم يظهر زر/مدخل إجراء واضح بنفس نمط التبويبات الأخرى أثناء الجولة (`REVIEW UX`)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-29-admin-internal-safe-flow/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-29-admin-internal-safe-flow/admin-groups-schools-internal-safe-flow-audit.json`

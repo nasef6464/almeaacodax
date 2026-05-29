@@ -51,6 +51,15 @@
 - `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/users-initial.png`
 - `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/users-search.png`
 
+## فحص داخلي آمن (نماذج وإجراءات)
+
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/SUMMARY.md`
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/admin-groups-schools-internal-safe-flow-audit.json`
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/groups-home.png`
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/groups-action.png`
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/school-home.png`
+- `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/users-action.png`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
