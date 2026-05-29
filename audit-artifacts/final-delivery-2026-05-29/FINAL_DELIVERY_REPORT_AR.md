@@ -129,3 +129,21 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/admin-groups-schools-internal-safe-flow-audit.json`
+
+## متابعة لاحقة 5 (Continuation Live + Sentry)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: `groups` + `school-portal` + `users` + فحص Sentry الحي
+- نتيجة الفحص العملي الحي:
+  - `PASS: 9`
+  - `REVIEW: 1`
+  - `FAIL: 0`
+  - `school portal explicit manage entry`: `PASS`
+  - `console errors`: رسالة اتصال متقطعة عامة مرة واحدة
+  - `network 5xx`: صفر
+- نتيجة Sentry:
+  - `smoke:sentry-runtime`: `PASS`
+  - `smoke:sentry-live-proof`: `PASS` (تم إصدار حدث حي وقبول endpoint بحالة `202`)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/admin-groups-schools-internal-safe-flow-audit.json`

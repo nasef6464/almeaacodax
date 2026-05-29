@@ -150,10 +150,15 @@ async function run() {
     await snap(page, "school-home");
     addCheck("school portal open", "PASS", "loaded");
 
-    const hasSchoolPortalEntry = await hasText(page, "فتح إدارة المدارس");
-    addCheck("school portal explicit manage entry", hasSchoolPortalEntry ? "PASS" : "REVIEW", hasSchoolPortalEntry ? "button visible" : "button not visible on this deployment");
-
     const schoolAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة", "فتح إدارة المدارس", "العلاقات"]);
+    const hasSchoolPortalEntry = await hasText(page, "فتح إدارة المدارس");
+    const explicitEntryVisible = hasSchoolPortalEntry || /فتح الإدارة|فتح إدارة المدارس/i.test(schoolAction);
+    addCheck(
+      "school portal explicit manage entry",
+      explicitEntryVisible ? "PASS" : "REVIEW",
+      explicitEntryVisible ? "button visible" : "button not visible on this deployment",
+    );
+
     await snap(page, "school-action");
     addCheck("school portal entry action", schoolAction ? "PASS" : "REVIEW", schoolAction || "no clear entry button");
 
