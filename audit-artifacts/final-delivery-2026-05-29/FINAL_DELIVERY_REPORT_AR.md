@@ -147,3 +147,23 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/admin-groups-schools-internal-safe-flow-audit.json`
+
+## متابعة لاحقة 6 (Full Admin Sweep + Vercel Live Target)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: جميع تبويبات لوحة الإدارة + جاهزية health/readiness + تأكيد alias الإنتاج على Vercel
+- نتيجة الفحص الحي الكامل للوحة الإدارة:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - `Console errors: 0` على مستوى الجولة
+  - `Network 5xx: 0`
+- نتيجة العقود المكملة:
+  - `smoke:health-readiness`: `PASS`
+  - `smoke:integrations-runtime`: `PASS` (10/10)
+- نتيجة Vercel:
+  - alias `https://almeaacodax.vercel.app` يشير إلى deployment إنتاج `Ready` حديث ضمن نفس الحساب.
+  - تم التحقق عبر `vercel inspect` و`vercel ls`.
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation/admin-live-handoff-audit.json`

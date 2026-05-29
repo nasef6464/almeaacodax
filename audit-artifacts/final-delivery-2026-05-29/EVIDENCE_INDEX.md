@@ -77,6 +77,19 @@
 - `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/school-home.png`
 - `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont2/users-home.png`
 
+## فحص شامل تبويبات الإدارة (Continuation Full Sweep)
+
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation/platform-integrations.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation/ai-assistant.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation/school-portal.png`
+
+## فحوصات readiness والتكاملات
+
+- `npm run smoke:health-readiness` (PASS)
+- `npm run smoke:integrations-runtime` (PASS)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
