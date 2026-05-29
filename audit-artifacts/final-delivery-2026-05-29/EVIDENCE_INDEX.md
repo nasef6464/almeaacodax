@@ -30,6 +30,15 @@
 
 - `local-admin-sweep-results.json`
 - `live-predeploy-admin-sweep-results.json`
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/SUMMARY.md`
+
+## صور فحص حي لاحق
+
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/overview.png`
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/platform-integrations.png`
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/ai-assistant.png`
+- `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/settings.png`
 
 ## أوامر تحقق تم تشغيلها
 

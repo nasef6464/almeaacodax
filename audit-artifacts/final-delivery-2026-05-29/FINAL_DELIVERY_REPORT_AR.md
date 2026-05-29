@@ -64,3 +64,13 @@
 - إظهار سبب fallback للطالب داخل سجل مساعد الطالب بشكل أوضح للمدير.
 - تحويل صفحة `monitoring` إلى قائمة حالات قابلة للفرز حسب خطورة الخطأ.
 - إضافة زر “اختبار كمستخدم طالب” في إدارة المساعد لتجربة `/ai/chat` من نفس واجهة الإدارة دون انتحال بيانات طالب.
+
+## متابعة لاحقة (Live Follow-up)
+
+- تاريخ المتابعة: 2026-05-29
+- نوع الفحص: Admin live handoff sweep (automated visual/functional pass)
+- النتيجة: `22 / 22 PASS`
+- بدون أخطاء `console`
+- بدون أخطاء `network 5xx`
+- مجلد الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-29-admin-tabs-live-followup/`
