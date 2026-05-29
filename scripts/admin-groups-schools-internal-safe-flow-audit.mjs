@@ -110,6 +110,10 @@ async function inspectFormState(page) {
   return { formCount, visibleInputs, hasSave, saveDisabled };
 }
 
+async function hasText(page, text) {
+  return page.locator(`text=${text}`).first().isVisible().catch(() => false);
+}
+
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -145,6 +149,9 @@ async function run() {
     await gotoTab(page, "school-portal");
     await snap(page, "school-home");
     addCheck("school portal open", "PASS", "loaded");
+
+    const hasSchoolPortalEntry = await hasText(page, "فتح إدارة المدارس");
+    addCheck("school portal explicit manage entry", hasSchoolPortalEntry ? "PASS" : "REVIEW", hasSchoolPortalEntry ? "button visible" : "button not visible on this deployment");
 
     const schoolAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة", "فتح إدارة المدارس", "العلاقات"]);
     await snap(page, "school-action");

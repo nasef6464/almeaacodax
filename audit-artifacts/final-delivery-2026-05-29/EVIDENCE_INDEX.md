@@ -60,6 +60,15 @@
 - `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/school-home.png`
 - `../admin-live-handoff/2026-05-29-admin-internal-safe-flow/users-action.png`
 
+## فحص ما بعد الإصلاح والنشر (School Portal Closure)
+
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/admin-groups-schools-internal-safe-flow-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/groups-home.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/groups-action.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/school-home.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/users-action.png`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

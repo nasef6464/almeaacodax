@@ -110,3 +110,22 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-29-admin-internal-safe-flow/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-29-admin-internal-safe-flow/admin-groups-schools-internal-safe-flow-audit.json`
+
+## متابعة لاحقة 4 (Postfix Live Verification)
+
+- تاريخ المتابعة: 2026-05-30
+- الهدف: إغلاق ملاحظة `school-portal` عبر إظهار مدخل إدارة واضح داخل البوابة نفسها.
+- الإجراء المنفذ:
+  - إضافة زر واضح داخل `SchoolPortalManager` باسم `فتح إدارة المدارس`.
+  - نشر الإنتاج على Vercel بعد رفع التعديل إلى `main`.
+  - إعادة فحص عملي حي على نفس النطاق.
+- النتيجة:
+  - `PASS: 9`
+  - `REVIEW: 1`
+  - `FAIL: 0`
+  - `school portal explicit manage entry`: `PASS` (button visible)
+  - `school portal entry action`: `PASS` (فتح إدارة المدارس)
+  - `console errors`: ظهرت رسالة اتصال متقطعة عامة مرة واحدة أثناء الجولة ولا يوجد `network 5xx`.
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-final/admin-groups-schools-internal-safe-flow-audit.json`
