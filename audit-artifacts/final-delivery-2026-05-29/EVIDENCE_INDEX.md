@@ -40,6 +40,17 @@
 - `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/ai-assistant.png`
 - `../admin-live-handoff/2026-05-29-admin-tabs-live-followup/settings.png`
 
+## فحص عملي بصري (مجموعات + مدارس + مستخدمين)
+
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/SUMMARY.md`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/admin-deep-groups-schools-audit.json`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/groups-initial.png`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/groups-action-open.png`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/school-portal-initial.png`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/school-portal-action-open.png`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/users-initial.png`
+- `../admin-live-handoff/2026-05-29-admin-deep-groups-schools/users-search.png`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

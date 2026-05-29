@@ -74,3 +74,20 @@
 - بدون أخطاء `network 5xx`
 - مجلد الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-29-admin-tabs-live-followup/`
+
+## متابعة لاحقة 2 (Deep Practical + Visual)
+
+- تاريخ المتابعة: 2026-05-29
+- النطاق: `groups` + `school-portal` + `users`
+- نوع الفحص: عملي بصري غير هدام (فتح تبويب + تمارين تفاعل آمنة + توثيق صور)
+- النتيجة:
+  - `PASS: 7`
+  - `REVIEW: 2`
+  - `FAIL: 0`
+  - `Console errors: 0`
+  - `Network 5xx: 0`
+- تفسير `REVIEW`:
+  - في `groups` و`school-portal` لم يظهر حقل بحث واضح ضمن الشاشة وقت الفحص، لذلك سُجلت كمراجعة UI وليست فشلًا وظيفيًا.
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-29-admin-deep-groups-schools/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-29-admin-deep-groups-schools/admin-deep-groups-schools-audit.json`
