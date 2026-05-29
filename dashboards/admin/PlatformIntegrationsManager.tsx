@@ -263,7 +263,7 @@ const aiExternalTemplates: Array<{
   note: string;
 }> = [
   { id: "ai-global", name: "AI Global Routing", baseUrl: "", note: "gemini" },
-  { id: "ai-gemini", name: "AI Gemini Free", baseUrl: "", note: "model=gemini-1.5-flash" },
+  { id: "ai-gemini", name: "AI Gemini Free", baseUrl: "", note: "model=gemini-2.5-flash" },
   { id: "ai-openrouter", name: "AI OpenRouter Free", baseUrl: "https://openrouter.ai/api/v1", note: "model=qwen/qwen3-235b-a22b:free" },
   { id: "ai-qwen", name: "AI Qwen Free", baseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1", note: "model=qwen-plus" },
   { id: "ai-deepseek", name: "AI DeepSeek", baseUrl: "https://api.deepseek.com", note: "model=deepseek-chat" },

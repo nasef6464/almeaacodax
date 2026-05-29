@@ -131,6 +131,14 @@ const readModelHint = (rawValue: unknown, fallback: string) => {
   return modelMatch?.[1]?.trim() || fallback;
 };
 
+const normalizeProviderModel = (provider: AiProvider, model: string) => {
+  const cleanModel = String(model || "").trim();
+  if (provider === "gemini" && cleanModel === "gemini-1.5-flash") {
+    return env.GEMINI_MODEL || "gemini-2.5-flash";
+  }
+  return cleanModel;
+};
+
 const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   provider: env.AI_PROVIDER,
   providerOrder: env.AI_PROVIDER_ORDER,
@@ -169,7 +177,7 @@ const loadRuntimeAiConfig = async () => {
     if (!item || item.enabled !== true) return;
     const apiKey = String(item.apiKey || item.apiSecret || "").trim();
     const baseUrl = String(item.baseUrl || "").trim();
-    const model = readModelHint(item.note, fallbackModel);
+    const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
     next.providers[provider] = {
       ...next.providers[provider],
       ...(apiKey ? { apiKey } : {}),
