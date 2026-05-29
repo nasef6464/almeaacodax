@@ -1205,6 +1205,8 @@ export const api = {
       provider?: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
       model?: string;
       usedFallback?: boolean;
+      providerErrors?: string[];
+      fallbackReason?: string;
     }>("/ai/chat", {
       method: "POST",
       body: payload,
@@ -1301,6 +1303,12 @@ export const api = {
         responsePreview: string;
         responseLength: number;
         error?: string;
+        metadata?: {
+          providerErrors?: string[];
+          fallbackReason?: string;
+          hasImage?: boolean;
+          [key: string]: unknown;
+        };
         userEmail?: string;
         role?: string;
         createdAt: string;

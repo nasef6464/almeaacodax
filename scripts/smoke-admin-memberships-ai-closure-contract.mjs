@@ -45,6 +45,7 @@ check("integrations manager clearly diagnoses student AI runtime usage", () => {
   assertIncludes(integrationsSource, "api.aiStatus()");
   assertIncludes(integrationsSource, "api.aiReadiness()");
   assertIncludes(integrationsSource, "api.getAiInteractions(12)");
+  assertIncludes(integrationsSource, "lastStudentFallbackReason");
   assertIncludes(integrationsSource, "مساعد الطالب");
   assertIncludes(integrationsSource, "اختبار مزود الطالب");
 });
@@ -57,6 +58,8 @@ check("assistant manager surfaces provider source and fallback state", () => {
 
 check("ai route returns enough metadata to debug old/fallback student assistant", () => {
   assertIncludes(aiRouteSource, "providerErrors");
+  assertIncludes(aiRouteSource, "fallbackReason");
+  assertIncludes(aiRouteSource, "responseFailureMessage");
   assertIncludes(aiRouteSource, "providerOrderSource");
   assertIncludes(aiRouteSource, "usedFallback");
 });

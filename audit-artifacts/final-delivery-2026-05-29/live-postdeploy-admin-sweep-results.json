@@ -1,0 +1,46 @@
+[
+  {
+    "id": "memberships",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=memberships&_v=95a0c191",
+    "adminPanel": true,
+    "membershipsPagePresent": false,
+    "studentAiDiagPresent": false,
+    "providerTestPresent": false,
+    "loading": false,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "platform-integrations",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=platform-integrations&_v=95a0c191",
+    "adminPanel": true,
+    "membershipsPagePresent": false,
+    "studentAiDiagPresent": false,
+    "providerTestPresent": false,
+    "loading": false,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "ai-assistant",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=ai-assistant&_v=95a0c191",
+    "adminPanel": true,
+    "membershipsPagePresent": false,
+    "studentAiDiagPresent": false,
+    "providerTestPresent": true,
+    "loading": false,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "monitoring",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=monitoring&_v=95a0c191",
+    "adminPanel": true,
+    "membershipsPagePresent": false,
+    "studentAiDiagPresent": false,
+    "providerTestPresent": false,
+    "loading": false,
+    "visibleErrors": true,
+    "consoleErrors": []
+  }
+]

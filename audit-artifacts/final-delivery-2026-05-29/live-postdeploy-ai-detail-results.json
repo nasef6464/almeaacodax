@@ -1,0 +1,22 @@
+[
+  {
+    "id": "platform-integrations",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=platform-integrations",
+    "hasStudentAiDiag": true,
+    "hasStudentProviderButton": true,
+    "hasAiGlobal": true,
+    "hasProviderTest": false,
+    "loading": false,
+    "visibleErrors": false
+  },
+  {
+    "id": "ai-assistant",
+    "url": "https://almeaacodax.vercel.app/admin-dashboard?tab=ai-assistant",
+    "hasStudentAiDiag": false,
+    "hasStudentProviderButton": false,
+    "hasAiGlobal": true,
+    "hasProviderTest": true,
+    "loading": false,
+    "visibleErrors": false
+  }
+]

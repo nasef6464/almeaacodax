@@ -163,6 +163,7 @@ type StudentAiRuntimeSummary = {
   lastStudentProvider: string;
   lastStudentStatus: string;
   lastStudentFallback: boolean;
+  lastStudentFallbackReason?: string;
   note?: string;
 };
 
@@ -738,7 +739,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
         monitoring?: { aiErrors24h?: number; fallbackStudentChats24h?: number };
       };
       const interactions = interactionsPayload as {
-        items?: Array<{ endpoint?: string; audience?: string; provider?: string; status?: string; usedFallback?: boolean }>;
+        items?: Array<{
+          endpoint?: string;
+          audience?: string;
+          provider?: string;
+          status?: string;
+          usedFallback?: boolean;
+          error?: string;
+          metadata?: { providerErrors?: string[]; fallbackReason?: string };
+        }>;
       };
       const studentItems = (interactions.items || []).filter(
         (item) => item.endpoint === "/ai/chat" || item.audience === "student",
@@ -759,6 +768,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         lastStudentProvider: String(lastStudent?.provider || "لا يوجد سجل طالب"),
         lastStudentStatus: String(lastStudent?.status || "لا يوجد سجل طالب"),
         lastStudentFallback: Boolean(lastStudent?.usedFallback),
+        lastStudentFallbackReason: lastStudent?.metadata?.fallbackReason || lastStudent?.metadata?.providerErrors?.join(" | ") || lastStudent?.error || "",
       });
     } catch (error) {
       setStudentAiRuntimeSummary({
@@ -1021,6 +1031,11 @@ export const PlatformIntegrationsManager: React.FC = () => {
                   {studentAiRuntimeSummary.lastStudentStatus}
                   {studentAiRuntimeSummary.lastStudentFallback ? " - fallback" : ""}
                 </div>
+                {studentAiRuntimeSummary.lastStudentFallbackReason ? (
+                  <div className="mt-2 rounded-lg bg-rose-50 px-2 py-1 text-[11px] font-bold text-rose-700">
+                    {studentAiRuntimeSummary.lastStudentFallbackReason}
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : (

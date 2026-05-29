@@ -87,6 +87,20 @@ type AiCallResult = {
   errors: string[];
 };
 
+const redactAiDiagnostic = (value: unknown) =>
+  String(value || "")
+    .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[redacted-google-key]")
+    .replace(/sk-[0-9A-Za-z_-]{20,}/g, "[redacted-api-key]")
+    .replace(/[A-Za-z0-9_-]{40,}/g, "[redacted-token]")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 500);
+
+const compactProviderErrors = (errors: string[]) => errors.slice(0, 3).map(redactAiDiagnostic).filter(Boolean);
+
+const fallbackReasonFromErrors = (errors: string[], fallback = "لم يرجع أي مزود AI نصا صالحا، لذلك تم استخدام الرد الاحتياطي.") =>
+  compactProviderErrors(errors).join(" | ") || fallback;
+
 type ProviderRuntime = {
   apiKey?: string;
   model: string;
@@ -527,6 +541,11 @@ const fetchWithTimeout = async (url: string, init: RequestInit) => {
   }
 };
 
+const responseFailureMessage = async (provider: string, response: Response) => {
+  const body = await response.text().catch(() => "");
+  return `${provider} request failed with status ${response.status}${body ? `: ${redactAiDiagnostic(body)}` : ""}`;
+};
+
 const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => {
   const apiKey = runtimeAiConfig.providers.gemini.apiKey;
   const model = runtimeAiConfig.providers.gemini.model;
@@ -552,7 +571,7 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType,
   );
 
   if (!response.ok) {
-    throw new Error(`Gemini request failed with status ${response.status}`);
+    throw new Error(await responseFailureMessage("Gemini", response));
   }
 
   const payload = (await response.json()) as {
@@ -578,7 +597,7 @@ const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType)
   });
 
   if (!response.ok) {
-    throw new Error(`Ollama request failed with status ${response.status}`);
+    throw new Error(await responseFailureMessage("Ollama", response));
   }
 
   const payload = (await response.json()) as { response?: string };
@@ -601,7 +620,7 @@ const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeTyp
   });
 
   if (!response.ok) {
-    throw new Error(`LM Studio request failed with status ${response.status}`);
+    throw new Error(await responseFailureMessage("LM Studio", response));
   }
 
   const payload = (await response.json()) as {
@@ -661,7 +680,7 @@ const callOpenAiCompatible = async (
   });
 
   if (!response.ok) {
-    throw new Error(`${provider} request failed with status ${response.status}`);
+    throw new Error(await responseFailureMessage(provider, response));
   }
 
   const payload = (await response.json()) as {
@@ -978,6 +997,7 @@ ${message}
 
     const budget = await withinAiBudget(req.authUser?.id);
     if (!budget.allowed) {
+      const fallbackReason = "تم استخدام الرد الاحتياطي لأن حد استخدام المساعد اليومي وصل إلى الحد المسموح.";
       await recordAiInteraction({
         req,
         endpoint: "/ai/chat",
@@ -996,6 +1016,7 @@ ${message}
           dailyLimit: budget.dailyLimit,
           perUserLimit: budget.perUserLimit,
           hasImage,
+          fallbackReason,
         },
       });
       return res.json({
@@ -1005,12 +1026,15 @@ ${message}
         provider: "none",
         model: "local-fallback",
         usedFallback: true,
+        fallbackReason,
       });
     }
 
     try {
       const result = await callAiWithMeta(prompt, undefined, image);
       const responseText = result.text || fallback;
+      const providerErrors = compactProviderErrors(result.errors);
+      const fallbackReason = result.text ? undefined : fallbackReasonFromErrors(result.errors);
       await recordAiInteraction({
         req,
         endpoint: "/ai/chat",
@@ -1025,7 +1049,8 @@ ${message}
         metadata: {
           weaknessesCount: studentContext?.weaknesses.length || 0,
           recentResultsCount: studentContext?.recentResults.length || 0,
-          providerErrors: result.errors.slice(0, 3),
+          providerErrors,
+          fallbackReason,
           hasImage,
         },
       });
@@ -1036,8 +1061,11 @@ ${message}
         provider: result.text ? result.provider : "none",
         model: result.text ? result.model : "local-fallback",
         usedFallback: !result.text,
+        providerErrors,
+        fallbackReason,
       });
     } catch (error) {
+      const fallbackReason = fallbackReasonFromErrors([error instanceof Error ? error.message : "AI chat failed"]);
       await recordAiInteraction({
         req,
         endpoint: "/ai/chat",
@@ -1049,8 +1077,8 @@ ${message}
         usedFallback: true,
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
-        error: error instanceof Error ? error.message : "AI chat failed",
-        metadata: { hasImage },
+        error: fallbackReason,
+        metadata: { hasImage, fallbackReason },
       });
       return res.json({
         text: fallback,
@@ -1059,6 +1087,7 @@ ${message}
         provider: "none",
         model: "local-fallback",
         usedFallback: true,
+        fallbackReason,
       });
     }
   }),

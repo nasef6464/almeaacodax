@@ -71,6 +71,8 @@ export type StudentChatResponse = {
   provider?: "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
   model?: string;
   usedFallback?: boolean;
+  providerErrors?: string[];
+  fallbackReason?: string;
 };
 
 export const getChatResponse = async (message: string, image?: { data: string; mimeType: string }): Promise<StudentChatResponse> => {
@@ -84,6 +86,8 @@ export const getChatResponse = async (message: string, image?: { data: string; m
       provider: response.provider || "none",
       model: response.model || "local-fallback",
       usedFallback: Boolean(response.usedFallback),
+      providerErrors: response.providerErrors || [],
+      fallbackReason: response.fallbackReason,
     };
   } catch {
     return {
