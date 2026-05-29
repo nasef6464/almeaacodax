@@ -90,6 +90,15 @@
 - `npm run smoke:health-readiness` (PASS)
 - `npm run smoke:integrations-runtime` (PASS)
 
+## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)
+
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/platform-integrations.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/ai-assistant.png`
+- `npm run smoke:admin-memberships-ai-closure` (PASS)
+- `npm run smoke:ai-config-bridge` (PASS)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

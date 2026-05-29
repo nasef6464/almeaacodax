@@ -167,3 +167,26 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation/admin-live-handoff-audit.json`
+
+## متابعة لاحقة 7 (Focused Integrations + AI Assistant + Reconfirm)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: `platform-integrations` + `ai-assistant` + إعادة تأكيد Vercel/Sentry
+- نتيجة الفحص الحي (ضمن جولة الإدارة الكاملة):
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - `platform-integrations`: `PASS` (interactive=97, no 5xx, no console errors)
+  - `ai-assistant`: `PASS` (interactive=61, no 5xx, no console errors)
+- نتيجة العقود المرتبطة:
+  - `smoke:admin-memberships-ai-closure`: `PASS` (6 checks)
+  - `smoke:ai-config-bridge`: `PASS` (8 checks)
+- إعادة تأكيد Vercel:
+  - alias `https://almeaacodax.vercel.app` يشير إلى deployment إنتاج `Ready` حديث:
+    - `dpl_DwAqqRmRT4wE5M3zZ8osZj6tmbnH`
+    - URL: `https://almeaacodax-5gsq9pdpb-nasefs-projects-18e6bdb1.vercel.app`
+- إعادة تأكيد Sentry:
+  - live proof emitted بنجاح (`status=202`, `eventId=76e213f70aa944c491728db5d2d3face`)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/admin-live-handoff-audit.json`
