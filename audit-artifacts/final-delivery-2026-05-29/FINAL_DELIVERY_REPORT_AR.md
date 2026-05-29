@@ -228,3 +228,39 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/admin-live-handoff-audit.json`
+
+## متابعة لاحقة 10 (Closure-Grade Consistency Pass)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: تدقيق إغلاق جديد على الإنتاج + إعادة إثبات Vercel/Sentry
+- نتيجة الجولة البصرية:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - `platform-integrations`: `PASS`
+  - `ai-assistant`: `PASS`
+- إعادة تأكيد Vercel:
+  - alias `https://almeaacodax.vercel.app` على deployment `Ready` حديث:
+    - `dpl_HmMLskm9oFaXxMh7Fq1dMrn2M8Ak`
+    - URL: `https://almeaacodax-gizdhbuwx-nasefs-projects-18e6bdb1.vercel.app`
+- إعادة تأكيد Sentry:
+  - live proof emitted بنجاح (`status=202`, `eventId=7c048839da5740f6aed88108e36a9eb9`)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-10/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-10/admin-live-handoff-audit.json`
+
+## Go / No-Go Checklist (إغلاق تشغيلي)
+
+- `PASS` تبويبات الإدارة الأساسية (22/22) تعمل حيًا بدون فشل تبويب.
+- `PASS` تبويب `platform-integrations` يعمل ويظهر عناصر التحكم.
+- `PASS` تبويب `ai-assistant` يعمل ويظهر عناصر التحكم.
+- `PASS` عقود AI/Integrations (`smoke:admin-memberships-ai-closure`, `smoke:ai-config-bridge`).
+- `PASS` جاهزية الواجهة (`smoke:frontend:strict`) وجاهزية الصحة (`smoke:health-readiness`).
+- `PASS` alias الإنتاج على Vercel يشير إلى deployment `Ready` حديث.
+- `PASS` إثبات Sentry حي (`status=202`) متكرر وناجح.
+- `NOTE` التحقق تم في مسارات آمنة غير تدميرية، دون تنفيذ عمليات إنتاجية حساسة (حذف/اعتماد نهائي).
+
+### قرار الإغلاق
+
+- الحالة: `GO (مشروط تشغيليًا)`
+- الشرط التشغيلي المتبقي خارج الفحص الآمن: أي خطوات مالية/اعتمادية حساسة تتم بواسطة المالك بصلاحية تشغيل إنتاجية كاملة.
