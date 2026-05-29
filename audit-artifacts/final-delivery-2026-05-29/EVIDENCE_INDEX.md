@@ -148,6 +148,14 @@
 - `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
 - `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
 
+## فحص بصري مركز (Continuation 14)
+
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/admin-groups-schools-internal-safe-flow-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/groups-home.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/school-home.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/users-home.png`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

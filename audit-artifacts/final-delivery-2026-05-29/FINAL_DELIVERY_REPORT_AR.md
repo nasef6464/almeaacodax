@@ -308,3 +308,22 @@
 - Sentry live proof:
   - `status=202`
   - `eventId=16605788eabe404a8be91c74820b9974`
+
+## متابعة لاحقة 14 (Focused Live Visual on Groups/Schools/Users)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: فحص بصري/عملي حي مركز على `groups` + `school-portal` + `users`
+- نتيجة الفحص:
+  - `Total: 10`
+  - `PASS: 9`
+  - `REVIEW: 1`
+  - `FAIL: 0`
+  - `Console errors: 0`
+  - `Network 5xx: 0`
+- نقاط أساسية:
+  - `school portal explicit manage entry`: `PASS`
+  - `school portal entry action`: `PASS` (فتح إدارة المدارس)
+  - `school portal form state`: `REVIEW` (لا نموذج تحرير مباشر داخل شاشة البوابة نفسها؛ البوابة مدخل تشغيلي)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/admin-groups-schools-internal-safe-flow-audit.json`
