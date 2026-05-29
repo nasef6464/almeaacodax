@@ -190,3 +190,18 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/admin-live-handoff-audit.json`
+
+## متابعة لاحقة 8 (Practical Readiness + Fresh Vercel/Sentry Proof)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: جاهزية الاستخدام العملي + إعادة تأكيد الإنتاج الحالي
+- نتائج smoke العملية:
+  - `smoke:real-usage-readiness`: `PASS` (8 checks)
+  - `smoke:frontend:strict`: `PASS` (28 checks)
+  - `smoke:health-readiness`: `PASS`
+- إعادة تأكيد Vercel:
+  - alias `https://almeaacodax.vercel.app` على deployment `Ready` حديث:
+    - `dpl_NDgewLDDj2kNkWiCz1zRcZfAabxw`
+    - URL: `https://almeaacodax-hg64r4eaf-nasefs-projects-18e6bdb1.vercel.app`
+- إعادة تأكيد Sentry:
+  - live proof emitted بنجاح (`status=202`, `eventId=37ccabe599a3471bb76d4f797bc45300`)

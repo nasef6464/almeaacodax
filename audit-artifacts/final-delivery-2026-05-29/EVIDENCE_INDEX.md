@@ -99,6 +99,14 @@
 - `npm run smoke:admin-memberships-ai-closure` (PASS)
 - `npm run smoke:ai-config-bridge` (PASS)
 
+## جاهزية عملية + إثباتات إنتاج حديثة (Continuation 8)
+
+- `npm run smoke:real-usage-readiness` (PASS)
+- `npm run smoke:frontend:strict` (PASS)
+- `npm run smoke:health-readiness` (PASS)
+- `vercel inspect almeaacodax.vercel.app` (Ready, fresh production target)
+- `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
