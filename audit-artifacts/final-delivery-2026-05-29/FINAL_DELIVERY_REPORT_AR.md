@@ -205,3 +205,26 @@
     - URL: `https://almeaacodax-hg64r4eaf-nasefs-projects-18e6bdb1.vercel.app`
 - إعادة تأكيد Sentry:
   - live proof emitted بنجاح (`status=202`, `eventId=37ccabe599a3471bb76d4f797bc45300`)
+
+## متابعة لاحقة 9 (Fresh Visual Pass + AI/Integrations + Live Proof)
+
+- تاريخ المتابعة: 2026-05-30
+- النطاق: جولة بصرية حيّة جديدة + إعادة فحوص AI/Integrations + إعادة إثبات Vercel/Sentry
+- نتيجة الجولة البصرية على لوحة الإدارة:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - `platform-integrations`: `PASS`
+  - `ai-assistant`: `PASS`
+- نتائج العقود:
+  - `smoke:admin-memberships-ai-closure`: `PASS` (6 checks)
+  - `smoke:ai-config-bridge`: `PASS` (8 checks)
+- إعادة تأكيد Vercel:
+  - alias `https://almeaacodax.vercel.app` على deployment `Ready` حديث:
+    - `dpl_D8BU3dhCJG6UAr87mCz8EDzyWVMC`
+    - URL: `https://almeaacodax-ht8w9osij-nasefs-projects-18e6bdb1.vercel.app`
+- إعادة تأكيد Sentry:
+  - live proof emitted بنجاح (`status=202`, `eventId=95786952c074413e97509af104ef4d2f`)
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/admin-live-handoff-audit.json`

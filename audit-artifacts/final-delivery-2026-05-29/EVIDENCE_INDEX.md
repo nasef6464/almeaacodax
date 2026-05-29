@@ -107,6 +107,15 @@
 - `vercel inspect almeaacodax.vercel.app` (Ready, fresh production target)
 - `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
 
+## جولة بصرية حيّة جديدة + إثباتات AI/Integrations (Continuation 9)
+
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/platform-integrations.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-9/ai-assistant.png`
+- `npm run smoke:admin-memberships-ai-closure` (PASS)
+- `npm run smoke:ai-config-bridge` (PASS)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
