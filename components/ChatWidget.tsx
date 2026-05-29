@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Sparkles, ImagePlus } from 'lucide-react';
 import { getChatResponse } from '../services/geminiService';
 import { Link } from 'react-router-dom';
 
@@ -45,6 +45,9 @@ export const ChatWidget: React.FC = () => {
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<{ data: string; mimeType: string } | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -55,16 +58,41 @@ export const ChatWidget: React.FC = () => {
         scrollToBottom();
     }, [messages, isOpen]);
 
+    const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64 = (reader.result as string).split(',')[1];
+            setImageFile({ data: base64, mimeType: file.type });
+            setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+    };
+
+    const clearImage = () => {
+        setImagePreview(null);
+        setImageFile(null);
+    };
+
     const handleSend = async (override?: string) => {
         const text = (override || inputValue).trim();
-        if (!text) return;
+        if (!text && !imageFile) return;
 
-        const userMsg: Message = { id: Date.now().toString(), text, sender: 'user' };
+        const userMsg: Message = {
+            id: Date.now().toString(),
+            text: text || (imageFile ? '[صورة]' : ''),
+            sender: 'user',
+        };
         setMessages((prev) => [...prev, userMsg]);
         setInputValue('');
+        const currentImage = imageFile;
+        clearImage();
         setIsLoading(true);
 
-        const responseText = await getChatResponse(userMsg.text);
+        const responseText = await getChatResponse(userMsg.text, currentImage || undefined);
 
         const botMsg: Message = {
             id: (Date.now() + 1).toString(),
@@ -172,7 +200,35 @@ export const ChatWidget: React.FC = () => {
                                 </button>
                             ))}
                         </div>
+                        {imagePreview && (
+                            <div className="relative inline-flex">
+                                <img src={imagePreview} alt="صورة مرفقة" className="h-16 rounded-lg border border-gray-200 object-cover" />
+                                <button
+                                    type="button"
+                                    onClick={clearImage}
+                                    className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 shadow"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        )}
                         <div className="flex gap-2">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp,image/gif"
+                                className="hidden"
+                                onChange={handleImagePick}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isLoading}
+                                className="bg-gray-100 text-gray-600 p-2 rounded-full hover:bg-gray-200 disabled:opacity-50 shrink-0"
+                                aria-label="رفع صورة"
+                            >
+                                <ImagePlus size={18} />
+                            </button>
                             <input
                                 type="text"
                                 value={inputValue}
@@ -184,7 +240,7 @@ export const ChatWidget: React.FC = () => {
                             />
                             <button
                                 onClick={() => void handleSend()}
-                                disabled={isLoading || !inputValue.trim()}
+                                disabled={isLoading || (!inputValue.trim() && !imageFile)}
                                 className="bg-primary-600 text-white p-2 rounded-full hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                 aria-label="إرسال السؤال"
                             >

@@ -1,0 +1,75 @@
+[
+  {
+    "id": "overview",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=overview",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "paths",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=paths",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "memberships",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=memberships",
+    "expectedVisible": true,
+    "hasMemberships": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "financial",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=financial",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "platform-integrations",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=platform-integrations",
+    "expectedVisible": true,
+    "hasStudentAiDiag": false,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "ai-assistant",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=ai-assistant",
+    "expectedVisible": true,
+    "hasProviderTest": false,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "users",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=users",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "groups",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=groups",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  },
+  {
+    "id": "monitoring",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=monitoring",
+    "expectedVisible": true,
+    "visibleErrors": true,
+    "consoleErrors": []
+  },
+  {
+    "id": "settings",
+    "url": "http://127.0.0.1:5173/admin-dashboard?tab=settings",
+    "expectedVisible": true,
+    "visibleErrors": false,
+    "consoleErrors": []
+  }
+]

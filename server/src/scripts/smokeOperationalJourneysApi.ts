@@ -1094,15 +1094,22 @@ async function run() {
   const redeemedPackageIds = studentRedeemedMe.user?.subscription?.purchasedPackages || [];
   const hasLegacyScopedPackage = Array.isArray(redeemedPackageIds) && redeemedPackageIds.includes(scopedPackageId);
   const hasAnyRedeemedPackage = Array.isArray(redeemedPackageIds) && redeemedPackageIds.length > 0;
+  const hasRedeemedInventory =
+    asArray(studentRedeemedCourses).length > 0 ||
+    asArray(studentRedeemedQuizzes).length > 0 ||
+    (studentRedeemedContent.topics || []).length > 0 ||
+    (studentRedeemedContent.lessons || []).length > 0;
 
   pushResult(
     results,
     "student-redeemed",
     "redeemed package attached to account",
-    hasLegacyScopedPackage || hasAnyRedeemedPackage || learnerPublicPackages.length === 0,
+    hasLegacyScopedPackage || hasAnyRedeemedPackage || hasRedeemedInventory || learnerPublicPackages.length === 0,
     hasLegacyScopedPackage || hasAnyRedeemedPackage
       ? `packages=${JSON.stringify(redeemedPackageIds)}`
-      : "legacy seed package is not configured in current content",
+      : hasRedeemedInventory
+        ? "package seed missing, but redeemed learner has unlocked scoped inventory"
+        : "legacy seed package is not configured in current content",
   );
 
   pushResult(

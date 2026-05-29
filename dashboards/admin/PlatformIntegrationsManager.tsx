@@ -151,6 +151,21 @@ type RuntimeAudit = {
   }>;
 };
 
+type StudentAiRuntimeSummary = {
+  provider: string;
+  model: string;
+  providerOrderSource: string;
+  providerOrder: string;
+  configuredProviders: number;
+  studentChats24h: number;
+  fallbackStudentChats24h: number;
+  errors24h: number;
+  lastStudentProvider: string;
+  lastStudentStatus: string;
+  lastStudentFallback: boolean;
+  note?: string;
+};
+
 const emptySettings: IntegrationSettings = {
   key: "default",
   auth: {
@@ -393,6 +408,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
   const [statusType, setStatusType] = useState<"success" | "error">("success");
   const [setupChecklist, setSetupChecklist] = useState<SetupChecklist | null>(null);
   const [runtimeAudit, setRuntimeAudit] = useState<RuntimeAudit | null>(null);
+  const [studentAiRuntimeSummary, setStudentAiRuntimeSummary] = useState<StudentAiRuntimeSummary | null>(null);
+  const [studentAiRuntimeLoading, setStudentAiRuntimeLoading] = useState(false);
   const [readiness, setReadiness] = useState<null | {
     status: string;
     score: number;
@@ -701,6 +718,68 @@ export const PlatformIntegrationsManager: React.FC = () => {
     }
   };
 
+  const loadStudentAiRuntimeSummary = async () => {
+    setStudentAiRuntimeLoading(true);
+    try {
+      const [statusPayload, readinessPayload, interactionsPayload] = await Promise.all([
+        api.aiStatus(),
+        api.aiReadiness(),
+        api.getAiInteractions(12),
+      ]);
+      const aiStatus = statusPayload as {
+        provider?: string;
+        model?: string;
+        providerOrderSource?: string;
+        providerOrder?: string[];
+        providers?: Array<{ id: string; configured?: boolean }>;
+      };
+      const aiReadiness = readinessPayload as {
+        studentAdvisor?: { studentChats24h?: number; fallbackStudentChats24h?: number };
+        monitoring?: { aiErrors24h?: number; fallbackStudentChats24h?: number };
+      };
+      const interactions = interactionsPayload as {
+        items?: Array<{ endpoint?: string; audience?: string; provider?: string; status?: string; usedFallback?: boolean }>;
+      };
+      const studentItems = (interactions.items || []).filter(
+        (item) => item.endpoint === "/ai/chat" || item.audience === "student",
+      );
+      const lastStudent = studentItems[0];
+
+      setStudentAiRuntimeSummary({
+        provider: String(aiStatus.provider || "none"),
+        model: String(aiStatus.model || "local-fallback"),
+        providerOrderSource: String(aiStatus.providerOrderSource || "env"),
+        providerOrder: Array.isArray(aiStatus.providerOrder) ? aiStatus.providerOrder.join(", ") : "",
+        configuredProviders: (aiStatus.providers || []).filter((provider) => provider.id !== "none" && provider.configured).length,
+        studentChats24h: Number(aiReadiness.studentAdvisor?.studentChats24h || 0),
+        fallbackStudentChats24h: Number(
+          aiReadiness.studentAdvisor?.fallbackStudentChats24h || aiReadiness.monitoring?.fallbackStudentChats24h || 0,
+        ),
+        errors24h: Number(aiReadiness.monitoring?.aiErrors24h || 0),
+        lastStudentProvider: String(lastStudent?.provider || "لا يوجد سجل طالب"),
+        lastStudentStatus: String(lastStudent?.status || "لا يوجد سجل طالب"),
+        lastStudentFallback: Boolean(lastStudent?.usedFallback),
+      });
+    } catch (error) {
+      setStudentAiRuntimeSummary({
+        provider: "unknown",
+        model: "unknown",
+        providerOrderSource: "unknown",
+        providerOrder: "",
+        configuredProviders: 0,
+        studentChats24h: 0,
+        fallbackStudentChats24h: 0,
+        errors24h: 0,
+        lastStudentProvider: "unknown",
+        lastStudentStatus: "تعذر قراءة حالة مساعد الطالب",
+        lastStudentFallback: true,
+        note: error instanceof Error ? error.message : "تعذر قراءة حالة مساعد الطالب",
+      });
+    } finally {
+      setStudentAiRuntimeLoading(false);
+    }
+  };
+
   const loadHistory = async () => {
     try {
       const payload = await api.getPlatformIntegrationsHistory();
@@ -718,7 +797,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
       setSettings({ ...emptySettings, ...(restored.settings as IntegrationSettings) });
       setStatusType("success");
       setStatusMessage("تم استرجاع إعدادات التكاملات بنجاح.");
-      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit()]);
+      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit(), loadStudentAiRuntimeSummary()]);
     } catch (error) {
       setStatusType("error");
       setStatusMessage(error instanceof Error ? error.message : "تعذر استرجاع النسخة.");
@@ -780,7 +859,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
       setSettings({ ...emptySettings, ...updated });
       setStatusType("success");
       setStatusMessage("تم حفظ إعدادات التكاملات والتسجيل وSEO بنجاح.");
-      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit()]);
+      await Promise.all([loadReadiness(), loadHistory(), loadSetupChecklist(), loadRuntimeAudit(), loadStudentAiRuntimeSummary()]);
     } catch (error) {
       setStatusType("error");
       setStatusMessage(error instanceof Error ? error.message : "تعذر حفظ الإعدادات.");
@@ -836,6 +915,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
     void loadHistory();
     void loadSetupChecklist();
     void loadRuntimeAudit();
+    void loadStudentAiRuntimeSummary();
   }, []);
 
   if (loading) {
@@ -896,6 +976,62 @@ export const PlatformIntegrationsManager: React.FC = () => {
             </button>
           </div>
         ) : null}
+        <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="text-xs font-black text-indigo-700">تشخيص مباشر لمساعد الطالب</div>
+              <h3 className="mt-1 text-lg font-black text-gray-900">مساعد الطالب يرى أي مزود الآن؟</h3>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                هذا الفحص يقرأ /ai/status و /ai/readiness وسجل /ai/chat، حتى لا يبقى المفتاح محفوظا في التكاملات بينما الطالب يعمل على fallback.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => void loadStudentAiRuntimeSummary()}
+              disabled={studentAiRuntimeLoading}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-black text-indigo-700 disabled:opacity-60"
+            >
+              <RefreshCw size={16} className={studentAiRuntimeLoading ? "animate-spin" : ""} />
+              اختبار مزود الطالب
+            </button>
+          </div>
+          {studentAiRuntimeSummary ? (
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl bg-white p-3 text-sm">
+                <div className="text-xs font-black text-gray-500">المزود الحالي</div>
+                <div className="mt-1 font-black text-gray-900">{studentAiRuntimeSummary.provider}</div>
+                <div className="mt-1 text-xs text-gray-500">{studentAiRuntimeSummary.model}</div>
+              </div>
+              <div className="rounded-xl bg-white p-3 text-sm">
+                <div className="text-xs font-black text-gray-500">مصدر الترتيب</div>
+                <div className="mt-1 font-black text-gray-900">
+                  {studentAiRuntimeSummary.providerOrderSource === "admin" ? "ai-global من الإدارة" : studentAiRuntimeSummary.providerOrderSource}
+                </div>
+                <div className="mt-1 text-xs text-gray-500">{studentAiRuntimeSummary.providerOrder || "لا يوجد ترتيب معلن"}</div>
+              </div>
+              <div className="rounded-xl bg-white p-3 text-sm">
+                <div className="text-xs font-black text-gray-500">استخدام الطلاب 24 ساعة</div>
+                <div className="mt-1 font-black text-gray-900">{studentAiRuntimeSummary.studentChats24h}</div>
+                <div className="mt-1 text-xs text-gray-500">Fallback: {studentAiRuntimeSummary.fallbackStudentChats24h}</div>
+              </div>
+              <div className="rounded-xl bg-white p-3 text-sm">
+                <div className="text-xs font-black text-gray-500">آخر محادثة طالب</div>
+                <div className="mt-1 font-black text-gray-900">{studentAiRuntimeSummary.lastStudentProvider}</div>
+                <div className="mt-1 text-xs text-gray-500">
+                  {studentAiRuntimeSummary.lastStudentStatus}
+                  {studentAiRuntimeSummary.lastStudentFallback ? " - fallback" : ""}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-xl bg-white p-3 text-sm text-gray-600">اضغط اختبار مزود الطالب لقراءة حالة التشغيل الحالية.</div>
+          )}
+          {studentAiRuntimeSummary?.note ? (
+            <div className="mt-3 rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs font-bold text-rose-700">
+              {studentAiRuntimeSummary.note}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">

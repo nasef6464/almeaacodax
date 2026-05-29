@@ -656,7 +656,7 @@ export const AiAssistantManager: React.FC = () => {
                                                 className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
                                             >
                                                 {testingProvider === provider.id ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
-                                                اختبار المزود
+                                                اختبر المزود
                                             </button>
                                             {providerTestResults[provider.id] && (
                                                 <p className="text-xs text-gray-600 leading-5">{providerTestResults[provider.id]}</p>

@@ -1,6 +1,6 @@
 # تقرير الإغلاق النهائي - دفعة 1 + 2
 
-- التاريخ: 2026-05-22T08:33:28.860Z
+- التاريخ: 2026-05-22T08:55:02.072Z
 - Frontend: `https://almeaacodax.vercel.app`
 - API: `https://almeaacodax-k2ux.onrender.com/api`
 
@@ -18,8 +18,8 @@
 
 ## 2) التشغيل الإنتاجي النهائي
 
-- ✅ فتح الواجهة: status=200 time=1296ms
-- ✅ صحة الـ API: status=200 time=882ms
+- ✅ فتح الواجهة: status=200 time=989ms
+- ✅ صحة الـ API: status=200 time=1031ms
 - ⏳ جاهزية التكاملات (Admin): Missing GOLIVE_ADMIN_TOKEN or GOLIVE_ADMIN_EMAIL / GOLIVE_ADMIN_PASSWORD; readiness endpoint auth check skipped.
 
 ## تصنيف واضح حسب القاعدة الجديدة

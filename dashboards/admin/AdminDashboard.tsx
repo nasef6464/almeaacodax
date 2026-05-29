@@ -45,6 +45,7 @@ const LibraryManager = lazyNamed<{ subjectId: string }>(() => import('./LibraryM
 const QuizzesManager = lazyNamed(() => import('./QuizzesManager'), 'QuizzesManager');
 const SkillsTreeManager = lazyNamed(() => import('./SkillsTreeManager'), 'SkillsTreeManager');
 const FinancialManager = lazyNamed(() => import('./FinancialManager'), 'FinancialManager');
+const MembershipsManager = lazyNamed(() => import('./MembershipsManager'), 'MembershipsManager');
 const NotificationsManager = lazyNamed(() => import('./NotificationsManager'), 'NotificationsManager');
 const HomepageManager = lazyNamed(() => import('./HomepageManager'), 'HomepageManager');
 const PlatformFontsManager = lazyNamed(() => import('./PlatformFontsManager'), 'PlatformFontsManager');
@@ -844,6 +845,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
             { id: 'groups', label: 'المجموعات والمدارس', icon: <Building2 size={20} /> },
+            { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
             { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
             { id: 'notifications', label: 'الإشعارات', icon: <Bell size={20} /> },
             { id: 'monitoring', label: 'مراقبة النظام', icon: <Activity size={20} /> },
@@ -1973,6 +1975,8 @@ export const AdminDashboard: React.FC = () => {
                 return <SchoolsManager />;
             case 'school-portal':
                 return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
+            case 'memberships':
+                return <MembershipsManager />;
             case 'financial':
                 return <FinancialManager />;
             case 'notifications':

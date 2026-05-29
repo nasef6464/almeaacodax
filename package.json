@@ -46,6 +46,7 @@
         "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
         "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
         "smoke:ai-config-bridge": "node scripts/smoke-ai-config-bridge-contract.mjs",
+        "smoke:admin-memberships-ai-closure": "node scripts/smoke-admin-memberships-ai-closure-contract.mjs",
         "smoke:ai-admin-closure": "npm run smoke:ai-config-bridge && npm run smoke:integrations-runtime && npm run smoke:monitoring && npm run smoke:admin-tabs",
         "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
         "smoke:sentry-live-proof": "node scripts/smoke-sentry-live-proof-auto.mjs",
@@ -110,7 +111,13 @@
         "smoke:batch100p-question-bank-crud": "node scripts/smoke-batch100p-question-bank-runtime-crud-contract.mjs",
         "smoke:batch100q-operational-admin-runtime": "node scripts/smoke-batch100q-operational-admin-runtime-contract.mjs",
         "smoke:batch136-admin-users-schools-parent-payment": "node scripts/smoke-batch136-admin-users-schools-parent-payment-contract.mjs",
-        "smoke:batch136-closure": "npm run smoke:operational && npm run smoke:health-readiness && npm run smoke:frontend:strict"
+        "smoke:batch136-closure": "npm run smoke:operational && npm run smoke:health-readiness && npm run smoke:frontend:strict",
+        "smoke:handover-utf8": "node scripts/smoke-handover-utf8-contract.mjs",
+        "smoke:handover-structure": "node scripts/smoke-handover-structure-contract.mjs",
+        "smoke:handover-consistency": "node scripts/smoke-handover-consistency-contract.mjs",
+        "smoke:handover-gates": "node scripts/smoke-handover-gates-contract.mjs",
+        "smoke:handover-blockers": "node scripts/smoke-handover-blockers-contract.mjs",
+        "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers"
     },
     "dependencies": {
         "@google/genai": "^1.30.0",
@@ -136,6 +143,7 @@
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "^5.0.0",
         "autoprefixer": "^10.4.20",
+        "playwright": "^1.60.0",
         "postcss": "^8.4.49",
         "tailwindcss": "^3.4.17",
         "typescript": "~5.8.2",

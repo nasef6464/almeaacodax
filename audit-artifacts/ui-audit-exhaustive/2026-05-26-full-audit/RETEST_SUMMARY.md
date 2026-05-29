@@ -1,6 +1,6 @@
 # Retest Summary
 
-- Total Retested: 248
-- PASS: 177
-- FAIL: 71
+- Total Retested: 277
+- PASS: 186
+- FAIL: 91
 - BLOCKED: 0

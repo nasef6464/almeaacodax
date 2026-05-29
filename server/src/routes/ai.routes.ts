@@ -14,8 +14,14 @@ import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 
+const imageInputSchema = z.object({
+  data: z.string().min(1),
+  mimeType: z.string().regex(/^image\/(png|jpeg|webp|gif|svg\+xml)$/),
+}).optional();
+
 const chatSchema = z.object({
   message: z.string().min(1).max(2000),
+  image: imageInputSchema,
 });
 
 const adminAssistantSchema = z.object({
@@ -521,10 +527,17 @@ const fetchWithTimeout = async (url: string, init: RequestInit) => {
   }
 };
 
-const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => {
   const apiKey = runtimeAiConfig.providers.gemini.apiKey;
   const model = runtimeAiConfig.providers.gemini.model;
   if (!apiKey) return "";
+
+  const parts: Array<Record<string, unknown>> = image
+    ? [
+        { inlineData: { mimeType: image.mimeType, data: image.data } },
+        { text: prompt },
+      ]
+    : [{ text: prompt }];
 
   const response = await fetchWithTimeout(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -532,7 +545,7 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType)
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts }],
         generationConfig: responseMimeType ? { responseMimeType } : undefined,
       }),
     },
@@ -658,7 +671,7 @@ const callOpenAiCompatible = async (
   return payload.choices?.[0]?.message?.content?.trim() || "";
 };
 
-const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType): Promise<AiCallResult> => {
+const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
 
@@ -671,7 +684,7 @@ const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeT
     try {
       let text = "";
       if (provider === "gemini") {
-        text = await callGemini(prompt, responseMimeType);
+        text = await callGemini(prompt, responseMimeType, image);
       }
       if (provider === "ollama") {
         text = await callOllama(prompt, responseMimeType);
@@ -709,10 +722,10 @@ const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeT
   };
 };
 
-const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType) => (await callAiWithMeta(prompt, responseMimeType)).text;
+const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => (await callAiWithMeta(prompt, responseMimeType, image)).text;
 
-const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt: string) => {
-  if (provider === "gemini") return callGemini(prompt);
+const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt: string, image?: { data: string; mimeType: string }) => {
+  if (provider === "gemini") return callGemini(prompt, undefined, image);
   if (provider === "ollama") return callOllama(prompt);
   if (provider === "lmstudio") return callLmStudio(prompt);
   return callOpenAiCompatible(provider, prompt);
@@ -938,11 +951,16 @@ aiRouter.post(
   "/chat",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const { message } = chatSchema.parse(req.body);
+    const parsed = chatSchema.parse(req.body);
+    const { message } = parsed;
+    const image = parsed.image?.data && parsed.image?.mimeType
+      ? { data: parsed.image.data, mimeType: parsed.image.mimeType }
+      : undefined;
     const startedAt = Date.now();
     const studentContext = await buildStudentAiContext(req.authUser?.id);
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
 
+    const hasImage = Boolean(image);
     const prompt = `
 ${ARABIC_TUTOR_RULES}
 بيانات الطالب من المنصة إن وجدت:
@@ -952,6 +970,7 @@ ${studentContext?.summary || "الطالب غير مسجل أو لا توجد ب
 - إذا سأل الطالب عن ضعفه أو ماذا يذاكر، استخدم بيانات أدائه أولا.
 - لا تعرض بيانات حساسة، واجعل الرد كمرشد أكاديمي بسيط.
 - اقترح خطوة واحدة واضحة ثم تدريب قصير.
+${hasImage ? "- الصورة المرفقة: حلل محتواها إن كانت سؤالاً أو شرحاً أو رسمة، وأجب بناء عليها مع ربطها بخطة الطالب." : ""}
 
 سؤال الطالب:
 ${message}
@@ -976,6 +995,7 @@ ${message}
           userCount: budget.userCount,
           dailyLimit: budget.dailyLimit,
           perUserLimit: budget.perUserLimit,
+          hasImage,
         },
       });
       return res.json({
@@ -989,7 +1009,7 @@ ${message}
     }
 
     try {
-      const result = await callAiWithMeta(prompt);
+      const result = await callAiWithMeta(prompt, undefined, image);
       const responseText = result.text || fallback;
       await recordAiInteraction({
         req,
@@ -1006,6 +1026,7 @@ ${message}
           weaknessesCount: studentContext?.weaknesses.length || 0,
           recentResultsCount: studentContext?.recentResults.length || 0,
           providerErrors: result.errors.slice(0, 3),
+          hasImage,
         },
       });
       return res.json({
@@ -1029,6 +1050,7 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         error: error instanceof Error ? error.message : "AI chat failed",
+        metadata: { hasImage },
       });
       return res.json({
         text: fallback,

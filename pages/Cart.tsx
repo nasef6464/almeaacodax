@@ -1,5 +1,5 @@
 ﻿import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { PaymentModal } from '../components/PaymentModal';
@@ -17,6 +17,8 @@ const Cart: React.FC = () => {
   const { cartItems, removeFromCart, clearCart } = useStore();
   const [activeItem, setActiveItem] = useState<CartItem | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isCheckoutPage = location.pathname === '/checkout';
 
   const total = useMemo(
     () => cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0),
@@ -37,6 +39,15 @@ const Cart: React.FC = () => {
           >
             تصفح العضويات
           </button>
+          {isCheckoutPage ? (
+            <button
+              type="button"
+              disabled
+              className="mt-3 inline-flex cursor-not-allowed rounded-2xl bg-indigo-300 px-5 py-3 text-sm font-black text-white"
+            >
+              إتمام الدفع الآن
+            </button>
+          ) : null}
         </div>
       </div>
     );
@@ -96,6 +107,15 @@ const Cart: React.FC = () => {
           <span className="text-sm font-bold text-gray-500">إجمالي السلة</span>
           <span className="text-xl font-black text-indigo-700">{total} SAR</span>
         </div>
+        {isCheckoutPage ? (
+          <button
+            type="button"
+            onClick={() => setActiveItem(cartItems[0] || null)}
+            className="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700"
+          >
+            إتمام الدفع الآن
+          </button>
+        ) : null}
       </div>
 
       {activeItem ? (

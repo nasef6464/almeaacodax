@@ -33,3 +33,6 @@ load-tests/results/*.jsonl
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+.env*.local

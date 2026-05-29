@@ -158,12 +158,12 @@ const Pricing: React.FC = () => {
                 <div>
                   <div className="font-black text-gray-900">إدارة العضويات العامة للمدير</div>
                   <div className="text-gray-600">
-                    من لوحة المدير افتح إدارة المسارات ثم تبويب الباقات الشاملة، وفعل خيار "عضوية عامة تفتح كل المنصة".
+                    من لوحة المدير افتح تبويب العضويات لمراجعة العضويات العامة والطلبات والمشتركين من مكان واحد.
                   </div>
                 </div>
               </div>
               <Link
-                to="/admin-dashboard?tab=paths"
+                to="/admin-dashboard?tab=memberships"
                 className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
               >
                 فتح إدارة العضويات

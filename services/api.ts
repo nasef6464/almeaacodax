@@ -1197,7 +1197,7 @@ export const api = {
       body: payload,
       token,
     }),
-  aiChat: (payload: { message: string }, token?: string | null) =>
+  aiChat: (payload: { message: string; image?: { data: string; mimeType: string } }, token?: string | null) =>
     request<{
       text: string;
       personalized?: boolean;

@@ -73,9 +73,9 @@ export type StudentChatResponse = {
   usedFallback?: boolean;
 };
 
-export const getChatResponse = async (message: string): Promise<StudentChatResponse> => {
+export const getChatResponse = async (message: string, image?: { data: string; mimeType: string }): Promise<StudentChatResponse> => {
   try {
-    const response = await api.aiChat({ message });
+    const response = await api.aiChat(image ? { message, image } : { message });
     const text = displayText(response.text);
     return {
       text: text || buildLocalStudentReply(message),
