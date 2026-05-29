@@ -294,3 +294,17 @@
 - Sentry live proof:
   - `status=202`
   - `eventId=3784d1bba28042aea5afa5674fabca0d`
+
+## متابعة لاحقة 13 (Compact Fresh Verification)
+
+- تاريخ المتابعة: 2026-05-30
+- نتائج سريعة محدثة:
+  - `smoke:frontend:strict`: `PASS` (28 checks)
+  - `smoke:integrations-runtime`: `PASS` (10 checks)
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_D8cZU6m7wUeLVCGjqkRbegNNn6gm`
+  - URL: `https://almeaacodax-nhqusdbdc-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=16605788eabe404a8be91c74820b9974`

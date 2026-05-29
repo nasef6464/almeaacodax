@@ -141,6 +141,13 @@
 - `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
 - `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
 
+## تحقق مدمج جديد (Continuation 13)
+
+- `npm run smoke:frontend:strict` (PASS)
+- `npm run smoke:integrations-runtime` (PASS)
+- `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
+- `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
