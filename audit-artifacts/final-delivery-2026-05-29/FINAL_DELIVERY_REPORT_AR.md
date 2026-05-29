@@ -264,3 +264,18 @@
 
 - الحالة: `GO (مشروط تشغيليًا)`
 - الشرط التشغيلي المتبقي خارج الفحص الآمن: أي خطوات مالية/اعتمادية حساسة تتم بواسطة المالك بصلاحية تشغيل إنتاجية كاملة.
+
+## متابعة لاحقة 11 (Stability Snapshot)
+
+- تاريخ المتابعة: 2026-05-30
+- فحوص الاستقرار:
+  - `smoke:frontend:strict`: `PASS` (28 checks)
+  - `smoke:health-readiness`: `PASS`
+  - `smoke:sentry-runtime`: `PASS` (5 checks)
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_Cf98vBxtTvnyidHZwhUUu6Hf6cjc`
+  - URL: `https://almeaacodax-pxzsenaru-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=b9f7ab0783eb46fa8dc13b782258919a`
