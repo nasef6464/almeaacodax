@@ -132,6 +132,25 @@ export const SchoolPortalManager: React.FC = () => {
     const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
     const scope = useMemo(() => {
+        if (user.role === Role.ADMIN) {
+            const schools = groups.filter((group) => group.type === 'SCHOOL');
+            const classes = groups.filter((group) => group.type === 'CLASS');
+            const students = users.filter((item) => item.role === Role.STUDENT);
+            const studentIds = new Set(students.map((student) => student.id));
+            const results = examResults.filter((result) => !!result.userId && studentIds.has(result.userId));
+            const schoolIds = new Set(schools.map((school) => school.id));
+            return {
+                schools,
+                classes,
+                students,
+                results,
+                packages: b2bPackages.filter((pkg) => schoolIds.has(pkg.schoolId)),
+                codes: accessCodes.filter((code) => schoolIds.has(code.schoolId)),
+                scopedCourses: courses,
+                followUpQuizzes: quizzes,
+            };
+        }
+
         const userGroupIds = new Set(user.groupIds || []);
         const schoolIds = new Set<string>();
 
@@ -184,7 +203,7 @@ export const SchoolPortalManager: React.FC = () => {
             scopedCourses,
             followUpQuizzes,
         };
-    }, [accessCodes, b2bPackages, courses, examResults, groups, quizzes, user.groupIds, user.schoolId]);
+    }, [accessCodes, b2bPackages, courses, examResults, groups, quizzes, user.groupIds, user.role, user.schoolId, users]);
 
     const studentSummaries = useMemo(() => (
         scope.students.map((student) => {
