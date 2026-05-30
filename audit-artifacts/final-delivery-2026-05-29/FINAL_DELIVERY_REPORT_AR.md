@@ -458,3 +458,18 @@
   - لا توجد Console errors أو Network 5xx في هذا الفحص المركز.
 - مرجع الدليل:
   - `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-postdeploy-2026-05-30.json`
+
+## متابعة لاحقة 24 (AI Bridge Reconfirm)
+
+- تاريخ المتابعة: 2026-05-30
+- نتائج الربط بعد النشر:
+  - `smoke:ai-config-bridge`: `PASS` (8 checks)
+  - `smoke:admin-memberships-ai-closure`: `PASS` (6 checks)
+  - `smoke:integrations-runtime`: `PASS` (10 checks)
+- Vercel snapshot الأحدث:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_5gTur5BX3KRPafYyJbEGG9zPgExh`
+  - URL: `https://almeaacodax-rcw5n4mbp-nasefs-projects-18e6bdb1.vercel.app`
+- ملاحظة تشغيلية:
+  - `smoke-sentry-live-proof` في هذه الجولة توقف بسبب غياب `SMOKE_ADMIN_TOKEN` في البيئة الحالية.
+  - التصنيف: `Owner Credential Blocker` (ليس فشل منتج/كود).

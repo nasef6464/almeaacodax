@@ -216,6 +216,14 @@
 - Production HTML proof: `assets/index-GjGaWa4t.js`
 - Postdeploy gap proof: `live-real-gaps-postdeploy-2026-05-30.json`
 
+## إعادة تثبيت جسر AI (Continuation 24)
+
+- `npm run smoke:ai-config-bridge` (PASS)
+- `npm run smoke:admin-memberships-ai-closure` (PASS)
+- `npm run smoke:integrations-runtime` (PASS)
+- `vercel inspect almeaacodax.vercel.app` -> `dpl_5gTur5BX3KRPafYyJbEGG9zPgExh` (Ready)
+- `node scripts/smoke-sentry-live-proof.mjs` -> `BLOCKED: Missing SMOKE_ADMIN_TOKEN`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
