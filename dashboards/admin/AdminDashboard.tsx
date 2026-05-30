@@ -936,12 +936,13 @@ export const AdminDashboard: React.FC = () => {
             ];
         }
 
-        if (user.role === Role.SUPERVISOR && !nextItems.some((item) => item.id === 'school-portal')) {
+        if ([Role.ADMIN, Role.SUPERVISOR].includes(user.role) && !nextItems.some((item) => item.id === 'school-portal')) {
+            const groupsIndex = nextItems.findIndex((item) => item.id === 'groups');
             const overviewIndex = nextItems.findIndex((item) => item.id === 'overview');
-            const targetIndex = overviewIndex === -1 ? 0 : overviewIndex + 1;
+            const targetIndex = groupsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : groupsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'school-portal', label: 'بوابة المدرسة', icon: <Building2 size={20} /> },
+                { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة المدارس' : 'بوابة المدرسة', icon: <Building2 size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
