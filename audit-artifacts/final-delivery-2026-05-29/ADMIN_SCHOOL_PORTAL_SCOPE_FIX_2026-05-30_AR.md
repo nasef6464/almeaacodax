@@ -51,6 +51,9 @@
 - PASS: فحص بصري مركز لولي الأمر والمعلم والمشرف على الإنتاج - 9/9 صفحات، 0 REVIEW، 0 أخطاء Console، 0 أخطاء Network 5xx.
 - PASS: إعادة فحص لوحة المدير النهائية بعد إضافة العضويات لمصفوفة الفحص - 23/23 تبويب PASS، 0 FAIL.
 - PASS: تبويب `memberships` داخل لوحة المدير مفحوص بصريا ووظيفيا: 40 عنصر تفاعلي ظاهر، 0 disabled، 0 Console errors، 0 Network 5xx.
+- PASS: فحص وظائف الإدارة الآمنة للتبويبات الحرجة - 12/12 PASS، ويشمل المستخدمين، المجموعات، بوابة المدارس، العضويات، المالية، التكاملات، مساعد الإدارة، الصفحة الرئيسية، الإعلانات، الخطوط، النسخ الاحتياطي، والمراقبة.
+- PASS: عقود الإدارة الوظيفية المتاحة: `smoke:admin-tabs`, `smoke:admin-memberships-ai-closure`, `smoke:ai-admin-closure`, `smoke:admin-school-command`, `smoke:batch100i-admin-dashboard-functional-qa`, `smoke:batch100n-admin-tab-e2e`, `smoke:batch100o-admin-crud-course-linkage`, `smoke:batch100q-operational-admin-runtime`.
+- PASS: عقود إدارة الشكل والمحتوى: `smoke:announcement-ads`, `smoke:platform-fonts`, `smoke:batch100j-homepage-branding-course-icons`, `smoke:batch100k-homepage-admin-sweep`, `smoke:batch100l-homepage-color-picker`, `smoke:batch100m-homepage-live-preview`.
 
 ## أدلة الفحص
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
@@ -60,3 +63,4 @@
 - `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-public-student-visual/`
 - `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-staff-parent-visual/`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-final-sweep-with-memberships/`
+- `audit-artifacts/admin-live-handoff/2026-05-30-admin-safe-actions-final/`
