@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-05-30T20:10:06.601Z",
+  "baseUrl": "https://almeaacodax.vercel.app",
+  "apiBaseUrl": "https://almeaacodax-k2ux.onrender.com/api",
+  "runId": "2026-05-30-admin-live-idempotent-save-final",
+  "note": "Idempotent live save audit: GET current settings, PATCH the same safe payload, GET again, compare stable hashes. No secrets or raw payloads stored.",
+  "total": 4,
+  "pass": 4,
+  "fail": 0,
+  "results": [
+    {
+      "name": "homepage-settings",
+      "path": "/content/homepage-settings",
+      "method": "PATCH",
+      "getBeforeStatus": 200,
+      "saveStatus": 200,
+      "getAfterStatus": 200,
+      "beforeHash": "e25b9c92be534552dd33c82200b0ff9a1882fb450b5063a9d1cabd6f4a237fb1",
+      "afterHash": "e25b9c92be534552dd33c82200b0ff9a1882fb450b5063a9d1cabd6f4a237fb1",
+      "payloadHash": "e25b9c92be534552dd33c82200b0ff9a1882fb450b5063a9d1cabd6f4a237fb1",
+      "stableStatePreserved": true,
+      "status": "PASS",
+      "failureHint": ""
+    },
+    {
+      "name": "platform-font-settings",
+      "path": "/content/platform-font-settings",
+      "method": "PATCH",
+      "getBeforeStatus": 200,
+      "saveStatus": 200,
+      "getAfterStatus": 200,
+      "beforeHash": "dd81956c269263cd2aaf05c455de222a2290d01c1073891c2d6e9c986144f8c2",
+      "afterHash": "dd81956c269263cd2aaf05c455de222a2290d01c1073891c2d6e9c986144f8c2",
+      "payloadHash": "dd81956c269263cd2aaf05c455de222a2290d01c1073891c2d6e9c986144f8c2",
+      "stableStatePreserved": true,
+      "status": "PASS",
+      "failureHint": ""
+    },
+    {
+      "name": "platform-integrations",
+      "path": "/content/platform-integrations",
+      "method": "PATCH",
+      "getBeforeStatus": 200,
+      "saveStatus": 200,
+      "getAfterStatus": 200,
+      "beforeHash": "408718f17b34b7355373a813341a8cdc3b206edeb6e1c925a233ce016e23fb07",
+      "afterHash": "408718f17b34b7355373a813341a8cdc3b206edeb6e1c925a233ce016e23fb07",
+      "payloadHash": "db254a8ae3d17d7fcc7d63ce487e283e7d8a6c2d1a14e7df089bb4a80b8221f5",
+      "stableStatePreserved": true,
+      "status": "PASS",
+      "failureHint": ""
+    },
+    {
+      "name": "payment-settings",
+      "path": "/payments/settings",
+      "method": "PATCH",
+      "getBeforeStatus": 200,
+      "saveStatus": 200,
+      "getAfterStatus": 200,
+      "beforeHash": "df138184775c178e280338e9e9b56be61bfdfbf62484df3e521ab664dda72624",
+      "afterHash": "df138184775c178e280338e9e9b56be61bfdfbf62484df3e521ab664dda72624",
+      "payloadHash": "6cd3bed70be2228afdac526cc205825fbcc96b0aad1393f16c6f808ea1f8ed4a",
+      "stableStatePreserved": true,
+      "status": "PASS",
+      "failureHint": ""
+    }
+  ]
+}

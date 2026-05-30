@@ -64,3 +64,11 @@
 - `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-staff-parent-visual/`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-final-sweep-with-memberships/`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-safe-actions-final/`
+
+## فحص الحفظ الحي الآمن - 2026-05-30
+- PASS: تم اختبار حفظ فعلي آمن على الإنتاج بدون تغيير محتوى المستخدم: قراءة الإعداد الحالي، حفظ نفس القيمة، ثم قراءة ثانية ومقارنة الحالة المستقرة.
+- PASS: `homepage-settings` - GET 200، SAVE 200، RELOAD 200، والحالة المستقرة محفوظة.
+- PASS: `platform-font-settings` - GET 200، SAVE 200، RELOAD 200، والحالة المستقرة محفوظة.
+- PASS: `platform-integrations` - GET 200، SAVE 200، RELOAD 200، والحالة المستقرة محفوظة، بدون تسجيل أي أسرار أو مفاتيح في التقرير.
+- PASS: `payment-settings` - GET 200، SAVE 200، RELOAD 200، والحالة المستقرة محفوظة.
+- الدليل: `audit-artifacts/admin-live-handoff/2026-05-30-admin-live-idempotent-save-final/`.
