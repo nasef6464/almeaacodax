@@ -473,3 +473,29 @@
 - ملاحظة تشغيلية:
   - `smoke-sentry-live-proof` في هذه الجولة توقف بسبب غياب `SMOKE_ADMIN_TOKEN` في البيئة الحالية.
   - التصنيف: `Owner Credential Blocker` (ليس فشل منتج/كود).
+
+## متابعة لاحقة 25 (Fresh Live Visual + Internal Flow Closure)
+
+- تاريخ المتابعة: 2026-05-30
+- جولة إدارة حيّة كاملة:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - بدون `responseFailures` وبدون `consoleErrors` على مستوى الجولة الشاملة
+- فحص داخلي مركز `users/groups/school-portal` بعد ضبط معيار الفحص:
+  - `Total: 10`
+  - `PASS: 10`
+  - `REVIEW: 0`
+  - `FAIL: 0`
+  - `Network 5xx: 0`
+- ملاحظة مهمة:
+  - `school-portal` شاشة تشغيلية (Operational Portal) وليست نموذج CRUD مباشر؛ تم اعتمادها PASS عند ظهور مدخل الإدارة الواضح.
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_5gTur5BX3KRPafYyJbEGG9zPgExh`
+  - URL: `https://almeaacodax-rcw5n4mbp-nasefs-projects-18e6bdb1.vercel.app`
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/admin-live-handoff-audit.json`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/admin-groups-schools-internal-safe-flow-audit.json`

@@ -224,6 +224,15 @@
 - `vercel inspect almeaacodax.vercel.app` -> `dpl_5gTur5BX3KRPafYyJbEGG9zPgExh` (Ready)
 - `node scripts/smoke-sentry-live-proof.mjs` -> `BLOCKED: Missing SMOKE_ADMIN_TOKEN`
 
+## فحص بصري جديد + إغلاق التدفق الداخلي (Continuation 25)
+
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/platform-integrations.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/ai-assistant.png`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/admin-groups-schools-internal-safe-flow-audit.json`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

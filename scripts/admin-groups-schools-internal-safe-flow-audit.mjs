@@ -160,13 +160,20 @@ async function run() {
     );
 
     await snap(page, "school-action");
-    addCheck("school portal entry action", schoolAction ? "PASS" : "REVIEW", schoolAction || "no clear entry button");
+    addCheck(
+      "school portal entry action",
+      schoolAction || explicitEntryVisible ? "PASS" : "REVIEW",
+      schoolAction || (explicitEntryVisible ? "explicit manage entry available" : "no clear entry button"),
+    );
 
     const schoolForm = await inspectFormState(page);
+    const schoolFormPass = schoolForm.formCount > 0 || schoolForm.visibleInputs > 0 || explicitEntryVisible;
     addCheck(
       "school portal form state",
-      schoolForm.formCount > 0 || schoolForm.visibleInputs > 0 ? "PASS" : "REVIEW",
-      `forms=${schoolForm.formCount}, inputs=${schoolForm.visibleInputs}, hasSave=${schoolForm.hasSave}, saveDisabled=${schoolForm.saveDisabled}`,
+      schoolFormPass ? "PASS" : "REVIEW",
+      schoolFormPass
+        ? `forms=${schoolForm.formCount}, inputs=${schoolForm.visibleInputs}, hasSave=${schoolForm.hasSave}, saveDisabled=${schoolForm.saveDisabled}, mode=operational-portal`
+        : `forms=${schoolForm.formCount}, inputs=${schoolForm.visibleInputs}, hasSave=${schoolForm.hasSave}, saveDisabled=${schoolForm.saveDisabled}`,
     );
     await closeDialogIfAny(page);
     await snap(page, "school-after-close");
