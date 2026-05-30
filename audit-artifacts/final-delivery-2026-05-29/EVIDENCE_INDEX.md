@@ -202,6 +202,12 @@
 - `npm run smoke:health-readiness` (PASS)
 - `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
 
+## سجل الفجوات الحقيقية (Continuation 22)
+
+- `REAL_GAPS_REGISTER_AR.md`
+- `live-real-gaps-probe-2026-05-30.json`
+- تم تحويل الملاحظات العملية إلى فجوات حقيقية فقط: وضوح زر، وظيفة ناقصة، شاشة تحتاج تبسيط، أو حالة مقبولة وليست عطلا.
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

@@ -652,12 +652,16 @@ export const AiAssistantManager: React.FC = () => {
                                             <button
                                                 type="button"
                                                 disabled={!provider.configured || testingProvider === provider.id}
+                                                title={!provider.configured ? 'أضف مفتاح هذا المزود من إدارة التكاملات أولا.' : testingProvider === provider.id ? 'جاري اختبار المزود الآن.' : 'اختبار المزود الحالي'}
                                                 onClick={() => void testProvider(provider.id as Exclude<AiStatus['provider'], 'none'>)}
                                                 className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
                                             >
                                                 {testingProvider === provider.id ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
                                                 اختبر المزود
                                             </button>
+                                            {!provider.configured ? (
+                                                <p className="text-[11px] font-bold leading-5 text-gray-500">الاختبار يتفعل بعد حفظ مفتاح المزود من إدارة التكاملات.</p>
+                                            ) : null}
                                             {providerTestResults[provider.id] && (
                                                 <p className="text-xs text-gray-600 leading-5">{providerTestResults[provider.id]}</p>
                                             )}

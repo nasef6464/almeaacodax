@@ -423,3 +423,18 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/admin-live-handoff-audit.json`
+
+## متابعة لاحقة 22 (Real Gaps Only)
+
+- تاريخ المتابعة: 2026-05-30
+- الهدف: استخراج الفجوات الحقيقية فقط بدل إعادة فحص أخضر متكرر.
+- النتيجة:
+  - لا توجد فجوة حظر في لوحة الإدارة بعد آخر جولة حية كاملة.
+  - تم رصد فجوات وضوح في أزرار معطلة بدون سبب ظاهر داخل `backups` و`ai-assistant` و`mock-exams`.
+  - تم إصلاحها بإظهار سبب التعطيل للمدير دون تغيير منطق الحفظ أو الاسترجاع أو اختبار المزود.
+- عناصر تم تصنيفها كحالات طبيعية لا كأعطال:
+  - ترقيم الصفحات في `questions/users` عند أول/آخر صفحة.
+  - `school-portal` بوابة تشغيل وليست نموذج CRUD مباشر، ومدخل إدارة المدارس موجود.
+- مرجع القرار:
+  - `audit-artifacts/final-delivery-2026-05-29/REAL_GAPS_REGISTER_AR.md`
+  - `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-probe-2026-05-30.json`

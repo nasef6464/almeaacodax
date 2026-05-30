@@ -225,6 +225,19 @@ export const BackupManager: React.FC = () => {
     }, [pathExportPreview]);
     const selectedExportPath = paths.find((path) => path.id === selectedPathExportId);
     const requiredConfirmText = replaceMode ? 'استبدال' : 'استرجاع';
+    const pathExportDisabledReason = !selectedPathExportId ? 'اختر المسار المطلوب أولا حتى يتم تجهيز نسخة المسار.' : '';
+    const restorePreviewDisabledReason = !backupPayload
+        ? 'اختر ملف JSON أو حمّل Snapshot داخل اللوحة أولا.'
+        : isRestoring
+            ? 'جاري تنفيذ عملية استرجاع حالية.'
+            : '';
+    const restoreApplyDisabledReason = !backupPayload
+        ? 'اختر ملف JSON أو حمّل Snapshot داخل اللوحة أولا.'
+        : isRestoring
+            ? 'جاري تنفيذ عملية استرجاع حالية.'
+            : confirmText !== requiredConfirmText
+                ? `اكتب "${requiredConfirmText}" لتفعيل التطبيق الحقيقي.`
+                : '';
 
     const latestSafetySnapshot = activities.find((activity) => activity.action === 'restore-safety-snapshot');
     const statusTone = backupStatus?.status === 'ready'
@@ -583,11 +596,15 @@ export const BackupManager: React.FC = () => {
                             type="button"
                             onClick={createPathBackup}
                             disabled={!selectedPathExportId}
+                            title={pathExportDisabledReason || 'تحميل نسخة JSON للمسار المحدد'}
                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-black text-white hover:bg-blue-800 disabled:opacity-60"
                         >
                             <Download size={18} />
                             تحميل نسخة المسار
                         </button>
+                        {pathExportDisabledReason ? (
+                            <p className="text-xs font-bold text-blue-700">{pathExportDisabledReason}</p>
+                        ) : null}
                     </div>
                 </div>
 
@@ -858,11 +875,15 @@ export const BackupManager: React.FC = () => {
                         <button
                             onClick={() => runRestore(false)}
                             disabled={!backupPayload || isRestoring}
+                            title={restorePreviewDisabledReason || 'فحص ملف النسخة قبل أي تعديل'}
                             className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-100 disabled:opacity-60"
                         >
                             {isRestoring ? <Loader2 size={18} className="animate-spin" /> : <RefreshCw size={18} />}
                             فحص قبل الاسترجاع
                         </button>
+                        {restorePreviewDisabledReason ? (
+                            <p className="text-xs font-bold text-emerald-700">{restorePreviewDisabledReason}</p>
+                        ) : null}
 
                         <label className="flex items-start gap-3 rounded-2xl bg-amber-50 p-3 text-sm text-amber-800">
                             <input
@@ -895,10 +916,14 @@ export const BackupManager: React.FC = () => {
                         <button
                             onClick={() => runRestore(true)}
                             disabled={!backupPayload || isRestoring || confirmText !== requiredConfirmText}
+                            title={restoreApplyDisabledReason || 'تطبيق الاسترجاع الحقيقي بعد الفحص والتأكيد'}
                             className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white hover:bg-slate-800 disabled:opacity-60"
                         >
                             تطبيق الاسترجاع
                         </button>
+                        {restoreApplyDisabledReason ? (
+                            <p className="text-xs font-bold text-slate-600">{restoreApplyDisabledReason}</p>
+                        ) : null}
                     </div>
                 </section>
             </div>

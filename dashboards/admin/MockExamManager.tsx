@@ -307,11 +307,17 @@ export const MockExamManager: React.FC = () => {
             <button
               onClick={saveExam}
               disabled={!selectedPathId || sections.every((section) => section.questionIds.length === 0)}
+              title={!selectedPathId ? 'اختر مسارا أولا.' : sections.every((section) => section.questionIds.length === 0) ? 'اختر سؤالا واحدا على الأقل قبل حفظ الاختبار.' : 'حفظ الاختبار المحاكي'}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Save size={18} />
               حفظ الاختبار المحاكي
             </button>
+            {(!selectedPathId || sections.every((section) => section.questionIds.length === 0)) ? (
+              <p className="text-xs font-bold text-indigo-700">
+                {!selectedPathId ? 'اختر مسارا أولا.' : 'اختر سؤالا واحدا على الأقل قبل حفظ الاختبار.'}
+              </p>
+            ) : null}
           </div>
         </div>
 
