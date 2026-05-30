@@ -28,3 +28,4 @@
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-groups-schools-critical-postfix-live/`
 - `audit-artifacts/final-delivery-2026-05-29/live-student-ai-chat-browser-post-schoolportal-fix-2026-05-30.json`
+- `audit-artifacts/final-delivery-2026-05-29/in-app-browser-admin-groups-final-2026-05-30.png`
