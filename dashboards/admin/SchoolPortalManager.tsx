@@ -10,6 +10,7 @@ import {
     Mail,
     Printer,
     ShieldCheck,
+    Search,
     Target,
     Users,
 } from 'lucide-react';
@@ -128,6 +129,7 @@ export const SchoolPortalManager: React.FC = () => {
     const [selectedSchoolId, setSelectedSchoolId] = useState('all');
     const [selectedClassId, setSelectedClassId] = useState('all');
     const [reportMode, setReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
+    const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
     const scope = useMemo(() => {
         const userGroupIds = new Set(user.groupIds || []);
@@ -232,10 +234,24 @@ export const SchoolPortalManager: React.FC = () => {
     }, [scope.classes, scope.students, selectedClassId, selectedSchoolId]);
 
     const reportStudentIds = useMemo(() => new Set(reportStudents.map((student) => student.id)), [reportStudents]);
-    const reportStudentSummaries = useMemo(
-        () => studentSummaries.filter((summary) => reportStudentIds.has(summary.student.id)),
-        [reportStudentIds, studentSummaries],
-    );
+    const reportStudentSummaries = useMemo(() => {
+        const scopedSummaries = studentSummaries.filter((summary) => reportStudentIds.has(summary.student.id));
+        const search = studentSearchTerm.trim().toLowerCase();
+        if (!search) return scopedSummaries;
+
+        return scopedSummaries.filter((summary) => {
+            const haystack = [
+                summary.student.name,
+                summary.student.email,
+                summary.classNames,
+                summary.latest?.quizTitle,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            return haystack.includes(search);
+        });
+    }, [reportStudentIds, studentSearchTerm, studentSummaries]);
 
     const reportPackages = useMemo(() => {
         if (selectedSchoolId === 'all') return scope.packages;
@@ -785,6 +801,21 @@ export const SchoolPortalManager: React.FC = () => {
                             <option value="aggregated">مجمّع فقط</option>
                             <option value="individual">مفرد فقط</option>
                         </select>
+                    </label>
+                </div>
+                <div className="mt-3">
+                    <label className="text-xs font-black text-gray-600">
+                        بحث داخل النطاق الحالي
+                        <div className="relative mt-2">
+                            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="search"
+                                value={studentSearchTerm}
+                                onChange={(event) => setStudentSearchTerm(event.target.value)}
+                                placeholder="ابحث باسم الطالب أو البريد أو الفصل..."
+                                className="w-full rounded-xl border border-gray-200 bg-white py-2 pr-9 pl-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                            />
+                        </div>
                     </label>
                 </div>
             </div>
