@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-05-30T09:38:47.758Z",
+  "attempts": [
+    {
+      "model": "openai/gpt-4o-mini",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "openai/gpt-4.1-mini",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "anthropic/claude-3.5-haiku",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "meta-llama/llama-3.1-8b-instruct",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "mistralai/mistral-small-3.1-24b-instruct",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "qwen/qwen-2.5-7b-instruct:free",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    },
+    {
+      "model": "google/gemini-2.0-flash-exp:free",
+      "patchStatus": 200,
+      "patchOk": true,
+      "patchMessage": null,
+      "testStatus": 200,
+      "ok": false,
+      "message": "المزود غير مفعل. أضف مفاتيحه من لوحة الإدارة (التكاملات/المنصات الخارجية) أو من Render ثم أعد الاختبار.",
+      "sample": null
+    }
+  ],
+  "loginStatus": 200,
+  "getStatus": 200,
+  "initial": {
+    "openrouterEnabled": false,
+    "openrouterNote": null,
+    "globalNote": null,
+    "globalOrder": null
+  },
+  "successModel": null
+}
