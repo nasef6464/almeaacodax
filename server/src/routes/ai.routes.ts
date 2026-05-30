@@ -844,7 +844,12 @@ aiRouter.get(
     const dataScore = studentCount > 0 && studentsWithResults > 0 ? 25 : studentCount > 0 ? 12 : 0;
     const guidanceScore = weakSkillSignals > 0 ? 25 : 8;
     const monitoringScore = aiErrors24h === 0 ? 20 : Math.max(0, 20 - Math.min(aiErrors24h * 5, 20));
-    const score = Math.max(0, Math.min(100, providerScore + dataScore + guidanceScore + monitoringScore));
+    // Penalize readiness when runtime still falls back for real student chats.
+    const fallbackPenalty =
+      configuredRealProviders.length > 0 && fallbackStudentChats24h > 0
+        ? Math.min(30, 10 + fallbackStudentChats24h * 2)
+        : 0;
+    const score = Math.max(0, Math.min(100, providerScore + dataScore + guidanceScore + monitoringScore - fallbackPenalty));
 
     const nextActions = [
       configuredRealProviders.length === 0
