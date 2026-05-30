@@ -162,6 +162,11 @@
 - `npm run smoke:health-readiness` (PASS)
 - `npm run smoke:sentry-runtime` (PASS)
 
+## لقطة جديدة Vercel + Sentry (Continuation 16)
+
+- `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
+- `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

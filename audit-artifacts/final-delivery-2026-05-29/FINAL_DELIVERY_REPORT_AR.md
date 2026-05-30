@@ -340,3 +340,14 @@
   - الواجهة والـ routing في حالة مستقرة.
   - readiness probes متوافقة مع حالة النشر.
   - تكامل Sentry runtime ما زال سليمًا.
+
+## متابعة لاحقة 16 (Fresh Vercel + Sentry Proof)
+
+- تاريخ المتابعة: 2026-05-30
+- Vercel:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_FFTbgyTXT4p7TSEVa8DhWGLzxCyd`
+  - URL: `https://almeaacodax-dzfyqkazg-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=ae313dda3c274782bf61b28fce771a39`
