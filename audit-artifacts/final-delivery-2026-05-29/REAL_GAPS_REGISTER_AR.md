@@ -38,6 +38,15 @@
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/SUMMARY.md`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/admin-live-handoff-audit.json`
 - `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-probe-2026-05-30.json`
+- `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-postdeploy-2026-05-30.json`
+
+## إثبات ما بعد النشر
+
+- Vercel deployment: `dpl_7EETRCrGiTz2eQhpgUc5nG9SYioz`
+- الحالة: `Ready`
+- الإنتاج: `https://almeaacodax.vercel.app`
+- تحقق مركز بعد النشر: `mock-exams`, `backups`, `ai-assistant`
+- النتيجة: الأزرار التي بقيت معطلة تعرض الآن سبب التعطيل، ولا توجد أخطاء Console أو Network 5xx في الفحص المركز.
 
 ## قرار التسليم
 

@@ -208,6 +208,14 @@
 - `live-real-gaps-probe-2026-05-30.json`
 - تم تحويل الملاحظات العملية إلى فجوات حقيقية فقط: وضوح زر، وظيفة ناقصة، شاشة تحتاج تبسيط، أو حالة مقبولة وليست عطلا.
 
+## نشر وإثبات ما بعد الإصلاح (Continuation 23)
+
+- GitHub latest pushed commit: `44af1355`
+- Vercel production deployment: `dpl_7EETRCrGiTz2eQhpgUc5nG9SYioz` (`Ready`)
+- Production alias: `https://almeaacodax.vercel.app`
+- Production HTML proof: `assets/index-GjGaWa4t.js`
+- Postdeploy gap proof: `live-real-gaps-postdeploy-2026-05-30.json`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

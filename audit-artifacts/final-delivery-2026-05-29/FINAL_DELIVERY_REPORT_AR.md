@@ -438,3 +438,23 @@
 - مرجع القرار:
   - `audit-artifacts/final-delivery-2026-05-29/REAL_GAPS_REGISTER_AR.md`
   - `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-probe-2026-05-30.json`
+
+## متابعة لاحقة 23 (Deploy + Postdeploy Proof)
+
+- تاريخ المتابعة: 2026-05-30
+- GitHub:
+  - تم رفع إصلاحات وضوح الأزرار وسجل الفجوات.
+  - آخر commit منشور وقت التحقق: `44af1355`
+- Vercel:
+  - تم إضافة `.vercelignore` لتجنب رفع أرشيفات الفحص والصور والملفات المحلية في النشر اليدوي.
+  - تم نشر الإنتاج بنجاح.
+  - deployment: `dpl_7EETRCrGiTz2eQhpgUc5nG9SYioz`
+  - alias: `https://almeaacodax.vercel.app`
+  - status: `Ready`
+- تحقق بعد النشر:
+  - HTML الإنتاج يشير إلى `assets/index-GjGaWa4t.js`.
+  - تم فحص `mock-exams`, `backups`, `ai-assistant` بعد النشر.
+  - الأزرار المعطلة أصبحت تعرض سبب التعطيل بنص قريب أو `title`.
+  - لا توجد Console errors أو Network 5xx في هذا الفحص المركز.
+- مرجع الدليل:
+  - `audit-artifacts/final-delivery-2026-05-29/live-real-gaps-postdeploy-2026-05-30.json`
