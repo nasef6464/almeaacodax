@@ -499,3 +499,25 @@
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-25/admin-live-handoff-audit.json`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont25b/admin-groups-schools-internal-safe-flow-audit.json`
+
+## متابعة لاحقة 26 (Final AI/Integrations Runtime Seal)
+
+- تاريخ المتابعة: 2026-05-30
+- اختبارات العقد:
+  - `smoke:ai-config-bridge`: `PASS` (8 checks)
+  - `smoke:integrations-runtime`: `PASS` (10 checks)
+  - `smoke:health-readiness`: `PASS`
+  - `smoke:admin-memberships-ai-closure`: `PASS` (6 checks)
+- تحقق حي مركز على الإنتاج (جلسة مدير فعلية):
+  - `platform-integrations`: ظهرت مؤشرات `runtime/readiness`
+  - `ai-assistant`: ظهر فصل واضح بين `مساعد الطالب` و`مساعد المدير` وظهور نص `اختبر المزود`
+  - `consoleErrors: 0`
+  - `network5xx: 0`
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_ARwx79KxJkSDK5UmpqTU1JYks6g4`
+  - URL: `https://almeaacodax-ca4rrbuzx-nasefs-projects-18e6bdb1.vercel.app`
+- ملفات الأدلة:
+  - `audit-artifacts/final-delivery-2026-05-29/live-ai-runtime-check-2026-05-30.json`
+  - `audit-artifacts/final-delivery-2026-05-29/live-cont26-platform-integrations.png`
+  - `audit-artifacts/final-delivery-2026-05-29/live-cont26-ai-assistant.png`
