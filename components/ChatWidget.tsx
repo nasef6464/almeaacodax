@@ -33,6 +33,8 @@ const providerLabels: Record<string, string> = {
 };
 
 export const ChatWidget: React.FC = () => {
+    const widgetOwnerRef = useRef(false);
+    const [isWidgetOwner, setIsWidgetOwner] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -49,6 +51,22 @@ export const ChatWidget: React.FC = () => {
     const [imageFile, setImageFile] = useState<{ data: string; mimeType: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ownerKey = '__ALMEAA_CHAT_WIDGET_OWNER__';
+        const ownerWindow = window as unknown as Record<string, boolean>;
+        if (ownerWindow[ownerKey]) {
+            setIsWidgetOwner(false);
+            return;
+        }
+        ownerWindow[ownerKey] = true;
+        widgetOwnerRef.current = true;
+        return () => {
+            if (widgetOwnerRef.current) {
+                delete ownerWindow[ownerKey];
+            }
+        };
+    }, []);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -107,6 +125,10 @@ export const ChatWidget: React.FC = () => {
         setMessages((prev) => [...prev, botMsg]);
         setIsLoading(false);
     };
+
+    if (!isWidgetOwner) {
+        return null;
+    }
 
     return (
         <>
