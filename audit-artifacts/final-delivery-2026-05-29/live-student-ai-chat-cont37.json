@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-05-30T09:30:29.267Z",
+  "emailPresent": true,
+  "ok": true,
+  "loginStatus": 200,
+  "loginRole": "student",
+  "chatStatus": 200,
+  "chatMessage": null,
+  "provider": "none",
+  "model": "local-fallback",
+  "usedFallback": true,
+  "replyExists": false
+}
