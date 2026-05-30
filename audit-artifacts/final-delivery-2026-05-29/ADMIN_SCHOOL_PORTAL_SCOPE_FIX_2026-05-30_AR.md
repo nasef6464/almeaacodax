@@ -23,6 +23,11 @@
 - PASS: `smoke:health-readiness`.
 - PASS: `smoke:payment-package`.
 - PASS: `smoke:batch136-admin-users-schools-parent-payment`.
+- PASS: `smoke:student-journey` - 7/7 لمسار تعلم الطالب.
+- PASS: `smoke:real-usage-readiness` - 8/8 لجاهزية الاستخدام الحقيقي.
+- PASS: `smoke:production-audit` - 9/9 بعد تحديث العقد ليقبل إزالة Firebase legacy بالكامل.
+- PASS: `smoke:runtime-source` - 5/5 لتأكيد مصدر التشغيل الحقيقي.
+- PASS: `smoke:operational` على الخادم الحي - 71/71 لأدوار المدير والمعلم والمشرف والطالب وولي الأمر.
 
 ## أدلة الفحص
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`

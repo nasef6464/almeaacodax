@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
@@ -14,8 +15,14 @@ const checks = [
     ok: () => /env\.DEV_LOCAL_ADMIN_BYPASS && env\.NODE_ENV !== "production" && isStrictLocalRequest\(req\)/.test(read("server/src/middleware/auth.ts")),
   },
   {
-    name: "legacy Firebase sync is development-only",
-    ok: () => /import\.meta\.env\.DEV && import\.meta\.env\.VITE_USE_REAL_API === 'false'/.test(read("App.tsx")),
+    name: "legacy Firebase sync is removed or development-only",
+    ok: () => {
+      const legacyFilesRemoved =
+        !existsSync(join(root, "services", "firebaseSync.ts")) &&
+        !existsSync(join(root, "services", "firebase.ts"));
+      if (legacyFilesRemoved) return true;
+      return /import\.meta\.env\.DEV && import\.meta\.env\.VITE_USE_REAL_API === 'false'/.test(read("App.tsx"));
+    },
   },
   {
     name: "admin audit model exists",
