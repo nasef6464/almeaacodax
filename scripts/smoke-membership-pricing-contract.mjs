@@ -6,6 +6,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const pricingSource = read('pages/Pricing.tsx');
 const pathsManagerSource = read('dashboards/admin/PathsManager.tsx');
+const membershipsManagerSource = read('dashboards/admin/MembershipsManager.tsx');
 
 const checks = [];
 const check = (name, fn) => checks.push({ name, fn });
@@ -37,7 +38,8 @@ check('free membership CTA keeps the user in account flow', () => {
 
 check('admin has a clear membership management entry point', () => {
   includes(pricingSource, 'إدارة العضويات العامة للمدير');
-  includes(pricingSource, 'to="/admin-dashboard?tab=paths"');
+  includes(pricingSource, 'to="/admin-dashboard?tab=memberships"');
+  includes(membershipsManagerSource, 'publicPackages');
   includes(pathsManagerSource, 'إدارة العضويات العامة وباقات المسارات');
   includes(pathsManagerSource, 'عضوية عامة تفتح كل المنصة');
   includes(pathsManagerSource, "packageType: packageAppliesGlobally ? 'membership' : 'courses'");

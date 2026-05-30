@@ -31,8 +31,8 @@ check("supervisor overview has a compact command center", () => {
 
 check("supervisor command center has quick workflow actions", () => {
   assertIncludes(dashboard, 'href="#/reports"');
-  assertIncludes(dashboard, "setActiveTab('school-portal')");
-  assertIncludes(dashboard, "setActiveTab('quizzes')");
+  assertIncludes(dashboard, "setActiveAdminTab('school-portal')");
+  assertIncludes(dashboard, "setActiveAdminTab('quizzes')");
 });
 
 check("supervisor analytics are scoped and derived from owned groups/students", () => {

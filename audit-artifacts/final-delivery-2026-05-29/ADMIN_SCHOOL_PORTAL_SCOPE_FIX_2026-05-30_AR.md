@@ -28,6 +28,25 @@
 - PASS: `smoke:production-audit` - 9/9 بعد تحديث العقد ليقبل إزالة Firebase legacy بالكامل.
 - PASS: `smoke:runtime-source` - 5/5 لتأكيد مصدر التشغيل الحقيقي.
 - PASS: `smoke:operational` على الخادم الحي - 71/71 لأدوار المدير والمعلم والمشرف والطالب وولي الأمر.
+- PASS: `smoke:auth-frontend` - 6/6.
+- PASS: `smoke:auth-account` - 5/5.
+- PASS: `smoke:membership-pricing` - 4/4 بعد تحديث العقد إلى تبويب العضويات المستقل.
+- PASS: `smoke:mock-exams` - 9/9.
+- PASS: `smoke:my-quizzes` - 8/8 بعد تحديث العقد لمسار المستخدم المحمي وملف CSS الحالي.
+- PASS: `smoke:reports-role` - 11/11.
+- PASS: `smoke:school-management` - 9/9.
+- PASS: `smoke:supervisor-dashboard` - 3/3 بعد تحديث العقد إلى أزرار المشرف الحالية.
+- PASS: `smoke:payment-providers` - 7/7.
+- PASS: `smoke:notifications` - 6/6.
+- PASS: `smoke:monitoring` - 6/6.
+- PASS: `smoke:seo`.
+- PASS: `smoke:api-security` - 6/6.
+- PASS: `smoke:csrf` - 4/4.
+- PASS: `smoke:quiz-integrity-guard` - 4/4.
+- PASS: `smoke:quiz-answer-exposure` - 5/5.
+- PASS: `smoke:rbac-school-scope` - 4/4.
+- PASS: `smoke:integrations-runtime` - 10/10.
+- PASS: إعادة `typecheck` و `build` للواجهة والخادم بعد تحديث عقود الفحص.
 
 ## أدلة الفحص
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
