@@ -47,9 +47,11 @@
 - PASS: `smoke:rbac-school-scope` - 4/4.
 - PASS: `smoke:integrations-runtime` - 10/10.
 - PASS: إعادة `typecheck` و `build` للواجهة والخادم بعد تحديث عقود الفحص.
+- PASS: فحص بصري مركز للضيف والطالب على الإنتاج - 13/13 صفحة، 0 REVIEW، 0 أخطاء Console، 0 أخطاء Network 5xx.
 
 ## أدلة الفحص
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-groups-schools-critical-postfix-live/`
 - `audit-artifacts/final-delivery-2026-05-29/live-student-ai-chat-browser-post-schoolportal-fix-2026-05-30.json`
 - `audit-artifacts/final-delivery-2026-05-29/in-app-browser-admin-groups-final-2026-05-30.png`
+- `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-public-student-visual/`
