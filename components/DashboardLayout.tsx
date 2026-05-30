@@ -1,5 +1,9 @@
 import React from 'react';
 import { Header } from './Header';
+import { Role } from '../types';
+import { useStore } from '../store/useStore';
+
+const ChatWidget = React.lazy(() => import('./ChatWidget').then((module) => ({ default: module.ChatWidget })));
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -7,6 +11,9 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, sidebar }) => {
+    const { user } = useStore();
+    const showStudentAssistant = user.role === Role.STUDENT;
+
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col" dir="rtl">
             <Header />
@@ -23,6 +30,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, side
                     </div>
                 </main>
             </div>
+            {showStudentAssistant ? (
+                <React.Suspense fallback={null}>
+                    <ChatWidget />
+                </React.Suspense>
+            ) : null}
         </div>
     );
 };

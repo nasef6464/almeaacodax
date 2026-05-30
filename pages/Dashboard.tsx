@@ -22,6 +22,7 @@ const Favorites = React.lazy(() => import('./Favorites'));
 const Plan = React.lazy(() => import('./Plan'));
 const QA = React.lazy(() => import('./QA'));
 const MyRequests = React.lazy(() => import('./MyRequests').then(module => ({ default: module.MyRequests })));
+const ChatWidget = React.lazy(() => import('../components/ChatWidget').then((module) => ({ default: module.ChatWidget })));
 
 const TabLoading = () => (
     <div className="flex items-center justify-center h-64 text-amber-500">
@@ -794,6 +795,11 @@ const Dashboard: React.FC = () => {
                     {renderContent()}
                 </div>
             </main>
+            {!isParentDashboard ? (
+                <Suspense fallback={null}>
+                    <ChatWidget />
+                </Suspense>
+            ) : null}
         </div>
     );
 };
