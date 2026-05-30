@@ -15,6 +15,16 @@
 - PASS: بناء الخادم.
 
 ## التحقق المطلوب بعد النشر
-- إعادة فحص تبويب بوابة المدارس على الإنتاج.
-- إعادة فحص العلاقات العملية بين المدارس، الفصول، الطلاب، الأكواد، والباقات.
-- إعادة تشغيل فحص لوحة الإدارة الحي للتأكد أن التبويبات الحرجة ما زالت PASS.
+- PASS: الإنتاج يخدم commit `f6bd12df`.
+- PASS: فحص لوحة الإدارة الحي بعد النشر: 22 تبويب PASS، 0 FAIL.
+- PASS: فحص المجموعات/بوابة المدارس/المستخدمين الداخلي بعد النشر: 10 PASS، 0 REVIEW، 0 FAIL.
+- PASS: فحص مساعد الطالب الحي من جلسة متصفح حقيقية: تسجيل دخول طالب 200، `/ai/chat` 200، المزود `gemini`، الموديل `gemini-2.5-flash`، و `usedFallback=false`.
+- PASS: `smoke:ai-config-bridge`.
+- PASS: `smoke:health-readiness`.
+- PASS: `smoke:payment-package`.
+- PASS: `smoke:batch136-admin-users-schools-parent-payment`.
+
+## أدلة الفحص
+- `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
+- `audit-artifacts/admin-live-handoff/2026-05-30-admin-groups-schools-critical-postfix-live/`
+- `audit-artifacts/final-delivery-2026-05-29/live-student-ai-chat-browser-post-schoolportal-fix-2026-05-30.json`
