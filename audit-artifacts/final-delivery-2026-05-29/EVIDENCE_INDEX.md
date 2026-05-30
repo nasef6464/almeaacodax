@@ -258,6 +258,18 @@
 - `npm --prefix server run check`
 - `npm run build`
 - `npm --prefix server run build`
+
+## AI Runtime Truth Sync (Continuation 34)
+
+- `AI_RUNTIME_BLOCKER_AR.md`
+- `live-admin-ai-provider-tests-cont34.json`
+- `live-admin-ai-readiness-postfix-cont33.json`
+- `live-student-ai-chat-postfix-cont33.json`
+- `live-admin-ai-readiness-post-render-cont33.json`
+- `live-student-ai-chat-post-render-cont33.json`
+- Render deploy proof:
+  - service: `srv-d7qtcr9o3t8c73cs32sg`
+  - deploy: `dep-d8daiu0js32c73fcjv30` (`live`)
 - `npm run smoke:ai-config-bridge`
 - `npm run smoke:admin-memberships-ai-closure`
 - `npm run smoke:health-readiness`

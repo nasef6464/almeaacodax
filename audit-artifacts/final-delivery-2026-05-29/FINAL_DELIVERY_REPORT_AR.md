@@ -540,3 +540,32 @@
   - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-dashboard.png`
   - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-assistant-direct-click.png`
   - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-qa-route.png`
+
+## متابعة لاحقة 34 (AI Runtime Truth Sync) - 2026-05-30
+
+- تم التحقق الحي من:
+  - `GET /ai/readiness`
+  - `POST /ai/chat` (طالب فعلي)
+  - `POST /ai/providers/test` (اختبار مزودات)
+- قبل تصحيح السيرفر: كانت الجاهزية تظهر `score=100` رغم وجود fallback فعلي.
+- تم إصلاح المعادلة في `server/src/routes/ai.routes.ts` بإضافة خصم مباشر عند وجود `fallbackStudentChats24h` مع مزودات مفعلة.
+- commit الإصلاح: `1427e3ae`
+- تم إعادة نشر Render للخدمة:
+  - `serviceId: srv-d7qtcr9o3t8c73cs32sg`
+  - `deployId: dep-d8daiu0js32c73fcjv30`
+  - الحالة النهائية: `live`
+- بعد النشر:
+  - `ai/readiness.score = 86` (أصبح يعكس الواقع)
+  - `activeProvider = gemini`
+  - `fallbackStudentChats24h = 2`
+- اختبار الطالب الفعلي بعد النشر:
+  - `POST /ai/chat` -> `200`
+  - `provider=none`, `usedFallback=true`
+  - السبب الخارجي المسجل: `Gemini quota 429` + `OpenRouter model 404` + `ollama fetch failed`
+
+### قرار الحالة الحالية
+
+- حالة الكود والجسر (UI/Backend/Runtime bridge): `PASS`
+- حالة تشغيل المزود الفعلي بدون fallback: `BLOCKED (External Provider Quota/Model)`
+- المطلوب للإغلاق النهائي:
+  - تفعيل مزود واحد على الأقل بمفتاح صالح ورصيد/موديل متاح.
