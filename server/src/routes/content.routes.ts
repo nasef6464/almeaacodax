@@ -1091,6 +1091,7 @@ const externalPlatformSchema = z.object({
   platformType: z.enum(["lms", "marketplace", "crm", "custom"]).default("custom"),
   baseUrl: z.string().optional().default(""),
   apiKey: z.string().optional().default(""),
+  apiKeys: z.array(z.string()).optional().default([]),
   apiSecret: z.string().optional().default(""),
   webhookUrl: z.string().optional().default(""),
   webhookSecret: z.string().optional().default(""),
@@ -1318,6 +1319,8 @@ const buildPublicBaseUrl = (settings: { seo?: { canonicalBaseUrl?: string } } | 
 };
 
 const SENSITIVE_PROVIDER_FIELDS = ["appSecret", "clientSecret", "apiKey", "accessToken", "botToken", "verifyToken"] as const;
+const SENSITIVE_EXTERNAL_PLATFORM_FIELDS = ["apiKey", "apiSecret", "webhookSecret"] as const;
+const SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS = ["apiKeys"] as const;
 
 const maskSensitiveProviderValues = (settings: Record<string, unknown>) => {
   const masked = JSON.parse(JSON.stringify(settings)) as Record<string, unknown>;
@@ -1335,7 +1338,28 @@ const maskSensitiveProviderValues = (settings: Record<string, unknown>) => {
     });
   });
 
+  const externalPlatforms = (masked.externalPlatforms as Array<Record<string, unknown>> | undefined) || [];
+  const externalPlatformSecretState: Record<string, Record<string, boolean>> = {};
+  externalPlatforms.forEach((platform) => {
+    const platformId = String(platform.id || "").trim().toLowerCase();
+    if (!platformId) return;
+    externalPlatformSecretState[platformId] = {};
+    SENSITIVE_EXTERNAL_PLATFORM_FIELDS.forEach((fieldKey) => {
+      const currentValue = String(platform[fieldKey] || "");
+      externalPlatformSecretState[platformId][fieldKey] = currentValue.length > 0;
+      if (currentValue.length > 0) {
+        platform[fieldKey] = "";
+      }
+    });
+    SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS.forEach((fieldKey) => {
+      const currentValues = Array.isArray(platform[fieldKey]) ? (platform[fieldKey] as unknown[]) : [];
+      externalPlatformSecretState[platformId][fieldKey] = currentValues.some((value) => String(value || "").trim().length > 0);
+      platform[fieldKey] = [];
+    });
+  });
+
   masked.providerSecretState = providerSecretState;
+  masked.externalPlatformSecretState = externalPlatformSecretState;
   return masked;
 };
 
@@ -1354,6 +1378,32 @@ const mergeSensitiveProviderValues = (
       const previousValue = String(previousConfig[fieldKey] || "");
       if (!incomingValue && previousValue) {
         providerConfig[fieldKey] = previousValue;
+      }
+    });
+  });
+
+  const mergedExternalPlatforms = (merged.externalPlatforms as Array<Record<string, unknown>> | undefined) || [];
+  const previousExternalPlatforms = ((previous?.externalPlatforms as Array<Record<string, unknown>> | undefined) || []);
+  const previousById = new Map(
+    previousExternalPlatforms.map((platform) => [String(platform.id || "").trim().toLowerCase(), platform] as const),
+  );
+  mergedExternalPlatforms.forEach((platform) => {
+    const platformId = String(platform.id || "").trim().toLowerCase();
+    const previousPlatform = previousById.get(platformId);
+    if (!previousPlatform) return;
+    SENSITIVE_EXTERNAL_PLATFORM_FIELDS.forEach((fieldKey) => {
+      const incomingValue = String(platform[fieldKey] || "").trim();
+      const previousValue = String(previousPlatform[fieldKey] || "");
+      if (!incomingValue && previousValue) {
+        platform[fieldKey] = previousValue;
+      }
+    });
+    SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS.forEach((fieldKey) => {
+      const incomingValues = Array.isArray(platform[fieldKey]) ? (platform[fieldKey] as unknown[]) : [];
+      const hasIncoming = incomingValues.some((value) => String(value || "").trim().length > 0);
+      const previousValues = Array.isArray(previousPlatform[fieldKey]) ? previousPlatform[fieldKey] : [];
+      if (!hasIncoming && previousValues.length > 0) {
+        platform[fieldKey] = previousValues;
       }
     });
   });

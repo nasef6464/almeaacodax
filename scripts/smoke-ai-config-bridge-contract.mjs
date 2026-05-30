@@ -36,15 +36,15 @@ check("ai route exposes provider source metadata", () => {
   assertIncludes(aiRouteSource, 'source: "fallback"');
 });
 
-check("integrations manager has AI templates and one-click free setup", () => {
+check("integrations manager has AI templates, routing, and multi-key setup", () => {
   assertIncludes(integrationsSource, "aiExternalTemplates");
   assertIncludes(integrationsSource, "setupFreeAiStack");
   assertIncludes(integrationsSource, "ai-global");
-  assertIncludes(integrationsSource, "تهيئة مجانية تلقائية");
-  assertIncludes(integrationsSource, "مسارات جاهزة لترتيب مزودات الذكاء");
-  assertIncludes(integrationsSource, "مجاني موصى به");
-  assertIncludes(integrationsSource, "مجاني Qwen أولًا");
-  assertIncludes(integrationsSource, "متوازن");
+  assertIncludes(integrationsSource, "aiProviderOptions");
+  assertIncludes(integrationsSource, "writeAiNote");
+  assertIncludes(integrationsSource, "aiProviderOrder");
+  assertIncludes(integrationsSource, "apiKeys");
+  assertIncludes(integrationsSource, "externalPlatformSecretState");
 });
 
 check("integrations manager warns/fixes invalid AI config", () => {
@@ -56,6 +56,12 @@ check("integrations manager warns/fixes invalid AI config", () => {
 check("backend enforces unique non-empty external platform ids", () => {
   assertIncludes(contentRouteSource, "sanitizeAndValidateExternalPlatforms");
   assertIncludes(contentRouteSource, "externalPlatforms contains duplicate ids");
+});
+
+check("backend preserves and masks external AI secrets", () => {
+  assertIncludes(contentRouteSource, "SENSITIVE_EXTERNAL_PLATFORM_FIELDS");
+  assertIncludes(contentRouteSource, "SENSITIVE_EXTERNAL_PLATFORM_ARRAY_FIELDS");
+  assertIncludes(contentRouteSource, "externalPlatformSecretState");
 });
 
 check("assistant manager shows source and bridges to integrations", () => {

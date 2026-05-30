@@ -103,6 +103,7 @@ const fallbackReasonFromErrors = (errors: string[], fallback = "لم يرجع أ
 
 type ProviderRuntime = {
   apiKey?: string;
+  apiKeys?: string[];
   model: string;
   baseUrl?: string;
   enabled?: boolean;
@@ -113,6 +114,7 @@ type AiRuntimeConfig = {
   provider?: AiProvider;
   providerOrder: string;
   providerOrderSource: "env" | "admin";
+  routingMode: "manual" | "auto";
   providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
 };
 
@@ -139,10 +141,35 @@ const normalizeProviderModel = (provider: AiProvider, model: string) => {
   return cleanModel;
 };
 
+const uniqueNonEmpty = (values: unknown[]) =>
+  [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
+
+const readJsonObject = (rawValue: unknown): Record<string, unknown> => {
+  const value = String(rawValue || "").trim();
+  if (!value) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+};
+
+const readProviderKeyHints = (item: Record<string, unknown>) => {
+  const note = readJsonObject(item.note);
+  const noteKeys = Array.isArray(note.apiKeys) ? note.apiKeys : [];
+  const directKeys = Array.isArray(item.apiKeys) ? item.apiKeys : [];
+  const commaKeys = String(note.apiKeys || item.apiKeys || "")
+    .split(/[\n,]/)
+    .map((value) => value.trim());
+  return uniqueNonEmpty([item.apiKey, item.apiSecret, ...directKeys, ...noteKeys, ...commaKeys]);
+};
+
 const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   provider: env.AI_PROVIDER,
   providerOrder: env.AI_PROVIDER_ORDER,
   providerOrderSource: "env",
+  routingMode: "manual",
   providers: {
     gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
     openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
@@ -175,12 +202,14 @@ const loadRuntimeAiConfig = async () => {
   const applyExternal = (provider: Exclude<AiProvider, "none">, externalId: string, fallbackModel: string) => {
     const item = byId.get(externalId);
     if (!item || item.enabled !== true) return;
-    const apiKey = String(item.apiKey || item.apiSecret || "").trim();
+    const apiKeys = readProviderKeyHints(item);
+    const apiKey = apiKeys[0] || "";
     const baseUrl = String(item.baseUrl || "").trim();
     const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
     next.providers[provider] = {
       ...next.providers[provider],
       ...(apiKey ? { apiKey } : {}),
+      ...(apiKeys.length ? { apiKeys } : {}),
       ...(baseUrl ? { baseUrl } : {}),
       model,
       enabled: true,
@@ -190,9 +219,16 @@ const loadRuntimeAiConfig = async () => {
 
   const global = byId.get("ai-global");
   if (global) {
-    const preferredProvider = String(global.note || "").trim().toLowerCase();
-    if (["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"].includes(preferredProvider)) {
+    const globalNote = readJsonObject(global.note);
+    const rawPreferredProvider = String(globalNote.provider || global.note || "").trim().toLowerCase();
+    const routingMode = String(globalNote.mode || (rawPreferredProvider === "auto" ? "auto" : "manual")).trim().toLowerCase();
+    if (routingMode === "auto") {
+      next.provider = undefined;
+      next.routingMode = "auto";
+    } else if (["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"].includes(rawPreferredProvider)) {
+      const preferredProvider = rawPreferredProvider;
       next.provider = preferredProvider as AiProvider;
+      next.routingMode = "manual";
     }
     const order = String(global.syncScheduleCron || "").trim();
     if (order) {
@@ -223,7 +259,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     id: "gemini",
     label: "Google Gemini",
     model: runtimeAiConfig.providers.gemini.model,
-    configured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
+    configured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
     source: runtimeAiConfig.providers.gemini.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
@@ -233,7 +269,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     id: "openrouter",
     label: "OpenRouter",
     model: runtimeAiConfig.providers.openrouter.model,
-    configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey),
+    configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey || runtimeAiConfig.providers.openrouter.apiKeys?.length),
     source: runtimeAiConfig.providers.openrouter.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
@@ -243,7 +279,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     id: "deepseek",
     label: "DeepSeek",
     model: runtimeAiConfig.providers.deepseek.model,
-    configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey),
+    configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey || runtimeAiConfig.providers.deepseek.apiKeys?.length),
     source: runtimeAiConfig.providers.deepseek.source,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
@@ -253,7 +289,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     id: "qwen",
     label: "Qwen / Alibaba Model Studio",
     model: runtimeAiConfig.providers.qwen.model,
-    configured: Boolean(runtimeAiConfig.providers.qwen.apiKey),
+    configured: Boolean(runtimeAiConfig.providers.qwen.apiKey || runtimeAiConfig.providers.qwen.apiKeys?.length),
     source: runtimeAiConfig.providers.qwen.source,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
@@ -263,7 +299,7 @@ const configuredProviders = (): ProviderDescriptor[] => [
     id: "openai",
     label: "OpenAI",
     model: runtimeAiConfig.providers.openai.model,
-    configured: Boolean(runtimeAiConfig.providers.openai.apiKey),
+    configured: Boolean(runtimeAiConfig.providers.openai.apiKey || runtimeAiConfig.providers.openai.apiKeys?.length),
     source: runtimeAiConfig.providers.openai.source,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
@@ -554,10 +590,13 @@ const responseFailureMessage = async (provider: string, response: Response) => {
   return `${provider} request failed with status ${response.status}${body ? `: ${redactAiDiagnostic(body)}` : ""}`;
 };
 
+const providerKeys = (provider: Exclude<AiProvider, "none">) =>
+  uniqueNonEmpty([runtimeAiConfig.providers[provider].apiKey, ...(runtimeAiConfig.providers[provider].apiKeys || [])]);
+
 const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => {
-  const apiKey = runtimeAiConfig.providers.gemini.apiKey;
+  const apiKeys = providerKeys("gemini");
   const model = runtimeAiConfig.providers.gemini.model;
-  if (!apiKey) return "";
+  if (apiKeys.length === 0) return "";
 
   const parts: Array<Record<string, unknown>> = image
     ? [
@@ -566,27 +605,38 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType,
       ]
     : [{ text: prompt }];
 
-  const response = await fetchWithTimeout(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts }],
-        generationConfig: responseMimeType ? { responseMimeType } : undefined,
-      }),
-    },
-  );
+  const errors: string[] = [];
+  for (const apiKey of apiKeys) {
+    try {
+      const response = await fetchWithTimeout(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts }],
+            generationConfig: responseMimeType ? { responseMimeType } : undefined,
+          }),
+        },
+      );
 
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage("Gemini", response));
+      if (!response.ok) {
+        throw new Error(await responseFailureMessage("Gemini", response));
+      }
+
+      const payload = (await response.json()) as {
+        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      };
+
+      const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
+      if (text) return text;
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : "Gemini request failed");
+    }
   }
 
-  const payload = (await response.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-  };
-
-  return payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
+  if (errors.length) throw new Error(errors.join(" | "));
+  return "";
 };
 
 const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
@@ -643,10 +693,10 @@ const callOpenAiCompatible = async (
   prompt: string,
   responseMimeType?: AiResponseMimeType,
 ) => {
-  const settings: Record<typeof provider, { baseUrl: string; apiKey?: string; model: string; headers?: Record<string, string> }> = {
+  const settings: Record<typeof provider, { baseUrl: string; apiKeys: string[]; model: string; headers?: Record<string, string> }> = {
     openrouter: {
       baseUrl: runtimeAiConfig.providers.openrouter.baseUrl || "https://openrouter.ai/api/v1",
-      apiKey: runtimeAiConfig.providers.openrouter.apiKey,
+      apiKeys: providerKeys("openrouter"),
       model: runtimeAiConfig.providers.openrouter.model,
       headers: {
         "HTTP-Referer": env.CLIENT_URL,
@@ -655,47 +705,58 @@ const callOpenAiCompatible = async (
     },
     deepseek: {
       baseUrl: runtimeAiConfig.providers.deepseek.baseUrl || "https://api.deepseek.com",
-      apiKey: runtimeAiConfig.providers.deepseek.apiKey,
+      apiKeys: providerKeys("deepseek"),
       model: runtimeAiConfig.providers.deepseek.model,
     },
     qwen: {
       baseUrl: runtimeAiConfig.providers.qwen.baseUrl || env.QWEN_BASE_URL,
-      apiKey: runtimeAiConfig.providers.qwen.apiKey,
+      apiKeys: providerKeys("qwen"),
       model: runtimeAiConfig.providers.qwen.model,
     },
     openai: {
       baseUrl: runtimeAiConfig.providers.openai.baseUrl || "https://api.openai.com/v1",
-      apiKey: runtimeAiConfig.providers.openai.apiKey,
+      apiKeys: providerKeys("openai"),
       model: runtimeAiConfig.providers.openai.model,
     },
   };
   const selected = settings[provider];
-  if (!selected.apiKey) return "";
+  if (selected.apiKeys.length === 0) return "";
 
-  const response = await fetchWithTimeout(`${selected.baseUrl.replace(/\/$/, "")}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${selected.apiKey}`,
-      ...(selected.headers || {}),
-    },
-    body: JSON.stringify({
-      model: selected.model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.25,
-      response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-    }),
-  });
+  const errors: string[] = [];
+  for (const apiKey of selected.apiKeys) {
+    try {
+      const response = await fetchWithTimeout(`${selected.baseUrl.replace(/\/$/, "")}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          ...(selected.headers || {}),
+        },
+        body: JSON.stringify({
+          model: selected.model,
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.25,
+          response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+        }),
+      });
 
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage(provider, response));
+      if (!response.ok) {
+        throw new Error(await responseFailureMessage(provider, response));
+      }
+
+      const payload = (await response.json()) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
+
+      const text = payload.choices?.[0]?.message?.content?.trim() || "";
+      if (text) return text;
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : `${provider} request failed`);
+    }
   }
 
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-
-  return payload.choices?.[0]?.message?.content?.trim() || "";
+  if (errors.length) throw new Error(errors.join(" | "));
+  return "";
 };
 
 const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }): Promise<AiCallResult> => {
@@ -788,10 +849,11 @@ aiRouter.get(
       provider: activeProvider,
       ollamaConfigured: isOllamaExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.ollama.baseUrl && runtimeAiConfig.providers.ollama.model),
       lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
-      geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey),
+      geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
       providers,
       providerOrder: providerPriority(),
       providerOrderSource: runtimeAiConfig.providerOrderSource,
+      routingMode: runtimeAiConfig.routingMode,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
     });

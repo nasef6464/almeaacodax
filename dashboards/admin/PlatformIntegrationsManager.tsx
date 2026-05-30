@@ -45,6 +45,7 @@ type ExternalPlatform = {
   platformType: "lms" | "marketplace" | "crm" | "custom";
   baseUrl: string;
   apiKey: string;
+  apiKeys?: string[];
   apiSecret: string;
   webhookUrl: string;
   webhookSecret: string;
@@ -113,6 +114,7 @@ type IntegrationSettings = {
   externalPlatforms: ExternalPlatform[];
   registrationFields: RegistrationField[];
   providerSecretState?: Record<string, Partial<Record<"appSecret" | "clientSecret" | "apiKey" | "accessToken" | "botToken" | "verifyToken", boolean>>>;
+  externalPlatformSecretState?: Record<string, Partial<Record<"apiKey" | "apiSecret" | "webhookSecret" | "apiKeys", boolean>>>;
 };
 
 type IntegrationHistoryItem = {
@@ -246,6 +248,7 @@ const createExternalPlatform = (index: number): ExternalPlatform => ({
   platformType: "custom",
   baseUrl: "",
   apiKey: "",
+  apiKeys: [],
   apiSecret: "",
   webhookUrl: "",
   webhookSecret: "",
@@ -271,6 +274,38 @@ const aiExternalTemplates: Array<{
   { id: "ai-ollama", name: "AI Ollama Local", baseUrl: "http://127.0.0.1:11434", note: "model=gemma3:4b" },
   { id: "ai-lmstudio", name: "AI LM Studio Local", baseUrl: "http://127.0.0.1:1234/v1", note: "model=local-model" },
 ];
+
+const aiProviderOptions = [
+  { id: "auto", label: "تلقائي" },
+  { id: "gemini", label: "Gemini" },
+  { id: "openrouter", label: "OpenRouter" },
+  { id: "openai", label: "OpenAI" },
+  { id: "deepseek", label: "DeepSeek" },
+  { id: "qwen", label: "Qwen" },
+];
+
+const isAiExternalPlatform = (id: string) => id.trim().toLowerCase().startsWith("ai-");
+
+const aiProviderFromExternalId = (id: string) => id.trim().toLowerCase().replace(/^ai-/, "");
+
+const readAiNote = (note: string) => {
+  try {
+    const parsed = JSON.parse(note || "{}") as Record<string, string>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    const model = String(note || "").match(/(?:^|[,\s;])model\s*[:=]\s*([A-Za-z0-9_.:/-]+)/i)?.[1] || "";
+    return model ? { model } : {};
+  }
+};
+
+const writeAiNote = (currentNote: string, patch: Record<string, string>) =>
+  JSON.stringify({ ...readAiNote(currentNote), ...patch });
+
+const aiProviderOrder = (primary: string) => {
+  const base = ["gemini", "openrouter", "openai", "deepseek", "qwen", "ollama", "lmstudio", "none"];
+  if (primary === "auto") return base.join(",");
+  return [primary, ...base.filter((item) => item !== primary)].join(",");
+};
 
 const providerLabels: Array<{ key: keyof IntegrationSettings["providers"]; label: string }> = [
   { key: "google", label: "Google Login" },
@@ -575,8 +610,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
       };
 
       upsert("ai-global", {
-        syncScheduleCron: "gemini,openrouter,qwen,deepseek,openai,none",
-        note: "gemini",
+        syncScheduleCron: aiProviderOrder("auto"),
+        note: JSON.stringify({ mode: "auto", provider: "gemini" }),
       });
       upsert("ai-gemini");
       upsert("ai-openrouter");
@@ -601,7 +636,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         id: template.id,
         exists: Boolean(item),
         enabled: Boolean(item?.enabled),
-        hasKey: Boolean(String(item?.apiKey || item?.apiSecret || "").trim()),
+        hasKey: Boolean(String(item?.apiKey || item?.apiSecret || "").trim() || (item?.apiKeys || []).some((key) => String(key || "").trim())),
       };
     });
   }, [settings.externalPlatforms]);
@@ -630,7 +665,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
       .forEach((template) => {
         const entry = byId.get(template.id);
         if (!entry || !entry.enabled) return;
-        const hasKey = Boolean(String(entry.apiKey || entry.apiSecret || "").trim());
+        const hasKey = Boolean(String(entry.apiKey || entry.apiSecret || "").trim() || (entry.apiKeys || []).some((key) => String(key || "").trim()));
         if (!hasKey && !["ai-ollama", "ai-lmstudio"].includes(template.id)) {
           warnings.push(`${template.id} مفعّل بدون مفتاح API.`);
         }
@@ -640,7 +675,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
   }, [settings.externalPlatforms]);
 
   const autoFixAiConfig = () => {
-    const allowedOrder = "gemini,openrouter,qwen,deepseek,openai,none";
+    const allowedOrder = aiProviderOrder("auto");
     setSettings((prev) => {
       const next = [...prev.externalPlatforms];
       const byId = new Map(next.map((item, index) => [item.id.trim().toLowerCase(), index] as const));
@@ -652,7 +687,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
             ...next[index],
             enabled: true,
             syncScheduleCron: allowedOrder,
-            note: String(next[index].note || "gemini"),
+            note: JSON.stringify({ mode: "auto", provider: "gemini" }),
           };
           return;
         }
@@ -663,7 +698,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
           enabled: true,
           platformType: "custom",
           syncScheduleCron: allowedOrder,
-          note: "gemini",
+          note: JSON.stringify({ mode: "auto", provider: "gemini" }),
         });
       };
 
@@ -673,7 +708,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         const idx = byId.get(template.id);
         if (typeof idx !== "number") continue;
         const item = next[idx];
-        const hasKey = Boolean(String(item.apiKey || item.apiSecret || "").trim());
+        const hasKey = Boolean(String(item.apiKey || item.apiSecret || "").trim() || (item.apiKeys || []).some((key) => String(key || "").trim()));
         if (!hasKey && !["ai-ollama", "ai-lmstudio"].includes(template.id)) {
           next[idx] = { ...item, enabled: false };
         }
@@ -825,6 +860,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         id: item.id.trim().toLowerCase(),
         name: item.name.trim(),
         baseUrl: item.baseUrl.trim(),
+        apiKeys: (item.apiKeys || []).map((key) => key.trim()).filter(Boolean),
       }));
 
       const emptyId = normalizedExternal.find((item) => !item.id);
@@ -1507,6 +1543,13 @@ export const PlatformIntegrationsManager: React.FC = () => {
               </select>
               <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.baseUrl} onChange={(e) => updateExternal(platform.id, { baseUrl: e.target.value })} placeholder="API Base URL" />
               <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.apiKey} onChange={(e) => updateExternal(platform.id, { apiKey: e.target.value })} placeholder="API Key" />
+              <div className={`flex items-center justify-center rounded-lg border px-2 py-2 text-[11px] font-black md:col-span-1 ${
+                settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKey || settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKeys
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : "border-gray-200 bg-gray-50 text-gray-500"
+              }`}>
+                {settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKey || settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKeys ? "مفتاح محفوظ" : "بدون مفتاح"}
+              </div>
               <label className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
                 <input type="checkbox" checked={platform.enabled} onChange={(e) => updateExternal(platform.id, { enabled: e.target.checked })} />
                 active
@@ -1530,42 +1573,101 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 طلبات
               </label>
               {platform.id.trim().toLowerCase() === "ai-global" ? (
-                <div className="rounded-lg border border-indigo-100 bg-indigo-50 px-2 py-2 text-xs md:col-span-12">
-                  <div className="font-black text-indigo-800">مسارات جاهزة لترتيب مزودات الذكاء</div>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-3 text-xs md:col-span-12">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-end">
+                    <label className="flex-1">
+                      <span className="mb-1 block font-black text-emerald-900">طريقة تشغيل مساعد الطالب</span>
+                      <select
+                        className="w-full rounded-lg border border-emerald-200 bg-white px-2 py-2"
+                        value={readAiNote(platform.note).mode || "manual"}
+                        onChange={(event) => {
+                          const mode = event.target.value;
+                          const provider = mode === "auto" ? "gemini" : readAiNote(platform.note).provider || "gemini";
+                          updateExternal(platform.id, {
+                            note: writeAiNote(platform.note, { mode, provider }),
+                            syncScheduleCron: aiProviderOrder(mode === "auto" ? "auto" : provider),
+                          });
+                        }}
+                      >
+                        <option value="auto">تلقائي: جرّب المزود التالي عند التعطل</option>
+                        <option value="manual">يدوي: استخدم مزود محدد أولا</option>
+                      </select>
+                    </label>
+                    <label className="flex-1">
+                      <span className="mb-1 block font-black text-emerald-900">المزود المفضل</span>
+                      <select
+                        className="w-full rounded-lg border border-emerald-200 bg-white px-2 py-2"
+                        value={readAiNote(platform.note).provider || "gemini"}
+                        onChange={(event) => {
+                          const provider = event.target.value;
+                          const mode = readAiNote(platform.note).mode || "manual";
+                          updateExternal(platform.id, {
+                            note: writeAiNote(platform.note, { mode, provider }),
+                            syncScheduleCron: aiProviderOrder(mode === "auto" ? "auto" : provider),
+                          });
+                        }}
+                      >
+                        {aiProviderOptions.filter((option) => option.id !== "auto").map((option) => (
+                          <option key={option.id} value={option.id}>{option.label}</option>
+                        ))}
+                      </select>
+                    </label>
                     <button
                       onClick={() =>
                         updateExternal(platform.id, {
-                          syncScheduleCron: "gemini,openrouter,qwen,deepseek,openai,none",
-                          note: "gemini",
+                          note: writeAiNote(platform.note, { mode: "auto", provider: "gemini" }),
+                          syncScheduleCron: aiProviderOrder("auto"),
                         })
                       }
-                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
+                      className="rounded-lg border border-emerald-200 bg-white px-3 py-2 font-black text-emerald-800 hover:bg-emerald-100"
                     >
-                      مجاني موصى به
+                      تشغيل تلقائي آمن
                     </button>
                     <button
                       onClick={() =>
                         updateExternal(platform.id, {
-                          syncScheduleCron: "qwen,openrouter,gemini,deepseek,openai,none",
-                          note: "qwen",
+                          note: writeAiNote(platform.note, { mode: "manual", provider: "gemini" }),
+                          syncScheduleCron: aiProviderOrder("gemini"),
                         })
                       }
-                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
+                      className="rounded-lg border border-emerald-200 bg-white px-3 py-2 font-black text-emerald-800 hover:bg-emerald-100"
                     >
-                      مجاني Qwen أولًا
+                      Gemini أولا
                     </button>
-                    <button
-                      onClick={() =>
-                        updateExternal(platform.id, {
-                          syncScheduleCron: "openrouter,gemini,qwen,deepseek,openai,none",
-                          note: "openrouter",
-                        })
-                      }
-                      className="rounded border border-indigo-200 bg-white px-2 py-1 font-black text-indigo-700 hover:bg-indigo-100"
-                    >
-                      متوازن
-                    </button>
+                  </div>
+                  <div className="mt-2 text-[11px] font-bold text-emerald-700">
+                    في الوضع التلقائي سيستخدم المساعد أول مفتاح يعمل، ثم ينتقل للمزود التالي إذا انتهت الحصة أو فشل الاتصال.
+                  </div>
+                </div>
+              ) : null}
+              {isAiExternalPlatform(platform.id) && platform.id.trim().toLowerCase() !== "ai-global" ? (
+                <div className="rounded-lg border border-sky-100 bg-sky-50 px-3 py-3 text-xs md:col-span-12">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <label>
+                      <span className="mb-1 block font-black text-sky-900">Model</span>
+                      <input
+                        className="w-full rounded-lg border border-sky-200 bg-white px-2 py-2"
+                        value={readAiNote(platform.note).model || ""}
+                        onChange={(event) => updateExternal(platform.id, { note: writeAiNote(platform.note, { model: event.target.value }) })}
+                        placeholder={aiProviderFromExternalId(platform.id) === "gemini" ? "gemini-2.5-flash" : "model-name"}
+                      />
+                    </label>
+                    <label className="md:col-span-2">
+                      <span className="mb-1 block font-black text-sky-900">مفاتيح إضافية لنفس المزود</span>
+                      <textarea
+                        className="min-h-[86px] w-full rounded-lg border border-sky-200 bg-white px-2 py-2 font-mono text-[11px]"
+                        value={(platform.apiKeys || []).join("\n")}
+                        onChange={(event) =>
+                          updateExternal(platform.id, {
+                            apiKeys: event.target.value.split(/\r?\n/).map((key) => key.trim()).filter(Boolean),
+                          })
+                        }
+                        placeholder="ضع كل مفتاح في سطر مستقل. المفتاح الأساسي يمكن وضعه في API Key."
+                      />
+                    </label>
+                  </div>
+                  <div className="mt-2 text-[11px] font-bold text-sky-700">
+                    عند فشل مفتاح سيجرب النظام المفتاح التالي لنفس المزود قبل الانتقال لمزود آخر.
                   </div>
                 </div>
               ) : null}

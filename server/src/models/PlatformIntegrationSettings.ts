@@ -108,6 +108,7 @@ const platformIntegrationSettingsSchema = new Schema<any>(
             platformType: { type: String, enum: ["lms", "marketplace", "crm", "custom"], default: "custom" },
             baseUrl: { type: String, default: "" },
             apiKey: { type: String, default: "" },
+            apiKeys: { type: [String], default: [] },
             apiSecret: { type: String, default: "" },
             webhookUrl: { type: String, default: "" },
             webhookSecret: { type: String, default: "" },

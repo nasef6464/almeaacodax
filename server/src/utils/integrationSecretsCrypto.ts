@@ -7,6 +7,7 @@ const IV_LENGTH = 12;
 
 const PROVIDER_SECRET_FIELDS = ["appSecret", "clientSecret", "apiKey", "accessToken", "botToken", "verifyToken"] as const;
 const EXTERNAL_PLATFORM_SECRET_FIELDS = ["apiKey", "apiSecret", "webhookSecret"] as const;
+const EXTERNAL_PLATFORM_SECRET_ARRAY_FIELDS = ["apiKeys"] as const;
 
 const getKeyMaterial = () => {
   const source = String(env.PLATFORM_INTEGRATIONS_SECRET_KEY || env.JWT_SECRET || "").trim();
@@ -70,6 +71,10 @@ export const encryptIntegrationSecretsAtRest = (settings: Record<string, unknown
         platform[field] = encryptValue(current);
       }
     });
+    EXTERNAL_PLATFORM_SECRET_ARRAY_FIELDS.forEach((field) => {
+      const values = Array.isArray(platform[field]) ? (platform[field] as unknown[]) : [];
+      platform[field] = values.map((value) => encryptValue(String(value || "").trim())).filter(Boolean);
+    });
   });
   next.externalPlatforms = externalPlatforms;
 
@@ -95,6 +100,10 @@ export const decryptIntegrationSecretsForRuntime = (settings: Record<string, unk
       if (current) {
         platform[field] = decryptValue(current);
       }
+    });
+    EXTERNAL_PLATFORM_SECRET_ARRAY_FIELDS.forEach((field) => {
+      const values = Array.isArray(platform[field]) ? (platform[field] as unknown[]) : [];
+      platform[field] = values.map((value) => decryptValue(String(value || "").trim())).filter(Boolean);
     });
   });
   next.externalPlatforms = externalPlatforms;
