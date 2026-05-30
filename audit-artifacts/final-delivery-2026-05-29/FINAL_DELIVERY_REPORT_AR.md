@@ -521,3 +521,22 @@
   - `audit-artifacts/final-delivery-2026-05-29/live-ai-runtime-check-2026-05-30.json`
   - `audit-artifacts/final-delivery-2026-05-29/live-cont26-platform-integrations.png`
   - `audit-artifacts/final-delivery-2026-05-29/live-cont26-ai-assistant.png`
+
+## متابعة لاحقة 27 (Student Assistant Access Check)
+
+- تاريخ المتابعة: 2026-05-30
+- نتائج داعمة:
+  - `smoke:student-learning-journey`: `PASS` (7 checks)
+- فحص حي من جلسة طالب فعلية:
+  - تسجيل دخول الطالب: `PASS`
+  - صفحة `/dashboard`: تعمل، بدون `network 5xx`
+  - ملاحظة UX حقيقية: نقطة دخول مساعد الطالب غير واضحة/غير قابلة للوصول بشكل موثوق في الفحص الآلي الحالي.
+  - ظهر نص `فتح المساعد الذكي` ضمن المحتوى، لكن لم يظهر فتح فعلي لنافذة مساعد الطالب أثناء التفاعل الآلي.
+  - `consoleErrors`: ظهر `403` مورد واحد خلال الجولة (بدون 5xx).
+- التصنيف:
+  - `REVIEW UX (عاجل قبل التسليم)` لممر الوصول إلى مساعد الطالب من واجهة الطالب.
+- ملفات الأدلة:
+  - `audit-artifacts/final-delivery-2026-05-29/live-student-assistant-check-2026-05-30.json`
+  - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-dashboard.png`
+  - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-assistant-direct-click.png`
+  - `audit-artifacts/final-delivery-2026-05-29/live-cont27-student-qa-route.png`

@@ -244,6 +244,14 @@
 - `live-cont26-platform-integrations.png`
 - `live-cont26-ai-assistant.png`
 
+## فحص وصول مساعد الطالب (Continuation 27)
+
+- `npm run smoke:student-learning-journey` (PASS)
+- `live-student-assistant-check-2026-05-30.json`
+- `live-cont27-student-dashboard.png`
+- `live-cont27-student-assistant-direct-click.png`
+- `live-cont27-student-qa-route.png`
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
