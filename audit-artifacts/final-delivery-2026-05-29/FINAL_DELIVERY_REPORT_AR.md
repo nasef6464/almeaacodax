@@ -405,3 +405,21 @@
 - Sentry live proof:
   - `status=202`
   - `eventId=9f22cf8a6abb47bfba77900b22a3c511`
+
+## متابعة لاحقة 21 (Another Full Live Admin Sweep)
+
+- تاريخ المتابعة: 2026-05-30
+- جولة إدارة حيّة:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - بدون `console errors` وبدون `network 5xx`
+- readiness:
+  - `smoke:health-readiness`: `PASS`
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_8HgD7g4HZQFovbRoAzwfCaT72vW4`
+  - URL: `https://almeaacodax-l8jzkvsd6-nasefs-projects-18e6bdb1.vercel.app`
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-21/admin-live-handoff-audit.json`
