@@ -11,6 +11,7 @@ type AiStatus = {
     providers?: AiProviderStatus[];
     providerOrder?: string[];
     providerOrderSource?: 'env' | 'admin';
+    routingMode?: 'manual' | 'auto';
     model: string;
     timeoutMs: number;
 };
@@ -520,6 +521,13 @@ export const AiAssistantManager: React.FC = () => {
                                 <p className="text-xs text-gray-500">مصدر ترتيب المزودات</p>
                                 <p className="text-sm font-bold text-gray-900 mt-1">
                                     {status?.providerOrderSource === 'admin' ? 'من ai-global (الإدارة)' : 'من env'}
+                                </p>
+                                <p className="mt-1 text-xs font-bold text-indigo-700">
+                                    {status?.routingMode === 'auto'
+                                        ? 'الوضع: تلقائي مع انتقال عند التعطل'
+                                        : status?.routingMode === 'manual'
+                                            ? 'الوضع: يدوي حسب المزود المختار'
+                                            : 'الوضع: غير معروف'}
                                 </p>
                             </div>
                             <p className="text-sm text-gray-600 leading-6">{modeDescription}</p>

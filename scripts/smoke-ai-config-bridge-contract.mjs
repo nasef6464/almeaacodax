@@ -28,6 +28,8 @@ check("ai route supports admin runtime config load", () => {
   assertIncludes(aiRouteSource, "loadRuntimeAiConfig");
   assertIncludes(aiRouteSource, 'providerOrderSource: "env" | "admin"');
   assertIncludes(aiRouteSource, "providerOrderSource: runtimeAiConfig.providerOrderSource");
+  assertIncludes(aiRouteSource, 'routingMode: "manual" | "auto"');
+  assertIncludes(aiRouteSource, "routingMode: runtimeAiConfig.routingMode");
 });
 
 check("ai route exposes provider source metadata", () => {
@@ -44,6 +46,7 @@ check("integrations manager has AI templates, routing, and multi-key setup", () 
   assertIncludes(integrationsSource, "writeAiNote");
   assertIncludes(integrationsSource, "aiProviderOrder");
   assertIncludes(integrationsSource, "apiKeys");
+  assertIncludes(integrationsSource, "routingMode");
   assertIncludes(integrationsSource, "externalPlatformSecretState");
 });
 
@@ -74,6 +77,7 @@ check("assistant manager shows source and bridges to integrations", () => {
 check("api typing includes provider source fields", () => {
   assertIncludes(apiSource, 'source: "env" | "admin" | "runtime-local" | "fallback"');
   assertIncludes(apiSource, 'providerOrderSource?: "env" | "admin"');
+  assertIncludes(apiSource, 'routingMode?: "manual" | "auto"');
 });
 
 check("package script exposes smoke:ai-config-bridge", () => {

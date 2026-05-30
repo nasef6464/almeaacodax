@@ -157,6 +157,7 @@ type StudentAiRuntimeSummary = {
   provider: string;
   model: string;
   providerOrderSource: string;
+  routingMode: "manual" | "auto" | "unknown";
   providerOrder: string;
   configuredProviders: number;
   studentChats24h: number;
@@ -766,6 +767,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         provider?: string;
         model?: string;
         providerOrderSource?: string;
+        routingMode?: "manual" | "auto";
         providerOrder?: string[];
         providers?: Array<{ id: string; configured?: boolean }>;
       };
@@ -793,6 +795,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         provider: String(aiStatus.provider || "none"),
         model: String(aiStatus.model || "local-fallback"),
         providerOrderSource: String(aiStatus.providerOrderSource || "env"),
+        routingMode: aiStatus.routingMode || "unknown",
         providerOrder: Array.isArray(aiStatus.providerOrder) ? aiStatus.providerOrder.join(", ") : "",
         configuredProviders: (aiStatus.providers || []).filter((provider) => provider.id !== "none" && provider.configured).length,
         studentChats24h: Number(aiReadiness.studentAdvisor?.studentChats24h || 0),
@@ -810,6 +813,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
         provider: "unknown",
         model: "unknown",
         providerOrderSource: "unknown",
+        routingMode: "unknown",
         providerOrder: "",
         configuredProviders: 0,
         studentChats24h: 0,
@@ -1052,6 +1056,13 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <div className="text-xs font-black text-gray-500">مصدر الترتيب</div>
                 <div className="mt-1 font-black text-gray-900">
                   {studentAiRuntimeSummary.providerOrderSource === "admin" ? "ai-global من الإدارة" : studentAiRuntimeSummary.providerOrderSource}
+                </div>
+                <div className="mt-1 text-xs font-bold text-indigo-700">
+                  {studentAiRuntimeSummary.routingMode === "auto"
+                    ? "الوضع: تلقائي مع انتقال عند التعطل"
+                    : studentAiRuntimeSummary.routingMode === "manual"
+                      ? "الوضع: يدوي حسب المزود المختار"
+                      : "الوضع: غير معروف"}
                 </div>
                 <div className="mt-1 text-xs text-gray-500">{studentAiRuntimeSummary.providerOrder || "لا يوجد ترتيب معلن"}</div>
               </div>

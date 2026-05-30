@@ -1230,6 +1230,7 @@ export const api = {
       }>;
       providerOrder?: string[];
       providerOrderSource?: "env" | "admin";
+      routingMode?: "manual" | "auto";
       model: string;
       timeoutMs: number;
     }>("/ai/status", { token }),
