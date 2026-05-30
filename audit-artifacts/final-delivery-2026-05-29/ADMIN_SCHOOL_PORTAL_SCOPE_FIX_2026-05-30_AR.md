@@ -48,6 +48,9 @@
 - PASS: `smoke:integrations-runtime` - 10/10.
 - PASS: إعادة `typecheck` و `build` للواجهة والخادم بعد تحديث عقود الفحص.
 - PASS: فحص بصري مركز للضيف والطالب على الإنتاج - 13/13 صفحة، 0 REVIEW، 0 أخطاء Console، 0 أخطاء Network 5xx.
+- PASS: فحص بصري مركز لولي الأمر والمعلم والمشرف على الإنتاج - 9/9 صفحات، 0 REVIEW، 0 أخطاء Console، 0 أخطاء Network 5xx.
+- PASS: إعادة فحص لوحة المدير النهائية بعد إضافة العضويات لمصفوفة الفحص - 23/23 تبويب PASS، 0 FAIL.
+- PASS: تبويب `memberships` داخل لوحة المدير مفحوص بصريا ووظيفيا: 40 عنصر تفاعلي ظاهر، 0 disabled، 0 Console errors، 0 Network 5xx.
 
 ## أدلة الفحص
 - `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-live-postfix/`
@@ -55,3 +58,5 @@
 - `audit-artifacts/final-delivery-2026-05-29/live-student-ai-chat-browser-post-schoolportal-fix-2026-05-30.json`
 - `audit-artifacts/final-delivery-2026-05-29/in-app-browser-admin-groups-final-2026-05-30.png`
 - `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-public-student-visual/`
+- `audit-artifacts/ui-audit-exhaustive/2026-05-30-focused-staff-parent-visual/`
+- `audit-artifacts/admin-live-handoff/2026-05-30-admin-critical-final-sweep-with-memberships/`

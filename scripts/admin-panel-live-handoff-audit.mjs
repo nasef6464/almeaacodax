@@ -33,6 +33,7 @@ const tabs = [
   'users',
   'groups',
   'school-portal',
+  'memberships',
   'financial',
   'notifications',
   'homepage',
