@@ -394,3 +394,14 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/admin-live-handoff-audit.json`
+
+## متابعة لاحقة 20 (Latest Live Snapshot)
+
+- تاريخ المتابعة: 2026-05-30
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_89twBJ4QW7LJPq2LZPooLuG7g41g`
+  - URL: `https://almeaacodax-7rfz48q6n-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=9f22cf8a6abb47bfba77900b22a3c511`

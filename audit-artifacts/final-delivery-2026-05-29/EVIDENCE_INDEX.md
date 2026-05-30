@@ -188,6 +188,11 @@
 - `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
 - `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
 
+## لقطة مباشرة جديدة (Continuation 20)
+
+- `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
+- `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
