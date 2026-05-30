@@ -81,5 +81,7 @@
 - PASS: العضويات/الباقات والمالية: 13 باقة/عضوية، عضوية عامة واحدة، 17 طلب دفع، وبيانات الاشتراكات موجودة على المستخدمين.
 - PASS: تم إصلاح سماح المدير بفتح تبويب `school-portal` من أزرار الإدارة الداخلية بدل الرجوع إلى النظرة العامة.
 - PASS: `smoke:admin-tabs` يغطي الآن أن `school-portal` مسموح للمدير والمشرف ومربوط في `renderContent`.
+- PASS: فحص ما بعد النشر أكد أن الإنتاج يخدم commit `01aa64f6` وأن تبويب `school-portal` يفتح للمدير مباشرة: 50 عنصر تحكم ظاهر، 4 حقول إدخال، 0 Console errors، 0 Network 5xx.
 - الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-relations-api-final/`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-school-portal-postdeploy-final/`
