@@ -156,6 +156,12 @@
 - `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/school-home.png`
 - `../admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/users-home.png`
 
+## فحص ثبات بدون صلاحيات إضافية (Continuation 15)
+
+- `npm run smoke:frontend:strict` (PASS)
+- `npm run smoke:health-readiness` (PASS)
+- `npm run smoke:sentry-runtime` (PASS)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`

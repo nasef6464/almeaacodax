@@ -327,3 +327,16 @@
 - ملفات الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/SUMMARY.md`
   - `audit-artifacts/admin-live-handoff/2026-05-30-admin-internal-safe-flow-live-cont14/admin-groups-schools-internal-safe-flow-audit.json`
+
+## متابعة لاحقة 15 (Non-Escalated Stability Pass)
+
+- تاريخ المتابعة: 2026-05-30
+- الهدف: تأكيد ثبات الإنتاج بدون أوامر تتطلب صلاحيات إضافية
+- النتائج:
+  - `smoke:frontend:strict`: `PASS` (28 checks)
+  - `smoke:health-readiness`: `PASS`
+  - `smoke:sentry-runtime`: `PASS` (5 checks)
+- الخلاصة:
+  - الواجهة والـ routing في حالة مستقرة.
+  - readiness probes متوافقة مع حالة النشر.
+  - تكامل Sentry runtime ما زال سليمًا.
