@@ -375,3 +375,22 @@
   - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
   - `dpl_AV3sQivHwtrwiCvNWW7A8gpsKWtm`
   - URL: `https://almeaacodax-5cvbjd43h-nasefs-projects-18e6bdb1.vercel.app`
+
+## متابعة لاحقة 19 (Full Live Admin Sweep + Fresh Vercel/Sentry)
+
+- تاريخ المتابعة: 2026-05-30
+- جولة إدارة حيّة:
+  - `Total tabs: 22`
+  - `PASS: 22`
+  - `FAIL: 0`
+  - بدون `console errors` وبدون `network 5xx` على مستوى الجولة
+- Vercel snapshot:
+  - alias `https://almeaacodax.vercel.app` -> deployment `Ready`
+  - `dpl_BsRWELWrLMjFhhV2RZEr8chCKeb6`
+  - URL: `https://almeaacodax-nvf4zg6je-nasefs-projects-18e6bdb1.vercel.app`
+- Sentry live proof:
+  - `status=202`
+  - `eventId=65afb59b5eaf47b8a197540194fb2b6c`
+- ملفات الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/SUMMARY.md`
+  - `audit-artifacts/admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/admin-live-handoff-audit.json`

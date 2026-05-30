@@ -179,6 +179,15 @@
 - `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
 - `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
 
+## جولة حيّة كاملة + Vercel/Sentry (Continuation 19)
+
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/SUMMARY.md`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/admin-live-handoff-audit.json`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/platform-integrations.png`
+- `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-19/ai-assistant.png`
+- `vercel inspect almeaacodax.vercel.app` (Ready, latest production target)
+- `node scripts/smoke-sentry-live-proof.mjs` (PASS, status=202)
+
 ## أوامر تحقق تم تشغيلها
 
 - `npm run typecheck`
