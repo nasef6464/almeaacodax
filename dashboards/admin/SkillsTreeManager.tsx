@@ -444,16 +444,29 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button onClick={() => openEditMainSkillModal(mainSkill)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="تعديل">
+                  <button
+                    onClick={() => openEditMainSkillModal(mainSkill)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    aria-label={`تعديل المهارة الرئيسة ${mainSkill.name}`}
+                    title={`تعديل المهارة الرئيسة ${mainSkill.name}`}
+                  >
                     <Edit2 size={18} />
                   </button>
-                  <button onClick={() => handleDeleteMainSkill(mainSkill.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف">
+                  <button
+                    onClick={() => handleDeleteMainSkill(mainSkill.id)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    aria-label={`حذف المهارة الرئيسة ${mainSkill.name}`}
+                    title={`حذف المهارة الرئيسة ${mainSkill.name}`}
+                  >
                     <Trash2 size={18} />
                   </button>
                   <button onClick={() => {
                     setExpandedMainSkillId(expandedMainSkillId === mainSkill.id ? null : mainSkill.id);
                     setExpandedSubSkillId(null);
-                  }} className={`p-2 rounded-lg transition-colors ml-2 ${expandedMainSkillId === mainSkill.id ? 'bg-indigo-100 text-indigo-700' : 'text-gray-400 hover:bg-gray-200'}`}>
+                  }} className={`p-2 rounded-lg transition-colors ml-2 ${expandedMainSkillId === mainSkill.id ? 'bg-indigo-100 text-indigo-700' : 'text-gray-400 hover:bg-gray-200'}`}
+                    aria-label={`${expandedMainSkillId === mainSkill.id ? 'طي' : 'فتح'} المهارة الرئيسة ${mainSkill.name}`}
+                    title={`${expandedMainSkillId === mainSkill.id ? 'طي' : 'فتح'} المهارة الرئيسة ${mainSkill.name}`}
+                  >
                     {expandedMainSkillId === mainSkill.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </button>
                 </div>
@@ -497,13 +510,28 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                               </div>
                             </div>
                             <div className="flex items-center gap-1">
-                              <button onClick={() => openEditSubSkillModal(subSkill)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                              <button
+                                onClick={() => openEditSubSkillModal(subSkill)}
+                                className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                aria-label={`تعديل المهارة الفرعية ${subSkill.name}`}
+                                title={`تعديل المهارة الفرعية ${subSkill.name}`}
+                              >
                                 <Edit2 size={16} />
                               </button>
-                              <button onClick={() => handleDeleteSubSkill(subSkill.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                              <button
+                                onClick={() => handleDeleteSubSkill(subSkill.id)}
+                                className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                aria-label={`حذف المهارة الفرعية ${subSkill.name}`}
+                                title={`حذف المهارة الفرعية ${subSkill.name}`}
+                              >
                                 <Trash2 size={16} />
                               </button>
-                              <button onClick={() => setExpandedSubSkillId(expandedSubSkillId === subSkill.id ? null : subSkill.id)} className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors">
+                              <button
+                                onClick={() => setExpandedSubSkillId(expandedSubSkillId === subSkill.id ? null : subSkill.id)}
+                                className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors"
+                                aria-label={`${expandedSubSkillId === subSkill.id ? 'طي' : 'فتح'} المهارة الفرعية ${subSkill.name}`}
+                                title={`${expandedSubSkillId === subSkill.id ? 'طي' : 'فتح'} المهارة الفرعية ${subSkill.name}`}
+                              >
                                 {expandedSubSkillId === subSkill.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                               </button>
                             </div>
@@ -535,10 +563,20 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                                           <div className="text-xs text-gray-500">{lesson.type === 'video' ? 'فيديو' : lesson.type === 'text' ? 'مقال' : 'اختبار'} · {lesson.duration}</div>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                          <button onClick={() => openEditLessonModal(mainSkill.id, subSkill.id, lesson)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                          <button
+                                            onClick={() => openEditLessonModal(mainSkill.id, subSkill.id, lesson)}
+                                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            aria-label={`تعديل الدرس ${lesson.title}`}
+                                            title={`تعديل الدرس ${lesson.title}`}
+                                          >
                                             <Edit2 size={14} />
                                           </button>
-                                          <button onClick={() => handleDetachLesson(subSkill.id, lesson)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                          <button
+                                            onClick={() => handleDetachLesson(subSkill.id, lesson)}
+                                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            aria-label={`فصل الدرس ${lesson.title} عن المهارة`}
+                                            title={`فصل الدرس ${lesson.title} عن المهارة`}
+                                          >
                                             <Trash2 size={14} />
                                           </button>
                                         </div>

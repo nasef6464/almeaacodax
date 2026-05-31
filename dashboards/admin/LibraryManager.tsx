@@ -537,10 +537,17 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                     setIsEditing(true);
                   }}
                   className="text-gray-400 hover:text-indigo-600"
+                  aria-label={`تعديل ملف المكتبة ${item.title}`}
+                  title={`تعديل ملف المكتبة ${item.title}`}
                 >
                   <Edit2 size={18} />
                 </button>
-                <button onClick={() => deleteLibraryItem(item.id)} className="text-gray-400 hover:text-red-600">
+                <button
+                  onClick={() => deleteLibraryItem(item.id)}
+                  className="text-gray-400 hover:text-red-600"
+                  aria-label={`حذف ملف المكتبة ${item.title}`}
+                  title={`حذف ملف المكتبة ${item.title}`}
+                >
                   <Trash2 size={18} />
                 </button>
               </div>

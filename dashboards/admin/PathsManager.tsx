@@ -859,10 +859,20 @@ export const PathsManager: React.FC = () => {
                       >
                         {path.isActive === false ? <Lock size={18} /> : <LockOpen size={18} />}
                       </button>
-                      <button onClick={(e) => openEditPath(path, e)} className="text-gray-400 hover:text-indigo-600 transition-colors p-2">
+                      <button
+                        onClick={(e) => openEditPath(path, e)}
+                        className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
+                        aria-label={`تعديل المسار ${path.name}`}
+                        title={`تعديل المسار ${path.name}`}
+                      >
                         <Settings size={18} />
                       </button>
-                      <button onClick={(e) => handleDeletePath(path.id, e)} className="text-gray-400 hover:text-red-600 transition-colors p-2">
+                      <button
+                        onClick={(e) => handleDeletePath(path.id, e)}
+                        className="text-gray-400 hover:text-red-600 transition-colors p-2"
+                        aria-label={`حذف المسار ${path.name}`}
+                        title={`حذف المسار ${path.name}`}
+                      >
                         <X size={18} />
                       </button>
                   </div>
@@ -1220,10 +1230,20 @@ export const PathsManager: React.FC = () => {
                                   <div className="flex justify-between items-start mb-4">
                                       <h3 className="text-xl font-bold text-gray-800">{level.name}</h3>
                                       <div className="flex gap-2">
-                                          <button onClick={(e) => openEditLevel(level, e)} className="text-gray-400 hover:text-indigo-600 transition-colors p-1">
+                                          <button
+                                            onClick={(e) => openEditLevel(level, e)}
+                                            className="text-gray-400 hover:text-indigo-600 transition-colors p-1"
+                                            aria-label={`تعديل المرحلة ${level.name}`}
+                                            title={`تعديل المرحلة ${level.name}`}
+                                          >
                                               <Settings size={16} />
                                           </button>
-                                          <button onClick={(e) => handleDeleteLevel(level.id, e)} className="text-gray-400 hover:text-red-600 transition-colors p-1">
+                                          <button
+                                            onClick={(e) => handleDeleteLevel(level.id, e)}
+                                            className="text-gray-400 hover:text-red-600 transition-colors p-1"
+                                            aria-label={`حذف المرحلة ${level.name}`}
+                                            title={`حذف المرحلة ${level.name}`}
+                                          >
                                               <X size={16} />
                                           </button>
                                       </div>
@@ -1280,10 +1300,20 @@ export const PathsManager: React.FC = () => {
                           {getSubjectIcon(subject)}
                         </div>
                         <div className="flex gap-2">
-                           <button onClick={(e) => openEditSubject(subject, e)} className="text-gray-400 hover:text-indigo-600 transition-colors p-2">
+                           <button
+                             onClick={(e) => openEditSubject(subject, e)}
+                             className="text-gray-400 hover:text-indigo-600 transition-colors p-2"
+                             aria-label={`تعديل المادة ${subject.name}`}
+                             title={`تعديل المادة ${subject.name}`}
+                           >
                               <Settings size={16} />
                            </button>
-                           <button onClick={(e) => handleDeleteSubject(subject.id, e)} className="text-gray-400 hover:text-red-600 transition-colors p-2">
+                           <button
+                             onClick={(e) => handleDeleteSubject(subject.id, e)}
+                             className="text-gray-400 hover:text-red-600 transition-colors p-2"
+                             aria-label={`حذف المادة ${subject.name}`}
+                             title={`حذف المادة ${subject.name}`}
+                           >
                               <X size={16} />
                            </button>
                         </div>
