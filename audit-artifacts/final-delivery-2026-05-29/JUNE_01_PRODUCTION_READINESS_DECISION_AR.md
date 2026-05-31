@@ -1,9 +1,9 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit على `main`: `9e4be4d9`.
+- آخر commit على `main`: `a8a1c65b`.
 - Vercel production: `Ready`.
-- دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` أظهر أن الإنتاج بنى من `github.com/nasef6464/almeaacodax`، الفرع `main`، commit `9e4be4d`.
+- دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` أظهر أن الإنتاج بنى من `github.com/nasef6464/almeaacodax`، الفرع `main`، commit `a8a1c65`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
 
 ## ما تم إثباته الآن
