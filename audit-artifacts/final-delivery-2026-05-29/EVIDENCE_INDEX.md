@@ -276,3 +276,15 @@
 - `npm run smoke:frontend:strict`
 - `npm run smoke:payment-package`
 - `npm run smoke:batch136-admin-users-schools-parent-payment`
+
+## Final Admin And Student Delivery Closure (2026-06-01)
+
+- `JUNE_01_FINAL_DELIVERY_CLOSURE_AR.md`
+- Production frontend smoke: `npm run smoke:frontend:strict` -> PASS 28/28.
+- Health readiness: `npm run smoke:health-readiness` -> PASS.
+- Payment/package contract: `npm run smoke:payment-package` -> PASS 8/8.
+- Reports role contract: `npm run smoke:reports-role` -> PASS 11/11.
+- Admin visual tabs evidence: `../admin-live-handoff/2026-05-31-admin-tabs-final-after-5dffc7e5/`
+- Admin UI gap evidence: `../admin-live-handoff/2026-05-31-admin-ui-gap-final-after-5dffc7e5/`
+- Live AI runtime evidence: `../admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/`
+- Student learning deep postdeploy evidence: `../ui-audit-exhaustive/2026-05-31-student-learning-deep-postdeploy-12d26857/`
