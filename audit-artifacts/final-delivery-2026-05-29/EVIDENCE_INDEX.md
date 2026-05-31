@@ -284,6 +284,8 @@
 - Health readiness: `npm run smoke:health-readiness` -> PASS.
 - Payment/package contract: `npm run smoke:payment-package` -> PASS 8/8.
 - Reports role contract: `npm run smoke:reports-role` -> PASS 11/11.
+- XLSX safety contract: `npm run smoke:xlsx-safety` -> PASS 16/16.
+- Performance/lazy-loading contract: `npm run smoke:performance` -> PASS.
 - Admin visual tabs evidence: `../admin-live-handoff/2026-05-31-admin-tabs-final-after-5dffc7e5/`
 - Admin UI gap evidence: `../admin-live-handoff/2026-05-31-admin-ui-gap-final-after-5dffc7e5/`
 - Live AI runtime evidence: `../admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/`

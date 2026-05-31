@@ -17,6 +17,7 @@
 | AI والتكاملات | PASS 6/6 | `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/` |
 | رحلة الطالب بعد تأثير الإدارة | PASS 10/10 | `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-postdeploy-12d26857/` |
 | Vercel/Production shell | PASS 28/28 | `npm run smoke:frontend:strict` |
+| تخفيف مخاطر Excel / xlsx | PASS 16/16 | `npm run smoke:xlsx-safety` |
 
 ## ما تم إصلاحه في آخر جولة
 - تم إصلاح وصول `سؤال وجواب` داخل الدورة للطالب عندما تكون الدورة منشورة ومجانية، أو عندما يمتلك الطالب صلاحية عبر `enrolledCourses` أو `AccessGrant`.
@@ -25,6 +26,7 @@
 
 ## ما لا يزال متابعة وليس حاجزا للتسليم
 - تحذير `xlsx` الأمني لا يملك إصلاحا مباشرا متاحا عبر npm في الإصدار الحالي. الوظائف العملية للتصدير والقوالب تعمل ومخففة بطبقة `utils/xlsxLoader.ts`.
+- تم إضافة حارس آلي `smoke:xlsx-safety` للتأكد من أن استيراد Excel الإداري يمر عبر `xlsxLoader`، وأن القراءة تعطل الصيغ وVBA، وأن مفاتيح prototype pollution تنظف قبل استخدام الصفوف.
 - يفضل لاحقا عمل جولة منفصلة لاستبدال مكتبة Excel بالكامل، لأنها تغيير واسع يحتاج regression للاستيراد والتصدير.
 
 ## أوامر التحقق الأخيرة
@@ -32,4 +34,5 @@
 - `npm run smoke:health-readiness` -> PASS.
 - `npm run smoke:payment-package` -> PASS 8/8.
 - `npm run smoke:reports-role` -> PASS 11/11.
-
+- `npm run smoke:xlsx-safety` -> PASS 16/16.
+- `npm run smoke:performance` -> PASS.
