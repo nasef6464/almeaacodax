@@ -1571,7 +1571,12 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <input type="checkbox" aria-label={`تفعيل المنصة الخارجية ${platform.name || platform.id}`} title={`تفعيل المنصة الخارجية ${platform.name || platform.id}`} checked={platform.enabled} onChange={(e) => updateExternal(platform.id, { enabled: e.target.checked })} />
                 active
               </label>
-              <button onClick={() => removeExternal(platform.id)} className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1">
+              <button
+                onClick={() => removeExternal(platform.id)}
+                aria-label={`حذف المنصة الخارجية ${platform.name || platform.id}`}
+                title={`حذف المنصة الخارجية ${platform.name || platform.id}`}
+                className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1"
+              >
                 <Trash2 size={14} />
               </button>
               <input aria-label={`Webhook URL للمنصة ${platform.name || platform.id}`} title={`Webhook URL للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.webhookUrl} onChange={(e) => updateExternal(platform.id, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
@@ -1727,7 +1732,12 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <input type="checkbox" aria-label={`تفعيل حقل التسجيل ${field.label || field.key || field.id}`} title={`تفعيل حقل التسجيل ${field.label || field.key || field.id}`} checked={field.enabled} onChange={(e) => updateField(field.id, { enabled: e.target.checked })} />
                 active
               </label>
-              <button onClick={() => removeField(field.id)} className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1">
+              <button
+                onClick={() => removeField(field.id)}
+                aria-label={`حذف حقل التسجيل ${field.label || field.key || field.id}`}
+                title={`حذف حقل التسجيل ${field.label || field.key || field.id}`}
+                className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1"
+              >
                 <Trash2 size={14} />
               </button>
               <input aria-label={`نص المساعدة لحقل التسجيل ${field.label || field.key || field.id}`} title={`نص المساعدة لحقل التسجيل ${field.label || field.key || field.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-12" value={field.helpText || ""} onChange={(e) => updateField(field.id, { helpText: e.target.value })} placeholder="help text" />

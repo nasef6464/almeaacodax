@@ -772,6 +772,8 @@ export const HomepageManager: React.FC = () => {
                                 <label key={path.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
                                     <input
                                         type="checkbox"
+                                        aria-label={`إظهار المسار المميز ${path.name}`}
+                                        title={`إظهار المسار المميز ${path.name}`}
                                         checked={settings.featuredPathIds.includes(path.id)}
                                         onChange={() =>
                                             setSettings((prev) => ({
@@ -796,6 +798,8 @@ export const HomepageManager: React.FC = () => {
                                 <label key={course.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
                                     <input
                                         type="checkbox"
+                                        aria-label={`إظهار الدورة المميزة ${course.title}`}
+                                        title={`إظهار الدورة المميزة ${course.title}`}
                                         checked={settings.featuredCourseIds.includes(course.id)}
                                         onChange={() =>
                                             setSettings((prev) => ({
@@ -827,6 +831,8 @@ export const HomepageManager: React.FC = () => {
                                     <label key={lesson.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
                                         <input
                                             type="checkbox"
+                                            aria-label={`إظهار المقال أو الدرس النصي ${lesson.title}`}
+                                            title={`إظهار المقال أو الدرس النصي ${lesson.title}`}
                                             checked={(settings.featuredArticleLessonIds || []).includes(lesson.id)}
                                             onChange={() =>
                                                 setSettings((prev) => ({

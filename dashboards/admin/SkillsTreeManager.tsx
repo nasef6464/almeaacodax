@@ -382,6 +382,8 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
             value={selectedSubjectId}
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+            aria-label="فلتر المادة - اختر المسار أولا"
+            title="اختر المسار أولا لتفعيل فلتر المواد"
             disabled={!selectedPathId}
           >
             <option value="">كل المواد</option>

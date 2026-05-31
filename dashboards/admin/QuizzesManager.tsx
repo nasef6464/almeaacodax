@@ -887,6 +887,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                 setSelectedSkillId('');
               }}
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="فلتر المادة - اختر المسار أولا"
+              title="اختر المسار أولا لتفعيل فلتر المواد"
               disabled={!selectedPathId}
             >
               <option value="">كل المواد</option>
@@ -908,6 +910,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             setSelectedSkillId('');
           }}
           className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الرئيسية - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الرئيسية"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الرئيسية</option>
@@ -922,6 +926,8 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           value={selectedSkillId}
           onChange={(event) => setSelectedSkillId(event.target.value)}
           className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الفرعية</option>

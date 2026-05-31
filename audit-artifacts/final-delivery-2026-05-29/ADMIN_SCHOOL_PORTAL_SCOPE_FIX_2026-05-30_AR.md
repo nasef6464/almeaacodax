@@ -117,3 +117,8 @@
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-tabs-postdeploy-final-894f85cc/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-final/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-after-clarity-fix/`
+- PASS تحسين حقول النماذج بعد النشر: تم نشر commit `b508613a`، ونجح `smoke:frontend:strict` بنتيجة 29/29، والفحص يؤكد أن الإنتاج يخدم نفس commit.
+- تم تحسين وضوح حقول النماذج والاختيارات داخل `homepage` و`announcement-ads` و`platform-integrations` و`platform-fonts` و`backups` و`notifications` و`mock-exams` بإضافة أسماء/تلميحات تشغيلية بدون تغيير هدف أو منطق المنصة.
+- نتيجة فحص الفجوات بعد الإصلاح الثاني: 16/23 تبويب PASS و7 REVIEW، بعد أن كانت 11/23 PASS و12 REVIEW في الجولة السابقة.
+- ما زال المتبقي غير حاجز للتسليم لكنه يحتاج تمريرة UX لاحقة: عناصر معطلة لأنها تعتمد على اختيار سابق في `lessons` و`quizzes` و`questions` و`skills` و`users`، و12 حقل داخل مكونات الصفحة الرئيسية، و5 حقول متبقية في التكاملات.
+- دليل الإصلاح الثاني: `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-after-form-label-fix/`.

@@ -876,6 +876,8 @@ export const UsersManager: React.FC = () => {
                 <div className="flex gap-2">
                     <button
                         onClick={() => setUsersPage((current) => Math.max(1, current - 1))}
+                        aria-label="الصفحة السابقة من المستخدمين"
+                        title={usersPage <= 1 ? "أنت في أول صفحة" : "الانتقال إلى الصفحة السابقة"}
                         disabled={usersPage <= 1 || isUsersLoading}
                         className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 disabled:opacity-50"
                     >
@@ -883,6 +885,8 @@ export const UsersManager: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setUsersPage((current) => Math.min(usersTotalPages, current + 1))}
+                        aria-label="الصفحة التالية من المستخدمين"
+                        title={usersPage >= Math.max(usersTotalPages, 1) ? "أنت في آخر صفحة" : "الانتقال إلى الصفحة التالية"}
                         disabled={usersPage >= Math.max(usersTotalPages, 1) || isUsersLoading}
                         className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 disabled:opacity-50"
                     >

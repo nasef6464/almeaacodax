@@ -1100,6 +1100,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 setSelectedSkillId('');
               }}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="فلتر المادة - اختر المسار أولا"
+              title="اختر المسار أولا لتفعيل فلتر المواد"
               disabled={!selectedPathId}
             >
               <option value="">كل المواد</option>
@@ -1121,6 +1123,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             setSelectedSkillId('');
           }}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الرئيسية - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الرئيسية"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الرئيسية</option>
@@ -1135,6 +1139,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           value={selectedSkillId}
           onChange={(event) => setSelectedSkillId(event.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الفرعية</option>
@@ -1308,6 +1314,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 <button
                   type="button"
                   onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  aria-label="الصفحة السابقة من بنك الأسئلة"
+                  title={pagedPagination.hasPrev ? "الانتقال إلى الصفحة السابقة" : "لا توجد صفحة سابقة"}
                   disabled={!pagedPagination.hasPrev || isLoadingPagedQuestions}
                   className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -1319,6 +1327,8 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 <button
                   type="button"
                   onClick={() => setCurrentPage((page) => page + 1)}
+                  aria-label="الصفحة التالية من بنك الأسئلة"
+                  title={pagedPagination.hasNext ? "الانتقال إلى الصفحة التالية" : "لا توجد صفحة تالية"}
                   disabled={!pagedPagination.hasNext || isLoadingPagedQuestions}
                   className="rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >

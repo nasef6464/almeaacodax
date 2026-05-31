@@ -835,6 +835,8 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                 setSelectedSkillId('');
               }}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="فلتر المادة - اختر المسار أولا"
+              title="اختر المسار أولا لتفعيل فلتر المواد"
               disabled={!selectedPathId}
             >
               <option value="">كل المواد</option>
@@ -851,6 +853,8 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
             setSelectedSkillId('');
           }}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الرئيسة - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الرئيسة"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الرئيسة</option>
@@ -862,6 +866,8 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           value={selectedSkillId}
           onChange={(e) => setSelectedSkillId(e.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="فلتر المهارات الفرعية - اختر المادة أولا"
+          title="اختر المادة أولا لتفعيل فلتر المهارات الفرعية"
           disabled={!selectedSubjectId}
         >
           <option value="">كل المهارات الفرعية</option>

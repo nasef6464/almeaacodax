@@ -1,0 +1,449 @@
+{
+  "generatedAt": "2026-05-31T11:46:12.658Z",
+  "baseUrl": "https://almeaacodax.vercel.app",
+  "apiBaseUrl": "https://almeaacodax-k2ux.onrender.com/api",
+  "runId": "2026-05-31-admin-ui-gap-postdeploy-after-form-label-fix",
+  "total": 23,
+  "pass": 16,
+  "review": 7,
+  "results": [
+    {
+      "tab": "overview",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 62,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 3967
+    },
+    {
+      "tab": "paths",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 48,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 853
+    },
+    {
+      "tab": "lessons",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 411,
+      "unnamedControls": [],
+      "disabledWithoutReason": [
+        {
+          "label": "كل المواد",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الرئيسة",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الفرعية",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        }
+      ],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 7090
+    },
+    {
+      "tab": "library",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 47,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1294
+    },
+    {
+      "tab": "quizzes",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 393,
+      "unnamedControls": [],
+      "disabledWithoutReason": [
+        {
+          "label": "كل المواد",
+          "tag": "select",
+          "className": "w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الرئيسية",
+          "tag": "select",
+          "className": "w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الفرعية",
+          "tag": "select",
+          "className": "w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        }
+      ],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 8563
+    },
+    {
+      "tab": "mock-exams",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 56,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1671
+    },
+    {
+      "tab": "questions",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 401,
+      "unnamedControls": [],
+      "disabledWithoutReason": [
+        {
+          "label": "كل المواد",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الرئيسية",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "كل المهارات الفرعية",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        },
+        {
+          "label": "السابق",
+          "tag": "button",
+          "className": "rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+        },
+        {
+          "label": "التالي",
+          "tag": "button",
+          "className": "rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+        }
+      ],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 6127
+    },
+    {
+      "tab": "skills",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 74,
+      "unnamedControls": [],
+      "disabledWithoutReason": [
+        {
+          "label": "كل الموادالكمياللفظيرياضيات",
+          "tag": "select",
+          "className": "px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+        }
+      ],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1520
+    },
+    {
+      "tab": "users",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 169,
+      "unnamedControls": [],
+      "disabledWithoutReason": [
+        {
+          "label": "السابقة",
+          "tag": "button",
+          "className": "px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 disabled:opacity-50"
+        },
+        {
+          "label": "التالية",
+          "tag": "button",
+          "className": "px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 disabled:opacity-50"
+        }
+      ],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 4419
+    },
+    {
+      "tab": "groups",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 146,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 4847
+    },
+    {
+      "tab": "school-portal",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 50,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 3526
+    },
+    {
+      "tab": "memberships",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 41,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1599
+    },
+    {
+      "tab": "financial",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 43,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1821
+    },
+    {
+      "tab": "notifications",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 50,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1248
+    },
+    {
+      "tab": "homepage",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 346,
+      "unnamedControls": [
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "className": "accent-amber-500"
+        }
+      ],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 4631
+    },
+    {
+      "tab": "announcement-ads",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 53,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1244
+    },
+    {
+      "tab": "platform-fonts",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 73,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 3125
+    },
+    {
+      "tab": "platform-integrations",
+      "status": "REVIEW",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 290,
+      "unnamedControls": [
+        {
+          "tag": "button",
+          "type": "",
+          "className": "inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-r"
+        },
+        {
+          "tag": "button",
+          "type": "",
+          "className": "inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-r"
+        },
+        {
+          "tag": "button",
+          "type": "",
+          "className": "inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-r"
+        },
+        {
+          "tag": "button",
+          "type": "",
+          "className": "inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-r"
+        },
+        {
+          "tag": "button",
+          "type": "",
+          "className": "inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-r"
+        }
+      ],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 9181
+    },
+    {
+      "tab": "live-sessions",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 38,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 862
+    },
+    {
+      "tab": "backups",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 54,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 2994
+    },
+    {
+      "tab": "monitoring",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 46,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 11496
+    },
+    {
+      "tab": "ai-assistant",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 63,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 5111
+    },
+    {
+      "tab": "settings",
+      "status": "PASS",
+      "consoleErrors": [],
+      "network5xx": [],
+      "controls": 36,
+      "unnamedControls": [],
+      "disabledWithoutReason": [],
+      "incompleteTextHits": [],
+      "genericButtons": [],
+      "bodyLength": 1928
+    }
+  ]
+}
