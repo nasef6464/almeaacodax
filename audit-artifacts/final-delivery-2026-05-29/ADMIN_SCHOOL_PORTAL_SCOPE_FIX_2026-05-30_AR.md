@@ -103,3 +103,5 @@
 - PASS: تمت إعادة كل التغييرات المؤقتة إلى حالتها الأصلية: الباقة، المدرسة، والمجموعة.
 - النتيجة: 7/7 PASS، 0 FAIL، 0 BLOCKED.
 - الدليل: `audit-artifacts/admin-live-handoff/2026-05-31-admin-school-package-linkage-final/`.
+- PASS بعد النشر: الإنتاج يخدم commit `4791eb2a`، وتمت إعادة نفس فحص ربط باقات المدارس والمجموعات بعد النشر بنتيجة 7/7 PASS، 0 FAIL، 0 BLOCKED.
+- دليل ما بعد النشر: `audit-artifacts/admin-live-handoff/2026-05-31-admin-school-package-linkage-postdeploy/`.
