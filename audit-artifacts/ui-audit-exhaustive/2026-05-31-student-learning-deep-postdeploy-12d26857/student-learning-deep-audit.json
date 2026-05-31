@@ -1,0 +1,176 @@
+{
+  "generatedAt": "2026-05-31T15:04:05.132Z",
+  "baseUrl": "https://almeaacodax.vercel.app",
+  "apiBaseUrl": "https://almeaacodax-k2ux.onrender.com/api",
+  "runId": "2026-05-31-student-learning-deep-postdeploy-12d26857",
+  "targetPathId": "p_1777779639431",
+  "targetSubjectId": "sub_1777779748206",
+  "targets": {
+    "path": {
+      "id": "p_1777779639431",
+      "name": "القدرات"
+    },
+    "subject": {
+      "id": "sub_1777779748206",
+      "name": "الكمي"
+    },
+    "course": {
+      "id": "course_current_p_1777779639431_sub_1777779748206_foundation",
+      "title": "تأسيس الكمي: العمليات والمهارات الأساسية"
+    },
+    "quiz": {
+      "id": "quiz_current_p_1777779639431_sub_1777779748206_practice",
+      "title": "تدريب الكمي: العمليات والمهارات الأساسية"
+    }
+  },
+  "checks": [
+    {
+      "name": "active path and subject are available",
+      "status": "PASS",
+      "details": "القدرات / الكمي"
+    },
+    {
+      "name": "course target is available",
+      "status": "PASS",
+      "details": "تأسيس الكمي: العمليات والمهارات الأساسية"
+    },
+    {
+      "name": "training quiz target is available",
+      "status": "PASS",
+      "details": "تدريب الكمي: العمليات والمهارات الأساسية"
+    }
+  ],
+  "routeResults": [
+    {
+      "name": "student-dashboard",
+      "route": "/dashboard",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\student-dashboard.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/dashboard",
+      "title": "منصة المئة | مساحة الطالب",
+      "bodyLength": 1535,
+      "controlCount": 37,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "subject-skill-map",
+      "route": "/category/p_1777779639431?subject=sub_1777779748206&tab=skills",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\subject-skill-map.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/category/p_1777779639431?subject=sub_1777779748206&tab=skills",
+      "title": "مسارات القدرات والتحصيلي | منصة المئة",
+      "bodyLength": 730,
+      "controlCount": 24,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "course-player",
+      "route": "/course/course_current_p_1777779639431_sub_1777779748206_foundation",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\course-player.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/course/course_current_p_1777779639431_sub_1777779748206_foundation",
+      "title": "دورات القدرات والتحصيلي | منصة المئة",
+      "bodyLength": 397,
+      "controlCount": 21,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "training-quiz",
+      "route": "/quiz/quiz_current_p_1777779639431_sub_1777779748206_practice?returnTo=%2Fcategory%2Fp_1777779639431%3Fsubject%3Dsub_1777779748206%26tab%3Dskills&source=foundation",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\training-quiz.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/quiz/quiz_current_p_1777779639431_sub_1777779748206_practice?returnTo=%2Fcategory%2Fp_1777779639431%3Fsubject%3Dsub_1777779748206%26tab%3Dskills&source=foundation",
+      "title": "منصة المئة | مساحة الطالب",
+      "bodyLength": 255,
+      "controlCount": 12,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "my-quizzes",
+      "route": "/my-quizzes",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\my-quizzes.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/my-quizzes",
+      "title": "منصة المئة | مساحة الطالب",
+      "bodyLength": 2471,
+      "controlCount": 57,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "student-reports",
+      "route": "/reports",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\student-reports.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/reports",
+      "title": "منصة المئة | مساحة الطالب",
+      "bodyLength": 827,
+      "controlCount": 24,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    },
+    {
+      "name": "student-plan",
+      "route": "/plan",
+      "status": "PASS",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-05-31-student-learning-deep-postdeploy-12d26857\\student-plan.png",
+      "consoleErrors": [],
+      "network4xx": [],
+      "unexpected4xx": [],
+      "network5xx": [],
+      "href": "https://almeaacodax.vercel.app/plan",
+      "title": "منصة المئة | مساحة الطالب",
+      "bodyLength": 2953,
+      "controlCount": 55,
+      "hasLoginForm": false,
+      "hasQuizUi": true,
+      "hasLearningUi": true,
+      "hasBlockingError": false
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "pass": 10,
+    "fail": 0
+  }
+}

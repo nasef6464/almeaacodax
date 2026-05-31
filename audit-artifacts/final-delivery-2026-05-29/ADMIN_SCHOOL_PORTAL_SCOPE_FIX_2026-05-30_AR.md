@@ -194,3 +194,5 @@
 - PASS تحقق قبل الرفع: `npm --prefix server run check`، `npm --prefix server run build`، `npm run typecheck`، `npm run build`، `npm run smoke:my-quizzes`، و`npm run smoke:student-learning-journey`.
 - دليل ما قبل النشر: `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-after-69c5259d-v2-predeploy/`.
 - تحديث بعد إعادة التشخيص: الدورة المفحوصة منشورة ومعتمدة وسعرها 0؛ لذلك تم توسيع صلاحية `سؤال وجواب` للدورات المجانية المنشورة للطلاب المسجلين، مع بقاء الدورات المدفوعة مرتبطة بـ `enrolledCourses` أو `AccessGrant`.
+- PASS بعد النشر النهائي: الإنتاج يخدم commit `12d26857` عبر `smoke:frontend:strict` بنتيجة 29/29، ثم فحص رحلة الطالب البصري الحي أعاد 10/10 PASS و0 FAIL و0 Console errors و0 Network 4xx/5xx.
+- دليل ما بعد النشر النهائي: `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-postdeploy-12d26857/`.
