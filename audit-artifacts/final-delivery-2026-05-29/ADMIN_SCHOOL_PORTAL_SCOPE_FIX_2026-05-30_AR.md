@@ -193,3 +193,4 @@
 - تم الإصلاح: مسار نقاشات الدورة في الخادم أصبح يعترف بالوصول المباشر للدورة وبصلاحيات الباقات حسب `courseIds` أو `pathIds/subjectIds/contentTypes` النشطة، مع احترام انتهاء الصلاحية والحالة `active`.
 - PASS تحقق قبل الرفع: `npm --prefix server run check`، `npm --prefix server run build`، `npm run typecheck`، `npm run build`، `npm run smoke:my-quizzes`، و`npm run smoke:student-learning-journey`.
 - دليل ما قبل النشر: `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-after-69c5259d-v2-predeploy/`.
+- تحديث بعد إعادة التشخيص: الدورة المفحوصة منشورة ومعتمدة وسعرها 0؛ لذلك تم توسيع صلاحية `سؤال وجواب` للدورات المجانية المنشورة للطلاب المسجلين، مع بقاء الدورات المدفوعة مرتبطة بـ `enrolledCourses` أو `AccessGrant`.

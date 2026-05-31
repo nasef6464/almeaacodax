@@ -31,6 +31,17 @@ const getCourseIdentityValues = (course: any) => uniqueStrings([course?._id, cou
 
 const grantContentTypesThatCoverCourse = new Set(["all", "courses", "foundation"]);
 
+function isPublishedFreeCourse(course: any) {
+  const approvalStatus = String(course?.approvalStatus || "approved");
+  const price = Number(course?.price || 0);
+  return (
+    course?.isPublished !== false &&
+    course?.showOnPlatform !== false &&
+    (approvalStatus === "approved" || approvalStatus === "") &&
+    (course?.access === "free_preview" || price <= 0)
+  );
+}
+
 async function hasCourseAccessGrant(userId: string, course: any) {
   const courseIds = getCourseIdentityValues(course);
   const coursePathId = String(course?.pathId || "");
@@ -67,7 +78,7 @@ const findCoursesForDiscussionEntity = async (entityType: string, entityId: stri
   const safeEntityId = String(entityId || "").trim();
   if (!safeEntityId) return [];
 
-  const projection = "_id id pathId subjectId ownerId createdBy assignedTeacherId modules assessments isPublished showOnPlatform approvalStatus";
+  const projection = "_id id pathId subjectId ownerId createdBy assignedTeacherId modules assessments isPublished showOnPlatform approvalStatus access price";
 
   if (entityType === "course") {
     return CourseModel.find({ $or: [{ _id: safeEntityId }, { id: safeEntityId }] }).select(projection).lean();
@@ -135,6 +146,10 @@ async function assertCanAccessEntity(userId: string, entityType: string, entityI
 
   const enrolledSet = new Set((user.enrolledCourses || []).map(String));
   if (enrolledSet.size && courses.some((course) => getCourseIdentityValues(course).some((id) => enrolledSet.has(id)))) {
+    return true;
+  }
+
+  if (courses.some((course) => isPublishedFreeCourse(course))) {
     return true;
   }
 
