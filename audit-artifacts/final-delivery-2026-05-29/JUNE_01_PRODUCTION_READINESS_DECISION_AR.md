@@ -1,8 +1,9 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع أدلة تعدد مفاتيح AI: `81ca924` من `main`.
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `81ca9245`.
+- آخر commit وظيفي على إنتاج Vercel عند إعادة التحقق بعد رفع حارس تعدد مفاتيح AI: `81ca924` من `main`.
+- آخر commit على GitHub بعد تحديث التقرير: `fc707b6d`، وهو commit توثيقي فقط ولم يغير ملفات تشغيل الواجهة.
+- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `fc707b6d`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.

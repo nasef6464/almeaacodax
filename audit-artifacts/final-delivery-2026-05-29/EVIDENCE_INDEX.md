@@ -93,7 +93,8 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
-- Vercel production recheck after push: `Ready`, commit `81ca924` from GitHub `main`.
+- Vercel production functional recheck after push: `Ready`, commit `81ca924` from GitHub `main`.
+- Latest GitHub documentation commit: `fc707b6d`; docs-only and does not change production runtime files.
 - Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.

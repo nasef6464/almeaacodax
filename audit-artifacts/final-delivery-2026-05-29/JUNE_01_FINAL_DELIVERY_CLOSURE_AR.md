@@ -2,8 +2,9 @@
 
 ## القرار الحالي
 - الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
-- آخر commit منشور على إنتاج Vercel عند إعادة التحقق بعد رفع أدلة تعدد مفاتيح AI: `81ca924` من `main`.
-- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `81ca9245`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
+- آخر commit وظيفي منشور على إنتاج Vercel عند إعادة التحقق بعد رفع حارس تعدد مفاتيح AI: `81ca924` من `main`.
+- آخر commit على GitHub بعد تحديث التقرير: `fc707b6d`، وهو commit توثيقي فقط ولم يغير ملفات تشغيل الواجهة.
+- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `fc707b6d`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 
