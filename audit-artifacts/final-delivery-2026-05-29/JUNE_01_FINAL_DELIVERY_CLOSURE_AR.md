@@ -2,8 +2,8 @@
 
 ## القرار الحالي
 - الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
-- آخر commit منشور على إنتاج Vercel عند إعادة التحقق: `c7c1645` من `main`.
-- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `c7c16457`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
+- آخر commit منشور على إنتاج Vercel عند إعادة التحقق بعد رفع أدلة تعدد مفاتيح AI: `81ca924` من `main`.
+- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `81ca9245`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 
@@ -49,3 +49,4 @@
 - `node scripts/live-ai-runtime-audit.mjs` -> PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
 - `npm run smoke:ai-config-bridge` -> PASS 12/12 بعد إضافة حارس تعدد مفاتيح AI وfailover.
 - فحص سلامة scripts: 115 script بدون مسارات `node scripts/...` مفقودة.
+- بعد النشر على Vercel: `npm run smoke:frontend:strict` -> PASS 28/28، و`npm run smoke:health-readiness` -> PASS.

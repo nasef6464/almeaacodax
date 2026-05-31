@@ -93,7 +93,7 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
-- Vercel production recheck: `Ready`, commit `c7c1645` from GitHub `main`.
+- Vercel production recheck after push: `Ready`, commit `81ca924` from GitHub `main`.
 - Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
@@ -104,6 +104,8 @@
 - `npm run smoke:admin-memberships-ai-closure` - PASS 6/6.
 - `npm run smoke:payment-package` - PASS 8/8.
 - `npm run smoke:security-rbac-phase6` - PASS 5/5.
+- Postdeploy `npm run smoke:frontend:strict` - PASS 28/28, entry asset `index-B5N5Bp36.js`.
+- Postdeploy `npm run smoke:health-readiness` - PASS.
 - Vercel inspect logs: production Ready ويبني من GitHub `main`; استخدم logs كدليل commit المنشور بعد أي commit توثيقي لاحق.
 
 ## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)

@@ -1,8 +1,8 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit على إنتاج Vercel عند إعادة التحقق: `c7c1645` من `main`.
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `c7c16457`.
+- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع أدلة تعدد مفاتيح AI: `81ca924` من `main`.
+- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `81ca9245`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
@@ -24,6 +24,7 @@
 - Sentry wiring: `smoke:sentry-runtime` نجح `5/5`.
 - سلامة قائمة scripts في `package.json`: تم فحص 115 script ولم يظهر أي مسار `node scripts/...` مفقود.
 - جسر AI والتكاملات بعد تقوية العقد: `smoke:ai-config-bridge` نجح `12/12`، ويثبت وجود تعدد مفاتيح AI، وتجربة مفاتيح المزود بالترتيب، والوضع التلقائي عند تعطل المزود.
+- بعد نشر commit `81ca924`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
 
 ## الفجوات التي لا يجوز إخفاؤها
 - مساعد الطالب يعمل وظيفيا ولا يكسر الواجهة، لكن آخر فحص حي رجع `fallback=true` لأن Gemini أعاد `429 quota exceeded`.

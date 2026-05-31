@@ -579,7 +579,7 @@
 - لم يتم إعادة الفحص من الصفر؛ تمت مراجعة آخر الأدلة والـ commits ثم تشغيل فحوص انتقائية على نقاط المفاجآت المحتملة.
 - إنتاج Vercel:
   - الحالة: `Ready`
-  - commit المنشور: `c7c1645` من GitHub `main`
+  - commit المنشور بعد رفع هذه المتابعة: `81ca924` من GitHub `main`
   - دليل التحقق: `vercel inspect almeaacodax.vercel.app --logs`
 - سلامة scripts:
   - تم فحص 115 script في `package.json`.
@@ -596,6 +596,8 @@
   - `npm run smoke:admin-memberships-ai-closure` -> `PASS 6/6`
   - `npm run smoke:payment-package` -> `PASS 8/8`
   - `npm run smoke:security-rbac-phase6` -> `PASS 5/5`
+  - بعد النشر: `npm run smoke:frontend:strict` -> `PASS 28/28`
+  - بعد النشر: `npm run smoke:health-readiness` -> `PASS`
 - إعادة فحص AI الحي:
   - الدليل: `audit-artifacts/admin-live-handoff/2026-06-01-live-ai-final-recheck-multikey-guard/SUMMARY.md`
   - النتيجة: `PASS 6`, `REVIEW 2`
