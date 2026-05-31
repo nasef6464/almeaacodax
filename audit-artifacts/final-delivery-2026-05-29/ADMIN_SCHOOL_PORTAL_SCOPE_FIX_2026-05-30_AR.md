@@ -142,3 +142,9 @@
 - PASS: بعد تعديل محرر النص الغني نجحت `npm run typecheck` و`npm run build` و`smoke:admin-tabs` و`smoke:admin-memberships-ai-closure` و`smoke:ai-config-bridge`.
 - المتبقي: تحذير `xlsx` عالي الخطورة لا يملك fix متاحا في قناة npm الحالية؛ آخر إصدار منشور هو `0.18.5` نفسه. المخاطر العملية مخففة حاليا عبر التحميل الكسول وطبقة `utils/xlsxLoader.ts` التي تعطل الصيغ/VBA وتزيل مفاتيح prototype pollution من بيانات الاستيراد.
 - قرار التسليم: لا يتم استبدال `xlsx` بمكتبة مختلفة في نفس دفعة التسليم دون جولة Regression مخصصة للاستيراد/التصدير؛ يسجل كبند متابعة أمني بعد التسليم وليس كعطل في لوحة الإدارة.
+- PASS بعد النشر: الإنتاج يخدم commit `38b5a176`، و`smoke:frontend:strict` نجح 29/29.
+- PASS بعد تعديل التبعيات: فحص فجوات لوحة الإدارة الحي أعاد 23/23 PASS و0 REVIEW.
+- PASS بعد تعديل التبعيات: فحص AI الحي أعاد 6/6 PASS و0 REVIEW، ومحادثة الطالب استخدمت `gemini-2.5-flash` مع `usedFallback=false`.
+- أدلة ما بعد التبعيات:
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-after-dependency-fix/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-postdependency/`
