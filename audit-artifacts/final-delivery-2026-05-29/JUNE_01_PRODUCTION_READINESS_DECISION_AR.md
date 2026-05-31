@@ -1,9 +1,8 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit وظيفي على إنتاج Vercel عند إعادة التحقق بعد رفع حارس تعدد مفاتيح AI: `81ca924` من `main`.
-- آخر commit على GitHub بعد تحديث التقرير: `fc707b6d`، وهو commit توثيقي فقط ولم يغير ملفات تشغيل الواجهة.
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `fc707b6d`.
+- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق: `0f9a057` من `main`.
+- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `0f9a0577`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
@@ -25,7 +24,7 @@
 - Sentry wiring: `smoke:sentry-runtime` نجح `5/5`.
 - سلامة قائمة scripts في `package.json`: تم فحص 115 script ولم يظهر أي مسار `node scripts/...` مفقود.
 - جسر AI والتكاملات بعد تقوية العقد: `smoke:ai-config-bridge` نجح `12/12`، ويثبت وجود تعدد مفاتيح AI، وتجربة مفاتيح المزود بالترتيب، والوضع التلقائي عند تعطل المزود.
-- بعد نشر commit `81ca924`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
+- بعد نشر commit `0f9a057`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
 - تم اكتشاف وإصلاح فجوة تسليم: أوامر `smoke:handover-*` في `package.json` كانت تشير إلى ملفات موجودة محليا وغير متتبعة؛ تمت إضافتها إلى Git وتشغيل `smoke:handover:all` بنجاح.
 - فحوص مخاطر الإطلاق الإضافية نجحت: `api-security 6/6`, `csrf 4/4`, `auth-cookie 5/5`, `payment-providers 7/7`, `payment-tampering 9/9`, `production-audit 9/9`, `production-hardening 5/5`, `reports-role 11/11`, `rbac-school-scope 4/4`, `sentry-runtime 5/5`.
 

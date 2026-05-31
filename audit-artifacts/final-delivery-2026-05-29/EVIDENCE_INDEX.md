@@ -93,8 +93,7 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
-- Vercel production functional recheck after push: `Ready`, commit `81ca924` from GitHub `main`.
-- Latest GitHub documentation commit: `fc707b6d`; docs-only and does not change production runtime files.
+- Vercel production recheck after handover guard push: `Ready`, commit `0f9a057` from GitHub `main`.
 - Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
@@ -105,7 +104,7 @@
 - `npm run smoke:admin-memberships-ai-closure` - PASS 6/6.
 - `npm run smoke:payment-package` - PASS 8/8.
 - `npm run smoke:security-rbac-phase6` - PASS 5/5.
-- Postdeploy `npm run smoke:frontend:strict` - PASS 28/28, entry asset `index-B5N5Bp36.js`.
+- Postdeploy `npm run smoke:frontend:strict` - PASS 28/28, entry asset `index-BUBhsRw2.js`.
 - Postdeploy `npm run smoke:health-readiness` - PASS.
 - Handover scripts tracking fix: added the five `scripts/smoke-handover-*-contract.mjs` files that were referenced by `package.json` but not tracked.
 - `npm run smoke:handover:all` - PASS.

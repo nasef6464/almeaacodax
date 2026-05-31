@@ -579,8 +579,7 @@
 - لم يتم إعادة الفحص من الصفر؛ تمت مراجعة آخر الأدلة والـ commits ثم تشغيل فحوص انتقائية على نقاط المفاجآت المحتملة.
 - إنتاج Vercel:
   - الحالة: `Ready`
-  - commit التشغيل المنشور بعد رفع حارس تعدد مفاتيح AI: `81ca924` من GitHub `main`
-  - آخر commit على GitHub بعد تحديث التقرير: `fc707b6d`، وهو توثيقي فقط ولا يغير ملفات تشغيل الواجهة
+  - commit التشغيل المنشور بعد رفع حراس handover ومخاطر الإطلاق: `0f9a057` من GitHub `main`
   - دليل التحقق: `vercel inspect almeaacodax.vercel.app --logs`
 - سلامة scripts:
   - تم فحص 115 script في `package.json`.
@@ -597,7 +596,7 @@
   - `npm run smoke:admin-memberships-ai-closure` -> `PASS 6/6`
   - `npm run smoke:payment-package` -> `PASS 8/8`
   - `npm run smoke:security-rbac-phase6` -> `PASS 5/5`
-  - بعد النشر: `npm run smoke:frontend:strict` -> `PASS 28/28`
+  - بعد النشر الأخير: `npm run smoke:frontend:strict` -> `PASS 28/28`
   - بعد النشر: `npm run smoke:health-readiness` -> `PASS`
 - إعادة فحص AI الحي:
   - الدليل: `audit-artifacts/admin-live-handoff/2026-06-01-live-ai-final-recheck-multikey-guard/SUMMARY.md`

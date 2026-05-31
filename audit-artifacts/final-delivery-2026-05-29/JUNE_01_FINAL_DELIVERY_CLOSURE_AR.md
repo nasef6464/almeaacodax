@@ -2,9 +2,8 @@
 
 ## القرار الحالي
 - الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
-- آخر commit وظيفي منشور على إنتاج Vercel عند إعادة التحقق بعد رفع حارس تعدد مفاتيح AI: `81ca924` من `main`.
-- آخر commit على GitHub بعد تحديث التقرير: `fc707b6d`، وهو commit توثيقي فقط ولم يغير ملفات تشغيل الواجهة.
-- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `fc707b6d`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
+- آخر commit منشور على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق: `0f9a057` من `main`.
+- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `0f9a0577`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 
@@ -50,6 +49,6 @@
 - `node scripts/live-ai-runtime-audit.mjs` -> PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
 - `npm run smoke:ai-config-bridge` -> PASS 12/12 بعد إضافة حارس تعدد مفاتيح AI وfailover.
 - فحص سلامة scripts: 115 script بدون مسارات `node scripts/...` مفقودة.
-- بعد النشر على Vercel: `npm run smoke:frontend:strict` -> PASS 28/28، و`npm run smoke:health-readiness` -> PASS.
+- بعد النشر على Vercel commit `0f9a057`: `npm run smoke:frontend:strict` -> PASS 28/28، و`npm run smoke:health-readiness` -> PASS.
 - تم إصلاح فجوة تسليم إضافية: ملفات `smoke:handover-*` كانت غير متتبعة رغم أن `package.json` يشير إليها؛ تمت إضافتها وتشغيل `npm run smoke:handover:all` بنجاح.
 - فحوص أمان/إنتاج/دفع إضافية: `api-security`, `csrf`, `auth-cookie`, `payment-providers`, `payment-tampering`, `production-audit`, `production-hardening`, `xlsx-safety`, `reports-role`, `rbac-school-scope`, `sentry-runtime` كلها PASS.
