@@ -1,0 +1,243 @@
+{
+  "generatedAt": "2026-05-31T13:31:34.371Z",
+  "apiBaseUrl": "https://almeaacodax-k2ux.onrender.com/api",
+  "adminLogin": {
+    "ok": true,
+    "status": 200,
+    "user": {
+      "role": "admin",
+      "email": "nasef64@gmail.com"
+    }
+  },
+  "studentLogin": {
+    "ok": true,
+    "status": 200,
+    "user": {
+      "role": "student",
+      "email": "student.a@almeaa.local"
+    }
+  },
+  "status": {
+    "ok": true,
+    "status": 200,
+    "provider": "gemini",
+    "routingMode": "manual",
+    "providerOrderSource": "admin",
+    "providerOrder": [
+      "gemini",
+      "openrouter",
+      "openai",
+      "deepseek",
+      "qwen",
+      "ollama",
+      "lmstudio",
+      "none"
+    ],
+    "model": "gemini-2.5-flash",
+    "configuredProviders": [
+      {
+        "id": "gemini",
+        "model": "gemini-2.5-flash",
+        "source": "admin"
+      },
+      {
+        "id": "ollama",
+        "model": "gemma3:4b",
+        "source": "env"
+      },
+      {
+        "id": "lmstudio",
+        "model": "local-model",
+        "source": "env"
+      }
+    ]
+  },
+  "readiness": {
+    "ok": true,
+    "status": 200,
+    "score": 100,
+    "activeProvider": "gemini",
+    "studentAdvisor": {
+      "ready": true,
+      "studentCount": 25,
+      "studentsWithResults": 6,
+      "weakSkillSignals": 147,
+      "studentChats24h": 5,
+      "personalizedStudentChats7d": 126,
+      "fallbackStudentChats24h": 0
+    },
+    "monitoring": {
+      "aiErrors24h": 0,
+      "fallbackStudentChats24h": 0
+    },
+    "nextActions": []
+  },
+  "providerTests": [
+    {
+      "provider": "gemini",
+      "ok": true,
+      "status": 200,
+      "providerOk": true,
+      "model": "gemini-2.5-flash",
+      "latencyMs": 7591,
+      "message": "",
+      "samplePreview": "إليك بعض الخيارات:\n\n1.  **أنا أعمل الآن.** (Anā aʿmal al-ān.) - \"أنا أعمل الآن.\" (I am working now.)\n2.  **أنا في الخدمة.** (Anā fī al-khidma.) - \"I am at your service/operational.\"\n3.  **الذكاء الاصطناعي يعمل.** (Al-dhakā' al-iṣṭinā'ī yaʿm"
+    }
+  ],
+  "studentChat": {
+    "ok": true,
+    "status": 200,
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "usedFallback": false,
+    "fallbackReason": "",
+    "providerErrors": [],
+    "textPreview": "نعم، أنا هنا لمساعدتك."
+  },
+  "interactionsBefore": {
+    "ok": true,
+    "status": 200,
+    "summary": {
+      "total": 308,
+      "last24h": 6,
+      "fallbackCount": 293,
+      "errorCount": 0,
+      "byAudience": [
+        {
+          "audience": "student",
+          "count": 269
+        },
+        {
+          "audience": "admin",
+          "count": 22
+        },
+        {
+          "audience": "guest",
+          "count": 17
+        }
+      ],
+      "byProvider": [
+        {
+          "provider": "none",
+          "count": 293,
+          "avgLatencyMs": 3511
+        },
+        {
+          "provider": "gemini",
+          "count": 15,
+          "avgLatencyMs": 7778
+        }
+      ]
+    }
+  },
+  "interactionsAfter": {
+    "ok": true,
+    "status": 200,
+    "summary": {
+      "total": 309,
+      "last24h": 7,
+      "fallbackCount": 293,
+      "errorCount": 0,
+      "byAudience": [
+        {
+          "audience": "student",
+          "count": 270
+        },
+        {
+          "audience": "admin",
+          "count": 22
+        },
+        {
+          "audience": "guest",
+          "count": 17
+        }
+      ],
+      "byProvider": [
+        {
+          "provider": "none",
+          "count": 293,
+          "avgLatencyMs": 3511
+        },
+        {
+          "provider": "gemini",
+          "count": 16,
+          "avgLatencyMs": 7503
+        }
+      ]
+    },
+    "latest": [
+      {
+        "audience": "student",
+        "endpoint": "/ai/chat",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "status": "success",
+        "usedFallback": false,
+        "error": "",
+        "fallbackReason": "",
+        "hasImage": false,
+        "createdAt": "2026-05-31T13:31:34.378Z"
+      },
+      {
+        "audience": "student",
+        "endpoint": "/ai/chat",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "status": "success",
+        "usedFallback": false,
+        "error": "",
+        "fallbackReason": "",
+        "hasImage": false,
+        "createdAt": "2026-05-31T12:40:03.171Z"
+      },
+      {
+        "audience": "student",
+        "endpoint": "/ai/chat",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "status": "success",
+        "usedFallback": false,
+        "error": "",
+        "fallbackReason": "",
+        "hasImage": false,
+        "createdAt": "2026-05-31T12:18:24.436Z"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "ai status endpoint is reachable",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "admin readiness endpoint is reachable",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "provider order comes from admin integrations",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "at least one real provider is configured",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "student chat endpoint responded",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "student chat used a real provider",
+      "pass": true,
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "pass": 6,
+    "review": 0
+  }
+}

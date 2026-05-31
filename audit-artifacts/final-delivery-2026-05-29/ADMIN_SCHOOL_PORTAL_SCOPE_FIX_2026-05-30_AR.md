@@ -162,3 +162,14 @@
 - أدلة ما بعد النشر:
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-xlsx-export-postdeploy-fdd2c2d5/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-school-package-linkage-postdeploy-fdd2c2d5/`
+
+## فحص إغلاق لوحة الإدارة والمساعد بعد آخر رفع - 2026-05-31
+- PASS: الإنتاج يخدم commit `5dffc7e5`، و`smoke:frontend:strict` نجح 29/29 بعد النشر.
+- PASS: تم فتح وتصوير 23 تبويبا في لوحة الإدارة على الإنتاج: 23/23 PASS و0 FAIL، بدون أخطاء Console أو Network 5xx.
+- PASS: فحص فجوات الوضوح داخل لوحة الإدارة أعاد 23/23 PASS و0 REVIEW؛ لا توجد أزرار مرئية بلا اسم، ولا عناصر معطلة بلا سبب تشغيلي، ولا نصوص "قريبا/تحت التطوير" في التبويبات المفحوصة.
+- PASS: تبويبات العضويات، المالية، المدارس/المجموعات، بوابة المدارس، التكاملات، ومساعد الإدارة ظهرت ضمن الفحص النهائي وعملت كواجهات إدارة فعلية وليست صفحات فارغة.
+- PASS: فحص AI النهائي أعاد 6/6 PASS و0 REVIEW: المزود `gemini`، الموديل `gemini-2.5-flash`، مصدر الترتيب `admin`، readiness = 100، ومحادثة الطالب رجعت من Gemini مع `usedFallback=false`.
+- أدلة الإغلاق بعد آخر رفع:
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-tabs-final-after-5dffc7e5/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-final-after-5dffc7e5/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/`
