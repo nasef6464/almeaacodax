@@ -148,3 +148,13 @@
 - أدلة ما بعد التبعيات:
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-after-dependency-fix/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-postdependency/`
+
+## فحص Excel والتصدير العملي على الإنتاج - 2026-05-31
+- PASS: تم إضافة فاحص حي مستقل `scripts/admin-xlsx-export-live-audit.mjs` لتجربة تنزيل ملفات Excel/القوالب من لوحة الإدارة على الموقع المنشور.
+- PASS: الفحص العملي أعاد 15/15 PASS و0 FAIL و0 Console errors و0 Network failures.
+- PASS: تم تنزيل الملفات التالية فعليا من الإنتاج: تقرير المستخدمين، تقرير جاهزية المدارس/المجموعات، قالب استيراد الدروس، تصدير الدروس، تصدير الأسئلة، قالب أسئلة Excel، تصدير المكتبة، وتصدير جاهزية الاختبارات.
+- PASS: الفحص يدعم قرار إبقاء `xlsx` مؤقتا مع طبقة التخفيف الحالية؛ وظائف التصدير والقوالب الأساسية تعمل بعد آخر نشر، والتحذير الأمني المتبقي لا يظهر كعطل وظيفي في لوحة الإدارة.
+- PASS: فحص ربط باقات المدارس والمجموعات بعد آخر نشر أعاد 7/7 PASS، ويثبت أن اختيار الدورة داخل باقة مدرسة أو مجموعة يصل للخادم ويرجع بعد القراءة، ثم تتم إعادة أي تعديل مؤقت لحالته الأصلية.
+- الأدلة:
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-xlsx-export-postdeploy-v3/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-school-package-linkage-postdeploy-xlsx/`
