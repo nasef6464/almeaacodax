@@ -134,3 +134,11 @@
 - PASS: اختبار مزود Gemini من الإدارة نجح، ورسالة الطالب رجعت من `gemini` مع `usedFallback=false`.
 - ملاحظة تشغيلية: يوجد سجل قديم كبير لمحادثات fallback قبل الإصلاحات، لكنه ليس حالة الإنتاج الحالية؛ آخر فحص حي سجل محادثة طالب جديدة ناجحة على Gemini.
 - دليل الفحص: `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-final-check-3/`.
+
+## تدقيق التبعيات قبل التسليم - 2026-05-31
+- PASS: تم تشغيل `npm --prefix server audit fix` للخادم، وتحديث `express/body-parser/qs` داخل `server/package-lock.json`.
+- PASS: `npm --prefix server audit --json` أصبح 0 ثغرات، و`npm --prefix server run check` و`npm --prefix server run build` نجحا.
+- PASS: تم تقليل تحذيرات الواجهة من 3 إلى 1: تثبيت `react-quill-new@3.7.0` مع override آمن لـ `quill@2.0.2` أزال تحذير Quill منخفض الخطورة.
+- PASS: بعد تعديل محرر النص الغني نجحت `npm run typecheck` و`npm run build` و`smoke:admin-tabs` و`smoke:admin-memberships-ai-closure` و`smoke:ai-config-bridge`.
+- المتبقي: تحذير `xlsx` عالي الخطورة لا يملك fix متاحا في قناة npm الحالية؛ آخر إصدار منشور هو `0.18.5` نفسه. المخاطر العملية مخففة حاليا عبر التحميل الكسول وطبقة `utils/xlsxLoader.ts` التي تعطل الصيغ/VBA وتزيل مفاتيح prototype pollution من بيانات الاستيراد.
+- قرار التسليم: لا يتم استبدال `xlsx` بمكتبة مختلفة في نفس دفعة التسليم دون جولة Regression مخصصة للاستيراد/التصدير؛ يسجل كبند متابعة أمني بعد التسليم وليس كعطل في لوحة الإدارة.
