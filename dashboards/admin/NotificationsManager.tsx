@@ -189,19 +189,19 @@ export const NotificationsManager: React.FC = () => {
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <label className="space-y-1 text-sm font-bold text-gray-700">
             <span>Template Key (اختياري)</span>
-            <input value={templateKey} onChange={(e) => setTemplateKey(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
+            <input aria-label="Template Key للإشعار" title="Template Key للإشعار" value={templateKey} onChange={(e) => setTemplateKey(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
           </label>
           <label className="space-y-1 text-sm font-bold text-gray-700">
             <span>الموضوع (اختياري للبريد)</span>
-            <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
+            <input aria-label="موضوع الإشعار" title="موضوع الإشعار" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
           </label>
           <label className="space-y-1 text-sm font-bold text-gray-700">
             <span>العنوان</span>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
+            <input aria-label="عنوان الإشعار" title="عنوان الإشعار" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
           </label>
           <label className="space-y-1 text-sm font-bold text-gray-700">
             <span>المحتوى</span>
-            <input value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
+            <input aria-label="محتوى الإشعار" title="محتوى الإشعار" value={body} onChange={(e) => setBody(e.target.value)} className="w-full rounded-xl border border-gray-200 px-3 py-2" />
           </label>
         </div>
 
@@ -236,7 +236,7 @@ export const NotificationsManager: React.FC = () => {
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
             {candidateUsers.map((user) => (
               <label key={user.id} className="flex items-center gap-2 text-xs text-gray-700">
-                <input type="checkbox" checked={pickedUserIds.includes(user.id)} onChange={() => toggleUser(user.id)} />
+                <input type="checkbox" aria-label={`اختيار المستخدم ${user.name}`} title={`اختيار المستخدم ${user.name}`} checked={pickedUserIds.includes(user.id)} onChange={() => toggleUser(user.id)} />
                 <span>{user.name} ({user.role})</span>
               </label>
             ))}

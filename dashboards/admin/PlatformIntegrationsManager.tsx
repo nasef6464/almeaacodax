@@ -1148,19 +1148,19 @@ export const PlatformIntegrationsManager: React.FC = () => {
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>السماح بالتسجيل الذاتي</span>
-            <input type="checkbox" checked={settings.auth.allowSelfRegistration} onChange={(e) => updateAuth("allowSelfRegistration", e.target.checked)} />
+            <input type="checkbox" aria-label="السماح بالتسجيل الذاتي" title="السماح بالتسجيل الذاتي" checked={settings.auth.allowSelfRegistration} onChange={(e) => updateAuth("allowSelfRegistration", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>السماح بالبريد وكلمة المرور</span>
-            <input type="checkbox" checked={settings.auth.allowEmailPassword} onChange={(e) => updateAuth("allowEmailPassword", e.target.checked)} />
+            <input type="checkbox" aria-label="السماح بالبريد وكلمة المرور" title="السماح بالبريد وكلمة المرور" checked={settings.auth.allowEmailPassword} onChange={(e) => updateAuth("allowEmailPassword", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>تفعيل تحقق البريد</span>
-            <input type="checkbox" checked={settings.auth.requireEmailVerification} onChange={(e) => updateAuth("requireEmailVerification", e.target.checked)} />
+            <input type="checkbox" aria-label="تفعيل تحقق البريد" title="تفعيل تحقق البريد" checked={settings.auth.requireEmailVerification} onChange={(e) => updateAuth("requireEmailVerification", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>موافقة الإدارة قبل التفعيل</span>
-            <input type="checkbox" checked={settings.auth.requireAdminApproval} onChange={(e) => updateAuth("requireAdminApproval", e.target.checked)} />
+            <input type="checkbox" aria-label="موافقة الإدارة قبل التفعيل" title="موافقة الإدارة قبل التفعيل" checked={settings.auth.requireAdminApproval} onChange={(e) => updateAuth("requireAdminApproval", e.target.checked)} />
           </label>
         </div>
       </div>
@@ -1188,7 +1188,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
                     <ExternalLink size={12} />
                     فتح دليل الإعداد
                   </button>
-                  <input type="checkbox" checked={settings.providers[provider.key].enabled} onChange={(e) => updateProvider(provider.key, { enabled: e.target.checked })} />
+                  <input type="checkbox" aria-label={`تفعيل مزود ${provider.label}`} title={`تفعيل مزود ${provider.label}`} checked={settings.providers[provider.key].enabled} onChange={(e) => updateProvider(provider.key, { enabled: e.target.checked })} />
                 </div>
               </div>
               {settings.providerSecretState?.[provider.key] ? (
@@ -1196,15 +1196,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
                   توجد مفاتيح سرية محفوظة لهذا المزود. اترك حقل السر فارغًا إذا لا تريد تغييره.
                 </div>
               ) : null}
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].mode || ""} onChange={(e) => updateProvider(provider.key, { mode: e.target.value })} placeholder="mode" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].appId || ""} onChange={(e) => updateProvider(provider.key, { appId: e.target.value })} placeholder="App ID / Project ID" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].clientId || ""} onChange={(e) => updateProvider(provider.key, { clientId: e.target.value })} placeholder="Client ID" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].clientSecret || ""} onChange={(e) => updateProvider(provider.key, { clientSecret: e.target.value })} placeholder="Client Secret / API Secret" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].apiKey || ""} onChange={(e) => updateProvider(provider.key, { apiKey: e.target.value })} placeholder="API Key" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].accessToken || ""} onChange={(e) => updateProvider(provider.key, { accessToken: e.target.value })} placeholder="Access Token / DSN / Redis URL" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].callbackUrl || ""} onChange={(e) => updateProvider(provider.key, { callbackUrl: e.target.value })} placeholder="Callback URL" />
-              <input className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].webhookUrl || ""} onChange={(e) => updateProvider(provider.key, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
-              <textarea className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" rows={2} value={settings.providers[provider.key].note || ""} onChange={(e) => updateProvider(provider.key, { note: e.target.value })} placeholder="ملاحظات تشغيلية" />
+              <input aria-label={`وضع مزود ${provider.label}`} title={`وضع مزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].mode || ""} onChange={(e) => updateProvider(provider.key, { mode: e.target.value })} placeholder="mode" />
+              <input aria-label={`App ID أو Project ID لمزود ${provider.label}`} title={`App ID أو Project ID لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].appId || ""} onChange={(e) => updateProvider(provider.key, { appId: e.target.value })} placeholder="App ID / Project ID" />
+              <input aria-label={`Client ID لمزود ${provider.label}`} title={`Client ID لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].clientId || ""} onChange={(e) => updateProvider(provider.key, { clientId: e.target.value })} placeholder="Client ID" />
+              <input aria-label={`Client Secret أو API Secret لمزود ${provider.label}`} title={`Client Secret أو API Secret لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].clientSecret || ""} onChange={(e) => updateProvider(provider.key, { clientSecret: e.target.value })} placeholder="Client Secret / API Secret" />
+              <input aria-label={`API Key لمزود ${provider.label}`} title={`API Key لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].apiKey || ""} onChange={(e) => updateProvider(provider.key, { apiKey: e.target.value })} placeholder="API Key" />
+              <input aria-label={`Access Token أو DSN لمزود ${provider.label}`} title={`Access Token أو DSN لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].accessToken || ""} onChange={(e) => updateProvider(provider.key, { accessToken: e.target.value })} placeholder="Access Token / DSN / Redis URL" />
+              <input aria-label={`Callback URL لمزود ${provider.label}`} title={`Callback URL لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].callbackUrl || ""} onChange={(e) => updateProvider(provider.key, { callbackUrl: e.target.value })} placeholder="Callback URL" />
+              <input aria-label={`Webhook URL لمزود ${provider.label}`} title={`Webhook URL لمزود ${provider.label}`} className="mb-2 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" value={settings.providers[provider.key].webhookUrl || ""} onChange={(e) => updateProvider(provider.key, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
+              <textarea aria-label={`ملاحظات تشغيلية لمزود ${provider.label}`} title={`ملاحظات تشغيلية لمزود ${provider.label}`} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" rows={2} value={settings.providers[provider.key].note || ""} onChange={(e) => updateProvider(provider.key, { note: e.target.value })} placeholder="ملاحظات تشغيلية" />
               {(providerGuides[provider.key].callbackPath || providerGuides[provider.key].webhookPath) ? (
                 <div className="mt-2 space-y-1 text-xs">
                   {providerGuides[provider.key].callbackPath ? (
@@ -1403,6 +1403,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
           </select>
           {testChannel === "email" ? (
             <input
+              aria-label="بريد مستلم اختبار الإشعارات"
+              title="بريد مستلم اختبار الإشعارات"
               className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
               value={testEmail}
               onChange={(e) => setTestEmail(e.target.value)}
@@ -1410,6 +1412,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
             />
           ) : (
             <input
+              aria-label="رقم مستلم اختبار الإشعارات"
+              title="رقم مستلم اختبار الإشعارات"
               className="rounded-xl border border-gray-200 px-3 py-2 text-sm"
               value={testPhone}
               onChange={(e) => setTestPhone(e.target.value)}
@@ -1417,6 +1421,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
             />
           )}
           <input
+            aria-label="رسالة اختبار الإشعارات"
+            title="رسالة اختبار الإشعارات"
             className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2"
             value={testMessage}
             onChange={(e) => setTestMessage(e.target.value)}
@@ -1444,26 +1450,26 @@ export const PlatformIntegrationsManager: React.FC = () => {
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>تفعيل الزر العائم</span>
-            <input type="checkbox" checked={settings.contactWidget.enabled} onChange={(e) => updateContactWidget("enabled", e.target.checked)} />
+            <input type="checkbox" aria-label="تفعيل الزر العائم" title="تفعيل الزر العائم" checked={settings.contactWidget.enabled} onChange={(e) => updateContactWidget("enabled", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>فتح في تبويب جديد</span>
-            <input type="checkbox" checked={settings.contactWidget.openInNewTab} onChange={(e) => updateContactWidget("openInNewTab", e.target.checked)} />
+            <input type="checkbox" aria-label="فتح الزر العائم في تبويب جديد" title="فتح الزر العائم في تبويب جديد" checked={settings.contactWidget.openInNewTab} onChange={(e) => updateContactWidget("openInNewTab", e.target.checked)} />
           </label>
           <select className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.contactWidget.channel} onChange={(e) => updateContactWidget("channel", e.target.value as "whatsapp" | "telegram" | "phone")}>
             <option value="whatsapp">WhatsApp</option>
             <option value="telegram">Telegram</option>
             <option value="phone">Phone</option>
           </select>
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.contactWidget.whatsappNumber} onChange={(e) => updateContactWidget("whatsappNumber", e.target.value)} placeholder="رقم الواتساب بصيغة دولية 9665xxxxxxx" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.contactWidget.whatsappMessage} onChange={(e) => updateContactWidget("whatsappMessage", e.target.value)} placeholder="رسالة البداية" />
+          <input aria-label="رقم واتساب الزر العائم" title="رقم واتساب الزر العائم" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.contactWidget.whatsappNumber} onChange={(e) => updateContactWidget("whatsappNumber", e.target.value)} placeholder="رقم الواتساب بصيغة دولية 9665xxxxxxx" />
+          <input aria-label="رسالة بداية الزر العائم" title="رسالة بداية الزر العائم" className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.contactWidget.whatsappMessage} onChange={(e) => updateContactWidget("whatsappMessage", e.target.value)} placeholder="رسالة البداية" />
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>إظهار في الصفحات العامة</span>
-            <input type="checkbox" checked={settings.contactWidget.showOnPublicPages} onChange={(e) => updateContactWidget("showOnPublicPages", e.target.checked)} />
+            <input type="checkbox" aria-label="إظهار الزر العائم في الصفحات العامة" title="إظهار الزر العائم في الصفحات العامة" checked={settings.contactWidget.showOnPublicPages} onChange={(e) => updateContactWidget("showOnPublicPages", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>إظهار في لوحات المستخدمين</span>
-            <input type="checkbox" checked={settings.contactWidget.showOnDashboardPages} onChange={(e) => updateContactWidget("showOnDashboardPages", e.target.checked)} />
+            <input type="checkbox" aria-label="إظهار الزر العائم في لوحات المستخدمين" title="إظهار الزر العائم في لوحات المستخدمين" checked={settings.contactWidget.showOnDashboardPages} onChange={(e) => updateContactWidget("showOnDashboardPages", e.target.checked)} />
           </label>
         </div>
       </div>
@@ -1473,20 +1479,20 @@ export const PlatformIntegrationsManager: React.FC = () => {
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>تفعيل SEO</span>
-            <input type="checkbox" checked={settings.seo.enabled} onChange={(e) => updateSeo("enabled", e.target.checked)} />
+            <input type="checkbox" aria-label="تفعيل SEO" title="تفعيل SEO" checked={settings.seo.enabled} onChange={(e) => updateSeo("enabled", e.target.checked)} />
           </label>
           <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
             <span>السماح بالأرشفة (robots index)</span>
-            <input type="checkbox" checked={settings.seo.robotsIndexingEnabled} onChange={(e) => updateSeo("robotsIndexingEnabled", e.target.checked)} />
+            <input type="checkbox" aria-label="السماح بالأرشفة" title="السماح بالأرشفة" checked={settings.seo.robotsIndexingEnabled} onChange={(e) => updateSeo("robotsIndexingEnabled", e.target.checked)} />
           </label>
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.siteName} onChange={(e) => updateSeo("siteName", e.target.value)} placeholder="اسم الموقع" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultTitle} onChange={(e) => updateSeo("defaultTitle", e.target.value)} placeholder="العنوان الافتراضي" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.seo.defaultDescription} onChange={(e) => updateSeo("defaultDescription", e.target.value)} placeholder="الوصف الافتراضي" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.canonicalBaseUrl} onChange={(e) => updateSeo("canonicalBaseUrl", e.target.value)} placeholder="Canonical Base URL" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultOgImage} onChange={(e) => updateSeo("defaultOgImage", e.target.value)} placeholder="OG Image URL" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleSiteVerification} onChange={(e) => updateSeo("googleSiteVerification", e.target.value)} placeholder="Google Site Verification" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleAnalyticsId} onChange={(e) => updateSeo("googleAnalyticsId", e.target.value)} placeholder="Google Analytics ID (G-XXXX)" />
-          <input className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleTagManagerId} onChange={(e) => updateSeo("googleTagManagerId", e.target.value)} placeholder="Google Tag Manager ID (GTM-XXXX)" />
+          <input aria-label="اسم الموقع في SEO" title="اسم الموقع في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.siteName} onChange={(e) => updateSeo("siteName", e.target.value)} placeholder="اسم الموقع" />
+          <input aria-label="العنوان الافتراضي في SEO" title="العنوان الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultTitle} onChange={(e) => updateSeo("defaultTitle", e.target.value)} placeholder="العنوان الافتراضي" />
+          <input aria-label="الوصف الافتراضي في SEO" title="الوصف الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.seo.defaultDescription} onChange={(e) => updateSeo("defaultDescription", e.target.value)} placeholder="الوصف الافتراضي" />
+          <input aria-label="Canonical Base URL" title="Canonical Base URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.canonicalBaseUrl} onChange={(e) => updateSeo("canonicalBaseUrl", e.target.value)} placeholder="Canonical Base URL" />
+          <input aria-label="OG Image URL" title="OG Image URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultOgImage} onChange={(e) => updateSeo("defaultOgImage", e.target.value)} placeholder="OG Image URL" />
+          <input aria-label="Google Site Verification" title="Google Site Verification" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleSiteVerification} onChange={(e) => updateSeo("googleSiteVerification", e.target.value)} placeholder="Google Site Verification" />
+          <input aria-label="Google Analytics ID" title="Google Analytics ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleAnalyticsId} onChange={(e) => updateSeo("googleAnalyticsId", e.target.value)} placeholder="Google Analytics ID (G-XXXX)" />
+          <input aria-label="Google Tag Manager ID" title="Google Tag Manager ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleTagManagerId} onChange={(e) => updateSeo("googleTagManagerId", e.target.value)} placeholder="Google Tag Manager ID (GTM-XXXX)" />
         </div>
       </div>
 
@@ -1545,15 +1551,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
         <div className="mt-4 space-y-3">
           {settings.externalPlatforms.map((platform) => (
             <div key={platform.id} className="grid grid-cols-1 gap-2 rounded-xl border border-gray-100 p-3 md:grid-cols-12">
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.name} onChange={(e) => updateExternal(platform.id, { name: e.target.value })} placeholder="اسم المنصة" />
+              <input aria-label={`اسم المنصة الخارجية ${platform.name || platform.id}`} title={`اسم المنصة الخارجية ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.name} onChange={(e) => updateExternal(platform.id, { name: e.target.value })} placeholder="اسم المنصة" />
               <select className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.platformType} onChange={(e) => updateExternal(platform.id, { platformType: e.target.value as ExternalPlatform["platformType"] })}>
                 <option value="lms">LMS</option>
                 <option value="marketplace">Marketplace</option>
                 <option value="crm">CRM</option>
                 <option value="custom">Custom</option>
               </select>
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.baseUrl} onChange={(e) => updateExternal(platform.id, { baseUrl: e.target.value })} placeholder="API Base URL" />
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.apiKey} onChange={(e) => updateExternal(platform.id, { apiKey: e.target.value })} placeholder="API Key" />
+              <input aria-label={`API Base URL للمنصة ${platform.name || platform.id}`} title={`API Base URL للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.baseUrl} onChange={(e) => updateExternal(platform.id, { baseUrl: e.target.value })} placeholder="API Base URL" />
+              <input aria-label={`API Key للمنصة ${platform.name || platform.id}`} title={`API Key للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={platform.apiKey} onChange={(e) => updateExternal(platform.id, { apiKey: e.target.value })} placeholder="API Key" />
               <div className={`flex items-center justify-center rounded-lg border px-2 py-2 text-[11px] font-black md:col-span-1 ${
                 settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKey || settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKeys
                   ? "border-emerald-200 bg-emerald-50 text-emerald-700"
@@ -1562,25 +1568,25 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 {settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKey || settings.externalPlatformSecretState?.[platform.id.trim().toLowerCase()]?.apiKeys ? "مفتاح محفوظ" : "بدون مفتاح"}
               </div>
               <label className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={platform.enabled} onChange={(e) => updateExternal(platform.id, { enabled: e.target.checked })} />
+                <input type="checkbox" aria-label={`تفعيل المنصة الخارجية ${platform.name || platform.id}`} title={`تفعيل المنصة الخارجية ${platform.name || platform.id}`} checked={platform.enabled} onChange={(e) => updateExternal(platform.id, { enabled: e.target.checked })} />
                 active
               </label>
               <button onClick={() => removeExternal(platform.id)} className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1">
                 <Trash2 size={14} />
               </button>
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.webhookUrl} onChange={(e) => updateExternal(platform.id, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.webhookSecret} onChange={(e) => updateExternal(platform.id, { webhookSecret: e.target.value })} placeholder="Webhook Secret" />
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.syncScheduleCron} onChange={(e) => updateExternal(platform.id, { syncScheduleCron: e.target.value })} placeholder="Sync schedule (cron)" />
+              <input aria-label={`Webhook URL للمنصة ${platform.name || platform.id}`} title={`Webhook URL للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.webhookUrl} onChange={(e) => updateExternal(platform.id, { webhookUrl: e.target.value })} placeholder="Webhook URL" />
+              <input aria-label={`Webhook Secret للمنصة ${platform.name || platform.id}`} title={`Webhook Secret للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.webhookSecret} onChange={(e) => updateExternal(platform.id, { webhookSecret: e.target.value })} placeholder="Webhook Secret" />
+              <input aria-label={`Sync schedule للمنصة ${platform.name || platform.id}`} title={`Sync schedule للمنصة ${platform.name || platform.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-3" value={platform.syncScheduleCron} onChange={(e) => updateExternal(platform.id, { syncScheduleCron: e.target.value })} placeholder="Sync schedule (cron)" />
               <label className="flex items-center justify-center gap-1 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={platform.syncStudents} onChange={(e) => updateExternal(platform.id, { syncStudents: e.target.checked })} />
+                <input type="checkbox" aria-label={`مزامنة الطلاب للمنصة ${platform.name || platform.id}`} title={`مزامنة الطلاب للمنصة ${platform.name || platform.id}`} checked={platform.syncStudents} onChange={(e) => updateExternal(platform.id, { syncStudents: e.target.checked })} />
                 طلاب
               </label>
               <label className="flex items-center justify-center gap-1 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={platform.syncCourses} onChange={(e) => updateExternal(platform.id, { syncCourses: e.target.checked })} />
+                <input type="checkbox" aria-label={`مزامنة الكورسات للمنصة ${platform.name || platform.id}`} title={`مزامنة الكورسات للمنصة ${platform.name || platform.id}`} checked={platform.syncCourses} onChange={(e) => updateExternal(platform.id, { syncCourses: e.target.checked })} />
                 كورسات
               </label>
               <label className="flex items-center justify-center gap-1 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={platform.syncOrders} onChange={(e) => updateExternal(platform.id, { syncOrders: e.target.checked })} />
+                <input type="checkbox" aria-label={`مزامنة الطلبات للمنصة ${platform.name || platform.id}`} title={`مزامنة الطلبات للمنصة ${platform.name || platform.id}`} checked={platform.syncOrders} onChange={(e) => updateExternal(platform.id, { syncOrders: e.target.checked })} />
                 طلبات
               </label>
               {platform.id.trim().toLowerCase() === "ai-global" ? (
@@ -1657,6 +1663,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
                     <label>
                       <span className="mb-1 block font-black text-sky-900">Model</span>
                       <input
+                        aria-label={`موديل AI للمنصة ${platform.name || platform.id}`}
+                        title={`موديل AI للمنصة ${platform.name || platform.id}`}
                         className="w-full rounded-lg border border-sky-200 bg-white px-2 py-2"
                         value={readAiNote(platform.note).model || ""}
                         onChange={(event) => updateExternal(platform.id, { note: writeAiNote(platform.note, { model: event.target.value }) })}
@@ -1701,8 +1709,8 @@ export const PlatformIntegrationsManager: React.FC = () => {
         <div className="mt-4 space-y-3">
           {settings.registrationFields.map((field) => (
             <div key={field.id} className="grid grid-cols-1 gap-2 rounded-xl border border-gray-100 p-3 md:grid-cols-12">
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.key} onChange={(e) => updateField(field.id, { key: e.target.value })} placeholder="key" />
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.label} onChange={(e) => updateField(field.id, { label: e.target.value })} placeholder="label" />
+              <input aria-label={`مفتاح حقل التسجيل ${field.label || field.key || field.id}`} title={`مفتاح حقل التسجيل ${field.label || field.key || field.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.key} onChange={(e) => updateField(field.id, { key: e.target.value })} placeholder="key" />
+              <input aria-label={`عنوان حقل التسجيل ${field.label || field.key || field.id}`} title={`عنوان حقل التسجيل ${field.label || field.key || field.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.label} onChange={(e) => updateField(field.id, { label: e.target.value })} placeholder="label" />
               <select className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.type} onChange={(e) => updateField(field.id, { type: e.target.value as RegistrationField["type"] })}>
                 <option value="text">text</option>
                 <option value="email">email</option>
@@ -1710,19 +1718,19 @@ export const PlatformIntegrationsManager: React.FC = () => {
                 <option value="select">select</option>
                 <option value="textarea">textarea</option>
               </select>
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.placeholder || ""} onChange={(e) => updateField(field.id, { placeholder: e.target.value })} placeholder="placeholder" />
+              <input aria-label={`Placeholder لحقل التسجيل ${field.label || field.key || field.id}`} title={`Placeholder لحقل التسجيل ${field.label || field.key || field.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-2" value={field.placeholder || ""} onChange={(e) => updateField(field.id, { placeholder: e.target.value })} placeholder="placeholder" />
               <label className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={field.required} onChange={(e) => updateField(field.id, { required: e.target.checked })} />
+                <input type="checkbox" aria-label={`حقل التسجيل ${field.label || field.key || field.id} مطلوب`} title={`حقل التسجيل ${field.label || field.key || field.id} مطلوب`} checked={field.required} onChange={(e) => updateField(field.id, { required: e.target.checked })} />
                 required
               </label>
               <label className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-1">
-                <input type="checkbox" checked={field.enabled} onChange={(e) => updateField(field.id, { enabled: e.target.checked })} />
+                <input type="checkbox" aria-label={`تفعيل حقل التسجيل ${field.label || field.key || field.id}`} title={`تفعيل حقل التسجيل ${field.label || field.key || field.id}`} checked={field.enabled} onChange={(e) => updateField(field.id, { enabled: e.target.checked })} />
                 active
               </label>
               <button onClick={() => removeField(field.id)} className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-2 py-2 text-xs font-black text-rose-700 md:col-span-1">
                 <Trash2 size={14} />
               </button>
-              <input className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-12" value={field.helpText || ""} onChange={(e) => updateField(field.id, { helpText: e.target.value })} placeholder="help text" />
+              <input aria-label={`نص المساعدة لحقل التسجيل ${field.label || field.key || field.id}`} title={`نص المساعدة لحقل التسجيل ${field.label || field.key || field.id}`} className="rounded-lg border border-gray-200 px-2 py-2 text-xs md:col-span-12" value={field.helpText || ""} onChange={(e) => updateField(field.id, { helpText: e.target.value })} placeholder="help text" />
             </div>
           ))}
           {settings.registrationFields.length === 0 ? (

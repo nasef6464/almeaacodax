@@ -638,6 +638,8 @@ export const BackupManager: React.FC = () => {
                     <div className="flex w-full flex-col gap-2 sm:flex-row xl:w-auto">
                         <input
                             type="text"
+                            aria-label="عنوان لقطة النسخة الاحتياطية"
+                            title="عنوان لقطة النسخة الاحتياطية"
                             value={snapshotTitle}
                             onChange={(event) => setSnapshotTitle(event.target.value)}
                             placeholder="اسم اختياري للنسخة"
@@ -861,6 +863,7 @@ export const BackupManager: React.FC = () => {
                         <span className="mt-1 text-xs text-gray-500">{selectedFileName || 'نسخة محتوى تعلم من المنصة'}</span>
                         <input
                             type="file"
+                            aria-label="اختيار ملف نسخة محتوى JSON"
                             accept="application/json,.json"
                             className="hidden"
                             onChange={(event) => {
@@ -888,6 +891,8 @@ export const BackupManager: React.FC = () => {
                         <label className="flex items-start gap-3 rounded-2xl bg-amber-50 p-3 text-sm text-amber-800">
                             <input
                                 type="checkbox"
+                                aria-label="استبدال المحتوى الحالي أثناء الاستيراد"
+                                title="استبدال المحتوى الحالي أثناء الاستيراد"
                                 checked={replaceMode}
                                 onChange={(event) => {
                                     setReplaceMode(event.target.checked);
@@ -906,6 +911,8 @@ export const BackupManager: React.FC = () => {
                             </label>
                             <input
                                 type="text"
+                                aria-label="تأكيد تطبيق الاستيراد الحقيقي"
+                                title="تأكيد تطبيق الاستيراد الحقيقي"
                                 value={confirmText}
                                 onChange={(event) => setConfirmText(event.target.value)}
                                 className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"

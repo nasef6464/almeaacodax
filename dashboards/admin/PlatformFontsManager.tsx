@@ -278,6 +278,8 @@ export const PlatformFontsManager: React.FC = () => {
                                 ))}
                             </select>
                             <input
+                                aria-label={`حجم ${target.title}`}
+                                title={`حجم ${target.title}`}
                                 value={String(settings[target.sizeKey] || '')}
                                 onChange={(event) => updateSettings({ [target.sizeKey]: event.target.value })}
                                 placeholder="مثال: 16px أو 1.2rem"
@@ -306,11 +308,15 @@ export const PlatformFontsManager: React.FC = () => {
                         <div className="flex gap-2">
                             <input
                                 type="color"
+                                aria-label={`لون ${target.title}`}
+                                title={`لون ${target.title}`}
                                 value={currentColor || '#111827'}
                                 onChange={(event) => updateSettings({ [target.colorKey]: event.target.value })}
                                 className="h-12 w-14 rounded-2xl border border-gray-200 bg-white p-1"
                             />
                             <input
+                                aria-label={`لون ${target.title} كنص`}
+                                title={`لون ${target.title} كنص`}
                                 value={currentColor}
                                 onChange={(event) => updateSettings({ [target.colorKey]: event.target.value })}
                                 placeholder="#111827"
@@ -460,6 +466,7 @@ export const PlatformFontsManager: React.FC = () => {
                             ) : null}
                             <input
                                 type="file"
+                                aria-label={`رفع ملف ${item.label}`}
                                 accept=".woff,.woff2,.ttf,.otf,font/woff,font/woff2"
                                 className="hidden"
                                 onChange={(event) => void handleFontUpload(item.target, event.target.files?.[0])}

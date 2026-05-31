@@ -162,6 +162,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2 md:col-span-2">
                   <span className="text-sm font-bold text-gray-700">عنوان الإعلان</span>
                   <input
+                    aria-label="عنوان الإعلان"
+                    title="عنوان الإعلان"
                     value={selectedAd.title}
                     onChange={(event) => updateSelected({ title: event.target.value })}
                     className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
@@ -171,6 +173,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2 md:col-span-2">
                   <span className="text-sm font-bold text-gray-700">النص المختصر</span>
                   <textarea
+                    aria-label="النص المختصر"
+                    title="النص المختصر"
                     value={selectedAd.body || ''}
                     onChange={(event) => updateSelected({ body: event.target.value })}
                     rows={3}
@@ -220,6 +224,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">الترتيب</span>
                   <input
+                    aria-label="ترتيب الإعلان"
+                    title="ترتيب الإعلان"
                     type="number"
                     value={selectedAd.priority}
                     onChange={(event) => updateSelected({ priority: Number(event.target.value || 0) })}
@@ -230,6 +236,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">تأخير الظهور بالثواني</span>
                   <input
+                    aria-label="تأخير ظهور الإعلان بالثواني"
+                    title="تأخير ظهور الإعلان بالثواني"
                     type="number"
                     min={0}
                     max={30}
@@ -255,6 +263,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">من تاريخ</span>
                   <input
+                    aria-label="تاريخ بداية الإعلان"
+                    title="تاريخ بداية الإعلان"
                     type="date"
                     value={toDateInput(selectedAd.startsAt)}
                     onChange={(event) => updateSelected({ startsAt: fromDateInput(event.target.value, 'start') })}
@@ -265,6 +275,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">حتى تاريخ</span>
                   <input
+                    aria-label="تاريخ نهاية الإعلان"
+                    title="تاريخ نهاية الإعلان"
                     type="date"
                     value={toDateInput(selectedAd.endsAt)}
                     onChange={(event) => updateSelected({ endsAt: fromDateInput(event.target.value, 'end') })}
@@ -275,6 +287,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">نص الزر</span>
                   <input
+                    aria-label="نص زر الإعلان"
+                    title="نص زر الإعلان"
                     value={selectedAd.ctaLabel || ''}
                     onChange={(event) => updateSelected({ ctaLabel: event.target.value })}
                     className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
@@ -284,6 +298,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <label className="space-y-2">
                   <span className="text-sm font-bold text-gray-700">رابط الزر</span>
                   <input
+                    aria-label="رابط زر الإعلان"
+                    title="رابط زر الإعلان"
                     value={selectedAd.ctaUrl || ''}
                     placeholder="/category/p_xxx أو https://"
                     onChange={(event) => updateSelected({ ctaUrl: event.target.value })}
@@ -295,6 +311,8 @@ export const AnnouncementAdsManager: React.FC = () => {
                   <span className="text-sm font-bold text-gray-700">رابط الصورة أو رفع صورة</span>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
                     <input
+                      aria-label="رابط صورة الإعلان"
+                      title="رابط صورة الإعلان"
                       value={selectedAd.imageUrl || ''}
                       onChange={(event) => updateSelected({ imageUrl: event.target.value })}
                       className="w-full rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-indigo-400"
@@ -302,7 +320,7 @@ export const AnnouncementAdsManager: React.FC = () => {
                     <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-indigo-200 px-4 py-3 text-sm font-bold text-indigo-700 hover:bg-indigo-50">
                       <ImagePlus size={18} />
                       تحميل
-                      <input type="file" accept="image/*" className="hidden" onChange={(event) => handleImageUpload(event.target.files?.[0])} />
+                      <input type="file" accept="image/*" className="hidden" aria-label="رفع صورة الإعلان" onChange={(event) => handleImageUpload(event.target.files?.[0])} />
                     </label>
                   </div>
                   <span className="block text-xs font-bold leading-6 text-gray-500">

@@ -931,6 +931,8 @@ const TextField: React.FC<{
     <label className="block">
         <span className="block text-sm font-bold text-gray-700 mb-2">{label}</span>
         <input
+            aria-label={label}
+            title={label}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             disabled={disabled}
@@ -957,8 +959,11 @@ const ColorField: React.FC<{
                     onChange={(event) => onChange(event.target.value)}
                     className="h-10 w-12 cursor-pointer rounded-lg border border-gray-200 bg-white p-1"
                     aria-label={label}
+                    title={label}
                 />
                 <input
+                    aria-label={`${label} كنص`}
+                    title={`${label} كنص`}
                     value={value}
                     onChange={(event) => onChange(event.target.value)}
                     dir="ltr"
@@ -1002,6 +1007,8 @@ const TextAreaField: React.FC<{
     <label className="block">
         <span className="block text-sm font-bold text-gray-700 mb-2">{label}</span>
         <textarea
+            aria-label={label}
+            title={label}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             rows={rows}

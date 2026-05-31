@@ -209,10 +209,10 @@ export const MockExamManager: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold" placeholder="عنوان الاختبار" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-20 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" placeholder="وصف مختصر" />
+            <input aria-label="عنوان الاختبار المحاكي" title="عنوان الاختبار المحاكي" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold" placeholder="عنوان الاختبار" />
+            <textarea aria-label="وصف الاختبار المحاكي" title="وصف الاختبار المحاكي" value={description} onChange={(e) => setDescription(e.target.value)} className="min-h-20 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" placeholder="وصف مختصر" />
             <label className="block text-xs font-black text-gray-500">نسبة النجاح</label>
-            <input type="number" min={0} max={100} value={passingScore} onChange={(e) => setPassingScore(Number(e.target.value) || 0)} className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold" />
+            <input type="number" aria-label="نسبة النجاح في الاختبار المحاكي" title="نسبة النجاح في الاختبار المحاكي" min={0} max={100} value={passingScore} onChange={(e) => setPassingScore(Number(e.target.value) || 0)} className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold" />
 
             <div className="grid gap-3 md:grid-cols-2">
               <div>
@@ -229,6 +229,8 @@ export const MockExamManager: React.FC = () => {
               <div>
                 <label className="mb-2 block text-xs font-black text-gray-500">سعر فردي اختياري</label>
                 <input
+                  aria-label="السعر الفردي الاختياري للاختبار"
+                  title="السعر الفردي الاختياري للاختبار"
                   type="number"
                   min={0}
                   value={accessPrice}
@@ -263,6 +265,8 @@ export const MockExamManager: React.FC = () => {
                     <div key={section.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
                       <div className="grid gap-3 md:grid-cols-2">
                         <input
+                          aria-label={`عنوان قسم الاختبار ${section.title}`}
+                          title={`عنوان قسم الاختبار ${section.title}`}
                           value={section.title}
                           onChange={(e) => setSections((prev) => prev.map((item) => item.id === section.id ? { ...item, title: e.target.value } : item))}
                           className="rounded-xl border border-gray-200 px-3 py-2 text-sm font-bold"
@@ -282,6 +286,8 @@ export const MockExamManager: React.FC = () => {
                       <div className="mt-3 flex items-center gap-3">
                         <input
                           type="number"
+                          aria-label={`مدة قسم الاختبار ${section.title}`}
+                          title={`مدة قسم الاختبار ${section.title}`}
                           min={5}
                           value={section.timeLimit || 30}
                           onChange={(e) => setSections((prev) => prev.map((item) => item.id === section.id ? { ...item, timeLimit: Number(e.target.value) || 30 } : item))}
@@ -334,6 +340,8 @@ export const MockExamManager: React.FC = () => {
                 <label className="relative block">
                   <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
+                    aria-label="بحث في أسئلة الاختبار المحاكي"
+                    title="بحث في أسئلة الاختبار المحاكي"
                     value={questionSearchTerm}
                     onChange={(event) => setQuestionSearchTerm(event.target.value)}
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-3 pr-9 text-sm font-bold outline-none focus:border-indigo-300 focus:bg-white"
@@ -381,6 +389,8 @@ export const MockExamManager: React.FC = () => {
                         <label key={question.id} className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm hover:bg-white">
                           <input
                             type="checkbox"
+                            aria-label={`اختيار سؤال للاختبار ${question.id}`}
+                            title={`اختيار سؤال للاختبار ${question.id}`}
                             checked={section.questionIds.includes(question.id)}
                             onChange={() => toggleQuestion(section.id, question.id)}
                             className="mt-1"
