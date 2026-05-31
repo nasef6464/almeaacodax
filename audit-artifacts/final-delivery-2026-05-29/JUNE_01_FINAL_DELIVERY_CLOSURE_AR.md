@@ -2,7 +2,7 @@
 
 ## القرار الحالي
 - الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
-- آخر commit مرفوع ومفحوص على Vercel production: `a8a1c65b`، وVercel logs أظهرت build من `main` commit `a8a1c65`.
+- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `a8a1c65b`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 

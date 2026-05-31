@@ -97,7 +97,7 @@
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
 - `../ui-audit-exhaustive/2026-06-01-student-learning-final-readiness/SUMMARY.md` - رحلة الطالب: PASS 10/10.
 - `../admin-live-handoff/2026-06-01-live-ai-final-readiness-v4/SUMMARY.md` - AI حي: PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
-- Vercel inspect logs: production Ready وبنى من GitHub main commit `a8a1c65`.
+- Vercel inspect logs: production Ready ويبني من GitHub `main`; استخدم logs كدليل commit المنشور بعد أي commit توثيقي لاحق.
 
 ## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)
 
