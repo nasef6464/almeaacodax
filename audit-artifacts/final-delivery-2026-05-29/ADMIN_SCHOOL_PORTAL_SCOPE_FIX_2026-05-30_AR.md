@@ -105,3 +105,15 @@
 - الدليل: `audit-artifacts/admin-live-handoff/2026-05-31-admin-school-package-linkage-final/`.
 - PASS بعد النشر: الإنتاج يخدم commit `4791eb2a`، وتمت إعادة نفس فحص ربط باقات المدارس والمجموعات بعد النشر بنتيجة 7/7 PASS، 0 FAIL، 0 BLOCKED.
 - دليل ما بعد النشر: `audit-artifacts/admin-live-handoff/2026-05-31-admin-school-package-linkage-postdeploy/`.
+
+## فحص فجوات الوضوح داخل لوحة المدير - 2026-05-31
+- PASS: تم تشغيل فحص بصري شامل على الإنتاج الحالي لكل تبويبات لوحة المدير بعد آخر نشر: 23/23 تبويب PASS، 0 FAIL، 0 Console errors، 0 Network 5xx.
+- PASS: تم تشغيل فحص فجوات دقيق للأزرار غير المسماة والعناصر المعطلة بلا سبب ونصوص "قريبا/تحت التطوير".
+- تم إصلاح فجوة حقيقية في الوضوح: أزرار الأيقونات فقط داخل `paths` و`library` و`skills` أصبحت تحمل `aria-label` و`title` واضحين مثل تعديل/حذف/فتح/طي، بدون تغيير وظيفة البيانات.
+- PASS بعد الإصلاح والنشر: الإنتاج يخدم commit `4ed7c188`، و`smoke:frontend:strict` نجح 29/29.
+- PASS بعد الإصلاح: تبويب `paths` انتقل من REVIEW إلى PASS، وتبويب `library` انتقل من REVIEW إلى PASS، وتبويب `skills` اختفت منه 12 فجوة أزرار غير مسماة.
+- المتبقي غير حاجز للتسليم: بعض حقول النماذج والـ checkboxes لها عناوين مرئية لكن تحتاج ربط label تقني أدق، وبعض الفلاتر المعطلة تظهر كذلك لأنها تعتمد على اختيار سابق. لا يوجد معها فشل حفظ أو خطأ شبكة أو شاشة مكسورة.
+- أدلة الفحص:
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-tabs-postdeploy-final-894f85cc/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-final/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-postdeploy-after-clarity-fix/`
