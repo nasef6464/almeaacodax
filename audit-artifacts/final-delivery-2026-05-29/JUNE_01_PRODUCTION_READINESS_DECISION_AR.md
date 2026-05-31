@@ -1,7 +1,8 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `a8a1c65b`.
+- آخر commit على إنتاج Vercel عند إعادة التحقق: `c7c1645` من `main`.
+- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `c7c16457`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
@@ -21,10 +22,13 @@
 - صحة الإنتاج: `smoke:frontend:strict` نجح `28/28`، و`smoke:health-readiness` نجح، و`smoke:production-hardening` نجح `5/5`، و`smoke:production-audit` نجح `9/9`.
 - مخاطر Excel/xlsx: `smoke:xlsx-safety` نجح `16/16`.
 - Sentry wiring: `smoke:sentry-runtime` نجح `5/5`.
+- سلامة قائمة scripts في `package.json`: تم فحص 115 script ولم يظهر أي مسار `node scripts/...` مفقود.
+- جسر AI والتكاملات بعد تقوية العقد: `smoke:ai-config-bridge` نجح `12/12`، ويثبت وجود تعدد مفاتيح AI، وتجربة مفاتيح المزود بالترتيب، والوضع التلقائي عند تعطل المزود.
 
 ## الفجوات التي لا يجوز إخفاؤها
 - مساعد الطالب يعمل وظيفيا ولا يكسر الواجهة، لكن آخر فحص حي رجع `fallback=true` لأن Gemini أعاد `429 quota exceeded`.
 - دليل AI الحالي: `audit-artifacts/admin-live-handoff/2026-06-01-live-ai-final-readiness-v4/`.
+- إعادة فحص AI بعد تقوية عقد تعدد المفاتيح: `audit-artifacts/admin-live-handoff/2026-06-01-live-ai-final-recheck-multikey-guard/`.
 - النتيجة: `PASS 6` و`REVIEW 2`.
 - السبب: مزود Gemini مضبوط من الإدارة، لكن الحصة الحالية للمفتاح المستعمل انتهت. النظام يدعم مفاتيح متعددة في `ai-gemini.apiKeys` وترتيب مزودات بديل عبر `ai-global`.
 - المطلوب لتحويلها إلى PASS: إضافة مفتاح Gemini آخر صالح أو تفعيل مزود بديل مثل OpenRouter/Qwen/OpenAI في `ai-global`، ثم إعادة فحص `live-ai-runtime-audit`.

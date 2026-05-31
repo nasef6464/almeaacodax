@@ -6,6 +6,7 @@ const assistantSource = await readFile(new URL("../dashboards/admin/AiAssistantM
 const apiSource = await readFile(new URL("../services/api.ts", import.meta.url), "utf8");
 const contentRouteSource = await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8");
 const packageJsonSource = await readFile(new URL("../package.json", import.meta.url), "utf8");
+const liveAuditSource = await readFile(new URL("../scripts/live-ai-runtime-audit.mjs", import.meta.url), "utf8");
 
 const checks = [];
 
@@ -48,6 +49,31 @@ check("integrations manager has AI templates, routing, and multi-key setup", () 
   assertIncludes(integrationsSource, "apiKeys");
   assertIncludes(integrationsSource, "routingMode");
   assertIncludes(integrationsSource, "externalPlatformSecretState");
+});
+
+check("integrations manager explains AI auto failover and multiple keys", () => {
+  assertIncludes(integrationsSource, "تلقائي: جرّب المزود التالي عند التعطل");
+  assertIncludes(integrationsSource, "تشغيل تلقائي آمن");
+  assertIncludes(integrationsSource, "في الوضع التلقائي سيستخدم المساعد أول مفتاح يعمل");
+  assertIncludes(integrationsSource, "مفاتيح إضافية لنفس المزود");
+  assertIncludes(integrationsSource, "ضع كل مفتاح في سطر مستقل");
+  assertIncludes(integrationsSource, "عند فشل مفتاح سيجرب النظام المفتاح التالي لنفس المزود قبل الانتقال لمزود آخر");
+});
+
+check("ai route reads and retries multiple keys per provider", () => {
+  assertIncludes(aiRouteSource, "readProviderKeyHints");
+  assertIncludes(aiRouteSource, "const noteKeys = Array.isArray(note.apiKeys) ? note.apiKeys : []");
+  assertIncludes(aiRouteSource, "const directKeys = Array.isArray(item.apiKeys) ? item.apiKeys : []");
+  assertIncludes(aiRouteSource, "const providerKeys = (provider: Exclude<AiProvider, \"none\">) =>");
+  assertIncludes(aiRouteSource, "for (const apiKey of apiKeys)");
+  assertIncludes(aiRouteSource, "errors.push(error instanceof Error ? error.message");
+});
+
+check("live AI audit records real-provider success separately from fallback", () => {
+  assertIncludes(liveAuditSource, "configured provider live test succeeds");
+  assertIncludes(liveAuditSource, "student chat used a real provider");
+  assertIncludes(liveAuditSource, "readinessAfter");
+  assertIncludes(liveAuditSource, "fallbackStudentChats24h");
 });
 
 check("integrations manager warns/fixes invalid AI config", () => {

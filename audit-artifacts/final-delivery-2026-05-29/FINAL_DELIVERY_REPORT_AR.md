@@ -573,3 +573,35 @@
 - حالة تشغيل المزود الفعلي بدون fallback: `BLOCKED (External Provider Quota/Model)`
 - المطلوب للإغلاق النهائي:
   - تفعيل مزود واحد على الأقل بمفتاح صالح ورصيد/موديل متاح.
+
+## متابعة لاحقة 35 (Production Readiness Recheck + AI Multi-Key Guard) - 2026-06-01
+
+- لم يتم إعادة الفحص من الصفر؛ تمت مراجعة آخر الأدلة والـ commits ثم تشغيل فحوص انتقائية على نقاط المفاجآت المحتملة.
+- إنتاج Vercel:
+  - الحالة: `Ready`
+  - commit المنشور: `c7c1645` من GitHub `main`
+  - دليل التحقق: `vercel inspect almeaacodax.vercel.app --logs`
+- سلامة scripts:
+  - تم فحص 115 script في `package.json`.
+  - لا توجد أوامر `node scripts/...` تشير إلى ملفات مفقودة.
+- تقوية منع رجوع مشكلة AI:
+  - تم تحديث `scripts/smoke-ai-config-bridge-contract.mjs` ليغطي:
+    - شرح الوضع التلقائي في واجهة التكاملات.
+    - إدخال أكثر من مفتاح لنفس المزود.
+    - قراءة الخادم للمفاتيح المتعددة.
+    - تجربة مفاتيح المزود بالترتيب قبل الانتقال لمزود آخر.
+    - فصل نجاح المزود الحقيقي عن fallback في فحص AI الحي.
+- نتائج الفحوص بعد التحديث:
+  - `npm run smoke:ai-config-bridge` -> `PASS 12/12`
+  - `npm run smoke:admin-memberships-ai-closure` -> `PASS 6/6`
+  - `npm run smoke:payment-package` -> `PASS 8/8`
+  - `npm run smoke:security-rbac-phase6` -> `PASS 5/5`
+- إعادة فحص AI الحي:
+  - الدليل: `audit-artifacts/admin-live-handoff/2026-06-01-live-ai-final-recheck-multikey-guard/SUMMARY.md`
+  - النتيجة: `PASS 6`, `REVIEW 2`
+  - `studentChat.provider=none`
+  - `usedFallback=true`
+  - السبب: Gemini أعاد `429 quota exceeded`، مع فشل المزودات المحلية غير المناسبة للإنتاج.
+- حكم هذه المتابعة:
+  - لوحة الإدارة والأدوار والدفع ورحلة الطالب مثبتة بأدلة كافية للتشغيل الداخلي وتجربة مجموعة صغيرة.
+  - إعلان عام بدفع ومستخدمين حقيقيين ما زال لا يأخذ ختم `READY FOR PUBLIC LAUNCH` حتى يتم إثبات مزود AI حقيقي يعمل بدون fallback.

@@ -93,10 +93,17 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
+- Vercel production recheck: `Ready`, commit `c7c1645` from GitHub `main`.
+- Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
 - `../ui-audit-exhaustive/2026-06-01-student-learning-final-readiness/SUMMARY.md` - رحلة الطالب: PASS 10/10.
 - `../admin-live-handoff/2026-06-01-live-ai-final-readiness-v4/SUMMARY.md` - AI حي: PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
+- `../admin-live-handoff/2026-06-01-live-ai-final-recheck-multikey-guard/SUMMARY.md` - AI حي بعد تقوية عقد تعدد المفاتيح: PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
+- `npm run smoke:ai-config-bridge` - PASS 12/12، يتضمن تعدد مفاتيح المزود، failover، وفصل نجاح المزود الحقيقي عن fallback.
+- `npm run smoke:admin-memberships-ai-closure` - PASS 6/6.
+- `npm run smoke:payment-package` - PASS 8/8.
+- `npm run smoke:security-rbac-phase6` - PASS 5/5.
 - Vercel inspect logs: production Ready ويبني من GitHub `main`; استخدم logs كدليل commit المنشور بعد أي commit توثيقي لاحق.
 
 ## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)
