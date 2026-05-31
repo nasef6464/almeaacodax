@@ -184,3 +184,12 @@
 - PASS: `npm run smoke:payment-package` نجح 8/8، ويغطي العضويات العامة، طلبات الدفع، الخصومات، الاعتماد اليدوي، والربط مع الباقات.
 - PASS: `npm run smoke:reports-role` نجح 11/11، ويغطي تقارير الطالب وولي الأمر والمعلم/المشرف مع نطاق الصلاحيات والتصدير.
 - الدليل: `audit-artifacts/ui-audit-exhaustive/2026-05-31-role-pages-live-after-9641982a-v4/`.
+
+## فحص رحلة الطالب التعليمية العميقة وربط الباقات - 2026-05-31
+- PASS: `npm run smoke:student-learning-journey` نجح 7/7، ويؤكد أن مسار القدرات/الكمي يعرض المهارات، الدروس، الاختبار التدريبي، ملفات الدعم، وروابط الرجوع داخل نفس الموضوع.
+- PASS: تم إضافة فاحص بصري حي `scripts/live-student-learning-deep-audit.mjs` يفتح حساب طالب على الإنتاج، يلتقط صورا للوحة الطالب، خريطة المهارات، مشغل الدورة، الاختبار، محاولاتي، التقارير، والخطة الدراسية.
+- PASS جزئي قبل النشر: الفحص البصري الحي أعاد 9/10 PASS بعد ضبط جلسة الطالب وCSRF في الفاحص.
+- FAIL حقيقي قبل النشر: صفحة مشغل الدورة تعمل بصريا، لكن طلب `سؤال وجواب` داخل الدورة يرجع 403 لأن backend كان يعتمد على `enrolledCourses` فقط ولا يعترف بصلاحيات الباقات/الأكواد/العضوية المسجلة في `AccessGrant`.
+- تم الإصلاح: مسار نقاشات الدورة في الخادم أصبح يعترف بالوصول المباشر للدورة وبصلاحيات الباقات حسب `courseIds` أو `pathIds/subjectIds/contentTypes` النشطة، مع احترام انتهاء الصلاحية والحالة `active`.
+- PASS تحقق قبل الرفع: `npm --prefix server run check`، `npm --prefix server run build`، `npm run typecheck`، `npm run build`، `npm run smoke:my-quizzes`، و`npm run smoke:student-learning-journey`.
+- دليل ما قبل النشر: `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-after-69c5259d-v2-predeploy/`.
