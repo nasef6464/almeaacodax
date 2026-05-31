@@ -158,3 +158,7 @@
 - الأدلة:
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-xlsx-export-postdeploy-v3/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-school-package-linkage-postdeploy-xlsx/`
+- PASS بعد النشر: الإنتاج يخدم commit `fdd2c2d5`، و`smoke:frontend:strict` نجح 29/29، ثم تمت إعادة فحص Excel الحي بنتيجة 15/15 PASS وإعادة فحص ربط باقات المدارس والمجموعات بنتيجة 7/7 PASS.
+- أدلة ما بعد النشر:
+  - `audit-artifacts/admin-live-handoff/2026-05-31-admin-xlsx-export-postdeploy-fdd2c2d5/`
+  - `audit-artifacts/admin-live-handoff/2026-05-31-school-package-linkage-postdeploy-fdd2c2d5/`
