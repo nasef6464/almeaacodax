@@ -90,6 +90,15 @@
 - `npm run smoke:health-readiness` (PASS)
 - `npm run smoke:integrations-runtime` (PASS)
 
+## قرار جاهزية الإنتاج - 2026-06-01
+
+- `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
+- `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
+- `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
+- `../ui-audit-exhaustive/2026-06-01-student-learning-final-readiness/SUMMARY.md` - رحلة الطالب: PASS 10/10.
+- `../admin-live-handoff/2026-06-01-live-ai-final-readiness-v4/SUMMARY.md` - AI حي: PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.
+- Vercel inspect logs: production Ready وبنى من GitHub main commit `9e4be4d`.
+
 ## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)
 
 - `../admin-live-handoff/2026-05-30-admin-tabs-live-continuation-7/SUMMARY.md`

@@ -1,8 +1,8 @@
 # إغلاق تسليم لوحة الإدارة والمنصة - 2026-06-01
 
 ## القرار الحالي
-- الحالة: جاهز تشغيليا حسب الأدلة الحالية، مع استمرار بند متابعة أمني غير حاجب خاص بمكتبة `xlsx`.
-- آخر commit مرفوع ومفحوص: `62e0b5c2`.
+- الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
+- آخر commit مرفوع ومفحوص على Vercel production: `9e4be4d9`، وVercel logs أظهرت build من `main` commit `9e4be4d`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 
@@ -18,6 +18,7 @@
 | رحلة الطالب بعد تأثير الإدارة | PASS 10/10 | `audit-artifacts/ui-audit-exhaustive/2026-05-31-student-learning-deep-postdeploy-12d26857/` |
 | Vercel/Production shell | PASS 28/28 | `npm run smoke:frontend:strict` |
 | تخفيف مخاطر Excel / xlsx | PASS 16/16 | `npm run smoke:xlsx-safety` |
+| قرار جاهزية الإنتاج 2026-06-01 | NO للإعلان العام الكامل | `audit-artifacts/final-delivery-2026-05-29/JUNE_01_PRODUCTION_READINESS_DECISION_AR.md` |
 
 ## ما تم إصلاحه في آخر جولة
 - تم إصلاح وصول `سؤال وجواب` داخل الدورة للطالب عندما تكون الدورة منشورة ومجانية، أو عندما يمتلك الطالب صلاحية عبر `enrolledCourses` أو `AccessGrant`.
@@ -36,3 +37,12 @@
 - `npm run smoke:reports-role` -> PASS 11/11.
 - `npm run smoke:xlsx-safety` -> PASS 16/16.
 - `npm run smoke:performance` -> PASS.
+- `npm run smoke:security-rbac-phase6` -> PASS 5/5.
+- `npm run smoke:rbac-school-scope` -> PASS 4/4.
+- `npm run smoke:auth-login-security` -> PASS 6/6.
+- `npm run smoke:api-security` -> PASS 6/6.
+- `npm run smoke:payment-tampering` -> PASS 9/9.
+- `npm run smoke:payment-providers` -> PASS 7/7.
+- `node scripts/live-role-pages-audit.mjs` -> PASS 20/20.
+- `node scripts/live-student-learning-deep-audit.mjs` -> PASS 10/10.
+- `node scripts/live-ai-runtime-audit.mjs` -> PASS 6, REVIEW 2 بسبب Gemini quota 429 وfallback.

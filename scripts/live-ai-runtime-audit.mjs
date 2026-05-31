@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 
 const BASE_URL = (process.env.UI_AUDIT_API_BASE_URL || process.env.API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
-const RUN_ID = process.env.AI_RUNTIME_AUDIT_RUN_ID || `ai-runtime-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+const RUN_ID =
+  process.env.AI_RUNTIME_AUDIT_RUN_ID ||
+  process.env.LIVE_AI_AUDIT_RUN_ID ||
+  `ai-runtime-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "admin-live-handoff", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 
@@ -22,6 +25,8 @@ const redact = (value) =>
     .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[redacted-google-key]")
     .replace(/sk-[0-9A-Za-z_-]{20,}/g, "[redacted-api-key]")
     .replace(/[A-Za-z0-9_-]{44,}/g, "[redacted-token]")
+    .replace(/\\n/g, " ")
+    .replace(/\s+/g, " ")
     .slice(0, 900);
 
 const cookieHeader = (headers) => {
@@ -122,6 +127,10 @@ const interactionsAfter = adminLogin?.ok
   ? await request("/ai/interactions?limit=8", { cookie: adminLogin.cookie })
   : { ok: false, status: 0, body: { skipped: "missing-admin-login" } };
 
+const readinessAfter = adminLogin?.ok
+  ? await request("/ai/readiness", { cookie: adminLogin.cookie })
+  : { ok: false, status: 0, body: { skipped: "missing-admin-login" } };
+
 const report = {
   generatedAt: new Date().toISOString(),
   apiBaseUrl: BASE_URL,
@@ -194,6 +203,15 @@ const report = {
         }))
       : [],
   },
+  readinessAfter: {
+    ok: readinessAfter.ok,
+    status: readinessAfter.status,
+    score: readinessAfter.body?.score,
+    activeProvider: readinessAfter.body?.activeProvider,
+    studentAdvisor: readinessAfter.body?.studentAdvisor,
+    monitoring: readinessAfter.body?.monitoring,
+    nextActions: readinessAfter.body?.nextActions || [],
+  },
 };
 
 const checks = [
@@ -201,8 +219,18 @@ const checks = [
   { name: "admin readiness endpoint is reachable", pass: readiness.ok },
   { name: "provider order comes from admin integrations", pass: report.status.providerOrderSource === "admin" },
   { name: "at least one real provider is configured", pass: report.status.configuredProviders.length > 0 },
+  {
+    name: "configured provider live test succeeds",
+    pass: providerTests.length === 0 || providerTests.some((item) => item.result.body?.ok === true),
+  },
   { name: "student chat endpoint responded", pass: studentChat.ok },
   { name: "student chat used a real provider", pass: studentChat.body?.provider && studentChat.body.provider !== "none" && studentChat.body?.usedFallback !== true },
+  {
+    name: "post-chat readiness reflects fallback pressure",
+    pass:
+      studentChat.body?.usedFallback !== true ||
+      Number(readinessAfter.body?.studentAdvisor?.fallbackStudentChats24h || readinessAfter.body?.monitoring?.fallbackStudentChats24h || 0) > 0,
+  },
 ];
 
 report.checks = checks.map((check) => ({ ...check, status: check.pass ? "PASS" : "REVIEW" }));
@@ -222,7 +250,9 @@ fs.writeFileSync(
     `- Provider: ${report.status.provider || "unknown"}`,
     `- Routing: ${report.status.routingMode || "unknown"} / ${report.status.providerOrderSource || "unknown"}`,
     `- Readiness score: ${report.readiness.score ?? "unknown"}`,
+    `- Post-chat readiness score: ${report.readinessAfter.score ?? "unknown"}`,
     `- Student chat: provider=${report.studentChat.provider || "unknown"}, fallback=${String(report.studentChat.usedFallback)}`,
+    `- Fallback reason: ${report.studentChat.fallbackReason || "none"}`,
     `- Checks: PASS ${report.summary.pass}, REVIEW ${report.summary.review}`,
     "",
     "## Checks",
