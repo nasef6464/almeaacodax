@@ -26,6 +26,8 @@
 - سلامة قائمة scripts في `package.json`: تم فحص 115 script ولم يظهر أي مسار `node scripts/...` مفقود.
 - جسر AI والتكاملات بعد تقوية العقد: `smoke:ai-config-bridge` نجح `12/12`، ويثبت وجود تعدد مفاتيح AI، وتجربة مفاتيح المزود بالترتيب، والوضع التلقائي عند تعطل المزود.
 - بعد نشر commit `81ca924`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
+- تم اكتشاف وإصلاح فجوة تسليم: أوامر `smoke:handover-*` في `package.json` كانت تشير إلى ملفات موجودة محليا وغير متتبعة؛ تمت إضافتها إلى Git وتشغيل `smoke:handover:all` بنجاح.
+- فحوص مخاطر الإطلاق الإضافية نجحت: `api-security 6/6`, `csrf 4/4`, `auth-cookie 5/5`, `payment-providers 7/7`, `payment-tampering 9/9`, `production-audit 9/9`, `production-hardening 5/5`, `reports-role 11/11`, `rbac-school-scope 4/4`, `sentry-runtime 5/5`.
 
 ## الفجوات التي لا يجوز إخفاؤها
 - مساعد الطالب يعمل وظيفيا ولا يكسر الواجهة، لكن آخر فحص حي رجع `fallback=true` لأن Gemini أعاد `429 quota exceeded`.

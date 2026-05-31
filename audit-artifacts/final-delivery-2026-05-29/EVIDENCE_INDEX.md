@@ -107,6 +107,22 @@
 - `npm run smoke:security-rbac-phase6` - PASS 5/5.
 - Postdeploy `npm run smoke:frontend:strict` - PASS 28/28, entry asset `index-B5N5Bp36.js`.
 - Postdeploy `npm run smoke:health-readiness` - PASS.
+- Handover scripts tracking fix: added the five `scripts/smoke-handover-*-contract.mjs` files that were referenced by `package.json` but not tracked.
+- `npm run smoke:handover:all` - PASS.
+- Script tracking recheck: 102 `node scripts/...` references, no missing targets and no untracked targets.
+- Launch risk guard recheck:
+  - `npm run smoke:api-security` - PASS 6/6.
+  - `npm run smoke:csrf` - PASS 4/4.
+  - `npm run smoke:auth-cookie` - PASS 5/5.
+  - `npm run smoke:payment-providers` - PASS 7/7.
+  - `npm run smoke:payment-tampering` - PASS 9/9.
+  - `npm run smoke:production-audit` - PASS 9/9.
+  - `npm run smoke:production-hardening` - PASS 5/5.
+  - `npm run smoke:xlsx-safety` - PASS 16/16.
+  - `npm run smoke:reports-role` - PASS 11/11.
+  - `npm run smoke:rbac-school-scope` - PASS 4/4.
+  - `npm run smoke:sentry-runtime` - PASS 5/5.
+- In-app Browser visual check: `/admin-dashboard` loaded on production, no login redirect, admin/integrations/users signals visible in DOM.
 - Vercel inspect logs: production Ready ويبني من GitHub `main`; استخدم logs كدليل commit المنشور بعد أي commit توثيقي لاحق.
 
 ## فحص مركّز التكاملات + مساعد الذكاء (Continuation 7)

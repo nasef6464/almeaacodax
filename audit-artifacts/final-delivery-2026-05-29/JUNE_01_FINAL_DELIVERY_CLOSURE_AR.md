@@ -51,3 +51,5 @@
 - `npm run smoke:ai-config-bridge` -> PASS 12/12 بعد إضافة حارس تعدد مفاتيح AI وfailover.
 - فحص سلامة scripts: 115 script بدون مسارات `node scripts/...` مفقودة.
 - بعد النشر على Vercel: `npm run smoke:frontend:strict` -> PASS 28/28، و`npm run smoke:health-readiness` -> PASS.
+- تم إصلاح فجوة تسليم إضافية: ملفات `smoke:handover-*` كانت غير متتبعة رغم أن `package.json` يشير إليها؛ تمت إضافتها وتشغيل `npm run smoke:handover:all` بنجاح.
+- فحوص أمان/إنتاج/دفع إضافية: `api-security`, `csrf`, `auth-cookie`, `payment-providers`, `payment-tampering`, `production-audit`, `production-hardening`, `xlsx-safety`, `reports-role`, `rbac-school-scope`, `sentry-runtime` كلها PASS.

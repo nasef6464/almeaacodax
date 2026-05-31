@@ -608,3 +608,38 @@
 - حكم هذه المتابعة:
   - لوحة الإدارة والأدوار والدفع ورحلة الطالب مثبتة بأدلة كافية للتشغيل الداخلي وتجربة مجموعة صغيرة.
   - إعلان عام بدفع ومستخدمين حقيقيين ما زال لا يأخذ ختم `READY FOR PUBLIC LAUNCH` حتى يتم إثبات مزود AI حقيقي يعمل بدون fallback.
+
+## متابعة لاحقة 36 (Handover Scripts + Launch Risk Guards) - 2026-06-01
+
+- فجوة حقيقية تم اكتشافها:
+  - `package.json` كان يحتوي أوامر `smoke:handover-*`، وملفاتها موجودة محليا لكنها غير متتبعة في Git.
+  - هذا كان سيكسر تجربة أي مطور/حساب جديد يعمل من clean clone.
+- الإصلاح:
+  - تم إضافة حراس التسليم الخمسة إلى Git:
+    - `scripts/smoke-handover-utf8-contract.mjs`
+    - `scripts/smoke-handover-structure-contract.mjs`
+    - `scripts/smoke-handover-consistency-contract.mjs`
+    - `scripts/smoke-handover-gates-contract.mjs`
+    - `scripts/smoke-handover-blockers-contract.mjs`
+- إثبات الإصلاح:
+  - `npm run smoke:handover:all` -> `PASS`
+  - فحص تتبع scripts: 102 أوامر `node scripts/...`، بدون missing وبدون untracked.
+- فحوص مخاطر الإطلاق التي أعيد تشغيلها:
+  - `npm run smoke:api-security` -> `PASS 6/6`
+  - `npm run smoke:csrf` -> `PASS 4/4`
+  - `npm run smoke:auth-cookie` -> `PASS 5/5`
+  - `npm run smoke:payment-providers` -> `PASS 7/7`
+  - `npm run smoke:payment-tampering` -> `PASS 9/9`
+  - `npm run smoke:production-audit` -> `PASS 9/9`
+  - `npm run smoke:production-hardening` -> `PASS 5/5`
+  - `npm run smoke:xlsx-safety` -> `PASS 16/16`
+  - `npm run smoke:reports-role` -> `PASS 11/11`
+  - `npm run smoke:rbac-school-scope` -> `PASS 4/4`
+  - `npm run smoke:sentry-runtime` -> `PASS 5/5`
+- فحص بصري خفيف عبر المتصفح المدمج:
+  - الإنتاج فتح `https://almeaacodax.vercel.app/admin-dashboard`.
+  - لم يحدث redirect إلى تسجيل الدخول.
+  - ظهرت إشارات لوحة الإدارة والتكاملات والمستخدمين في DOM.
+- المخاطر المتبقية:
+  - AI ما زال external blocker بسبب Gemini quota/fallback.
+  - تحذير npm high severity الخاص بـ `xlsx` ما زال non-blocking مع وجود `smoke:xlsx-safety` وتمريره `16/16`.
