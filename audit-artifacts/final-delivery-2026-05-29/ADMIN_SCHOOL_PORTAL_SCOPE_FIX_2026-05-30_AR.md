@@ -173,3 +173,14 @@
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-tabs-final-after-5dffc7e5/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-admin-ui-gap-final-after-5dffc7e5/`
   - `audit-artifacts/admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/`
+
+## فحص أدوار المستخدمين خارج الإدارة - 2026-05-31
+- PASS: تم إضافة فاحص حي مستقل `scripts/live-role-pages-audit.mjs` لفتح صفحات الأدوار الأساسية على الإنتاج بدون ضغط عشوائي على الأزرار.
+- PASS: فحص الأدوار أعاد 20/20 PASS و0 FAIL و0 BLOCKED.
+- PASS: تم فحص الزائر على الصفحة الرئيسية والعضويات والمدونة، مع التأكد أن `/reports` و`/my-requests` محميتان وتفتحان تسجيل الدخول بدلا من كشف بيانات.
+- PASS: تم فحص الطالب على `/dashboard` و`/my-quizzes` و`/reports` و`/plan` و`/profile` و`/pricing` بدون أخطاء Console أو Network 4xx/5xx.
+- PASS: تم فحص ولي الأمر على `/parent-dashboard` و`/reports` و`/profile`.
+- PASS: تم فحص المعلم والمشرف على `/admin-dashboard` و`/reports` و`/profile`.
+- PASS: `npm run smoke:payment-package` نجح 8/8، ويغطي العضويات العامة، طلبات الدفع، الخصومات، الاعتماد اليدوي، والربط مع الباقات.
+- PASS: `npm run smoke:reports-role` نجح 11/11، ويغطي تقارير الطالب وولي الأمر والمعلم/المشرف مع نطاق الصلاحيات والتصدير.
+- الدليل: `audit-artifacts/ui-audit-exhaustive/2026-05-31-role-pages-live-after-9641982a-v4/`.
