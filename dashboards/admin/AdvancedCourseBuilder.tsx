@@ -421,6 +421,18 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
     }));
   };
 
+  const getAssessmentQuiz = (assessment: CourseAssessment) =>
+    quizzes.find((quiz) => quiz.id === assessment.quizId);
+
+  const getAssessmentPhaseLabel = (phase: CourseAssessment['phase']) => {
+    if (phase === 'pre_course') return 'اختبار قبلي';
+    if (phase === 'final_course') return 'اختبار نهائي';
+    return 'اختبار أثناء الدورة';
+  };
+
+  const getAssessmentAccessLabel = (access: CourseAssessment['access']) =>
+    access === 'free_preview' ? 'معاينة مجانية' : 'ضمن شراء الدورة';
+
   const addCourseFile = () => {
     const currentFiles = Array.isArray(courseData.files) ? courseData.files : [];
     const newFile: CourseFile = {
@@ -554,7 +566,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                           <div 
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className="flex flex-col gap-3 bg-white border border-gray-200 p-3 rounded-xl hover:border-indigo-300 hover:shadow-sm transition-all group sm:flex-row sm:items-center"
+                                            className="grid grid-cols-[auto_1fr] gap-3 bg-white border border-gray-200 p-3 rounded-xl hover:border-indigo-300 hover:shadow-sm transition-all group sm:grid-cols-[auto_auto_minmax(0,1fr)_minmax(320px,420px)_auto] sm:items-center"
                                           >
                                             <div {...provided.dragHandleProps} className="cursor-grab text-gray-300 hover:text-gray-500">
                                               <GripVertical size={18} />
@@ -562,7 +574,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                             <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100">
                                               {getLessonIcon(lesson.type)}
                                             </div>
-                                            <div className="flex-1">
+                                            <div className="col-span-2 min-w-0 sm:col-span-1">
                                               <span className="font-bold text-gray-800">{getSafeLabel(lesson.title, 'درس بدون اسم')}</span>
                                               <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 font-medium">
                                                 <span className="flex items-center gap-1">
@@ -579,7 +591,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                             {(() => {
                                               const accessCopy = getCourseLessonAccessCopy(lesson);
                                               return (
-                                                <div className="flex flex-col gap-2 rounded-xl border border-gray-100 bg-gray-50 p-2 sm:w-60">
+                                                <div className="col-span-2 flex w-full flex-col gap-2 rounded-xl border border-gray-100 bg-gray-50 p-3 sm:col-span-1">
                                                   <div className={`inline-flex w-fit items-center gap-1 rounded-full px-2 py-1 text-[11px] font-black ${accessCopy.badgeClass}`}>
                                                     {lesson.accessControl === 'public' ? <Globe size={12} /> : <Lock size={12} />}
                                                     {accessCopy.label}
@@ -596,12 +608,12 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                                 </div>
                                               );
                                             })()}
-                                            <div className="flex items-center gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                            <div className="col-span-2 flex items-center gap-2 transition-opacity sm:col-span-1 sm:opacity-0 sm:group-hover:opacity-100">
                                               <button 
                                                 onClick={() => setEditingLesson({ moduleId: module.id, lesson })}
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-bold text-sm flex items-center gap-1"
                                               >
-                                                <Edit2 size={16} /> إعدادات الدرس
+                                                <Edit2 size={16} /> {lesson.type === 'quiz' ? 'إعدادات الاختبار' : 'إعدادات الدرس'}
                                               </button>
                                               <button onClick={() => deleteLesson(module.id, lesson.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                                                 <Trash2 size={16} />
@@ -743,115 +755,172 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                 </Droppable>
               </DragDropContext>
 
-              <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-gray-800">اختبارات الدورة الرسمية</h4>
+              <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <h4 className="font-bold text-gray-800">اختبارات الدورة الرسمية</h4>
+                      <p className="mt-1 text-xs leading-5 text-gray-500">
+                        هنا تربط اختبارات عامة للدورة مثل القبلي والنهائي. اختبارات الدروس الموجودة داخل المنهج تدار من صف الدرس/الاختبار نفسه.
+                      </p>
+                    </div>
                     <select
                       defaultValue=""
                       onChange={(e) => {
                         addCourseAssessment(e.target.value);
                         e.target.value = '';
                       }}
-                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                      className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-700 outline-none focus:border-indigo-400 md:w-64"
                     >
-                      <option value="">إضافة اختبار</option>
+                      <option value="">استدعاء اختبار من المركز</option>
                       {scopedQuizzes.map((quiz) => (
                         <option key={quiz.id} value={quiz.id}>{getSafeLabel(quiz.title, 'اختبار')}</option>
                       ))}
                     </select>
                   </div>
-                  {(courseData.assessments || []).length === 0 && (
-                    <p className="text-xs text-gray-500">لن تظهر هنا اختبارات الدروس الداخلية، فقط اختبارات الدورة العامة (قبلي/نهائي).</p>
-                  )}
-                  <div className="space-y-2">
-                    {(courseData.assessments || []).map((assessment) => (
-                      <div key={assessment.id} className="border border-gray-200 rounded-lg p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
-                        <input
-                          value={assessment.title}
-                          onChange={(e) => updateCourseAssessment(assessment.id, { title: e.target.value })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                          placeholder="عنوان الاختبار"
-                        />
-                        <select
-                          value={assessment.phase}
-                          onChange={(e) => updateCourseAssessment(assessment.id, { phase: e.target.value as CourseAssessment['phase'] })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                        >
-                          <option value="pre_course">قبلي</option>
-                          <option value="during_course">أثناء الدورة</option>
-                          <option value="final_course">نهائي</option>
-                        </select>
-                        <select
-                          value={assessment.access}
-                          onChange={(e) => updateCourseAssessment(assessment.id, { access: e.target.value as CourseAssessment['access'] })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                        >
-                          <option value="enrolled_paid">مدفوع مع الدورة</option>
-                          <option value="free_preview">مجاني للعرض</option>
-                        </select>
-                        <div className="flex items-center justify-between">
-                          <label className="text-xs flex items-center gap-1">
+
+                  {(courseData.assessments || []).length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm leading-7 text-gray-500">
+                      لا توجد اختبارات رسمية مرتبطة بهذه الدورة. يمكن تركها فارغة، وسيظل تبويب الاختبارات للطالب يعرض اختبارات المادة المناسبة كاقتراحات.
+                    </div>
+                  ) : null}
+
+                  <div className="space-y-3">
+                    {(courseData.assessments || []).map((assessment) => {
+                      const assessmentQuiz = getAssessmentQuiz(assessment);
+                      return (
+                        <div key={assessment.id} className="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-3">
+                          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-700">
+                                  {getAssessmentPhaseLabel(assessment.phase)}
+                                </span>
+                                <span className={`rounded-full px-2 py-1 text-[11px] font-black ${assessment.access === 'free_preview' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                  {getAssessmentAccessLabel(assessment.access)}
+                                </span>
+                                <span className={`rounded-full px-2 py-1 text-[11px] font-black ${assessment.showOnPlatform !== false ? 'bg-sky-50 text-sky-700' : 'bg-gray-100 text-gray-500'}`}>
+                                  {assessment.showOnPlatform !== false ? 'ظاهر للطالب' : 'مخفي'}
+                                </span>
+                              </div>
+                              <p className="mt-2 truncate text-sm font-black text-gray-900">{assessment.title || assessmentQuiz?.title || 'اختبار بدون عنوان'}</p>
+                              <p className="mt-1 text-[11px] text-gray-500">
+                                المصدر: {assessmentQuiz ? getSafeLabel(assessmentQuiz.title, 'اختبار من المركز') : 'الاختبار الأصلي غير موجود'}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              className="self-start rounded-lg px-3 py-2 text-xs font-black text-red-600 hover:bg-red-50"
+                              onClick={() => removeCourseAssessment(assessment.id)}
+                            >
+                              حذف الربط
+                            </button>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                            <input
+                              value={assessment.title}
+                              onChange={(e) => updateCourseAssessment(assessment.id, { title: e.target.value })}
+                              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 md:col-span-2"
+                              placeholder="عنوان يظهر للطالب"
+                            />
+                            <select
+                              value={assessment.phase}
+                              onChange={(e) => updateCourseAssessment(assessment.id, { phase: e.target.value as CourseAssessment['phase'] })}
+                              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400"
+                            >
+                              <option value="pre_course">قبلي</option>
+                              <option value="during_course">أثناء الدورة</option>
+                              <option value="final_course">نهائي</option>
+                            </select>
+                            <select
+                              value={assessment.access}
+                              onChange={(e) => updateCourseAssessment(assessment.id, { access: e.target.value as CourseAssessment['access'] })}
+                              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400"
+                            >
+                              <option value="enrolled_paid">ضمن شراء الدورة</option>
+                              <option value="free_preview">معاينة مجانية</option>
+                            </select>
+                          </div>
+
+                          <label className="inline-flex items-center gap-2 text-xs font-bold text-gray-600">
                             <input
                               type="checkbox"
                               checked={assessment.showOnPlatform !== false}
                               onChange={(e) => updateCourseAssessment(assessment.id, { showOnPlatform: e.target.checked })}
                             />
-                            عرض
+                            إظهار هذا الاختبار في تبويب اختبارات الدورة للطالب
                           </label>
-                          <button className="text-red-600 text-xs font-bold" onClick={() => removeCourseAssessment(assessment.id)}>حذف</button>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-gray-800">ملفات المادة العلمية</h4>
+                <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <h4 className="font-bold text-gray-800">ملفات الدورة</h4>
+                      <p className="mt-1 text-xs leading-5 text-gray-500">
+                        ملفات تظهر للطالب في تبويب "ملفات الدورة". ضع رابطًا مباشرًا واضحًا، واتركها فارغة إذا لا توجد مذكرات أو مرفقات.
+                      </p>
+                    </div>
                     <button
                       type="button"
                       onClick={addCourseFile}
-                      className="px-3 py-2 rounded-lg text-sm font-bold bg-indigo-50 text-indigo-700"
+                      className="w-full rounded-xl bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100 md:w-auto"
                     >
                       + إضافة ملف
                     </button>
                   </div>
-                  {(courseData.files || []).length === 0 && (
-                    <p className="text-xs text-gray-500">هذه الملفات تظهر للطالب في تبويب "ملفات الدورة".</p>
-                  )}
-                  <div className="space-y-2">
+
+                  {(courseData.files || []).length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm leading-7 text-gray-500">
+                      لا توجد ملفات مضافة لهذه الدورة حاليًا.
+                    </div>
+                  ) : null}
+
+                  <div className="space-y-3">
                     {(courseData.files || []).map((file) => (
-                      <div key={file.id} className="border border-gray-200 rounded-lg p-2 grid grid-cols-1 md:grid-cols-4 gap-2">
-                        <input
-                          value={file.title}
-                          onChange={(e) => updateCourseFile(file.id, { title: e.target.value })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                          placeholder="عنوان الملف"
-                        />
-                        <select
-                          value={file.type}
-                          onChange={(e) => updateCourseFile(file.id, { type: e.target.value as CourseFile['type'] })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                        >
-                          <option value="pdf">PDF</option>
-                          <option value="doc">DOC</option>
-                          <option value="image">Image</option>
-                        </select>
-                        <input
-                          value={file.url}
-                          onChange={(e) => updateCourseFile(file.id, { url: e.target.value })}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm"
-                          placeholder="رابط الملف"
-                        />
-                        <div className="flex items-center gap-2">
+                      <div key={file.id} className="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-black text-gray-900">{file.title || 'ملف بدون عنوان'}</p>
+                            <p className="mt-1 text-[11px] text-gray-500">{file.type?.toUpperCase()} - {file.size || 'حجم غير محدد'}</p>
+                          </div>
+                          <button className="rounded-lg px-3 py-2 text-xs font-black text-red-600 hover:bg-red-50" onClick={() => removeCourseFile(file.id)}>
+                            حذف الملف
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                          <input
+                            value={file.title}
+                            onChange={(e) => updateCourseFile(file.id, { title: e.target.value })}
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 md:col-span-2"
+                            placeholder="عنوان الملف"
+                          />
+                          <select
+                            value={file.type}
+                            onChange={(e) => updateCourseFile(file.id, { type: e.target.value as CourseFile['type'] })}
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400"
+                          >
+                            <option value="pdf">PDF</option>
+                            <option value="doc">DOC</option>
+                            <option value="image">صورة</option>
+                          </select>
                           <input
                             value={file.size}
                             onChange={(e) => updateCourseFile(file.id, { size: e.target.value })}
-                            className="px-2 py-1 border border-gray-300 rounded text-sm w-full"
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400"
                             placeholder="الحجم"
                           />
-                          <button className="text-red-600 text-xs font-bold" onClick={() => removeCourseFile(file.id)}>حذف</button>
+                          <input
+                            value={file.url}
+                            onChange={(e) => updateCourseFile(file.id, { url: e.target.value })}
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 md:col-span-5"
+                            placeholder="رابط الملف"
+                          />
                         </div>
                       </div>
                     ))}
@@ -1356,15 +1425,125 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
         </div>
       </div>
 
-      {/* Lesson Edit Modal */}
-      {editingLesson && (
-        <UnifiedLessonBuilder 
+      {/* Course item edit modal */}
+      {editingLesson && editingLesson.lesson.type === 'quiz' ? (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col" dir="rtl">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
+                <HelpCircle size={18} className="text-purple-500" />
+                إعدادات الاختبار داخل هذه الدورة
+              </h3>
+              <button onClick={() => setEditingLesson(null)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-200">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto flex-1 space-y-5">
+              <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm leading-7 text-indigo-800">
+                هذا الإعداد يخص ظهور الاختبار داخل منهج هذه الدورة فقط. الاختبار الأصلي في مركز الاختبارات لا يتغير، ويمكن استخدامه في مكان آخر بإعداد مختلف.
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-1">اسم الاختبار داخل الدورة</label>
+                  <input
+                    type="text"
+                    value={editingLesson.lesson.title || ''}
+                    onChange={(event) =>
+                      setEditingLesson((current) =>
+                        current ? { ...current, lesson: { ...current.lesson, title: event.target.value } } : current,
+                      )
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">الوصول داخل الدورة</label>
+                  <select
+                    value={editingLesson.lesson.accessControl || 'enrolled'}
+                    onChange={(event) =>
+                      setEditingLesson((current) =>
+                        current
+                          ? { ...current, lesson: { ...current.lesson, accessControl: event.target.value as Lesson['accessControl'] } }
+                          : current,
+                      )
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  >
+                    <option value="enrolled">مدفوع بعد شراء الدورة</option>
+                    <option value="public">معاينة مجانية داخل الدورة</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">المدة الظاهرة</label>
+                  <input
+                    type="text"
+                    value={editingLesson.lesson.duration || ''}
+                    onChange={(event) =>
+                      setEditingLesson((current) =>
+                        current ? { ...current, lesson: { ...current.lesson, duration: event.target.value } } : current,
+                      )
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="مثال: 30 دقيقة"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm">
+                <div>
+                  <div className="text-xs font-bold text-gray-500">الاختبار الأصلي</div>
+                  <div className="mt-1 font-black text-gray-800">{editingLesson.lesson.quizId || 'غير مرتبط'}</div>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-gray-500">المسار</div>
+                  <div className="mt-1 font-black text-gray-800">{paths.find((path) => path.id === editingLesson.lesson.pathId)?.name || 'غير محدد'}</div>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-gray-500">المادة</div>
+                  <div className="mt-1 font-black text-gray-800">{subjects.find((subject) => subject.id === editingLesson.lesson.subjectId)?.name || 'غير محدد'}</div>
+                </div>
+              </div>
+
+              <textarea
+                value={editingLesson.lesson.description || ''}
+                onChange={(event) =>
+                  setEditingLesson((current) =>
+                    current ? { ...current, lesson: { ...current.lesson, description: event.target.value } } : current,
+                  )
+                }
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none h-24 resize-none"
+                placeholder="وصف مختصر يظهر للطالب داخل الدورة"
+              />
+            </div>
+
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row gap-3 sm:justify-end">
+              <button
+                onClick={() => setEditingLesson(null)}
+                className="px-5 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 font-bold hover:bg-gray-50"
+              >
+                إلغاء
+              </button>
+              <button
+                onClick={() => handleSaveLesson(editingLesson.moduleId, editingLesson.lesson)}
+                className="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700"
+              >
+                حفظ إعدادات الاختبار
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : editingLesson ? (
+        <UnifiedLessonBuilder
           initialLesson={editingLesson.lesson}
           moduleId={editingLesson.moduleId}
           onSave={handleSaveLesson}
           onCancel={() => setEditingLesson(null)}
         />
-      )}
+      ) : null}
     </div>
   );
 };
