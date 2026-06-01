@@ -230,6 +230,14 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         enrollCourse(course.id);
     };
 
+    const handleLockedCourseTestClick = () => {
+        if (isGuestUser) {
+            navigate('/?auth=login');
+            return;
+        }
+        setShowPaymentModal(true);
+    };
+
     useEffect(() => {
         if (searchParams.get('buy') !== '1' || isEnrolled) return;
 
@@ -507,15 +515,23 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         {explicitCourseTests.length > 0 ? (
                             <SimulatedTestExperience
                                 tests={explicitCourseTests}
-                                onLockedClick={() => setShowPaymentModal(true)}
+                                title="اختبارات الدورة الرسمية"
+                                lockedCountLabel="ضمن شراء الدورة"
+                                onLockedClick={handleLockedCourseTestClick}
                                 onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
                             />
                         ) : relatedTests.length > 0 ? (
-                            <SimulatedTestExperience
-                                tests={relatedTests}
-                                onLockedClick={() => setShowPaymentModal(true)}
-                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
-                            />
+                            <div className="space-y-4">
+                                <div className="rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm leading-7 text-indigo-800">
+                                    لم يتم ربط اختبارات رسمية بهذه الدورة بعد، لذلك نعرض اختبارات مناسبة من نفس المادة كاقتراحات تدريبية.
+                                </div>
+                                <SimulatedTestExperience
+                                    tests={relatedTests}
+                                    title="اختبارات المادة المقترحة"
+                                    onLockedClick={handleLockedCourseTestClick}
+                                    onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
+                                />
+                            </div>
                         ) : (
                             <div className="bg-gray-50 rounded-3xl border border-dashed border-gray-200 overflow-hidden">
                                 <div className="text-center py-10 px-4 border-b border-gray-100 bg-white">
@@ -530,7 +546,8 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     {fallbackTests.length > 0 ? (
                                         <SimulatedTestExperience
                                             tests={fallbackTests}
-                                            onLockedClick={() => setShowPaymentModal(true)}
+                                            title="اختبارات المادة المقترحة"
+                                            onLockedClick={handleLockedCourseTestClick}
                                             onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
                                         />
                                     ) : (

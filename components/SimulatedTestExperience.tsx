@@ -20,6 +20,8 @@ interface Test {
 interface SimulatedTestExperienceProps {
     tests: Test[];
     mode?: 'test' | 'bank';
+    title?: string;
+    lockedCountLabel?: string;
     onLockedClick?: (test: Test) => void;
     onStartTest?: (test: Test) => void;
 }
@@ -27,7 +29,14 @@ interface SimulatedTestExperienceProps {
 const stripOptionLabel = (value: string) =>
     value.replace(/^\s*[أابجدهـA-D]\s*[\)\-\.]\s*/i, '').trim();
 
-export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = ({ tests, mode = 'test', onLockedClick, onStartTest }) => {
+export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = ({
+    tests,
+    mode = 'test',
+    title,
+    lockedCountLabel,
+    onLockedClick,
+    onStartTest
+}) => {
     const [selectedTest, setSelectedTest] = useState<Test | null>(null);
     const [testState, setTestState] = useState<'list' | 'popup' | 'pre-test' | 'in-progress' | 'confirm-submit' | 'result'>('list');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -43,7 +52,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [isNightMode, setIsNightMode] = useState(false);
     const openTestsCount = tests.filter((test) => !test.isLocked).length;
     const lockedTestsCount = tests.length - openTestsCount;
-    const listTitle = mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة';
+    const listTitle = title || (mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة');
     const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار';
 
     const toggleFavorite = (idx: number) => {
@@ -154,7 +163,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                         <div className="mt-2 text-2xl font-black text-emerald-800">{openTestsCount}</div>
                     </div>
                     <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-right">
-                        <div className="text-xs font-black text-amber-600">ضمن باقة</div>
+                        <div className="text-xs font-black text-amber-600">{lockedCountLabel || 'ضمن باقة'}</div>
                         <div className="mt-2 text-2xl font-black text-amber-800">{lockedTestsCount}</div>
                     </div>
                 </div>
