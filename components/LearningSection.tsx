@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
-import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Library, Eye, Lock, Package, CreditCard } from 'lucide-react';
+import { Video, BookOpen, FileText, PlayCircle, MonitorPlay, Star, User, Users, Library, Eye, Lock, Package, CreditCard, ShoppingCart } from 'lucide-react';
 import { ProgressBar } from './ui/ProgressBar';
 import { useStore } from '../store/useStore';
 import { PackageContentType } from '../types';
@@ -809,75 +809,88 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 isPurchased: accessibleCourseIds.has(baseCourse.id) || hasCourseAccess || baseCourse.isPurchased,
                             };
                             const isPurchased = course.isPurchased;
-                            const lockedCourseMessage = !isPurchased ? getLockedContentMessage('courses') : null;
+                            const coursePrice = Number(course.price || 0);
+                            const originalPrice = Number(course.originalPrice || 0);
+                            const isFreeCourse = coursePrice <= 0;
+                            const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
+                            const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+                            const courseCurrency = course.currency || 'ر.س';
+                            const courseInstructor = course.instructor || course.author || course.createdByName || 'فريق المنصة';
+                            const primaryActionLabel = isPurchased
+                                ? (course.progress > 0 ? 'مواصلة التعلم' : 'ابدأ التعلم')
+                                : isFreeCourse
+                                    ? 'ابدأ مجاناً'
+                                    : 'شراء الدورة';
+                            const primaryActionPath = isPurchased || isFreeCourse
+                                ? `/course/${course.id}?learn=1`
+                                : `/course/${course.id}?buy=1`;
 
                             return (
                             <Card
                                 key={course.id}
-                                className="flex flex-col overflow-hidden border-2 border-transparent hover:shadow-xl transition-all duration-300 cursor-pointer rounded-3xl"
+                                className="flex flex-col overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 rounded-3xl"
                                 style={{ borderColor: theme.border }}
                             >
-                                <div className="relative h-48 bg-gray-900 group">
+                                <div className="relative h-48 bg-gray-100 group overflow-hidden">
                                     <img 
                                         src={course.thumbnail} 
                                         alt={course.title} 
-                                        className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
-                                    {!isPurchased && (
-                                        <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-md text-white p-2 rounded-full">
-                                            <Lock size={16} />
-                                        </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                    
-                                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                                        <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">{course.category}</span>
-                                        <div className="mb-2 flex flex-wrap gap-2">
-                                            <span className={`rounded-full px-3 py-1 text-[11px] font-black ${isPurchased ? 'bg-emerald-500/90 text-white' : 'bg-amber-500/90 text-white'}`}>
-                                                {isPurchased ? 'مفتوح لك الآن' : 'مدفوع أو يحتاج تفعيل'}
-                                            </span>
-                                        </div>
-                                        <h3 className="font-bold text-xl text-white mb-1">{course.title}</h3>
-                                    </div>
                                 </div>
-                                <div className="p-5 flex-1 flex flex-col bg-white">
-                                    <div className="mb-4">
-                                        <div className="flex justify-between text-xs text-gray-500 mb-2 font-bold">
-                                            <span>{course.progress}% مكتمل</span>
+                                <div className="flex flex-1 flex-col bg-white p-5">
+                                    <div className="mb-4 flex items-start justify-between gap-3">
+                                        <div>
+                                            <div className="mb-2 flex flex-wrap items-center gap-2">
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${isFreeCourse ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                                    {isFreeCourse ? 'مجاني' : 'مدفوع'}
+                                                </span>
+                                                {isPurchased && (
+                                                    <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">مفعل لك</span>
+                                                )}
+                                            </div>
+                                            <h3 className="text-xl font-black leading-snug text-gray-900">{course.title}</h3>
                                         </div>
-                                        <ProgressBar percentage={course.progress} showPercentage={false} color={safeColorTheme as any} />
+                                        <div className="shrink-0 text-left">
+                                            {isFreeCourse ? (
+                                                <div className="text-lg font-black text-emerald-600">مجاني</div>
+                                            ) : (
+                                                <div>
+                                                    {hasDiscount && <div className="text-sm font-bold text-gray-400 line-through">{originalPrice} {courseCurrency}</div>}
+                                                    <div className="text-lg font-black text-amber-600">{coursePrice} {courseCurrency}</div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    {!isPurchased && lockedCourseMessage && (
-                                        <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50 p-3 text-right">
-                                            <div className="text-xs font-black text-amber-700">لماذا هذا المحتوى مغلق؟</div>
-                                            <div className="mt-1 text-sm font-bold text-gray-900">{lockedCourseMessage.title}</div>
-                                            <div className="mt-1 text-xs leading-6 text-gray-600">{lockedCourseMessage.description}</div>
-                                            {showPublicAdminDiagnostics && lockedCourseMessage.coverageSummary ? (
-                                                <div className="mt-2 text-[11px] font-black text-amber-700">{lockedCourseMessage.coverageSummary}</div>
-                                            ) : null}
+                                    <div className="mb-4 flex flex-wrap gap-3 text-xs font-bold text-gray-500">
+                                        <span className="inline-flex items-center gap-1"><User size={14} /> {courseInstructor}</span>
+                                        <span className="inline-flex items-center gap-1"><Users size={14} /> {audienceCount} طالب</span>
+                                    </div>
+                                    {(isPurchased || course.progress > 0) && (
+                                        <div className="mb-4">
+                                            <div className="mb-2 flex justify-between text-xs font-bold text-gray-500">
+                                                <span>{course.progress}% مكتمل</span>
+                                            </div>
+                                            <ProgressBar percentage={course.progress} showPercentage={false} color={safeColorTheme as any} />
                                         </div>
                                     )}
                                     <div className="mt-auto">
-                                        {!isPurchased && (
-                                            <button
-                                                onClick={() => setPaymentModalData({
-                                                    isOpen: true,
-                                                    item: course,
-                                                    type: 'course',
-                                                })}
-                                                className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center mb-0"
-                                                style={{ backgroundColor: theme.base }}
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Link
+                                                to={`/course/${course.id}`}
+                                                className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-3 text-sm font-black text-gray-700 transition hover:bg-gray-50"
                                             >
-                                                طلب شراء الدورة
+                                                معاينة الدورة
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => navigate(primaryActionPath)}
+                                                className={`flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-black text-white shadow-md transition hover:-translate-y-0.5 ${isFreeCourse || isPurchased ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-500 hover:bg-amber-600'}`}
+                                            >
+                                                {!isFreeCourse && !isPurchased && <ShoppingCart size={16} />}
+                                                {primaryActionLabel}
                                             </button>
-                                        )}
-                                        <Link
-                                            to={`/course/${course.id}`}
-                                            className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-transform hover:-translate-y-1 flex items-center justify-center ${!isPurchased ? 'hidden' : ''}`}
-                                            style={{ backgroundColor: theme.base }}
-                                        >
-                                            {course.isPurchased ? (course.progress > 0 ? 'مواصلة التعلم' : 'ابدأ التعلم') : 'اشترك الآن'}
-                                        </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </Card>
