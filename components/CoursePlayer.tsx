@@ -53,7 +53,9 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   const navigate = useNavigate();
   const { completedLessons, markLessonComplete, questions, user } = useStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() =>
+    typeof window === 'undefined' ? true : window.innerWidth >= 1024,
+  );
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [expandedModules, setExpandedModules] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'description' | 'resources' | 'discussions'>('description');
