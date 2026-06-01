@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from './ui/Card';
-import { Star, User, Sparkles, Loader2 } from 'lucide-react';
+import { Eye, ShoppingCart, Star, User, Sparkles, Loader2, Users } from 'lucide-react';
 import { generateCourseSummary } from '../services/geminiService';
 import { useStore } from '../store/useStore';
 
@@ -41,6 +41,10 @@ const CourseItem: React.FC<{ course: any }> = ({ course }) => {
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject) ||
         course.isPurchased;
+    const coursePrice = Number(course.price || 0);
+    const originalPrice = Number(course.originalPrice || 0);
+    const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
+    const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
 
     const handleGetSummary = async () => {
         if (summary) return;
@@ -78,25 +82,39 @@ const CourseItem: React.FC<{ course: any }> = ({ course }) => {
                     </div>
                     <span>{course.instructor}</span>
                 </div>
+                <div className="mb-4 flex items-center gap-2 text-xs font-bold text-gray-500">
+                    <Users size={14} />
+                    <span>{audienceCount} طالب</span>
+                </div>
 
                 <div className="mt-auto pt-4 border-t border-gray-50 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col">
-                            <span className="text-xs text-gray-400 line-through">{course.price + 100} {course.currency}</span>
+                            {hasDiscount ? <span className="text-xs text-gray-400 line-through">{originalPrice} {course.currency}</span> : null}
                             <span className="text-xl font-black text-emerald-600">
-                                {course.price} <span className="text-xs font-normal text-gray-500">{course.currency}</span>
+                                {coursePrice} <span className="text-xs font-normal text-gray-500">{course.currency}</span>
                             </span>
                         </div>
-                        <Link
-                            to={`/course/${course.id}`}
-                            className={`px-6 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
-                                isPurchased
-                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                    : 'bg-white border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white'
-                            }`}
-                        >
-                            {isPurchased ? 'مواصلة التعلم' : 'اشترك الآن'}
-                        </Link>
+                        <div className="flex gap-2">
+                            <Link
+                                to={`/course/${course.id}`}
+                                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 transition-all hover:bg-gray-50"
+                                aria-label="معاينة الدورة"
+                            >
+                                <Eye size={16} />
+                            </Link>
+                            <Link
+                                to={isPurchased ? `/course/${course.id}?learn=1` : `/course/${course.id}?buy=1`}
+                                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
+                                    isPurchased
+                                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                        : 'bg-white border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white'
+                                }`}
+                            >
+                                <ShoppingCart size={16} />
+                                {isPurchased ? 'استمر' : 'شراء'}
+                            </Link>
+                        </div>
                     </div>
 
                     <div>

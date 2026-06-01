@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
 import { PaymentModal } from './PaymentModal';
 import { useStore } from '../store/useStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
@@ -49,6 +49,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [isSharing, setIsSharing] = useState(false);
     const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
     const matchedCoursePackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
@@ -59,6 +60,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
+    const isGuestUser = !user?.email || user.id === 'guest';
+    const coursePrice = Number(course.price || 0);
+    const courseOriginalPrice = Number(course.originalPrice || 0);
+    const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
+    const courseAudienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
 
     useEffect(() => {
         setActiveTab(initialTab);
@@ -206,12 +212,35 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     }, [course.id, favoriteStorageKey]);
 
     const handleEnroll = () => {
-        if (!isEnrolled && Number(course.price || 0) > 0) {
+        if (!isEnrolled && coursePrice > 0) {
+            if (isGuestUser) {
+                navigate('/?auth=login');
+                return;
+            }
             setShowPaymentModal(true);
             return;
         }
         enrollCourse(course.id);
     };
+
+    useEffect(() => {
+        if (searchParams.get('buy') !== '1' || isEnrolled) return;
+
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('buy');
+        setSearchParams(nextParams, { replace: true });
+
+        if (coursePrice > 0) {
+            if (isGuestUser) {
+                navigate('/?auth=login');
+                return;
+            }
+            setShowPaymentModal(true);
+            return;
+        }
+
+        enrollCourse(course.id);
+    }, [course.id, coursePrice, enrollCourse, isEnrolled, isGuestUser, navigate, searchParams, setSearchParams]);
 
     const getFileTypeLabel = (type?: string) => {
         const normalized = String(type || '').toLowerCase();
@@ -269,6 +298,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
     const handleLessonClick = (lesson: { id?: string; type: string; quizId?: string; isLocked?: boolean }) => {
         if (lesson.isLocked) {
+            if (isGuestUser) {
+                navigate('/?auth=login');
+                return;
+            }
             setShowPaymentModal(true);
             return;
         }
@@ -726,7 +759,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     </div>
                                     <div>
                                         <p className="text-gray-400 text-[10px]">طلاب مسجل</p>
-                                        <p className="font-bold">{course.studentCount || 455}</p>
+                                        <p className="font-bold">{courseAudienceCount}</p>
                                     </div>
                                 </div>
                             </div>
@@ -783,6 +816,17 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 <div className="absolute inset-0 bg-black/20"></div>
                             </div>
                             <div className="p-5 sm:p-6">
+                                {!isEnrolled ? (
+                                    <div className="mb-5 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-right">
+                                        <div className="text-xs font-bold text-gray-500">السعر</div>
+                                        <div className="mt-1 flex flex-wrap items-baseline justify-end gap-2">
+                                            {hasCourseDiscount ? (
+                                                <span className="text-sm font-bold text-gray-400 line-through">{courseOriginalPrice} {course.currency}</span>
+                                            ) : null}
+                                            <span className="text-2xl font-black text-amber-600">{coursePrice} {course.currency}</span>
+                                        </div>
+                                    </div>
+                                ) : null}
                                 <div className="mb-6">
                                     <div className="flex justify-between text-xs font-bold text-gray-500 mb-2">
                                         <span>الدرجة: {progress}%</span>
@@ -807,7 +851,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                         onClick={handleEnroll}
                                         className="w-full bg-amber-500 text-white py-4 rounded-2xl font-black text-lg hover:bg-amber-600 transition-all shadow-lg mb-4 flex items-center justify-center gap-2"
                                     >
-                                        انضم للدورة الآن
+                                        {coursePrice > 0 ? 'شراء الدورة' : 'ابدأ مجاناً'}
                                     </button>
                                 )}
 

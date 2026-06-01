@@ -16,6 +16,9 @@ import {
   Clock,
   Award,
   ShoppingBag,
+  ShoppingCart,
+  User,
+  Users,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
@@ -426,35 +429,57 @@ export const SubjectLearningPage: React.FC = () => {
 
         {activeTab === 'courses' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
-            {subjectCourses.map((course) => (
+            {subjectCourses.map((course) => {
+              const coursePrice = Number(course.price || 0);
+              const originalPrice = Number(course.originalPrice || 0);
+              const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
+              const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+              return (
               <Card key={course.id} className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden rounded-2xl">
                 <div className="relative h-48 bg-gray-100 group overflow-hidden">
                   <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
                   <div className="absolute top-3 right-3 bg-black/50 backdrop-blur px-3 py-2 rounded-lg text-white text-xs font-black flex items-center gap-1">
                     {hasCoursePackageAccess ? <ShoppingBag size={16} /> : <Lock size={16} />}
-                    {hasCoursePackageAccess ? 'ضمن باقتك' : `${course.price || 0} ${course.currency || 'ر.س'}`}
+                    {hasCoursePackageAccess ? 'ضمن باقتك' : `${coursePrice} ${course.currency || 'ر.س'}`}
                   </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 leading-snug">{course.title}</h3>
+                  <div className="mb-4 flex flex-wrap gap-3 text-xs font-bold text-gray-500">
+                    <span className="inline-flex items-center gap-1"><User size={14} /> {course.instructor}</span>
+                    <span className="inline-flex items-center gap-1"><Users size={14} /> {audienceCount} طالب</span>
+                  </div>
                   <div className="mt-auto">
-                    <div className="flex justify-between text-xs text-gray-500 mb-2 font-bold">
+                    <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2 text-xs text-gray-500 font-bold">
                       <span>{course.progress}% مكتمل</span>
+                      <span>
+                        {hasDiscount ? <span className="ml-2 text-gray-400 line-through">{originalPrice}</span> : null}
+                        <span className="text-base font-black text-amber-600">{coursePrice} {course.currency || 'ر.س'}</span>
+                      </span>
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2.5 mb-4 overflow-hidden">
                       <div className="bg-[#10b981] h-2.5 rounded-full" style={{ width: `${course.progress}%` }}></div>
                     </div>
-                    <button
-                      className="w-full py-3 rounded-xl font-bold text-sm transition-all bg-[#f59e0b] text-white hover:bg-amber-600"
-                      onClick={() => navigate(`/course/${course.id}`)}
-                    >
-                      {course.progress > 0 ? 'مواصلة التعلم' : hasCoursePackageAccess ? 'ابدأ من الباقة' : 'عرض الدورة والاشتراك'}
-                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        className="w-full py-3 rounded-xl font-bold text-sm transition-all border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                        onClick={() => navigate(`/course/${course.id}`)}
+                      >
+                        معاينة
+                      </button>
+                      <button
+                        className="w-full py-3 rounded-xl font-bold text-sm transition-all bg-[#f59e0b] text-white hover:bg-amber-600 inline-flex items-center justify-center gap-2"
+                        onClick={() => navigate(course.progress > 0 || hasCoursePackageAccess ? `/course/${course.id}?learn=1` : `/course/${course.id}?buy=1`)}
+                      >
+                        <ShoppingCart size={16} />
+                        {course.progress > 0 || hasCoursePackageAccess ? 'استمر' : 'شراء'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </Card>
-            ))}
+            )})}
           </div>
         )}
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle } from 'lucide-react';
+import { ArrowDown, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -491,13 +491,18 @@ export const Landing: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {featuredCourses.map((course, idx) => (
-                            <Link key={`fcourse-${course.id}-${idx}`} to={`/course/${course.id}`} className="group">
+                        {featuredCourses.map((course, idx) => {
+                            const coursePrice = Number(course.price || 0);
+                            const originalPrice = Number(course.originalPrice || 0);
+                            const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
+                            return (
+                            <div key={`fcourse-${course.id}-${idx}`} className="group">
                                 <Card className="overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 rounded-3xl group-hover:-translate-y-2">
                                     <div className="relative aspect-video overflow-hidden">
                                         <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-indigo-600 font-black text-sm shadow-sm">
-                                            {course.price} ر.س
+                                            {hasDiscount ? <span className="ml-2 text-xs text-gray-400 line-through">{originalPrice}</span> : null}
+                                            {coursePrice} ر.س
                                         </div>
                                     </div>
                                     <div className="p-6 text-right">
@@ -514,16 +519,18 @@ export const Landing: React.FC = () => {
                                         <p className="text-xs text-gray-500 mb-4 flex items-center gap-1">
                                             <Users size={12} /> {course.instructor}
                                         </p>
-                                        <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                                            <span className="text-indigo-600 font-bold text-sm">عرض التفاصيل</span>
-                                            <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                                                <ArrowDown className="transform rotate-90" size={16} />
-                                            </div>
+                                        <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-50">
+                                            <Link to={`/course/${course.id}`} className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 transition-all hover:bg-gray-50">
+                                                <Eye size={15} /> معاينة
+                                            </Link>
+                                            <Link to={`/course/${course.id}?buy=1`} className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition-all hover:bg-indigo-700">
+                                                <ShoppingCart size={15} /> شراء
+                                            </Link>
                                         </div>
                                     </div>
                                 </Card>
-                            </Link>
-                        ))}
+                            </div>
+                        )})}
                     </div>
                     {featuredCourses.length === 0 && <div className="text-center py-12 text-gray-500">لا توجد دورات منشورة حاليًا.</div>}
                 </div>
