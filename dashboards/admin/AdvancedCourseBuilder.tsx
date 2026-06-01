@@ -223,7 +223,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       id: `course_lesson_${existingLesson.id}_${Date.now()}`,
       order: module.lessons.length + 1,
       isCompleted: false,
-      accessControl: existingLesson.accessControl || 'enrolled',
+      accessControl: 'enrolled',
     };
 
     setCourseData(prev => ({
@@ -273,6 +273,34 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
           : m
       )
     }));
+  };
+
+  const updateCourseLessonAccess = (moduleId: string, lessonId: string, accessControl: Lesson['accessControl']) => {
+    setCourseData((prev) => ({
+      ...prev,
+      modules: (prev.modules || []).map((module) =>
+        module.id !== moduleId
+          ? module
+          : {
+              ...module,
+              lessons: module.lessons.map((lesson) =>
+                lesson.id === lessonId ? { ...lesson, accessControl } : lesson,
+              ),
+            },
+      ),
+    }));
+  };
+
+  const getCourseLessonAccessCopy = (lesson: Lesson) => {
+    const isPreview = lesson.accessControl === 'public';
+    const typeLabel = lesson.type === 'quiz' ? 'الاختبار' : 'الدرس';
+    return {
+      label: isPreview ? 'معاينة مجانية' : 'مدفوع داخل الدورة',
+      hint: isPreview
+        ? `${typeLabel} يفتح للزائر كمعاينة داخل هذه الدورة فقط.`
+        : `${typeLabel} لا يفتح إلا بعد شراء الدورة أو باقة تشملها.`,
+      badgeClass: isPreview ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700',
+    };
   };
 
   // Drag and drop handler
@@ -526,7 +554,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                           <div 
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className="flex items-center gap-3 bg-white border border-gray-200 p-3 rounded-xl hover:border-indigo-300 hover:shadow-sm transition-all group"
+                                            className="flex flex-col gap-3 bg-white border border-gray-200 p-3 rounded-xl hover:border-indigo-300 hover:shadow-sm transition-all group sm:flex-row sm:items-center"
                                           >
                                             <div {...provided.dragHandleProps} className="cursor-grab text-gray-300 hover:text-gray-500">
                                               <GripVertical size={18} />
@@ -548,7 +576,27 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                                                 )}
                                               </div>
                                             </div>
-                                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            {(() => {
+                                              const accessCopy = getCourseLessonAccessCopy(lesson);
+                                              return (
+                                                <div className="flex flex-col gap-2 rounded-xl border border-gray-100 bg-gray-50 p-2 sm:w-60">
+                                                  <div className={`inline-flex w-fit items-center gap-1 rounded-full px-2 py-1 text-[11px] font-black ${accessCopy.badgeClass}`}>
+                                                    {lesson.accessControl === 'public' ? <Globe size={12} /> : <Lock size={12} />}
+                                                    {accessCopy.label}
+                                                  </div>
+                                                  <p className="text-[11px] leading-5 text-gray-500">{accessCopy.hint}</p>
+                                                  <select
+                                                    value={lesson.accessControl || 'enrolled'}
+                                                    onChange={(event) => updateCourseLessonAccess(module.id, lesson.id, event.target.value as Lesson['accessControl'])}
+                                                    className="w-full rounded-lg border border-gray-200 bg-white px-2 py-2 text-xs font-bold text-gray-700 outline-none focus:border-indigo-400"
+                                                  >
+                                                    <option value="enrolled">مدفوع بعد الشراء</option>
+                                                    <option value="public">معاينة مجانية</option>
+                                                  </select>
+                                                </div>
+                                              );
+                                            })()}
+                                            <div className="flex items-center gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                               <button 
                                                 onClick={() => setEditingLesson({ moduleId: module.id, lesson })}
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-bold text-sm flex items-center gap-1"
@@ -1275,32 +1323,24 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                     </div>
 
                     <div className="p-4 border border-gray-200 rounded-xl bg-white space-y-3">
-                      <h4 className="font-bold text-gray-800">Free Preview Lessons</h4>
-                      <p className="text-xs text-gray-500">Allow specific lessons to be public even when course is paid.</p>
+                      <h4 className="font-bold text-gray-800">ملخص معاينة المنهج داخل هذه الدورة</h4>
+                      <p className="text-xs text-gray-500">
+                        هذه الإعدادات تخص نسخة الدرس أو الاختبار داخل هذه الدورة فقط، ولا تغير حالة العنصر الأصلي في مراكز الدروس أو الاختبارات.
+                      </p>
                       <div className="max-h-56 overflow-y-auto space-y-2">
                         {(courseData.modules || []).flatMap((module) => module.lessons.map((lesson) => ({ module, lesson }))).map(({ module, lesson }) => (
                           <div key={lesson.id} className="flex items-center justify-between gap-3 border border-gray-100 rounded-lg p-2">
                             <div className="text-sm text-gray-700">
-                              <span className="font-bold">{getSafeLabel(lesson.title, 'Lesson')}</span>
-                              <span className="text-xs text-gray-500 mr-2">({getSafeLabel(module.title, 'Module')})</span>
+                              <span className="font-bold">{getSafeLabel(lesson.title, 'عنصر بدون اسم')}</span>
+                              <span className="text-xs text-gray-500 mr-2">({getSafeLabel(module.title, 'قسم بدون اسم')})</span>
                             </div>
                             <select
                               value={lesson.accessControl || 'enrolled'}
-                              onChange={(e) => {
-                                const nextAccess = e.target.value as Lesson['accessControl'];
-                                setCourseData((prev) => ({
-                                  ...prev,
-                                  modules: (prev.modules || []).map((m) =>
-                                    m.id !== module.id
-                                      ? m
-                                      : { ...m, lessons: m.lessons.map((l) => (l.id === lesson.id ? { ...l, accessControl: nextAccess } : l)) },
-                                  ),
-                                }));
-                              }}
+                              onChange={(e) => updateCourseLessonAccess(module.id, lesson.id, e.target.value as Lesson['accessControl'])}
                               className="px-2 py-1 border border-gray-300 rounded text-xs"
                             >
-                              <option value="enrolled">Paid/Enrolled</option>
-                              <option value="public">Free preview</option>
+                              <option value="enrolled">مدفوع بعد الشراء</option>
+                              <option value="public">معاينة مجانية</option>
                             </select>
                           </div>
                         ))}
