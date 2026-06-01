@@ -67,6 +67,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   const [actionFeedback, setActionFeedback] = useState('');
 
   const flattenedLessons = useMemo(() => course.modules?.flatMap((module) => module.lessons) || [], [course.modules]);
+  const unlockedLessons = useMemo(() => flattenedLessons.filter((lesson) => !lesson.isLocked), [flattenedLessons]);
   const totalLessons = flattenedLessons.length || 1;
   const completedCount = flattenedLessons.filter((lesson) => completedLessons.includes(lesson.id)).length;
   const progress = Math.round((completedCount / totalLessons) * 100);
@@ -74,6 +75,8 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     () => flattenedLessons.findIndex((lesson) => lesson.id === activeLesson?.id),
     [activeLesson?.id, flattenedLessons],
   );
+  const previousLesson = activeLessonIndex >= 0 ? flattenedLessons[activeLessonIndex - 1] : undefined;
+  const nextLesson = activeLessonIndex >= 0 ? flattenedLessons[activeLessonIndex + 1] : undefined;
   const favoriteStorageKey = `course-player-favorites:${String(user?.id || 'guest')}`;
   const lessonResources = useMemo(() => {
     const resources: Array<{ id: string; title: string; url: string; source: string }> = [];
@@ -120,8 +123,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   useEffect(() => {
     const initialLesson =
       (initialLessonId ? flattenedLessons.find((lesson) => lesson.id === initialLessonId && !lesson.isLocked) : null) ||
-      flattenedLessons.find((lesson) => !lesson.isLocked) ||
-      flattenedLessons[0] ||
+      unlockedLessons[0] ||
       null;
     const firstModuleWithLessons = course.modules?.find((module) =>
       module.lessons.some((lesson) => lesson.id === initialLesson?.id),
@@ -129,7 +131,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
 
     setActiveLesson(initialLesson);
     setExpandedModules(firstModuleWithLessons ? [firstModuleWithLessons.id] : []);
-  }, [course, flattenedLessons, initialLessonId]);
+  }, [course, flattenedLessons, initialLessonId, unlockedLessons]);
 
   useEffect(() => {
     if (activeLesson?.id) {
@@ -449,14 +451,14 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                     </button>
                     <button
                       onClick={() => handleNavigateBetweenLessons('prev')}
-                      disabled={activeLessonIndex <= 0}
+                      disabled={activeLessonIndex <= 0 || Boolean(previousLesson?.isLocked)}
                       className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white border border-gray-200 hover:bg-gray-50 shadow-sm'}`}
                     >
                       <SkipBack size={18} /> السابق
                     </button>
                     <button
                       onClick={() => handleNavigateBetweenLessons('next')}
-                      disabled={activeLessonIndex === -1 || activeLessonIndex >= flattenedLessons.length - 1}
+                      disabled={activeLessonIndex === -1 || activeLessonIndex >= flattenedLessons.length - 1 || Boolean(nextLesson?.isLocked)}
                       className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                     >
                       التالي <SkipForward size={18} />
@@ -571,6 +573,28 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                   )}
                 </div>
               </motion.div>
+            ) : flattenedLessons.length > 0 && unlockedLessons.length === 0 ? (
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
+                <Lock className="w-14 h-14 text-amber-300 mb-4" />
+                <h2 className="text-2xl font-black text-gray-900">محتوى الدورة يحتاج تفعيل</h2>
+                <p className="mt-3 max-w-md text-sm leading-7 text-gray-500">
+                  لا توجد دروس مجانية للمعاينة في هذه الدورة حالياً. يمكنك الرجوع لصفحة الدورة وطلب الشراء أو اختيار باقة مناسبة.
+                </p>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    onClick={() => navigate(`/course/${course.id}?buy=1`)}
+                    className="rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black text-white hover:bg-amber-600"
+                  >
+                    شراء الدورة
+                  </button>
+                  <button
+                    onClick={handleBack}
+                    className="rounded-2xl border border-gray-200 bg-white px-6 py-3 text-sm font-black text-gray-700 hover:bg-gray-50"
+                  >
+                    الرجوع للدورة
+                  </button>
+                </div>
+              </div>
             ) : flattenedLessons.length === 0 ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
                 <BookOpen className="w-14 h-14 text-indigo-200 mb-4" />
