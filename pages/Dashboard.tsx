@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
-    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, Trophy, LogOut,
+    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
@@ -99,6 +99,38 @@ const formatQuizCardDate = (createdAt?: number) => {
         month: 'long',
         day: 'numeric'
     });
+};
+
+const normalizeDashboardScope = (value?: string) => (value ?? '').trim().toLowerCase();
+
+const courseBelongsToPath = (course: { pathId?: string; category?: string }, path: { id: string; name?: string }) => {
+    const coursePath = normalizeDashboardScope(course.pathId || course.category);
+    return coursePath === normalizeDashboardScope(path.id) || coursePath === normalizeDashboardScope(path.name);
+};
+
+const getCourseLessons = (course: { modules?: Array<{ lessons: Array<{ id: string }> }> }) =>
+    course.modules?.flatMap((module) => module.lessons || []) || [];
+
+const resolvePathProgress = (
+    path: { id: string; name?: string },
+    courses: Array<{ pathId?: string; category?: string; modules?: Array<{ lessons: Array<{ id: string }> }> }>,
+    completedLessons: string[],
+    examResults: Array<{ skillsAnalysis?: Array<{ pathId?: string }> }>,
+) => {
+    const pathCourses = courses.filter((course) => courseBelongsToPath(course, path));
+    const lessonIds = pathCourses.flatMap(getCourseLessons).map((lesson) => lesson.id);
+    const completedLessonCount = lessonIds.filter((lessonId) => completedLessons.includes(lessonId)).length;
+    const pathExamCount = examResults.filter((result) => (result.skillsAnalysis || []).some((skill) => skill.pathId === path.id)).length;
+    const completedUnits = completedLessonCount + pathExamCount;
+    const totalUnits = lessonIds.length + pathExamCount;
+
+    return {
+        coursesCount: pathCourses.length,
+        lessonsCount: lessonIds.length,
+        completedLessonCount,
+        examsCount: pathExamCount,
+        progress: totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0,
+    };
 };
 
 type ScopedQuizResult = QuizResult & {
@@ -337,7 +369,7 @@ const useParentScopedResults = () => {
 const linkedStudentIdsKey = (ids?: string[]) => (ids || []).join('|');
 
 const PathsTab = () => {
-    const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, enrolledCourses, completedLessons, user } = useStore();
+    const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, completedLessons, user, examResults } = useStore();
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     
     // Fallback for icons and colors
@@ -378,17 +410,7 @@ const PathsTab = () => {
                 {activePaths.length > 0 ? (
                     <div className="grid gap-6">
                         {activePaths.map(path => {
-                            // Calculate progress based on enrolled courses in this path
-                            const pathCourses = courses.filter(c => !c.isPackage && (c.category === path.category || c.category === path.title) && enrolledCourses.includes(c.id));
-                            let pathTotalLessons = 0;
-                            let pathCompletedLessons = 0;
-                            pathCourses.forEach(course => {
-                                course.modules?.forEach(mod => {
-                                    pathTotalLessons += mod.lessons.length;
-                                    pathCompletedLessons += mod.lessons.filter(l => completedLessons.includes(l.id)).length;
-                                });
-                            });
-                            const pathProgress = pathTotalLessons > 0 ? Math.round((pathCompletedLessons / pathTotalLessons) * 100) : 0;
+                            const pathStats = resolvePathProgress(path, courses.filter((course) => !course.isPackage), completedLessons, examResults);
 
                             return (
                                 <Card key={path.id} className="p-6 border-2 border-transparent hover:border-gray-100 transition-all">
@@ -405,11 +427,11 @@ const PathsTab = () => {
                                         <div className="flex-1 max-w-md w-full">
                                             <div className="flex justify-between text-sm mb-2">
                                                 <span className="font-bold text-gray-700">نسبة الإنجاز</span>
-                                                <span className="font-bold text-amber-500">{pathProgress}%</span>
+                                                <span className="font-bold text-amber-500">{pathStats.progress}%</span>
                                             </div>
-                                            <ProgressBar percentage={pathProgress} color="secondary" />
+                                            <ProgressBar percentage={pathStats.progress} color="secondary" />
                                             <p className="text-xs text-gray-400 mt-2 text-left">
-                                                {pathCourses.length} دورات مسجلة
+                                                {pathStats.coursesCount} دورات · {pathStats.examsCount} اختبارات محسوبة
                                             </p>
                                         </div>
                                         <div className="shrink-0 flex flex-col gap-2">
@@ -1321,10 +1343,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const [reviewStats, setReviewStats] = useState<{ dueToday: number; dueThisWeek: number; totalCards: number } | null>(null);
     const [myCertificates, setMyCertificates] = useState<any[]>([]);
     const [certificatesLoading, setCertificatesLoading] = useState(false);
-    const [leaderboard, setLeaderboard] = useState<{
-        top: Array<{ rank: number; name: string; avgScore: number; points: number }>;
-        currentUserRank: null | { rank: number; avgScore: number; points: number };
-    } | null>(null);
     const [mockExamGenerating, setMockExamGenerating] = useState(false);
     const [mockExamMessage, setMockExamMessage] = useState('');
 
@@ -1363,38 +1381,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         };
     }, []);
 
-    useEffect(() => {
-        let mounted = true;
-        api.getLeaderboard({ scope: 'global', period: 'month', limit: 10 })
-            .then((payload) => {
-                if (!mounted) return;
-                setLeaderboard({
-                    top: Array.isArray(payload.top)
-                        ? payload.top.map((row) => ({
-                            rank: Number(row.rank || 0),
-                            name: String(row.name || 'طالب'),
-                            avgScore: Number(row.avgScore || 0),
-                            points: Number(row.points || 0),
-                        }))
-                        : [],
-                    currentUserRank: payload.currentUserRank
-                        ? {
-                            rank: Number(payload.currentUserRank.rank || 0),
-                            avgScore: Number(payload.currentUserRank.avgScore || 0),
-                            points: Number(payload.currentUserRank.points || 0),
-                        }
-                        : null,
-                });
-            })
-            .catch((error) => {
-                console.warn('Leaderboard unavailable:', error);
-                if (mounted) setLeaderboard({ top: [], currentUserRank: null });
-            });
-        return () => {
-            mounted = false;
-        };
-    }, []);
-    
     // Debugging logs as requested
     // Get full course objects for enrolled courses
     const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
@@ -1468,8 +1454,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         };
     }
 
-    // --- Group courses by real paths for "My Paths" ---
-    const normalize = (value?: string) => (value ?? '').trim().toLowerCase();
+    // --- Group learning by registered paths for "My Paths" ---
     const getSmallPathStyle = (pathId: string) => {
         if (pathId === 'p_qudrat') return { icon: <Target size={20} className="text-purple-500" />, bg: 'bg-purple-50' };
         if (pathId === 'p_tahsili') return { icon: <BookOpen size={20} className="text-blue-500" />, bg: 'bg-blue-50' };
@@ -1481,33 +1466,22 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const hasExplicitEnrolledPaths = enrolledPathSet.size > 0;
     const relevantPaths = hasExplicitEnrolledPaths
         ? storePaths.filter((path) => enrolledPathSet.has(path.id) && (canSeeHiddenPaths || path.isActive !== false))
-        : storePaths.filter((path) => {
-            if (!canSeeHiddenPaths && path.isActive === false) return false;
-            const pathName = normalize(path.name);
-            const pathId = normalize(path.id);
-            return activeCourses.some((course) => {
-                const category = normalize(course.category);
-                return category === pathName || category === pathId;
-            });
-        });
+        : [];
 
     const paths = relevantPaths
         .map((path) => {
-            const pathName = normalize(path.name);
-            const pathId = normalize(path.id);
-            const pathCourses = activeCourses.filter((course) => {
-                const category = normalize(course.category);
-                return category === pathName || category === pathId;
-            });
+            const pathCourses = courses.filter((course) => !course.isPackage && courseBelongsToPath(course, path));
+            const pathStats = resolvePathProgress(path, pathCourses, completedLessons, examResults);
 
             return {
                 id: path.id,
                 title: `مسار ${path.name}`,
                 courses: pathCourses,
+                stats: pathStats,
                 ...getSmallPathStyle(path.id)
             };
         })
-        .filter((path) => path.courses.length > 0);
+        .filter((path) => path.courses.length > 0 || path.stats.examsCount > 0);
 
     return (
     <div className="space-y-8 animate-fade-in pb-20">
@@ -1603,34 +1577,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             </div>
         </Card>
 
-        <Card className="p-5 border border-amber-100 bg-gradient-to-l from-amber-50 to-white">
-            <div className="flex items-center justify-between gap-4">
-                <div className="text-right">
-                    <h3 className="text-lg font-bold text-gray-900 inline-flex items-center gap-2">
-                        <Trophy size={18} className="text-amber-600" />
-                        لوحة المتصدرين
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">أفضل 10 طلاب هذا الشهر بناءً على الأداء والنشاط.</p>
-                </div>
-                {leaderboard?.currentUserRank ? (
-                    <div className="rounded-xl border border-amber-200 bg-white px-3 py-2 text-xs font-black text-amber-700">
-                        ترتيبك: #{leaderboard.currentUserRank.rank}
-                    </div>
-                ) : null}
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
-                {(leaderboard?.top || []).slice(0, 10).map((row) => (
-                    <div key={`${row.rank}-${row.name}`} className="flex items-center justify-between rounded-xl bg-white px-3 py-2 border border-gray-100">
-                        <div className="font-black text-sm text-gray-800">#{row.rank} {row.name}</div>
-                        <div className="text-xs font-bold text-gray-500">متوسط {row.avgScore}% · {row.points} نقطة</div>
-                    </div>
-                ))}
-                {leaderboard && leaderboard.top.length === 0 ? (
-                    <div className="text-sm text-gray-500">لا توجد بيانات كافية لعرض المتصدرين الآن.</div>
-                ) : null}
-            </div>
-        </Card>
-
         <ParentFollowUpPanel setActiveTab={setActiveTab} />
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -1687,17 +1633,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                         <h3 className="text-xl font-bold text-gray-900 mb-4">مساراتي</h3>
                         <div className="space-y-4">
                             {paths.map(path => {
-                                // Calculate progress for this specific path
-                                let pathTotalLessons = 0;
-                                let pathCompletedLessons = 0;
-                                path.courses.forEach(course => {
-                                    course.modules?.forEach(mod => {
-                                        pathTotalLessons += mod.lessons.length;
-                                        pathCompletedLessons += mod.lessons.filter(l => completedLessons.includes(l.id)).length;
-                                    });
-                                });
-                                const pathProgress = pathTotalLessons > 0 ? Math.round((pathCompletedLessons / pathTotalLessons) * 100) : 0;
-
                                 return (
                                     <Card key={path.id} className="p-5 flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${path.bg}`}>
@@ -1705,11 +1640,11 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                         </div>
                                         <div className="flex-1 w-full text-center md:text-right">
                                             <h4 className="font-bold text-gray-900 mb-1">{path.title}</h4>
-                                            <p className="text-xs text-gray-500 mb-3">{path.courses.length} دورات مسجلة</p>
-                                            <ProgressBar percentage={pathProgress} color="secondary" showPercentage={true} />
+                                            <p className="text-xs text-gray-500 mb-3">{path.courses.length} دورات · {path.stats.examsCount} اختبارات</p>
+                                            <ProgressBar percentage={path.stats.progress} color="secondary" showPercentage={true} />
                                         </div>
                                         <Link 
-                                            to={`/course/${path.courses[0].id}`} 
+                                            to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}
                                             className="w-full md:w-auto mt-4 md:mt-0 bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-bold text-sm hover:bg-gray-200 transition-colors text-center"
                                         >
                                             استكمل

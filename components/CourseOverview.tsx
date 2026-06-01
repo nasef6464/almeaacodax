@@ -5,7 +5,7 @@ import {
     PlayCircle, BookOpen, Clock, Star, User, 
     ChevronRight, Share2, Heart, BarChart, 
     CheckCircle, List, Info, FileText, Download,
-    Eye, MessageSquare, Send, HelpCircle
+    Eye, MessageSquare, Send, HelpCircle, Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SimulatedTestExperience } from './SimulatedTestExperience';
@@ -206,8 +206,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     }, [course.id, favoriteStorageKey]);
 
     const handleEnroll = () => {
+        if (!isEnrolled && Number(course.price || 0) > 0) {
+            setShowPaymentModal(true);
+            return;
+        }
         enrollCourse(course.id);
-        // Optionally show a success message or redirect
     };
 
     const getFileTypeLabel = (type?: string) => {
@@ -264,7 +267,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         return '';
     };
 
-    const handleLessonClick = (lesson: { id?: string; type: string; quizId?: string }) => {
+    const handleLessonClick = (lesson: { id?: string; type: string; quizId?: string; isLocked?: boolean }) => {
+        if (lesson.isLocked) {
+            setShowPaymentModal(true);
+            return;
+        }
         const linkedQuizId = resolveEmbeddedQuizId(lesson);
         if (lesson.type === 'quiz' && linkedQuizId) {
             navigate(
@@ -412,10 +419,11 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 <div className="space-y-2">
                                     {module.lessons.map((lesson, lIdx) => {
                                         const isCompleted = completedLessons.includes(lesson.id);
+                                        const isLocked = Boolean(lesson.isLocked);
                                         return (
                                         <div 
                                             key={lesson.id} 
-                                            className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group cursor-pointer"
+                                            className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl transition-colors group cursor-pointer ${isLocked ? 'bg-amber-50/60 hover:bg-amber-50' : 'bg-gray-50 hover:bg-gray-100'}`}
                                             onClick={() => handleLessonClick(lesson)}
                                         >
                                             <div className="flex items-center gap-4">
@@ -429,12 +437,14 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                                         <span>{lesson.title}</span>
                                                         {renderCourseLessonEdgeIcon('end')}
                                                     </p>
-                                                    <p className="text-[10px] text-gray-400">{lesson.type === 'quiz' ? 'اختبار محاكي' : 'درس فيديو'}</p>
+                                                    <p className="text-[10px] text-gray-400">{isLocked ? 'يحتاج اشتراك' : lesson.type === 'quiz' ? 'اختبار محاكي' : 'مفتوح الآن'}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-[10px] text-gray-400">{lesson.duration}</span>
-                                                {isCompleted ? (
+                                                {isLocked ? (
+                                                    <Lock size={16} className="text-amber-500" />
+                                                ) : isCompleted ? (
                                                     <CheckCircle size={16} className="text-emerald-500" />
                                                 ) : (
                                                     <div className="w-4 h-4 rounded-full border-2 border-gray-200"></div>

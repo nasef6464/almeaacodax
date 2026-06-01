@@ -2,11 +2,25 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Course } from '../types';
 import { CoursePlayer } from '../components/CoursePlayer';
-import { CourseLanding } from '../components/CourseLanding';
 import { CourseOverview } from '../components/CourseOverview';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { adapter } from '../services/adapter';
+
+const withCourseAccessLocks = (course: Course, hasAccess: boolean): Course => {
+    if (hasAccess) return course;
+
+    return {
+        ...course,
+        modules: course.modules?.map((module) => ({
+            ...module,
+            lessons: module.lessons.map((lesson) => ({
+                ...lesson,
+                isLocked: lesson.accessControl !== 'public',
+            })),
+        })),
+    };
+};
 
 const CourseView: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
@@ -141,21 +155,23 @@ const CourseView: React.FC = () => {
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
+    const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer);
+
+    if (isPlaying) {
+        return (
+            <CoursePlayer
+                course={courseForCurrentAccess}
+                initialLessonId={searchParams.get('lesson') || undefined}
+                onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
+                onBack={() => {
+                    setIsPlaying(false);
+                    updateLearningUrlState(false);
+                }}
+            />
+        );
+    }
 
     if (isEnrolled) {
-        if (isPlaying) {
-            return (
-                <CoursePlayer
-                    course={course}
-                    initialLessonId={searchParams.get('lesson') || undefined}
-                    onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
-                    onBack={() => {
-                        setIsPlaying(false);
-                        updateLearningUrlState(false);
-                    }}
-                />
-            );
-        }
         return (
             <div>
                 {course.certificateEnabled && Number(course.progress || 0) >= 100 ? (
@@ -182,7 +198,7 @@ const CourseView: React.FC = () => {
                     </div>
                 ) : null}
                 <CourseOverview
-                    course={course}
+                    course={courseForCurrentAccess}
                     initialTab={resolveOverviewTab(requestedTab)}
                     onTabChange={(tab) => {
                         const nextParams = new URLSearchParams(searchParams);
@@ -203,8 +219,24 @@ const CourseView: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            <CourseLanding course={course} />
+        <div>
+            <CourseOverview
+                course={courseForCurrentAccess}
+                initialTab={resolveOverviewTab(requestedTab)}
+                onTabChange={(tab) => {
+                    const nextParams = new URLSearchParams(searchParams);
+                    if (tab === 'syllabus') {
+                        nextParams.delete('tab');
+                    } else {
+                        nextParams.set('tab', tab);
+                    }
+                    setSearchParams(nextParams, { replace: true });
+                }}
+                onContinue={(lessonId?: string) => {
+                    setIsPlaying(true);
+                    updateLearningUrlState(true, lessonId);
+                }}
+            />
         </div>
     );
 };

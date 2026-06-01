@@ -307,6 +307,7 @@ const Reports: React.FC = () => {
     const [scopedSmartRemediation, setScopedSmartRemediation] = useState<SmartRemediationPlan | null>(null);
     const [scopedSmartRemediationLoading, setScopedSmartRemediationLoading] = useState(false);
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
+    const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
 
@@ -488,12 +489,19 @@ const Reports: React.FC = () => {
         () => studentEnrolledPathIds.map((pathId, index) => displayText(paths.find((path) => path.id === pathId)?.name) || `مسار مسجل ${index + 1}`),
         [paths, studentEnrolledPathIds],
     );
+    const studentReportPathOptions = useMemo(
+        () => paths.filter((path) => studentEnrolledPathIds.includes(path.id) || user.role !== Role.STUDENT),
+        [paths, studentEnrolledPathIds, user.role],
+    );
+    const effectiveStudentPathIds = selectedStudentPathId === 'all'
+        ? studentEnrolledPathIds
+        : [selectedStudentPathId].filter(Boolean);
     const studentPathScopedSkills = useMemo(
         () =>
-            studentEnrolledPathIds.length > 0
-                ? aggregatedSkills.filter((skill) => skill.pathId && studentEnrolledPathIds.includes(skill.pathId))
+            effectiveStudentPathIds.length > 0
+                ? aggregatedSkills.filter((skill) => skill.pathId && effectiveStudentPathIds.includes(skill.pathId))
                 : aggregatedSkills,
-        [aggregatedSkills, studentEnrolledPathIds],
+        [aggregatedSkills, effectiveStudentPathIds],
     );
     const reportBaseSkills = studentPathScopedSkills.length > 0 ? studentPathScopedSkills : aggregatedSkills;
     const reliableAggregatedSkills = reportBaseSkills.filter((skill) => skill.isReliable);
@@ -2288,6 +2296,18 @@ const Reports: React.FC = () => {
                                 ? `نركز الآن على: ${studentTrackLabel}.`
                                 : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                         </p>
+                        {studentReportPathOptions.length > 0 ? (
+                            <select
+                                value={selectedStudentPathId}
+                                onChange={(event) => setSelectedStudentPathId(event.target.value)}
+                                className="print-hide mt-3 w-full rounded-xl border border-white/70 bg-white px-3 py-2 text-sm font-black text-gray-700 sm:max-w-xs"
+                            >
+                                <option value="all">كل مساراتي</option>
+                                {studentReportPathOptions.map((path) => (
+                                    <option key={path.id} value={path.id}>{displayText(path.name)}</option>
+                                ))}
+                            </select>
+                        ) : null}
                     </div>
                     <Link
                         to="/dashboard?tab=paths"

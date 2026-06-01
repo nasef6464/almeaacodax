@@ -59,6 +59,7 @@ const formatCreatedDate = (date?: number) => {
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [activePathFilter, setActivePathFilter] = useState<string>('all');
   const [activeAttemptCategory, setActiveAttemptCategory] = useState<AttemptCategory>('regular');
   const [activeAttemptScoreFilter, setActiveAttemptScoreFilter] = useState<AttemptScoreFilter>('all');
   const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
@@ -136,8 +137,18 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [canAccessQuiz, quizzes],
   );
+  const getPathName = (pathId?: string) => paths.find((path) => path.id === pathId)?.name || 'بدون مسار';
+  const matchesActivePath = (pathId?: string) => activePathFilter === 'all' || pathId === activePathFilter;
+  const pathFilteredPreparedQuizzes = useMemo(
+    () => availablePreparedQuizzes.filter((quiz) => matchesActivePath(quiz.pathId)),
+    [activePathFilter, availablePreparedQuizzes],
+  );
 
   const quizLookup = useMemo(() => new Map(quizzes.map((quiz) => [quiz.id, quiz])), [quizzes]);
+  const visiblePathOptions = useMemo(
+    () => paths.filter((path) => canSeeHiddenPaths || path.isActive !== false),
+    [canSeeHiddenPaths, paths],
+  );
 
   const attemptGroups = useMemo<QuizAttemptGroup[]>(() => {
     const grouped = new Map<string, QuizAttemptGroup>();
@@ -213,9 +224,12 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       : activeAttemptGroups.filter((group) => group.quizTitle.includes(activeFilter));
 
   const visibleAttemptGroups = filteredAttemptGroups.filter((group) =>
-    activeAttemptScoreFilter === 'all' ||
-    (activeAttemptScoreFilter === 'needs-review' && group.latestAttempt.score < 75) ||
-    (activeAttemptScoreFilter === 'good' && group.latestAttempt.score >= 75)
+    matchesActivePath(group.quiz?.pathId || group.latestAttempt.skillsAnalysis?.[0]?.pathId) &&
+    (
+      activeAttemptScoreFilter === 'all' ||
+      (activeAttemptScoreFilter === 'needs-review' && group.latestAttempt.score < 75) ||
+      (activeAttemptScoreFilter === 'good' && group.latestAttempt.score >= 75)
+    )
   );
 
   useEffect(() => {
@@ -228,45 +242,45 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
   const directedQuizzes = useMemo(
     () =>
-      availablePreparedQuizzes.filter((quiz) => {
+      pathFilteredPreparedQuizzes.filter((quiz) => {
         const mode = quiz.mode || 'regular';
         const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
         return mode === 'central' || hasExplicitTargets;
       }),
-    [availablePreparedQuizzes],
+    [pathFilteredPreparedQuizzes],
   );
 
   const saherQuizzes = useMemo(
     () =>
-      availablePreparedQuizzes.filter((quiz) => {
+      pathFilteredPreparedQuizzes.filter((quiz) => {
         const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
         return (quiz.mode || 'regular') === 'saher' && !hasExplicitTargets;
       }),
-    [availablePreparedQuizzes],
+    [pathFilteredPreparedQuizzes],
   );
 
   const centralQuizzes = useMemo(
-    () => availablePreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'central'),
-    [availablePreparedQuizzes],
+    () => pathFilteredPreparedQuizzes.filter((quiz) => (quiz.mode || 'regular') === 'central'),
+    [pathFilteredPreparedQuizzes],
   );
 
   const guidedSaherQuizzes = useMemo(
     () =>
-      availablePreparedQuizzes.filter((quiz) => {
+      pathFilteredPreparedQuizzes.filter((quiz) => {
         const mode = quiz.mode || 'regular';
         const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
         return mode === 'saher' || mode === 'central' || hasExplicitTargets;
       }),
-    [availablePreparedQuizzes],
+    [pathFilteredPreparedQuizzes],
   );
 
   const regularPreparedQuizzes = useMemo(
     () =>
-      availablePreparedQuizzes.filter((quiz) => {
+      pathFilteredPreparedQuizzes.filter((quiz) => {
         const hasExplicitTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
         return (quiz.mode || 'regular') === 'regular' && !hasExplicitTargets;
       }),
-    [availablePreparedQuizzes],
+    [pathFilteredPreparedQuizzes],
   );
 
   const lockedPaidQuizzes = useMemo(
@@ -331,7 +345,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return Array.from(weakSkillsMap.values())
       .map((item) => {
         const mastery = Math.round(item.masterySum / item.attempts);
-        const relatedQuizzes = availablePreparedQuizzes
+        const relatedQuizzes = pathFilteredPreparedQuizzes
           .filter((quiz) => {
             const directSkillMatch = !!item.skillId && (quiz.skillIds || []).includes(item.skillId);
             const subjectMatch = !!item.subjectId && quiz.subjectId === item.subjectId;
@@ -367,7 +381,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       .filter((item) => item.mastery < 75)
       .sort((a, b) => a.mastery - b.mastery || b.relatedCount - a.relatedCount)
       .slice(0, 3);
-  }, [availablePreparedQuizzes, examResults, subjects, lessons, libraryItems]);
+  }, [pathFilteredPreparedQuizzes, examResults, subjects, lessons, libraryItems]);
 
   const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
     const params = new URLSearchParams({ attempt: result.date });
@@ -400,7 +414,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     () =>
       subjects
         .map((subject) => {
-          const subjectQuizzes = availablePreparedQuizzes.filter((quiz) => quiz.subjectId === subject.id);
+          const subjectQuizzes = pathFilteredPreparedQuizzes.filter((quiz) => quiz.subjectId === subject.id);
           const directedCount = directedQuizzes.filter((quiz) => quiz.subjectId === subject.id).length;
           const saherCount = saherQuizzes.filter((quiz) => quiz.subjectId === subject.id).length;
           return {
@@ -413,7 +427,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         .filter((item) => item.total > 0)
         .sort((a, b) => b.total - a.total)
         .slice(0, 6),
-    [availablePreparedQuizzes, directedQuizzes, saherQuizzes, subjects],
+    [pathFilteredPreparedQuizzes, directedQuizzes, saherQuizzes, subjects],
   );
 
   if (isAttemptsView && totalQuizzes === 0) {
@@ -532,6 +546,17 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               </div>
             ) : null}
 
+            <select
+              value={activePathFilter}
+              onChange={(event) => setActivePathFilter(event.target.value)}
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none"
+            >
+              <option value="all">كل المسارات</option>
+              {visiblePathOptions.map((path) => (
+                <option key={path.id} value={path.id}>{path.name}</option>
+              ))}
+            </select>
+
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               <AttemptScoreFilterButton
                 active={activeAttemptScoreFilter === 'all'}
@@ -573,6 +598,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                   onToggle={() => setOpenAttemptGroupKey((current) => (current === group.key ? null : group.key))}
                   getAttemptResultLink={getAttemptResultLink}
                   getAttemptRetryLink={getAttemptRetryLink}
+                  getPathName={getPathName}
                 />
               ))}
             </div>
@@ -614,8 +640,22 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       <div className="hidden">
         <StatCard icon={<Zap size={24} />} value={saherQuizzes.length} label="ساهر جاهز" color="purple" />
         <StatCard icon={<Target size={24} />} value={directedQuizzes.length} label="اختبارات موجهة" color="amber" />
-        <StatCard icon={<CheckCircle size={24} />} value={availablePreparedQuizzes.length} label="متاح الآن" color="blue" />
+        <StatCard icon={<CheckCircle size={24} />} value={pathFilteredPreparedQuizzes.length} label="متاح الآن" color="blue" />
         <StatCard icon={<FileText size={24} />} value={lockedPaidQuizzes.length} label="يتطلب باقة" color="emerald" />
+      </div>
+
+      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <label className="mb-2 block text-sm font-black text-gray-800">فلترة الاختبارات حسب المسار</label>
+        <select
+          value={activePathFilter}
+          onChange={(event) => setActivePathFilter(event.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none"
+        >
+          <option value="all">كل المسارات</option>
+          {visiblePathOptions.map((path) => (
+            <option key={path.id} value={path.id}>{path.name}</option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -756,6 +796,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               emptyMessage="لا توجد اختبارات موجهة لحسابك حاليًا."
               items={directedQuizzes}
               subjects={subjects}
+              paths={paths}
               badgeClassName="bg-amber-100 text-amber-700"
               badgeLabel="موجّه"
             />
@@ -765,6 +806,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               emptyMessage="لا توجد اختبارات ساهر جاهزة منشورة لك حاليًا."
               items={saherQuizzes}
               subjects={subjects}
+              paths={paths}
               badgeClassName="bg-purple-100 text-purple-700"
               badgeLabel="ساهر"
             />
@@ -774,6 +816,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               emptyMessage="لا توجد اختبارات جاهزة إضافية منشورة حاليًا."
               items={regularPreparedQuizzes}
               subjects={subjects}
+              paths={paths}
               badgeClassName="bg-gray-100 text-gray-700"
               badgeLabel="جاهز"
             />
@@ -789,7 +832,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         <div className="hidden">
           <div className="bg-gray-900 text-white p-4 text-center font-bold text-lg">ملخص سريع</div>
           <div className="p-6 space-y-4">
-            <SummaryRow label="اختبارات جاهزة متاحة" value={availablePreparedQuizzes.length} />
+            <SummaryRow label="اختبارات جاهزة متاحة" value={pathFilteredPreparedQuizzes.length} />
             <SummaryRow label="اختبارات موجهة لك" value={directedQuizzes.length} />
             <SummaryRow label="اختبارات ساهر" value={saherQuizzes.length} />
             <SummaryRow label="اختبارات مركزية" value={centralQuizzes.length} />
@@ -859,6 +902,7 @@ const QuizSection = ({
   emptyMessage,
   items,
   subjects,
+  paths,
   badgeClassName,
   badgeLabel,
 }: {
@@ -867,6 +911,7 @@ const QuizSection = ({
   items: Array<{
     id: string;
     title: string;
+    pathId?: string;
     subjectId: string;
     questionIds: string[];
     createdAt: number;
@@ -874,6 +919,7 @@ const QuizSection = ({
     access?: { type?: string };
   }>;
   subjects: ReturnType<typeof useStore.getState>['subjects'];
+  paths: ReturnType<typeof useStore.getState>['paths'];
   badgeClassName: string;
   badgeLabel: string;
 }) => (
@@ -893,6 +939,9 @@ const QuizSection = ({
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="font-bold text-gray-900">{quiz.title}</div>
+                <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">
+                  {paths.find((path) => path.id === quiz.pathId)?.name || 'بدون مسار'}
+                </span>
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${
                     quiz.access?.type === 'paid'
@@ -1021,6 +1070,7 @@ type AttemptGroupCardProps = {
   onToggle: () => void;
   getAttemptResultLink: (result: QuizResult, viewMode?: 'review' | 'analysis') => string;
   getAttemptRetryLink: (result: QuizResult) => string;
+  getPathName: (pathId?: string) => string;
 };
 
 const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
@@ -1029,11 +1079,13 @@ const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
   onToggle,
   getAttemptResultLink,
   getAttemptRetryLink,
+  getPathName,
 }) => {
   const latest = group.latestAttempt;
   const best = group.bestAttempt;
   const weakestSkill = [...(latest.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery)[0];
   const isPassed = best.score >= 50;
+  const pathLabel = getPathName(group.quiz?.pathId || latest.skillsAnalysis?.[0]?.pathId);
   const categoryLabel = group.category === 'mock' ? 'محاكي' : 'عادي';
 
   return (
@@ -1042,6 +1094,7 @@ const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-black text-gray-600">{categoryLabel}</span>
+            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">{pathLabel}</span>
             <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${isPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
               أفضل نتيجة {best.score}%
             </span>
