@@ -642,3 +642,20 @@
 - المخاطر المتبقية:
   - AI ما زال external blocker بسبب Gemini quota/fallback.
   - تحذير npm high severity الخاص بـ `xlsx` ما زال non-blocking مع وجود `smoke:xlsx-safety` وتمريره `16/16`.
+## Continuation - فحص نهائي مركز الاختبارات المحاكية 2026-06-01
+
+- النطاق: تبويب `مركز الاختبارات المحاكية` داخل لوحة الإدارة على الإنتاج: `https://almeaacodax.vercel.app/admin-dashboard?tab=mock-exams`.
+- النتيجة: `PASS with REVIEW note`.
+- الدليل البصري محفوظ في: `audit-artifacts/admin-live-handoff/2026-06-01-admin-mock-exams-final-check/`.
+- ما ثبت بصريا: الصفحة ليست واجهة شكلية؛ تظهر اختيارات المسار، عنوان ووصف ونسبة نجاح ونوع وصول وسعر اختياري، بحث وفلاتر بنك الأسئلة، إضافة قسم، تجهيز أقسام من مواد المسار، حفظ، معاينة، تعديل، إخفاء، حذف.
+- أخطاء المتصفح: `0 console errors`.
+- فحوص مرتبطة نجحت:
+  - `npm run smoke:mock-exams` -> `PASS 9/9`
+  - `npm run smoke:quiz-access` -> `PASS 18/18`
+  - `npm run smoke:my-quizzes` -> `PASS 8/8`
+  - `npm run smoke:quiz-integrity-guard` -> `PASS 4/4`
+  - `npm run smoke:quiz-client-security` -> `PASS 4/4`
+  - `npm run smoke:frontend:strict` -> `PASS 29/29`
+- ملاحظة REVIEW حقيقية: المسار المحدد في الفحص الحي أظهر `0 سؤال في المسار`، مع وجود محاكيات محفوظة. هذا ليس blocker لأن الواجهة تمنع الحفظ وتطلب اختيار سؤال واحد على الأقل، لكنه يحتاج تجهيز بيانات محتوى كافية لكل مسار مدفوع قبل الإعلان العام.
+- حالة الإنتاج: Vercel `Ready` ويخدم commit `d89dcfe1` من `main`.
+- لا يوجد تعديل كود مطلوب من هذا الفحص؛ الفجوة المتبقية للإعلان العام ما زالت منفصلة وهي إثبات مزود AI حقيقي بدون fallback بعد حل quota/المفاتيح.

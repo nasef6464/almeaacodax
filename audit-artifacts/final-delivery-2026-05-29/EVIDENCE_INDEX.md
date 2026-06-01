@@ -93,7 +93,7 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
-- Vercel production recheck after handover guard push: `Ready`, commit `0f9a057` from GitHub `main`.
+- Vercel production recheck after handover guard push and delivery evidence update: `Ready`, commit `d89dcfe1` from GitHub `main`.
 - Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
@@ -104,10 +104,14 @@
 - `npm run smoke:admin-memberships-ai-closure` - PASS 6/6.
 - `npm run smoke:payment-package` - PASS 8/8.
 - `npm run smoke:security-rbac-phase6` - PASS 5/5.
-- Postdeploy `npm run smoke:frontend:strict` - PASS 28/28, entry asset `index-BUBhsRw2.js`.
+- Postdeploy `npm run smoke:frontend:strict` - PASS 29/29, entry asset `index-zbtr9KJP.js`.
 - Postdeploy `npm run smoke:health-readiness` - PASS.
 - Handover scripts tracking fix: added the five `scripts/smoke-handover-*-contract.mjs` files that were referenced by `package.json` but not tracked.
 - `npm run smoke:handover:all` - PASS.
+- `../admin-live-handoff/2026-06-01-admin-mock-exams-final-check/SUMMARY.md` - admin mock exams live visual/functional check: PASS with REVIEW note.
+- `../admin-live-handoff/2026-06-01-admin-mock-exams-final-check/mock-exams-admin-live.png` - live screenshot.
+- `../admin-live-handoff/2026-06-01-admin-mock-exams-final-check/mock-exams-admin-live.json` - live DOM/state and console evidence.
+- Focused mock exam checks: `smoke:mock-exams 9/9`, `smoke:quiz-access 18/18`, `smoke:my-quizzes 8/8`, `smoke:quiz-integrity-guard 4/4`, `smoke:quiz-client-security 4/4`.
 - Script tracking recheck: 102 `node scripts/...` references, no missing targets and no untracked targets.
 - Launch risk guard recheck:
   - `npm run smoke:api-security` - PASS 6/6.

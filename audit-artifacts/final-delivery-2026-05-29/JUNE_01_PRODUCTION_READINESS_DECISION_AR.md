@@ -1,8 +1,8 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق: `0f9a057` من `main`.
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `0f9a0577`.
+- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق وتحديث أدلة التسليم: `d89dcfe1` من `main`.
+- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `d89dcfe1`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
@@ -19,7 +19,7 @@
 - التقارير حسب الدور: `smoke:reports-role` نجح `11/11`.
 - أمان الصلاحيات: `smoke:security-rbac-phase6` نجح `5/5`، و`smoke:rbac-school-scope` نجح `4/4`.
 - أمان الدخول والـ API: `smoke:auth-login-security` نجح `6/6`، و`smoke:api-security` نجح `6/6`.
-- صحة الإنتاج: `smoke:frontend:strict` نجح `28/28`، و`smoke:health-readiness` نجح، و`smoke:production-hardening` نجح `5/5`، و`smoke:production-audit` نجح `9/9`.
+- صحة الإنتاج: `smoke:frontend:strict` نجح `29/29`، و`smoke:health-readiness` نجح، و`smoke:production-hardening` نجح `5/5`، و`smoke:production-audit` نجح `9/9`.
 - مخاطر Excel/xlsx: `smoke:xlsx-safety` نجح `16/16`.
 - Sentry wiring: `smoke:sentry-runtime` نجح `5/5`.
 - سلامة قائمة scripts في `package.json`: تم فحص 115 script ولم يظهر أي مسار `node scripts/...` مفقود.
@@ -27,6 +27,9 @@
 - بعد نشر commit `0f9a057`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
 - تم اكتشاف وإصلاح فجوة تسليم: أوامر `smoke:handover-*` في `package.json` كانت تشير إلى ملفات موجودة محليا وغير متتبعة؛ تمت إضافتها إلى Git وتشغيل `smoke:handover:all` بنجاح.
 - فحوص مخاطر الإطلاق الإضافية نجحت: `api-security 6/6`, `csrf 4/4`, `auth-cookie 5/5`, `payment-providers 7/7`, `payment-tampering 9/9`, `production-audit 9/9`, `production-hardening 5/5`, `reports-role 11/11`, `rbac-school-scope 4/4`, `sentry-runtime 5/5`.
+- بعد نشر commit `d89dcfe1`: `smoke:frontend:strict` نجح `29/29` وأثبت أن الإنتاج يخدم commit المتوقع.
+- تبويب `مركز الاختبارات المحاكية` في لوحة الإدارة تم فحصه بصريا ووظيفيا على الإنتاج: لا يوجد redirect لتسجيل الدخول، لا توجد أخطاء console، وتظهر وظائف إنشاء المحاكاة، إضافة الأقسام، تجهيز الأقسام، الحفظ، المعاينة، التعديل، الإخفاء، والحذف. الدليل: `audit-artifacts/admin-live-handoff/2026-06-01-admin-mock-exams-final-check/`.
+- فحوص الاختبارات المحاكية والتدفق المرتبط بها نجحت: `smoke:mock-exams 9/9`, `smoke:quiz-access 18/18`, `smoke:my-quizzes 8/8`, `smoke:quiz-integrity-guard 4/4`, `smoke:quiz-client-security 4/4`.
 
 ## الفجوات التي لا يجوز إخفاؤها
 - مساعد الطالب يعمل وظيفيا ولا يكسر الواجهة، لكن آخر فحص حي رجع `fallback=true` لأن Gemini أعاد `429 quota exceeded`.
