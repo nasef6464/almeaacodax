@@ -1,0 +1,111 @@
+{
+  "generatedAt": "2026-06-01T22:55:28.214Z",
+  "commit": "2ab8e5e5",
+  "runId": "2026-06-02-student-payment-modal-live-v2-2ab8e5e5",
+  "status": "PASS",
+  "safety": "Stopped before pressing create-order; no payment request was submitted.",
+  "attempts": [],
+  "final": {
+    "email": "student.d@almeaa.local",
+    "kind": "existing-seed-student-d",
+    "course": {
+      "id": "course_1779224794108",
+      "title": "الا ستعداد للقدرات",
+      "price": 100,
+      "currency": "SAR"
+    },
+    "before": {
+      "url": "https://almeaacodax.vercel.app/course/course_1779224794108",
+      "bodyLength": 557,
+      "hasBuy": true,
+      "hasPaymentIntro": false,
+      "hasMethodStep": false,
+      "hasCreateOrder": false,
+      "buttons": [
+        "منصةالمئةقدرات & تحصيلي",
+        "الرئيسية",
+        "القدرات",
+        "التحصيلي",
+        "اختبارات محاكية",
+        "العضويات",
+        "المدونة",
+        "0",
+        "حسابيجود خالد",
+        "وصف",
+        "المحتوى",
+        "الاختبارات",
+        "سؤال وجواب",
+        "ملفات الدورة",
+        "شراء الدورة",
+        "المفضلة",
+        "مشاركة"
+      ]
+    },
+    "intro": {
+      "url": "https://almeaacodax.vercel.app/course/course_1779224794108",
+      "bodyLength": 706,
+      "hasBuy": true,
+      "hasPaymentIntro": true,
+      "hasMethodStep": false,
+      "hasCreateOrder": false,
+      "buttons": [
+        "منصةالمئةقدرات & تحصيلي",
+        "الرئيسية",
+        "القدرات",
+        "التحصيلي",
+        "اختبارات محاكية",
+        "العضويات",
+        "المدونة",
+        "0",
+        "حسابيجود خالد",
+        "وصف",
+        "المحتوى",
+        "الاختبارات",
+        "سؤال وجواب",
+        "ملفات الدورة",
+        "شراء الدورة",
+        "المفضلة",
+        "مشاركة",
+        "متابعة الشراء",
+        "إضافة للسلة",
+        "ليس الآن"
+      ]
+    },
+    "method": {
+      "url": "https://almeaacodax.vercel.app/course/course_1779224794108",
+      "bodyLength": 990,
+      "hasBuy": true,
+      "hasPaymentIntro": false,
+      "hasMethodStep": true,
+      "hasCreateOrder": false,
+      "buttons": [
+        "منصةالمئةقدرات & تحصيلي",
+        "الرئيسية",
+        "القدرات",
+        "التحصيلي",
+        "اختبارات محاكية",
+        "العضويات",
+        "المدونة",
+        "0",
+        "حسابيجود خالد",
+        "وصف",
+        "المحتوى",
+        "الاختبارات",
+        "سؤال وجواب",
+        "ملفات الدورة",
+        "شراء الدورة",
+        "المفضلة",
+        "مشاركة",
+        "تفعيل الكود",
+        "بطاقة بنكيةإرسال طلب دفع ومراجعته من الإدارة أو تفعيل الدفع الآمن لاحقًا.Tap / MyFatoorah / HyperPay - السعودية",
+        "تحويل بنكيسجّل رقم المرجع أو أرفق رابط إيصال التحويل.Bank transfer - السعودية",
+        "محفظة إلكترونيةأدخل رقم المحفظة أو الجوال المرتبط بها.STC Pay - السعودية"
+      ]
+    },
+    "screenshots": [
+      "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-student-payment-modal-live-v2-2ab8e5e5\\student-course-before-buy.png",
+      "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-student-payment-modal-live-v2-2ab8e5e5\\student-payment-intro-open.png",
+      "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-student-payment-modal-live-v2-2ab8e5e5\\student-payment-method-step.png"
+    ]
+  }
+}

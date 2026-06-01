@@ -328,3 +328,22 @@
 - Admin UI gap evidence: `../admin-live-handoff/2026-05-31-admin-ui-gap-final-after-5dffc7e5/`
 - Live AI runtime evidence: `../admin-live-handoff/2026-05-31-live-ai-runtime-final-after-5dffc7e5/`
 - Student learning deep postdeploy evidence: `../ui-audit-exhaustive/2026-05-31-student-learning-deep-postdeploy-12d26857/`
+
+## Student Course And Payment Closure (2026-06-02)
+
+- Course tabs evidence: `../ui-audit-exhaustive/2026-06-02-student-course-tabs-live-a52ad041/`
+  - Course syllabus: PASS.
+  - Course tests: PASS; official course tests are separated from suggested subject tests.
+  - Course files: PASS; empty state is scoped to the course and does not leak files from other content.
+  - Category course cards: PASS; price, old price, instructor, student count, preview, and purchase actions are visible.
+- Guest purchase guards evidence: `../ui-audit-exhaustive/2026-06-02-guest-course-purchase-guards-live-8e4ba865/`
+  - Preview link opens the paid course page: PASS.
+  - Guest purchase requires login: PASS.
+  - Guest locked course test requires login: PASS.
+- Student payment modal evidence: `../ui-audit-exhaustive/2026-06-02-student-payment-modal-live-v2-2ab8e5e5/`
+  - Tested account: `student.d@almeaa.local`.
+  - Tested course: `course_1779224794108`.
+  - Payment intro opens: PASS.
+  - Payment methods step opens: PASS.
+  - No real payment request was submitted.
+- Production frontend smoke after deploy: `npm run smoke:frontend:strict` -> PASS 29/29, production serving commit `2ab8e5e5`.
