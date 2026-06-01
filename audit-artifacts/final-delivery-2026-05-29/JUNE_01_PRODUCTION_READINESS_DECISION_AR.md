@@ -1,8 +1,8 @@
 # قرار جاهزية الإنتاج - 2026-06-01
 
 ## آخر حالة إنتاج
-- آخر commit على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق وتحديث أدلة التسليم: `d89dcfe1` من `main`.
-- آخر commit وظيفي/أدلة تم فحصه قبل تحديث هذا القرار: `d89dcfe1`.
+- آخر commit على إنتاج Vercel يتم إثباته في كل مرة بواسطة `npm run smoke:frontend:strict` و`vercel inspect`.
+- آخر فحص بعد رفع دليل مركز الاختبارات المحاكية أثبت أن الإنتاج يخدم commit المتوقع من `main`؛ رقم الـ commit التفصيلي يظهر في مخرجات `smoke:frontend:strict`.
 - Vercel production: `Ready`.
 - دليل Vercel: `vercel inspect almeaacodax.vercel.app --logs` هو مصدر الحقيقة للـ commit المنشور، وتم استخدامه للتأكد أن الإنتاج يبني من `github.com/nasef6464/almeaacodax`، الفرع `main`.
 - الخادم الحي: `https://almeaacodax-k2ux.onrender.com/api`.
@@ -27,7 +27,7 @@
 - بعد نشر commit `0f9a057`: `smoke:frontend:strict` نجح `28/28` و`smoke:health-readiness` نجح.
 - تم اكتشاف وإصلاح فجوة تسليم: أوامر `smoke:handover-*` في `package.json` كانت تشير إلى ملفات موجودة محليا وغير متتبعة؛ تمت إضافتها إلى Git وتشغيل `smoke:handover:all` بنجاح.
 - فحوص مخاطر الإطلاق الإضافية نجحت: `api-security 6/6`, `csrf 4/4`, `auth-cookie 5/5`, `payment-providers 7/7`, `payment-tampering 9/9`, `production-audit 9/9`, `production-hardening 5/5`, `reports-role 11/11`, `rbac-school-scope 4/4`, `sentry-runtime 5/5`.
-- بعد نشر commit `d89dcfe1`: `smoke:frontend:strict` نجح `29/29` وأثبت أن الإنتاج يخدم commit المتوقع.
+- بعد نشر دليل مركز الاختبارات المحاكية: `smoke:frontend:strict` نجح `29/29` وأثبت أن الإنتاج يخدم commit المتوقع.
 - تبويب `مركز الاختبارات المحاكية` في لوحة الإدارة تم فحصه بصريا ووظيفيا على الإنتاج: لا يوجد redirect لتسجيل الدخول، لا توجد أخطاء console، وتظهر وظائف إنشاء المحاكاة، إضافة الأقسام، تجهيز الأقسام، الحفظ، المعاينة، التعديل، الإخفاء، والحذف. الدليل: `audit-artifacts/admin-live-handoff/2026-06-01-admin-mock-exams-final-check/`.
 - فحوص الاختبارات المحاكية والتدفق المرتبط بها نجحت: `smoke:mock-exams 9/9`, `smoke:quiz-access 18/18`, `smoke:my-quizzes 8/8`, `smoke:quiz-integrity-guard 4/4`, `smoke:quiz-client-security 4/4`.
 

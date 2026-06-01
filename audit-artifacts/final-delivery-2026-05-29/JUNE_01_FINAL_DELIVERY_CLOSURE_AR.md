@@ -2,8 +2,8 @@
 
 ## القرار الحالي
 - الحالة: جاهز للتشغيل الداخلي وتجربة مجموعة صغيرة حسب الأدلة الحالية، وليس جاهزا بعد لإعلان عام كامل لأن فحص AI الحي الأخير رجع fallback بسبب نفاد حصة Gemini.
-- آخر commit منشور على إنتاج Vercel عند إعادة التحقق بعد رفع حراس handover ومخاطر الإطلاق وتحديث أدلة التسليم: `d89dcfe1` من `main`.
-- آخر commit وظيفي/أدلة مفحوص قبل تحديث هذا القرار: `d89dcfe1`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
+- آخر commit منشور على إنتاج Vercel يتم إثباته بواسطة `npm run smoke:frontend:strict` و`vercel inspect`.
+- آخر فحص بعد رفع دليل مركز الاختبارات المحاكية أثبت أن الإنتاج يخدم commit المتوقع من `main`. مصدر الحقيقة لأي commit توثيقي لاحق هو `vercel inspect almeaacodax.vercel.app --logs`.
 - الإنتاج: `https://almeaacodax.vercel.app`.
 - الخادم: `https://almeaacodax-k2ux.onrender.com/api`.
 
@@ -51,6 +51,6 @@
 - فحص سلامة scripts: 115 script بدون مسارات `node scripts/...` مفقودة.
 - بعد النشر على Vercel commit `0f9a057`: `npm run smoke:frontend:strict` -> PASS 28/28، و`npm run smoke:health-readiness` -> PASS.
 - تم إصلاح فجوة تسليم إضافية: ملفات `smoke:handover-*` كانت غير متتبعة رغم أن `package.json` يشير إليها؛ تمت إضافتها وتشغيل `npm run smoke:handover:all` بنجاح.
-- بعد النشر على Vercel commit `d89dcfe1`: `npm run smoke:frontend:strict` -> PASS 29/29 وأثبت أن الإنتاج يخدم commit المتوقع.
+- بعد رفع دليل مركز الاختبارات المحاكية: `npm run smoke:frontend:strict` -> PASS 29/29 وأثبت أن الإنتاج يخدم commit المتوقع.
 - فحص تبويب `مركز الاختبارات المحاكية` على الإنتاج: PASS مع ملاحظة REVIEW للبيانات فقط؛ المسار المحدد يعرض `0 سؤال في المسار`، لكن الواجهة تمنع الحفظ بدون اختيار سؤال وتعرض محاكيات حالية. الدليل محفوظ في `audit-artifacts/admin-live-handoff/2026-06-01-admin-mock-exams-final-check/`.
 - فحوص أمان/إنتاج/دفع إضافية: `api-security`, `csrf`, `auth-cookie`, `payment-providers`, `payment-tampering`, `production-audit`, `production-hardening`, `xlsx-safety`, `reports-role`, `rbac-school-scope`, `sentry-runtime` كلها PASS.

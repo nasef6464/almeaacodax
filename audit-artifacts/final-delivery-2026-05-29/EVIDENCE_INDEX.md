@@ -93,7 +93,7 @@
 ## قرار جاهزية الإنتاج - 2026-06-01
 
 - `JUNE_01_PRODUCTION_READINESS_DECISION_AR.md`
-- Vercel production recheck after handover guard push and delivery evidence update: `Ready`, commit `d89dcfe1` from GitHub `main`.
+- Vercel production recheck after delivery evidence update: `Ready`; latest post-push smoke verifies the expected commit from GitHub `main`.
 - Script integrity recheck: 115 package scripts checked; no missing `node scripts/...` targets.
 - `../admin-live-handoff/2026-06-01-admin-school-package-linkage-final/SUMMARY.md` - ربط باقات المدارس والمجموعات: PASS 7/7.
 - `../ui-audit-exhaustive/2026-06-01-role-pages-final-readiness/SUMMARY.md` - صفحات الأدوار: PASS 20/20.
