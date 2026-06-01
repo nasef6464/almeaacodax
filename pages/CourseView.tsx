@@ -151,11 +151,12 @@ const CourseView: React.FC = () => {
     }
 
     const hasPackageAccess = hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
+    const isFreeCourse = Number(course.price || 0) <= 0;
     const isEnrolled =
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
-    const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer);
+    const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer || isFreeCourse);
 
     if (isPlaying) {
         return (

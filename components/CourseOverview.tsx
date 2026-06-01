@@ -77,6 +77,12 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     useEffect(() => {
         let mounted = true;
         const loadThreads = async () => {
+            if (isGuestUser) {
+                setDiscussionThreads([]);
+                setDiscussionLoading(false);
+                setDiscussionError('');
+                return;
+            }
             setDiscussionLoading(true);
             setDiscussionError('');
             try {
@@ -97,7 +103,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         return () => {
             mounted = false;
         };
-    }, [course.id]);
+    }, [course.id, isGuestUser]);
     
     // Calculate real progress
     const totalLessons = course.modules?.reduce((acc, mod) => acc + mod.lessons.length, 0) || 1;
