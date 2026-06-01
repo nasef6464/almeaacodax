@@ -574,9 +574,13 @@ const resolveProvider = (): AiProvider =>
   providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
   "none";
 
-const fetchWithTimeout = async (url: string, init: RequestInit) => {
+type AiCallOptions = {
+  timeoutMs?: number;
+};
+
+const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = env.AI_REQUEST_TIMEOUT_MS) => {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), env.AI_REQUEST_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     return await fetch(url, { ...init, signal: controller.signal });
@@ -593,7 +597,7 @@ const responseFailureMessage = async (provider: string, response: Response) => {
 const providerKeys = (provider: Exclude<AiProvider, "none">) =>
   uniqueNonEmpty([runtimeAiConfig.providers[provider].apiKey, ...(runtimeAiConfig.providers[provider].apiKeys || [])]);
 
-const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => {
+const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }, options: AiCallOptions = {}) => {
   const apiKeys = providerKeys("gemini");
   const model = runtimeAiConfig.providers.gemini.model;
   if (apiKeys.length === 0) return "";
@@ -618,6 +622,7 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType,
             generationConfig: responseMimeType ? { responseMimeType } : undefined,
           }),
         },
+        options.timeoutMs,
       );
 
       if (!response.ok) {
@@ -639,20 +644,24 @@ const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType,
   return "";
 };
 
-const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
   const baseUrl = String(runtimeAiConfig.providers.ollama.baseUrl || "").trim();
   const model = runtimeAiConfig.providers.ollama.model;
   if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(`${baseUrl.replace(/\/$/, "")}/api/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model,
-      prompt,
-      stream: false,
-      format: responseMimeType === "application/json" ? "json" : undefined,
-    }),
-  });
+  const response = await fetchWithTimeout(
+    `${baseUrl.replace(/\/$/, "")}/api/generate`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        prompt,
+        stream: false,
+        format: responseMimeType === "application/json" ? "json" : undefined,
+      }),
+    },
+    options.timeoutMs,
+  );
 
   if (!response.ok) {
     throw new Error(await responseFailureMessage("Ollama", response));
@@ -662,20 +671,24 @@ const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType)
   return payload.response?.trim() || "";
 };
 
-const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType) => {
+const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
   const baseUrl = String(runtimeAiConfig.providers.lmstudio.baseUrl || "").trim();
   const model = runtimeAiConfig.providers.lmstudio.model;
   if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.3,
-      response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-    }),
-  });
+  const response = await fetchWithTimeout(
+    `${baseUrl.replace(/\/$/, "")}/chat/completions`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3,
+        response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+      }),
+    },
+    options.timeoutMs,
+  );
 
   if (!response.ok) {
     throw new Error(await responseFailureMessage("LM Studio", response));
@@ -692,6 +705,7 @@ const callOpenAiCompatible = async (
   provider: Exclude<AiProvider, "gemini" | "ollama" | "lmstudio" | "none">,
   prompt: string,
   responseMimeType?: AiResponseMimeType,
+  options: AiCallOptions = {},
 ) => {
   const settings: Record<typeof provider, { baseUrl: string; apiKeys: string[]; model: string; headers?: Record<string, string> }> = {
     openrouter: {
@@ -725,20 +739,24 @@ const callOpenAiCompatible = async (
   const errors: string[] = [];
   for (const apiKey of selected.apiKeys) {
     try {
-      const response = await fetchWithTimeout(`${selected.baseUrl.replace(/\/$/, "")}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          ...(selected.headers || {}),
+      const response = await fetchWithTimeout(
+        `${selected.baseUrl.replace(/\/$/, "")}/chat/completions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+            ...(selected.headers || {}),
+          },
+          body: JSON.stringify({
+            model: selected.model,
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.25,
+            response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
+          }),
         },
-        body: JSON.stringify({
-          model: selected.model,
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.25,
-          response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-        }),
-      });
+        options.timeoutMs,
+      );
 
       if (!response.ok) {
         throw new Error(await responseFailureMessage(provider, response));
@@ -812,11 +830,16 @@ const callAiWithMeta = async (prompt: string, responseMimeType?: AiResponseMimeT
 
 const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => (await callAiWithMeta(prompt, responseMimeType, image)).text;
 
-const callSingleProvider = async (provider: Exclude<AiProvider, "none">, prompt: string, image?: { data: string; mimeType: string }) => {
-  if (provider === "gemini") return callGemini(prompt, undefined, image);
-  if (provider === "ollama") return callOllama(prompt);
-  if (provider === "lmstudio") return callLmStudio(prompt);
-  return callOpenAiCompatible(provider, prompt);
+const callSingleProvider = async (
+  provider: Exclude<AiProvider, "none">,
+  prompt: string,
+  image?: { data: string; mimeType: string },
+  options: AiCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
+) => {
+  if (provider === "gemini") return callGemini(prompt, undefined, image, options);
+  if (provider === "ollama") return callOllama(prompt, undefined, options);
+  if (provider === "lmstudio") return callLmStudio(prompt, undefined, options);
+  return callOpenAiCompatible(provider, prompt, undefined, options);
 };
 
 const withinAiBudget = async (userId?: string) => {
