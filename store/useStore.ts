@@ -315,12 +315,25 @@ const isRegisteredUser = (user?: User | null) =>
 const resolveEntityId = (entity: { id?: unknown; _id?: unknown }, fallback = '') =>
     String(entity?.id || entity?._id || fallback || '');
 
+const toOptionalFiniteNumber = (value: unknown) => {
+    if (value === '' || value === null || value === undefined) return undefined;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : undefined;
+};
+
 const normalizeCourseForStore = (course: any) => {
     const normalizedId = resolveEntityId(course);
     return {
         ...course,
         id: normalizedId,
         _id: normalizedId,
+        price: Number(course?.price || 0),
+        rating: Number(course?.rating || 0),
+        progress: Number(course?.progress || 0),
+        originalPrice: toOptionalFiniteNumber(course?.originalPrice),
+        studentCount: toOptionalFiniteNumber(course?.studentCount),
+        fakeStudentsCount: toOptionalFiniteNumber(course?.fakeStudentsCount),
+        fakeRating: toOptionalFiniteNumber(course?.fakeRating),
         showOnPlatform: typeof course?.showOnPlatform === 'boolean' ? course.showOnPlatform : false,
     } as Course;
 };

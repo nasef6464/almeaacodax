@@ -12,6 +12,7 @@ import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
+import { getCourseAudienceCount } from '../utils/courseStats';
 import { api } from '../services/api';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
@@ -813,9 +814,9 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             const originalPrice = Number(course.originalPrice || 0);
                             const isFreeCourse = coursePrice <= 0;
                             const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
-                            const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+                            const audienceCount = getCourseAudienceCount(course);
                             const courseCurrency = course.currency || 'ر.س';
-                            const courseInstructor = course.instructor || course.author || course.createdByName || 'فريق المنصة';
+                            const courseInstructor = course.instructor || 'فريق المنصة';
                             const primaryActionLabel = isPurchased
                                 ? (course.progress > 0 ? 'مواصلة التعلم' : 'ابدأ التعلم')
                                 : isFreeCourse

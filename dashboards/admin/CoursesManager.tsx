@@ -3,6 +3,7 @@ import { Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { AdvancedCourseBuilder } from './AdvancedCourseBuilder';
 import { Plus, Search, Edit2, Trash2, Eye, Star, Users, Lock, LockOpen, X, BookOpen, Target, ExternalLink, PlayCircle, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { getCourseAudienceCount, getCourseRating } from '../../utils/courseStats';
 
 interface CoursesManagerProps {
   subjectId?: string;
@@ -325,10 +326,10 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1 text-xs text-gray-500">
                         <div className="flex items-center gap-1">
-                          <Users size={12} /> {course.fakeStudentsCount || course.studentCount || 0} طالب
+                          <Users size={12} /> {getCourseAudienceCount(course)} طالب
                         </div>
                         <div className="flex items-center gap-1">
-                          <Star size={12} className="text-amber-400" /> {course.fakeRating || course.rating || 0} تقييم
+                          <Star size={12} className="text-amber-400" /> {getCourseRating(course)} تقييم
                         </div>
                       </div>
                     </td>
@@ -502,7 +503,7 @@ export const CoursesManager: React.FC<CoursesManagerProps> = ({ subjectId }) => 
                 <div className="mt-4 space-y-2 text-sm font-bold text-gray-700">
                   <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">المدرب: {previewCourse.instructor || 'غير محدد'}</div>
                   <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">الفئة: {previewCourse.category || 'غير محدد'}</div>
-                  <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">الطلاب: {previewCourse.fakeStudentsCount || previewCourse.studentCount || 0}</div>
+                  <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">الطلاب: {getCourseAudienceCount(previewCourse)}</div>
                 </div>
               </div>
             </div>

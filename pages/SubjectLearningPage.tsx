@@ -32,6 +32,7 @@ import { getLearningSlotQuizzes, resolveQuizLearningAccessType } from '../utils/
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
+import { getCourseAudienceCount } from '../utils/courseStats';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -433,7 +434,7 @@ export const SubjectLearningPage: React.FC = () => {
               const coursePrice = Number(course.price || 0);
               const originalPrice = Number(course.originalPrice || 0);
               const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
-              const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+              const audienceCount = getCourseAudienceCount(course);
               return (
               <Card key={course.id} className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden rounded-2xl">
                 <div className="relative h-48 bg-gray-100 group overflow-hidden">

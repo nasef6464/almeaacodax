@@ -17,6 +17,7 @@ import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
 import { shareTextSummary } from '../utils/shareText';
+import { getCourseAudienceCount } from '../utils/courseStats';
 
 interface CourseOverviewProps {
     course: Course;
@@ -64,7 +65,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const coursePrice = Number(course.price || 0);
     const courseOriginalPrice = Number(course.originalPrice || 0);
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
-    const courseAudienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+    const courseAudienceCount = getCourseAudienceCount(course);
 
     useEffect(() => {
         setActiveTab(initialTab);

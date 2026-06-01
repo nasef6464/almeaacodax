@@ -6,6 +6,7 @@ import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
+import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
 
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.jpg?v=20260512';
@@ -205,10 +206,10 @@ export const Landing: React.FC = () => {
             (!course.pathId || visiblePathIds.has(course.pathId)),
     );
     const sortedPublishedCourses = [...publishedCourses].sort((a, b) => {
-        const studentsA = a.fakeStudentsCount || a.studentCount || 0;
-        const studentsB = b.fakeStudentsCount || b.studentCount || 0;
-        const ratingA = a.fakeRating || a.rating || 0;
-        const ratingB = b.fakeRating || b.rating || 0;
+        const studentsA = getCourseAudienceCount(a);
+        const studentsB = getCourseAudienceCount(b);
+        const ratingA = getCourseRating(a);
+        const ratingB = getCourseRating(b);
         return studentsB + ratingB * 100 - (studentsA + ratingA * 100);
     });
 
@@ -248,10 +249,10 @@ export const Landing: React.FC = () => {
         return publishedArticleLessons.slice(0, 3);
     }, [homepageSettings.featuredArticleLessonIds, publishedArticleLessons]);
 
-    const totalStudents = publishedCourses.reduce((sum, course) => sum + (course.fakeStudentsCount || course.studentCount || 0), 0);
+    const totalStudents = publishedCourses.reduce((sum, course) => sum + getCourseAudienceCount(course), 0);
     const totalQA = publishedCourses.reduce((sum, course) => sum + (course.qa?.length || 0), 0);
     const averageRating = publishedCourses.length > 0
-        ? publishedCourses.reduce((sum, course) => sum + (course.fakeRating || course.rating || 0), 0) / publishedCourses.length
+        ? publishedCourses.reduce((sum, course) => sum + getCourseRating(course), 0) / publishedCourses.length
         : 0;
     const publishedQuizzes = quizzes.filter(
         (quiz) => quiz.isPublished !== false && quiz.showOnPlatform !== false && (!quiz.pathId || visiblePathIds.has(quiz.pathId)),
@@ -509,10 +510,10 @@ export const Landing: React.FC = () => {
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-1 text-amber-400">
                                                 <Star size={14} fill="currentColor" />
-                                                <span className="text-xs font-bold text-gray-600">{course.fakeRating || course.rating || 0}</span>
+                                                <span className="text-xs font-bold text-gray-600">{getCourseRating(course)}</span>
                                             </div>
                                             <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1">
-                                                <Users size={12} /> {course.fakeStudentsCount || course.studentCount || 0} طالب
+                                                <Users size={12} /> {getCourseAudienceCount(course)} طالب
                                             </span>
                                         </div>
                                         <h3 className="font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">{course.title}</h3>

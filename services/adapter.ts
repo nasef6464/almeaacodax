@@ -253,6 +253,12 @@ const normalizeModule = (module: any, moduleIndex: number): Module => ({
     : [],
 });
 
+const toOptionalFiniteNumber = (value: unknown) => {
+  if (value === "" || value === null || value === undefined) return undefined;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : undefined;
+};
+
 const normalizeCourse = (course: any): Course => ({
   id: String(course?.id || course?._id || ""),
   title: cleanText(course?.title || "دورة بدون عنوان"),
@@ -277,10 +283,10 @@ const normalizeCourse = (course: any): Course => ({
   isPackage: Boolean(course?.isPackage),
   packageType: course?.packageType,
   packageContentTypes: Array.isArray(course?.packageContentTypes) ? course.packageContentTypes : undefined,
-  originalPrice: typeof course?.originalPrice === "number" ? course.originalPrice : undefined,
+  originalPrice: toOptionalFiniteNumber(course?.originalPrice),
   includedCourses: Array.isArray(course?.includedCourses) ? course.includedCourses : [],
-  studentCount: typeof course?.studentCount === "number" ? course.studentCount : undefined,
-  weeksCount: typeof course?.weeksCount === "number" ? course.weeksCount : undefined,
+  studentCount: toOptionalFiniteNumber(course?.studentCount),
+  weeksCount: toOptionalFiniteNumber(course?.weeksCount),
   previewVideoUrl: course?.previewVideoUrl,
   files: Array.isArray(course?.files) ? course.files : [],
   qa: Array.isArray(course?.qa) ? course.qa : [],
@@ -289,8 +295,8 @@ const normalizeCourse = (course: any): Course => ({
   prerequisiteCourseIds: Array.isArray(course?.prerequisiteCourseIds) ? course.prerequisiteCourseIds : [],
   dripContentEnabled: Boolean(course?.dripContentEnabled),
   certificateEnabled: Boolean(course?.certificateEnabled),
-  fakeRating: typeof course?.fakeRating === "number" ? course.fakeRating : undefined,
-  fakeStudentsCount: typeof course?.fakeStudentsCount === "number" ? course.fakeStudentsCount : undefined,
+  fakeRating: toOptionalFiniteNumber(course?.fakeRating),
+  fakeStudentsCount: toOptionalFiniteNumber(course?.fakeStudentsCount),
   skills: Array.isArray(course?.skills) ? course.skills : [],
   ownerType: course?.ownerType,
   ownerId: course?.ownerId || undefined,
@@ -298,9 +304,9 @@ const normalizeCourse = (course: any): Course => ({
   assignedTeacherId: course?.assignedTeacherId || undefined,
   approvalStatus: course?.approvalStatus,
   approvedBy: course?.approvedBy || undefined,
-  approvedAt: typeof course?.approvedAt === "number" ? course.approvedAt : undefined,
+  approvedAt: toOptionalFiniteNumber(course?.approvedAt),
   reviewerNotes: course?.reviewerNotes || undefined,
-  revenueSharePercentage: typeof course?.revenueSharePercentage === "number" ? course.revenueSharePercentage : undefined,
+  revenueSharePercentage: toOptionalFiniteNumber(course?.revenueSharePercentage),
 });
 
 const normalizeQuestion = (question: any): Question => ({

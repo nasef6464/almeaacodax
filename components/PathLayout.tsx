@@ -4,6 +4,7 @@ import { Card } from './ui/Card';
 import { Eye, ShoppingCart, Star, User, Sparkles, Loader2, Users } from 'lucide-react';
 import { generateCourseSummary } from '../services/geminiService';
 import { useStore } from '../store/useStore';
+import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
 
 export interface PathCard {
     id: string;
@@ -44,7 +45,8 @@ const CourseItem: React.FC<{ course: any }> = ({ course }) => {
     const coursePrice = Number(course.price || 0);
     const originalPrice = Number(course.originalPrice || 0);
     const hasDiscount = originalPrice > coursePrice && coursePrice > 0;
-    const audienceCount = Number(course.fakeStudentsCount || course.studentCount || 0);
+    const audienceCount = getCourseAudienceCount(course);
+    const displayRating = getCourseRating(course);
 
     const handleGetSummary = async () => {
         if (summary) return;
@@ -61,7 +63,7 @@ const CourseItem: React.FC<{ course: any }> = ({ course }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
                 <div className="absolute top-3 left-3 bg-white/90 backdrop-blur shadow-sm px-2 py-1 rounded-lg text-xs font-bold text-gray-700 flex items-center gap-1">
                     <Star size={12} className="text-amber-400 fill-current" />
-                    {course.rating}
+                    {displayRating}
                 </div>
             </div>
 

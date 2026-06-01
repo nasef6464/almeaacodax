@@ -10,6 +10,7 @@ import {
 import { PaymentModal } from './PaymentModal';
 import { motion, AnimatePresence } from 'motion/react';
 import { useStore } from '../store/useStore';
+import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
 
 const CustomVideoPlayer = React.lazy(() =>
     import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
@@ -25,6 +26,8 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
     const [activeTab, setActiveTab] = useState<'overview' | 'syllabus' | 'reviews'>('overview');
     const [expandedModules, setExpandedModules] = useState<string[]>(course.modules?.map(m => m.id) || []);
     const { user, enrolledCourses, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const audienceCount = getCourseAudienceCount(course);
+    const displayRating = getCourseRating(course);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(String(user?.role));
     const isCoursePubliclyAvailable =
         course.showOnPlatform !== false &&
@@ -310,7 +313,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                                     </div>
                                     <div>
                                         <p className="text-gray-400 text-[10px]">الطلاب المسجلين</p>
-                                        <p className="font-bold text-sm">{course.studentCount || 1000}+ طالب</p>
+                                        <p className="font-bold text-sm">{audienceCount} طالب</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 border-r border-white/10 pr-6">
@@ -319,7 +322,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                                     </div>
                                     <div>
                                         <p className="text-gray-400 text-[10px]">التقييم</p>
-                                        <p className="font-bold text-sm">{course.rating} / 5.0</p>
+                                        <p className="font-bold text-sm">{displayRating} / 5.0</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 border-r border-white/10 pr-6">
