@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-06-01T22:46:02.149Z",
+  "commit": "8e4ba865",
+  "runId": "2026-06-02-guest-course-purchase-guards-live-8e4ba865",
+  "verdicts": {
+    "previewLinkOpensCourse": true,
+    "buyButtonGuestRequiresLogin": true,
+    "lockedCourseTestGuestRequiresLogin": true
+  },
+  "results": [
+    {
+      "name": "category-before-actions",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-guest-course-purchase-guards-live-8e4ba865\\category-before-actions.png",
+      "url": "https://almeaacodax.vercel.app/category/p_1777779639431?subject=sub_1777779748206",
+      "bodyLength": 572,
+      "hasLogin": true,
+      "hasPreview": true,
+      "hasBuy": true,
+      "hasOpenPackage": false
+    },
+    {
+      "name": "preview-link-opens-course",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-guest-course-purchase-guards-live-8e4ba865\\preview-link-opens-course.png",
+      "url": "https://almeaacodax.vercel.app/course/course_1779224794108",
+      "bodyLength": 99,
+      "hasLogin": true,
+      "hasPreview": false,
+      "hasBuy": false,
+      "hasOpenPackage": false
+    },
+    {
+      "name": "buy-button-guest-login",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-guest-course-purchase-guards-live-8e4ba865\\buy-button-guest-login.png",
+      "url": "https://almeaacodax.vercel.app/course/course_1779224794108?buy=1",
+      "bodyLength": 99,
+      "hasLogin": true,
+      "hasPreview": false,
+      "hasBuy": false,
+      "hasOpenPackage": false
+    },
+    {
+      "name": "locked-test-guest-login",
+      "screenshot": "C:\\ALMEAA MAY - codax\\audit-artifacts\\ui-audit-exhaustive\\2026-06-02-guest-course-purchase-guards-live-8e4ba865\\locked-test-guest-login.png",
+      "url": "https://almeaacodax.vercel.app/?auth=login",
+      "bodyLength": 2259,
+      "hasLogin": true,
+      "hasPreview": false,
+      "hasBuy": false,
+      "hasOpenPackage": false
+    }
+  ]
+}

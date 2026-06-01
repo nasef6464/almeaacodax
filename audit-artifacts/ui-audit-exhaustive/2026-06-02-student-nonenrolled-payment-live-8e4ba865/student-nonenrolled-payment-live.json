@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-06-01T22:44:26.360Z",
+  "commit": "8e4ba865",
+  "runId": "2026-06-02-student-nonenrolled-payment-live-8e4ba865",
+  "status": "BLOCKED",
+  "reason": "no paid course without existing student access was found for this student account",
+  "testedCourse": null,
+  "screenshots": [],
+  "state": null
+}
