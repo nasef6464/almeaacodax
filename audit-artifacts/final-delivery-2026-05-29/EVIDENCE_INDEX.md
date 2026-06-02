@@ -423,17 +423,22 @@
 - Evidence folder: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/`
 - Verified:
   - Course files now have per-course access: free preview or included with course purchase.
+  - Backend route and database model both preserve course file access.
   - Admin course builder exposes the access choice for each course file.
   - Student course overview separates visible files from locked paid files.
   - Course player hides paid course files during preview unless the student owns the course/package or the viewer is staff.
+  - Guest course cards no longer trust global `course.isPurchased`; a paid course shows preview + purchase, not learning access.
 - Checks:
-  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS.
+  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 13/13.
   - `npm run typecheck` -> PASS.
   - `npm run build` -> PASS.
   - `npm --prefix server run check` -> PASS.
   - `npm --prefix server run build` -> PASS.
   - `npm run smoke:arabic-mojibake` -> PASS.
+  - `npm run smoke:frontend:strict` -> PASS 29/29; production serves commit `1a904b9a`.
 - Visual note:
   - Production screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-course-description-a55f578f.png`.
-  - Production API returned course `course_1779224794108` with `files: []`, so locked/free file rows were validated by contract and code path, not by mutating production data.
-  - Production health returned commit `a55f578fb337`; Render deploy `dep-d8f94hsm0tmc73ensebg` is live; frontend smoke confirmed Vercel serves commit `a55f578f`.
+  - Guest course card screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-course-cards-1a904b9a.png`.
+  - Guest preview screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-preview-1a904b9a.png`.
+  - Guest purchase screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-buy-1a904b9a.png`.
+  - Purchase proof JSON confirms clicking purchase as guest redirects to `/?auth=login` and does not enter `learn=1`.

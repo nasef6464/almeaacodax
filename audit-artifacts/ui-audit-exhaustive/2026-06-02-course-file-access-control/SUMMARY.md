@@ -3,35 +3,43 @@
 ## Scope
 - Closed a real delivery gap in course management: course-level files were shown as direct resources without per-course preview/payment access.
 - The fix keeps reusable lessons/quizzes/files usable in different places while letting each course decide whether a file is free preview or included with purchase.
+- Closed the guest course-card gap reported visually: a paid course card could show learning access before login/purchase if the course payload had a global `isPurchased` flag.
 
 ## Change
 - Added `CourseFile.access` with `free_preview` / `enrolled_paid`.
 - Backend course payload now accepts and defaults course files to `enrolled_paid`.
-- Admin course builder now shows the file access state and lets the manager choose:
-  - `ضمن شراء الدورة`
-  - `معاينة مجانية`
+- Backend course model now persists `CourseFile.access`; the first live probe proved the route accepted the field but the model dropped it, and this was fixed before signoff.
+- Admin course builder now shows the file access state and lets the manager choose whether a course file is free preview or included with purchase.
 - Student course overview now separates visible files from locked paid files.
 - Course player now hides paid course files from preview lessons unless the student owns the course/package or the viewer is staff.
+- Course cards and course landing now ignore global `course.isPurchased` for guests; only a real registered viewer purchase/package can turn the main button into learning access.
 
 ## Verification
-- `node scripts/smoke-course-file-access-contract.mjs` - PASS
+- `node scripts/smoke-course-file-access-contract.mjs` - PASS (13/13)
 - `npm run typecheck` - PASS
 - `npm run build` - PASS
 - `npm --prefix server run check` - PASS
 - `npm --prefix server run build` - PASS
 - `npm run smoke:arabic-mojibake` - PASS
+- `npm run smoke:frontend:strict` - PASS 29/29 on production serving commit `1a904b9a`
 
-## Visual Note
-- Local browser opened `http://127.0.0.1:5173/course/course_1779224794108?tab=files&fresh=file-access-local`.
-- The local UI shell rendered, but the local frontend had no connected API backend, so course data could not load locally.
-- Production API verification:
-  - `https://almeaacodax.vercel.app/api/courses/course_1779224794108` returns the course and `files: []`.
-  - `https://almeaacodax.vercel.app/api/health` returns commit `a55f578fb337`.
-- Production visual verification:
-  - Screenshot: `live-course-description-a55f578f.png`.
-  - The course page renders title, course tabs, price panel, and `ملفات الدورة`.
-  - This specific course currently has no files, so locked/free file rows cannot be visually demonstrated without changing production data.
+## Visual Evidence
+- Production course page baseline:
+  - `live-course-description-a55f578f.png`
+  - The course page renders title, course tabs, price panel, and course files tab.
+- Guest course card verification after `1a904b9a`:
+  - `live-guest-course-cards-1a904b9a.png`
+  - `live-guest-course-cards-1a904b9a.json`
+  - Result: paid course card shows old/new price, instructor, student count, preview, and purchase; it does not show learning access for the paid course.
+- Guest paid course preview verification:
+  - `live-guest-paid-course-preview-1a904b9a.png`
+  - `live-guest-course-preview-1a904b9a.json`
+  - Result: preview opens the course page without `learn=1`; paid lessons/tests are locked until subscription; purchase remains visible.
+- Guest paid course purchase CTA verification:
+  - `live-guest-paid-course-buy-1a904b9a.png`
+  - `live-guest-course-buy-1a904b9a.json`
+  - Result: clicking purchase as guest redirects to `/?auth=login` and does not open learning mode.
 
 ## Delivery Decision
 - This is a real functional fix, not a cosmetic change.
-- It supports the requested TutorLMS-like behavior: preview can open selected course content, while paid files stay gated until purchase.
+- It supports the requested TutorLMS-like behavior: preview can browse the course and open only preview/free content, while paid lessons/tests/files stay gated until purchase or a real package/subscription.
