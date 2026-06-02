@@ -24,6 +24,7 @@
 - PASS `node scripts/smoke-course-quiz-context-contract.mjs`
 - PASS `npm run build`
 - PASS `npm --prefix server run check`
+- PASS production smoke: `npm run smoke:frontend:strict` passed 29/29 and confirmed production is serving commit `fa4ab8d6`.
 
 ## Delivery Note
 

@@ -416,3 +416,4 @@
   - `node scripts/smoke-course-quiz-context-contract.mjs` -> PASS.
   - `npm run build` -> PASS.
   - `npm --prefix server run check` -> PASS.
+  - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `fa4ab8d6`.
