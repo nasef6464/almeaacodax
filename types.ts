@@ -451,6 +451,10 @@ export interface Activity {
     title: string;
     date: string;
     link?: string;
+    targetLabel?: string;
+    scheduledDate?: string;
+    scheduledTime?: string;
+    notes?: string;
 }
 
 export interface UserSubscription {

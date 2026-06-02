@@ -11,6 +11,10 @@ const activitySchema = new Schema(
     title: { type: String, required: true, trim: true },
     date: { type: String, required: true },
     link: { type: String, default: "" },
+    targetLabel: { type: String, default: "", trim: true },
+    scheduledDate: { type: String, default: "", trim: true },
+    scheduledTime: { type: String, default: "", trim: true },
+    notes: { type: String, default: "", trim: true },
   },
   {
     timestamps: true,

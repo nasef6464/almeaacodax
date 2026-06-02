@@ -3,7 +3,7 @@ import { Card } from '../components/ui/Card';
 import { CheckCircle, Clock, XCircle, FileText, Calendar } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
-import { PaymentRequest } from '../types';
+import { Activity, PaymentRequest } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 
 type RequestStatus = 'completed' | 'pending' | 'cancelled';
@@ -43,6 +43,7 @@ const contentTypeLabel = (type: string) => {
 export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+  const [serverActivities, setServerActivities] = useState<Activity[]>([]);
   const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
   const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
 
@@ -77,6 +78,35 @@ export const MyRequests: React.FC = () => {
       } catch {
         if (!cancelled) {
           setPaymentRequests([]);
+        }
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [isRegisteredUser]);
+
+  useEffect(() => {
+    if (!isRegisteredUser) {
+      setServerActivities([]);
+      return;
+    }
+
+    let cancelled = false;
+    const run = async () => {
+      try {
+        const response = await api.getMyActivities({ limit: 50 });
+        if (!cancelled) {
+          setServerActivities(((response.activities || []) as Activity[]).map((activity) => ({
+            ...activity,
+            id: String(activity.id),
+          })));
+        }
+      } catch {
+        if (!cancelled) {
+          setServerActivities([]);
         }
       }
     };
@@ -127,7 +157,11 @@ export const MyRequests: React.FC = () => {
     const todayLabel = today.toLocaleDateString('ar-SA');
     const todayIso = today.toISOString();
 
-    const sessionRows = recentActivity
+    const mergedActivities = Array.from(
+      new Map([...serverActivities, ...recentActivity].map((activity) => [String(activity.id), activity])).values(),
+    );
+
+    const sessionRows = mergedActivities
       .filter((activity) => activity.type === 'session_booked')
       .map((activity) => ({
         id: `session_${activity.id}`,
@@ -227,6 +261,7 @@ export const MyRequests: React.FC = () => {
     b2bPackages,
     hasScopedPackageAccess,
     recentActivity,
+    serverActivities,
     paymentRequests,
   ]);
 

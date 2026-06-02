@@ -828,6 +828,25 @@ export const api = {
     ),
   getMyNotifications: (pagination?: { page?: number; limit?: number }, token?: string | null) =>
     request<unknown>(withQuery("/notifications/me", pagination || {}), { token }),
+  getMyActivities: (pagination?: { limit?: number }, token?: string | null) =>
+    request<{ activities: unknown[] }>(withQuery("/activities/me", pagination || {}), { token, cache: "no-store" }),
+  createMyActivity: (
+    payload: {
+      type: "course_view" | "lesson_complete" | "quiz_complete" | "skill_practice" | "session_booked";
+      title: string;
+      link?: string;
+      targetLabel?: string;
+      scheduledDate?: string;
+      scheduledTime?: string;
+      notes?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<{ activity: unknown }>("/activities/me", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   markNotificationRead: (id: string, token?: string | null) =>
     request<unknown>(`/notifications/${id}/read`, {
       method: "PATCH",

@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { api } from '../services/api';
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
@@ -16,6 +17,7 @@ export const BookSession: React.FC = () => {
   const [time, setTime] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const today = new Date().toISOString().slice(0, 10);
   const requestedSkillId = searchParams.get('skillId');
@@ -110,7 +112,7 @@ export const BookSession: React.FC = () => {
     setNotes(`أرغب في حصة علاجية مركزة على:\n${details.join('\n')}`);
   }, [notes, requestedSectionName, requestedSkillName, requestedSubjectName]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
 
@@ -119,13 +121,27 @@ export const BookSession: React.FC = () => {
       return;
     }
 
-    addActivity({
-      type: 'session_booked',
-      title: `تم حجز حصة خاصة: ${selectedTargetLabel}`,
-      link: '/dashboard?tab=sessions',
-    });
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        type: 'session_booked' as const,
+        title: `تم حجز حصة خاصة: ${selectedTargetLabel}`,
+        link: '/dashboard?tab=sessions',
+        targetLabel: selectedTargetLabel,
+        scheduledDate: date,
+        scheduledTime: time,
+        notes,
+      };
+      await api.createMyActivity(payload);
+      addActivity(payload);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'تعذر إرسال طلب الحصة الآن. جرّب مرة أخرى.');
+      setIsSubmitting(false);
+      return;
+    }
 
     setIsSubmitted(true);
+    setIsSubmitting(false);
 
     setTimeout(() => {
       navigate('/dashboard?tab=sessions');
@@ -258,10 +274,11 @@ export const BookSession: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Send size={20} />
-            تأكيد الحجز
+            {isSubmitting ? 'جاري إرسال الطلب...' : 'تأكيد الحجز'}
           </button>
         </form>
       </Card>
