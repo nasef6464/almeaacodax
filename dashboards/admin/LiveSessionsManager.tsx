@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, Video } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, RefreshCw, Video } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { Lesson, LessonType } from '../../types';
+import { Activity, Lesson, LessonType } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
+import { api } from '../../services/api';
 
 const LIVE_TYPES: LessonType[] = ['live_youtube', 'zoom', 'google_meet', 'teams'];
 
@@ -39,6 +40,10 @@ export const LiveSessionsManager: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
     const [copyMessage, setCopyMessage] = useState('');
+    const [sessionBookings, setSessionBookings] = useState<Activity[]>([]);
+    const [bookingsLoading, setBookingsLoading] = useState(false);
+    const [bookingsError, setBookingsError] = useState('');
+    const [updatingBookingId, setUpdatingBookingId] = useState('');
 
     const liveLessons = useMemo(
         () =>
@@ -56,6 +61,29 @@ export const LiveSessionsManager: React.FC = () => {
     const upcomingLessons = liveLessons.filter((lesson) => lesson.meetingDate && new Date(lesson.meetingDate).getTime() >= Date.now());
     const recordedLessons = liveLessons.filter((lesson) => lesson.recordingUrl && lesson.showRecordingOnPlatform);
     const needsSetupLessons = liveLessons.filter((lesson) => !lesson.meetingUrl || !lesson.meetingDate || !lesson.pathId || !lesson.subjectId);
+    const pendingBookings = sessionBookings.filter((booking) => (booking.bookingStatus || 'pending') === 'pending');
+
+    const loadSessionBookings = async () => {
+        setBookingsLoading(true);
+        setBookingsError('');
+        try {
+            const response = await api.getAdminSessionBookings({ status: 'all', limit: 50 });
+            setSessionBookings(((response.bookings || []) as Activity[]).map((booking) => ({
+                ...booking,
+                id: String(booking.id),
+                bookingStatus: booking.bookingStatus || 'pending',
+            })));
+        } catch (error) {
+            setSessionBookings([]);
+            setBookingsError(error instanceof Error ? error.message : 'تعذر تحميل طلبات الحصص الآن.');
+        } finally {
+            setBookingsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        void loadSessionBookings();
+    }, []);
 
     const createNewLesson = () => {
         setCurrentLesson({
@@ -154,6 +182,28 @@ export const LiveSessionsManager: React.FC = () => {
         ]);
     };
 
+    const updateSessionBooking = async (booking: Activity, bookingStatus: 'pending' | 'confirmed' | 'cancelled') => {
+        const assignedTeacherName =
+            bookingStatus === 'confirmed'
+                ? (window.prompt('اسم المدرس أو المسؤول عن الحصة', booking.assignedTeacherName || '') ?? (booking.assignedTeacherName || ''))
+                : booking.assignedTeacherName || '';
+        const adminNotes = window.prompt('ملاحظة داخلية للطلب (اختياري)', booking.adminNotes || '') ?? (booking.adminNotes || '');
+
+        try {
+            setUpdatingBookingId(booking.id);
+            await api.updateAdminSessionBooking(booking.id, {
+                bookingStatus,
+                assignedTeacherName,
+                adminNotes,
+            });
+            await loadSessionBookings();
+        } catch (error) {
+            window.alert(error instanceof Error ? error.message : 'تعذر تحديث طلب الحصة الآن.');
+        } finally {
+            setUpdatingBookingId('');
+        }
+    };
+
     if (isEditing && currentLesson) {
         return (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in relative z-50">
@@ -217,6 +267,107 @@ export const LiveSessionsManager: React.FC = () => {
                 <SummaryCard title="قادمة" value={upcomingLessons.length.toString()} />
                 <SummaryCard title="لها تسجيل" value={recordedLessons.length.toString()} />
                 <SummaryCard title="تحتاج ضبط" value={needsSetupLessons.length.toString()} />
+            </div>
+
+            <div className="bg-white rounded-2xl border border-indigo-100 shadow-sm overflow-hidden">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-indigo-50 bg-indigo-50/50 px-5 py-4">
+                    <div>
+                        <h3 className="text-lg font-black text-gray-900">طلبات الحصص الخاصة</h3>
+                        <p className="text-sm text-gray-500 mt-1">طلبات الطلاب من صفحة حجز الحصة. أكد الطلب أو ألغِه ثم أنشئ الحصة المباشرة المناسبة من الجدول.</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => void loadSessionBookings()}
+                        disabled={bookingsLoading}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-50 disabled:opacity-60"
+                    >
+                        <RefreshCw size={16} className={bookingsLoading ? 'animate-spin' : ''} />
+                        تحديث الطلبات
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-5">
+                    <SummaryCard title="طلبات جديدة" value={pendingBookings.length.toString()} />
+                    <SummaryCard title="كل الطلبات" value={sessionBookings.length.toString()} />
+                    <SummaryCard title="تم التأكيد" value={sessionBookings.filter((booking) => booking.bookingStatus === 'confirmed').length.toString()} />
+                    <SummaryCard title="ملغاة" value={sessionBookings.filter((booking) => booking.bookingStatus === 'cancelled').length.toString()} />
+                </div>
+
+                {bookingsError ? (
+                    <div className="mx-5 mb-5 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
+                        {bookingsError}
+                    </div>
+                ) : null}
+
+                <div className="px-5 pb-5">
+                    {sessionBookings.length > 0 ? (
+                        <div className="grid gap-3">
+                            {sessionBookings.map((booking) => {
+                                const status = booking.bookingStatus || 'pending';
+                                return (
+                                    <div key={booking.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                            <div className="space-y-2 text-right">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                                        status === 'confirmed'
+                                                            ? 'bg-emerald-50 text-emerald-700'
+                                                            : status === 'cancelled'
+                                                                ? 'bg-rose-50 text-rose-700'
+                                                                : 'bg-amber-50 text-amber-700'
+                                                    }`}>
+                                                        {status === 'confirmed' ? 'مؤكد' : status === 'cancelled' ? 'ملغي' : 'جديد'}
+                                                    </span>
+                                                    <h4 className="text-base font-black text-gray-900">{displayText(booking.title) || 'طلب حصة خاصة'}</h4>
+                                                </div>
+                                                <div className="text-sm text-gray-500">
+                                                    الطالب: <span className="font-bold text-gray-700">{displayText(booking.studentName) || booking.studentEmail || 'طالب غير معروف'}</span>
+                                                </div>
+                                                {booking.targetLabel ? <div className="text-sm text-gray-500">المادة/المهارة: {displayText(booking.targetLabel)}</div> : null}
+                                                <div className="text-sm text-gray-500">
+                                                    الوقت المطلوب: {[booking.scheduledDate, booking.scheduledTime].filter(Boolean).join(' - ') || 'لم يحدد'}
+                                                </div>
+                                                {booking.notes ? <div className="rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-600">{displayText(booking.notes)}</div> : null}
+                                                {booking.assignedTeacherName ? <div className="text-sm text-emerald-700">المسؤول: {displayText(booking.assignedTeacherName)}</div> : null}
+                                                {booking.adminNotes ? <div className="text-xs text-gray-400">ملاحظة الإدارة: {displayText(booking.adminNotes)}</div> : null}
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 lg:justify-end">
+                                                <button
+                                                    type="button"
+                                                    disabled={updatingBookingId === booking.id}
+                                                    onClick={() => void updateSessionBooking(booking, 'confirmed')}
+                                                    className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100 disabled:opacity-60"
+                                                >
+                                                    تأكيد
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    disabled={updatingBookingId === booking.id}
+                                                    onClick={() => void updateSessionBooking(booking, 'pending')}
+                                                    className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 disabled:opacity-60"
+                                                >
+                                                    قيد المراجعة
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    disabled={updatingBookingId === booking.id}
+                                                    onClick={() => void updateSessionBooking(booking, 'cancelled')}
+                                                    className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-black text-rose-700 hover:bg-rose-100 disabled:opacity-60"
+                                                >
+                                                    إلغاء
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-5 py-8 text-center text-sm font-bold text-gray-500">
+                            {bookingsLoading ? 'جاري تحميل طلبات الحصص...' : 'لا توجد طلبات حصص خاصة حتى الآن.'}
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

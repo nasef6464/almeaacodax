@@ -11,7 +11,7 @@ import { ProgressBar } from '../components/ui/ProgressBar';
 import { Link, useLocation } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { useStore } from '../store/useStore';
-import { QuizResult, Role, SkillGap } from '../types';
+import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -503,7 +503,50 @@ const SmartPathTab = () => {
 
 const SessionsTab = () => {
     const { recentActivity, lessons, user } = useStore();
-    const sessions = recentActivity.filter(a => a.type === 'session_booked');
+    const [serverActivities, setServerActivities] = useState<Activity[]>([]);
+    const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+    const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
+    useEffect(() => {
+        if (!isRegisteredUser) {
+            setServerActivities([]);
+            return;
+        }
+
+        let cancelled = false;
+        const run = async () => {
+            setIsLoadingRequests(true);
+            try {
+                const response = await api.getMyActivities({ limit: 50 });
+                if (!cancelled) {
+                    setServerActivities(((response.activities || []) as Activity[]).map((activity) => ({
+                        ...activity,
+                        id: String(activity.id),
+                    })));
+                }
+            } catch {
+                if (!cancelled) setServerActivities([]);
+            } finally {
+                if (!cancelled) setIsLoadingRequests(false);
+            }
+        };
+
+        void run();
+        return () => {
+            cancelled = true;
+        };
+    }, [isRegisteredUser]);
+
+    const sessions = useMemo(
+        () =>
+            Array.from(
+                new Map(
+                    [...serverActivities, ...recentActivity]
+                        .filter((activity) => activity.type === 'session_booked')
+                        .map((activity) => [String(activity.id), activity]),
+                ).values(),
+            ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+        [serverActivities, recentActivity],
+    );
     const liveSessions = lessons
         .filter((lesson) => ['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type))
         .filter((lesson) => {
@@ -586,11 +629,24 @@ const SessionsTab = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg text-gray-900">{session.title}</h3>
-                                    <p className="text-sm text-gray-500">{new Date(session.date).toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    <p className="text-sm text-gray-500">
+                                        {session.scheduledDate || session.scheduledTime
+                                            ? [session.scheduledDate, session.scheduledTime].filter(Boolean).join(' - ')
+                                            : new Date(session.date).toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </p>
+                                    {session.targetLabel ? (
+                                        <p className="text-xs text-gray-400 mt-1">{session.targetLabel}</p>
+                                    ) : null}
                                 </div>
                             </div>
-                            <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
-                                مؤكد
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                session.bookingStatus === 'confirmed'
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : session.bookingStatus === 'cancelled'
+                                        ? 'bg-rose-100 text-rose-700'
+                                        : 'bg-amber-100 text-amber-700'
+                            }`}>
+                                {session.bookingStatus === 'confirmed' ? 'مؤكد' : session.bookingStatus === 'cancelled' ? 'ملغي' : 'بانتظار التأكيد'}
                             </span>
                         </Card>
                     ))}
@@ -598,7 +654,7 @@ const SessionsTab = () => {
             ) : (
                 <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
                     <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
-                    <h3 className="text-lg font-bold text-gray-700 mb-2">لا توجد جلسات قادمة</h3>
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">{isLoadingRequests ? 'جاري تحميل طلباتك...' : 'لا توجد جلسات قادمة'}</h3>
                     <p className="text-gray-500 mb-6">احجز حصة خاصة مع نخبة من المعلمين أو تابع الحصص المباشرة المتاحة داخل المنصة.</p>
                     <Link to="/book-session" className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors inline-block">
                         احجز الآن

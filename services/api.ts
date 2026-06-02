@@ -847,6 +847,25 @@ export const api = {
       body: payload,
       token,
     }),
+  getAdminSessionBookings: (params?: { status?: "all" | "pending" | "confirmed" | "cancelled"; limit?: number }, token?: string | null) =>
+    request<{ bookings: unknown[] }>(withQuery("/activities/admin/session-bookings", params || {}), {
+      token,
+      cache: "no-store",
+    }),
+  updateAdminSessionBooking: (
+    id: string,
+    payload: {
+      bookingStatus?: "pending" | "confirmed" | "cancelled";
+      assignedTeacherName?: string;
+      adminNotes?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<{ booking: unknown }>(`/activities/admin/session-bookings/${id}`, {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
   markNotificationRead: (id: string, token?: string | null) =>
     request<unknown>(`/notifications/${id}/read`, {
       method: "PATCH",

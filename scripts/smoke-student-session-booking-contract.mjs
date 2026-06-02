@@ -12,6 +12,8 @@ const assertIncludes = (source, snippet, message = snippet) => {
 
 const bookSession = read("pages/BookSession.tsx");
 const myRequests = read("pages/MyRequests.tsx");
+const dashboard = read("pages/Dashboard.tsx");
+const liveSessionsManager = read("dashboards/admin/LiveSessionsManager.tsx");
 const apiSource = read("services/api.ts");
 const activityRoute = read("server/src/routes/activity.routes.ts");
 const routeIndex = read("server/src/routes/index.ts");
@@ -27,15 +29,22 @@ check("student requests reload session bookings from backend", () => {
   assertIncludes(myRequests, "api.getMyActivities({ limit: 50 })");
   assertIncludes(myRequests, "serverActivities");
   assertIncludes(myRequests, "mergedActivities");
+  assertIncludes(dashboard, "api.getMyActivities({ limit: 50 })");
+  assertIncludes(dashboard, "bookingStatus");
 });
 
 check("activity API exposes authenticated create/list endpoints", () => {
   assertIncludes(apiSource, "createMyActivity");
   assertIncludes(apiSource, "getMyActivities");
+  assertIncludes(apiSource, "getAdminSessionBookings");
+  assertIncludes(apiSource, "updateAdminSessionBooking");
   assertIncludes(routeIndex, 'apiRouter.use("/activities", activityRouter)');
   assertIncludes(activityRoute, 'activityRouter.post(');
   assertIncludes(activityRoute, 'activityRouter.get(');
+  assertIncludes(activityRoute, '"/admin/session-bookings"');
+  assertIncludes(activityRoute, 'activityRouter.patch(');
   assertIncludes(activityRoute, 'requireAuth');
+  assertIncludes(activityRoute, 'requireRole(["admin", "supervisor", "teacher"])');
 });
 
 check("session booking metadata is stored with activity", () => {
@@ -43,6 +52,17 @@ check("session booking metadata is stored with activity", () => {
   assertIncludes(activityModel, "scheduledDate");
   assertIncludes(activityModel, "scheduledTime");
   assertIncludes(activityModel, "notes");
+  assertIncludes(activityModel, "bookingStatus");
+  assertIncludes(activityModel, "assignedTeacherName");
+  assertIncludes(activityModel, "adminNotes");
+});
+
+check("admin live sessions manager exposes booking queue", () => {
+  assertIncludes(liveSessionsManager, "طلبات الحصص الخاصة");
+  assertIncludes(liveSessionsManager, "loadSessionBookings");
+  assertIncludes(liveSessionsManager, "updateSessionBooking");
+  assertIncludes(liveSessionsManager, "api.getAdminSessionBookings");
+  assertIncludes(liveSessionsManager, "api.updateAdminSessionBooking");
 });
 
 let failed = 0;

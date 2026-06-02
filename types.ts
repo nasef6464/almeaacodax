@@ -455,6 +455,12 @@ export interface Activity {
     scheduledDate?: string;
     scheduledTime?: string;
     notes?: string;
+    bookingStatus?: 'pending' | 'confirmed' | 'cancelled';
+    assignedTeacherName?: string;
+    adminNotes?: string;
+    studentName?: string;
+    studentEmail?: string;
+    studentRole?: string;
 }
 
 export interface UserSubscription {

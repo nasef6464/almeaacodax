@@ -15,10 +15,20 @@ const activitySchema = new Schema(
     scheduledDate: { type: String, default: "", trim: true },
     scheduledTime: { type: String, default: "", trim: true },
     notes: { type: String, default: "", trim: true },
+    bookingStatus: {
+      type: String,
+      enum: ["pending", "confirmed", "cancelled"],
+      default: "pending",
+      index: true,
+    },
+    assignedTeacherName: { type: String, default: "", trim: true },
+    adminNotes: { type: String, default: "", trim: true },
   },
   {
     timestamps: true,
   },
 );
+
+activitySchema.index({ type: 1, bookingStatus: 1, createdAt: -1 });
 
 export const ActivityModel = mongoose.model("Activity", activitySchema);
