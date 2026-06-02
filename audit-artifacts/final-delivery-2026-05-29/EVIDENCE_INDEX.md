@@ -548,3 +548,30 @@
   - Production Playwright probe -> PASS for home nonblank, footer links, privacy page, blog content/open links, cart empty action, checkout disabled action, and invalid quiz route controlled message.
   - Production login modal probe -> PASS for email/password controls and configured auth surface.
   - Production `/category/p_tahsili` probe -> PASS for nonblank route and visible subject/category navigation controls.
+
+## Student Package-to-Learning Navigation Closure (2026-06-03)
+
+- Deployed commit: `019c8b46`.
+- Closed the student owned-package UX issue where `افتح محتوى الباقة` remained in the package marketplace instead of opening learning content.
+- Code change:
+  - Active package CTAs now route to the relevant learning tab for the package content type, preserving path, subject, and level where available.
+  - Package preview actions still stay in the package marketplace as intended.
+- Evidence folders:
+  - Visual production proof: `../ui-audit-exhaustive/2026-06-03-student-package-open-live-019c8b46-v2/`.
+  - Full post-deploy student journey: `../ui-audit-exhaustive/2026-06-03-student-full-journey-live-post-package-open-019c8b46/`.
+- Verified:
+  - Production package page rendered the owned package CTA for the student account.
+  - Clicking `افتح محتوى الباقة` moved from `tab=packages` to `tab=courses`.
+  - The destination preserved `subject=sub_1777779748206`.
+  - The destination rendered learning content, not a login form or blocked state.
+  - No console errors and no 5xx network failures were recorded in the visual proof.
+  - Post-deploy student journey passed 10/10: dashboard, subject learning page, course player, training quiz, my quizzes, reports, and plan.
+- Checks:
+  - `npm run smoke:package-path-navigation` -> PASS 8/8.
+  - `npm run smoke:student-learning-journey` -> PASS 7/7.
+  - `npm run smoke:payment-package` -> PASS 8/8.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
+  - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `019c8b46`.
+  - Production visual package-open proof -> PASS.
+  - Production deep student learning audit -> PASS 10/10.
