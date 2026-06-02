@@ -249,7 +249,11 @@ const Blog: React.FC = () => {
                                     {entry.dateLabel}
                                 </span>
                             </div>
-                            <Link to={entry.actionLink} className="text-sm font-bold text-indigo-600 hover:text-indigo-700 w-full sm:w-auto">
+                            <Link
+                                to={entry.actionLink}
+                                aria-label={`فتح المقال ${entry.title}`}
+                                className="text-sm font-bold text-indigo-600 hover:text-indigo-700 w-full sm:w-auto"
+                            >
                                 {entry.actionLabel}
                             </Link>
                         </div>

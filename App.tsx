@@ -51,6 +51,7 @@ const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
 const Pricing = React.lazy(() => import('./pages/Pricing'));
 const Cart = React.lazy(() => import('./pages/Cart'));
 const MyRequests = React.lazy(() => import('./pages/MyRequests').then(module => ({ default: module.MyRequests })));
+const StaticInfoPage = React.lazy(() => import('./pages/StaticInfoPage'));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -923,6 +924,11 @@ const App: React.FC = () => {
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Cart />} />
+                  <Route path="/about" element={<StaticInfoPage kind="about" />} />
+                  <Route path="/contact" element={<StaticInfoPage kind="contact" />} />
+                  <Route path="/faq" element={<StaticInfoPage kind="faq" />} />
+                  <Route path="/privacy" element={<StaticInfoPage kind="privacy" />} />
+                  <Route path="/terms" element={<StaticInfoPage kind="terms" />} />
                   <Route path="/certificate/:code" element={<CertificatePage />} />
                   <Route path="/review" element={<RequireAuth><ReviewSession /></RequireAuth>} />
                   
