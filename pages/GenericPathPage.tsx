@@ -407,6 +407,34 @@ export const GenericPathPage: React.FC = () => {
             accessContext: getPackageStudentAccessNote(pkg, contentTypes),
         };
     };
+    const buildPackageContentRoute = (pkg: any, contentTypes = resolvePackageContentTypes(pkg)) => {
+        const packageSubjectId = pkg.subjectId || pkg.subject || selectedSubjectId || pathSubjects[0]?.id || '';
+        const packageSubject = packageSubjectId ? pathSubjects.find((subject) => subject.id === packageSubjectId) : null;
+        const params = new URLSearchParams();
+        const preferredTab = contentTypes.includes('all') || contentTypes.includes('courses')
+            ? 'courses'
+            : contentTypes.includes('foundation')
+                ? 'skills'
+                : contentTypes.includes('banks')
+                    ? 'banks'
+                    : contentTypes.includes('tests')
+                        ? 'tests'
+                        : contentTypes.includes('library')
+                            ? 'library'
+                            : 'courses';
+
+        if (packageSubject?.levelId) {
+            params.set('level', packageSubject.levelId);
+        } else if (selectedLevelId) {
+            params.set('level', selectedLevelId);
+        }
+        if (packageSubjectId) {
+            params.set('subject', packageSubjectId);
+        }
+        params.set('tab', preferredTab);
+
+        return `/category/${path.id}?${params.toString()}`;
+    };
     const getPackageKindLabel = (contentTypes: string[]) =>
         contentTypes.includes('all')
             ? 'باقة شاملة'
@@ -741,11 +769,7 @@ export const GenericPathPage: React.FC = () => {
                                                     });
                                                     return;
                                                 }
-                                                if (packageSubjectId) {
-                                                    navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
-                                                    return;
-                                                }
-                                                navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
+                                                navigate(buildPackageContentRoute(pkg, contentTypes));
                                             }}
                                             className={`w-full rounded-xl py-3 font-bold transition-all ${
                                                 packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`
@@ -866,11 +890,7 @@ export const GenericPathPage: React.FC = () => {
                                              setSelectedPackageForPayment(paymentPackage);
                                              return;
                                          }
-                                         if (packageSubjectId) {
-                                             navigate(`/category/${path.id}?tab=packages&subject=${packageSubjectId}&package=${pkg.id}`);
-                                             return;
-                                         }
-                                         navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`);
+                                         navigate(buildPackageContentRoute(pkg, contentTypes));
                                      }}
                                      className={`w-full rounded-xl py-3 font-bold transition-all ${
                                          packageIsActive ? 'bg-emerald-50 text-emerald-700' : `${tone.action} shadow-lg motion-safe:animate-pulse`

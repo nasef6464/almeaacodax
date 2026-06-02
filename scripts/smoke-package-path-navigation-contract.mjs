@@ -30,6 +30,12 @@ check('package preview stays in package/path context', () => {
   includes(genericPathPage, 'navigate(`/category/${path.id}?tab=packages&package=${pkg.id}`)');
 });
 
+check('active package CTA opens learning content instead of staying in marketplace', () => {
+  includes(genericPathPage, 'const buildPackageContentRoute = (pkg: any, contentTypes = resolvePackageContentTypes(pkg))');
+  includes(genericPathPage, "params.set('tab', preferredTab);");
+  includes(genericPathPage, 'navigate(buildPackageContentRoute(pkg, contentTypes));');
+});
+
 check('suggested package CTA stays in package/path context', () => {
   includes(genericPathPage, 'navigate(`/category/${path.id}?tab=packages&subject=${subjectId}&package=${suggestedPackage.id}`)');
   includes(genericPathPage, 'navigate(`/category/${path.id}?tab=packages`)');
