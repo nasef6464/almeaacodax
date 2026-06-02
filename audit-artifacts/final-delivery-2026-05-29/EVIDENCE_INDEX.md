@@ -371,3 +371,20 @@
 - Product note:
   - Student booking is now real backend persistence, not local-only UI success.
   - Remaining improvement: add a dedicated admin queue for reviewing and managing session booking requests; current proof stores and returns them as student activities.
+
+## Admin Session Booking Queue Closure (2026-06-02)
+
+- Commit deployed: `be1d060a` (`Add admin session booking queue`).
+- Frontend deployment:
+  - Vercel production alias: `https://almeaacodax.vercel.app`
+  - `npm run smoke:frontend:strict` -> PASS 29/29.
+  - Production served expected commit/version `be1d060a`.
+- Backend deployment:
+  - Render deploy: `dep-d8f67n5sichs73an7110`
+  - Status: `live`.
+- Evidence folder: `../admin-live-handoff/2026-06-02-admin-session-bookings-live-be1d060a/`
+- Verified:
+  - Admin API list for session bookings -> PASS.
+  - Admin API status update -> PASS.
+  - Admin live-sessions tab visual queue -> PASS by screenshot.
+  - Student dashboard sessions tab now reloads persisted bookings from backend.
