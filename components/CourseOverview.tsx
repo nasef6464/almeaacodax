@@ -37,6 +37,8 @@ type CourseDisplayTest = {
     level: string;
     isLocked: boolean;
     courseLessonId?: string;
+    isUnavailable?: boolean;
+    unavailableLabel?: string;
 };
 
 const resolveCourseIconColor = (value: string | undefined, fallback: string) => {
@@ -179,17 +181,19 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             .sort((a, b) => (a.order || 0) - (b.order || 0))
             .map((assessment) => {
                 const quiz = quizById.get(String(assessment.quizId));
-                if (!quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz)) return null;
+                const isUnavailable = !quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz);
 
-                const isLocked = assessment.access === 'enrolled_paid' && !isEnrolled;
+                const isLocked = isUnavailable || (assessment.access === 'enrolled_paid' && !isEnrolled);
                 return {
-                    id: quiz.id,
-                    title: `${phaseLabel[assessment.phase] || 'اختبار الدورة'} - ${assessment.title || quiz.title}`,
-                    duration: `${quiz.settings.timeLimit || 30} دقيقة`,
-                    questions: quiz.questionIds.length,
+                    id: String(assessment.quizId),
+                    title: `${phaseLabel[assessment.phase] || 'اختبار الدورة'} - ${assessment.title || quiz?.title || 'اختبار بدون مصدر'}`,
+                    duration: `${quiz?.settings.timeLimit || 30} دقيقة`,
+                    questions: quiz?.questionIds.length || 0,
                     type: assessment.phase === 'final_course' ? 'comprehensive' : 'trial',
-                    level: assessment.access === 'free_preview' ? 'مجاني' : 'مدفوع',
+                    level: isUnavailable ? 'يحتاج مراجعة من الإدارة' : assessment.access === 'free_preview' ? 'مجاني' : 'مدفوع',
                     isLocked,
+                    isUnavailable,
+                    unavailableLabel: 'رابط الاختبار يحتاج مراجعة',
                 };
             })
             .filter(Boolean) as CourseDisplayTest[];
@@ -214,19 +218,21 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 if (!linkedQuizId || assessmentQuizIds.has(linkedQuizId) || seenQuizIds.has(linkedQuizId)) return null;
 
                 const quiz = quizById.get(linkedQuizId);
-                if (!quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz)) return null;
+                const isUnavailable = !quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz);
 
                 seenQuizIds.add(linkedQuizId);
                 const isPreview = lesson.accessControl === 'public';
                 return {
-                    id: String(quiz.id),
-                    title: lesson.title || quiz.title,
-                    duration: lesson.duration || `${quiz.settings.timeLimit || 30} دقيقة`,
-                    questions: quiz.questionIds.length,
+                    id: linkedQuizId,
+                    title: lesson.title || quiz?.title || 'اختبار الدورة',
+                    duration: lesson.duration || `${quiz?.settings.timeLimit || 30} دقيقة`,
+                    questions: quiz?.questionIds.length || 0,
                     type: 'trial',
-                    level: isPreview ? 'معاينة مجانية' : 'ضمن منهج الدورة',
-                    isLocked: !isPreview && !isEnrolled,
+                    level: isUnavailable ? 'يحتاج مراجعة من الإدارة' : isPreview ? 'معاينة مجانية' : 'ضمن منهج الدورة',
+                    isLocked: isUnavailable || (!isPreview && !isEnrolled),
                     courseLessonId: String(lesson.id || ''),
+                    isUnavailable,
+                    unavailableLabel: 'رابط الاختبار يحتاج مراجعة',
                 };
             })
             .filter(Boolean) as CourseDisplayTest[];

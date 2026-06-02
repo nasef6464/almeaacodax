@@ -18,6 +18,7 @@ const player = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");
 const learningSection = read("components/LearningSection.tsx");
 const courseLanding = read("components/CourseLanding.tsx");
+const simulatedTestExperienceSource = read("components/SimulatedTestExperience.tsx");
 
 check(
   "CourseFile has per-course access control",
@@ -61,8 +62,20 @@ check(
 check(
   "Course overview keeps per-course quiz preview access separate from the reusable quiz",
   includes(overview, "lesson.accessControl === 'public'") &&
-    includes(overview, "isLocked: !isPreview && !isEnrolled") &&
+    includes(overview, "isLocked: isUnavailable || (!isPreview && !isEnrolled)") &&
     includes(overview, "assessmentQuizIds.has(linkedQuizId)"),
+);
+check(
+  "Course overview surfaces missing course quiz links instead of hiding them",
+  includes(overview, "رابط الاختبار يحتاج مراجعة") &&
+    includes(overview, "isUnavailable") &&
+    includes(overview, "questions: quiz?.questionIds.length || 0"),
+);
+check(
+  "Simulated tests disable unavailable linked course tests",
+  includes(simulatedTestExperienceSource, "test.isUnavailable") &&
+    includes(simulatedTestExperienceSource, "disabled={Boolean(test.isUnavailable)}") &&
+    includes(simulatedTestExperienceSource, "غير جاهز"),
 );
 check(
   "Course player never treats guests as staff viewers",

@@ -16,6 +16,8 @@ interface Test {
     pathId?: string;
     subjectId?: string;
     courseLessonId?: string;
+    isUnavailable?: boolean;
+    unavailableLabel?: string;
 }
 
 interface SimulatedTestExperienceProps {
@@ -51,8 +53,8 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [favorites, setFavorites] = useState<Record<number, boolean>>({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isNightMode, setIsNightMode] = useState(false);
-    const readyTests = tests.filter((test) => Number(test.questions || 0) > 0);
-    const openTestsCount = readyTests.filter((test) => !test.isLocked).length;
+    const readyTests = tests.filter((test) => Number(test.questions || 0) > 0 || test.isUnavailable);
+    const openTestsCount = readyTests.filter((test) => !test.isLocked && !test.isUnavailable).length;
     const lockedTestsCount = readyTests.length - openTestsCount;
     const listTitle = title || (mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة');
     const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار';
@@ -84,6 +86,9 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
     const handleTestClick = (test: Test) => {
         setSelectedTest(test);
+        if (test.isUnavailable) {
+            return;
+        }
         if (test.isLocked) {
             if (onLockedClick) {
                 onLockedClick(test);
@@ -172,14 +177,14 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                 {readyTests.map((test) => (
                     <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group">
                         <div className="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${test.isLocked ? 'bg-gray-100 text-gray-500' : 'bg-emerald-50 text-emerald-600'}`}>
-                                {test.isLocked ? <Lock size={24} /> : <Unlock size={24} />}
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${test.isUnavailable ? 'bg-rose-50 text-rose-600' : test.isLocked ? 'bg-gray-100 text-gray-500' : 'bg-emerald-50 text-emerald-600'}`}>
+                                {test.isUnavailable ? <AlertTriangle size={24} /> : test.isLocked ? <Lock size={24} /> : <Unlock size={24} />}
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                     <h3 className="font-bold text-lg text-gray-800 group-hover:text-indigo-600 transition-colors">{test.title}</h3>
-                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-100' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'}`}>
-                                        {test.isLocked ? 'ضمن باقة' : 'مفتوح الآن'}
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.isUnavailable ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-100' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-100' : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100'}`}>
+                                        {test.isUnavailable ? (test.unavailableLabel || 'يحتاج مراجعة') : test.isLocked ? 'ضمن باقة' : 'مفتوح الآن'}
                                     </span>
                                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${test.type === 'trial' ? 'bg-green-100 text-green-700' : test.type === 'comprehensive' ? 'bg-purple-100 text-purple-700' : test.type === 'bank' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
                                         {test.type === 'trial' ? 'تجريبي' : test.type === 'comprehensive' ? 'شامل' : test.type === 'bank' ? 'بنك أسئلة' : 'محاكي'}
@@ -192,8 +197,11 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                                 </div>
                             </div>
                         </div>
-                        <button className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}>
-                            {test.isLocked ? 'فتح الباقة' : listAction}
+                        <button
+                            disabled={Boolean(test.isUnavailable)}
+                            className={`px-6 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0 ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-500' : test.isLocked ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100' : 'bg-white text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white'}`}
+                        >
+                            {test.isUnavailable ? 'غير جاهز' : test.isLocked ? 'فتح الباقة' : listAction}
                             <ChevronRight size={18} className="transform rotate-180" />
                         </button>
                     </div>
