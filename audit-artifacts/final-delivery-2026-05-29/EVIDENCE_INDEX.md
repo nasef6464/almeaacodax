@@ -517,3 +517,5 @@
   - `node scripts/smoke-route-loading-contract.mjs` -> PASS.
   - `npm run typecheck` -> PASS.
   - `npm run build` -> PASS.
+  - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `6d9ca9c5`.
+  - Production browser redirect proof -> PASS for same-origin `https://...` and browser-normalized `https:/...` path forms.
