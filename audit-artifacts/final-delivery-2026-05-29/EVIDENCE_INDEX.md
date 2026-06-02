@@ -492,3 +492,16 @@
   - `../ui-audit-exhaustive/2026-06-02-course-tests-curriculum-live-dd03ea3a/course-files-tab-viewport.png`.
 - Remaining content action:
   - In admin, replace or repair the missing source for `اختبار موجّه جديد`; the platform now surfaces this as a clear admin/content issue instead of hiding it.
+
+## Course Missing Guided Quiz Content Repair (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-course-missing-guided-quiz-content-repair/`
+- Closed the remaining content action from `2026-06-02-course-tests-curriculum-live-dd03ea3a`.
+- Verified:
+  - Existing production quiz `quiz_1777929187194_central` now has 4 approved question references.
+  - The quiz is published, visible, and approved.
+  - The target course still links the same quiz lesson in its curriculum.
+  - General quiz access remains private, so the item is repaired for course context without making it broadly public.
+- Checks:
+  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 18/18.
+  - Production API course/quiz check -> PASS.
