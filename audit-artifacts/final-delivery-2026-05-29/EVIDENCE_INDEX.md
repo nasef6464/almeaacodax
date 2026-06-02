@@ -430,8 +430,9 @@
   - Guest course cards no longer trust global `course.isPurchased`; a paid course shows preview + purchase, not learning access.
   - Guest direct `?learn=1` no longer opens an empty player when the course has no free preview lessons.
   - Admin course builder lets the manager choose which course lessons are free preview and which require purchase.
+  - Guest preview boundary is enforced: the second preview lesson cannot continue into the third purchase-only lesson via Next or sidebar click.
 - Checks:
-  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 13/13.
+  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 14/14.
   - `npm run typecheck` -> PASS.
   - `npm run build` -> PASS.
   - `npm --prefix server run check` -> PASS.
@@ -447,6 +448,8 @@
   - Live two-preview-lessons screenshots:
     - `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-two-preview-lessons-course-page.png`.
     - `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-two-preview-lessons-player.png`.
+  - Guest preview boundary screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-preview-boundary-locked-third-90799d7f.png`.
   - Purchase proof JSON confirms clicking purchase as guest redirects to `/?auth=login` and does not enter `learn=1`.
   - Direct learning proof JSON confirms paid course without preview lessons renders locked lesson list and purchase CTA rather than an empty player.
   - Two-preview proof JSON confirms course `course_1779224794108` now has 2 free preview lessons and 3 purchase-only items for guests.
+  - Boundary proof JSON confirms the guest remains on the second preview lesson after Next/sidebar attempts against the third locked lesson.

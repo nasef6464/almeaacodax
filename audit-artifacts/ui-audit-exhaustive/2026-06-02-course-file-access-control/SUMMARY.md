@@ -15,7 +15,7 @@
 - Course cards and course landing now ignore global `course.isPurchased` for guests; only a real registered viewer purchase/package can turn the main button into learning access.
 
 ## Verification
-- `node scripts/smoke-course-file-access-contract.mjs` - PASS (13/13)
+- `node scripts/smoke-course-file-access-contract.mjs` - PASS (14/14)
 - `npm run typecheck` - PASS
 - `npm run build` - PASS
 - `npm --prefix server run check` - PASS
@@ -53,6 +53,12 @@
     - `live-guest-two-preview-lessons-player.png`
     - `live-guest-two-preview-lessons-proof.json`
   - Result: guest sees 2 items as `مفتوح الآن`, 3 items as `يحتاج اشتراك`, and `?learn=1` opens only the first free preview lesson.
+
+- Guest preview boundary verification:
+  - Evidence:
+    - `live-guest-preview-boundary-locked-third-90799d7f.png`
+    - `live-guest-preview-boundary-locked-third-90799d7f.json`
+  - Result: a guest on the second free preview lesson cannot continue into the third purchase-only lesson via the Next button or by clicking the locked sidebar item. The player stays on the second preview lesson.
 
 ## Delivery Decision
 - This is a real functional fix, not a cosmetic change.
