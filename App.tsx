@@ -431,6 +431,8 @@ const AbsoluteUrlPathRedirect: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
+    const normalizeAbsolutePathCandidate = (value: string) =>
+      /^https?:\/{1,2}/i.test(value) ? value.replace(/^(https?):\/(?!\/)/i, '$1://') : '';
     const rawPath = location.pathname || '/';
     const encodedCandidate = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath;
     const decodedCandidate = (() => {
@@ -440,10 +442,12 @@ const AbsoluteUrlPathRedirect: React.FC = () => {
         return encodedCandidate;
       }
     })();
-    const absoluteCandidate = /^https?:\/\//i.test(decodedCandidate)
-      ? `${decodedCandidate}${location.search || ''}${location.hash || ''}`
-      : /^https?:\/\//i.test(encodedCandidate)
-        ? `${encodedCandidate}${location.search || ''}${location.hash || ''}`
+    const normalizedDecodedCandidate = normalizeAbsolutePathCandidate(decodedCandidate);
+    const normalizedEncodedCandidate = normalizeAbsolutePathCandidate(encodedCandidate);
+    const absoluteCandidate = normalizedDecodedCandidate
+      ? `${normalizedDecodedCandidate}${location.search || ''}${location.hash || ''}`
+      : normalizedEncodedCandidate
+        ? `${normalizedEncodedCandidate}${location.search || ''}${location.hash || ''}`
         : '';
 
     if (!absoluteCandidate) {

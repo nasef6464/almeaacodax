@@ -19,7 +19,11 @@
 - Local built preview proof:
   - `http://127.0.0.1:4173/http://127.0.0.1:4173/course/course_1779224794108?tab=tests`
   - redirected to `http://127.0.0.1:4173/course/course_1779224794108?tab=tests`.
+  - `http://127.0.0.1:4173/http:/127.0.0.1:4173/course/course_1779224794108?tab=tests`
+  - redirected to `http://127.0.0.1:4173/course/course_1779224794108?tab=tests`.
   - `http://127.0.0.1:4173/https://external.example/path`
+  - redirected to `http://127.0.0.1:4173/`.
+  - `http://127.0.0.1:4173/https:/external.example/path`
   - redirected to `http://127.0.0.1:4173/`.
 
 ## Result

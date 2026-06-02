@@ -74,6 +74,8 @@ check("subject query is not removed before lazy taxonomy arrives", () => {
 
 check("absolute URLs pasted into the app path are canonicalized", () => {
   assertIncludes(appSource, "const AbsoluteUrlPathRedirect: React.FC = () => {");
+  assertIncludes(appSource, "const normalizeAbsolutePathCandidate = (value: string) =>");
+  assertIncludes(appSource, "value.replace(/^(https?):\\/(?!\\/)/i, '$1://')");
   assertIncludes(appSource, "decodeURIComponent(encodedCandidate)");
   assertIncludes(appSource, "target.origin === window.location.origin");
   assertIncludes(appSource, "navigate(nextPath || '/', { replace: true })");
