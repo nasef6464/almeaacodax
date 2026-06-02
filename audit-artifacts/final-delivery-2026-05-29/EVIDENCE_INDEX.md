@@ -471,3 +471,24 @@
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-builder-curriculum-controls.png`.
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-quiz-settings-modal.png`.
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/guest-course-card-post-admin-repair-2de284bb.png`.
+
+## Course Tests Curriculum Visibility (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-course-tests-curriculum-live-dd03ea3a/`
+- Verified:
+  - Course tests tab now reads both explicit course assessments and quiz lessons embedded inside the course curriculum.
+  - The student sees `اختبارات الدورة والمنهج` instead of the old misleading "no official tests linked" message when course quiz lessons exist.
+  - Missing linked quiz sources are not silently hidden; they appear with `رابط الاختبار يحتاج مراجعة` and a disabled `غير جاهز` action.
+  - Ready linked quiz opens from the course tests tab with course context and course lesson context.
+  - Files tab shows a clear empty state when the course has no directly uploaded files.
+- Checks:
+  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 18/18.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
+  - Production `npm run smoke:frontend:strict` -> PASS 29/29; production serves commit `dd03ea3a`.
+- Visual evidence:
+  - `../ui-audit-exhaustive/2026-06-02-course-tests-curriculum-live-dd03ea3a/course-tests-tab-viewport.png`.
+  - `../ui-audit-exhaustive/2026-06-02-course-tests-curriculum-live-dd03ea3a/course-ready-test-dom-click-viewport.png`.
+  - `../ui-audit-exhaustive/2026-06-02-course-tests-curriculum-live-dd03ea3a/course-files-tab-viewport.png`.
+- Remaining content action:
+  - In admin, replace or repair the missing source for `اختبار موجّه جديد`; the platform now surfaces this as a clear admin/content issue instead of hiding it.
