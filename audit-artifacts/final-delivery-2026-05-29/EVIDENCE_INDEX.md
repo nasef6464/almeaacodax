@@ -347,3 +347,27 @@
   - Payment methods step opens: PASS.
   - No real payment request was submitted.
 - Production frontend smoke after deploy: `npm run smoke:frontend:strict` -> PASS 29/29, production serving commit `2ab8e5e5`.
+
+## Student Support And Session Booking Closure (2026-06-02)
+
+- Arabic closure note: `STUDENT_SUPPORT_SESSION_BOOKING_CLOSURE_2026-06-02_AR.md`
+- Commit deployed: `0a94707a` (`Persist student session booking requests`).
+- Frontend deployment:
+  - Vercel production alias: `https://almeaacodax.vercel.app`
+  - `npm run smoke:frontend:strict` -> PASS 29/29.
+  - Production served expected commit/version `0a94707a`.
+- Backend deployment:
+  - Render service: `srv-d7qtcr9o3t8c73cs32sg`
+  - Render deploy: `dep-d8f5kjt53gjs739nh13g`
+  - Status: `live`.
+- Student support visual audit:
+  - Evidence folder: `../ui-audit-exhaustive/2026-06-02-student-support-routes-live-post-session-booking-0a94707a/`
+  - Result: PASS 7/7.
+  - Covered routes: `/dashboard?tab=sessions`, `/book-session`, `/live-sessions`, `/qa`, `/my-quizzes`, `/reports`, `/plan`.
+- Live persisted booking smoke:
+  - Evidence folder: `../ui-audit-exhaustive/2026-06-02-student-session-booking-live-postdeploy-0a94707a/`
+  - Result: PASS.
+  - Verified `/activities/me` POST creates a `session_booked` activity and `/activities/me` GET returns it from the backend.
+- Product note:
+  - Student booking is now real backend persistence, not local-only UI success.
+  - Remaining improvement: add a dedicated admin queue for reviewing and managing session booking requests; current proof stores and returns them as student activities.

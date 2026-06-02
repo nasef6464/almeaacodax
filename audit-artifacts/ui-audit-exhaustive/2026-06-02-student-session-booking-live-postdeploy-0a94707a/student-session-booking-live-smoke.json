@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "apiBaseUrl": "https://almeaacodax-k2ux.onrender.com/api",
+  "created": {
+    "id": "6a1e5b83dfe43ebcf1c53b1a",
+    "type": "session_booked",
+    "title": "Smoke session booking 1780374402631",
+    "targetLabel": "??? ?? ???? ?????",
+    "status": "",
+    "scheduledDate": "2026-06-03",
+    "scheduledTime": "17:00"
+  },
+  "returnedCount": 4
+}
