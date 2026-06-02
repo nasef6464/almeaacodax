@@ -434,4 +434,6 @@
   - `npm --prefix server run build` -> PASS.
   - `npm run smoke:arabic-mojibake` -> PASS.
 - Visual note:
-  - Local browser reached the route, but local API was not connected, so final visual proof must be done on production after deployment.
+  - Production screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-course-description-a55f578f.png`.
+  - Production API returned course `course_1779224794108` with `files: []`, so locked/free file rows were validated by contract and code path, not by mutating production data.
+  - Production health returned commit `a55f578fb337`; Render deploy `dep-d8f94hsm0tmc73ensebg` is live; frontend smoke confirmed Vercel serves commit `a55f578f`.

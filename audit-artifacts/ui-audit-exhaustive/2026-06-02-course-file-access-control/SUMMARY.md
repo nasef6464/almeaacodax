@@ -24,7 +24,13 @@
 ## Visual Note
 - Local browser opened `http://127.0.0.1:5173/course/course_1779224794108?tab=files&fresh=file-access-local`.
 - The local UI shell rendered, but the local frontend had no connected API backend, so course data could not load locally.
-- Post-deploy production visual verification is required on `https://almeaacodax.vercel.app/course/course_1779224794108?tab=files`.
+- Production API verification:
+  - `https://almeaacodax.vercel.app/api/courses/course_1779224794108` returns the course and `files: []`.
+  - `https://almeaacodax.vercel.app/api/health` returns commit `a55f578fb337`.
+- Production visual verification:
+  - Screenshot: `live-course-description-a55f578f.png`.
+  - The course page renders title, course tabs, price panel, and `ملفات الدورة`.
+  - This specific course currently has no files, so locked/free file rows cannot be visually demonstrated without changing production data.
 
 ## Delivery Decision
 - This is a real functional fix, not a cosmetic change.
