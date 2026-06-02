@@ -30,6 +30,7 @@ const courseFileSchema = new Schema(
     type: { type: String, default: "pdf", trim: true },
     url: { type: String, default: "", trim: true },
     size: { type: String, default: "", trim: true },
+    access: { type: String, enum: ["free_preview", "enrolled_paid"], default: "enrolled_paid" },
   },
   { _id: false },
 );

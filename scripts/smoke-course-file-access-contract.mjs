@@ -11,6 +11,7 @@ const matches = (source, pattern) => pattern.test(source);
 
 const types = read("types.ts");
 const serverRoutes = read("server/src/routes/course.routes.ts");
+const courseModel = read("server/src/models/Course.ts");
 const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 const overview = read("components/CourseOverview.tsx");
 const player = read("components/CoursePlayer.tsx");
@@ -22,6 +23,10 @@ check(
 check(
   "Backend accepts and defaults course file access",
   matches(serverRoutes, /courseFileSchema[\s\S]*access:\s*z\.enum\(\["free_preview",\s*"enrolled_paid"\]\)\.default\("enrolled_paid"\)/),
+);
+check(
+  "Database model persists course file access",
+  matches(courseModel, /courseFileSchema[\s\S]*access:\s*\{\s*type:\s*String,\s*enum:\s*\["free_preview",\s*"enrolled_paid"\],\s*default:\s*"enrolled_paid"\s*\}/),
 );
 check(
   "Admin course builder defaults new files to purchase-only",
