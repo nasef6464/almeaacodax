@@ -465,7 +465,9 @@
   - Course assessments and course files sections are present.
   - Quiz item settings open the course-scoped quiz modal, not the lesson builder.
   - Final proof recorded no blocking console errors or 5xx network failures.
+  - Post-repair guest check confirms the target course card remains visible with purchase and preview actions.
 - Visual evidence:
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-subject-courses-list.png`.
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-builder-curriculum-controls.png`.
   - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-quiz-settings-modal.png`.
+  - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/guest-course-card-post-admin-repair-2de284bb.png`.

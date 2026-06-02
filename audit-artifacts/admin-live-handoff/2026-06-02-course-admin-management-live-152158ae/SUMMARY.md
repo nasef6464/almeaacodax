@@ -14,6 +14,7 @@
 - PASS: Opening a quiz item shows "إعدادات الاختبار داخل هذه الدورة", not the lesson builder.
 - PASS: The quiz modal explains that the setting is scoped to this course and does not mutate the original quiz in the quiz center.
 - PASS: No blocking console errors or 5xx network failures were recorded in the final proof.
+- PASS: After restoring the course status, a fresh guest check confirmed the course card is visible with purchase and preview actions.
 
 ## Evidence
 - `admin-subject-courses-list.png`
@@ -21,6 +22,8 @@
 - `admin-course-builder-curriculum-controls.png`
 - `admin-course-quiz-settings-modal.png`
 - `admin-course-management-proof.json`
+- `guest-course-card-post-admin-repair-2de284bb.png`
+- `guest-course-card-post-admin-repair-2de284bb.json`
 
 ## Note
 - During the audit, an unsafe fallback click hit the row "رفض" action once before exact targeting was corrected. The course was immediately restored to `approved + published + visible`; the final proof and subsequent checks ran after restoration.
