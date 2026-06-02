@@ -426,6 +426,47 @@ const LegacyHashRouteCompat: React.FC = () => {
   return null;
 };
 
+const AbsoluteUrlPathRedirect: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const rawPath = location.pathname || '/';
+    const encodedCandidate = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath;
+    const decodedCandidate = (() => {
+      try {
+        return decodeURIComponent(encodedCandidate);
+      } catch {
+        return encodedCandidate;
+      }
+    })();
+    const absoluteCandidate = /^https?:\/\//i.test(decodedCandidate)
+      ? `${decodedCandidate}${location.search || ''}${location.hash || ''}`
+      : /^https?:\/\//i.test(encodedCandidate)
+        ? `${encodedCandidate}${location.search || ''}${location.hash || ''}`
+        : '';
+
+    if (!absoluteCandidate) {
+      return;
+    }
+
+    try {
+      const target = new URL(absoluteCandidate);
+      if (target.origin === window.location.origin) {
+        const nextPath = `${target.pathname || '/'}${target.search || ''}${target.hash || ''}`;
+        navigate(nextPath || '/', { replace: true });
+        return;
+      }
+    } catch {
+      // Unknown absolute-looking paths fall back to the public home page.
+    }
+
+    navigate('/', { replace: true });
+  }, [location.hash, location.pathname, location.search, navigate]);
+
+  return null;
+};
+
 const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }> = ({ bootstrapReady, children }) => {
   const location = useLocation();
 
@@ -819,6 +860,7 @@ const App: React.FC = () => {
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
         <LegacyHashRouteCompat />
+        <AbsoluteUrlPathRedirect />
         <SeoRouteMeta />
         <BootstrapRouteGate bootstrapReady={bootstrapReady}>
         <CategoryRouteShellGate>

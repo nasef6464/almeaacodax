@@ -505,3 +505,15 @@
 - Checks:
   - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 18/18.
   - Production API course/quiz check -> PASS.
+
+## Absolute URL Path Redirect (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-absolute-url-path-redirect-local-proof/`
+- Closed the malformed in-app browser URL case where the app opens at a duplicated absolute URL path.
+- Verified:
+  - Same-origin absolute URLs pasted into the app path redirect to the intended internal route.
+  - External absolute URLs pasted into the app path redirect to `/`.
+- Checks:
+  - `node scripts/smoke-route-loading-contract.mjs` -> PASS.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
