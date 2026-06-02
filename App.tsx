@@ -239,6 +239,7 @@ const getSeoBaseUrl = () => {
 };
 
 const SEO_BASE_URL = getSeoBaseUrl();
+const SEO_DEFAULT_IMAGE_PATH = '/images/homepage-hero-boy-platform.jpg';
 
 const SEO_PRIVATE_PREFIXES = [
   '/dashboard',
@@ -309,6 +310,7 @@ const SeoRouteMeta: React.FC = () => {
 
     const canonicalPath = isPrivate ? '/' : path;
     const canonicalUrl = `${SEO_BASE_URL}${canonicalPath === '/' ? '/' : canonicalPath}`;
+    const imageUrl = `${SEO_BASE_URL}${SEO_DEFAULT_IMAGE_PATH}`;
     const robots = isPrivate ? 'noindex, nofollow' : 'index, follow';
 
     document.title = title;
@@ -317,8 +319,11 @@ const SeoRouteMeta: React.FC = () => {
     upsertMeta('meta[property="og:title"]', 'property', 'og:title', title);
     upsertMeta('meta[property="og:description"]', 'property', 'og:description', description);
     upsertMeta('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
+    upsertMeta('meta[property="og:image"]', 'property', 'og:image', imageUrl);
+    upsertMeta('meta[property="og:image:alt"]', 'property', 'og:image:alt', 'منصة المئة للقدرات والتحصيلي');
     upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
     upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
+    upsertMeta('meta[name="twitter:image"]', 'name', 'twitter:image', imageUrl);
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
