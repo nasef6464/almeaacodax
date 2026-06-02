@@ -50,8 +50,9 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const [favorites, setFavorites] = useState<Record<number, boolean>>({});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isNightMode, setIsNightMode] = useState(false);
-    const openTestsCount = tests.filter((test) => !test.isLocked).length;
-    const lockedTestsCount = tests.length - openTestsCount;
+    const readyTests = tests.filter((test) => Number(test.questions || 0) > 0);
+    const openTestsCount = readyTests.filter((test) => !test.isLocked).length;
+    const lockedTestsCount = readyTests.length - openTestsCount;
     const listTitle = title || (mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة');
     const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار';
 
@@ -135,7 +136,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     };
 
     if (testState === 'list') {
-        if (tests.length === 0) {
+        if (readyTests.length === 0) {
             return (
                 <Card className="mx-auto max-w-3xl border border-dashed border-gray-200 bg-white p-8 text-center shadow-sm">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
@@ -167,7 +168,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                         <div className="mt-2 text-2xl font-black text-amber-800">{lockedTestsCount}</div>
                     </div>
                 </div>
-                {tests.map((test) => (
+                {readyTests.map((test) => (
                     <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group">
                         <div className="flex items-center gap-4 mb-4 md:mb-0 w-full md:w-auto">
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${test.isLocked ? 'bg-gray-100 text-gray-500' : 'bg-emerald-50 text-emerald-600'}`}>

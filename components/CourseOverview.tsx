@@ -56,6 +56,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
     const canShowQuizInCourse = (quiz: (typeof quizzes)[number]) =>
         isStaffViewer || (quiz.isPublished !== false && quiz.showOnPlatform !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
+    const hasReadyQuizQuestions = (quiz: (typeof quizzes)[number]) => (quiz.questionIds?.length || 0) > 0;
 
     const isEnrolled =
         enrolledCourses.includes(course.id) ||
@@ -117,7 +118,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
         return quizzes
             .filter((quiz) => {
-                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz)) {
+                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz) || !hasReadyQuizQuestions(quiz)) {
                     return false;
                 }
 
@@ -155,7 +156,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             .sort((a, b) => (a.order || 0) - (b.order || 0))
             .map((assessment) => {
                 const quiz = quizById.get(String(assessment.quizId));
-                if (!quiz || !canShowQuizInCourse(quiz)) return null;
+                if (!quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz)) return null;
 
                 const isLocked = assessment.access === 'enrolled_paid' && !isEnrolled;
                 return {
@@ -183,7 +184,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
 
         return quizzes
             .filter((quiz) => {
-                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz) || relatedIds.has(quiz.id)) {
+                if (!canShowQuizInCourse(quiz) || !isMockQuiz(quiz) || !hasReadyQuizQuestions(quiz) || relatedIds.has(quiz.id)) {
                     return false;
                 }
 

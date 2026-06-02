@@ -44,9 +44,9 @@ check('course detail can be browsed before purchase while non-public lessons sta
 check('locked lessons and paid enrollment open the purchase flow instead of granting access', () => {
   assertIncludes(courseOverviewSource, 'lesson.isLocked');
   assertIncludes(courseOverviewSource, 'setShowPaymentModal(true);');
-  assertIncludes(courseOverviewSource, "Number(course.price || 0) > 0");
-  assertIncludes(courseOverviewSource, 'يحتاج اشتراك');
-  assertIncludes(courseOverviewSource, 'مفتوح الآن');
+  assertIncludes(courseOverviewSource, 'coursePrice > 0');
+  assertIncludes(courseOverviewSource, "navigate('/?auth=login')");
+  assertIncludes(courseOverviewSource, 'handleLessonClick');
 });
 
 check('student path progress is scoped to enrolled paths and path-related exams', () => {
