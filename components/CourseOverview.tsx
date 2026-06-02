@@ -28,6 +28,17 @@ interface CourseOverviewProps {
 
 type TabType = 'description' | 'syllabus' | 'tests' | 'qa' | 'files';
 
+type CourseDisplayTest = {
+    id: string;
+    title: string;
+    duration: string;
+    questions: number;
+    type: string;
+    level: string;
+    isLocked: boolean;
+    courseLessonId?: string;
+};
+
 const resolveCourseIconColor = (value: string | undefined, fallback: string) => {
     const trimmed = String(value || '').trim();
     return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed) ? trimmed : fallback;
@@ -116,6 +127,15 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         acc + mod.lessons.filter(l => completedLessons.includes(l.id)).length, 0) || 0;
     const progress = Math.round((completedCount / totalLessons) * 100);
 
+    const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
+        const directId = String(lesson.quizId || '').trim();
+        if (directId) return directId;
+        const rawId = String(lesson.id || '').trim();
+        const prefixedMatch = rawId.match(/^course_quiz_(.+)_\d+$/);
+        if (prefixedMatch?.[1]) return prefixedMatch[1];
+        return '';
+    };
+
     const relatedTests = useMemo(() => {
         const courseSkillIds = new Set(course.skills || []);
 
@@ -172,16 +192,49 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                     isLocked,
                 };
             })
-            .filter(Boolean) as Array<{
-                id: string;
-                title: string;
-                duration: string;
-                questions: number;
-                type: string;
-                level: string;
-                isLocked: boolean;
-            }>;
+            .filter(Boolean) as CourseDisplayTest[];
     }, [canShowQuizInCourse, course.assessments, isEnrolled, quizzes]);
+    const courseCurriculumQuizTests = useMemo(() => {
+        const modules = Array.isArray(course.modules) ? course.modules : [];
+        if (modules.length === 0) return [];
+
+        const assessmentQuizIds = new Set(
+            (Array.isArray(course.assessments) ? course.assessments : [])
+                .map((assessment) => String(assessment.quizId || '').trim())
+                .filter(Boolean),
+        );
+        const quizById = new Map(quizzes.map((quiz) => [String(quiz.id), quiz]));
+        const seenQuizIds = new Set<string>();
+
+        return modules
+            .flatMap((module) => module.lessons || [])
+            .map((lesson) => {
+                if (lesson.type !== 'quiz') return null;
+                const linkedQuizId = resolveEmbeddedQuizId(lesson);
+                if (!linkedQuizId || assessmentQuizIds.has(linkedQuizId) || seenQuizIds.has(linkedQuizId)) return null;
+
+                const quiz = quizById.get(linkedQuizId);
+                if (!quiz || !canShowQuizInCourse(quiz) || !hasReadyQuizQuestions(quiz)) return null;
+
+                seenQuizIds.add(linkedQuizId);
+                const isPreview = lesson.accessControl === 'public';
+                return {
+                    id: String(quiz.id),
+                    title: lesson.title || quiz.title,
+                    duration: lesson.duration || `${quiz.settings.timeLimit || 30} دقيقة`,
+                    questions: quiz.questionIds.length,
+                    type: 'trial',
+                    level: isPreview ? 'معاينة مجانية' : 'ضمن منهج الدورة',
+                    isLocked: !isPreview && !isEnrolled,
+                    courseLessonId: String(lesson.id || ''),
+                };
+            })
+            .filter(Boolean) as CourseDisplayTest[];
+    }, [canShowQuizInCourse, course.assessments, course.modules, isEnrolled, quizzes]);
+    const courseTabTests = useMemo(
+        () => [...explicitCourseTests, ...courseCurriculumQuizTests],
+        [courseCurriculumQuizTests, explicitCourseTests],
+    );
     const fallbackTests = useMemo(() => {
         const relatedIds = new Set(relatedTests.map((test) => test.id));
 
@@ -312,15 +365,6 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         } finally {
             setIsSharing(false);
         }
-    };
-
-    const resolveEmbeddedQuizId = (lesson: { id?: string; quizId?: string; type?: string }) => {
-        const directId = String(lesson.quizId || '').trim();
-        if (directId) return directId;
-        const rawId = String(lesson.id || '').trim();
-        const prefixedMatch = rawId.match(/^course_quiz_(.+)_\d+$/);
-        if (prefixedMatch?.[1]) return prefixedMatch[1];
-        return '';
     };
 
     const handleLessonClick = (lesson: { id?: string; type: string; quizId?: string; isLocked?: boolean }) => {
@@ -526,13 +570,13 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6"
                     >
-                        {explicitCourseTests.length > 0 ? (
+                        {courseTabTests.length > 0 ? (
                             <SimulatedTestExperience
-                                tests={explicitCourseTests}
-                                title="اختبارات الدورة الرسمية"
+                                tests={courseTabTests}
+                                title="اختبارات الدورة والمنهج"
                                 lockedCountLabel="ضمن شراء الدورة"
                                 onLockedClick={handleLockedCourseTestClick}
-                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course', courseId: course.id }))}
+                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course', courseId: course.id, courseLessonId: test.courseLessonId }))}
                             />
                         ) : relatedTests.length > 0 ? (
                             <div className="space-y-4">

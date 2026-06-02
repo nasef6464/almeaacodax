@@ -15,6 +15,7 @@ interface Test {
     isLocked: boolean;
     pathId?: string;
     subjectId?: string;
+    courseLessonId?: string;
 }
 
 interface SimulatedTestExperienceProps {

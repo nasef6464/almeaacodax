@@ -52,6 +52,19 @@ check(
   includes(overview, "handleLockedCourseFileClick") && includes(overview, "lockedCourseFiles.map"),
 );
 check(
+  "Course overview shows curriculum quiz lessons in the course tests tab",
+  includes(overview, "courseCurriculumQuizTests") &&
+    includes(overview, "resolveEmbeddedQuizId(lesson)") &&
+    includes(overview, "courseTabTests") &&
+    includes(overview, "courseLessonId: test.courseLessonId"),
+);
+check(
+  "Course overview keeps per-course quiz preview access separate from the reusable quiz",
+  includes(overview, "lesson.accessControl === 'public'") &&
+    includes(overview, "isLocked: !isPreview && !isEnrolled") &&
+    includes(overview, "assessmentQuizIds.has(linkedQuizId)"),
+);
+check(
   "Course player never treats guests as staff viewers",
   matches(player, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
 );
