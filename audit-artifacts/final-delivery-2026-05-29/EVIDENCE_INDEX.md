@@ -428,6 +428,8 @@
   - Student course overview separates visible files from locked paid files.
   - Course player hides paid course files during preview unless the student owns the course/package or the viewer is staff.
   - Guest course cards no longer trust global `course.isPurchased`; a paid course shows preview + purchase, not learning access.
+  - Guest direct `?learn=1` no longer opens an empty player when the course has no free preview lessons.
+  - Admin course builder lets the manager choose which course lessons are free preview and which require purchase.
 - Checks:
   - `node scripts/smoke-course-file-access-contract.mjs` -> PASS 13/13.
   - `npm run typecheck` -> PASS.
@@ -441,4 +443,6 @@
   - Guest course card screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-course-cards-1a904b9a.png`.
   - Guest preview screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-preview-1a904b9a.png`.
   - Guest purchase screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-buy-1a904b9a.png`.
+  - Guest direct learning URL screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-direct-learn-paid-course-ff2a72dd.png`.
   - Purchase proof JSON confirms clicking purchase as guest redirects to `/?auth=login` and does not enter `learn=1`.
+  - Direct learning proof JSON confirms paid course without preview lessons renders locked lesson list and purchase CTA rather than an empty player.

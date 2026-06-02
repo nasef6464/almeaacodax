@@ -39,6 +39,13 @@
   - `live-guest-paid-course-buy-1a904b9a.png`
   - `live-guest-course-buy-1a904b9a.json`
   - Result: clicking purchase as guest redirects to `/?auth=login` and does not open learning mode.
+- Guest direct learning URL verification after `ff2a72dd`:
+  - `live-guest-direct-learn-paid-course-ff2a72dd.png`
+  - `live-guest-direct-learn-paid-course-ff2a72dd.json`
+  - Result: opening `?learn=1` on a paid course with no free preview lesson returns a normal course preview page with locked lessons and purchase CTA, not an empty player.
+- Admin preview-control note:
+  - Course builder already exposes lesson access per course item: `معاينة مجانية` for public preview lessons and `مدفوع بعد شراء الدورة` for locked lessons.
+  - Course builder also exposes the same per-course preview/purchase split for linked assessments and course files.
 
 ## Delivery Decision
 - This is a real functional fix, not a cosmetic change.
