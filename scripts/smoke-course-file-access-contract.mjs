@@ -64,6 +64,11 @@ check(
   matches(courseView, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
 );
 check(
+  "Course view does not open an empty player for guests without preview lessons",
+  includes(courseView, "hasPlayablePreviewLesson") &&
+    matches(courseView, /if \(isPlaying && \(isEnrolled \|\| isStaffViewer \|\| isFreeCourse \|\| hasPlayablePreviewLesson\)\)/),
+);
+check(
   "Course cards ignore global purchase flags for guests",
   matches(learningSection, /const isRegisteredViewer = !\(!user\?\.email \|\| user\.id === 'guest'\);[\s\S]*const isPurchasedByViewer =[\s\S]*\(isRegisteredViewer && Boolean\(baseCourse\.isPurchased\)\);[\s\S]*isPurchased: isPurchasedByViewer/),
 );

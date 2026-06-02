@@ -158,8 +158,11 @@ const CourseView: React.FC = () => {
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
     const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer || isFreeCourse);
+    const hasPlayablePreviewLesson = courseForCurrentAccess.modules?.some((module) =>
+        module.lessons.some((lesson) => !lesson.isLocked),
+    ) === true;
 
-    if (isPlaying) {
+    if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
         return (
             <CoursePlayer
                 course={courseForCurrentAccess}
