@@ -453,3 +453,19 @@
   - Direct learning proof JSON confirms paid course without preview lessons renders locked lesson list and purchase CTA rather than an empty player.
   - Two-preview proof JSON confirms course `course_1779224794108` now has 2 free preview lessons and 3 purchase-only items for guests.
   - Boundary proof JSON confirms the guest remains on the second preview lesson after Next/sidebar attempts against the third locked lesson.
+
+## Course Admin Management Live Audit (2026-06-02)
+
+- Evidence folder: `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/`
+- Verified:
+  - Admin reaches `القدرات -> الكمي -> إدارة الدورات` on production.
+  - The target course edit action opens the course builder.
+  - The course builder exposes importing existing lessons and existing quizzes.
+  - Course lessons/quizzes expose per-course preview vs paid access.
+  - Course assessments and course files sections are present.
+  - Quiz item settings open the course-scoped quiz modal, not the lesson builder.
+  - Final proof recorded no blocking console errors or 5xx network failures.
+- Visual evidence:
+  - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-subject-courses-list.png`.
+  - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-builder-curriculum-controls.png`.
+  - `../admin-live-handoff/2026-06-02-course-admin-management-live-152158ae/admin-course-quiz-settings-modal.png`.
