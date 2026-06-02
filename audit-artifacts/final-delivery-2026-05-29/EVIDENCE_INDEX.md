@@ -401,3 +401,5 @@
   - `npm --prefix server run check` -> PASS.
   - `npm --prefix server run build` -> PASS.
   - `npm run build` -> PASS.
+  - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `7c4a4d0e`.
+  - Live persistence probe -> PASS; temporary completed-lesson marker was verified and removed.

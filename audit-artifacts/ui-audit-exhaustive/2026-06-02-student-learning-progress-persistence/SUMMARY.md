@@ -25,6 +25,8 @@
 - PASS `npm --prefix server run check`
 - PASS `npm --prefix server run build`
 - PASS `npm run build`
+- PASS production deploy: `npm run smoke:frontend:strict` confirmed production is serving commit `7c4a4d0e`.
+- PASS live persistence probe: a temporary completed-lesson marker was added through `/auth/me/preferences`, verified through `/auth/me`, then restored to the original student state.
 
 ## Delivery Note
 
