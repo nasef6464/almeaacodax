@@ -532,3 +532,19 @@
   - `npm run build` -> PASS.
   - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `a9bef9a1`.
   - Production metadata probe -> PASS for all five target public routes.
+
+## Public Open Items Closure (2026-06-03)
+
+- Closed the public footer and blog visibility items that were previously listed as blocked.
+- Added stable public routes and footer links for `/about`, `/contact`, `/faq`, `/privacy`, and `/terms`.
+- Added accessible article/course open labels on the blog listing.
+- Added a guarded bootstrap timeout for direct quiz/result routes so invalid or unavailable quiz URLs show the controlled access message instead of remaining on the loading brand mark.
+- Verified:
+  - Production serves commit `b7a3b35b`.
+  - `npm run smoke:public-open-items` -> PASS.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
+  - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29.
+  - Production Playwright probe -> PASS for home nonblank, footer links, privacy page, blog content/open links, cart empty action, checkout disabled action, and invalid quiz route controlled message.
+  - Production login modal probe -> PASS for email/password controls and configured auth surface.
+  - Production `/category/p_tahsili` probe -> PASS for nonblank route and visible subject/category navigation controls.
