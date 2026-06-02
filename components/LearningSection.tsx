@@ -74,7 +74,7 @@ const resolveThemePalette = (value?: string) => {
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
+    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
     const theme = resolveThemePalette(colorTheme);
@@ -479,40 +479,50 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         : previewTopic;
 
     const canStudentSeeTopic = (topic: (typeof topicList)[number]) => isStaffViewer || topic.showOnPlatform !== false;
+    const getTopicProgressStats = (
+        topic: (typeof topicList)[number],
+        scopedSubTopics = topicList.filter(t => t.parentId === topic.id && canStudentSeeTopic(t) && matchesScopedContent(t.pathId, t.subjectId)),
+    ) => {
+        const topicGroup = [topic, ...scopedSubTopics];
+        const lessonIds = Array.from(new Set(topicGroup.flatMap(item => item.lessonIds || [])))
+            .filter(lessonId => {
+                const lesson = findByEntityId(lessons, lessonId);
+                return lesson ? canStudentSeeLesson(lesson) : false;
+            });
+        const quizIds = Array.from(new Set(topicGroup.flatMap(item => item.quizIds || [])))
+            .filter(quizId => {
+                const quiz = findByEntityId(quizList, quizId);
+                return quiz ? canStudentSeeQuiz(quiz) : false;
+            });
+        const completedLessonCount = lessonIds.filter(lessonId => completedLessons.includes(String(lessonId))).length;
+        const completedQuizCount = quizIds.filter(quizId =>
+            examResults.some(result => String(result.quizId || '') === String(quizId)),
+        ).length;
+        const totalUnits = lessonIds.length + quizIds.length;
+
+        return {
+            totalLessons: lessonIds.length,
+            totalQuizzes: quizIds.length,
+            completedLessons: completedLessonCount,
+            progress: totalUnits > 0 ? Math.round(((completedLessonCount + completedQuizCount) / totalUnits) * 100) : 0,
+        };
+    };
 
     let mappedSkills = topicList
         .filter(t => !t.parentId && (isStaffViewer || t.showOnPlatform !== false) && matchesScopedContent(t.pathId, t.subjectId))
         .sort((a, b) => a.order - b.order)
         .map(topic => {
             const subTopics = topicList.filter(t => t.parentId === topic.id && canStudentSeeTopic(t) && matchesScopedContent(t.pathId, t.subjectId));
-            const visibleLessonCount = (lessonIds?: string[]) =>
-                (lessonIds || []).filter(lessonId => {
-                    const lesson = findByEntityId(lessons, lessonId);
-                    return lesson ? canStudentSeeLesson(lesson) : false;
-                }).length;
-            const visibleQuizCount = (quizIds?: string[]) =>
-                (quizIds || []).filter(quizId => {
-                    const quiz = findByEntityId(quizList, quizId);
-                    return quiz ? canStudentSeeQuiz(quiz) : false;
-                }).length;
-            let totalLessons = visibleLessonCount(topic.lessonIds);
-            let totalQuizzes = visibleQuizCount(topic.quizIds);
-            subTopics.forEach(sub => {
-                totalLessons += visibleLessonCount(sub.lessonIds);
-                totalQuizzes += visibleQuizCount(sub.quizIds);
-            });
-            
-            // Dummy progress for demo purposes until user progress is tracked properly
-            const progress = 0; 
+            const progressStats = getTopicProgressStats(topic, subTopics);
             
             return {
                 id: topic.id,
                 title: topic.title,
-                totalLessons: totalLessons || 1,
-                completed: Math.floor((progress / 100) * (totalLessons || 1)),
-                totalQuizzes: totalQuizzes,
+                totalLessons: progressStats.totalLessons || 1,
+                completed: progressStats.completedLessons,
+                totalQuizzes: progressStats.totalQuizzes,
                 isLocked: !isStaffViewer && topic.isLocked === true && !hasFoundationAccess,
-                progress: progress,
+                progress: progressStats.progress,
                 originalTopic: topic // Keep a reference to the real topic
             };
         });
@@ -559,19 +569,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         }
 
         const subTopics = topicList.filter((topic) => topic.parentId === parentTopic.id && (isStaffViewer || topic.showOnPlatform !== false));
-        const countVisibleLessons = (lessonIds?: string[]) =>
-            (lessonIds || []).filter((lessonId) => {
-                const lesson = findByEntityId(lessons, lessonId);
-                return lesson ? canStudentSeeLesson(lesson) : false;
-            }).length;
-        const countVisibleQuizzes = (quizIds?: string[]) =>
-            (quizIds || []).filter((quizId) => {
-                const quiz = findByEntityId(quizList, quizId);
-                return quiz ? canStudentSeeQuiz(quiz) : false;
-            }).length;
-
-        const totalLessons = countVisibleLessons(parentTopic.lessonIds) + subTopics.reduce((sum, topic) => sum + countVisibleLessons(topic.lessonIds), 0);
-        const totalQuizzes = countVisibleQuizzes(parentTopic.quizIds) + subTopics.reduce((sum, topic) => sum + countVisibleQuizzes(topic.quizIds), 0);
+        const progressStats = getTopicProgressStats(parentTopic, subTopics);
 
         setActiveTab('skills');
         const requestedContentTab = searchParams.get('content') === 'quizzes' ? 'quizzes' : 'lessons';
@@ -580,18 +578,18 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         setSelectedSkill({
             id: parentTopic.id,
             title: parentTopic.title,
-            totalLessons: totalLessons || 1,
-            completed: 0,
-            totalQuizzes,
+            totalLessons: progressStats.totalLessons || 1,
+            completed: progressStats.completedLessons,
+            totalQuizzes: progressStats.totalQuizzes,
             isLocked: false,
-            progress: 0,
+            progress: progressStats.progress,
             originalTopic: parentTopic,
             initialSubTopicId: requestedTopic.parentId ? requestedTopic.id : null,
             initialContentTab: requestedContentTab,
             initialLessonId: requestedLessonId || null,
             trainingDone: hasReturnedFromFoundationTraining,
         });
-    }, [category, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
+    }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
 
     let banks = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),

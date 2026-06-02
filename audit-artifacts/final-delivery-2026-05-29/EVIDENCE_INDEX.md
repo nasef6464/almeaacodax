@@ -388,3 +388,16 @@
   - Admin API status update -> PASS.
   - Admin live-sessions tab visual queue -> PASS by screenshot.
   - Student dashboard sessions tab now reloads persisted bookings from backend.
+
+## Student Learning Progress Persistence (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-student-learning-progress-persistence/`
+- Verified:
+  - Foundation/topic progress is calculated from visible completed lessons and completed quizzes, not a fixed demo zero.
+  - Marking a lesson complete persists `completedLessons` through `/auth/me/preferences`.
+  - Backend preferences endpoint now accepts and stores `completedLessons`.
+- Checks:
+  - `node scripts/smoke-student-learning-progress-contract.mjs` -> PASS.
+  - `npm --prefix server run check` -> PASS.
+  - `npm --prefix server run build` -> PASS.
+  - `npm run build` -> PASS.

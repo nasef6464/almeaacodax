@@ -453,7 +453,7 @@ export const api = {
       body: payload,
       token,
     }),
-  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[] }, token?: string | null) =>
+  updateMyPreferences: (payload: { favorites?: string[]; reviewLater?: string[]; enrolledPaths?: string[]; completedLessons?: string[] }, token?: string | null) =>
     request<{ user: unknown }>("/auth/me/preferences", {
       method: "PATCH",
       body: payload,

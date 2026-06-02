@@ -99,6 +99,7 @@ const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(),
   reviewLater: z.array(z.string()).optional(),
   enrolledPaths: z.array(z.string()).optional(),
+  completedLessons: z.array(z.string()).optional(),
 });
 const updateMyProfileSchema = z.object({
   name: z.string().min(2).max(120).optional(),
@@ -991,6 +992,10 @@ authRouter.patch(
 
     if (payload.enrolledPaths) {
       update.enrolledPaths = Array.from(new Set(payload.enrolledPaths));
+    }
+
+    if (payload.completedLessons) {
+      update.completedLessons = Array.from(new Set(payload.completedLessons));
     }
 
     const user = await UserModel.findByIdAndUpdate(

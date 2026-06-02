@@ -658,6 +658,7 @@ export const useStore = create<AppState>()(
             markLessonComplete: (lessonId, courseId, lessonTitle) => {
                 const state = get();
                 if (state.completedLessons.includes(lessonId)) return;
+                const nextCompletedLessons = [...state.completedLessons, lessonId];
                 
                 const newActivity: Activity = {
                     id: Date.now().toString(),
@@ -667,8 +668,17 @@ export const useStore = create<AppState>()(
                     link: `/course/${courseId}`
                 };
 
+                if (shouldSyncUserToApi(state.user)) {
+                    api.updateMyPreferences({
+                        favorites: state.favorites,
+                        reviewLater: state.reviewLater,
+                        enrolledPaths: state.enrolledPaths,
+                        completedLessons: nextCompletedLessons,
+                    }).catch(console.error);
+                }
+
                 set((state) => ({
-                    completedLessons: [...state.completedLessons, lessonId],
+                    completedLessons: nextCompletedLessons,
                     recentActivity: [newActivity, ...state.recentActivity].slice(0, 10) // Keep last 10
                 }));
             },
