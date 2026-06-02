@@ -51,7 +51,7 @@ interface CoursePlayerProps {
 
 export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, initialLessonId, onLessonChange }) => {
   const navigate = useNavigate();
-  const { completedLessons, markLessonComplete, questions, user } = useStore();
+  const { completedLessons, markLessonComplete, questions, user, enrolledCourses, hasScopedPackageAccess } = useStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() =>
     typeof window === 'undefined' ? true : window.innerWidth >= 1024,
@@ -73,6 +73,13 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   const totalLessons = flattenedLessons.length || 1;
   const completedCount = flattenedLessons.filter((lesson) => completedLessons.includes(lesson.id)).length;
   const progress = Math.round((completedCount / totalLessons) * 100);
+  const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const canUsePaidCourseFiles =
+    isStaffViewer ||
+    enrolledCourses.includes(course.id) ||
+    (user.subscription?.purchasedCourses || []).includes(course.id) ||
+    hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject) ||
+    Number(course.price || 0) <= 0;
   const activeLessonIndex = useMemo(
     () => flattenedLessons.findIndex((lesson) => lesson.id === activeLesson?.id),
     [activeLesson?.id, flattenedLessons],
@@ -92,6 +99,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     }
     (course.files || []).forEach((file, index) => {
       if (!file?.url) return;
+      if (file.access === 'enrolled_paid' && !canUsePaidCourseFiles) return;
       resources.push({
         id: String(file.id || `${course.id}-file-${index}`),
         title: String(file.title || `ملف ${index + 1}`),
@@ -105,7 +113,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
       seen.add(item.url);
       return true;
     });
-  }, [activeLesson?.fileUrl, activeLesson?.id, activeLesson?.title, course.files, course.id]);
+  }, [activeLesson?.fileUrl, activeLesson?.id, activeLesson?.title, canUsePaidCourseFiles, course.files, course.id]);
   const renderLessonEdgeIcon = (position: 'start' | 'end') => {
     const icon = String(position === 'start' ? course.lessonStartIcon || '' : course.lessonEndIcon || '').trim();
     if (!icon) return null;

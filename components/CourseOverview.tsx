@@ -67,6 +67,9 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const courseOriginalPrice = Number(course.originalPrice || 0);
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
     const courseAudienceCount = getCourseAudienceCount(course);
+    const canUsePaidCourseFiles = isStaffViewer || isEnrolled || coursePrice <= 0;
+    const visibleCourseFiles = (course.files || []).filter((file) => file.access !== 'enrolled_paid' || canUsePaidCourseFiles);
+    const lockedCourseFiles = (course.files || []).filter((file) => file.access === 'enrolled_paid' && !canUsePaidCourseFiles);
 
     useEffect(() => {
         setActiveTab(initialTab);
@@ -232,6 +235,14 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     };
 
     const handleLockedCourseTestClick = () => {
+        if (isGuestUser) {
+            navigate('/?auth=login');
+            return;
+        }
+        setShowPaymentModal(true);
+    };
+
+    const handleLockedCourseFileClick = () => {
         if (isGuestUser) {
             navigate('/?auth=login');
             return;
@@ -691,7 +702,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
-                        {course.files?.map((file) => (
+                        {visibleCourseFiles.map((file) => (
                             <div key={file.id} className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center justify-between group hover:bg-indigo-50 transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-rose-500 shadow-sm">
@@ -720,7 +731,26 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 </div>
                             </div>
                         ))}
-                        {(!course.files || course.files.length === 0) && (
+                        {lockedCourseFiles.map((file) => (
+                            <button
+                                key={file.id}
+                                type="button"
+                                onClick={handleLockedCourseFileClick}
+                                className="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex items-center justify-between gap-3 text-right hover:bg-amber-100 transition-colors"
+                            >
+                                <div className="flex items-center gap-4 min-w-0">
+                                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-amber-600 shadow-sm">
+                                        <Lock size={22} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-bold text-gray-800 truncate">{file.title}</p>
+                                        <p className="text-[10px] text-amber-700">{file.size} - ضمن شراء الدورة</p>
+                                    </div>
+                                </div>
+                                <ChevronRight size={18} className="text-amber-600 shrink-0" />
+                            </button>
+                        ))}
+                        {visibleCourseFiles.length === 0 && lockedCourseFiles.length === 0 && (
                             <div className="col-span-2 bg-gray-50 rounded-3xl border border-dashed border-gray-200 overflow-hidden">
                                 <div className="text-center py-10 px-4 bg-white">
                                     <FileText size={48} className="mx-auto text-gray-200 mb-4" />

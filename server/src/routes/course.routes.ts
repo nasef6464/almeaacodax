@@ -47,6 +47,7 @@ const courseFileSchema = z.object({
   type: z.string().default("pdf"),
   url: z.string().default(""),
   size: z.string().default(""),
+  access: z.enum(["free_preview", "enrolled_paid"]).default("enrolled_paid"),
 });
 
 const courseSchema = z.object({

@@ -417,3 +417,21 @@
   - `npm run build` -> PASS.
   - `npm --prefix server run check` -> PASS.
   - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `fa4ab8d6`.
+
+## Course File Access Control (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/`
+- Verified:
+  - Course files now have per-course access: free preview or included with course purchase.
+  - Admin course builder exposes the access choice for each course file.
+  - Student course overview separates visible files from locked paid files.
+  - Course player hides paid course files during preview unless the student owns the course/package or the viewer is staff.
+- Checks:
+  - `node scripts/smoke-course-file-access-contract.mjs` -> PASS.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
+  - `npm --prefix server run check` -> PASS.
+  - `npm --prefix server run build` -> PASS.
+  - `npm run smoke:arabic-mojibake` -> PASS.
+- Visual note:
+  - Local browser reached the route, but local API was not connected, so final visual proof must be done on production after deployment.

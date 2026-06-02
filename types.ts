@@ -81,6 +81,7 @@ export interface CourseFile {
     type: 'pdf' | 'doc' | 'image';
     url: string;
     size: string;
+    access?: CourseAssessmentAccess;
 }
 
 export interface CourseQA {

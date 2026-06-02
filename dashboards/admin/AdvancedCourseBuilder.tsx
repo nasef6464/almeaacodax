@@ -433,6 +433,9 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
   const getAssessmentAccessLabel = (access: CourseAssessment['access']) =>
     access === 'free_preview' ? 'معاينة مجانية' : 'ضمن شراء الدورة';
 
+  const getCourseFileAccessLabel = (access: CourseFile['access']) =>
+    access === 'free_preview' ? 'معاينة مجانية' : 'ضمن شراء الدورة';
+
   const addCourseFile = () => {
     const currentFiles = Array.isArray(courseData.files) ? courseData.files : [];
     const newFile: CourseFile = {
@@ -441,6 +444,7 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
       type: 'pdf',
       url: '',
       size: '0 MB',
+      access: 'enrolled_paid',
     };
     setCourseData((prev) => ({ ...prev, files: [...currentFiles, newFile] }));
   };
@@ -886,7 +890,12 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <p className="truncate text-sm font-black text-gray-900">{file.title || 'ملف بدون عنوان'}</p>
-                            <p className="mt-1 text-[11px] text-gray-500">{file.type?.toUpperCase()} - {file.size || 'حجم غير محدد'}</p>
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]">
+                              <span className="text-gray-500">{file.type?.toUpperCase()} - {file.size || 'حجم غير محدد'}</span>
+                              <span className={`rounded-full px-2 py-1 font-black ${file.access === 'free_preview' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                {getCourseFileAccessLabel(file.access)}
+                              </span>
+                            </div>
                           </div>
                           <button className="rounded-lg px-3 py-2 text-xs font-black text-red-600 hover:bg-red-50" onClick={() => removeCourseFile(file.id)}>
                             حذف الملف
@@ -908,6 +917,14 @@ export const AdvancedCourseBuilder: React.FC<AdvancedCourseBuilderProps> = ({ in
                             <option value="pdf">PDF</option>
                             <option value="doc">DOC</option>
                             <option value="image">صورة</option>
+                          </select>
+                          <select
+                            value={file.access || 'enrolled_paid'}
+                            onChange={(e) => updateCourseFile(file.id, { access: e.target.value as CourseFile['access'] })}
+                            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400"
+                          >
+                            <option value="enrolled_paid">ضمن شراء الدورة</option>
+                            <option value="free_preview">معاينة مجانية</option>
                           </select>
                           <input
                             value={file.size}
