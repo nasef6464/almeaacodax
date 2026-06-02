@@ -444,5 +444,9 @@
   - Guest preview screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-preview-1a904b9a.png`.
   - Guest purchase screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-paid-course-buy-1a904b9a.png`.
   - Guest direct learning URL screenshot: `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-direct-learn-paid-course-ff2a72dd.png`.
+  - Live two-preview-lessons screenshots:
+    - `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-two-preview-lessons-course-page.png`.
+    - `../ui-audit-exhaustive/2026-06-02-course-file-access-control/live-guest-two-preview-lessons-player.png`.
   - Purchase proof JSON confirms clicking purchase as guest redirects to `/?auth=login` and does not enter `learn=1`.
   - Direct learning proof JSON confirms paid course without preview lessons renders locked lesson list and purchase CTA rather than an empty player.
+  - Two-preview proof JSON confirms course `course_1779224794108` now has 2 free preview lessons and 3 purchase-only items for guests.

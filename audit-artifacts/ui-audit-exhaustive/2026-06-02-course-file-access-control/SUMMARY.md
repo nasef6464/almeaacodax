@@ -46,6 +46,13 @@
 - Admin preview-control note:
   - Course builder already exposes lesson access per course item: `معاينة مجانية` for public preview lessons and `مدفوع بعد شراء الدورة` for locked lessons.
   - Course builder also exposes the same per-course preview/purchase split for linked assessments and course files.
+- Live data configuration after user reference:
+  - Course `course_1779224794108` was configured so the first two course lessons are free preview and the remaining three course items stay purchase-only.
+  - Evidence:
+    - `live-guest-two-preview-lessons-course-page.png`
+    - `live-guest-two-preview-lessons-player.png`
+    - `live-guest-two-preview-lessons-proof.json`
+  - Result: guest sees 2 items as `مفتوح الآن`, 3 items as `يحتاج اشتراك`, and `?learn=1` opens only the first free preview lesson.
 
 ## Delivery Decision
 - This is a real functional fix, not a cosmetic change.
