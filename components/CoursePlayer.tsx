@@ -73,7 +73,8 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
   const totalLessons = flattenedLessons.length || 1;
   const completedCount = flattenedLessons.filter((lesson) => completedLessons.includes(lesson.id)).length;
   const progress = Math.round((completedCount / totalLessons) * 100);
-  const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+  const isGuestUser = !user?.email || user.id === 'guest';
+  const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
   const canUsePaidCourseFiles =
     isStaffViewer ||
     enrolledCourses.includes(course.id) ||

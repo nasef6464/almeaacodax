@@ -15,6 +15,7 @@ const courseModel = read("server/src/models/Course.ts");
 const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 const overview = read("components/CourseOverview.tsx");
 const player = read("components/CoursePlayer.tsx");
+const courseView = read("pages/CourseView.tsx");
 
 check(
   "CourseFile has per-course access control",
@@ -41,12 +42,24 @@ check(
   includes(overview, "visibleCourseFiles") && includes(overview, "lockedCourseFiles"),
 );
 check(
+  "Course overview never treats guests as staff viewers",
+  matches(overview, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
+);
+check(
   "Course overview does not open locked paid files from preview",
   includes(overview, "handleLockedCourseFileClick") && includes(overview, "lockedCourseFiles.map"),
 );
 check(
+  "Course player never treats guests as staff viewers",
+  matches(player, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
+);
+check(
   "Course player filters paid course files during preview lessons",
   includes(player, "canUsePaidCourseFiles") && includes(player, "file.access === 'enrolled_paid' && !canUsePaidCourseFiles"),
+);
+check(
+  "Course view never unlocks course playback for guests as staff",
+  matches(courseView, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
 );
 
 const failed = checks.filter((item) => !item.pass);

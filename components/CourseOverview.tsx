@@ -53,7 +53,8 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [searchParams, setSearchParams] = useSearchParams();
     const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
     const matchedCoursePackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
-    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const isGuestUser = !user?.email || user.id === 'guest';
+    const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
     const canShowQuizInCourse = (quiz: (typeof quizzes)[number]) =>
         isStaffViewer || (quiz.isPublished !== false && quiz.showOnPlatform !== false && (!quiz.approvalStatus || quiz.approvalStatus === 'approved'));
     const hasReadyQuizQuestions = (quiz: (typeof quizzes)[number]) => (quiz.questionIds?.length || 0) > 0;
@@ -62,7 +63,6 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
-    const isGuestUser = !user?.email || user.id === 'guest';
     const coursePrice = Number(course.price || 0);
     const courseOriginalPrice = Number(course.originalPrice || 0);
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;

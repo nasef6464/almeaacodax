@@ -32,7 +32,8 @@ const CourseView: React.FC = () => {
     const requestedTab = searchParams.get('tab');
     const [certificateCode, setCertificateCode] = useState('');
     const { user, enrolledCourses, hasScopedPackageAccess, courses } = useStore();
-    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const isGuestUser = !user?.email || user.id === 'guest';
+    const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
 
     useEffect(() => {
         setIsPlaying(searchParams.get('learn') === '1');
