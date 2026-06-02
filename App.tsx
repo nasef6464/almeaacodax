@@ -100,6 +100,8 @@ const DATA_BOOTSTRAP_START_PREFIXES = [
   '/achievements',
 ];
 
+const DATA_BOOTSTRAP_GATE_TIMEOUT_MS = 8000;
+
 const getInitialRouterPath = () => {
   const pathname = window.location.pathname || '/';
   const hashPath = window.location.hash.replace(/^#/, '');
@@ -479,8 +481,23 @@ const AbsoluteUrlPathRedirect: React.FC = () => {
 
 const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }> = ({ bootstrapReady, children }) => {
   const location = useLocation();
+  const [timedOutPath, setTimedOutPath] = useState<string | null>(null);
+  const currentPath = location.pathname || '/';
 
-  if (!bootstrapReady && isDataBootstrapBlockingPath(location.pathname || '/')) {
+  useEffect(() => {
+    if (bootstrapReady || !isDataBootstrapBlockingPath(currentPath)) {
+      setTimedOutPath(null);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setTimedOutPath(currentPath);
+    }, DATA_BOOTSTRAP_GATE_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [bootstrapReady, currentPath]);
+
+  if (!bootstrapReady && isDataBootstrapBlockingPath(currentPath) && timedOutPath !== currentPath) {
     return <LoadingFallback />;
   }
 

@@ -27,6 +27,8 @@ includes('App.tsx', 'path="/contact"');
 includes('App.tsx', 'path="/faq"');
 includes('App.tsx', 'path="/privacy"');
 includes('App.tsx', 'path="/terms"');
+includes('App.tsx', 'DATA_BOOTSTRAP_GATE_TIMEOUT_MS');
+includes('App.tsx', 'timedOutPath !== currentPath');
 
 includes('pages/StaticInfoPage.tsx', "title: 'من نحن'");
 includes('pages/StaticInfoPage.tsx', "title: 'تواصل معنا'");
