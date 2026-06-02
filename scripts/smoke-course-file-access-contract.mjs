@@ -16,6 +16,8 @@ const builder = read("dashboards/admin/AdvancedCourseBuilder.tsx");
 const overview = read("components/CourseOverview.tsx");
 const player = read("components/CoursePlayer.tsx");
 const courseView = read("pages/CourseView.tsx");
+const learningSection = read("components/LearningSection.tsx");
+const courseLanding = read("components/CourseLanding.tsx");
 
 check(
   "CourseFile has per-course access control",
@@ -60,6 +62,14 @@ check(
 check(
   "Course view never unlocks course playback for guests as staff",
   matches(courseView, /const isGuestUser = !user\?\.email \|\| user\.id === 'guest';[\s\S]*const isStaffViewer = !isGuestUser && \['admin', 'teacher', 'supervisor'\]\.includes\(user\.role\)/),
+);
+check(
+  "Course cards ignore global purchase flags for guests",
+  matches(learningSection, /const isRegisteredViewer = !\(!user\?\.email \|\| user\.id === 'guest'\);[\s\S]*const isPurchasedByViewer =[\s\S]*\(isRegisteredViewer && Boolean\(baseCourse\.isPurchased\)\);[\s\S]*isPurchased: isPurchasedByViewer/),
+);
+check(
+  "Course landing ignores global purchase flags for guests",
+  matches(courseLanding, /const isRegisteredViewer = !\(!user\?\.email \|\| user\.id === 'guest'\);[\s\S]*const isPurchasedByViewer =[\s\S]*\(isRegisteredViewer && Boolean\(course\.isPurchased\)\);[\s\S]*const hasAccess =/),
 );
 
 const failed = checks.filter((item) => !item.pass);

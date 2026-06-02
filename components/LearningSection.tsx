@@ -161,6 +161,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [paymentModalData, setPaymentModalData] = useState<{ isOpen: boolean, item: any, type: string }>({ isOpen: false, item: null, type: '' });
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
     const isAdminViewer = user.role === 'admin';
+    const isRegisteredViewer = !(!user?.email || user.id === 'guest');
     const accessibleCourseIds = new Set([
         ...enrolledCourses,
         ...(user.subscription?.purchasedCourses || []),
@@ -652,7 +653,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const learningInventory = {
         courses: {
             total: sectionCourses.length,
-            locked: sectionCourses.filter((course) => !(accessibleCourseIds.has(course.id) || hasCourseAccess || course.isPurchased)).length,
+            locked: sectionCourses.filter((course) => {
+                const isPurchasedByViewer =
+                    accessibleCourseIds.has(course.id) ||
+                    hasCourseAccess ||
+                    (isRegisteredViewer && Boolean(course.isPurchased));
+                return !isPurchasedByViewer;
+            }).length,
             label: 'الدورات',
         },
         skills: {
@@ -803,9 +810,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                     <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {sectionCourses.map((baseCourse) => {
+                            const isPurchasedByViewer =
+                                accessibleCourseIds.has(baseCourse.id) ||
+                                hasCourseAccess ||
+                                (isRegisteredViewer && Boolean(baseCourse.isPurchased));
                             const course = {
                                 ...baseCourse,
-                                isPurchased: accessibleCourseIds.has(baseCourse.id) || hasCourseAccess || baseCourse.isPurchased,
+                                isPurchased: isPurchasedByViewer,
                             };
                             const isPurchased = course.isPurchased;
                             const coursePrice = Number(course.price || 0);

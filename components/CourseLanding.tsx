@@ -28,18 +28,21 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
     const { user, enrolledCourses, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const audienceCount = getCourseAudienceCount(course);
     const displayRating = getCourseRating(course);
-    const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(String(user?.role));
+    const isRegisteredViewer = !(!user?.email || user.id === 'guest');
+    const isStaffViewer = isRegisteredViewer && ['admin', 'teacher', 'supervisor'].includes(String(user?.role));
     const isCoursePubliclyAvailable =
         course.showOnPlatform !== false &&
         course.isPublished !== false &&
         (!course.approvalStatus || course.approvalStatus === 'approved');
     const hasPackageAccess = hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
     const matchedPackage = getMatchingPackage('courses', course.pathId || course.category, course.subjectId || course.subject);
-    const hasAccess =
+    const isPurchasedByViewer =
         enrolledCourses.includes(course.id) ||
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
-        hasPackageAccess ||
-        course.isPurchased;
+        (isRegisteredViewer && Boolean(course.isPurchased));
+    const hasAccess =
+        isPurchasedByViewer ||
+        hasPackageAccess;
     const publicPackageItem = course.isPackage && isCoursePubliclyAvailable
         ? {
             ...course,
