@@ -519,3 +519,16 @@
   - `npm run build` -> PASS.
   - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `6d9ca9c5`.
   - Production browser redirect proof -> PASS for same-origin `https://...` and browser-normalized `https:/...` path forms.
+
+## Public Social Sharing Image Metadata (2026-06-02)
+
+- Closed the older public SEO blocked items for missing `og:image` / `twitter:image` metadata on the static app shell.
+- Verified:
+  - `/`, `/blog`, `/forgot-password`, `/mock-exams`, and `/pricing` return static `og:image`, `twitter:card=summary_large_image`, and `twitter:image` metadata on production.
+  - The shared image URL `/images/homepage-hero-boy-platform.jpg` returns `200` with `image/jpeg`.
+- Checks:
+  - `node scripts/smoke-seo-contract.mjs` -> PASS.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
+  - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `a9bef9a1`.
+  - Production metadata probe -> PASS for all five target public routes.
