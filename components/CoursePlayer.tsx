@@ -227,7 +227,12 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     if (!activeLesson) return;
     const resolvedQuizId = resolveEmbeddedQuizId(activeLesson);
     if (!resolvedQuizId) return;
-    navigate(buildQuizRouteWithContext(resolvedQuizId, { returnTo: `/course/${course.id}`, source: 'course' }));
+    navigate(buildQuizRouteWithContext(resolvedQuizId, {
+      returnTo: `/course/${course.id}`,
+      source: 'course',
+      courseId: course.id,
+      courseLessonId: activeLesson.id,
+    }));
   };
 
   const handleOpenLessonFile = (mode: 'preview' | 'download') => {

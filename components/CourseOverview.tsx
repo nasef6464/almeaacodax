@@ -327,6 +327,8 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 buildQuizRouteWithContext(linkedQuizId, {
                     returnTo: `/course/${course.id}`,
                     source: 'course',
+                    courseId: course.id,
+                    courseLessonId: String(lesson.id || ''),
                 }),
             );
             return;
@@ -519,7 +521,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                 title="اختبارات الدورة الرسمية"
                                 lockedCountLabel="ضمن شراء الدورة"
                                 onLockedClick={handleLockedCourseTestClick}
-                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
+                                onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course', courseId: course.id }))}
                             />
                         ) : relatedTests.length > 0 ? (
                             <div className="space-y-4">
@@ -530,7 +532,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                     tests={relatedTests}
                                     title="اختبارات المادة المقترحة"
                                     onLockedClick={handleLockedCourseTestClick}
-                                    onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
+                                    onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course', courseId: course.id }))}
                                 />
                             </div>
                         ) : (
@@ -549,7 +551,7 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                             tests={fallbackTests}
                                             title="اختبارات المادة المقترحة"
                                             onLockedClick={handleLockedCourseTestClick}
-                                            onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course' }))}
+                                            onStartTest={(test) => navigate(buildQuizRouteWithContext(String(test.id), { returnTo: `/course/${course.id}`, source: 'course', courseId: course.id }))}
                                         />
                                     ) : (
                                         <div className="text-center py-8 text-sm text-gray-500">

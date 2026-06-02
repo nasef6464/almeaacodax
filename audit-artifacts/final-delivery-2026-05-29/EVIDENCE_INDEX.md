@@ -403,3 +403,16 @@
   - `npm run build` -> PASS.
   - Production `npm run smoke:frontend:strict` -> PASS 29/29, serving commit `7c4a4d0e`.
   - Live persistence probe -> PASS; temporary completed-lesson marker was verified and removed.
+
+## Course Quiz Context Access (2026-06-02)
+
+- Evidence folder: `../ui-audit-exhaustive/2026-06-02-course-quiz-context-access/`
+- Verified:
+  - Course quiz links now carry course context.
+  - Embedded course quizzes carry both course and course-lesson context.
+  - `source=course` in the quiz page resolves access from the course lesson/assessment before falling back to global quiz access.
+  - A quiz can remain reusable: free preview in one course, paid in another, and separately configured in the quiz center.
+- Checks:
+  - `node scripts/smoke-course-quiz-context-contract.mjs` -> PASS.
+  - `npm run build` -> PASS.
+  - `npm --prefix server run check` -> PASS.

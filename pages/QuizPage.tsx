@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
-import { PackageContentType, Question, Quiz, QuizResult } from '../types';
+import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
@@ -104,6 +104,8 @@ export const QuizPage: React.FC = () => {
     hydrateExamResults,
     examResults,
     recordQuestionAttempt,
+    courses,
+    enrolledCourses,
     skills,
     subjects,
     sections,
@@ -139,6 +141,8 @@ export const QuizPage: React.FC = () => {
   });
   const returnToParam = searchParams.get('returnTo') || '';
   const sourceParam = searchParams.get('source') || '';
+  const courseIdParam = searchParams.get('courseId') || '';
+  const courseLessonIdParam = searchParams.get('courseLessonId') || '';
   const safeReturnTo = useMemo(() => {
     if (!returnToParam) return '';
     if (returnToParam.startsWith('/') && !returnToParam.startsWith('//')) return returnToParam;
@@ -167,6 +171,55 @@ export const QuizPage: React.FC = () => {
   const shouldDelayEmptyState = referencedQuestionCount > 0 && quizQuestions.length === 0 && !isFinished;
   const waitingForQuestionHydration =
     shouldDelayEmptyState && questionHydrationStartedAt !== null && Date.now() - questionHydrationStartedAt < 3000;
+  const sourceCourseId = useMemo(() => {
+    if (courseIdParam) return courseIdParam;
+    const match = safeReturnTo.match(/^\/course\/([^/?#]+)/);
+    return match?.[1] || '';
+  }, [courseIdParam, safeReturnTo]);
+  const sourceCourse = useMemo(
+    () => (sourceCourseId ? courses.find((item) => String(item.id || '') === sourceCourseId) || null : null),
+    [courses, sourceCourseId],
+  );
+  const courseHasAccess = useMemo(() => {
+    if (!sourceCourse) return false;
+    if (Number(sourceCourse.price || 0) <= 0) return true;
+    if (enrolledCourses.includes(sourceCourse.id)) return true;
+    if ((user.subscription?.purchasedCourses || []).includes(sourceCourse.id)) return true;
+    return hasScopedPackageAccess('courses', sourceCourse.pathId || sourceCourse.category, sourceCourse.subjectId || sourceCourse.subject);
+  }, [enrolledCourses, hasScopedPackageAccess, sourceCourse, user.subscription?.purchasedCourses]);
+
+  const findCourseQuizContext = (course: Course | null, targetQuizId: string) => {
+    if (!course || !targetQuizId) return null;
+    const courseLesson = (course.modules || [])
+      .flatMap((module) => module.lessons || [])
+      .find((lesson) => {
+        if (courseLessonIdParam && String(lesson.id || '') === courseLessonIdParam) return true;
+        const directQuizId = String(lesson.quizId || '').trim();
+        if (directQuizId === targetQuizId) return true;
+        const prefixedMatch = String(lesson.id || '').match(/^course_quiz_(.+)_\d+$/);
+        return prefixedMatch?.[1] === targetQuizId;
+      });
+    if (courseLesson) {
+      return {
+        source: 'lesson' as const,
+        isPreview: courseLesson.accessControl === 'public',
+        isPaid: courseLesson.accessControl !== 'public',
+      };
+    }
+
+    const assessment = (course.assessments || []).find(
+      (item) => item.showOnPlatform !== false && String(item.quizId || '') === targetQuizId,
+    );
+    if (assessment) {
+      return {
+        source: 'assessment' as const,
+        isPreview: assessment.access === 'free_preview',
+        isPaid: assessment.access !== 'free_preview',
+      };
+    }
+
+    return null;
+  };
 
   const buildReturnToSourcePath = () => {
     if (!safeReturnTo) return '';
@@ -305,18 +358,27 @@ export const QuizPage: React.FC = () => {
       }
     }
 
+    const courseQuizContext = sourceParam === 'course' ? findCourseQuizContext(sourceCourse, foundQuiz.id) : null;
     const sourceSlot = resolveQuizLearningSlot(sourceParam);
-    const accessType = resolveQuizLearningAccessType(
-      foundQuiz,
-      sourceSlot ? { pathId: foundQuiz.pathId, subjectId: foundQuiz.subjectId, slot: sourceSlot } : undefined,
-    );
+    const accessType = courseQuizContext?.isPreview
+      ? 'free'
+      : courseQuizContext?.isPaid
+        ? 'paid'
+        : resolveQuizLearningAccessType(
+            foundQuiz,
+            sourceSlot ? { pathId: foundQuiz.pathId, subjectId: foundQuiz.subjectId, slot: sourceSlot } : undefined,
+          );
     const access = { ...(foundQuiz.access || { type: 'free' as const }), type: accessType };
     if (isStaffViewer) {
       setHasAccess(true);
     } else if (access.type === 'free') {
       setHasAccess(true);
     } else if (access.type === 'paid') {
-      setHasAccess(checkAccess(foundQuiz.id, true) || hasScopedPackageAccess(resolveQuizPackageContentType(foundQuiz, sourceParam), foundQuiz.pathId, foundQuiz.subjectId));
+      setHasAccess(
+        (sourceParam === 'course' && courseHasAccess) ||
+          checkAccess(foundQuiz.id, true) ||
+          hasScopedPackageAccess(resolveQuizPackageContentType(foundQuiz, sourceParam), foundQuiz.pathId, foundQuiz.subjectId),
+      );
     } else if (access.type === 'private') {
       const userGroups = user.groupIds || [];
       const allowed = (access.allowedGroupIds || []).length === 0 || access.allowedGroupIds?.some((id) => userGroups.includes(id));
@@ -410,7 +472,7 @@ export const QuizPage: React.FC = () => {
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

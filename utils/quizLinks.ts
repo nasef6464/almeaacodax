@@ -4,6 +4,8 @@ type QuizRouteContext = {
   returnTo?: string;
   source?: QuizJourneySource;
   returnOnFinish?: boolean;
+  courseId?: string;
+  courseLessonId?: string;
 };
 
 export const isSafeInternalRoute = (target?: string) => {
@@ -24,6 +26,14 @@ export const buildQuizRouteWithContext = (quizId: string, context: QuizRouteCont
 
   if (context.returnOnFinish) {
     params.set('returnOnFinish', '1');
+  }
+
+  if (context.courseId) {
+    params.set('courseId', context.courseId);
+  }
+
+  if (context.courseLessonId) {
+    params.set('courseLessonId', context.courseLessonId);
   }
 
   const query = params.toString();
