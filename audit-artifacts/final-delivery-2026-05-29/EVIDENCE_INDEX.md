@@ -623,12 +623,14 @@
 - Evidence folders:
   - Student live journey: `../ui-audit-exhaustive/2026-06-03-student-full-goal-live-b82f9032/`.
   - Linked role pages: `../ui-audit-exhaustive/2026-06-03-student-linked-roles-live-b82f9032/`.
+  - Student payment modal proof: `../ui-audit-exhaustive/2026-06-03-student-payment-modal-live-c90a4f52-v3/`.
 - Verified as a student-like journey:
   - Dashboard renders student progress, weak-skill recommendation, learning actions, and path timeline.
   - Subject learning page opens the selected path/subject learning space and shows open learning tabs.
   - Course page and training quiz route open without login fallback, console errors, 4xx, or 5xx.
   - My quizzes, reports, and plan pages open with student-specific controls and no blocked state.
   - Student reports show the current path context, weakest skill, remediation actions, and export/share controls.
+  - Student payment modal opens from cart, shows trusted total, purchase scope, no automatic unlock, and admin review wording; the proof stops before submitting a real payment request.
   - Parent reports open in the parent account with concise linked-student performance, attempts, recommendations, and recent results.
   - Teacher and supervisor report/admin pages open with the correct protected role surfaces.
 - Live visual route audit:
