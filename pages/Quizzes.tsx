@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
+import { EmptyState } from '../components/ui/EmptyState';
 import { useStore } from '../store/useStore';
 import { Quiz, QuizResult } from '../types';
 import { isStandaloneMockExam } from '../utils/mockExam';
@@ -448,7 +449,16 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           </p>
         </header>
 
-        <div className="rounded-3xl border-2 border-dashed border-gray-200 bg-white p-5 text-center sm:p-6">
+        <EmptyState
+          eyebrow="اختبار واحد يكفي للبداية"
+          title="ابدأ من اختبار واحد"
+          description="اختر مركز الاختبارات أو أنشئ اختبار ساهر، وبعد الحل ستظهر المحاولات والتقرير المختصر هنا."
+          icon={<FileText size={22} />}
+          primaryAction={{ label: 'مركز الاختبارات', href: '/dashboard?tab=saher', icon: <Zap size={15} /> }}
+          secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={15} /> }}
+          tone="indigo"
+        />
+        <div className="hidden">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
             <FileText size={22} />
           </div>
@@ -973,9 +983,16 @@ const QuizSection = ({
         ))}
       </div>
     ) : (
-      <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center text-sm text-gray-500">
-        {emptyMessage}
-      </div>
+      <EmptyState
+        eyebrow={badgeLabel}
+        title="لا يوجد محتوى هنا الآن"
+        description={emptyMessage}
+        icon={<FileText size={20} />}
+        primaryAction={{ label: 'اختبار ساهر', href: '/quiz', icon: <Target size={14} /> }}
+        secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={14} /> }}
+        tone="slate"
+        className="rounded-2xl p-4 shadow-none"
+      />
     )}
   </div>
 );

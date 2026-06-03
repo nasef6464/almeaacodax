@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
+import { EmptyState } from '../components/ui/EmptyState';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Role, type QuestionAttempt, type QuizResult } from '../types';
@@ -1530,16 +1531,15 @@ const Reports: React.FC = () => {
                         <p className="text-sm text-gray-500">نظرة شاملة على مستوى التقدم</p>
                     </div>
                 </header>
-                <Card className="p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-gray-200">
-                    <div className="w-20 h-20 bg-gray-50 text-gray-400 rounded-full flex items-center justify-center mb-4">
-                        <PieChart size={40} />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 leading-tight">لا توجد بيانات كافية</h2>
-                    <p className="text-gray-500 mb-6">قم بإجراء بعض الاختبارات لنتمكن من تحليل أدائك وتقديم توصيات مخصصة لك.</p>
-                    <Link to="/quiz" className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
-                        ابدأ أول اختبار
-                    </Link>
-                </Card>
+                <EmptyState
+                    eyebrow="تقريرك يبدأ بعد أول قياس"
+                    title="لا توجد بيانات كافية"
+                    description="حل اختبارًا قصيرًا واحدًا، وبعدها سنعرض لك المهارة الأضعف والخطوة التالية مباشرة."
+                    icon={<PieChart size={24} />}
+                    primaryAction={{ label: 'ابدأ أول اختبار', href: '/quiz', icon: <Target size={16} /> }}
+                    secondaryAction={{ label: 'اختباراتي', href: '/dashboard?tab=quizzes', icon: <FileText size={16} /> }}
+                    tone="indigo"
+                />
             </div>
         );
     }

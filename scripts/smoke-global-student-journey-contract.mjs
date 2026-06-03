@@ -4,6 +4,7 @@ const files = {
   packageJson: await readFile(new URL('../package.json', import.meta.url), 'utf8'),
   dashboard: await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8'),
   studentNextAction: await readFile(new URL('../components/StudentNextActionStrip.tsx', import.meta.url), 'utf8'),
+  emptyState: await readFile(new URL('../components/ui/EmptyState.tsx', import.meta.url), 'utf8'),
   subjectLearning: await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8'),
   quizzes: await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8'),
   reports: await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
@@ -63,6 +64,19 @@ check('student next action strip is compact, reusable, and has one primary actio
   assertIncludes(files.studentNextAction, 'secondaryLabel');
   assertIncludes(files.studentNextAction, 'secondaryHref');
   assertIncludes(files.studentNextAction, 'aria-labelledby="student-next-action-title"');
+});
+
+check('student empty states use one compact design system pattern', () => {
+  assertIncludes(files.emptyState, 'EmptyStateProps');
+  assertIncludes(files.emptyState, 'primaryAction');
+  assertIncludes(files.emptyState, 'secondaryAction');
+  assertIncludes(files.emptyState, "tone?: 'indigo' | 'amber' | 'emerald' | 'slate'");
+  assertIncludes(files.reports, "import { EmptyState } from '../components/ui/EmptyState'");
+  assertIncludes(files.quizzes, "import { EmptyState } from '../components/ui/EmptyState'");
+  assertIncludes(files.subjectLearning, "import { EmptyState } from '../components/ui/EmptyState'");
+  assertIncludes(files.reports, 'تقريرك يبدأ بعد أول قياس');
+  assertIncludes(files.quizzes, 'اختبار واحد يكفي للبداية');
+  assertIncludes(files.subjectLearning, 'لا توجد موضوعات تأسيسية الآن');
 });
 
 check('subject learning page guides foundation, training, tests, and package recovery', () => {

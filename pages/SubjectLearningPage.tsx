@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
+import { EmptyState } from '../components/ui/EmptyState';
 import { VideoModal } from '../components/VideoModal';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { Lesson, PackageContentType, Topic } from '../types';
@@ -654,9 +655,16 @@ export const SubjectLearningPage: React.FC = () => {
                   </div>
                 );
               }) : (
-                <div className="col-span-full text-center py-12 text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                  لا توجد موضوعات تأسيسية مضافة حاليًا.
-                </div>
+                <EmptyState
+                  eyebrow="التأسيس"
+                  title="لا توجد موضوعات تأسيسية الآن"
+                  description="ابدأ من التدريب أو ارجع للمسار حتى تظهر الموضوعات فور إضافتها من الإدارة."
+                  icon={<BookOpen size={22} />}
+                  primaryAction={{ label: 'ابدأ التدريب', href: buildSubjectReturnPath('questions'), icon: <Target size={15} /> }}
+                  secondaryAction={{ label: 'رجوع للمسار', href: `/category/${pathId}`, icon: <Layers size={15} /> }}
+                  tone="indigo"
+                  className="col-span-full"
+                />
               )}
             </div>
           </div>
