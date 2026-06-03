@@ -993,7 +993,46 @@ const toSafeDate = (value?: string) => {
 
 const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
 
-const buildScopedStudentFilter = (authUser: any) => {
+const resolveSupervisorSchoolReportScope = async (authUser: any) => {
+  if (authUser.role !== "supervisor") {
+    return {
+      schoolIds: uniqueStrings(authUser.schoolId ? [String(authUser.schoolId)] : []),
+      groupIds: uniqueStrings((authUser.groupIds || []).map(String)),
+    };
+  }
+
+  const managedGroupIds = uniqueStrings((authUser.groupIds || []).map(String));
+  const [seedGroups, directSupervisedSchools] = await Promise.all([
+    managedGroupIds.length
+      ? GroupModel.find(buildDocumentsByIdsQuery(managedGroupIds)).select("id _id parentId type").lean()
+      : Promise.resolve([]),
+    GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") }).select("id _id").lean(),
+  ]);
+
+  const scopedSchoolIds = uniqueStrings([
+    authUser.schoolId ? String(authUser.schoolId) : undefined,
+    ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
+    ...seedGroups.filter((group: any) => group.type === "SCHOOL").map((group: any) => String(group.id || group._id || "")),
+    ...seedGroups
+      .filter((group: any) => group.type === "CLASS" || group.type === "PRIVATE_GROUP")
+      .map((group: any) => String(group.parentId || "")),
+  ]);
+
+  const childScopedGroups = scopedSchoolIds.length
+    ? await GroupModel.find({ parentId: { $in: scopedSchoolIds }, type: { $in: ["CLASS", "PRIVATE_GROUP"] } }).select("id _id").lean()
+    : [];
+
+  return {
+    schoolIds: scopedSchoolIds,
+    groupIds: uniqueStrings([
+      ...managedGroupIds,
+      ...directSupervisedSchools.map((group: any) => String(group.id || group._id || "")),
+      ...childScopedGroups.map((group: any) => String(group.id || group._id || "")),
+    ]),
+  };
+};
+
+const buildScopedStudentFilter = async (authUser: any) => {
   const managedPathIds = new Set<string>((authUser.managedPathIds || []).map(String));
   const managedSubjectIds = new Set<string>((authUser.managedSubjectIds || []).map(String));
 
@@ -1002,14 +1041,16 @@ const buildScopedStudentFilter = (authUser: any) => {
   }
 
   if (authUser.role === "teacher" || authUser.role === "supervisor") {
-    const allowedGroupIds = new Set((authUser.groupIds || []).map(String));
+    const supervisorScope = await resolveSupervisorSchoolReportScope(authUser);
+    const allowedGroupIds = new Set(supervisorScope.groupIds);
+    const scopedSchoolIds = supervisorScope.schoolIds;
     const scopeFilters: Record<string, unknown>[] = [];
 
     if (allowedGroupIds.size > 0) {
       scopeFilters.push({ groupIds: { $in: Array.from(allowedGroupIds) } });
     }
-    if (authUser.schoolId) {
-      scopeFilters.push({ schoolId: String(authUser.schoolId) });
+    if (scopedSchoolIds.length > 0) {
+      scopeFilters.push({ schoolId: { $in: scopedSchoolIds } });
     }
 
     return {
@@ -1037,7 +1078,7 @@ const buildScopedStudentFilter = (authUser: any) => {
 };
 
 const resolveScopedStudents = async (authUser: any, options?: { limit?: number }) => {
-  const { filter, managedPathIds, managedSubjectIds } = buildScopedStudentFilter(authUser);
+  const { filter, managedPathIds, managedSubjectIds } = await buildScopedStudentFilter(authUser);
   const limit = Math.max(1, Math.min(options?.limit || 500, 1000));
   const [students, totalStudents] = await Promise.all([
     UserModel.find(filter).select(STUDENT_DASHBOARD_SELECT).sort({ createdAt: -1 }).limit(limit).lean(),

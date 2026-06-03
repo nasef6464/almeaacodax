@@ -170,6 +170,10 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
 check('server analytics scopes reports by role before returning weak skills and students', () => {
   assertIncludes(quizRoutesSource, 'authUser.role === "admin"');
   assertIncludes(quizRoutesSource, 'authUser.role === "teacher" || authUser.role === "supervisor"');
+  assertIncludes(quizRoutesSource, 'const resolveSupervisorSchoolReportScope = async');
+  assertIncludes(quizRoutesSource, 'GroupModel.find({ type: "SCHOOL", supervisorIds: String(authUser.id || authUser._id || "") })');
+  assertIncludes(quizRoutesSource, 'const childScopedGroups = scopedSchoolIds.length');
+  assertIncludes(quizRoutesSource, 'scopeFilters.push({ schoolId: { $in: scopedSchoolIds } })');
   assertIncludes(quizRoutesSource, 'authUser.role === "parent"');
   assertIncludes(quizRoutesSource, 'linkedStudentIds');
   assertIncludes(quizRoutesSource, 'matchesManagedScope');
