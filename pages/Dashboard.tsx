@@ -15,6 +15,7 @@ import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { isStandaloneMockExam } from '../utils/mockExam';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -1469,12 +1470,13 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             smartAction = {
                 type: 'skill',
                 title: 'مراجعة مهارة ضعيفة',
-                desc: `لاحظنا ضعف في مهارة "${weakSkill.skill}". ننصحك بمراجعتها.`,
-                buttonText: 'راجع المهارة الآن',
+                desc: `ابدأ بمهارة "${weakSkill.skill}" ثم أعد القياس.`,
+                buttonText: 'افتح التقرير',
                 link: '/reports',
                 icon: <AlertTriangle size={24} className="text-rose-500" />,
-                bg: 'bg-rose-50',
-                btnBg: 'bg-rose-600 hover:bg-rose-700'
+                tone: 'rose' as const,
+                secondaryText: 'خطة العلاج',
+                secondaryLink: '/plan'
             };
         }
     }
@@ -1491,12 +1493,13 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             smartAction = {
                 type: 'course',
                 title: 'استكمل تعلمك',
-                desc: `أنت تبلي بلاءً حسناً في دورة "${courseToContinue.title}". واصل التقدم!`,
+                desc: `واصل من "${courseToContinue.title}".`,
                 buttonText: 'متابعة الدورة',
                 link: `/course/${courseToContinue.id}`,
                 icon: <TrendingUp size={24} className="text-indigo-500" />,
-                bg: 'bg-indigo-50',
-                btnBg: 'bg-indigo-600 hover:bg-indigo-700'
+                tone: 'indigo' as const,
+                secondaryText: 'تقاريري',
+                secondaryLink: '/reports'
             };
         }
     }
@@ -1510,8 +1513,9 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             buttonText: 'ابدأ اختبار ساهر',
             link: '/quiz',
             icon: <Zap size={24} className="text-amber-500" />,
-            bg: 'bg-amber-50',
-            btnBg: 'bg-amber-600 hover:bg-amber-700'
+            tone: 'amber' as const,
+            secondaryText: 'مساراتي',
+            secondaryLink: '/courses'
         };
     }
 
@@ -1665,28 +1669,16 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                     </Card>
                 </div>
 
-                {/* 2. Smart Action ("ماذا أفعل الآن؟") */}
-                <section>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">ماذا أفعل الآن؟</h3>
-                    <Card className={`p-6 border-0 shadow-md ${smartAction.bg}`}>
-                        <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-right">
-                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm shrink-0">
-                                {smartAction.icon}
-                            </div>
-                            <div className="flex-1">
-                                <h4 className="font-bold text-lg text-gray-900 mb-2">{smartAction.title}</h4>
-                                <p className="text-gray-600 text-sm mb-4">{smartAction.desc}</p>
-                            </div>
-                            <Link 
-                                to={smartAction.link || '#'}
-                                className={`${smartAction.btnBg} inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-center text-sm font-black text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md md:w-auto`}
-                            >
-                                <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
-                                {smartAction.buttonText}
-                            </Link>
-                        </div>
-                    </Card>
-                </section>
+                <StudentNextActionStrip
+                    title={smartAction.title}
+                    description={smartAction.desc}
+                    primaryLabel={smartAction.buttonText}
+                    primaryHref={smartAction.link || '#'}
+                    icon={smartAction.icon}
+                    tone={smartAction.tone}
+                    secondaryLabel={smartAction.secondaryText}
+                    secondaryHref={smartAction.secondaryLink}
+                />
 
                 {/* 3. My Paths ("مساراتي") */}
                 {paths.length > 0 && (

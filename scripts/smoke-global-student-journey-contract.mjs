@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const files = {
   packageJson: await readFile(new URL('../package.json', import.meta.url), 'utf8'),
   dashboard: await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8'),
+  studentNextAction: await readFile(new URL('../components/StudentNextActionStrip.tsx', import.meta.url), 'utf8'),
   subjectLearning: await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8'),
   quizzes: await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8'),
   reports: await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
@@ -44,6 +45,7 @@ function assertPattern(source, pattern, message) {
 }
 
 check('student dashboard keeps one clear continuation area and learner shortcuts', () => {
+  assertIncludes(files.dashboard, 'StudentNextActionStrip');
   assertIncludes(files.dashboard, 'smartAction.buttonText');
   assertIncludes(files.dashboard, 'smartAction.link');
   assertIncludes(files.dashboard, "setActiveTab('saher')");
@@ -51,6 +53,16 @@ check('student dashboard keeps one clear continuation area and learner shortcuts
   assertIncludes(files.dashboard, "setActiveTab('reports')");
   assertIncludes(files.dashboard, "setActiveTab('plan')");
   assertAnyIncludes(files.dashboard, ['آخر الأنشطة', 'Ø¢Ø®Ø± Ø§Ù„Ø£Ù†Ø´Ø·Ø©']);
+});
+
+check('student next action strip is compact, reusable, and has one primary action', () => {
+  assertIncludes(files.studentNextAction, 'StudentNextActionStripProps');
+  assertIncludes(files.studentNextAction, 'خطوتك التالية');
+  assertIncludes(files.studentNextAction, 'primaryLabel');
+  assertIncludes(files.studentNextAction, 'primaryHref');
+  assertIncludes(files.studentNextAction, 'secondaryLabel');
+  assertIncludes(files.studentNextAction, 'secondaryHref');
+  assertIncludes(files.studentNextAction, 'aria-labelledby="student-next-action-title"');
 });
 
 check('subject learning page guides foundation, training, tests, and package recovery', () => {
