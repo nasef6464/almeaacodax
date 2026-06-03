@@ -273,6 +273,28 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const getCurrency = () => purchaseItem.currency || settings.currency || 'SAR';
     const hasPackageChoices = packageOptions.length > 1;
     const showPackageChoices = shouldUsePackageOptions && hasPackageChoices;
+    const purchaseSeparationLabel = 'ملخص طلب الشراء';
+    const packageCourseSeparationNote = shouldPurchaseAsPackage
+        ? 'هذا الطلب يفتح الباقة المختارة فقط'
+        : 'هذا الطلب يفتح هذا العنصر فقط';
+    const paymentDecisionRows = [
+        packageCourseSeparationNote,
+        'لن يتم فتح المحتوى تلقائيًا من المتصفح',
+        'تتم مراجعة الطلب وتفعيل الوصول من الإدارة',
+    ];
+    const renderPaymentDecisionSummary = () => (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4 text-right">
+            <div className="text-sm font-black text-indigo-900">{purchaseSeparationLabel}</div>
+            <div className="mt-3 space-y-2">
+                {paymentDecisionRows.map((row) => (
+                    <div key={row} className="flex items-start gap-2 text-xs font-bold leading-5 text-indigo-700">
+                        <ShieldCheck size={14} className="mt-0.5 shrink-0" />
+                        <span>{row}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 
     const buildPaymentRequestPayload = () => {
         const packageId = purchaseItem.packageId || (shouldPurchaseAsPackage ? purchaseItem.id : undefined);
@@ -683,6 +705,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                             : discountPreview?.message || 'كود الخصم سيتم فحصه قبل إرسال الطلب'}
                 </div>
             )}
+            {renderPaymentDecisionSummary()}
             <div className="pt-2">
                 <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6 bg-gray-50 p-4 rounded-xl">
                     <span className="text-gray-500 font-bold">إجمالي المبلغ:</span>

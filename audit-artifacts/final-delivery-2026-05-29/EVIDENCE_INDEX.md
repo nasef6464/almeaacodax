@@ -575,3 +575,17 @@
   - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `019c8b46`.
   - Production visual package-open proof -> PASS.
   - Production deep student learning audit -> PASS 10/10.
+
+## Student Payment Modal Separation Summary (2026-06-03)
+
+- Added a visible payment decision summary in the student payment modal.
+- Verified:
+  - The modal now clearly says the purchase request opens only the selected package or selected item.
+  - The modal now clearly says content is not opened automatically from the browser.
+  - The modal now explains that access is activated after admin review.
+- Checks:
+  - `npm run smoke:payment-providers` -> PASS 7/7.
+  - `npm run smoke:payment-tampering` -> PASS 9/9.
+  - `npm run smoke:results` -> PASS 6/6.
+  - `npm run build` -> PASS.
+  - `npm run typecheck` -> PASS.
