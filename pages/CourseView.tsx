@@ -161,19 +161,22 @@ const CourseView: React.FC = () => {
     const hasPlayablePreviewLesson = courseForCurrentAccess.modules?.some((module) =>
         module.lessons.some((lesson) => !lesson.isLocked),
     ) === true;
+    const canOpenCoursePlayer = isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson;
 
-    if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
-        return (
-            <CoursePlayer
-                course={courseForCurrentAccess}
-                initialLessonId={searchParams.get('lesson') || undefined}
-                onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
-                onBack={() => {
-                    setIsPlaying(false);
-                    updateLearningUrlState(false);
-                }}
-            />
-        );
+    if (isPlaying) {
+        if (canOpenCoursePlayer) {
+            return (
+                <CoursePlayer
+                    course={courseForCurrentAccess}
+                    initialLessonId={searchParams.get('lesson') || undefined}
+                    onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
+                    onBack={() => {
+                        setIsPlaying(false);
+                        updateLearningUrlState(false);
+                    }}
+                />
+            );
+        }
     }
 
     if (isEnrolled) {

@@ -56,7 +56,8 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
     const readyTests = tests.filter((test) => Number(test.questions || 0) > 0 || test.isUnavailable);
     const openTestsCount = readyTests.filter((test) => !test.isLocked && !test.isUnavailable).length;
     const lockedTestsCount = readyTests.length - openTestsCount;
-    const listTitle = title || (mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة');
+    const listTitle = mode === 'bank' ? 'تدريبات المادة' : 'اختبارات المادة';
+    const displayListTitle = title || listTitle;
     const listAction = mode === 'bank' ? 'ابدأ التدريب' : 'ابدأ الاختبار';
 
     const toggleFavorite = (idx: number) => {
@@ -162,7 +163,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
             <div className="space-y-4 max-w-4xl mx-auto">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-right">
-                        <div className="text-xs font-black text-indigo-600">{listTitle}</div>
+                        <div className="text-xs font-black text-indigo-600">{displayListTitle}</div>
                         <div className="mt-2 text-2xl font-black text-indigo-900">{tests.length}</div>
                     </div>
                     <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-right">

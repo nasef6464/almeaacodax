@@ -594,3 +594,25 @@
   - `npm run typecheck` -> PASS.
   - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `c90a4f52`.
   - Production payment modal visual proof -> PASS.
+
+## Student Extra Scope Sweep (2026-06-03)
+
+- Continued the student account sweep after the main journey closure.
+- Fixed:
+  - Training and subject tests now expose separate internal list title constants while preserving optional custom titles.
+  - Course player entry now uses an explicit `isPlaying` branch and always passes the access-aware course with locked non-public lessons for non-enrolled viewers.
+- Verified:
+  - Student "My quizzes" keeps attempts, result, review, analysis, and retry actions available.
+  - Student quiz access keeps free, paid, private, course-only, training, and tests paths separated.
+  - Mock exams remain independent from normal subject tests.
+  - Student path scope keeps browse-before-purchase course details while locking non-public lessons.
+  - Student reports remain scoped and filterable by enrolled path.
+- Checks:
+  - `npm run smoke:my-quizzes` -> PASS 8/8.
+  - `npm run smoke:reports-role` -> PASS 11/11.
+  - `npm run smoke:quiz-access` -> PASS 18/18.
+  - `npm run smoke:mock-exams` -> PASS 9/9.
+  - `npm run smoke:student-path-scope` -> PASS 5/5.
+  - `npm run smoke:student-learning-journey` -> PASS 7/7.
+  - `npm run typecheck` -> PASS.
+  - `npm run build` -> PASS.
