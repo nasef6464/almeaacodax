@@ -45,6 +45,21 @@ check('student report starts simple and keeps details opt-in', () => {
   assertIncludes(reportsSource, "isStudentReportFull ? (");
 });
 
+check('student report shows the quick decision card instead of hiding it behind staff-only scope', () => {
+  assertIncludes(reportsSource, '(isStudentView ? hasStudentAnalytics : true) ? (');
+  assertIncludes(reportsSource, 'studentFollowUpSummary ||');
+  assertIncludes(reportsSource, 'copyStudentSummary');
+  assertIncludes(reportsSource, 'shareStudentSummary');
+});
+
+check('student skill performance report is explicitly driven by quiz answers and evidence', () => {
+  assertIncludes(reportsSource, 'تقرير أداء المهارات من الاختبارات');
+  assertIncludes(reportsSource, 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
+  assertIncludes(reportsSource, 'مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.');
+  assertIncludes(reportsSource, 'skill.totalEvidence');
+  assertIncludes(reportsSource, 'skill.correctAttempts');
+});
+
 check('student report links weak skills to lesson, quiz, plan, and exports', () => {
   assertIncludes(reportsSource, 'getSkillRecommendation(selectedReportSkill');
   assertIncludes(reportsSource, 'lessonLink');
@@ -78,6 +93,10 @@ check('student smart remediation uses AI with a local fallback plan', () => {
 check('parent report stays brief with copied/shared/PDF summary and practical actions', () => {
   assertIncludes(reportsSource, 'if (user.role === Role.PARENT)');
   assertIncludes(reportsSource, 'parentBriefSummary');
+  assertIncludes(reportsSource, 'const copyParentBriefSummary = async () =>');
+  assertIncludes(reportsSource, 'await navigator.clipboard.writeText(parentBriefSummary)');
+  assertIncludes(reportsSource, 'const shareParentBriefSummary = async () =>');
+  assertIncludes(reportsSource, "await shareTextSummary('ملخص ولي الأمر', parentBriefSummary)");
   assertIncludes(reportsSource, 'parentActionItems');
   assertIncludes(reportsSource, 'parentSkillActions');
   assertIncludes(reportsSource, "printElementAsPdf('reports-print-area',");
@@ -91,6 +110,14 @@ check('parent report links the weakest skill to lesson, training, and measuremen
   assertIncludes(reportsSource, 'بدء تدريب');
   assertIncludes(reportsSource, 'حصة علاجية');
   assertIncludes(reportsSource, 'الخطوة العملية: شرح قصير، تدريب بسيط، ثم إعادة قياس هادئة.');
+});
+
+check('parent and staff reports explain skill weakness as quiz evidence inside the allowed scope', () => {
+  assertIncludes(reportsSource, 'تقرير مهارة من الاختبارات');
+  assertIncludes(reportsSource, 'ظهر الضعف من ${weakSkill.attempts} إجابات');
+  assertIncludes(reportsSource, 'تقرير مهارات الاختبارات');
+  assertIncludes(reportsSource, 'مرتبة من نتائج الاختبارات داخل نطاق دورك فقط.');
+  assertIncludes(reportsSource, 'دليل الاختبار: الحكم يظهر بعد');
 });
 
 check('admin, supervisor, and teacher reports expose separate skills and students reports with export', () => {

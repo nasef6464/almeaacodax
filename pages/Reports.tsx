@@ -1221,6 +1221,28 @@ const Reports: React.FC = () => {
             leadStudent ? `أكثر طالب يحتاج متابعة الآن: ${displayText(leadStudent.name)}.` : null,
             'الخطوة العملية: شرح قصير، تدريب بسيط، ثم إعادة قياس هادئة.',
         ].filter(Boolean).join(' ');
+        const copyParentBriefSummary = async () => {
+            if (!parentBriefSummary) return;
+
+            try {
+                await navigator.clipboard.writeText(parentBriefSummary);
+                setCopiedScopedSummary(true);
+                window.setTimeout(() => setCopiedScopedSummary(false), 1800);
+            } catch {
+                setCopiedScopedSummary(false);
+            }
+        };
+        const shareParentBriefSummary = async () => {
+            if (!parentBriefSummary) return;
+
+            try {
+                await shareTextSummary('ملخص ولي الأمر', parentBriefSummary);
+                setSharedScopedSummary(true);
+                window.setTimeout(() => setSharedScopedSummary(false), 1800);
+            } catch {
+                setSharedScopedSummary(false);
+            }
+        };
         const parentActionItems = [
             {
                 title: 'اليوم',
@@ -1257,7 +1279,7 @@ const Reports: React.FC = () => {
                     </div>
                     <div className="print-hide flex flex-wrap gap-2">
                         <button
-                            onClick={copyScopedSummary}
+                            onClick={copyParentBriefSummary}
                             disabled={!parentBriefSummary}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                         >
@@ -1265,7 +1287,7 @@ const Reports: React.FC = () => {
                             {copiedScopedSummary ? 'تم النسخ' : 'نسخ الملخص'}
                         </button>
                         <button
-                            onClick={shareScopedSummary}
+                            onClick={shareParentBriefSummary}
                             disabled={!parentBriefSummary}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60"
                         >
@@ -1386,9 +1408,14 @@ const Reports: React.FC = () => {
                             </Card>
 
                             <Card className="p-5">
-                                <div className="text-xs font-bold text-gray-500">أهم مهارة تحتاج متابعة</div>
+                                <div className="text-xs font-bold text-gray-500">تقرير مهارة من الاختبارات</div>
                                 <div className="mt-3 text-xl font-black text-gray-900">{displayText(weakSkill?.skill) || 'بانتظار بيانات المهارات'}</div>
                                 <div className="mt-2 text-sm text-gray-500">{displayText(weakSkill?.section) || 'مهارة عامة'}</div>
+                                <div className="mt-2 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold leading-5 text-slate-600">
+                                    {weakSkill
+                                        ? `ظهر الضعف من ${weakSkill.attempts} إجابات، ومتأثر به ${weakSkill.affectedStudents} طالب داخل حساب ولي الأمر.`
+                                        : 'سيظهر هنا التحليل بعد محاولات اختبار كافية.'}
+                                </div>
                                 <div className="mt-4 rounded-full bg-gray-100 h-2 overflow-hidden">
                                     <div className="h-full rounded-full bg-amber-500" style={{ width: `${Math.max(0, Math.min(100, Number(weakSkill?.mastery) || 0))}%` }} />
                                 </div>
@@ -1472,7 +1499,7 @@ const Reports: React.FC = () => {
                 </div>
             </header>
 
-            {!isStudentView ? (
+            {(isStudentView ? hasStudentAnalytics : true) ? (
             <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative">
                 <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
                 <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
@@ -1704,9 +1731,12 @@ const Reports: React.FC = () => {
                                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                         <div>
                                             <div className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                                                تقرير مهارات مجمع
+                                                تقرير مهارات الاختبارات
                                             </div>
                                             <h3 className="mt-2 text-lg font-black text-gray-900">مهارات تحتاج دعم</h3>
+                                            <p className="mt-1 text-xs font-bold leading-5 text-gray-500">
+                                                مرتبة من نتائج الاختبارات داخل نطاق دورك فقط.
+                                            </p>
                                         </div>
                                         <div className="print-hide flex flex-wrap items-center gap-2">
                                             <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
@@ -1742,6 +1772,9 @@ const Reports: React.FC = () => {
                                                 <div className="mt-2 grid grid-cols-2 gap-2 text-xs font-bold">
                                                     <div className="rounded-xl bg-white/80 px-3 py-1.5">طلاب: {skill.affectedStudents}</div>
                                                     <div className="rounded-xl bg-white/80 px-3 py-1.5">محاولات: {skill.attempts}</div>
+                                                </div>
+                                                <div className="mt-2 rounded-xl bg-white/80 px-3 py-2 text-xs font-bold leading-5 text-slate-600">
+                                                    دليل الاختبار: الحكم يظهر بعد {skill.evidenceThreshold || MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر، ثم يقترح اختبار متابعة على نفس المهارة.
                                                 </div>
                                                 <div className="print-hide mt-2 grid gap-2 sm:grid-cols-2">
                                                     <Link
@@ -2322,9 +2355,9 @@ const Reports: React.FC = () => {
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">أضعف مهارة الآن</h2>
+                            <h2 className="text-xl font-black text-gray-900">تقرير أداء المهارات من الاختبارات</h2>
                             <p className="mt-1 text-sm leading-6 text-gray-500">
-                                ملخص سريع: المهارة، السبب المختصر، والخطوة التالية.
+                                ملخص سريع من إجاباتك: أضعف مهارة، قوة الدليل، والخطوة التالية للتعلم التكيفي.
                             </p>
                             <p className="mt-1 text-xs font-bold text-indigo-600">
                                 القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
@@ -2352,6 +2385,9 @@ const Reports: React.FC = () => {
                                                         {skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'}
                                                     </span>
                                                     <div className="mt-3 text-lg font-black leading-8 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                                    <div className="mt-1 text-xs font-black text-slate-500">
+                                                        مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.
+                                                    </div>
                                                 </div>
                                                 <div className={`text-3xl font-black ${tone.text}`}>{skill.mastery}%</div>
                                             </div>
