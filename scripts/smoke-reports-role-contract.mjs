@@ -93,6 +93,21 @@ check('student therapeutic report keeps a short weekly loop with direct actions'
   assertIncludes(reportsSource, 'shareStudentSummary');
 });
 
+check('student compact report is period-based and prints the simple skill rows', () => {
+  assertIncludes(reportsSource, "const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month')");
+  assertIncludes(reportsSource, 'studentPeriodExamResults');
+  assertIncludes(reportsSource, 'compactStudentSkillRows');
+  assertIncludes(reportsSource, 'studentPrintableSkillRows');
+});
+
+check('student weak-skill actions open the linked foundation topic first', () => {
+  assertIncludes(reportsSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes', lessonId?: string)");
+  assertIncludes(reportsSource, "params.set('tab', 'skills')");
+  assertIncludes(reportsSource, "params.set('content', content)");
+  assertIncludes(reportsSource, 'const foundationTrainingLink = recommendedTopic');
+  assertIncludes(reportsSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
+});
+
 check('student smart remediation uses AI with a local fallback plan', () => {
   assertIncludes(reportsSource, 'const buildSmartRemediation = async () =>');
   assertIncludes(reportsSource, 'api.aiRemediationPlan');

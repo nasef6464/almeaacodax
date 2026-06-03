@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
-import { Role } from '../types';
+import { Role, type QuestionAttempt, type QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
@@ -97,6 +97,8 @@ interface StudentAggregatedSkill {
     status: 'weak' | 'average' | 'strong';
 }
 
+type StudentReportPeriod = 'month' | 'quarter' | 'all';
+
 const roleScopeTitle: Record<string, string> = {
     admin: 'نطاق المنصة بالكامل',
     supervisor: 'نطاق المجموعات والمدرسة التابعة لك',
@@ -107,6 +109,41 @@ const roleScopeTitle: Record<string, string> = {
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 const MIN_SKILL_EVIDENCE_COUNT = 3;
+
+const getReportItemTimestamp = (item: Pick<QuizResult, 'date'> & { createdAt?: string | number }) => {
+    const raw = item.date || item.createdAt;
+    if (typeof raw === 'number') return raw;
+    if (!raw) return 0;
+
+    const timestamp = new Date(raw).getTime();
+    return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
+const getStudentPeriodStart = (period: StudentReportPeriod) => {
+    const now = new Date();
+    if (period === 'month') return new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    if (period === 'quarter') return new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime();
+    return 0;
+};
+
+const filterStudentReportPeriod = <T extends Pick<QuestionAttempt, 'date'> & { createdAt?: string | number }>(
+    items: T[],
+    period: StudentReportPeriod,
+) => {
+    if (period === 'all') return items;
+
+    const start = getStudentPeriodStart(period);
+    return items.filter((item) => {
+        const timestamp = getReportItemTimestamp(item);
+        return timestamp === 0 || timestamp >= start;
+    });
+};
+
+const studentReportPeriodLabels: Record<StudentReportPeriod, string> = {
+    month: 'هذا الشهر',
+    quarter: 'آخر 3 أشهر',
+    all: 'كل الفترات',
+};
 
 const getReportSkillKey = (skill: { skill: string; skillId?: string }) => skill.skillId || skill.skill;
 
@@ -242,40 +279,54 @@ const getSkillRecommendation = (
     const recommendationPathId = resolvedSkill.pathId;
     const recommendationSubjectId = resolvedSkill.subjectId;
     const recommendationSectionId = resolvedSkill.sectionId;
-    const recommendedTopic =
-        recommendedLesson && recommendationPathId && recommendationSubjectId
-            ? topics.find(
-                (topic) =>
-                    topic.pathId === recommendationPathId &&
-                    topic.subjectId === recommendationSubjectId &&
-                    topic.showOnPlatform !== false &&
-                    (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
-            )
-            : undefined;
-    const lessonLink =
+    const recommendedTopic = recommendationPathId && recommendationSubjectId
+        ? topics.find((topic) => {
+            const matchesScope =
+                topic.pathId === recommendationPathId &&
+                topic.subjectId === recommendationSubjectId &&
+                topic.showOnPlatform !== false;
+            if (!matchesScope) return false;
+
+            const topicHasLesson = recommendedLesson
+                ? (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId))
+                : false;
+            const topicHasQuiz = recommendedQuiz
+                ? (topic.quizIds || []).some((quizId) => matchesEntityId(recommendedQuiz, quizId))
+                : false;
+            const topicMatchesSkill = matchesEntityId(topic, resolvedSkill.id);
+            const topicMatchesSection = recommendationSectionId && topic.sectionId === recommendationSectionId;
+
+            return topicHasLesson || topicHasQuiz || topicMatchesSkill || topicMatchesSection;
+        })
+        : undefined;
+    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes', lessonId?: string) =>
         recommendationPathId && recommendationSubjectId
             ? (() => {
-                const params = new URLSearchParams({
-                    subject: recommendationSubjectId,
-                    tab: 'skills',
-                });
+                const params = new URLSearchParams({ subject: recommendationSubjectId });
+                params.set('tab', 'skills');
 
-                if (recommendedTopic?.id && recommendedLesson?.id) {
+                if (recommendedTopic?.id) {
                     params.set('topic', recommendedTopic.id);
-                    params.set('content', 'lessons');
-                    params.set('lesson', recommendedLesson.id);
+                    params.set('content', content);
+                    if (content === 'lessons' && lessonId) {
+                        params.set('lesson', lessonId);
+                    }
                 }
 
                 return `/category/${recommendationPathId}?${params.toString()}`;
             })()
             : undefined;
+    const lessonLink = buildFoundationTopicLink('lessons', recommendedLesson?.id);
+    const foundationTrainingLink = recommendedTopic
+        ? buildFoundationTopicLink('quizzes')
+        : undefined;
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink,
         lessonTopicTitle: displayText(recommendedTopic?.title),
-        quizTitle: displayText(recommendedQuiz?.title),
-        quizLink: recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined,
+        quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
+        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
         subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
@@ -309,6 +360,7 @@ const Reports: React.FC = () => {
     const [scopedSmartRemediation, setScopedSmartRemediation] = useState<SmartRemediationPlan | null>(null);
     const [scopedSmartRemediationLoading, setScopedSmartRemediationLoading] = useState(false);
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
+    const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
@@ -352,12 +404,23 @@ const Reports: React.FC = () => {
         };
     }, [user?.email, user.role]);
 
+    const studentPeriodExamResults = useMemo(
+        () => filterStudentReportPeriod(examResults, studentReportPeriod),
+        [examResults, studentReportPeriod],
+    );
+    const studentPeriodQuestionAttempts = useMemo(
+        () => filterStudentReportPeriod(questionAttempts, studentReportPeriod),
+        [questionAttempts, studentReportPeriod],
+    );
+    const studentPeriodLabel = studentReportPeriodLabels[studentReportPeriod];
+    const studentReportDataCount = studentPeriodExamResults.length + studentPeriodQuestionAttempts.length;
+
     // Calculate Performance Analysis
     const stats = useMemo(() => {
-        if (examResults.length === 0) {
-            if (questionAttempts.length === 0) return null;
+        if (studentPeriodExamResults.length === 0) {
+            if (studentPeriodQuestionAttempts.length === 0) return null;
 
-            const answeredAttempts = questionAttempts.filter((attempt) => attempt.selectedOptionIndex >= 0);
+            const answeredAttempts = studentPeriodQuestionAttempts.filter((attempt) => attempt.selectedOptionIndex >= 0);
             const correctAttempts = answeredAttempts.filter((attempt) => attempt.isCorrect).length;
             const averageScore = answeredAttempts.length > 0 ? Math.round((correctAttempts / answeredAttempts.length) * 100) : 0;
 
@@ -368,12 +431,12 @@ const Reports: React.FC = () => {
             };
         }
 
-        const totalScore = examResults.reduce((acc, curr) => acc + curr.score, 0);
-        const averageScore = Math.round(totalScore / examResults.length);
+        const totalScore = studentPeriodExamResults.reduce((acc, curr) => acc + curr.score, 0);
+        const averageScore = Math.round(totalScore / studentPeriodExamResults.length);
 
         // Group by quizTitle (as a proxy for subject)
         const subjectScores: Record<string, { total: number, count: number }> = {};
-        examResults.forEach(result => {
+        studentPeriodExamResults.forEach(result => {
             // Try to extract a general subject name from the quiz title (e.g., "اختبار الهندسة" -> "الهندسة")
             const subjectName = displayText(result.quizTitle).replace('اختبار ', '').replace('الوحدة الأولى', 'أساسيات');
             
@@ -394,13 +457,13 @@ const Reports: React.FC = () => {
         });
 
         return { averageScore, bestSubject, worstSubject };
-    }, [examResults, questionAttempts]);
+    }, [studentPeriodExamResults, studentPeriodQuestionAttempts]);
 
     // Aggregate Skill Analysis
     const aggregatedSkills = useMemo(() => {
         const skillsMap: Record<string, { totalMastery: number, count: number, skillName: string; skillId?: string; pathId?: string; subjectId?: string; sectionId?: string }> = {};
         
-        examResults.forEach(result => {
+        studentPeriodExamResults.forEach(result => {
             if (result.skillsAnalysis) {
                 result.skillsAnalysis.forEach(skill => {
                     const skillKey = skill.skillId || skill.skill;
@@ -427,11 +490,11 @@ const Reports: React.FC = () => {
             }
         });
 
-        if (Object.keys(skillsMap).length === 0 && questionAttempts.length > 0) {
+        if (Object.keys(skillsMap).length === 0 && studentPeriodQuestionAttempts.length > 0) {
             const questionById = new Map(questions.map((question) => [question.id, question]));
             const skillById = new Map(skills.map((skill) => [skill.id, skill]));
 
-            questionAttempts.forEach((attempt) => {
+            studentPeriodQuestionAttempts.forEach((attempt) => {
                 const question = questionById.get(attempt.questionId);
                 const questionSkillIds = Array.isArray(question?.skillIds) ? question.skillIds : [];
 
@@ -479,7 +542,7 @@ const Reports: React.FC = () => {
                 status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong'
             };
         }).sort((a, b) => a.mastery - b.mastery); // Sort by weakest first
-    }, [examResults, questionAttempts, questions, sections, skills, subjects]);
+    }, [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects]);
 
     const weakestSkill = aggregatedSkills.length > 0 ? aggregatedSkills[0] : null;
     const studentEvidenceSummary = useMemo(() => {
@@ -522,7 +585,7 @@ const Reports: React.FC = () => {
     const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user.role === Role.STUDENT;
-    const hasStudentAnalytics = examResults.length > 0 || aggregatedSkills.length > 0;
+    const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
     const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
     const hasStudentTrackScope = studentEnrolledPathIds.length > 0;
@@ -616,6 +679,26 @@ const Reports: React.FC = () => {
             },
         ];
     }, [studentTodayFocus]);
+    const compactStudentSkillRows = useMemo(() => {
+        return focusedReportSkills.slice(0, 5).map((skill) => {
+            const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
+            const quizLink = recommendation.quizLink || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
+
+            return {
+                ...skill,
+                tone: getReportMasteryTone(skill.mastery),
+                lessonLink: recommendation.lessonLink || '/courses',
+                lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
+                quizLink,
+                quizLabel: recommendation.quizTitle || 'تدريب',
+                retestLink: quizLink,
+                evidenceLabel: skill.isReliable
+                    ? `${skill.correctAttempts}/${skill.totalEvidence} صحيح`
+                    : `قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`,
+            };
+        });
+    }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
+    const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);
     const studentAdaptiveLearningBridge = useMemo(() => {
         if (!studentTodayFocus) return null;
 
@@ -640,6 +723,7 @@ const Reports: React.FC = () => {
         const weaknessLabel = weakest?.isReliable ? 'ضعف مؤكد' : 'إشارة أولية';
         const parts = [
             `متوسطك الحالي ${stats?.averageScore || 0}%.`,
+            `الفترة: ${studentPeriodLabel}.`,
             studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
             weakest ? `${weaknessLabel}: ${displayText(weakest.skill)} (${weakest.mastery}%) من ${weakest.attempts} محاولة.` : null,
             nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
@@ -647,7 +731,7 @@ const Reports: React.FC = () => {
         ].filter(Boolean);
 
         return parts.join(' ');
-    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentTrackLabel]);
+    }, [focusedReportSkills, hasStudentAnalytics, isStudentView, stats?.averageScore, studentPeriodLabel, studentTrackLabel]);
     const copyStudentSummary = async () => {
         if (!studentFollowUpSummary) return;
 
@@ -1187,13 +1271,13 @@ const Reports: React.FC = () => {
         XLSX.writeFile(workbook, `my-skills-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
     const downloadStudentAttemptsWorkbook = async () => {
-        if (!examResults.length) return;
+        if (!studentPeriodExamResults.length) return;
 
         const XLSX = await loadXlsx();
         const workbook = XLSX.utils.book_new();
         const rows = [
             ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ', 'أضعف مهارة'],
-            ...examResults.map((result) => {
+            ...studentPeriodExamResults.map((result) => {
                 const weakSkill = [...(result.skillsAnalysis || [])].sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))[0];
 
                 return [
@@ -1222,6 +1306,7 @@ const Reports: React.FC = () => {
                 ['البند', 'القيمة'],
                 ['نوع التقرير', 'تقرير طالب'],
                 ['تاريخ التصدير', now],
+                ['الفترة', studentPeriodLabel],
                 ['متوسط الأداء', `${stats?.averageScore || 0}%`],
                 ['أفضل محور', `${displayText(stats?.bestSubject?.name)} - ${stats?.bestSubject?.score || 0}%`],
                 ['أضعف محور', `${displayText(stats?.worstSubject?.name)} - ${stats?.worstSubject?.score || 0}%`],
@@ -1246,7 +1331,7 @@ const Reports: React.FC = () => {
         const skillRows = isStudentView
             ? [
                 ['المادة', 'المهارة الرئيسية', 'المهارة', 'نسبة الإتقان', 'الحالة', 'الإجراء المقترح', 'شرح مقترح', 'اختبار مقترح'],
-                ...aggregatedSkills.map((skill) => {
+                ...studentPrintableSkillRows.map((skill) => {
                     const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
                     const tone = getReportMasteryTone(skill.mastery);
 
@@ -1302,7 +1387,7 @@ const Reports: React.FC = () => {
 
         const attemptsRows = [
             ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ'],
-            ...examResults.map((result) => [
+            ...studentPeriodExamResults.map((result) => [
                 displayText(result.quizTitle) || '-',
                 `${result.score}%`,
                 result.totalQuestions,
@@ -2512,6 +2597,9 @@ const Reports: React.FC = () => {
                         <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">
                             {studentFollowUpSummary}
                         </p>
+                        <p className="mt-1 text-xs font-black text-slate-400">
+                            الفترة الحالية: {studentPeriodLabel} - {studentReportDataCount} نتيجة أو إجابة مرصودة.
+                        </p>
                     </div>
                     <div className="print-hide flex min-w-full flex-wrap gap-2 lg:min-w-[360px] lg:justify-end">
                         {!isStudentReportFull ? (
@@ -2564,7 +2652,7 @@ const Reports: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={downloadStudentAttemptsWorkbook}
-                                    disabled={!examResults.length}
+                                    disabled={!studentPeriodExamResults.length}
                                     className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
                                 >
                                     <Download size={15} />
@@ -2623,7 +2711,7 @@ const Reports: React.FC = () => {
                 </div>
             </Card>
 
-            {studentAdaptiveLearningBridge ? (
+            {studentAdaptiveLearningBridge && isStudentReportFull ? (
                 <Card className="p-4 sm:p-5 border border-violet-100 bg-white shadow-sm">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div className="min-w-0">
@@ -2675,80 +2763,82 @@ const Reports: React.FC = () => {
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">تقرير أداء المهارات من الاختبارات</h2>
+                            <div className="mb-2 inline-flex rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-500">
+                                تقرير أداء المهارات من الاختبارات
+                            </div>
+                            <h2 className="text-xl font-black text-gray-900">المهارات التي تبدأ بها</h2>
                             <p className="mt-1 text-sm leading-6 text-gray-500">
-                                ملخص سريع من إجاباتك: أضعف مهارة، قوة الدليل، والخطوة التالية للتعلم التكيفي.
+                                ملخص قصير حسب الفترة المختارة. كل مهارة في سطر واحد ومعها خطوة مباشرة.
                             </p>
                             <p className="mt-1 text-xs font-bold text-indigo-600">
-                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
+                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة في {studentPeriodLabel}.
+                            </p>
+                            <p className="mt-1 text-[11px] font-bold text-slate-400">
+                                مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.
                             </p>
                         </div>
-                        <button
-                            onClick={() => setStudentReportDepth('full')}
-                            className="print-hide self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700"
-                        >
-                            عرض كل التفاصيل
-                        </button>
+                        <div className="print-hide flex flex-wrap gap-2">
+                            {(['month', 'quarter', 'all'] as StudentReportPeriod[]).map((period) => (
+                                <button
+                                    key={period}
+                                    onClick={() => setStudentReportPeriod(period)}
+                                    className={`rounded-xl px-3 py-2 text-xs font-black transition ${studentReportPeriod === period ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                                >
+                                    {studentReportPeriodLabels[period]}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setStudentReportDepth('full')}
+                                className="rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"
+                            >
+                                تفاصيل
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="mt-5">
-                        {focusedReportSkills.length > 0 ? focusedReportSkills.slice(0, 1).map((skill, index) => {
-                            const tone = getReportMasteryTone(skill.mastery);
-
-                            return (
-                                <div key={`${getReportSkillKey(skill)}-${index}`} className={`rounded-3xl border p-4 ${tone.bg} ${tone.border}`}>
-                                    <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_1.4fr]">
-                                        <div>
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div className="min-w-0">
-                                                    <span className={`inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-black ${tone.text}`}>
-                                                        {skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'}
-                                                    </span>
-                                                    <div className="mt-3 text-lg font-black leading-8 text-gray-900 break-words">{displayText(skill.skill)}</div>
-                                                    <div className="mt-1 text-xs font-black text-slate-500">
-                                                        مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.
-                                                    </div>
-                                                </div>
-                                                <div className={`text-3xl font-black ${tone.text}`}>{skill.mastery}%</div>
-                                            </div>
-                                            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
-                                                <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
-                                            </div>
-                            <div className="mt-3 grid gap-2 text-xs font-bold text-gray-600">
-                                {skill.subjectName ? <span className="rounded-xl bg-white/80 px-3 py-2">المادة: {displayText(skill.subjectName)}</span> : null}
-                                {skill.sectionName ? <span className="rounded-xl bg-white/80 px-3 py-2">المهارة الرئيسية: {displayText(skill.sectionName)}</span> : null}
-                                <span className="rounded-xl bg-white/80 px-3 py-2">
-                                    القياس: {skill.totalEvidence} سؤال عبر المحاولات
-                                </span>
-                                <span className="rounded-xl bg-white/80 px-3 py-2">
-                                    الصحيح: {skill.correctAttempts} من {skill.totalEvidence}
-                                </span>
-                            </div>
-                                            <p className="mt-3 text-sm font-bold leading-6 text-gray-700">
-                                                {skill.isReliable
-                                                    ? 'ابدأ بالشرح، ثم تدريب قصير، وبعدها أعد القياس.'
-                                                    : `هذه إشارة أولية. ثبّتها بعد ${Math.max(MIN_SKILL_EVIDENCE_COUNT - skill.attempts, 1)} محاولة إضافية.`}
-                                            </p>
+                    <div className="mt-5 space-y-2">
+                        {studentPrintableSkillRows.length > 0 ? studentPrintableSkillRows.map((skill) => (
+                            <div key={getReportSkillKey(skill)} className={`rounded-2xl border p-3 ${skill.tone.bg} ${skill.tone.border}`}>
+                                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
+                                    <div className="min-w-0">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className={`rounded-full bg-white px-2.5 py-1 text-[11px] font-black ${skill.tone.text}`}>
+                                                {skill.tone.label}
+                                            </span>
+                                            <span className="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-black text-slate-500">
+                                                {skill.evidenceLabel}
+                                            </span>
                                         </div>
-                                        <div className="grid gap-3 sm:grid-cols-3">
-                                            {studentQuickActions.map(({ title, label, link, Icon, className }) => (
-                                                <Link key={title} to={link} className={`print-hide flex min-h-[84px] flex-col justify-between rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}>
-                                                    <div>
-                                                        <Icon size={18} />
-                                                        <div className="mt-2 text-sm font-black">{title}</div>
-                                                    </div>
-                                                    <span className="mt-2 inline-flex justify-center rounded-xl bg-white px-3 py-1.5 text-xs font-black text-slate-800">
-                                                        {label}
-                                                    </span>
-                                                </Link>
-                                            ))}
+                                        <div className="mt-2 font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                        <div className="mt-1 text-xs font-bold text-gray-500">
+                                            {[displayText(skill.subjectName), displayText(skill.sectionName)].filter(Boolean).join(' - ') || 'مهارة من اختباراتك'}
                                         </div>
                                     </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-14 text-center text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
+                                        <div className="h-2 w-24 overflow-hidden rounded-full bg-white/80">
+                                            <div className={`h-full rounded-full ${skill.tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                                        </div>
+                                    </div>
+                                    <div className="print-hide flex flex-wrap gap-2 lg:justify-end">
+                                        <Link to={skill.lessonLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
+                                            <Video size={14} />
+                                            شرح
+                                        </Link>
+                                        <Link to={skill.quizLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
+                                            <FileText size={14} />
+                                            تدريب
+                                        </Link>
+                                        <Link to={skill.retestLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
+                                            <CheckCircle size={14} />
+                                            قياس
+                                        </Link>
+                                    </div>
                                 </div>
-                            );
-                        }) : (
+                            </div>
+                        )) : (
                             <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm font-bold leading-7 text-gray-500">
-                                لا توجد مهارات كافية بعد. حل اختبارًا قصيرًا مرتبطًا بالمهارات، وسيظهر هنا ملخص واضح تلقائيًا.
+                                لا توجد مهارات كافية في {studentPeriodLabel}. اختر فترة أطول أو حل اختبارًا قصيرًا مرتبطًا بالمهارات.
                             </div>
                         )}
                     </div>

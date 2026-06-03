@@ -93,6 +93,9 @@ check('student report remains simple first and exposes retest/remediation action
   assertIncludes(files.reports, 'studentQuickActions');
   assertIncludes(files.reports, 'studentTodayFocus');
   assertIncludes(files.reports, 'studentAdaptiveLearningBridge');
+  assertIncludes(files.reports, 'studentReportPeriod');
+  assertIncludes(files.reports, 'compactStudentSkillRows');
+  assertIncludes(files.reports, 'buildFoundationTopicLink');
   assertIncludes(files.reports, 'retestLink');
   assertIncludes(files.reports, 'downloadStudentSkillsWorkbook');
   assertAnyIncludes(files.reports, ['خطوة واحدة واضحة اليوم', 'Ø®Ø·ÙˆØ© ÙˆØ§Ø­Ø¯Ø© ÙˆØ§Ø¶Ø­Ø© Ø§Ù„ÙŠÙˆÙ…']);
