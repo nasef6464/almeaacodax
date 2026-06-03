@@ -345,7 +345,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, enrolledPaths, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, enrolledPaths, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -917,6 +917,88 @@ const Reports: React.FC = () => {
             });
         return filtered.slice(0, 6);
     }, [scopedResults, scopedGroupFilter, scopedFilteredStudents]);
+    const scopedGroupPerformanceRows = useMemo(() => {
+        if (!scopedAnalytics) return [];
+
+        const groupNameById = new Map(groups.map((group) => [group.id, displayText(group.name) || group.id]));
+        const studentGroups = new Map<string, string[]>();
+        const rows = new Map<string, {
+            groupName: string;
+            scoreTotal: number;
+            attempts: number;
+            weakAttempts: number;
+            weakStudentIds: Set<string>;
+            studentIds: Set<string>;
+        }>();
+
+        const ensureRow = (groupName: string) => {
+            const safeGroupName = displayText(groupName) || 'مجموعة غير محددة';
+            const current = rows.get(safeGroupName);
+            if (current) return current;
+
+            const created = {
+                groupName: safeGroupName,
+                scoreTotal: 0,
+                attempts: 0,
+                weakAttempts: 0,
+                weakStudentIds: new Set<string>(),
+                studentIds: new Set<string>(),
+            };
+            rows.set(safeGroupName, created);
+            return created;
+        };
+
+        scopedAnalytics.weakestStudents.forEach((student) => {
+            const names = (student.groupNames || []).map(displayText).filter(Boolean);
+            const ids = (student.groupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
+            const resolvedNames = names.length ? names : ids;
+            if (!resolvedNames.length) return;
+
+            studentGroups.set(student.id, resolvedNames);
+            resolvedNames.forEach((groupName) => {
+                const row = ensureRow(groupName);
+                row.studentIds.add(student.id);
+                row.weakStudentIds.add(student.id);
+            });
+        });
+
+        scopedResults.forEach((result) => {
+            const directGroups = (result.studentGroupIds || []).map((groupId) => groupNameById.get(groupId) || groupId).filter(Boolean);
+            const resolvedGroups = directGroups.length ? directGroups : (result.userId ? studentGroups.get(result.userId) || [] : []);
+            const score = Number(result.score || 0);
+            const studentId = String(result.userId || result.studentEmail || result.studentName || '');
+
+            resolvedGroups.forEach((groupName) => {
+                const row = ensureRow(groupName);
+                row.scoreTotal += score;
+                row.attempts += 1;
+                if (score < 75) row.weakAttempts += 1;
+                if (studentId) row.studentIds.add(studentId);
+            });
+        });
+
+        return Array.from(rows.values())
+            .map((row) => ({
+                groupName: row.groupName,
+                averageScore: row.attempts ? Math.round(row.scoreTotal / row.attempts) : 0,
+                attempts: row.attempts,
+                weakAttempts: row.weakAttempts,
+                weakStudentCount: row.weakStudentIds.size,
+                studentCount: row.studentIds.size,
+            }))
+            .sort((a, b) => {
+                const weaknessScoreA = a.weakStudentCount * 10 + a.weakAttempts - a.averageScore;
+                const weaknessScoreB = b.weakStudentCount * 10 + b.weakAttempts - b.averageScore;
+                return weaknessScoreB - weaknessScoreA;
+            })
+            .slice(0, 8);
+    }, [groups, scopedAnalytics, scopedResults]);
+    const weakestScopedGroup = scopedGroupPerformanceRows[0] || null;
+    const strongestScopedGroup = useMemo(() => {
+        return [...scopedGroupPerformanceRows]
+            .filter((group) => group.attempts > 0)
+            .sort((a, b) => b.averageScore - a.averageScore || a.weakStudentCount - b.weakStudentCount)[0] || null;
+    }, [scopedGroupPerformanceRows]);
     const directedFollowUpOptions = useMemo(
         () => (scopedAnalytics?.assignedFollowUps || []).filter((quiz) => {
             const mode = quiz.mode || 'regular';
@@ -1323,6 +1405,8 @@ const Reports: React.FC = () => {
                 ['عدد المجموعات', scopedAnalytics?.scope.groupCount || 0],
                 ['محاولات الاختبار', scopedAnalytics?.scope.quizAttempts || 0],
                 ['إجابات مرصودة', scopedAnalytics?.scope.questionAttempts || 0],
+                ['أفضل فصل', strongestScopedGroup ? `${displayText(strongestScopedGroup.groupName)} - ${strongestScopedGroup.averageScore}%` : '-'],
+                ['أضعف فصل', weakestScopedGroup ? `${displayText(weakestScopedGroup.groupName)} - ${weakestScopedGroup.averageScore}%` : '-'],
                 ['أول مهارة تحتاج تدخل', displayText(scopedLeadSkill?.skill) || '-'],
                 ['أول طالب للمتابعة', displayText(scopedLeadStudent?.name) || '-'],
                 ['الملخص', scopedFollowUpSummary || 'لا توجد بيانات كافية بعد.'],
@@ -1385,23 +1469,51 @@ const Reports: React.FC = () => {
                 ]),
             ];
 
-        const attemptsRows = [
-            ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ'],
-            ...studentPeriodExamResults.map((result) => [
-                displayText(result.quizTitle) || '-',
-                `${result.score}%`,
-                result.totalQuestions,
-                result.correctAnswers,
-                result.wrongAnswers,
-                result.unanswered,
-                displayText(result.timeSpent) || '-',
-                displayText(result.date) || '-',
+        const groupRows = [
+            ['الفصل/المجموعة', 'متوسط الأداء', 'عدد الطلاب', 'طلاب متعثرون', 'محاولات', 'محاولات تحتاج متابعة'],
+            ...scopedGroupPerformanceRows.map((group) => [
+                displayText(group.groupName) || '-',
+                `${group.averageScore}%`,
+                group.studentCount,
+                group.weakStudentCount,
+                group.attempts,
+                group.weakAttempts,
             ]),
         ];
+
+        const attemptsRows = isStudentView
+            ? [
+                ['اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'بدون إجابة', 'الوقت', 'التاريخ'],
+                ...studentPeriodExamResults.map((result) => [
+                    displayText(result.quizTitle) || '-',
+                    `${result.score}%`,
+                    result.totalQuestions,
+                    result.correctAnswers,
+                    result.wrongAnswers,
+                    result.unanswered,
+                    displayText(result.timeSpent) || '-',
+                    displayText(result.date) || '-',
+                ]),
+            ]
+            : [
+                ['الطالب', 'اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'التاريخ'],
+                ...scopedResults.slice(0, 200).map((result) => [
+                    displayText(result.studentName || result.studentEmail) || '-',
+                    displayText(result.quizTitle) || '-',
+                    `${Number(result.score || 0)}%`,
+                    result.totalQuestions || 0,
+                    result.correctAnswers || 0,
+                    result.wrongAnswers || 0,
+                    displayText(result.date || result.createdAt) || '-',
+                ]),
+            ];
 
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summaryRows), 'summary');
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(skillRows), 'skills');
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(actionRows), 'action-plan');
+        if (!isStudentView) {
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(groupRows), 'groups');
+        }
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(attemptsRows), 'attempts');
         XLSX.writeFile(workbook, isStudentView ? 'student-performance-report.xlsx' : 'scoped-performance-report.xlsx');
     };
@@ -1925,6 +2037,86 @@ const Reports: React.FC = () => {
                                 يتم عرض المهارات الضعيفة المؤكدة فقط بعد {scopedAnalytics.scope.minSkillEvidence || MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر.
                                 {scopedAnalytics.scope.earlyWeakSkillSignalCount ? ` توجد ${scopedAnalytics.scope.earlyWeakSkillSignalCount} إشارة أولية تحتاج قياسًا إضافيًا قبل الحكم.` : ''}
                             </div>
+
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
+                                <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-sm">
+                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                        <div>
+                                            <div className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
+                                                مركز قرار المشرف
+                                            </div>
+                                            <h3 className="mt-2 text-lg font-black text-gray-900">ابدأ من فصل، طالب، مهارة</h3>
+                                            <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
+                                                ملخص تنفيذي من نفس نتائج الاختبارات، ثم تدخل علاجي وقياس متابعة.
+                                            </p>
+                                        </div>
+                                        <div className="print-hide flex flex-wrap gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={buildScopedSmartRemediation}
+                                                disabled={scopedSmartRemediationLoading || !scopedAnalytics.weakestSkills.length}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                {scopedSmartRemediationLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                                                أنشئ تدخل علاجي
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={downloadPerformanceWorkbook}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-100"
+                                            >
+                                                <Download size={14} />
+                                                تصدير الإدارة
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                                            <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
+                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
+                                                {displayText(strongestScopedGroup?.groupName) || 'بانتظار نتائج الفصول'}
+                                            </div>
+                                            <div className="mt-1 text-xs font-bold text-emerald-700">
+                                                {strongestScopedGroup ? `${strongestScopedGroup.averageScore}% - ${strongestScopedGroup.attempts} محاولة` : 'لا توجد محاولات كافية'}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-2xl border border-rose-100 bg-rose-50 p-3">
+                                            <div className="text-xs font-black text-rose-700">أضعف فصل</div>
+                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
+                                                {displayText(weakestScopedGroup?.groupName) || 'بانتظار نتائج الفصول'}
+                                            </div>
+                                            <div className="mt-1 text-xs font-bold text-rose-700">
+                                                {weakestScopedGroup ? `${weakestScopedGroup.weakStudentCount} طلاب متعثرون - ${weakestScopedGroup.averageScore}%` : 'لا توجد إشارة واضحة'}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
+                                            <div className="text-xs font-black text-amber-700">طالب متعثر</div>
+                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
+                                                {displayText(scopedLeadStudent?.name) || 'لا يوجد طالب محدد'}
+                                            </div>
+                                            <div className="mt-1 text-xs font-bold text-amber-700">
+                                                {scopedLeadStudent ? `${scopedLeadStudent.averageScore}% - ${scopedLeadStudent.weakSkillCount} مهارات` : 'المؤشرات مطمئنة حاليًا'}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-3">
+                                            <div className="text-xs font-black text-indigo-700">مهارة مشتركة ضعيفة</div>
+                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
+                                                {displayText(scopedLeadSkill?.skill) || 'بانتظار بيانات المهارات'}
+                                            </div>
+                                            <div className="mt-1 text-xs font-bold text-indigo-700">
+                                                {scopedLeadSkill ? `${scopedLeadSkill.affectedStudents} طلاب - ${scopedLeadSkill.mastery}%` : 'اربط الاختبارات بالمهارات أولًا'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 rounded-2xl bg-slate-50 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
+                                        القرار المقترح: {scopedLeadSkill
+                                            ? `تدخل قصير على ${displayText(scopedLeadSkill.skill)} ثم اختبار متابعة.`
+                                            : scopedLeadStudent
+                                                ? `ابدأ بمتابعة ${displayText(scopedLeadStudent.name)} ثم قياس قصير.`
+                                                : 'وجّه اختبارًا تشخيصيًا قصيرًا حتى تظهر الأولويات.'}
+                                    </div>
+                                </div>
+                            ) : null}
 
                             {institutionalReportHub ? (
                                 <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">

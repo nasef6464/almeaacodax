@@ -117,6 +117,11 @@ check('supervisor and school dashboard exposes intervention intelligence', () =>
   assertIncludes(files.adminDashboard, 'strugglingStudents');
   assertIncludes(files.adminDashboard, 'actionLabel');
   assertIncludes(files.adminDashboard, 'tab=quizzes');
+  assertIncludes(files.reports, 'scopedGroupPerformanceRows');
+  assertIncludes(files.reports, 'weakestScopedGroup');
+  assertIncludes(files.reports, 'strongestScopedGroup');
+  assertIncludes(files.reports, 'buildScopedSmartRemediation');
+  assertIncludes(files.reports, 'groupRows');
   assertAnyIncludes(files.adminDashboard, ['أضعف المهارات', 'Ø£Ø¶Ø¹Ù Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª']);
   assertAnyIncludes(files.reports, ['تحليل اختبار موجه', 'ØªØ­Ù„ÙŠÙ„ Ø§Ø®ØªØ¨Ø§Ø± Ù…ÙˆØ¬Ù‡']);
   assertIncludes(files.reports, 'downloadDirectedQuizAnalysisWorkbook');
