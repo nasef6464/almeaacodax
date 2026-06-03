@@ -579,13 +579,18 @@
 ## Student Payment Modal Separation Summary (2026-06-03)
 
 - Added a visible payment decision summary in the student payment modal.
+- Evidence folder: `../ui-audit-exhaustive/2026-06-03-student-payment-modal-live-c90a4f52-v3/`.
 - Verified:
   - The modal now clearly says the purchase request opens only the selected package or selected item.
   - The modal now clearly says content is not opened automatically from the browser.
   - The modal now explains that access is activated after admin review.
+  - Production visual proof opened the payment modal as a student from the cart and stopped before creating a payment request.
+  - No login form, console errors, or 5xx network failures were recorded in the visual proof.
 - Checks:
   - `npm run smoke:payment-providers` -> PASS 7/7.
   - `npm run smoke:payment-tampering` -> PASS 9/9.
   - `npm run smoke:results` -> PASS 6/6.
   - `npm run build` -> PASS.
   - `npm run typecheck` -> PASS.
+  - Production `SMOKE_STRICT_VERSION=1 npm run smoke:frontend:strict` -> PASS 29/29, serving commit `c90a4f52`.
+  - Production payment modal visual proof -> PASS.
