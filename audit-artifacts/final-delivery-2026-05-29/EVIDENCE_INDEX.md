@@ -616,3 +616,36 @@
   - `npm run smoke:student-learning-journey` -> PASS 7/7.
   - `npm run typecheck` -> PASS.
   - `npm run build` -> PASS.
+
+## Student Full Goal Live Verification (2026-06-03)
+
+- Production commit under verification: `b82f9032`.
+- Evidence folders:
+  - Student live journey: `../ui-audit-exhaustive/2026-06-03-student-full-goal-live-b82f9032/`.
+  - Linked role pages: `../ui-audit-exhaustive/2026-06-03-student-linked-roles-live-b82f9032/`.
+- Verified as a student-like journey:
+  - Dashboard renders student progress, weak-skill recommendation, learning actions, and path timeline.
+  - Subject learning page opens the selected path/subject learning space and shows open learning tabs.
+  - Course page and training quiz route open without login fallback, console errors, 4xx, or 5xx.
+  - My quizzes, reports, and plan pages open with student-specific controls and no blocked state.
+  - Student reports show the current path context, weakest skill, remediation actions, and export/share controls.
+  - Parent reports open in the parent account with concise linked-student performance, attempts, recommendations, and recent results.
+  - Teacher and supervisor report/admin pages open with the correct protected role surfaces.
+- Live visual route audit:
+  - Student journey -> PASS 10/10.
+  - Linked role pages -> PASS 20/20.
+- Contract checks:
+  - `npm run smoke:student-learning-journey` -> PASS 7/7.
+  - `npm run smoke:student-path-scope` -> PASS 5/5.
+  - `npm run smoke:package-path-navigation` -> PASS 8/8.
+  - `npm run smoke:my-quizzes` -> PASS 8/8.
+  - `npm run smoke:results` -> PASS 6/6.
+  - `npm run smoke:reports-role` -> PASS 11/11.
+  - `npm run smoke:payment-package` -> PASS 8/8.
+  - `npm run smoke:payment-providers` -> PASS 7/7.
+  - `npm run smoke:payment-tampering` -> PASS 9/9.
+  - `npm run smoke:rbac-school-scope` -> PASS 4/4.
+  - `npm run smoke:batch136-admin-users-schools-parent-payment` -> PASS.
+  - `npm run smoke:supervisor-dashboard` -> PASS 3/3.
+  - `npm run smoke:school-management` -> PASS 9/9.
+  - `npm run smoke:school-portal-command` -> PASS 8/8.
