@@ -60,6 +60,16 @@ check('student skill performance report is explicitly driven by quiz answers and
   assertIncludes(reportsSource, 'skill.correctAttempts');
 });
 
+check('student skill report bridges weak quiz skills into relearning, adaptive training, and smart path', () => {
+  assertIncludes(reportsSource, 'const studentAdaptiveLearningBridge = useMemo');
+  assertIncludes(reportsSource, 'إعادة التعلم والتعلم التكيفي');
+  assertIncludes(reportsSource, 'إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس جديد داخل المسار الذكي.');
+  assertIncludes(reportsSource, 'studentAdaptiveLearningBridge.adaptiveTrainingLink');
+  assertIncludes(reportsSource, 'studentAdaptiveLearningBridge.smartPathLink');
+  assertIncludes(reportsSource, 'studentAdaptiveLearningBridge.retestLink');
+  assertIncludes(reportsSource, 'قياس جديد');
+});
+
 check('student report links weak skills to lesson, quiz, plan, and exports', () => {
   assertIncludes(reportsSource, 'getSkillRecommendation(selectedReportSkill');
   assertIncludes(reportsSource, 'lessonLink');
@@ -149,7 +159,8 @@ check('staff scoped reports keep intervention plan, summary, and smart remediati
   assertIncludes(reportsSource, 'const scopedInterventionPlan = useMemo');
   assertIncludes(reportsSource, 'ابدأ بالمهارة الأكثر احتياجًا');
   assertIncludes(reportsSource, 'تابع الطالب الأكثر احتياجًا');
-  assertIncludes(reportsSource, 'حوّلها لخطة متابعة');
+  assertIncludes(reportsSource, 'حوّلها لمسار تعلم تكيفي');
+  assertIncludes(reportsSource, 'تدريبًا تكيفيًا');
   assertIncludes(reportsSource, 'const scopedFollowUpSummary = useMemo');
   assertIncludes(reportsSource, 'const buildScopedSmartRemediation = async () =>');
   assertIncludes(reportsSource, 'const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5)');

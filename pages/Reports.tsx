@@ -613,6 +613,22 @@ const Reports: React.FC = () => {
             },
         ];
     }, [studentTodayFocus]);
+    const studentAdaptiveLearningBridge = useMemo(() => {
+        if (!studentTodayFocus) return null;
+
+        const skillParam = studentTodayFocus.skillId ? `?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '';
+
+        return {
+            skillName: displayText(studentTodayFocus.skill),
+            evidenceLine: studentTodayFocus.isReliable
+                ? `الحكم مؤكد من ${studentTodayFocus.attempts} محاولات على المهارة.`
+                : `هذه قراءة أولية من ${studentTodayFocus.attempts} محاولة وتحتاج قياسًا إضافيًا.`,
+            relearnLink: studentTodayFocus.lessonLink || '/courses',
+            adaptiveTrainingLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
+            smartPathLink: '/plan',
+            retestLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
+        };
+    }, [studentTodayFocus]);
     const studentFollowUpSummary = useMemo(() => {
         if (!isStudentView || !hasStudentAnalytics) return '';
 
@@ -624,7 +640,7 @@ const Reports: React.FC = () => {
             studentTrackLabel ? `المسار: ${studentTrackLabel}.` : 'اختر مسارك حتى نرتب التقارير والاختبارات حسبه.',
             weakest ? `${weaknessLabel}: ${displayText(weakest.skill)} (${weakest.mastery}%) من ${weakest.attempts} محاولة.` : null,
             nextTwo.length ? `الأولوية: ${nextTwo.join('، ')}.` : null,
-            'الخطوة: شرح قصير، تدريب بسيط، ثم إعادة قياس بعد عدة أسئلة.',
+            'الخطوة: إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس داخل المسار الذكي.',
         ].filter(Boolean);
 
         return parts.join(' ');
@@ -702,11 +718,11 @@ const Reports: React.FC = () => {
                 className: 'border-amber-100 bg-amber-50 text-amber-800',
             },
             {
-                title: 'حوّلها لخطة متابعة',
+                title: 'حوّلها لمسار تعلم تكيفي',
                 label: weakestScopedSubject ? `${displayText(weakestScopedSubject.subjectName)} - ${weakestScopedSubject.mastery}%` : 'اختر مادة للمتابعة',
                 body: weakestScopedSubject
-                    ? `أنشئ اختبار متابعة أو تدريبًا قصيرًا في هذه المادة للطلاب الضعاف (${weakestScopedSubject.weakStudents}).`
-                    : 'اربط الاختبارات بالمواد والمهارات حتى يظهر اقتراح المتابعة تلقائيًا.',
+                    ? `أنشئ اختبار متابعة وتدريبًا تكيفيًا في هذه المادة للطلاب الضعاف (${weakestScopedSubject.weakStudents}) ثم اربطه بخطة إعادة تعلم.`
+                    : 'اربط الاختبارات بالمواد والمهارات حتى يظهر مسار إعادة التعلم تلقائيًا.',
                 className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
             },
         ];
@@ -2350,6 +2366,54 @@ const Reports: React.FC = () => {
                     </Link>
                 </div>
             </Card>
+
+            {studentAdaptiveLearningBridge ? (
+                <Card className="p-4 sm:p-5 border border-violet-100 bg-white shadow-sm">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="min-w-0">
+                            <div className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700">
+                                إعادة التعلم والتعلم التكيفي
+                            </div>
+                            <h2 className="mt-3 text-xl font-black leading-8 text-gray-900">
+                                مسار ذكي لمهارة: {studentAdaptiveLearningBridge.skillName || 'المهارة الأضعف'}
+                            </h2>
+                            <p className="mt-2 max-w-3xl text-sm font-bold leading-7 text-gray-600">
+                                {studentAdaptiveLearningBridge.evidenceLine} اتبع الترتيب: إعادة تعلم قصيرة، تدريب تكيفي، ثم قياس جديد داخل المسار الذكي.
+                            </p>
+                        </div>
+                        <div className="print-hide grid gap-2 sm:grid-cols-2 lg:min-w-[640px] xl:grid-cols-4">
+                            <Link
+                                to={studentAdaptiveLearningBridge.relearnLink}
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-violet-100 bg-violet-50 px-3 py-2 text-xs font-black text-violet-700 hover:bg-violet-100 sm:text-sm"
+                            >
+                                <BookOpen size={15} />
+                                إعادة التعلم
+                            </Link>
+                            <Link
+                                to={studentAdaptiveLearningBridge.adaptiveTrainingLink}
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 hover:bg-amber-100 sm:text-sm"
+                            >
+                                <FileText size={15} />
+                                تدريب تكيفي
+                            </Link>
+                            <Link
+                                to={studentAdaptiveLearningBridge.smartPathLink}
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700 sm:text-sm"
+                            >
+                                <Target size={15} />
+                                المسار الذكي
+                            </Link>
+                            <Link
+                                to={studentAdaptiveLearningBridge.retestLink}
+                                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100 sm:text-sm"
+                            >
+                                <CheckCircle size={15} />
+                                قياس جديد
+                            </Link>
+                        </div>
+                    </div>
+                </Card>
+            ) : null}
 
             {!isStudentReportFull ? (
                 <Card className="p-4 sm:p-6 border-0 shadow-sm bg-white">
