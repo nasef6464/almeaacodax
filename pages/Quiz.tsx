@@ -208,15 +208,16 @@ const Quiz: React.FC = () => {
   const canUserAccessPreparedQuiz = (quiz: (typeof quizzes)[number]) => {
     if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
     if (isStandaloneMockExam(quiz)) return false;
-    if ((quiz.mode || 'regular') !== 'saher') return false;
+    const quizMode = quiz.mode || 'regular';
+    if (quizMode !== 'saher' && quizMode !== 'central') return false;
     if (isQuizExpired(quiz.dueDate)) return false;
 
-    if ((quiz.mode || 'regular') === 'central') {
-      const isUserTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+    const hasExplicitAudience = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+    if (hasExplicitAudience) {
+      const isUserTargeted = (quiz.targetUserIds || []).includes(user.id);
       const userGroups = user.groupIds || [];
-      const isGroupTargeted =
-        (quiz.targetGroupIds || []).length === 0 || (quiz.targetGroupIds || []).some((groupId) => userGroups.includes(groupId));
-      if (!isUserTargeted || !isGroupTargeted) return false;
+      const isGroupTargeted = (quiz.targetGroupIds || []).some((groupId) => userGroups.includes(groupId));
+      if (!isUserTargeted && !isGroupTargeted) return false;
     }
     return true;
   };
@@ -244,7 +245,8 @@ const Quiz: React.FC = () => {
       quizzes.filter((quiz) => {
         if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
         if (isQuizExpired(quiz.dueDate)) return false;
-        return isStandaloneMockExam(quiz) || (quiz.mode || 'regular') !== 'saher' || getResolvedQuestionCount(quiz) === 0;
+        const quizMode = quiz.mode || 'regular';
+        return isStandaloneMockExam(quiz) || (quizMode !== 'saher' && quizMode !== 'central') || getResolvedQuestionCount(quiz) === 0;
       }).length,
     [quizzes, globalQuestionBank],
   );
@@ -402,62 +404,99 @@ const Quiz: React.FC = () => {
         });
     };
 
+    const matchesTargetSkills = (question: typeof globalQuestionBank[number]) =>
+      targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
+    const matchesQuestionType = (question: typeof globalQuestionBank[number]) =>
+      questionTypeFilter === 'all' || question.type === questionTypeFilter;
+
     const strictPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
-      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
       const difficultyMatches = !difficulty || question.difficulty === difficulty;
-      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && subjectMatches && sectionMatches && skillMatches && difficultyMatches && typeMatches;
+      return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && difficultyMatches && matchesQuestionType(question);
     });
 
     const relaxedPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
-      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
-      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && subjectMatches && sectionMatches && skillMatches && typeMatches;
+      return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && matchesQuestionType(question);
     });
+
+    const skillStrictPool = targetSkillIds.length > 0
+      ? globalQuestionBank.filter((question) => {
+          const difficultyMatches = !difficulty || question.difficulty === difficulty;
+          return matchesTargetSkills(question) && difficultyMatches && matchesQuestionType(question);
+        })
+      : [];
+
+    const skillRelaxedPool = targetSkillIds.length > 0
+      ? globalQuestionBank.filter((question) => matchesTargetSkills(question) && matchesQuestionType(question))
+      : [];
+
+    const skillContextFillPool = targetSkillIds.length > 0
+      ? globalQuestionBank.filter((question) => {
+          const questionSkillScopes = (question.skillIds || [])
+            .map((skillId) => skills.find((skill) => skill.id === skillId))
+            .filter(Boolean);
+          const sharesPath = questionSkillScopes.length === 0 || targetSkills.some((targetSkill) =>
+            questionSkillScopes.some((skill) => skill?.pathId && skill.pathId === targetSkill.pathId),
+          );
+          const sharesSubject = questionSkillScopes.length === 0 || targetSkills.some((targetSkill) =>
+            questionSkillScopes.some((skill) => skill?.subjectId && skill.subjectId === targetSkill.subjectId),
+          );
+          return sharesPath && sharesSubject && matchesQuestionType(question);
+        })
+      : [];
 
     const fallbackPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const skillMatches = targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
-      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && skillMatches && typeMatches;
+      return pathMatches && matchesTargetSkills(question) && matchesQuestionType(question);
     });
     const contextFillPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
       const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
-      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && subjectMatches && sectionMatches && typeMatches;
+      return pathMatches && subjectMatches && sectionMatches && matchesQuestionType(question);
     });
     const broadFillPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const typeMatches = questionTypeFilter === 'all' || question.type === questionTypeFilter;
-      return pathMatches && typeMatches;
+      return pathMatches && matchesQuestionType(question);
     });
 
     const sourcePool =
       strictPool.length > 0
         ? strictPool
+        : skillStrictPool.length > 0
+          ? skillStrictPool
         : relaxedPool.length > 0
           ? relaxedPool
+          : skillRelaxedPool.length > 0
+            ? skillRelaxedPool
           : fallbackPool.length > 0
             ? fallbackPool
+            : skillContextFillPool.length > 0
+              ? skillContextFillPool
             : contextFillPool.length > 0
               ? contextFillPool
               : broadFillPool;
     if (sourcePool.length === 0) {
-      showStatus('لا توجد أسئلة مطابقة للخيارات الحالية. جرّب تغيير المسار أو المادة أو مستوى الصعوبة.', 'error');
+      showStatus(
+        targetSkillIds.length > 0
+          ? 'لا توجد أسئلة منشورة لهذه المهارات حتى الآن. جرّب إزالة نطاق المهارات أو اختر مهارات أخرى.'
+          : 'لا توجد أسئلة مطابقة للخيارات الحالية. جرّب تغيير المسار أو المادة أو مستوى الصعوبة.',
+        'error',
+      );
       return;
     }
 
     addQuestions(strictPool);
+    addQuestions(skillStrictPool);
     addQuestions(relaxedPool);
+    addQuestions(skillRelaxedPool);
     addQuestions(fallbackPool);
+    addQuestions(skillContextFillPool);
     addQuestions(contextFillPool);
     addQuestions(broadFillPool);
 
@@ -814,7 +853,7 @@ const Quiz: React.FC = () => {
               )}
               {hiddenReadyQuizCount > 0 ? (
                 <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-bold leading-6 text-amber-700">
-                  تعرض هذه القائمة اختبارات ساهر الجاهزة فقط.
+                  تعرض هذه القائمة اختبارات ساهر والاختبارات الموجهة المتاحة لك فقط.
                 </div>
               ) : null}
             </div>

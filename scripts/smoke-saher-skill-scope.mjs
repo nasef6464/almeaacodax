@@ -71,6 +71,14 @@ const pickSelfQuizQuestions = ({ selectedSkills, questionCount }) => {
     return pathMatches && subjectMatches && skillMatches && typeMatches;
   });
 
+  const skillRelaxedPool = selectedSkills.length > 0
+    ? questions.filter((question) => {
+        const skillMatches = (question.skillIds || []).some((skillId) => selectedSkills.includes(skillId));
+        const typeMatches = !question.type || question.type === 'mcq';
+        return skillMatches && typeMatches;
+      })
+    : [];
+
   const contextFillPool = questions.filter((question) => {
     const pathMatches = question.pathId === TARGET_PATH_ID;
     const subjectMatches = question.subject === TARGET_SUBJECT_ID;
@@ -79,10 +87,12 @@ const pickSelfQuizQuestions = ({ selectedSkills, questionCount }) => {
   });
 
   addQuestions(strictPool);
+  addQuestions(skillRelaxedPool);
   addQuestions(contextFillPool);
   return {
     picked: [...byId.values()],
     strictCount: strictPool.length,
+    skillRelaxedCount: skillRelaxedPool.length,
     contextCount: contextFillPool.length,
   };
 };
@@ -103,6 +113,9 @@ await check('saher UI supports all skills, main skill groups, and multiple sub-s
     'toggleTargetSkill',
     'setSkillScope(next)',
     "const [targetSkillIds, setTargetSkillIds] = useState<string[]>([])",
+    'const skillStrictPool = targetSkillIds.length > 0',
+    'const skillRelaxedPool = targetSkillIds.length > 0',
+    'لا توجد أسئلة منشورة لهذه المهارات حتى الآن',
   ];
 
   const missing = requiredFragments.filter((fragment) => !quizSource.includes(fragment));
@@ -130,13 +143,30 @@ await check('saher extra quiz links carry multiple weak skill ids from results',
   return 'result extra quiz keeps up to three weak skills';
 });
 
+await check('saher ready tab includes Saher and directed quizzes with audience OR logic', async () => {
+  const requiredFragments = [
+    "quizMode !== 'saher' && quizMode !== 'central'",
+    'const hasExplicitAudience = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0',
+    'if (!isUserTargeted && !isGroupTargeted) return false',
+    'تعرض هذه القائمة اختبارات ساهر والاختبارات الموجهة المتاحة لك فقط',
+  ];
+
+  const missing = requiredFragments.filter((fragment) => !quizSource.includes(fragment));
+  if (missing.length > 0) {
+    throw new Error(`missing directed prepared quiz fragments: ${missing.join(', ')}`);
+  }
+
+  return 'prepared list allows central directed tests for targeted student or group';
+});
+
 await check('saher multi-skill scope can fill a student quiz', async () => {
-  const { picked, strictCount, contextCount } = pickSelfQuizQuestions({
+  const { picked, strictCount, skillRelaxedCount, contextCount } = pickSelfQuizQuestions({
     selectedSkills: selectedSkillIds,
     questionCount: REQUESTED_COUNT,
   });
 
   if (strictCount < 2) throw new Error(`multi-skill strict pool too small: ${strictCount}`);
+  if (skillRelaxedCount < strictCount) throw new Error(`relaxed skill pool ${skillRelaxedCount} is smaller than strict pool ${strictCount}`);
   if (picked.length < Math.min(REQUESTED_COUNT, contextCount)) {
     throw new Error(`picked ${picked.length} questions from ${contextCount} available`);
   }
@@ -146,7 +176,7 @@ await check('saher multi-skill scope can fill a student quiz', async () => {
     throw new Error(`picked unrelated questions: ${unrelated.map((question) => question.id || question._id).join(', ')}`);
   }
 
-  return `${picked.length} questions, selected skills=${selectedSkillIds.length}, strict=${strictCount}`;
+  return `${picked.length} questions, selected skills=${selectedSkillIds.length}, strict=${strictCount}, skillRelaxed=${skillRelaxedCount}`;
 });
 
 for (const item of checks) {
