@@ -1754,39 +1754,51 @@ const Reports: React.FC = () => {
             </header>
 
             {(isStudentView ? hasStudentAnalytics : true) ? (
-            <Card className="p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative">
-                <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
-                <div className="relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <Card
+                aria-label={isStudentView ? 'تقرير مبسط للطالب' : roleScopeTitle[user.role] || 'تقرير نطاق'}
+                className={isStudentView ? 'p-4 border border-indigo-100 shadow-sm bg-white text-slate-900 overflow-hidden relative' : 'p-4 sm:p-6 border-0 shadow-sm bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white overflow-hidden relative'}
+            >
+                {!isStudentView ? (
+                    <>
+                        <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+                        <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
+                    </>
+                ) : null}
+                <div className={isStudentView ? 'relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center' : 'relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center'}>
                     <div>
-                        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
+                        <div className={isStudentView ? 'mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700' : 'mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100'}>
                             <Sparkles size={14} />
                             القرار السريع من التقرير
                         </div>
-                        <h2 className="text-2xl font-black leading-9">
+                        <h2 className={isStudentView ? 'text-lg font-black leading-7 text-gray-900 sm:text-xl' : 'text-2xl font-black leading-9'}>
                             {isStudentView ? 'ابدأ بخطوة واحدة واضحة اليوم' : 'ابدأ التدخل من أعلى نقطة تأثير'}
                         </h2>
-                        <p className="mt-3 max-w-3xl text-sm leading-8 text-indigo-100">
+                        <p className={isStudentView ? 'mt-2 max-w-3xl text-sm font-bold leading-7 text-gray-600' : 'mt-3 max-w-3xl text-sm leading-8 text-indigo-100'}>
                             {isStudentView
                                 ? (studentFollowUpSummary || 'حل اختبارًا قصيرًا أولًا حتى نحدد المهارة التي تحتاج متابعة.')
                                 : (scopedFollowUpSummary || 'بمجرد تحميل بيانات النطاق سيظهر هنا ملخص سريع للطالب أو المهارة التي تحتاج تدخلًا.')}
                         </p>
-                        <div className="print-hide mt-4 flex flex-wrap gap-2">
+                        {isStudentView ? (
+                            <p className="mt-1 text-xs font-black text-slate-400">
+                                {studentPeriodLabel} - {studentReportDataCount} نتيجة أو إجابة مرصودة.
+                            </p>
+                        ) : null}
+                        <div className="print-hide mt-3 flex flex-wrap gap-2">
                             {isStudentView ? (
                                 <>
                                     <button
                                         onClick={copyStudentSummary}
-                                        className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-900 hover:bg-indigo-50"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700 sm:text-sm"
                                     >
                                         {copiedStudentSummary ? <CheckCircle size={16} /> : <Copy size={16} />}
-                                        {copiedStudentSummary ? 'تم النسخ' : 'نسخ ملخص ولي الأمر'}
+                                        {copiedStudentSummary ? 'تم النسخ' : 'نسخ ملخص'}
                                     </button>
                                     <button
                                         onClick={shareStudentSummary}
-                                        className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-black text-white hover:bg-white/15"
+                                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50 sm:text-sm"
                                     >
                                         {sharedStudentSummary ? <CheckCircle size={16} /> : <Share2 size={16} />}
-                                        {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة الملخص'}
+                                        {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
                                     </button>
                                 </>
                             ) : (
@@ -1811,27 +1823,27 @@ const Reports: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-                            <div className="text-xs font-bold text-indigo-100">أهم مؤشر</div>
-                            <div className="mt-2 text-xl font-black">
+                    <div className={isStudentView ? 'grid gap-2 sm:grid-cols-3 lg:grid-cols-1' : 'grid gap-3 sm:grid-cols-3 lg:grid-cols-1'}>
+                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أهم مؤشر</div>
+                            <div className={isStudentView ? 'mt-1 text-lg font-black text-indigo-700' : 'mt-2 text-xl font-black'}>
                                 {isStudentView ? `${stats?.averageScore ?? 0}%` : `${scopedAnalytics?.scope.studentCount ?? 0} طالب`}
                             </div>
-                            <div className="mt-1 text-xs font-bold text-indigo-100">
+                            <div className={isStudentView ? 'mt-1 text-xs font-bold text-slate-500' : 'mt-1 text-xs font-bold text-indigo-100'}>
                                 {isStudentView ? 'متوسط الأداء' : 'داخل نطاق المتابعة'}
                             </div>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-                            <div className="text-xs font-bold text-indigo-100">أولوية الآن</div>
-                            <div className="mt-2 text-sm font-black leading-6">
+                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أولوية الآن</div>
+                            <div className={isStudentView ? 'mt-1 text-sm font-black leading-6 text-gray-900' : 'mt-2 text-sm font-black leading-6'}>
                                 {isStudentView
                                     ? displayText(weakestSkill?.skill) || 'ابدأ باختبار قصير'
                                     : displayText(scopedAnalytics?.weakestSkills?.[0]?.skill) || 'بانتظار بيانات المهارات'}
                             </div>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-                            <div className="text-xs font-bold text-indigo-100">الخطوة التالية</div>
-                            <div className="mt-2 text-sm font-bold leading-6">
+                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                            <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>الخطوة التالية</div>
+                            <div className={isStudentView ? 'mt-1 text-sm font-bold leading-6 text-gray-700' : 'mt-2 text-sm font-bold leading-6'}>
                                 {isStudentView ? 'شرح قصير + تدريب + إعادة قياس' : 'تدخل موجه + اختبار متابعة'}
                             </div>
                         </div>
@@ -2587,97 +2599,6 @@ const Reports: React.FC = () => {
 
             {isStudentView && hasStudentAnalytics && (
             <>
-            <Card className="p-4 sm:p-6 border border-indigo-100 shadow-sm bg-white overflow-hidden">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="min-w-0">
-                        <div className="mb-3 inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                            تقرير مبسط للطالب
-                        </div>
-                        <h2 className="text-2xl font-black leading-tight text-gray-900">خطوة واحدة واضحة اليوم</h2>
-                        <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">
-                            {studentFollowUpSummary}
-                        </p>
-                        <p className="mt-1 text-xs font-black text-slate-400">
-                            الفترة الحالية: {studentPeriodLabel} - {studentReportDataCount} نتيجة أو إجابة مرصودة.
-                        </p>
-                    </div>
-                    <div className="print-hide flex min-w-full flex-wrap gap-2 lg:min-w-[360px] lg:justify-end">
-                        {!isStudentReportFull ? (
-                            <>
-                                <button
-                                    onClick={copyStudentSummary}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
-                                >
-                                    {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
-                                    {copiedStudentSummary ? 'تم' : 'نسخ ملخص'}
-                                </button>
-                                <button
-                                    onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-50 sm:text-sm"
-                                >
-                                    <Download size={15} />
-                                    تحميل
-                                </button>
-                                <button
-                                    onClick={() => setStudentReportDepth('full')}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
-                                >
-                                    <FileText size={15} />
-                                    تقرير تفصيلي
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    onClick={copyStudentSummary}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:bg-slate-50 sm:text-sm"
-                                >
-                                    {copiedStudentSummary ? <CheckCircle size={15} /> : <Copy size={15} />}
-                                    {copiedStudentSummary ? 'تم' : 'نسخ'}
-                                </button>
-                                <button
-                                    onClick={shareStudentSummary}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition hover:bg-indigo-700 sm:text-sm"
-                                >
-                                    {sharedStudentSummary ? <CheckCircle size={15} /> : <Share2 size={15} />}
-                                    {sharedStudentSummary ? 'تمت المشاركة' : 'مشاركة'}
-                                </button>
-                                <button
-                                    onClick={downloadStudentSkillsWorkbook}
-                                    disabled={!aggregatedSkills.length}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                                >
-                                    <FileText size={15} />
-                                    المهارات
-                                </button>
-                                <button
-                                    onClick={downloadStudentAttemptsWorkbook}
-                                    disabled={!studentPeriodExamResults.length}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
-                                >
-                                    <Download size={15} />
-                                    المحاولات
-                                </button>
-                                <Link to="/plan" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-black text-white transition hover:bg-emerald-600 sm:text-sm">
-                                    <Target size={15} />
-                                    الخطة
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        void buildSmartRemediation();
-                                    }}
-                                    disabled={smartRemediationLoading || focusedReportSkills.length === 0}
-                                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-black text-slate-900 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
-                                >
-                                    {smartRemediationLoading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-                                    {smartRemediationLoading ? 'تجهيز' : 'اقتراح'}
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </Card>
-
             <Card className={`p-3 sm:p-4 border shadow-sm ${hasStudentTrackScope ? 'border-emerald-100 bg-emerald-50/70' : 'border-amber-100 bg-amber-50/80'}`}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -2899,9 +2820,21 @@ const Reports: React.FC = () => {
                             نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار، ثم نقترح لك خطوة علاجية مناسبة.
                         </p>
                     </div>
-                    <Link to="/dashboard?tab=saher" className="self-start rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
-                        اختبر مهارة جديدة
-                    </Link>
+                    <div className="print-hide flex flex-wrap gap-2">
+                        <button
+                            onClick={() => {
+                                void buildSmartRemediation();
+                            }}
+                            disabled={smartRemediationLoading || focusedReportSkills.length === 0}
+                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {smartRemediationLoading ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+                            {smartRemediationLoading ? 'تجهيز' : 'اقتراح خطة'}
+                        </button>
+                        <Link to="/dashboard?tab=saher" className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
+                            اختبر مهارة جديدة
+                        </Link>
+                    </div>
                 </div>
 
                 {selectedReportSkill ? (

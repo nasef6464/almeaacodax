@@ -1,15 +1,13 @@
 import React from 'react';
 
-interface CardProps {
-    children: React.ReactNode;
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
     className?: string;
-    onClick?: () => void;
-    style?: React.CSSProperties;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = '', onClick, style }) => {
+export const Card: React.FC<CardProps> = ({ children, className = '', onClick, style, ...props }) => {
     return (
         <div 
+            {...props}
             onClick={onClick}
             className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden ${className}`}
             style={style}
