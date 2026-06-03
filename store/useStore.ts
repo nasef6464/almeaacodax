@@ -222,8 +222,12 @@ const isPublicPackageAvailable = (course: Course) =>
         (!course.approvalStatus || course.approvalStatus === 'approved'),
     );
 
-const getUserSchoolIds = (groups: Group[], userGroupIds: string[] = []) => {
+const getUserSchoolIds = (groups: Group[], userGroupIds: string[] = [], directSchoolId?: string) => {
     const ids = new Set<string>();
+
+    if (directSchoolId) {
+        ids.add(directSchoolId);
+    }
 
     userGroupIds.forEach((groupId) => {
         const group = groups.find((item) => item.id === groupId);
@@ -827,7 +831,7 @@ export const useStore = create<AppState>()(
                     return true;
                 }
 
-                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || []);
+                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId);
                 if (schoolIds.size === 0) {
                     return false;
                 }
@@ -836,7 +840,7 @@ export const useStore = create<AppState>()(
             },
             getMatchingPackage: (contentType, pathId, subjectId) => {
                 const state = get();
-                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || []);
+                const schoolIds = getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId);
                 if (schoolIds.size === 0) {
                     return null;
                 }
@@ -1311,8 +1315,12 @@ export const useStore = create<AppState>()(
                 const nextGroupIds = currentUser.groupIds?.includes(groupId)
                     ? (currentUser.groupIds || [])
                     : [...(currentUser.groupIds || []), groupId];
+                const nextSchoolId = targetGroup.type === 'SCHOOL'
+                    ? targetGroup.id
+                    : targetGroup.parentId || currentUser.schoolId;
 
                 api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
                     groupIds: nextGroupIds,
                 }).catch(console.error);
 
@@ -1328,7 +1336,7 @@ export const useStore = create<AppState>()(
                     return group;
                 });
 
-                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, groupIds: nextGroupIds } : existingUser);
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
                 return {
                     groups: newGroups,
                     users: newUsers,
@@ -1341,7 +1349,12 @@ export const useStore = create<AppState>()(
                 if (!currentUser) return state;
 
                 const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
                 api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
                     groupIds: nextGroupIds,
                 }).catch(console.error);
 
@@ -1357,7 +1370,7 @@ export const useStore = create<AppState>()(
                     return group;
                 });
 
-                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, groupIds: nextGroupIds } : existingUser);
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
                 return {
                     groups: newGroups,
                     users: newUsers,

@@ -1126,8 +1126,28 @@ authRouter.post(
       });
     }
 
+    let resolvedUser = grantResult.user;
+    const schoolId = String(accessCode.schoolId || linkedPackage.schoolId || "").trim();
+    if (schoolId && String(user.role || "") === "student") {
+      await Promise.all([
+        UserModel.findByIdAndUpdate(user._id, {
+          $set: { schoolId },
+          $addToSet: { groupIds: schoolId },
+        }),
+        GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {
+          $addToSet: { studentIds: String(user.id || user._id) },
+        }),
+      ]);
+
+      const schoolStudentCount = await UserModel.countDocuments({ schoolId, role: "student" });
+      await GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), {
+        $set: { totalStudents: schoolStudentCount },
+      });
+      resolvedUser = await UserModel.findById(user._id);
+    }
+
     return res.json({
-      user: serializeUser(grantResult.user),
+      user: serializeUser(resolvedUser),
       accessCode: reservedAccessCode,
       package: linkedPackage,
       accessGrant: grantResult.grant,

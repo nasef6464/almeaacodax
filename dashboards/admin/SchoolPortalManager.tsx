@@ -18,6 +18,16 @@ import { useStore } from '../../store/useStore';
 import { Group, QuizResult, Role, User } from '../../types';
 import { loadXlsx } from '../../utils/xlsxLoader';
 
+const packageContentTypeLabels: Record<string, string> = {
+    all: 'كل المحتوى',
+    courses: 'الدورات',
+    foundation: 'التأسيس',
+    banks: 'التدريب',
+    tests: 'الاختبارات',
+    mockExams: 'الاختبارات المحاكية',
+    library: 'المكتبة',
+};
+
 const createWorkbookDownload = async (
     fileName: string,
     sheets: Array<{ name: string; rows: Array<Array<string | number>> }>,
@@ -120,6 +130,8 @@ export const SchoolPortalManager: React.FC = () => {
         users,
         groups,
         courses,
+        paths,
+        subjects,
         quizzes,
         examResults,
         b2bPackages,
@@ -276,6 +288,23 @@ export const SchoolPortalManager: React.FC = () => {
         if (selectedSchoolId === 'all') return scope.packages;
         return scope.packages.filter((pkg) => pkg.schoolId === selectedSchoolId);
     }, [scope.packages, selectedSchoolId]);
+    const describePackageScope = (pkg: (typeof reportPackages)[number]) => {
+        const content = (pkg.contentTypes?.length ? pkg.contentTypes : ['all'])
+            .map((type) => packageContentTypeLabels[type] || type)
+            .join('، ');
+        const pathNames = (pkg.pathIds || [])
+            .map((pathId) => paths.find((path) => path.id === pathId)?.name || pathId)
+            .join('، ');
+        const subjectNames = (pkg.subjectIds || [])
+            .map((subjectId) => subjects.find((subject) => subject.id === subjectId)?.name || subjectId)
+            .join('، ');
+
+        return [
+            content,
+            pathNames ? `المسارات: ${pathNames}` : 'كل المسارات',
+            subjectNames ? `المواد: ${subjectNames}` : 'كل المواد',
+        ].join(' · ');
+    };
 
     const reportCodes = useMemo(() => {
         if (selectedSchoolId === 'all') return scope.codes;
@@ -625,12 +654,13 @@ export const SchoolPortalManager: React.FC = () => {
             {
                 name: 'packages',
                 rows: [
-                    ['الباقة', 'الحالة', 'المقاعد', 'الأكواد'],
+                    ['الباقة', 'الحالة', 'المقاعد', 'الأكواد', 'نطاق الوصول'],
                     ...reportPackages.map((pkg) => [
                         pkg.name,
                         pkg.status === 'active' ? 'نشطة' : 'موقوفة',
                         pkg.maxStudents || 0,
                         reportCodes.filter((code) => code.packageId === pkg.id).length,
+                        describePackageScope(pkg),
                     ]),
                 ],
             },
@@ -1179,6 +1209,9 @@ export const SchoolPortalManager: React.FC = () => {
                                         <div className="font-black text-gray-900">{pkg.name}</div>
                                         <div className="mt-1 text-xs text-gray-500">
                                             {pkg.courseIds.length} دورة · {reportCodes.filter((code) => code.packageId === pkg.id).length} كود
+                                        </div>
+                                        <div className="mt-2 text-xs font-bold leading-5 text-gray-600">
+                                            {describePackageScope(pkg)}
                                         </div>
                                     </div>
                                     <span className={`rounded-full px-3 py-1 text-xs font-black ${

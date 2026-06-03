@@ -71,6 +71,15 @@ const checks = [
       schoolPortal.includes("intervention-summary"),
   },
   {
+    name: "school portal exposes package content scope for contracts",
+    ok:
+      schoolPortal.includes("packageContentTypeLabels") &&
+      schoolPortal.includes("describePackageScope") &&
+      schoolPortal.includes("المسارات:") &&
+      schoolPortal.includes("المواد:") &&
+      schoolPortal.includes("نطاق الوصول"),
+  },
+  {
     name: "announcement ads have a live preview path",
     ok:
       read("components/AnnouncementAdsOverlay.tsx").includes("ANNOUNCEMENT_AD_PREVIEW_EVENT") &&

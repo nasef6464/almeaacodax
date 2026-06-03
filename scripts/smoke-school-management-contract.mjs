@@ -4,8 +4,10 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const files = {
   routes: await read("server/src/routes/content.routes.ts"),
+  authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
   schools: await read("dashboards/admin/SchoolsManager.tsx"),
+  store: await read("store/useStore.ts"),
 };
 
 const checks = [];
@@ -93,6 +95,21 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "assignSupervisorToGroup(value, classroom.id)");
   assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, classroom.id)");
   assertIncludes(files.schools, "setActiveTab('relations')");
+});
+
+check("school supervisor links preserve school scope", () => {
+  assertIncludes(files.store, "const nextSchoolId = targetGroup.type === 'SCHOOL'");
+  assertIncludes(files.store, "schoolId: nextSchoolId || null");
+  assertIncludes(files.store, "getUserSchoolIds(state.groups, state.user.groupIds || [], state.user.schoolId)");
+  assertIncludes(files.store, "remainingSchoolIds");
+});
+
+check("school access codes attach students to the school roster", () => {
+  assertIncludes(files.authRoutes, '"/me/redeem-access-code"');
+  assertIncludes(files.authRoutes, "$set: { schoolId }");
+  assertIncludes(files.authRoutes, "$addToSet: { groupIds: schoolId }");
+  assertIncludes(files.authRoutes, "$addToSet: { studentIds: String(user.id || user._id) }");
+  assertIncludes(files.authRoutes, "totalStudents: schoolStudentCount");
 });
 
 const failed = checks.filter((item) => item.status === "FAIL");
