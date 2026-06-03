@@ -76,6 +76,12 @@ check('student quiz actions have clear compact visual cues', () => {
   assertIncludes(quizzesSource, 'px-4 py-2.5 text-sm font-black');
 });
 
+check('student quiz center excludes standalone path mock exams from regular catalog', () => {
+  assertIncludes(quizzesSource, '.filter((quiz) => !isStandaloneMockExam(quiz))');
+  assertIncludes(dashboardSource, '.filter((quiz) => !isStandaloneMockExam(quiz))');
+  assertIncludes(dashboardSource, "import { isStandaloneMockExam } from '../utils/mockExam'");
+});
+
 check('smart learning action buttons stay prominent but compact', () => {
   assertIncludes(dashboardSource, 'hover:-translate-y-0.5 hover:shadow-md');
   assertIncludes(dashboardSource, 'h-2 w-2 rounded-full bg-white/80 animate-pulse');

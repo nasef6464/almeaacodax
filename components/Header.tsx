@@ -23,7 +23,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { useStore } from '../store/useStore';
 import type { HomepageSettings } from '../types';
-import { isPathMockExam } from '../utils/mockExam';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
@@ -95,7 +94,7 @@ export const Header: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels, quizzes, cartItems } = useStore();
+  const { paths, subjects, levels, cartItems } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null) => {
@@ -226,17 +225,7 @@ export const Header: React.FC = () => {
       menu.push(menuNode);
     });
 
-    const mockExamPaths = topLevelPaths.filter((path) => {
-      const name = path.name || '';
-      const hasVisibleMockExam = quizzes.some(
-        (quiz) =>
-          isPathMockExam(quiz, path.id) &&
-          quiz.isPublished !== false &&
-          quiz.showOnPlatform !== false &&
-          (!quiz.approvalStatus || quiz.approvalStatus === 'approved'),
-      );
-      return hasVisibleMockExam || name.includes('قدرات') || name.includes('القدرات') || name.includes('تحصيلي') || name.includes('التحصيلي');
-    });
+    const mockExamPaths = topLevelPaths.filter((path) => path.settings?.showMockExamCard !== false);
 
     if (mockExamPaths.length > 0) {
       menu.push({
@@ -256,7 +245,7 @@ export const Header: React.FC = () => {
     menu.push({ id: 'blog', label: text.blog, link: '/blog', iconName: 'layout-grid' });
 
     return menu;
-  }, [levels, paths, quizzes, subjects, user?.role]);
+  }, [levels, paths, subjects, user?.role]);
 
   const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor';
   const showNavigationLoading = Boolean(user) && paths.length === 0 && navigationMenu.length <= 2 && !navigationLoadingExpired;

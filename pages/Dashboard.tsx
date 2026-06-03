@@ -14,6 +14,7 @@ import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { isStandaloneMockExam } from '../utils/mockExam';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -1819,6 +1820,7 @@ const SaherTab = () => {
     };
 
     const preparedTests = quizzes
+        .filter((quiz) => !isStandaloneMockExam(quiz))
         .filter((quiz) => canAccessQuiz(quiz))
         .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
     const saherTests = preparedTests

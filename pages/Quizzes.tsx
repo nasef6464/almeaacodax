@@ -133,6 +133,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const availablePreparedQuizzes = useMemo(
     () =>
       quizzes
+        .filter((quiz) => !isStandaloneMockExam(quiz))
         .filter((quiz) => canAccessQuiz(quiz))
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [canAccessQuiz, quizzes],
@@ -287,6 +288,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     () =>
       quizzes
         .filter((quiz) => {
+          if (isStandaloneMockExam(quiz)) return false;
           if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
           if (quiz.showOnPlatform === false) return false;
           if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;

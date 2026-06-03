@@ -26,6 +26,12 @@ function assertIncludes(source, fragment, message) {
   }
 }
 
+function assertNotIncludes(source, fragment, message) {
+  if (source.includes(fragment)) {
+    throw new Error(message || `Unexpected fragment: ${fragment}`);
+  }
+}
+
 function assertPattern(source, pattern, message) {
   if (!pattern.test(source)) {
     throw new Error(message || `Missing pattern: ${pattern}`);
@@ -98,10 +104,11 @@ check('quiz runner loads mock exam sections and uses their total time and return
 });
 
 check('header updates mock exam navigation when quiz data changes', () => {
-  assertIncludes(headerSource, 'isPathMockExam(quiz, path.id)');
+  assertIncludes(headerSource, 'path.settings?.showMockExamCard !== false');
+  assertNotIncludes(headerSource, 'isPathMockExam(quiz, path.id)');
   assertIncludes(headerSource, "id: 'mock-exams'");
   assertIncludes(headerSource, "link: '/mock-exams'");
-  assertIncludes(headerSource, "[levels, paths, quizzes, subjects, user?.role]");
+  assertIncludes(headerSource, "[levels, paths, subjects, user?.role]");
 });
 
 check('frontend smoke covers global and per-path mock exam route shells', () => {
