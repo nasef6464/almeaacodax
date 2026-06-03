@@ -608,6 +608,8 @@ export const Landing: React.FC = () => {
                             <FeatureCard icon={<Video className="text-purple-500" size={20} />} title="شرح مباشر وتفاعلي" description="احضر الحصص وتابع الشرح بخطوات منظمة تناسب مستواك." />
                             <FeatureCard icon={<Users className="text-blue-500" size={20} />} title="نخبة المعلمين" description="معلمون ومتخصصون في القدرات والتحصيلي بخبرة عملية وأكاديمية." />
                             <FeatureCard icon={<BarChart className="text-emerald-500" size={20} />} title="تحليل الأداء" description="تقارير دقيقة توضح نقاط قوتك وضعفك لتعرف أين تبدأ." />
+                            <FeatureCard icon={<ShoppingCart className="text-indigo-500" size={20} />} title="باقات واضحة" description="باقات للمسارات والمدارس والمجموعات، حتى يعرف الطالب ما الذي يفتحه كل اشتراك." />
+                            <FeatureCard icon={<Users className="text-cyan-500" size={20} />} title="مدارس ومجموعات" description="لوحات متابعة للمشرفين والمدارس تكشف الفصول المتقدمة والطلاب الذين يحتاجون تدخلًا." />
                             <FeatureCard icon={<Book className="text-amber-500" size={20} />} title="ملفات ومراجعات" description="ملخصات ومراجعات داعمة تساعدك قبل الاختبار وبعد التدريب." />
                         </div>
                         <div className="lg:w-1/2 text-right">

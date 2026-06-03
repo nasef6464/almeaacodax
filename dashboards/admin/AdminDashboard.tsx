@@ -765,7 +765,7 @@ export const AdminDashboard: React.FC = () => {
             .sort((a, b) => a.attempts - b.attempts || a.average - b.average)
             .slice(0, 5);
 
-        const groupSnapshots = scopedGroupList
+        const groupPerformanceSnapshots = scopedGroupList
             .map((group) => {
                 const groupStudentIds = new Set(group.studentIds || []);
                 const groupResults = scopedResults.filter((result) => result.userId && groupStudentIds.has(result.userId));
@@ -780,9 +780,13 @@ export const AdminDashboard: React.FC = () => {
                     average: groupAverage,
                     attempts: groupResults.length,
                 };
-            })
+            });
+        const groupSnapshots = [...groupPerformanceSnapshots]
             .sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)
             .slice(0, 4);
+        const groupsWithResults = groupPerformanceSnapshots.filter((group) => group.attempts > 0);
+        const bestClass = [...groupsWithResults].sort((a, b) => b.average - a.average || b.studentCount - a.studentCount)[0] || null;
+        const weakestClass = [...groupsWithResults].sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)[0] || null;
 
         return {
             schoolCount: scopedSchoolIds.size,
@@ -794,7 +798,10 @@ export const AdminDashboard: React.FC = () => {
             weakStudentsCount: studentsNeedingFollowUp.length,
             weakestSkills,
             studentsNeedingFollowUp,
+            strugglingStudents: studentsNeedingFollowUp,
             groupSnapshots,
+            bestClass,
+            weakestClass,
         };
     }, [examResults, groups, quizzes, user.groupIds, user.schoolId, users]);
 
@@ -1501,6 +1508,42 @@ export const AdminDashboard: React.FC = () => {
                                 <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
                                     توجيه اختبار
                                 </button>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                                    <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
+                                    <div className="mt-2 flex items-center justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className="truncate text-sm font-black text-gray-900">{supervisorScopeSummary.bestClass?.name || 'بانتظار نتائج كافية'}</div>
+                                            <div className="mt-1 text-xs text-gray-500">
+                                                {supervisorScopeSummary.bestClass ? `${supervisorScopeSummary.bestClass.studentCount} طالب - ${supervisorScopeSummary.bestClass.attempts} نتيجة` : 'يظهر بعد أول نتائج للفصول.'}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-xl bg-white px-3 py-1.5 text-sm font-black text-emerald-700">
+                                            {supervisorScopeSummary.bestClass ? `${supervisorScopeSummary.bestClass.average}%` : '-'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4">
+                                    <div className="text-xs font-black text-rose-700">أضعف فصل</div>
+                                    <div className="mt-2 flex items-center justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className="truncate text-sm font-black text-gray-900">{supervisorScopeSummary.weakestClass?.name || 'بانتظار نتائج كافية'}</div>
+                                            <div className="mt-1 text-xs text-gray-500">
+                                                {supervisorScopeSummary.weakestClass ? `${supervisorScopeSummary.weakestClass.studentCount} طالب - ${supervisorScopeSummary.weakestClass.attempts} نتيجة` : 'يظهر بعد أول نتائج للفصول.'}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="#/admin-dashboard?tab=quizzes&source=supervisor&mode=central"
+                                            onClick={() => setActiveAdminTab('quizzes')}
+                                            className="rounded-xl bg-white px-3 py-1.5 text-xs font-black text-rose-700 hover:bg-rose-100"
+                                        >
+                                            أنشئ تدخل علاجي
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
