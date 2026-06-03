@@ -23,6 +23,7 @@ import {
 import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { Lesson, PackageContentType, Topic } from '../types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
@@ -53,6 +54,7 @@ export const SubjectLearningPage: React.FC = () => {
   const hasCoursePackageAccess = isStaffViewer || hasScopedPackageAccess('courses', pathId, subjectId);
   const hasFoundationAccess = isStaffViewer || hasScopedPackageAccess('foundation', pathId, subjectId);
   const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', pathId, subjectId);
+  const hasTestsAccess = isStaffViewer || hasScopedPackageAccess('tests', pathId, subjectId);
   const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', pathId, subjectId);
   const lockFoundationForSubject = matchedSubject?.settings?.lockSkillsForNonSubscribers === true;
   const canSeeTopic = (topic: Topic) => isStaffViewer || topic.showOnPlatform !== false;
@@ -73,6 +75,12 @@ export const SubjectLearningPage: React.FC = () => {
     if (subjectId) params.set('subject', subjectId);
     params.set('tab', 'packages');
     params.set('content', contentType);
+    return `/category/${pathId || ''}?${params.toString()}`;
+  };
+  const buildSubjectTabPath = (tab: 'courses' | 'skills' | 'questions' | 'exams' | 'library') => {
+    const params = new URLSearchParams();
+    if (subjectId) params.set('subject', subjectId);
+    params.set('tab', tab);
     return `/category/${pathId || ''}?${params.toString()}`;
   };
   const openPackageTab = (contentType: PackageContentType) => navigate(buildPackagePath(contentType));
@@ -191,6 +199,101 @@ export const SubjectLearningPage: React.FC = () => {
   );
 
   const mainTopics = useMemo(() => subjectTopics.filter((topic) => !topic.parentId), [subjectTopics]);
+  const firstOpenTopic = mainTopics.find((topic) => !isTopicLockedForStudent(topic)) || mainTopics[0] || null;
+  const firstOpenBank = subjectBanks.find((quiz) => !isQuizLockedForStudent(quiz, 'banks', 'training')) || subjectBanks[0] || null;
+  const firstOpenExam = subjectExams.find((quiz) => !isQuizLockedForStudent(quiz, 'tests', 'tests')) || subjectExams[0] || null;
+  const subjectNextAction = (() => {
+    if (activeTab === 'questions') {
+      return hasBanksAccess || firstOpenBank
+        ? {
+            title: 'ابدأ تدريبًا قصيرًا',
+            description: 'حل تدريبًا واحدًا، ثم راجع نتيجتك.',
+            primaryLabel: firstOpenBank && !isQuizLockedForStudent(firstOpenBank, 'banks', 'training') ? 'ابدأ التدريب' : 'ابدأ تدريبًا عشوائيًا',
+            primaryHref: firstOpenBank && !isQuizLockedForStudent(firstOpenBank, 'banks', 'training')
+              ? buildQuizRouteWithContext(firstOpenBank.id, { returnTo: buildSubjectTabPath('questions'), source: 'training' })
+              : '/quiz',
+            secondaryLabel: 'التأسيس',
+            secondaryHref: buildSubjectTabPath('skills'),
+            icon: <HelpCircle size={22} className="text-indigo-500" />,
+            tone: 'indigo' as const,
+          }
+        : {
+            title: 'افتح باقة التدريب',
+            description: 'الباقة تفتح تدريبات هذه المادة.',
+            primaryLabel: 'عرض الباقات',
+            primaryHref: buildPackagePath('banks'),
+            secondaryLabel: 'التأسيس',
+            secondaryHref: buildSubjectTabPath('skills'),
+            icon: <ShoppingBag size={22} className="text-amber-500" />,
+            tone: 'amber' as const,
+          };
+    }
+
+    if (activeTab === 'exams') {
+      return hasTestsAccess || firstOpenExam
+        ? {
+            title: 'اختبر جاهزيتك',
+            description: 'اختبار واحد يكفي لمعرفة الخطوة التالية.',
+            primaryLabel: firstOpenExam && !isQuizLockedForStudent(firstOpenExam, 'tests', 'tests') ? 'ابدأ الاختبار' : 'اختبار ساهر',
+            primaryHref: firstOpenExam && !isQuizLockedForStudent(firstOpenExam, 'tests', 'tests')
+              ? buildQuizRouteWithContext(firstOpenExam.id, { returnTo: buildSubjectTabPath('exams'), source: 'tests' })
+              : '/quiz',
+            secondaryLabel: 'تقاريري',
+            secondaryHref: '/reports',
+            icon: <FileCheck size={22} className="text-emerald-500" />,
+            tone: 'emerald' as const,
+          }
+        : {
+            title: 'افتح باقة الاختبارات',
+            description: 'بعدها تظهر اختبارات المادة هنا.',
+            primaryLabel: 'عرض الباقات',
+            primaryHref: buildPackagePath('tests'),
+            secondaryLabel: 'التدريب',
+            secondaryHref: buildSubjectTabPath('questions'),
+            icon: <ShoppingBag size={22} className="text-amber-500" />,
+            tone: 'amber' as const,
+          };
+    }
+
+    if (activeTab === 'library') {
+      return {
+        title: 'راجع ملفًا داعمًا',
+        description: 'اختر ملفًا واحدًا ثم ارجع للتدريب.',
+        primaryLabel: 'ابدأ التدريب',
+        primaryHref: buildSubjectTabPath('questions'),
+        secondaryLabel: 'التأسيس',
+        secondaryHref: buildSubjectTabPath('skills'),
+        icon: <FileText size={22} className="text-indigo-500" />,
+        tone: 'indigo' as const,
+      };
+    }
+
+    if (!hasFoundationAccess && lockFoundationForSubject) {
+      return {
+        title: 'افتح التأسيس أولًا',
+        description: 'ابدأ من الأساسيات قبل التدريب والاختبار.',
+        primaryLabel: 'عرض الباقات',
+        primaryHref: buildPackagePath('foundation'),
+        secondaryLabel: 'التدريب',
+        secondaryHref: buildSubjectTabPath('questions'),
+        icon: <ShoppingBag size={22} className="text-amber-500" />,
+        tone: 'amber' as const,
+      };
+    }
+
+    return {
+      title: firstOpenTopic ? `ابدأ: ${firstOpenTopic.title}` : 'ابدأ التأسيس',
+      description: 'درس قصير، تدريب بسيط، ثم قياس.',
+      primaryLabel: firstOpenTopic ? 'افتح الموضوع' : 'ابدأ التأسيس',
+      primaryHref: firstOpenTopic
+        ? `${buildSubjectTabPath('skills')}&topic=${encodeURIComponent(firstOpenTopic.id)}&content=lessons`
+        : buildSubjectTabPath('skills'),
+      secondaryLabel: 'التدريب',
+      secondaryHref: buildSubjectTabPath('questions'),
+      icon: <Target size={22} className="text-indigo-500" />,
+      tone: 'indigo' as const,
+    };
+  })();
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -433,6 +536,19 @@ export const SubjectLearningPage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 mt-8">
         {renderTabs()}
+
+        <div className="mb-8">
+          <StudentNextActionStrip
+            title={subjectNextAction.title}
+            description={subjectNextAction.description}
+            primaryLabel={subjectNextAction.primaryLabel}
+            primaryHref={subjectNextAction.primaryHref}
+            icon={subjectNextAction.icon}
+            tone={subjectNextAction.tone}
+            secondaryLabel={subjectNextAction.secondaryLabel}
+            secondaryHref={subjectNextAction.secondaryHref}
+          />
+        </div>
 
         {activeTab === 'courses' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">

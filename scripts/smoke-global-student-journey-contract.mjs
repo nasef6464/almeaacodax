@@ -66,6 +66,8 @@ check('student next action strip is compact, reusable, and has one primary actio
 });
 
 check('subject learning page guides foundation, training, tests, and package recovery', () => {
+  assertIncludes(files.subjectLearning, 'StudentNextActionStrip');
+  assertIncludes(files.subjectLearning, 'subjectNextAction');
   assertIncludes(files.subjectLearning, "tab: 'skills'");
   assertIncludes(files.subjectLearning, "slot: 'training'");
   assertIncludes(files.subjectLearning, 'openPackageTab');
