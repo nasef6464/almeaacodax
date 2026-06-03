@@ -5,11 +5,6 @@ import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { getMockExamQuestionCount, getMockExamSections, getMockExamTimeLimit, isPathMockExam } from '../utils/mockExam';
 
-const isMockExamPath = (name?: string) => {
-  const value = name || '';
-  return value.includes('قدرات') || value.includes('القدرات') || value.includes('تحصيلي') || value.includes('التحصيلي');
-};
-
 const getPathIcon = (name?: string) =>
   (name || '').includes('تحصيلي') ? <BookOpen size={28} /> : <Target size={28} />;
 
@@ -34,12 +29,10 @@ export const MockExams: React.FC = () => {
   const mockPaths = paths
     .filter((path) => {
       const showMockEntry = path.settings?.showMockExamCard !== false;
-      const hasMockExam = getVisibleMockExams(path.id).length > 0;
       return (
         showMockEntry &&
         (canSeeHiddenPaths || path.isActive !== false) &&
-        path.showInNavbar !== false &&
-        (isMockExamPath(path.name) || hasMockExam)
+        path.showInNavbar !== false
       );
     })
     .sort((a, b) => getPathSortRank(a.name) - getPathSortRank(b.name) || a.name.localeCompare(b.name, 'ar'));

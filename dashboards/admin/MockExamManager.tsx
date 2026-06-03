@@ -19,6 +19,53 @@ const createSection = (title: string, subjectId = '', order = 0): DraftSection =
 
 const unique = (items: string[]) => Array.from(new Set(items.filter(Boolean)));
 const plainQuestionText = (value?: string | null) => normalizeQuestionHtml(value).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const includesAny = (value: string | undefined, keywords: string[]) => {
+  const normalized = (value || '').toLowerCase();
+  return keywords.some((keyword) => normalized.includes(keyword.toLowerCase()));
+};
+
+const findSubjectByKeywords = (pathSubjects: Array<{ id: string; name: string }>, keywords: string[]) =>
+  pathSubjects.find((subject) => includesAny(subject.name, keywords));
+
+const buildQiyasSections = (pathName: string | undefined, pathSubjects: Array<{ id: string; name: string }>) => {
+  const isTahsili = includesAny(pathName, ['تحصيلي', 'tahsili']);
+  const isQudrat = includesAny(pathName, ['قدرات', 'qudrat']);
+
+  if (isTahsili) {
+    const tahsiliSubjects = [
+      { title: 'الرياضيات', keywords: ['رياضيات', 'math'] },
+      { title: 'الفيزياء', keywords: ['فيزياء', 'physics'] },
+      { title: 'الكيمياء', keywords: ['كيمياء', 'chemistry'] },
+      { title: 'الأحياء', keywords: ['أحياء', 'احياء', 'biology'] },
+    ];
+
+    const matchedSections = tahsiliSubjects
+      .map((item, index) => {
+        const subject = findSubjectByKeywords(pathSubjects, item.keywords);
+        return subject ? createSection(item.title, subject.id, index) : null;
+      })
+      .filter(Boolean) as DraftSection[];
+
+    if (matchedSections.length > 0) return matchedSections;
+  }
+
+  if (isQudrat) {
+    const quantitativeSubject = findSubjectByKeywords(pathSubjects, ['كمي', 'الكمي', 'quant']);
+    const verbalSubject = findSubjectByKeywords(pathSubjects, ['لفظي', 'اللفظي', 'verbal']);
+    const qudratSections = [
+      { title: 'القسم الأول - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '' },
+      { title: 'القسم الثاني - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '' },
+      { title: 'القسم الثالث - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '' },
+      { title: 'القسم الرابع - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '' },
+    ];
+
+    return qudratSections
+      .filter((section) => section.subjectId)
+      .map((section, index) => ({ ...createSection(section.title, section.subjectId, index), timeLimit: 25 }));
+  }
+
+  return pathSubjects.slice(0, 4).map((subject, index) => ({ ...createSection(subject.name, subject.id, index), timeLimit: 25 }));
+};
 
 export const MockExamManager: React.FC = () => {
   const { paths, subjects, questions, quizzes, skills, addQuiz, updateQuiz, deleteQuiz } = useStore();
@@ -53,6 +100,7 @@ export const MockExamManager: React.FC = () => {
     () => skills.filter((skill) => skill.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === skill.subjectId)),
     [pathSubjects, selectedPathId, skills],
   );
+  const selectedPathName = paths.find((path) => path.id === selectedPathId)?.name || '';
   const mockExams = useMemo(
     () => quizzes.filter((quiz) => isPathMockExam(quiz, selectedPathId)).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     [quizzes, selectedPathId],
@@ -76,7 +124,7 @@ export const MockExamManager: React.FC = () => {
     setPassingScore(60);
     setAccessType('free');
     setAccessPrice(99);
-    setSections(pathSubjects.slice(0, 2).map((subject, index) => createSection(subject.name, subject.id, index)));
+    setSections(buildQiyasSections(selectedPathName, pathSubjects));
   };
 
   const loadExam = (quiz: Quiz) => {
@@ -243,6 +291,15 @@ export const MockExamManager: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setSections(buildQiyasSections(selectedPathName, pathSubjects))}
+                className="mr-auto inline-flex items-center gap-2 rounded-xl bg-violet-50 px-3 py-2 text-xs font-black text-violet-700"
+                title="تجهيز أقسام القدرات أو التحصيلي حسب مواد المسار الحالية"
+              >
+                <Award size={16} />
+                تجهيز حسب قياس
+              </button>
               <h4 className="font-black text-gray-900">الأقسام</h4>
               <button
                 onClick={() => setSections((prev) => [...prev, createSection(`قسم ${prev.length + 1}`, pathSubjects[prev.length]?.id || '', prev.length)])}

@@ -16,6 +16,7 @@ import { useStore } from '../../store/useStore';
 import { Course, PackageContentType, PathDisplaySettings } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 import { isMaterialQuizCandidate } from '../../utils/mockExam';
+import { isQuizVisibleInLearningSlot } from '../../utils/quizLearningPlacement';
 
 const publicPackageContentOptions: Array<{ value: PackageContentType; label: string; description: string }> = [
   { value: 'courses', label: 'الدورات', description: 'يفتح الدورات المرتبطة بالمسار.' },
@@ -24,6 +25,12 @@ const publicPackageContentOptions: Array<{ value: PackageContentType; label: str
   { value: 'tests', label: 'الاختبارات', description: 'يفتح الاختبارات المنشورة داخل المادة.' },
   { value: 'library', label: 'المكتبة', description: 'يفتح ملفات ومراجع المكتبة.' },
 ];
+
+const isSelectedForSubjectLearningSlot = (quiz: any, subject: any, slot: 'training' | 'tests') =>
+  quiz.subjectId === subject.id &&
+  quiz.pathId === subject.pathId &&
+  isMaterialQuizCandidate(quiz) &&
+  isQuizVisibleInLearningSlot(quiz, { pathId: subject.pathId, subjectId: subject.id, slot });
 
 const getPathIcon = (path: any) => {
   if (path?.iconUrl) return <img src={path.iconUrl} alt={path.name} className="w-8 h-8 object-contain" />;
@@ -211,8 +218,8 @@ export const PathsManager: React.FC = () => {
         courses: courses.filter((course: any) => !course.isPackage && course.subjectId === currentSubject.id),
         topics: topics.filter((topic: any) => topic.subjectId === currentSubject.id),
         lessons: lessons.filter((lesson: any) => lesson.subjectId === currentSubject.id),
-        training: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMaterialQuizCandidate(quiz) && isTrainingQuiz(quiz)),
-        tests: quizzes.filter((quiz: any) => quiz.subjectId === currentSubject.id && isMaterialQuizCandidate(quiz) && isMockQuiz(quiz)),
+        training: quizzes.filter((quiz: any) => isSelectedForSubjectLearningSlot(quiz, currentSubject, 'training')),
+        tests: quizzes.filter((quiz: any) => isSelectedForSubjectLearningSlot(quiz, currentSubject, 'tests')),
         library: libraryItems.filter((item: any) => item.subjectId === currentSubject.id),
       }
     : null;
