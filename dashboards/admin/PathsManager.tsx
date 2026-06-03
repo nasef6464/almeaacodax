@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { CoursesManager } from './CoursesManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { FoundationManager } from './FoundationManager';
@@ -23,6 +23,7 @@ const publicPackageContentOptions: Array<{ value: PackageContentType; label: str
   { value: 'foundation', label: 'التأسيس', description: 'يفتح الموضوعات والدروس التأسيسية.' },
   { value: 'banks', label: 'التدريب', description: 'يفتح بنوك التدريب والأسئلة.' },
   { value: 'tests', label: 'الاختبارات', description: 'يفتح الاختبارات المنشورة داخل المادة.' },
+  { value: 'mockExams', label: 'الاختبارات المحاكية', description: 'يفتح الاختبارات المحاكية على مستوى المسار.' },
   { value: 'library', label: 'المكتبة', description: 'يفتح ملفات ومراجع المكتبة.' },
 ];
 

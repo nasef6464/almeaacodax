@@ -697,6 +697,7 @@ const hasSchoolPackageAccess = async (
 };
 
 const getPackageContentTypeForQuizSource = (source?: string) => {
+  if (source === "mock-exam") return "mockExams";
   if (source === "training") return "banks";
   if (source === "tests") return "tests";
   if (source === "foundation") return "foundation";
@@ -724,6 +725,10 @@ const getQuizPlacementAccessType = (quiz: any, source?: string) => {
 };
 
 const getPaidQuizPackageContentTypes = (quiz: any, source?: string) => {
+  if (quiz?.mockExam?.enabled === true) {
+    return ["mockExams"];
+  }
+
   const sourceContentType = getPackageContentTypeForQuizSource(source);
   if (sourceContentType) {
     return [sourceContentType];

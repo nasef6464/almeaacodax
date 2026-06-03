@@ -571,6 +571,7 @@ const PACKAGE_CONTENT_OPTIONS: Array<{ value: PackageContentType; label: string 
     { value: 'foundation', label: 'التأسيس' },
     { value: 'banks', label: 'التدريبات' },
     { value: 'tests', label: 'الاختبارات' },
+    { value: 'mockExams', label: 'الاختبارات المحاكية' },
     { value: 'library', label: 'المكتبة' },
 ];
 

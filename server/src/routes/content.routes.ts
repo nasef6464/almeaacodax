@@ -549,7 +549,7 @@ const b2bPackageSchema = z.object({
   assignedTeacherId: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
   courseIds: z.array(z.string()).default([]),
-  contentTypes: z.array(z.enum(["courses", "foundation", "banks", "tests", "library", "all"])).default(["all"]),
+  contentTypes: z.array(z.enum(["courses", "foundation", "banks", "tests", "mockExams", "library", "all"])).default(["all"]),
   pathIds: z.array(z.string()).default([]),
   subjectIds: z.array(z.string()).default([]),
   type: z.enum(["free_access", "discounted"]).default("free_access"),
@@ -950,6 +950,22 @@ const homepageSettingsSchema = z.object({
       headingWeight: z.enum(["bold", "black"]).optional(),
     })
     .optional(),
+  navigation: z
+    .object({
+      showAutoPaths: z.boolean().optional(),
+      moreLabel: z.string().optional(),
+      items: z
+        .array(
+          z.object({
+            id: z.string(),
+            label: z.string().optional(),
+            visible: z.boolean().optional(),
+            order: z.number().optional(),
+          }),
+        )
+        .optional(),
+    })
+    .optional(),
   featuredPathIds: z.array(z.string()).optional(),
   featuredCourseIds: z.array(z.string()).optional(),
   featuredArticleLessonIds: z.array(z.string()).optional(),
@@ -1033,6 +1049,16 @@ const defaultHomepageSettings = {
     headingFont: "tajawal",
     bodyFont: "tajawal",
     headingWeight: "black",
+  },
+  navigation: {
+    showAutoPaths: true,
+    moreLabel: "أخرى",
+    items: [
+      { id: "home", label: "الرئيسية", visible: true, order: 0 },
+      { id: "mock-exams", label: "اختبارات محاكية", visible: true, order: 20 },
+      { id: "pricing", label: "العضويات", visible: true, order: 90 },
+      { id: "blog", label: "المدونة", visible: true, order: 100 },
+    ],
   },
   featuredPathIds: [],
   featuredCourseIds: [],

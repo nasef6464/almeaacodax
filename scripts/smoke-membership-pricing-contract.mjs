@@ -19,30 +19,51 @@ const notIncludes = (source, needle) => {
 
 check('pricing page treats platform memberships separately from learning packages', () => {
   includes(pricingSource, 'عضويات المنصة');
-  includes(pricingSource, 'العضويات هنا اشتراك عام للمنصة');
-  includes(pricingSource, 'ليست باقات ساحة التعلم داخل المسارات');
+  includes(pricingSource, 'العضوية هنا اشتراك عام على مستوى المنصة');
+  includes(pricingSource, 'باقات المسارات والمدارس تدار بشكل مستقل');
+  includes(pricingSource, 'isPublicMembership');
+  includes(pricingSource, "course.packageType === 'membership'");
   notIncludes(pricingSource, "ctaLink: '/courses'");
   notIncludes(pricingSource, 'to={plan.ctaLink}');
 });
 
-check('paid membership CTAs do not route users into courses', () => {
-  includes(pricingSource, "action: 'whatsapp'");
-  includes(pricingSource, 'https://wa.me/');
-  includes(pricingSource, 'هذه عضوية عامة للمنصة وليست باقة مسار تعلم.');
+check('paid membership CTAs use the managed payment flow', () => {
+  includes(pricingSource, '<PaymentModal');
+  includes(pricingSource, 'type="package"');
+  includes(pricingSource, "purchaseType: 'package'");
+  includes(pricingSource, 'هذه عضوية عامة على مستوى المنصة وليست باقة مسار محددة.');
+  notIncludes(pricingSource, 'https://wa.me/');
 });
 
 check('free membership CTA keeps the user in account flow', () => {
-  includes(pricingSource, "const freeMembershipLink = user ? '/dashboard' : '/login';");
+  includes(pricingSource, "const freeMembershipLink = user?.id && user.id !== 'guest' ? '/dashboard' : '/login';");
   includes(pricingSource, 'to={freeMembershipLink}');
 });
 
 check('admin has a clear membership management entry point', () => {
-  includes(pricingSource, 'إدارة العضويات العامة للمدير');
+  includes(pricingSource, 'إدارة العضويات العامة');
   includes(pricingSource, 'to="/admin-dashboard?tab=memberships"');
-  includes(membershipsManagerSource, 'publicPackages');
-  includes(pathsManagerSource, 'إدارة العضويات العامة وباقات المسارات');
-  includes(pathsManagerSource, 'عضوية عامة تفتح كل المنصة');
+  includes(membershipsManagerSource, 'إدارة العضويات');
+  includes(membershipsManagerSource, 'إنشاء عضوية عامة');
+  includes(membershipsManagerSource, 'باقات المسارات منفصلة');
   includes(pathsManagerSource, "packageType: packageAppliesGlobally ? 'membership' : 'courses'");
+});
+
+check('memberships can include the same content type as other packages', () => {
+  includes(membershipsManagerSource, 'contentTypeLabels');
+  includes(membershipsManagerSource, 'mockExams');
+  includes(membershipsManagerSource, 'toggleContentType');
+  includes(membershipsManagerSource, 'يمكن أن يشترك نفس المحتوى في أكثر من باقة أو عضوية');
+  includes(membershipsManagerSource, "packageContentTypes: form.packageContentTypes.length ? form.packageContentTypes : ['all']");
+});
+
+check('membership files do not contain Arabic mojibake markers', () => {
+  for (const source of [pricingSource, membershipsManagerSource]) {
+    notIncludes(source, 'Ø');
+    notIncludes(source, 'Ù');
+    notIncludes(source, 'Ã');
+    notIncludes(source, 'Â');
+  }
 });
 
 let failed = 0;

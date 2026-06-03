@@ -40,7 +40,7 @@ check('quiz access model supports free, paid, private, and course-only access', 
   assertIncludes(typeSource, "type: 'free' | 'paid' | 'private' | 'course_only'");
   assertIncludes(typeSource, 'price?: number');
   assertIncludes(typeSource, 'allowedGroupIds?: string[]');
-  assertIncludes(typeSource, "export type PackageContentType = 'courses' | 'foundation' | 'banks' | 'tests' | 'library' | 'all'");
+  assertIncludes(typeSource, "export type PackageContentType = 'courses' | 'foundation' | 'banks' | 'tests' | 'mockExams' | 'library' | 'all'");
 });
 
 check('quiz builder exposes the four access states with package and group controls', () => {

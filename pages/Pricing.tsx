@@ -1,79 +1,37 @@
-import React from 'react';
-import { ExternalLink, ShieldCheck } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 
-type MembershipPlan = {
-  id: 'free' | 'basic' | 'premium';
-  name: string;
-  price: string;
-  period: string;
-  highlight?: boolean;
-  features: string[];
-  cta: string;
-  action: 'internal' | 'whatsapp';
-};
+const PaymentModal = React.lazy(() => import('../components/PaymentModal').then((module) => ({ default: module.PaymentModal })));
 
-const WHATSAPP_PHONE = '00966508438250';
+const formatPrice = (price?: number, currency = 'SAR') =>
+  `${new Intl.NumberFormat('ar-SA').format(Number(price || 0))} ${currency}`;
 
-const membershipPlans: MembershipPlan[] = [
-  {
-    id: 'free',
-    name: 'عضوية مجانية',
-    price: '0 ر.س',
-    period: 'مدى الحياة',
-    features: [
-      'الوصول إلى محتوى تعليمي مجاني',
-      'تجربة محدودة للاختبارات',
-      'لوحة طالب أساسية',
-    ],
-    cta: 'ابدأ الآن',
-    action: 'internal',
-  },
-  {
-    id: 'basic',
-    name: 'عضوية أساسية',
-    price: '49 ر.س',
-    period: 'شهريًا',
-    features: [
-      'فتح الدورات الأساسية الكاملة',
-      'تدريبات واختبارات إضافية',
-      'تحليل أداء أسبوعي',
-    ],
-    cta: 'اطلب العضوية الأساسية',
-    action: 'whatsapp',
-  },
-  {
-    id: 'premium',
-    name: 'عضوية مميزة',
-    price: '99 ر.س',
-    period: 'شهريًا',
-    highlight: true,
-    features: [
-      'كل محتوى المنصة بدون قيود',
-      'اختبارات محاكية متقدمة',
-      'شهادات وتحليلات ذكية كاملة',
-    ],
-    cta: 'اطلب العضوية المميزة',
-    action: 'whatsapp',
-  },
-];
+const isPublicMembership = (course: ReturnType<typeof useStore.getState>['courses'][number]) =>
+  course.isPackage === true &&
+  course.packageType === 'membership' &&
+  !(course.pathId || course.category || course.subjectId || course.subject);
 
-const buildMembershipRequestUrl = (plan: MembershipPlan) => {
-  const message = [
-    'مرحبًا، أريد الاشتراك في عضوية منصة المئة.',
-    `العضوية: ${plan.name}`,
-    `السعر: ${plan.price} / ${plan.period}`,
-    'هذه عضوية عامة للمنصة وليست باقة مسار تعلم.',
-  ].join('\n');
-
-  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
-};
+const isVisiblePackage = (course: ReturnType<typeof useStore.getState>['courses'][number]) =>
+  course.showOnPlatform !== false &&
+  course.isPublished !== false &&
+  (!course.approvalStatus || course.approvalStatus === 'approved');
 
 const Pricing: React.FC = () => {
-  const { user } = useStore();
-  const freeMembershipLink = user ? '/dashboard' : '/login';
+  const { user, courses } = useStore();
+  const [selectedMembership, setSelectedMembership] = useState<any | null>(null);
   const isAdmin = user?.role === 'admin';
+
+  const memberships = useMemo(
+    () =>
+      courses
+        .filter((course) => isPublicMembership(course) && isVisiblePackage(course))
+        .sort((a, b) => Number(a.price || 0) - Number(b.price || 0)),
+    [courses],
+  );
+
+  const freeMembershipLink = user?.id && user.id !== 'guest' ? '/dashboard' : '/login';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
@@ -81,72 +39,68 @@ const Pricing: React.FC = () => {
         <div className="text-center">
           <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات المنصة</h1>
           <p className="mt-3 text-sm text-gray-600 sm:text-base">
-            اختر العضوية المناسبة لك وابدأ رحلة تعليمية أقوى في منصة المئة.
-          </p>
-          <p className="mx-auto mt-3 max-w-2xl rounded-full bg-indigo-50 px-4 py-2 text-xs font-bold text-indigo-700">
-            العضويات هنا اشتراك عام للمنصة، وليست باقات ساحة التعلم داخل المسارات.
+            العضوية هنا اشتراك عام على مستوى المنصة. باقات المسارات والمدارس تدار بشكل مستقل داخل المسارات والمدارس.
           </p>
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {membershipPlans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`rounded-3xl border p-6 shadow-sm transition-all ${
-                plan.highlight
-                  ? 'border-amber-300 bg-amber-50/60 shadow-amber-100'
-                  : 'border-gray-200 bg-white'
-              }`}
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">مجانية</span>
+            <h2 className="mt-3 text-2xl font-black text-gray-900">عضوية مجانية</h2>
+            <div className="mt-2 text-3xl font-black text-indigo-700">0 ر.س</div>
+            <ul className="mt-5 space-y-2 text-sm text-gray-700">
+              <li className="rounded-xl bg-gray-50 px-3 py-2">الوصول للمحتوى المجاني</li>
+              <li className="rounded-xl bg-gray-50 px-3 py-2">لوحة طالب أساسية</li>
+              <li className="rounded-xl bg-gray-50 px-3 py-2">شراء باقات المسارات عند الحاجة</li>
+            </ul>
+            <Link
+              to={freeMembershipLink}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
             >
-              {plan.highlight ? (
-                <span className="inline-block rounded-full bg-amber-500 px-3 py-1 text-xs font-black text-white">
-                  الأكثر طلبًا
-                </span>
-              ) : null}
+              ابدأ الآن
+            </Link>
+          </div>
 
-              <h2 className="mt-3 text-2xl font-black text-gray-900">{plan.name}</h2>
-              <div className="mt-2 flex items-end gap-2">
-                <span className="text-3xl font-black text-indigo-700">{plan.price}</span>
-                <span className="pb-1 text-sm text-gray-500">{plan.period}</span>
+          {memberships.map((membership) => (
+            <div key={membership.id} className="rounded-2xl border border-amber-200 bg-white p-6 shadow-sm">
+              <span className="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">عضوية عامة</span>
+              <h2 className="mt-3 text-2xl font-black text-gray-900">{membership.title}</h2>
+              <div className="mt-2 text-3xl font-black text-indigo-700">
+                {formatPrice(membership.price, membership.currency || 'SAR')}
               </div>
-
+              {membership.description ? (
+                <p className="mt-3 text-sm leading-7 text-gray-600">{membership.description}</p>
+              ) : null}
               <ul className="mt-5 space-y-2 text-sm text-gray-700">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="rounded-xl bg-white/80 px-3 py-2">
-                    {feature}
-                  </li>
+                {(membership.features?.length ? membership.features : ['وصول عام حسب إعدادات المدير']).slice(0, 5).map((feature: string) => (
+                  <li key={feature} className="rounded-xl bg-gray-50 px-3 py-2">{feature}</li>
                 ))}
               </ul>
-
-              {plan.action === 'internal' ? (
-                <Link
-                  to={freeMembershipLink}
-                  className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-2 text-sm font-black text-white ${
-                    plan.highlight ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
-              ) : (
-                <a
-                  href={buildMembershipRequestUrl(plan)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black text-white ${
-                    plan.highlight ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'
-                  }`}
-                >
-                  {plan.cta}
-                  <ExternalLink size={16} />
-                </a>
-              )}
+              <button
+                type="button"
+                onClick={() => setSelectedMembership({
+                  ...membership,
+                  packageId: membership.id,
+                  purchaseType: 'package',
+                  isPackage: true,
+                  contentTypes: membership.packageContentTypes?.length ? membership.packageContentTypes : ['all'],
+                  packageContentTypes: membership.packageContentTypes?.length ? membership.packageContentTypes : ['all'],
+                  accessContext: 'هذه عضوية عامة على مستوى المنصة وليست باقة مسار محددة.',
+                })}
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-sm font-black text-white hover:bg-amber-600"
+              >
+                <CreditCard size={16} />
+                طلب العضوية
+              </button>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-emerald-800">
-          هذه الصفحة خاصة بعضويات المنصة العامة. باقات ساحة التعلم تدار بشكل مستقل داخل المسارات وساحة التعلم.
-        </div>
+        {memberships.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm leading-7 text-amber-800">
+            لا توجد عضويات عامة منشورة من الإدارة حاليا. يستطيع الطالب استخدام العضوية المجانية أو شراء باقات المسارات من صفحات المسارات.
+          </div>
+        ) : null}
 
         {isAdmin ? (
           <div className="mt-4 rounded-2xl border border-indigo-100 bg-white p-4 text-sm leading-7 text-gray-700 shadow-sm">
@@ -156,22 +110,32 @@ const Pricing: React.FC = () => {
                   <ShieldCheck size={18} />
                 </span>
                 <div>
-                  <div className="font-black text-gray-900">إدارة العضويات العامة للمدير</div>
+                  <div className="font-black text-gray-900">إدارة العضويات العامة</div>
                   <div className="text-gray-600">
-                    من لوحة المدير افتح تبويب العضويات لمراجعة العضويات العامة والطلبات والمشتركين من مكان واحد.
+                    العضويات العامة تظهر هنا بعد نشرها من تبويب العضويات. باقات المسارات والمدارس تبقى منفصلة في أماكنها.
                   </div>
                 </div>
               </div>
               <Link
                 to="/admin-dashboard?tab=memberships"
-                className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
               >
                 فتح إدارة العضويات
+                <ExternalLink size={16} />
               </Link>
             </div>
           </div>
         ) : null}
       </div>
+
+      <React.Suspense fallback={null}>
+        <PaymentModal
+          isOpen={!!selectedMembership}
+          onClose={() => setSelectedMembership(null)}
+          item={selectedMembership || {}}
+          type="package"
+        />
+      </React.Suspense>
     </div>
   );
 };

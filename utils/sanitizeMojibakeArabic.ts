@@ -99,6 +99,14 @@ export const sanitizeHomepageSettings = (settings: HomepageSettings): HomepageSe
         bodyFont: settings.typography?.bodyFont || 'tajawal',
         headingWeight: settings.typography?.headingWeight || 'black',
     },
+    navigation: {
+        ...(settings.navigation || {}),
+        moreLabel: sanitizeArabicText(settings.navigation?.moreLabel || 'أخرى'),
+        items: (settings.navigation?.items || []).map((item) => ({
+            ...item,
+            label: sanitizeArabicText(item.label),
+        })),
+    },
     testimonials: (settings.testimonials || []).map((testimonial) => ({
         ...testimonial,
         name: sanitizeArabicText(testimonial.name),

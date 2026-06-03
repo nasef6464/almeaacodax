@@ -65,7 +65,7 @@ const courseSchema = new Schema(
     packageType: { type: String, enum: ["courses", "videos", "tests", "membership"], default: "courses" },
     packageContentTypes: {
       type: [String],
-      enum: ["courses", "foundation", "banks", "tests", "library", "all"],
+      enum: ["courses", "foundation", "banks", "tests", "mockExams", "library", "all"],
       default: ["courses"],
     },
     originalPrice: { type: Number, default: null },

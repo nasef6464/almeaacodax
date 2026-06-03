@@ -471,7 +471,7 @@ export interface UserSubscription {
     purchasedPackages: string[];
 }
 
-export type PackageContentType = 'courses' | 'foundation' | 'banks' | 'tests' | 'library' | 'all';
+export type PackageContentType = 'courses' | 'foundation' | 'banks' | 'tests' | 'mockExams' | 'library' | 'all';
 
 export type PaymentMethodKey = 'card' | 'transfer' | 'wallet';
 
@@ -642,9 +642,23 @@ export interface HomepageSettings {
     testimonials: HomepageTestimonial[];
     sections: HomepageSections;
     typography?: HomepageTypography;
+    navigation?: HomepageNavigationSettings;
     featuredPathIds: string[];
     featuredCourseIds: string[];
     featuredArticleLessonIds?: string[];
+}
+
+export interface HomepageNavigationItem {
+    id: 'home' | 'mock-exams' | 'pricing' | 'blog' | string;
+    label?: string;
+    visible?: boolean;
+    order?: number;
+}
+
+export interface HomepageNavigationSettings {
+    showAutoPaths?: boolean;
+    moreLabel?: string;
+    items?: HomepageNavigationItem[];
 }
 
 export type PlatformFontFamily =

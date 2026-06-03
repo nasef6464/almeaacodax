@@ -86,6 +86,25 @@ const homepageTypographySchema = new Schema(
   { _id: false },
 );
 
+const homepageNavigationItemSchema = new Schema(
+  {
+    id: { type: String, required: true },
+    label: { type: String, default: "" },
+    visible: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+  },
+  { _id: false },
+);
+
+const homepageNavigationSchema = new Schema(
+  {
+    showAutoPaths: { type: Boolean, default: true },
+    moreLabel: { type: String, default: "أخرى" },
+    items: { type: [homepageNavigationItemSchema], default: [] },
+  },
+  { _id: false },
+);
+
 const homepageSettingsSchema = new Schema(
   {
     key: { type: String, required: true, unique: true, default: "default" },
@@ -95,6 +114,7 @@ const homepageSettingsSchema = new Schema(
     testimonials: { type: [homepageTestimonialSchema], default: [] },
     sections: { type: homepageSectionsSchema, default: () => ({}) },
     typography: { type: homepageTypographySchema, default: () => ({}) },
+    navigation: { type: homepageNavigationSchema, default: () => ({}) },
     featuredPathIds: { type: [String], default: [] },
     featuredCourseIds: { type: [String], default: [] },
     featuredArticleLessonIds: { type: [String], default: [] },

@@ -31,6 +31,7 @@ interface SavedQuizPageProgress {
 
 const shuffleQuestions = (items: Question[]) => [...items].sort(() => Math.random() - 0.5);
 const resolveQuizPackageContentType = (quiz: Quiz, source?: string): PackageContentType => {
+  if (source === 'mock-exam' || quiz.mockExam?.enabled === true) return 'mockExams';
   if (source === 'training' || source === 'foundation') return 'banks';
   if (source === 'course') return 'courses';
   if (quiz.type === 'bank' || quiz.placement === 'training' || quiz.showInTraining) return 'banks';

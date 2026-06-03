@@ -19,6 +19,7 @@ const packageContentLabels: Record<string, { label: string; description: string 
     foundation: { label: 'التأسيس', description: 'الموضوعات والدروس التأسيسية.' },
     banks: { label: 'التدريب', description: 'تدريبات وبنوك أسئلة.' },
     tests: { label: 'الاختبارات', description: 'اختبارات محاكية وموجهة.' },
+    mockExams: { label: 'الاختبارات المحاكية', description: 'اختبارات محاكية على مستوى المسار.' },
     library: { label: 'المكتبة', description: 'ملفات ومراجع داعمة.' },
     all: { label: 'شاملة', description: 'تفتح كل مساحات التعلم في هذا المسار.' },
 };
@@ -331,6 +332,7 @@ export const GenericPathPage: React.FC = () => {
         { type: 'foundation', label: 'التأسيس' },
         { type: 'banks', label: 'التدريب' },
         { type: 'tests', label: 'الاختبارات' },
+        { type: 'mockExams', label: 'الاختبارات المحاكية' },
         { type: 'library', label: 'المكتبة' },
     ] as const;
     const pathMockQuizzes = quizzes
@@ -357,6 +359,7 @@ export const GenericPathPage: React.FC = () => {
             foundation: topics.filter((topic) => canStudentSeeContent(topic) && matchesSubjectScope(topic)).length,
             banks: getVisibleLearningSlotQuizzes('training', subjectId).length,
             tests: getVisibleLearningSlotQuizzes('tests', subjectId).length,
+            mockExams: pathMockQuizzes.length,
             library: libraryItems.filter((item) => canStudentSeeContent(item) && matchesSubjectScope(item)).length,
         };
         const unlockedRows = contentAccessRows.filter(({ type }) => hasScopedPackageAccess(type, path.id, subjectId));
@@ -419,9 +422,11 @@ export const GenericPathPage: React.FC = () => {
                     ? 'banks'
                     : contentTypes.includes('tests')
                         ? 'tests'
-                        : contentTypes.includes('library')
-                            ? 'library'
-                            : 'courses';
+                        : contentTypes.includes('mockExams')
+                            ? 'mock-exams'
+                            : contentTypes.includes('library')
+                                ? 'library'
+                                : 'courses';
 
         if (packageSubject?.levelId) {
             params.set('level', packageSubject.levelId);
@@ -530,7 +535,7 @@ export const GenericPathPage: React.FC = () => {
         const access = quiz.access || { type: 'free' as const };
         if (access.type === 'free') return true;
         if (access.type === 'paid') {
-            return checkAccess(quiz.id, true) || hasScopedPackageAccess('tests', quiz.pathId, quiz.subjectId);
+            return checkAccess(quiz.id, true) || hasScopedPackageAccess('mockExams', quiz.pathId, quiz.subjectId);
         }
         if (access.type === 'private') {
             const userGroups = user.groupIds || [];
@@ -543,7 +548,7 @@ export const GenericPathPage: React.FC = () => {
     };
 
     const openMockExamPayment = (quiz: any) => {
-        const matchedPackage = getSuggestedPackageForSubject(quiz.subjectId, ['tests']);
+        const matchedPackage = getSuggestedPackageForSubject(quiz.subjectId, ['mockExams']);
         if (matchedPackage) {
             setSelectedMockExamPaymentTarget({
                 ...buildPaymentPackage(matchedPackage, resolvePackageContentTypes(matchedPackage)),

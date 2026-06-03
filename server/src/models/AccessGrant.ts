@@ -15,7 +15,7 @@ const accessGrantSchema = new Schema(
     courseIds: { type: [String], default: [] },
     contentTypes: {
       type: [String],
-      enum: ["courses", "foundation", "banks", "tests", "library", "all"],
+      enum: ["courses", "foundation", "banks", "tests", "mockExams", "library", "all"],
       default: ["all"],
     },
     pathIds: { type: [String], default: [] },

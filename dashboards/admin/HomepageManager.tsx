@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Image as ImageIcon, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { api } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -92,6 +92,16 @@ const defaultHomepageSettings: HomepageSettings = {
         bodyFont: 'tajawal',
         headingWeight: 'black',
     },
+    navigation: {
+        showAutoPaths: true,
+        moreLabel: 'أخرى',
+        items: [
+            { id: 'home', label: 'الرئيسية', visible: true, order: 0 },
+            { id: 'mock-exams', label: 'اختبارات محاكية', visible: true, order: 20 },
+            { id: 'pricing', label: 'العضويات', visible: true, order: 90 },
+            { id: 'blog', label: 'المدونة', visible: true, order: 100 },
+        ],
+    },
     testimonials: [
         { id: 't1', name: 'سارة العتيبي', degree: '98% قدرات', text: 'المنصة غيرت طريقة مذاكرتي تمامًا.', image: 'https://i.pravatar.cc/100?img=5' },
         { id: 't2', name: 'فهد الشمري', degree: '96% تحصيلي', text: 'الشروحات والتدريبات كانت مرتبة جدًا.', image: 'https://i.pravatar.cc/100?img=11' },
@@ -111,6 +121,11 @@ const mergeHomepageSettings = (settings: HomepageSettings): HomepageSettings => 
         hero: { ...defaultHomepageSettings.hero, ...sanitized.hero },
         sections: { ...defaultHomepageSettings.sections, ...sanitized.sections },
         typography: { ...defaultHomepageSettings.typography, ...sanitized.typography },
+        navigation: {
+            ...defaultHomepageSettings.navigation,
+            ...sanitized.navigation,
+            items: sanitized.navigation?.items?.length ? sanitized.navigation.items : defaultHomepageSettings.navigation?.items,
+        },
         stats: sanitized.stats?.length ? sanitized.stats : defaultHomepageSettings.stats,
         testimonials: sanitized.testimonials?.length ? sanitized.testimonials : defaultHomepageSettings.testimonials,
         featuredPathIds: sanitized.featuredPathIds || [],
@@ -347,6 +362,37 @@ export const HomepageManager: React.FC = () => {
         }));
     };
 
+    const updateNavigationItem = (id: string, updates: Partial<NonNullable<HomepageSettings['navigation']>['items'][number]>) => {
+        setSettings((prev) => {
+            const defaults = defaultHomepageSettings.navigation?.items || [];
+            const currentItems = prev.navigation?.items?.length ? prev.navigation.items : defaults;
+            const nextItems = currentItems.map((item) => (item.id === id ? { ...item, ...updates } : item));
+            if (!nextItems.some((item) => item.id === id)) {
+                nextItems.push({ id, ...updates });
+            }
+            return {
+                ...prev,
+                navigation: {
+                    ...defaultHomepageSettings.navigation,
+                    ...prev.navigation,
+                    items: nextItems,
+                },
+            };
+        });
+    };
+
+    const updateNavigationField = (field: keyof NonNullable<HomepageSettings['navigation']>, value: string | boolean) => {
+        setSettings((prev) => ({
+            ...prev,
+            navigation: {
+                ...defaultHomepageSettings.navigation,
+                ...prev.navigation,
+                [field]: value,
+                items: prev.navigation?.items?.length ? prev.navigation.items : defaultHomepageSettings.navigation?.items,
+            },
+        }));
+    };
+
     const updateStat = (index: number, updates: Partial<HomepageStat>) => {
         setSettings((prev) => ({
             ...prev,
@@ -407,6 +453,7 @@ export const HomepageManager: React.FC = () => {
                 hero: { ...settings.hero, imageUrl: withCacheBust(settings.hero.imageUrl) },
                 sections: { ...settings.sections },
                 typography: { ...defaultHomepageSettings.typography, ...settings.typography },
+                navigation: { ...defaultHomepageSettings.navigation, ...settings.navigation },
                 stats: settings.stats.filter((item) => item.label.trim().length > 0),
                 testimonials: normalizedTestimonials,
             };
@@ -508,6 +555,57 @@ export const HomepageManager: React.FC = () => {
                             </div>
                             <TextField label="نص الشعار الأول" value={settings.brand?.logoText || ''} onChange={(value) => updateBrandField('logoText', value)} />
                             <TextField label="نص الشعار المميز" value={settings.brand?.logoAccentText || ''} onChange={(value) => updateBrandField('logoAccentText', value)} />
+                        </div>
+                    </section>
+
+                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                        <div className="flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="font-bold text-gray-900">الشريط العلوي</h2>
+                                <p className="text-sm text-gray-500">تحكم في ظهور العناصر العامة. المسارات الجديدة تظهر تلقائيًا ويمكن التحكم في كل مسار من إدارة المسارات.</p>
+                            </div>
+                            <label className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-bold text-gray-700">
+                                <input
+                                    type="checkbox"
+                                    checked={settings.navigation?.showAutoPaths !== false}
+                                    onChange={(event) => updateNavigationField('showAutoPaths', event.target.checked)}
+                                />
+                                إظهار المسارات تلقائيًا
+                            </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <TextField
+                                label="اسم قائمة العناصر الأخرى"
+                                value={settings.navigation?.moreLabel || 'أخرى'}
+                                onChange={(value) => updateNavigationField('moreLabel', value)}
+                            />
+                            {(settings.navigation?.items?.length ? settings.navigation.items : defaultHomepageSettings.navigation?.items || []).map((item) => (
+                                <div key={item.id} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="text-sm font-black text-gray-800">{item.id}</div>
+                                        <label className="inline-flex items-center gap-2 text-xs font-bold text-gray-600">
+                                            <input
+                                                type="checkbox"
+                                                checked={item.visible !== false}
+                                                onChange={(event) => updateNavigationItem(item.id, { visible: event.target.checked })}
+                                            />
+                                            ظاهر
+                                        </label>
+                                    </div>
+                                    <div className="grid grid-cols-[1fr_90px] gap-3">
+                                        <TextField
+                                            label="الاسم الظاهر"
+                                            value={item.label || ''}
+                                            onChange={(value) => updateNavigationItem(item.id, { label: value })}
+                                        />
+                                        <TextField
+                                            label="الترتيب"
+                                            value={String(item.order ?? 0)}
+                                            onChange={(value) => updateNavigationItem(item.id, { order: Number(value || 0) })}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </section>
 

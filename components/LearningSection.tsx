@@ -172,6 +172,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         foundation: 'التأسيس',
         banks: 'التدريب',
         tests: 'الاختبارات',
+        mockExams: 'الاختبارات المحاكية',
         library: 'المكتبة',
         all: 'الباقة الشاملة',
     };
@@ -218,6 +219,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             foundation: 'التأسيس',
             banks: 'التدريبات',
             tests: 'الاختبارات',
+            mockExams: 'الاختبارات المحاكية',
             library: 'المكتبة',
             all: 'الباقة الشاملة',
         };
