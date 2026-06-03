@@ -43,6 +43,8 @@ check('student report starts simple and keeps details opt-in', () => {
   assertIncludes(reportsSource, "onClick={() => setStudentReportDepth('full')}");
   assertIncludes(reportsSource, "{!isStudentReportFull ? (");
   assertIncludes(reportsSource, "isStudentReportFull ? (");
+  assertIncludes(reportsSource, 'تقرير مبسط للطالب');
+  assertIncludes(reportsSource, 'خطوة واحدة واضحة اليوم');
 });
 
 check('student report shows the quick decision card instead of hiding it behind staff-only scope', () => {
@@ -153,6 +155,20 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'const targetUserCount = quiz.targetUserIds?.length || 0');
   assertIncludes(reportsSource, 'const targetGroupCount = quiz.targetGroupIds?.length || 0');
   assertIncludes(reportsSource, 'موجه إلى: {targetLabel}');
+});
+
+check('supervisor can analyze and export a specific directed quiz by students and skills', () => {
+  assertIncludes(reportsSource, "const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all')");
+  assertIncludes(reportsSource, 'const directedFollowUpOptions = useMemo');
+  assertIncludes(reportsSource, "return mode === 'central' || hasTargets");
+  assertIncludes(reportsSource, 'const directedQuizAnalysisResults = useMemo');
+  assertIncludes(reportsSource, 'const directedQuizSkillAnalysis = useMemo');
+  assertIncludes(reportsSource, 'const directedQuizStudentAnalysis = useMemo');
+  assertIncludes(reportsSource, 'const downloadDirectedQuizAnalysisWorkbook = async () =>');
+  assertIncludes(reportsSource, 'تحليل اختبار موجه');
+  assertIncludes(reportsSource, 'نتائج الطلاب والمهارات لنفس الاختبار');
+  assertIncludes(reportsSource, 'تصدير تحليل الاختبار');
+  assertIncludes(reportsSource, 'directed-quiz-analysis-');
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {

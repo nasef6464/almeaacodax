@@ -69,8 +69,10 @@ interface ScopedQuizResult {
     id?: string;
     _id?: string;
     userId?: string;
+    quizId?: string;
     studentName?: string;
     studentEmail?: string;
+    studentGroupIds?: string[];
     quizTitle: string;
     score: number;
     totalQuestions?: number;
@@ -310,6 +312,7 @@ const Reports: React.FC = () => {
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [scopedGroupFilter, setScopedGroupFilter] = useState<string>('all');
+    const [selectedFollowUpQuizId, setSelectedFollowUpQuizId] = useState<string>('all');
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -830,6 +833,112 @@ const Reports: React.FC = () => {
             });
         return filtered.slice(0, 6);
     }, [scopedResults, scopedGroupFilter, scopedFilteredStudents]);
+    const directedFollowUpOptions = useMemo(
+        () => (scopedAnalytics?.assignedFollowUps || []).filter((quiz) => {
+            const mode = quiz.mode || 'regular';
+            const hasTargets = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+            return mode === 'central' || hasTargets;
+        }),
+        [scopedAnalytics?.assignedFollowUps],
+    );
+    useEffect(() => {
+        if (selectedFollowUpQuizId === 'all') return;
+        if (!directedFollowUpOptions.some((quiz) => quiz.id === selectedFollowUpQuizId)) {
+            setSelectedFollowUpQuizId('all');
+        }
+    }, [directedFollowUpOptions, selectedFollowUpQuizId]);
+    const selectedFollowUpQuiz = useMemo(
+        () => directedFollowUpOptions.find((quiz) => quiz.id === selectedFollowUpQuizId) || null,
+        [directedFollowUpOptions, selectedFollowUpQuizId],
+    );
+    const directedQuizAnalysisResults = useMemo(() => {
+        if (!scopedResults.length) return [];
+
+        const targetQuizIds = selectedFollowUpQuizId === 'all'
+            ? new Set(directedFollowUpOptions.map((quiz) => quiz.id))
+            : new Set([selectedFollowUpQuizId]);
+        if (targetQuizIds.size === 0) return [];
+
+        return scopedResults.filter((result) => {
+            if (!result.quizId || !targetQuizIds.has(result.quizId)) return false;
+            if (scopedGroupFilter === 'all') return true;
+            const student = scopedFilteredStudents.find((item) => item.id === result.userId);
+            return !!student;
+        });
+    }, [directedFollowUpOptions, scopedFilteredStudents, scopedGroupFilter, scopedResults, selectedFollowUpQuizId]);
+    const directedQuizSkillAnalysis = useMemo(() => {
+        const skillMap = new Map<string, {
+            skill: string;
+            masterySum: number;
+            attempts: number;
+            affectedStudents: Set<string>;
+        }>();
+
+        directedQuizAnalysisResults.forEach((result) => {
+            (result.skillsAnalysis || []).forEach((skill) => {
+                const skillName = displayText(skill.skill);
+                if (!skillName) return;
+                const key = skillName;
+                const current = skillMap.get(key) || {
+                    skill: skillName,
+                    masterySum: 0,
+                    attempts: 0,
+                    affectedStudents: new Set<string>(),
+                };
+                const mastery = Number(skill.mastery || 0);
+                current.masterySum += mastery;
+                current.attempts += 1;
+                if (mastery < 75 && result.userId) {
+                    current.affectedStudents.add(String(result.userId));
+                }
+                skillMap.set(key, current);
+            });
+        });
+
+        return Array.from(skillMap.values())
+            .map((item) => ({
+                skill: item.skill,
+                mastery: Math.round(item.masterySum / Math.max(item.attempts, 1)),
+                attempts: item.attempts,
+                affectedStudents: item.affectedStudents.size,
+            }))
+            .sort((a, b) => a.mastery - b.mastery)
+            .slice(0, 8);
+    }, [directedQuizAnalysisResults]);
+    const directedQuizStudentAnalysis = useMemo(() => {
+        return directedQuizAnalysisResults
+            .map((result) => {
+                const weakSkills = (result.skillsAnalysis || [])
+                    .filter((skill) => Number(skill.mastery || 0) < 75)
+                    .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
+                    .slice(0, 3);
+
+                return {
+                    result,
+                    studentName: displayText(result.studentName || result.studentEmail) || 'طالب',
+                    score: Number(result.score || 0),
+                    weakSkills,
+                };
+            })
+            .sort((a, b) => a.score - b.score)
+            .slice(0, 12);
+    }, [directedQuizAnalysisResults]);
+    const directedQuizSummary = useMemo(() => {
+        const attempts = directedQuizAnalysisResults.length;
+        const averageScore = attempts
+            ? Math.round(directedQuizAnalysisResults.reduce((sum, result) => sum + Number(result.score || 0), 0) / attempts)
+            : 0;
+        const needsFollowUp = directedQuizAnalysisResults.filter((result) => Number(result.score || 0) < 75).length;
+        const weakestSkill = directedQuizSkillAnalysis[0] || null;
+
+        return {
+            attempts,
+            averageScore,
+            needsFollowUp,
+            weakestSkill,
+            title: selectedFollowUpQuiz ? displayText(selectedFollowUpQuiz.title) : 'كل الاختبارات الموجهة',
+        };
+    }, [directedQuizAnalysisResults, directedQuizSkillAnalysis, selectedFollowUpQuiz]);
     const showScopedAggregatedSections = scopedReportMode === 'combined' || scopedReportMode === 'aggregated';
     const showScopedIndividualSections = scopedReportMode === 'combined' || scopedReportMode === 'individual';
     const scopedLeadStudentSummary = useMemo(() => {
@@ -1006,6 +1115,50 @@ const Reports: React.FC = () => {
 
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), 'students-report');
         XLSX.writeFile(workbook, `students-performance-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    };
+    const downloadDirectedQuizAnalysisWorkbook = async () => {
+        if (!directedQuizAnalysisResults.length) return;
+
+        const XLSX = await loadXlsx();
+        const workbook = XLSX.utils.book_new();
+        const summaryRows = [
+            ['البند', 'القيمة'],
+            ['نوع التقرير', 'تحليل اختبار موجه'],
+            ['الاختبار', directedQuizSummary.title],
+            ['النطاق', roleScopeTitle[user.role] || 'النطاق الحالي'],
+            ['المجموعة', scopedGroupFilter === 'all' ? 'كل المجموعات' : scopedGroupFilter],
+            ['عدد المحاولات', directedQuizSummary.attempts],
+            ['متوسط الأداء', `${directedQuizSummary.averageScore}%`],
+            ['طلاب يحتاجون متابعة', directedQuizSummary.needsFollowUp],
+            ['أضعف مهارة', directedQuizSummary.weakestSkill ? `${directedQuizSummary.weakestSkill.skill} ${directedQuizSummary.weakestSkill.mastery}%` : '-'],
+        ];
+        const skillRows = [
+            ['المهارة', 'متوسط الإتقان', 'عدد الأدلة', 'طلاب متأثرون'],
+            ...directedQuizSkillAnalysis.map((skill) => [
+                displayText(skill.skill) || '-',
+                `${skill.mastery}%`,
+                skill.attempts,
+                skill.affectedStudents,
+            ]),
+        ];
+        const studentRows = [
+            ['الطالب', 'اسم الاختبار', 'الدرجة', 'عدد الأسئلة', 'الصحيح', 'الخطأ', 'أضعف المهارات', 'التاريخ'],
+            ...directedQuizStudentAnalysis.map(({ result, weakSkills }) => [
+                displayText(result.studentName || result.studentEmail) || '-',
+                displayText(result.quizTitle) || '-',
+                `${Number(result.score || 0)}%`,
+                result.totalQuestions || 0,
+                result.correctAnswers || 0,
+                result.wrongAnswers || 0,
+                weakSkills.length ? weakSkills.map((skill) => `${displayText(skill.skill)} ${Number(skill.mastery || 0)}%`).join('، ') : '-',
+                displayText(result.date || result.createdAt) || '-',
+            ]),
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summaryRows), 'summary');
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(skillRows), 'skills');
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(studentRows), 'students');
+        XLSX.writeFile(workbook, `directed-quiz-analysis-${new Date().toISOString().slice(0, 10)}.xlsx`);
     };
     const downloadStudentSkillsWorkbook = async () => {
         if (!aggregatedSkills.length) return;
@@ -1738,6 +1891,109 @@ const Reports: React.FC = () => {
                                             فتح مركز التنبيهات
                                         </Link>
                                     </div>
+                                </div>
+                            ) : null}
+
+                            {directedFollowUpOptions.length > 0 ? (
+                                <div className="rounded-3xl border border-emerald-100 bg-white p-4 shadow-sm">
+                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                        <div>
+                                            <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                                                تحليل اختبار موجه
+                                            </div>
+                                            <h3 className="mt-2 text-lg font-black text-gray-900">نتائج الطلاب والمهارات لنفس الاختبار</h3>
+                                            <p className="mt-1 max-w-2xl text-xs font-bold leading-6 text-gray-500">
+                                                مناسب عندما يوجه المشرف أو المدير اختبارًا لمجموعة طلاب ويريد تقريرًا سريعًا: متوسط الأداء، أضعف المهارات، والطلاب الذين يحتاجون متابعة.
+                                            </p>
+                                        </div>
+                                        <div className="print-hide flex flex-wrap items-center gap-2">
+                                            <select
+                                                value={selectedFollowUpQuizId}
+                                                onChange={(event) => setSelectedFollowUpQuizId(event.target.value)}
+                                                className="max-w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 focus:border-emerald-400 focus:outline-none"
+                                            >
+                                                <option value="all">كل الاختبارات الموجهة</option>
+                                                {directedFollowUpOptions.map((quiz) => (
+                                                    <option key={quiz.id} value={quiz.id}>{displayText(quiz.title)}</option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                type="button"
+                                                onClick={downloadDirectedQuizAnalysisWorkbook}
+                                                disabled={!directedQuizAnalysisResults.length}
+                                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <Download size={14} />
+                                                تصدير تحليل الاختبار
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                                        <div className="rounded-2xl bg-slate-50 p-3">
+                                            <div className="text-xs font-bold text-slate-500">الاختبار</div>
+                                            <div className="mt-2 text-sm font-black leading-6 text-slate-900">{directedQuizSummary.title}</div>
+                                        </div>
+                                        <div className="rounded-2xl bg-emerald-50 p-3">
+                                            <div className="text-xs font-bold text-emerald-700">محاولات</div>
+                                            <div className="mt-2 text-2xl font-black text-emerald-700">{directedQuizSummary.attempts}</div>
+                                        </div>
+                                        <div className="rounded-2xl bg-indigo-50 p-3">
+                                            <div className="text-xs font-bold text-indigo-700">متوسط الأداء</div>
+                                            <div className="mt-2 text-2xl font-black text-indigo-700">{directedQuizSummary.averageScore}%</div>
+                                        </div>
+                                        <div className="rounded-2xl bg-rose-50 p-3">
+                                            <div className="text-xs font-bold text-rose-700">يحتاجون متابعة</div>
+                                            <div className="mt-2 text-2xl font-black text-rose-700">{directedQuizSummary.needsFollowUp}</div>
+                                        </div>
+                                    </div>
+
+                                    {directedQuizAnalysisResults.length > 0 ? (
+                                        <div className="mt-4 grid gap-4 xl:grid-cols-[1fr_1fr]">
+                                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+                                                <div className="mb-3 text-sm font-black text-gray-900">أضعف المهارات في الاختبار</div>
+                                                <div className="space-y-2">
+                                                    {directedQuizSkillAnalysis.slice(0, 5).map((skill) => (
+                                                        <div key={skill.skill} className="rounded-xl bg-white p-3">
+                                                            <div className="flex items-center justify-between gap-3">
+                                                                <div className="min-w-0 text-sm font-black text-gray-900">{displayText(skill.skill)}</div>
+                                                                <div className={`rounded-full px-2.5 py-1 text-xs font-black ${skill.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                                                    {skill.mastery}%
+                                                                </div>
+                                                            </div>
+                                                            <div className="mt-2 text-xs font-bold text-gray-500">
+                                                                {skill.affectedStudents} طالب متأثر - {skill.attempts} دليل من الإجابات
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+                                                <div className="mb-3 text-sm font-black text-gray-900">أول الطلاب للمتابعة</div>
+                                                <div className="space-y-2">
+                                                    {directedQuizStudentAnalysis.slice(0, 5).map(({ result, studentName, score, weakSkills }) => (
+                                                        <div key={result.id || result._id || `${result.userId}-${result.date}`} className="rounded-xl bg-white p-3">
+                                                            <div className="flex items-center justify-between gap-3">
+                                                                <div className="min-w-0 text-sm font-black text-gray-900">{studentName}</div>
+                                                                <div className={`rounded-full px-2.5 py-1 text-xs font-black ${score >= 75 ? 'bg-emerald-50 text-emerald-700' : score >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
+                                                                    {score}%
+                                                                </div>
+                                                            </div>
+                                                            <div className="mt-2 text-xs font-bold leading-5 text-gray-500">
+                                                                {weakSkills.length
+                                                                    ? `متابعة: ${weakSkills.map((skill) => `${displayText(skill.skill)} ${Number(skill.mastery || 0)}%`).join('، ')}`
+                                                                    : 'لا توجد مهارة ضعيفة واضحة في هذه المحاولة.'}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm font-bold leading-7 text-slate-500">
+                                            لا توجد محاولات مسجلة لهذا الاختبار الموجه داخل الفلتر الحالي بعد.
+                                        </div>
+                                    )}
                                 </div>
                             ) : null}
 
