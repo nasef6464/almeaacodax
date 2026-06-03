@@ -36,6 +36,7 @@
         "smoke:membership-pricing": "node scripts/smoke-membership-pricing-contract.mjs",
         "smoke:package-course-split": "node scripts/smoke-package-course-split-contract.mjs",
         "smoke:package-path-navigation": "node scripts/smoke-package-path-navigation-contract.mjs",
+        "smoke:foundation-course-details": "node scripts/smoke-foundation-course-details-contract.mjs",
         "smoke:real-usage-readiness": "node scripts/smoke-real-usage-readiness-contract.mjs",
         "smoke:payment-providers": "node scripts/smoke-payment-provider-readiness-contract.mjs",
         "smoke:payment-tampering": "node scripts/smoke-payment-tampering-contract.mjs",

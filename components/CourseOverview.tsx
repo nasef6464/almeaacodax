@@ -17,7 +17,7 @@ import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
 import { shareTextSummary } from '../utils/shareText';
-import { getCourseAudienceCount } from '../utils/courseStats';
+import { getCourseAudienceCount, getCourseContentStats } from '../utils/courseStats';
 
 interface CourseOverviewProps {
     course: Course;
@@ -61,7 +61,8 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
-    const { user, enrolledCourses, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
+    const [coursePurchaseNotice, setCoursePurchaseNotice] = useState('');
+    const { user, enrolledCourses, enrolledPaths, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
@@ -80,9 +81,16 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const courseOriginalPrice = Number(course.originalPrice || 0);
     const hasCourseDiscount = courseOriginalPrice > coursePrice && coursePrice > 0;
     const courseAudienceCount = getCourseAudienceCount(course);
+    const courseContentStats = getCourseContentStats(course);
     const canUsePaidCourseFiles = isStaffViewer || isEnrolled || coursePrice <= 0;
     const visibleCourseFiles = (course.files || []).filter((file) => file.access !== 'enrolled_paid' || canUsePaidCourseFiles);
     const lockedCourseFiles = (course.files || []).filter((file) => file.access === 'enrolled_paid' && !canUsePaidCourseFiles);
+    const requiredPathId = String(course.pathId || '').trim();
+    const needsPathEnrollmentBeforePurchase = Boolean(requiredPathId && !isStaffViewer && !isGuestUser && !(enrolledPaths || []).includes(requiredPathId));
+    const sendStudentToPathRegistration = () => {
+        setCoursePurchaseNotice('سجل في المسار أولًا من صفحة مساراتي، ثم ارجع لشراء الدورة أو الباقة المناسبة.');
+        window.setTimeout(() => navigate('/dashboard?tab=paths'), 900);
+    };
 
     useEffect(() => {
         setActiveTab(initialTab);
@@ -287,6 +295,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                 navigate('/?auth=login');
                 return;
             }
+            if (needsPathEnrollmentBeforePurchase) {
+                sendStudentToPathRegistration();
+                return;
+            }
             setShowPaymentModal(true);
             return;
         }
@@ -298,12 +310,20 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
             navigate('/?auth=login');
             return;
         }
+        if (needsPathEnrollmentBeforePurchase) {
+            sendStudentToPathRegistration();
+            return;
+        }
         setShowPaymentModal(true);
     };
 
     const handleLockedCourseFileClick = () => {
         if (isGuestUser) {
             navigate('/?auth=login');
+            return;
+        }
+        if (needsPathEnrollmentBeforePurchase) {
+            sendStudentToPathRegistration();
             return;
         }
         setShowPaymentModal(true);
@@ -319,6 +339,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
         if (coursePrice > 0) {
             if (isGuestUser) {
                 navigate('/?auth=login');
+                return;
+            }
+            if (needsPathEnrollmentBeforePurchase) {
+                sendStudentToPathRegistration();
                 return;
             }
             setShowPaymentModal(true);
@@ -631,6 +655,9 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-6"
                     >
+                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-sm leading-7 text-indigo-800">
+                            هذه المساحة مخصصة للاستفسار عن محتوى الدورة ومتابعة الردود التعليمية. حجز الحصص الخاصة يتم من صفحة الحصص، وليس من سؤال وجواب الدورة.
+                        </div>
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <input 
                                 type="text" 
@@ -872,6 +899,12 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                             </div>
                         </div>
 
+                        {coursePurchaseNotice ? (
+                            <div role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold leading-7 text-amber-800">
+                                {coursePurchaseNotice}
+                            </div>
+                        ) : null}
+
                         {/* Content Tabs */}
                         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                             <div className="flex overflow-x-auto border-b border-gray-100">
@@ -987,21 +1020,28 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                                             <Clock size={14} />
                                             <span>المدة</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{course.weeksCount || 6} اشهر</span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-xs">
-                                        <div className="flex items-center gap-2 text-gray-500">
-                                            <BarChart size={14} />
-                                            <span>محاضرات</span>
-                                        </div>
-                                        <span className="font-bold text-gray-800">{course.modules?.reduce((acc, m) => acc + m.lessons.length, 0) || 42}</span>
+                                        <span className="font-bold text-gray-800">{courseContentStats.durationLabel}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-xs">
                                         <div className="flex items-center gap-2 text-gray-500">
                                             <PlayCircle size={14} />
-                                            <span>فيديو</span>
+                                            <span>دروس فيديو</span>
                                         </div>
-                                        <span className="font-bold text-gray-800">{course.duration} ساعات</span>
+                                        <span className="font-bold text-gray-800">{courseContentStats.videoLessons}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs">
+                                        <div className="flex items-center gap-2 text-gray-500">
+                                            <BarChart size={14} />
+                                            <span>اختبارات</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800">{courseContentStats.testsCount}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs">
+                                        <div className="flex items-center gap-2 text-gray-500">
+                                            <BookOpen size={14} />
+                                            <span>إجمالي الدروس</span>
+                                        </div>
+                                        <span className="font-bold text-gray-800">{courseContentStats.totalLessons}</span>
                                     </div>
                                 </div>
                             </div>

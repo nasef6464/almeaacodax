@@ -54,6 +54,7 @@ export const SubjectLearningPage: React.FC = () => {
   const hasFoundationAccess = isStaffViewer || hasScopedPackageAccess('foundation', pathId, subjectId);
   const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', pathId, subjectId);
   const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', pathId, subjectId);
+  const lockFoundationForSubject = matchedSubject?.settings?.lockSkillsForNonSubscribers === true;
   const canSeeTopic = (topic: Topic) => isStaffViewer || topic.showOnPlatform !== false;
   const canSeeLesson = (lesson: (typeof lessons)[number]) =>
     isStaffViewer || (lesson.showOnPlatform !== false && (!lesson.approvalStatus || lesson.approvalStatus === 'approved'));
@@ -84,8 +85,13 @@ export const SubjectLearningPage: React.FC = () => {
     if (accessType === 'private') return true;
     return !hasScopedPackageAccess(contentType, quiz.pathId || pathId, quiz.subjectId || subjectId);
   };
-  const isTopicLockedForStudent = (topic: Topic | null | undefined) =>
-    Boolean(topic?.isLocked && !hasFoundationAccess && !isStaffViewer);
+  const getTopicParent = (topic: Topic | null | undefined) =>
+    topic?.parentId ? findByEntityId(topics as Topic[], topic.parentId) : null;
+  const isTopicLockedForStudent = (topic: Topic | null | undefined) => {
+    if (!topic || hasFoundationAccess || isStaffViewer) return false;
+    const parentTopic = getTopicParent(topic);
+    return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
+  };
   const isLibraryItemLockedForStudent = (item: (typeof libraryItems)[number]) =>
     Boolean(item.isLocked && !hasLibraryAccess && !isStaffViewer);
   const isTopicSupportLockedForStudent = (topic: Topic | null | undefined) => isTopicLockedForStudent(topic);

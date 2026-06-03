@@ -82,6 +82,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     // Get Subject Settings
     const currentSubjectData = subjects.find(s => s.id === subject);
     const settings = currentSubjectData?.settings || {};
+    const lockFoundationForSubject = settings.lockSkillsForNonSubscribers === true;
     const enabledTabs = {
         courses: settings.showCourses ?? true,
         skills: settings.showSkills ?? true,
@@ -480,6 +481,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         : previewTopic;
 
     const canStudentSeeTopic = (topic: (typeof topicList)[number]) => isStaffViewer || topic.showOnPlatform !== false;
+    const getTopicParent = (topic: (typeof topicList)[number] | null | undefined) =>
+        topic?.parentId ? findByEntityId(topicList, topic.parentId) : null;
+    const isFoundationTopicLockedForStudent = (topic: (typeof topicList)[number] | null | undefined) => {
+        if (!topic || isStaffViewer || hasFoundationAccess) return false;
+        const parentTopic = getTopicParent(topic);
+        return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
+    };
     const getTopicProgressStats = (
         topic: (typeof topicList)[number],
         scopedSubTopics = topicList.filter(t => t.parentId === topic.id && canStudentSeeTopic(t) && matchesScopedContent(t.pathId, t.subjectId)),
@@ -522,7 +530,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 totalLessons: progressStats.totalLessons || 1,
                 completed: progressStats.completedLessons,
                 totalQuizzes: progressStats.totalQuizzes,
-                isLocked: !isStaffViewer && topic.isLocked === true && !hasFoundationAccess,
+                isLocked: isFoundationTopicLockedForStudent(topic),
                 progress: progressStats.progress,
                 originalTopic: topic // Keep a reference to the real topic
             };
@@ -543,10 +551,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             : requestedTopic;
         if (!parentTopic || !matchesScopedContent(parentTopic.pathId, parentTopic.subjectId)) return;
 
-        const topicIsLocked =
-            !isStaffViewer &&
-            !hasFoundationAccess &&
-            (parentTopic.isLocked === true || requestedTopic.isLocked === true);
+        const topicIsLocked = isFoundationTopicLockedForStudent(requestedTopic) || isFoundationTopicLockedForStudent(parentTopic);
         if (topicIsLocked) {
             const packageItem = buildScopedPackageItem(
                 'foundation',
@@ -590,7 +595,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             initialLessonId: requestedLessonId || null,
             trainingDone: hasReturnedFromFoundationTraining,
         });
-    }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, quizList, searchParams, subject, topicList]);
+    }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, lockFoundationForSubject, quizList, searchParams, subject, topicList]);
 
     let banks = getLearningSlotQuizzes(
         quizzes.filter(isMaterialQuizCandidate),

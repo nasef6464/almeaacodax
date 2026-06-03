@@ -191,7 +191,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     initialManagerParams.get('mode') === 'central' ? 'central' : initialManagerParams.get('mode') === 'saher' ? 'saher' : initialManagerParams.get('mode') === 'regular' ? 'regular' : 'all',
   );
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'shown' | 'hidden'>('all');
-  const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>('all');
+  const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>(filterType ? 'visible' : 'all');
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);

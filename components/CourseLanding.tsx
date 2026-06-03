@@ -10,7 +10,7 @@ import {
 import { PaymentModal } from './PaymentModal';
 import { motion, AnimatePresence } from 'motion/react';
 import { useStore } from '../store/useStore';
-import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
+import { getCourseAudienceCount, getCourseContentStats, getCourseRating } from '../utils/courseStats';
 
 const CustomVideoPlayer = React.lazy(() =>
     import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
@@ -27,6 +27,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
     const [expandedModules, setExpandedModules] = useState<string[]>(course.modules?.map(m => m.id) || []);
     const { user, enrolledCourses, hasScopedPackageAccess, getMatchingPackage } = useStore();
     const audienceCount = getCourseAudienceCount(course);
+    const contentStats = getCourseContentStats(course);
     const displayRating = getCourseRating(course);
     const isRegisteredViewer = !(!user?.email || user.id === 'guest');
     const isStaffViewer = isRegisteredViewer && ['admin', 'teacher', 'supervisor'].includes(String(user?.role));
@@ -425,15 +426,15 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                                     <div className="grid grid-cols-1 gap-3">
                                         <div className="flex items-center gap-3 text-sm text-gray-600">
                                             <PlayCircle size={18} className="text-indigo-500" />
-                                            <span>{course.duration} ساعة من الفيديوهات المسجلة</span>
+                                            <span>{contentStats.videoLessons} درس فيديو</span>
                                         </div>
                                         <div className="flex items-center gap-3 text-sm text-gray-600">
                                             <BookOpen size={18} className="text-indigo-500" />
-                                            <span>{course.features[0] || '73 درس'}</span>
+                                            <span>{contentStats.totalLessons} درس داخل الدورة</span>
                                         </div>
                                         <div className="flex items-center gap-3 text-sm text-gray-600">
                                             <BarChart size={18} className="text-indigo-500" />
-                                            <span>اختبارات محاكية وتقييمات دورية</span>
+                                            <span>{contentStats.testsCount} اختبار أو تدريب</span>
                                         </div>
                                         <div className="flex items-center gap-3 text-sm text-gray-600">
                                             <ShieldCheck size={18} className="text-indigo-500" />
@@ -441,7 +442,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                                         </div>
                                         <div className="flex items-center gap-3 text-sm text-gray-600">
                                             <Clock size={18} className="text-indigo-500" />
-                                            <span>وصول مدى الحياة للمحتوى</span>
+                                            <span>المدة: {contentStats.durationLabel}</span>
                                         </div>
                                     </div>
                                 </div>

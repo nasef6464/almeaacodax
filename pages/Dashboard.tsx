@@ -439,7 +439,11 @@ const PathsTab = () => {
                                                 متابعة المسار
                                             </Link>
                                             <button 
-                                                onClick={() => unenrollPath(path.id)}
+                                                onClick={() => {
+                                                    if (window.confirm(`هل تريد إلغاء التسجيل في مسار "${path.title}"؟ سيظل بإمكانك التسجيل فيه مرة أخرى لاحقًا.`)) {
+                                                        unenrollPath(path.id);
+                                                    }
+                                                }}
                                                 className="text-red-500 text-sm font-bold hover:text-red-600 transition-colors text-center w-full"
                                             >
                                                 إلغاء التسجيل
