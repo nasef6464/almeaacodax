@@ -94,10 +94,14 @@ check('subject learning page guides foundation, training, tests, and package rec
 });
 
 check('quiz center separates self Saher, directed tests, history, and weak-skill recommendations', () => {
+  assertIncludes(files.quizzes, 'StudentNextActionStrip');
+  assertIncludes(files.quizzes, 'quizCenterNextAction');
   assertIncludes(files.quizzes, 'directedQuizzes');
   assertIncludes(files.quizzes, 'saherQuizzes');
   assertIncludes(files.quizzes, 'weakSkillRecommendations');
   assertIncludes(files.quizzes, 'recommendedQuiz');
+  assertIncludes(files.quizzes, 'ابدأ بمهارة:');
+  assertIncludes(files.quizzes, 'افتح التحليل');
   assertIncludes(files.quizzes, '/dashboard?tab=quizzes');
   assertAnyIncludes(files.quizzes, ['اختبار ساهر الذاتي', 'Ø§Ø®ØªØ¨Ø§Ø± Ø³Ø§Ù‡Ø± Ø§Ù„Ø°Ø§ØªÙŠ']);
   assertAnyIncludes(files.quizzes, ['اختبارات موجهة لك', 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ù…ÙˆØ¬Ù‡Ø© Ù„Ùƒ']);

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { EmptyState } from '../components/ui/EmptyState';
 import { useStore } from '../store/useStore';
 import { Quiz, QuizResult } from '../types';
@@ -413,6 +414,52 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return allSkills.sort((a, b) => a.mastery - b.mastery)[0];
   }, [examResults]);
 
+  const latestAttempt = attemptGroups[0]?.latestAttempt;
+  const firstWeakRecommendation = weakSkillRecommendations[0];
+  const quizCenterNextAction = firstWeakRecommendation
+    ? {
+        title: `ابدأ بمهارة: ${firstWeakRecommendation.skill}`,
+        description: `راجع التقرير ثم افتح خطة علاج قصيرة، وبعدها أعد القياس. مستوى الإتقان الحالي ${firstWeakRecommendation.mastery}%.`,
+        primaryLabel: 'افتح التقرير',
+        primaryHref: '/reports',
+        secondaryLabel: 'ابدأ خطة علاج',
+        secondaryHref: '/plan',
+        tone: firstWeakRecommendation.mastery < 50 ? ('rose' as const) : ('amber' as const),
+        icon: <Target size={18} className="text-amber-600" />,
+      }
+    : latestAttempt && latestAttempt.score < 75
+      ? {
+          title: 'راجع آخر اختبار قبل المحاولة التالية',
+          description: `آخر درجة ${latestAttempt.score}%. افتح التحليل المختصر، ثم أعد المحاولة عندما تراجع نقطة الضعف.`,
+          primaryLabel: 'افتح التحليل',
+          primaryHref: getAttemptResultLink(latestAttempt, 'analysis'),
+          secondaryLabel: 'إعادة المحاولة',
+          secondaryHref: getAttemptRetryLink(latestAttempt),
+          tone: 'rose' as const,
+          icon: <TrendingUp size={18} className="text-rose-600" />,
+        }
+      : directedQuizzes.length > 0
+        ? {
+            title: 'لديك اختبار موجه جاهز',
+            description: 'ابدأ الاختبار الموجه أولًا لأنه من الإدارة أو المشرف، وبعده ستظهر النتيجة في اختباراتي.',
+            primaryLabel: 'ابدأ الاختبار',
+            primaryHref: buildQuizRouteWithContext(directedQuizzes[0].id, { returnTo: '/dashboard?tab=quizzes' }),
+            secondaryLabel: 'اختباراتي',
+            secondaryHref: '/dashboard?tab=quizzes',
+            tone: 'indigo' as const,
+            icon: <Target size={18} className="text-indigo-600" />,
+          }
+        : {
+            title: 'ابدأ قياسًا قصيرًا بساهر',
+            description: 'اختبار ساهر يعطيك نقطة بداية واضحة، ثم يفتح لك التقرير وخطة التدريب حسب أضعف مهارة.',
+            primaryLabel: 'اختبار ساهر',
+            primaryHref: '/quiz',
+            secondaryLabel: 'تقريري',
+            secondaryHref: '/reports',
+            tone: 'emerald' as const,
+            icon: <Zap size={18} className="text-emerald-600" />,
+          };
+
   const subjectQuizReadiness = useMemo(
     () =>
       subjects
@@ -511,6 +558,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             ) : null}
           </div>
         </header>
+
+        <StudentNextActionStrip {...quizCenterNextAction} />
 
         <div className="hidden">
           <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
@@ -648,6 +697,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <p className="mt-1 text-sm text-gray-500">ابدأ اختبارًا جديدًا، أو افتح اختبارًا موجهًا، والنتائج تجدها في اختباراتي.</p>
         </div>
       </header>
+
+      <StudentNextActionStrip {...quizCenterNextAction} />
 
       <div className="hidden">
         <StatCard icon={<Zap size={24} />} value={saherQuizzes.length} label="ساهر جاهز" color="purple" />

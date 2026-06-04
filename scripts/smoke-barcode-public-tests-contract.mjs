@@ -163,6 +163,30 @@ addCheck(
 );
 
 addCheck(
+  "barcode admin manager filters approved questions by path, subject, section, type, and difficulty",
+  barcodeManagerSource.includes("activeSections") &&
+    barcodeManagerSource.includes("sectionId") &&
+    barcodeManagerSource.includes("questionTypeFilter") &&
+    barcodeManagerSource.includes("difficultyFilter") &&
+    barcodeManagerSource.includes("question.pathId === pathId") &&
+    barcodeManagerSource.includes("question.subject === normalizedSubjectId") &&
+    barcodeManagerSource.includes("question.sectionId === sectionId"),
+  "staff should choose barcode questions from the same path/topic taxonomy used by the question center",
+);
+
+addCheck(
+  "barcode admin manager exposes publishing and identity settings",
+  barcodeManagerSource.includes("collectSchool") &&
+    barcodeManagerSource.includes("collectClassroom") &&
+    barcodeManagerSource.includes("startsAtLocal") &&
+    barcodeManagerSource.includes("endsAtLocal") &&
+    barcodeManagerSource.includes("maxSubmissions") &&
+    barcodeManagerSource.includes("startsAt: startsAtLocal") &&
+    barcodeManagerSource.includes("endsAt: endsAtLocal"),
+  "barcode tests need real-test controls for opening window, submission cap, and identity fields",
+);
+
+addCheck(
   "barcode reports summarize schools, classrooms, weak skills, and low performers",
   publicRoutes.includes("bySchool") &&
     publicRoutes.includes("byClassroom") &&

@@ -185,20 +185,28 @@ const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: s
 };
 
 export const PublicBarcodeTestsManager: React.FC = () => {
-  const { paths, subjects, questions, skills } = useStore();
+  const { paths, subjects, sections, questions, skills } = useStore();
   const firstPathId = paths[0]?.id || '';
   const [pathId, setPathId] = useState(firstPathId);
   const activeSubjects = useMemo(() => subjects.filter((subject) => subject.pathId === pathId), [subjects, pathId]);
   const [subjectId, setSubjectId] = useState(activeSubjects[0]?.id || '');
+  const [sectionId, setSectionId] = useState('');
+  const [questionTypeFilter, setQuestionTypeFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
   const [title, setTitle] = useState('اختبار سريع');
   const [description, setDescription] = useState('اختبار قصير للتعرف على مستواك.');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [showResultToStudent, setShowResultToStudent] = useState(true);
+  const [collectSchool, setCollectSchool] = useState(true);
+  const [collectClassroom, setCollectClassroom] = useState(true);
   const [testKind, setTestKind] = useState<'quick' | 'mock'>('quick');
   const [timeLimit, setTimeLimit] = useState(20);
   const [maxAttempts, setMaxAttempts] = useState(1);
   const [passingScore, setPassingScore] = useState(60);
+  const [maxSubmissions, setMaxSubmissions] = useState('');
+  const [startsAtLocal, setStartsAtLocal] = useState('');
+  const [endsAtLocal, setEndsAtLocal] = useState('');
   const [randomizeQuestions, setRandomizeQuestions] = useState(true);
   const [randomizeOptions, setRandomizeOptions] = useState(false);
   const [showAnswers, setShowAnswers] = useState(true);
@@ -217,16 +225,23 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [loadingReport, setLoadingReport] = useState(false);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
+  const activeSections = useMemo(
+    () => sections.filter((section) => section.subjectId === normalizedSubjectId),
+    [normalizedSubjectId, sections],
+  );
   const eligibleQuestions = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     return questions
       .filter((question) => {
         const approved = !question.approvalStatus || question.approvalStatus === 'approved';
-        return approved && question.pathId === pathId && question.subject === normalizedSubjectId;
+        const matchesSection = !sectionId || question.sectionId === sectionId;
+        const matchesType = questionTypeFilter === 'all' || question.type === questionTypeFilter;
+        const matchesDifficulty = difficultyFilter === 'all' || question.difficulty === difficultyFilter;
+        return approved && question.pathId === pathId && question.subject === normalizedSubjectId && matchesSection && matchesType && matchesDifficulty;
       })
       .filter((question) => !term || question.text.toLowerCase().includes(term))
       .slice(0, 80);
-  }, [normalizedSubjectId, pathId, questions, searchTerm]);
+  }, [difficultyFilter, normalizedSubjectId, pathId, questionTypeFilter, questions, searchTerm, sectionId]);
 
   const selectedSkills = useMemo(() => {
     const selectedQuestions = questions.filter((question) => selectedQuestionIds.includes(question.id));
@@ -300,13 +315,17 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         description,
         pathId,
         subjectId: normalizedSubjectId,
+        sectionId,
         skillIds: selectedSkills,
         questionIds: selectedQuestionIds,
         testKind,
         status: 'active',
         showResultToStudent,
-        collectSchool: true,
-        collectClassroom: true,
+        collectSchool,
+        collectClassroom,
+        startsAt: startsAtLocal ? new Date(startsAtLocal).getTime() : null,
+        endsAt: endsAtLocal ? new Date(endsAtLocal).getTime() : null,
+        maxSubmissions: maxSubmissions ? Number(maxSubmissions) : null,
         settings: {
           showExplanations,
           showAnswers,
@@ -484,6 +503,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   const nextSubject = subjects.find((subject) => subject.pathId === nextPathId);
                   setPathId(nextPathId);
                   setSubjectId(nextSubject?.id || '');
+                  setSectionId('');
                   setSelectedQuestionIds([]);
                 }}
                 className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
@@ -497,6 +517,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 value={normalizedSubjectId}
                 onChange={(event) => {
                   setSubjectId(event.target.value);
+                  setSectionId('');
                   setSelectedQuestionIds([]);
                 }}
                 className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
@@ -504,6 +525,54 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 {activeSubjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
               </select>
             </label>
+            <label className="block">
+              <span className="mb-1 block text-xs font-black text-slate-600">الموضوع / القسم</span>
+              <select
+                value={sectionId}
+                onChange={(event) => {
+                  setSectionId(event.target.value);
+                  setSelectedQuestionIds([]);
+                }}
+                className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+              >
+                <option value="">كل الموضوعات</option>
+                {activeSections.map((section) => <option key={section.id} value={section.id}>{section.name}</option>)}
+              </select>
+            </label>
+            <div className="grid gap-3 md:grid-cols-2">
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">نوع السؤال</span>
+                <select
+                  value={questionTypeFilter}
+                  onChange={(event) => {
+                    setQuestionTypeFilter(event.target.value);
+                    setSelectedQuestionIds([]);
+                  }}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+                >
+                  <option value="all">كل الأنواع</option>
+                  <option value="mcq">اختيار من متعدد</option>
+                  <option value="true_false">صح وخطأ</option>
+                  <option value="essay">مقالي</option>
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">مستوى الصعوبة</span>
+                <select
+                  value={difficultyFilter}
+                  onChange={(event) => {
+                    setDifficultyFilter(event.target.value);
+                    setSelectedQuestionIds([]);
+                  }}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+                >
+                  <option value="all">كل المستويات</option>
+                  <option value="Easy">سهل</option>
+                  <option value="Medium">متوسط</option>
+                  <option value="Hard">صعب</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-slate-100 bg-white p-4">
@@ -544,6 +613,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 ['شريط تقدم للطالب', showProgressBar, setShowProgressBar],
                 ['يلزم إجابة كل سؤال', requireAnswerBeforeNext, setRequireAnswerBeforeNext],
                 ['مراجعة الأسئلة', allowQuestionReview, setAllowQuestionReview],
+                ['طلب اسم المدرسة', collectSchool, setCollectSchool],
+                ['طلب الفصل', collectClassroom, setCollectClassroom],
               ].map(([label, value, setter]) => (
                 <button
                   type="button"
@@ -555,9 +626,51 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 </button>
               ))}
             </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">يفتح في</span>
+                <input
+                  type="datetime-local"
+                  value={startsAtLocal}
+                  onChange={(event) => setStartsAtLocal(event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">يغلق في</span>
+                <input
+                  type="datetime-local"
+                  value={endsAtLocal}
+                  onChange={(event) => setEndsAtLocal(event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">حد المشاركات</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={maxSubmissions}
+                  onChange={(event) => setMaxSubmissions(event.target.value)}
+                  placeholder="بدون حد"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
+                />
+              </label>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 className="text-sm font-black text-slate-900">أسئلة مركز الأسئلة</h2>
+                <p className="mt-1 text-xs font-bold text-slate-500">
+                  تظهر الأسئلة المعتمدة فقط حسب المسار والمادة والموضوع المختار.
+                </p>
+              </div>
+              <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-600">
+                {eligibleQuestions.length} سؤال متاح
+              </span>
+            </div>
             <div className="mb-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
               <Search size={16} className="text-slate-400" />
               <input
