@@ -12,10 +12,7 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { matchesEntityId } from '../utils/entityIds';
-
-type XlsxModule = typeof import('xlsx');
-
-const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');
+import { loadXlsx } from '../utils/xlsxLoader';
 
 interface ScopedAnalyticsOverview {
     scope: {

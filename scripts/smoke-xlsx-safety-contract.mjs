@@ -20,10 +20,16 @@ function notIncludes(file, needle) {
 }
 
 const loader = read("utils/xlsxLoader.ts");
+const packageJson = read("package.json");
 addCheck(
   "xlsx is loaded lazily",
-  loader.includes("import('xlsx')"),
+  loader.includes("import('@e965/xlsx')"),
   "xlsxLoader keeps xlsx out of the initial admin bundle",
+);
+addCheck(
+  "legacy xlsx package is removed",
+  packageJson.includes('"@e965/xlsx"') && !packageJson.includes('"xlsx"'),
+  "the audited npm package xlsx must not be a direct dependency",
 );
 addCheck(
   "workbook import disables formula parsing",

@@ -61,7 +61,7 @@ assertIncludes('styles/main.css', '@tailwind base;');
 assertIncludes('tailwind.config.cjs', './components/**/*.{ts,tsx}');
 assertIncludes('postcss.config.cjs', 'tailwindcss');
 
-assertIncludes('pages/Reports.tsx', "const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
+assertIncludes('pages/Reports.tsx', "import { loadXlsx } from '../utils/xlsxLoader';");
 assertNotIncludes('pages/Reports.tsx', "import * as XLSX from 'xlsx';");
 assertIncludes('pages/Results.tsx', "const ResultDonutChart = React.lazy(() =>");
 assertIncludes('pages/Results.tsx', "import('../components/results/ResultDonutChart')");
@@ -72,8 +72,8 @@ assertIncludes('pages/Reports.tsx', 'const MIN_SKILL_EVIDENCE_COUNT = 3;');
 assertIncludes('pages/Reports.tsx', 'isReliable: data.count >= MIN_SKILL_EVIDENCE_COUNT');
 assertIncludes('pages/Reports.tsx', 'const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);');
 assertIncludes('pages/Reports.tsx', 'weaknessLabel = weakest?.isReliable');
-assertIncludes('pages/Reports.tsx', "skill.isReliable ? 'ابدأ هنا' : 'قراءة أولية'");
-assertIncludes('pages/Reports.tsx', 'القياس: {skill.totalEvidence} سؤال عبر المحاولات');
+assertIncludes('pages/Reports.tsx', 'evidenceLabel: skill.isReliable');
+assertIncludes('pages/Reports.tsx', 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
 assertIncludes('pages/Reports.tsx', 'studentEnrolledPathIds');
 assertIncludes('pages/Reports.tsx', 'studentPathScopedSkills');
 assertIncludes('pages/Reports.tsx', 'تقاريرك مرتبة حسب مسارك');
@@ -96,7 +96,7 @@ assertIncludes('pages/Reports.tsx', 'const targetUserCount = quiz.targetUserIds?
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'initialTargetUserId ? [initialTargetUserId] : []');
 assertIncludes('dashboards/admin/QuizzesManager.tsx', 'reportContextStudent');
 
-assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');");
+assertIncludes('utils/xlsxLoader.ts', "export const loadXlsx = async (): Promise<XlsxModule> => import('@e965/xlsx');");
 for (const file of [
   'dashboards/admin/UsersManager.tsx',
   'dashboards/admin/SchoolsManager.tsx',
@@ -127,7 +127,7 @@ assertIncludes('App.tsx', 'const SKILL_PROGRESS_BOOTSTRAP_DEFER_PREFIXES = [');
 assertIncludes('App.tsx', 'const shouldDeferSkillProgressBootstrap = (path: string) =>');
 assertIncludes('App.tsx', 'const BootstrapRouteGate: React.FC<{ bootstrapReady: boolean; children: React.ReactNode }>');
 assertIncludes('App.tsx', 'const CategoryRouteShellGate: React.FC<{ children: React.ReactNode }>');
-assertIncludes('App.tsx', 'isDataBootstrapBlockingPath(location.pathname ||');
+assertIncludes('App.tsx', 'if (isDataBootstrapBlockingPath(path))');
 assertIncludes('App.tsx', 'shouldStartBootstrapForPath(path)');
 assertIncludes('App.tsx', "const [bootstrapReady, setBootstrapReady] = useState(false);");
 assertAnyIncludes('App.tsx', [

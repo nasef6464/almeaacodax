@@ -1,6 +1,6 @@
-export type XlsxModule = typeof import('xlsx');
+export type XlsxModule = typeof import('@e965/xlsx');
 
-export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');
+export const loadXlsx = async (): Promise<XlsxModule> => import('@e965/xlsx');
 
 export const MAX_XLSX_IMPORT_BYTES = 5 * 1024 * 1024;
 

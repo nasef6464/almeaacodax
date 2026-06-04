@@ -127,6 +127,7 @@
         "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers"
     },
     "dependencies": {
+        "@e965/xlsx": "^0.20.3",
         "@google/genai": "^1.30.0",
         "@hello-pangea/dnd": "^18.0.1",
         "@sentry/react": "^9.18.0",
@@ -141,7 +142,6 @@
         "react-quill-new": "^3.7.0",
         "react-router-dom": "^7.16.0",
         "recharts": "^3.4.1",
-        "xlsx": "^0.18.5",
         "zustand": "^5.0.12"
     },
     "devDependencies": {
