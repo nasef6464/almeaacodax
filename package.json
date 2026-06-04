@@ -84,6 +84,7 @@
         "smoke:health-readiness": "node scripts/smoke-health-readiness-contract.mjs",
         "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
         "smoke:supervisor-dashboard": "node scripts/smoke-supervisor-dashboard-contract.mjs",
+        "smoke:supervisor-school-live": "node scripts/live-supervisor-school-command-audit.mjs",
         "smoke:school-management": "node scripts/smoke-school-management-contract.mjs",
         "smoke:admin-school-command": "node scripts/smoke-admin-school-command-center-contract.mjs",
         "smoke:school-portal-command": "node scripts/smoke-school-portal-command-center-contract.mjs",

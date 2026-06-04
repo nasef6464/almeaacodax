@@ -6,6 +6,8 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 
 const schoolPortal = read("dashboards/admin/SchoolPortalManager.tsx");
 const adminDashboard = read("dashboards/admin/AdminDashboard.tsx");
+const packageJson = JSON.parse(read("package.json"));
+const liveSupervisorSchoolAudit = read("scripts/live-supervisor-school-command-audit.mjs");
 
 const checks = [
   {
@@ -78,6 +80,19 @@ const checks = [
       schoolPortal.includes("المسارات:") &&
       schoolPortal.includes("المواد:") &&
       schoolPortal.includes("نطاق الوصول"),
+  },
+  {
+    name: "supervisor school command center has a live visual audit",
+    ok:
+      packageJson.scripts["smoke:supervisor-school-live"] === "node scripts/live-supervisor-school-command-audit.mjs" &&
+      liveSupervisorSchoolAudit.includes("VIEWPORTS") &&
+      liveSupervisorSchoolAudit.includes('name: "mobile"') &&
+      liveSupervisorSchoolAudit.includes("horizontalOverflow") &&
+      liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=school-portal") &&
+      liveSupervisorSchoolAudit.includes("/reports") &&
+      liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=quizzes&source=school-portal&mode=central") &&
+      liveSupervisorSchoolAudit.includes("actionControlCount") &&
+      liveSupervisorSchoolAudit.includes("missingTextGroups"),
   },
   {
     name: "announcement ads have a live preview path",
