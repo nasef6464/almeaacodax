@@ -53,6 +53,8 @@ check('student dashboard keeps one clear continuation area and learner shortcuts
   assertIncludes(files.dashboard, 'StudentNextActionStrip');
   assertIncludes(files.dashboard, 'smartAction.buttonText');
   assertIncludes(files.dashboard, 'smartAction.link');
+  assertIncludes(files.dashboard, 'data-testid="student-path-unenroll"');
+  assertIncludes(files.dashboard, 'هل تريد إلغاء التسجيل في مسار');
   assertIncludes(files.dashboard, "setActiveTab('saher')");
   assertIncludes(files.dashboard, "setActiveTab('quizzes')");
   assertIncludes(files.dashboard, "setActiveTab('reports')");
@@ -202,6 +204,8 @@ check('release verification has live role and student journey coverage', () => {
   assertIncludes(files.roleAudit, 'network5xx');
   assertIncludes(files.liveStudentJourney, 'VIEWPORTS');
   assertIncludes(files.liveStudentJourney, 'name: "mobile"');
+  assertIncludes(files.liveStudentJourney, 'unenrollConfirmProbe');
+  assertIncludes(files.liveStudentJourney, 'student-path-unenroll');
   assertIncludes(files.liveStudentJourney, 'missingNextAction');
   assertIncludes(files.liveStudentJourney, 'actionControlCount');
   assertIncludes(files.liveStudentJourney, 'horizontalOverflow');

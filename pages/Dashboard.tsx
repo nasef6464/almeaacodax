@@ -450,6 +450,7 @@ const PathsTab = () => {
                                                 متابعة المسار
                                             </Link>
                                             <button 
+                                                data-testid="student-path-unenroll"
                                                 onClick={() => {
                                                     if (window.confirm(`هل تريد إلغاء التسجيل في مسار "${path.title}"؟ سيظل بإمكانك التسجيل فيه مرة أخرى لاحقًا.`)) {
                                                         unenrollPath(path.id);

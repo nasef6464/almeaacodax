@@ -222,6 +222,37 @@ async function inspectRoute(page, name, route, expectations = {}) {
     }
   }
 
+  let unenrollConfirmProbe = null;
+  if (expectations.unenrollConfirmProbe) {
+    const unenrollButtons = page.locator('[data-testid="student-path-unenroll"]');
+    const buttonCount = await unenrollButtons.count().catch(() => 0);
+    if (buttonCount > 0) {
+      const dialogPromise = new Promise((resolve) => {
+        page.once("dialog", async (dialog) => {
+          const message = dialog.message();
+          await dialog.dismiss().catch(() => {});
+          resolve({ seen: true, message });
+        });
+      });
+      await unenrollButtons.first().click();
+      const result = await Promise.race([
+        dialogPromise,
+        page.waitForTimeout(3000).then(() => ({ seen: false, message: "" })),
+      ]);
+      unenrollConfirmProbe = {
+        status: result.seen ? "checked" : "missing-dialog",
+        buttonCount,
+        message: String(result.message || "").slice(0, 180),
+      };
+    } else {
+      unenrollConfirmProbe = {
+        status: "missing-button",
+        buttonCount,
+        message: "",
+      };
+    }
+  }
+
   page.off("console", onConsole);
   page.off("response", onResponse);
 
@@ -276,6 +307,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     !missingNextAction &&
     !(paymentProbe?.status === "checked" && (!paymentProbe.hasModal || !paymentProbe.hasAccessCodeInput || !paymentProbe.hasRedeemButton)) &&
     !(paymentProbe?.status === "skipped-no-paid-membership" && !paymentProbe.hasFreeStart) &&
+    !(expectations.unenrollConfirmProbe && unenrollConfirmProbe?.status !== "checked") &&
     !layoutFailure &&
     !state.hasBlockingError &&
     network5xx.length === 0 &&
@@ -292,6 +324,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     unexpected4xx,
     network5xx,
     paymentProbe,
+    unenrollConfirmProbe,
     missingNextAction,
     layoutFailure,
     ...state,
@@ -312,7 +345,7 @@ const routeResults = [];
 
 try {
   const routePlan = [
-    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"] }],
+    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"], requiredSelectors: ['[data-testid="student-path-unenroll"]'], unenrollConfirmProbe: true }],
     ["student-memberships-pricing", targets.routes.pricing, { minBodyLength: 420, minControls: 3, nextActions: ["ابدأ", "طلب", "عضوية", "باقة", "تفعيل"], requiredSelectors: ['[data-testid="pricing-memberships-page"]', '[data-testid="pricing-free-membership-start"]'], paymentProbe: true }],
     ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8, nextActions: ["افتح", "ابدأ", "تدريب", "اختبار", "عرض الباقات"] }],
     ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
@@ -384,7 +417,7 @@ fs.writeFileSync(
     ...checks.map((item) => `- [${item.status}] ${item.name} - ${item.details}`),
     "",
     "## Routes",
-    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
+    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, unenrollConfirm=${item.unenrollConfirmProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
     "",
   ].join("\n"),
   "utf8",
