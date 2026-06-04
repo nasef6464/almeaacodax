@@ -129,6 +129,7 @@ async function resolveJourneyTargets() {
       myQuizzes: "/my-quizzes",
       reports: "/reports",
       plan: "/plan",
+      pricing: "/pricing",
     },
   };
 }
@@ -193,13 +194,41 @@ async function inspectRoute(page, name, route, expectations = {}) {
   });
   await page.waitForTimeout(1000);
 
+  let paymentProbe = null;
+  if (expectations.paymentProbe) {
+    const requestButtons = page.locator('[data-testid="pricing-membership-request"]');
+    const requestButtonCount = await requestButtons.count().catch(() => 0);
+    if (requestButtonCount > 0) {
+      await requestButtons.first().click();
+      await page.waitForSelector('[data-testid="payment-modal-shell"]', { timeout: 10000 });
+      const continueButton = page.locator('[data-testid="payment-continue-purchase"]');
+      if (await continueButton.count()) {
+        await continueButton.first().click();
+        await page.waitForSelector('[data-testid="payment-access-code-input"]', { timeout: 10000 });
+      }
+      paymentProbe = {
+        status: "checked",
+        requestButtonCount,
+        hasModal: await page.locator('[data-testid="payment-modal-shell"]').count().then(Boolean).catch(() => false),
+        hasAccessCodeInput: await page.locator('[data-testid="payment-access-code-input"]').count().then(Boolean).catch(() => false),
+        hasRedeemButton: await page.locator('[data-testid="payment-redeem-access-code"]').count().then(Boolean).catch(() => false),
+      };
+    } else {
+      paymentProbe = {
+        status: "skipped-no-paid-membership",
+        requestButtonCount,
+        hasFreeStart: await page.locator('[data-testid="pricing-free-membership-start"]').count().then(Boolean).catch(() => false),
+      };
+    }
+  }
+
   page.off("console", onConsole);
   page.off("response", onResponse);
 
   const screenshot = path.join(OUT_DIR, `${name}.png`);
   await page.screenshot({ path: screenshot, fullPage: true });
 
-  const state = await page.evaluate((expectedNextActions) => {
+  const state = await page.evaluate(({ expectedNextActions, requiredSelectors }) => {
     const text = document.body.innerText || "";
     const controls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
       const rect = el.getBoundingClientRect();
@@ -220,6 +249,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
       controlCount: controls.length,
       actionControlCount: actionControls.length,
       actionControls,
+      missingSelectors: (requiredSelectors || []).filter((selector) => !document.querySelector(selector)),
       nextActionTextFound: expectedNextActions.some((pattern) => text.includes(pattern)),
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
       scrollWidth: document.documentElement.scrollWidth,
@@ -229,7 +259,10 @@ async function inspectRoute(page, name, route, expectations = {}) {
       hasLearningUi: /درس|دورة|المهارات|تدريب|المسار|خطة|تقرير|اختبار/.test(text),
       hasBlockingError: /تعذر تحميل|تعذر إرسال|خطأ غير متوقع|حدث خطأ|غير مصرح|ليس لديك صلاحية|Authentication required|Invalid CSRF|CSRF_TOKEN_INVALID/i.test(text),
     };
-  }, expectations.nextActions || DEFAULT_NEXT_ACTION_PATTERNS);
+  }, {
+    expectedNextActions: expectations.nextActions || DEFAULT_NEXT_ACTION_PATTERNS,
+    requiredSelectors: expectations.requiredSelectors || [],
+  });
 
   const missingNextAction = expectations.requireNextAction !== false && state.actionControlCount < 1 && !state.nextActionTextFound;
   const layoutFailure = expectations.viewport === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
@@ -239,7 +272,10 @@ async function inspectRoute(page, name, route, expectations = {}) {
     !state.hasLoginForm &&
     state.bodyLength >= (expectations.minBodyLength || 300) &&
     state.controlCount >= (expectations.minControls || 1) &&
+    state.missingSelectors.length === 0 &&
     !missingNextAction &&
+    !(paymentProbe?.status === "checked" && (!paymentProbe.hasModal || !paymentProbe.hasAccessCodeInput || !paymentProbe.hasRedeemButton)) &&
+    !(paymentProbe?.status === "skipped-no-paid-membership" && !paymentProbe.hasFreeStart) &&
     !layoutFailure &&
     !state.hasBlockingError &&
     network5xx.length === 0 &&
@@ -255,6 +291,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     network4xx,
     unexpected4xx,
     network5xx,
+    paymentProbe,
     missingNextAction,
     layoutFailure,
     ...state,
@@ -276,6 +313,7 @@ const routeResults = [];
 try {
   const routePlan = [
     ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"] }],
+    ["student-memberships-pricing", targets.routes.pricing, { minBodyLength: 500, minControls: 3, nextActions: ["ابدأ", "طلب", "عضوية", "باقة", "تفعيل"], requiredSelectors: ['[data-testid="pricing-memberships-page"]', '[data-testid="pricing-free-membership-start"]'], paymentProbe: true }],
     ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8, nextActions: ["افتح", "ابدأ", "تدريب", "اختبار", "عرض الباقات"] }],
     ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
     ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
@@ -346,7 +384,7 @@ fs.writeFileSync(
     ...checks.map((item) => `- [${item.status}] ${item.name} - ${item.details}`),
     "",
     "## Routes",
-    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
+    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
     "",
   ].join("\n"),
   "utf8",

@@ -522,6 +522,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     const renderActionError = (compact = false) => actionError ? (
         <div
             ref={actionErrorRef}
+            data-testid="payment-action-error"
             role="alert"
             className={`rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-right text-sm font-bold text-red-700 ${compact ? '' : 'shadow-sm'}`}
         >
@@ -553,6 +554,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <button
                     type="button"
                     onClick={() => setStep('method')}
+                    data-testid="payment-continue-purchase"
                     className="flex-1 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700"
                 >
                     متابعة الشراء
@@ -596,12 +598,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     <input
                         value={accessCode}
                         onChange={(event) => setAccessCode(event.target.value.toUpperCase())}
+                        data-testid="payment-access-code-input"
                         placeholder="أدخل كود التفعيل"
                         className="flex-1 p-3 rounded-xl border border-amber-200 bg-white focus:ring-2 focus:ring-amber-400 outline-none font-mono"
                     />
                     <button
                         onClick={() => void handleRedeemAccessCode()}
                         disabled={accessCodeLoading}
+                        data-testid="payment-redeem-access-code"
                         className="bg-amber-500 text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-amber-600 transition-colors disabled:opacity-60"
                     >
                         {accessCodeLoading ? 'جارٍ التفعيل...' : 'تفعيل الكود'}
@@ -771,7 +775,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
     );
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
+        <div data-testid="payment-modal-shell" className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
             <div className={`bg-white w-full ${hasPackageChoices && (step === 'intro' || step === 'method') ? 'max-w-4xl' : 'max-w-xl'} max-h-[92vh] overflow-y-auto rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl relative animate-scale-up`}>
                 <button onClick={onClose} className="absolute top-6 left-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10" aria-label="إغلاق">
                     <X size={20} />

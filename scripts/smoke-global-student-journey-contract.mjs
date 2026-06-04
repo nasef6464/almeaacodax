@@ -9,6 +9,8 @@ const files = {
   quizzes: await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8'),
   reports: await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8'),
   plan: await readFile(new URL('../pages/Plan.tsx', import.meta.url), 'utf8'),
+  pricing: await readFile(new URL('../pages/Pricing.tsx', import.meta.url), 'utf8'),
+  paymentModal: await readFile(new URL('../components/PaymentModal.tsx', import.meta.url), 'utf8'),
   landing: await readFile(new URL('../pages/Landing.tsx', import.meta.url), 'utf8'),
   adminDashboard: await readFile(new URL('../dashboards/admin/AdminDashboard.tsx', import.meta.url), 'utf8'),
   notificationRoutes: await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8'),
@@ -168,6 +170,21 @@ check('landing page covers product value, reports, packages, schools/groups, and
   assertAnyIncludes(files.landing, ['تقارير', 'ØªÙ‚Ø§Ø±ÙŠØ±', 'reports']);
   assertAnyIncludes(files.landing, ['باقات', 'Ø¨Ø§Ù‚Ø§Øª', 'packages']);
   assertAnyIncludes(files.landing, ['مدارس', 'Ø§Ù„Ù…Ø¯Ø§Ø±Ø³', 'schools', 'groups']);
+});
+
+check('student membership and activation purchase path is explicit and live-audited', () => {
+  assertIncludes(files.pricing, 'data-testid="pricing-memberships-page"');
+  assertIncludes(files.pricing, 'data-testid="pricing-free-membership-start"');
+  assertIncludes(files.pricing, 'data-testid="pricing-membership-request"');
+  assertIncludes(files.paymentModal, 'data-testid="payment-modal-shell"');
+  assertIncludes(files.paymentModal, 'data-testid="payment-continue-purchase"');
+  assertIncludes(files.paymentModal, 'data-testid="payment-access-code-input"');
+  assertIncludes(files.paymentModal, 'data-testid="payment-redeem-access-code"');
+  assertIncludes(files.paymentModal, 'data-testid="payment-action-error"');
+  assertIncludes(files.liveStudentJourney, 'student-memberships-pricing');
+  assertIncludes(files.liveStudentJourney, 'paymentProbe');
+  assertIncludes(files.liveStudentJourney, 'pricing-membership-request');
+  assertIncludes(files.liveStudentJourney, 'payment-access-code-input');
 });
 
 check('release verification has live role and student journey coverage', () => {

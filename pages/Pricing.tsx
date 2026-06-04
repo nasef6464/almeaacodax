@@ -34,7 +34,7 @@ const Pricing: React.FC = () => {
   const freeMembershipLink = user?.id && user.id !== 'guest' ? '/dashboard' : '/login';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
+    <div data-testid="pricing-memberships-page" className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-4 py-10" dir="rtl">
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
           <h1 className="text-3xl font-black text-gray-900 sm:text-4xl">عضويات المنصة</h1>
@@ -55,6 +55,7 @@ const Pricing: React.FC = () => {
             </ul>
             <Link
               to={freeMembershipLink}
+              data-testid="pricing-free-membership-start"
               className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
             >
               ابدأ الآن
@@ -78,6 +79,7 @@ const Pricing: React.FC = () => {
               </ul>
               <button
                 type="button"
+                data-testid="pricing-membership-request"
                 onClick={() => setSelectedMembership({
                   ...membership,
                   packageId: membership.id,
