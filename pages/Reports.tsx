@@ -1745,6 +1745,7 @@ const Reports: React.FC = () => {
                     </div>
                     <div className="print-hide flex flex-wrap gap-2">
                         <button
+                            data-testid="parent-report-copy"
                             onClick={copyParentBriefSummary}
                             disabled={!parentBriefSummary}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
@@ -1753,6 +1754,7 @@ const Reports: React.FC = () => {
                             {copiedScopedSummary ? 'تم النسخ' : 'نسخ الملخص'}
                         </button>
                         <button
+                            data-testid="parent-report-share"
                             onClick={shareParentBriefSummary}
                             disabled={!parentBriefSummary}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60"
@@ -1761,6 +1763,7 @@ const Reports: React.FC = () => {
                             {sharedScopedSummary ? 'تمت المشاركة' : 'مشاركة'}
                         </button>
                         <button
+                            data-testid="parent-report-pdf"
                             onClick={() => printElementAsPdf('reports-print-area', 'تقرير ولي الأمر')}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2 text-sm font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
                         >
@@ -1940,6 +1943,7 @@ const Reports: React.FC = () => {
                 </div>
                 <div className="print-hide flex flex-wrap gap-2">
                     <button
+                        data-testid="student-report-export-pdf"
                         onClick={() => printElementAsPdf('reports-print-area', 'تقرير الأداء')}
                         className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-black text-indigo-700 shadow-sm hover:bg-indigo-50 sm:text-sm"
                     >
@@ -1947,6 +1951,7 @@ const Reports: React.FC = () => {
                         PDF
                     </button>
                     <button
+                        data-testid="student-report-export-excel"
                         onClick={downloadPerformanceWorkbook}
                         className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50 sm:text-sm"
                     >
@@ -1955,6 +1960,7 @@ const Reports: React.FC = () => {
                     </button>
                     {isStudentView && hasStudentAnalytics ? (
                     <button
+                        data-testid="student-report-depth-toggle"
                         onClick={() => setStudentReportDepth((current) => (current === 'simple' ? 'full' : 'simple'))}
                         className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50 sm:text-sm"
                     >
@@ -2166,6 +2172,7 @@ const Reports: React.FC = () => {
                                         <div className="print-hide flex flex-wrap gap-2">
                                             <button
                                                 type="button"
+                                                data-testid="staff-intervention-create"
                                                 onClick={buildScopedSmartRemediation}
                                                 disabled={scopedSmartRemediationLoading || !scopedAnalytics.weakestSkills.length}
                                                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -2175,6 +2182,7 @@ const Reports: React.FC = () => {
                                             </button>
                                             <button
                                                 type="button"
+                                                data-testid="staff-management-export"
                                                 onClick={downloadPerformanceWorkbook}
                                                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-100"
                                             >
@@ -2277,6 +2285,7 @@ const Reports: React.FC = () => {
                                             </button>
                                             <button
                                                 type="button"
+                                                data-testid="staff-intervention-alert-send"
                                                 onClick={() => void sendInterventionAlert()}
                                                 disabled={!canSendInterventionAlert || interventionAlertSending}
                                                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 shadow-sm hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50"
@@ -2293,6 +2302,7 @@ const Reports: React.FC = () => {
                                             </Link>
                                             <button
                                                 type="button"
+                                                data-testid="staff-students-export"
                                                 onClick={downloadScopedStudentsWorkbook}
                                                 disabled={!scopedStudentFocusCards.length}
                                                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-rose-700 shadow-sm hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
@@ -2349,6 +2359,7 @@ const Reports: React.FC = () => {
                                             </select>
                                             <button
                                                 type="button"
+                                                data-testid="directed-quiz-analysis-export"
                                                 onClick={downloadDirectedQuizAnalysisWorkbook}
                                                 disabled={!directedQuizAnalysisResults.length}
                                                 className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"

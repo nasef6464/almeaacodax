@@ -87,6 +87,24 @@ check('student report links weak skills to lesson, quiz, plan, and exports', () 
   assertIncludes(reportsSource, 'to="/plan"');
 });
 
+check('report action buttons have stable live-audit selectors', () => {
+  for (const testId of [
+    'student-report-export-pdf',
+    'student-report-export-excel',
+    'student-report-depth-toggle',
+    'parent-report-copy',
+    'parent-report-share',
+    'parent-report-pdf',
+    'staff-intervention-create',
+    'staff-management-export',
+    'staff-intervention-alert-send',
+    'staff-students-export',
+    'directed-quiz-analysis-export',
+  ]) {
+    assertIncludes(reportsSource, `data-testid="${testId}"`);
+  }
+});
+
 check('student therapeutic report keeps a short weekly loop with direct actions', () => {
   assertIncludes(reportsSource, 'const studentWeeklyPlan = useMemo');
   assertIncludes(reportsSource, 'const studentTodayFocus = studentWeeklyPlan[0] || null');

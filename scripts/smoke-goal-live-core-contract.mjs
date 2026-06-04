@@ -5,6 +5,7 @@ const files = {
   studentContract: await readFile(new URL("./smoke-global-student-journey-contract.mjs", import.meta.url), "utf8"),
   studentLive: await readFile(new URL("./live-student-learning-deep-audit.mjs", import.meta.url), "utf8"),
   roleLive: await readFile(new URL("./live-role-pages-audit.mjs", import.meta.url), "utf8"),
+  reportActionsLive: await readFile(new URL("./live-report-actions-audit.mjs", import.meta.url), "utf8"),
   supervisorLive: await readFile(new URL("./live-supervisor-school-command-audit.mjs", import.meta.url), "utf8"),
   barcodeContract: await readFile(new URL("./smoke-barcode-public-tests-contract.mjs", import.meta.url), "utf8"),
   barcodeLive: await readFile(new URL("./live-barcode-public-tests-audit.mjs", import.meta.url), "utf8"),
@@ -37,6 +38,7 @@ check("core goal live gate is wired as one command", () => {
     "smoke:barcode-public-tests",
     "smoke:student-learning-live",
     "smoke:role-pages-live",
+    "smoke:report-actions-live",
     "smoke:supervisor-school-live",
     "smoke:barcode-public-tests-live",
   ]);
@@ -51,6 +53,12 @@ check("core goal contract is wired into package scripts", () => {
 check("role pages live audit is wired into package scripts", () => {
   if (pkg.scripts?.["smoke:role-pages-live"] !== "node scripts/live-role-pages-audit.mjs") {
     throw new Error("smoke:role-pages-live must point to scripts/live-role-pages-audit.mjs");
+  }
+});
+
+check("report actions live audit is wired into package scripts", () => {
+  if (pkg.scripts?.["smoke:report-actions-live"] !== "node scripts/live-report-actions-audit.mjs") {
+    throw new Error("smoke:report-actions-live must point to scripts/live-report-actions-audit.mjs");
   }
 });
 
@@ -87,6 +95,31 @@ check("role live gate covers every requested role on desktop and mobile before d
   assertIncludes(files.roleLive, "horizontalOverflow");
   assertIncludes(files.roleLive, "network5xx");
   assertIncludes(files.roleLive, "consoleErrors");
+});
+
+check("report action gate proves the important next action buttons by role", () => {
+  for (const role of ["student", "parent", "teacher", "supervisor", "admin"]) {
+    assertIncludes(files.reportActionsLive, `role: "${role}"`, `report actions audit missing ${role}`);
+  }
+  for (const testId of [
+    "student-next-action-primary",
+    "student-report-export-pdf",
+    "student-report-export-excel",
+    "parent-report-copy",
+    "parent-report-share",
+    "parent-report-pdf",
+    "staff-intervention-create",
+    "staff-management-export",
+    "staff-intervention-alert-send",
+    "staff-students-export",
+    "directed-quiz-analysis-export",
+  ]) {
+    assertIncludes(files.reportActionsLive, `data-testid="${testId}"`, `report actions audit missing ${testId}`);
+  }
+  assertIncludes(files.reportActionsLive, "VIEWPORTS");
+  assertIncludes(files.reportActionsLive, 'name: "mobile"');
+  assertIncludes(files.reportActionsLive, "horizontalOverflow");
+  assertIncludes(files.reportActionsLive, "network5xx");
 });
 
 check("supervisor live gate covers school command center and directed quiz analysis", () => {

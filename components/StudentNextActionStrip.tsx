@@ -48,7 +48,7 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
   const styles = toneStyles[tone];
 
   return (
-    <section aria-labelledby="student-next-action-title">
+    <section aria-labelledby="student-next-action-title" data-testid="student-next-action-strip">
       <div className={`rounded-2xl border p-4 shadow-sm ${styles.shell}`}>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 items-start gap-3 text-right">
@@ -68,6 +68,7 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
             {secondaryLabel && secondaryHref ? (
               <Link
                 to={secondaryHref}
+                data-testid="student-next-action-secondary"
                 className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/80 bg-white px-4 text-sm font-black text-gray-700 transition hover:bg-gray-50"
               >
                 {secondaryLabel}
@@ -75,6 +76,7 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
             ) : null}
             <Link
               to={primaryHref}
+              data-testid="student-next-action-primary"
               className={`inline-flex min-h-11 items-center justify-center rounded-xl px-5 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${styles.button}`}
             >
               {primaryLabel}
