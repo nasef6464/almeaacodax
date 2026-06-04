@@ -1179,6 +1179,30 @@ export const SchoolsManager: React.FC = () => {
             || schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
             || (currentUser.groupIds || []).some((groupId) => schoolGroupIds.has(groupId))
         ));
+        const schoolLevelSupervisors = schoolSupervisors.filter((currentUser) => (
+            selectedSchool.supervisorIds.includes(currentUser.id)
+            || (currentUser.groupIds || []).includes(selectedSchool.id)
+        ));
+        const classScopedSupervisors = schoolSupervisors.filter((currentUser) => (
+            !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id)
+            && (
+                schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
+                || (currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
+            )
+        ));
+        const supervisorScopeRows = schoolSupervisors.map((currentUser) => {
+            const schoolScope = selectedSchool.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(selectedSchool.id);
+            const scopedClassNames = schoolClasses
+                .filter((classroom) => classroom.supervisorIds.includes(currentUser.id) || (currentUser.groupIds || []).includes(classroom.id))
+                .map((classroom) => classroom.name);
+
+            return {
+                user: currentUser,
+                scopeLabel: schoolScope ? 'مدير/مشرف المدرسة كاملة' : 'مشرف فصول محددة',
+                scopeDetails: schoolScope ? selectedSchool.name : scopedClassNames.join('، ') || 'بدون نطاق واضح',
+                isSchoolWide: schoolScope,
+            };
+        });
         const schoolParentUsers = parents.filter((currentUser) => (
             (currentUser.linkedStudentIds || []).some((studentId) => schoolStudents.some((student) => student.id === studentId))
         ));
@@ -2533,11 +2557,14 @@ export const SchoolsManager: React.FC = () => {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="border border-gray-100 rounded-xl p-5 space-y-4">
+                                <div data-testid="school-wide-supervisors-panel" className="border border-gray-100 rounded-xl p-5 space-y-4">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <h3 className="text-lg font-bold text-gray-900">مشرفو المدرسة</h3>
-                                        <span className="text-sm text-gray-500">{schoolSupervisors.length} مرتبطون</span>
+                                        <h3 className="text-lg font-bold text-gray-900">مدير/مشرف المدرسة كاملة</h3>
+                                        <span className="text-sm text-gray-500">{schoolLevelSupervisors.length} يرى المدرسة كاملة</span>
                                     </div>
+                                    <p className="text-xs font-bold leading-6 text-gray-500">
+                                        هذا النطاق مناسب لمدير المدرسة أو المسؤول العام؛ سيظهر له كل الفصول والطلاب والتقارير داخل هذه المدرسة.
+                                    </p>
                                     <select
                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         defaultValue=""
@@ -2558,17 +2585,17 @@ export const SchoolsManager: React.FC = () => {
                                             event.target.value = '';
                                         }}
                                     >
-                                        <option value="">إضافة مشرف أو معلم للمدرسة</option>
+                                        <option value="">إضافة مدير/مشرف للمدرسة كاملة</option>
                                         {supervisors
-                                            .filter((currentUser) => !selectedSchool.supervisorIds.includes(currentUser.id))
+                                            .filter((currentUser) => !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id))
                                             .map((currentUser) => (
                                                 <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
                                             ))}
                                     </select>
                                     <div className="flex flex-wrap gap-2">
-                                        {schoolSupervisors.length === 0 ? (
-                                            <span className="text-sm text-gray-400">لا يوجد مشرفون مرتبطون بهذه المدرسة بعد.</span>
-                                        ) : schoolSupervisors.map((currentUser) => (
+                                        {schoolLevelSupervisors.length === 0 ? (
+                                            <span className="text-sm text-gray-400">لا يوجد مدير أو مشرف عام لهذه المدرسة بعد.</span>
+                                        ) : schoolLevelSupervisors.map((currentUser) => (
                                             <button
                                                 key={currentUser.id}
                                                 onClick={() => {
@@ -2587,6 +2614,31 @@ export const SchoolsManager: React.FC = () => {
                                                 {currentUser.name} ×
                                             </button>
                                         ))}
+                                    </div>
+                                    <div data-testid="school-supervisor-scope-summary" className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                                        <div className="mb-2 flex items-center justify-between gap-2">
+                                            <span className="text-xs font-black text-slate-700">نطاقات المشرفين</span>
+                                            <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-slate-600">
+                                                {classScopedSupervisors.length} للفصول فقط
+                                            </span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {supervisorScopeRows.length === 0 ? (
+                                                <p className="text-xs font-bold text-slate-500">اربط مشرفًا بالمدرسة أو فصلًا محددًا لتظهر الصلاحيات هنا.</p>
+                                            ) : supervisorScopeRows.map((row) => (
+                                                <div key={row.user.id} data-testid={row.isSchoolWide ? 'school-supervisor-scope-school' : 'school-supervisor-scope-class'} className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
+                                                    <div>
+                                                        <p className="text-xs font-black text-gray-900">{row.user.name}</p>
+                                                        <p className="text-[11px] font-bold text-gray-500">{row.scopeDetails}</p>
+                                                    </div>
+                                                    <span className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-black ${
+                                                        row.isSchoolWide ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
+                                                    }`}>
+                                                        {row.scopeLabel}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
 

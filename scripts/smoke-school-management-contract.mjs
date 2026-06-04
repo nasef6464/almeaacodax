@@ -101,6 +101,17 @@ check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, "فتح التقارير");
 });
 
+check("school supervisor scope is explicit and not mixed with platform admin", () => {
+  assertIncludes(files.schools, "schoolLevelSupervisors");
+  assertIncludes(files.schools, "classScopedSupervisors");
+  assertIncludes(files.schools, "supervisorScopeRows");
+  assertIncludes(files.schools, 'data-testid="school-wide-supervisors-panel"');
+  assertIncludes(files.schools, 'data-testid="school-supervisor-scope-summary"');
+  assertIncludes(files.schools, "مدير/مشرف المدرسة كاملة");
+  assertIncludes(files.schools, "مشرف فصول محددة");
+  assertIncludes(files.schools, "يرى المدرسة كاملة");
+});
+
 check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
   assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");
