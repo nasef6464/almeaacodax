@@ -173,6 +173,9 @@ check('release verification has live role and student journey coverage', () => {
   assertIncludes(files.roleAudit, 'role: "admin"');
   assertIncludes(files.roleAudit, 'ROLE_ADMIN_EMAIL');
   assertIncludes(files.roleAudit, 'PAGE_TIMEOUT_MS');
+  assertIncludes(files.roleAudit, 'viewports');
+  assertIncludes(files.roleAudit, 'name: "mobile"');
+  assertIncludes(files.roleAudit, 'horizontalOverflow');
   assertIncludes(files.roleAudit, 'navigationError');
   assertPattern(files.roleAudit, /student[\s\S]*parent[\s\S]*teacher[\s\S]*supervisor/i, 'live role audit should cover student, parent, teacher, and supervisor');
   assertAnyIncludes(files.roleAudit, ['admin', 'Role.ADMIN']);

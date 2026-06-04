@@ -8,6 +8,10 @@ const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().t
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
+const viewports = [
+  { name: "desktop", width: 1440, height: 1000 },
+  { name: "mobile", width: 390, height: 844 },
+];
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -140,7 +144,7 @@ async function login(page, role) {
   return { ok: true, url: page.url(), role: user.role };
 }
 
-async function inspectPage(page, role, pageSpec) {
+async function inspectPage(page, role, pageSpec, viewport) {
   const consoleErrors = [];
   const network4xx = [];
   const network5xx = [];
@@ -153,11 +157,12 @@ async function inspectPage(page, role, pageSpec) {
   };
   page.on("console", onConsole);
   page.on("response", onResponse);
+  await page.setViewportSize({ width: viewport.width, height: viewport.height });
 
   const url = `${BASE_URL}${pageSpec.path}`;
   const roleDir = path.join(OUT_DIR, role.role);
   fs.mkdirSync(roleDir, { recursive: true });
-  const screenshot = path.join(roleDir, `${safeName(pageSpec.path)}.png`);
+  const screenshot = path.join(roleDir, `${safeName(`${viewport.name}-${pageSpec.path}`)}.png`);
   let navigationError = "";
   let navigationWarning = "";
 
@@ -185,6 +190,10 @@ async function inspectPage(page, role, pageSpec) {
     });
     return {
       href: location.href,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      scrollWidth: document.documentElement.scrollWidth,
+      horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
       bodyLength: text.length,
       controlCount: controls.length,
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(text),
@@ -194,6 +203,10 @@ async function inspectPage(page, role, pageSpec) {
     };
   }).catch((error) => ({
     href: page.url(),
+    viewportWidth: viewport.width,
+    viewportHeight: viewport.height,
+    scrollWidth: 0,
+    horizontalOverflow: false,
     bodyLength: 0,
     controlCount: 0,
     hasLoginForm: false,
@@ -204,11 +217,14 @@ async function inspectPage(page, role, pageSpec) {
   }));
 
   const isGuardedOk = pageSpec.expect === "guarded" && (state.hasLoginForm || state.hasGuardText || state.href.includes("login"));
-  const isOpenOk = pageSpec.expect !== "guarded" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && state.hasRoleContent;
+  const isPublicOk = pageSpec.expect === "public" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0;
+  const isPrivateOk = pageSpec.expect === "private" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && state.hasRoleContent;
+  const isOpenOk = isPublicOk || isPrivateOk;
   const status = navigationError || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
 
   return {
     role: role.role,
+    viewport: viewport.name,
     path: pageSpec.path,
     expect: pageSpec.expect,
     status,
@@ -246,7 +262,9 @@ try {
     }
 
     for (const pageSpec of role.pages) {
-      results.push(await inspectPage(page, role, pageSpec));
+      for (const viewport of viewports) {
+        results.push(await inspectPage(page, role, pageSpec, viewport));
+      }
     }
     await context.close();
   }
@@ -259,6 +277,7 @@ const summary = {
   baseUrl: BASE_URL,
   apiBaseUrl: API_BASE_URL,
   runId: RUN_ID,
+  viewports,
   total: results.length,
   pass: results.filter((item) => item.status === "PASS").length,
   fail: results.filter((item) => item.status === "FAIL").length,
@@ -284,7 +303,7 @@ fs.writeFileSync(
     ...loginResults.map((item) => `- ${item.ok ? "PASS" : "BLOCKED"} ${item.role}${item.reason ? ` - ${item.reason}` : ""}`),
     "",
     "## Pages",
-    ...results.map((item) => `- [${item.status}] ${item.role} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}${item.navigationError ? `, navigation=${item.navigationError}` : ""}${item.navigationWarning ? `, warning=${item.navigationWarning}` : ""}`),
+    ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport || "desktop"} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}${item.navigationError ? `, navigation=${item.navigationError}` : ""}${item.navigationWarning ? `, warning=${item.navigationWarning}` : ""}`),
     "",
   ].join("\n"),
   "utf8",
