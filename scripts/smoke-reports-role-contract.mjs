@@ -101,9 +101,10 @@ check('student compact report is period-based and prints the simple skill rows',
 });
 
 check('student weak-skill actions open the linked foundation topic first', () => {
-  assertIncludes(reportsSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes', lessonId?: string)");
+  assertIncludes(reportsSource, "const buildFoundationTopicLink = (content: 'lessons' | 'quizzes')");
   assertIncludes(reportsSource, 'scoredFoundationTopics');
   assertIncludes(reportsSource, 'foundationTopicLink');
+  assertIncludes(reportsSource, "const lessonLink = buildFoundationTopicLink('lessons')");
   assertIncludes(reportsSource, "params.set('tab', 'skills')");
   assertIncludes(reportsSource, "params.set('content', content)");
   assertIncludes(reportsSource, 'const foundationTrainingLink = recommendedTopic');

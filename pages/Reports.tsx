@@ -316,7 +316,7 @@ const getSkillRecommendation = (
             .sort((a, b) => b.score - a.score)
         : [];
     const recommendedTopic = scoredFoundationTopics[0]?.topic;
-    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes', lessonId?: string) =>
+    const buildFoundationTopicLink = (content: 'lessons' | 'quizzes') =>
         recommendationPathId && recommendationSubjectId
             ? (() => {
                 const params = new URLSearchParams({ subject: recommendationSubjectId });
@@ -325,15 +325,12 @@ const getSkillRecommendation = (
                 if (recommendedTopic?.id) {
                     params.set('topic', recommendedTopic.id);
                     params.set('content', content);
-                    if (content === 'lessons' && lessonId) {
-                        params.set('lesson', lessonId);
-                    }
                 }
 
                 return `/category/${recommendationPathId}?${params.toString()}`;
             })()
             : undefined;
-    const lessonLink = buildFoundationTopicLink('lessons', recommendedLesson?.id);
+    const lessonLink = buildFoundationTopicLink('lessons');
     const foundationTrainingLink = recommendedTopic
         ? buildFoundationTopicLink('quizzes')
         : undefined;
