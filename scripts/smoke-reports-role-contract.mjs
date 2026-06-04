@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 const reportsSource = await readFile(new URL('../pages/Reports.tsx', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const notificationRoutesSource = await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8');
 const apiSource = await readFile(new URL('../services/api.ts', import.meta.url), 'utf8');
 
 const checks = [];
@@ -194,6 +195,19 @@ check('supervisor can analyze and export a specific directed quiz by students an
   assertIncludes(reportsSource, 'نتائج الطلاب والمهارات لنفس الاختبار');
   assertIncludes(reportsSource, 'تصدير تحليل الاختبار');
   assertIncludes(reportsSource, 'directed-quiz-analysis-');
+});
+
+check('staff reports can send a real intervention alert to linked parent and supervisor recipients', () => {
+  assertIncludes(reportsSource, 'sendInterventionAlert');
+  assertIncludes(reportsSource, 'canSendInterventionAlert');
+  assertIncludes(reportsSource, 'إرسال تنبيه');
+  assertIncludes(apiSource, 'sendInterventionAlert');
+  assertIncludes(apiSource, '"/notifications/intervention-alert"');
+  assertIncludes(notificationRoutesSource, 'notificationRouter.post("/intervention-alert"');
+  assertIncludes(notificationRoutesSource, 'requireRole(["admin", "supervisor", "teacher"])');
+  assertIncludes(notificationRoutesSource, 'linkedStudentIds: studentId');
+  assertIncludes(notificationRoutesSource, 'supervisorIds');
+  assertIncludes(notificationRoutesSource, 'createNotificationDeliveries');
 });
 
 check('staff scoped reports keep intervention plan, summary, and smart remediation', () => {

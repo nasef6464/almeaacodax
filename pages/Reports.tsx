@@ -1,6 +1,6 @@
 ﻿
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, type LucideIcon } from 'lucide-react';
+import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, Bell, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -370,6 +370,9 @@ const Reports: React.FC = () => {
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
     const [copiedScopedSummary, setCopiedScopedSummary] = useState(false);
     const [copiedInstitutionalAlert, setCopiedInstitutionalAlert] = useState(false);
+    const [interventionAlertSending, setInterventionAlertSending] = useState(false);
+    const [interventionAlertSent, setInterventionAlertSent] = useState(false);
+    const [interventionAlertError, setInterventionAlertError] = useState('');
     const [sharedScopedSummary, setSharedScopedSummary] = useState(false);
     const [copiedStudentSummary, setCopiedStudentSummary] = useState(false);
     const [sharedStudentSummary, setSharedStudentSummary] = useState(false);
@@ -1204,6 +1207,32 @@ const Reports: React.FC = () => {
             window.setTimeout(() => setCopiedInstitutionalAlert(false), 1800);
         } catch {
             setCopiedInstitutionalAlert(false);
+        }
+    };
+    const canSendInterventionAlert =
+        Boolean(institutionalReportHub?.alertText && scopedLeadStudent) &&
+        [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role);
+    const sendInterventionAlert = async () => {
+        if (!canSendInterventionAlert || !scopedLeadStudent || !institutionalReportHub?.alertText) return;
+
+        setInterventionAlertSending(true);
+        setInterventionAlertError('');
+        try {
+            await api.sendInterventionAlert({
+                studentId: scopedLeadStudent.id,
+                studentName: displayText(scopedLeadStudent.name),
+                skillName: displayText(scopedLeadSkill?.skill),
+                mastery: scopedLeadSkill?.mastery,
+                title: 'تنبيه تدخل علاجي',
+                body: institutionalReportHub.alertText,
+                channels: ['in_app'],
+            });
+            setInterventionAlertSent(true);
+            window.setTimeout(() => setInterventionAlertSent(false), 2200);
+        } catch (error) {
+            setInterventionAlertError(error instanceof Error ? error.message : 'تعذر إرسال التنبيه الآن.');
+        } finally {
+            setInterventionAlertSending(false);
         }
     };
     const scopedSkillReportCards = useMemo(() => {
@@ -2166,6 +2195,15 @@ const Reports: React.FC = () => {
                                                 {copiedInstitutionalAlert ? <CheckCircle size={14} /> : <Copy size={14} />}
                                                 {copiedInstitutionalAlert ? 'تم النسخ' : 'نسخ تنبيه'}
                                             </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => void sendInterventionAlert()}
+                                                disabled={!canSendInterventionAlert || interventionAlertSending}
+                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 shadow-sm hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                {interventionAlertSending ? <Loader2 size={14} className="animate-spin" /> : interventionAlertSent ? <CheckCircle size={14} /> : <Bell size={14} />}
+                                                {interventionAlertSending ? 'إرسال' : interventionAlertSent ? 'تم الإرسال' : 'إرسال تنبيه'}
+                                            </button>
                                             <Link
                                                 to={institutionalReportHub.studentsLink}
                                                 className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
@@ -2191,6 +2229,11 @@ const Reports: React.FC = () => {
                                         <div className="rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
                                             الهدف: {institutionalReportHub.targetLine}
                                         </div>
+                                        {interventionAlertError ? (
+                                            <div role="alert" className="rounded-2xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs font-bold leading-6 text-rose-700">
+                                                {displayText(interventionAlertError)}
+                                            </div>
+                                        ) : null}
                                         <Link
                                             to={institutionalReportHub.alertLink}
                                             className="print-hide rounded-2xl bg-white/80 px-3 py-2 text-xs font-black leading-6 text-indigo-700 hover:bg-white"

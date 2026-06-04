@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
+import mongoose from "mongoose";
 import { roles } from "../constants/roles.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { NotificationTemplateModel } from "../models/NotificationTemplate.js";
+import { GroupModel } from "../models/Group.js";
+import { UserModel } from "../models/User.js";
 import { enqueueNotificationDeliveries, enqueuePendingNotifications } from "../queues/notificationQueue.js";
 import {
   createNotificationDeliveries,
@@ -38,6 +41,16 @@ const sendNotificationSchema = z.object({
   userIds: z.array(z.string().min(1).max(120)).optional().default([]),
   roles: z.array(z.enum(roles)).optional().default([]),
   variables: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
+});
+
+const interventionAlertSchema = z.object({
+  studentId: z.string().min(1).max(120),
+  studentName: z.string().min(1).max(160).optional().default(""),
+  skillName: z.string().max(180).optional().default(""),
+  mastery: z.number().min(0).max(100).optional(),
+  title: z.string().min(2).max(220),
+  body: z.string().min(2).max(1200),
+  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
 });
 
 const processPendingSchema = z.object({
@@ -183,6 +196,86 @@ notificationRouter.post("/admin/send", requireAuth, requireRole(["admin"]), asyn
       message: queueResult.queued
         ? "Notification delivery records created and external deliveries queued."
         : "Notification delivery records created. External channels stay pending until Redis/BullMQ is configured or processed manually.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin", "supervisor", "teacher"]), async (req, res, next) => {
+  try {
+    const payload = interventionAlertSchema.parse(req.body || {});
+    const authUser = req.authUser!;
+    const studentLookup = mongoose.isValidObjectId(payload.studentId)
+      ? { $or: [{ _id: payload.studentId }, { id: payload.studentId }] }
+      : { id: payload.studentId };
+    const student = await UserModel.findOne({
+      role: "student",
+      ...studentLookup,
+    })
+      .select("_id id name email role schoolId groupIds")
+      .lean();
+
+    if (!student) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Student not found" });
+    }
+
+    const studentId = String((student as any).id || (student as any)._id);
+    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
+    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
+    const scopedGroups = await GroupModel.find({
+      $or: [
+        { studentIds: studentId },
+        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
+        { id: { $in: studentGroupIds } },
+      ],
+    })
+      .select("_id id supervisorIds studentIds")
+      .lean();
+
+    if (authUser.role !== "admin") {
+      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
+      const canReachStudent =
+        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
+        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
+        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
+
+      if (!canReachStudent) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
+      }
+    }
+
+    const supervisorIds = new Set<string>();
+    scopedGroups.forEach((group: any) => (group.supervisorIds || []).forEach((id: unknown) => supervisorIds.add(String(id))));
+    const parentUsers = await UserModel.find({ role: "parent", linkedStudentIds: studentId }).select("_id id").lean();
+    const recipientIds = Array.from(
+      new Set([
+        ...parentUsers.map((user: any) => String(user.id || user._id)),
+        ...Array.from(supervisorIds),
+      ]),
+    ).filter((id) => id && id !== String(authUser.id));
+
+    if (!recipientIds.length) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "No linked parent or supervisor recipients found" });
+    }
+
+    const result = await createNotificationDeliveries({
+      title: payload.title,
+      subject: payload.title,
+      body: payload.body,
+      channels: ["in_app"],
+      userIds: recipientIds,
+      variables: {
+        studentName: payload.studentName || String((student as any).name || ""),
+        skillName: payload.skillName || "",
+        mastery: payload.mastery ?? "",
+      },
+      createdBy: authUser.id,
+    });
+
+    res.status(StatusCodes.ACCEPTED).json({
+      ...result,
+      message: "Intervention alert created for linked parent and supervisor recipients.",
     });
   } catch (error) {
     next(error);

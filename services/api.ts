@@ -902,6 +902,23 @@ export const api = {
       body: payload,
       token,
     }),
+  sendInterventionAlert: (
+    payload: {
+      studentId: string;
+      studentName?: string;
+      skillName?: string;
+      mastery?: number;
+      title: string;
+      body: string;
+      channels?: Array<"in_app">;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>("/notifications/intervention-alert", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   processPendingNotifications: (payload?: { limit?: number }, token?: string | null) =>
     request<unknown>("/notifications/admin/process-pending", {
       method: "POST",

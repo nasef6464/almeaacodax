@@ -11,6 +11,7 @@ const files = {
   plan: await readFile(new URL('../pages/Plan.tsx', import.meta.url), 'utf8'),
   landing: await readFile(new URL('../pages/Landing.tsx', import.meta.url), 'utf8'),
   adminDashboard: await readFile(new URL('../dashboards/admin/AdminDashboard.tsx', import.meta.url), 'utf8'),
+  notificationRoutes: await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8'),
   roleAudit: await readFile(new URL('../scripts/live-role-pages-audit.mjs', import.meta.url), 'utf8'),
   studentJourney: await readFile(new URL('../scripts/smoke-student-learning-journey.mjs', import.meta.url), 'utf8'),
   reportsContract: await readFile(new URL('../scripts/smoke-reports-role-contract.mjs', import.meta.url), 'utf8'),
@@ -143,6 +144,9 @@ check('supervisor and school dashboard exposes intervention intelligence', () =>
   assertAnyIncludes(files.adminDashboard, ['أضعف المهارات', 'Ø£Ø¶Ø¹Ù Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª']);
   assertAnyIncludes(files.reports, ['تحليل اختبار موجه', 'ØªØ­Ù„ÙŠÙ„ Ø§Ø®ØªØ¨Ø§Ø± Ù…ÙˆØ¬Ù‡']);
   assertIncludes(files.reports, 'downloadDirectedQuizAnalysisWorkbook');
+  assertIncludes(files.reports, 'canSendInterventionAlert');
+  assertIncludes(files.reports, 'sendInterventionAlert');
+  assertIncludes(files.notificationRoutes, 'notificationRouter.post("/intervention-alert"');
 });
 
 check('landing page covers product value, reports, packages, schools/groups, and proof', () => {
