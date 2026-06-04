@@ -123,6 +123,7 @@ async function resolveJourneyTargets() {
     quiz,
     routes: {
       dashboard: "/dashboard",
+      dashboardPaths: "/dashboard?tab=paths",
       subject: `/category/${TARGET_PATH_ID}?subject=${TARGET_SUBJECT_ID}&tab=skills`,
       course: course ? `/course/${idOf(course)}` : "",
       quiz: quiz ? `/quiz/${idOf(quiz)}?returnTo=${encodeURIComponent(`/category/${TARGET_PATH_ID}?subject=${TARGET_SUBJECT_ID}&tab=skills`)}&source=foundation` : "",
@@ -225,7 +226,18 @@ async function inspectRoute(page, name, route, expectations = {}) {
   let unenrollConfirmProbe = null;
   if (expectations.unenrollConfirmProbe) {
     const unenrollButtons = page.locator('[data-testid="student-path-unenroll"]');
-    const buttonCount = await unenrollButtons.count().catch(() => 0);
+    let enrolledForProbe = false;
+    let buttonCount = await unenrollButtons.count().catch(() => 0);
+    if (buttonCount === 0) {
+      const enrollButtons = page.locator('[data-testid="student-path-enroll"]');
+      const enrollButtonCount = await enrollButtons.count().catch(() => 0);
+      if (enrollButtonCount > 0) {
+        await enrollButtons.first().click();
+        enrolledForProbe = true;
+        await page.waitForTimeout(700);
+        buttonCount = await unenrollButtons.count().catch(() => 0);
+      }
+    }
     if (buttonCount > 0) {
       const dialogPromise = new Promise((resolve) => {
         page.once("dialog", async (dialog) => {
@@ -242,12 +254,14 @@ async function inspectRoute(page, name, route, expectations = {}) {
       unenrollConfirmProbe = {
         status: result.seen ? "checked" : "missing-dialog",
         buttonCount,
+        enrolledForProbe,
         message: String(result.message || "").slice(0, 180),
       };
     } else {
       unenrollConfirmProbe = {
         status: "missing-button",
         buttonCount,
+        enrolledForProbe,
         message: "",
       };
     }
@@ -345,7 +359,8 @@ const routeResults = [];
 
 try {
   const routePlan = [
-    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"], requiredSelectors: ['[data-testid="student-path-unenroll"]'], unenrollConfirmProbe: true }],
+    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"] }],
+    ["student-paths", targets.routes.dashboardPaths, { minBodyLength: 500, minControls: 4, nextActions: ["متابعة المسار", "إلغاء التسجيل", "تسجيل"], requiredSelectors: ['[data-testid="student-path-unenroll"]'], unenrollConfirmProbe: true }],
     ["student-memberships-pricing", targets.routes.pricing, { minBodyLength: 420, minControls: 3, nextActions: ["ابدأ", "طلب", "عضوية", "باقة", "تفعيل"], requiredSelectors: ['[data-testid="pricing-memberships-page"]', '[data-testid="pricing-free-membership-start"]'], paymentProbe: true }],
     ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8, nextActions: ["افتح", "ابدأ", "تدريب", "اختبار", "عرض الباقات"] }],
     ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],

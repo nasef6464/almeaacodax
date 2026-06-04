@@ -53,6 +53,7 @@ check('student dashboard keeps one clear continuation area and learner shortcuts
   assertIncludes(files.dashboard, 'StudentNextActionStrip');
   assertIncludes(files.dashboard, 'smartAction.buttonText');
   assertIncludes(files.dashboard, 'smartAction.link');
+  assertIncludes(files.dashboard, 'data-testid="student-path-enroll"');
   assertIncludes(files.dashboard, 'data-testid="student-path-unenroll"');
   assertIncludes(files.dashboard, 'هل تريد إلغاء التسجيل في مسار');
   assertIncludes(files.dashboard, "setActiveTab('saher')");

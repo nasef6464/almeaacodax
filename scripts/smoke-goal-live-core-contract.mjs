@@ -66,6 +66,7 @@ check("student live gate covers packages, payment activation, mobile layout, and
   assertIncludes(files.studentLive, "student-memberships-pricing");
   assertIncludes(files.studentLive, "paymentProbe");
   assertIncludes(files.studentLive, "unenrollConfirmProbe");
+  assertIncludes(files.studentLive, "student-path-enroll");
   assertIncludes(files.studentLive, "student-path-unenroll");
   assertIncludes(files.studentLive, "pricing-membership-request");
   assertIncludes(files.studentLive, "payment-access-code-input");

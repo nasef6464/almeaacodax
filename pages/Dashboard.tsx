@@ -490,6 +490,7 @@ const PathsTab = () => {
                                 <h3 className="font-bold text-lg text-gray-900 mb-2">{path.title}</h3>
                                 <p className="text-sm text-gray-500 mb-6 flex-1">{path.description}</p>
                                 <button 
+                                    data-testid="student-path-enroll"
                                     onClick={() => enrollPath(path.id)}
                                     className="w-full bg-indigo-50 text-indigo-700 py-2 rounded-lg font-bold hover:bg-indigo-100 transition-colors"
                                 >
