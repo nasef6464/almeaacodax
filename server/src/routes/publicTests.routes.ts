@@ -400,8 +400,39 @@ publicTestsRouter.get(
     const averageScore = submissions.length
       ? Math.round(submissions.reduce((total, item: any) => total + Number(item.score || 0), 0) / submissions.length)
       : 0;
+    const passingScore = Number(test.settings?.passingScore || 60);
+    const passCount = submissions.filter((submission: any) => Number(submission.score || 0) >= passingScore).length;
+    const highestScore = submissions.length ? Math.max(...submissions.map((submission: any) => Number(submission.score || 0))) : 0;
+    const lowestScore = submissions.length ? Math.min(...submissions.map((submission: any) => Number(submission.score || 0))) : 0;
+    const averageTimeSeconds = submissions.length
+      ? Math.round(submissions.reduce((total, item: any) => total + Number(item.timeSpentSeconds || 0), 0) / submissions.length)
+      : 0;
     const skillMap = new Map<string, { skillId: string; total: number; count: number }>();
+    const schoolMap = new Map<string, { name: string; submissions: number; totalScore: number; passed: number }>();
+    const classroomMap = new Map<string, { name: string; schoolName: string; submissions: number; totalScore: number; passed: number }>();
     submissions.forEach((submission: any) => {
+      const score = Number(submission.score || 0);
+      const schoolName = String(submission.schoolName || "غير محدد").trim() || "غير محدد";
+      const classroomName = String(submission.classroomName || "غير محدد").trim() || "غير محدد";
+      const schoolCurrent = schoolMap.get(schoolName) || { name: schoolName, submissions: 0, totalScore: 0, passed: 0 };
+      schoolCurrent.submissions += 1;
+      schoolCurrent.totalScore += score;
+      if (score >= passingScore) schoolCurrent.passed += 1;
+      schoolMap.set(schoolName, schoolCurrent);
+
+      const classroomKey = `${schoolName}::${classroomName}`;
+      const classroomCurrent = classroomMap.get(classroomKey) || {
+        name: classroomName,
+        schoolName,
+        submissions: 0,
+        totalScore: 0,
+        passed: 0,
+      };
+      classroomCurrent.submissions += 1;
+      classroomCurrent.totalScore += score;
+      if (score >= passingScore) classroomCurrent.passed += 1;
+      classroomMap.set(classroomKey, classroomCurrent);
+
       (submission.skillsAnalysis || []).forEach((skill: any) => {
         const current = skillMap.get(skill.skillId) || { skillId: skill.skillId, total: 0, count: 0 };
         current.total += Number(skill.mastery || 0);
@@ -413,16 +444,70 @@ publicTestsRouter.get(
       .map((skill) => ({ skillId: skill.skillId, mastery: skill.count ? Math.round(skill.total / skill.count) : 0, attempts: skill.count }))
       .sort((a, b) => a.mastery - b.mastery)
       .slice(0, 5);
+    const bySchool = Array.from(schoolMap.values())
+      .map((item) => ({
+        name: item.name,
+        submissions: item.submissions,
+        averageScore: item.submissions ? Math.round(item.totalScore / item.submissions) : 0,
+        passRate: item.submissions ? Math.round((item.passed / item.submissions) * 100) : 0,
+      }))
+      .sort((a, b) => b.submissions - a.submissions || a.averageScore - b.averageScore);
+    const byClassroom = Array.from(classroomMap.values())
+      .map((item) => ({
+        name: item.name,
+        schoolName: item.schoolName,
+        submissions: item.submissions,
+        averageScore: item.submissions ? Math.round(item.totalScore / item.submissions) : 0,
+        passRate: item.submissions ? Math.round((item.passed / item.submissions) * 100) : 0,
+      }))
+      .sort((a, b) => b.submissions - a.submissions || a.averageScore - b.averageScore);
+    const lowPerformers = submissions
+      .filter((submission: any) => Number(submission.score || 0) < passingScore)
+      .sort((a: any, b: any) => Number(a.score || 0) - Number(b.score || 0))
+      .slice(0, 20)
+      .map((submission: any) => ({
+        id: submission.id,
+        studentName: submission.studentName,
+        schoolName: submission.schoolName,
+        classroomName: submission.classroomName,
+        score: submission.score,
+        submittedAt: submission.submittedAt,
+      }));
 
     return res.json({
-      test: { id: test.id, slug: test.slug, title: test.title },
-      summary: { submissions: submissions.length, averageScore, weakestSkills },
+      test: {
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        testKind: test.testKind || "quick",
+        passingScore,
+        questionCount: Array.isArray(test.questionIds) ? test.questionIds.length : 0,
+      },
+      summary: {
+        submissions: submissions.length,
+        averageScore,
+        passingScore,
+        passRate: submissions.length ? Math.round((passCount / submissions.length) * 100) : 0,
+        highestScore,
+        lowestScore,
+        averageTimeSeconds,
+        weakestSkills,
+        bySchool,
+        byClassroom,
+        lowPerformers,
+      },
       rows: submissions.map((submission: any) => ({
         id: submission.id,
         studentName: submission.studentName,
         schoolName: submission.schoolName,
         classroomName: submission.classroomName,
         score: submission.score,
+        totalQuestions: submission.totalQuestions,
+        correctAnswers: submission.correctAnswers,
+        wrongAnswers: submission.wrongAnswers,
+        unanswered: submission.unanswered,
+        timeSpentSeconds: submission.timeSpentSeconds,
+        skillsAnalysis: submission.skillsAnalysis || [],
         submittedAt: submission.submittedAt,
       })),
     });

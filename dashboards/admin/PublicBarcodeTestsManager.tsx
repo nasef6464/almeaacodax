@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { CheckCircle2, Clipboard, FileQuestion, Loader2, QrCode, Search } from 'lucide-react';
+import { CheckCircle2, Clipboard, Download, FileQuestion, Loader2, Printer, QrCode, Search } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 
@@ -40,10 +40,33 @@ type BarcodeTestsListResponse = {
 };
 
 type PublicBarcodeReport = {
+  test?: {
+    id: string;
+    slug: string;
+    title: string;
+    testKind?: 'quick' | 'mock';
+    passingScore?: number;
+    questionCount?: number;
+  };
   summary: {
     submissions: number;
     averageScore: number;
+    passingScore?: number;
+    passRate?: number;
+    highestScore?: number;
+    lowestScore?: number;
+    averageTimeSeconds?: number;
     weakestSkills: Array<{ skillId: string; mastery: number; attempts: number }>;
+    bySchool?: Array<{ name: string; submissions: number; averageScore: number; passRate: number }>;
+    byClassroom?: Array<{ name: string; schoolName: string; submissions: number; averageScore: number; passRate: number }>;
+    lowPerformers?: Array<{
+      id: string;
+      studentName: string;
+      schoolName?: string;
+      classroomName?: string;
+      score: number;
+      submittedAt: number;
+    }>;
   };
   rows: Array<{
     id: string;
@@ -51,12 +74,115 @@ type PublicBarcodeReport = {
     schoolName?: string;
     classroomName?: string;
     score: number;
+    totalQuestions?: number;
+    correctAnswers?: number;
+    wrongAnswers?: number;
+    unanswered?: number;
+    timeSpentSeconds?: number;
+    skillsAnalysis?: Array<{ skillId: string; mastery: number; attempts?: number; status?: string }>;
     submittedAt: number;
   }>;
 };
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error && error.message ? error.message : fallback;
+
+const csvCell = (value: unknown) => {
+  const raw = String(value ?? '');
+  const safe = /^[=+\-@]/.test(raw.trim()) ? `'${raw}` : raw;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
+
+const escapeHtml = (value: unknown) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+const downloadCsv = (filename: string, rows: unknown[][]) => {
+  const csv = rows.map((row) => row.map(csvCell).join(',')).join('\n');
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+};
+
+const formatDateTime = (timestamp?: number) =>
+  timestamp
+    ? new Date(timestamp).toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' })
+    : 'غير محدد';
+
+const formatDuration = (seconds?: number) => {
+  const value = Number(seconds || 0);
+  if (!value) return 'غير محدد';
+  const minutes = Math.floor(value / 60);
+  const rest = value % 60;
+  return `${minutes}د ${rest}ث`;
+};
+
+const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: string) => string) => {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+  const rows = report.rows.slice(0, 80);
+  const weakSkills = report.summary.weakestSkills || [];
+  const schoolRows = report.summary.bySchool || [];
+  printWindow.document.write(`
+    <html dir="rtl" lang="ar">
+      <head>
+        <title>${escapeHtml(report.test?.title || 'تقرير اختبار الباركود')}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 28px; color: #0f172a; }
+          h1, h2 { margin: 0 0 10px; }
+          .muted { color: #64748b; }
+          .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+          .card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; }
+          .num { font-size: 24px; font-weight: 900; }
+          table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+          th, td { border-bottom: 1px solid #e2e8f0; padding: 9px; text-align: right; font-size: 12px; }
+          th { background: #f8fafc; }
+          .section { margin-top: 24px; }
+        </style>
+      </head>
+      <body>
+        <h1>${escapeHtml(report.test?.title || 'تقرير اختبار الباركود')}</h1>
+        <p class="muted">تقرير مختصر للإدارة - ${formatDateTime(Date.now())}</p>
+        <div class="cards">
+          <div class="card"><div class="muted">المحاولات</div><div class="num">${report.summary.submissions}</div></div>
+          <div class="card"><div class="muted">المتوسط</div><div class="num">${report.summary.averageScore}%</div></div>
+          <div class="card"><div class="muted">نسبة النجاح</div><div class="num">${report.summary.passRate || 0}%</div></div>
+          <div class="card"><div class="muted">أقل درجة</div><div class="num">${report.summary.lowestScore || 0}%</div></div>
+        </div>
+        <div class="section">
+          <h2>أضعف المهارات</h2>
+          <table><thead><tr><th>المهارة</th><th>الإتقان</th><th>المحاولات</th></tr></thead><tbody>
+            ${weakSkills.map((skill) => `<tr><td>${escapeHtml(skillNameById(skill.skillId))}</td><td>${skill.mastery}%</td><td>${skill.attempts}</td></tr>`).join('')}
+          </tbody></table>
+        </div>
+        <div class="section">
+          <h2>حسب المدرسة</h2>
+          <table><thead><tr><th>المدرسة</th><th>المحاولات</th><th>المتوسط</th><th>نسبة النجاح</th></tr></thead><tbody>
+            ${schoolRows.map((row) => `<tr><td>${escapeHtml(row.name)}</td><td>${row.submissions}</td><td>${row.averageScore}%</td><td>${row.passRate}%</td></tr>`).join('')}
+          </tbody></table>
+        </div>
+        <div class="section">
+          <h2>آخر المشاركات</h2>
+          <table><thead><tr><th>الطالب</th><th>المدرسة</th><th>الفصل</th><th>الدرجة</th><th>التاريخ</th></tr></thead><tbody>
+            ${rows.map((row) => `<tr><td>${escapeHtml(row.studentName)}</td><td>${escapeHtml(row.schoolName || '-')}</td><td>${escapeHtml(row.classroomName || '-')}</td><td>${row.score}%</td><td>${escapeHtml(formatDateTime(row.submittedAt))}</td></tr>`).join('')}
+          </tbody></table>
+        </div>
+        <script>window.print();</script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+};
 
 export const PublicBarcodeTestsManager: React.FC = () => {
   const { paths, subjects, questions, skills } = useStore();
@@ -228,6 +354,46 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     } catch {
       setFeedback(fullPublicUrl);
     }
+  };
+
+  const skillNameById = (skillId: string) =>
+    skills.find((skill) => skill.id === skillId)?.name || skillId || 'غير مصنف';
+
+  const exportReportCsv = () => {
+    if (!report) return;
+    const rows: unknown[][] = [
+      ['الطالب', 'المدرسة', 'الفصل', 'الدرجة', 'الصحيح', 'الخطأ', 'غير مجاب', 'الوقت', 'تاريخ الإرسال'],
+      ...report.rows.map((row) => [
+        row.studentName,
+        row.schoolName || '',
+        row.classroomName || '',
+        row.score,
+        row.correctAnswers ?? '',
+        row.wrongAnswers ?? '',
+        row.unanswered ?? '',
+        formatDuration(row.timeSpentSeconds),
+        formatDateTime(row.submittedAt),
+      ]),
+      [],
+      ['تجميع حسب المدرسة'],
+      ['المدرسة', 'المحاولات', 'المتوسط', 'نسبة النجاح'],
+      ...(report.summary.bySchool || []).map((row) => [row.name, row.submissions, row.averageScore, row.passRate]),
+      [],
+      ['تجميع حسب الفصل'],
+      ['المدرسة', 'الفصل', 'المحاولات', 'المتوسط', 'نسبة النجاح'],
+      ...(report.summary.byClassroom || []).map((row) => [row.schoolName, row.name, row.submissions, row.averageScore, row.passRate]),
+      [],
+      ['أضعف المهارات'],
+      ['المهارة', 'الإتقان', 'المحاولات'],
+      ...(report.summary.weakestSkills || []).map((skill) => [skillNameById(skill.skillId), skill.mastery, skill.attempts]),
+    ];
+    downloadCsv(`barcode-test-report-${report.test?.id || createdTest?.test.id || 'latest'}.csv`, rows);
+    setFeedback('تم تجهيز ملف النتائج.');
+  };
+
+  const printReport = () => {
+    if (!report) return;
+    openPrintReport(report, skillNameById);
   };
 
   return (
@@ -532,6 +698,122 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           )}
 
           {report && (
+            <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-base font-black text-slate-900">تقرير اختبار الباركود</h2>
+                  <p className="mt-1 text-xs font-bold text-slate-400">ملخص تنفيذي بسيط للإدارة والمشرف.</p>
+                </div>
+                <div className="flex shrink-0 gap-1">
+                  <button type="button" onClick={exportReportCsv} className="inline-flex items-center gap-1 rounded-xl border border-emerald-100 bg-emerald-50 px-2.5 py-2 text-[11px] font-black text-emerald-700 hover:bg-emerald-100">
+                    <Download size={13} />
+                    Excel
+                  </button>
+                  <button type="button" onClick={printReport} className="inline-flex items-center gap-1 rounded-xl border border-indigo-100 bg-indigo-50 px-2.5 py-2 text-[11px] font-black text-indigo-700 hover:bg-indigo-100">
+                    <Printer size={13} />
+                    PDF
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="rounded-2xl bg-slate-50 p-3 text-center">
+                  <div className="text-2xl font-black text-slate-900">{report.summary.submissions}</div>
+                  <div className="text-xs font-bold text-slate-500">محاولة</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-3 text-center">
+                  <div className="text-2xl font-black text-slate-900">{report.summary.averageScore}%</div>
+                  <div className="text-xs font-bold text-slate-500">متوسط</div>
+                </div>
+                <div className="rounded-2xl bg-emerald-50 p-3 text-center">
+                  <div className="text-2xl font-black text-emerald-700">{report.summary.passRate || 0}%</div>
+                  <div className="text-xs font-bold text-emerald-700">نسبة النجاح</div>
+                </div>
+                <div className="rounded-2xl bg-rose-50 p-3 text-center">
+                  <div className="text-2xl font-black text-rose-700">{report.summary.lowestScore || 0}%</div>
+                  <div className="text-xs font-bold text-rose-700">أقل درجة</div>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-3">
+                <div className="text-xs font-black text-amber-800">أضعف المهارات</div>
+                <div className="mt-2 space-y-2">
+                  {(report.summary.weakestSkills || []).slice(0, 4).map((skill) => (
+                    <div key={skill.skillId} className="flex items-center justify-between rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700">
+                      <span className="min-w-0 truncate">{skillNameById(skill.skillId)}</span>
+                      <span className="shrink-0 text-amber-700">{skill.mastery}%</span>
+                    </div>
+                  ))}
+                  {(report.summary.weakestSkills || []).length === 0 && (
+                    <div className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-500">لا توجد مهارات كافية للتحليل بعد.</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div>
+                  <div className="mb-2 text-xs font-black text-slate-700">حسب المدرسة</div>
+                  <div className="space-y-2">
+                    {(report.summary.bySchool || []).slice(0, 4).map((row) => (
+                      <div key={row.name} className="rounded-xl bg-slate-50 px-3 py-2">
+                        <div className="flex items-center justify-between gap-2 text-xs font-black text-slate-700">
+                          <span className="min-w-0 truncate">{row.name}</span>
+                          <span className="shrink-0">{row.averageScore}%</span>
+                        </div>
+                        <div className="mt-1 text-[11px] font-bold text-slate-400">{row.submissions} محاولة · نجاح {row.passRate}%</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="mb-2 text-xs font-black text-slate-700">حسب الفصل</div>
+                  <div className="space-y-2">
+                    {(report.summary.byClassroom || []).slice(0, 4).map((row) => (
+                      <div key={`${row.schoolName}-${row.name}`} className="rounded-xl bg-slate-50 px-3 py-2">
+                        <div className="flex items-center justify-between gap-2 text-xs font-black text-slate-700">
+                          <span className="min-w-0 truncate">{row.name}</span>
+                          <span className="shrink-0">{row.averageScore}%</span>
+                        </div>
+                        <div className="mt-1 text-[11px] font-bold text-slate-400">{row.schoolName} · {row.submissions} محاولة</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50 p-3">
+                <div className="text-xs font-black text-rose-800">طلاب يحتاجون متابعة</div>
+                <div className="mt-2 space-y-2">
+                  {(report.summary.lowPerformers || []).slice(0, 5).map((row) => (
+                    <div key={row.id} className="flex items-center justify-between gap-2 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700">
+                      <span className="min-w-0 truncate">{row.studentName}</span>
+                      <span className="shrink-0 text-rose-700">{row.score}%</span>
+                    </div>
+                  ))}
+                  {(report.summary.lowPerformers || []).length === 0 && (
+                    <div className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-emerald-700">لا يوجد طلاب تحت درجة النجاح في هذا التقرير.</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 border-t border-slate-100 pt-3">
+                <div className="mb-2 text-xs font-black text-slate-700">آخر المشاركات</div>
+                <div className="space-y-2">
+                  {report.rows.slice(0, 6).map((row) => (
+                    <div key={row.id} className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="min-w-0 truncate">{row.studentName}</span>
+                        <span className="shrink-0">{row.score}%</span>
+                      </div>
+                      <div className="mt-1 text-[11px] text-slate-400">{row.schoolName || 'بدون مدرسة'} · {row.classroomName || 'بدون فصل'} · {formatDuration(row.timeSpentSeconds)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {false && report && (
             <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
               <h2 className="text-base font-black text-slate-900">ملخص النتائج</h2>
               <div className="mt-4 grid grid-cols-2 gap-2">

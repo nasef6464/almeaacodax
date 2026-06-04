@@ -162,6 +162,26 @@ addCheck(
   "staff must configure barcode tests like regular platform tests",
 );
 
+addCheck(
+  "barcode reports summarize schools, classrooms, weak skills, and low performers",
+  publicRoutes.includes("bySchool") &&
+    publicRoutes.includes("byClassroom") &&
+    publicRoutes.includes("lowPerformers") &&
+    publicRoutes.includes("passRate") &&
+    publicRoutes.includes("averageTimeSeconds"),
+  "public QR tests need useful post-test analysis for supervisors and school managers",
+);
+addCheck(
+  "barcode admin report can export Excel-ready CSV and printable PDF",
+  barcodeManagerSource.includes("downloadCsv") &&
+    barcodeManagerSource.includes("openPrintReport") &&
+    barcodeManagerSource.includes("exportReportCsv") &&
+    barcodeManagerSource.includes("printReport") &&
+    barcodeManagerSource.includes("حسب المدرسة") &&
+    barcodeManagerSource.includes("طلاب يحتاجون متابعة"),
+  "staff must be able to share barcode test results outside the platform",
+);
+
 const failed = checks.filter((check) => check.status === "FAIL");
 for (const check of checks) {
   console.log(`${check.status} ${check.name} - ${check.detail}`);
