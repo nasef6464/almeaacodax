@@ -1137,6 +1137,51 @@ export const api = {
       method: "DELETE",
       token,
     }),
+  createPublicBarcodeTest: (
+    payload: {
+      title: string;
+      description?: string;
+      pathId: string;
+      subjectId: string;
+      sectionId?: string;
+      skillIds?: string[];
+      questionIds: string[];
+      status?: "draft" | "active" | "paused" | "archived";
+      showResultToStudent?: boolean;
+      collectSchool?: boolean;
+      collectClassroom?: boolean;
+      startsAt?: number | null;
+      endsAt?: number | null;
+      maxSubmissions?: number | null;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>("/public-tests/admin", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  getPublicBarcodeTest: (slug: string, token?: string | null) =>
+    request<unknown>(`/public-tests/${encodeURIComponent(slug)}`, { token }),
+  submitPublicBarcodeTest: (
+    slug: string,
+    payload: {
+      studentName: string;
+      schoolName?: string;
+      classroomName?: string;
+      contact?: string;
+      sessionFingerprint?: string;
+      answers: Array<{ questionId: string; selectedOptionIndex: number }>;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>(`/public-tests/${encodeURIComponent(slug)}/submit`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  getPublicBarcodeTestReport: (id: string, token?: string | null) =>
+    request<unknown>(`/public-tests/admin/${encodeURIComponent(id)}/report`, { token }),
   getSchoolReport: (id: string, token?: string | null) =>
     request<unknown>(`/content/schools/${id}/report`, {
       token,

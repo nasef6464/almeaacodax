@@ -1,0 +1,300 @@
+import { Router } from "express";
+import { StatusCodes } from "http-status-codes";
+import { randomUUID } from "node:crypto";
+import { z } from "zod";
+import { requireAuth, requireRole } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { PublicBarcodeTestModel } from "../models/PublicBarcodeTest.js";
+import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.js";
+import { QuestionModel } from "../models/Question.js";
+
+export const publicTestsRouter = Router();
+
+const slugSchema = z
+  .string()
+  .trim()
+  .min(3)
+  .max(80)
+  .regex(/^[a-zA-Z0-9\u0600-\u06ff-]+$/);
+
+const publicBarcodeTestSchema = z.object({
+  id: z.string().trim().optional(),
+  slug: slugSchema.optional(),
+  title: z.string().trim().min(2).max(180),
+  description: z.string().trim().max(600).optional().default(""),
+  pathId: z.string().trim().min(1),
+  subjectId: z.string().trim().min(1),
+  sectionId: z.string().trim().optional().default(""),
+  skillIds: z.array(z.string().trim().min(1)).optional().default([]),
+  questionIds: z.array(z.string().trim().min(1)).min(1).max(120),
+  status: z.enum(["draft", "active", "paused", "archived"]).optional().default("draft"),
+  showResultToStudent: z.boolean().optional().default(true),
+  collectSchool: z.boolean().optional().default(true),
+  collectClassroom: z.boolean().optional().default(true),
+  startsAt: z.number().nullable().optional().default(null),
+  endsAt: z.number().nullable().optional().default(null),
+  maxSubmissions: z.number().int().min(1).nullable().optional().default(null),
+  ownerType: z.enum(["platform", "school", "teacher"]).optional().default("platform"),
+  ownerId: z.string().trim().optional().default(""),
+});
+
+const publicBarcodeSubmitSchema = z.object({
+  studentName: z.string().trim().min(2).max(160),
+  schoolName: z.string().trim().max(160).optional().default(""),
+  classroomName: z.string().trim().max(120).optional().default(""),
+  contact: z.string().trim().max(160).optional().default(""),
+  sessionFingerprint: z.string().trim().max(200).optional().default(""),
+  answers: z
+    .array(
+      z.object({
+        questionId: z.string().trim().min(1),
+        selectedOptionIndex: z.number().int().min(-1).max(50),
+      }),
+    )
+    .min(1)
+    .max(120),
+});
+
+const createSlug = (title: string) =>
+  `${title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\u0600-\u06ff]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48) || "test"}-${randomUUID().slice(0, 8)}`;
+
+const ensureActiveWindow = (test: any) => {
+  const now = Date.now();
+  if (test.status !== "active") return false;
+  if (test.startsAt && now < Number(test.startsAt)) return false;
+  if (test.endsAt && now > Number(test.endsAt)) return false;
+  return true;
+};
+
+const publicQuestionFields = "_id id text options imageUrl skillIds pathId subject sectionId type difficulty";
+
+const buildSkillsAnalysis = (questions: any[], answersByQuestionId: Map<string, number>) => {
+  const skillStats = new Map<string, { skillId: string; total: number; correct: number }>();
+  for (const question of questions) {
+    const questionId = String(question.id || question._id);
+    const selected = answersByQuestionId.get(questionId) ?? -1;
+    const isCorrect = selected === Number(question.correctOptionIndex);
+    const skillIds = Array.isArray(question.skillIds) && question.skillIds.length ? question.skillIds.map(String) : ["unclassified"];
+    for (const skillId of skillIds) {
+      const current = skillStats.get(skillId) || { skillId, total: 0, correct: 0 };
+      current.total += 1;
+      if (isCorrect) current.correct += 1;
+      skillStats.set(skillId, current);
+    }
+  }
+
+  return Array.from(skillStats.values())
+    .map((item) => ({
+      skillId: item.skillId,
+      attempts: item.total,
+      mastery: item.total ? Math.round((item.correct / item.total) * 100) : 0,
+      status: item.total && item.correct / item.total < 0.5 ? "weak" : item.correct / Math.max(item.total, 1) < 0.75 ? "average" : "strong",
+    }))
+    .sort((a, b) => a.mastery - b.mastery);
+};
+
+publicTestsRouter.post(
+  "/admin",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const payload = publicBarcodeTestSchema.parse(req.body || {});
+    const questionDocs = await QuestionModel.find({
+      $or: [{ id: { $in: payload.questionIds } }, { _id: { $in: payload.questionIds.filter((id) => /^[a-f0-9]{24}$/i.test(id)) } }],
+      pathId: payload.pathId,
+      subject: payload.subjectId,
+      approvalStatus: "approved",
+    })
+      .select("_id id")
+      .lean();
+    const approvedQuestionIds = questionDocs.map((question: any) => String(question.id || question._id));
+
+    if (approvedQuestionIds.length !== payload.questionIds.length) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "All barcode test questions must exist in the approved question center for the selected path and subject.",
+      });
+    }
+
+    const now = Date.now();
+    const test = await PublicBarcodeTestModel.create({
+      ...payload,
+      id: payload.id || `pbt_${now}_${randomUUID().slice(0, 8)}`,
+      slug: payload.slug || createSlug(payload.title),
+      questionIds: approvedQuestionIds,
+      createdBy: req.authUser!.id,
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      test,
+      publicUrl: `/barcode-test/${test.slug}`,
+      qrPayload: `/barcode-test/${test.slug}`,
+    });
+  }),
+);
+
+publicTestsRouter.get(
+  "/:slug",
+  asyncHandler(async (req, res) => {
+    const slug = slugSchema.parse(req.params.slug);
+    const test = await PublicBarcodeTestModel.findOne({ slug }).lean();
+    if (!test || !ensureActiveWindow(test)) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test is not available" });
+    }
+
+    const questions = await QuestionModel.find({
+      $or: [{ id: { $in: test.questionIds } }, { _id: { $in: test.questionIds.filter((id: string) => /^[a-f0-9]{24}$/i.test(id)) } }],
+      approvalStatus: "approved",
+    })
+      .select(publicQuestionFields)
+      .lean();
+
+    return res.json({
+      test: {
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        description: test.description,
+        pathId: test.pathId,
+        subjectId: test.subjectId,
+        sectionId: test.sectionId,
+        collectSchool: test.collectSchool,
+        collectClassroom: test.collectClassroom,
+        showResultToStudent: test.showResultToStudent,
+        questionCount: questions.length,
+      },
+      questions: questions.map((question: any) => ({
+        id: String(question.id || question._id),
+        text: question.text,
+        options: question.options,
+        imageUrl: question.imageUrl,
+        skillIds: question.skillIds || [],
+        type: question.type,
+        difficulty: question.difficulty,
+      })),
+    });
+  }),
+);
+
+publicTestsRouter.post(
+  "/:slug/submit",
+  asyncHandler(async (req, res) => {
+    const slug = slugSchema.parse(req.params.slug);
+    const payload = publicBarcodeSubmitSchema.parse(req.body || {});
+    const test = await PublicBarcodeTestModel.findOne({ slug }).lean();
+    if (!test || !ensureActiveWindow(test)) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test is not available" });
+    }
+
+    if (test.maxSubmissions) {
+      const currentCount = await PublicBarcodeSubmissionModel.countDocuments({ testId: test.id });
+      if (currentCount >= Number(test.maxSubmissions)) {
+        return res.status(StatusCodes.CONFLICT).json({ message: "Public test reached the submission limit" });
+      }
+    }
+
+    const questions = await QuestionModel.find({
+      $or: [{ id: { $in: test.questionIds } }, { _id: { $in: test.questionIds.filter((id: string) => /^[a-f0-9]{24}$/i.test(id)) } }],
+      approvalStatus: "approved",
+    })
+      .select("_id id correctOptionIndex skillIds")
+      .lean();
+    const answersByQuestionId = new Map(payload.answers.map((answer) => [answer.questionId, answer.selectedOptionIndex]));
+    const answerRows = questions.map((question: any) => {
+      const questionId = String(question.id || question._id);
+      const selectedOptionIndex = answersByQuestionId.get(questionId) ?? -1;
+      return {
+        questionId,
+        selectedOptionIndex,
+        isCorrect: selectedOptionIndex === Number(question.correctOptionIndex),
+        skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
+      };
+    });
+    const correctAnswers = answerRows.filter((answer) => answer.isCorrect).length;
+    const totalQuestions = questions.length;
+    const unanswered = answerRows.filter((answer) => answer.selectedOptionIndex < 0).length;
+    const wrongAnswers = Math.max(totalQuestions - correctAnswers - unanswered, 0);
+    const score = totalQuestions ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+    const skillsAnalysis = buildSkillsAnalysis(questions, answersByQuestionId);
+    const submission = await PublicBarcodeSubmissionModel.create({
+      id: `pbts_${Date.now()}_${randomUUID().slice(0, 8)}`,
+      testId: test.id,
+      slug,
+      studentName: payload.studentName,
+      schoolName: payload.schoolName,
+      classroomName: payload.classroomName,
+      contact: payload.contact,
+      sessionFingerprint: payload.sessionFingerprint,
+      answers: answerRows,
+      score,
+      totalQuestions,
+      correctAnswers,
+      wrongAnswers,
+      unanswered,
+      skillsAnalysis,
+      submittedAt: Date.now(),
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      submissionId: submission.id,
+      result: test.showResultToStudent
+        ? {
+            score,
+            totalQuestions,
+            correctAnswers,
+            wrongAnswers,
+            unanswered,
+            weakestSkill: skillsAnalysis[0] || null,
+            strongestSkill: [...skillsAnalysis].sort((a, b) => b.mastery - a.mastery)[0] || null,
+            nextAction: "راجع أضعف مهارة، ثم ادخل المنصة لتكمل تدريبًا قصيرًا عليها.",
+          }
+        : null,
+    });
+  }),
+);
+
+publicTestsRouter.get(
+  "/admin/:id/report",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const test = await PublicBarcodeTestModel.findOne({ id: req.params.id }).lean();
+    if (!test) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test not found" });
+    }
+    const submissions = await PublicBarcodeSubmissionModel.find({ testId: test.id }).sort({ submittedAt: -1 }).limit(1000).lean();
+    const averageScore = submissions.length
+      ? Math.round(submissions.reduce((total, item: any) => total + Number(item.score || 0), 0) / submissions.length)
+      : 0;
+    const skillMap = new Map<string, { skillId: string; total: number; count: number }>();
+    submissions.forEach((submission: any) => {
+      (submission.skillsAnalysis || []).forEach((skill: any) => {
+        const current = skillMap.get(skill.skillId) || { skillId: skill.skillId, total: 0, count: 0 };
+        current.total += Number(skill.mastery || 0);
+        current.count += 1;
+        skillMap.set(skill.skillId, current);
+      });
+    });
+    const weakestSkills = Array.from(skillMap.values())
+      .map((skill) => ({ skillId: skill.skillId, mastery: skill.count ? Math.round(skill.total / skill.count) : 0, attempts: skill.count }))
+      .sort((a, b) => a.mastery - b.mastery)
+      .slice(0, 5);
+
+    return res.json({
+      test: { id: test.id, slug: test.slug, title: test.title },
+      summary: { submissions: submissions.length, averageScore, weakestSkills },
+      rows: submissions.map((submission: any) => ({
+        id: submission.id,
+        studentName: submission.studentName,
+        schoolName: submission.schoolName,
+        classroomName: submission.classroomName,
+        score: submission.score,
+        submittedAt: submission.submittedAt,
+      })),
+    });
+  }),
+);
