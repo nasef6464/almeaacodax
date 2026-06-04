@@ -209,18 +209,26 @@ const useParentScopedResults = () => {
         if (user.role !== Role.PARENT) return;
 
         let isMounted = true;
+        const slowLoadTimer = window.setTimeout(() => {
+            if (!isMounted) return;
+            setIsLoading(false);
+            setLoadError('استغرق تحميل نتائج الأبناء وقتًا أطول من المعتاد. يمكنك فتح التقرير أو تحديث الصفحة بعد قليل.');
+        }, 10000);
         setIsLoading(true);
         setLoadError(null);
 
         api.getScopedQuizResults()
             .then((payload) => {
+                window.clearTimeout(slowLoadTimer);
                 if (!isMounted) return;
+                setLoadError(null);
                 setScopedResults(
                     extractScopedQuizResults(payload)
                         .sort((a, b) => getResultTimestamp(b) - getResultTimestamp(a))
                 );
             })
             .catch((error) => {
+                window.clearTimeout(slowLoadTimer);
                 console.error('Failed to load parent scoped quiz results', error);
                 if (isMounted) {
                     setLoadError('تعذر تحميل نتائج الأبناء الآن. حاول تحديث الصفحة بعد قليل.');
@@ -232,6 +240,7 @@ const useParentScopedResults = () => {
 
         return () => {
             isMounted = false;
+            window.clearTimeout(slowLoadTimer);
         };
     }, [user.role]);
 
@@ -885,9 +894,26 @@ const Dashboard: React.FC = () => {
 // -- Sub-Components --
 
 const ParentLoadingState = () => (
-    <div className="flex items-center justify-center rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-sm font-bold text-gray-500">
-        <Loader2 size={18} className="ml-2 animate-spin text-emerald-600" />
-        جاري تحميل بيانات الأبناء...
+    <div className="rounded-3xl border border-dashed border-emerald-100 bg-white p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3">
+                <Loader2 size={20} className="mt-1 shrink-0 animate-spin text-emerald-600" />
+                <div>
+                    <h3 className="text-lg font-black text-gray-900">جاري تجهيز متابعة الأبناء</h3>
+                    <p className="mt-2 max-w-2xl text-sm font-bold leading-7 text-gray-500">
+                        نجمع آخر النتائج والمهارات الضعيفة وخطوة المتابعة المناسبة. إذا استغرق التحميل لحظات، يمكنك فتح التقرير أو الرجوع للملف الشخصي بدون انتظار هذه البطاقة.
+                    </p>
+                </div>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+                <Link to="/reports" className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700">
+                    فتح التقرير
+                </Link>
+                <Link to="/profile" className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
+                    الملف الشخصي
+                </Link>
+            </div>
+        </div>
     </div>
 );
 
