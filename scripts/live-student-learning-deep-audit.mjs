@@ -9,6 +9,25 @@ const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const TARGET_PATH_ID = process.env.SMOKE_STUDENT_JOURNEY_PATH_ID || "p_1777779639431";
 const TARGET_SUBJECT_ID = process.env.SMOKE_STUDENT_JOURNEY_SUBJECT_ID || "sub_1777779748206";
+const VIEWPORTS = [
+  { name: "desktop", width: 1440, height: 1000 },
+  { name: "mobile", width: 390, height: 844 },
+];
+const DEFAULT_NEXT_ACTION_PATTERNS = [
+  "ابدأ",
+  "استمر",
+  "افتح",
+  "تابع",
+  "تدريب",
+  "اختبار",
+  "تقرير",
+  "خطة",
+  "إعادة قياس",
+  "أعد القياس",
+  "عرض الباقات",
+  "سجل",
+  "راجع",
+];
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -180,31 +199,48 @@ async function inspectRoute(page, name, route, expectations = {}) {
   const screenshot = path.join(OUT_DIR, `${name}.png`);
   await page.screenshot({ path: screenshot, fullPage: true });
 
-  const state = await page.evaluate(() => {
+  const state = await page.evaluate((expectedNextActions) => {
     const text = document.body.innerText || "";
     const controls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
       const rect = el.getBoundingClientRect();
       const style = window.getComputedStyle(el);
       return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
     });
+    const actionControls = controls
+      .filter((el) => {
+        const label = `${el.innerText || ""} ${el.getAttribute("aria-label") || ""} ${el.getAttribute("title") || ""}`.trim();
+        return label && expectedNextActions.some((pattern) => label.includes(pattern));
+      })
+      .map((el) => `${el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || ""}`.trim().slice(0, 80))
+      .filter(Boolean);
     return {
       href: location.href,
       title: document.title,
       bodyLength: text.length,
       controlCount: controls.length,
+      actionControlCount: actionControls.length,
+      actionControls,
+      nextActionTextFound: expectedNextActions.some((pattern) => text.includes(pattern)),
+      horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(text),
       hasQuizUi: /السؤال|التالي|إنهاء|اختبار|نتيجة|إجابة|ابدأ|ابدأ الاختبار/.test(text),
       hasLearningUi: /درس|دورة|المهارات|تدريب|المسار|خطة|تقرير|اختبار/.test(text),
       hasBlockingError: /تعذر تحميل|تعذر إرسال|خطأ غير متوقع|حدث خطأ|غير مصرح|ليس لديك صلاحية|Authentication required|Invalid CSRF|CSRF_TOKEN_INVALID/i.test(text),
     };
-  });
+  }, expectations.nextActions || DEFAULT_NEXT_ACTION_PATTERNS);
 
+  const missingNextAction = expectations.requireNextAction !== false && state.actionControlCount < 1 && !state.nextActionTextFound;
+  const layoutFailure = expectations.viewport === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
   const allowed4xx = network4xx.filter((item) => expectations.allow4xx?.some((pattern) => item.url.includes(pattern)));
   const unexpected4xx = network4xx.filter((item) => !allowed4xx.includes(item));
   const pass =
     !state.hasLoginForm &&
     state.bodyLength >= (expectations.minBodyLength || 300) &&
     state.controlCount >= (expectations.minControls || 1) &&
+    !missingNextAction &&
+    !layoutFailure &&
     !state.hasBlockingError &&
     network5xx.length === 0 &&
     unexpected4xx.length === 0 &&
@@ -219,6 +255,8 @@ async function inspectRoute(page, name, route, expectations = {}) {
     network4xx,
     unexpected4xx,
     network5xx,
+    missingNextAction,
+    layoutFailure,
     ...state,
   };
 }
@@ -233,31 +271,36 @@ addPrereq("course target is available", Boolean(targets.course), targets.course?
 addPrereq("training quiz target is available", Boolean(targets.quiz), targets.quiz?.title || "missing quiz");
 
 const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext({
-  viewport: { width: 1440, height: 1000 },
-  locale: "ar-SA",
-  ignoreHTTPSErrors: process.env.UI_AUDIT_IGNORE_HTTPS_ERRORS === "1",
-});
-const page = await context.newPage();
 const routeResults = [];
 
 try {
-  await seedBrowserSession(context, page, session);
   const routePlan = [
-    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8 }],
-    ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8 }],
-    ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4 }],
-    ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true }],
-    ["my-quizzes", targets.routes.myQuizzes, { minBodyLength: 900, minControls: 8 }],
-    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4 }],
-    ["student-plan", targets.routes.plan, { minBodyLength: 900, minControls: 8 }],
+    ["student-dashboard", targets.routes.dashboard, { minBodyLength: 800, minControls: 8, nextActions: ["ابدأ", "استمر", "اختبار", "تقرير", "خطة"] }],
+    ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8, nextActions: ["افتح", "ابدأ", "تدريب", "اختبار", "عرض الباقات"] }],
+    ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
+    ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
+    ["my-quizzes", targets.routes.myQuizzes, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "افتح التحليل", "اختبار", "تقرير"] }],
+    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"] }],
+    ["student-plan", targets.routes.plan, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "جلسة اليوم", "تدريب", "راجع", "أعد القياس"] }],
   ].filter(([, route]) => Boolean(route));
 
-  for (const [name, route, expectations] of routePlan) {
-    routeResults.push(await inspectRoute(page, name, route, expectations));
+  for (const viewport of VIEWPORTS) {
+    const context = await browser.newContext({
+      viewport: { width: viewport.width, height: viewport.height },
+      locale: "ar-SA",
+      ignoreHTTPSErrors: process.env.UI_AUDIT_IGNORE_HTTPS_ERRORS === "1",
+    });
+    const page = await context.newPage();
+    try {
+      await seedBrowserSession(context, page, session);
+      for (const [name, route, expectations] of routePlan) {
+        routeResults.push(await inspectRoute(page, `${viewport.name}-${name}`, route, { ...expectations, viewport: viewport.name }));
+      }
+    } finally {
+      await context.close().catch(() => {});
+    }
   }
 } finally {
-  await context.close().catch(() => {});
   await browser.close().catch(() => {});
 }
 
@@ -266,6 +309,7 @@ const report = {
   baseUrl: BASE_URL,
   apiBaseUrl: API_BASE_URL,
   runId: RUN_ID,
+  viewports: VIEWPORTS,
   targetPathId: TARGET_PATH_ID,
   targetSubjectId: TARGET_SUBJECT_ID,
   targets: {
@@ -302,7 +346,7 @@ fs.writeFileSync(
     ...checks.map((item) => `- [${item.status}] ${item.name} - ${item.details}`),
     "",
     "## Routes",
-    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}, url=${item.href}`),
+    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
     "",
   ].join("\n"),
   "utf8",

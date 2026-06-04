@@ -13,6 +13,7 @@ const files = {
   adminDashboard: await readFile(new URL('../dashboards/admin/AdminDashboard.tsx', import.meta.url), 'utf8'),
   notificationRoutes: await readFile(new URL('../server/src/routes/notification.routes.ts', import.meta.url), 'utf8'),
   roleAudit: await readFile(new URL('../scripts/live-role-pages-audit.mjs', import.meta.url), 'utf8'),
+  liveStudentJourney: await readFile(new URL('../scripts/live-student-learning-deep-audit.mjs', import.meta.url), 'utf8'),
   studentJourney: await readFile(new URL('../scripts/smoke-student-learning-journey.mjs', import.meta.url), 'utf8'),
   reportsContract: await readFile(new URL('../scripts/smoke-reports-role-contract.mjs', import.meta.url), 'utf8'),
 };
@@ -182,6 +183,11 @@ check('release verification has live role and student journey coverage', () => {
   assertAnyIncludes(files.roleAudit, ['admin', 'Role.ADMIN']);
   assertIncludes(files.roleAudit, 'consoleErrors');
   assertIncludes(files.roleAudit, 'network5xx');
+  assertIncludes(files.liveStudentJourney, 'VIEWPORTS');
+  assertIncludes(files.liveStudentJourney, 'name: "mobile"');
+  assertIncludes(files.liveStudentJourney, 'missingNextAction');
+  assertIncludes(files.liveStudentJourney, 'actionControlCount');
+  assertIncludes(files.liveStudentJourney, 'horizontalOverflow');
   assertIncludes(files.studentJourney, 'foundation journey has at least one playable lesson');
   assertIncludes(files.studentJourney, 'quiz retry and finish routes keep the learner inside the same topic');
   assertIncludes(files.reportsContract, 'supervisor can analyze and export a specific directed quiz by students and skills');
@@ -189,7 +195,9 @@ check('release verification has live role and student journey coverage', () => {
 
 check('this global journey gate is wired into package scripts', () => {
   assertIncludes(files.packageJson, 'smoke:global-student-journey');
+  assertIncludes(files.packageJson, 'smoke:student-learning-live');
   assertIncludes(files.packageJson, 'scripts/smoke-global-student-journey-contract.mjs');
+  assertIncludes(files.packageJson, 'scripts/live-student-learning-deep-audit.mjs');
 });
 
 for (const item of checks) {
