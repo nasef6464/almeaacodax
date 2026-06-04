@@ -36,6 +36,11 @@ addCheck(
   "spreadsheet reads must not preserve VBA payloads",
 );
 addCheck(
+  "workbook import rejects oversized files",
+  loader.includes("MAX_XLSX_IMPORT_BYTES") && loader.includes("buffer.byteLength > MAX_XLSX_IMPORT_BYTES"),
+  "spreadsheet reads must bound parser work for uploaded Excel files",
+);
+addCheck(
   "spreadsheet object sanitizer strips prototype pollution keys",
   ["__proto__", "prototype", "constructor"].every((key) => loader.includes(key)) &&
     loader.includes("sanitizeSpreadsheetValue"),

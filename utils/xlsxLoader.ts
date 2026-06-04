@@ -2,6 +2,8 @@ export type XlsxModule = typeof import('xlsx');
 
 export const loadXlsx = async (): Promise<XlsxModule> => import('xlsx');
 
+export const MAX_XLSX_IMPORT_BYTES = 5 * 1024 * 1024;
+
 const UNSAFE_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
 
 const sanitizeSpreadsheetValue = (value: unknown): unknown => {
@@ -22,6 +24,10 @@ const sanitizeSpreadsheetValue = (value: unknown): unknown => {
 };
 
 export const readWorkbookFromBuffer = async (buffer: ArrayBuffer) => {
+  if (buffer.byteLength > MAX_XLSX_IMPORT_BYTES) {
+    throw new Error('ملف Excel كبير جدًا. الحد الأقصى 5 ميجابايت.');
+  }
+
   const XLSX = await loadXlsx();
   return XLSX.read(buffer, {
     type: 'array',
