@@ -145,6 +145,8 @@ check("barcode live gate checks admin creation and public student entry on deskt
   assertIncludes(files.barcodeLive, "`/barcode-test/${encodeURIComponent(selectedTest.slug)}`");
   assertIncludes(files.barcodeLive, 'data-testid="barcode-required-identity-note"');
   assertIncludes(files.barcodeLive, 'data-testid="barcode-public-identity-fields"');
+  assertIncludes(files.barcodeLive, "createAuditPublicTest");
+  assertIncludes(files.barcodeLive, "Unable to create a live barcode audit test");
   assertIncludes(files.barcodeLive, "VIEWPORTS");
   assertIncludes(files.barcodeLive, 'name: "mobile"');
   assertIncludes(files.barcodeLive, "horizontalOverflow");

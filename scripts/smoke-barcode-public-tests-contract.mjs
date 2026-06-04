@@ -244,6 +244,16 @@ addCheck(
 );
 
 addCheck(
+  "barcode live audit creates a public test when production has none ready",
+  liveAuditSource.includes("createAuditPublicTest") &&
+    liveAuditSource.includes("/quizzes/questions?approvalStatus=approved") &&
+    liveAuditSource.includes("/public-tests/admin") &&
+    liveAuditSource.includes("Unable to create a live barcode audit test") &&
+    liveAuditSource.includes("Created audit test"),
+  "live barcode proof should not silently skip the public student page when no active test exists",
+);
+
+addCheck(
   "barcode reports summarize schools, classrooms, weak skills, and low performers",
   publicRoutes.includes("bySchool") &&
     publicRoutes.includes("byClassroom") &&

@@ -4,7 +4,10 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
-const RUN_ID = process.env.BARCODE_LIVE_AUDIT_RUN_ID || `barcode-public-tests-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+const RUN_ID =
+  process.env.BARCODE_LIVE_AUDIT_RUN_ID ||
+  process.env.BARCODE_PUBLIC_TEST_AUDIT_RUN_ID ||
+  `barcode-public-tests-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const VIEWPORTS = [
@@ -112,6 +115,107 @@ async function listPublicTests(page) {
   }, { apiBaseUrl: API_BASE_URL });
 }
 
+async function listApprovedQuestions(page) {
+  return page.evaluate(async ({ apiBaseUrl }) => {
+    const response = await fetch(`${apiBaseUrl}/quizzes/questions?approvalStatus=approved&summary=true&limit=80`, {
+      credentials: "include",
+      cache: "no-store",
+      headers: { accept: "application/json" },
+    });
+    const payload = await response.json().catch(() => ({}));
+    const items = Array.isArray(payload) ? payload : Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.items) ? payload.items : [];
+    return {
+      ok: response.ok,
+      status: response.status,
+      items,
+      message: payload?.message || "",
+    };
+  }, { apiBaseUrl: API_BASE_URL });
+}
+
+function selectQuestionGroup(questions) {
+  const groups = new Map();
+  for (const question of questions || []) {
+    const pathId = String(question.pathId || "");
+    const subjectId = String(question.subject || question.subjectId || "");
+    const questionId = String(question.id || question._id || "");
+    if (!pathId || !subjectId || !questionId) continue;
+    const key = `${pathId}::${subjectId}`;
+    const current = groups.get(key) || { pathId, subjectId, questions: [] };
+    current.questions.push(question);
+    groups.set(key, current);
+  }
+  return [...groups.values()].sort((a, b) => b.questions.length - a.questions.length)[0] || null;
+}
+
+async function createAuditPublicTest(page) {
+  const questions = await listApprovedQuestions(page);
+  if (!questions.ok) {
+    return { ok: false, status: questions.status, message: `approved questions list failed: ${questions.message || questions.status}` };
+  }
+  const group = selectQuestionGroup(questions.items);
+  if (!group || group.questions.length < 1) {
+    return { ok: false, status: 0, message: "no approved question group available for barcode audit" };
+  }
+  const selectedQuestions = group.questions.slice(0, Math.min(5, group.questions.length));
+  return page.evaluate(
+    async ({ apiBaseUrl, group, selectedQuestions }) => {
+      const now = Date.now();
+      const csrfToken = sessionStorage.getItem("almeaa:csrf-token") || "";
+      const response = await fetch(`${apiBaseUrl}/public-tests/admin`, {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+        headers: {
+          "content-type": "application/json",
+          accept: "application/json",
+          ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
+        },
+        body: JSON.stringify({
+          title: `اختبار باركود تدقيق ${new Date(now).toLocaleString("ar-SA")}`,
+          description: "اختبار تدقيق آلي للتأكد من أن رابط الباركود العام يعمل بدون تسجيل.",
+          pathId: group.pathId,
+          subjectId: group.subjectId,
+          sectionId: String(selectedQuestions[0]?.sectionId || ""),
+          skillIds: [...new Set(selectedQuestions.flatMap((question) => Array.isArray(question.skillIds) ? question.skillIds.map(String) : []))],
+          questionIds: selectedQuestions.map((question) => String(question.id || question._id)),
+          testKind: "quick",
+          status: "active",
+          showResultToStudent: true,
+          collectSchool: true,
+          collectClassroom: true,
+          settings: {
+            showExplanations: true,
+            showAnswers: true,
+            showResultsReport: true,
+            maxAttempts: 20,
+            passingScore: 60,
+            timeLimit: 20,
+            randomizeQuestions: false,
+            randomizeOptions: false,
+            showProgressBar: true,
+            requireAnswerBeforeNext: false,
+            allowQuestionReview: true,
+            optionLayout: "auto",
+          },
+          startsAt: null,
+          endsAt: null,
+          maxSubmissions: null,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      return {
+        ok: response.ok,
+        status: response.status,
+        message: payload?.message || "",
+        test: payload?.test || null,
+        publicUrl: payload?.publicUrl || "",
+      };
+    },
+    { apiBaseUrl: API_BASE_URL, group, selectedQuestions },
+  );
+}
+
 async function inspectRoute(page, viewport, routeSpec) {
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
   const consoleErrors = [];
@@ -186,12 +290,26 @@ async function main() {
   let loginResult = null;
   let publicTests = { ok: false, status: 0, items: [] };
   let selectedTest = null;
+  let createdAuditTest = null;
 
   try {
     loginResult = await login(page);
     publicTests = await listPublicTests(page);
     if (!publicTests.ok) throw new Error(`Public barcode admin list failed ${publicTests.status}: ${publicTests.message}`);
     selectedTest = publicTests.items.find((item) => item.status === "active" && item.slug && Number(item.questionCount || 0) > 0) || null;
+    if (!selectedTest) {
+      createdAuditTest = await createAuditPublicTest(page);
+      if (!createdAuditTest.ok || !createdAuditTest.test?.slug) {
+        throw new Error(`Unable to create a live barcode audit test (${createdAuditTest.status || 0}: ${createdAuditTest.message || "unknown"})`);
+      }
+      selectedTest = {
+        id: createdAuditTest.test.id,
+        slug: createdAuditTest.test.slug,
+        title: createdAuditTest.test.title,
+        status: createdAuditTest.test.status,
+        questionCount: Array.isArray(createdAuditTest.test.questionIds) ? createdAuditTest.test.questionIds.length : 1,
+      };
+    }
 
     for (const viewport of VIEWPORTS) {
       results.push(
@@ -245,6 +363,7 @@ async function main() {
     runId: RUN_ID,
     login: loginResult,
     listedPublicTests: publicTests.items?.length || 0,
+    createdAuditTest: createdAuditTest?.test ? { id: createdAuditTest.test.id, slug: createdAuditTest.test.slug } : null,
     selectedPublicTest: selectedTest ? { id: selectedTest.id, slug: selectedTest.slug, questionCount: selectedTest.questionCount } : null,
     total: results.length,
     pass: results.filter((row) => row.status === "PASS").length,
@@ -263,6 +382,7 @@ async function main() {
       `- Base URL: ${summary.baseUrl}`,
       `- Logged role: ${summary.login?.role || "unknown"}`,
       `- Listed public tests: ${summary.listedPublicTests}`,
+      `- Created audit test: ${summary.createdAuditTest?.slug || "no"}`,
       `- Selected public test: ${summary.selectedPublicTest?.slug || "none"}`,
       `- Total checked: ${summary.total}`,
       `- PASS: ${summary.pass}`,

@@ -260,7 +260,7 @@ const BarcodeTest: React.FC = () => {
   }
 
   return (
-    <main data-testid="barcode-public-real-test-shell" className="mx-auto max-w-4xl px-4 py-8">
+    <main data-testid="barcode-public-real-test-shell" className="mx-auto max-w-4xl overflow-x-hidden px-4 py-8">
       <form onSubmit={submit} className="space-y-5">
         <section data-testid="barcode-public-test-header" className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
           <div className="flex items-start gap-3">
@@ -331,14 +331,14 @@ const BarcodeTest: React.FC = () => {
 
         <section data-testid="barcode-public-question-list" className="space-y-4">
           {data.questions.map((question, index) => (
-            <div key={question.id} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+            <div key={question.id} className="min-w-0 overflow-hidden rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
               <div className="mb-4 flex items-start gap-3">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-black text-slate-700">
                   {index + 1}
                 </span>
-                <h2 className="text-base font-black leading-8 text-slate-900">{question.text}</h2>
+                <h2 className="min-w-0 overflow-hidden break-words text-base font-black leading-8 text-slate-900">{question.text}</h2>
               </div>
-              {question.imageUrl && <img src={question.imageUrl} alt="" className="mb-4 max-h-64 rounded-2xl border border-slate-100 object-contain" />}
+              {question.imageUrl && <img src={question.imageUrl} alt="" className="mb-4 max-h-64 max-w-full rounded-2xl border border-slate-100 object-contain" />}
               <div className={`grid gap-2 ${optionGridClass}`}>
                 {question.options.map((option, optionIndex) => {
                   const active = answers[question.id] === optionIndex;
@@ -348,7 +348,7 @@ const BarcodeTest: React.FC = () => {
                       key={`${question.id}-${optionIndex}`}
                       disabled={timeExpired}
                       onClick={() => setAnswers((current) => ({ ...current, [question.id]: optionIndex }))}
-                      className={`rounded-2xl border px-4 py-3 text-right text-sm font-bold transition ${
+                      className={`min-w-0 break-words rounded-2xl border px-4 py-3 text-right text-sm font-bold transition ${
                         active
                           ? 'border-indigo-500 bg-indigo-50 text-indigo-800'
                           : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50/40'
