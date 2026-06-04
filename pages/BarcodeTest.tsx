@@ -7,6 +7,7 @@ type PublicBarcodeQuestion = {
   id: string;
   text: string;
   options: string[];
+  optionOrder?: number[];
   imageUrl?: string;
   skillIds?: string[];
   difficulty?: string;
@@ -18,8 +19,21 @@ type PublicBarcodeTestResponse = {
     slug: string;
     title: string;
     description?: string;
+    testKind?: 'quick' | 'mock';
     collectSchool?: boolean;
     collectClassroom?: boolean;
+    settings?: {
+      showResultsReport?: boolean;
+      maxAttempts?: number;
+      passingScore?: number;
+      timeLimit?: number;
+      randomizeQuestions?: boolean;
+      randomizeOptions?: boolean;
+      showProgressBar?: boolean;
+      requireAnswerBeforeNext?: boolean;
+      allowQuestionReview?: boolean;
+      optionLayout?: 'auto' | 'horizontal' | 'two_columns';
+    };
     questionCount: number;
   };
   questions: PublicBarcodeQuestion[];
@@ -29,6 +43,8 @@ type PublicBarcodeSubmitResponse = {
   submissionId: string;
   result: null | {
     score: number;
+    passed?: boolean;
+    passingScore?: number;
     totalQuestions: number;
     correctAnswers: number;
     wrongAnswers: number;
@@ -67,6 +83,13 @@ const BarcodeTest: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<PublicBarcodeSubmitResponse['result']>(null);
+  const [startedAt] = useState(() => Date.now());
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,6 +119,21 @@ const BarcodeTest: React.FC = () => {
     () => Object.values(answers).filter((value) => value >= 0).length,
     [answers],
   );
+  const elapsedSeconds = Math.max(0, Math.floor((now - startedAt) / 1000));
+  const timeLimitMinutes = Number(data?.test.settings?.timeLimit || 0);
+  const remainingSeconds = timeLimitMinutes > 0 ? Math.max(timeLimitMinutes * 60 - elapsedSeconds, 0) : null;
+  const progressPercent = data?.questions.length ? Math.round((answeredCount / data.questions.length) * 100) : 0;
+  const optionGridClass =
+    data?.test.settings?.optionLayout === 'two_columns'
+      ? 'sm:grid-cols-2'
+      : data?.test.settings?.optionLayout === 'horizontal'
+        ? 'lg:grid-cols-4'
+        : '';
+  const formatSeconds = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const rest = seconds % 60;
+    return `${minutes}:${String(rest).padStart(2, '0')}`;
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -112,6 +150,10 @@ const BarcodeTest: React.FC = () => {
       setError('اكتب الفصل.');
       return;
     }
+    if (data.test.settings?.requireAnswerBeforeNext && answeredCount < data.questions.length) {
+      setError('أجب عن كل الأسئلة قبل الإرسال.');
+      return;
+    }
 
     setSubmitting(true);
     setError('');
@@ -122,9 +164,10 @@ const BarcodeTest: React.FC = () => {
         classroomName,
         contact,
         sessionFingerprint: getSessionFingerprint(),
+        timeSpentSeconds: elapsedSeconds,
         answers: data.questions.map((question) => ({
           questionId: question.id,
-          selectedOptionIndex: answers[question.id] ?? -1,
+          selectedOptionIndex: answers[question.id] >= 0 ? question.optionOrder?.[answers[question.id]] ?? answers[question.id] : -1,
         })),
       })) as PublicBarcodeSubmitResponse;
       setResult(response.result);
@@ -172,6 +215,7 @@ const BarcodeTest: React.FC = () => {
               <h1 className="mt-3 text-2xl font-black text-slate-900">نتيجتك {result.score}%</h1>
               <p className="mt-2 text-sm font-bold text-slate-500">
                 صحيح {result.correctAnswers} من {result.totalQuestions}
+                {typeof result.passed === 'boolean' ? ` · ${result.passed ? 'ناجح' : `أقل من ${result.passingScore || 60}%`}` : ''}
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
@@ -223,12 +267,29 @@ const BarcodeTest: React.FC = () => {
               <FileQuestion size={22} />
             </div>
             <div>
-              <p className="text-xs font-black text-indigo-600">اختبار سريع</p>
+              <p className="text-xs font-black text-indigo-600">{data.test.testKind === 'mock' ? 'اختبار محاكي' : 'اختبار سريع'}</p>
               <h1 className="mt-1 text-2xl font-black text-slate-900">{data.test.title}</h1>
               {data.test.description && <p className="mt-2 text-sm leading-7 text-slate-500">{data.test.description}</p>}
+              <div className="mt-3 flex flex-wrap gap-2 text-xs font-black">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{data.questions.length} سؤال</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{timeLimitMinutes ? `${timeLimitMinutes} دقيقة` : 'بدون مؤقت'}</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{data.test.settings?.maxAttempts || 1} محاولة</span>
+              </div>
             </div>
           </div>
         </section>
+
+        {data.test.settings?.showProgressBar !== false && (
+          <section className="rounded-3xl border border-slate-100 bg-white p-4 shadow-sm">
+            <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-600">
+              <span>التقدم {progressPercent}%</span>
+              <span>{remainingSeconds === null ? `الوقت ${formatSeconds(elapsedSeconds)}` : `المتبقي ${formatSeconds(remainingSeconds)}`}</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="h-full rounded-full bg-indigo-600 transition-all" style={{ width: `${progressPercent}%` }} />
+            </div>
+          </section>
+        )}
 
         <section className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-3">
@@ -271,7 +332,7 @@ const BarcodeTest: React.FC = () => {
                 <h2 className="text-base font-black leading-8 text-slate-900">{question.text}</h2>
               </div>
               {question.imageUrl && <img src={question.imageUrl} alt="" className="mb-4 max-h-64 rounded-2xl border border-slate-100 object-contain" />}
-              <div className="grid gap-2">
+              <div className={`grid gap-2 ${optionGridClass}`}>
                 {question.options.map((option, optionIndex) => {
                   const active = answers[question.id] === optionIndex;
                   return (

@@ -26,6 +26,7 @@ const publicBarcodeSubmissionSchema = new Schema(
     wrongAnswers: { type: Number, default: 0 },
     unanswered: { type: Number, default: 0 },
     skillsAnalysis: { type: [Schema.Types.Mixed], default: [] },
+    timeSpentSeconds: { type: Number, default: 0 },
     sessionFingerprint: { type: String, default: "", index: true },
     submittedAt: { type: Number, default: () => Date.now(), index: true },
   },

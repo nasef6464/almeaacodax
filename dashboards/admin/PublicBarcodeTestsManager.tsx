@@ -44,6 +44,18 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [showResultToStudent, setShowResultToStudent] = useState(true);
+  const [testKind, setTestKind] = useState<'quick' | 'mock'>('quick');
+  const [timeLimit, setTimeLimit] = useState(20);
+  const [maxAttempts, setMaxAttempts] = useState(1);
+  const [passingScore, setPassingScore] = useState(60);
+  const [randomizeQuestions, setRandomizeQuestions] = useState(true);
+  const [randomizeOptions, setRandomizeOptions] = useState(false);
+  const [showAnswers, setShowAnswers] = useState(true);
+  const [showExplanations, setShowExplanations] = useState(true);
+  const [showProgressBar, setShowProgressBar] = useState(true);
+  const [requireAnswerBeforeNext, setRequireAnswerBeforeNext] = useState(false);
+  const [allowQuestionReview, setAllowQuestionReview] = useState(true);
+  const [optionLayout, setOptionLayout] = useState<'auto' | 'horizontal' | 'two_columns'>('auto');
   const [createdTest, setCreatedTest] = useState<CreatedBarcodeTest | null>(null);
   const [report, setReport] = useState<PublicBarcodeReport | null>(null);
   const [feedback, setFeedback] = useState('');
@@ -104,10 +116,25 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         subjectId: normalizedSubjectId,
         skillIds: selectedSkills,
         questionIds: selectedQuestionIds,
+        testKind,
         status: 'active',
         showResultToStudent,
         collectSchool: true,
         collectClassroom: true,
+        settings: {
+          showExplanations,
+          showAnswers,
+          showResultsReport: showResultToStudent,
+          maxAttempts,
+          passingScore,
+          timeLimit,
+          randomizeQuestions,
+          randomizeOptions,
+          showProgressBar,
+          requireAnswerBeforeNext,
+          allowQuestionReview,
+          optionLayout,
+        },
       })) as CreatedBarcodeTest;
       setCreatedTest(response);
       setFeedback('تم إنشاء رابط الاختبار والباركود.');
@@ -189,6 +216,38 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               <span className="mb-1 block text-xs font-black text-slate-600">وصف قصير</span>
               <input value={description} onChange={(event) => setDescription(event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400" />
             </label>
+            <div className="md:col-span-2 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 md:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setTestKind('quick');
+                  setTimeLimit(20);
+                  setMaxAttempts(1);
+                  setRandomizeQuestions(true);
+                  setRequireAnswerBeforeNext(false);
+                  setOptionLayout('auto');
+                }}
+                className={`rounded-2xl border p-4 text-right ${testKind === 'quick' ? 'border-indigo-300 bg-white text-indigo-800 shadow-sm' : 'border-transparent bg-transparent text-slate-600'}`}
+              >
+                <div className="text-sm font-black">اختبار سريع</div>
+                <div className="mt-1 text-xs font-bold leading-6 text-slate-500">مناسب للنشر السريع والتسويق وقياس مستوى أولي.</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setTestKind('mock');
+                  setTimeLimit(60);
+                  setMaxAttempts(1);
+                  setRandomizeQuestions(false);
+                  setRequireAnswerBeforeNext(false);
+                  setOptionLayout('horizontal');
+                }}
+                className={`rounded-2xl border p-4 text-right ${testKind === 'mock' ? 'border-indigo-300 bg-white text-indigo-800 shadow-sm' : 'border-transparent bg-transparent text-slate-600'}`}
+              >
+                <div className="text-sm font-black">اختبار محاكي</div>
+                <div className="mt-1 text-xs font-bold leading-6 text-slate-500">شكل أقرب للاختبار الحقيقي بزمن وترتيب ثابت.</div>
+              </button>
+            </div>
             <label className="block">
               <span className="mb-1 block text-xs font-black text-slate-600">المسار</span>
               <select
@@ -218,6 +277,57 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 {activeSubjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
               </select>
             </label>
+          </div>
+
+          <div className="rounded-2xl border border-slate-100 bg-white p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-sm font-black text-slate-900">إعدادات الاختبار</h2>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
+                مثل الاختبار الحقيقي
+              </span>
+            </div>
+            <div className="grid gap-3 md:grid-cols-4">
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">الوقت بالدقائق</span>
+                <input type="number" min={0} max={300} value={timeLimit} onChange={(event) => setTimeLimit(Number(event.target.value))} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400" />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">عدد المحاولات</span>
+                <input type="number" min={1} max={20} value={maxAttempts} onChange={(event) => setMaxAttempts(Number(event.target.value))} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400" />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">درجة النجاح</span>
+                <input type="number" min={0} max={100} value={passingScore} onChange={(event) => setPassingScore(Number(event.target.value))} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400" />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-black text-slate-600">شكل الاختيارات</span>
+                <select value={optionLayout} onChange={(event) => setOptionLayout(event.target.value as typeof optionLayout)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400">
+                  <option value="auto">تلقائي</option>
+                  <option value="two_columns">عمودان</option>
+                  <option value="horizontal">أفقي واسع</option>
+                </select>
+              </label>
+            </div>
+            <div className="mt-4 grid gap-2 md:grid-cols-2">
+              {[
+                ['خلط الأسئلة', randomizeQuestions, setRandomizeQuestions],
+                ['خلط الاختيارات', randomizeOptions, setRandomizeOptions],
+                ['إظهار الإجابات', showAnswers, setShowAnswers],
+                ['إظهار الشرح', showExplanations, setShowExplanations],
+                ['شريط تقدم للطالب', showProgressBar, setShowProgressBar],
+                ['يلزم إجابة كل سؤال', requireAnswerBeforeNext, setRequireAnswerBeforeNext],
+                ['مراجعة الأسئلة', allowQuestionReview, setAllowQuestionReview],
+              ].map(([label, value, setter]) => (
+                <button
+                  type="button"
+                  key={String(label)}
+                  onClick={() => (setter as React.Dispatch<React.SetStateAction<boolean>>)((current) => !current)}
+                  className={`rounded-xl border px-3 py-2 text-right text-xs font-black ${(value as boolean) ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500'}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">

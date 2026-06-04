@@ -1146,10 +1146,25 @@ export const api = {
       sectionId?: string;
       skillIds?: string[];
       questionIds: string[];
+      testKind?: "quick" | "mock";
       status?: "draft" | "active" | "paused" | "archived";
       showResultToStudent?: boolean;
       collectSchool?: boolean;
       collectClassroom?: boolean;
+      settings?: {
+        showExplanations?: boolean;
+        showAnswers?: boolean;
+        showResultsReport?: boolean;
+        maxAttempts?: number;
+        passingScore?: number;
+        timeLimit?: number;
+        randomizeQuestions?: boolean;
+        randomizeOptions?: boolean;
+        showProgressBar?: boolean;
+        requireAnswerBeforeNext?: boolean;
+        allowQuestionReview?: boolean;
+        optionLayout?: "auto" | "horizontal" | "two_columns";
+      };
       startsAt?: number | null;
       endsAt?: number | null;
       maxSubmissions?: number | null;
@@ -1171,6 +1186,7 @@ export const api = {
       classroomName?: string;
       contact?: string;
       sessionFingerprint?: string;
+      timeSpentSeconds?: number;
       answers: Array<{ questionId: string; selectedOptionIndex: number }>;
     },
     token?: string | null,

@@ -27,10 +27,28 @@ const publicBarcodeTestSchema = z.object({
   sectionId: z.string().trim().optional().default(""),
   skillIds: z.array(z.string().trim().min(1)).optional().default([]),
   questionIds: z.array(z.string().trim().min(1)).min(1).max(120),
+  testKind: z.enum(["quick", "mock"]).optional().default("quick"),
   status: z.enum(["draft", "active", "paused", "archived"]).optional().default("draft"),
   showResultToStudent: z.boolean().optional().default(true),
   collectSchool: z.boolean().optional().default(true),
   collectClassroom: z.boolean().optional().default(true),
+  settings: z
+    .object({
+      showExplanations: z.boolean().optional().default(true),
+      showAnswers: z.boolean().optional().default(true),
+      showResultsReport: z.boolean().optional().default(true),
+      maxAttempts: z.number().int().min(1).max(20).optional().default(1),
+      passingScore: z.number().int().min(0).max(100).optional().default(60),
+      timeLimit: z.number().int().min(0).max(300).optional().default(20),
+      randomizeQuestions: z.boolean().optional().default(true),
+      randomizeOptions: z.boolean().optional().default(false),
+      showProgressBar: z.boolean().optional().default(true),
+      requireAnswerBeforeNext: z.boolean().optional().default(false),
+      allowQuestionReview: z.boolean().optional().default(true),
+      optionLayout: z.enum(["auto", "horizontal", "two_columns"]).optional().default("auto"),
+    })
+    .optional()
+    .default({}),
   startsAt: z.number().nullable().optional().default(null),
   endsAt: z.number().nullable().optional().default(null),
   maxSubmissions: z.number().int().min(1).nullable().optional().default(null),
@@ -44,6 +62,7 @@ const publicBarcodeSubmitSchema = z.object({
   classroomName: z.string().trim().max(120).optional().default(""),
   contact: z.string().trim().max(160).optional().default(""),
   sessionFingerprint: z.string().trim().max(200).optional().default(""),
+  timeSpentSeconds: z.number().int().min(0).max(24 * 60 * 60).optional().default(0),
   answers: z
     .array(
       z.object({
@@ -96,6 +115,20 @@ const buildSkillsAnalysis = (questions: any[], answersByQuestionId: Map<string, 
       status: item.total && item.correct / item.total < 0.5 ? "weak" : item.correct / Math.max(item.total, 1) < 0.75 ? "average" : "strong",
     }))
     .sort((a, b) => a.mastery - b.mastery);
+};
+
+const shuffleArray = <T>(items: T[]) => [...items].sort(() => Math.random() - 0.5);
+
+const buildAttemptIdentityFilter = (testId: string, payload: z.infer<typeof publicBarcodeSubmitSchema>) => {
+  const or: Array<Record<string, unknown>> = [];
+  if (payload.sessionFingerprint) or.push({ sessionFingerprint: payload.sessionFingerprint });
+  if (payload.contact) or.push({ contact: payload.contact });
+  or.push({
+    studentName: payload.studentName,
+    schoolName: payload.schoolName,
+    classroomName: payload.classroomName,
+  });
+  return { testId, $or: or };
 };
 
 publicTestsRouter.post(
@@ -159,23 +192,30 @@ publicTestsRouter.get(
         slug: test.slug,
         title: test.title,
         description: test.description,
+        testKind: test.testKind || "quick",
         pathId: test.pathId,
         subjectId: test.subjectId,
         sectionId: test.sectionId,
         collectSchool: test.collectSchool,
         collectClassroom: test.collectClassroom,
         showResultToStudent: test.showResultToStudent,
+        settings: test.settings || {},
         questionCount: questions.length,
       },
-      questions: questions.map((question: any) => ({
-        id: String(question.id || question._id),
-        text: question.text,
-        options: question.options,
-        imageUrl: question.imageUrl,
-        skillIds: question.skillIds || [],
-        type: question.type,
-        difficulty: question.difficulty,
-      })),
+      questions: (test.settings?.randomizeQuestions ? shuffleArray(questions) : questions).map((question: any) => {
+        const options = Array.isArray(question.options) ? question.options : [];
+        const optionOrder = test.settings?.randomizeOptions ? shuffleArray(options.map((_: unknown, index: number) => index)) : options.map((_: unknown, index: number) => index);
+        return {
+          id: String(question.id || question._id),
+          text: question.text,
+          options: optionOrder.map((optionIndex: number) => options[optionIndex]),
+          optionOrder,
+          imageUrl: question.imageUrl,
+          skillIds: question.skillIds || [],
+          type: question.type,
+          difficulty: question.difficulty,
+        };
+      }),
     });
   }),
 );
@@ -195,6 +235,23 @@ publicTestsRouter.post(
       if (currentCount >= Number(test.maxSubmissions)) {
         return res.status(StatusCodes.CONFLICT).json({ message: "Public test reached the submission limit" });
       }
+    }
+
+    const maxAttempts = Number(test.settings?.maxAttempts || 1);
+    if (maxAttempts > 0) {
+      const previousAttempts = await PublicBarcodeSubmissionModel.countDocuments(buildAttemptIdentityFilter(test.id, payload));
+      if (previousAttempts >= maxAttempts) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "وصل الطالب للحد المسموح من محاولات هذا الاختبار.",
+          attemptsUsed: previousAttempts,
+          maxAttempts,
+        });
+      }
+    }
+
+    const timeLimitMinutes = Number(test.settings?.timeLimit || 0);
+    if (timeLimitMinutes > 0 && payload.timeSpentSeconds > timeLimitMinutes * 60 + 60) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "انتهى وقت الاختبار قبل الإرسال." });
     }
 
     const questions = await QuestionModel.find({
@@ -236,6 +293,7 @@ publicTestsRouter.post(
       wrongAnswers,
       unanswered,
       skillsAnalysis,
+      timeSpentSeconds: payload.timeSpentSeconds,
       submittedAt: Date.now(),
     });
 
@@ -244,12 +302,16 @@ publicTestsRouter.post(
       result: test.showResultToStudent
         ? {
             score,
+            passed: score >= Number(test.settings?.passingScore || 60),
+            passingScore: Number(test.settings?.passingScore || 60),
             totalQuestions,
             correctAnswers,
             wrongAnswers,
             unanswered,
             weakestSkill: skillsAnalysis[0] || null,
             strongestSkill: [...skillsAnalysis].sort((a, b) => b.mastery - a.mastery)[0] || null,
+            showAnswers: test.settings?.showAnswers !== false,
+            showExplanations: test.settings?.showExplanations !== false,
             nextAction: "راجع أضعف مهارة، ثم ادخل المنصة لتكمل تدريبًا قصيرًا عليها.",
           }
         : null,

@@ -82,6 +82,25 @@ addCheck(
   "barcode tests need separate lifecycle and reporting storage",
 );
 addCheck(
+  "barcode tests store real quiz settings",
+  publicTestModel.includes("testKind") &&
+    publicTestModel.includes("settings") &&
+    publicTestModel.includes("timeLimit") &&
+    publicTestModel.includes("maxAttempts") &&
+    publicTestModel.includes("passingScore") &&
+    publicTestModel.includes("randomizeOptions"),
+  "barcode tests can behave like quick or mock real tests",
+);
+addCheck(
+  "barcode API returns and enforces real test settings",
+  publicRoutes.includes("testKind") &&
+    publicRoutes.includes("settings") &&
+    publicRoutes.includes("buildAttemptIdentityFilter") &&
+    publicRoutes.includes("optionOrder") &&
+    publicRoutes.includes("passed"),
+  "public tests need attempts, timing, pass score, and safe shuffled options",
+);
+addCheck(
   "barcode frontend API helpers are available",
   apiSource.includes("createPublicBarcodeTest") &&
     apiSource.includes("getPublicBarcodeTest") &&
@@ -100,6 +119,8 @@ addCheck(
     barcodePageSource.includes("schoolName") &&
     barcodePageSource.includes("classroomName") &&
     barcodePageSource.includes("submitPublicBarcodeTest") &&
+    barcodePageSource.includes("timeSpentSeconds") &&
+    barcodePageSource.includes("optionOrder") &&
     barcodePageSource.includes("أجبت عن"),
   "public test experience must be simple and actionable",
 );
@@ -117,6 +138,17 @@ addCheck(
     barcodeManagerSource.includes("approvalStatus === 'approved'") &&
     barcodeManagerSource.includes("getPublicBarcodeTestReport"),
   "admin manager must create QR links and expose a simple report",
+);
+addCheck(
+  "barcode admin manager exposes quick and mock real-test settings",
+  barcodeManagerSource.includes("testKind") &&
+    barcodeManagerSource.includes("اختبار محاكي") &&
+    barcodeManagerSource.includes("timeLimit") &&
+    barcodeManagerSource.includes("maxAttempts") &&
+    barcodeManagerSource.includes("passingScore") &&
+    barcodeManagerSource.includes("randomizeOptions") &&
+    barcodeManagerSource.includes("optionLayout"),
+  "staff must configure barcode tests like regular platform tests",
 );
 
 const failed = checks.filter((check) => check.status === "FAIL");
