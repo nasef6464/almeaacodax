@@ -55,6 +55,14 @@ addCheck(
   "staff creates public QR tests without mixing them with Saher or directed tests",
 );
 addCheck(
+  "barcode tests have a dedicated admin listing endpoint",
+  publicRoutes.includes('publicTestsRouter.get(') &&
+    publicRoutes.includes('"/admin"') &&
+    publicRoutes.includes("summaryByTestId") &&
+    publicRoutes.includes("PublicBarcodeSubmissionModel.aggregate"),
+  "staff must reopen old QR tests and review submissions after creation",
+);
+addCheck(
   "barcode public test view does not require auth",
   publicRoutes.includes('publicTestsRouter.get(') && publicRoutes.includes('"/:slug"') && !publicRoutes.includes('"/:slug",\n  requireAuth'),
   "students can open a barcode test without logging in",
@@ -104,6 +112,7 @@ addCheck(
   "barcode frontend API helpers are available",
   apiSource.includes("createPublicBarcodeTest") &&
     apiSource.includes("getPublicBarcodeTest") &&
+    apiSource.includes("listPublicBarcodeTests") &&
     apiSource.includes("submitPublicBarcodeTest") &&
     apiSource.includes("getPublicBarcodeTestReport"),
   "admin and public pages need typed API entry points",
@@ -135,6 +144,8 @@ addCheck(
   "barcode admin manager creates QR tests from approved questions",
   barcodeManagerSource.includes("QRCodeSVG") &&
     barcodeManagerSource.includes("createPublicBarcodeTest") &&
+    barcodeManagerSource.includes("listPublicBarcodeTests") &&
+    barcodeManagerSource.includes("openSavedTest") &&
     barcodeManagerSource.includes("approvalStatus === 'approved'") &&
     barcodeManagerSource.includes("getPublicBarcodeTestReport"),
   "admin manager must create QR links and expose a simple report",

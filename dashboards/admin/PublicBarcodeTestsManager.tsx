@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { CheckCircle2, Clipboard, FileQuestion, Loader2, QrCode, Search } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -9,9 +9,34 @@ type CreatedBarcodeTest = {
     id: string;
     slug: string;
     title: string;
+    testKind?: 'quick' | 'mock';
+    status?: string;
   };
   publicUrl: string;
   qrPayload: string;
+  summary?: {
+    submissions: number;
+    averageScore: number;
+    lastSubmittedAt?: number;
+  };
+};
+
+type BarcodeTestsListResponse = {
+  items: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    testKind: 'quick' | 'mock';
+    status: string;
+    questionCount: number;
+    publicUrl: string;
+    qrPayload: string;
+    summary: {
+      submissions: number;
+      averageScore: number;
+      lastSubmittedAt?: number;
+    };
+  }>;
 };
 
 type PublicBarcodeReport = {
@@ -57,10 +82,12 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [allowQuestionReview, setAllowQuestionReview] = useState(true);
   const [optionLayout, setOptionLayout] = useState<'auto' | 'horizontal' | 'two_columns'>('auto');
   const [createdTest, setCreatedTest] = useState<CreatedBarcodeTest | null>(null);
+  const [savedTests, setSavedTests] = useState<BarcodeTestsListResponse['items']>([]);
   const [report, setReport] = useState<PublicBarcodeReport | null>(null);
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loadingTests, setLoadingTests] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
@@ -92,6 +119,39 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         ? current.filter((id) => id !== questionId)
         : [...current, questionId],
     );
+  };
+
+  const loadSavedTests = async () => {
+    setLoadingTests(true);
+    try {
+      const response = (await api.listPublicBarcodeTests({ limit: 30 })) as BarcodeTestsListResponse;
+      setSavedTests(response.items || []);
+    } catch (err) {
+      setError(getErrorMessage(err, 'تعذر تحميل اختبارات الباركود الحالية.'));
+    } finally {
+      setLoadingTests(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadSavedTests();
+  }, []);
+
+  const openSavedTest = (test: BarcodeTestsListResponse['items'][number]) => {
+    setCreatedTest({
+      test: {
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        testKind: test.testKind,
+        status: test.status,
+      },
+      publicUrl: test.publicUrl,
+      qrPayload: test.qrPayload,
+      summary: test.summary,
+    });
+    setReport(null);
+    setFeedback('تم فتح الاختبار المختار.');
   };
 
   const createTest = async () => {
@@ -138,6 +198,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
       })) as CreatedBarcodeTest;
       setCreatedTest(response);
       setFeedback('تم إنشاء رابط الاختبار والباركود.');
+      await loadSavedTests();
     } catch (err) {
       setError(getErrorMessage(err, 'تعذر إنشاء الاختبار الآن.'));
     } finally {
@@ -378,6 +439,59 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         </section>
 
         <aside className="space-y-4">
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-black text-slate-900">الاختبارات المنشورة</h2>
+                <p className="mt-1 text-xs font-bold text-slate-400">آخر روابط QR ونتائجها</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void loadSavedTests()}
+                disabled={loadingTests}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+              >
+                {loadingTests ? '...' : 'تحديث'}
+              </button>
+            </div>
+            <div className="mt-4 max-h-72 space-y-2 overflow-auto pr-1">
+              {savedTests.map((test) => {
+                const active = createdTest?.test.id === test.id;
+                return (
+                  <button
+                    type="button"
+                    key={test.id}
+                    onClick={() => openSavedTest(test)}
+                    className={`w-full rounded-2xl border p-3 text-right transition ${
+                      active ? 'border-indigo-300 bg-indigo-50' : 'border-slate-100 bg-slate-50 hover:border-indigo-100 hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="line-clamp-1 text-sm font-black text-slate-800">{test.title}</div>
+                        <div className="mt-1 text-xs font-bold text-slate-400">
+                          {test.testKind === 'mock' ? 'محاكي' : 'سريع'} · {test.questionCount} سؤال
+                        </div>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[11px] font-black text-slate-600">
+                        {test.summary.submissions}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-[11px] font-black text-slate-500">
+                      <span>متوسط {test.summary.averageScore}%</span>
+                      <span>{test.status === 'active' ? 'نشط' : test.status}</span>
+                    </div>
+                  </button>
+                );
+              })}
+              {!loadingTests && savedTests.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-xs font-black text-slate-500">
+                  لا توجد اختبارات محفوظة بعد.
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
             <div className="text-sm font-black text-slate-500">الأسئلة المختارة</div>
             <div className="mt-2 text-4xl font-black text-slate-900">{selectedQuestionIds.length}</div>

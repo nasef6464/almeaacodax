@@ -171,6 +171,74 @@ publicTestsRouter.post(
 );
 
 publicTestsRouter.get(
+  "/admin",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const query = z
+      .object({
+        pathId: z.string().trim().optional(),
+        subjectId: z.string().trim().optional(),
+        status: z.enum(["draft", "active", "paused", "archived"]).optional(),
+        testKind: z.enum(["quick", "mock"]).optional(),
+        limit: z.coerce.number().int().min(1).max(100).optional().default(30),
+      })
+      .parse(req.query || {});
+
+    const filter: Record<string, unknown> = {};
+    if (query.pathId) filter.pathId = query.pathId;
+    if (query.subjectId) filter.subjectId = query.subjectId;
+    if (query.status) filter.status = query.status;
+    if (query.testKind) filter.testKind = query.testKind;
+
+    const tests = await PublicBarcodeTestModel.find(filter).sort({ createdAt: -1 }).limit(query.limit).lean();
+    const testIds = tests.map((test: any) => String(test.id));
+    const submissionSummary = testIds.length
+      ? await PublicBarcodeSubmissionModel.aggregate([
+          { $match: { testId: { $in: testIds } } },
+          {
+            $group: {
+              _id: "$testId",
+              submissions: { $sum: 1 },
+              averageScore: { $avg: "$score" },
+              lastSubmittedAt: { $max: "$submittedAt" },
+            },
+          },
+        ])
+      : [];
+    const summaryByTestId = new Map(
+      submissionSummary.map((item: any) => [
+        String(item._id),
+        {
+          submissions: Number(item.submissions || 0),
+          averageScore: Math.round(Number(item.averageScore || 0)),
+          lastSubmittedAt: Number(item.lastSubmittedAt || 0),
+        },
+      ]),
+    );
+
+    return res.json({
+      items: tests.map((test: any) => ({
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        description: test.description,
+        pathId: test.pathId,
+        subjectId: test.subjectId,
+        testKind: test.testKind || "quick",
+        status: test.status,
+        questionCount: Array.isArray(test.questionIds) ? test.questionIds.length : 0,
+        settings: test.settings || {},
+        createdAt: test.createdAt,
+        publicUrl: `/barcode-test/${test.slug}`,
+        qrPayload: `/barcode-test/${test.slug}`,
+        summary: summaryByTestId.get(String(test.id)) || { submissions: 0, averageScore: 0, lastSubmittedAt: 0 },
+      })),
+    });
+  }),
+);
+
+publicTestsRouter.get(
   "/:slug",
   asyncHandler(async (req, res) => {
     const slug = slugSchema.parse(req.params.slug);

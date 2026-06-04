@@ -1178,6 +1178,24 @@ export const api = {
     }),
   getPublicBarcodeTest: (slug: string, token?: string | null) =>
     request<unknown>(`/public-tests/${encodeURIComponent(slug)}`, { token }),
+  listPublicBarcodeTests: (
+    params?: {
+      pathId?: string;
+      subjectId?: string;
+      status?: "draft" | "active" | "paused" | "archived";
+      testKind?: "quick" | "mock";
+      limit?: number;
+    },
+    token?: string | null,
+  ) => {
+    const search = new URLSearchParams();
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        search.set(key, String(value));
+      }
+    });
+    return request<unknown>(`/public-tests/admin${search.toString() ? `?${search.toString()}` : ""}`, { token });
+  },
   submitPublicBarcodeTest: (
     slug: string,
     payload: {
