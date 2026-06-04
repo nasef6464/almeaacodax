@@ -122,6 +122,7 @@ const BarcodeTest: React.FC = () => {
   const elapsedSeconds = Math.max(0, Math.floor((now - startedAt) / 1000));
   const timeLimitMinutes = Number(data?.test.settings?.timeLimit || 0);
   const remainingSeconds = timeLimitMinutes > 0 ? Math.max(timeLimitMinutes * 60 - elapsedSeconds, 0) : null;
+  const timeExpired = remainingSeconds === 0 && timeLimitMinutes > 0;
   const progressPercent = data?.questions.length ? Math.round((answeredCount / data.questions.length) * 100) : 0;
   const optionGridClass =
     data?.test.settings?.optionLayout === 'two_columns'
@@ -150,7 +151,7 @@ const BarcodeTest: React.FC = () => {
       setError('اكتب الفصل.');
       return;
     }
-    if (data.test.settings?.requireAnswerBeforeNext && answeredCount < data.questions.length) {
+    if (!timeExpired && data.test.settings?.requireAnswerBeforeNext && answeredCount < data.questions.length) {
       setError('أجب عن كل الأسئلة قبل الإرسال.');
       return;
     }
@@ -259,9 +260,9 @@ const BarcodeTest: React.FC = () => {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
+    <main data-testid="barcode-public-real-test-shell" className="mx-auto max-w-4xl px-4 py-8">
       <form onSubmit={submit} className="space-y-5">
-        <section className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
+        <section data-testid="barcode-public-test-header" className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="rounded-2xl bg-indigo-50 p-3 text-indigo-600">
               <FileQuestion size={22} />
@@ -291,7 +292,7 @@ const BarcodeTest: React.FC = () => {
           </section>
         )}
 
-        <section className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+        <section data-testid="barcode-public-identity-fields" className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-3">
             <label className="block">
               <span className="mb-1 flex items-center gap-1 text-xs font-black text-slate-600"><UserRound size={14} /> الاسم</span>
@@ -322,7 +323,13 @@ const BarcodeTest: React.FC = () => {
           </div>
         )}
 
-        <section className="space-y-4">
+        {timeExpired && (
+          <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm font-black text-amber-800">
+            انتهى وقت الاختبار. أرسل إجاباتك الآن لتسجيل المحاولة.
+          </div>
+        )}
+
+        <section data-testid="barcode-public-question-list" className="space-y-4">
           {data.questions.map((question, index) => (
             <div key={question.id} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
               <div className="mb-4 flex items-start gap-3">
@@ -339,6 +346,7 @@ const BarcodeTest: React.FC = () => {
                     <button
                       type="button"
                       key={`${question.id}-${optionIndex}`}
+                      disabled={timeExpired}
                       onClick={() => setAnswers((current) => ({ ...current, [question.id]: optionIndex }))}
                       className={`rounded-2xl border px-4 py-3 text-right text-sm font-bold transition ${
                         active
@@ -361,6 +369,7 @@ const BarcodeTest: React.FC = () => {
               أجبت عن {answeredCount} من {data.questions.length}
             </p>
             <button
+              data-testid="barcode-public-submit"
               type="submit"
               disabled={submitting}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"

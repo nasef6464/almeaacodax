@@ -15,6 +15,7 @@ const appSource = fs.readFileSync(path.join(root, "App.tsx"), "utf8");
 const adminDashboardSource = fs.readFileSync(path.join(root, "dashboards", "admin", "AdminDashboard.tsx"), "utf8");
 const barcodePageSource = fs.readFileSync(path.join(root, "pages", "BarcodeTest.tsx"), "utf8");
 const barcodeManagerSource = fs.readFileSync(path.join(root, "dashboards", "admin", "PublicBarcodeTestsManager.tsx"), "utf8");
+const liveAuditSource = fs.readFileSync(path.join(root, "scripts", "live-barcode-public-tests-audit.mjs"), "utf8");
 
 const checks = [];
 
@@ -42,6 +43,11 @@ addCheck(
   "barcode tests contract is wired into package scripts",
   pkg.scripts?.["smoke:barcode-public-tests"] === "node scripts/smoke-barcode-public-tests-contract.mjs",
   "the barcode tests goal must remain visible in automated checks",
+);
+addCheck(
+  "barcode live browser audit is wired into package scripts",
+  pkg.scripts?.["smoke:barcode-public-tests-live"] === "node scripts/live-barcode-public-tests-audit.mjs",
+  "barcode tests need a real admin/public browser proof after changes and deployment",
 );
 
 addCheck(
@@ -153,6 +159,10 @@ addCheck(
 addCheck(
   "barcode admin manager exposes quick and mock real-test settings",
   barcodeManagerSource.includes("testKind") &&
+    barcodeManagerSource.includes('data-testid="barcode-test-kind-selector"') &&
+    barcodeManagerSource.includes('data-testid="barcode-kind-quick"') &&
+    barcodeManagerSource.includes('data-testid="barcode-kind-mock"') &&
+    barcodeManagerSource.includes('data-testid="barcode-real-test-settings"') &&
     barcodeManagerSource.includes("اختبار محاكي") &&
     barcodeManagerSource.includes("timeLimit") &&
     barcodeManagerSource.includes("maxAttempts") &&
@@ -165,6 +175,9 @@ addCheck(
 addCheck(
   "barcode admin manager filters approved questions by path, subject, section, type, and difficulty",
   barcodeManagerSource.includes("activeSections") &&
+    barcodeManagerSource.includes('data-testid="barcode-path-select"') &&
+    barcodeManagerSource.includes('data-testid="barcode-subject-select"') &&
+    barcodeManagerSource.includes('data-testid="barcode-question-center-filter"') &&
     barcodeManagerSource.includes("sectionId") &&
     barcodeManagerSource.includes("questionTypeFilter") &&
     barcodeManagerSource.includes("difficultyFilter") &&
@@ -184,6 +197,30 @@ addCheck(
     barcodeManagerSource.includes("startsAt: startsAtLocal") &&
     barcodeManagerSource.includes("endsAt: endsAtLocal"),
   "barcode tests need real-test controls for opening window, submission cap, and identity fields",
+);
+
+addCheck(
+  "barcode public page renders as a real timed test shell with identity fields and submit action",
+  barcodePageSource.includes('data-testid="barcode-public-real-test-shell"') &&
+    barcodePageSource.includes('data-testid="barcode-public-test-header"') &&
+    barcodePageSource.includes('data-testid="barcode-public-identity-fields"') &&
+    barcodePageSource.includes('data-testid="barcode-public-question-list"') &&
+    barcodePageSource.includes('data-testid="barcode-public-submit"') &&
+    barcodePageSource.includes("timeExpired") &&
+    barcodePageSource.includes("disabled={timeExpired}"),
+  "students entering by barcode must see a real timed test, not a loose form",
+);
+
+addCheck(
+  "barcode live audit checks admin and public test surfaces on desktop and mobile",
+  liveAuditSource.includes("VIEWPORTS") &&
+    liveAuditSource.includes('name: "mobile"') &&
+    liveAuditSource.includes('"/admin-dashboard?tab=barcode-tests"') &&
+    liveAuditSource.includes('`/barcode-test/${encodeURIComponent(selectedTest.slug)}`') &&
+    liveAuditSource.includes("horizontalOverflow") &&
+    liveAuditSource.includes('data-testid="barcode-real-test-settings"') &&
+    liveAuditSource.includes('data-testid="barcode-public-real-test-shell"'),
+  "live proof must cover barcode management and student public entry without registration",
 );
 
 addCheck(

@@ -462,7 +462,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               <span className="mb-1 block text-xs font-black text-slate-600">وصف قصير</span>
               <input value={description} onChange={(event) => setDescription(event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400" />
             </label>
-            <div className="md:col-span-2 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 md:grid-cols-2">
+            <div data-testid="barcode-test-kind-selector" className="md:col-span-2 grid gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 md:grid-cols-2">
               <button
                 type="button"
                 onClick={() => {
@@ -473,6 +473,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   setRequireAnswerBeforeNext(false);
                   setOptionLayout('auto');
                 }}
+                data-testid="barcode-kind-quick"
                 className={`rounded-2xl border p-4 text-right ${testKind === 'quick' ? 'border-indigo-300 bg-white text-indigo-800 shadow-sm' : 'border-transparent bg-transparent text-slate-600'}`}
               >
                 <div className="text-sm font-black">اختبار سريع</div>
@@ -488,6 +489,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   setRequireAnswerBeforeNext(false);
                   setOptionLayout('horizontal');
                 }}
+                data-testid="barcode-kind-mock"
                 className={`rounded-2xl border p-4 text-right ${testKind === 'mock' ? 'border-indigo-300 bg-white text-indigo-800 shadow-sm' : 'border-transparent bg-transparent text-slate-600'}`}
               >
                 <div className="text-sm font-black">اختبار محاكي</div>
@@ -497,6 +499,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
             <label className="block">
               <span className="mb-1 block text-xs font-black text-slate-600">المسار</span>
               <select
+                data-testid="barcode-path-select"
                 value={pathId}
                 onChange={(event) => {
                   const nextPathId = event.target.value;
@@ -514,6 +517,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
             <label className="block">
               <span className="mb-1 block text-xs font-black text-slate-600">المادة</span>
               <select
+                data-testid="barcode-subject-select"
                 value={normalizedSubjectId}
                 onChange={(event) => {
                   setSubjectId(event.target.value);
@@ -575,7 +579,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-white p-4">
+          <div data-testid="barcode-real-test-settings" className="rounded-2xl border border-slate-100 bg-white p-4">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-black text-slate-900">إعدادات الاختبار</h2>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
@@ -659,7 +663,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+          <div data-testid="barcode-question-center-filter" className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h2 className="text-sm font-black text-slate-900">أسئلة مركز الأسئلة</h2>
@@ -776,6 +780,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
             <div className="mt-2 text-4xl font-black text-slate-900">{selectedQuestionIds.length}</div>
             <button
               type="button"
+              data-testid="barcode-create-real-test"
               onClick={createTest}
               disabled={saving}
               className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
