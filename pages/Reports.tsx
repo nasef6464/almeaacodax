@@ -225,6 +225,7 @@ interface SkillRecommendation {
     lessonTitle?: string;
     lessonLink?: string;
     lessonTopicTitle?: string;
+    foundationTopicLink?: string;
     quizTitle?: string;
     quizLink?: string;
     resourceTitle?: string;
@@ -280,26 +281,41 @@ const getSkillRecommendation = (
     const recommendationPathId = resolvedSkill.pathId;
     const recommendationSubjectId = resolvedSkill.subjectId;
     const recommendationSectionId = resolvedSkill.sectionId;
-    const recommendedTopic = recommendationPathId && recommendationSubjectId
-        ? topics.find((topic) => {
-            const matchesScope =
+    const scoredFoundationTopics = recommendationPathId && recommendationSubjectId
+        ? topics
+            .filter((topic) =>
                 topic.pathId === recommendationPathId &&
                 topic.subjectId === recommendationSubjectId &&
-                topic.showOnPlatform !== false;
-            if (!matchesScope) return false;
+                topic.showOnPlatform !== false,
+            )
+            .map((topic) => {
+                const topicHasLesson = recommendedLesson
+                    ? (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId))
+                    : false;
+                const topicHasQuiz = recommendedQuiz
+                    ? (topic.quizIds || []).some((quizId) => matchesEntityId(recommendedQuiz, quizId))
+                    : false;
+                const topicMatchesSkill = matchesEntityId(topic, resolvedSkill.id);
+                const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
+                const linkedContentScore =
+                    (topicHasLesson ? 60 : 0) +
+                    (topicHasQuiz ? 55 : 0) +
+                    (topicMatchesSkill ? 80 : 0) +
+                    (topicMatchesSection ? 35 : 0);
 
-            const topicHasLesson = recommendedLesson
-                ? (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId))
-                : false;
-            const topicHasQuiz = recommendedQuiz
-                ? (topic.quizIds || []).some((quizId) => matchesEntityId(recommendedQuiz, quizId))
-                : false;
-            const topicMatchesSkill = matchesEntityId(topic, resolvedSkill.id);
-            const topicMatchesSection = recommendationSectionId && topic.sectionId === recommendationSectionId;
-
-            return topicHasLesson || topicHasQuiz || topicMatchesSkill || topicMatchesSection;
-        })
-        : undefined;
+                return {
+                    topic,
+                    score: linkedContentScore + (topic.parentId ? 4 : 0),
+                    topicHasLesson,
+                    topicHasQuiz,
+                    topicMatchesSkill,
+                    topicMatchesSection,
+                };
+            })
+            .filter((item) => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+        : [];
+    const recommendedTopic = scoredFoundationTopics[0]?.topic;
     const buildFoundationTopicLink = (content: 'lessons' | 'quizzes', lessonId?: string) =>
         recommendationPathId && recommendationSubjectId
             ? (() => {
@@ -321,11 +337,15 @@ const getSkillRecommendation = (
     const foundationTrainingLink = recommendedTopic
         ? buildFoundationTopicLink('quizzes')
         : undefined;
+    const foundationTopicLink = recommendedTopic
+        ? buildFoundationTopicLink('lessons')
+        : undefined;
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink,
         lessonTopicTitle: displayText(recommendedTopic?.title),
+        foundationTopicLink,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
         quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
         resourceTitle: displayText(recommendedResource?.title),
@@ -635,6 +655,7 @@ const Reports: React.FC = () => {
                 lessonTitle: recommendation.lessonTitle,
                 lessonLink: recommendation.lessonLink,
                 lessonTopicTitle: recommendation.lessonTopicTitle,
+                foundationTopicLink: recommendation.foundationTopicLink,
                 quizTitle: recommendation.quizTitle,
                 quizLink: recommendation.quizLink,
                 actionText:
@@ -655,8 +676,8 @@ const Reports: React.FC = () => {
                 body: studentTodayFocus.lessonTitle
                     ? displayText(studentTodayFocus.lessonTopicTitle || studentTodayFocus.lessonTitle)
                     : 'أقرب شرح لهذه المهارة.',
-                label: studentTodayFocus.lessonLink ? 'فتح الشرح' : 'استعراض الشروحات',
-                link: studentTodayFocus.lessonLink || '/courses',
+                label: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح الشرح' : 'استعراض الشروحات',
+                link: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
                 Icon: Video,
                 className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
             },
@@ -688,7 +709,7 @@ const Reports: React.FC = () => {
             return {
                 ...skill,
                 tone: getReportMasteryTone(skill.mastery),
-                lessonLink: recommendation.lessonLink || '/courses',
+                lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || '/courses',
                 lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
                 quizLink,
                 quizLabel: recommendation.quizTitle || 'تدريب',
@@ -710,7 +731,7 @@ const Reports: React.FC = () => {
             evidenceLine: studentTodayFocus.isReliable
                 ? `الحكم مؤكد من ${studentTodayFocus.attempts} محاولات على المهارة.`
                 : `هذه قراءة أولية من ${studentTodayFocus.attempts} محاولة وتحتاج قياسًا إضافيًا.`,
-            relearnLink: studentTodayFocus.lessonLink || '/courses',
+            relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
             adaptiveTrainingLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
             smartPathLink: '/plan',
             retestLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),

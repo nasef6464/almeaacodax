@@ -46,6 +46,7 @@ export const SubjectLearningPage: React.FC = () => {
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
   const [videoData, setVideoData] = useState<{ url: string; title: string; interactiveQuestions?: Lesson['interactiveQuestions'] } | null>(null);
+  const [autoOpenedLessonId, setAutoOpenedLessonId] = useState<string | null>(null);
 
   const matchedPath = paths.find((item) => item.id === pathId);
   const matchedSubject = subjects.find((item) => item.id === subjectId);
@@ -492,6 +493,22 @@ export const SubjectLearningPage: React.FC = () => {
       openExternalUrl(lesson.fileUrl);
     }
   };
+
+  useEffect(() => {
+    const requestedLessonId = searchParams.get('lesson');
+    if (!requestedLessonId || topicModalTab !== 'lessons' || autoOpenedLessonId === requestedLessonId) {
+      return;
+    }
+
+    const directLesson = [...activeTopicLessons, ...relatedLessonSuggestions]
+      .find((lesson) => matchesEntityId(lesson, requestedLessonId));
+    if (!directLesson) {
+      return;
+    }
+
+    setAutoOpenedLessonId(requestedLessonId);
+    openLessonContent(directLesson);
+  }, [activeTopicLessons, autoOpenedLessonId, relatedLessonSuggestions, searchParams, topicModalTab]);
 
   const renderTabs = () => (
     <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center gap-3 mb-12">
