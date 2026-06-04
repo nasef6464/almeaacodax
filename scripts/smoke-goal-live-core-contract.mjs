@@ -4,6 +4,7 @@ const files = {
   packageJson: await readFile(new URL("../package.json", import.meta.url), "utf8"),
   studentContract: await readFile(new URL("./smoke-global-student-journey-contract.mjs", import.meta.url), "utf8"),
   studentLive: await readFile(new URL("./live-student-learning-deep-audit.mjs", import.meta.url), "utf8"),
+  roleLive: await readFile(new URL("./live-role-pages-audit.mjs", import.meta.url), "utf8"),
   supervisorLive: await readFile(new URL("./live-supervisor-school-command-audit.mjs", import.meta.url), "utf8"),
   barcodeContract: await readFile(new URL("./smoke-barcode-public-tests-contract.mjs", import.meta.url), "utf8"),
   barcodeLive: await readFile(new URL("./live-barcode-public-tests-audit.mjs", import.meta.url), "utf8"),
@@ -35,6 +36,7 @@ check("core goal live gate is wired as one command", () => {
     "smoke:global-student-journey",
     "smoke:barcode-public-tests",
     "smoke:student-learning-live",
+    "smoke:role-pages-live",
     "smoke:supervisor-school-live",
     "smoke:barcode-public-tests-live",
   ]);
@@ -43,6 +45,12 @@ check("core goal live gate is wired as one command", () => {
 check("core goal contract is wired into package scripts", () => {
   if (pkg.scripts?.["smoke:goal-live-core-contract"] !== "node scripts/smoke-goal-live-core-contract.mjs") {
     throw new Error("smoke:goal-live-core-contract must point to scripts/smoke-goal-live-core-contract.mjs");
+  }
+});
+
+check("role pages live audit is wired into package scripts", () => {
+  if (pkg.scripts?.["smoke:role-pages-live"] !== "node scripts/live-role-pages-audit.mjs") {
+    throw new Error("smoke:role-pages-live must point to scripts/live-role-pages-audit.mjs");
   }
 });
 
@@ -62,6 +70,23 @@ check("student contract keeps Saher, directed tests, reports, foundation actions
   assertIncludes(files.studentContract, "student report remains simple first");
   assertIncludes(files.studentContract, "buildFoundationTopicLink");
   assertIncludes(files.studentContract, "student membership and activation purchase path is explicit and live-audited");
+});
+
+check("role live gate covers every requested role on desktop and mobile before deployment", () => {
+  for (const role of ["guest", "student", "parent", "teacher", "supervisor", "admin"]) {
+    assertIncludes(files.roleLive, `role: "${role}"`, `live role audit missing ${role}`);
+  }
+  assertIncludes(files.roleLive, 'path: "/dashboard"');
+  assertIncludes(files.roleLive, 'path: "/parent-dashboard"');
+  assertIncludes(files.roleLive, 'path: "/admin-dashboard"');
+  assertIncludes(files.roleLive, 'path: "/reports"');
+  assertIncludes(files.roleLive, 'path: "/plan"');
+  assertIncludes(files.roleLive, 'path: "/pricing"');
+  assertIncludes(files.roleLive, "viewports");
+  assertIncludes(files.roleLive, 'name: "mobile"');
+  assertIncludes(files.roleLive, "horizontalOverflow");
+  assertIncludes(files.roleLive, "network5xx");
+  assertIncludes(files.roleLive, "consoleErrors");
 });
 
 check("supervisor live gate covers school command center and directed quiz analysis", () => {
