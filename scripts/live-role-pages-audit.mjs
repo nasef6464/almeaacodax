@@ -220,7 +220,8 @@ async function inspectPage(page, role, pageSpec, viewport) {
   const isPublicOk = pageSpec.expect === "public" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0;
   const isPrivateOk = pageSpec.expect === "private" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && state.hasRoleContent;
   const isOpenOk = isPublicOk || isPrivateOk;
-  const status = navigationError || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
+  const layoutFailure = viewport.name === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
+  const status = navigationError || layoutFailure || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
 
   return {
     role: role.role,
@@ -234,6 +235,7 @@ async function inspectPage(page, role, pageSpec, viewport) {
     network5xx,
     navigationError,
     navigationWarning,
+    layoutFailure,
     ...state,
   };
 }
@@ -303,7 +305,7 @@ fs.writeFileSync(
     ...loginResults.map((item) => `- ${item.ok ? "PASS" : "BLOCKED"} ${item.role}${item.reason ? ` - ${item.reason}` : ""}`),
     "",
     "## Pages",
-    ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport || "desktop"} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}${item.navigationError ? `, navigation=${item.navigationError}` : ""}${item.navigationWarning ? `, warning=${item.navigationWarning}` : ""}`),
+    ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport || "desktop"} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}${item.navigationError ? `, navigation=${item.navigationError}` : ""}${item.navigationWarning ? `, warning=${item.navigationWarning}` : ""}`),
     "",
   ].join("\n"),
   "utf8",
