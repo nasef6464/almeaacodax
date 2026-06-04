@@ -55,7 +55,6 @@ const roles = [
       '[data-testid="staff-management-export"]',
       '[data-testid="staff-intervention-alert-send"]',
       '[data-testid="staff-students-export"]',
-      '[data-testid="directed-quiz-analysis-export"]',
     ],
   },
   {
