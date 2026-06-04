@@ -197,7 +197,11 @@ const loginResults = [];
 
 try {
   for (const role of roles) {
-    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "ar-SA" });
+    const context = await browser.newContext({
+      viewport: { width: 1440, height: 1000 },
+      locale: "ar-SA",
+      ignoreHTTPSErrors: process.env.UI_AUDIT_IGNORE_HTTPS_ERRORS === "1",
+    });
     const page = await context.newPage();
     const loginResult = await login(page, role);
     loginResults.push({ role: role.role, ok: loginResult.ok, skipped: loginResult.skipped || false, reason: loginResult.reason || "" });
