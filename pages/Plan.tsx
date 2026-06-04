@@ -20,6 +20,7 @@ import {
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { useStore } from '../store/useStore';
 import { StudyPlan, StudyPlanDay } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
@@ -868,6 +869,39 @@ const Plan: React.FC = () => {
       endTime: selectedDayTasks[selectedDayTasks.length - 1].scheduledEndTime,
     };
   }, [draft.preferredStartTime, selectedDayTasks]);
+  const firstInternalPlanTask = selectedDayTasks.find((task) => task.link && !task.external);
+  const planTodayNextAction = currentPlan && selectedDayTasks.length > 0
+    ? {
+        title: `جلسة اليوم: ${selectedDayTasks[0].title}`,
+        description: `${selectedDayTasks.length} مهام، من ${selectedDaySummary.startTime} إلى ${selectedDaySummary.endTime}. ابدأ بالمهمة الأولى فقط.`,
+        primaryLabel: selectedDayTasks[0].type === 'quiz' ? 'ابدأ التدريب' : 'ابدأ الآن',
+        primaryHref: firstInternalPlanTask?.link || '/reports',
+        secondaryLabel: 'افتح التقرير',
+        secondaryHref: '/reports',
+        tone: 'emerald' as const,
+        icon: <TimerReset size={18} className="text-emerald-600" />,
+      }
+    : primarySmartSkill
+      ? {
+          title: `ابدأ بمهارة: ${primarySmartSkill.skillName}`,
+          description: `الإتقان الحالي ${primarySmartSkill.mastery}%. افتح شرحًا قصيرًا، ثم ارجع للخطة.`,
+          primaryLabel: primarySmartSkill.lesson ? 'افتح الشرح' : 'اختبار ساهر',
+          primaryHref: primarySmartSkill.lesson?.link || '/dashboard?tab=saher',
+          secondaryLabel: 'تقريري',
+          secondaryHref: '/reports',
+          tone: primarySmartSkill.mastery < 50 ? ('rose' as const) : ('amber' as const),
+          icon: <Target size={18} className="text-amber-600" />,
+        }
+      : {
+          title: 'ابدأ بقياس قصير أولًا',
+          description: 'اختبار ساهر يحدد أضعف مهارة، وبعدها تظهر الخطة العلاجية بوضوح.',
+          primaryLabel: 'اختبار ساهر',
+          primaryHref: '/dashboard?tab=saher',
+          secondaryLabel: 'تقريري',
+          secondaryHref: '/reports',
+          tone: 'indigo' as const,
+          icon: <Sparkles size={18} className="text-indigo-600" />,
+        };
 
   const draftSessionSlices = useMemo(
     () => createDailySessionSlices(draft.preferredStartTime, draft.dailyMinutes),
@@ -1071,6 +1105,8 @@ const Plan: React.FC = () => {
         </div>
       </header>
 
+      <StudentNextActionStrip {...planTodayNextAction} />
+
       <Card className="border border-blue-100 bg-blue-50/70 p-4 sm:p-6">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 rounded-full bg-white p-2 text-blue-600 shadow-sm">
@@ -1079,8 +1115,7 @@ const Plan: React.FC = () => {
           <div>
             <h2 className="font-bold text-blue-900 mb-1">يرجى الملاحظة</h2>
             <p className="text-sm leading-7 text-blue-800">
-              هذه الخطة وقتية للمذاكرة بين تاريخ بداية ونهاية محددين. تختار فيها المسار والمواد والدورات
-              وأيام الإجازة وعدد دقائق المذاكرة اليومية، ثم يقوم النظام بتوزيع المهام عليك تلقائيًا.
+              اختر المسار والمواد والوقت اليومي، وسيقسم النظام يومك إلى شرح وتدريب ومراجعة.
             </p>
           </div>
         </div>

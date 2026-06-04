@@ -125,6 +125,9 @@ check('student report remains simple first and exposes retest/remediation action
 });
 
 check('plan page can turn weak skills into a timed learning loop', () => {
+  assertIncludes(files.plan, 'StudentNextActionStrip');
+  assertIncludes(files.plan, 'planTodayNextAction');
+  assertIncludes(files.plan, 'جلسة اليوم:');
   assertIncludes(files.plan, 'SmartSkillPlanItem');
   assertIncludes(files.plan, 'createDailySessionSlices');
   assertIncludes(files.plan, 'foundation');
