@@ -1108,6 +1108,24 @@ export const api = {
       body: payload,
       token,
     }),
+  createInterventionStudyPlan: (
+    payload: {
+      studentId: string;
+      studentName?: string;
+      pathId: string;
+      subjectId?: string;
+      skillId?: string;
+      skillName?: string;
+      dailyMinutes?: number;
+      preferredStartTime?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>("/content/study-plans/intervention", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   updateStudyPlan: (id: string, payload: unknown, token?: string | null) =>
     request<unknown>(`/content/study-plans/${id}`, {
       method: "PATCH",

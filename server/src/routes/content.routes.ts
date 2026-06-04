@@ -849,6 +849,17 @@ const studyPlanSchema = z.object({
   updatedAt: z.number().optional(),
 });
 
+const interventionStudyPlanSchema = z.object({
+  studentId: z.string().min(1).max(120),
+  studentName: z.string().max(160).optional().default(""),
+  pathId: z.string().min(1),
+  subjectId: z.string().optional().default(""),
+  skillId: z.string().optional().default(""),
+  skillName: z.string().max(180).optional().default(""),
+  dailyMinutes: z.number().min(15).max(240).optional().default(90),
+  preferredStartTime: z.string().optional().default("17:00"),
+});
+
 const schoolImportRowSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
@@ -1654,6 +1665,85 @@ contentRouter.get(
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
     res.json(payload);
+  }),
+);
+
+contentRouter.post(
+  "/study-plans/intervention",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const payload = interventionStudyPlanSchema.parse(req.body);
+    const authUser = req.authUser!;
+    const studentLookup = mongoose.isValidObjectId(payload.studentId)
+      ? { $or: [{ _id: payload.studentId }, { id: payload.studentId }] }
+      : { id: payload.studentId };
+    const student = await UserModel.findOne({
+      role: "student",
+      ...studentLookup,
+    })
+      .select("_id id name role groupIds")
+      .lean();
+
+    if (!student) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Student not found" });
+    }
+
+    const studentId = String((student as any).id || (student as any)._id);
+    const studentGroupIds = Array.isArray((student as any).groupIds) ? (student as any).groupIds.map(String) : [];
+    const groupObjectIds = studentGroupIds.filter((id: string) => mongoose.isValidObjectId(id));
+    const scopedGroups = await GroupModel.find({
+      $or: [
+        { studentIds: studentId },
+        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
+        { id: { $in: studentGroupIds } },
+      ],
+    })
+      .select("_id id supervisorIds studentIds")
+      .lean();
+
+    if (authUser.role !== "admin") {
+      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
+      const canReachStudent =
+        authGroupIds.some((groupId: string) => studentGroupIds.includes(groupId)) ||
+        scopedGroups.some((group: any) => (group.supervisorIds || []).map(String).includes(String(authUser.id))) ||
+        (Array.isArray((authUser as any).linkedStudentIds) && (authUser as any).linkedStudentIds.map(String).includes(studentId));
+
+      if (!canReachStudent) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this student" });
+      }
+    }
+
+    const today = new Date();
+    const end = new Date(today);
+    end.setDate(today.getDate() + 13);
+    const toDateKey = (date: Date) => date.toISOString().slice(0, 10);
+    const now = Date.now();
+    const studentName = payload.studentName || String((student as any).name || "الطالب");
+    const skillName = payload.skillName || "المهارة الأضعف";
+    const planId = `intervention_${studentId}_${payload.pathId}_${now}`;
+    const plan = await StudyPlanModel.create({
+      id: planId,
+      userId: studentId,
+      name: `خطة علاج ${skillName} - ${studentName}`,
+      pathId: payload.pathId,
+      subjectIds: payload.subjectId ? [payload.subjectId] : [],
+      courseIds: [],
+      startDate: toDateKey(today),
+      endDate: toDateKey(end),
+      skipCompletedQuizzes: true,
+      offDays: [],
+      dailyMinutes: payload.dailyMinutes,
+      preferredStartTime: payload.preferredStartTime || "17:00",
+      status: "active",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return res.status(StatusCodes.CREATED).json({
+      plan,
+      message: "Intervention study plan created for the selected student.",
+    });
   }),
 );
 

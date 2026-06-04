@@ -380,6 +380,8 @@ const Reports: React.FC = () => {
     const [smartRemediationLoading, setSmartRemediationLoading] = useState(false);
     const [scopedSmartRemediation, setScopedSmartRemediation] = useState<SmartRemediationPlan | null>(null);
     const [scopedSmartRemediationLoading, setScopedSmartRemediationLoading] = useState(false);
+    const [scopedInterventionPlanCreated, setScopedInterventionPlanCreated] = useState(false);
+    const [scopedInterventionPlanError, setScopedInterventionPlanError] = useState('');
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
@@ -880,6 +882,8 @@ const Reports: React.FC = () => {
         if (!scopedAnalytics?.weakestSkills.length) return;
 
         setScopedSmartRemediationLoading(true);
+        setScopedInterventionPlanCreated(false);
+        setScopedInterventionPlanError('');
         const skillPayload = scopedAnalytics.weakestSkills.slice(0, 5).map((skill) => ({
             skill: skill.skill,
             skillId: skill.skillId,
@@ -907,9 +911,31 @@ const Reports: React.FC = () => {
                 })),
                 parentNote: 'تابع الطلاب الضعاف بهدوء، واجعل التغذية الراجعة قصيرة وواضحة بعد كل محاولة.',
             });
-        } finally {
-            setScopedSmartRemediationLoading(false);
         }
+
+        const leadStudent = scopedAnalytics.weakestStudents[0];
+        const leadSkill = scopedAnalytics.weakestSkills[0];
+        const resolvedSkill = leadSkill?.skillId ? skills.find((skill) => skill.id === leadSkill.skillId) : undefined;
+        const subjectId = resolvedSkill?.subjectId || scopedAnalytics.subjectSummaries[0]?.subjectId;
+        const pathId = resolvedSkill?.pathId || subjects.find((subject) => subject.id === subjectId)?.pathId || paths[0]?.id;
+        if (leadStudent && leadSkill && pathId && [Role.ADMIN, Role.SUPERVISOR, Role.TEACHER].includes(user.role as Role)) {
+            try {
+                await api.createInterventionStudyPlan({
+                    studentId: leadStudent.id,
+                    studentName: displayText(leadStudent.name),
+                    pathId,
+                    subjectId,
+                    skillId: leadSkill.skillId,
+                    skillName: displayText(leadSkill.skill),
+                    dailyMinutes: 90,
+                    preferredStartTime: '17:00',
+                });
+                setScopedInterventionPlanCreated(true);
+            } catch (error) {
+                setScopedInterventionPlanError(error instanceof Error ? error.message : 'تعذر إنشاء خطة الطالب الآن.');
+            }
+        }
+        setScopedSmartRemediationLoading(false);
     };
     const scopedLeadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
     const scopedLeadSkill = scopedAnalytics?.weakestSkills?.[0] || null;
@@ -2117,6 +2143,20 @@ const Reports: React.FC = () => {
                                             </button>
                                         </div>
                                     </div>
+                                    {scopedInterventionPlanCreated || scopedInterventionPlanError ? (
+                                        <div
+                                            role="status"
+                                            className={`mt-3 rounded-2xl border px-3 py-2 text-xs font-bold leading-6 ${
+                                                scopedInterventionPlanCreated
+                                                    ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                                                    : 'border-rose-100 bg-rose-50 text-rose-700'
+                                            }`}
+                                        >
+                                            {scopedInterventionPlanCreated
+                                                ? 'تم إنشاء خطة علاج داخل حساب الطالب المحدد، ويمكنه فتحها من صفحة خطتي.'
+                                                : displayText(scopedInterventionPlanError)}
+                                        </div>
+                                    ) : null}
                                     <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                                         <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
                                             <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
