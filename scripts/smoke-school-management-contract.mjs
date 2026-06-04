@@ -89,6 +89,18 @@ check("school list has portfolio readiness command center", () => {
   assertIncludes(files.schools, "أولوية المتابعة");
 });
 
+check("selected school has a clear commercial operating flow", () => {
+  assertIncludes(files.schools, "commercialOperatingSteps");
+  assertIncludes(files.schools, 'data-testid="school-commercial-operating-flow"');
+  assertIncludes(files.schools, "school-commercial-step-");
+  assertIncludes(files.schools, "خط تشغيل التعاقد المدرسي");
+  assertIncludes(files.schools, "ابدأ من هنا ولا تترك المدرسة ناقصة");
+  assertIncludes(files.schools, "إضافة الطلاب");
+  assertIncludes(files.schools, "ربط المشرفين");
+  assertIncludes(files.schools, "إدارة الباقات");
+  assertIncludes(files.schools, "فتح التقارير");
+});
+
 check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
   assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");

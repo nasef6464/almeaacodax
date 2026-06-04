@@ -1294,6 +1294,64 @@ export const SchoolsManager: React.FC = () => {
                 onClick: () => setActiveTab('reports'),
             },
         ];
+        const commercialOperatingSteps = [
+            {
+                id: 'classes',
+                title: 'الفصول',
+                metric: `${schoolClasses.length} فصل`,
+                description: schoolClasses.length > 0 ? 'الفصول جاهزة لاستقبال الطلاب.' : 'ابدأ بإنشاء فصول المدرسة.',
+                statusLabel: schoolClasses.length > 0 ? 'جاهز' : 'ناقص',
+                isReady: schoolClasses.length > 0,
+                tab: 'overview' as const,
+                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
+            },
+            {
+                id: 'students',
+                title: 'الطلاب',
+                metric: `${schoolStudents.length} طالب`,
+                description: studentsWithoutClass.length > 0
+                    ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح.`
+                    : 'الطلاب مربوطون داخل نطاق المدرسة.',
+                statusLabel: schoolStudents.length > 0 && studentsWithoutClass.length === 0 ? 'جاهز' : 'راجع',
+                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
+                tab: 'import' as const,
+                buttonLabel: schoolStudents.length > 0 ? 'استيراد/إضافة طلاب' : 'إضافة الطلاب',
+            },
+            {
+                id: 'supervisors',
+                title: 'المشرفون',
+                metric: `${schoolSupervisors.length} مشرف`,
+                description: schoolSupervisors.length > 0 ? 'يمكن متابعة المدرسة أو الفصول حسب النطاق.' : 'اربط مدير المدرسة أو مشرفي الفصول.',
+                statusLabel: schoolSupervisors.length > 0 ? 'جاهز' : 'ناقص',
+                isReady: schoolSupervisors.length > 0,
+                tab: 'relations' as const,
+                buttonLabel: 'ربط المشرفين',
+            },
+            {
+                id: 'access',
+                title: 'الباقات والوصول',
+                metric: `${activeSchoolPackages.length} باقة`,
+                description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
+                    ? 'الباقات والأكواد جاهزة للتسليم.'
+                    : 'فعّل باقة مدرسية وولّد كود دخول.',
+                statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
+                isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
+                tab: 'packages' as const,
+                buttonLabel: 'إدارة الباقات',
+            },
+            {
+                id: 'reports',
+                title: 'التقارير',
+                metric: schoolReport ? `${schoolReport.metrics.averageScore}%` : 'قريبًا',
+                description: schoolReport && schoolReport.metrics.quizAttempts > 0
+                    ? 'تقرير الأداء جاهز للإدارة والمتابعة.'
+                    : 'يظهر التقرير بعد أول اختبارات أو تدريبات.',
+                statusLabel: schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'ينتظر بيانات',
+                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
+                tab: 'reports' as const,
+                buttonLabel: 'فتح التقارير',
+            },
+        ];
         const schoolLaunchPlan = [
             ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
             ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
@@ -2234,6 +2292,60 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                <div data-testid="school-commercial-operating-flow" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
+                                <Building2 size={14} />
+                                خط تشغيل التعاقد المدرسي
+                            </div>
+                            <h2 className="mt-3 text-lg font-black text-gray-900">ابدأ من هنا ولا تترك المدرسة ناقصة</h2>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={downloadSchoolHandover}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-amber-600"
+                        >
+                            <Download size={16} />
+                            ملف التسليم
+                        </button>
+                    </div>
+                    <div className="grid gap-3 lg:grid-cols-5">
+                        {commercialOperatingSteps.map((step, index) => (
+                            <div
+                                key={step.id}
+                                data-testid={`school-commercial-step-${step.id}`}
+                                className={`rounded-2xl border p-4 ${
+                                    step.isReady
+                                        ? 'border-emerald-100 bg-emerald-50'
+                                        : 'border-amber-100 bg-amber-50'
+                                }`}
+                            >
+                                <div className="mb-3 flex items-center justify-between gap-2">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-black text-gray-900">
+                                        {index + 1}
+                                    </span>
+                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
+                                        step.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                    }`}>
+                                        {step.statusLabel}
+                                    </span>
+                                </div>
+                                <p className="text-sm font-black text-gray-900">{step.title}</p>
+                                <p className="mt-1 text-xl font-black text-gray-900">{step.metric}</p>
+                                <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{step.description}</p>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveTab(step.tab)}
+                                    className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
+                                >
+                                    {step.buttonLabel}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
