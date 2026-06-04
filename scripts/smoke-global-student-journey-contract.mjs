@@ -108,6 +108,10 @@ check('quiz center separates self Saher, directed tests, history, and weak-skill
 });
 
 check('student report remains simple first and exposes retest/remediation actions', () => {
+  assertIncludes(files.reports, "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'");
+  assertIncludes(files.reports, 'studentReportNextAction');
+  assertIncludes(files.reports, 'فتح موضوع التأسيس');
+  assertIncludes(files.reports, 'اختبار ساهر');
   assertIncludes(files.reports, "useState<'simple' | 'full'>('simple')");
   assertIncludes(files.reports, 'studentQuickActions');
   assertIncludes(files.reports, 'studentTodayFocus');

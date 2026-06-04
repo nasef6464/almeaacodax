@@ -4,6 +4,7 @@ import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, Chec
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { EmptyState } from '../components/ui/EmptyState';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Role, type QuestionAttempt, type QuizResult } from '../types';
@@ -739,6 +740,35 @@ const Reports: React.FC = () => {
             retestLink: studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz${skillParam}` : '/dashboard?tab=saher'),
         };
     }, [studentTodayFocus]);
+    const studentReportNextAction = useMemo(() => {
+        if (!isStudentView) return null;
+
+        if (studentTodayFocus) {
+            const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
+            const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
+            const trainingLink = studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
+
+            return {
+                title: `ابدأ بـ ${skillName}`,
+                description: 'افتح موضوع التأسيس المرتبط، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.',
+                primaryLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'استعراض الشروح',
+                primaryHref: learningLink,
+                secondaryLabel: 'تدريب قصير',
+                secondaryHref: trainingLink,
+                tone: studentTodayFocus.mastery < 50 ? 'rose' as const : 'amber' as const,
+            };
+        }
+
+        return {
+            title: 'ابدأ بقياس قصير',
+            description: 'حل اختبار ساهر أولًا، وبعدها سيظهر تقرير المهارات والخطة العلاجية تلقائيًا.',
+            primaryLabel: 'اختبار ساهر',
+            primaryHref: '/dashboard?tab=saher',
+            secondaryLabel: 'اختباراتي',
+            secondaryHref: '/my-quizzes',
+            tone: 'indigo' as const,
+        };
+    }, [isStudentView, studentTodayFocus]);
     const studentFollowUpSummary = useMemo(() => {
         if (!isStudentView || !hasStudentAnalytics) return '';
 
@@ -1937,6 +1967,19 @@ const Reports: React.FC = () => {
                     ) : null}
                 </div>
             </header>
+
+            {studentReportNextAction ? (
+                <StudentNextActionStrip
+                    title={studentReportNextAction.title}
+                    description={studentReportNextAction.description}
+                    primaryLabel={studentReportNextAction.primaryLabel}
+                    primaryHref={studentReportNextAction.primaryHref}
+                    secondaryLabel={studentReportNextAction.secondaryLabel}
+                    secondaryHref={studentReportNextAction.secondaryHref}
+                    tone={studentReportNextAction.tone}
+                    icon={<Target size={18} className={studentReportNextAction.tone === 'rose' ? 'text-rose-600' : studentReportNextAction.tone === 'amber' ? 'text-amber-600' : 'text-indigo-600'} />}
+                />
+            ) : null}
 
             {(isStudentView ? hasStudentAnalytics : true) ? (
             <Card

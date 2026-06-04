@@ -40,6 +40,10 @@ check('reports load scoped analytics and scoped quiz results for non-student rol
 });
 
 check('student report starts simple and keeps details opt-in', () => {
+  assertIncludes(reportsSource, "import { StudentNextActionStrip } from '../components/StudentNextActionStrip'");
+  assertIncludes(reportsSource, 'studentReportNextAction');
+  assertIncludes(reportsSource, 'فتح موضوع التأسيس');
+  assertIncludes(reportsSource, 'اختبار ساهر');
   assertIncludes(reportsSource, "const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple')");
   assertIncludes(reportsSource, "const isStudentReportFull = studentReportDepth === 'full'");
   assertIncludes(reportsSource, "onClick={() => setStudentReportDepth('full')}");
