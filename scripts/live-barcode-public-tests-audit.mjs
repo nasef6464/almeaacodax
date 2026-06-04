@@ -319,6 +319,8 @@ async function main() {
           minBodyLength: 900,
           minControlCount: 12,
           requiredSelectors: [
+            '[data-testid="barcode-workspace-shell"]',
+            '[data-testid="barcode-tests-list"]',
             '[data-testid="barcode-test-kind-selector"]',
             '[data-testid="barcode-kind-quick"]',
             '[data-testid="barcode-kind-mock"]',
@@ -326,6 +328,7 @@ async function main() {
             '[data-testid="barcode-subject-select"]',
             '[data-testid="barcode-real-test-settings"]',
             '[data-testid="barcode-question-center-filter"]',
+            '[data-testid="barcode-add-question-from-builder"]',
             '[data-testid="barcode-create-real-test"]',
             '[data-testid="barcode-required-identity-note"]',
           ],

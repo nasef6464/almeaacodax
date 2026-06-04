@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { CheckCircle2, Clipboard, Download, FileQuestion, Loader2, Printer, QrCode, Search } from 'lucide-react';
+import { CheckCircle2, Clipboard, Download, FileQuestion, Loader2, Plus, Printer, QrCode, Search, Trophy } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
+import { Question } from '../../types';
+import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 
 type CreatedBarcodeTest = {
   test: {
@@ -185,7 +187,7 @@ const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: s
 };
 
 export const PublicBarcodeTestsManager: React.FC = () => {
-  const { paths, subjects, sections, questions, skills } = useStore();
+  const { user, paths, subjects, sections, questions, skills, addQuestion } = useStore();
   const firstPathId = paths[0]?.id || '';
   const [pathId, setPathId] = useState(firstPathId);
   const activeSubjects = useMemo(() => subjects.filter((subject) => subject.pathId === pathId), [subjects, pathId]);
@@ -223,6 +225,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [loadingReport, setLoadingReport] = useState(false);
   const [liveMonitoring, setLiveMonitoring] = useState(false);
   const [lastReportRefreshAt, setLastReportRefreshAt] = useState<number | null>(null);
+  const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
   const activeSections = useMemo(
@@ -248,6 +251,12 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     return [...new Set(selectedQuestions.flatMap((question) => question.skillIds || []))];
   }, [questions, selectedQuestionIds]);
 
+  const reportTopStudents = useMemo(() => {
+    return [...(report?.rows || [])]
+      .sort((a, b) => b.score - a.score || Number(a.timeSpentSeconds || 999999) - Number(b.timeSpentSeconds || 999999))
+      .slice(0, 5);
+  }, [report]);
+
   const fullPublicUrl = useMemo(() => {
     if (!createdTest) return '';
     const relative = createdTest.publicUrl || `/barcode-test/${createdTest.test.slug}`;
@@ -260,6 +269,35 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         ? current.filter((id) => id !== questionId)
         : [...current, questionId],
     );
+  };
+
+  const saveQuestionFromBuilder = async (questionPayload: Partial<Question>) => {
+    setError('');
+    setFeedback('');
+    try {
+      const created = await addQuestion({
+        ...questionPayload,
+        id: `barcode_q_${Date.now()}`,
+        pathId,
+        subject: normalizedSubjectId,
+        sectionId: questionPayload.sectionId || sectionId,
+        skillIds: questionPayload.skillIds || [],
+        ownerType: questionPayload.ownerType || (user.role === 'teacher' ? 'teacher' : 'platform'),
+        ownerId: questionPayload.ownerId || user.id,
+        createdBy: questionPayload.createdBy || user.id,
+        approvalStatus: questionPayload.approvalStatus || (user.role === 'admin' ? 'approved' : 'pending_review'),
+      } as Question);
+
+      if (!created.approvalStatus || created.approvalStatus === 'approved') {
+        setSelectedQuestionIds((current) => current.includes(created.id) ? current : [created.id, ...current]);
+      }
+      setShowQuestionBuilder(false);
+      setFeedback(created.approvalStatus === 'approved'
+        ? 'تم حفظ السؤال في مركز الأسئلة وإضافته للاختبار.'
+        : 'تم حفظ السؤال في مركز الأسئلة، وسيظهر بعد الاعتماد.');
+    } catch (err) {
+      setError(getErrorMessage(err, 'تعذر حفظ السؤال الآن.'));
+    }
   };
 
   const loadSavedTests = async () => {
@@ -439,7 +477,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   }, [createdTest?.test.id, liveMonitoring]);
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div data-testid="barcode-workspace-shell" className="space-y-6 animate-fade-in">
       <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -464,7 +502,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
         <section className="space-y-5 rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-2">
             <label className="block">
@@ -695,6 +733,15 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   تظهر الأسئلة المعتمدة فقط حسب المسار والمادة والموضوع المختار.
                 </p>
               </div>
+              <button
+                type="button"
+                data-testid="barcode-add-question-from-builder"
+                onClick={() => setShowQuestionBuilder(true)}
+                className="inline-flex items-center gap-1 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700"
+              >
+                <Plus size={14} />
+                إنشاء سؤال
+              </button>
               <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-600">
                 {eligibleQuestions.length} سؤال متاح
               </span>
@@ -736,8 +783,16 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 );
               })}
               {eligibleQuestions.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center">
+                <div data-testid="barcode-question-center-empty-state" className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center">
                   <FileQuestion className="mx-auto mb-2 text-slate-300" />
+                  <button
+                    type="button"
+                    onClick={() => setShowQuestionBuilder(true)}
+                    className="mb-3 inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700"
+                  >
+                    <Plus size={14} />
+                    إنشاء سؤال لهذا الاختبار
+                  </button>
                   <p className="text-sm font-black text-slate-500">لا توجد أسئلة معتمدة لهذا الاختيار.</p>
                 </div>
               )}
@@ -745,8 +800,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           </div>
         </section>
 
-        <aside className="space-y-4">
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+        <aside className="contents">
+          <div data-testid="barcode-tests-list" className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-sm font-black text-slate-900">الاختبارات المنشورة</h2>
@@ -823,7 +878,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   <Clipboard size={14} />
                   نسخ
                 </button>
-                <a href={fullPublicUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700">
+                <a data-testid="barcode-open-full-preview" href={fullPublicUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700">
                   فتح الاختبار
                 </a>
               </div>
@@ -849,7 +904,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           )}
 
           {report && (
-            <div data-testid="barcode-live-results-board" className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+            <div data-testid="barcode-test-full-report" className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm lg:col-span-2">
+              <span data-testid="barcode-live-results-board" className="sr-only">barcode live results board</span>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-base font-black text-slate-900">تقرير اختبار الباركود</h2>
@@ -921,6 +977,27 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   ))}
                   {(report.summary.weakestSkills || []).length === 0 && (
                     <div className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-500">لا توجد مهارات كافية للتحليل بعد.</div>
+                  )}
+                </div>
+              </div>
+
+              <div data-testid="barcode-test-top-students" className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
+                <div className="mb-2 flex items-center gap-2 text-xs font-black text-emerald-800">
+                  <Trophy size={14} />
+                  أوائل الطلاب
+                </div>
+                <div className="grid gap-2 md:grid-cols-2">
+                  {reportTopStudents.map((row, index) => (
+                    <div key={row.id} className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">{index + 1}</span>
+                        <span className="min-w-0 truncate">{row.studentName}</span>
+                      </div>
+                      <span className="shrink-0 text-emerald-700">{row.score}%</span>
+                    </div>
+                  ))}
+                  {reportTopStudents.length === 0 && (
+                    <div className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-500">تظهر قائمة الأوائل بعد أول مشاركة.</div>
                   )}
                 </div>
               </div>
@@ -1013,6 +1090,26 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           )}
         </aside>
       </div>
+      {showQuestionBuilder && (
+        <div data-testid="barcode-unified-question-builder">
+          <UnifiedQuestionBuilder
+            subjectId={normalizedSubjectId}
+            sectionId={sectionId}
+            initialQuestion={{
+              pathId,
+              subject: normalizedSubjectId,
+              sectionId,
+              type: 'mcq',
+              difficulty: 'Medium',
+              options: ['', '', '', ''],
+              correctOptionIndex: 0,
+              skillIds: [],
+            }}
+            onSave={(questionPayload) => void saveQuestionFromBuilder(questionPayload)}
+            onCancel={() => setShowQuestionBuilder(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

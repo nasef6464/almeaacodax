@@ -165,6 +165,24 @@ addCheck(
   "admin manager must create QR links and expose a simple report",
 );
 addCheck(
+  "barcode admin manager is a full workspace, not a narrow side panel",
+  barcodeManagerSource.includes('data-testid="barcode-workspace-shell"') &&
+    barcodeManagerSource.includes('data-testid="barcode-tests-list"') &&
+    barcodeManagerSource.includes('data-testid="barcode-test-full-report"') &&
+    barcodeManagerSource.includes('data-testid="barcode-open-full-preview"'),
+  "manager should create, open, monitor, and report barcode tests from a full page workspace",
+);
+addCheck(
+  "barcode manager can add a question from the unified question builder",
+  barcodeManagerSource.includes("UnifiedQuestionBuilder") &&
+    barcodeManagerSource.includes("addQuestion") &&
+    barcodeManagerSource.includes('data-testid="barcode-add-question-from-builder"') &&
+    barcodeManagerSource.includes('data-testid="barcode-unified-question-builder"') &&
+    barcodeManagerSource.includes('data-testid="barcode-question-center-empty-state"') &&
+    barcodeManagerSource.includes("saveQuestionFromBuilder"),
+  "staff should create a missing question from the same barcode workflow and store it in the question center",
+);
+addCheck(
   "barcode admin manager exposes quick and mock real-test settings",
   barcodeManagerSource.includes("testKind") &&
     barcodeManagerSource.includes('data-testid="barcode-test-kind-selector"') &&
@@ -268,6 +286,8 @@ addCheck(
     barcodeManagerSource.includes("openPrintReport") &&
     barcodeManagerSource.includes("exportReportCsv") &&
     barcodeManagerSource.includes("printReport") &&
+    barcodeManagerSource.includes('data-testid="barcode-test-top-students"') &&
+    barcodeManagerSource.includes("reportTopStudents") &&
     barcodeManagerSource.includes("حسب المدرسة") &&
     barcodeManagerSource.includes("طلاب يحتاجون متابعة"),
   "staff must be able to share barcode test results outside the platform",
