@@ -209,6 +209,7 @@ async function main() {
             '[data-testid="barcode-real-test-settings"]',
             '[data-testid="barcode-question-center-filter"]',
             '[data-testid="barcode-create-real-test"]',
+            '[data-testid="barcode-required-identity-note"]',
           ],
         }),
       );

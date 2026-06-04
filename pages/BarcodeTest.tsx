@@ -143,11 +143,11 @@ const BarcodeTest: React.FC = () => {
       setError('اكتب اسمك أولًا.');
       return;
     }
-    if (data.test.collectSchool && !schoolName.trim()) {
+    if (!schoolName.trim()) {
       setError('اكتب اسم المدرسة.');
       return;
     }
-    if (data.test.collectClassroom && !classroomName.trim()) {
+    if (!classroomName.trim()) {
       setError('اكتب الفصل.');
       return;
     }

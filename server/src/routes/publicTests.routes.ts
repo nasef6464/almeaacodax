@@ -156,6 +156,8 @@ publicTestsRouter.post(
     const now = Date.now();
     const test = await PublicBarcodeTestModel.create({
       ...payload,
+      collectSchool: true,
+      collectClassroom: true,
       id: payload.id || `pbt_${now}_${randomUUID().slice(0, 8)}`,
       slug: payload.slug || createSlug(payload.title),
       questionIds: approvedQuestionIds,
@@ -264,8 +266,8 @@ publicTestsRouter.get(
         pathId: test.pathId,
         subjectId: test.subjectId,
         sectionId: test.sectionId,
-        collectSchool: test.collectSchool,
-        collectClassroom: test.collectClassroom,
+        collectSchool: true,
+        collectClassroom: true,
         showResultToStudent: test.showResultToStudent,
         settings: test.settings || {},
         questionCount: questions.length,
@@ -296,6 +298,11 @@ publicTestsRouter.post(
     const test = await PublicBarcodeTestModel.findOne({ slug }).lean();
     if (!test || !ensureActiveWindow(test)) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Public test is not available" });
+    }
+    if (!payload.schoolName.trim() || !payload.classroomName.trim()) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Student name, school name, and classroom are required for barcode public tests.",
+      });
     }
 
     if (test.maxSubmissions) {

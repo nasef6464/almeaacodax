@@ -198,8 +198,6 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [showResultToStudent, setShowResultToStudent] = useState(true);
-  const [collectSchool, setCollectSchool] = useState(true);
-  const [collectClassroom, setCollectClassroom] = useState(true);
   const [testKind, setTestKind] = useState<'quick' | 'mock'>('quick');
   const [timeLimit, setTimeLimit] = useState(20);
   const [maxAttempts, setMaxAttempts] = useState(1);
@@ -223,6 +221,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [loadingTests, setLoadingTests] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
+  const [liveMonitoring, setLiveMonitoring] = useState(false);
+  const [lastReportRefreshAt, setLastReportRefreshAt] = useState<number | null>(null);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
   const activeSections = useMemo(
@@ -292,6 +292,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
       summary: test.summary,
     });
     setReport(null);
+    setLiveMonitoring(false);
     setFeedback('تم فتح الاختبار المختار.');
   };
 
@@ -300,6 +301,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     setFeedback('');
     setCreatedTest(null);
     setReport(null);
+    setLiveMonitoring(false);
     if (!pathId || !normalizedSubjectId) {
       setError('اختر المسار والمادة أولًا.');
       return;
@@ -321,8 +323,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         testKind,
         status: 'active',
         showResultToStudent,
-        collectSchool,
-        collectClassroom,
+        collectSchool: true,
+        collectClassroom: true,
         startsAt: startsAtLocal ? new Date(startsAtLocal).getTime() : null,
         endsAt: endsAtLocal ? new Date(endsAtLocal).getTime() : null,
         maxSubmissions: maxSubmissions ? Number(maxSubmissions) : null,
@@ -358,6 +360,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     try {
       const response = (await api.getPublicBarcodeTestReport(createdTest.test.id)) as PublicBarcodeReport;
       setReport(response);
+      setLastReportRefreshAt(Date.now());
     } catch (err) {
       setError(getErrorMessage(err, 'تعذر قراءة التقرير الآن.'));
     } finally {
@@ -372,6 +375,17 @@ export const PublicBarcodeTestsManager: React.FC = () => {
       setFeedback('تم نسخ الرابط.');
     } catch {
       setFeedback(fullPublicUrl);
+    }
+  };
+
+  const copyWhatsAppInvite = async () => {
+    if (!fullPublicUrl || !createdTest) return;
+    const message = `اختبار مباشر: ${createdTest.test.title}\nافتح الرابط، اكتب اسمك ومدرستك وفصلك، ثم ابدأ الاختبار:\n${fullPublicUrl}`;
+    try {
+      await navigator.clipboard.writeText(message);
+      setFeedback('تم نسخ رسالة واتساب جاهزة للطلاب.');
+    } catch {
+      setFeedback(message);
     }
   };
 
@@ -414,6 +428,15 @@ export const PublicBarcodeTestsManager: React.FC = () => {
     if (!report) return;
     openPrintReport(report, skillNameById);
   };
+
+  useEffect(() => {
+    if (!createdTest || !liveMonitoring) return undefined;
+    void loadReport();
+    const timer = window.setInterval(() => {
+      void loadReport();
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [createdTest?.test.id, liveMonitoring]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -617,8 +640,6 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 ['شريط تقدم للطالب', showProgressBar, setShowProgressBar],
                 ['يلزم إجابة كل سؤال', requireAnswerBeforeNext, setRequireAnswerBeforeNext],
                 ['مراجعة الأسئلة', allowQuestionReview, setAllowQuestionReview],
-                ['طلب اسم المدرسة', collectSchool, setCollectSchool],
-                ['طلب الفصل', collectClassroom, setCollectClassroom],
               ].map(([label, value, setter]) => (
                 <button
                   type="button"
@@ -629,6 +650,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   {label}
                 </button>
               ))}
+            </div>
+            <div data-testid="barcode-required-identity-note" className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-xs font-black leading-6 text-emerald-800">
+              الاسم والمدرسة والفصل إلزامية دائمًا في اختبارات الباركود، لأن الرابط قد يرسل واتساب أو يعرض كـ QR داخل الفصل بدون تسجيل دخول.
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               <label className="block">
@@ -805,6 +829,15 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               </div>
               <button
                 type="button"
+                data-testid="barcode-copy-whatsapp-invite"
+                onClick={copyWhatsAppInvite}
+                className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+              >
+                <Clipboard size={14} />
+                نسخ رسالة واتساب للطلاب
+              </button>
+              <button
+                type="button"
                 onClick={loadReport}
                 disabled={loadingReport}
                 className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700 hover:bg-indigo-100 disabled:opacity-60"
@@ -816,7 +849,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           )}
 
           {report && (
-            <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+            <div data-testid="barcode-live-results-board" className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-base font-black text-slate-900">تقرير اختبار الباركود</h2>
@@ -830,6 +863,30 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   <button type="button" onClick={printReport} className="inline-flex items-center gap-1 rounded-xl border border-indigo-100 bg-indigo-50 px-2.5 py-2 text-[11px] font-black text-indigo-700 hover:bg-indigo-100">
                     <Printer size={13} />
                     PDF
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-sm font-black text-indigo-900">متابعة مباشرة على الشاشة</div>
+                    <div className="mt-1 text-xs font-bold text-indigo-700">
+                      اعرض هذه اللوحة أثناء الاختبار، وستتحدث النتائج كل 5 ثوانٍ عند تفعيل المتابعة.
+                    </div>
+                    <div className="mt-1 text-[11px] font-bold text-indigo-600">
+                      آخر تحديث: {lastReportRefreshAt ? formatDateTime(lastReportRefreshAt) : 'لم يحدث بعد'}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    data-testid="barcode-live-monitor-toggle"
+                    onClick={() => setLiveMonitoring((value) => !value)}
+                    className={`rounded-xl px-4 py-2 text-xs font-black ${
+                      liveMonitoring ? 'bg-rose-600 text-white hover:bg-rose-700' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    }`}
+                  >
+                    {liveMonitoring ? 'إيقاف المتابعة' : 'بدء المتابعة المباشرة'}
                   </button>
                 </div>
               </div>

@@ -79,6 +79,14 @@ addCheck(
   "public submissions must collect name, school, and class",
 );
 addCheck(
+  "barcode public tests force school and classroom for QR classroom usage",
+  publicRoutes.includes("collectSchool: true") &&
+    publicRoutes.includes("collectClassroom: true") &&
+    publicRoutes.includes("payload.schoolName.trim()") &&
+    publicRoutes.includes("payload.classroomName.trim()"),
+  "QR/WhatsApp tests need student name, school, and class before submission",
+);
+addCheck(
   "barcode questions come from the approved question center",
   publicRoutes.includes("QuestionModel.find") && publicRoutes.includes('approvalStatus: "approved"') && publicRoutes.includes("questionIds"),
   "barcode tests must reuse approved question center items",
@@ -197,6 +205,18 @@ addCheck(
     barcodeManagerSource.includes("startsAt: startsAtLocal") &&
     barcodeManagerSource.includes("endsAt: endsAtLocal"),
   "barcode tests need real-test controls for opening window, submission cap, and identity fields",
+);
+
+addCheck(
+  "barcode admin manager supports WhatsApp sharing and live classroom monitoring",
+  barcodeManagerSource.includes("copyWhatsAppInvite") &&
+    barcodeManagerSource.includes('data-testid="barcode-copy-whatsapp-invite"') &&
+    barcodeManagerSource.includes('data-testid="barcode-required-identity-note"') &&
+    barcodeManagerSource.includes('data-testid="barcode-live-results-board"') &&
+    barcodeManagerSource.includes('data-testid="barcode-live-monitor-toggle"') &&
+    barcodeManagerSource.includes("window.setInterval") &&
+    barcodeManagerSource.includes("5000"),
+  "staff should share links by WhatsApp/QR and watch results live like a forms dashboard",
 );
 
 addCheck(
