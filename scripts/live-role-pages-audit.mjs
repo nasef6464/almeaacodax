@@ -7,6 +7,7 @@ const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaa
 const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
+const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -41,6 +42,17 @@ const roles = [
       { path: "/plan", expect: "private" },
       { path: "/profile", expect: "private" },
       { path: "/pricing", expect: "public" },
+    ],
+  },
+  {
+    role: "admin",
+    email: process.env.ROLE_ADMIN_EMAIL,
+    password: process.env.ROLE_ADMIN_PASSWORD,
+    pages: [
+      { path: "/admin-dashboard", expect: "private" },
+      { path: "/admin-dashboard?tab=paths", expect: "private" },
+      { path: "/reports", expect: "private" },
+      { path: "/profile", expect: "private" },
     ],
   },
   {
@@ -143,18 +155,26 @@ async function inspectPage(page, role, pageSpec) {
   page.on("response", onResponse);
 
   const url = `${BASE_URL}${pageSpec.path}`;
-  await page.goto(url, { waitUntil: "networkidle", timeout: 60000 }).catch(async () => {
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
-  });
-  await page.waitForTimeout(800);
-
-  page.off("console", onConsole);
-  page.off("response", onResponse);
-
   const roleDir = path.join(OUT_DIR, role.role);
   fs.mkdirSync(roleDir, { recursive: true });
   const screenshot = path.join(roleDir, `${safeName(pageSpec.path)}.png`);
-  await page.screenshot({ path: screenshot, fullPage: true });
+  let navigationError = "";
+  let navigationWarning = "";
+
+  try {
+    await page.goto(url, { waitUntil: "networkidle", timeout: PAGE_TIMEOUT_MS }).catch(async (error) => {
+      navigationWarning = String(error?.message || error || "").slice(0, 500);
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
+    });
+    await page.waitForTimeout(800);
+  } catch (error) {
+    navigationError = String(error?.message || error || "").slice(0, 500);
+  } finally {
+    page.off("console", onConsole);
+    page.off("response", onResponse);
+  }
+
+  await page.screenshot({ path: screenshot, fullPage: true }).catch(() => undefined);
 
   const state = await page.evaluate(() => {
     const text = document.body.innerText || "";
@@ -172,11 +192,20 @@ async function inspectPage(page, role, pageSpec) {
       hasRoleContent: /لوحة|تقرير|اختبار|خطة|حساب|ملف|ولي|طالب|معلم|مشرف|دورة|عضوية/.test(text),
       title: document.title,
     };
-  });
+  }).catch((error) => ({
+    href: page.url(),
+    bodyLength: 0,
+    controlCount: 0,
+    hasLoginForm: false,
+    hasGuardText: false,
+    hasRoleContent: false,
+    title: "",
+    evaluateError: String(error?.message || error || "").slice(0, 500),
+  }));
 
   const isGuardedOk = pageSpec.expect === "guarded" && (state.hasLoginForm || state.hasGuardText || state.href.includes("login"));
   const isOpenOk = pageSpec.expect !== "guarded" && !state.hasLoginForm && state.bodyLength > 250 && state.controlCount > 0 && state.hasRoleContent;
-  const status = network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
+  const status = navigationError || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
 
   return {
     role: role.role,
@@ -187,6 +216,8 @@ async function inspectPage(page, role, pageSpec) {
     consoleErrors,
     network4xx,
     network5xx,
+    navigationError,
+    navigationWarning,
     ...state,
   };
 }
@@ -253,7 +284,7 @@ fs.writeFileSync(
     ...loginResults.map((item) => `- ${item.ok ? "PASS" : "BLOCKED"} ${item.role}${item.reason ? ` - ${item.reason}` : ""}`),
     "",
     "## Pages",
-    ...results.map((item) => `- [${item.status}] ${item.role} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}`),
+    ...results.map((item) => `- [${item.status}] ${item.role} ${item.path}: expect=${item.expect}, controls=${item.controlCount ?? "-"}, console=${item.consoleErrors?.length || 0}, network4xx=${item.network4xx?.length || 0}, network5xx=${item.network5xx?.length || 0}${item.navigationError ? `, navigation=${item.navigationError}` : ""}${item.navigationWarning ? `, warning=${item.navigationWarning}` : ""}`),
     "",
   ].join("\n"),
   "utf8",
