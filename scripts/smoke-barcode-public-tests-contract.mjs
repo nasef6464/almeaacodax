@@ -11,6 +11,10 @@ const publicRoutes = fs.readFileSync(path.join(root, "server", "src", "routes", 
 const publicTestModel = fs.readFileSync(path.join(root, "server", "src", "models", "PublicBarcodeTest.ts"), "utf8");
 const publicSubmissionModel = fs.readFileSync(path.join(root, "server", "src", "models", "PublicBarcodeSubmission.ts"), "utf8");
 const apiSource = fs.readFileSync(path.join(root, "services", "api.ts"), "utf8");
+const appSource = fs.readFileSync(path.join(root, "App.tsx"), "utf8");
+const adminDashboardSource = fs.readFileSync(path.join(root, "dashboards", "admin", "AdminDashboard.tsx"), "utf8");
+const barcodePageSource = fs.readFileSync(path.join(root, "pages", "BarcodeTest.tsx"), "utf8");
+const barcodeManagerSource = fs.readFileSync(path.join(root, "dashboards", "admin", "PublicBarcodeTestsManager.tsx"), "utf8");
 
 const checks = [];
 
@@ -84,6 +88,35 @@ addCheck(
     apiSource.includes("submitPublicBarcodeTest") &&
     apiSource.includes("getPublicBarcodeTestReport"),
   "admin and public pages need typed API entry points",
+);
+addCheck(
+  "barcode public student route is registered",
+  appSource.includes('path="/barcode-test/:slug"') && appSource.includes("pages/BarcodeTest"),
+  "students need a real public route for QR links",
+);
+addCheck(
+  "barcode student page submits identity and answers",
+  barcodePageSource.includes("studentName") &&
+    barcodePageSource.includes("schoolName") &&
+    barcodePageSource.includes("classroomName") &&
+    barcodePageSource.includes("submitPublicBarcodeTest") &&
+    barcodePageSource.includes("أجبت عن"),
+  "public test experience must be simple and actionable",
+);
+addCheck(
+  "barcode admin tab is available for staff",
+  adminDashboardSource.includes("'barcode-tests'") &&
+    adminDashboardSource.includes("PublicBarcodeTestsManager") &&
+    adminDashboardSource.includes("QrCode"),
+  "staff must reach barcode test management from the admin dashboard",
+);
+addCheck(
+  "barcode admin manager creates QR tests from approved questions",
+  barcodeManagerSource.includes("QRCodeSVG") &&
+    barcodeManagerSource.includes("createPublicBarcodeTest") &&
+    barcodeManagerSource.includes("approvalStatus === 'approved'") &&
+    barcodeManagerSource.includes("getPublicBarcodeTestReport"),
+  "admin manager must create QR links and expose a simple report",
 );
 
 const failed = checks.filter((check) => check.status === "FAIL");

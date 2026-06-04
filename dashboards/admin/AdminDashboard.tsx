@@ -20,6 +20,7 @@ import {
     Bot,
     Megaphone,
     Type,
+    QrCode,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
@@ -56,6 +57,7 @@ const OperationsCommandCenter = lazyNamed(() => import('./OperationsCommandCente
 const AiAssistantManager = lazyNamed(() => import('./AiAssistantManager'), 'AiAssistantManager');
 const MockExamManager = lazyNamed(() => import('./MockExamManager'), 'MockExamManager');
 const AnnouncementAdsManager = lazyNamed(() => import('./AnnouncementAdsManager'), 'AnnouncementAdsManager');
+const PublicBarcodeTestsManager = lazyNamed(() => import('./PublicBarcodeTestsManager'), 'PublicBarcodeTestsManager');
 
 type ReviewQueueItem = {
     id: string;
@@ -939,6 +941,16 @@ export const AdminDashboard: React.FC = () => {
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'live-sessions', label: 'الحصص المباشرة', icon: <Video size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
+        if (!nextItems.some((item) => item.id === 'barcode-tests') && [Role.ADMIN, Role.TEACHER, Role.SUPERVISOR].includes(user.role)) {
+            const quizzesIndex = nextItems.findIndex((item) => item.id === 'quizzes');
+            const targetIndex = quizzesIndex === -1 ? nextItems.length : quizzesIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'barcode-tests', label: 'اختبارات باركود', icon: <QrCode size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -2009,6 +2021,8 @@ export const AdminDashboard: React.FC = () => {
                 return <QuizzesManager key={`quizzes-${tabRequestVersion}`} />;
             case 'mock-exams':
                 return <MockExamManager />;
+            case 'barcode-tests':
+                return <PublicBarcodeTestsManager />;
             case 'questions':
                 return <QuestionBankManager />;
             case 'skills':

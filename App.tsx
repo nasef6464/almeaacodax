@@ -52,6 +52,7 @@ const Pricing = React.lazy(() => import('./pages/Pricing'));
 const Cart = React.lazy(() => import('./pages/Cart'));
 const MyRequests = React.lazy(() => import('./pages/MyRequests').then(module => ({ default: module.MyRequests })));
 const StaticInfoPage = React.lazy(() => import('./pages/StaticInfoPage'));
+const BarcodeTest = React.lazy(() => import('./pages/BarcodeTest'));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -941,6 +942,7 @@ const App: React.FC = () => {
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Cart />} />
+                  <Route path="/barcode-test/:slug" element={<BarcodeTest />} />
                   <Route path="/about" element={<StaticInfoPage kind="about" />} />
                   <Route path="/contact" element={<StaticInfoPage kind="contact" />} />
                   <Route path="/faq" element={<StaticInfoPage kind="faq" />} />
