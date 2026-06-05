@@ -87,9 +87,10 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const lockedCourseFiles = (course.files || []).filter((file) => file.access === 'enrolled_paid' && !canUsePaidCourseFiles);
     const requiredPathId = String(course.pathId || '').trim();
     const needsPathEnrollmentBeforePurchase = Boolean(requiredPathId && !isStaffViewer && !isGuestUser && !(enrolledPaths || []).includes(requiredPathId));
+    const pathRegistrationUrl = '/dashboard?tab=paths';
     const sendStudentToPathRegistration = () => {
         setCoursePurchaseNotice('سجل في المسار أولًا من صفحة مساراتي، ثم ارجع لشراء الدورة أو الباقة المناسبة.');
-        window.setTimeout(() => navigate('/dashboard?tab=paths'), 900);
+        window.setTimeout(() => navigate(pathRegistrationUrl), 1600);
     };
 
     useEffect(() => {
@@ -900,8 +901,20 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
                         </div>
 
                         {coursePurchaseNotice ? (
-                            <div role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold leading-7 text-amber-800">
-                                {coursePurchaseNotice}
+                            <div
+                                role="alert"
+                                data-testid="course-path-registration-notice"
+                                className="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold leading-7 text-amber-800 sm:flex-row sm:items-center sm:justify-between"
+                            >
+                                <span>{coursePurchaseNotice}</span>
+                                <button
+                                    type="button"
+                                    data-testid="course-path-registration-link"
+                                    onClick={() => navigate(pathRegistrationUrl)}
+                                    className="inline-flex shrink-0 items-center justify-center rounded-xl bg-amber-500 px-4 py-2 text-xs font-black text-white transition hover:bg-amber-600"
+                                >
+                                    اذهب لمساراتي
+                                </button>
                             </div>
                         ) : null}
 

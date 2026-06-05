@@ -75,6 +75,21 @@ assertIncludes(
   'Course purchase path-registration block sends students to My Paths.',
 );
 assertIncludes(
+  'components/CourseOverview.tsx',
+  'data-testid="course-path-registration-notice"',
+  'Course purchase path-registration block shows a visible alert inside the course page.',
+);
+assertIncludes(
+  'components/CourseOverview.tsx',
+  'data-testid="course-path-registration-link"',
+  'Course purchase path-registration block includes a direct My Paths action.',
+);
+assertIncludes(
+  'components/CourseOverview.tsx',
+  'اذهب لمساراتي',
+  'Course path-registration action uses clear student-facing wording.',
+);
+assertIncludes(
   'components/PaymentModal.tsx',
   'actionErrorRef.current?.scrollIntoView',
   'Payment errors scroll into view instead of staying hidden above the form.',
