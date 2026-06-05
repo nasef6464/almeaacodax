@@ -23,6 +23,17 @@
 - Consider an external form mode for very large school events: Google Forms/Microsoft Forms embed or link, to reduce server load when hundreds of students enter at once.
 - The internal mode remains preferred when skill analysis, automatic marking, top students, and weak-skill reports are required.
 
+### Question Authoring And Math Editor
+
+- Question lists must show a quick visual preview when a question has an image but no typed text, instead of only showing "question without text".
+- The unified question editor must support Arabic math authoring for Qudrat/Tahsili content:
+  - Arabic and English fractions, roots, powers, angles, arcs, ratios, and sequences.
+  - clean right-to-left math layout beside Arabic words.
+  - reliable rendering in question bank, barcode tests, normal quizzes, mock exams, and student review.
+- Pasting from Word should preserve useful formatting, tables, math-like text, images when possible, and remain editable after paste.
+- The editor should support simple math drawings/diagrams for geometry questions, either through an embedded drawing tool or a controlled image/shape workflow.
+- Imported or pasted image-heavy questions must still be searchable and scannable through metadata, skill, difficulty, and image preview.
+
 ### School / Group Commercial Flow
 
 - Separate platform admin from school manager concept.
@@ -259,6 +270,43 @@ Start with Tasks 1, 2, and 3. They directly fix the manager-visible barcode issu
 3. Strong previous-test report with top students.
 
 Then move to Tasks 5, 6, and 7 for the school commercial flow.
+
+### Task 9: Unified Question Authoring Upgrade
+
+**Files:**
+- Modify: `dashboards/admin/QuestionBankManager.tsx`
+- Modify: `dashboards/admin/builders/UnifiedQuestionBuilder.tsx`
+- Modify: question preview/rendering helpers under `utils/` and editor/math rendering styles
+- Modify: barcode/question-bank smoke contracts
+- Add or modify live visual audit for question bank previews
+
+- [ ] Show a thumbnail/preview in the question list when question text is empty but media exists.
+- [ ] Add stable test IDs:
+  - `question-row-media-preview`
+  - `question-editor-word-paste`
+  - `question-editor-math-toolbar`
+  - `question-editor-diagram-tool`
+- [ ] Improve Word paste cleanup so Arabic text, tables, simple equations, and embedded images remain usable and editable.
+- [ ] Add math insertion helpers for Arabic-friendly:
+  - fractions
+  - roots
+  - powers
+  - angles and degree symbols
+  - ratios and sequences
+- [ ] Add a diagram workflow for geometry questions:
+  - simple line/shape drawing if feasible
+  - otherwise a clear upload/crop/annotate flow
+- [ ] Verify rendering in:
+  - question bank list
+  - barcode test creation
+  - normal quiz player
+  - mock exam player
+  - student result/review
+- [ ] Run:
+  - question bank contract
+  - barcode contract
+  - quiz rendering checks
+  - build
 
 ## Current Evidence From Code Inspection
 
