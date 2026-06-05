@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore';
 import { Card } from '../components/ui/Card';
 import { Award, CheckCircle2, ChevronRight, CreditCard, LayoutGrid, Lock, Unlock } from 'lucide-react';
 import { LearningSection } from '../components/LearningSection';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { normalizePathId } from '../utils/normalizePathId';
 import { isMockQuiz, isTrainingQuiz } from '../utils/quizPlacement';
 import { getLearningSlotQuizzes } from '../utils/quizLearningPlacement';
@@ -440,6 +441,26 @@ export const GenericPathPage: React.FC = () => {
 
         return `/category/${path.id}?${params.toString()}`;
     };
+    const buildSubjectLearningRoute = (tab: 'skills' | 'questions' | 'tests' | 'library' = 'skills') => {
+        const params = new URLSearchParams();
+        if (selectedLevelId) params.set('level', selectedLevelId);
+        if (selectedSubjectId) params.set('subject', selectedSubjectId);
+        params.set('tab', tab);
+        return `/category/${path.id}?${params.toString()}`;
+    };
+    const renderSubjectNextAction = () => (
+        <div className="mb-6">
+            <StudentNextActionStrip
+                title="ابدأ من التأسيس"
+                description="افتح أول موضوع، شاهد شرحًا قصيرًا، ثم انتقل لتدريب بسيط."
+                primaryLabel="افتح أول موضوع"
+                primaryHref={buildSubjectLearningRoute('skills')}
+                secondaryLabel="تدريب"
+                secondaryHref={buildSubjectLearningRoute('questions')}
+                tone="indigo"
+            />
+        </div>
+    );
     const getPackageKindLabel = (contentTypes: string[]) =>
         contentTypes.includes('all')
             ? 'باقة شاملة'
@@ -1256,6 +1277,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     </header>
                     <div className="max-w-7xl mx-auto px-4 py-8">
                         {renderSubjectAccessGuide(selectedSubjectId)}
+                        {renderSubjectNextAction()}
                         <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                         {renderPackagePaymentModal()}
                     </div>
@@ -1348,6 +1370,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
 
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {renderSubjectAccessGuide(selectedSubjectId)}
+                {renderSubjectNextAction()}
                 <LearningSection category={path.id} subject={selectedSubjectId} title={`${currentSubject?.name}`} colorTheme={(currentSubject?.color || style.color) as any} />
                 {renderPackagePaymentModal()}
             </div>
