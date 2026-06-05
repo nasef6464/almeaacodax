@@ -36,6 +36,7 @@ function assertScriptIncludes(scriptName, fragments) {
 check("core goal live gate is wired as one command", () => {
   assertScriptIncludes("smoke:goal-live-core", [
     "smoke:global-student-journey",
+    "smoke:arabic-mojibake",
     "smoke:barcode-public-tests",
     "smoke:student-learning-live",
     "smoke:role-pages-live",

@@ -7,20 +7,33 @@ const checkedFiles = [
   'App.tsx',
   'index.tsx',
   'vite.config.ts',
+  'components/QuestionDrawingPad.tsx',
+  'components/RichTextEditor.tsx',
+  'components/StudentNextActionStrip.tsx',
+  'dashboards/admin/AdminDashboard.tsx',
+  'dashboards/admin/SchoolsManager.tsx',
   'pages/CourseView.tsx',
+  'pages/Reports.tsx',
   'server/src/routes/seo.routes.ts',
 ];
 
 const badPatterns = [
-  { name: 'UTF-8 mojibake marker', pattern: /[ÃØÙ][^\n\r]*[ÃØÙ]/ },
+  { name: 'UTF-8 mojibake marker', pattern: /[\u00c3\u00d8\u00d9][^\n\r]*[\u00c3\u00d8\u00d9]/ },
   { name: 'placeholder question marks', pattern: /\?{4,}/ },
 ];
 
 const expectedArabicSnippets = [
   { file: 'App.tsx', text: 'منصة المئة | قدرات وتحصيلي' },
   { file: 'App.tsx', text: 'منصة تعليمية عربية للقدرات والتحصيلي' },
+  { file: 'components/QuestionDrawingPad.tsx', text: 'إدراج الرسم' },
+  { file: 'components/RichTextEditor.tsx', text: 'رياضيات' },
+  { file: 'components/StudentNextActionStrip.tsx', text: 'خطوتك التالية' },
+  { file: 'dashboards/admin/AdminDashboard.tsx', text: 'أنشئ تدخل علاجي' },
+  { file: 'dashboards/admin/SchoolsManager.tsx', text: 'مدير/مشرف المدرسة كاملة' },
   { file: 'pages/CourseView.tsx', text: 'لم نتمكن من فتح الدورة' },
   { file: 'pages/CourseView.tsx', text: 'إصدار الشهادة' },
+  { file: 'pages/Reports.tsx', text: 'تقارير الأداء' },
+  { file: 'pages/Reports.tsx', text: 'ابدأ التدخل من أعلى نقطة تأثير' },
   { file: 'server/src/routes/seo.routes.ts', text: 'الصفحة الرئيسية' },
   { file: 'server/src/routes/seo.routes.ts', text: 'منصة المئة' },
 ];
