@@ -25,6 +25,18 @@ const Cart: React.FC = () => {
     [cartItems],
   );
 
+  const confirmRemoveItem = (item: CartItem) => {
+    const confirmed = window.confirm(`هل تريد حذف "${item.title}" من السلة؟ يمكنك إضافته مرة أخرى لاحقًا.`);
+    if (!confirmed) return;
+    removeFromCart(item.id, item.type);
+  };
+
+  const confirmClearCart = () => {
+    const confirmed = window.confirm('هل تريد تفريغ السلة بالكامل؟ ستحتاج لإضافة العناصر مرة أخرى قبل الشراء.');
+    if (!confirmed) return;
+    clearCart();
+  };
+
   if (!cartItems.length) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-10" dir="rtl">
@@ -59,7 +71,8 @@ const Cart: React.FC = () => {
         <h1 className="text-2xl font-black text-gray-900">سلة المشتريات</h1>
         <button
           type="button"
-          onClick={clearCart}
+          data-testid="cart-clear-confirm"
+          onClick={confirmClearCart}
           className="rounded-xl border border-rose-200 px-4 py-2 text-xs font-black text-rose-700 hover:bg-rose-50"
         >
           تفريغ السلة
@@ -91,7 +104,8 @@ const Cart: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={() => removeFromCart(item.id, item.type)}
+                data-testid="cart-remove-confirm"
+                onClick={() => confirmRemoveItem(item)}
                 className="inline-flex items-center gap-1 rounded-xl border border-gray-200 px-4 py-2 text-xs font-black text-gray-600 hover:bg-gray-50"
               >
                 <Trash2 size={14} />

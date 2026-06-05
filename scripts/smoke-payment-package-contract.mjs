@@ -5,6 +5,7 @@ const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const paymentModalSource = read('components/PaymentModal.tsx');
+const cartSource = read('pages/Cart.tsx');
 const learningSectionSource = read('components/LearningSection.tsx');
 const pathPageSource = read('pages/GenericPathPage.tsx');
 const paymentModelSource = read('server/src/models/PaymentRequest.ts');
@@ -128,6 +129,17 @@ check('payment action errors stay visible and announced in the modal', () => {
   assertIncludes(paymentModalSource, 'actionErrorRef.current?.scrollIntoView({ behavior: \'smooth\', block: \'nearest\' })');
   assertIncludes(paymentModalSource, "step !== 'success' && renderActionError()");
   assertIncludes(paymentModalSource, 'sticky top-0 z-20 mb-4');
+});
+
+check('cart removal actions require confirmation before losing purchase items', () => {
+  assertIncludes(cartSource, 'data-testid="cart-remove-confirm"');
+  assertIncludes(cartSource, 'data-testid="cart-clear-confirm"');
+  assertIncludes(cartSource, 'confirmRemoveItem');
+  assertIncludes(cartSource, 'confirmClearCart');
+  assertIncludes(cartSource, 'window.confirm(`هل تريد حذف');
+  assertIncludes(cartSource, "window.confirm('هل تريد تفريغ السلة بالكامل");
+  assertIncludes(cartSource, 'removeFromCart(item.id, item.type)');
+  assertIncludes(cartSource, 'clearCart()');
 });
 
 check('path package tab includes global memberships without path binding', () => {
