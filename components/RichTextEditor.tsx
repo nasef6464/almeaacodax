@@ -15,6 +15,115 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
+const WORD_PASTE_PATTERN = /(?:class="?Mso|mso-|<o:p|xmlns:o|urn:schemas-microsoft-com:office:word|<!--\[if)/i;
+const RICH_PASTE_PATTERN = /<(table|img)\b/i;
+const SAFE_WORD_STYLE_PROPERTIES = new Set([
+  'text-align',
+  'direction',
+  'vertical-align',
+  'border',
+  'border-collapse',
+  'padding',
+  'background',
+  'background-color',
+  'color',
+  'font-weight',
+  'font-style',
+  'text-decoration',
+  'width',
+  'height',
+]);
+
+const cleanInlineStyle = (style: string) =>
+  style
+    .split(';')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .filter((item) => {
+      const [rawProperty, ...rawValue] = item.split(':');
+      const property = rawProperty?.trim().toLowerCase();
+      const value = rawValue.join(':').trim().toLowerCase();
+
+      if (!property || property.startsWith('mso-')) return false;
+      if (!SAFE_WORD_STYLE_PROPERTIES.has(property)) return false;
+      return !/(expression\s*\(|javascript:|vbscript:|data:text\/html)/i.test(value);
+    })
+    .join('; ');
+
+const unwrapElement = (element: Element) => {
+  const parent = element.parentNode;
+  if (!parent) return;
+
+  while (element.firstChild) {
+    parent.insertBefore(element.firstChild, element);
+  }
+  parent.removeChild(element);
+};
+
+const insertCleanedHtmlDirectly = (root: HTMLElement, html: string) => {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const fragment = template.content;
+  const selection = window.getSelection();
+  const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+  const commonAncestor = range?.commonAncestorContainer;
+  const canInsertAtSelection = Boolean(commonAncestor && root.contains(commonAncestor));
+
+  root.focus();
+  if (range && canInsertAtSelection) {
+    range.deleteContents();
+    range.insertNode(fragment);
+    selection?.removeAllRanges();
+    return;
+  }
+
+  root.append(fragment);
+};
+
+const cleanWordPasteHtml = (html: string) => {
+  if (typeof window === 'undefined' || !html.trim()) return normalizeQuestionHtml(html);
+
+  const source = html
+    .replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '')
+    .replace(/<xml[\s\S]*?<\/xml>/gi, '')
+    .replace(/<\/?o:[^>]*>/gi, '')
+    .replace(/\sxmlns(?::\w+)?=(["'])[\s\S]*?\1/gi, '');
+
+  const document = new DOMParser().parseFromString(source, 'text/html');
+
+  document.body.querySelectorAll('*').forEach((element) => {
+    Array.from(element.attributes).forEach((attribute) => {
+      const name = attribute.name.toLowerCase();
+
+      if (name === 'class' && /\bMso/i.test(attribute.value)) {
+        element.removeAttribute(attribute.name);
+        return;
+      }
+
+      if (name === 'style') {
+        const cleanedStyle = cleanInlineStyle(attribute.value);
+        if (cleanedStyle) {
+          element.setAttribute('style', cleanedStyle);
+        } else {
+          element.removeAttribute(attribute.name);
+        }
+        return;
+      }
+
+      if (name.startsWith('xmlns') || name === 'lang' || name === 'face') {
+        element.removeAttribute(attribute.name);
+      }
+    });
+
+    const tagName = element.tagName.toLowerCase();
+    if (tagName === 'font' || (tagName === 'span' && !element.attributes.length)) {
+      unwrapElement(element);
+    }
+  });
+
+  return normalizeQuestionHtml(document.body.innerHTML);
+};
+
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
   const editorRef = useRef<ReactQuill | null>(null);
   const mathTemplates = useMemo(
@@ -39,6 +148,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
         [{ color: [] }, { background: [] }],
         ['clean'],
       ],
+      table: true,
       clipboard: {
         matchVisual: false,
       },
@@ -57,6 +167,28 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
   };
 
+  const handlePasteCapture = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const html = event.clipboardData.getData('text/html');
+    if (!html || (!WORD_PASTE_PATTERN.test(html) && !RICH_PASTE_PATTERN.test(html))) return;
+
+    const editor = editorRef.current?.getEditor();
+    const cleanedHtml = cleanWordPasteHtml(html);
+    if (!editor || !cleanedHtml) return;
+
+    event.preventDefault();
+    const range = editor.getSelection(true);
+    const insertAt = range?.index ?? editor.getLength();
+
+    if (/<table\b/i.test(cleanedHtml)) {
+      insertCleanedHtmlDirectly(editor.root, cleanedHtml);
+      onChange(normalizeQuestionHtml(editor.root.innerHTML));
+      return;
+    }
+
+    editor.clipboard.dangerouslyPasteHTML(insertAt, cleanedHtml, 'user');
+    onChange(normalizeQuestionHtml(editor.root.innerHTML));
+  };
+
   const formats = [
     'header',
     'direction',
@@ -72,12 +204,18 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     'image',
     'video',
     'formula',
+    'table',
     'color',
     'background',
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden" dir="ltr">
+    <div
+      className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+      data-testid="question-editor-word-paste"
+      dir="ltr"
+      onPasteCapture={handlePasteCapture}
+    >
       <div
         className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-slate-50 px-3 py-2"
         data-testid="question-editor-math-toolbar"

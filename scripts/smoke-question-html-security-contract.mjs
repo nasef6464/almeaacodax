@@ -69,6 +69,20 @@ check("rich text editor exposes Arabic-friendly math helpers", () => {
   assertIncludes(files.richTextEditor, "زاوية");
 });
 
+check("rich text editor cleans Word paste before insertion", () => {
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-word-paste"');
+  assertIncludes(files.richTextEditor, "cleanWordPasteHtml");
+  assertIncludes(files.richTextEditor, "insertCleanedHtmlDirectly");
+  assertIncludes(files.richTextEditor, "handlePasteCapture");
+  assertIncludes(files.richTextEditor, "clipboardData.getData('text/html')");
+  assertIncludes(files.richTextEditor, "dangerouslyPasteHTML");
+  assertIncludes(files.richTextEditor, "table: true");
+  assertIncludes(files.richTextEditor, "Mso");
+  assertIncludes(files.richTextEditor, "mso-");
+  assertIncludes(files.richTextEditor, "table");
+  assertIncludes(files.richTextEditor, "img");
+});
+
 check("learner question rendering keeps normalized HTML contract", () => {
   for (const [name, source] of Object.entries({
     quizPage: files.quizPage,
