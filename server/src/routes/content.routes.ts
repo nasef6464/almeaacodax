@@ -2295,13 +2295,14 @@ contentRouter.get(
 
     const schoolId = school.id || String(school._id);
 
+    const studentFilter = { schoolId, role: "student" };
     const [classes, packages, codes, students, totalStudents, activeStudents] = await Promise.all([
       GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 }).lean(),
       B2BPackageModel.find({ schoolId }).sort({ createdAt: -1 }).lean(),
       AccessCodeModel.find({ schoolId }).sort({ createdAt: -1 }).lean(),
-      UserModel.find({ schoolId }).select("id _id groupIds isActive").sort({ createdAt: -1 }).lean(),
-      UserModel.countDocuments({ schoolId }),
-      UserModel.countDocuments({ schoolId, isActive: { $ne: false } }),
+      UserModel.find(studentFilter).select("id _id groupIds isActive").sort({ createdAt: -1 }).lean(),
+      UserModel.countDocuments(studentFilter),
+      UserModel.countDocuments({ ...studentFilter, isActive: { $ne: false } }),
     ]);
 
     const studentIds = students.map(getModelDocumentId).filter(Boolean);
@@ -2500,7 +2501,7 @@ contentRouter.post(
       buildDocumentQuery(schoolId),
       {
         $addToSet: { studentIds: { $each: studentIds } },
-        $set: { totalStudents: await UserModel.countDocuments({ schoolId }) },
+        $set: { totalStudents: await UserModel.countDocuments({ schoolId, role: "student" }) },
       },
       { new: true },
     );
@@ -2509,7 +2510,7 @@ contentRouter.post(
     await Promise.all(
       latestClasses.map(async (group) => {
         const classId = group.id || String(group._id);
-        const count = await UserModel.countDocuments({ groupIds: classId });
+        const count = await UserModel.countDocuments({ role: "student", groupIds: classId });
         await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $set: { totalStudents: count } });
       }),
     );

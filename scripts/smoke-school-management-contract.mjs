@@ -8,7 +8,10 @@ const files = {
   api: await read("services/api.ts"),
   schools: await read("dashboards/admin/SchoolsManager.tsx"),
   store: await read("store/useStore.ts"),
+  packageJson: await read("package.json"),
+  schoolFromScratchAudit: await read("scripts/live-school-from-scratch-audit.mjs"),
 };
+const packageJson = JSON.parse(files.packageJson);
 
 const checks = [];
 
@@ -130,6 +133,29 @@ check("school operating blueprint explains commercial scope simply", () => {
   assertIncludes(files.schools, "الباقات والمسارات");
   assertIncludes(files.schools, "المدرسة هي العقد التجاري");
   assertIncludes(files.schools, "ضبط الصلاحيات");
+});
+
+check("school from scratch live audit is wired and cleans up", () => {
+  if (packageJson.scripts["smoke:school-from-scratch-live"] !== "node scripts/live-school-from-scratch-audit.mjs") {
+    throw new Error("Missing smoke:school-from-scratch-live package script");
+  }
+  assertIncludes(files.schoolFromScratchAudit, "create temporary school");
+  assertIncludes(files.schoolFromScratchAudit, "import one student into class");
+  assertIncludes(files.schoolFromScratchAudit, "apply parent and class supervisor relations");
+  assertIncludes(files.schoolFromScratchAudit, "create school package with path scope");
+  assertIncludes(files.schoolFromScratchAudit, "create school access code");
+  assertIncludes(files.schoolFromScratchAudit, "school report sees new commercial setup");
+  assertIncludes(files.schoolFromScratchAudit, "cleanupRequest");
+});
+
+check("school reports count students only", () => {
+  assertIncludes(files.routes, 'const studentFilter = { schoolId, role: "student" };');
+  assertIncludes(files.routes, "UserModel.find(studentFilter)");
+  assertIncludes(files.routes, "UserModel.countDocuments(studentFilter)");
+  assertIncludes(files.routes, 'UserModel.countDocuments({ schoolId, role: "student" })');
+  assertIncludes(files.routes, 'UserModel.countDocuments({ role: "student", groupIds: classId })');
+  assertIncludes(files.schoolFromScratchAudit, "metrics.totalStudents === 1");
+  assertIncludes(files.schoolFromScratchAudit, "metrics.activeStudents === 1");
 });
 
 check("school supervisor links preserve school scope", () => {

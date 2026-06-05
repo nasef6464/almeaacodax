@@ -90,6 +90,7 @@
         "smoke:supervisor-dashboard": "node scripts/smoke-supervisor-dashboard-contract.mjs",
         "smoke:supervisor-school-live": "node scripts/live-supervisor-school-command-audit.mjs",
         "smoke:supervisor-executive-snapshot-live": "node scripts/live-supervisor-executive-snapshot-audit.mjs",
+        "smoke:school-from-scratch-live": "node scripts/live-school-from-scratch-audit.mjs",
         "repair:supervisor-school-scope": "node scripts/repair-live-supervisor-school-scope.mjs",
         "smoke:school-management": "node scripts/smoke-school-management-contract.mjs",
         "smoke:admin-school-command": "node scripts/smoke-admin-school-command-center-contract.mjs",
