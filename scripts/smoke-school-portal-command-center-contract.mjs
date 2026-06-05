@@ -6,9 +6,11 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 
 const schoolPortal = read("dashboards/admin/SchoolPortalManager.tsx");
 const adminDashboard = read("dashboards/admin/AdminDashboard.tsx");
+const authContext = read("contexts/AuthContext.tsx");
 const packageJson = JSON.parse(read("package.json"));
 const liveSupervisorSchoolAudit = read("scripts/live-supervisor-school-command-audit.mjs");
 const liveExecutiveSnapshotAudit = read("scripts/live-supervisor-executive-snapshot-audit.mjs");
+const supervisorScopeRepair = read("scripts/repair-live-supervisor-school-scope.mjs");
 
 const checks = [
   {
@@ -17,6 +19,13 @@ const checks = [
       schoolPortal.includes("مركز قرارات المشرف") &&
       schoolPortal.includes("ماذا أفعل الآن؟") &&
       schoolPortal.includes("أدوات سريعة للمتابعة اليومية"),
+  },
+  {
+    name: "auth hydration preserves school and class scope for supervisors",
+    ok:
+      authContext.includes("schoolId: backendUser?.schoolId ?? existing.schoolId") &&
+      authContext.includes("groupIds: backendUser?.groupIds ?? existing.groupIds") &&
+      authContext.includes("isActive: backendUser?.isActive ?? existing.isActive"),
   },
   {
     name: "school portal supports daily operational actions",
@@ -113,13 +122,21 @@ const checks = [
     name: "executive snapshot has a dedicated live action audit",
     ok:
       packageJson.scripts["smoke:supervisor-executive-snapshot-live"] === "node scripts/live-supervisor-executive-snapshot-audit.mjs" &&
+      packageJson.scripts["repair:supervisor-school-scope"] === "node scripts/repair-live-supervisor-school-scope.mjs" &&
       packageJson.scripts["smoke:goal-live-core"].includes("smoke:supervisor-executive-snapshot-live") &&
+      liveExecutiveSnapshotAudit.includes("ALLOW_ADMIN_FALLBACK") &&
+      liveExecutiveSnapshotAudit.includes('candidate.role === "admin" && !ALLOW_ADMIN_FALLBACK') &&
       liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-executive-decision-snapshot"]') &&
       liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-best-class"]') &&
       liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-weakest-class"]') &&
       liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-shared-weak-skill"]') &&
       liveExecutiveSnapshotAudit.includes("intent=intervention") &&
-      liveExecutiveSnapshotAudit.includes("horizontalOverflow"),
+      liveExecutiveSnapshotAudit.includes("horizontalOverflow") &&
+      supervisorScopeRepair.includes("supervisor.school@almeaa.local") &&
+      supervisorScopeRepair.includes("supervisor.group@almeaa.local") &&
+      supervisorScopeRepair.includes("repair:supervisor-school-scope") === false &&
+      supervisorScopeRepair.includes("/content/groups") &&
+      supervisorScopeRepair.includes("/auth/admin/users/"),
   },
   {
     name: "announcement ads have a live preview path",

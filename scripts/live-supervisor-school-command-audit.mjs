@@ -25,9 +25,19 @@ if (fs.existsSync(CREDENTIALS_FILE)) {
 
 const ROLE_CANDIDATES = [
   {
+    role: "school-supervisor",
+    email: process.env.ROLE_SCHOOL_SUPERVISOR_EMAIL || "supervisor.school@almeaa.local",
+    password: process.env.ROLE_SCHOOL_SUPERVISOR_PASSWORD || "Supervisor@123",
+  },
+  {
     role: "supervisor",
     email: process.env.ROLE_SUPERVISOR_EMAIL || process.env.SUPERVISOR_EMAIL,
     password: process.env.ROLE_SUPERVISOR_PASSWORD || process.env.SUPERVISOR_PASSWORD,
+  },
+  {
+    role: "group-supervisor",
+    email: "supervisor.group@almeaa.local",
+    password: "Supervisor@123",
   },
   {
     role: "admin",
@@ -39,7 +49,10 @@ const ROLE_CANDIDATES = [
     email: process.env.ROLE_TEACHER_EMAIL || process.env.TEACHER_EMAIL,
     password: process.env.ROLE_TEACHER_PASSWORD || process.env.TEACHER_PASSWORD,
   },
-].filter((item) => item.email && item.password);
+].filter((item, index, items) => {
+  if (!item.email || !item.password) return false;
+  return items.findIndex((candidate) => String(candidate.email).toLowerCase() === String(item.email).toLowerCase()) === index;
+});
 
 const ROUTES = [
   {

@@ -7,6 +7,7 @@ const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaa
 const RUN_ID = process.env.SUPERVISOR_EXECUTIVE_SNAPSHOT_AUDIT_RUN_ID || `supervisor-executive-snapshot-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
+const ALLOW_ADMIN_FALLBACK = process.env.SUPERVISOR_EXECUTIVE_SNAPSHOT_ALLOW_ADMIN_FALLBACK === "1";
 const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 1000 },
   { name: "mobile", width: 390, height: 844 },
@@ -25,16 +26,30 @@ if (fs.existsSync(CREDENTIALS_FILE)) {
 
 const ROLE_CANDIDATES = [
   {
+    role: "school-supervisor",
+    email: process.env.ROLE_SCHOOL_SUPERVISOR_EMAIL || "supervisor.school@almeaa.local",
+    password: process.env.ROLE_SCHOOL_SUPERVISOR_PASSWORD || "Supervisor@123",
+  },
+  {
     role: "supervisor",
     email: process.env.ROLE_SUPERVISOR_EMAIL || process.env.SUPERVISOR_EMAIL,
     password: process.env.ROLE_SUPERVISOR_PASSWORD || process.env.SUPERVISOR_PASSWORD,
+  },
+  {
+    role: "group-supervisor",
+    email: "supervisor.group@almeaa.local",
+    password: "Supervisor@123",
   },
   {
     role: "admin",
     email: process.env.ROLE_ADMIN_EMAIL || process.env.SMOKE_ADMIN_EMAIL || process.env.ADMIN_EMAIL,
     password: process.env.ROLE_ADMIN_PASSWORD || process.env.SMOKE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD,
   },
-].filter((candidate) => candidate.email && candidate.password);
+].filter((candidate, index, candidates) => {
+  if (!candidate.email || !candidate.password) return false;
+  if (candidate.role === "admin" && !ALLOW_ADMIN_FALLBACK) return false;
+  return candidates.findIndex((item) => String(item.email).toLowerCase() === String(candidate.email).toLowerCase()) === index;
+});
 
 const REQUIRED_SELECTORS = [
   '[data-testid="supervisor-executive-decision-snapshot"]',
