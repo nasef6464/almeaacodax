@@ -103,6 +103,16 @@ assertIncludes(
   "placeholder=\"ابحث في نص السؤال...\"",
   'Question bank must keep the visible search filter.',
 );
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
+  'data-testid="question-row-media-preview"',
+  'Question bank rows must show a visual preview when a question has media but no text.',
+);
+assertIncludes(
+  'dashboards/admin/QuestionBankManager.tsx',
+  'alt="معاينة صورة السؤال"',
+  'Question media preview must have a clear accessible label.',
+);
 
 assertIncludes(
   'server/src/routes/quiz.routes.ts',
