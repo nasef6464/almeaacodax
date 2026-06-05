@@ -366,7 +366,7 @@ try {
     ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
     ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
     ["my-quizzes", targets.routes.myQuizzes, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "افتح التحليل", "اختبار", "تقرير"] }],
-    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"] }],
+    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"], requiredSelectors: ['[data-testid="student-today-learning-loop"]', '[data-testid="student-today-learning-loop-actions"]'] }],
     ["student-plan", targets.routes.plan, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "جلسة اليوم", "تدريب", "راجع", "أعد القياس"] }],
   ].filter(([, route]) => Boolean(route));
 

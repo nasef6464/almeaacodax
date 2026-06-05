@@ -668,7 +668,34 @@ const Reports: React.FC = () => {
     }, [focusedReportSkills, lessons, quizzes, libraryItems, questions, skills, topics]);
     const studentTodayFocus = studentWeeklyPlan[0] || null;
     const studentQuickActions = useMemo(() => {
-        if (!studentTodayFocus) return [];
+        if (!studentTodayFocus) {
+            return [
+                {
+                    title: 'ابدأ بقياس قصير',
+                    body: 'اختبار ساهر يحدد أول مهارة تحتاج تركيزًا.',
+                    label: 'اختبار ساهر',
+                    link: '/dashboard?tab=saher',
+                    Icon: CheckCircle,
+                    className: 'border-emerald-100 bg-emerald-50 text-emerald-800',
+                },
+                {
+                    title: 'استعرض الشروح',
+                    body: 'افتح موضوع تأسيس مناسب بعد أول قياس.',
+                    label: 'الشروحات',
+                    link: '/courses',
+                    Icon: Video,
+                    className: 'border-indigo-100 bg-indigo-50 text-indigo-800',
+                },
+                {
+                    title: 'حل تدريب قصير',
+                    body: 'تدريب سريع بعد ظهور المهارة الأضعف.',
+                    label: 'اختيار تدريب',
+                    link: '/my-quizzes',
+                    Icon: FileText,
+                    className: 'border-amber-100 bg-amber-50 text-amber-800',
+                },
+            ];
+        }
 
         return [
             {
@@ -701,6 +728,42 @@ const Reports: React.FC = () => {
             },
         ];
     }, [studentTodayFocus]);
+    const studentTodayLearningLoop = useMemo(() => {
+        if (!studentTodayFocus) {
+            return {
+                skillName: 'ابدأ بقياس قصير',
+                mastery: 0,
+                evidenceLabel: 'لا توجد بيانات كافية بعد',
+                readinessLabel: 'قياس البداية',
+                steps: studentQuickActions.map((action, index) => ({
+                    ...action,
+                    step: index + 1,
+                })),
+            };
+        }
+
+        const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
+        const mastery = Number(studentTodayFocus.mastery || 0);
+        const evidenceLabel = studentTodayFocus.isReliable
+            ? `${studentTodayFocus.attempts} محاولات`
+            : `قراءة أولية من ${studentTodayFocus.attempts} محاولة`;
+        const readinessLabel = mastery >= 75
+            ? 'جاهز للتثبيت'
+            : mastery >= 50
+                ? 'راجع ثم قِس'
+                : 'ابدأ من الشرح';
+
+        return {
+            skillName,
+            mastery,
+            evidenceLabel,
+            readinessLabel,
+            steps: studentQuickActions.map((action, index) => ({
+                ...action,
+                step: index + 1,
+            })),
+        };
+    }, [studentQuickActions, studentTodayFocus]);
     const compactStudentSkillRows = useMemo(() => {
         return focusedReportSkills.slice(0, 5).map((skill) => {
             const recommendation = getSkillRecommendation(skill, skills, lessons, quizzes, libraryItems, questions, topics);
@@ -3019,6 +3082,57 @@ const Reports: React.FC = () => {
                                 <CheckCircle size={15} />
                                 قياس جديد
                             </Link>
+                        </div>
+                    </div>
+                </Card>
+            ) : null}
+
+            {studentTodayLearningLoop ? (
+                <Card className="p-3 sm:p-4 border border-slate-100 bg-white shadow-sm" data-testid="student-today-learning-loop">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-black text-indigo-700">
+                                    خطة اليوم
+                                </span>
+                                <span className="rounded-full bg-slate-50 px-3 py-1 text-[11px] font-black text-slate-600">
+                                    {studentTodayLearningLoop.readinessLabel}
+                                </span>
+                                <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black text-slate-500 ring-1 ring-slate-100">
+                                    {studentTodayLearningLoop.evidenceLabel}
+                                </span>
+                            </div>
+                            <h2 className="mt-2 text-lg font-black leading-7 text-gray-900">
+                                {studentTodayLearningLoop.skillName}
+                            </h2>
+                            <p className="mt-1 text-xs font-bold text-gray-500">
+                                اتبع الترتيب فقط: شرح، تدريب، قياس. لا تحتاج تفتح كل التقرير الآن.
+                            </p>
+                        </div>
+                        <div className="print-hide grid gap-2 sm:grid-cols-3 lg:min-w-[560px]" data-testid="student-today-learning-loop-actions">
+                            {studentTodayLearningLoop.steps.map((action) => {
+                                const Icon = action.Icon;
+
+                                return (
+                                    <Link
+                                        key={`${action.title}-${action.step}`}
+                                        to={action.link}
+                                        className={`group rounded-2xl border p-3 transition hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
+                                    >
+                                        <div className="flex items-center justify-between gap-2">
+                                            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-white text-xs font-black shadow-sm">
+                                                {action.step}
+                                            </span>
+                                            <Icon size={16} />
+                                        </div>
+                                        <div className="mt-2 text-sm font-black">{action.title}</div>
+                                        <div className="mt-1 line-clamp-1 text-[11px] font-bold opacity-80">{action.body}</div>
+                                        <div className="mt-2 text-[11px] font-black underline-offset-4 group-hover:underline">
+                                            {action.label}
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
                 </Card>
