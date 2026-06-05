@@ -21,7 +21,7 @@
         "smoke:student-learning-journey": "node scripts/smoke-student-learning-journey.mjs",
         "smoke:student-learning-live": "node scripts/live-student-learning-deep-audit.mjs",
         "smoke:global-student-journey": "node scripts/smoke-global-student-journey-contract.mjs",
-        "smoke:goal-live-core": "npm run smoke:global-student-journey && npm run smoke:barcode-public-tests && npm run smoke:student-learning-live && npm run smoke:role-pages-live && npm run smoke:report-actions-live && npm run smoke:supervisor-school-live && npm run smoke:supervisor-executive-snapshot-live && npm run smoke:barcode-public-tests-live",
+        "smoke:goal-live-core": "npm run smoke:global-student-journey && npm run smoke:barcode-public-tests && npm run smoke:student-learning-live && npm run smoke:role-pages-live && npm run smoke:report-actions-live && npm run smoke:supervisor-school-live && npm run smoke:supervisor-executive-snapshot-live && npm run smoke:school-from-scratch-live && npm run smoke:barcode-public-tests-live",
         "smoke:goal-live-core-contract": "node scripts/smoke-goal-live-core-contract.mjs",
         "smoke:role-pages-live": "node scripts/live-role-pages-audit.mjs",
         "smoke:report-actions-live": "node scripts/live-report-actions-audit.mjs",

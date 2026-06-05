@@ -7,6 +7,7 @@ const files = {
   roleLive: await readFile(new URL("./live-role-pages-audit.mjs", import.meta.url), "utf8"),
   reportActionsLive: await readFile(new URL("./live-report-actions-audit.mjs", import.meta.url), "utf8"),
   supervisorLive: await readFile(new URL("./live-supervisor-school-command-audit.mjs", import.meta.url), "utf8"),
+  schoolFromScratchLive: await readFile(new URL("./live-school-from-scratch-audit.mjs", import.meta.url), "utf8"),
   barcodeContract: await readFile(new URL("./smoke-barcode-public-tests-contract.mjs", import.meta.url), "utf8"),
   barcodeLive: await readFile(new URL("./live-barcode-public-tests-audit.mjs", import.meta.url), "utf8"),
 };
@@ -40,6 +41,7 @@ check("core goal live gate is wired as one command", () => {
     "smoke:role-pages-live",
     "smoke:report-actions-live",
     "smoke:supervisor-school-live",
+    "smoke:school-from-scratch-live",
     "smoke:barcode-public-tests-live",
   ]);
 });
@@ -133,6 +135,18 @@ check("supervisor live gate covers school command center and directed quiz analy
   assertIncludes(files.supervisorLive, "VIEWPORTS");
   assertIncludes(files.supervisorLive, 'name: "mobile"');
   assertIncludes(files.supervisorLive, "horizontalOverflow");
+});
+
+check("school commercial live gate creates and cleans a school from scratch", () => {
+  assertScriptIncludes("smoke:goal-live-core", ["smoke:school-from-scratch-live"]);
+  assertIncludes(files.schoolFromScratchLive, "create temporary school");
+  assertIncludes(files.schoolFromScratchLive, "create class under school");
+  assertIncludes(files.schoolFromScratchLive, "import one student into class");
+  assertIncludes(files.schoolFromScratchLive, "apply parent and class supervisor relations");
+  assertIncludes(files.schoolFromScratchLive, "create school package with path scope");
+  assertIncludes(files.schoolFromScratchLive, "create school access code");
+  assertIncludes(files.schoolFromScratchLive, "metrics.totalStudents === 1");
+  assertIncludes(files.schoolFromScratchLive, "cleanupStaleAuditData");
 });
 
 check("barcode contract keeps direct QR tests as a separate real-test system", () => {
