@@ -1,8 +1,10 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { PencilRuler } from 'lucide-react';
+import { QuestionDrawingPad } from './QuestionDrawingPad';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 
 if (typeof window !== 'undefined') {
@@ -126,6 +128,7 @@ const cleanWordPasteHtml = (html: string) => {
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
   const editorRef = useRef<ReactQuill | null>(null);
+  const [showDrawingPad, setShowDrawingPad] = useState(false);
   const mathTemplates = useMemo(
     () => [
       { label: 'كسر', value: ' (البسط)/(المقام) ' },
@@ -164,6 +167,17 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     const insertAt = range?.index ?? editor.getLength();
     editor.insertText(insertAt, template, 'user');
     editor.setSelection(insertAt + template.length, 0, 'silent');
+    onChange(normalizeQuestionHtml(editor.root.innerHTML));
+  };
+
+  const insertDrawingImage = (dataUrl: string) => {
+    const editor = editorRef.current?.getEditor();
+    if (!editor) return;
+
+    const range = editor.getSelection(true);
+    const insertAt = range?.index ?? editor.getLength();
+    editor.insertEmbed(insertAt, 'image', dataUrl, 'user');
+    editor.setSelection(insertAt + 1, 0, 'silent');
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
   };
 
@@ -233,7 +247,22 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
             {template.label}
           </button>
         ))}
+        <button
+          type="button"
+          onClick={() => setShowDrawingPad((current) => !current)}
+          className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-black ${
+            showDrawingPad
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'
+          }`}
+          data-testid="question-editor-drawing-toggle"
+          title="فتح لوحة الرسم"
+        >
+          <PencilRuler className="h-3.5 w-3.5" />
+          رسم
+        </button>
       </div>
+      {showDrawingPad ? <QuestionDrawingPad onInsertImage={insertDrawingImage} /> : null}
       <ReactQuill
         ref={editorRef}
         theme="snow"

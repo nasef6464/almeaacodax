@@ -13,6 +13,7 @@ const files = {
   favorites: await read("pages/Favorites.tsx"),
   videoPlayer: await read("components/CustomVideoPlayer.tsx"),
   richTextEditor: await read("components/RichTextEditor.tsx"),
+  questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
 };
 
 const checks = [];
@@ -81,6 +82,21 @@ check("rich text editor cleans Word paste before insertion", () => {
   assertIncludes(files.richTextEditor, "mso-");
   assertIncludes(files.richTextEditor, "table");
   assertIncludes(files.richTextEditor, "img");
+});
+
+check("rich text editor supports drawing simple math diagrams", () => {
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-drawing-toggle"');
+  assertIncludes(files.richTextEditor, "insertDrawingImage");
+  assertIncludes(files.richTextEditor, "insertEmbed(insertAt, 'image', dataUrl");
+  assertIncludes(files.richTextEditor, "QuestionDrawingPad");
+  assertIncludes(files.questionDrawingPad, 'data-testid="question-editor-drawing-pad"');
+  assertIncludes(files.questionDrawingPad, 'data-testid="question-editor-drawing-canvas"');
+  assertIncludes(files.questionDrawingPad, 'data-testid="question-editor-insert-drawing"');
+  assertIncludes(files.questionDrawingPad, "freehand");
+  assertIncludes(files.questionDrawingPad, "rectangle");
+  assertIncludes(files.questionDrawingPad, "circle");
+  assertIncludes(files.questionDrawingPad, "angle");
+  assertIncludes(files.questionDrawingPad, "toDataURL('image/png')");
 });
 
 check("learner question rendering keeps normalized HTML contract", () => {
