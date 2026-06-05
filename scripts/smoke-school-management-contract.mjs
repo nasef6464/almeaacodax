@@ -120,6 +120,18 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "setActiveTab('relations')");
 });
 
+check("school operating blueprint explains commercial scope simply", () => {
+  assertIncludes(files.schools, "schoolOperatingBlueprint");
+  assertIncludes(files.schools, 'data-testid="school-operating-blueprint"');
+  assertIncludes(files.schools, "خريطة تشغيل المدرسة");
+  assertIncludes(files.schools, "من يدير ماذا؟ ومن يرى ماذا؟");
+  assertIncludes(files.schools, "مدير المدرسة");
+  assertIncludes(files.schools, "مشرف الفصل");
+  assertIncludes(files.schools, "الباقات والمسارات");
+  assertIncludes(files.schools, "المدرسة هي العقد التجاري");
+  assertIncludes(files.schools, "ضبط الصلاحيات");
+});
+
 check("school supervisor links preserve school scope", () => {
   assertIncludes(files.store, "const nextSchoolId = targetGroup.type === 'SCHOOL'");
   assertIncludes(files.store, "schoolId: nextSchoolId || null");

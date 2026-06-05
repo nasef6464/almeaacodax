@@ -1376,6 +1376,48 @@ export const SchoolsManager: React.FC = () => {
                 buttonLabel: 'فتح التقارير',
             },
         ];
+        const schoolOperatingBlueprint = [
+            {
+                title: 'مدير المدرسة',
+                scope: 'يرى المدرسة كاملة',
+                detail: `${schoolLevelSupervisors.length} حساب بصلاحية المدرسة كاملة`,
+                action: schoolLevelSupervisors.length > 0 ? 'راجع النطاق' : 'اربط مدير/مشرف عام',
+                tab: 'relations' as const,
+                isReady: schoolLevelSupervisors.length > 0,
+            },
+            {
+                title: 'مشرف الفصل',
+                scope: 'يرى الفصول المحددة فقط',
+                detail: `${classScopedSupervisors.length} مشرف فصل`,
+                action: classScopedSupervisors.length > 0 ? 'راجع الفصول' : 'اربط مشرفا بفصل',
+                tab: 'relations' as const,
+                isReady: classScopedSupervisors.length > 0,
+            },
+            {
+                title: 'الطلاب',
+                scope: 'كل طالب داخل مدرسة وفصل',
+                detail: studentsWithoutClass.length > 0 ? `${studentsWithoutClass.length} طالب بلا فصل` : `${schoolStudents.length} طالب مصنف`,
+                action: studentsWithoutClass.length > 0 || schoolStudents.length === 0 ? 'أضف/صنف الطلاب' : 'تصدير كشف الطلاب',
+                tab: schoolStudents.length === 0 ? 'import' as const : 'overview' as const,
+                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
+            },
+            {
+                title: 'الباقات والمسارات',
+                scope: 'تفتح محتوى المدرسة حسب التعاقد',
+                detail: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'لا توجد باقة نشطة',
+                action: activeSchoolPackages.length > 0 ? 'راجع الأكواد' : 'أنشئ باقة مدرسية',
+                tab: 'packages' as const,
+                isReady: activeSchoolPackages.length > 0,
+            },
+            {
+                title: 'التقارير',
+                scope: 'إدارة ومشرف وفصول وطلاب',
+                detail: schoolReport && schoolReport.metrics.quizAttempts > 0 ? `${schoolReport.metrics.quizAttempts} محاولة` : 'تظهر بعد أول اختبار',
+                action: 'فتح تقارير الأداء',
+                tab: 'reports' as const,
+                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
+            },
+        ];
         const schoolLaunchPlan = [
             ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
             ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
@@ -2365,6 +2407,56 @@ export const SchoolsManager: React.FC = () => {
                                     className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
                                 >
                                     {step.buttonLabel}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div data-testid="school-operating-blueprint" className="rounded-2xl border border-slate-100 bg-slate-950 p-5 text-white shadow-sm">
+                    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">
+                                <ShieldCheck size={14} />
+                                خريطة تشغيل المدرسة
+                            </div>
+                            <h2 className="mt-3 text-lg font-black">من يدير ماذا؟ ومن يرى ماذا؟</h2>
+                            <p className="mt-1 text-sm font-bold leading-6 text-slate-300">
+                                المدرسة هي العقد التجاري، الفصول هي نطاق المتابعة، والباقة هي ما يفتح المحتوى للطلاب.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('relations')}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-900 transition-colors hover:bg-amber-100"
+                        >
+                            <Users size={16} />
+                            ضبط الصلاحيات
+                        </button>
+                    </div>
+                    <div className="grid gap-3 lg:grid-cols-5">
+                        {schoolOperatingBlueprint.map((item) => (
+                            <div
+                                key={item.title}
+                                data-testid={`school-operating-blueprint-${item.title}`}
+                                className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                            >
+                                <div className="mb-3 flex items-center justify-between gap-2">
+                                    <span className="text-sm font-black text-white">{item.title}</span>
+                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
+                                        item.isReady ? 'bg-emerald-400/15 text-emerald-200' : 'bg-amber-400/15 text-amber-200'
+                                    }`}>
+                                        {item.isReady ? 'جاهز' : 'ناقص'}
+                                    </span>
+                                </div>
+                                <p className="text-xs font-bold leading-6 text-slate-300">{item.scope}</p>
+                                <p className="mt-2 text-sm font-black text-white">{item.detail}</p>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveTab(item.tab)}
+                                    className="mt-3 w-full rounded-xl bg-white/10 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-white hover:text-slate-900"
+                                >
+                                    {item.action}
                                 </button>
                             </div>
                         ))}
