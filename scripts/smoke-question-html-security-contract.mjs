@@ -12,6 +12,7 @@ const files = {
   results: await read("pages/Results.tsx"),
   favorites: await read("pages/Favorites.tsx"),
   videoPlayer: await read("components/CustomVideoPlayer.tsx"),
+  richTextEditor: await read("components/RichTextEditor.tsx"),
 };
 
 const checks = [];
@@ -56,6 +57,16 @@ check("admin question previews use normalized HTML", () => {
   assertNotIncludes(files.questionBank, "__html: question.text");
   assertNotIncludes(files.questionBank, "__html: previewQuestion.text");
   assertNotIncludes(files.quizBuilder, "__html: q.text");
+});
+
+check("rich text editor exposes Arabic-friendly math helpers", () => {
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-math-toolbar"');
+  assertIncludes(files.richTextEditor, "insertMathTemplate");
+  assertIncludes(files.richTextEditor, "mathTemplates");
+  assertIncludes(files.richTextEditor, "كسر");
+  assertIncludes(files.richTextEditor, "جذر");
+  assertIncludes(files.richTextEditor, "أس");
+  assertIncludes(files.richTextEditor, "زاوية");
 });
 
 check("learner question rendering keeps normalized HTML contract", () => {
