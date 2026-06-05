@@ -37,6 +37,12 @@ function assertIncludes(source, fragment, message) {
   }
 }
 
+function assertNotIncludes(source, fragment, message) {
+  if (source.includes(fragment)) {
+    throw new Error(message || `Unexpected fragment: ${fragment}`);
+  }
+}
+
 function assertAnyIncludes(source, fragments, message) {
   if (!fragments.some((fragment) => source.includes(fragment))) {
     throw new Error(message || `Missing one of: ${fragments.join(' | ')}`);
@@ -66,11 +72,17 @@ check('student dashboard keeps one clear continuation area and learner shortcuts
 check('student next action strip is compact, reusable, and has one primary action', () => {
   assertIncludes(files.studentNextAction, 'StudentNextActionStripProps');
   assertIncludes(files.studentNextAction, 'خطوتك التالية');
+  assertIncludes(files.studentNextAction, 'data-testid="student-next-action-kicker"');
+  assertIncludes(files.studentNextAction, 'data-testid="student-next-action-title"');
+  assertIncludes(files.studentNextAction, 'data-testid="student-next-action-description"');
+  assertIncludes(files.studentNextAction, 'aria-live="polite"');
+  assertIncludes(files.studentNextAction, 'sm:p-4');
   assertIncludes(files.studentNextAction, 'primaryLabel');
   assertIncludes(files.studentNextAction, 'primaryHref');
   assertIncludes(files.studentNextAction, 'secondaryLabel');
   assertIncludes(files.studentNextAction, 'secondaryHref');
   assertIncludes(files.studentNextAction, 'aria-labelledby="student-next-action-title"');
+  assertNotIncludes(files.studentNextAction, 'Ø®Ø·ÙˆØªÙƒ');
 });
 
 check('student empty states use one compact design system pattern', () => {

@@ -6,6 +6,7 @@ type StudentNextActionStripProps = {
   description: string;
   primaryLabel: string;
   primaryHref: string;
+  kicker?: string;
   icon?: React.ReactNode;
   tone?: 'amber' | 'indigo' | 'rose' | 'emerald';
   secondaryLabel?: string;
@@ -40,6 +41,7 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
   description,
   primaryLabel,
   primaryHref,
+  kicker = 'خطوتك التالية',
   icon,
   tone = 'indigo',
   secondaryLabel,
@@ -48,19 +50,23 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
   const styles = toneStyles[tone];
 
   return (
-    <section aria-labelledby="student-next-action-title" data-testid="student-next-action-strip">
-      <div className={`rounded-2xl border p-4 shadow-sm ${styles.shell}`}>
+    <section aria-labelledby="student-next-action-title" data-testid="student-next-action-strip" aria-live="polite">
+      <div className={`rounded-2xl border p-3 shadow-sm sm:p-4 ${styles.shell}`}>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 items-start gap-3 text-right">
             <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
               {icon || <span className={`h-3 w-3 rounded-full ${styles.dot}`} />}
             </div>
             <div className="min-w-0">
-              <div className="mb-1 text-xs font-black text-gray-500">خطوتك التالية</div>
-              <h3 id="student-next-action-title" className="text-lg font-black leading-7 text-gray-900">
+              <div className="mb-1 text-xs font-black text-gray-500" data-testid="student-next-action-kicker">
+                {kicker}
+              </div>
+              <h3 id="student-next-action-title" data-testid="student-next-action-title" className="text-base font-black leading-7 text-gray-900 sm:text-lg">
                 {title}
               </h3>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-600">{description}</p>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-600" data-testid="student-next-action-description">
+                {description}
+              </p>
             </div>
           </div>
 
