@@ -101,6 +101,12 @@ check("role live gate covers every requested role on desktop and mobile before d
   assertIncludes(files.roleLive, "horizontalOverflow");
   assertIncludes(files.roleLive, "network5xx");
   assertIncludes(files.roleLive, "consoleErrors");
+  assertIncludes(files.roleLive, "ACTION_HINT_PATTERN");
+  assertIncludes(files.roleLive, "actionControlCount");
+  assertIncludes(files.roleLive, "missing visible action hint");
+  assertIncludes(files.roleLive, "MOJIBAKE_PATTERN");
+  assertIncludes(files.roleLive, "hasMojibakeText");
+  assertIncludes(files.roleLive, "visible mojibake text");
 });
 
 check("report action gate proves the important next action buttons by role", () => {
