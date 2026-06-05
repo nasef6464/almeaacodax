@@ -8,6 +8,7 @@ const schoolPortal = read("dashboards/admin/SchoolPortalManager.tsx");
 const adminDashboard = read("dashboards/admin/AdminDashboard.tsx");
 const packageJson = JSON.parse(read("package.json"));
 const liveSupervisorSchoolAudit = read("scripts/live-supervisor-school-command-audit.mjs");
+const liveExecutiveSnapshotAudit = read("scripts/live-supervisor-executive-snapshot-audit.mjs");
 
 const checks = [
   {
@@ -107,6 +108,18 @@ const checks = [
       liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=quizzes&source=school-portal&mode=central") &&
       liveSupervisorSchoolAudit.includes("actionControlCount") &&
       liveSupervisorSchoolAudit.includes("missingTextGroups"),
+  },
+  {
+    name: "executive snapshot has a dedicated live action audit",
+    ok:
+      packageJson.scripts["smoke:supervisor-executive-snapshot-live"] === "node scripts/live-supervisor-executive-snapshot-audit.mjs" &&
+      packageJson.scripts["smoke:goal-live-core"].includes("smoke:supervisor-executive-snapshot-live") &&
+      liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-executive-decision-snapshot"]') &&
+      liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-best-class"]') &&
+      liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-weakest-class"]') &&
+      liveExecutiveSnapshotAudit.includes('[data-testid="supervisor-shared-weak-skill"]') &&
+      liveExecutiveSnapshotAudit.includes("intent=intervention") &&
+      liveExecutiveSnapshotAudit.includes("horizontalOverflow"),
   },
   {
     name: "announcement ads have a live preview path",
