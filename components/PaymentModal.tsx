@@ -166,7 +166,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
 
     useEffect(() => {
         if (!actionError || !isOpen) return;
-        actionErrorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        actionErrorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        actionErrorRef.current?.focus({ preventScroll: true });
     }, [actionError, isOpen]);
 
     useEffect(() => {
@@ -524,7 +525,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             ref={actionErrorRef}
             data-testid="payment-action-error"
             role="alert"
-            className={`rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-right text-sm font-bold text-red-700 ${compact ? '' : 'shadow-sm'}`}
+            aria-live="assertive"
+            tabIndex={-1}
+            className={`rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-right text-sm font-bold text-red-700 outline-none focus:ring-2 focus:ring-red-300 ${compact ? '' : 'sticky top-0 z-20 mb-4 shadow-sm'}`}
         >
             {actionError}
         </div>
@@ -574,7 +577,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     ليس الآن
                 </button>
             </div>
-            {renderActionError()}
         </div>
     );
 
@@ -614,7 +616,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
             </div>
 
             {settings.notes && <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700 text-right">{settings.notes}</div>}
-            {renderActionError(true)}
             {settingsLoading && <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 text-right">جارٍ تحميل إعدادات الدفع...</div>}
             {!settingsLoading && enabledMethods.length === 0 && (
                 <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-right">
@@ -634,8 +635,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                 <ChevronLeft size={20} className="rotate-180" />
                 <span className="font-bold text-sm">العودة لطرق الدفع</span>
             </button>
-
-            {renderActionError(true)}
 
             {method === 'card' && (
                 <div className="space-y-4">
@@ -740,7 +739,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     )}
                 </div>
 
-                {renderActionError()}
                 <button onClick={() => void handlePayment()} disabled={loading} className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-700 transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50">
                     {loading ? (
                         <>
@@ -781,6 +779,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, ite
                     <X size={20} />
                 </button>
                 <div className="p-5 sm:p-8 md:p-12">
+                    {step !== 'success' && renderActionError()}
                     {step === 'intro' && renderIntro()}
                     {step === 'method' && renderMethodSelector()}
                     {step === 'details' && renderDetails()}

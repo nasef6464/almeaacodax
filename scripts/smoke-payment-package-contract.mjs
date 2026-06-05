@@ -119,6 +119,17 @@ check('locked learning sections can offer multiple matching public packages', ()
   assertIncludes(paymentModalSource, 'min-h-[108px]');
 });
 
+check('payment action errors stay visible and announced in the modal', () => {
+  assertIncludes(paymentModalSource, 'data-testid="payment-action-error"');
+  assertIncludes(paymentModalSource, 'role="alert"');
+  assertIncludes(paymentModalSource, 'aria-live="assertive"');
+  assertIncludes(paymentModalSource, 'tabIndex={-1}');
+  assertIncludes(paymentModalSource, 'actionErrorRef.current?.focus({ preventScroll: true })');
+  assertIncludes(paymentModalSource, 'actionErrorRef.current?.scrollIntoView({ behavior: \'smooth\', block: \'nearest\' })');
+  assertIncludes(paymentModalSource, "step !== 'success' && renderActionError()");
+  assertIncludes(paymentModalSource, 'sticky top-0 z-20 mb-4');
+});
+
 check('path package tab includes global memberships without path binding', () => {
   assertIncludes(pathPageSource, 'const packagePathId = c.pathId || c.category;');
   assertIncludes(pathPageSource, 'return !packagePathId || packagePathId === path.id;');
