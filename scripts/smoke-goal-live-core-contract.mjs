@@ -130,6 +130,10 @@ check("report action gate proves the important next action buttons by role", () 
   }
   assertIncludes(files.reportActionsLive, "VIEWPORTS");
   assertIncludes(files.reportActionsLive, 'name: "mobile"');
+  assertIncludes(files.reportActionsLive, "printProbeSelector");
+  assertIncludes(files.reportActionsLive, "printProbe");
+  assertIncludes(files.reportActionsLive, "wroteDocument");
+  assertIncludes(files.reportActionsLive, "printed");
   assertIncludes(files.reportActionsLive, "horizontalOverflow");
   assertIncludes(files.reportActionsLive, "network5xx");
 });

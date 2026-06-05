@@ -28,6 +28,9 @@ const roles = [
     role: "student",
     email: process.env.ROLE_STUDENT_EMAIL,
     password: process.env.ROLE_STUDENT_PASSWORD,
+    printProbeSelector: '[data-testid="student-report-export-pdf"]',
+    printProbeTitle: "تقرير الأداء",
+    printProbeText: "تقارير الأداء",
     requiredSelectors: [
       '[data-testid="student-next-action-strip"]',
       '[data-testid="student-next-action-primary"]',
@@ -149,6 +152,56 @@ async function inspectReports(page, role, viewport) {
     await page.goto(`${BASE_URL}/reports`, { waitUntil: "domcontentloaded", timeout: 60000 });
   });
   await page.waitForTimeout(1000);
+
+  let printProbe = null;
+  if (role.printProbeSelector) {
+    printProbe = await page.evaluate(({ selector, expectedTitle, expectedText }) => {
+      const originalOpen = window.open;
+      const probe = {
+        attempted: false,
+        wroteDocument: false,
+        printed: false,
+        titleFound: false,
+        textFound: false,
+        htmlLength: 0,
+      };
+      window.open = () => {
+        probe.attempted = true;
+        return {
+          document: {
+            open: () => undefined,
+            write: (html) => {
+              const printableHtml = String(html || "");
+              probe.wroteDocument = printableHtml.length > 500;
+              probe.titleFound = printableHtml.includes(expectedTitle);
+              probe.textFound = printableHtml.includes(expectedText);
+              probe.htmlLength = printableHtml.length;
+            },
+            close: () => undefined,
+          },
+          focus: () => undefined,
+          print: () => {
+            probe.printed = true;
+          },
+        };
+      };
+
+      const button = document.querySelector(selector);
+      if (button) button.click();
+
+      return new Promise((resolve) => {
+        window.setTimeout(() => {
+          window.open = originalOpen;
+          resolve(probe);
+        }, 700);
+      });
+    }, {
+      selector: role.printProbeSelector,
+      expectedTitle: role.printProbeTitle,
+      expectedText: role.printProbeText,
+    });
+  }
+
   page.off("console", onConsole);
   page.off("response", onResponse);
 
@@ -190,6 +243,7 @@ async function inspectReports(page, role, viewport) {
     !state.hasLoginForm &&
     state.bodyLength > 300 &&
     missingSelectors.length === 0 &&
+    (!role.printProbeSelector || (printProbe?.attempted && printProbe?.wroteDocument && printProbe?.printed && printProbe?.titleFound && printProbe?.textFound)) &&
     !layoutFailure &&
     network5xx.length === 0;
 
@@ -201,6 +255,7 @@ async function inspectReports(page, role, viewport) {
     consoleErrors,
     network5xx,
     missingSelectors,
+    printProbe,
     layoutFailure,
     ...state,
   };
@@ -260,7 +315,7 @@ fs.writeFileSync(
     ...loginResults.map((item) => `- ${item.ok ? "PASS" : "BLOCKED"} ${item.role}${item.reason ? ` - ${item.reason}` : ""}`),
     "",
     "## Actions",
-    ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport || "desktop"}: missing=${item.missingSelectors?.join(",") || "none"}, overflow=${item.layoutFailure || "none"}, network5xx=${item.network5xx?.length || 0}`),
+    ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport || "desktop"}: missing=${item.missingSelectors?.join(",") || "none"}, print=${item.printProbe ? `${item.printProbe.printed ? "printed" : "not-printed"}/${item.printProbe.htmlLength || 0}` : "none"}, overflow=${item.layoutFailure || "none"}, network5xx=${item.network5xx?.length || 0}`),
     "",
   ].join("\n"),
   "utf8",
