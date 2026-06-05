@@ -273,7 +273,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
   const screenshot = path.join(OUT_DIR, `${name}.png`);
   await page.screenshot({ path: screenshot, fullPage: true });
 
-  const state = await page.evaluate(({ expectedNextActions, requiredSelectors, actionGroupBudgets, nextActionStrip }) => {
+  const state = await page.evaluate(({ expectedNextActions, requiredSelectors, actionGroupBudgets, nextActionStrip, quizStepHint }) => {
     const text = document.body.innerText || "";
     const controls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
       const rect = el.getBoundingClientRect();
@@ -325,6 +325,14 @@ async function inspectRoute(page, name, route, expectations = {}) {
         stripProbe.primary.length <= 44 &&
         stripProbe.secondaryCount <= 1
       : true;
+    const quizHint = document.querySelector('[data-testid="quiz-current-step-hint"]');
+    const quizHintText = quizHint?.textContent?.trim() || "";
+    const quizHintStatus = quizStepHint
+      ? Boolean(quizHint) &&
+        quizHintText.length >= 20 &&
+        quizHintText.length <= 160 &&
+        /أجب|التالي|إنهاء/.test(quizHintText)
+      : true;
     return {
       href: location.href,
       title: document.title,
@@ -335,6 +343,8 @@ async function inspectRoute(page, name, route, expectations = {}) {
       actionGroupResults,
       nextActionStripProbe: stripProbe,
       nextActionStripStatus: stripStatus ? "PASS" : "FAIL",
+      quizStepHintProbe: quizStepHint ? { exists: Boolean(quizHint), text: quizHintText } : null,
+      quizStepHintStatus: quizHintStatus ? "PASS" : "FAIL",
       missingSelectors: (requiredSelectors || []).filter((selector) => !document.querySelector(selector)),
       nextActionTextFound: expectedNextActions.some((pattern) => text.includes(pattern)),
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
@@ -350,6 +360,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     requiredSelectors: expectations.requiredSelectors || [],
     actionGroupBudgets: expectations.actionGroupBudgets || [],
     nextActionStrip: Boolean(expectations.nextActionStrip),
+    quizStepHint: Boolean(expectations.quizStepHint),
   });
 
   const missingNextAction = expectations.requireNextAction !== false && state.actionControlCount < 1 && !state.nextActionTextFound;
@@ -363,6 +374,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     state.controlCount >= (expectations.minControls || 1) &&
     state.missingSelectors.length === 0 &&
     state.nextActionStripStatus === "PASS" &&
+    state.quizStepHintStatus === "PASS" &&
     actionGroupFailures.length === 0 &&
     !missingNextAction &&
     !(paymentProbe?.status === "checked" && (!paymentProbe.hasModal || !paymentProbe.hasAccessCodeInput || !paymentProbe.hasRedeemButton)) &&
@@ -410,8 +422,8 @@ try {
     ["student-paths", targets.routes.dashboardPaths, { minBodyLength: 500, minControls: 4, nextActions: ["متابعة المسار", "إلغاء التسجيل", "تسجيل"], requiredSelectors: ['[data-testid="student-path-unenroll"]'], unenrollConfirmProbe: true }],
     ["student-memberships-pricing", targets.routes.pricing, { minBodyLength: 420, minControls: 3, nextActions: ["ابدأ", "طلب", "عضوية", "باقة", "تفعيل"], requiredSelectors: ['[data-testid="pricing-memberships-page"]', '[data-testid="pricing-free-membership-start"]'], paymentProbe: true }],
     ["subject-skill-map", targets.routes.subject, { minBodyLength: 650, minControls: 8, nextActionStrip: true, requiredSelectors: ['[data-testid="student-next-action-strip"]', '[data-testid="student-next-action-primary"]'], nextActions: ["افتح", "ابدأ", "تدريب", "اختبار", "عرض الباقات"] }],
-    ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
-    ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
+    ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActionStrip: true, requiredSelectors: ['[data-testid="student-next-action-strip"]', '[data-testid="student-next-action-primary"]'], nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
+    ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, quizStepHint: true, requiredSelectors: ['[data-testid="quiz-current-step-hint"]'], nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
     ["my-quizzes", targets.routes.myQuizzes, { minBodyLength: 900, minControls: 8, nextActionStrip: true, requiredSelectors: ['[data-testid="student-next-action-strip"]', '[data-testid="student-next-action-primary"]'], nextActions: ["ابدأ", "افتح التحليل", "اختبار", "تقرير"] }],
     ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActionStrip: true, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"], requiredSelectors: ['[data-testid="student-next-action-strip"]', '[data-testid="student-next-action-primary"]', '[data-testid="student-today-learning-loop"]', '[data-testid="student-today-learning-loop-actions"]', '[data-testid="student-readiness-decision"]', '[data-testid="student-readiness-decision-action"]'], actionGroupBudgets: [{ name: "today-learning-loop-actions", selector: '[data-testid="student-today-learning-loop-actions"]', min: 1, max: 3 }, { name: "readiness-decision-action", selector: '[data-testid="student-readiness-decision"]', min: 1, max: 1 }] }],
     ["student-plan", targets.routes.plan, { minBodyLength: 900, minControls: 8, nextActionStrip: true, requiredSelectors: ['[data-testid="student-next-action-strip"]', '[data-testid="student-next-action-primary"]'], nextActions: ["ابدأ", "جلسة اليوم", "تدريب", "راجع", "أعد القياس"] }],
@@ -479,7 +491,7 @@ fs.writeFileSync(
     ...checks.map((item) => `- [${item.status}] ${item.name} - ${item.details}`),
     "",
     "## Routes",
-    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, strip=${item.nextActionStripProbe ? item.nextActionStripStatus : "none"}, actionGroups=${item.actionGroupFailures?.length ? `fail ${item.actionGroupFailures.map((group) => `${group.name}:${group.controlCount}/${group.min}-${group.max}`).join(", ")}` : "ok"}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, unenrollConfirm=${item.unenrollConfirmProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
+    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, strip=${item.nextActionStripProbe ? item.nextActionStripStatus : "none"}, quizHint=${item.quizStepHintProbe ? item.quizStepHintStatus : "none"}, actionGroups=${item.actionGroupFailures?.length ? `fail ${item.actionGroupFailures.map((group) => `${group.name}:${group.controlCount}/${group.min}-${group.max}`).join(", ")}` : "ok"}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, unenrollConfirm=${item.unenrollConfirmProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
     "",
   ].join("\n"),
   "utf8",

@@ -72,6 +72,9 @@ check("student live gate covers packages, payment activation, mobile layout, and
   assertIncludes(files.studentLive, "nextActionStripProbe");
   assertIncludes(files.studentLive, "nextActionStripStatus");
   assertIncludes(files.studentLive, "nextActionStrip: true");
+  assertIncludes(files.studentLive, "quizStepHintProbe");
+  assertIncludes(files.studentLive, "quizStepHintStatus");
+  assertIncludes(files.studentLive, "quizStepHint: true");
   assertIncludes(files.studentLive, "student-path-enroll");
   assertIncludes(files.studentLive, "student-path-unenroll");
   assertIncludes(files.studentLive, "pricing-membership-request");

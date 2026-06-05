@@ -1020,6 +1020,12 @@ export const QuizPage: React.FC = () => {
 
         {!isFinished ? (
           <div className="space-y-4">
+          <div
+            data-testid="quiz-current-step-hint"
+            className={`${isNightMode ? 'border-indigo-900 bg-indigo-950 text-indigo-100' : 'border-indigo-100 bg-indigo-50 text-indigo-800'} rounded-2xl border px-4 py-3 text-sm font-black leading-6`}
+          >
+            أجب عن السؤال الحالي، ثم اضغط التالي. عند آخر سؤال اضغط إنهاء الاختبار.
+          </div>
           {shouldShowProgressBar ? (
             <div className="px-1">
               <div className={`mb-1 flex items-center justify-between text-xs font-black ${isNightMode ? 'text-slate-300' : 'text-slate-600'}`}>

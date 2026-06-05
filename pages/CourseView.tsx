@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { Course } from '../types';
 import { CoursePlayer } from '../components/CoursePlayer';
 import { CourseOverview } from '../components/CourseOverview';
+import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { adapter } from '../services/adapter';
@@ -162,6 +163,25 @@ const CourseView: React.FC = () => {
         module.lessons.some((lesson) => !lesson.isLocked),
     ) === true;
     const canOpenCoursePlayer = isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson;
+    const courseSubjectPath = course.subjectId || course.subject;
+    const coursePath = course.pathId || course.category;
+    const foundationHref =
+        coursePath && courseSubjectPath
+            ? `/category/${coursePath}?subject=${courseSubjectPath}&tab=skills`
+            : '/dashboard?tab=paths';
+    const courseNextAction = (
+        <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
+            <StudentNextActionStrip
+                title={canOpenCoursePlayer ? 'ابدأ أول درس الآن' : 'افتح الباقة المناسبة'}
+                description={canOpenCoursePlayer ? 'شاهد درسًا قصيرًا، ثم انتقل لتدريب بسيط من نفس المهارة.' : 'بعد التفعيل تظهر لك الدروس والاختبارات المرتبطة بهذه الدورة.'}
+                primaryLabel={canOpenCoursePlayer ? 'ابدأ التعلم' : 'عرض الباقات'}
+                primaryHref={canOpenCoursePlayer ? `/course/${course.id}?learn=1` : '/pricing'}
+                secondaryLabel="التأسيس"
+                secondaryHref={foundationHref}
+                tone={canOpenCoursePlayer ? 'indigo' : 'amber'}
+            />
+        </div>
+    );
 
     if (isPlaying) {
         if (canOpenCoursePlayer) {
@@ -182,6 +202,7 @@ const CourseView: React.FC = () => {
     if (isEnrolled) {
         return (
             <div>
+                {courseNextAction}
                 {course.certificateEnabled && Number(course.progress || 0) >= 100 ? (
                     <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
                         <button
@@ -228,6 +249,7 @@ const CourseView: React.FC = () => {
 
     return (
         <div>
+            {courseNextAction}
             <CourseOverview
                 course={courseForCurrentAccess}
                 initialTab={resolveOverviewTab(requestedTab)}
