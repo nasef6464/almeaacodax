@@ -121,8 +121,12 @@ check('student report remains simple first and exposes retest/remediation action
   assertIncludes(files.reports, "useState<'simple' | 'full'>('simple')");
   assertIncludes(files.reports, 'studentQuickActions');
   assertIncludes(files.reports, 'studentTodayLearningLoop');
+  assertIncludes(files.reports, 'studentReadinessDecision');
   assertIncludes(files.reports, 'data-testid="student-today-learning-loop"');
   assertIncludes(files.reports, 'data-testid="student-today-learning-loop-actions"');
+  assertIncludes(files.reports, 'data-testid="student-readiness-decision"');
+  assertIncludes(files.reports, 'data-testid="student-readiness-decision-action"');
+  assertIncludes(files.reports, 'readyToAdvance');
   assertIncludes(files.reports, 'اتبع الترتيب فقط: شرح، تدريب، قياس');
   assertIncludes(files.reports, 'studentTodayFocus');
   assertIncludes(files.reports, 'studentAdaptiveLearningBridge');
