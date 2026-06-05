@@ -384,6 +384,32 @@ export const SchoolPortalManager: React.FC = () => {
             nextAction,
         };
     }).sort((a, b) => b.watchCount - a.watchCount || a.average - b.average);
+    const bestClassSnapshot = [...classActionPlan]
+        .filter((item) => item.studentCount > 0)
+        .sort((a, b) => b.average - a.average || a.watchCount - b.watchCount)[0];
+    const weakestClassSnapshot = classActionPlan.find((item) => item.studentCount > 0 && (item.watchCount > 0 || item.average < 60))
+        || [...classActionPlan].filter((item) => item.studentCount > 0).sort((a, b) => a.average - b.average)[0];
+    const sharedWeakSkillSnapshot = Object.values(
+        reportStudentSummaries
+            .flatMap((summary) => summary.weakSkills.map((skill) => ({ ...skill, studentId: summary.student.id })))
+            .reduce<Record<string, { skill: string; count: number; masteryTotal: number; studentIds: Set<string> }>>((acc, item) => {
+                const key = item.skill || 'مهارة غير محددة';
+                if (!acc[key]) {
+                    acc[key] = { skill: key, count: 0, masteryTotal: 0, studentIds: new Set<string>() };
+                }
+                acc[key].count += 1;
+                acc[key].masteryTotal += Number(item.mastery || 0);
+                acc[key].studentIds.add(item.studentId);
+                return acc;
+            }, {}),
+    )
+        .map((item) => ({
+            skill: item.skill,
+            count: item.count,
+            studentCount: item.studentIds.size,
+            averageMastery: item.count ? Math.round(item.masteryTotal / item.count) : 0,
+        }))
+        .sort((a, b) => b.studentCount - a.studentCount || a.averageMastery - b.averageMastery)[0];
 
     const totalSeats = reportPackages
         .filter((pkg) => pkg.status === 'active')
@@ -448,6 +474,24 @@ export const SchoolPortalManager: React.FC = () => {
         if (primaryTargetGroupId) params.set('targetGroupId', primaryTargetGroupId);
         window.location.hash = `/admin-dashboard?${params.toString()}`;
         setActionFeedback(primaryTargetGroupId ? 'تم فتح مركز الاختبارات مع تحديد نطاق المجموعة.' : 'تم فتح مركز الاختبارات لإنشاء اختبار موجه.');
+    };
+
+    const createDecisionIntervention = () => {
+        const targetClassId = weakestClassSnapshot?.classroom.id || primaryTargetGroupId;
+        const params = new URLSearchParams({
+            tab: 'quizzes',
+            mode: 'central',
+            source: 'school-portal',
+            intent: 'intervention',
+        });
+        if (targetClassId) params.set('targetGroupId', targetClassId);
+        if (sharedWeakSkillSnapshot?.skill) params.set('weakSkill', sharedWeakSkillSnapshot.skill);
+        window.location.hash = `/admin-dashboard?${params.toString()}`;
+        setActionFeedback(
+            weakestClassSnapshot
+                ? `تم فتح مركز الاختبارات لتدخل علاجي على ${weakestClassSnapshot.classroom.name}.`
+                : 'تم فتح مركز الاختبارات لإنشاء تدخل علاجي سريع.',
+        );
     };
 
     const openReports = () => {
@@ -958,6 +1002,54 @@ export const SchoolPortalManager: React.FC = () => {
                             {reportClasses[0]?.name || scope.schools[0]?.name || 'لم يحدد بعد'}
                         </div>
                         <p className="mt-1 text-xs text-gray-500">يمكن تغيير النطاق من مركز الاختبارات.</p>
+                    </div>
+                </div>
+
+                <div data-testid="supervisor-executive-decision-snapshot" className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h3 className="text-base font-black text-gray-900">لقطة قرار الإدارة</h3>
+                            <p className="mt-1 text-xs font-bold text-gray-500">أقل كلام، أعلى فائدة: من الأفضل؟ من يحتاج تدخل؟ وما المهارة المشتركة؟</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={createDecisionIntervention}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-xs font-black text-white transition-colors hover:bg-indigo-700"
+                        >
+                            <Target size={15} />
+                            أنشئ تدخل علاجي
+                        </button>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-3">
+                        <div data-testid="supervisor-best-class" className="rounded-xl bg-white p-4">
+                            <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
+                            <div className="mt-2 truncate text-sm font-black text-gray-900">
+                                {bestClassSnapshot?.classroom.name || 'لا توجد بيانات كافية'}
+                            </div>
+                            <p className="mt-1 text-xs font-bold text-gray-500">
+                                {bestClassSnapshot ? `${bestClassSnapshot.average}% متوسط، ${bestClassSnapshot.watchCount} متابعة` : 'يظهر بعد بدء القياس.'}
+                            </p>
+                        </div>
+                        <div data-testid="supervisor-weakest-class" className="rounded-xl bg-white p-4">
+                            <div className="text-xs font-black text-rose-700">أضعف فصل</div>
+                            <div className="mt-2 truncate text-sm font-black text-gray-900">
+                                {weakestClassSnapshot?.classroom.name || 'لا توجد بيانات كافية'}
+                            </div>
+                            <p className="mt-1 text-xs font-bold text-gray-500">
+                                {weakestClassSnapshot ? `${weakestClassSnapshot.average}% متوسط، ${weakestClassSnapshot.watchCount} يحتاجون متابعة` : 'يظهر بعد بدء القياس.'}
+                            </p>
+                        </div>
+                        <div data-testid="supervisor-shared-weak-skill" className="rounded-xl bg-white p-4">
+                            <div className="text-xs font-black text-indigo-700">مهارة ضعيفة مشتركة</div>
+                            <div className="mt-2 truncate text-sm font-black text-gray-900">
+                                {sharedWeakSkillSnapshot?.skill || 'لا توجد مهارة متكررة'}
+                            </div>
+                            <p className="mt-1 text-xs font-bold text-gray-500">
+                                {sharedWeakSkillSnapshot
+                                    ? `${sharedWeakSkillSnapshot.studentCount} طالب، إتقان ${sharedWeakSkillSnapshot.averageMastery}%`
+                                    : 'ستظهر عند وجود تحليل مهارات.'}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

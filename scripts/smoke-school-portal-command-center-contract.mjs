@@ -73,6 +73,20 @@ const checks = [
       schoolPortal.includes("intervention-summary"),
   },
   {
+    name: "school portal gives an executive decision snapshot",
+    ok:
+      schoolPortal.includes("bestClassSnapshot") &&
+      schoolPortal.includes("weakestClassSnapshot") &&
+      schoolPortal.includes("sharedWeakSkillSnapshot") &&
+      schoolPortal.includes("createDecisionIntervention") &&
+      schoolPortal.includes('data-testid="supervisor-executive-decision-snapshot"') &&
+      schoolPortal.includes("لقطة قرار الإدارة") &&
+      schoolPortal.includes("أفضل فصل") &&
+      schoolPortal.includes("أضعف فصل") &&
+      schoolPortal.includes("مهارة ضعيفة مشتركة") &&
+      schoolPortal.includes("أنشئ تدخل علاجي"),
+  },
+  {
     name: "school portal exposes package content scope for contracts",
     ok:
       schoolPortal.includes("packageContentTypeLabels") &&
