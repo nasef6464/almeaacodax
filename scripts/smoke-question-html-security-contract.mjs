@@ -60,6 +60,14 @@ check("admin question previews use normalized HTML", () => {
   assertNotIncludes(files.quizBuilder, "__html: q.text");
 });
 
+check("admin question bank shows image-only questions at a glance", () => {
+  assertIncludes(files.questionBank, 'data-testid="question-row-media-preview"');
+  assertIncludes(files.questionBank, "question.imageUrl");
+  assertIncludes(files.questionBank, "معاينة صورة السؤال");
+  assertIncludes(files.questionBank, "سؤال بصورة مرفقة");
+  assertIncludes(files.questionBank, "سؤال بدون نص");
+});
+
 check("rich text editor exposes Arabic-friendly math helpers", () => {
   assertIncludes(files.richTextEditor, 'data-testid="question-editor-math-toolbar"');
   assertIncludes(files.richTextEditor, "insertMathTemplate");

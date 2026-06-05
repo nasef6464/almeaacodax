@@ -1182,9 +1182,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                   <tr key={question.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        {question.text ? (
-                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
-                        ) : question.imageUrl ? (
+                        {question.imageUrl ? (
                           <div className="flex items-center gap-3" data-testid="question-row-media-preview">
                             <div className="h-14 w-20 shrink-0 overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50">
                               <img
@@ -1195,12 +1193,16 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                               />
                             </div>
                             <div className="min-w-0">
-                              <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
-                              <div className="mt-1 line-clamp-1 text-[11px] font-bold text-gray-400">
-                                اضغط معاينة لرؤية السؤال كاملًا.
-                              </div>
+                              {question.text ? (
+                                <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                              ) : (
+                                <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
+                              )}
+                              <div className="mt-1 line-clamp-1 text-[11px] font-bold text-gray-400">اضغط معاينة لرؤية السؤال كاملًا.</div>
                             </div>
                           </div>
+                        ) : question.text ? (
+                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                         ) : (
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
