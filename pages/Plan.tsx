@@ -960,6 +960,18 @@ const Plan: React.FC = () => {
     setFormSuccess('');
   };
 
+  const handleDeleteEditingPlan = () => {
+    if (!editingPlanId) return;
+
+    const planName = currentPlan?.name || draft.name || 'الخطة الدراسية';
+    const confirmed = window.confirm(`هل تريد حذف "${planName}"؟ لا يمكن التراجع عن حذف الخطة.`);
+
+    if (!confirmed) return;
+
+    deleteStudyPlan(editingPlanId);
+    resetDraft();
+  };
+
   const applySmartPlanDraft = () => {
     const focus = smartSkillPlan[0];
     const suggestedSubjectId =
@@ -1546,10 +1558,8 @@ const Plan: React.FC = () => {
                   أرشفة الخطة
                 </button>
                 <button
-                  onClick={() => {
-                    deleteStudyPlan(editingPlanId);
-                    resetDraft();
-                  }}
+                  data-testid="student-plan-delete"
+                  onClick={handleDeleteEditingPlan}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-50 px-6 py-4 font-bold text-red-700 transition hover:bg-red-100"
                 >
                   حذف الخطة

@@ -165,6 +165,9 @@ check('plan page can turn weak skills into a timed learning loop', () => {
   assertIncludes(files.plan, 'review');
   assertIncludes(files.plan, 'createStudyPlan');
   assertIncludes(files.plan, 'updateStudyPlan');
+  assertIncludes(files.plan, 'data-testid="student-plan-delete"');
+  assertIncludes(files.plan, 'handleDeleteEditingPlan');
+  assertIncludes(files.plan, 'window.confirm(`هل تريد حذف');
 });
 
 check('supervisor and school dashboard exposes intervention intelligence', () => {
