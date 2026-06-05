@@ -273,7 +273,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
   const screenshot = path.join(OUT_DIR, `${name}.png`);
   await page.screenshot({ path: screenshot, fullPage: true });
 
-  const state = await page.evaluate(({ expectedNextActions, requiredSelectors }) => {
+  const state = await page.evaluate(({ expectedNextActions, requiredSelectors, actionGroupBudgets }) => {
     const text = document.body.innerText || "";
     const controls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
       const rect = el.getBoundingClientRect();
@@ -287,6 +287,24 @@ async function inspectRoute(page, name, route, expectations = {}) {
       })
       .map((el) => `${el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || ""}`.trim().slice(0, 80))
       .filter(Boolean);
+    const actionGroupResults = (actionGroupBudgets || []).map((budget) => {
+      const root = document.querySelector(budget.selector);
+      if (!root) return { ...budget, exists: false, controlCount: 0, status: "missing" };
+      const visibleControls = Array.from(root.querySelectorAll("a[href], button, [role='button']")).filter((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+      });
+      const controlCount = visibleControls.length;
+      const min = typeof budget.min === "number" ? budget.min : 0;
+      const max = typeof budget.max === "number" ? budget.max : Number.POSITIVE_INFINITY;
+      return {
+        ...budget,
+        exists: true,
+        controlCount,
+        status: controlCount >= min && controlCount <= max ? "PASS" : "FAIL",
+      };
+    });
     return {
       href: location.href,
       title: document.title,
@@ -294,6 +312,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
       controlCount: controls.length,
       actionControlCount: actionControls.length,
       actionControls,
+      actionGroupResults,
       missingSelectors: (requiredSelectors || []).filter((selector) => !document.querySelector(selector)),
       nextActionTextFound: expectedNextActions.some((pattern) => text.includes(pattern)),
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
@@ -307,9 +326,11 @@ async function inspectRoute(page, name, route, expectations = {}) {
   }, {
     expectedNextActions: expectations.nextActions || DEFAULT_NEXT_ACTION_PATTERNS,
     requiredSelectors: expectations.requiredSelectors || [],
+    actionGroupBudgets: expectations.actionGroupBudgets || [],
   });
 
   const missingNextAction = expectations.requireNextAction !== false && state.actionControlCount < 1 && !state.nextActionTextFound;
+  const actionGroupFailures = (state.actionGroupResults || []).filter((group) => group.status !== "PASS");
   const layoutFailure = expectations.viewport === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
   const allowed4xx = network4xx.filter((item) => expectations.allow4xx?.some((pattern) => item.url.includes(pattern)));
   const unexpected4xx = network4xx.filter((item) => !allowed4xx.includes(item));
@@ -318,6 +339,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     state.bodyLength >= (expectations.minBodyLength || 300) &&
     state.controlCount >= (expectations.minControls || 1) &&
     state.missingSelectors.length === 0 &&
+    actionGroupFailures.length === 0 &&
     !missingNextAction &&
     !(paymentProbe?.status === "checked" && (!paymentProbe.hasModal || !paymentProbe.hasAccessCodeInput || !paymentProbe.hasRedeemButton)) &&
     !(paymentProbe?.status === "skipped-no-paid-membership" && !paymentProbe.hasFreeStart) &&
@@ -340,6 +362,7 @@ async function inspectRoute(page, name, route, expectations = {}) {
     paymentProbe,
     unenrollConfirmProbe,
     missingNextAction,
+    actionGroupFailures,
     layoutFailure,
     ...state,
   };
@@ -366,7 +389,7 @@ try {
     ["course-player", targets.routes.course, { minBodyLength: 350, minControls: 4, nextActions: ["ابدأ", "شاهد", "التالي", "تدريب", "اختبار"] }],
     ["training-quiz", targets.routes.quiz, { minBodyLength: 240, minControls: 2, quiz: true, nextActions: ["ابدأ", "التالي", "إنهاء", "إجابة"] }],
     ["my-quizzes", targets.routes.myQuizzes, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "افتح التحليل", "اختبار", "تقرير"] }],
-    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"], requiredSelectors: ['[data-testid="student-today-learning-loop"]', '[data-testid="student-today-learning-loop-actions"]', '[data-testid="student-readiness-decision"]', '[data-testid="student-readiness-decision-action"]'] }],
+    ["student-reports", targets.routes.reports, { minBodyLength: 500, minControls: 4, nextActions: ["فتح موضوع التأسيس", "اختبار ساهر", "خطة", "أعد القياس", "تدريب"], requiredSelectors: ['[data-testid="student-today-learning-loop"]', '[data-testid="student-today-learning-loop-actions"]', '[data-testid="student-readiness-decision"]', '[data-testid="student-readiness-decision-action"]'], actionGroupBudgets: [{ name: "today-learning-loop-actions", selector: '[data-testid="student-today-learning-loop-actions"]', min: 1, max: 3 }, { name: "readiness-decision-action", selector: '[data-testid="student-readiness-decision"]', min: 1, max: 1 }] }],
     ["student-plan", targets.routes.plan, { minBodyLength: 900, minControls: 8, nextActions: ["ابدأ", "جلسة اليوم", "تدريب", "راجع", "أعد القياس"] }],
   ].filter(([, route]) => Boolean(route));
 
@@ -432,7 +455,7 @@ fs.writeFileSync(
     ...checks.map((item) => `- [${item.status}] ${item.name} - ${item.details}`),
     "",
     "## Routes",
-    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, unenrollConfirm=${item.unenrollConfirmProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
+    ...routeResults.map((item) => `- [${item.status}] ${item.name}: controls=${item.controlCount}, nextActions=${item.actionControlCount}, actionGroups=${item.actionGroupFailures?.length ? `fail ${item.actionGroupFailures.map((group) => `${group.name}:${group.controlCount}/${group.min}-${group.max}`).join(", ")}` : "ok"}, missingSelectors=${item.missingSelectors?.length || 0}, paymentProbe=${item.paymentProbe?.status || "none"}, unenrollConfirm=${item.unenrollConfirmProbe?.status || "none"}, overflow=${item.horizontalOverflow ? "yes" : "no"}, console=${item.consoleErrors.length}, network4xx=${item.network4xx.length}, network5xx=${item.network5xx.length}${item.missingNextAction ? ", missing next action" : ""}${item.layoutFailure ? `, layout=${item.layoutFailure}` : ""}, url=${item.href}`),
     "",
   ].join("\n"),
   "utf8",

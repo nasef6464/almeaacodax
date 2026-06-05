@@ -229,6 +229,10 @@ check('release verification has live role and student journey coverage', () => {
   assertIncludes(files.liveStudentJourney, 'student-path-unenroll');
   assertIncludes(files.liveStudentJourney, 'missingNextAction');
   assertIncludes(files.liveStudentJourney, 'actionControlCount');
+  assertIncludes(files.liveStudentJourney, 'actionGroupBudgets');
+  assertIncludes(files.liveStudentJourney, 'today-learning-loop-actions');
+  assertIncludes(files.liveStudentJourney, 'readiness-decision-action');
+  assertIncludes(files.liveStudentJourney, 'actionGroupFailures');
   assertIncludes(files.liveStudentJourney, 'horizontalOverflow');
   assertIncludes(files.studentJourney, 'foundation journey has at least one playable lesson');
   assertIncludes(files.studentJourney, 'quiz retry and finish routes keep the learner inside the same topic');
