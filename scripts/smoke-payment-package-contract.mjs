@@ -142,6 +142,15 @@ check('cart removal actions require confirmation before losing purchase items', 
   assertIncludes(cartSource, 'clearCart()');
 });
 
+check('empty cart uses the shared empty-state design with clear next actions', () => {
+  assertIncludes(cartSource, "import { EmptyState } from '../components/ui/EmptyState'");
+  assertIncludes(cartSource, '<EmptyState');
+  assertIncludes(cartSource, 'title="سلة المشتريات فارغة"');
+  assertIncludes(cartSource, "description=\"اختر باقة أو عضوية أولًا، ثم ارجع لإتمام الدفع من هنا.\"");
+  assertIncludes(cartSource, "primaryAction={{ label: 'تصفح الباقات', href: '/pricing'");
+  assertIncludes(cartSource, "secondaryAction={{ label: 'لوحة الطالب', href: '/dashboard'");
+});
+
 check('path package tab includes global memberships without path binding', () => {
   assertIncludes(pathPageSource, 'const packagePathId = c.pathId || c.category;');
   assertIncludes(pathPageSource, 'return !packagePathId || packagePathId === path.id;');

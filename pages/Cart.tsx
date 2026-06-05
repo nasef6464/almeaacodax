@@ -1,8 +1,9 @@
 ﻿import React, { useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { ShoppingCart, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { PaymentModal } from '../components/PaymentModal';
+import { EmptyState } from '../components/ui/EmptyState';
 import type { CartItem } from '../types';
 
 const typeLabel: Record<CartItem['type'], string> = {
@@ -16,7 +17,6 @@ const typeLabel: Record<CartItem['type'], string> = {
 const Cart: React.FC = () => {
   const { cartItems, removeFromCart, clearCart } = useStore();
   const [activeItem, setActiveItem] = useState<CartItem | null>(null);
-  const navigate = useNavigate();
   const location = useLocation();
   const isCheckoutPage = location.pathname === '/checkout';
 
@@ -40,27 +40,16 @@ const Cart: React.FC = () => {
   if (!cartItems.length) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-10" dir="rtl">
-        <div className="rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-sm">
-          <ShoppingCart className="mx-auto mb-3 text-gray-400" size={32} />
-          <h1 className="text-xl font-black text-gray-900">سلة المشتريات فارغة</h1>
-          <p className="mt-2 text-sm font-bold text-gray-500">أضف دورة أو باقة من صفحة الشراء أولاً.</p>
-          <button
-            type="button"
-            onClick={() => navigate('/pricing')}
-            className="mt-5 inline-flex rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white hover:bg-indigo-700"
-          >
-            تصفح العضويات
-          </button>
-          {isCheckoutPage ? (
-            <button
-              type="button"
-              disabled
-              className="mt-3 inline-flex cursor-not-allowed rounded-2xl bg-indigo-300 px-5 py-3 text-sm font-black text-white"
-            >
-              إتمام الدفع الآن
-            </button>
-          ) : null}
-        </div>
+        <EmptyState
+          eyebrow={isCheckoutPage ? 'الدفع' : 'السلة'}
+          title="سلة المشتريات فارغة"
+          description="اختر باقة أو عضوية أولًا، ثم ارجع لإتمام الدفع من هنا."
+          icon={<ShoppingCart size={22} />}
+          primaryAction={{ label: 'تصفح الباقات', href: '/pricing', icon: <ShoppingCart size={15} /> }}
+          secondaryAction={{ label: 'لوحة الطالب', href: '/dashboard', icon: <ShoppingCart size={15} /> }}
+          tone="indigo"
+          className="bg-white"
+        />
       </div>
     );
   }
