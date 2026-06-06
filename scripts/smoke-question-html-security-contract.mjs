@@ -113,6 +113,11 @@ check("rich text editor cleans Word paste before insertion", () => {
   assertIncludes(files.richTextEditor, "mso-");
   assertIncludes(files.richTextEditor, "table");
   assertIncludes(files.richTextEditor, "img");
+  assertIncludes(files.richTextEditor, "font-family");
+  assertIncludes(files.richTextEditor, "font-size");
+  assertIncludes(files.richTextEditor, "line-height");
+  assertIncludes(files.richTextEditor, "LEGACY_FONT_SIZE_MAP");
+  assertIncludes(files.richTextEditor, "sup|sub|span|math|mfrac|msup|msub");
 });
 
 check("rich text editor supports drawing simple math diagrams", () => {
@@ -124,6 +129,14 @@ check("rich text editor supports drawing simple math diagrams", () => {
   assertIncludes(files.questionDrawingPad, 'data-testid="question-editor-drawing-canvas"');
   assertIncludes(files.questionDrawingPad, 'data-testid="question-editor-insert-drawing"');
   assertIncludes(files.questionDrawingPad, "freehand");
+  assertIncludes(files.questionDrawingPad, "arrow");
+  assertIncludes(files.questionDrawingPad, "text");
+  assertIncludes(files.questionDrawingPad, "drawArrowHead");
+  assertIncludes(files.questionDrawingPad, "TextCursorInput");
+  assertIncludes(files.questionDrawingPad, "strokeColor");
+  assertIncludes(files.questionDrawingPad, "textLabel");
+  assertIncludes(files.questionDrawingPad, 'type="color"');
+  assertIncludes(files.questionDrawingPad, "fillText");
   assertIncludes(files.questionDrawingPad, "rectangle");
   assertIncludes(files.questionDrawingPad, "circle");
   assertIncludes(files.questionDrawingPad, "angle");

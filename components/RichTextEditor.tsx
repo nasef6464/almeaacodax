@@ -18,7 +18,7 @@ interface RichTextEditorProps {
 }
 
 const WORD_PASTE_PATTERN = /(?:class="?Mso|mso-|<o:p|xmlns:o|urn:schemas-microsoft-com:office:word|<!--\[if)/i;
-const RICH_PASTE_PATTERN = /<(table|img)\b/i;
+const RICH_PASTE_PATTERN = /<(table|img|sup|sub|span|math|mfrac|msup|msub|annotation|svg)\b/i;
 const SAFE_WORD_STYLE_PROPERTIES = new Set([
   'text-align',
   'direction',
@@ -31,6 +31,9 @@ const SAFE_WORD_STYLE_PROPERTIES = new Set([
   'color',
   'font-weight',
   'font-style',
+  'font-family',
+  'font-size',
+  'line-height',
   'text-decoration',
   'width',
   'height',
@@ -47,16 +50,31 @@ const SAFE_WORD_ATTRIBUTES = new Set([
   'rowspan',
 ]);
 
+const LEGACY_FONT_SIZE_MAP: Record<string, string> = {
+  '1': '10px',
+  '2': '13px',
+  '3': '16px',
+  '4': '18px',
+  '5': '24px',
+  '6': '32px',
+  '7': '48px',
+};
+
 const mathTemplates = [
   { label: 'كسر عربي', formula: '\\frac{\\text{س}}{\\text{ص}}' },
   { label: 'كسر إنجليزي', formula: '\\frac{x}{y}' },
+  { label: 'عدد كسري', formula: '1\\frac{3}{5}' },
+  { label: 'كسر داخل قوس', formula: '\\left(\\frac{444}{555}\\div\\frac{666}{333}\\right)' },
   { label: 'جذر', formula: '\\sqrt{\\text{س}}' },
   { label: 'جذر تربيعي', formula: '\\sqrt{a^2+b^2}' },
+  { label: 'جذر مع كسر', formula: '\\sqrt{\\frac{\\text{س}}{\\text{ص}}}' },
   { label: 'أس', formula: '\\text{س}^{2}+\\text{ص}^{2}' },
   { label: 'زاوية', formula: 'm\\angle \\text{س} = 45^\\circ' },
   { label: 'قوس دائرة', formula: 'm\\widehat{AB}=120^\\circ' },
+  { label: 'قانون دائرة', formula: 'm\\angle 1=\\frac{1}{2}m\\widehat{AB}' },
   { label: 'نسبة', formula: '\\text{أ}:\\text{ب} = 3:5' },
   { label: 'متتابعة', formula: '1,\\ 3,\\ 5,\\ \\ldots' },
+  { label: 'متتابعة كسور', formula: '\\frac{1}{5},\\ \\frac{3}{5},\\ \\frac{7}{5},\\ \\ldots' },
   { label: 'اختيار قدرات', formula: '\\frac{444}{555}\\div\\frac{666}{333}' },
 ];
 
@@ -146,7 +164,32 @@ const cleanWordPasteHtml = (html: string) => {
     });
 
     const tagName = element.tagName.toLowerCase();
-    if (tagName === 'font' || (tagName === 'span' && !element.attributes.length)) {
+    if (tagName === 'font') {
+      const face = element.getAttribute('face');
+      const size = element.getAttribute('size');
+      const color = element.getAttribute('color');
+      const fontSize = size ? LEGACY_FONT_SIZE_MAP[size] || size : '';
+      const fontStyles = [
+        face ? `font-family: ${face}` : '',
+        fontSize ? `font-size: ${fontSize}` : '',
+        color ? `color: ${color}` : '',
+      ].filter(Boolean);
+
+      if (fontStyles.length) {
+        const span = document.createElement('span');
+        span.setAttribute('style', cleanInlineStyle(fontStyles.join('; ')));
+        while (element.firstChild) {
+          span.appendChild(element.firstChild);
+        }
+        element.replaceWith(span);
+        return;
+      }
+
+      unwrapElement(element);
+      return;
+    }
+
+    if (tagName === 'span' && !element.attributes.length) {
       unwrapElement(element);
     }
   });

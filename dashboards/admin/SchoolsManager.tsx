@@ -2277,11 +2277,11 @@ export const SchoolsManager: React.FC = () => {
 
         return (
             <div data-testid="school-workspace-shell" className="space-y-6 animate-fade-in">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
                     <button onClick={() => { setManagementError(null); setManagementNotice(null); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة لقائمة المدارس
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
+                    <h1 className="min-w-[220px] flex-1 text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
                     <button
                         onClick={() => {
                             const newName = window.prompt('اكتب اسم المدرسة الجديد:', selectedSchool.name);
@@ -2333,7 +2333,7 @@ export const SchoolsManager: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="flex gap-2 border-b border-gray-200">
+                <div className="flex flex-wrap gap-2 border-b border-gray-200">
                     {[
                         { id: 'overview', label: 'نظرة عامة والفصول' },
                         { id: 'packages', label: 'الباقات والأكواد' },
@@ -2434,6 +2434,77 @@ export const SchoolsManager: React.FC = () => {
                                 </button>
                             </div>
                         ))}
+                    </div>
+                    <div data-testid="school-primary-actions" className="mt-4 grid gap-2 md:grid-cols-3 xl:grid-cols-6">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                createGroup({
+                                    id: `class_${Date.now()}`,
+                                    name: `فصل جديد - ${selectedSchool.name}`,
+                                    type: 'CLASS',
+                                    parentId: selectedSchool.id,
+                                    ownerId: user.id,
+                                    supervisorIds: [],
+                                    studentIds: [],
+                                    courseIds: [],
+                                    createdAt: Date.now(),
+                                    totalStudents: 0,
+                                    totalSupervisors: 0,
+                                    totalCourses: 0,
+                                });
+                                setActiveTab('overview');
+                                setManagementNotice('تم إنشاء فصل جديد. يمكنك تغيير اسمه وربط الطلاب والمشرفين من بطاقة الفصل.');
+                            }}
+                            className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-black text-white transition-colors hover:bg-slate-800"
+                        >
+                            إضافة فصل
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setActiveTab('overview');
+                                window.setTimeout(() => {
+                                    document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 50);
+                            }}
+                            className="rounded-xl bg-indigo-50 px-3 py-2.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100"
+                        >
+                            إضافة طالب
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setActiveTab('overview');
+                                window.setTimeout(() => {
+                                    document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 50);
+                            }}
+                            className="rounded-xl bg-purple-50 px-3 py-2.5 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
+                        >
+                            إضافة مشرف
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('packages')}
+                            className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100"
+                        >
+                            الباقات والأكواد
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('reports')}
+                            className="rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-black text-blue-700 transition-colors hover:bg-blue-100"
+                        >
+                            التقارير
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleDeleteSelectedSchool}
+                            className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
+                        >
+                            حذف المدرسة
+                        </button>
                     </div>
                 </div>
 
