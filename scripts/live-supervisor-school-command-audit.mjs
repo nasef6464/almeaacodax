@@ -69,6 +69,7 @@ const ROUTES = [
     name: "school-portal-decision-center",
     path: "/admin-dashboard?tab=school-portal",
     allowScopeNotice: true,
+    requireSupervisorScopeCard: true,
     minBodyLength: 1200,
     minControlCount: 12,
     expectedTextGroups: [
@@ -199,10 +200,16 @@ async function inspectRoute(page, viewport, routeSpec) {
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /(تسجيل الدخول|Login|البريد الإلكتروني)/.test(text),
       hasBlockingError: /(تعذر|خطأ غير متوقع|غير مصرح|ليس لديك صلاحية|Authentication required|Invalid CSRF)/i.test(text),
       hasScopeNotice: /(لا يوجد نطاق إشراف ظاهر|لم يتم ربط حسابك بمدرسة|اطلب من المدير ربطك بالمدرسة)/.test(text),
+      hasSupervisorScopeCard: Boolean(document.querySelector('[data-testid="supervisor-school-scope-card"]')),
+      hasSupervisorScopeActionGuide: Boolean(document.querySelector('[data-testid="supervisor-scope-action-guide"]')),
     };
   }, routeSpec);
 
   const layoutFailure = viewport.name === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
+  const scopeCardFailure =
+    routeSpec.requireSupervisorScopeCard && !state.hasScopeNotice && (!state.hasSupervisorScopeCard || !state.hasSupervisorScopeActionGuide)
+      ? "missing supervisor scope card"
+      : "";
   const scopeNoticeOk =
     Boolean(routeSpec.allowScopeNotice) &&
     state.hasScopeNotice &&
@@ -210,6 +217,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     !state.hasLoginForm &&
     !state.hasBlockingError &&
     !layoutFailure &&
+    !scopeCardFailure &&
     network5xx.length === 0;
   const pass =
     scopeNoticeOk ||
@@ -220,6 +228,7 @@ async function inspectRoute(page, viewport, routeSpec) {
       !state.hasLoginForm &&
       !state.hasBlockingError &&
       !layoutFailure &&
+      !scopeCardFailure &&
       network5xx.length === 0);
 
   return {
@@ -232,6 +241,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     consoleErrors,
     network5xx,
     layoutFailure,
+    scopeCardFailure,
     ...state,
   };
 }

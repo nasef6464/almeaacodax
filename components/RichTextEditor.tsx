@@ -18,7 +18,7 @@ interface RichTextEditorProps {
 }
 
 const WORD_PASTE_PATTERN = /(?:class="?Mso|mso-|<o:p|xmlns:o|urn:schemas-microsoft-com:office:word|<!--\[if)/i;
-const RICH_PASTE_PATTERN = /<(table|img|sup|sub|span|math|mfrac|msup|msub|annotation|svg)\b/i;
+const RICH_PASTE_PATTERN = /<(table|img|sup|sub|span|math|mrow|mi|mo|mn|mtext|mfrac|msqrt|mroot|msup|msub|msubsup|mover|munder|munderover|mtable|mtr|mtd|semantics|annotation|svg)\b/i;
 const SAFE_WORD_STYLE_PROPERTIES = new Set([
   'text-align',
   'direction',
@@ -35,6 +35,8 @@ const SAFE_WORD_STYLE_PROPERTIES = new Set([
   'font-size',
   'line-height',
   'text-decoration',
+  'text-indent',
+  'white-space',
   'width',
   'height',
   'display',
@@ -42,12 +44,53 @@ const SAFE_WORD_STYLE_PROPERTIES = new Set([
 
 const SAFE_WORD_ATTRIBUTES = new Set([
   'src',
+  'href',
+  'xlink:href',
   'alt',
   'title',
   'width',
   'height',
+  'style',
+  'dir',
+  'lang',
+  'color',
+  'face',
+  'size',
   'colspan',
   'rowspan',
+  'viewbox',
+  'xmlns',
+  'version',
+  'preserveaspectratio',
+  'd',
+  'fill',
+  'fill-rule',
+  'stroke',
+  'stroke-width',
+  'stroke-linecap',
+  'stroke-linejoin',
+  'stroke-dasharray',
+  'transform',
+  'points',
+  'x',
+  'y',
+  'x1',
+  'y1',
+  'x2',
+  'y2',
+  'cx',
+  'cy',
+  'r',
+  'rx',
+  'ry',
+  'font-family',
+  'font-size',
+  'font-weight',
+  'text-anchor',
+  'dominant-baseline',
+  'mathvariant',
+  'displaystyle',
+  'encoding',
 ]);
 
 const LEGACY_FONT_SIZE_MAP: Record<string, string> = {

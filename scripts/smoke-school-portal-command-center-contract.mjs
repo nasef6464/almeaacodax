@@ -97,6 +97,21 @@ const checks = [
       schoolPortal.includes("أنشئ تدخل علاجي"),
   },
   {
+    name: "supervisor scope separates school managers from class-only supervisors",
+    ok:
+      schoolPortal.includes("schoolWideIds") &&
+      schoolPortal.includes("classScopedIds") &&
+      schoolPortal.includes("isSchoolWideSupervisor") &&
+      schoolPortal.includes("isClassSupervisor") &&
+      schoolPortal.includes("supervisorAccess") &&
+      schoolPortal.includes('data-testid="supervisor-school-scope-card"') &&
+      schoolPortal.includes('data-testid="supervisor-scope-action-guide"') &&
+      schoolPortal.includes("مدير/مشرف مدرسة كاملة") &&
+      schoolPortal.includes("مشرف فصل أو فصول محددة") &&
+      schoolPortal.includes("فصول غير مسندة") &&
+      !schoolPortal.includes("if (user.schoolId) {\n            schoolIds.add(user.schoolId);"),
+  },
+  {
     name: "school portal exposes package content scope for contracts",
     ok:
       schoolPortal.includes("packageContentTypeLabels") &&
@@ -113,6 +128,9 @@ const checks = [
       liveSupervisorSchoolAudit.includes('name: "mobile"') &&
       liveSupervisorSchoolAudit.includes("horizontalOverflow") &&
       liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=school-portal") &&
+      liveSupervisorSchoolAudit.includes("requireSupervisorScopeCard") &&
+      liveSupervisorSchoolAudit.includes("hasSupervisorScopeCard") &&
+      liveSupervisorSchoolAudit.includes("hasSupervisorScopeActionGuide") &&
       liveSupervisorSchoolAudit.includes("/reports") &&
       liveSupervisorSchoolAudit.includes("/admin-dashboard?tab=quizzes&source=school-portal&mode=central") &&
       liveSupervisorSchoolAudit.includes("actionControlCount") &&

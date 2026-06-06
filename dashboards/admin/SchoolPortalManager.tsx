@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     AlertTriangle,
     BookOpen,
@@ -160,45 +160,55 @@ export const SchoolPortalManager: React.FC = () => {
                 codes: accessCodes.filter((code) => schoolIds.has(code.schoolId)),
                 scopedCourses: courses,
                 followUpQuizzes: quizzes,
+                schoolWideIds: Array.from(schoolIds),
+                classScopedIds: classes.map((classroom) => classroom.id),
             };
         }
 
         const userGroupIds = new Set(user.groupIds || []);
-        const schoolIds = new Set<string>();
-
-        if (user.schoolId) {
-            schoolIds.add(user.schoolId);
-        }
+        const schoolWideIds = new Set<string>();
+        const classScopedIds = new Set<string>();
 
         groups.forEach((group) => {
-            if (!userGroupIds.has(group.id)) return;
             if (group.type === 'SCHOOL') {
-                schoolIds.add(group.id);
+                const isSchoolWideSupervisor = userGroupIds.has(group.id) || group.supervisorIds.includes(user.id);
+                if (isSchoolWideSupervisor) {
+                    schoolWideIds.add(group.id);
+                }
             }
-            if (group.parentId) {
-                schoolIds.add(group.parentId);
+            if (group.type === 'CLASS') {
+                const isClassSupervisor = userGroupIds.has(group.id) || group.supervisorIds.includes(user.id);
+                if (isClassSupervisor) {
+                    classScopedIds.add(group.id);
+                }
             }
         });
 
-        const schools = groups.filter((group) => group.type === 'SCHOOL' && schoolIds.has(group.id));
+        const visibleSchoolIds = new Set<string>([
+            ...Array.from(schoolWideIds),
+            ...groups
+                .filter((group) => group.type === 'CLASS' && classScopedIds.has(group.id) && group.parentId)
+                .map((group) => group.parentId as string),
+        ]);
+        const schools = groups.filter((group) => group.type === 'SCHOOL' && visibleSchoolIds.has(group.id));
         const classes = groups.filter((group) => {
             if (group.type !== 'CLASS') return false;
-            return userGroupIds.has(group.id) || (!!group.parentId && schoolIds.has(group.parentId));
+            return classScopedIds.has(group.id) || (!!group.parentId && schoolWideIds.has(group.parentId));
         });
         const classIds = new Set(classes.map((item) => item.id));
         const students = users.filter((item) => {
             if (item.role !== Role.STUDENT) return false;
-            const sharesSchool = !!item.schoolId && schoolIds.has(item.schoolId);
-            const sharesClass = (item.groupIds || []).some((groupId) => classIds.has(groupId) || userGroupIds.has(groupId));
+            const sharesSchool = !!item.schoolId && schoolWideIds.has(item.schoolId);
+            const sharesClass = (item.groupIds || []).some((groupId) => classIds.has(groupId));
             return sharesSchool || sharesClass;
         });
         const studentIds = new Set(students.map((student) => student.id));
         const results = examResults.filter((result) => !!result.userId && studentIds.has(result.userId));
-        const packages = b2bPackages.filter((pkg) => schoolIds.has(pkg.schoolId));
-        const codes = accessCodes.filter((code) => schoolIds.has(code.schoolId));
+        const packages = b2bPackages.filter((pkg) => visibleSchoolIds.has(pkg.schoolId));
+        const codes = accessCodes.filter((code) => visibleSchoolIds.has(code.schoolId));
         const packageCourseIds = new Set(packages.flatMap((pkg) => pkg.courseIds || []));
         const scopedCourses = courses.filter((course) => packageCourseIds.has(course.id) || classes.some((classroom) => classroom.courseIds.includes(course.id)));
-        const scopedGroupIds = new Set([...Array.from(classIds), ...Array.from(schoolIds), ...Array.from(userGroupIds)]);
+        const scopedGroupIds = new Set([...Array.from(classIds), ...Array.from(visibleSchoolIds), ...Array.from(userGroupIds)]);
         const followUpQuizzes = quizzes.filter((quiz) => {
             const targetsGroup = (quiz.targetGroupIds || []).some((groupId) => scopedGroupIds.has(groupId));
             const targetsStudent = (quiz.targetUserIds || []).some((studentId) => studentIds.has(studentId));
@@ -214,8 +224,53 @@ export const SchoolPortalManager: React.FC = () => {
             codes,
             scopedCourses,
             followUpQuizzes,
+            schoolWideIds: Array.from(schoolWideIds),
+            classScopedIds: Array.from(classScopedIds),
         };
     }, [accessCodes, b2bPackages, courses, examResults, groups, quizzes, user.groupIds, user.role, user.schoolId, users]);
+
+    const supervisorAccess = useMemo(() => {
+        const hasWholeSchoolAccess = user.role === Role.ADMIN || scope.schoolWideIds.length > 0;
+        const classScopedNames = scope.classes
+            .filter((classroom) => scope.classScopedIds.includes(classroom.id) && !scope.schoolWideIds.includes(classroom.parentId || ''))
+            .map((classroom) => classroom.name);
+        const schoolWideNames = scope.schools
+            .filter((school) => user.role === Role.ADMIN || scope.schoolWideIds.includes(school.id))
+            .map((school) => school.name);
+        const title = user.role === Role.ADMIN
+            ? 'مشاهدة مدير المنصة'
+            : hasWholeSchoolAccess
+                ? 'مدير/مشرف مدرسة كاملة'
+                : 'مشرف فصل أو فصول محددة';
+        const description = user.role === Role.ADMIN
+            ? 'ترى كل المدارس والفصول لأغراض الإدارة والمتابعة.'
+            : hasWholeSchoolAccess
+                ? 'ترى كل الفصول والطلاب والتقارير داخل المدرسة المرتبطة بك.'
+                : 'ترى فقط الفصول المسندة لك والطلاب الموجودين داخلها.';
+        const visibleScope = schoolWideNames.length
+            ? schoolWideNames.join('، ')
+            : classScopedNames.length
+                ? classScopedNames.join('، ')
+                : 'نطاق الإشراف الحالي';
+
+        return {
+            title,
+            description,
+            visibleScope,
+            isWholeSchool: hasWholeSchoolAccess,
+            schoolWideNames,
+            classScopedNames,
+        };
+    }, [scope.classScopedIds, scope.classes, scope.schoolWideIds, scope.schools, user.role]);
+
+    useEffect(() => {
+        if (selectedSchoolId !== 'all' && !scope.schools.some((school) => school.id === selectedSchoolId)) {
+            setSelectedSchoolId('all');
+        }
+        if (selectedClassId !== 'all' && !scope.classes.some((classroom) => classroom.id === selectedClassId)) {
+            setSelectedClassId('all');
+        }
+    }, [scope.classes, scope.schools, selectedClassId, selectedSchoolId]);
 
     const studentSummaries = useMemo(() => (
         scope.students.map((student) => {
@@ -818,6 +873,52 @@ export const SchoolPortalManager: React.FC = () => {
                         تصدير Excel
                     </button>
                 </div>
+            </div>
+
+            <div data-testid="supervisor-school-scope-card" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-start gap-3">
+                        <div className={`rounded-2xl p-3 ${supervisorAccess.isWholeSchool ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'}`}>
+                            <ShieldCheck size={22} />
+                        </div>
+                        <div>
+                            <div className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
+                                {supervisorAccess.title}
+                            </div>
+                            <h2 className="mt-2 text-lg font-black text-gray-900">{supervisorAccess.visibleScope}</h2>
+                            <p className="mt-1 max-w-3xl text-sm leading-6 text-gray-500">{supervisorAccess.description}</p>
+                        </div>
+                    </div>
+                    <div data-testid="supervisor-scope-action-guide" className="grid min-w-[280px] grid-cols-1 gap-2 sm:grid-cols-3 lg:max-w-xl">
+                        <div className="rounded-xl bg-slate-50 p-3">
+                            <div className="text-xs font-black text-slate-500">ابدأ من</div>
+                            <div className="mt-1 text-sm font-black text-gray-900">
+                                {supervisorAccess.isWholeSchool ? 'أضعف فصل' : 'طلاب فصلك'}
+                            </div>
+                        </div>
+                        <div className="rounded-xl bg-slate-50 p-3">
+                            <div className="text-xs font-black text-slate-500">إجراء اليوم</div>
+                            <div className="mt-1 text-sm font-black text-gray-900">
+                                {watchList.length ? 'اختبار متابعة' : 'تقرير مختصر'}
+                            </div>
+                        </div>
+                        <div className="rounded-xl bg-slate-50 p-3">
+                            <div className="text-xs font-black text-slate-500">لا يظهر لك</div>
+                            <div className="mt-1 text-sm font-black text-gray-900">
+                                {supervisorAccess.isWholeSchool ? 'إدارة المنصة' : 'فصول غير مسندة'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {!supervisorAccess.isWholeSchool && supervisorAccess.classScopedNames.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        {supervisorAccess.classScopedNames.map((className) => (
+                            <span key={className} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                                {className}
+                            </span>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">

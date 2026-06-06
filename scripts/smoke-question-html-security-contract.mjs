@@ -116,8 +116,14 @@ check("rich text editor cleans Word paste before insertion", () => {
   assertIncludes(files.richTextEditor, "font-family");
   assertIncludes(files.richTextEditor, "font-size");
   assertIncludes(files.richTextEditor, "line-height");
+  assertIncludes(files.richTextEditor, "white-space");
+  assertIncludes(files.richTextEditor, "text-indent");
+  assertIncludes(files.richTextEditor, "mathvariant");
+  assertIncludes(files.richTextEditor, "viewbox");
+  assertIncludes(files.richTextEditor, "preserveaspectratio");
+  assertIncludes(files.richTextEditor, "SAFE_WORD_ATTRIBUTES.has(name)");
   assertIncludes(files.richTextEditor, "LEGACY_FONT_SIZE_MAP");
-  assertIncludes(files.richTextEditor, "sup|sub|span|math|mfrac|msup|msub");
+  assertIncludes(files.richTextEditor, "mrow|mi|mo|mn|mtext|mfrac|msqrt|mroot|msup|msub");
 });
 
 check("rich text editor supports drawing simple math diagrams", () => {
