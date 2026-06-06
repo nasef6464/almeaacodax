@@ -187,14 +187,24 @@ async function main() {
     await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "networkidle", timeout: 60000 });
     const searchInput = page.getByTestId("question-bank-search-input");
     await searchInput.fill(marker);
-    await page.waitForTimeout(1200);
+    await page.waitForFunction(
+      (needle) => Array.from(document.querySelectorAll("tbody tr")).some((row) => (row.textContent || "").includes(needle)),
+      marker,
+      { timeout: 30000 },
+    );
+    const markerRow = page.locator("tbody tr").filter({ hasText: marker }).first();
+    await markerRow.scrollIntoViewIfNeeded();
     const listState = await page.evaluate((marker) => {
       const text = document.body.innerText || "";
-      const inlinePreview = document.querySelector('[data-testid="question-row-inline-media-preview"]');
-      const mediaPreview = document.querySelector('[data-testid="question-row-media-preview"]');
+      const row = Array.from(document.querySelectorAll("tbody tr")).find((item) => (item.textContent || "").includes(marker));
+      const inlinePreview = row?.querySelector('[data-testid="question-row-inline-media-preview"]');
+      const mediaPreview = row?.querySelector('[data-testid="question-row-media-preview"]');
       const inlineImage = inlinePreview?.querySelector("img");
       return {
         hasMarker: text.includes(marker),
+        markerRowVisible: Boolean(row && row.getBoundingClientRect().width > 20 && row.getBoundingClientRect().height > 20),
+        markerRowHasMediaPreview: Boolean(mediaPreview),
+        markerRowHasInlineMediaPreview: Boolean(inlinePreview),
         mediaPreviewCount: document.querySelectorAll('[data-testid="question-row-media-preview"]').length,
         inlineMediaPreviewCount: document.querySelectorAll('[data-testid="question-row-inline-media-preview"]').length,
         inlineImageVisible: Boolean(inlineImage && inlineImage.getBoundingClientRect().width > 20 && inlineImage.getBoundingClientRect().height > 20),
@@ -210,8 +220,9 @@ async function main() {
       { name: "editor math symbols available", ok: editorState.mathSymbolCount >= 10 },
       { name: "editor drawing toggle visible", ok: editorState.hasDrawingToggle },
       { name: "temporary inline-media question is searchable", ok: listState.hasMarker },
-      { name: "question row media preview visible", ok: listState.mediaPreviewCount >= 1 },
-      { name: "inline media preview visible in row", ok: listState.inlineMediaPreviewCount >= 1 && listState.inlineImageVisible },
+      { name: "temporary question row is visible", ok: listState.markerRowVisible },
+      { name: "question row media preview visible", ok: listState.markerRowHasMediaPreview },
+      { name: "inline media preview visible in row", ok: listState.markerRowHasInlineMediaPreview && listState.inlineImageVisible },
       { name: "no server errors observed", ok: network5xx.length === 0 },
     ];
 
