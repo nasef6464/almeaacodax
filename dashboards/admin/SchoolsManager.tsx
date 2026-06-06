@@ -16,6 +16,7 @@ import {
     ShieldCheck,
     Trash2,
     Upload,
+    UserPlus,
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -596,6 +597,7 @@ export const SchoolsManager: React.FC = () => {
         assignCourseToGroup,
         removeCourseFromGroup,
         assignStudentToGroup,
+        removeStudentFromGroup,
         createB2BPackage,
         updateB2BPackage,
         deleteB2BPackage,
@@ -635,6 +637,7 @@ export const SchoolsManager: React.FC = () => {
     const [newCodeDurationDays, setNewCodeDurationDays] = useState('30');
     const [bulkClassNames, setBulkClassNames] = useState('');
     const [singleStudent, setSingleStudent] = useState({ name: '', email: '', className: '', password: '' });
+    const [quickSupervisor, setQuickSupervisor] = useState({ name: '', email: '', password: '', targetGroupId: '' });
     const [pagedAccessCodes, setPagedAccessCodes] = useState<Array<{
         id: string;
         code: string;
@@ -1259,6 +1262,70 @@ export const SchoolsManager: React.FC = () => {
             setManagementError(null);
             setManagementNotice(null);
             setSelectedSchool(null);
+        };
+        const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
+            const name = quickSupervisor.name.trim();
+            const email = quickSupervisor.email.trim().toLowerCase();
+            const targetGroupId = quickSupervisor.targetGroupId || fallbackGroupId || selectedSchool.id;
+            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === targetGroupId);
+
+            if (!name || !email) {
+                setManagementError('اكتب اسم المشرف وبريده قبل الإنشاء أو الربط.');
+                setManagementNotice(null);
+                return;
+            }
+
+            if (!targetGroup) {
+                setManagementError('اختر نطاق المشرف: المدرسة كاملة أو فصل محدد.');
+                setManagementNotice(null);
+                return;
+            }
+
+            const existingSupervisor = supervisors.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === email);
+            const password = quickSupervisor.password.trim() || generateTemporaryPassword();
+
+            try {
+                let supervisor = existingSupervisor;
+
+                if (!supervisor) {
+                    const response = await api.createAdminUser({
+                        name,
+                        email,
+                        password,
+                        role: Role.SUPERVISOR,
+                        schoolId: selectedSchool.id,
+                        groupIds: [targetGroupId],
+                    }) as { user?: AdminUserPayload };
+
+                    if (!response.user) {
+                        throw new Error('لم يرجع الخادم حساب المشرف الجديد.');
+                    }
+
+                    supervisor = buildStoreUser(response.user);
+                    addUser(supervisor);
+                }
+
+                assignSupervisorToGroup(supervisor.id, targetGroupId);
+
+                if (targetGroupId === selectedSchool.id) {
+                    setSelectedSchool((current) =>
+                        current && !current.supervisorIds.includes(supervisor!.id)
+                            ? { ...current, supervisorIds: [...current.supervisorIds, supervisor!.id] }
+                            : current,
+                    );
+                }
+
+                setQuickSupervisor({ name: '', email: '', password: '', targetGroupId: '' });
+                setManagementError(null);
+                setManagementNotice(
+                    existingSupervisor
+                        ? `تم ربط ${supervisor.name} على نطاق ${targetGroup.name}.`
+                        : `تم إنشاء وربط ${supervisor.name} على نطاق ${targetGroup.name}. كلمة المرور المؤقتة: ${password}`,
+                );
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء أو ربط المشرف الآن.');
+                setManagementNotice(null);
+            }
         };
         const readinessChecks = [
             {
@@ -2487,6 +2554,50 @@ export const SchoolsManager: React.FC = () => {
                                     <p className="text-xs font-bold leading-6 text-gray-500">
                                         هذا النطاق مناسب لمدير المدرسة أو المسؤول العام؛ سيظهر له كل الفصول والطلاب والتقارير داخل هذه المدرسة.
                                     </p>
+                                    <div className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
+                                        <div className="mb-3 flex items-center gap-2 text-sm font-black text-purple-800">
+                                            <UserPlus size={16} />
+                                            إنشاء أو ربط مشرف بسرعة
+                                        </div>
+                                        <div className="grid gap-3 md:grid-cols-2">
+                                            <input
+                                                value={quickSupervisor.name}
+                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, name: event.target.value }))}
+                                                placeholder="اسم المشرف"
+                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
+                                            />
+                                            <input
+                                                value={quickSupervisor.email}
+                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, email: event.target.value }))}
+                                                placeholder="بريد المشرف"
+                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
+                                            />
+                                            <input
+                                                value={quickSupervisor.password}
+                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, password: event.target.value }))}
+                                                placeholder="كلمة مرور اختيارية"
+                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
+                                            />
+                                            <select
+                                                value={quickSupervisor.targetGroupId}
+                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, targetGroupId: event.target.value }))}
+                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
+                                            >
+                                                <option value="">المدرسة كاملة</option>
+                                                {schoolClasses.map((classroom) => (
+                                                    <option key={classroom.id} value={classroom.id}>فصل: {classroom.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => void handleCreateQuickSupervisor()}
+                                            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
+                                        >
+                                            <UserPlus size={16} />
+                                            إنشاء/ربط المشرف
+                                        </button>
+                                    </div>
                                     <select
                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         defaultValue=""
@@ -2804,6 +2915,22 @@ export const SchoolsManager: React.FC = () => {
                                                                         <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
                                                                     ))}
                                                             </select>
+                                                            <button
+                                                                type="button"
+                                                                data-testid="school-class-create-supervisor"
+                                                                onClick={() => {
+                                                                    setQuickSupervisor((current) => ({ ...current, targetGroupId: classroom.id }));
+                                                                    setManagementNotice(`تم اختيار فصل ${classroom.name}. اكتب بيانات المشرف في صندوق إنشاء المشرف ثم اضغط إنشاء/ربط.`);
+                                                                    setManagementError(null);
+                                                                    window.setTimeout(() => {
+                                                                        document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                    }, 50);
+                                                                }}
+                                                                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
+                                                            >
+                                                                <UserPlus size={14} />
+                                                                إنشاء مشرف جديد لهذا الفصل
+                                                            </button>
                                                             <div className="flex flex-wrap gap-2 mt-2">
                                                                 {classSupervisors.length === 0 ? (
                                                                     <span className="text-xs text-gray-400">لا يوجد مشرف مرتبط بهذا الفصل.</span>
@@ -2903,6 +3030,7 @@ export const SchoolsManager: React.FC = () => {
                                                     <th className="p-4">البريد</th>
                                                     <th className="p-4">الفصل الحالي</th>
                                                     <th className="p-4">النقل إلى فصل</th>
+                                                    <th className="p-4">إجراءات</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-100 bg-white text-sm">
@@ -2935,6 +3063,30 @@ export const SchoolsManager: React.FC = () => {
                                                                         <option key={classroom.id} value={classroom.id}>{classroom.name}</option>
                                                                     ))}
                                                                 </select>
+                                                            </td>
+                                                            <td className="p-4">
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {currentClass && (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => removeStudentFromGroup(student.id, currentClass.id)}
+                                                                            className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                                                        >
+                                                                            إخراج من الفصل
+                                                                        </button>
+                                                                    )}
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            if (window.confirm(`هل تريد إزالة ${student.name} من ${selectedSchool.name}؟ سيتم إخراجه من المدرسة وفصولها.`)) {
+                                                                                removeStudentFromGroup(student.id, selectedSchool.id);
+                                                                            }
+                                                                        }}
+                                                                        className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
+                                                                    >
+                                                                        إزالة من المدرسة
+                                                                    </button>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     );

@@ -115,6 +115,12 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, "window.confirm");
   assertIncludes(files.schools, "deleteGroup(selectedSchool.id)");
   assertIncludes(files.schools, "setSelectedSchool(null)");
+  assertIncludes(files.store, "deletedGroupIds");
+  assertIncludes(files.store, "deletedPackageIds");
+  assertIncludes(files.store, "state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)");
+  assertIncludes(files.routes, "GroupModel.deleteMany({ type: \"CLASS\", parentId: groupId })");
+  assertIncludes(files.routes, "B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
+  assertIncludes(files.routes, "AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } })");
 });
 
 check("school workspace exposes all guided setup panels", () => {
@@ -154,11 +160,24 @@ check("school supervisor scope is explicit and not mixed with platform admin", (
 });
 
 check("school supervisor management actions are wired", () => {
+  assertIncludes(files.schools, "quickSupervisor");
+  assertIncludes(files.schools, "handleCreateQuickSupervisor");
+  assertIncludes(files.schools, "api.createAdminUser");
+  assertIncludes(files.schools, "existingSupervisor");
+  assertIncludes(files.schools, 'data-testid="school-class-create-supervisor"');
   assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
   assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");
   assertIncludes(files.schools, "assignSupervisorToGroup(value, classroom.id)");
   assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, classroom.id)");
   assertIncludes(files.schools, "setActiveTab('relations')");
+});
+
+check("school student roster exposes direct removal actions", () => {
+  assertIncludes(files.schools, "removeStudentFromGroup");
+  assertIncludes(files.schools, "إخراج من الفصل");
+  assertIncludes(files.schools, "إزالة من المدرسة");
+  assertIncludes(files.schools, "removeStudentFromGroup(student.id, currentClass.id)");
+  assertIncludes(files.schools, "removeStudentFromGroup(student.id, selectedSchool.id)");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {

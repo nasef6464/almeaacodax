@@ -2044,10 +2044,42 @@ contentRouter.delete(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this group" });
     }
 
+    const groupId = existing.id || String(existing._id);
+    const childClasses = existing.type === "SCHOOL"
+      ? await GroupModel.find({ type: "CLASS", parentId: groupId }).select("id _id")
+      : [];
+    const deletedGroupIds = [
+      groupId,
+      String(existing._id),
+      ...childClasses.flatMap((group: any) => [group.id, String(group._id)]),
+    ].map((value) => String(value || "")).filter(Boolean);
+
     const deleted = await GroupModel.findOneAndDelete(buildDocumentQuery(String(existing._id)));
 
     if (!deleted) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Group not found" });
+    }
+
+    if (existing.type === "SCHOOL") {
+      await Promise.all([
+        GroupModel.deleteMany({ type: "CLASS", parentId: groupId }),
+        UserModel.updateMany(
+          { $or: [{ schoolId: { $in: deletedGroupIds } }, { groupIds: { $in: deletedGroupIds } }] },
+          { $unset: { schoolId: "" }, $pull: { groupIds: { $in: deletedGroupIds } } },
+        ),
+        B2BPackageModel.deleteMany({ schoolId: { $in: deletedGroupIds } }),
+        AccessCodeModel.deleteMany({ schoolId: { $in: deletedGroupIds } }),
+      ]);
+    } else {
+      await Promise.all([
+        UserModel.updateMany({ groupIds: { $in: deletedGroupIds } }, { $pull: { groupIds: { $in: deletedGroupIds } } }),
+        GroupModel.updateMany({}, {
+          $pull: {
+            studentIds: { $in: deletedGroupIds },
+            supervisorIds: { $in: deletedGroupIds },
+          },
+        }),
+      ]);
     }
 
     return res.json({ success: true });

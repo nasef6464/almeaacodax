@@ -1123,17 +1123,36 @@ export const useStore = create<AppState>()(
 
             deleteGroup: (groupId) => set((state) => {
                 api.deleteGroup(groupId).catch(console.error);
-                const newGroups = state.groups.filter(g => g.id !== groupId);
+                const targetGroup = state.groups.find(g => g.id === groupId);
+                const deletedGroupIds = new Set<string>([
+                    groupId,
+                    ...(targetGroup?.type === 'SCHOOL'
+                        ? state.groups.filter(g => g.parentId === groupId).map(g => g.id)
+                        : []),
+                ]);
+                const deletedPackageIds = new Set(
+                    targetGroup?.type === 'SCHOOL'
+                        ? state.b2bPackages.filter(pkg => pkg.schoolId === groupId).map(pkg => pkg.id)
+                        : [],
+                );
+
+                const newGroups = state.groups.filter(g => !deletedGroupIds.has(g.id));
                 const newUsers = state.users.map(u => ({
                     ...u,
                     schoolId: u.schoolId === groupId ? undefined : u.schoolId,
-                    groupIds: u.groupIds?.filter(id => id !== groupId) || []
+                    groupIds: u.groupIds?.filter(id => !deletedGroupIds.has(id)) || []
                 }));
                 
                 const currentUser = newUsers.find(u => u.id === state.user.id) || state.user;
 
                 return {
                     groups: newGroups,
+                    b2bPackages: targetGroup?.type === 'SCHOOL'
+                        ? state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)
+                        : state.b2bPackages,
+                    accessCodes: targetGroup?.type === 'SCHOOL'
+                        ? state.accessCodes.filter(code => code.schoolId !== groupId && !deletedPackageIds.has(code.packageId))
+                        : state.accessCodes,
                     users: newUsers,
                     user: currentUser
                 };
