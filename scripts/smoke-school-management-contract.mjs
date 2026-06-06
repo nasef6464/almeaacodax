@@ -93,6 +93,9 @@ check("school list has portfolio readiness command center", () => {
 });
 
 check("selected school has a clear commercial operating flow", () => {
+  assertIncludes(files.schools, 'data-testid="school-workspace-shell"');
+  assertIncludes(files.schools, 'data-testid="school-setup-progress"');
+  assertIncludes(files.schools, 'data-testid="school-next-action"');
   assertIncludes(files.schools, "commercialOperatingSteps");
   assertIncludes(files.schools, 'data-testid="school-commercial-operating-flow"');
   assertIncludes(files.schools, "school-commercial-step-");
@@ -102,6 +105,17 @@ check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, "ربط المشرفين");
   assertIncludes(files.schools, "إدارة الباقات");
   assertIncludes(files.schools, "فتح التقارير");
+});
+
+check("school workspace exposes all guided setup panels", () => {
+  assertIncludes(files.schools, 'data-testid="school-classes-panel"');
+  assertIncludes(files.schools, 'data-testid="school-students-panel"');
+  assertIncludes(files.schools, 'data-testid="school-supervisors-panel"');
+  assertIncludes(files.schools, 'data-testid="school-packages-panel"');
+  assertIncludes(files.schools, 'data-testid="school-reports-panel"');
+  assertIncludes(files.schools, "طلاب مسجلون");
+  assertIncludes(files.schools, "أضف الطلاب أو ارفع ملف Excel");
+  assertIncludes(files.schools, "طالب يحتاج فصل واضح");
 });
 
 check("school supervisor scope is explicit and not mixed with platform admin", () => {

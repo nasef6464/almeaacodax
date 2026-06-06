@@ -1245,6 +1245,15 @@ export const SchoolsManager: React.FC = () => {
                 hint: schoolClasses.length > 0 ? `${schoolClasses.length} فصل جاهز` : 'أضف فصلًا واحدًا على الأقل',
             },
             {
+                label: 'طلاب مسجلون',
+                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
+                hint: schoolStudents.length === 0
+                    ? 'أضف الطلاب أو ارفع ملف Excel'
+                    : studentsWithoutClass.length > 0
+                        ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح`
+                        : `${schoolStudents.length} طالب داخل فصول واضحة`,
+            },
+            {
                 label: 'مشرفون',
                 isReady: schoolSupervisors.length > 0,
                 hint: schoolSupervisors.length > 0 ? `${schoolSupervisors.length} مشرف/معلم` : 'اربط مشرفًا أو معلمًا بالمدرسة',
@@ -2258,7 +2267,7 @@ export const SchoolsManager: React.FC = () => {
         };
 
         return (
-            <div className="space-y-6 animate-fade-in">
+            <div data-testid="school-workspace-shell" className="space-y-6 animate-fade-in">
                 <div className="flex items-center gap-4">
                     <button onClick={() => { setManagementError(null); setManagementNotice(null); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة لقائمة المدارس
@@ -2377,7 +2386,7 @@ export const SchoolsManager: React.FC = () => {
                             ملف التسليم
                         </button>
                     </div>
-                    <div className="grid gap-3 lg:grid-cols-5">
+                    <div data-testid="school-setup-progress" className="grid gap-3 lg:grid-cols-5">
                         {commercialOperatingSteps.map((step, index) => (
                             <div
                                 key={step.id}
@@ -2495,10 +2504,10 @@ export const SchoolsManager: React.FC = () => {
                                 <p className="text-xs font-black text-gray-500">حالة التسليم</p>
                                 <p className="mt-1 text-lg font-black text-gray-900">{readinessStatusLabel}</p>
                             </div>
-                            <p className="text-sm font-bold leading-7 text-gray-600 md:max-w-2xl">{readinessNextStep}</p>
+                            <p data-testid="school-next-action" className="text-sm font-bold leading-7 text-gray-600 md:max-w-2xl">{readinessNextStep}</p>
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                         {readinessChecks.map((check) => (
                             <div
                                 key={check.label}
@@ -2542,7 +2551,7 @@ export const SchoolsManager: React.FC = () => {
 
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     {activeTab === 'overview' && (
-                        <div className="space-y-8">
+                        <div data-testid="school-classes-panel" className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="bg-blue-50 p-6 rounded-xl">
                                     <div className="flex items-center gap-3 mb-2">
@@ -2602,7 +2611,7 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                            <div data-testid="school-students-panel" className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                     <div>
                                         <h3 className="text-lg font-black text-gray-900">إضافة طالب منفرد</h3>
@@ -3111,7 +3120,7 @@ export const SchoolsManager: React.FC = () => {
                     )}
 
                     {activeTab === 'packages' && (
-                        <div className="space-y-8">
+                        <div data-testid="school-packages-panel" className="space-y-8">
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
                                     <div className="text-xs font-black text-emerald-700 mb-2">باقات نشطة</div>
@@ -3654,7 +3663,7 @@ export const SchoolsManager: React.FC = () => {
                     )}
 
                     {activeTab === 'relations' && (
-                        <div className="space-y-8">
+                        <div data-testid="school-supervisors-panel" className="space-y-8">
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                                 <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
                                     <p className="mb-1 text-xs font-black text-blue-700">أولياء أمور مرتبطون</p>
@@ -4027,7 +4036,7 @@ export const SchoolsManager: React.FC = () => {
                     )}
 
                     {activeTab === 'reports' && (
-                        <div className="space-y-6">
+                        <div data-testid="school-reports-panel" className="space-y-6">
                             {isLoadingReport ? (
                                 <div className="py-12 text-center text-gray-500">جارٍ تحميل تقرير المدرسة...</div>
                             ) : reportError ? (
