@@ -177,17 +177,34 @@ const buildQuestionSummaryCacheKey = (query: z.infer<typeof questionListQuerySch
     skillId: query.skillId || "",
   });
 
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 const toQuestionSummaryText = (value: unknown) => {
   const raw = typeof value === "string" ? value : "";
-  const plain = raw
+  const withoutDangerousBlocks = raw
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ");
+  const plain = withoutDangerousBlocks
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  return plain.length > QUESTION_SUMMARY_TEXT_LIMIT
+
+  const summaryText = plain.length > QUESTION_SUMMARY_TEXT_LIMIT
     ? `${plain.slice(0, QUESTION_SUMMARY_TEXT_LIMIT).trim()}...`
     : plain;
+  const inlineMedia = withoutDangerousBlocks.match(/<img\b[^>]*\/?>|<svg\b[\s\S]*?<\/svg>|<table\b[\s\S]*?<\/table>/i)?.[0] || "";
+
+  if (inlineMedia) {
+    return `${summaryText ? `<p>${escapeHtml(summaryText)}</p>` : ""}${inlineMedia}`.trim();
+  }
+
+  return summaryText;
 };
 
 const sanitizeQuestionForLearner = (question: Record<string, any>) => {

@@ -16,6 +16,7 @@ const files = {
   richTextEditor: await read("components/RichTextEditor.tsx"),
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
   liveQuestionEditorAudit: await read("scripts/live-question-editor-audit.mjs"),
+  quizRoutes: await read("server/src/routes/quiz.routes.ts"),
   styles: await read("styles/main.css"),
 };
 
@@ -75,6 +76,15 @@ check("admin question bank shows image-only questions at a glance", () => {
   assertIncludes(files.questionBank, "معاينة صورة السؤال");
   assertIncludes(files.questionBank, "سؤال بصورة مرفقة");
   assertIncludes(files.questionBank, "سؤال بدون نص");
+});
+
+check("question summary API keeps one inline media preview for admin lists", () => {
+  assertIncludes(files.quizRoutes, "const escapeHtml");
+  assertIncludes(files.quizRoutes, "const inlineMedia");
+  assertIncludes(files.quizRoutes, "<img\\b[^>]*");
+  assertIncludes(files.quizRoutes, "<svg\\b[\\s\\S]*?<\\/svg>");
+  assertIncludes(files.quizRoutes, "<table\\b[\\s\\S]*?<\\/table>");
+  assertIncludes(files.quizRoutes, "toQuestionSummaryText(item.text)");
 });
 
 check("rich text editor exposes Arabic-friendly math helpers", () => {
