@@ -16,6 +16,7 @@ import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
+import { EmptyState } from '../components/ui/EmptyState';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -467,16 +468,24 @@ const PathsTab = () => {
                         })}
                     </div>
                 ) : (
-                    <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300">
-                        <RouteIcon size={40} className="mx-auto text-gray-300 mb-3" />
-                        <p className="text-gray-500">لست مسجلاً في أي مسار حالياً.</p>
+                    <div data-testid="student-paths-empty-state">
+                        <EmptyState
+                            eyebrow="مساراتي"
+                            title="لست مسجلاً في أي مسار حالياً"
+                            description="ابدأ بتسجيل مسار واحد فقط، ثم تابع التأسيس والتدريب والتقارير من نفس المكان."
+                            icon={<RouteIcon size={22} />}
+                            primaryAction={{ label: 'استكشف المسارات', href: '/dashboard?tab=paths#available-paths', icon: <Target size={15} /> }}
+                            secondaryAction={{ label: 'راجع الباقات', href: '/pricing', icon: <ShoppingCart size={15} /> }}
+                            tone="indigo"
+                            className="bg-white"
+                        />
                     </div>
                 )}
             </div>
 
             {/* Available Paths */}
             {availablePaths.length > 0 && (
-                <div>
+                <div id="available-paths">
                     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <Target className="text-indigo-500" size={20} />
                         مسارات متاحة للتسجيل

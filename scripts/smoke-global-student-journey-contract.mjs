@@ -57,10 +57,15 @@ function assertPattern(source, pattern, message) {
 
 check('student dashboard keeps one clear continuation area and learner shortcuts', () => {
   assertIncludes(files.dashboard, 'StudentNextActionStrip');
+  assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
   assertIncludes(files.dashboard, 'smartAction.buttonText');
   assertIncludes(files.dashboard, 'smartAction.link');
   assertIncludes(files.dashboard, 'data-testid="student-path-enroll"');
   assertIncludes(files.dashboard, 'data-testid="student-path-unenroll"');
+  assertIncludes(files.dashboard, 'data-testid="student-paths-empty-state"');
+  assertIncludes(files.dashboard, 'primaryAction={{ label:');
+  assertIncludes(files.dashboard, 'secondaryAction={{ label:');
+  assertIncludes(files.dashboard, 'id="available-paths"');
   assertIncludes(files.dashboard, 'هل تريد إلغاء التسجيل في مسار');
   assertIncludes(files.dashboard, "setActiveTab('saher')");
   assertIncludes(files.dashboard, "setActiveTab('quizzes')");
