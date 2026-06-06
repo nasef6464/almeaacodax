@@ -1190,11 +1190,16 @@ export const useStore = create<AppState>()(
                     });
                 };
 
-                const clearSchoolClassMemberships = (schoolId?: string) => {
-                    if (!schoolId) return;
-                    const schoolClassIds = state.groups
+                const getSchoolClassIds = (schoolId?: string) => {
+                    if (!schoolId) return [];
+                    return state.groups
                         .filter(group => group.type === 'CLASS' && group.parentId === schoolId)
                         .map(group => group.id);
+                };
+
+                const clearSchoolClassMemberships = (schoolId?: string) => {
+                    if (!schoolId) return;
+                    const schoolClassIds = getSchoolClassIds(schoolId);
 
                     schoolClassIds.forEach(classId => removeUserFromGroup(classId, true));
                     nextGroupIds = nextGroupIds.filter(id => !schoolClassIds.includes(id));
@@ -1216,6 +1221,15 @@ export const useStore = create<AppState>()(
                         }
                         nextSchoolId = targetGroup.parentId;
                         addUserToGroup(targetGroup.parentId, true);
+                    }
+
+                    if (targetGroup.type === 'CLASS' && targetGroup.parentId) {
+                        getSchoolClassIds(targetGroup.parentId)
+                            .filter(classId => classId !== targetGroup.id)
+                            .forEach(classId => removeUserFromGroup(classId, true));
+                        nextGroupIds = nextGroupIds.filter(id => !getSchoolClassIds(targetGroup.parentId).includes(id) || id === targetGroup.id);
+                        addUserToGroup(targetGroup.parentId, true);
+                        nextSchoolId = targetGroup.parentId;
                     }
 
                     if (!nextGroupIds.includes(targetGroup.id)) {
@@ -1290,7 +1304,7 @@ export const useStore = create<AppState>()(
                 if (targetGroup.type === 'SCHOOL') {
                     nextSchoolId = undefined;
                     const relatedClassIds = state.groups.filter(group => group.type === 'CLASS' && group.parentId === groupId).map(group => group.id);
-                    nextGroupIds = nextGroupIds.filter(id => !relatedClassIds.includes(id));
+                    nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id));
                 } else {
                     nextGroupIds = nextGroupIds.filter(id => id !== groupId);
                 }

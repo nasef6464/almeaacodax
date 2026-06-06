@@ -224,6 +224,14 @@ check("school supervisor links preserve school scope", () => {
   assertIncludes(files.store, "remainingSchoolIds");
 });
 
+check("school student class assignment keeps one clear school/class relation", () => {
+  assertIncludes(files.store, "const getSchoolClassIds = (schoolId?: string) =>");
+  assertIncludes(files.store, "targetGroup.type === 'CLASS' && targetGroup.parentId");
+  assertIncludes(files.store, ".filter(classId => classId !== targetGroup.id)");
+  assertIncludes(files.store, "addUserToGroup(targetGroup.parentId, true)");
+  assertIncludes(files.store, "nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id))");
+});
+
 check("school access codes attach students to the school roster", () => {
   assertIncludes(files.authRoutes, '"/me/redeem-access-code"');
   assertIncludes(files.authRoutes, "$set: { schoolId }");
