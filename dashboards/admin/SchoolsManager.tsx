@@ -1238,6 +1238,19 @@ export const SchoolsManager: React.FC = () => {
         const schoolStudentStartIndex = (safeSchoolStudentPage - 1) * schoolStudentPageSize;
         const schoolStudentEndIndex = Math.min(schoolStudentStartIndex + schoolStudentPageSize, visibleSchoolStudents.length);
         const pagedVisibleSchoolStudents = visibleSchoolStudents.slice(schoolStudentStartIndex, schoolStudentEndIndex);
+        const focusClassStudentForm = (classroomName: string) => {
+            setSingleStudent((current) => ({ ...current, className: classroomName }));
+            setManagementNotice(`تم اختيار فصل ${classroomName}. اكتب بيانات الطالب ثم اضغط إضافة الطالب.`);
+            window.setTimeout(() => {
+                document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 50);
+        };
+        const focusClassRoster = (classroomId: string) => {
+            setSelectedClassFilter(classroomId);
+            window.setTimeout(() => {
+                document.querySelector('[data-testid="school-roster-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        };
         const readinessChecks = [
             {
                 label: 'فصول دراسية',
@@ -2876,7 +2889,7 @@ export const SchoolsManager: React.FC = () => {
                                             const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
 
                                             return (
-                                                <div key={classroom.id} className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
+                                                <div key={classroom.id} data-testid="school-class-card" className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
                                                     <div className="flex justify-between items-start gap-3">
                                                         <div>
                                                             <h4 className="font-bold text-gray-900">{classroom.name}</h4>
@@ -2926,6 +2939,41 @@ export const SchoolsManager: React.FC = () => {
                                                                 <Trash2 size={18} />
                                                             </button>
                                                         </div>
+                                                    </div>
+
+                                                    <div data-testid="school-class-operating-actions" className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-3 md:grid-cols-4">
+                                                        <button
+                                                            type="button"
+                                                            data-testid="school-class-add-students"
+                                                            onClick={() => focusClassStudentForm(classroom.name)}
+                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-indigo-600 hover:text-white"
+                                                        >
+                                                            إضافة طالب
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            data-testid="school-class-roster"
+                                                            onClick={() => focusClassRoster(classroom.id)}
+                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
+                                                        >
+                                                            طلاب الفصل
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            data-testid="school-class-import-students"
+                                                            onClick={() => setActiveTab('import')}
+                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-amber-500 hover:text-white"
+                                                        >
+                                                            Excel للفصل
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            data-testid="school-class-access"
+                                                            onClick={() => setActiveTab('packages')}
+                                                            className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-emerald-600 hover:text-white"
+                                                        >
+                                                            محتوى وأكواد
+                                                        </button>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-3">
@@ -3004,7 +3052,7 @@ export const SchoolsManager: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="border border-gray-100 rounded-2xl p-5 space-y-4">
+                            <div data-testid="school-roster-panel" className="border border-gray-100 rounded-2xl p-5 space-y-4">
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
                                         <h3 className="text-lg font-bold text-gray-900">طلاب المدرسة</h3>

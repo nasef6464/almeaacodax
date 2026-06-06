@@ -113,9 +113,23 @@ check("school workspace exposes all guided setup panels", () => {
   assertIncludes(files.schools, 'data-testid="school-supervisors-panel"');
   assertIncludes(files.schools, 'data-testid="school-packages-panel"');
   assertIncludes(files.schools, 'data-testid="school-reports-panel"');
+  assertIncludes(files.schools, 'data-testid="school-roster-panel"');
   assertIncludes(files.schools, "طلاب مسجلون");
   assertIncludes(files.schools, "أضف الطلاب أو ارفع ملف Excel");
   assertIncludes(files.schools, "طالب يحتاج فصل واضح");
+});
+
+check("each class card works as an operating unit", () => {
+  assertIncludes(files.schools, 'data-testid="school-class-card"');
+  assertIncludes(files.schools, 'data-testid="school-class-operating-actions"');
+  assertIncludes(files.schools, 'data-testid="school-class-add-students"');
+  assertIncludes(files.schools, 'data-testid="school-class-roster"');
+  assertIncludes(files.schools, 'data-testid="school-class-import-students"');
+  assertIncludes(files.schools, 'data-testid="school-class-access"');
+  assertIncludes(files.schools, "focusClassStudentForm");
+  assertIncludes(files.schools, "focusClassRoster");
+  assertIncludes(files.schools, "setActiveTab('import')");
+  assertIncludes(files.schools, "setActiveTab('packages')");
 });
 
 check("school supervisor scope is explicit and not mixed with platform admin", () => {
