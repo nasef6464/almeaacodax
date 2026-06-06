@@ -292,7 +292,15 @@ async function run() {
     const classHasStudent = (updatedClass?.studentIds || []).map(String).includes(studentId);
     const classHasSupervisor = (updatedClass?.supervisorIds || []).length > 0;
     const schoolHasStudent = (updatedSchool?.studentIds || []).map(String).includes(studentId);
-    addCheck("school and class rosters updated", classHasStudent && classHasSupervisor && schoolHasStudent ? "PASS" : "FAIL", `schoolStudent=${schoolHasStudent}, classStudent=${classHasStudent}, classSupervisor=${classHasSupervisor}`);
+    addCheck("school and class rosters updated", classHasStudent && classHasSupervisor && schoolHasStudent ? "PASS" : "FAIL", `schoolStudent=${schoolHasStudent}, classStudent=${classHasStudent}, classSupervisor=${classHasSupervisor}`, {
+      studentId: short(studentId),
+      classId: short(classId),
+      updatedClassId: short(docId(updatedClass)),
+      classStudentIds: (updatedClass?.studentIds || []).map(short),
+      classSupervisorIds: (updatedClass?.supervisorIds || []).map(short),
+      schoolStudentIds: (updatedSchool?.studentIds || []).map(short),
+      relationGroupCount: relationGroups.length,
+    });
 
     const packagePayload = await request(session, "/content/b2b-packages", {
       method: "POST",

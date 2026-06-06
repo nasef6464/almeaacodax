@@ -3306,9 +3306,12 @@ contentRouter.post(
           ...currentGroupIds.filter((id) => !currentSchoolClassIds.includes(id)),
           classId,
         ]);
+        await GroupModel.updateMany(
+          { type: "CLASS", parentId: schoolId },
+          { $pull: { studentIds: { $in: studentIdAliases } } },
+        );
         await Promise.all([
           UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } }),
-          GroupModel.updateMany({ type: "CLASS", parentId: schoolId }, { $pull: { studentIds: { $in: studentIdAliases } } }),
           GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } }),
           GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), { $addToSet: { studentIds: studentId } }),
         ]);

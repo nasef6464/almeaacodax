@@ -241,6 +241,12 @@ check("school bulk import and relation uploads keep class membership singular", 
   assertIncludes(files.routes, "$pull: { studentIds: { $in: studentIdAliases } }");
   assertIncludes(files.routes, "groupIds: [],");
   assertIncludes(files.routes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
+  const relationsRouteIndex = files.routes.indexOf('"/schools/:id/relations"');
+  const relationCleanupIndex = files.routes.indexOf('await GroupModel.updateMany(\n          { type: "CLASS", parentId: schoolId }', relationsRouteIndex);
+  const relationAddIndex = files.routes.indexOf("GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } })", relationsRouteIndex);
+  if (relationCleanupIndex < 0 || relationAddIndex < 0 || relationCleanupIndex > relationAddIndex) {
+    throw new Error("School relation upload must clear old class rosters before adding the student to the target class");
+  }
 });
 
 check("school access codes attach students to the school roster", () => {
