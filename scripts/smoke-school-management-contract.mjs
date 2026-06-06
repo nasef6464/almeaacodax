@@ -28,6 +28,10 @@ function assertIncludes(source, fragment, message) {
   if (!source.includes(fragment)) throw new Error(message || `Missing fragment: ${fragment}`);
 }
 
+function assertNotIncludes(source, fragment, message) {
+  if (source.includes(fragment)) throw new Error(message || `Unexpected fragment: ${fragment}`);
+}
+
 check("backend has one real school relations endpoint", () => {
   assertIncludes(files.routes, '"/schools/:id/relations"');
   assertIncludes(files.routes, "schoolRelationSchema");
@@ -54,7 +58,7 @@ check("frontend uses server relation workflow and supports one student add", () 
 check("school management has launch readiness command center", () => {
   assertIncludes(files.schools, "readinessStatusLabel");
   assertIncludes(files.schools, "readinessNextStep");
-  assertIncludes(files.schools, "launchActionCards");
+  assertIncludes(files.schools, 'data-testid="school-command-center"');
   assertIncludes(files.schools, "downloadSchoolGapReport");
   assertIncludes(files.schools, "readiness-gaps.xlsx");
 });
@@ -94,17 +98,23 @@ check("school list has portfolio readiness command center", () => {
 
 check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, 'data-testid="school-workspace-shell"');
+  assertIncludes(files.schools, 'data-testid="school-command-center"');
   assertIncludes(files.schools, 'data-testid="school-setup-progress"');
   assertIncludes(files.schools, 'data-testid="school-next-action"');
   assertIncludes(files.schools, "commercialOperatingSteps");
-  assertIncludes(files.schools, 'data-testid="school-commercial-operating-flow"');
   assertIncludes(files.schools, "school-commercial-step-");
-  assertIncludes(files.schools, "خط تشغيل التعاقد المدرسي");
-  assertIncludes(files.schools, "ابدأ من هنا ولا تترك المدرسة ناقصة");
   assertIncludes(files.schools, "إضافة الطلاب");
   assertIncludes(files.schools, "ربط المشرفين");
   assertIncludes(files.schools, "إدارة الباقات");
   assertIncludes(files.schools, "فتح التقارير");
+});
+
+check("selected school has a real delete action", () => {
+  assertIncludes(files.schools, "handleDeleteSelectedSchool");
+  assertIncludes(files.schools, 'data-testid="school-delete-button"');
+  assertIncludes(files.schools, "window.confirm");
+  assertIncludes(files.schools, "deleteGroup(selectedSchool.id)");
+  assertIncludes(files.schools, "setSelectedSchool(null)");
 });
 
 check("school workspace exposes all guided setup panels", () => {
@@ -151,16 +161,15 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "setActiveTab('relations')");
 });
 
-check("school operating blueprint explains commercial scope simply", () => {
-  assertIncludes(files.schools, "schoolOperatingBlueprint");
-  assertIncludes(files.schools, 'data-testid="school-operating-blueprint"');
-  assertIncludes(files.schools, "خريطة تشغيل المدرسة");
-  assertIncludes(files.schools, "من يدير ماذا؟ ومن يرى ماذا؟");
-  assertIncludes(files.schools, "مدير المدرسة");
-  assertIncludes(files.schools, "مشرف الفصل");
-  assertIncludes(files.schools, "الباقات والمسارات");
-  assertIncludes(files.schools, "المدرسة هي العقد التجاري");
-  assertIncludes(files.schools, "ضبط الصلاحيات");
+check("school workspace avoids duplicate operating blocks", () => {
+  assertNotIncludes(files.schools, "launchActionCards");
+  assertNotIncludes(files.schools, "schoolOperatingBlueprint");
+  assertNotIncludes(files.schools, 'data-testid="school-commercial-operating-flow"');
+  assertNotIncludes(files.schools, 'data-testid="school-operating-blueprint"');
+  assertIncludes(files.schools, "schoolLevelSupervisors");
+  assertIncludes(files.schools, "classScopedSupervisors");
+  assertIncludes(files.schools, 'data-testid="school-wide-supervisors-panel"');
+  assertIncludes(files.schools, 'data-testid="school-supervisor-scope-summary"');
 });
 
 check("school from scratch live audit is wired and cleans up", () => {

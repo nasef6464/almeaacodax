@@ -1251,6 +1251,15 @@ export const SchoolsManager: React.FC = () => {
                 document.querySelector('[data-testid="school-roster-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 50);
         };
+        const handleDeleteSelectedSchool = () => {
+            const confirmed = window.confirm(`هل تريد حذف مدرسة ${selectedSchool.name}؟ سيتم إزالة المدرسة وفصولها وروابط الطلاب والمشرفين من هذا النطاق.`);
+            if (!confirmed) return;
+
+            deleteGroup(selectedSchool.id);
+            setManagementError(null);
+            setManagementNotice(null);
+            setSelectedSchool(null);
+        };
         const readinessChecks = [
             {
                 label: 'فصول دراسية',
@@ -1302,44 +1311,6 @@ export const SchoolsManager: React.FC = () => {
                 ? 'قريبة من التسليم'
                 : 'تحتاج تجهيز';
         const readinessNextStep = operationalWarnings[0] || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
-        const launchActionCards = [
-            {
-                title: 'الفصول والطلاب',
-                description: studentsWithoutClass.length > 0
-                    ? `${studentsWithoutClass.length} طالب يحتاج تحديد فصل`
-                    : `${schoolClasses.length} فصل و${schoolStudents.length} طالب داخل المدرسة`,
-                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
-                isReady: schoolClasses.length > 0 && studentsWithoutClass.length === 0,
-                onClick: () => setActiveTab('overview'),
-            },
-            {
-                title: 'المشرفون والمتابعة',
-                description: schoolSupervisors.length > 0
-                    ? `${schoolSupervisors.length} مشرف/معلم مرتبط بالمدرسة`
-                    : 'اربط مشرفًا أو مدير مدرسة قبل التسليم',
-                buttonLabel: 'ربط المشرفين',
-                isReady: schoolSupervisors.length > 0,
-                onClick: () => setActiveTab('relations'),
-            },
-            {
-                title: 'الوصول والباقات',
-                description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
-                    ? `${activeSchoolPackages.length} باقة نشطة و${activeSchoolCodes.length} كود صالح`
-                    : 'فعّل باقة وولّد كودًا صالحًا للطلاب',
-                buttonLabel: 'إدارة الباقات',
-                isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
-                onClick: () => setActiveTab('packages'),
-            },
-            {
-                title: 'التقرير التنفيذي',
-                description: schoolReport
-                    ? `${schoolReport.metrics.activeStudents} طالب نشط ومتوسط ${schoolReport.metrics.averageScore}%`
-                    : 'حمّل تقرير الأداء عند بدء ظهور نتائج الطلاب',
-                buttonLabel: 'تقارير الأداء',
-                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
-                onClick: () => setActiveTab('reports'),
-            },
-        ];
         const commercialOperatingSteps = [
             {
                 id: 'classes',
@@ -1396,48 +1367,6 @@ export const SchoolsManager: React.FC = () => {
                 isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
                 tab: 'reports' as const,
                 buttonLabel: 'فتح التقارير',
-            },
-        ];
-        const schoolOperatingBlueprint = [
-            {
-                title: 'مدير المدرسة',
-                scope: 'يرى المدرسة كاملة',
-                detail: `${schoolLevelSupervisors.length} حساب بصلاحية المدرسة كاملة`,
-                action: schoolLevelSupervisors.length > 0 ? 'راجع النطاق' : 'اربط مدير/مشرف عام',
-                tab: 'relations' as const,
-                isReady: schoolLevelSupervisors.length > 0,
-            },
-            {
-                title: 'مشرف الفصل',
-                scope: 'يرى الفصول المحددة فقط',
-                detail: `${classScopedSupervisors.length} مشرف فصل`,
-                action: classScopedSupervisors.length > 0 ? 'راجع الفصول' : 'اربط مشرفا بفصل',
-                tab: 'relations' as const,
-                isReady: classScopedSupervisors.length > 0,
-            },
-            {
-                title: 'الطلاب',
-                scope: 'كل طالب داخل مدرسة وفصل',
-                detail: studentsWithoutClass.length > 0 ? `${studentsWithoutClass.length} طالب بلا فصل` : `${schoolStudents.length} طالب مصنف`,
-                action: studentsWithoutClass.length > 0 || schoolStudents.length === 0 ? 'أضف/صنف الطلاب' : 'تصدير كشف الطلاب',
-                tab: schoolStudents.length === 0 ? 'import' as const : 'overview' as const,
-                isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
-            },
-            {
-                title: 'الباقات والمسارات',
-                scope: 'تفتح محتوى المدرسة حسب التعاقد',
-                detail: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'لا توجد باقة نشطة',
-                action: activeSchoolPackages.length > 0 ? 'راجع الأكواد' : 'أنشئ باقة مدرسية',
-                tab: 'packages' as const,
-                isReady: activeSchoolPackages.length > 0,
-            },
-            {
-                title: 'التقارير',
-                scope: 'إدارة ومشرف وفصول وطلاب',
-                detail: schoolReport && schoolReport.metrics.quizAttempts > 0 ? `${schoolReport.metrics.quizAttempts} محاولة` : 'تظهر بعد أول اختبار',
-                action: 'فتح تقارير الأداء',
-                tab: 'reports' as const,
-                isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
             },
         ];
         const schoolLaunchPlan = [
@@ -2325,6 +2254,16 @@ export const SchoolsManager: React.FC = () => {
                         <Printer size={16} />
                         طباعة التقرير
                     </button>
+                    <button
+                        type="button"
+                        data-testid="school-delete-button"
+                        onClick={handleDeleteSelectedSchool}
+                        className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
+                        title="حذف المدرسة وفصلها عن الطلاب والمشرفين"
+                    >
+                        <Trash2 size={16} />
+                        حذف المدرسة
+                    </button>
                 </div>
 
                 <div className="flex gap-2 border-b border-gray-200">
@@ -2365,39 +2304,35 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                {operationalWarnings.length > 0 && (
-                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-                        <div className="mb-3 flex items-center gap-2 text-sm font-black text-amber-800">
-                            <ShieldCheck size={18} />
-                            ملاحظات قبل التسليم
-                        </div>
-                        <div className="grid gap-2 md:grid-cols-2">
-                            {operationalWarnings.map((warning) => (
-                                <div key={warning} className="rounded-xl bg-white px-4 py-3 text-sm font-bold leading-7 text-amber-800">
-                                    {warning}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                <div data-testid="school-commercial-operating-flow" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div data-testid="school-command-center" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                     <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                         <div>
                             <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
                                 <Building2 size={14} />
-                                خط تشغيل التعاقد المدرسي
+                                مركز تشغيل المدرسة
                             </div>
-                            <h2 className="mt-3 text-lg font-black text-gray-900">ابدأ من هنا ولا تترك المدرسة ناقصة</h2>
+                            <h2 className="mt-3 text-lg font-black text-gray-900">{readinessStatusLabel}</h2>
+                            <p data-testid="school-next-action" className="mt-1 text-sm font-bold leading-7 text-gray-600">{readinessNextStep}</p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={downloadSchoolHandover}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-amber-600"
-                        >
-                            <Download size={16} />
-                            ملف التسليم
-                        </button>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                                readinessScore === readinessChecks.length
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : readinessScore >= 3
+                                        ? 'bg-amber-100 text-amber-700'
+                                        : 'bg-red-100 text-red-700'
+                            }`}>
+                                {readinessScore}/{readinessChecks.length} جاهز
+                            </span>
+                            <button
+                                type="button"
+                                onClick={downloadSchoolHandover}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-amber-600"
+                            >
+                                <Download size={16} />
+                                ملف التسليم
+                            </button>
+                        </div>
                     </div>
                     <div data-testid="school-setup-progress" className="grid gap-3 lg:grid-cols-5">
                         {commercialOperatingSteps.map((step, index) => (
@@ -2429,133 +2364,6 @@ export const SchoolsManager: React.FC = () => {
                                     className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
                                 >
                                     {step.buttonLabel}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div data-testid="school-operating-blueprint" className="rounded-2xl border border-slate-100 bg-slate-950 p-5 text-white shadow-sm">
-                    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">
-                                <ShieldCheck size={14} />
-                                خريطة تشغيل المدرسة
-                            </div>
-                            <h2 className="mt-3 text-lg font-black">من يدير ماذا؟ ومن يرى ماذا؟</h2>
-                            <p className="mt-1 text-sm font-bold leading-6 text-slate-300">
-                                المدرسة هي العقد التجاري، الفصول هي نطاق المتابعة، والباقة هي ما يفتح المحتوى للطلاب.
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('relations')}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-900 transition-colors hover:bg-amber-100"
-                        >
-                            <Users size={16} />
-                            ضبط الصلاحيات
-                        </button>
-                    </div>
-                    <div className="grid gap-3 lg:grid-cols-5">
-                        {schoolOperatingBlueprint.map((item) => (
-                            <div
-                                key={item.title}
-                                data-testid={`school-operating-blueprint-${item.title}`}
-                                className="rounded-2xl border border-white/10 bg-white/5 p-4"
-                            >
-                                <div className="mb-3 flex items-center justify-between gap-2">
-                                    <span className="text-sm font-black text-white">{item.title}</span>
-                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
-                                        item.isReady ? 'bg-emerald-400/15 text-emerald-200' : 'bg-amber-400/15 text-amber-200'
-                                    }`}>
-                                        {item.isReady ? 'جاهز' : 'ناقص'}
-                                    </span>
-                                </div>
-                                <p className="text-xs font-bold leading-6 text-slate-300">{item.scope}</p>
-                                <p className="mt-2 text-sm font-black text-white">{item.detail}</p>
-                                <button
-                                    type="button"
-                                    onClick={() => setActiveTab(item.tab)}
-                                    className="mt-3 w-full rounded-xl bg-white/10 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-white hover:text-slate-900"
-                                >
-                                    {item.action}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-                        <div>
-                            <h2 className="text-lg font-bold text-gray-900">جاهزية المدرسة للتشغيل</h2>
-                            <p className="text-sm text-gray-500 mt-1">فحص سريع قبل تسليم المدرسة للطلاب والمشرفين.</p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={downloadSchoolGapReport}
-                                className="inline-flex items-center gap-2 rounded-xl bg-gray-50 px-4 py-2 text-xs font-black text-gray-700 transition-colors hover:bg-gray-100"
-                            >
-                                <FileSpreadsheet size={15} />
-                                ملف النواقص
-                            </button>
-                            <span className={`px-4 py-2 rounded-full text-sm font-bold ${
-                                readinessScore === readinessChecks.length
-                                    ? 'bg-emerald-100 text-emerald-700'
-                                    : readinessScore >= 2
-                                        ? 'bg-amber-100 text-amber-700'
-                                        : 'bg-red-100 text-red-700'
-                            }`}>
-                                {readinessScore}/{readinessChecks.length} جاهز
-                            </span>
-                        </div>
-                    </div>
-                    <div className="mb-4 rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
-                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <p className="text-xs font-black text-gray-500">حالة التسليم</p>
-                                <p className="mt-1 text-lg font-black text-gray-900">{readinessStatusLabel}</p>
-                            </div>
-                            <p data-testid="school-next-action" className="text-sm font-bold leading-7 text-gray-600 md:max-w-2xl">{readinessNextStep}</p>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                        {readinessChecks.map((check) => (
-                            <div
-                                key={check.label}
-                                className={`rounded-xl border p-4 ${
-                                    check.isReady
-                                        ? 'border-emerald-100 bg-emerald-50'
-                                        : 'border-amber-100 bg-amber-50'
-                                }`}
-                            >
-                                <div className="flex items-center gap-2 mb-2">
-                                    <CheckCircle size={18} className={check.isReady ? 'text-emerald-600' : 'text-amber-600'} />
-                                    <p className="font-bold text-gray-900 text-sm">{check.label}</p>
-                                </div>
-                                <p className={`text-xs ${check.isReady ? 'text-emerald-700' : 'text-amber-700'}`}>{check.hint}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-4 grid gap-3 lg:grid-cols-4">
-                        {launchActionCards.map((card) => (
-                            <div key={card.title} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                                <div className="mb-3 flex items-center justify-between gap-2">
-                                    <p className="text-sm font-black text-gray-900">{card.title}</p>
-                                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
-                                        card.isReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
-                                    }`}>
-                                        {card.isReady ? 'جاهز' : 'استكمال'}
-                                    </span>
-                                </div>
-                                <p className="min-h-[42px] text-xs leading-6 text-gray-500">{card.description}</p>
-                                <button
-                                    type="button"
-                                    onClick={card.onClick}
-                                    className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-amber-600"
-                                >
-                                    {card.buttonLabel}
                                 </button>
                             </div>
                         ))}
