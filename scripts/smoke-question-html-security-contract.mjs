@@ -8,6 +8,7 @@ const files = {
   skillsTree: await read("dashboards/admin/SkillsTreeManager.tsx"),
   questionBank: await read("dashboards/admin/QuestionBankManager.tsx"),
   quizBuilder: await read("dashboards/admin/QuizBuilder.tsx"),
+  unifiedQuestionBuilder: await read("dashboards/admin/builders/UnifiedQuestionBuilder.tsx"),
   quizPage: await read("pages/QuizPage.tsx"),
   quiz: await read("pages/Quiz.tsx"),
   results: await read("pages/Results.tsx"),
@@ -81,14 +82,30 @@ check("admin question bank shows image-only questions at a glance", () => {
 check("question summary API keeps one inline media preview for admin lists", () => {
   assertIncludes(files.quizRoutes, "const escapeHtml");
   assertIncludes(files.quizRoutes, "const inlineMedia");
+  assertIncludes(files.quizRoutes, "options correctOptionIndex explanation videoUrl");
   assertIncludes(files.quizRoutes, "<img\\b[^>]*");
   assertIncludes(files.quizRoutes, "<svg\\b[\\s\\S]*?<\\/svg>");
   assertIncludes(files.quizRoutes, "<table\\b[\\s\\S]*?<\\/table>");
   assertIncludes(files.quizRoutes, "toQuestionSummaryText(item.text)");
 });
 
+check("question builder keeps MCQ options when editing summary rows", () => {
+  assertIncludes(files.questionBank, 'data-testid="question-row-edit"');
+  assertIncludes(files.quizRoutes, "options correctOptionIndex explanation videoUrl");
+  assertIncludes(files.unifiedQuestionBuilder, "normalizeQuestionForEditing");
+  assertIncludes(files.unifiedQuestionBuilder, "data-testid=\"question-builder-modal\"");
+  assertIncludes(files.unifiedQuestionBuilder, "max-w-6xl");
+  assertIncludes(files.unifiedQuestionBuilder, "data-testid=\"question-builder-option-input\"");
+  assertIncludes(files.unifiedQuestionBuilder, "normalizedCorrectOptionIndex");
+  assertIncludes(files.unifiedQuestionBuilder, "يرجى إدخال اختيارين على الأقل.");
+});
+
 check("rich text editor exposes Arabic-friendly math helpers", () => {
   assertIncludes(files.richTextEditor, 'data-testid="question-editor-math-toolbar"');
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-equation-input"');
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-equation-preview"');
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-insert-equation"');
+  assertIncludes(files.richTextEditor, "katex.renderToString");
   assertIncludes(files.richTextEditor, "insertFormulaTemplate");
   assertIncludes(files.richTextEditor, "mathTemplates");
   assertIncludes(files.richTextEditor, 'data-testid="question-editor-formula-template"');
@@ -169,6 +186,9 @@ check("rich text editor supports drawing simple math diagrams", () => {
 check("question editor has a live admin audit for toolbar and row media previews", () => {
   assertIncludes(files.packageJson, '"smoke:question-editor-live": "node scripts/live-question-editor-audit.mjs"');
   assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-math-toolbar"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-equation-input"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-equation-preview"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-insert-equation"');
   assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-word-paste"');
   assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-drawing-toggle"');
   assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-row-media-preview"');

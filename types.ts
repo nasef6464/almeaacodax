@@ -107,6 +107,8 @@ export interface CourseAssessment {
 
 export interface Course extends ContentWorkflow {
     id: string;
+    createdAt?: number;
+    updatedAt?: number;
     title: string;
     thumbnail: string;
     instructor: string;

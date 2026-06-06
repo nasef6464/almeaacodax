@@ -685,7 +685,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   onClick={() => (setter as React.Dispatch<React.SetStateAction<boolean>>)((current) => !current)}
                   className={`rounded-xl border px-3 py-2 text-right text-xs font-black ${(value as boolean) ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-500'}`}
                 >
-                  {label}
+                  {String(label)}
                 </button>
               ))}
             </div>

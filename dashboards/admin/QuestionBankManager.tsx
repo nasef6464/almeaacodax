@@ -1300,6 +1300,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                         </button>
                         <button
                           onClick={() => handleEdit(question)}
+                          data-testid="question-row-edit"
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="تعديل"
                         >

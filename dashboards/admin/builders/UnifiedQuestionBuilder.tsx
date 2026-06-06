@@ -13,6 +13,33 @@ interface UnifiedQuestionBuilderProps {
   sectionId?: string;
 }
 
+const emptyMcqOptions = ['', '', '', ''];
+
+const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubjectId = '', fallbackSectionId = ''): Partial<Question> => {
+  const type = source?.type || 'mcq';
+  const options =
+    type === 'true_false'
+      ? ['صح', 'خطأ']
+      : type === 'essay'
+        ? []
+        : [...((source?.options || []).map((option) => String(option ?? ''))), ...emptyMcqOptions].slice(0, Math.max(4, source?.options?.length || 0));
+
+  return {
+    text: '',
+    explanation: '',
+    videoUrl: '',
+    difficulty: 'Medium',
+    pathId: '',
+    subject: fallbackSubjectId,
+    sectionId: fallbackSectionId,
+    skillIds: [],
+    ...(source || {}),
+    type,
+    options,
+    correctOptionIndex: Math.max(0, Math.min(Number(source?.correctOptionIndex ?? 0), Math.max(options.length - 1, 0))),
+  };
+};
+
 export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   initialQuestion,
   onSave,
@@ -24,19 +51,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [validationError, setValidationError] = useState('');
   const [generationError, setGenerationError] = useState('');
-  const [question, setQuestion] = useState<Partial<Question>>(initialQuestion || {
-    text: '',
-    options: ['', '', '', ''],
-    correctOptionIndex: 0,
-    explanation: '',
-    videoUrl: '',
-    difficulty: 'Medium',
-    type: 'mcq',
-    pathId: '',
-    subject: subjectId || '',
-    sectionId: sectionId || '',
-    skillIds: []
-  });
+  const [question, setQuestion] = useState<Partial<Question>>(() => normalizeQuestionForEditing(initialQuestion, subjectId || '', sectionId || ''));
 
   const availableMainSkills = useMemo(
     () => sections.filter((section) => !!question.subject && section.subjectId === question.subject),
@@ -52,6 +67,10 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
     () => availableSubSkills.filter((skill) => question.skillIds?.includes(skill.id)),
     [availableSubSkills, question.skillIds]
   );
+
+  useEffect(() => {
+    setQuestion(normalizeQuestionForEditing(initialQuestion, subjectId || '', sectionId || ''));
+  }, [initialQuestion?.id, subjectId, sectionId]);
 
   useEffect(() => {
     if (!question.subject) return;
@@ -117,13 +136,28 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       setValidationError('يرجى ربط السؤال بمهارة فرعية واحدة على الأقل.');
       return;
     }
-    if (question.type === 'mcq' && question.options?.some(option => !option)) {
-      setValidationError('يرجى تعبئة جميع الخيارات.');
+    const optionRows = (question.options || [])
+      .map((option, index) => ({ index, value: String(option || '').trim() }))
+      .filter((option) => option.value);
+    const trimmedOptions = optionRows.map((option) => option.value);
+    const selectedCorrectIndex = Number(question.correctOptionIndex ?? 0);
+    const normalizedCorrectOptionIndex = optionRows.findIndex((option) => option.index === selectedCorrectIndex);
+
+    if (question.type === 'mcq' && trimmedOptions.length < 2) {
+      setValidationError('يرجى إدخال اختيارين على الأقل.');
+      return;
+    }
+    if (question.type === 'mcq' && normalizedCorrectOptionIndex < 0) {
+      setValidationError('يرجى اختيار إجابة صحيحة من الاختيارات الموجودة.');
       return;
     }
 
     setValidationError('');
-    onSave(question);
+    onSave({
+      ...question,
+      options: question.type === 'essay' ? [] : question.type === 'true_false' ? ['صح', 'خطأ'] : trimmedOptions,
+      correctOptionIndex: question.type === 'essay' ? 0 : question.type === 'true_false' ? Number(question.correctOptionIndex ?? 0) : normalizedCorrectOptionIndex,
+    });
   };
 
   const handleGenerateWithFeedback = async () => {
@@ -172,7 +206,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+      <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[94vh] overflow-hidden shadow-2xl flex flex-col" data-testid="question-builder-modal">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 className="font-bold text-gray-800 text-lg flex items-center gap-2">
             منشئ الأسئلة الموحد
@@ -208,6 +242,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           <RichTextEditor
             value={question.text || ''}
             onChange={value => setQuestion(prev => ({ ...prev, text: value }))}
+            minHeightClass="h-96"
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -215,7 +250,15 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <label className="block text-sm font-bold text-gray-700 mb-2">نوع السؤال</label>
               <select
                 value={question.type || 'mcq'}
-                onChange={event => setQuestion(prev => ({ ...prev, type: event.target.value as Question['type'] }))}
+                onChange={event => {
+                  const nextType = event.target.value as Question['type'];
+                  setQuestion(prev => ({
+                    ...prev,
+                    type: nextType,
+                    options: nextType === 'true_false' ? ['صح', 'خطأ'] : nextType === 'essay' ? [] : (prev.options?.length ? prev.options : emptyMcqOptions),
+                    correctOptionIndex: nextType === 'essay' ? 0 : Math.min(Number(prev.correctOptionIndex ?? 0), nextType === 'true_false' ? 1 : Math.max((prev.options?.length || 4) - 1, 0)),
+                  }));
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="mcq">اختيار من متعدد</option>
@@ -334,7 +377,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           {question.type === 'mcq' && (
             <div className="space-y-3">
               <label className="block text-sm font-bold text-gray-700">الخيارات</label>
-              {question.options?.map((option, index) => (
+              {(question.options?.length ? question.options : emptyMcqOptions).map((option, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <input
                     type="radio"
@@ -346,6 +389,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                   <input
                     type="text"
                     value={option}
+                    data-testid="question-builder-option-input"
                     onChange={event => {
                       const newOptions = [...(question.options || [])];
                       newOptions[index] = event.target.value;
@@ -393,6 +437,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
             <RichTextEditor
               value={question.explanation || ''}
               onChange={value => setQuestion(prev => ({ ...prev, explanation: value }))}
+              minHeightClass="h-52"
             />
           </div>
         </div>
@@ -403,6 +448,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
           </button>
           <button
             onClick={handleValidatedSave}
+            data-testid="question-builder-save"
             className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Save size={18} /> حفظ السؤال

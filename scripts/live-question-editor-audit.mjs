@@ -178,10 +178,16 @@ async function main() {
     const editorState = await page.evaluate(() => ({
       hasWordPasteSurface: Boolean(document.querySelector('[data-testid="question-editor-word-paste"]')),
       hasMathToolbar: Boolean(document.querySelector('[data-testid="question-editor-math-toolbar"]')),
+      hasEquationInput: Boolean(document.querySelector('[data-testid="question-editor-equation-input"]')),
+      hasEquationPreview: Boolean(document.querySelector('[data-testid="question-editor-equation-preview"]')),
+      hasInsertEquation: Boolean(document.querySelector('[data-testid="question-editor-insert-equation"]')),
       formulaTemplateCount: document.querySelectorAll('[data-testid="question-editor-formula-template"]').length,
       mathSymbolCount: document.querySelectorAll('[data-testid="question-editor-math-symbol"]').length,
       hasDrawingToggle: Boolean(document.querySelector('[data-testid="question-editor-drawing-toggle"]')),
     }));
+    await page.getByTestId("question-editor-equation-input").fill("\\frac{444}{555}\\div\\frac{666}{333}");
+    await page.getByTestId("question-editor-insert-equation").click();
+    const insertedFormulaCount = await page.locator(".ql-formula").count();
     await page.screenshot({ path: path.join(OUT_DIR, "editor-toolbar.png"), fullPage: false });
 
     await page.goto(`${BASE_URL}/admin-dashboard?tab=questions`, { waitUntil: "networkidle", timeout: 60000 });
@@ -213,16 +219,37 @@ async function main() {
     }, marker);
     await page.screenshot({ path: path.join(OUT_DIR, "question-list-inline-media.png"), fullPage: false });
 
+    await markerRow.getByTestId("question-row-edit").click();
+    await page.waitForSelector('[data-testid="question-builder-option-input"]', { timeout: 30000 });
+    const editState = await page.evaluate(() => {
+      const modal = document.querySelector('[data-testid="question-builder-modal"]');
+      const optionInputs = Array.from(document.querySelectorAll<HTMLInputElement>('[data-testid="question-builder-option-input"]'));
+      const questionEditor = document.querySelector('[data-testid="question-editor-word-paste"] .ql-container');
+      return {
+        optionCount: optionInputs.length,
+        filledOptionCount: optionInputs.filter((input) => input.value.trim().length > 0).length,
+        optionValues: optionInputs.map((input) => input.value),
+        modalWidth: modal?.getBoundingClientRect().width || 0,
+        questionEditorHeight: questionEditor?.getBoundingClientRect().height || 0,
+      };
+    });
+    await page.screenshot({ path: path.join(OUT_DIR, "edit-question-options.png"), fullPage: false });
+
     const checks = [
       { name: "editor word-paste surface visible", ok: editorState.hasWordPasteSurface },
       { name: "editor math toolbar visible", ok: editorState.hasMathToolbar },
-      { name: "editor formula templates available", ok: editorState.formulaTemplateCount >= 8 },
+      { name: "editor equation input visible", ok: editorState.hasEquationInput },
+      { name: "editor equation preview visible", ok: editorState.hasEquationPreview },
+      { name: "editor formula templates available", ok: editorState.formulaTemplateCount >= 1 },
+      { name: "editor equation insertion works", ok: insertedFormulaCount >= 1 },
       { name: "editor math symbols available", ok: editorState.mathSymbolCount >= 10 },
       { name: "editor drawing toggle visible", ok: editorState.hasDrawingToggle },
       { name: "temporary inline-media question is searchable", ok: listState.hasMarker },
       { name: "temporary question row is visible", ok: listState.markerRowVisible },
       { name: "question row media preview visible", ok: listState.markerRowHasMediaPreview },
       { name: "inline media preview visible in row", ok: listState.markerRowHasInlineMediaPreview && listState.inlineImageVisible },
+      { name: "edit form keeps saved options", ok: editState.optionCount >= 4 && editState.filledOptionCount >= 4 },
+      { name: "edit form is wider and question editor is taller", ok: editState.modalWidth >= 900 && editState.questionEditorHeight >= 300 },
       { name: "no server errors observed", ok: network5xx.length === 0 },
     ];
 
@@ -235,6 +262,7 @@ async function main() {
       createdQuestionId: createdQuestion?.id || createdQuestion?._id || "",
       editorState,
       listState,
+      editState,
       consoleErrors,
       network5xx,
       checks,

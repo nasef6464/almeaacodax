@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-import { FunctionSquare, PencilRuler, Sigma } from 'lucide-react';
+import { Eye, PencilRuler, Plus, Sigma } from 'lucide-react';
 import { QuestionDrawingPad } from './QuestionDrawingPad';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 
@@ -15,6 +15,7 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  minHeightClass?: string;
 }
 
 const WORD_PASTE_PATTERN = /(?:class="?Mso|mso-|<o:p|xmlns:o|urn:schemas-microsoft-com:office:word|<!--\[if)/i;
@@ -240,9 +241,10 @@ const cleanWordPasteHtml = (html: string) => {
   return normalizeQuestionHtml(document.body.innerHTML);
 };
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
+export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder, minHeightClass = 'h-64' }) => {
   const editorRef = useRef<ReactQuill | null>(null);
   const [showDrawingPad, setShowDrawingPad] = useState(false);
+  const [equationDraft, setEquationDraft] = useState('\\frac{x}{y}');
   const modules = useMemo(
     () => ({
       toolbar: [
@@ -273,6 +275,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     editor.insertText(insertAt + 1, ' ', 'user');
     editor.setSelection(insertAt + 2, 0, 'silent');
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
+  };
+
+  const insertEquationDraft = () => {
+    const trimmed = equationDraft.trim();
+    if (!trimmed) return;
+    insertFormulaTemplate(trimmed);
   };
 
   const insertTextSymbol = (symbol: string) => {
@@ -348,54 +356,88 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
       onPasteCapture={handlePasteCapture}
     >
       <div
-        className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-slate-50 px-3 py-2"
+        className="space-y-3 border-b border-gray-100 bg-slate-50 px-3 py-3"
         data-testid="question-editor-math-toolbar"
         dir="rtl"
       >
-        <span className="inline-flex items-center gap-1 text-xs font-black text-slate-500">
-          <Sigma className="h-3.5 w-3.5" />
-          رياضيات
-        </span>
-        {mathTemplates.map((template) => (
-          <button
-            key={template.label}
-            type="button"
-            onClick={() => insertFormulaTemplate(template.formula)}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-black text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
-            data-testid="question-editor-formula-template"
-            title={`إدراج ${template.label}`}
-          >
-            <FunctionSquare className="h-3.5 w-3.5" />
-            {template.label}
-          </button>
-        ))}
-        <div className="mx-1 h-5 w-px bg-slate-200" />
-        {mathSymbols.map((symbol) => (
-          <button
-            key={symbol}
-            type="button"
-            onClick={() => insertTextSymbol(symbol)}
-            className="h-7 min-w-7 rounded-lg border border-slate-200 bg-white px-2 text-xs font-black text-slate-700 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700"
-            data-testid="question-editor-math-symbol"
-            title={`إدراج ${symbol}`}
-          >
-            {symbol}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={() => setShowDrawingPad((current) => !current)}
-          className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-black ${
-            showDrawingPad
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-              : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'
-          }`}
-          data-testid="question-editor-drawing-toggle"
-          title="فتح لوحة الرسم"
-        >
-          <PencilRuler className="h-3.5 w-3.5" />
-          رسم
-        </button>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-center gap-2 text-xs font-black text-slate-600">
+              <Sigma className="h-3.5 w-3.5" />
+              محرر رياضيات ومعادلات
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                value={equationDraft}
+                onChange={(event) => setEquationDraft(event.target.value)}
+                dir="ltr"
+                className="min-h-10 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-800 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                placeholder="\\frac{x}{y} أو x^2 + y^2"
+                data-testid="question-editor-equation-input"
+              />
+              <button
+                type="button"
+                onClick={insertEquationDraft}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white hover:bg-indigo-700"
+                data-testid="question-editor-insert-equation"
+              >
+                <Plus className="h-4 w-4" />
+                إدراج
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDrawingPad((current) => !current)}
+                className={`inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-black ${
+                  showDrawingPad
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'
+                }`}
+                data-testid="question-editor-drawing-toggle"
+              >
+                <PencilRuler className="h-4 w-4" />
+                رسم
+              </button>
+            </div>
+            <div className="mt-2 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700" data-testid="question-editor-equation-preview">
+              <Eye className="h-4 w-4 text-slate-400" />
+              <span className="text-xs font-black text-slate-400">معاينة</span>
+              <span className="min-w-0 overflow-x-auto" dir="ltr">
+                {equationDraft.trim() ? <span dangerouslySetInnerHTML={{ __html: katex.renderToString(equationDraft, { throwOnError: false }) }} /> : null}
+              </span>
+            </div>
+          </div>
+          <div className="lg:w-72">
+            <label className="mb-2 block text-xs font-black text-slate-500">قوالب جاهزة</label>
+            <select
+              value=""
+              onChange={(event) => {
+                if (!event.target.value) return;
+                setEquationDraft(event.target.value);
+              }}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              data-testid="question-editor-formula-template"
+            >
+              <option value="">اختر قالبًا...</option>
+              {mathTemplates.map((template) => (
+                <option key={template.label} value={template.formula}>{template.label}</option>
+              ))}
+            </select>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {mathSymbols.slice(0, 12).map((symbol) => (
+                <button
+                  key={symbol}
+                  type="button"
+                  onClick={() => insertTextSymbol(symbol)}
+                  className="h-7 min-w-7 rounded-lg border border-slate-200 bg-white px-2 text-xs font-black text-slate-700 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700"
+                  data-testid="question-editor-math-symbol"
+                  title={`إدراج ${symbol}`}
+                >
+                  {symbol}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
       {showDrawingPad ? <QuestionDrawingPad onInsertImage={insertDrawingImage} /> : null}
       <ReactQuill
@@ -406,7 +448,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
         modules={modules}
         formats={formats}
         placeholder={placeholder || 'اكتب هنا... يدعم العربية والإنجليزية والمعادلات الرياضية مثل x^2 + y^2 = z^2'}
-        className="h-64 mb-12"
+        className={`${minHeightClass} mb-12`}
       />
     </div>
   );
