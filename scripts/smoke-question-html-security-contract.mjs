@@ -63,6 +63,7 @@ check("admin question previews use normalized HTML", () => {
 
 check("admin question bank shows image-only questions at a glance", () => {
   assertIncludes(files.questionBank, 'data-testid="question-row-media-preview"');
+  assertIncludes(files.questionBank, 'data-testid="question-row-image-below-text"');
   assertIncludes(files.questionBank, "question.imageUrl");
   assertIncludes(files.questionBank, "معاينة صورة السؤال");
   assertIncludes(files.questionBank, "سؤال بصورة مرفقة");
