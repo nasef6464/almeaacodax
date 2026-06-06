@@ -232,6 +232,17 @@ check("school student class assignment keeps one clear school/class relation", (
   assertIncludes(files.store, "nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id))");
 });
 
+check("school bulk import and relation uploads keep class membership singular", () => {
+  assertIncludes(files.routes, "let currentSchoolClassIds = uniqueStrings(existingClasses.flatMap((item) => [item.id, String(item._id)]));");
+  assertIncludes(files.routes, "currentSchoolClassIds = uniqueStrings([...currentSchoolClassIds, createdClassId, String(targetClass._id)]);");
+  assertIncludes(files.routes, "...existingGroupIds.filter((id) => !currentSchoolClassIds.includes(id))");
+  assertIncludes(files.routes, "GroupModel.updateMany(");
+  assertIncludes(files.routes, '{ type: "CLASS", parentId: schoolId }');
+  assertIncludes(files.routes, "$pull: { studentIds: { $in: studentIdAliases } }");
+  assertIncludes(files.routes, "groupIds: [],");
+  assertIncludes(files.routes, "UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } })");
+});
+
 check("school access codes attach students to the school roster", () => {
   assertIncludes(files.authRoutes, '"/me/redeem-access-code"');
   assertIncludes(files.authRoutes, "$set: { schoolId }");

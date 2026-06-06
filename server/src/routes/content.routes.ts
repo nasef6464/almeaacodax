@@ -2464,6 +2464,7 @@ contentRouter.post(
     const existingClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 });
     const classById = new Map(existingClasses.map((item) => [item.id || String(item._id), item]));
     const classByName = new Map(existingClasses.map((item) => [item.name.trim().toLowerCase(), item]));
+    let currentSchoolClassIds = uniqueStrings(existingClasses.flatMap((item) => [item.id, String(item._id)]));
     const credentials: Array<{ name: string; email: string; password: string; className?: string }> = [];
     const importedUsers: any[] = [];
 
@@ -2493,12 +2494,19 @@ contentRouter.post(
         const createdClassId = targetClass.id || String(targetClass._id);
         classById.set(createdClassId, targetClass);
         classByName.set(targetClass.name.trim().toLowerCase(), targetClass);
+        currentSchoolClassIds = uniqueStrings([...currentSchoolClassIds, createdClassId, String(targetClass._id)]);
       }
 
       const generatedPassword = row.password || `Nn@${Math.floor(100000 + Math.random() * 900000)}`;
       const passwordHash = await bcrypt.hash(generatedPassword, 10);
       const normalizedEmail = row.email.toLowerCase().trim();
       const classId = targetClass ? targetClass.id || String(targetClass._id) : undefined;
+      const existingUser = await UserModel.findOne({ email: normalizedEmail }).select("groupIds").lean();
+      const existingGroupIds = Array.isArray(existingUser?.groupIds) ? existingUser.groupIds.map(String) : [];
+      const nextGroupIds = uniqueStrings([
+        ...existingGroupIds.filter((id) => !currentSchoolClassIds.includes(id)),
+        ...(classId ? [classId] : []),
+      ]);
 
       const user = await UserModel.findOneAndUpdate(
         { email: normalizedEmail },
@@ -2509,7 +2517,7 @@ contentRouter.post(
           role: "student",
           isActive: true,
           schoolId,
-          groupIds: classId ? [classId] : [],
+          groupIds: nextGroupIds,
         },
         {
           upsert: true,
@@ -2517,6 +2525,16 @@ contentRouter.post(
           setDefaultsOnInsert: true,
         },
       );
+
+      const studentId = user.id || String(user._id);
+      const studentIdAliases = uniqueStrings([user.id, String(user._id)]);
+      await GroupModel.updateMany(
+        { type: "CLASS", parentId: schoolId },
+        { $pull: { studentIds: { $in: studentIdAliases } } },
+      );
+      if (classId) {
+        await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } });
+      }
 
       importedUsers.push(user);
       credentials.push({
@@ -3248,7 +3266,7 @@ contentRouter.post(
         role,
         isActive: true,
         schoolId,
-        groupIds: role === "supervisor" ? [schoolId] : [],
+        groupIds: [],
         linkedStudentIds: [],
       });
 
@@ -3280,10 +3298,19 @@ contentRouter.post(
 
       if (classroom) {
         const classId = classroom.id || String(classroom._id);
+        const studentId = student.id || String(student._id);
+        const studentIdAliases = uniqueStrings([student.id, String(student._id)]);
+        const currentSchoolClassIds = uniqueStrings(classes.flatMap((item) => [item.id, String(item._id)]));
+        const currentGroupIds = Array.isArray(student.groupIds) ? student.groupIds.map(String) : [];
+        const nextGroupIds = uniqueStrings([
+          ...currentGroupIds.filter((id) => !currentSchoolClassIds.includes(id)),
+          classId,
+        ]);
         await Promise.all([
-          UserModel.findByIdAndUpdate(student._id, { $set: { schoolId }, $addToSet: { groupIds: classId } }),
-          GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: student.id || String(student._id) } }),
-          GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), { $addToSet: { studentIds: student.id || String(student._id) } }),
+          UserModel.findByIdAndUpdate(student._id, { $set: { schoolId, groupIds: nextGroupIds } }),
+          GroupModel.updateMany({ type: "CLASS", parentId: schoolId }, { $pull: { studentIds: { $in: studentIdAliases } } }),
+          GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } }),
+          GroupModel.findOneAndUpdate(buildDocumentQuery(schoolId), { $addToSet: { studentIds: studentId } }),
         ]);
         summary.assignedClasses += 1;
       }
