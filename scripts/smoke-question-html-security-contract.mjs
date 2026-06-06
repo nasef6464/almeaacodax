@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const files = {
+  packageJson: await read("package.json"),
   sanitizer: await read("utils/questionHtml.ts"),
   skillsTree: await read("dashboards/admin/SkillsTreeManager.tsx"),
   questionBank: await read("dashboards/admin/QuestionBankManager.tsx"),
@@ -14,6 +15,7 @@ const files = {
   videoPlayer: await read("components/CustomVideoPlayer.tsx"),
   richTextEditor: await read("components/RichTextEditor.tsx"),
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
+  liveQuestionEditorAudit: await read("scripts/live-question-editor-audit.mjs"),
   styles: await read("styles/main.css"),
 };
 
@@ -64,6 +66,11 @@ check("admin question previews use normalized HTML", () => {
 check("admin question bank shows image-only questions at a glance", () => {
   assertIncludes(files.questionBank, 'data-testid="question-row-media-preview"');
   assertIncludes(files.questionBank, 'data-testid="question-row-image-below-text"');
+  assertIncludes(files.questionBank, 'data-testid="question-bank-add-question"');
+  assertIncludes(files.questionBank, 'data-testid="question-bank-search-input"');
+  assertIncludes(files.questionBank, 'data-testid={hasInlineMedia ? \'question-row-inline-media-preview\' : undefined}');
+  assertIncludes(files.questionBank, "hasInlineQuestionMedia");
+  assertIncludes(files.questionBank, "hasMediaPreview");
   assertIncludes(files.questionBank, "question.imageUrl");
   assertIncludes(files.questionBank, "معاينة صورة السؤال");
   assertIncludes(files.questionBank, "سؤال بصورة مرفقة");
@@ -147,6 +154,17 @@ check("rich text editor supports drawing simple math diagrams", () => {
   assertIncludes(files.questionDrawingPad, "circle");
   assertIncludes(files.questionDrawingPad, "angle");
   assertIncludes(files.questionDrawingPad, "toDataURL('image/png')");
+});
+
+check("question editor has a live admin audit for toolbar and row media previews", () => {
+  assertIncludes(files.packageJson, '"smoke:question-editor-live": "node scripts/live-question-editor-audit.mjs"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-math-toolbar"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-word-paste"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-editor-drawing-toggle"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-row-media-preview"');
+  assertIncludes(files.liveQuestionEditorAudit, 'data-testid="question-row-inline-media-preview"');
+  assertIncludes(files.liveQuestionEditorAudit, "createInlineMediaQuestion");
+  assertIncludes(files.liveQuestionEditorAudit, "method: \"DELETE\"");
 });
 
 check("learner question rendering keeps normalized HTML contract", () => {

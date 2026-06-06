@@ -76,6 +76,7 @@
         "smoke:csrf": "node scripts/smoke-csrf-contract.mjs",
         "smoke:api-security": "node scripts/smoke-api-security-contract.mjs",
         "smoke:question-html-security": "node scripts/smoke-question-html-security-contract.mjs",
+        "smoke:question-editor-live": "node scripts/live-question-editor-audit.mjs",
         "smoke:route-loading": "node scripts/smoke-route-loading-contract.mjs",
         "smoke:runtime-source": "node scripts/smoke-runtime-source-contract.mjs",
         "smoke:data-visibility-regression": "node scripts/smoke-data-visibility-regression-contract.mjs",

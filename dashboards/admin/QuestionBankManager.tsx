@@ -3,7 +3,7 @@ import { Download, Edit2, Plus, Search, Trash2, Upload, Eye, X, BookOpen, Target
 import { Question } from '../../types';
 import { useStore } from '../../store/useStore';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
-import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../../utils/questionHtml';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
 import { api } from '../../services/api';
 
@@ -874,6 +874,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
         </div>
         <button
           onClick={handleCreateNew}
+          data-testid="question-bank-add-question"
           className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
         >
           <Plus size={18} />
@@ -1156,6 +1157,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           <input
             type="text"
             placeholder="ابحث في نص السؤال..."
+            data-testid="question-bank-search-input"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -1178,29 +1180,38 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             <tbody className="divide-y divide-gray-100">
               {displayedQuestions.map((question) => {
                 const statusMeta = getStatusMeta(question);
+                const normalizedQuestionText = normalizeQuestionHtml(question.text);
+                const hasInlineMedia = hasInlineQuestionMedia(normalizedQuestionText);
+                const hasMediaPreview = Boolean(question.imageUrl) || hasInlineMedia;
                 return (
                   <tr key={question.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        {question.imageUrl ? (
+                        {hasMediaPreview ? (
                           <div className="space-y-2" data-testid="question-row-media-preview">
                             {question.text ? (
-                              <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                              <div
+                                className={`question-html text-sm text-gray-800 ${hasInlineMedia ? 'max-h-28 max-w-[260px] overflow-hidden rounded-xl border border-indigo-100 bg-white p-2' : 'line-clamp-2'}`}
+                                data-testid={hasInlineMedia ? 'question-row-inline-media-preview' : undefined}
+                                dangerouslySetInnerHTML={{ __html: normalizedQuestionText }}
+                              />
                             ) : (
                               <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
                             )}
-                            <div className="w-full max-w-[220px] overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50 p-1" data-testid="question-row-image-below-text">
-                              <img
-                                src={question.imageUrl}
-                                alt="معاينة صورة السؤال"
-                                className="h-24 w-full object-contain"
-                                loading="lazy"
-                              />
-                            </div>
+                            {question.imageUrl ? (
+                              <div className="w-full max-w-[220px] overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50 p-1" data-testid="question-row-image-below-text">
+                                <img
+                                  src={question.imageUrl}
+                                  alt="معاينة صورة السؤال"
+                                  className="h-24 w-full object-contain"
+                                  loading="lazy"
+                                />
+                              </div>
+                            ) : null}
                             <div className="line-clamp-1 text-[11px] font-bold text-gray-400">اضغط معاينة لرؤية السؤال كاملًا.</div>
                           </div>
                         ) : question.text ? (
-                          <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                          <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizedQuestionText }} />
                         ) : (
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
