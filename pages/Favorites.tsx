@@ -213,14 +213,14 @@ const Favorites: React.FC = () => {
                   />
                   {currentQuestion.text ? (
                     <div
-                      className="mt-4 text-center font-bold text-lg text-gray-800 leading-loose"
+                      className="question-html mt-4 text-center font-bold text-lg text-gray-800 leading-loose"
                       dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion.text) }}
                     />
                   ) : null}
                 </div>
               ) : (
                 <div
-                  className="text-lg sm:text-xl font-bold text-gray-800 text-center leading-loose break-words"
+                  className="question-html text-lg sm:text-xl font-bold text-gray-800 text-center leading-loose break-words"
                   dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion.text) }}
                 />
               )}

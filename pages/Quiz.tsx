@@ -1198,7 +1198,7 @@ const Quiz: React.FC = () => {
           <div className="flex-1">
             <div
               onClick={handleInlineQuestionImageClick}
-              className="text-base sm:text-lg font-medium text-gray-800 leading-loose mb-5 sm:mb-8 text-right break-words [&_img]:cursor-zoom-in"
+              className="question-html text-base sm:text-lg font-medium text-gray-800 leading-loose mb-5 sm:mb-8 text-right break-words [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentQuestion + 1}) ${normalizeQuestionHtml(questions[currentQuestion].text)}` }}
             />
             {questions[currentQuestion].imageUrl && (

@@ -14,6 +14,7 @@ const files = {
   videoPlayer: await read("components/CustomVideoPlayer.tsx"),
   richTextEditor: await read("components/RichTextEditor.tsx"),
   questionDrawingPad: await read("components/QuestionDrawingPad.tsx"),
+  styles: await read("styles/main.css"),
 };
 
 const checks = [];
@@ -70,12 +71,33 @@ check("admin question bank shows image-only questions at a glance", () => {
 
 check("rich text editor exposes Arabic-friendly math helpers", () => {
   assertIncludes(files.richTextEditor, 'data-testid="question-editor-math-toolbar"');
-  assertIncludes(files.richTextEditor, "insertMathTemplate");
+  assertIncludes(files.richTextEditor, "insertFormulaTemplate");
   assertIncludes(files.richTextEditor, "mathTemplates");
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-formula-template"');
+  assertIncludes(files.richTextEditor, 'data-testid="question-editor-math-symbol"');
+  assertIncludes(files.richTextEditor, "editor.insertEmbed(insertAt, 'formula', formula");
+  assertIncludes(files.richTextEditor, "{ script: 'sub' }");
+  assertIncludes(files.richTextEditor, "{ script: 'super' }");
+  assertIncludes(files.richTextEditor, "\\\\frac{\\\\text{س}}{\\\\text{ص}}");
+  assertIncludes(files.richTextEditor, "\\\\sqrt{\\\\text{س}}");
+  assertIncludes(files.richTextEditor, "m\\\\angle \\\\text{س}");
   assertIncludes(files.richTextEditor, "كسر");
   assertIncludes(files.richTextEditor, "جذر");
   assertIncludes(files.richTextEditor, "أس");
   assertIncludes(files.richTextEditor, "زاوية");
+});
+
+check("question math renders consistently across admin and learner surfaces", () => {
+  assertIncludes(files.questionBank, "question-html");
+  assertIncludes(files.quizBuilder, "question-html");
+  assertIncludes(files.quizPage, "question-html");
+  assertIncludes(files.quiz, "question-html");
+  assertIncludes(files.results, "question-html");
+  assertIncludes(files.favorites, "question-html");
+  assertIncludes(files.videoPlayer, "question-html");
+  assertIncludes(files.styles, ".question-html .ql-formula");
+  assertIncludes(files.styles, ".question-html .katex");
+  assertIncludes(files.styles, ".question-html table");
 });
 
 check("rich text editor cleans Word paste before insertion", () => {

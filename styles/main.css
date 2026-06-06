@@ -62,3 +62,52 @@ html.dark body {
     animation: none;
   }
 }
+
+.question-html,
+.ql-editor {
+  direction: rtl;
+  text-align: right;
+}
+
+.question-html .ql-formula,
+.ql-editor .ql-formula {
+  display: inline-flex;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.question-html .katex,
+.ql-editor .katex {
+  direction: ltr;
+  font-size: 1.08em;
+  line-height: 1.8;
+  white-space: normal;
+}
+
+.question-html table,
+.ql-editor table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  direction: rtl;
+  margin: 0.75rem 0;
+}
+
+.question-html td,
+.question-html th,
+.ql-editor td,
+.ql-editor th {
+  border: 1px solid #111827;
+  padding: 0.45rem 0.6rem;
+  vertical-align: middle;
+}
+
+.question-html img,
+.ql-editor img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  vertical-align: middle;
+}

@@ -1103,7 +1103,7 @@ export const QuizPage: React.FC = () => {
 
               <div
                 onClick={handleInlineQuestionImageClick}
-                className={`text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
+                className={`question-html text-base sm:text-lg mb-4 break-words [&_img]:cursor-zoom-in ${isNightMode ? 'text-slate-100' : 'text-gray-800'}`}
                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(currentQuestion?.text) }}
               />
               {currentQuestion?.imageUrl && (
@@ -1133,7 +1133,7 @@ export const QuizPage: React.FC = () => {
                     }`}
                   >
                     <span className={`flex-1 text-xs sm:text-sm font-bold leading-5 text-center break-words ${isNightMode ? 'text-slate-100' : 'text-gray-700'}`}>
-                      <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
+                      <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                     </span>
                     <div className="flex items-center shrink-0">
                       <div className={`h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 flex items-center justify-center text-lg font-black ${
@@ -1339,7 +1339,7 @@ export const QuizPage: React.FC = () => {
                             <div className="flex justify-between items-start mb-4">
                               <div
                                 onClick={handleInlineQuestionImageClick}
-                                className="text-gray-800 font-medium [&_img]:cursor-zoom-in"
+                                className="question-html text-gray-800 font-medium [&_img]:cursor-zoom-in"
                                 dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }}
                               />
                               <button
@@ -1390,7 +1390,7 @@ export const QuizPage: React.FC = () => {
                                       {(optionIndex === question.correctOptionIndex || optionIndex === userAnswer) && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                                     </div>
                                     <div className="min-w-0 flex-1 text-center">
-                                      <span className="block break-words text-sm font-bold leading-6" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
+                                      <span className="question-html block break-words text-sm font-bold leading-6" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
                                       {helperLabel ? <span className="mt-1 inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-black">{helperLabel}</span> : null}
                                     </div>
                                   </div>
@@ -1401,7 +1401,7 @@ export const QuizPage: React.FC = () => {
                             {quiz.settings.showExplanations && question.explanation && (
                               <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
                                 <h4 className="font-bold text-indigo-900 mb-2 text-sm">شرح الإجابة:</h4>
-                                <div className="text-indigo-800 text-sm" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
+                                <div className="question-html text-indigo-800 text-sm" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
                               </div>
                             )}
                           </div>

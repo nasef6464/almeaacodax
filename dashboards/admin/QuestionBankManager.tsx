@@ -1194,7 +1194,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                             </div>
                             <div className="min-w-0">
                               {question.text ? (
-                                <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                                <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                               ) : (
                                 <div className="text-sm font-black text-indigo-700">سؤال بصورة مرفقة</div>
                               )}
@@ -1202,7 +1202,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                             </div>
                           </div>
                         ) : question.text ? (
-                          <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                          <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                         ) : (
                           <div className="text-sm text-gray-400">سؤال بدون نص</div>
                         )}
@@ -1412,7 +1412,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                     </div>
                   ) : null}
                   {previewQuestion.text ? (
-                    <div className="text-lg font-black leading-10 text-gray-900" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(previewQuestion.text) }} />
+                    <div className="question-html text-lg font-black leading-10 text-gray-900" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(previewQuestion.text) }} />
                   ) : null}
                   <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {(previewQuestion.type === 'essay' ? ['إجابة كتابية'] : previewQuestion.options || []).map((option, index) => {

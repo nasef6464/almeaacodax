@@ -600,7 +600,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
                                   <div className="space-y-2">
                                     {subSkillQuestions.length > 0 ? subSkillQuestions.slice(0, 8).map((question) => (
                                       <div key={question.id} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-                                        <div className="text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
+                                        <div className="question-html text-sm text-gray-800 line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }} />
                                       </div>
                                     )) : (
                                       <div className="text-center py-6 text-sm text-gray-400 border border-dashed border-gray-200 rounded-lg">لا توجد أسئلة مرتبطة.</div>

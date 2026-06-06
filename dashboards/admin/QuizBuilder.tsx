@@ -810,7 +810,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                               {isSelected && <CheckCircle2 size={14} />}
                             </div>
                             <div className="flex-1">
-                              <div className="text-sm text-gray-800 line-clamp-2 mb-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.text) }} />
+                              <div className="question-html text-sm text-gray-800 line-clamp-2 mb-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(q.text) }} />
                               <div className="flex gap-2 text-xs">
                                 <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded">
                                   {q.difficulty === 'Easy' ? 'سهل' : q.difficulty === 'Medium' ? 'متوسط' : 'صعب'}

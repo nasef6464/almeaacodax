@@ -70,7 +70,7 @@ const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, b
           />
         ) : null}
         <div
-          className="mb-4 text-base font-bold leading-8 text-gray-900 sm:text-lg"
+          className="question-html mb-4 text-base font-bold leading-8 text-gray-900 sm:text-lg"
           dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(inlineQuestion.text) }}
         />
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -78,7 +78,7 @@ const VideoQuestionOverlay: React.FC<VideoQuestionOverlayProps> = ({ question, b
             <button
               key={`${question.id}-${index}`}
               onClick={() => onAnswer(index === inlineQuestion.correctOptionIndex)}
-              className="min-h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-bold text-gray-800 transition hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-800"
+              className="question-html min-h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-bold text-gray-800 transition hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-800"
               dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
             />
           ))}

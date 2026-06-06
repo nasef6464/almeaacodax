@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-import { PencilRuler } from 'lucide-react';
+import { FunctionSquare, PencilRuler, Sigma } from 'lucide-react';
 import { QuestionDrawingPad } from './QuestionDrawingPad';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
 
@@ -34,7 +34,33 @@ const SAFE_WORD_STYLE_PROPERTIES = new Set([
   'text-decoration',
   'width',
   'height',
+  'display',
 ]);
+
+const SAFE_WORD_ATTRIBUTES = new Set([
+  'src',
+  'alt',
+  'title',
+  'width',
+  'height',
+  'colspan',
+  'rowspan',
+]);
+
+const mathTemplates = [
+  { label: 'كسر عربي', formula: '\\frac{\\text{س}}{\\text{ص}}' },
+  { label: 'كسر إنجليزي', formula: '\\frac{x}{y}' },
+  { label: 'جذر', formula: '\\sqrt{\\text{س}}' },
+  { label: 'جذر تربيعي', formula: '\\sqrt{a^2+b^2}' },
+  { label: 'أس', formula: '\\text{س}^{2}+\\text{ص}^{2}' },
+  { label: 'زاوية', formula: 'm\\angle \\text{س} = 45^\\circ' },
+  { label: 'قوس دائرة', formula: 'm\\widehat{AB}=120^\\circ' },
+  { label: 'نسبة', formula: '\\text{أ}:\\text{ب} = 3:5' },
+  { label: 'متتابعة', formula: '1,\\ 3,\\ 5,\\ \\ldots' },
+  { label: 'اختيار قدرات', formula: '\\frac{444}{555}\\div\\frac{666}{333}' },
+];
+
+const mathSymbols = ['±', '×', '÷', '≈', '≠', '≤', '≥', '∞', '√', '∠', '°', 'π', '²', '³', '½', '⅓', '¼'];
 
 const cleanInlineStyle = (style: string) =>
   style
@@ -112,6 +138,8 @@ const cleanWordPasteHtml = (html: string) => {
         return;
       }
 
+      if (SAFE_WORD_ATTRIBUTES.has(name)) return;
+
       if (name.startsWith('xmlns') || name === 'lang' || name === 'face') {
         element.removeAttribute(attribute.name);
       }
@@ -129,23 +157,13 @@ const cleanWordPasteHtml = (html: string) => {
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
   const editorRef = useRef<ReactQuill | null>(null);
   const [showDrawingPad, setShowDrawingPad] = useState(false);
-  const mathTemplates = useMemo(
-    () => [
-      { label: 'كسر', value: ' (البسط)/(المقام) ' },
-      { label: 'جذر', value: ' √(العدد) ' },
-      { label: 'أس', value: ' س^٢ ' },
-      { label: 'زاوية', value: ' ق∠س = ٤٥° ' },
-      { label: 'نسبة', value: ' أ : ب ' },
-      { label: 'متتابعة', value: ' ١، ٣، ٥، ... ' },
-    ],
-    [],
-  );
   const modules = useMemo(
     () => ({
       toolbar: [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ direction: 'rtl' }, { align: [] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ script: 'sub' }, { script: 'super' }],
         [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
         ['link', 'image', 'video', 'formula'],
         [{ color: [] }, { background: [] }],
@@ -159,14 +177,26 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     [],
   );
 
-  const insertMathTemplate = (template: string) => {
+  const insertFormulaTemplate = (formula: string) => {
     const editor = editorRef.current?.getEditor();
     if (!editor) return;
 
     const range = editor.getSelection(true);
     const insertAt = range?.index ?? editor.getLength();
-    editor.insertText(insertAt, template, 'user');
-    editor.setSelection(insertAt + template.length, 0, 'silent');
+    editor.insertEmbed(insertAt, 'formula', formula, 'user');
+    editor.insertText(insertAt + 1, ' ', 'user');
+    editor.setSelection(insertAt + 2, 0, 'silent');
+    onChange(normalizeQuestionHtml(editor.root.innerHTML));
+  };
+
+  const insertTextSymbol = (symbol: string) => {
+    const editor = editorRef.current?.getEditor();
+    if (!editor) return;
+
+    const range = editor.getSelection(true);
+    const insertAt = range?.index ?? editor.getLength();
+    editor.insertText(insertAt, symbol, 'user');
+    editor.setSelection(insertAt + symbol.length, 0, 'silent');
     onChange(normalizeQuestionHtml(editor.root.innerHTML));
   };
 
@@ -212,6 +242,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
     'underline',
     'strike',
     'blockquote',
+    'script',
     'list',
     'indent',
     'link',
@@ -235,16 +266,34 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange,
         data-testid="question-editor-math-toolbar"
         dir="rtl"
       >
-        <span className="text-xs font-black text-slate-500">رياضيات</span>
+        <span className="inline-flex items-center gap-1 text-xs font-black text-slate-500">
+          <Sigma className="h-3.5 w-3.5" />
+          رياضيات
+        </span>
         {mathTemplates.map((template) => (
           <button
             key={template.label}
             type="button"
-            onClick={() => insertMathTemplate(template.value)}
-            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-black text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            onClick={() => insertFormulaTemplate(template.formula)}
+            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-black text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            data-testid="question-editor-formula-template"
             title={`إدراج ${template.label}`}
           >
+            <FunctionSquare className="h-3.5 w-3.5" />
             {template.label}
+          </button>
+        ))}
+        <div className="mx-1 h-5 w-px bg-slate-200" />
+        {mathSymbols.map((symbol) => (
+          <button
+            key={symbol}
+            type="button"
+            onClick={() => insertTextSymbol(symbol)}
+            className="h-7 min-w-7 rounded-lg border border-slate-200 bg-white px-2 text-xs font-black text-slate-700 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700"
+            data-testid="question-editor-math-symbol"
+            title={`إدراج ${symbol}`}
+          >
+            {symbol}
           </button>
         ))}
         <button

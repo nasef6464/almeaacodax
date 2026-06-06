@@ -1617,7 +1617,7 @@ const ReviewSolutions = ({
           <div className="bg-gray-50 rounded-2xl p-4 sm:p-8 mb-5 sm:mb-8 flex flex-col items-center justify-center border border-gray-100 min-h-[180px] sm:min-h-[220px]">
             <div
               onClick={handleInlineQuestionImageClick}
-              className="mb-5 sm:mb-6 px-2 text-center text-base sm:text-xl font-bold leading-loose text-gray-800 sm:px-4 [&_img]:cursor-zoom-in"
+              className="question-html mb-5 sm:mb-6 px-2 text-center text-base sm:text-xl font-bold leading-loose text-gray-800 sm:px-4 [&_img]:cursor-zoom-in"
               dangerouslySetInnerHTML={{ __html: `(${currentIdx + 1}) ${normalizeQuestionHtml(q.text)}` }}
             />
             {q.imageUrl ? (
@@ -1664,7 +1664,7 @@ const ReviewSolutions = ({
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${borderClass} ${bgClass}`} />
                     <span
-                      className="flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
+                      className="question-html flex-1 text-center text-sm font-bold leading-6 text-gray-700 break-words"
                       dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }}
                     />
                   </div>
