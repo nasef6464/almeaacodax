@@ -1399,6 +1399,7 @@ export const SchoolsManager: React.FC = () => {
                 label: 'فصول دراسية',
                 isReady: schoolClasses.length > 0,
                 hint: schoolClasses.length > 0 ? `${schoolClasses.length} فصل جاهز` : 'أضف فصلًا واحدًا على الأقل',
+                tab: 'overview' as const,
             },
             {
                 label: 'طلاب مسجلون',
@@ -1408,24 +1409,29 @@ export const SchoolsManager: React.FC = () => {
                     : studentsWithoutClass.length > 0
                         ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح`
                         : `${schoolStudents.length} طالب داخل فصول واضحة`,
+                tab: schoolStudents.length === 0 ? 'import' as const : 'overview' as const,
             },
             {
                 label: 'مشرفون',
                 isReady: schoolSupervisors.length > 0,
                 hint: schoolSupervisors.length > 0 ? `${schoolSupervisors.length} مشرف/معلم` : 'اربط مشرفًا أو معلمًا بالمدرسة',
+                tab: 'relations' as const,
             },
             {
                 label: 'باقة/مسارات',
                 isReady: activeSchoolPackages.length > 0,
                 hint: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة مرتبطة بالمسارات` : 'فعّل باقة مدرسية واحدة على الأقل وحدد مساراتها',
+                tab: 'packages' as const,
             },
             {
                 label: 'أكواد دخول',
                 isReady: activeSchoolCodes.length > 0,
                 hint: activeSchoolCodes.length > 0 ? `${activeSchoolCodes.length} كود صالح` : 'ولّد كودًا صالحًا للطلاب',
+                tab: 'packages' as const,
             },
         ];
         const readinessScore = readinessChecks.filter((check) => check.isReady).length;
+        const handoverBlockingGaps = readinessChecks.filter((check) => !check.isReady);
         const operationalWarnings = [
             schoolClasses.length === 0 ? 'أضف فصلًا واحدًا على الأقل قبل تسليم المدرسة.' : '',
             schoolSupervisors.length === 0 ? 'اربط مشرفًا أو معلمًا ليتمكن من متابعة الطلاب.' : '',
@@ -4681,6 +4687,46 @@ export const SchoolsManager: React.FC = () => {
                                             <div className="mt-1 text-sm font-black text-gray-900">{value}</div>
                                         </div>
                                     ))}
+                                </div>
+                                <div data-testid="school-handover-blocking-gaps" className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <h4 className="text-sm font-black text-gray-900">نواقص تمنع التسليم</h4>
+                                            <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
+                                                هذه القائمة هي قرار اليوم: أكمل البنود الناقصة فقط، ثم اطبع تقرير التسليم.
+                                            </p>
+                                        </div>
+                                        <span className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-black ${
+                                            handoverBlockingGaps.length === 0
+                                                ? 'bg-emerald-50 text-emerald-700'
+                                                : 'bg-amber-50 text-amber-700'
+                                        }`}>
+                                            {handoverBlockingGaps.length === 0 ? 'لا توجد نواقص تشغيلية' : `${handoverBlockingGaps.length} بند يحتاج استكمال`}
+                                        </span>
+                                    </div>
+                                    {handoverBlockingGaps.length === 0 ? (
+                                        <div className="mt-4 rounded-xl border border-emerald-100 bg-white px-4 py-3 text-sm font-bold text-emerald-700">
+                                            المدرسة جاهزة للتسليم. استخدم ملف التسليم أو الطباعة لمشاركة النسخة النهائية مع الإدارة.
+                                        </div>
+                                    ) : (
+                                        <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                            {handoverBlockingGaps.map((gap) => (
+                                                <div key={gap.label} className="flex flex-col gap-3 rounded-xl border border-white bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                                                    <div>
+                                                        <div className="text-sm font-black text-gray-900">{gap.label}</div>
+                                                        <div className="mt-1 text-xs font-bold leading-6 text-gray-500">{gap.hint}</div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveTab(gap.tab)}
+                                                        className="inline-flex shrink-0 items-center justify-center rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white hover:bg-gray-800"
+                                                    >
+                                                        استكمال
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             {isLoadingReport ? (

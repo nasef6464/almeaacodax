@@ -278,16 +278,17 @@ async function main() {
     const reportsPanelVisible = await visible(page, "school-reports-panel");
     const handoverSummaryVisible = await visible(page, "school-handover-report-summary");
     const handoverProgressVisible = await visible(page, "school-handover-readiness-progress");
+    const handoverBlockingGapsText = await page.getByTestId("school-handover-blocking-gaps").textContent({ timeout: 12000 }).catch(() => "");
     const handoverActionsVisible =
       (await visible(page, "school-report-download-handover")) &&
       (await visible(page, "school-report-download-gaps")) &&
       (await visible(page, "school-report-print-readiness"));
     check(
       "school handover report summary",
-      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && handoverActionsVisible ? "PASS" : "FAIL",
-      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && handoverActionsVisible
-        ? "readiness summary and handover actions visible"
-        : "handover report summary missing"
+      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && /نواقص تمنع التسليم/.test(handoverBlockingGapsText || "") && handoverActionsVisible ? "PASS" : "FAIL",
+      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && /نواقص تمنع التسليم/.test(handoverBlockingGapsText || "") && handoverActionsVisible
+        ? "readiness summary, blocking gaps and handover actions visible"
+        : "handover report summary or blocking gaps missing"
     );
     await screenshot(page, "06-handover-report-summary");
 
