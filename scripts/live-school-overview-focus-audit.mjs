@@ -177,13 +177,20 @@ async function main() {
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
     check("school workspace open", "PASS", "selected school workspace visible");
     const workspaceTabsText = await page.getByTestId("school-workspace-tabs").textContent({ timeout: 12000 }).catch(() => "");
+    const expectedWorkspaceTabOrder = [
+      "1 الفصول والطلاب",
+      "2 استيراد الطلاب",
+      "3 المشرفون والتسليم",
+      "4 الباقة والمسارات والأكواد",
+      "5 تقرير التسليم",
+    ];
+    const workspaceTabIndexes = expectedWorkspaceTabOrder.map((label) => (workspaceTabsText || "").indexOf(label));
     const workspaceTabsAreSetupOriented =
-      /الربط والتسليم/.test(workspaceTabsText || "") &&
-      /الباقة والمسارات/.test(workspaceTabsText || "") &&
-      /تقرير التسليم/.test(workspaceTabsText || "") &&
+      workspaceTabIndexes.every((index) => index >= 0) &&
+      workspaceTabIndexes.every((index, position) => position === 0 || workspaceTabIndexes[position - 1] < index) &&
       !/ربط ومتابعة/.test(workspaceTabsText || "");
     check(
-      "school workspace tabs are setup oriented",
+      "school workspace tabs follow operating journey",
       workspaceTabsAreSetupOriented ? "PASS" : "FAIL",
       workspaceTabsText || "workspace tabs missing"
     );

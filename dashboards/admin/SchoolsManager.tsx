@@ -2544,11 +2544,11 @@ export const SchoolsManager: React.FC = () => {
 
                 <div data-testid="school-workspace-tabs" className="flex flex-wrap gap-2 border-b border-gray-200">
                     {[
-                        { id: 'overview', label: 'نظرة عامة والفصول' },
-                        { id: 'packages', label: 'الباقة والمسارات' },
-                        { id: 'relations', label: 'الربط والتسليم' },
-                        { id: 'import', label: 'استيراد الطلاب (Excel)' },
-                        { id: 'reports', label: 'تقرير التسليم' },
+                        { id: 'overview', label: '1 الفصول والطلاب' },
+                        { id: 'import', label: '2 استيراد الطلاب' },
+                        { id: 'relations', label: '3 المشرفون والتسليم' },
+                        { id: 'packages', label: '4 الباقة والمسارات والأكواد' },
+                        { id: 'reports', label: '5 تقرير التسليم' },
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -5049,7 +5049,7 @@ export const SchoolsManager: React.FC = () => {
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
-                                            الربط والتسليم
+                                            المشرفون والتسليم
                                         </button>
                                     </div>
                                 )}
