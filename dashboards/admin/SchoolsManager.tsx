@@ -976,6 +976,7 @@ export const SchoolsManager: React.FC = () => {
         createGroup(newSchool);
         setNewSchoolName('');
         setManagementError(null);
+        setManagementNotice('تم إنشاء المدرسة وفتح مساحة التشغيل. ابدأ بإضافة الفصول ثم الطلاب والمشرفين والباقات.');
         setSelectedSchool(newSchool);
         setActiveTab('overview');
     };
@@ -4524,20 +4525,33 @@ export const SchoolsManager: React.FC = () => {
                     aria-label="Close school actions menu"
                 />
             )}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">المدارس والجهات (B2B)</h1>
                     <p className="text-sm text-gray-500 mt-1">إدارة التعاقدات، الباقات، الفصول، والمشرفين للمدارس والسناتر.</p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={exportSchoolPortfolioReadiness}
-                        className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
-                    >
-                        <Download size={18} /> تصدير جاهزية المدارس
-                    </button>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <button
+                    type="button"
+                    onClick={exportSchoolPortfolioReadiness}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+                >
+                    <Download size={18} /> تصدير جاهزية المدارس
+                </button>
+            </div>
+
+            <div data-testid="school-create-journey-panel" className="rounded-2xl border border-amber-100 bg-amber-50/70 p-5 shadow-sm">
+                <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr] lg:items-end">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-amber-700">
+                            <Plus size={14} />
+                            بداية تشغيل مدرسة جديدة
+                        </div>
+                        <h2 className="mt-3 text-lg font-black text-gray-900">أضف المدرسة ثم أكمل الرحلة من داخلها</h2>
+                        <p className="mt-1 text-sm font-bold leading-6 text-amber-900">
+                            بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة والأكواد.
+                        </p>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-[1fr_auto]">
                         <input
                             value={newSchoolName}
                             onChange={(event) => setNewSchoolName(event.target.value)}
@@ -4546,18 +4560,27 @@ export const SchoolsManager: React.FC = () => {
                                     handleCreateSchool();
                                 }
                             }}
-                            placeholder="اسم المدرسة أو الجهة"
-                            className="min-w-[220px] rounded-xl border border-amber-100 bg-white px-3 py-2 text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-amber-300"
+                            placeholder="مثال: مدارس التربية النموذجية"
+                            className="min-h-[48px] rounded-xl border border-amber-100 bg-white px-4 py-3 text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-amber-300"
                             data-testid="school-new-name-input"
                         />
                         <button
+                            type="button"
                             onClick={handleCreateSchool}
-                            className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-bold text-white transition-colors hover:bg-amber-600"
+                            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-black text-white transition-colors hover:bg-amber-600"
                             data-testid="school-create-button"
                         >
-                            <Plus size={20} /> إضافة المدرسة
+                            <Plus size={18} /> إنشاء وفتح التشغيل
                         </button>
                     </div>
+                </div>
+                <div className="mt-4 grid gap-2 md:grid-cols-5">
+                    {['الفصول', 'الطلاب', 'المشرفون', 'الباقة', 'الأكواد'].map((step, index) => (
+                        <div key={step} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-gray-700">
+                            <span className="ml-1 text-amber-600">{index + 1}</span>
+                            {step}
+                        </div>
+                    ))}
                 </div>
             </div>
 

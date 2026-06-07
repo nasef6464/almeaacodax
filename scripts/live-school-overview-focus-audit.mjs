@@ -115,6 +115,8 @@ async function main() {
   try {
     await login(page);
     await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
+    const createJourneyVisible = await page.getByTestId("school-create-journey-panel").isVisible({ timeout: 15000 }).catch(() => false);
+    check("school create journey panel", createJourneyVisible ? "PASS" : "FAIL", createJourneyVisible ? "clear create journey visible" : "create journey missing");
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");
