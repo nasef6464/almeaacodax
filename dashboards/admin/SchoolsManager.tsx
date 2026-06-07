@@ -611,6 +611,8 @@ export const SchoolsManager: React.FC = () => {
     const [activeSchoolActionsId, setActiveSchoolActionsId] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'relations' | 'import' | 'reports'>('overview');
     const [schoolSearch, setSchoolSearch] = useState('');
+    const [schoolListMode, setSchoolListMode] = useState<'active' | 'needs_setup' | 'ready' | 'all'>('active');
+    const [newSchoolName, setNewSchoolName] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [importRows, setImportRows] = useState<ImportRow[]>([]);
     const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
@@ -687,14 +689,54 @@ export const SchoolsManager: React.FC = () => {
         };
     }, [importRows, users]);
 
+    const getSchoolOperationalSnapshot = (school: Group) => {
+        const schoolClasses = classes.filter((group) => group.parentId === school.id);
+        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
+        const schoolStudents = students.filter((student) =>
+            student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
+        );
+        const activePackageCount = b2bPackages.filter((pkg) => pkg.schoolId === school.id && pkg.status === 'active').length;
+        const activeCodeCount = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now()).length;
+        const readinessScore = [
+            schoolClasses.length > 0,
+            schoolStudents.length > 0,
+            school.supervisorIds.length > 0,
+            activePackageCount > 0,
+            activeCodeCount > 0,
+        ].filter(Boolean).length;
+        const isEmptyDraft =
+            readinessScore === 0 &&
+            schoolStudents.length === 0 &&
+            schoolClasses.length === 0 &&
+            /^مدرسة جديدة(?:\s|$|-)/.test(school.name.trim());
+
+        return {
+            schoolClasses,
+            schoolStudents,
+            activePackageCount,
+            activeCodeCount,
+            readinessScore,
+            isEmptyDraft,
+        };
+    };
+
     const filteredSchools = useMemo(() => {
         const keyword = schoolSearch.trim().toLowerCase();
-        if (!keyword) {
-            return schools;
-        }
+        return schools.filter((school) => {
+            const matchesSearch = !keyword || school.name.toLowerCase().includes(keyword);
+            if (!matchesSearch) return false;
 
-        return schools.filter((school) => school.name.toLowerCase().includes(keyword));
-    }, [schoolSearch, schools]);
+            const snapshot = getSchoolOperationalSnapshot(school);
+            if (schoolListMode === 'all' || keyword) return true;
+            if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
+            if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isEmptyDraft;
+            return !snapshot.isEmptyDraft;
+        });
+    }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
+    const hiddenDraftSchoolsCount = useMemo(
+        () => schools.filter((school) => getSchoolOperationalSnapshot(school).isEmptyDraft).length,
+        [accessCodes, b2bPackages, classes, schools, students],
+    );
     const schoolPortfolioRows = useMemo(() => schools.map((school) => {
         const schoolClasses = classes.filter((group) => group.parentId === school.id);
         const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
@@ -706,6 +748,7 @@ export const SchoolsManager: React.FC = () => {
         const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
         const readinessChecks = [
             { key: 'classes', label: 'الفصول', isReady: schoolClasses.length > 0, tab: 'overview' as const, hint: 'أضف فصول المدرسة' },
+            { key: 'students', label: 'الطلاب', isReady: schoolStudents.length > 0, tab: 'overview' as const, hint: 'أضف الطلاب أو استورد كشف المدرسة' },
             { key: 'supervisors', label: 'المشرفون', isReady: school.supervisorIds.length > 0, tab: 'relations' as const, hint: 'اربط مدير المدرسة أو المشرفين' },
             { key: 'packages', label: 'الباقات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية' },
             { key: 'codes', label: 'الأكواد', isReady: schoolCodes.length > 0, tab: 'packages' as const, hint: 'ولّد كود دخول صالح' },
@@ -726,13 +769,14 @@ export const SchoolsManager: React.FC = () => {
             activePackageCount,
             activeCodeCount: schoolCodes.length,
             readinessScore,
+            readinessTotal: readinessChecks.length,
             status,
             nextAction,
         };
     }), [accessCodes, b2bPackages, classes, schools, students]);
     const schoolPortfolioSummary = useMemo(() => {
-        const ready = schoolPortfolioRows.filter((row) => row.readinessScore === 4).length;
-        const nearReady = schoolPortfolioRows.filter((row) => row.readinessScore >= 2 && row.readinessScore < 4).length;
+        const ready = schoolPortfolioRows.filter((row) => row.readinessScore === row.readinessTotal).length;
+        const nearReady = schoolPortfolioRows.filter((row) => row.readinessScore >= 2 && row.readinessScore < row.readinessTotal).length;
         const needsSetup = schoolPortfolioRows.filter((row) => row.readinessScore < 2).length;
         const nextPriority = [...schoolPortfolioRows].sort((a, b) => a.readinessScore - b.readinessScore || b.studentCount - a.studentCount)[0];
 
@@ -768,7 +812,7 @@ export const SchoolsManager: React.FC = () => {
                     ...schoolPortfolioRows.map((row) => [
                         row.school.name,
                         row.status,
-                        `${row.readinessScore}/4`,
+                        `${row.readinessScore}/${row.readinessTotal}`,
                         row.classCount,
                         row.studentCount,
                         row.supervisorCount,
@@ -909,9 +953,15 @@ export const SchoolsManager: React.FC = () => {
     }, [selectedSchool?.id, activeTab, accessCodes.length]);
 
     const handleCreateSchool = () => {
+        const name = newSchoolName.trim();
+        if (!name) {
+            setManagementError('اكتب اسم المدرسة أو الجهة التعليمية قبل الإضافة.');
+            return;
+        }
+
         const newSchool: Group = {
             id: `school_${Date.now()}`,
-            name: 'مدرسة جديدة',
+            name,
             type: 'SCHOOL',
             ownerId: user.id,
             supervisorIds: [],
@@ -924,6 +974,8 @@ export const SchoolsManager: React.FC = () => {
         };
 
         createGroup(newSchool);
+        setNewSchoolName('');
+        setManagementError(null);
         setSelectedSchool(newSchool);
         setActiveTab('overview');
     };
@@ -4246,12 +4298,27 @@ export const SchoolsManager: React.FC = () => {
                     >
                         <Download size={18} /> تصدير جاهزية المدارس
                     </button>
-                    <button
-                        onClick={handleCreateSchool}
-                        className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors"
-                    >
-                        <Plus size={20} /> إضافة مدرسة جديدة
-                    </button>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <input
+                            value={newSchoolName}
+                            onChange={(event) => setNewSchoolName(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    handleCreateSchool();
+                                }
+                            }}
+                            placeholder="اسم المدرسة أو الجهة"
+                            className="min-w-[220px] rounded-xl border border-amber-100 bg-white px-3 py-2 text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-amber-300"
+                            data-testid="school-new-name-input"
+                        />
+                        <button
+                            onClick={handleCreateSchool}
+                            className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-bold text-white transition-colors hover:bg-amber-600"
+                            data-testid="school-create-button"
+                        >
+                            <Plus size={20} /> إضافة المدرسة
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -4299,41 +4366,89 @@ export const SchoolsManager: React.FC = () => {
                 </div>
             </div>
 
+            {managementError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+                    {managementError}
+                </div>
+            )}
+
             {managementNotice && (
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
                     {managementNotice}
                 </div>
             )}
 
-            <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-3">
-                <Search size={18} className="text-gray-400" />
-                <input
-                    value={schoolSearch}
-                    onChange={(event) => setSchoolSearch(event.target.value)}
-                    placeholder="ابحث باسم المدرسة أو الجهة..."
-                    className="w-full bg-transparent outline-none text-sm text-gray-700"
-                />
+            <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">
+                        <Search size={18} className="text-gray-400" />
+                        <input
+                            value={schoolSearch}
+                            onChange={(event) => setSchoolSearch(event.target.value)}
+                            placeholder="ابحث باسم المدرسة أو الجهة..."
+                            className="w-full bg-transparent text-sm text-gray-700 outline-none"
+                        />
+                    </div>
+                    <div data-testid="school-list-mode-filter" className="flex flex-wrap gap-2">
+                        {[
+                            { id: 'active', label: 'الأولوية التجارية' },
+                            { id: 'needs_setup', label: 'تحتاج تجهيز' },
+                            { id: 'ready', label: 'جاهزة' },
+                            { id: 'all', label: 'عرض الكل' },
+                        ].map((mode) => (
+                            <button
+                                key={mode.id}
+                                type="button"
+                                onClick={() => setSchoolListMode(mode.id as typeof schoolListMode)}
+                                className={`rounded-xl px-3 py-2 text-xs font-black transition-colors ${
+                                    schoolListMode === mode.id
+                                        ? 'bg-gray-900 text-white'
+                                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                {mode.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                {schoolListMode === 'active' && hiddenDraftSchoolsCount > 0 && !schoolSearch.trim() && (
+                    <div data-testid="school-hidden-drafts-note" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
+                        تم إخفاء {hiddenDraftSchoolsCount} مدرسة فارغة لتقليل الزحمة. استخدم "عرض الكل" إذا أردت مراجعتها أو حذفها.
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredSchools.map((school) => {
                     const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
                     const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
-                    const schoolStudents = students.filter((student) => student.schoolId === school.id);
-                    const schoolClassCount = classes.filter((group) => group.parentId === school.id).length;
+                    const schoolClasses = classes.filter((group) => group.parentId === school.id);
+                    const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
+                    const schoolStudents = students.filter((student) =>
+                        student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
+                    );
+                    const schoolClassCount = schoolClasses.length;
                     const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
                     const cardReadinessScore = [
                         schoolClassCount > 0,
+                        schoolStudents.length > 0,
                         school.supervisorIds.length > 0,
                         activePackageCount > 0,
                         schoolCodes.length > 0,
                     ].filter(Boolean).length;
+                    const cardReadinessTotal = 5;
                     const cardReadinessActions = [
                         {
                             label: 'الفصول',
                             isReady: schoolClassCount > 0,
                             tab: 'overview' as const,
                             hint: schoolClassCount > 0 ? `${schoolClassCount} فصل` : 'أضف فصولًا',
+                        },
+                        {
+                            label: 'الطلاب',
+                            isReady: schoolStudents.length > 0,
+                            tab: 'overview' as const,
+                            hint: schoolStudents.length > 0 ? `${schoolStudents.length} طالب` : 'أضف الطلاب',
                         },
                         {
                             label: 'المشرفون',
@@ -4357,7 +4472,7 @@ export const SchoolsManager: React.FC = () => {
                     const nextCardAction = cardReadinessActions.find((action) => !action.isReady);
 
                     return (
-                        <div key={school.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+                        <div key={school.id} data-testid="school-card" className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
                             <div className="relative flex justify-between items-start mb-4">
                                 <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                                     <Building2 size={24} />
@@ -4402,14 +4517,14 @@ export const SchoolsManager: React.FC = () => {
                             <p className="text-sm text-gray-500 mb-5">إدارة الطلاب والفصول والباقات والمشرفين لهذه الجهة التعليمية.</p>
 
                             <div className={`mb-4 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
-                                cardReadinessScore === 4
+                                cardReadinessScore === cardReadinessTotal
                                     ? 'bg-emerald-50 text-emerald-700'
                                     : cardReadinessScore >= 2
                                         ? 'bg-amber-50 text-amber-700'
                                         : 'bg-red-50 text-red-700'
                             }`}>
-                                <span>{cardReadinessScore === 4 ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
-                                <span>{cardReadinessScore}/4</span>
+                                <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
+                                <span>{cardReadinessScore}/{cardReadinessTotal}</span>
                             </div>
                             <div className="mb-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
                                 <div className="mb-2 flex items-center justify-between gap-2">
