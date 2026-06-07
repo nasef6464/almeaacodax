@@ -102,6 +102,9 @@ check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, 'data-testid="school-setup-progress"');
   assertIncludes(files.schools, 'data-testid="school-next-action"');
   assertIncludes(files.schools, 'data-testid="school-primary-actions"');
+  assertIncludes(files.schools, "commercialDecisionCards");
+  assertIncludes(files.schools, 'data-testid="school-commercial-summary-strip"');
+  assertIncludes(files.schools, "school-commercial-decision-");
   assertIncludes(files.schools, "document.querySelector('[data-testid=\"school-students-panel\"]')");
   assertIncludes(files.schools, "document.querySelector('[data-testid=\"school-wide-supervisors-panel\"]')");
   assertIncludes(files.schools, "commercialOperatingSteps");
