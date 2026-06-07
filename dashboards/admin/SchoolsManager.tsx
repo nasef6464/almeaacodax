@@ -4930,7 +4930,7 @@ export const SchoolsManager: React.FC = () => {
                             { id: 'active', label: 'الأولوية التجارية' },
                             { id: 'needs_setup', label: 'تحتاج تجهيز' },
                             { id: 'ready', label: 'جاهزة' },
-                            { id: 'all', label: 'عرض الكل' },
+                            { id: 'all', label: 'عرض الكل/التنظيف' },
                         ].map((mode) => (
                             <button
                                 key={mode.id}
@@ -4947,6 +4947,13 @@ export const SchoolsManager: React.FC = () => {
                             </button>
                         ))}
                     </div>
+                </div>
+                <div data-testid="school-list-hygiene-summary" className="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold leading-6 text-slate-700">
+                    القائمة تعرض {filteredSchools.length} من {schools.length} مدرسة.
+                    {hiddenDraftSchoolsCount > 0
+                        ? ` تم عزل ${hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية عن الأولوية التجارية.`
+                        : ' لا توجد مدارس تجريبية معزولة حاليًا.'}
+                    {schoolListMode === 'all' ? ' أنت الآن في وضع المراجعة والتنظيف.' : ' استخدم عرض الكل/التنظيف عند مراجعة التجارب القديمة.'}
                 </div>
                 {schoolListMode === 'active' && hiddenDraftSchoolsCount > 0 && !schoolSearch.trim() && (
                     <div data-testid="school-hidden-drafts-note" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">

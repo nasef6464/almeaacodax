@@ -151,6 +151,8 @@ async function main() {
       (await visible(page, "school-list-mode-filter")) &&
       (await visible(page, "school-list-mode-active")) &&
       (await visible(page, "school-list-mode-all"));
+    const listHygieneText = await page.getByTestId("school-list-hygiene-summary").textContent({ timeout: 12000 }).catch(() => "");
+    const listFilterText = await page.getByTestId("school-list-mode-filter").textContent({ timeout: 12000 }).catch(() => "");
     const commercialCount = await page.getByTestId("school-card").count();
     await page.getByTestId("school-list-mode-all").click();
     await page.waitForTimeout(500);
@@ -161,6 +163,11 @@ async function main() {
       "school commercial list filter",
       commercialFilterVisible && allCount >= commercialCount ? "PASS" : "FAIL",
       commercialFilterVisible ? `commercial=${commercialCount}, all=${allCount}` : "commercial filter controls missing"
+    );
+    check(
+      "school list hygiene summary",
+      /القائمة تعرض/.test(listHygieneText || "") && /عرض الكل\/التنظيف/.test(listFilterText || "") ? "PASS" : "FAIL",
+      listHygieneText || "list hygiene summary missing"
     );
     const cardReadinessVisible = await firstSchoolCard.getByTestId("school-card-readiness").isVisible({ timeout: 12000 }).catch(() => false);
     const cardNextActionVisible = await firstSchoolCard.getByTestId("school-card-next-action").isVisible({ timeout: 12000 }).catch(() => false);
