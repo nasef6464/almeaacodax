@@ -1491,6 +1491,46 @@ export const SchoolsManager: React.FC = () => {
         const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
         const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
         const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
+        const commercialDecisionCards = [
+            {
+                id: 'readiness',
+                label: 'قرار التشغيل',
+                value: readinessStatusLabel,
+                hint: readinessScore === readinessChecks.length
+                    ? 'يمكن تسليم المدرسة بثقة ومتابعة الأداء من البوابة.'
+                    : 'لا تزال هناك خطوات تشغيل قبل التسليم التجاري الكامل.',
+                tone: readinessScore === readinessChecks.length ? 'emerald' : readinessScore >= 3 ? 'amber' : 'rose',
+                tab: 'overview' as const,
+            },
+            {
+                id: 'scope',
+                label: 'النطاق الحالي',
+                value: `${schoolClasses.length} فصل / ${schoolStudents.length} طالب`,
+                hint: schoolSupervisors.length > 0
+                    ? `${schoolSupervisors.length} مشرف أو معلم مرتبط بالنطاق.`
+                    : 'اربط مدير المدرسة أو مشرفي الفصول قبل التسليم.',
+                tone: schoolSupervisors.length > 0 ? 'blue' : 'amber',
+                tab: 'relations' as const,
+            },
+            {
+                id: 'access',
+                label: 'الوصول التجاري',
+                value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'بلا باقة نشطة',
+                hint: activeSchoolCodes.length > 0
+                    ? `${activeSchoolCodes.length} كود صالح للتوزيع.`
+                    : 'أنشئ باقة وكود دخول لتجنب شراء الطلاب بشكل فردي.',
+                tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
+                tab: 'packages' as const,
+            },
+            {
+                id: 'next-action',
+                label: 'إجراء اليوم',
+                value: nextOperatingStep.title,
+                hint: nextOperatingStep.description,
+                tone: nextOperatingStep.isReady ? 'emerald' : 'slate',
+                tab: nextOperatingStep.tab,
+            },
+        ];
         const schoolLaunchPlan = [
             ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
             ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
@@ -2455,6 +2495,31 @@ export const SchoolsManager: React.FC = () => {
                                 ملف التسليم
                             </button>
                         </div>
+                    </div>
+                    <div data-testid="school-commercial-summary-strip" className="mb-4 grid gap-3 lg:grid-cols-4">
+                        {commercialDecisionCards.map((card) => (
+                            <button
+                                key={card.id}
+                                type="button"
+                                data-testid={`school-commercial-decision-${card.id}`}
+                                onClick={() => setActiveTab(card.tab)}
+                                className={`rounded-2xl border p-4 text-right transition-colors ${
+                                    card.tone === 'emerald'
+                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
+                                        : card.tone === 'amber'
+                                            ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
+                                            : card.tone === 'rose'
+                                                ? 'border-rose-100 bg-rose-50 hover:bg-rose-100'
+                                                : card.tone === 'blue'
+                                                    ? 'border-blue-100 bg-blue-50 hover:bg-blue-100'
+                                                    : 'border-slate-100 bg-slate-50 hover:bg-slate-100'
+                                }`}
+                            >
+                                <div className="text-xs font-black text-slate-500">{card.label}</div>
+                                <div className="mt-2 text-base font-black text-gray-900">{card.value}</div>
+                                <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{card.hint}</p>
+                            </button>
+                        ))}
                     </div>
                     <div data-testid="school-delivery-journey" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
