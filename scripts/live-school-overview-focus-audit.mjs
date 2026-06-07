@@ -155,6 +155,23 @@ async function main() {
     await clickFocus(page, "access", "school-packages-panel");
     await screenshot(page, "05-focus-access");
 
+    await page.getByTestId("school-primary-open-reports").click();
+    const reportsPanelVisible = await visible(page, "school-reports-panel");
+    const handoverSummaryVisible = await visible(page, "school-handover-report-summary");
+    const handoverProgressVisible = await visible(page, "school-handover-readiness-progress");
+    const handoverActionsVisible =
+      (await visible(page, "school-report-download-handover")) &&
+      (await visible(page, "school-report-download-gaps")) &&
+      (await visible(page, "school-report-print-readiness"));
+    check(
+      "school handover report summary",
+      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && handoverActionsVisible ? "PASS" : "FAIL",
+      reportsPanelVisible && handoverSummaryVisible && handoverProgressVisible && handoverActionsVisible
+        ? "readiness summary and handover actions visible"
+        : "handover report summary missing"
+    );
+    await screenshot(page, "06-handover-report-summary");
+
     check("console errors", audit.consoleErrors.length === 0 ? "PASS" : "FAIL", `${audit.consoleErrors.length} console errors`);
     check("server errors", audit.networkFailures.length === 0 ? "PASS" : "FAIL", `${audit.networkFailures.length} 5xx responses`);
   } catch (error) {

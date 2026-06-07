@@ -4464,6 +4464,82 @@ export const SchoolsManager: React.FC = () => {
 
                     {activeTab === 'reports' && (
                         <div data-testid="school-reports-panel" className="space-y-6">
+                            <div data-testid="school-handover-report-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+                                    <div>
+                                        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black ${
+                                            readinessScore === readinessChecks.length
+                                                ? 'bg-emerald-50 text-emerald-700'
+                                                : readinessScore >= 3
+                                                    ? 'bg-amber-50 text-amber-700'
+                                                    : 'bg-red-50 text-red-700'
+                                        }`}>
+                                            <ShieldCheck size={14} />
+                                            {readinessStatusLabel}
+                                        </div>
+                                        <h3 className="mt-3 text-xl font-black text-gray-900">قرار تسليم المدرسة</h3>
+                                        <p className="mt-2 text-sm font-bold leading-7 text-gray-600">{readinessNextStep}</p>
+                                        <div className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
+                                            <div
+                                                data-testid="school-handover-readiness-progress"
+                                                className={`h-full rounded-full ${
+                                                    readinessScore === readinessChecks.length
+                                                        ? 'bg-emerald-500'
+                                                        : readinessScore >= 3
+                                                            ? 'bg-amber-500'
+                                                            : 'bg-red-500'
+                                                }`}
+                                                style={{ width: `${readinessPercent}%` }}
+                                            />
+                                        </div>
+                                        <div className="mt-2 flex items-center justify-between text-xs font-black text-gray-500">
+                                            <span>جاهزية التشغيل</span>
+                                            <span>{readinessScore}/{readinessChecks.length}</span>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                                        <button
+                                            type="button"
+                                            data-testid="school-report-download-handover"
+                                            onClick={downloadSchoolHandover}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white transition-colors hover:bg-slate-800"
+                                        >
+                                            <Download size={16} />
+                                            ملف التسليم
+                                        </button>
+                                        <button
+                                            type="button"
+                                            data-testid="school-report-download-gaps"
+                                            onClick={downloadSchoolGapReport}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm font-black text-amber-700 transition-colors hover:bg-amber-100"
+                                        >
+                                            <FileSpreadsheet size={16} />
+                                            فجوات الجاهزية
+                                        </button>
+                                        <button
+                                            type="button"
+                                            data-testid="school-report-print-readiness"
+                                            onClick={printSchoolReport}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
+                                        >
+                                            <Printer size={16} />
+                                            طباعة تقرير التسليم
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                                    {[
+                                        ['نطاق المدرسة', `${schoolClasses.length} فصل / ${schoolStudents.length} طالب`],
+                                        ['المشرفون', `${schoolSupervisors.length} مشرف`],
+                                        ['الوصول', `${activeSchoolPackages.length} باقة / ${activeSchoolCodes.length} كود`],
+                                    ].map(([label, value]) => (
+                                        <div key={label} className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                                            <div className="text-xs font-black text-gray-500">{label}</div>
+                                            <div className="mt-1 text-sm font-black text-gray-900">{value}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                             {isLoadingReport ? (
                                 <div className="py-12 text-center text-gray-500">جارٍ تحميل تقرير المدرسة...</div>
                             ) : reportError ? (
