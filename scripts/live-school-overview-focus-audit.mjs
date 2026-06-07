@@ -115,10 +115,15 @@ async function main() {
   try {
     await login(page);
     await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
-    await page.getByTestId("school-card").first().waitFor({ state: "visible", timeout: 45000 });
+    const firstSchoolCard = page.getByTestId("school-card").first();
+    await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");
+    const cardReadinessVisible = await firstSchoolCard.getByTestId("school-card-readiness").isVisible({ timeout: 12000 }).catch(() => false);
+    const cardNextActionVisible = await firstSchoolCard.getByTestId("school-card-next-action").isVisible({ timeout: 12000 }).catch(() => false);
+    const cardProgressVisible = await firstSchoolCard.getByTestId("school-card-readiness-progress").isVisible({ timeout: 12000 }).catch(() => false);
+    check("school card commercial state", cardReadinessVisible && cardNextActionVisible && cardProgressVisible ? "PASS" : "FAIL", "readiness, progress and next action visible");
 
-    await page.getByTestId("school-card").first().locator("button").last().click();
+    await firstSchoolCard.getByTestId("school-card-open-management").click();
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
     check("school workspace open", "PASS", "selected school workspace visible");
 

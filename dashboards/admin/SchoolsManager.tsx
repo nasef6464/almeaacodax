@@ -4703,30 +4703,35 @@ export const SchoolsManager: React.FC = () => {
                     const cardReadinessTotal = 5;
                     const cardReadinessActions = [
                         {
+                            id: 'classes',
                             label: 'الفصول',
                             isReady: schoolClassCount > 0,
                             tab: 'overview' as const,
                             hint: schoolClassCount > 0 ? `${schoolClassCount} فصل` : 'أضف فصولًا',
                         },
                         {
+                            id: 'students',
                             label: 'الطلاب',
                             isReady: schoolStudents.length > 0,
                             tab: 'overview' as const,
                             hint: schoolStudents.length > 0 ? `${schoolStudents.length} طالب` : 'أضف الطلاب',
                         },
                         {
+                            id: 'supervisors',
                             label: 'المشرفون',
                             isReady: school.supervisorIds.length > 0,
                             tab: 'relations' as const,
                             hint: school.supervisorIds.length > 0 ? `${school.supervisorIds.length} مشرف` : 'اربط مشرفًا',
                         },
                         {
+                            id: 'packages',
                             label: 'الباقات',
                             isReady: activePackageCount > 0,
                             tab: 'packages' as const,
                             hint: activePackageCount > 0 ? `${activePackageCount} باقة` : 'فعّل باقة',
                         },
                         {
+                            id: 'codes',
                             label: 'الأكواد',
                             isReady: schoolCodes.length > 0,
                             tab: 'packages' as const,
@@ -4780,7 +4785,7 @@ export const SchoolsManager: React.FC = () => {
                             <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
                             <p className="text-sm text-gray-500 mb-5">إدارة الطلاب والفصول والباقات والمشرفين لهذه الجهة التعليمية.</p>
 
-                            <div className={`mb-4 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
+                            <div data-testid="school-card-readiness" className={`mb-3 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
                                 cardReadinessScore === cardReadinessTotal
                                     ? 'bg-emerald-50 text-emerald-700'
                                     : cardReadinessScore >= 2
@@ -4790,7 +4795,20 @@ export const SchoolsManager: React.FC = () => {
                                 <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
                                 <span>{cardReadinessScore}/{cardReadinessTotal}</span>
                             </div>
-                            <div className="mb-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
+                            <div className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100">
+                                <div
+                                    data-testid="school-card-readiness-progress"
+                                    className={`h-full rounded-full ${
+                                        cardReadinessScore === cardReadinessTotal
+                                            ? 'bg-emerald-500'
+                                            : cardReadinessScore >= 2
+                                                ? 'bg-amber-500'
+                                                : 'bg-red-500'
+                                    }`}
+                                    style={{ width: `${Math.round((cardReadinessScore / cardReadinessTotal) * 100)}%` }}
+                                />
+                            </div>
+                            <div data-testid="school-card-next-action-panel" className="mb-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
                                 <div className="mb-2 flex items-center justify-between gap-2">
                                     <p className="text-xs font-black text-gray-500">الخطوة التالية</p>
                                     <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
@@ -4800,11 +4818,23 @@ export const SchoolsManager: React.FC = () => {
                                 <p className="text-sm font-bold text-gray-800">
                                     {nextCardAction ? nextCardAction.hint : 'افتح إدارة المدرسة لمراجعة التسليم أو التقرير.'}
                                 </p>
+                                <button
+                                    type="button"
+                                    data-testid="school-card-next-action"
+                                    onClick={() => {
+                                        setSelectedSchool(school);
+                                        setActiveTab(nextCardAction?.tab || 'overview');
+                                    }}
+                                    className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-gray-800"
+                                >
+                                    {nextCardAction ? `ابدأ: ${nextCardAction.label}` : 'فتح مراجعة التسليم'}
+                                </button>
                                 <div className="mt-3 grid grid-cols-2 gap-2">
                                     {cardReadinessActions.map((action) => (
                                         <button
                                             key={action.label}
                                             type="button"
+                                            data-testid={`school-card-step-${action.id}`}
                                             onClick={() => {
                                                 setSelectedSchool(school);
                                                 setActiveTab(action.tab);
@@ -4837,6 +4867,8 @@ export const SchoolsManager: React.FC = () => {
                             </div>
 
                             <button
+                                type="button"
+                                data-testid="school-card-open-management"
                                 onClick={() => {
                                     setSelectedSchool(school);
                                     setActiveTab('overview');
