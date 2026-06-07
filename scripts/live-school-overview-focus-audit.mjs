@@ -115,6 +115,12 @@ async function main() {
   try {
     await login(page);
     await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
+    const commercialTitleText = await page.getByTestId("school-commercial-title").textContent({ timeout: 15000 }).catch(() => "");
+    check(
+      "school commercial naming",
+      /تشغيل المدارس/.test(commercialTitleText || "") ? "PASS" : "FAIL",
+      commercialTitleText || "commercial school title missing"
+    );
     const createJourneyVisible = await page.getByTestId("school-create-journey-panel").isVisible({ timeout: 15000 }).catch(() => false);
     check("school create journey panel", createJourneyVisible ? "PASS" : "FAIL", createJourneyVisible ? "clear create journey visible" : "create journey missing");
     const createJourneyStepCount = await page.getByTestId("school-create-journey-step").count();

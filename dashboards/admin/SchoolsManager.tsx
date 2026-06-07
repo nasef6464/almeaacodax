@@ -4728,8 +4728,8 @@ export const SchoolsManager: React.FC = () => {
             )}
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">المدارس والجهات (B2B)</h1>
-                    <p className="text-sm text-gray-500 mt-1">إدارة التعاقدات، الباقات، الفصول، والمشرفين للمدارس والسناتر.</p>
+                    <h1 data-testid="school-commercial-title" className="text-2xl font-bold text-gray-900">تشغيل المدارس والتعاقدات</h1>
+                    <p className="text-sm text-gray-500 mt-1">رحلة واحدة لتسليم المدرسة: فصول، طلاب، مشرفون، باقات، أكواد، وتقرير جاهزية. السناتر والمجموعات الخاصة تدار داخل نفس المنطق عند الحاجة.</p>
                 </div>
                 <button
                     type="button"

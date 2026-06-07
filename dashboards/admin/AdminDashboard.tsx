@@ -853,7 +853,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
-            { id: 'groups', label: 'تشغيل المدارس والمجموعات', icon: <Building2 size={20} /> },
+            { id: 'groups', label: 'تشغيل المدارس', icon: <Building2 size={20} /> },
             { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
             { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
             { id: 'notifications', label: 'الإشعارات', icon: <Bell size={20} /> },
@@ -1208,7 +1208,7 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <button onClick={() => setActiveAdminTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
-                                المدارس والمجموعات
+                                تشغيل المدارس
                             </button>
                             <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
                                 التقارير
@@ -1489,7 +1489,7 @@ export const AdminDashboard: React.FC = () => {
 
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                 <div className="rounded-xl bg-indigo-50 p-4">
-                                    <div className="text-xs text-indigo-600 mb-1">المدارس/المجموعات</div>
+                                    <div className="text-xs text-indigo-600 mb-1">تشغيل المدارس</div>
                                     <div className="text-2xl font-black text-indigo-700">{supervisorScopeSummary.groupCount}</div>
                                 </div>
                                 <div className="rounded-xl bg-emerald-50 p-4">
