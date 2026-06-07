@@ -117,6 +117,12 @@ async function main() {
     await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
     const createJourneyVisible = await page.getByTestId("school-create-journey-panel").isVisible({ timeout: 15000 }).catch(() => false);
     check("school create journey panel", createJourneyVisible ? "PASS" : "FAIL", createJourneyVisible ? "clear create journey visible" : "create journey missing");
+    const createJourneyStepCount = await page.getByTestId("school-create-journey-step").count();
+    check(
+      "school create journey complete steps",
+      createJourneyStepCount === 6 ? "PASS" : "FAIL",
+      `${createJourneyStepCount}/6 visible`
+    );
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");

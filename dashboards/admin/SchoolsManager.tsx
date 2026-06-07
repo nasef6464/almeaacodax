@@ -4744,7 +4744,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                         <h2 className="mt-3 text-lg font-black text-gray-900">أضف المدرسة ثم أكمل الرحلة من داخلها</h2>
                         <p className="mt-1 text-sm font-bold leading-6 text-amber-900">
-                            بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة والأكواد.
+                            بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة والأكواد، وتنتهي بتقرير التسليم.
                         </p>
                     </div>
                     <div className="grid gap-3 md:grid-cols-[1fr_auto]">
@@ -4770,9 +4770,9 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <div className="mt-4 grid gap-2 md:grid-cols-5">
-                    {['الفصول', 'الطلاب', 'المشرفون', 'الباقة', 'الأكواد'].map((step, index) => (
-                        <div key={step} className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-gray-700">
+                <div data-testid="school-create-journey-steps" className="mt-4 grid gap-2 md:grid-cols-6">
+                    {['الفصول', 'الطلاب', 'المشرفون', 'الباقة', 'الأكواد', 'التقرير'].map((step, index) => (
+                        <div key={step} data-testid="school-create-journey-step" className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-gray-700">
                             <span className="ml-1 text-amber-600">{index + 1}</span>
                             {step}
                         </div>
@@ -4785,7 +4785,7 @@ export const SchoolsManager: React.FC = () => {
                     <div>
                         <div className="text-xs font-black text-slate-500">رحلة المدرسة التجارية</div>
                         <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات، الأكواد. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء والتقارير بدون خلطها مع الإعدادات.
+                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات، الأكواد، وتقرير التسليم. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
                         </p>
                     </div>
                     <button
