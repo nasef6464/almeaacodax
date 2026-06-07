@@ -120,6 +120,21 @@ async function main() {
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");
+    const commercialFilterVisible =
+      (await visible(page, "school-list-mode-filter")) &&
+      (await visible(page, "school-list-mode-active")) &&
+      (await visible(page, "school-list-mode-all"));
+    const commercialCount = await page.getByTestId("school-card").count();
+    await page.getByTestId("school-list-mode-all").click();
+    await page.waitForTimeout(500);
+    const allCount = await page.getByTestId("school-card").count();
+    await page.getByTestId("school-list-mode-active").click();
+    await page.waitForTimeout(500);
+    check(
+      "school commercial list filter",
+      commercialFilterVisible && allCount >= commercialCount ? "PASS" : "FAIL",
+      commercialFilterVisible ? `commercial=${commercialCount}, all=${allCount}` : "commercial filter controls missing"
+    );
     const cardReadinessVisible = await firstSchoolCard.getByTestId("school-card-readiness").isVisible({ timeout: 12000 }).catch(() => false);
     const cardNextActionVisible = await firstSchoolCard.getByTestId("school-card-next-action").isVisible({ timeout: 12000 }).catch(() => false);
     const cardProgressVisible = await firstSchoolCard.getByTestId("school-card-readiness-progress").isVisible({ timeout: 12000 }).catch(() => false);

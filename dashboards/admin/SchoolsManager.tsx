@@ -705,11 +705,13 @@ export const SchoolsManager: React.FC = () => {
             activePackageCount > 0,
             activeCodeCount > 0,
         ].filter(Boolean).length;
+        const normalizedSchoolName = school.name.trim().toLowerCase();
+        const hasRealOperation = readinessScore > 0 || schoolClasses.length > 0 || schoolStudents.length > 0;
+        const isLikelyDemoSchool = /(^|\s|-)(تجريبي|تجربة|اختبار|نموذج|demo|test|sample|trial)(\s|$|-)/i.test(normalizedSchoolName);
         const isEmptyDraft =
-            readinessScore === 0 &&
-            schoolStudents.length === 0 &&
-            schoolClasses.length === 0 &&
-            /^مدرسة جديدة(?:\s|$|-)/.test(school.name.trim());
+            !hasRealOperation &&
+            (/^مدرسة جديدة(?:\s|$|-)/.test(school.name.trim()) || isLikelyDemoSchool);
+        const isCommerciallyHiddenDraft = isEmptyDraft || (isLikelyDemoSchool && readinessScore < 2 && schoolStudents.length === 0);
 
         return {
             schoolClasses,
@@ -718,6 +720,8 @@ export const SchoolsManager: React.FC = () => {
             activeCodeCount,
             readinessScore,
             isEmptyDraft,
+            isLikelyDemoSchool,
+            isCommerciallyHiddenDraft,
         };
     };
 
@@ -730,12 +734,12 @@ export const SchoolsManager: React.FC = () => {
             const snapshot = getSchoolOperationalSnapshot(school);
             if (schoolListMode === 'all' || keyword) return true;
             if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
-            if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isEmptyDraft;
-            return !snapshot.isEmptyDraft;
+            if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isCommerciallyHiddenDraft;
+            return !snapshot.isCommerciallyHiddenDraft;
         });
     }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
     const hiddenDraftSchoolsCount = useMemo(
-        () => schools.filter((school) => getSchoolOperationalSnapshot(school).isEmptyDraft).length,
+        () => schools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, schools, students],
     );
     const schoolPortfolioRows = useMemo(() => schools.map((school) => {
@@ -4818,6 +4822,7 @@ export const SchoolsManager: React.FC = () => {
                             <button
                                 key={mode.id}
                                 type="button"
+                                data-testid={`school-list-mode-${mode.id}`}
                                 onClick={() => setSchoolListMode(mode.id as typeof schoolListMode)}
                                 className={`rounded-xl px-3 py-2 text-xs font-black transition-colors ${
                                     schoolListMode === mode.id
@@ -4832,7 +4837,7 @@ export const SchoolsManager: React.FC = () => {
                 </div>
                 {schoolListMode === 'active' && hiddenDraftSchoolsCount > 0 && !schoolSearch.trim() && (
                     <div data-testid="school-hidden-drafts-note" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
-                        تم إخفاء {hiddenDraftSchoolsCount} مدرسة فارغة لتقليل الزحمة. استخدم "عرض الكل" إذا أردت مراجعتها أو حذفها.
+                        تم إخفاء {hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية لتقليل الزحمة. استخدم "عرض الكل" إذا أردت مراجعتها أو حذفها.
                     </div>
                 )}
             </div>
