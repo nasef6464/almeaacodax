@@ -631,6 +631,7 @@ export const SchoolsManager: React.FC = () => {
     const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
     const [managementError, setManagementError] = useState<string | null>(null);
     const [managementNotice, setManagementNotice] = useState<string | null>(null);
+    const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
     const [schoolStudentPage, setSchoolStudentPage] = useState(1);
@@ -1308,12 +1309,17 @@ export const SchoolsManager: React.FC = () => {
             }, 50);
         };
         const handleDeleteSelectedSchool = () => {
-            const confirmed = window.confirm(`هل تريد حذف مدرسة ${selectedSchool.name}؟ سيتم إزالة المدرسة وفصولها وروابط الطلاب والمشرفين من هذا النطاق.`);
-            if (!confirmed) return;
+            setManagementError(null);
+            setManagementNotice(null);
+            setIsDeleteSchoolConfirmOpen(true);
+        };
+        const confirmDeleteSelectedSchool = () => {
+            const deletedSchoolName = selectedSchool.name;
 
             deleteGroup(selectedSchool.id);
             setManagementError(null);
-            setManagementNotice(null);
+            setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
+            setIsDeleteSchoolConfirmOpen(false);
             setSelectedSchool(null);
         };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
@@ -2423,7 +2429,7 @@ export const SchoolsManager: React.FC = () => {
         return (
             <div data-testid="school-workspace-shell" className="space-y-6 animate-fade-in">
                 <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-                    <button onClick={() => { setManagementError(null); setManagementNotice(null); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
+                    <button onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة لقائمة المدارس
                     </button>
                     <h1 className="min-w-[220px] flex-1 text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
@@ -2477,6 +2483,56 @@ export const SchoolsManager: React.FC = () => {
                         حذف المدرسة
                     </button>
                 </div>
+
+                {isDeleteSchoolConfirmOpen && (
+                    <div data-testid="school-delete-confirm-panel" className="rounded-2xl border border-red-200 bg-red-50 p-5">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div>
+                                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-red-700">
+                                    <Trash2 size={14} />
+                                    تأكيد حذف مدرسة
+                                </div>
+                                <h3 className="mt-3 text-lg font-black text-gray-900">راجع الأثر قبل حذف {selectedSchool.name}</h3>
+                                <p className="mt-1 text-sm font-bold leading-6 text-red-800">
+                                    الحذف يزيل المدرسة من هذه القائمة ويفصل نطاقها التشغيلي. استخدمه للتنظيف فقط عندما تكون متأكدًا أن المدرسة ليست عقدًا نشطًا.
+                                </p>
+                            </div>
+                            <div className="grid min-w-[280px] grid-cols-2 gap-2 text-center">
+                                {[
+                                    ['فصول', schoolClasses.length],
+                                    ['طلاب', schoolStudents.length],
+                                    ['مشرفون', schoolSupervisors.length],
+                                    ['باقات', schoolPackages.length],
+                                    ['أكواد', schoolCodes.length],
+                                    ['جاهزية', `${readinessScore}/${readinessChecks.length}`],
+                                ].map(([label, value]) => (
+                                    <div key={label} className="rounded-xl bg-white px-3 py-2">
+                                        <div className="text-lg font-black text-gray-900">{value}</div>
+                                        <div className="text-[11px] font-black text-gray-500">{label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                            <button
+                                type="button"
+                                data-testid="school-delete-cancel"
+                                onClick={() => setIsDeleteSchoolConfirmOpen(false)}
+                                className="rounded-xl bg-white px-4 py-2.5 text-sm font-black text-gray-700 transition-colors hover:bg-gray-100"
+                            >
+                                إلغاء والعودة للإدارة
+                            </button>
+                            <button
+                                type="button"
+                                data-testid="school-delete-confirm"
+                                onClick={confirmDeleteSelectedSchool}
+                                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-red-700"
+                            >
+                                حذف المدرسة نهائيًا
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="flex flex-wrap gap-2 border-b border-gray-200">
                     {[

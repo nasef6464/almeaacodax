@@ -129,6 +129,15 @@ async function main() {
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
     check("school workspace open", "PASS", "selected school workspace visible");
 
+    await page.getByTestId("school-delete-button").click();
+    const deletePanelVisible = await page.getByTestId("school-delete-confirm-panel").isVisible({ timeout: 12000 }).catch(() => false);
+    check("school delete confirmation panel", deletePanelVisible ? "PASS" : "FAIL", deletePanelVisible ? "destructive delete requires review panel" : "delete confirmation missing");
+    if (deletePanelVisible) {
+      await page.getByTestId("school-delete-cancel").click();
+      const deletePanelClosed = !(await page.getByTestId("school-delete-confirm-panel").isVisible({ timeout: 3000 }).catch(() => false));
+      check("school delete confirmation cancel", deletePanelClosed ? "PASS" : "FAIL", deletePanelClosed ? "delete panel cancelled without deletion" : "delete panel remained open");
+    }
+
     const focusStripVisible = await visible(page, "school-overview-focus-strip");
     check("overview focus strip visible", focusStripVisible ? "PASS" : "FAIL", focusStripVisible ? "focus strip rendered" : "focus strip missing");
     await screenshot(page, "01-school-overview-focus-strip");
