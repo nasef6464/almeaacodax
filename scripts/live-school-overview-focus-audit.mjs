@@ -216,6 +216,12 @@ async function main() {
     check("overview focus card count", focusCount === ids.length ? "PASS" : "FAIL", `${focusCount}/${ids.length} cards`);
 
     await clickFocus(page, "students", "school-students-panel");
+    const studentPanelText = await page.getByTestId("school-students-panel").textContent({ timeout: 12000 }).catch(() => "");
+    check(
+      "school manual student requires class",
+      /داخل فصل واضح/.test(studentPanelText || "") && /اختر فصل الطالب/.test(studentPanelText || "") && !/بدون فصل/.test(studentPanelText || "") ? "PASS" : "FAIL",
+      studentPanelText || "student panel copy missing"
+    );
     await screenshot(page, "02-focus-students");
     await clickFocus(page, "supervisors", "school-wide-supervisors-panel");
     const supervisorScopeDecisionVisible =

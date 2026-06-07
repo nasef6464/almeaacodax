@@ -1195,6 +1195,10 @@ export const SchoolsManager: React.FC = () => {
             setImportError('اكتب اسم الطالب والبريد الإلكتروني قبل الإضافة.');
             return;
         }
+        if (!singleStudent.className.trim()) {
+            setImportError('اختر فصل الطالب قبل الإضافة حتى تبقى المدرسة مرتبة والتقارير واضحة.');
+            return;
+        }
 
         setIsImporting(true);
         setImportError(null);
@@ -2921,7 +2925,7 @@ export const SchoolsManager: React.FC = () => {
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                     <div>
                                         <h3 className="text-lg font-black text-gray-900">إضافة طالب منفرد</h3>
-                                        <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع بدون ملف Excel.</p>
+                                        <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع داخل فصل واضح.</p>
                                     </div>
                                     <button
                                         data-testid="school-single-student-submit"
@@ -2932,6 +2936,40 @@ export const SchoolsManager: React.FC = () => {
                                         إضافة الطالب
                                     </button>
                                 </div>
+                                {schoolClasses.length === 0 && (
+                                    <div data-testid="school-student-needs-class-note" className="mb-4 flex flex-col gap-3 rounded-2xl border border-amber-100 bg-white px-4 py-3 md:flex-row md:items-center md:justify-between">
+                                        <div>
+                                            <div className="text-sm font-black text-amber-800">ابدأ بفصل واحد قبل إضافة الطلاب</div>
+                                            <p className="mt-1 text-xs font-bold leading-5 text-amber-700">الإضافة اليدوية تحتاج فصلًا واضحًا حتى لا تتراكم طلاب بلا تصنيف.</p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            data-testid="school-student-create-first-class"
+                                            onClick={() => {
+                                                createGroup({
+                                                    id: `class_${Date.now()}`,
+                                                    name: `فصل جديد - ${selectedSchool.name}`,
+                                                    type: 'CLASS',
+                                                    parentId: selectedSchool.id,
+                                                    ownerId: user.id,
+                                                    supervisorIds: [],
+                                                    studentIds: [],
+                                                    courseIds: [],
+                                                    createdAt: Date.now(),
+                                                    totalStudents: 0,
+                                                    totalSupervisors: 0,
+                                                    totalCourses: 0,
+                                                });
+                                                setManagementNotice('تم إنشاء فصل جديد. اختره من حقل فصل الطالب ثم أضف الطالب.');
+                                                setManagementError(null);
+                                            }}
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-black text-white transition-colors hover:bg-amber-600"
+                                        >
+                                            <Plus size={14} />
+                                            إنشاء فصل الآن
+                                        </button>
+                                    </div>
+                                )}
                                 <div className="grid gap-3 md:grid-cols-4">
                                     <input
                                         data-testid="school-single-student-name"
@@ -2953,7 +2991,7 @@ export const SchoolsManager: React.FC = () => {
                                         onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
                                         className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
                                     >
-                                        <option value="">بدون فصل</option>
+                                        <option value="">اختر فصل الطالب</option>
                                         {schoolClasses.map((classroom) => (
                                             <option key={classroom.id} value={classroom.name}>{classroom.name}</option>
                                         ))}
