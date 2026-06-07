@@ -2788,11 +2788,16 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
-                            data-testid="school-primary-delete-school"
-                            onClick={handleDeleteSelectedSchool}
-                            className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
+                            data-testid="school-primary-open-portal"
+                            onClick={() => {
+                                const url = new URL('/admin-dashboard', window.location.origin);
+                                url.searchParams.set('tab', 'school-portal');
+                                window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                                window.dispatchEvent(new HashChangeEvent('hashchange'));
+                            }}
+                            className="rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-100"
                         >
-                            حذف المدرسة
+                            بوابة المتابعة
                         </button>
                     </div>
                 </div>

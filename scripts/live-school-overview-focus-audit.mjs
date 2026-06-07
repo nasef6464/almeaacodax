@@ -168,6 +168,16 @@ async function main() {
       check("school delete confirmation cancel", deletePanelClosed ? "PASS" : "FAIL", deletePanelClosed ? "delete panel cancelled without deletion" : "delete panel remained open");
     }
 
+    const primaryPortalVisible = await visible(page, "school-primary-open-portal");
+    const duplicatePrimaryDeleteCount = await page.getByTestId("school-primary-delete-school").count();
+    check(
+      "school primary actions are non-destructive",
+      primaryPortalVisible && duplicatePrimaryDeleteCount === 0 ? "PASS" : "FAIL",
+      primaryPortalVisible && duplicatePrimaryDeleteCount === 0
+        ? "quick actions route to setup/follow-up without duplicate delete"
+        : `portal=${primaryPortalVisible}, duplicateDelete=${duplicatePrimaryDeleteCount}`
+    );
+
     const focusStripVisible = await visible(page, "school-overview-focus-strip");
     check("overview focus strip visible", focusStripVisible ? "PASS" : "FAIL", focusStripVisible ? "focus strip rendered" : "focus strip missing");
     await screenshot(page, "01-school-overview-focus-strip");
