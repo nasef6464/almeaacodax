@@ -201,6 +201,18 @@ async function main() {
       workspaceTabsAreSetupOriented ? "PASS" : "FAIL",
       workspaceTabsText || "workspace tabs missing"
     );
+    await page.getByRole("button", { name: /3 المشرفون والتسليم/ }).click();
+    const supervisorHandoverGuardText = await page.getByTestId("school-supervisor-handover-guard").textContent({ timeout: 12000 }).catch(() => "");
+    check(
+      "school supervisor handover guard",
+      /قرار المشرفين قبل التسليم/.test(supervisorHandoverGuardText || "") &&
+        /مدير\/مشرف عام/.test(supervisorHandoverGuardText || "") &&
+        /نواقص التسليم/.test(supervisorHandoverGuardText || "")
+        ? "PASS"
+        : "FAIL",
+      supervisorHandoverGuardText || "supervisor handover guard missing"
+    );
+    await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
 
     await page.getByTestId("school-delete-button").click();
     const deletePanelVisible = await page.getByTestId("school-delete-confirm-panel").isVisible({ timeout: 12000 }).catch(() => false);
