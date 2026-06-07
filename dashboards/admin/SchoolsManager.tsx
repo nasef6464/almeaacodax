@@ -4782,11 +4782,21 @@ export const SchoolsManager: React.FC = () => {
 
             <div data-testid="school-flow-boundary-card" className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
+                    <div className="min-w-0 flex-1">
                         <div className="text-xs font-black text-slate-500">رحلة المدرسة التجارية</div>
                         <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
                             هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات، الأكواد، وتقرير التسليم. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
                         </p>
+                        <div data-testid="school-flow-boundary-modes" className="mt-3 grid gap-2 md:grid-cols-2">
+                            <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
+                                <div className="text-xs font-black text-amber-700">هنا: تشغيل وتسليم</div>
+                                <p className="mt-1 text-xs font-bold leading-5 text-amber-900">إنشاء المدرسة، الفصول، الطلاب، المشرفين، الباقات، الأكواد، وملف التسليم.</p>
+                            </div>
+                            <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2">
+                                <div className="text-xs font-black text-indigo-700">البوابة: متابعة بعد التشغيل</div>
+                                <p className="mt-1 text-xs font-bold leading-5 text-indigo-900">قراءة الأداء، متابعة الفصول، طباعة التقارير، واكتشاف الطلاب المحتاجين لتدخل.</p>
+                            </div>
+                        </div>
                     </div>
                     <button
                         type="button"

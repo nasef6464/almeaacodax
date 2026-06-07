@@ -123,6 +123,15 @@ async function main() {
       createJourneyStepCount === 6 ? "PASS" : "FAIL",
       `${createJourneyStepCount}/6 visible`
     );
+    const boundaryModesVisible =
+      (await visible(page, "school-flow-boundary-card")) &&
+      (await visible(page, "school-flow-boundary-modes")) &&
+      (await visible(page, "open-school-portal-from-groups"));
+    check(
+      "school flow boundary modes",
+      boundaryModesVisible ? "PASS" : "FAIL",
+      boundaryModesVisible ? "setup vs follow-up boundary visible" : "school flow boundary missing"
+    );
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");
