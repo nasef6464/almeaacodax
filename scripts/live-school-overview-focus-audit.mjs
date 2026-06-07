@@ -144,6 +144,17 @@ async function main() {
       boundaryModesVisible ? "PASS" : "FAIL",
       boundaryModesVisible ? "setup vs follow-up boundary visible" : "school flow boundary missing"
     );
+    await page.getByTestId("open-school-portal-from-groups").click();
+    const portalBoundaryText = await page.getByTestId("school-portal-boundary-card").first().textContent({ timeout: 15000 }).catch(() => "");
+    check(
+      "school portal boundary names operations cleanly",
+      /تشغيل المدارس/.test(portalBoundaryText || "") && !/تشغيل المدارس والمجموعات/.test(portalBoundaryText || "")
+        ? "PASS"
+        : "FAIL",
+      portalBoundaryText || "school portal boundary missing"
+    );
+    await page.getByTestId("open-school-operations-from-portal").first().click();
+    await page.getByTestId("school-commercial-title").waitFor({ state: "visible", timeout: 15000 });
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");

@@ -821,7 +821,7 @@ export const SchoolPortalManager: React.FC = () => {
                         <div>
                             <div className="text-xs font-black text-indigo-700">فصل واضح بين التشغيل والمتابعة</div>
                             <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                                هذه البوابة للمتابعة والتقارير بعد ربط المدرسة أو الفصل. إنشاء المدرسة، إضافة الطلاب، وربط المشرفين يبدأ من صفحة تشغيل المدارس والمجموعات.
+                                هذه البوابة للمتابعة والتقارير بعد ربط المدرسة أو الفصل. إنشاء المدرسة، إضافة الطلاب، وربط المشرفين يبدأ من صفحة تشغيل المدارس.
                             </p>
                         </div>
                         <button
@@ -836,7 +836,7 @@ export const SchoolPortalManager: React.FC = () => {
                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-indigo-700 shadow-sm transition-colors hover:bg-indigo-100"
                         >
                             <Users size={16} />
-                            فتح صفحة التشغيل
+                            فتح تشغيل المدارس
                         </button>
                     </div>
                 </div>
@@ -871,7 +871,7 @@ export const SchoolPortalManager: React.FC = () => {
                         className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
                     >
                         <Users size={16} />
-                        فتح إدارة المدارس
+                        فتح تشغيل المدارس
                     </button>
                     <button
                         onClick={printPortalReport}
@@ -895,7 +895,7 @@ export const SchoolPortalManager: React.FC = () => {
                     <div>
                         <div className="text-xs font-black text-indigo-700">فصل واضح بين التشغيل والمتابعة</div>
                         <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                            هذه البوابة لقراءة الأداء، متابعة الفصول، طباعة التقارير، وتحديد الطلاب المحتاجين لتدخل. إنشاء المدرسة، إضافة الطلاب، ربط المشرفين، والباقات تتم من صفحة تشغيل المدارس والمجموعات.
+                            هذه البوابة لقراءة الأداء، متابعة الفصول، طباعة التقارير، وتحديد الطلاب المحتاجين لتدخل. إنشاء المدرسة، إضافة الطلاب، ربط المشرفين، والباقات تتم من صفحة تشغيل المدارس.
                         </p>
                     </div>
                     <button
@@ -910,7 +910,7 @@ export const SchoolPortalManager: React.FC = () => {
                         className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-indigo-700 shadow-sm transition-colors hover:bg-indigo-100"
                     >
                         <Users size={16} />
-                        فتح صفحة التشغيل
+                        فتح تشغيل المدارس
                     </button>
                 </div>
             </div>
