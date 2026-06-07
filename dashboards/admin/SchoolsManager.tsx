@@ -4322,6 +4322,31 @@ export const SchoolsManager: React.FC = () => {
                 </div>
             </div>
 
+            <div data-testid="school-flow-boundary-card" className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div className="text-xs font-black text-slate-500">رحلة المدرسة التجارية</div>
+                        <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
+                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات، الأكواد. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء والتقارير بدون خلطها مع الإعدادات.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const url = new URL('/admin-dashboard', window.location.origin);
+                            url.searchParams.set('tab', 'school-portal');
+                            window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                            window.dispatchEvent(new HashChangeEvent('hashchange'));
+                        }}
+                        data-testid="open-school-portal-from-groups"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-slate-800"
+                    >
+                        <ShieldCheck size={16} />
+                        فتح بوابة متابعة المدارس
+                    </button>
+                </div>
+            </div>
+
             <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
                 <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                     <div>

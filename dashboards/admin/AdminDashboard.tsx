@@ -853,7 +853,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
-            { id: 'groups', label: 'المجموعات والمدارس', icon: <Building2 size={20} /> },
+            { id: 'groups', label: 'تشغيل المدارس والمجموعات', icon: <Building2 size={20} /> },
             { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
             { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
             { id: 'notifications', label: 'الإشعارات', icon: <Bell size={20} /> },
@@ -961,7 +961,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = groupsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : groupsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة المدارس' : 'بوابة المدرسة', icon: <Building2 size={20} /> },
+                { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي', icon: <Building2 size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }

@@ -813,20 +813,32 @@ export const SchoolPortalManager: React.FC = () => {
         return (
             <div className="space-y-6 animate-fade-in">
                 <div>
-                    <h1 className="text-2xl font-black text-gray-900">بوابة المدرسة</h1>
+                    <h1 className="text-2xl font-black text-gray-900">{user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي'}</h1>
                     <p className="mt-2 text-sm text-gray-500">لم يتم ربط حسابك بمدرسة أو فصل حتى الآن. اطلب من المدير ربطك بالمدرسة أو الفصل المناسب.</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            window.location.hash = '#/admin-dashboard?tab=groups';
-                        }}
-                        className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
-                    >
-                        <Users size={16} />
-                        فتح إدارة المدارس
-                    </button>
+                <div data-testid="school-portal-boundary-card" className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <div className="text-xs font-black text-indigo-700">فصل واضح بين التشغيل والمتابعة</div>
+                            <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
+                                هذه البوابة للمتابعة والتقارير بعد ربط المدرسة أو الفصل. إنشاء المدرسة، إضافة الطلاب، وربط المشرفين يبدأ من صفحة تشغيل المدارس والمجموعات.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const url = new URL('/admin-dashboard', window.location.origin);
+                                url.searchParams.set('tab', 'groups');
+                                window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                                window.dispatchEvent(new HashChangeEvent('hashchange'));
+                            }}
+                            data-testid="open-school-operations-from-portal"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-indigo-700 shadow-sm transition-colors hover:bg-indigo-100"
+                        >
+                            <Users size={16} />
+                            فتح صفحة التشغيل
+                        </button>
+                    </div>
                 </div>
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-amber-800">
                     <div className="flex items-center gap-3 font-black">
@@ -842,7 +854,7 @@ export const SchoolPortalManager: React.FC = () => {
         <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-2xl font-black text-gray-900">بوابة المدرسة</h1>
+                    <h1 className="text-2xl font-black text-gray-900">{user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي'}</h1>
                     <p className="mt-2 text-sm leading-6 text-gray-500">
                         متابعة المدرسة والفصول والطلاب داخل نطاق المشرف بدون صلاحيات حذف أو تعديل إداري حساس.
                     </p>
@@ -851,7 +863,10 @@ export const SchoolPortalManager: React.FC = () => {
                     <button
                         type="button"
                         onClick={() => {
-                            window.location.hash = '#/admin-dashboard?tab=groups';
+                            const url = new URL('/admin-dashboard', window.location.origin);
+                            url.searchParams.set('tab', 'groups');
+                            window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                            window.dispatchEvent(new HashChangeEvent('hashchange'));
                         }}
                         className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white hover:bg-gray-800"
                     >
@@ -871,6 +886,31 @@ export const SchoolPortalManager: React.FC = () => {
                     >
                         <Download size={16} />
                         تصدير Excel
+                    </button>
+                </div>
+            </div>
+
+            <div data-testid="school-portal-boundary-card" className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div className="text-xs font-black text-indigo-700">فصل واضح بين التشغيل والمتابعة</div>
+                        <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
+                            هذه البوابة لقراءة الأداء، متابعة الفصول، طباعة التقارير، وتحديد الطلاب المحتاجين لتدخل. إنشاء المدرسة، إضافة الطلاب، ربط المشرفين، والباقات تتم من صفحة تشغيل المدارس والمجموعات.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const url = new URL('/admin-dashboard', window.location.origin);
+                            url.searchParams.set('tab', 'groups');
+                            window.history.pushState(null, '', `${url.pathname}${url.search}`);
+                            window.dispatchEvent(new HashChangeEvent('hashchange'));
+                        }}
+                        data-testid="open-school-operations-from-portal"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-indigo-700 shadow-sm transition-colors hover:bg-indigo-100"
+                    >
+                        <Users size={16} />
+                        فتح صفحة التشغيل
                     </button>
                 </div>
             </div>
