@@ -3576,6 +3576,42 @@ export const SchoolsManager: React.FC = () => {
 
                     {activeTab === 'packages' && (
                         <div data-testid="school-packages-panel" className="space-y-8">
+                            <div data-testid="school-access-decision-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+                                    <div>
+                                        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black ${
+                                            activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
+                                                ? 'bg-emerald-50 text-emerald-700'
+                                                : 'bg-amber-50 text-amber-700'
+                                        }`}>
+                                            <ShieldCheck size={14} />
+                                            {activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'الوصول جاهز للتسليم' : 'الوصول يحتاج استكمال'}
+                                        </div>
+                                        <h3 className="mt-3 text-xl font-black text-gray-900">قرار وصول المدرسة</h3>
+                                        <p data-testid="school-access-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-600">
+                                            {activeSchoolPackages.length === 0
+                                                ? 'فعّل باقة مدرسية حتى يحصل الطلاب على الوصول بدون شراء فردي.'
+                                                : activeSchoolCodes.length === 0
+                                                    ? 'ولّد كود دخول صالحًا للطلاب أو أرسل رابط التسجيل حسب طريقة التسليم.'
+                                                    : totalSeats > 0 && usedSeats >= totalSeats
+                                                        ? 'المقاعد المتاحة مستهلكة بالكامل. زِد سعة الباقة قبل إضافة طلاب جدد.'
+                                                        : 'الباقة والأكواد جاهزة. يمكنك إرسال ملف التسليم للمدرسة أو متابعة الاستهلاك.'}
+                                        </p>
+                                    </div>
+                                    <div className="grid gap-3 sm:grid-cols-3">
+                                        {[
+                                            ['الباقات النشطة', activeSchoolPackages.length, activeSchoolPackages.length > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'],
+                                            ['الأكواد الصالحة', activeSchoolCodes.length, activeSchoolCodes.length > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'],
+                                            ['المقاعد', totalSeats > 0 ? `${usedSeats}/${totalSeats}` : '0/0', totalSeats > 0 && usedSeats < totalSeats ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'],
+                                        ].map(([label, value, tone]) => (
+                                            <div key={label} className={`rounded-2xl px-4 py-3 text-center ${tone}`}>
+                                                <div className="text-xs font-black opacity-80">{label}</div>
+                                                <div className="mt-1 text-2xl font-black">{value}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
                                     <div className="text-xs font-black text-emerald-700 mb-2">باقات نشطة</div>

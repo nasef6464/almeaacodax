@@ -178,6 +178,14 @@ async function main() {
     await clickFocus(page, "classes", "school-class-creation-panel");
     await screenshot(page, "04-focus-classes");
     await clickFocus(page, "access", "school-packages-panel");
+    const accessDecisionVisible =
+      (await visible(page, "school-access-decision-summary")) &&
+      (await visible(page, "school-access-next-action"));
+    check(
+      "school access decision summary",
+      accessDecisionVisible ? "PASS" : "FAIL",
+      accessDecisionVisible ? "package/code access decision visible" : "access decision summary missing"
+    );
     await screenshot(page, "05-focus-access");
 
     await page.getByTestId("school-primary-open-reports").click();
