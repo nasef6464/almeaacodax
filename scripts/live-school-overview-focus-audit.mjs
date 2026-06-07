@@ -164,6 +164,16 @@ async function main() {
     await clickFocus(page, "students", "school-students-panel");
     await screenshot(page, "02-focus-students");
     await clickFocus(page, "supervisors", "school-wide-supervisors-panel");
+    const supervisorScopeDecisionVisible =
+      (await visible(page, "school-supervisor-scope-decision")) &&
+      (await visible(page, "school-supervisor-schoolwide-count")) &&
+      (await visible(page, "school-supervisor-class-count")) &&
+      (await visible(page, "school-supervisor-scope-summary"));
+    check(
+      "school supervisor scope decision",
+      supervisorScopeDecisionVisible ? "PASS" : "FAIL",
+      supervisorScopeDecisionVisible ? "school-wide and class-scoped supervisor choices visible" : "supervisor scope decision missing"
+    );
     await screenshot(page, "03-focus-supervisors");
     await clickFocus(page, "classes", "school-class-creation-panel");
     await screenshot(page, "04-focus-classes");

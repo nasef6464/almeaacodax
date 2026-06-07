@@ -2972,6 +2972,30 @@ export const SchoolsManager: React.FC = () => {
                                     <p className="text-xs font-bold leading-6 text-gray-500">
                                         هذا النطاق مناسب لمدير المدرسة أو المسؤول العام؛ سيظهر له كل الفصول والطلاب والتقارير داخل هذه المدرسة.
                                     </p>
+                                    <div data-testid="school-supervisor-scope-decision" className="grid gap-3 md:grid-cols-2">
+                                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="text-sm font-black text-emerald-900">مدير المدرسة كاملة</span>
+                                                <span data-testid="school-supervisor-schoolwide-count" className="rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700">
+                                                    {schoolLevelSupervisors.length}
+                                                </span>
+                                            </div>
+                                            <p className="mt-2 text-xs font-bold leading-6 text-emerald-800">
+                                                يرى كل الفصول والطلاب وتقارير المدرسة. استخدمه لمدير المدرسة أو المشرف العام.
+                                            </p>
+                                        </div>
+                                        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="text-sm font-black text-blue-900">مشرف فصول محددة</span>
+                                                <span data-testid="school-supervisor-class-count" className="rounded-full bg-white px-3 py-1 text-xs font-black text-blue-700">
+                                                    {classScopedSupervisors.length}
+                                                </span>
+                                            </div>
+                                            <p className="mt-2 text-xs font-bold leading-6 text-blue-800">
+                                                يرى الفصول التي تم ربطه بها فقط. استخدمه للمعلم أو مشرف الفصل.
+                                            </p>
+                                        </div>
+                                    </div>
                                     <div className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
                                         <div className="mb-3 flex items-center gap-2 text-sm font-black text-purple-800">
                                             <UserPlus size={16} />
