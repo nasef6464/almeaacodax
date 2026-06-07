@@ -164,6 +164,16 @@ async function main() {
     await firstSchoolCard.getByTestId("school-card-open-management").click();
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
     check("school workspace open", "PASS", "selected school workspace visible");
+    const workspaceTabsText = await page.getByTestId("school-workspace-tabs").textContent({ timeout: 12000 }).catch(() => "");
+    const workspaceTabsAreSetupOriented =
+      /الربط والتسليم/.test(workspaceTabsText || "") &&
+      /تقرير التسليم/.test(workspaceTabsText || "") &&
+      !/ربط ومتابعة/.test(workspaceTabsText || "");
+    check(
+      "school workspace tabs are setup oriented",
+      workspaceTabsAreSetupOriented ? "PASS" : "FAIL",
+      workspaceTabsText || "workspace tabs missing"
+    );
 
     await page.getByTestId("school-delete-button").click();
     const deletePanelVisible = await page.getByTestId("school-delete-confirm-panel").isVisible({ timeout: 12000 }).catch(() => false);

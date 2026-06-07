@@ -2538,13 +2538,13 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <div className="flex flex-wrap gap-2 border-b border-gray-200">
+                <div data-testid="school-workspace-tabs" className="flex flex-wrap gap-2 border-b border-gray-200">
                     {[
                         { id: 'overview', label: 'نظرة عامة والفصول' },
                         { id: 'packages', label: 'الباقات والأكواد' },
-                        { id: 'relations', label: 'ربط ومتابعة' },
+                        { id: 'relations', label: 'الربط والتسليم' },
                         { id: 'import', label: 'استيراد الطلاب (Excel)' },
-                        { id: 'reports', label: 'تقارير الأداء' },
+                        { id: 'reports', label: 'تقرير التسليم' },
                     ].map((tab) => (
                         <button
                             key={tab.id}
