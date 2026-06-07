@@ -185,8 +185,8 @@ async function main() {
       mathSymbolCount: document.querySelectorAll('[data-testid="question-editor-math-symbol"]').length,
       hasDrawingToggle: Boolean(document.querySelector('[data-testid="question-editor-drawing-toggle"]')),
     }));
-    await page.getByTestId("question-editor-equation-input").fill("\\frac{444}{555}\\div\\frac{666}{333}");
-    await page.getByTestId("question-editor-insert-equation").click();
+    await page.getByTestId("question-editor-equation-input").first().fill("\\frac{444}{555}\\div\\frac{666}{333}");
+    await page.getByTestId("question-editor-insert-equation").first().click();
     const insertedFormulaCount = await page.locator(".ql-formula").count();
     await page.screenshot({ path: path.join(OUT_DIR, "editor-toolbar.png"), fullPage: false });
 

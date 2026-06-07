@@ -15,8 +15,13 @@ interface UnifiedQuestionBuilderProps {
 
 const emptyMcqOptions = ['', '', '', ''];
 
+const normalizeQuestionType = (type?: Partial<Question>['type'] | string): Question['type'] => {
+  if (type === 'true_false' || type === 'essay') return type;
+  return 'mcq';
+};
+
 const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubjectId = '', fallbackSectionId = ''): Partial<Question> => {
-  const type = source?.type || 'mcq';
+  const type = normalizeQuestionType(source?.type);
   const options =
     type === 'true_false'
       ? ['صح', 'خطأ']
