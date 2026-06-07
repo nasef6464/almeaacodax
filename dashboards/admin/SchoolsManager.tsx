@@ -4985,7 +4985,7 @@ export const SchoolsManager: React.FC = () => {
                                     type="button"
                                     onClick={() => toggleSchoolActions(school.id)}
                                     className="text-gray-400 hover:text-gray-600"
-                                    title="More actions"
+                                    title="إجراءات تشغيل المدرسة"
                                 >
                                     <MoreVertical size={18} />
                                 </button>
@@ -5000,7 +5000,7 @@ export const SchoolsManager: React.FC = () => {
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
-                                            فتح الإدارة
+                                            فتح التشغيل
                                         </button>
                                         <button
                                             type="button"
@@ -5011,14 +5011,14 @@ export const SchoolsManager: React.FC = () => {
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
-                                            ربط المشرفين
+                                            الربط والتسليم
                                         </button>
                                     </div>
                                 )}
                             </div>
 
                             <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
-                            <p className="text-sm text-gray-500 mb-5">إدارة الطلاب والفصول والباقات والمشرفين لهذه الجهة التعليمية.</p>
+                            <p data-testid="school-card-operating-copy" className="text-sm text-gray-500 mb-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقات، أكواد، ثم تقرير تسليم.</p>
 
                             <div data-testid="school-card-readiness" className={`mb-3 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
                                 cardReadinessScore === cardReadinessTotal
@@ -5051,7 +5051,7 @@ export const SchoolsManager: React.FC = () => {
                                     </span>
                                 </div>
                                 <p className="text-sm font-bold text-gray-800">
-                                    {nextCardAction ? nextCardAction.hint : 'افتح إدارة المدرسة لمراجعة التسليم أو التقرير.'}
+                                    {nextCardAction ? nextCardAction.hint : 'افتح تشغيل المدرسة لمراجعة التسليم أو التقرير.'}
                                 </p>
                                 <button
                                     type="button"
@@ -5110,7 +5110,7 @@ export const SchoolsManager: React.FC = () => {
                                 }}
                                 className="w-full bg-gray-900 text-white py-2.5 rounded-xl font-bold hover:bg-gray-800 transition-colors"
                             >
-                                فتح إدارة المدرسة
+                                فتح تشغيل المدرسة
                             </button>
                         </div>
                     );

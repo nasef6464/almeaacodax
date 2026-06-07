@@ -160,6 +160,12 @@ async function main() {
     const cardNextActionVisible = await firstSchoolCard.getByTestId("school-card-next-action").isVisible({ timeout: 12000 }).catch(() => false);
     const cardProgressVisible = await firstSchoolCard.getByTestId("school-card-readiness-progress").isVisible({ timeout: 12000 }).catch(() => false);
     check("school card commercial state", cardReadinessVisible && cardNextActionVisible && cardProgressVisible ? "PASS" : "FAIL", "readiness, progress and next action visible");
+    const cardOperatingCopy = await firstSchoolCard.getByTestId("school-card-operating-copy").textContent({ timeout: 12000 }).catch(() => "");
+    check(
+      "school card explains operating journey",
+      /مسار تشغيل المدرسة/.test(cardOperatingCopy || "") && /تقرير تسليم/.test(cardOperatingCopy || "") ? "PASS" : "FAIL",
+      cardOperatingCopy || "school card operating copy missing"
+    );
 
     await firstSchoolCard.getByTestId("school-card-open-management").click();
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
