@@ -1488,6 +1488,9 @@ export const SchoolsManager: React.FC = () => {
                 buttonLabel: 'فتح التقارير',
             },
         ];
+        const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
+        const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
+        const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
         const schoolLaunchPlan = [
             ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
             ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
@@ -2451,6 +2454,59 @@ export const SchoolsManager: React.FC = () => {
                                 <Download size={16} />
                                 ملف التسليم
                             </button>
+                        </div>
+                    </div>
+                    <div data-testid="school-delivery-journey" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <div className="text-xs font-black text-slate-500">مسار تسليم المدرسة</div>
+                                <h3 className="mt-1 text-base font-black text-gray-900">
+                                    الخطوة الحالية: {nextOperatingStep.title}
+                                </h3>
+                                <p className="mt-1 text-sm font-bold leading-6 text-gray-600">
+                                    {nextOperatingStep.description}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                data-testid="school-next-step-button"
+                                onClick={() => setActiveTab(nextOperatingStep.tab)}
+                                className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
+                            >
+                                {nextOperatingStep.buttonLabel}
+                            </button>
+                        </div>
+                        <div className="mt-4">
+                            <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-500">
+                                <span>{readinessPercent}% جاهزية تشغيل</span>
+                                <span>{readinessScore}/{readinessChecks.length}</span>
+                            </div>
+                            <div className="h-2 rounded-full bg-white">
+                                <div
+                                    className={`h-2 rounded-full ${readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-red-500'}`}
+                                    style={{ width: `${readinessPercent}%` }}
+                                />
+                            </div>
+                        </div>
+                        <div className="mt-4 grid gap-2 md:grid-cols-5">
+                            {commercialOperatingSteps.map((step, index) => (
+                                <button
+                                    key={step.id}
+                                    type="button"
+                                    data-testid={`school-delivery-journey-step-${step.id}`}
+                                    onClick={() => setActiveTab(step.tab)}
+                                    className={`rounded-xl border px-3 py-2 text-right text-xs font-black transition-colors ${
+                                        step.isReady
+                                            ? 'border-emerald-100 bg-white text-emerald-700 hover:bg-emerald-50'
+                                            : index === currentOperatingStepIndex
+                                                ? 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
+                                                : 'border-slate-100 bg-white text-slate-500 hover:bg-slate-100'
+                                    }`}
+                                >
+                                    <span className="block text-[11px] text-slate-400">مرحلة {index + 1}</span>
+                                    {step.title}
+                                </button>
+                            ))}
                         </div>
                     </div>
                     <div data-testid="school-setup-progress" className="grid gap-3 lg:grid-cols-5">
