@@ -204,9 +204,11 @@ check("school from scratch live audit is wired and cleans up", () => {
   assertIncludes(files.schoolFromScratchAudit, "create temporary school");
   assertIncludes(files.schoolFromScratchAudit, "import one student into class");
   assertIncludes(files.schoolFromScratchAudit, "apply parent and class supervisor relations");
+  assertIncludes(files.schoolFromScratchAudit, "school-wide supervisor scope is separate from class supervisor");
   assertIncludes(files.schoolFromScratchAudit, "create school package with path scope");
   assertIncludes(files.schoolFromScratchAudit, "create school access code");
   assertIncludes(files.schoolFromScratchAudit, "school report sees new commercial setup");
+  assertIncludes(files.schoolFromScratchAudit, "school report preserves class supervisor count");
   assertIncludes(files.schoolFromScratchAudit, "cleanupRequest");
 });
 
