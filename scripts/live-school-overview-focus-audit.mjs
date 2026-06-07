@@ -203,6 +203,7 @@ async function main() {
     );
     await page.getByRole("button", { name: /3 المشرفون والتسليم/ }).click();
     const supervisorHandoverGuardText = await page.getByTestId("school-supervisor-handover-guard").textContent({ timeout: 12000 }).catch(() => "");
+    const relationsQuickSupervisorText = await page.getByTestId("school-relations-quick-supervisor-card").textContent({ timeout: 12000 }).catch(() => "");
     check(
       "school supervisor handover guard",
       /قرار المشرفين قبل التسليم/.test(supervisorHandoverGuardText || "") &&
@@ -211,6 +212,15 @@ async function main() {
         ? "PASS"
         : "FAIL",
       supervisorHandoverGuardText || "supervisor handover guard missing"
+    );
+    check(
+      "school relations quick supervisor form",
+      /مدير مدرسة أو مشرف فصل/.test(relationsQuickSupervisorText || "") &&
+        /المدرسة كاملة/.test(relationsQuickSupervisorText || "") &&
+        /إنشاء\/ربط المشرف/.test(relationsQuickSupervisorText || "")
+        ? "PASS"
+        : "FAIL",
+      relationsQuickSupervisorText || "relations quick supervisor form missing"
     );
     await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
 
@@ -232,6 +242,14 @@ async function main() {
         ? "quick actions route to setup/follow-up without duplicate delete"
         : `portal=${primaryPortalVisible}, duplicateDelete=${duplicatePrimaryDeleteCount}`
     );
+    await page.getByTestId("school-primary-add-supervisor").click();
+    const primarySupervisorRouteVisible = await visible(page, "school-relations-quick-supervisor-card");
+    check(
+      "school primary add supervisor routes to relations",
+      primarySupervisorRouteVisible ? "PASS" : "FAIL",
+      primarySupervisorRouteVisible ? "quick supervisor opens in supervisors tab" : "quick supervisor route missing"
+    );
+    await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
 
     const focusStripVisible = await visible(page, "school-overview-focus-strip");
     check("overview focus strip visible", focusStripVisible ? "PASS" : "FAIL", focusStripVisible ? "focus strip rendered" : "focus strip missing");
