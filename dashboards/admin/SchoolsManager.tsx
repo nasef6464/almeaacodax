@@ -2546,6 +2546,7 @@ export const SchoolsManager: React.FC = () => {
                     <div data-testid="school-primary-actions" className="mt-4 grid gap-2 md:grid-cols-3 xl:grid-cols-6">
                         <button
                             type="button"
+                            data-testid="school-primary-add-class"
                             onClick={() => {
                                 createGroup({
                                     id: `class_${Date.now()}`,
@@ -2570,6 +2571,7 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
+                            data-testid="school-primary-add-student"
                             onClick={() => {
                                 setActiveTab('overview');
                                 window.setTimeout(() => {
@@ -2582,6 +2584,7 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
+                            data-testid="school-primary-add-supervisor"
                             onClick={() => {
                                 setActiveTab('overview');
                                 window.setTimeout(() => {
@@ -2594,6 +2597,7 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
+                            data-testid="school-primary-open-packages"
                             onClick={() => setActiveTab('packages')}
                             className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100"
                         >
@@ -2601,6 +2605,7 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
+                            data-testid="school-primary-open-reports"
                             onClick={() => setActiveTab('reports')}
                             className="rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-black text-blue-700 transition-colors hover:bg-blue-100"
                         >
@@ -2608,6 +2613,7 @@ export const SchoolsManager: React.FC = () => {
                         </button>
                         <button
                             type="button"
+                            data-testid="school-primary-delete-school"
                             onClick={handleDeleteSelectedSchool}
                             className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
                         >
@@ -2685,6 +2691,7 @@ export const SchoolsManager: React.FC = () => {
                                         <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع بدون ملف Excel.</p>
                                     </div>
                                     <button
+                                        data-testid="school-single-student-submit"
                                         onClick={() => void handleAddSingleStudent()}
                                         disabled={isImporting}
                                         className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
@@ -2694,18 +2701,21 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                                 <div className="grid gap-3 md:grid-cols-4">
                                     <input
+                                        data-testid="school-single-student-name"
                                         value={singleStudent.name}
                                         onChange={(event) => setSingleStudent((current) => ({ ...current, name: event.target.value }))}
                                         placeholder="اسم الطالب"
                                         className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
                                     />
                                     <input
+                                        data-testid="school-single-student-email"
                                         value={singleStudent.email}
                                         onChange={(event) => setSingleStudent((current) => ({ ...current, email: event.target.value }))}
                                         placeholder="بريد الطالب"
                                         className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
                                     />
                                     <select
+                                        data-testid="school-single-student-class"
                                         value={singleStudent.className}
                                         onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
                                         className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
@@ -2716,6 +2726,7 @@ export const SchoolsManager: React.FC = () => {
                                         ))}
                                     </select>
                                     <input
+                                        data-testid="school-single-student-password"
                                         value={singleStudent.password}
                                         onChange={(event) => setSingleStudent((current) => ({ ...current, password: event.target.value }))}
                                         placeholder="كلمة مرور اختيارية"
@@ -2740,24 +2751,28 @@ export const SchoolsManager: React.FC = () => {
                                         </div>
                                         <div className="grid gap-3 md:grid-cols-2">
                                             <input
+                                                data-testid="school-quick-supervisor-name"
                                                 value={quickSupervisor.name}
                                                 onChange={(event) => setQuickSupervisor((current) => ({ ...current, name: event.target.value }))}
                                                 placeholder="اسم المشرف"
                                                 className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
                                             />
                                             <input
+                                                data-testid="school-quick-supervisor-email"
                                                 value={quickSupervisor.email}
                                                 onChange={(event) => setQuickSupervisor((current) => ({ ...current, email: event.target.value }))}
                                                 placeholder="بريد المشرف"
                                                 className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
                                             />
                                             <input
+                                                data-testid="school-quick-supervisor-password"
                                                 value={quickSupervisor.password}
                                                 onChange={(event) => setQuickSupervisor((current) => ({ ...current, password: event.target.value }))}
                                                 placeholder="كلمة مرور اختيارية"
                                                 className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
                                             />
                                             <select
+                                                data-testid="school-quick-supervisor-scope"
                                                 value={quickSupervisor.targetGroupId}
                                                 onChange={(event) => setQuickSupervisor((current) => ({ ...current, targetGroupId: event.target.value }))}
                                                 className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
@@ -2770,6 +2785,7 @@ export const SchoolsManager: React.FC = () => {
                                         </div>
                                         <button
                                             type="button"
+                                            data-testid="school-quick-supervisor-submit"
                                             onClick={() => void handleCreateQuickSupervisor()}
                                             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
                                         >
