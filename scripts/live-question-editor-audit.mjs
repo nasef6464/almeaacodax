@@ -223,7 +223,7 @@ async function main() {
     await page.waitForSelector('[data-testid="question-builder-option-input"]', { timeout: 30000 });
     const editState = await page.evaluate(() => {
       const modal = document.querySelector('[data-testid="question-builder-modal"]');
-      const optionInputs = Array.from(document.querySelectorAll<HTMLInputElement>('[data-testid="question-builder-option-input"]'));
+      const optionInputs = Array.from(document.querySelectorAll('[data-testid="question-builder-option-input"]'));
       const questionEditor = document.querySelector('[data-testid="question-editor-word-paste"] .ql-container');
       return {
         optionCount: optionInputs.length,
@@ -233,6 +233,7 @@ async function main() {
         questionEditorHeight: questionEditor?.getBoundingClientRect().height || 0,
       };
     });
+    await page.locator('[data-testid="question-builder-option-input"]').first().scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(OUT_DIR, "edit-question-options.png"), fullPage: false });
 
     const checks = [
