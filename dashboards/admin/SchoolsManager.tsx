@@ -1531,6 +1531,55 @@ export const SchoolsManager: React.FC = () => {
                 tab: nextOperatingStep.tab,
             },
         ];
+        const overviewFocusActions = [
+            {
+                id: 'classes',
+                label: 'الفصول',
+                value: `${schoolClasses.length} فصل`,
+                hint: schoolClasses.length > 0
+                    ? 'راجع توزيع الطلاب والمشرفين داخل كل فصل.'
+                    : 'ابدأ بإنشاء الفصول قبل استيراد الطلاب.',
+                actionLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إنشاء الفصول',
+                target: 'school-class-creation-panel',
+                tone: schoolClasses.length > 0 ? 'emerald' : 'amber',
+            },
+            {
+                id: 'students',
+                label: 'الطلاب',
+                value: `${schoolStudents.length} طالب`,
+                hint: studentsWithoutClass.length > 0
+                    ? `${studentsWithoutClass.length} طالب يحتاجون فصل.`
+                    : schoolStudents.length > 0
+                        ? 'الطلاب مرتبطون ويمكن متابعة توزيعهم.'
+                        : 'أضف طالبًا سريعًا أو استورد ملف المدرسة.',
+                actionLabel: schoolStudents.length > 0 ? 'تنظيم الطلاب' : 'إضافة طالب',
+                target: 'school-students-panel',
+                tone: studentsWithoutClass.length > 0 ? 'amber' : schoolStudents.length > 0 ? 'emerald' : 'indigo',
+            },
+            {
+                id: 'supervisors',
+                label: 'المشرفون',
+                value: `${schoolSupervisors.length} مشرف`,
+                hint: schoolSupervisors.length > 0
+                    ? 'الصلاحيات موزعة بين المدرسة والفصول.'
+                    : 'اربط مدير المدرسة أو مشرفي الفصول.',
+                actionLabel: 'ربط مشرف',
+                target: 'school-wide-supervisors-panel',
+                tone: schoolSupervisors.length > 0 ? 'emerald' : 'purple',
+            },
+            {
+                id: 'access',
+                label: 'الوصول',
+                value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة` : 'بدون باقة',
+                hint: activeSchoolCodes.length > 0
+                    ? `${activeSchoolCodes.length} كود جاهز للتسليم.`
+                    : 'فعّل باقة أو أنشئ أكواد المدرسة.',
+                actionLabel: 'الباقات والأكواد',
+                target: 'school-packages-panel',
+                tab: 'packages' as const,
+                tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
+            },
+        ];
         const schoolLaunchPlan = [
             ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
             ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
@@ -2690,7 +2739,60 @@ export const SchoolsManager: React.FC = () => {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     {activeTab === 'overview' && (
                         <div data-testid="school-classes-panel" className="space-y-8">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <p className="text-xs font-black text-slate-500">لوحة تشغيل المدرسة</p>
+                                        <h3 className="text-lg font-black text-gray-900">ابدأ من هنا بدل البحث داخل الصفحة</h3>
+                                    </div>
+                                    <span className="rounded-full bg-white px-3 py-1.5 text-xs font-black text-slate-600">
+                                        {nextOperatingStep.title}
+                                    </span>
+                                </div>
+                                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                    {overviewFocusActions.map((action) => (
+                                        <button
+                                            key={action.id}
+                                            type="button"
+                                            data-testid={`school-overview-focus-${action.id}`}
+                                            onClick={() => {
+                                                if (action.tab) {
+                                                    setActiveTab(action.tab);
+                                                } else {
+                                                    setActiveTab('overview');
+                                                }
+                                                window.setTimeout(() => {
+                                                    document.querySelector(`[data-testid="${action.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                }, 80);
+                                            }}
+                                            className={`rounded-2xl border p-4 text-right transition-all hover:-translate-y-0.5 hover:shadow-sm ${
+                                                action.tone === 'emerald'
+                                                    ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
+                                                    : action.tone === 'amber'
+                                                        ? 'border-amber-100 bg-amber-50 hover:bg-amber-100'
+                                                        : action.tone === 'purple'
+                                                            ? 'border-purple-100 bg-purple-50 hover:bg-purple-100'
+                                                            : action.tone === 'rose'
+                                                                ? 'border-rose-100 bg-rose-50 hover:bg-rose-100'
+                                                                : 'border-indigo-100 bg-indigo-50 hover:bg-indigo-100'
+                                            }`}
+                                        >
+                                            <div className="mb-3 flex items-center justify-between gap-2">
+                                                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-gray-600">
+                                                    {action.label}
+                                                </span>
+                                                <span className="text-lg font-black text-gray-900">{action.value}</span>
+                                            </div>
+                                            <p className="min-h-[44px] text-xs font-bold leading-6 text-gray-600">{action.hint}</p>
+                                            <span className="mt-3 inline-flex rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800">
+                                                {action.actionLabel}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div data-testid="school-overview-metrics-grid" className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="bg-blue-50 p-6 rounded-xl">
                                     <div className="flex items-center gap-3 mb-2">
                                         <Users className="text-blue-500" size={24} />
@@ -3027,7 +3129,7 @@ export const SchoolsManager: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                                <div data-testid="school-class-creation-panel" className="mb-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
                                     <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
                                         <div>
                                             <label className="mb-2 block text-sm font-bold text-amber-900">
