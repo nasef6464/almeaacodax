@@ -129,6 +129,12 @@ async function main() {
       createJourneyStepCount === 6 ? "PASS" : "FAIL",
       `${createJourneyStepCount}/6 visible`
     );
+    const createJourneyText = await page.getByTestId("school-create-journey-panel").textContent({ timeout: 12000 }).catch(() => "");
+    check(
+      "school create journey includes package paths",
+      /المسارات/.test(createJourneyText || "") ? "PASS" : "FAIL",
+      createJourneyText || "create journey copy missing"
+    );
     const boundaryModesVisible =
       (await visible(page, "school-flow-boundary-card")) &&
       (await visible(page, "school-flow-boundary-modes")) &&
@@ -163,7 +169,7 @@ async function main() {
     const cardOperatingCopy = await firstSchoolCard.getByTestId("school-card-operating-copy").textContent({ timeout: 12000 }).catch(() => "");
     check(
       "school card explains operating journey",
-      /مسار تشغيل المدرسة/.test(cardOperatingCopy || "") && /تقرير تسليم/.test(cardOperatingCopy || "") ? "PASS" : "FAIL",
+      /مسار تشغيل المدرسة/.test(cardOperatingCopy || "") && /مسارات/.test(cardOperatingCopy || "") && /تقرير تسليم/.test(cardOperatingCopy || "") ? "PASS" : "FAIL",
       cardOperatingCopy || "school card operating copy missing"
     );
 
@@ -173,6 +179,7 @@ async function main() {
     const workspaceTabsText = await page.getByTestId("school-workspace-tabs").textContent({ timeout: 12000 }).catch(() => "");
     const workspaceTabsAreSetupOriented =
       /الربط والتسليم/.test(workspaceTabsText || "") &&
+      /الباقة والمسارات/.test(workspaceTabsText || "") &&
       /تقرير التسليم/.test(workspaceTabsText || "") &&
       !/ربط ومتابعة/.test(workspaceTabsText || "");
     check(

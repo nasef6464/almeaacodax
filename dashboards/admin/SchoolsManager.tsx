@@ -755,7 +755,7 @@ export const SchoolsManager: React.FC = () => {
             { key: 'classes', label: 'الفصول', isReady: schoolClasses.length > 0, tab: 'overview' as const, hint: 'أضف فصول المدرسة' },
             { key: 'students', label: 'الطلاب', isReady: schoolStudents.length > 0, tab: 'overview' as const, hint: 'أضف الطلاب أو استورد كشف المدرسة' },
             { key: 'supervisors', label: 'المشرفون', isReady: school.supervisorIds.length > 0, tab: 'relations' as const, hint: 'اربط مدير المدرسة أو المشرفين' },
-            { key: 'packages', label: 'الباقات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية' },
+            { key: 'packages', label: 'الباقة/المسارات', isReady: activePackageCount > 0, tab: 'packages' as const, hint: 'فعّل باقة مدرسية مرتبطة بالمسارات' },
             { key: 'codes', label: 'الأكواد', isReady: schoolCodes.length > 0, tab: 'packages' as const, hint: 'ولّد كود دخول صالح' },
         ];
         const readinessScore = readinessChecks.filter((check) => check.isReady).length;
@@ -1411,9 +1411,9 @@ export const SchoolsManager: React.FC = () => {
                 hint: schoolSupervisors.length > 0 ? `${schoolSupervisors.length} مشرف/معلم` : 'اربط مشرفًا أو معلمًا بالمدرسة',
             },
             {
-                label: 'باقات نشطة',
+                label: 'باقة/مسارات',
                 isReady: activeSchoolPackages.length > 0,
-                hint: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'فعّل باقة مدرسية واحدة على الأقل',
+                hint: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة مرتبطة بالمسارات` : 'فعّل باقة مدرسية واحدة على الأقل وحدد مساراتها',
             },
             {
                 label: 'أكواد دخول',
@@ -1425,7 +1425,7 @@ export const SchoolsManager: React.FC = () => {
         const operationalWarnings = [
             schoolClasses.length === 0 ? 'أضف فصلًا واحدًا على الأقل قبل تسليم المدرسة.' : '',
             schoolSupervisors.length === 0 ? 'اربط مشرفًا أو معلمًا ليتمكن من متابعة الطلاب.' : '',
-            activeSchoolPackages.length === 0 ? 'فعّل باقة مدرسية حتى يحصل الطلاب على الوصول بدون شراء فردي.' : '',
+            activeSchoolPackages.length === 0 ? 'فعّل باقة مدرسية مرتبطة بالمسارات حتى يحصل الطلاب على الوصول بدون شراء فردي.' : '',
             activeSchoolCodes.length === 0 ? 'ولّد كود دخول صالحًا إذا كانت المدرسة ستسجل الطلاب بالأكواد.' : '',
             totalSeats > 0 && usedSeats >= totalSeats ? 'تم استهلاك كل المقاعد المتاحة، راجع سعة الباقات.' : '',
             studentsWithoutClass.length > 0
@@ -1476,15 +1476,15 @@ export const SchoolsManager: React.FC = () => {
             },
             {
                 id: 'access',
-                title: 'الباقات والوصول',
+                title: 'الباقة والمسارات',
                 metric: `${activeSchoolPackages.length} باقة`,
                 description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
-                    ? 'الباقات والأكواد جاهزة للتسليم.'
-                    : 'فعّل باقة مدرسية وولّد كود دخول.',
+                    ? 'الباقة والمسارات والأكواد جاهزة للتسليم.'
+                    : 'فعّل باقة مدرسية مرتبطة بالمسارات وولّد كود دخول.',
                 statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
                 isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
                 tab: 'packages' as const,
-                buttonLabel: 'إدارة الباقات',
+                buttonLabel: 'إدارة الباقة والمسارات',
             },
             {
                 id: 'reports',
@@ -1529,7 +1529,7 @@ export const SchoolsManager: React.FC = () => {
                 value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة نشطة` : 'بلا باقة نشطة',
                 hint: activeSchoolCodes.length > 0
                     ? `${activeSchoolCodes.length} كود صالح للتوزيع.`
-                    : 'أنشئ باقة وكود دخول لتجنب شراء الطلاب بشكل فردي.',
+                    : 'أنشئ باقة مرتبطة بالمسارات وكود دخول لتجنب شراء الطلاب بشكل فردي.',
                 tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
                 tab: 'packages' as const,
             },
@@ -1580,20 +1580,20 @@ export const SchoolsManager: React.FC = () => {
             },
             {
                 id: 'access',
-                label: 'الوصول',
+                label: 'الباقة/المسارات',
                 value: activeSchoolPackages.length > 0 ? `${activeSchoolPackages.length} باقة` : 'بدون باقة',
                 hint: activeSchoolCodes.length > 0
                     ? `${activeSchoolCodes.length} كود جاهز للتسليم.`
-                    : 'فعّل باقة أو أنشئ أكواد المدرسة.',
-                actionLabel: 'الباقات والأكواد',
+                    : 'فعّل باقة مرتبطة بالمسارات أو أنشئ أكواد المدرسة.',
+                actionLabel: 'الباقة والمسارات',
                 target: 'school-packages-panel',
                 tab: 'packages' as const,
                 tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
             },
         ];
         const schoolLaunchPlan = [
-            ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقات والأكواد', readinessNextStep],
-            ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقات'],
+            ['قبل التسليم', 'تأكيد الفصول والمشرفين والباقة والمسارات والأكواد', readinessNextStep],
+            ['يوم التسليم', 'إرسال أكواد الدخول وتعليمات الدخول للطلاب', activeSchoolCodes.length > 0 ? 'الأكواد الصالحة جاهزة للتوزيع' : 'ولّد كودًا صالحًا من تبويب الباقة والمسارات'],
             ['أول 3 أيام', 'متابعة الطلاب الذين لم يبدأوا التدريب أو الاختبارات', studentsWithoutClass.length > 0 ? 'ابدأ بالطلاب غير المصنفين في فصول' : 'راجع بوابة المشرف يوميًا'],
             ['نهاية الأسبوع الأول', 'تصدير تقرير الأداء ومشاركته مع الإدارة', schoolReport ? 'تقرير الأداء متاح من تبويب التقارير' : 'سيظهر التقرير بعد بدء الطلاب في القياس'],
         ];
@@ -2541,7 +2541,7 @@ export const SchoolsManager: React.FC = () => {
                 <div data-testid="school-workspace-tabs" className="flex flex-wrap gap-2 border-b border-gray-200">
                     {[
                         { id: 'overview', label: 'نظرة عامة والفصول' },
-                        { id: 'packages', label: 'الباقات والأكواد' },
+                        { id: 'packages', label: 'الباقة والمسارات' },
                         { id: 'relations', label: 'الربط والتسليم' },
                         { id: 'import', label: 'استيراد الطلاب (Excel)' },
                         { id: 'reports', label: 'تقرير التسليم' },
@@ -2776,7 +2776,7 @@ export const SchoolsManager: React.FC = () => {
                             onClick={() => setActiveTab('packages')}
                             className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100"
                         >
-                            الباقات والأكواد
+                            الباقة والمسارات
                         </button>
                         <button
                             type="button"
@@ -3595,12 +3595,12 @@ export const SchoolsManager: React.FC = () => {
                                         <h3 className="mt-3 text-xl font-black text-gray-900">قرار وصول المدرسة</h3>
                                         <p data-testid="school-access-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-600">
                                             {activeSchoolPackages.length === 0
-                                                ? 'فعّل باقة مدرسية حتى يحصل الطلاب على الوصول بدون شراء فردي.'
+                                                ? 'فعّل باقة مدرسية مرتبطة بالمسارات حتى يحصل الطلاب على الوصول بدون شراء فردي.'
                                                 : activeSchoolCodes.length === 0
                                                     ? 'ولّد كود دخول صالحًا للطلاب أو أرسل رابط التسجيل حسب طريقة التسليم.'
                                                     : totalSeats > 0 && usedSeats >= totalSeats
                                                         ? 'المقاعد المتاحة مستهلكة بالكامل. زِد سعة الباقة قبل إضافة طلاب جدد.'
-                                                        : 'الباقة والأكواد جاهزة. يمكنك إرسال ملف التسليم للمدرسة أو متابعة الاستهلاك.'}
+                                                        : 'الباقة والمسارات والأكواد جاهزة. يمكنك إرسال ملف التسليم للمدرسة أو متابعة الاستهلاك.'}
                                         </p>
                                     </div>
                                     <div className="grid gap-3 sm:grid-cols-3">
@@ -4749,7 +4749,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                         <h2 className="mt-3 text-lg font-black text-gray-900">أضف المدرسة ثم أكمل الرحلة من داخلها</h2>
                         <p className="mt-1 text-sm font-bold leading-6 text-amber-900">
-                            بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة والأكواد، وتنتهي بتقرير التسليم.
+                            بعد الإضافة ستفتح مساحة المدرسة مباشرة لتبدأ بالفصول، ثم الطلاب، ثم المشرفين، ثم الباقة المرتبطة بالمسارات والأكواد، وتنتهي بتقرير التسليم.
                         </p>
                     </div>
                     <div className="grid gap-3 md:grid-cols-[1fr_auto]">
@@ -4776,7 +4776,7 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 </div>
                 <div data-testid="school-create-journey-steps" className="mt-4 grid gap-2 md:grid-cols-6">
-                    {['الفصول', 'الطلاب', 'المشرفون', 'الباقة', 'الأكواد', 'التقرير'].map((step, index) => (
+                    {['الفصول', 'الطلاب', 'المشرفون', 'الباقة/المسارات', 'الأكواد', 'التقرير'].map((step, index) => (
                         <div key={step} data-testid="school-create-journey-step" className="rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-gray-700">
                             <span className="ml-1 text-amber-600">{index + 1}</span>
                             {step}
@@ -4790,12 +4790,12 @@ export const SchoolsManager: React.FC = () => {
                     <div className="min-w-0 flex-1">
                         <div className="text-xs font-black text-slate-500">رحلة المدرسة التجارية</div>
                         <p className="mt-1 text-sm font-bold leading-6 text-gray-700">
-                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات، الأكواد، وتقرير التسليم. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
+                            هذه الصفحة لتجهيز المدرسة: الفصول، الطلاب، المشرفون، الباقات المرتبطة بالمسارات، الأكواد، وتقرير التسليم. بعد التشغيل افتح بوابة المتابعة لقراءة الأداء المستمر بدون خلطها مع الإعدادات.
                         </p>
                         <div data-testid="school-flow-boundary-modes" className="mt-3 grid gap-2 md:grid-cols-2">
                             <div className="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2">
                                 <div className="text-xs font-black text-amber-700">هنا: تشغيل وتسليم</div>
-                                <p className="mt-1 text-xs font-bold leading-5 text-amber-900">إنشاء المدرسة، الفصول، الطلاب، المشرفين، الباقات، الأكواد، وملف التسليم.</p>
+                                <p className="mt-1 text-xs font-bold leading-5 text-amber-900">إنشاء المدرسة، الفصول، الطلاب، المشرفين، الباقة/المسارات، الأكواد، وملف التسليم.</p>
                             </div>
                             <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-2">
                                 <div className="text-xs font-black text-indigo-700">البوابة: متابعة بعد التشغيل</div>
@@ -4847,7 +4847,7 @@ export const SchoolsManager: React.FC = () => {
                         { label: 'قريبة', value: schoolPortfolioSummary.nearReady, tone: 'amber' },
                         { label: 'تحتاج تجهيز', value: schoolPortfolioSummary.needsSetup, tone: 'rose' },
                         { label: 'طلاب', value: schoolPortfolioSummary.totalStudents, tone: 'blue' },
-                        { label: 'باقات نشطة', value: schoolPortfolioSummary.totalActivePackages, tone: 'indigo' },
+                        { label: 'باقات/مسارات', value: schoolPortfolioSummary.totalActivePackages, tone: 'indigo' },
                     ].map((item) => (
                         <div key={item.label} className={`rounded-2xl border p-4 text-center ${
                             item.tone === 'emerald' ? 'border-emerald-100 bg-emerald-50' :
@@ -4960,10 +4960,10 @@ export const SchoolsManager: React.FC = () => {
                         },
                         {
                             id: 'packages',
-                            label: 'الباقات',
+                            label: 'الباقة/المسارات',
                             isReady: activePackageCount > 0,
                             tab: 'packages' as const,
-                            hint: activePackageCount > 0 ? `${activePackageCount} باقة` : 'فعّل باقة',
+                            hint: activePackageCount > 0 ? `${activePackageCount} باقة` : 'فعّل باقة ومسارات',
                         },
                         {
                             id: 'codes',
@@ -5018,7 +5018,7 @@ export const SchoolsManager: React.FC = () => {
                             </div>
 
                             <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
-                            <p data-testid="school-card-operating-copy" className="text-sm text-gray-500 mb-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقات، أكواد، ثم تقرير تسليم.</p>
+                            <p data-testid="school-card-operating-copy" className="text-sm text-gray-500 mb-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقة/مسارات، أكواد، ثم تقرير تسليم.</p>
 
                             <div data-testid="school-card-readiness" className={`mb-3 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
                                 cardReadinessScore === cardReadinessTotal
