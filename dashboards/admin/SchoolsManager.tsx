@@ -1516,6 +1516,12 @@ export const SchoolsManager: React.FC = () => {
         const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
         const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
         const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
+        const handoverDecisionTitle = handoverBlockingGaps.length === 0
+            ? 'جاهزة للتسليم التجاري'
+            : `لا تسلم المدرسة قبل إغلاق ${handoverBlockingGaps.length} بند`;
+        const handoverDecisionCopy = handoverBlockingGaps.length === 0
+            ? 'كل عناصر التشغيل الأساسية مكتملة. يمكنك تحميل ملف التسليم أو فتح بوابة المتابعة بعد بدء الطلاب.'
+            : 'هذه هي البنود التي تمنع التسليم النظيف للمدرسة. ابدأ بأول بند، وسيأخذك الزر مباشرة للمكان الصحيح.';
         const commercialDecisionCards = [
             {
                 id: 'readiness',
@@ -2645,6 +2651,57 @@ export const SchoolsManager: React.FC = () => {
                                 <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{card.hint}</p>
                             </button>
                         ))}
+                    </div>
+                    <div data-testid="school-handover-decision-board" className={`mb-4 rounded-2xl border p-4 ${
+                        handoverBlockingGaps.length === 0
+                            ? 'border-emerald-100 bg-emerald-50'
+                            : 'border-amber-100 bg-amber-50'
+                    }`}>
+                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                            <div>
+                                <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black ${
+                                    handoverBlockingGaps.length === 0
+                                        ? 'bg-white text-emerald-700'
+                                        : 'bg-white text-amber-800'
+                                }`}>
+                                    <ShieldCheck size={14} />
+                                    قرار التسليم
+                                </div>
+                                <h3 className="mt-3 text-lg font-black text-gray-900">{handoverDecisionTitle}</h3>
+                                <p className="mt-1 text-sm font-bold leading-7 text-gray-700">{handoverDecisionCopy}</p>
+                            </div>
+                            <button
+                                type="button"
+                                data-testid="school-handover-decision-report"
+                                onClick={() => setActiveTab('reports')}
+                                className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
+                            >
+                                فتح تقرير التسليم
+                            </button>
+                        </div>
+                        <div data-testid="school-handover-decision-items" className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                            {(handoverBlockingGaps.length > 0 ? handoverBlockingGaps : readinessChecks).map((item, index) => (
+                                <button
+                                    key={`${item.label}-${index}`}
+                                    type="button"
+                                    data-testid={`school-handover-decision-item-${index}`}
+                                    onClick={() => setActiveTab(item.tab)}
+                                    className={`rounded-xl border bg-white px-3 py-2 text-right transition-colors hover:bg-gray-50 ${
+                                        item.isReady ? 'border-emerald-100' : 'border-amber-200'
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-sm font-black text-gray-900">{item.label}</span>
+                                        <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                                            item.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
+                                        }`}>
+                                            {item.isReady ? 'جاهز' : 'ناقص'}
+                                        </span>
+                                    </div>
+                                    <p className="mt-1 text-xs font-bold leading-5 text-gray-600">{item.hint}</p>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                     <div data-testid="school-delivery-journey" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

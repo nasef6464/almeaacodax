@@ -224,6 +224,8 @@ async function main() {
     const workspaceTabsText = await page.getByTestId("school-workspace-tabs").textContent({ timeout: 12000 }).catch(() => "");
     const primaryActionsText = await page.getByTestId("school-primary-actions").textContent({ timeout: 12000 }).catch(() => "");
     const deliveryJourneyText = await page.getByTestId("school-delivery-journey").textContent({ timeout: 12000 }).catch(() => "");
+    const handoverDecisionVisible = await visible(page, "school-handover-decision-board");
+    const handoverDecisionItems = await page.locator('[data-testid^="school-handover-decision-item-"]').count();
     const expectedWorkspaceTabOrder = [
       "1 الفصول والطلاب",
       "2 استيراد الطلاب",
@@ -251,6 +253,11 @@ async function main() {
       `actions=${primaryActionsText || ""}; journey=${deliveryJourneyText || ""}`
     );
     await page.getByRole("button", { name: /3 المشرفون والتسليم/ }).click();
+    check(
+      "school handover decision board",
+      handoverDecisionVisible && handoverDecisionItems > 0 ? "PASS" : "FAIL",
+      handoverDecisionVisible ? `${handoverDecisionItems} decision items visible` : "handover decision board missing"
+    );
     const supervisorHandoverGuardText = await page.getByTestId("school-supervisor-handover-guard").textContent({ timeout: 12000 }).catch(() => "");
     const relationsQuickSupervisorText = await page.getByTestId("school-relations-quick-supervisor-card").textContent({ timeout: 12000 }).catch(() => "");
     check(
