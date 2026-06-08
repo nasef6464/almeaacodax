@@ -314,6 +314,14 @@ async function main() {
     const ids = ["classes", "students", "supervisors", "access"];
     const focusCount = await page.locator('button[data-testid^="school-overview-focus-"]').count();
     check("overview focus card count", focusCount === ids.length ? "PASS" : "FAIL", `${focusCount}/${ids.length} cards`);
+    const classOperatingBriefVisible = await visible(page, "school-class-operating-brief");
+    const classOperatingRows = await page.getByTestId("school-class-operating-row").count();
+    const classCardsBeforeFocus = await page.getByTestId("school-class-card").count();
+    check(
+      "school class operating brief",
+      classOperatingBriefVisible && (classCardsBeforeFocus === 0 || classOperatingRows === classCardsBeforeFocus) ? "PASS" : "FAIL",
+      `brief=${classOperatingBriefVisible}, rows=${classOperatingRows}, classCards=${classCardsBeforeFocus}`
+    );
 
     await clickFocus(page, "students", "school-students-panel");
     const studentPanelText = await page.getByTestId("school-students-panel").textContent({ timeout: 12000 }).catch(() => "");

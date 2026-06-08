@@ -1285,6 +1285,33 @@ export const SchoolsManager: React.FC = () => {
             !(currentUser.groupIds || []).some((groupId) => schoolClasses.some((classroom) => classroom.id === groupId))
             && !schoolClasses.some((classroom) => classroom.supervisorIds.includes(currentUser.id))
         ));
+        const classOperatingRows = schoolClasses.map((classroom) => {
+            const classStudents = schoolStudents.filter((student) => (
+                classroom.studentIds.includes(student.id)
+                || (student.groupIds || []).includes(classroom.id)
+            ));
+            const classSupervisors = schoolSupervisors.filter((currentUser) => (
+                classroom.supervisorIds.includes(currentUser.id)
+                || (currentUser.groupIds || []).includes(classroom.id)
+            ));
+            const classStudentsWithoutParent = classStudents.filter((student) => (
+                !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id))
+            ));
+            const gaps = [
+                classStudents.length === 0 ? 'لا يوجد طلاب' : '',
+                classSupervisors.length === 0 ? 'لا يوجد مشرف فصل' : '',
+                classStudentsWithoutParent.length > 0 ? `${classStudentsWithoutParent.length} بلا ولي أمر` : '',
+            ].filter(Boolean);
+
+            return {
+                classroom,
+                studentCount: classStudents.length,
+                supervisorCount: classSupervisors.length,
+                studentsWithoutParentCount: classStudentsWithoutParent.length,
+                gaps,
+                isReady: classStudents.length > 0 && classSupervisors.length > 0,
+            };
+        });
         const schoolCourses = publishedCourses.filter((course) => selectedSchool.courseIds.includes(course.id));
         const activeSchoolPackages = schoolPackages.filter((pkg) => pkg.status === 'active');
         const activeSchoolCodes = schoolCodes.filter((code) => code.expiresAt > Date.now());
@@ -2989,6 +3016,71 @@ export const SchoolsManager: React.FC = () => {
                                 </div>
                             </div>
 
+                            <div data-testid="school-class-operating-brief" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <p className="text-xs font-black text-slate-500">كشف تشغيل الفصول</p>
+                                        <h3 className="text-lg font-black text-gray-900">كل فصل واضح قبل التسليم</h3>
+                                        <p className="mt-1 text-sm font-bold leading-6 text-gray-500">
+                                            ملخص سريع يوضح الطلاب والمشرفين والنواقص داخل كل فصل بدون فتح الجداول الطويلة.
+                                        </p>
+                                    </div>
+                                    <span className="w-fit rounded-full bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700">
+                                        {classOperatingRows.filter((row) => row.isReady).length}/{Math.max(classOperatingRows.length, 1)} جاهز
+                                    </span>
+                                </div>
+                                {classOperatingRows.length === 0 ? (
+                                    <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50 px-4 py-5 text-sm font-bold text-amber-800">
+                                        لا توجد فصول بعد. ابدأ بإنشاء فصل واحد حتى تصبح رحلة الطلاب والمشرفين واضحة.
+                                    </div>
+                                ) : (
+                                    <div className="grid gap-3 lg:grid-cols-2">
+                                        {classOperatingRows.map((row) => (
+                                            <div
+                                                key={row.classroom.id}
+                                                data-testid="school-class-operating-row"
+                                                className={`rounded-2xl border p-4 ${
+                                                    row.isReady ? 'border-emerald-100 bg-emerald-50/60' : 'border-amber-100 bg-amber-50/70'
+                                                }`}
+                                            >
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                    <div>
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <h4 className="text-sm font-black text-gray-900">{row.classroom.name}</h4>
+                                                            <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                                                                row.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
+                                                            }`}>
+                                                                {row.isReady ? 'جاهز' : 'يحتاج مراجعة'}
+                                                            </span>
+                                                        </div>
+                                                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-black">
+                                                            <span className="rounded-full bg-white px-2.5 py-1 text-slate-700">{row.studentCount} طالب</span>
+                                                            <span className="rounded-full bg-white px-2.5 py-1 text-purple-700">{row.supervisorCount} مشرف</span>
+                                                            <span className="rounded-full bg-white px-2.5 py-1 text-amber-700">{row.studentsWithoutParentCount} بلا ولي أمر</span>
+                                                        </div>
+                                                        <p className="mt-3 text-xs font-bold leading-6 text-gray-600">
+                                                            {row.gaps.length > 0 ? row.gaps.join('، ') : 'الفصل جاهز للتسليم والمتابعة.'}
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        data-testid="school-class-operating-open"
+                                                        onClick={() => {
+                                                            document
+                                                                .querySelector(`[data-school-class-id="${row.classroom.id}"]`)
+                                                                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                        }}
+                                                        className="inline-flex shrink-0 items-center justify-center rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
+                                                    >
+                                                        فتح الفصل
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
                             <div data-testid="school-students-panel" className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                     <div>
@@ -3366,7 +3458,7 @@ export const SchoolsManager: React.FC = () => {
                                             const classStudentsWithoutParent = classStudents.filter((student) => !parents.some((parent) => (parent.linkedStudentIds || []).includes(student.id)));
 
                                             return (
-                                                <div key={classroom.id} data-testid="school-class-card" className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
+                                                <div key={classroom.id} data-testid="school-class-card" data-school-class-id={classroom.id} className="border border-gray-100 p-4 rounded-xl hover:shadow-sm transition-shadow space-y-4">
                                                     <div className="flex justify-between items-start gap-3">
                                                         <div>
                                                             <h4 className="font-bold text-gray-900">{classroom.name}</h4>
