@@ -825,7 +825,7 @@ export const AdminDashboard: React.FC = () => {
             tone: 'emerald',
         },
         {
-            title: 'تنظيم الطلاب والمجموعات',
+            title: 'متابعة الفصول والطلاب',
             value: supervisorScopeSummary.groupCount,
             hint: 'راجع الفصول والطلاب المرتبطين بحسابك.',
             actionLabel: 'بوابة المدرسة',
@@ -1480,10 +1480,10 @@ export const AdminDashboard: React.FC = () => {
                             <div className="flex items-center justify-between mb-5">
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900">نطاق الإشراف الحالي</h3>
-                                    <p className="text-sm text-gray-500 mt-1">متابعة سريعة للمجموعات والطلاب والاختبارات الموجهة داخل نطاقك.</p>
+                                    <p className="text-sm text-gray-500 mt-1">متابعة سريعة للفصول والطلاب والاختبارات الموجهة داخل نطاقك.</p>
                                 </div>
                                 <div className="text-sm text-amber-600 font-bold">
-                                    {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف مجموعة'}
+                                    {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف نطاق'}
                                 </div>
                             </div>
 
@@ -1515,7 +1515,7 @@ export const AdminDashboard: React.FC = () => {
                                     التقارير
                                 </a>
                                 <button onClick={() => setActiveAdminTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
-                                    الطلاب والمجموعات
+                                    بوابة المتابعة
                                 </button>
                                 <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
                                     توجيه اختبار
@@ -1651,7 +1651,7 @@ export const AdminDashboard: React.FC = () => {
 
                                 <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                                     <div className="mb-3 flex items-center justify-between">
-                                        <h4 className="text-sm font-black text-gray-900">المجموعات</h4>
+                                        <h4 className="text-sm font-black text-gray-900">الفصول والنطاقات</h4>
                                         <button onClick={() => setActiveAdminTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
                                     </div>
                                     <div className="space-y-3">

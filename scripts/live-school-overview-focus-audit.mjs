@@ -115,6 +115,17 @@ async function main() {
   try {
     await login(page);
     await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
+    const adminChromeText = await page.locator("body").innerText({ timeout: 15000 }).catch(() => "");
+    check(
+      "admin school navigation avoids group confusion",
+      /تشغيل المدارس/.test(adminChromeText || "") &&
+        /بوابة متابعة المدارس/.test(adminChromeText || "") &&
+        !/المجموعات والمدارس/.test(adminChromeText || "") &&
+        !/الطلاب والمجموعات/.test(adminChromeText || "")
+        ? "PASS"
+        : "FAIL",
+      adminChromeText ? adminChromeText.slice(0, 700) : "admin chrome text missing"
+    );
     const commercialTitleText = await page.getByTestId("school-commercial-title").textContent({ timeout: 15000 }).catch(() => "");
     check(
       "school commercial naming",

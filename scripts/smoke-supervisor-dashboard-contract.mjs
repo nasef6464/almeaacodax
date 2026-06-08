@@ -26,7 +26,7 @@ check("supervisor overview has a compact command center", () => {
   assertIncludes(dashboard, "متوسط الأداء");
   assertIncludes(dashboard, "متابعة الطلاب");
   assertIncludes(dashboard, "أضعف المهارات");
-  assertIncludes(dashboard, "المجموعات");
+  assertIncludes(dashboard, "الفصول والنطاقات");
 });
 
 check("supervisor command center has quick workflow actions", () => {
