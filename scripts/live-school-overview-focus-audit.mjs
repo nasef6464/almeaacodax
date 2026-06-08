@@ -195,6 +195,8 @@ async function main() {
     await page.getByTestId("school-workspace-shell").waitFor({ state: "visible", timeout: 45000 });
     check("school workspace open", "PASS", "selected school workspace visible");
     const workspaceTabsText = await page.getByTestId("school-workspace-tabs").textContent({ timeout: 12000 }).catch(() => "");
+    const primaryActionsText = await page.getByTestId("school-primary-actions").textContent({ timeout: 12000 }).catch(() => "");
+    const deliveryJourneyText = await page.getByTestId("school-delivery-journey").textContent({ timeout: 12000 }).catch(() => "");
     const expectedWorkspaceTabOrder = [
       "1 الفصول والطلاب",
       "2 استيراد الطلاب",
@@ -211,6 +213,15 @@ async function main() {
       "school workspace tabs follow operating journey",
       workspaceTabsAreSetupOriented ? "PASS" : "FAIL",
       workspaceTabsText || "workspace tabs missing"
+    );
+    check(
+      "school handover report naming",
+      /تقرير التسليم/.test(primaryActionsText || "") &&
+        /تقرير التسليم/.test(deliveryJourneyText || "") &&
+        !/فتح التقارير/.test(deliveryJourneyText || "")
+        ? "PASS"
+        : "FAIL",
+      `actions=${primaryActionsText || ""}; journey=${deliveryJourneyText || ""}`
     );
     await page.getByRole("button", { name: /3 المشرفون والتسليم/ }).click();
     const supervisorHandoverGuardText = await page.getByTestId("school-supervisor-handover-guard").textContent({ timeout: 12000 }).catch(() => "");

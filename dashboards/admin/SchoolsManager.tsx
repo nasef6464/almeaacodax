@@ -1498,7 +1498,7 @@ export const SchoolsManager: React.FC = () => {
             },
             {
                 id: 'reports',
-                title: 'التقارير',
+                title: 'تقرير التسليم',
                 metric: schoolReport ? `${schoolReport.metrics.averageScore}%` : 'قريبًا',
                 description: schoolReport && schoolReport.metrics.quizAttempts > 0
                     ? 'تقرير الأداء جاهز للإدارة والمتابعة.'
@@ -1506,7 +1506,7 @@ export const SchoolsManager: React.FC = () => {
                 statusLabel: schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'ينتظر بيانات',
                 isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
                 tab: 'reports' as const,
-                buttonLabel: 'فتح التقارير',
+                buttonLabel: 'فتح تقرير التسليم',
             },
         ];
         const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
@@ -2795,7 +2795,7 @@ export const SchoolsManager: React.FC = () => {
                             onClick={() => setActiveTab('reports')}
                             className="rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-black text-blue-700 transition-colors hover:bg-blue-100"
                         >
-                            التقارير
+                            تقرير التسليم
                         </button>
                         <button
                             type="button"
