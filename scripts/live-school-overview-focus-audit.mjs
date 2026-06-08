@@ -184,6 +184,9 @@ async function main() {
     await page.getByTestId("school-list-mode-all").click();
     await page.waitForTimeout(500);
     const allCount = await page.getByTestId("school-card").count();
+    const cleanupPanelText = await page.getByTestId("school-cleanup-review-panel").textContent({ timeout: 12000 }).catch(() => "");
+    const cleanupDraftCards = await page.locator('[data-testid="school-card"][data-cleanup-draft="true"]').count();
+    const cleanupBadges = await page.getByTestId("school-card-cleanup-badge").count();
     await page.getByTestId("school-list-mode-active").click();
     await page.waitForTimeout(500);
     check(
@@ -195,6 +198,14 @@ async function main() {
       "school list hygiene summary",
       /القائمة تعرض/.test(listHygieneText || "") && /عرض الكل\/التنظيف/.test(listFilterText || "") ? "PASS" : "FAIL",
       listHygieneText || "list hygiene summary missing"
+    );
+    check(
+      "school cleanup mode identifies isolated drafts",
+      /وضع التنظيف/.test(cleanupPanelText || "") &&
+        (allCount === commercialCount || (cleanupDraftCards > 0 && cleanupBadges > 0))
+        ? "PASS"
+        : "FAIL",
+      `commercial=${commercialCount}, all=${allCount}, draftCards=${cleanupDraftCards}, badges=${cleanupBadges}, panel=${cleanupPanelText || ""}`
     );
     const cardReadinessVisible = await firstSchoolCard.getByTestId("school-card-readiness").isVisible({ timeout: 12000 }).catch(() => false);
     const cardNextActionVisible = await firstSchoolCard.getByTestId("school-card-next-action").isVisible({ timeout: 12000 }).catch(() => false);

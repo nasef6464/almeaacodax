@@ -742,6 +742,10 @@ export const SchoolsManager: React.FC = () => {
         () => schools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
         [accessCodes, b2bPackages, classes, schools, students],
     );
+    const visibleDraftSchoolsCount = useMemo(
+        () => filteredSchools.filter((school) => getSchoolOperationalSnapshot(school).isCommerciallyHiddenDraft).length,
+        [accessCodes, b2bPackages, classes, filteredSchools, students],
+    );
     const schoolPortfolioRows = useMemo(() => schools.map((school) => {
         const schoolClasses = classes.filter((group) => group.parentId === school.id);
         const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
@@ -5100,7 +5104,25 @@ export const SchoolsManager: React.FC = () => {
                 </div>
                 {schoolListMode === 'active' && hiddenDraftSchoolsCount > 0 && !schoolSearch.trim() && (
                     <div data-testid="school-hidden-drafts-note" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
-                        تم إخفاء {hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية لتقليل الزحمة. استخدم "عرض الكل" إذا أردت مراجعتها أو حذفها.
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                            <span>تم إخفاء {hiddenDraftSchoolsCount} مدرسة مسودة أو تجريبية لتقليل الزحمة. افتح وضع التنظيف لمراجعتها أو حذف التجارب فقط.</span>
+                            <button
+                                type="button"
+                                data-testid="school-open-cleanup-mode"
+                                onClick={() => setSchoolListMode('all')}
+                                className="inline-flex w-fit items-center justify-center rounded-lg bg-amber-600 px-3 py-1.5 text-[11px] font-black text-white hover:bg-amber-700"
+                            >
+                                فتح وضع التنظيف
+                            </button>
+                        </div>
+                    </div>
+                )}
+                {schoolListMode === 'all' && (
+                    <div data-testid="school-cleanup-review-panel" className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-bold leading-6 text-amber-900">
+                        وضع التنظيف يعرض العقود والتجارب معًا للمراجعة. التجارب المعزولة تظهر بعلامة واضحة وزر "مراجعة الحذف"، ولا يتم حذف أي مدرسة إلا من لوحة التأكيد.
+                        {visibleDraftSchoolsCount > 0
+                            ? ` يظهر الآن ${visibleDraftSchoolsCount} مدرسة مسودة أو تجريبية داخل القائمة.`
+                            : ' لا تظهر مدارس تجريبية في نتيجة البحث الحالية.'}
                     </div>
                 )}
             </div>
@@ -5116,6 +5138,7 @@ export const SchoolsManager: React.FC = () => {
                     );
                     const schoolClassCount = schoolClasses.length;
                     const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
+                    const cardOperationalSnapshot = getSchoolOperationalSnapshot(school);
                     const cardReadinessScore = [
                         schoolClassCount > 0,
                         schoolStudents.length > 0,
@@ -5164,7 +5187,16 @@ export const SchoolsManager: React.FC = () => {
                     const nextCardAction = cardReadinessActions.find((action) => !action.isReady);
 
                     return (
-                        <div key={school.id} data-testid="school-card" className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+                        <div
+                            key={school.id}
+                            data-testid="school-card"
+                            data-cleanup-draft={cardOperationalSnapshot.isCommerciallyHiddenDraft ? 'true' : 'false'}
+                            className={`bg-white rounded-2xl p-6 border shadow-sm hover:shadow-md transition-all group ${
+                                cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all'
+                                    ? 'border-amber-200 bg-amber-50/30'
+                                    : 'border-gray-100'
+                            }`}
+                        >
                             <div className="relative flex justify-between items-start mb-4">
                                 <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
                                     <Building2 size={24} />
@@ -5204,6 +5236,12 @@ export const SchoolsManager: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+
+                            {cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
+                                <div data-testid="school-card-cleanup-badge" className="mb-3 rounded-xl border border-amber-200 bg-white px-3 py-2 text-xs font-black leading-5 text-amber-800">
+                                    مسودة/تجربة معزولة عن الأولوية التجارية. راجعها قبل حذفها حتى لا تحذف عقدًا حقيقيًا بالخطأ.
+                                </div>
+                            )}
 
                             <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
                             <p data-testid="school-card-operating-copy" className="text-sm text-gray-500 mb-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقة/مسارات، أكواد، ثم تقرير تسليم.</p>
@@ -5299,6 +5337,23 @@ export const SchoolsManager: React.FC = () => {
                             >
                                 فتح تشغيل المدرسة
                             </button>
+                            {cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
+                                <button
+                                    type="button"
+                                    data-testid="school-card-review-delete"
+                                    onClick={() => {
+                                        setSelectedSchool(school);
+                                        setActiveTab('overview');
+                                        setIsDeleteSchoolConfirmOpen(true);
+                                        window.setTimeout(() => {
+                                            document.querySelector('[data-testid="school-delete-confirm-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }, 80);
+                                    }}
+                                    className="mt-2 w-full rounded-xl border border-red-100 bg-white px-3 py-2.5 text-xs font-black text-red-600 transition-colors hover:bg-red-50"
+                                >
+                                    مراجعة الحذف
+                                </button>
+                            )}
                         </div>
                     );
                 })}
