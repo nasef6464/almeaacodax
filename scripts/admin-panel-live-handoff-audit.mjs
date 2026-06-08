@@ -31,7 +31,7 @@ const tabs = [
   'questions',
   'skills',
   'users',
-  'groups',
+  'schools',
   'school-portal',
   'memberships',
   'financial',

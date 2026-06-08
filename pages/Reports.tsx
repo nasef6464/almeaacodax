@@ -1367,7 +1367,7 @@ const Reports: React.FC = () => {
             user.role === Role.ADMIN
                 ? '/admin-dashboard?tab=users'
                 : user.role === Role.SUPERVISOR
-                    ? '/admin-dashboard?tab=groups'
+                    ? '/admin-dashboard?tab=schools'
                     : user.role === Role.TEACHER
                         ? '/admin-dashboard?tab=quizzes'
                         : '/dashboard?tab=reports';
@@ -3056,7 +3056,7 @@ const Reports: React.FC = () => {
                                             نسخ تنبيه
                                         </button>
                                         <Link
-                                            to={user.role === Role.ADMIN ? '/admin-dashboard?tab=users' : user.role === Role.SUPERVISOR ? '/admin-dashboard?tab=groups' : '/admin-dashboard?tab=quizzes'}
+                                            to={user.role === Role.ADMIN ? '/admin-dashboard?tab=users' : user.role === Role.SUPERVISOR ? '/admin-dashboard?tab=schools' : '/admin-dashboard?tab=quizzes'}
                                             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
                                         >
                                             <FileText size={14} />

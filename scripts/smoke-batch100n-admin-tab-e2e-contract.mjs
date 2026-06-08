@@ -11,8 +11,8 @@ const includes = (needle) => adminDashboard.includes(needle);
 
 check("AdminDashboard imports useCallback", includes("useCallback, useEffect, useMemo, useState"));
 check("AdminDashboard defines setActiveAdminTab helper", includes("const setActiveAdminTab = useCallback"));
-check("setActiveAdminTab updates tab state", includes("setActiveTab(tabId);"));
-check("setActiveAdminTab persists tab in URL search params", includes("url.searchParams.set('tab', tabId)"));
+check("setActiveAdminTab updates normalized tab state", includes("setActiveTab(normalizedTabId);"));
+check("setActiveAdminTab persists normalized tab in URL search params", includes("url.searchParams.set('tab', normalizedTabId)"));
 check("setActiveAdminTab preserves current hash while replacing URL", includes("window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)"));
 check("Sidebar buttons use URL-aware tab navigation", includes("onClick={() => setActiveAdminTab(item.id)}"));
 check("Sidebar buttons no longer use state-only navigation", !includes("onClick={() => setActiveTab(item.id)}"));
@@ -30,7 +30,7 @@ const requiredTabs = [
   "questions",
   "skills",
   "users",
-  "groups",
+  "schools",
   "school-portal",
   "financial",
   "notifications",

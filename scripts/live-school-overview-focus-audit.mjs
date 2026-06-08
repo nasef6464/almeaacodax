@@ -114,7 +114,7 @@ async function main() {
 
   try {
     await login(page);
-    await page.goto(`${BASE_URL}/admin-dashboard?tab=groups`, { waitUntil: "networkidle", timeout: 90000 });
+    await page.goto(`${BASE_URL}/admin-dashboard?tab=schools`, { waitUntil: "networkidle", timeout: 90000 });
     const adminChromeText = await page.locator("body").innerText({ timeout: 15000 }).catch(() => "");
     check(
       "admin school navigation avoids group confusion",
@@ -166,6 +166,11 @@ async function main() {
     );
     await page.getByTestId("open-school-operations-from-portal").first().click();
     await page.getByTestId("school-commercial-title").waitFor({ state: "visible", timeout: 15000 });
+    check(
+      "school operations url uses clean tab",
+      /[?&]tab=schools\b/.test(page.url()) && !/[?&]tab=groups\b/.test(page.url()) ? "PASS" : "FAIL",
+      page.url()
+    );
     const firstSchoolCard = page.getByTestId("school-card").first();
     await firstSchoolCard.waitFor({ state: "visible", timeout: 45000 });
     check("school list", "PASS", "at least one school card visible");

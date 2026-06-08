@@ -58,11 +58,11 @@ assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "toggleSchoolActions",
   "activeSchoolActionsId === school.id",
   "ربط المشرفين",
-  "فتح الإدارة",
+  "فتح تشغيل المدرسة",
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
-  "setActiveAdminTab('groups')",
+  "setActiveAdminTab('schools')",
   "setActiveAdminTab('quizzes')",
   "setActiveAdminTab('announcement-ads')",
 ]);

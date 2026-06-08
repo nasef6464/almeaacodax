@@ -4690,9 +4690,8 @@ export const SchoolsManager: React.FC = () => {
                                         </div>
                                         <h3 className="mt-3 text-xl font-black text-gray-900">قرار تسليم المدرسة</h3>
                                         <p className="mt-2 text-sm font-bold leading-7 text-gray-600">{readinessNextStep}</p>
-                                        <div className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
+                                        <div data-testid="school-handover-readiness-progress" className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
                                             <div
-                                                data-testid="school-handover-readiness-progress"
                                                 className={`h-full rounded-full ${
                                                     readinessScore === readinessChecks.length
                                                         ? 'bg-emerald-500'
@@ -5219,9 +5218,8 @@ export const SchoolsManager: React.FC = () => {
                                 <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
                                 <span>{cardReadinessScore}/{cardReadinessTotal}</span>
                             </div>
-                            <div className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100">
+                            <div data-testid="school-card-readiness-progress" className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100">
                                 <div
-                                    data-testid="school-card-readiness-progress"
                                     className={`h-full rounded-full ${
                                         cardReadinessScore === cardReadinessTotal
                                             ? 'bg-emerald-500'

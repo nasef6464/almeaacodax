@@ -132,13 +132,16 @@ const AdminTabLoading = () => (
     </div>
 );
 
+const normalizeAdminTabId = (tabId?: string | null) => {
+    if (tabId === 'courses') return 'paths';
+    if (tabId === 'groups') return 'schools';
+    return tabId || undefined;
+};
+
 const getRequestedAdminTab = () => {
     const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
     const requestedTab = new URLSearchParams(hashQuery || window.location.search).get('tab');
-    if (requestedTab === 'courses') {
-        return 'paths';
-    }
-    return requestedTab;
+    return normalizeAdminTabId(requestedTab);
 };
 
 export const AdminDashboard: React.FC = () => {
@@ -232,10 +235,11 @@ export const AdminDashboard: React.FC = () => {
     }, [activeTab, user.role]);
 
     const setActiveAdminTab = useCallback((tabId: string) => {
-        setActiveTab(tabId);
+        const normalizedTabId = normalizeAdminTabId(tabId) || tabId;
+        setActiveTab(normalizedTabId);
 
         const url = new URL(window.location.href);
-        url.searchParams.set('tab', tabId);
+        url.searchParams.set('tab', normalizedTabId);
         window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
     }, []);
 
@@ -853,7 +857,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
             { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
             { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
-            { id: 'groups', label: 'تشغيل المدارس', icon: <Building2 size={20} /> },
+            { id: 'schools', label: 'تشغيل المدارس', icon: <Building2 size={20} /> },
             { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
             { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
             { id: 'notifications', label: 'الإشعارات', icon: <Bell size={20} /> },
@@ -956,9 +960,9 @@ export const AdminDashboard: React.FC = () => {
         }
 
         if ([Role.ADMIN, Role.SUPERVISOR].includes(user.role) && !nextItems.some((item) => item.id === 'school-portal')) {
-            const groupsIndex = nextItems.findIndex((item) => item.id === 'groups');
+            const schoolsIndex = nextItems.findIndex((item) => item.id === 'schools');
             const overviewIndex = nextItems.findIndex((item) => item.id === 'overview');
-            const targetIndex = groupsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : groupsIndex + 1;
+            const targetIndex = schoolsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : schoolsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
                 { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي', icon: <Building2 size={20} /> },
@@ -1207,7 +1211,7 @@ export const AdminDashboard: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <button onClick={() => setActiveAdminTab('groups')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                            <button onClick={() => setActiveAdminTab('schools')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                 تشغيل المدارس
                             </button>
                             <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
@@ -1249,7 +1253,7 @@ export const AdminDashboard: React.FC = () => {
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
                                 <h4 className="text-sm font-black text-gray-900">مدارس تحتاج ضبط</h4>
-                                <button onClick={() => setActiveAdminTab('groups')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
+                                <button onClick={() => setActiveAdminTab('schools')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
                                     إدارة المدارس
                                 </button>
                             </div>
@@ -2029,6 +2033,7 @@ export const AdminDashboard: React.FC = () => {
                 return <SkillsTreeManager />;
             case 'users':
                 return <UsersManager />;
+            case 'schools':
             case 'groups':
                 return <SchoolsManager />;
             case 'school-portal':

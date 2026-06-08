@@ -828,7 +828,7 @@ export const SchoolPortalManager: React.FC = () => {
                             type="button"
                             onClick={() => {
                                 const url = new URL('/admin-dashboard', window.location.origin);
-                                url.searchParams.set('tab', 'groups');
+                                url.searchParams.set('tab', 'schools');
                                 window.history.pushState(null, '', `${url.pathname}${url.search}`);
                                 window.dispatchEvent(new HashChangeEvent('hashchange'));
                             }}
@@ -864,7 +864,7 @@ export const SchoolPortalManager: React.FC = () => {
                         type="button"
                         onClick={() => {
                             const url = new URL('/admin-dashboard', window.location.origin);
-                            url.searchParams.set('tab', 'groups');
+                            url.searchParams.set('tab', 'schools');
                             window.history.pushState(null, '', `${url.pathname}${url.search}`);
                             window.dispatchEvent(new HashChangeEvent('hashchange'));
                         }}
@@ -902,7 +902,7 @@ export const SchoolPortalManager: React.FC = () => {
                         type="button"
                         onClick={() => {
                             const url = new URL('/admin-dashboard', window.location.origin);
-                            url.searchParams.set('tab', 'groups');
+                            url.searchParams.set('tab', 'schools');
                             window.history.pushState(null, '', `${url.pathname}${url.search}`);
                             window.dispatchEvent(new HashChangeEvent('hashchange'));
                         }}
