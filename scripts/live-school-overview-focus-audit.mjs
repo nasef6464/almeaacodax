@@ -278,18 +278,18 @@ async function main() {
       studentPanelText || "student panel copy missing"
     );
     await screenshot(page, "02-focus-students");
-    await clickFocus(page, "supervisors", "school-wide-supervisors-panel");
-    const supervisorScopeDecisionVisible =
-      (await visible(page, "school-supervisor-scope-decision")) &&
-      (await visible(page, "school-supervisor-schoolwide-count")) &&
-      (await visible(page, "school-supervisor-class-count")) &&
-      (await visible(page, "school-supervisor-scope-summary"));
+    await clickFocus(page, "supervisors", "school-relations-quick-supervisor-card");
+    const focusedSupervisorCardText = await page.getByTestId("school-relations-quick-supervisor-card").textContent({ timeout: 12000 }).catch(() => "");
     check(
-      "school supervisor scope decision",
-      supervisorScopeDecisionVisible ? "PASS" : "FAIL",
-      supervisorScopeDecisionVisible ? "school-wide and class-scoped supervisor choices visible" : "supervisor scope decision missing"
+      "school overview supervisor routes to relations tab",
+      /مدير مدرسة أو مشرف فصل/.test(focusedSupervisorCardText || "") &&
+        /لا تحتاج للرجوع إلى النظرة العامة/.test(focusedSupervisorCardText || "")
+        ? "PASS"
+        : "FAIL",
+      focusedSupervisorCardText || "overview supervisor action did not route to relations quick supervisor"
     );
     await screenshot(page, "03-focus-supervisors");
+    await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
     await clickFocus(page, "classes", "school-class-creation-panel");
     await screenshot(page, "04-focus-classes");
     await clickFocus(page, "access", "school-packages-panel");

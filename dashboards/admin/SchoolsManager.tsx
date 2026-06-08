@@ -1585,7 +1585,8 @@ export const SchoolsManager: React.FC = () => {
                     ? 'الصلاحيات موزعة بين المدرسة والفصول.'
                     : 'اربط مدير المدرسة أو مشرفي الفصول.',
                 actionLabel: 'ربط مشرف',
-                target: 'school-wide-supervisors-panel',
+                target: 'school-relations-quick-supervisor-card',
+                tab: 'relations' as const,
                 tone: schoolSupervisors.length > 0 ? 'emerald' : 'purple',
             },
             {
