@@ -89,6 +89,21 @@ If continuing from a new account and local skills are missing, continue using th
   - Verified relations endpoint uses the same scope guard.
 - Status: PASS for the current supervisor RBAC checkpoint. School Supervisor and Class Supervisor scope has live/contract evidence, and direct sensitive school APIs checked in this checkpoint are guarded by backend scope.
 
+### Checkpoint 3 - Reports And Skills Scope
+
+- `npm run smoke:reports-role`: PASS 20/20.
+  - Verified scoped analytics and quiz results for non-student roles.
+  - Verified student, parent, admin, supervisor, and teacher report surfaces keep role-specific behavior.
+  - Verified server analytics scopes reports by role before returning weak skills and students.
+- `npm run smoke:saher-skills`: PASS 5/5.
+  - Verified Saher can select multiple skills and fill a student quiz from selected skill scope.
+  - Verified weak skill ids flow into extra quiz links.
+  - Verified directed quizzes include Saher and audience OR logic.
+- `npm run smoke:report-actions-live`: BLOCKED 5/5.
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/report-actions-2026-06-13T19-31-11-057Z`.
+  - Reason: missing role credentials for student, parent, teacher, supervisor, and admin. `audit-artifacts/ROLE_CREDENTIALS.env` was not present.
+- Status: PASS for contract-level reports and Saher skill scope. Live report action buttons still require role credentials before this checkpoint can be fully closed.
+
 ## Work Rule
 
 - No new account starts from scratch.
