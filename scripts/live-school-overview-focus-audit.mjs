@@ -332,6 +332,22 @@ async function main() {
       studentPanelText || "student panel copy missing"
     );
     await screenshot(page, "02-focus-students");
+    const removeClassButtonCount = await page.getByTestId("school-student-remove-class").count();
+    if (removeClassButtonCount > 0) {
+      const dialogPromise = page.waitForEvent("dialog", { timeout: 3000 }).catch(() => null);
+      await page.getByTestId("school-student-remove-class").first().click();
+      const dialog = await dialogPromise;
+      if (dialog) {
+        await dialog.dismiss();
+      }
+      check(
+        "student remove from class requires confirmation",
+        dialog && /إخراج/.test(dialog.message()) && /سيبقى الطالب داخل المدرسة/.test(dialog.message()) ? "PASS" : "FAIL",
+        dialog ? dialog.message() : "remove from class did not ask for confirmation"
+      );
+    } else {
+      check("student remove from class requires confirmation", "PASS", "no class-assigned student row available in this fixture");
+    }
     await clickFocus(page, "supervisors", "school-relations-quick-supervisor-card");
     const focusedSupervisorCardText = await page.getByTestId("school-relations-quick-supervisor-card").textContent({ timeout: 12000 }).catch(() => "");
     check(

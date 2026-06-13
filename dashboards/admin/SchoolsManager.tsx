@@ -3254,7 +3254,12 @@ export const SchoolsManager: React.FC = () => {
                                         ) : schoolLevelSupervisors.map((currentUser) => (
                                             <button
                                                 key={currentUser.id}
+                                                type="button"
+                                                data-testid="school-remove-school-supervisor"
                                                 onClick={() => {
+                                                    if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
+                                                        return;
+                                                    }
                                                     removeSupervisorFromGroup(currentUser.id, selectedSchool.id);
                                                     setSelectedSchool((current) =>
                                                         current
@@ -3561,7 +3566,13 @@ export const SchoolsManager: React.FC = () => {
                                                                 ) : classSupervisors.map((currentUser) => (
                                                                     <button
                                                                         key={currentUser.id}
-                                                                        onClick={() => removeSupervisorFromGroup(currentUser.id, classroom.id)}
+                                                                        type="button"
+                                                                        data-testid="school-remove-class-supervisor"
+                                                                        onClick={() => {
+                                                                            if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
+                                                                                removeSupervisorFromGroup(currentUser.id, classroom.id);
+                                                                            }
+                                                                        }}
                                                                         className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
                                                                     >
                                                                         {currentUser.name} ×
@@ -3693,7 +3704,12 @@ export const SchoolsManager: React.FC = () => {
                                                                     {currentClass && (
                                                                         <button
                                                                             type="button"
-                                                                            onClick={() => removeStudentFromGroup(student.id, currentClass.id)}
+                                                                            data-testid="school-student-remove-class"
+                                                                            onClick={() => {
+                                                                                if (window.confirm(`هل تريد إخراج ${student.name} من فصل ${currentClass.name}؟ سيبقى الطالب داخل المدرسة.`)) {
+                                                                                    removeStudentFromGroup(student.id, currentClass.id);
+                                                                                }
+                                                                            }}
                                                                             className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100"
                                                                         >
                                                                             إخراج من الفصل
@@ -3701,6 +3717,7 @@ export const SchoolsManager: React.FC = () => {
                                                                     )}
                                                                     <button
                                                                         type="button"
+                                                                        data-testid="school-student-remove-school"
                                                                         onClick={() => {
                                                                             if (window.confirm(`هل تريد إزالة ${student.name} من ${selectedSchool.name}؟ سيتم إخراجه من المدرسة وفصولها.`)) {
                                                                                 removeStudentFromGroup(student.id, selectedSchool.id);
