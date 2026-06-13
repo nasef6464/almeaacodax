@@ -357,6 +357,22 @@ async function main() {
     await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
     await clickFocus(page, "classes", "school-class-creation-panel");
     await screenshot(page, "04-focus-classes");
+    const firstClassId = await page.getByTestId("school-class-card").first().getAttribute("data-school-class-id").catch(() => "");
+    const classSupervisorButtonVisible = await page.getByTestId("school-class-create-supervisor").first().isVisible({ timeout: 12000 }).catch(() => false);
+    if (classSupervisorButtonVisible) {
+      await page.getByTestId("school-class-create-supervisor").first().click();
+      await page.getByTestId("school-relations-quick-supervisor-card").waitFor({ state: "visible", timeout: 12000 });
+    }
+    const routedClassSupervisorScope = await page.getByTestId("school-relations-supervisor-scope").inputValue({ timeout: 12000 }).catch(() => "");
+    check(
+      "class create supervisor routes to single relations form",
+      classSupervisorButtonVisible && !!firstClassId && routedClassSupervisorScope === firstClassId ? "PASS" : "FAIL",
+      classSupervisorButtonVisible
+        ? `expected=${firstClassId || "missing-class-id"}, selected=${routedClassSupervisorScope || "empty"}`
+        : "class supervisor creation button missing"
+    );
+    await page.locator('[data-testid="school-workspace-tabs"] button').first().click();
+    await page.getByTestId("school-supervisor-single-entry-note").waitFor({ state: "visible", timeout: 12000 });
     await clickFocus(page, "access", "school-packages-panel");
     const accessDecisionVisible =
       (await visible(page, "school-access-decision-summary")) &&

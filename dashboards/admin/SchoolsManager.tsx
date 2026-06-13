@@ -3545,8 +3545,9 @@ export const SchoolsManager: React.FC = () => {
                                                                     setQuickSupervisor((current) => ({ ...current, targetGroupId: classroom.id }));
                                                                     setManagementNotice(`تم اختيار فصل ${classroom.name}. اكتب بيانات المشرف في صندوق إنشاء المشرف ثم اضغط إنشاء/ربط.`);
                                                                     setManagementError(null);
+                                                                    setActiveTab('relations');
                                                                     window.setTimeout(() => {
-                                                                        document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                        document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                                                     }, 50);
                                                                 }}
                                                                 className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
