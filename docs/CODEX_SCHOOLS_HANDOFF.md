@@ -30,6 +30,16 @@ Secured removal actions inside schools management:
 4. Cover the case where a student is visible inside a class.
 5. Review that there is no duplication between school operations and the school follow-up portal.
 
+## Skills Available Locally
+
+- `almeaa-schools-full-closure`
+- `almeaa-schools-button-api-db-audit`
+- `almeaa-schools-rbac-real-users`
+- `almeaa-schools-simple-ux`
+- `almeaa-schools-smoke-gate`
+
+If continuing from a new account and local skills are missing, continue using this handoff file and the goal instructions; do not restart from scratch.
+
 ## Work Rule
 
 - No new account starts from scratch.
