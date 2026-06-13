@@ -133,6 +133,23 @@ If continuing from a new account and local skills are missing, continue using th
 - `npm run build`: PASS.
 - Status: PASS for the current simple UX and duplication checkpoint. Admin School Dashboard and School Portal command surfaces are contract-clean, and the school summary cards now guide users to the exact operational panels instead of leaving them to search manually.
 
+### Checkpoint 6 - Final Verification
+
+- `npm run typecheck`: PASS.
+- `npm run build`: PASS.
+- `npm run server:check`: PASS.
+- `npm run smoke:school-management`: PASS 22/22.
+- `npm run smoke:admin-school-command`: PASS 6/6.
+- `npm run smoke:school-portal-command`: PASS 14/14.
+- `npm run smoke:rbac-school-scope`: PASS 4/4.
+- `npm run smoke:reports-role`: PASS 20/20.
+- `npm run smoke:school-from-scratch-live`: BLOCKED.
+  - Reason: missing admin credentials. The script requires `ROLE_ADMIN_EMAIL`/`ROLE_ADMIN_PASSWORD`, `SMOKE_ADMIN_EMAIL`/`SMOKE_ADMIN_PASSWORD`, or `ADMIN_EMAIL`/`ADMIN_PASSWORD`.
+  - The script stopped at login before creating any temporary school data.
+  - Latest blocked run directory: `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T19-59-45-409Z`.
+- No stale `typecheck`, `tsc --noEmit`, or `live-school-from-scratch` Node processes were left running after verification.
+- Status: final contract/build verification is PASS except the live from-scratch school pilot proof, which remains BLOCKED until admin credentials are supplied.
+
 ## Work Rule
 
 - No new account starts from scratch.
