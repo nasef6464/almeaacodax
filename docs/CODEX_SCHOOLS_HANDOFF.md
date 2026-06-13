@@ -104,6 +104,19 @@ If continuing from a new account and local skills are missing, continue using th
   - Reason: missing role credentials for student, parent, teacher, supervisor, and admin. `audit-artifacts/ROLE_CREDENTIALS.env` was not present.
 - Status: PASS for contract-level reports and Saher skill scope. Live report action buttons still require role credentials before this checkpoint can be fully closed.
 
+### Checkpoint 4 - Real Student In Class UI
+
+- `npm run smoke:school-from-scratch-live`: BLOCKED.
+  - Reason: missing admin credentials. The script requires `ROLE_ADMIN_EMAIL`/`ROLE_ADMIN_PASSWORD`, `SMOKE_ADMIN_EMAIL`/`SMOKE_ADMIN_PASSWORD`, or `ADMIN_EMAIL`/`ADMIN_PASSWORD`.
+  - The script stopped at login before creating the temporary school, class, student, parent, supervisor, package, or access code.
+  - A run directory was created at `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T19-35-51-194Z`, but no summary files were written because execution stopped before the audit body.
+- `npm run smoke:batch100g-school-student-pagination`: PASS 4/4.
+  - Verified the school student table no longer hard-caps results at the first 80 records.
+  - Verified explicit pagination state and derived page rows.
+  - Verified student search and class filters reset the page safely.
+  - Verified pagination UI communicates visible range and provides previous/next controls.
+- Status: pagination and visible roster paging contract PASS. The live proof for creating a school from scratch, showing a student inside a class, moving/removing that student, and linking parent/supervisor remains BLOCKED until admin credentials are available.
+
 ## Work Rule
 
 - No new account starts from scratch.
