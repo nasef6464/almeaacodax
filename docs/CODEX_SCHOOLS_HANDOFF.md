@@ -76,6 +76,19 @@ If continuing from a new account and local skills are missing, continue using th
 | School Portal | Student reports and weak skills | Uses scoped students/results and class/school filters | Exam results and skills analysis scoped by visible students | Role scope must prevent cross-school/class leakage | `smoke:reports-role`, `smoke:saher-skills` | PASS-PARTIAL: scoped frontend logic exists; smoke proof still required. |
 | School Portal vs Admin School Dashboard | Duplication review | N/A | N/A | Role-specific visibility expected | Manual review plus command-center smokes | BLOCKER: needs UX pass to reduce duplication without redesign after functional gaps are closed. |
 
+### Checkpoint 2 - Supervisor RBAC
+
+- `npm run smoke:supervisor-school-live`: PASS 8/8.
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/supervisor-school-2026-06-13T19-23-30-001Z`.
+- `npm run smoke:supervisor-executive-snapshot-live`: PASS 2/2.
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/supervisor-executive-snapshot-2026-06-13T19-25-57-356Z`.
+- `npm run smoke:rbac-school-scope`: PASS 4/4.
+  - Verified shared school scope guard.
+  - Verified school report endpoint scope guard.
+  - Verified import-students endpoint scope guard.
+  - Verified relations endpoint uses the same scope guard.
+- Status: PASS for the current supervisor RBAC checkpoint. School Supervisor and Class Supervisor scope has live/contract evidence, and direct sensitive school APIs checked in this checkpoint are guarded by backend scope.
+
 ## Work Rule
 
 - No new account starts from scratch.
