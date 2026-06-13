@@ -1525,7 +1525,7 @@ export const SchoolsManager: React.FC = () => {
                 statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
                 isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
                 tab: 'packages' as const,
-                buttonLabel: 'إدارة الباقة والمسارات',
+                buttonLabel: 'إدارة الباقات والمسارات',
             },
             {
                 id: 'reports',
@@ -1537,7 +1537,7 @@ export const SchoolsManager: React.FC = () => {
                 statusLabel: schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'ينتظر بيانات',
                 isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
                 tab: 'reports' as const,
-                buttonLabel: 'فتح تقرير التسليم',
+                buttonLabel: 'فتح التقارير',
             },
         ];
         const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
@@ -1559,6 +1559,7 @@ export const SchoolsManager: React.FC = () => {
                     : 'لا تزال هناك خطوات تشغيل قبل التسليم التجاري الكامل.',
                 tone: readinessScore === readinessChecks.length ? 'emerald' : readinessScore >= 3 ? 'amber' : 'rose',
                 tab: 'overview' as const,
+                target: 'school-next-action',
             },
             {
                 id: 'scope',
@@ -1569,6 +1570,7 @@ export const SchoolsManager: React.FC = () => {
                     : 'اربط مدير المدرسة أو مشرفي الفصول قبل التسليم.',
                 tone: schoolSupervisors.length > 0 ? 'blue' : 'amber',
                 tab: 'relations' as const,
+                target: 'school-wide-supervisors-panel',
             },
             {
                 id: 'access',
@@ -1579,6 +1581,7 @@ export const SchoolsManager: React.FC = () => {
                     : 'أنشئ باقة مرتبطة بالمسارات وكود دخول لتجنب شراء الطلاب بشكل فردي.',
                 tone: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'emerald' : 'rose',
                 tab: 'packages' as const,
+                target: 'school-packages-panel',
             },
             {
                 id: 'next-action',
@@ -1587,6 +1590,15 @@ export const SchoolsManager: React.FC = () => {
                 hint: nextOperatingStep.description,
                 tone: nextOperatingStep.isReady ? 'emerald' : 'slate',
                 tab: nextOperatingStep.tab,
+                target: nextOperatingStep.id === 'supervisors'
+                    ? 'school-wide-supervisors-panel'
+                    : nextOperatingStep.id === 'access'
+                        ? 'school-packages-panel'
+                        : nextOperatingStep.id === 'reports'
+                            ? 'school-reports-panel'
+                            : nextOperatingStep.id === 'students'
+                                ? 'school-students-panel'
+                                : 'school-classes-panel',
             },
         ];
         const overviewFocusActions = [
@@ -2660,7 +2672,16 @@ export const SchoolsManager: React.FC = () => {
                                 key={card.id}
                                 type="button"
                                 data-testid={`school-commercial-decision-${card.id}`}
-                                onClick={() => setActiveTab(card.tab)}
+                                onClick={() => {
+                                    setActiveTab(card.tab);
+                                    window.setTimeout(() => {
+                                        if (card.target === 'school-wide-supervisors-panel') {
+                                            document.querySelector('[data-testid="school-wide-supervisors-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            return;
+                                        }
+                                        document.querySelector(`[data-testid="${card.target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 80);
+                                }}
                                 className={`rounded-2xl border p-4 text-right transition-colors ${
                                     card.tone === 'emerald'
                                         ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'

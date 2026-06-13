@@ -117,6 +117,22 @@ If continuing from a new account and local skills are missing, continue using th
   - Verified pagination UI communicates visible range and provides previous/next controls.
 - Status: pagination and visible roster paging contract PASS. The live proof for creating a school from scratch, showing a student inside a class, moving/removing that student, and linking parent/supervisor remains BLOCKED until admin credentials are available.
 
+### Checkpoint 5 - Simple UX And Duplication
+
+- Updated `dashboards/admin/SchoolsManager.tsx` so the commercial summary cards act as direct navigation:
+  - `النطاق الحالي` opens `relations` and scrolls directly to `school-wide-supervisors-panel`.
+  - `الوصول التجاري` opens `packages` and scrolls to `school-packages-panel`.
+  - `إجراء اليوم` scrolls to the relevant operational panel.
+  - Package/report labels were normalized to `إدارة الباقات والمسارات` and `فتح التقارير`.
+- `npm run smoke:school-management`: PASS 22/22.
+  - Verified the selected school has a clear commercial operating flow.
+  - Verified school workspace avoids duplicate operating blocks.
+  - Verified supervisor scope remains explicit and separate from platform admin.
+- `npm run smoke:admin-school-command`: PASS 6/6.
+- `npm run smoke:school-portal-command`: PASS 14/14.
+- `npm run build`: PASS.
+- Status: PASS for the current simple UX and duplication checkpoint. Admin School Dashboard and School Portal command surfaces are contract-clean, and the school summary cards now guide users to the exact operational panels instead of leaving them to search manually.
+
 ## Work Rule
 
 - No new account starts from scratch.
