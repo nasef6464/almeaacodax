@@ -278,7 +278,8 @@ async function main() {
         : "FAIL",
       relationsQuickSupervisorText || "relations quick supervisor form missing"
     );
-    await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
+    await page.locator('[data-testid="school-workspace-tabs"] button').first().click();
+    await page.getByTestId("school-supervisor-single-entry-note").waitFor({ state: "visible", timeout: 12000 });
 
     await page.getByTestId("school-delete-button").click();
     const deletePanelVisible = await page.getByTestId("school-delete-confirm-panel").isVisible({ timeout: 12000 }).catch(() => false);
@@ -305,7 +306,7 @@ async function main() {
       primarySupervisorRouteVisible ? "PASS" : "FAIL",
       primarySupervisorRouteVisible ? "quick supervisor opens in supervisors tab" : "quick supervisor route missing"
     );
-    await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
+    await page.locator('[data-testid="school-workspace-tabs"] button').first().click();
 
     const focusStripVisible = await visible(page, "school-overview-focus-strip");
     check("overview focus strip visible", focusStripVisible ? "PASS" : "FAIL", focusStripVisible ? "focus strip rendered" : "focus strip missing");
@@ -342,6 +343,17 @@ async function main() {
       focusedSupervisorCardText || "overview supervisor action did not route to relations quick supervisor"
     );
     await screenshot(page, "03-focus-supervisors");
+    await page.locator('[data-testid="school-workspace-tabs"] button').first().click();
+    await page.getByTestId("school-supervisor-single-entry-note").waitFor({ state: "visible", timeout: 12000 });
+    const duplicateOverviewSupervisorFormCount = await page.getByTestId("school-quick-supervisor-submit").count();
+    const singleSupervisorEntryNoteText = await page.getByTestId("school-supervisor-single-entry-note").textContent({ timeout: 12000 }).catch(() => "");
+    check(
+      "school overview avoids duplicate supervisor forms",
+      duplicateOverviewSupervisorFormCount === 0 && /إضافة المشرفين من مكان واحد/.test(singleSupervisorEntryNoteText || "") && /فتح إضافة المشرف/.test(singleSupervisorEntryNoteText || "") ? "PASS" : "FAIL",
+      duplicateOverviewSupervisorFormCount === 0
+        ? "overview points to the single supervisor entry in relations"
+        : `duplicate quick supervisor forms=${duplicateOverviewSupervisorFormCount}`
+    );
     await page.getByRole("button", { name: /1 الفصول والطلاب/ }).click();
     await clickFocus(page, "classes", "school-class-creation-panel");
     await screenshot(page, "04-focus-classes");

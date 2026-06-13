@@ -3199,54 +3199,27 @@ export const SchoolsManager: React.FC = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
-                                        <div className="mb-3 flex items-center gap-2 text-sm font-black text-purple-800">
-                                            <UserPlus size={16} />
-                                            إنشاء أو ربط مشرف بسرعة
-                                        </div>
-                                        <div className="grid gap-3 md:grid-cols-2">
-                                            <input
-                                                data-testid="school-quick-supervisor-name"
-                                                value={quickSupervisor.name}
-                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, name: event.target.value }))}
-                                                placeholder="اسم المشرف"
-                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
-                                            />
-                                            <input
-                                                data-testid="school-quick-supervisor-email"
-                                                value={quickSupervisor.email}
-                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, email: event.target.value }))}
-                                                placeholder="بريد المشرف"
-                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
-                                            />
-                                            <input
-                                                data-testid="school-quick-supervisor-password"
-                                                value={quickSupervisor.password}
-                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, password: event.target.value }))}
-                                                placeholder="كلمة مرور اختيارية"
-                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
-                                            />
-                                            <select
-                                                data-testid="school-quick-supervisor-scope"
-                                                value={quickSupervisor.targetGroupId}
-                                                onChange={(event) => setQuickSupervisor((current) => ({ ...current, targetGroupId: event.target.value }))}
-                                                className="rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-400"
+                                    <div data-testid="school-supervisor-single-entry-note" className="rounded-2xl border border-purple-100 bg-purple-50/70 p-4">
+                                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                            <div>
+                                                <div className="mb-2 flex items-center gap-2 text-sm font-black text-purple-800">
+                                                    <UserPlus size={16} />
+                                                    إضافة المشرفين من مكان واحد
+                                                </div>
+                                                <p className="text-xs font-bold leading-6 text-purple-900">
+                                                    حتى لا تتكرر نفس المهمة، يتم إنشاء مدير المدرسة أو مشرف الفصل من تبويب المشرفون والتسليم فقط. هذه البطاقة تعرض النطاق الحالي وتوجهك للمكان الصحيح.
+                                                </p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                data-testid="school-open-supervisor-entry"
+                                                onClick={() => setActiveTab('relations')}
+                                                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
                                             >
-                                                <option value="">المدرسة كاملة</option>
-                                                {schoolClasses.map((classroom) => (
-                                                    <option key={classroom.id} value={classroom.id}>فصل: {classroom.name}</option>
-                                                ))}
-                                            </select>
+                                                <UserPlus size={16} />
+                                                فتح إضافة المشرف
+                                            </button>
                                         </div>
-                                        <button
-                                            type="button"
-                                            data-testid="school-quick-supervisor-submit"
-                                            onClick={() => void handleCreateQuickSupervisor()}
-                                            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
-                                        >
-                                            <UserPlus size={16} />
-                                            إنشاء/ربط المشرف
-                                        </button>
                                     </div>
                                     <select
                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
