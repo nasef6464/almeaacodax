@@ -961,6 +961,47 @@ export const SchoolPortalManager: React.FC = () => {
                 )}
             </div>
 
+            <div data-testid="supervisor-role-operating-contract" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1 text-xs font-black text-white">
+                            <ShieldCheck size={14} />
+                            صلاحيات المشرف داخل المدرسة
+                        </div>
+                        <h2 className="mt-3 text-lg font-black text-gray-900">بوابة متابعة، وليست مكان حذف أو تشغيل حساس</h2>
+                        <p className="mt-1 max-w-3xl text-sm leading-6 text-gray-500">
+                            المشرف يرى الطلاب والفصول والمهارات داخل نطاقه فقط، وينفذ متابعة عملية. إنشاء المدرسة، حذفها، الباقات، وربط المشرفين يبقى في تشغيل المدارس حتى لا تتكرر الإدارة أو تختلط الصلاحيات.
+                        </p>
+                    </div>
+                    <div data-testid="supervisor-role-admin-boundary" className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-black leading-6 text-amber-800">
+                        أي تعديل إداري حساس يبدأ من تشغيل المدارس، أما هنا فالقرار اليومي: من يحتاج متابعة؟ وما الاختبار أو التقرير المناسب؟
+                    </div>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                        <div className="flex items-center gap-2 text-sm font-black text-blue-800">
+                            <Users size={16} />
+                            يتابع
+                        </div>
+                        <p className="mt-2 text-xs font-bold leading-6 text-blue-700">الطلاب، الفصول، المهارات الضعيفة، ونتائج الاختبارات داخل نطاقه.</p>
+                    </div>
+                    <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                        <div className="flex items-center gap-2 text-sm font-black text-emerald-800">
+                            <Target size={16} />
+                            ينفذ
+                        </div>
+                        <p className="mt-2 text-xs font-bold leading-6 text-emerald-700">اختبار موجه، خطة تدخل، رسالة متابعة، تقرير مختصر، وتصدير قائمة الطلاب.</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-center gap-2 text-sm font-black text-slate-800">
+                            <FileSpreadsheet size={16} />
+                            لا يغيّر من هنا
+                        </div>
+                        <p className="mt-2 text-xs font-bold leading-6 text-slate-600">إنشاء/حذف المدرسة، ربط المشرفين، الباقات، المسارات، واستيراد الطلاب الجماعي.</p>
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {[
                     { label: 'الطلاب داخل النطاق', value: reportStudents.length, icon: <Users size={22} />, color: 'blue' },
