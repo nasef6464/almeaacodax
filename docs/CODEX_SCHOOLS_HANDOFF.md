@@ -40,6 +40,42 @@ Secured removal actions inside schools management:
 
 If continuing from a new account and local skills are missing, continue using this handoff file and the goal instructions; do not restart from scratch.
 
+## Checkpoint Progress
+
+### Checkpoint 0 - Baseline Gates
+
+- Branch verified: `codex/schools-full-closure`.
+- Last 5 commits reviewed:
+  - `e2e08890` docs: record local schools skills for handoff
+  - `d09312b4` chore: prepare schools handoff and cleanup ignore rules
+  - `7fad0757` Confirm school roster removal actions
+  - `640bcfab` Route class supervisor creation to relations
+  - `6c0d98d0` Simplify school supervisor entry flow
+- `git status`: clean before documentation update.
+- `npm run typecheck`: BLOCKED. `tsc --noEmit` did not finish after two attempts, including a 5 minute timeout. Stale `npm run typecheck` / `tsc --noEmit` processes from those attempts were stopped.
+- `npm run build`: PASS.
+- `npm run server:check`: PASS.
+
+### Checkpoint 1 - School Closure Matrix
+
+| Page | Button or operation | API | Database | RBAC | Test | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| Admin School Dashboard | Create school | `createGroup -> /content/groups` | `GroupModel.create` | Backend group scope path exists, needs action-level proof | `smoke:school-management` contract references create/group flow | FIX: current store path is optimistic and does not await API success in the visible action flow. |
+| Admin School Dashboard | Edit school | `updateGroup -> /content/groups/:id` | `GroupModel.findOneAndUpdate` | Backend document scope required | Contract/static coverage only | FIX: current store path calls API with `.catch(console.error)` and needs explicit loading/error/success around the button. |
+| Admin School Dashboard | Delete/disable school | `deleteGroup -> /content/groups/:id` | Deletes school, classes, school packages, access codes, and removes group references | Backend document scope required | `smoke:school-management` checks delete wiring | FIX: confirmation exists, but visible action still uses optimistic store path; needs awaited success/error proof. |
+| Admin School Dashboard | Add class | `createGroup -> /content/groups` | `GroupModel.create` with parent school | Parent school/class relationship exists | `smoke:school-management` | FIX: needs awaited API flow and visible loading/error/success proof. |
+| Admin School Dashboard | Edit class | `updateGroup -> /content/groups/:id` | `GroupModel.findOneAndUpdate` | Backend document scope required | Contract/static coverage only | FIX: needs awaited API flow proof. |
+| Admin School Dashboard | Delete class | `deleteGroup -> /content/groups/:id` | Deletes class and removes student/supervisor group links | Backend document scope required | Contract/static coverage only | FIX: destructive action exists but needs awaited success/error proof. |
+| Admin School Dashboard | Import/add student | `importSchoolStudents -> /content/schools/:id/import-students` | `UserModel`, `GroupModel`, school/class totals | `assertSchoolManagementScope` | `smoke:school-from-scratch-live`, `smoke:batch100g-school-student-pagination` | PASS-PARTIAL: awaited API and backend DB route exist; live smoke still required for current checkpoint. |
+| Admin School Dashboard | Move/assign/remove student from class or school | Store group assignment APIs through `updateGroup` | `GroupModel.studentIds`, `User.groupIds` | Backend document scope required | `smoke:school-management` checks roster action presence | FIX: removal confirmations were added, but assignment/removal paths still need awaited API flow proof. |
+| Admin School Dashboard | Link parent | `applySchoolRelations -> /content/schools/:id/relations` | `UserModel.linkedStudentIds`, `schoolId` | `assertSchoolManagementScope` | `smoke:school-management`, `smoke:batch136-admin-users-schools-parent-payment` | PASS-PARTIAL: awaited relation endpoint exists; live role data proof still required. |
+| Admin School Dashboard | Link school/class supervisor | `applySchoolRelations` and `createAdminUser`; store assignment APIs | `UserModel.groupIds`, `GroupModel.supervisorIds`, `schoolId` | `assertSchoolManagementScope` and supervisor scope resolution | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | FIX: relation endpoint is scoped; quick assignment store actions still need awaited API proof. |
+| Admin School Dashboard | Link package/path/course | `createB2BPackage/updateB2BPackage/deleteB2BPackage` | `B2BPackageModel`, `AccessCodeModel` cleanup | `hasSchoolIdManagementScope` | `smoke:admin-school-command`, `smoke:school-portal-command` | FIX: backend scope exists; many visible package edits are direct optimistic calls and need loading/error/success proof. |
+| Admin School Dashboard | School report | `getSchoolReport -> /content/schools/:id/report` | `GroupModel`, `UserModel`, `B2BPackageModel`, `AccessCodeModel` | `assertSchoolManagementScope` | `smoke:reports-role`, `smoke:report-actions-live` | PASS-PARTIAL: awaited report load and backend scope exist; role report smoke still required. |
+| School Portal | Supervisor school/class scope | Frontend scoped from user groups and school/class supervisor IDs | Uses scoped groups, packages, access codes, results | Frontend scope exists; backend must remain source of truth for sensitive routes | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | PASS-PARTIAL: scoped display logic exists; direct API access still must be proven by smoke. |
+| School Portal | Student reports and weak skills | Uses scoped students/results and class/school filters | Exam results and skills analysis scoped by visible students | Role scope must prevent cross-school/class leakage | `smoke:reports-role`, `smoke:saher-skills` | PASS-PARTIAL: scoped frontend logic exists; smoke proof still required. |
+| School Portal vs Admin School Dashboard | Duplication review | N/A | N/A | Role-specific visibility expected | Manual review plus command-center smokes | BLOCKER: needs UX pass to reduce duplication without redesign after functional gaps are closed. |
+
 ## Work Rule
 
 - No new account starts from scratch.
