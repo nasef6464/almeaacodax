@@ -106,16 +106,24 @@ If continuing from a new account and local skills are missing, continue using th
 
 ### Checkpoint 4 - Real Student In Class UI
 
-- `npm run smoke:school-from-scratch-live`: BLOCKED.
-  - Reason: missing admin credentials. The script requires `ROLE_ADMIN_EMAIL`/`ROLE_ADMIN_PASSWORD`, `SMOKE_ADMIN_EMAIL`/`SMOKE_ADMIN_PASSWORD`, or `ADMIN_EMAIL`/`ADMIN_PASSWORD`.
-  - The script stopped at login before creating the temporary school, class, student, parent, supervisor, package, or access code.
-  - A run directory was created at `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T19-35-51-194Z`, but no summary files were written because execution stopped before the audit body.
+- `npm run smoke:school-from-scratch-live`: PASS 12/12.
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T23-33-53-345Z`.
+  - Verified temporary school creation.
+  - Verified class creation under school.
+  - Verified importing one student into the class.
+  - Verified student has school and class scope.
+  - Verified parent and class supervisor relation workflow.
+  - Verified school and class rosters update.
+  - Verified school-wide supervisor scope is separate from class supervisor.
+  - Verified school package and access code creation.
+  - Verified school report sees the commercial setup.
+  - Cleanup review: PASS 0 pending reviews.
 - `npm run smoke:batch100g-school-student-pagination`: PASS 4/4.
   - Verified the school student table no longer hard-caps results at the first 80 records.
   - Verified explicit pagination state and derived page rows.
   - Verified student search and class filters reset the page safely.
   - Verified pagination UI communicates visible range and provides previous/next controls.
-- Status: pagination and visible roster paging contract PASS. The live proof for creating a school from scratch, showing a student inside a class, moving/removing that student, and linking parent/supervisor remains BLOCKED until admin credentials are available.
+- Status: PASS for the current real student in class checkpoint. The live flow proves school -> class -> student -> parent/class supervisor/school supervisor -> package/access code -> report, with cleanup completed.
 
 ### Checkpoint 5 - Simple UX And Duplication
 
@@ -143,12 +151,11 @@ If continuing from a new account and local skills are missing, continue using th
 - `npm run smoke:school-portal-command`: PASS 14/14.
 - `npm run smoke:rbac-school-scope`: PASS 4/4.
 - `npm run smoke:reports-role`: PASS 20/20.
-- `npm run smoke:school-from-scratch-live`: BLOCKED.
-  - Reason: missing admin credentials. The script requires `ROLE_ADMIN_EMAIL`/`ROLE_ADMIN_PASSWORD`, `SMOKE_ADMIN_EMAIL`/`SMOKE_ADMIN_PASSWORD`, or `ADMIN_EMAIL`/`ADMIN_PASSWORD`.
-  - The script stopped at login before creating any temporary school data.
-  - Latest blocked run directory: `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T19-59-45-409Z`.
+- `npm run smoke:school-from-scratch-live`: PASS 12/12.
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-13T23-33-53-345Z`.
+  - Cleanup review: PASS 0 pending reviews.
 - No stale `typecheck`, `tsc --noEmit`, or `live-school-from-scratch` Node processes were left running after verification.
-- Status: final contract/build verification is PASS except the live from-scratch school pilot proof, which remains BLOCKED until admin credentials are supplied.
+- Status: final contract/build verification is PASS for all Checkpoint 6 commands.
 
 ## Work Rule
 
