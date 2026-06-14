@@ -24,9 +24,8 @@ Secured removal actions inside schools management:
 
 ## Remaining To Close Schools
 
-1. Convert the remaining quick student/supervisor roster assignment buttons to awaited API flows or document any unavoidable blocker.
-2. Re-run final verification after the remaining awaited-flow fixes.
-3. Deploy the final schools branch and run one production visual check after deployment.
+1. Re-run final verification after the awaited-flow fixes.
+2. Deploy the final schools branch and run one production visual check after deployment.
 
 ## Skills Available Locally
 
@@ -65,9 +64,9 @@ If continuing from a new account and local skills are missing, continue using th
 | Admin School Dashboard | Edit class | `updateGroupAsync -> /content/groups/:id` | `GroupModel.findOneAndUpdate` | Backend document scope required | `smoke:school-management` | PASS: class rename waits for API and keeps the workspace in source-backed state. |
 | Admin School Dashboard | Delete class | `deleteGroupAsync -> /content/groups/:id` | Deletes class and removes student/supervisor group links | Backend document scope required | `smoke:school-management` | PASS: destructive class action is confirmed and awaited. |
 | Admin School Dashboard | Import/add student | `importSchoolStudents -> /content/schools/:id/import-students`, `applySchoolRelations` | `UserModel`, `GroupModel`, school/class totals | `assertSchoolManagementScope` | `smoke:school-from-scratch-live`, `smoke:batch100g-school-student-pagination` | PASS: live school-from-scratch proved one student inside a class, parent/class supervisor relation, package/access code, report, and cleanup. |
-| Admin School Dashboard | Move/assign/remove student from class or school | Store group assignment APIs through `updateGroup` | `GroupModel.studentIds`, `User.groupIds` | Backend document scope required | `smoke:school-management` checks roster action presence | FIX: removal confirmations were added, but assignment/removal paths still need awaited API flow proof. |
+| Admin School Dashboard | Move/assign/remove student from class or school | `assignStudentToGroupAsync/removeStudentFromGroupAsync` through `updateAdminUser` and `updateGroup` | `GroupModel.studentIds`, `User.groupIds`, `User.schoolId` | Backend document scope required | `typecheck`, `build`, `server:check`, `smoke:school-management`, `smoke:batch100g-school-student-pagination` | PASS: class transfer and school/class removal now wait for API persistence with visible roster-saving state. |
 | Admin School Dashboard | Link parent | `applySchoolRelations -> /content/schools/:id/relations` | `UserModel.linkedStudentIds`, `schoolId` | `assertSchoolManagementScope` | `smoke:school-management`, `smoke:batch136-admin-users-schools-parent-payment`, `smoke:school-from-scratch-live` | PASS: awaited relation endpoint exists, batch136 passed, and live school-from-scratch proved parent relation with real created data. |
-| Admin School Dashboard | Link school/class supervisor | `applySchoolRelations` and `createAdminUser`; store assignment APIs | `UserModel.groupIds`, `GroupModel.supervisorIds`, `schoolId` | `assertSchoolManagementScope` and supervisor scope resolution | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | FIX: relation endpoint is scoped; quick assignment store actions still need awaited API proof. |
+| Admin School Dashboard | Link school/class supervisor | `applySchoolRelations`, `createAdminUser`, `assignSupervisorToGroupAsync/removeSupervisorFromGroupAsync` | `UserModel.groupIds`, `GroupModel.supervisorIds`, `schoolId` | `assertSchoolManagementScope` and supervisor scope resolution | `typecheck`, `build`, `server:check`, `smoke:school-management`, `smoke:admin-school-command`, `smoke:batch136-admin-users-schools-parent-payment` | PASS: quick school/class supervisor assignment, creation, and removal now wait for API persistence with visible roster-saving state. |
 | Admin School Dashboard | Link package/path/course | `createB2BPackageAsync/updateB2BPackageAsync/deleteB2BPackageAsync`, `createAccessCodeAsync/deleteAccessCodeAsync` | `B2BPackageModel`, `AccessCodeModel` cleanup | `hasSchoolIdManagementScope` | `typecheck`, `build`, `smoke:admin-school-command`, `smoke:school-management`, `smoke:school-portal-command`, `smoke:batch136-admin-users-schools-parent-payment` | PASS: school package create/update/delete/path/course controls and access-code generation/deletion now await API with visible saving/error/success state. |
 | Admin School Dashboard | School report | `getSchoolReport -> /content/schools/:id/report` | `GroupModel`, `UserModel`, `B2BPackageModel`, `AccessCodeModel` | `assertSchoolManagementScope` | `smoke:reports-role`, `smoke:report-actions-live` | PASS: report loading, role report actions, and backend scope are verified. |
 | School Portal | Supervisor school/class scope | Frontend scoped from user groups and school/class supervisor IDs | Uses scoped groups, packages, access codes, results | Frontend scope exists; backend scope guards verified for sensitive school APIs | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | PASS: supervisor school/class scope has live and backend contract evidence. |
@@ -222,6 +221,36 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-portal-command`: PASS 14/14.
   - `npm run smoke:batch136-admin-users-schools-parent-payment`: PASS.
 - Status: PASS. Access-code generation/deletion no longer relies only on optimistic local updates.
+
+#### Checkpoint 5 Follow-up - Student And Supervisor Roster Awaited API
+
+- Updated `store/useStore.ts` with awaited roster operations:
+  - `assignStudentToGroupAsync`
+  - `removeStudentFromGroupAsync`
+  - `assignSupervisorToGroupAsync`
+  - `removeSupervisorFromGroupAsync`
+- Updated `dashboards/admin/SchoolsManager.tsx` so the remaining quick roster actions wait for API persistence before updating visible state:
+  - assign existing supervisor to the whole school
+  - remove school-level supervisor
+  - assign existing supervisor to a class
+  - remove class supervisor
+  - create/link quick supervisor
+  - move student to another class
+  - remove student from class
+  - remove student from school
+  - relation-upload class/supervisor assignments
+- Added visible roster-saving state and disabled repeated roster clicks while saving.
+- Updated the affected smoke contracts so they verify the awaited async flow instead of the old optimistic calls.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-portal-command`: PASS 14/14.
+  - `npm run smoke:batch100g-school-student-pagination`: PASS 4/4.
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`: PASS.
+- Status: PASS. The remaining quick student/supervisor roster assignment and removal flows no longer rely on optimistic local updates.
 
 #### Checkpoint 5 Follow-up - Visual School Workspace Pass
 

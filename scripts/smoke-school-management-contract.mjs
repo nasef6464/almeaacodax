@@ -172,19 +172,25 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "api.createAdminUser");
   assertIncludes(files.schools, "existingSupervisor");
   assertIncludes(files.schools, 'data-testid="school-class-create-supervisor"');
-  assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
-  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");
-  assertIncludes(files.schools, "assignSupervisorToGroup(value, classroom.id)");
-  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, classroom.id)");
+  assertIncludes(files.store, "assignSupervisorToGroupAsync: async");
+  assertIncludes(files.store, "removeSupervisorFromGroupAsync: async");
+  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
+  assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)");
+  assertIncludes(files.schools, "rosterActionPending");
   assertIncludes(files.schools, "setActiveTab('relations')");
 });
 
 check("school student roster exposes direct removal actions", () => {
-  assertIncludes(files.schools, "removeStudentFromGroup");
+  assertIncludes(files.store, "assignStudentToGroupAsync: async");
+  assertIncludes(files.store, "removeStudentFromGroupAsync: async");
   assertIncludes(files.schools, "إخراج من الفصل");
   assertIncludes(files.schools, "إزالة من المدرسة");
-  assertIncludes(files.schools, "removeStudentFromGroup(student.id, currentClass.id)");
-  assertIncludes(files.schools, "removeStudentFromGroup(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleAssignStudentToClass(student.id, value)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, currentClass.id)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "rosterActionPending");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {

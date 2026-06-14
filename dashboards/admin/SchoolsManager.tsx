@@ -592,12 +592,12 @@ export const SchoolsManager: React.FC = () => {
         deleteGroupAsync,
         addUser,
         updateUser,
-        assignSupervisorToGroup,
-        removeSupervisorFromGroup,
+        assignSupervisorToGroupAsync,
+        removeSupervisorFromGroupAsync,
         assignCourseToGroup,
         removeCourseFromGroup,
-        assignStudentToGroup,
-        removeStudentFromGroup,
+        assignStudentToGroupAsync,
+        removeStudentFromGroupAsync,
         createB2BPackageAsync,
         updateB2BPackageAsync,
         deleteB2BPackageAsync,
@@ -634,6 +634,7 @@ export const SchoolsManager: React.FC = () => {
     const [schoolActionPending, setSchoolActionPending] = useState<string | null>(null);
     const [packageActionPending, setPackageActionPending] = useState<string | null>(null);
     const [accessCodeActionPending, setAccessCodeActionPending] = useState<string | null>(null);
+    const [rosterActionPending, setRosterActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -1414,6 +1415,80 @@ export const SchoolsManager: React.FC = () => {
                 setSchoolActionPending(null);
             }
         };
+        const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
+            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
+            setRosterActionPending(`supervisor-assign-${groupId}-${supervisorId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await assignSupervisorToGroupAsync(supervisorId, groupId);
+                if (groupId === selectedSchool.id) {
+                    setSelectedSchool((current) =>
+                        current && !current.supervisorIds.includes(supervisorId)
+                            ? { ...current, supervisorIds: [...current.supervisorIds, supervisorId] }
+                            : current,
+                    );
+                }
+                setManagementNotice(`تم حفظ ربط ${targetSupervisor?.name || 'المشرف'} على ${targetGroup?.name || 'النطاق المحدد'}.`);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر ربط المشرف الآن.');
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+        const handleRemoveSchoolSupervisor = async (supervisorId: string, groupId: string) => {
+            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
+            setRosterActionPending(`supervisor-remove-${groupId}-${supervisorId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await removeSupervisorFromGroupAsync(supervisorId, groupId);
+                if (groupId === selectedSchool.id) {
+                    setSelectedSchool((current) =>
+                        current
+                            ? { ...current, supervisorIds: current.supervisorIds.filter((id) => id !== supervisorId) }
+                            : current,
+                    );
+                }
+                setManagementNotice(`تم حفظ إزالة ${targetSupervisor?.name || 'المشرف'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر إزالة المشرف الآن.');
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+        const handleAssignStudentToClass = async (studentId: string, classId: string) => {
+            const targetStudent = schoolStudents.find((student) => student.id === studentId);
+            const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
+            setRosterActionPending(`student-assign-${classId}-${studentId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await assignStudentToGroupAsync(studentId, classId);
+                setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر نقل الطالب الآن.');
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+        const handleRemoveStudentScope = async (studentId: string, groupId: string) => {
+            const targetStudent = schoolStudents.find((student) => student.id === studentId);
+            const targetGroup = [selectedSchool, ...schoolClasses].find((group) => group.id === groupId);
+            setRosterActionPending(`student-remove-${groupId}-${studentId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await removeStudentFromGroupAsync(studentId, groupId);
+                setManagementNotice(`تم حفظ إخراج ${targetStudent?.name || 'الطالب'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر إخراج الطالب الآن.');
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
             const name = quickSupervisor.name.trim();
             const email = quickSupervisor.email.trim().toLowerCase();
@@ -1435,6 +1510,7 @@ export const SchoolsManager: React.FC = () => {
             const existingSupervisor = supervisors.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === email);
             const password = quickSupervisor.password.trim() || generateTemporaryPassword();
 
+            setRosterActionPending(`supervisor-quick-${targetGroupId}`);
             try {
                 let supervisor = existingSupervisor;
 
@@ -1456,7 +1532,7 @@ export const SchoolsManager: React.FC = () => {
                     addUser(supervisor);
                 }
 
-                assignSupervisorToGroup(supervisor.id, targetGroupId);
+                await assignSupervisorToGroupAsync(supervisor.id, targetGroupId);
 
                 if (targetGroupId === selectedSchool.id) {
                     setSelectedSchool((current) =>
@@ -1476,6 +1552,8 @@ export const SchoolsManager: React.FC = () => {
             } catch (error) {
                 setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء أو ربط المشرف الآن.');
                 setManagementNotice(null);
+            } finally {
+                setRosterActionPending(null);
             }
         };
         const handleCreateSchoolPackage = async (pkg: B2BPackage) => {
@@ -2558,17 +2636,17 @@ export const SchoolsManager: React.FC = () => {
                     }
                 }
 
-                relationRows.forEach((row) => {
+                for (const row of relationRows) {
                     const studentEmail = row.studentEmail.trim().toLowerCase();
                     if (!studentEmail) {
                         nextSummary.skippedRows += 1;
-                        return;
+                        continue;
                     }
 
                     const student = schoolStudents.find((item) => (item.email || '').trim().toLowerCase() === studentEmail);
                     if (!student) {
                         nextSummary.missingStudents += 1;
-                        return;
+                        continue;
                     }
 
                     const className = row.className?.trim();
@@ -2583,7 +2661,7 @@ export const SchoolsManager: React.FC = () => {
                     if (classroom && !(student.groupIds || []).includes(classroom.id)) {
                         const key = `${student.id}:${classroom.id}`;
                         if (!existingClassLinks.has(key)) {
-                            assignStudentToGroup(student.id, classroom.id);
+                            await assignStudentToGroupAsync(student.id, classroom.id);
                             existingClassLinks.add(key);
                             nextSummary.assignedClasses += 1;
                         }
@@ -2617,13 +2695,13 @@ export const SchoolsManager: React.FC = () => {
                                 || (targetGroupId === selectedSchool.id && selectedSchool.supervisorIds.includes(supervisor.id))
                                 || schoolClasses.some((item) => item.id === targetGroupId && item.supervisorIds.includes(supervisor.id));
                             if (!alreadyLinked && !existingSupervisorLinks.has(key)) {
-                                assignSupervisorToGroup(supervisor.id, targetGroupId);
+                                await assignSupervisorToGroupAsync(supervisor.id, targetGroupId);
                                 existingSupervisorLinks.add(key);
                                 nextSummary.linkedSupervisors += 1;
                             }
                         }
                     }
-                });
+                }
 
                 parentLinks.forEach((studentIds, parentId) => {
                     const original = [...parents, ...Array.from(parentByEmail.values())].find((parent) => parent.id === parentId);
@@ -2804,6 +2882,12 @@ export const SchoolsManager: React.FC = () => {
                 {managementNotice && (
                     <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
                         {managementNotice}
+                    </div>
+                )}
+
+                {rosterActionPending && (
+                    <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800">
+                        جار حفظ تغيير الطلاب أو المشرفين على الخادم...
                     </div>
                 )}
 
@@ -3419,21 +3503,14 @@ export const SchoolsManager: React.FC = () => {
                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         defaultValue=""
                                         onChange={(event) => {
+                                            const target = event.currentTarget;
                                             const value = event.target.value;
                                             if (!value) return;
-                                            assignSupervisorToGroup(value, selectedSchool.id);
-                                            setSelectedSchool((current) =>
-                                                current
-                                                    ? {
-                                                          ...current,
-                                                          supervisorIds: current.supervisorIds.includes(value)
-                                                              ? current.supervisorIds
-                                                              : [...current.supervisorIds, value],
-                                                      }
-                                                    : current,
-                                            );
-                                            event.target.value = '';
+                                            void handleAssignSchoolSupervisor(value, selectedSchool.id).finally(() => {
+                                                target.value = '';
+                                            });
                                         }}
+                                        disabled={Boolean(rosterActionPending)}
                                     >
                                         <option value="">إضافة مدير/مشرف للمدرسة كاملة</option>
                                         {supervisors
@@ -3454,16 +3531,9 @@ export const SchoolsManager: React.FC = () => {
                                                     if (!window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف ${selectedSchool.name}؟`)) {
                                                         return;
                                                     }
-                                                    removeSupervisorFromGroup(currentUser.id, selectedSchool.id);
-                                                    setSelectedSchool((current) =>
-                                                        current
-                                                            ? {
-                                                                  ...current,
-                                                                  supervisorIds: current.supervisorIds.filter((id) => id !== currentUser.id),
-                                                              }
-                                                            : current,
-                                                    );
+                                                    void handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id);
                                                 }}
+                                                disabled={Boolean(rosterActionPending)}
                                                 className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
                                             >
                                                 {currentUser.name} ×
@@ -3730,11 +3800,14 @@ export const SchoolsManager: React.FC = () => {
                                                                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                                                                 defaultValue=""
                                                                 onChange={(event) => {
+                                                                    const target = event.currentTarget;
                                                                     const value = event.target.value;
                                                                     if (!value) return;
-                                                                    assignSupervisorToGroup(value, classroom.id);
-                                                                    event.target.value = '';
+                                                                    void handleAssignSchoolSupervisor(value, classroom.id).finally(() => {
+                                                                        target.value = '';
+                                                                    });
                                                                 }}
+                                                                disabled={Boolean(rosterActionPending)}
                                                             >
                                                                 <option value="">إضافة مشرف للفصل</option>
                                                                 {supervisors
@@ -3770,9 +3843,10 @@ export const SchoolsManager: React.FC = () => {
                                                                         data-testid="school-remove-class-supervisor"
                                                                         onClick={() => {
                                                                             if (window.confirm(`هل تريد إزالة ${currentUser.name} من إشراف فصل ${classroom.name}؟`)) {
-                                                                                removeSupervisorFromGroup(currentUser.id, classroom.id);
+                                                                                void handleRemoveSchoolSupervisor(currentUser.id, classroom.id);
                                                                             }
                                                                         }}
+                                                                        disabled={Boolean(rosterActionPending)}
                                                                         className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
                                                                     >
                                                                         {currentUser.name} ×
@@ -3889,8 +3963,9 @@ export const SchoolsManager: React.FC = () => {
                                                                     onChange={(event) => {
                                                                         const value = event.target.value;
                                                                         if (!value || value === currentClass?.id) return;
-                                                                        assignStudentToGroup(student.id, value);
+                                                                        void handleAssignStudentToClass(student.id, value);
                                                                     }}
+                                                                    disabled={Boolean(rosterActionPending)}
                                                                     className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                                                                 >
                                                                     <option value="">اختر فصلاً</option>
@@ -3907,9 +3982,10 @@ export const SchoolsManager: React.FC = () => {
                                                                             data-testid="school-student-remove-class"
                                                                             onClick={() => {
                                                                                 if (window.confirm(`هل تريد إخراج ${student.name} من فصل ${currentClass.name}؟ سيبقى الطالب داخل المدرسة.`)) {
-                                                                                    removeStudentFromGroup(student.id, currentClass.id);
+                                                                                    void handleRemoveStudentScope(student.id, currentClass.id);
                                                                                 }
                                                                             }}
+                                                                            disabled={Boolean(rosterActionPending)}
                                                                             className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100"
                                                                         >
                                                                             إخراج من الفصل
@@ -3920,9 +3996,10 @@ export const SchoolsManager: React.FC = () => {
                                                                         data-testid="school-student-remove-school"
                                                                         onClick={() => {
                                                                             if (window.confirm(`هل تريد إزالة ${student.name} من ${selectedSchool.name}؟ سيتم إخراجه من المدرسة وفصولها.`)) {
-                                                                                removeStudentFromGroup(student.id, selectedSchool.id);
+                                                                                void handleRemoveStudentScope(student.id, selectedSchool.id);
                                                                             }
                                                                         }}
+                                                                        disabled={Boolean(rosterActionPending)}
                                                                         className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-700 transition-colors hover:bg-red-100"
                                                                     >
                                                                         إزالة من المدرسة
@@ -4644,6 +4721,7 @@ export const SchoolsManager: React.FC = () => {
                                     type="button"
                                     data-testid="school-relations-supervisor-submit"
                                     onClick={() => void handleCreateQuickSupervisor()}
+                                    disabled={Boolean(rosterActionPending)}
                                     className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
                                 >
                                     <UserPlus size={16} />
