@@ -203,7 +203,20 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run typecheck`: PASS.
   - `npm run build`: PASS.
   - `npm run smoke:school-management`: PASS 22/22.
-- Next proof after deployment: rerun the mobile visual check on the production bundle and confirm no horizontal overflow in the selected school workspace.
+- Post-deployment production visual proof:
+  - Production URL checked: `https://almeaacodax.vercel.app/admin-dashboard?tab=groups`.
+  - Mobile viewport checked: 390 x 844.
+  - Horizontal overflow: PASS, `documentElement.scrollWidth = 390`, `body.scrollWidth = 390`, no overflow nodes found.
+  - Visible selected school workspace panels: PASS.
+    - `school-workspace-shell`
+    - `school-primary-add-class`
+    - `school-students-panel`
+    - `school-roster-panel`
+    - `school-delete-button`
+    - `school-wide-supervisors-panel`
+  - Console errors: 0.
+  - Network 5xx responses: 0.
+- Status: PASS. The selected school workspace is visually contained on production mobile after deployment.
 
 ### Checkpoint 6 - Final Verification
 
