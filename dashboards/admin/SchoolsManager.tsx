@@ -40,6 +40,8 @@ type ImportSummary = {
 type ImportResponse = {
     summary: ImportSummary;
     credentials: Array<{ name: string; email: string; password: string; className?: string }>;
+    users?: AdminUserPayload[];
+    groups?: Group[];
 };
 
 type RelationImportRow = {
@@ -177,6 +179,17 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
         purchasedCourses: user.subscription?.purchasedCourses ?? [],
         purchasedPackages: user.subscription?.purchasedPackages ?? [],
     },
+});
+
+const buildStoreGroup = (group: Group & { _id?: string; createdAt?: number | string }): Group => ({
+    ...group,
+    id: String(group.id || group._id || ''),
+    parentId: group.parentId ? String(group.parentId) : undefined,
+    ownerId: String(group.ownerId || ''),
+    supervisorIds: Array.isArray(group.supervisorIds) ? group.supervisorIds.map(String) : [],
+    studentIds: Array.isArray(group.studentIds) ? group.studentIds.map(String) : [],
+    courseIds: Array.isArray(group.courseIds) ? group.courseIds.map(String) : [],
+    createdAt: typeof group.createdAt === 'number' ? group.createdAt : Date.parse(String(group.createdAt || '')) || Date.now(),
 });
 
 const generateTemporaryPassword = () => {
@@ -853,6 +866,42 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
+    const mergeSchoolUsers = (incomingUsers: AdminUserPayload[] | undefined) => {
+        if (!incomingUsers?.length) {
+            return;
+        }
+
+        const nextUsersById = new Map(users.map((currentUser) => [currentUser.id, currentUser]));
+        incomingUsers.map(buildStoreUser).forEach((incomingUser) => {
+            if (incomingUser.id) {
+                nextUsersById.set(incomingUser.id, incomingUser);
+            }
+        });
+        hydrateUsers(Array.from(nextUsersById.values()));
+    };
+
+    const mergeSchoolGroups = (incomingGroups: Group[] | undefined) => {
+        if (!incomingGroups?.length) {
+            return;
+        }
+
+        const normalizedGroups = incomingGroups.map(buildStoreGroup).filter((group) => group.id && group.name);
+        if (!normalizedGroups.length) {
+            return;
+        }
+
+        const nextGroupsById = new Map(groups.map((group) => [group.id, group]));
+        normalizedGroups.forEach((group) => nextGroupsById.set(group.id, group));
+        hydrateContentBootstrap({ groups: Array.from(nextGroupsById.values()) });
+
+        if (selectedSchool) {
+            const updatedSelectedSchool = normalizedGroups.find((group) => group.id === selectedSchool.id);
+            if (updatedSelectedSchool) {
+                setSelectedSchool(updatedSelectedSchool);
+            }
+        }
+    };
+
     const loadSchoolReport = async (schoolId: string) => {
         setIsLoadingReport(true);
         setReportError(null);
@@ -1200,7 +1249,12 @@ export const SchoolsManager: React.FC = () => {
             const response = await api.importSchoolStudents(selectedSchool.id, { rows: importRows }) as ImportResponse;
             setImportSummary(response.summary);
             setImportCredentials(response.credentials);
-            await refreshUsers();
+            if (response.users?.length) {
+                mergeSchoolUsers(response.users);
+            } else {
+                await refreshUsers();
+            }
+            mergeSchoolGroups(response.groups);
             await loadSchoolReport(selectedSchool.id);
         } catch (error) {
             setImportError(error instanceof Error ? error.message : 'تعذر استيراد الطلاب الآن.');
@@ -1237,7 +1291,12 @@ export const SchoolsManager: React.FC = () => {
             setImportSummary(response.summary);
             setImportCredentials(response.credentials);
             setSingleStudent({ name: '', email: '', className: '', password: '' });
-            await refreshUsers();
+            if (response.users?.length) {
+                mergeSchoolUsers(response.users);
+            } else {
+                await refreshUsers();
+            }
+            mergeSchoolGroups(response.groups);
             await loadSchoolReport(selectedSchool.id);
         } catch (error) {
             setImportError(error instanceof Error ? error.message : 'تعذر إضافة الطالب الآن.');
@@ -2531,19 +2590,13 @@ export const SchoolsManager: React.FC = () => {
                 setRelationCredentials(response.credentials || []);
                 setRelationError(null);
 
-                if (response.users) {
-                    hydrateUsers(response.users.map(buildStoreUser));
+                if (response.users?.length) {
+                    mergeSchoolUsers(response.users);
                 } else {
                     await refreshUsers();
                 }
 
-                if (response.groups) {
-                    hydrateContentBootstrap({ groups: response.groups });
-                    const updatedSelectedSchool = response.groups.find((group) => group.id === selectedSchool.id);
-                    if (updatedSelectedSchool) {
-                        setSelectedSchool(updatedSelectedSchool);
-                    }
-                }
+                mergeSchoolGroups(response.groups);
 
                 await loadSchoolReport(selectedSchool.id);
                 return;
@@ -3519,6 +3572,11 @@ export const SchoolsManager: React.FC = () => {
                                                 <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
                                             ))}
                                     </select>
+                                    {supervisors.filter((currentUser) => !schoolLevelSupervisors.some((supervisor) => supervisor.id === currentUser.id)).length === 0 && (
+                                        <p className="text-xs font-bold leading-6 text-amber-700">
+                                            لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
+                                        </p>
+                                    )}
                                     <div className="flex flex-wrap gap-2">
                                         {schoolLevelSupervisors.length === 0 ? (
                                             <span className="text-sm text-gray-400">لا يوجد مدير أو مشرف عام لهذه المدرسة بعد.</span>
@@ -3816,6 +3874,11 @@ export const SchoolsManager: React.FC = () => {
                                                                         <option key={currentUser.id} value={currentUser.id}>{currentUser.name}</option>
                                                                     ))}
                                                             </select>
+                                                            {supervisors.filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id)).length === 0 && (
+                                                                <p className="mt-2 text-xs font-bold leading-6 text-amber-700">
+                                                                    لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.
+                                                                </p>
+                                                            )}
                                                             <button
                                                                 type="button"
                                                                 data-testid="school-class-create-supervisor"

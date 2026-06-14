@@ -2565,6 +2565,13 @@ contentRouter.post(
       }),
     );
 
+    const [updatedGroups, updatedUsers] = await Promise.all([
+      GroupModel.find({
+        $or: [{ _id: school._id }, { id: schoolId }, { parentId: schoolId }],
+      }).sort({ createdAt: -1 }),
+      UserModel.find({ schoolId }).select("-passwordHash").sort({ createdAt: -1 }),
+    ]);
+
     return res.status(StatusCodes.CREATED).json({
       summary: {
         totalRows: payload.rows.length,
@@ -2574,6 +2581,8 @@ contentRouter.post(
         ).length,
       },
       credentials,
+      groups: updatedGroups,
+      users: updatedUsers,
     });
   }),
 );
