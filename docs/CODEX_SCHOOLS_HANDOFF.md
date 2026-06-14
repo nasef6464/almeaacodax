@@ -185,6 +185,26 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:admin-school-command`: PASS 6/6.
 - Status: PASS for this follow-up. The main school/class CRUD buttons no longer rely only on cosmetic optimistic store updates.
 
+#### Checkpoint 5 Follow-up - Visual School Workspace Pass
+
+- Browser visual check on production as admin:
+  - School list opened from `https://almeaacodax.vercel.app/admin-dashboard?tab=groups`.
+  - Desktop school list: PASS, no horizontal overflow, school create and open-management controls visible.
+  - Desktop selected school workspace: PASS, no horizontal overflow, key panels visible:
+    - `school-workspace-shell`
+    - `school-primary-add-class`
+    - `school-students-panel`
+    - `school-roster-panel`
+    - `school-delete-button`
+    - `school-wide-supervisors-panel`
+  - Mobile selected school workspace initially showed horizontal overflow.
+- Updated `dashboards/admin/SchoolsManager.tsx` to keep the school workspace, student panel, and roster panel constrained with `min-w-0`, `max-w-full`, and workspace `overflow-x-hidden`.
+- Verification after the mobile containment fix:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+- Next proof after deployment: rerun the mobile visual check on the production bundle and confirm no horizontal overflow in the selected school workspace.
+
 ### Checkpoint 6 - Final Verification
 
 - `npm run typecheck`: PASS.

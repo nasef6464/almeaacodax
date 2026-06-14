@@ -2542,7 +2542,7 @@ export const SchoolsManager: React.FC = () => {
         };
 
         return (
-            <div data-testid="school-workspace-shell" className="space-y-6 animate-fade-in">
+            <div data-testid="school-workspace-shell" className="min-w-0 max-w-full space-y-6 overflow-x-hidden animate-fade-in">
                 <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
                     <button onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }} className="text-gray-500 hover:text-gray-900">
                         &rarr; عودة لقائمة المدارس
@@ -3166,7 +3166,7 @@ export const SchoolsManager: React.FC = () => {
                                 )}
                             </div>
 
-                            <div data-testid="school-students-panel" className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                            <div data-testid="school-students-panel" className="min-w-0 max-w-full rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                     <div>
                                         <h3 className="text-lg font-black text-gray-900">إضافة طالب منفرد</h3>
@@ -3714,7 +3714,7 @@ export const SchoolsManager: React.FC = () => {
                                 )}
                             </div>
 
-                            <div data-testid="school-roster-panel" className="border border-gray-100 rounded-2xl p-5 space-y-4">
+                            <div data-testid="school-roster-panel" className="min-w-0 max-w-full border border-gray-100 rounded-2xl p-5 space-y-4">
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
                                         <h3 className="text-lg font-bold text-gray-900">طلاب المدرسة</h3>
