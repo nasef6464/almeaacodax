@@ -587,9 +587,9 @@ export const SchoolsManager: React.FC = () => {
         subjects,
         sections,
         paths,
-        createGroup,
-        updateGroup,
-        deleteGroup,
+        createGroupAsync,
+        updateGroupAsync,
+        deleteGroupAsync,
         addUser,
         updateUser,
         assignSupervisorToGroup,
@@ -631,6 +631,7 @@ export const SchoolsManager: React.FC = () => {
     const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
     const [managementError, setManagementError] = useState<string | null>(null);
     const [managementNotice, setManagementNotice] = useState<string | null>(null);
+    const [schoolActionPending, setSchoolActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -961,7 +962,7 @@ export const SchoolsManager: React.FC = () => {
         };
     }, [selectedSchool?.id, activeTab, accessCodes.length]);
 
-    const handleCreateSchool = () => {
+    const handleCreateSchool = async () => {
         const name = newSchoolName.trim();
         if (!name) {
             setManagementError('اكتب اسم المدرسة أو الجهة التعليمية قبل الإضافة.');
@@ -982,15 +983,23 @@ export const SchoolsManager: React.FC = () => {
             totalCourses: 0,
         };
 
-        createGroup(newSchool);
-        setNewSchoolName('');
+        setSchoolActionPending('create-school');
         setManagementError(null);
-        setManagementNotice('تم إنشاء المدرسة وفتح مساحة التشغيل. ابدأ بإضافة الفصول ثم الطلاب والمشرفين والباقات.');
-        setSelectedSchool(newSchool);
-        setActiveTab('overview');
+        setManagementNotice(null);
+        try {
+            const persistedSchool = await createGroupAsync(newSchool);
+            setNewSchoolName('');
+            setManagementNotice('تم إنشاء المدرسة وفتح مساحة التشغيل. ابدأ بإضافة الفصول ثم الطلاب والمشرفين والباقات.');
+            setSelectedSchool(persistedSchool);
+            setActiveTab('overview');
+        } catch (error) {
+            setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء المدرسة الآن.');
+        } finally {
+            setSchoolActionPending(null);
+        }
     };
 
-    const handleCreateBulkClasses = () => {
+    const handleCreateBulkClasses = async () => {
         if (!selectedSchool) return;
 
         const classNames = Array.from(new Set<string>(
@@ -1018,8 +1027,11 @@ export const SchoolsManager: React.FC = () => {
             return;
         }
 
-        namesToCreate.forEach((name, index) => {
-            createGroup({
+        setSchoolActionPending('create-classes');
+        setManagementError(null);
+        setManagementNotice(null);
+        try {
+            await Promise.all(namesToCreate.map((name, index) => createGroupAsync({
                 id: `class_${now}_${index}`,
                 name,
                 type: 'CLASS',
@@ -1032,11 +1044,15 @@ export const SchoolsManager: React.FC = () => {
                 totalStudents: 0,
                 totalSupervisors: 0,
                 totalCourses: 0,
-            });
-        });
+            })));
 
-        setBulkClassNames('');
-        setManagementError(null);
+            setBulkClassNames('');
+            setManagementNotice(`تم إنشاء ${namesToCreate.length} فصل/فصول داخل المدرسة.`);
+        } catch (error) {
+            setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء الفصول الآن.');
+        } finally {
+            setSchoolActionPending(null);
+        }
     };
 
     const downloadTemplate = () => {
@@ -1352,14 +1368,49 @@ export const SchoolsManager: React.FC = () => {
             setManagementNotice(null);
             setIsDeleteSchoolConfirmOpen(true);
         };
-        const confirmDeleteSelectedSchool = () => {
+        const confirmDeleteSelectedSchool = async () => {
             const deletedSchoolName = selectedSchool.name;
 
-            deleteGroup(selectedSchool.id);
+            setSchoolActionPending('delete-school');
             setManagementError(null);
-            setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
-            setIsDeleteSchoolConfirmOpen(false);
-            setSelectedSchool(null);
+            setManagementNotice(null);
+            try {
+                await deleteGroupAsync(selectedSchool.id);
+                setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
+                setIsDeleteSchoolConfirmOpen(false);
+                setSelectedSchool(null);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر حذف المدرسة الآن.');
+            } finally {
+                setSchoolActionPending(null);
+            }
+        };
+        const handleCreateSingleClass = async (notice = 'تم إنشاء فصل جديد. يمكنك تغيير اسمه وربط الطلاب والمشرفين من بطاقة الفصل.') => {
+            const now = Date.now();
+            setSchoolActionPending('create-class');
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await createGroupAsync({
+                    id: `class_${now}`,
+                    name: `فصل جديد - ${selectedSchool.name}`,
+                    type: 'CLASS',
+                    parentId: selectedSchool.id,
+                    ownerId: user.id,
+                    supervisorIds: [],
+                    studentIds: [],
+                    courseIds: [],
+                    createdAt: now,
+                    totalStudents: 0,
+                    totalSupervisors: 0,
+                    totalCourses: 0,
+                });
+                setManagementNotice(notice);
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء الفصل الآن.');
+            } finally {
+                setSchoolActionPending(null);
+            }
         };
         const handleCreateQuickSupervisor = async (fallbackGroupId?: string) => {
             const name = quickSupervisor.name.trim();
@@ -2498,14 +2549,25 @@ export const SchoolsManager: React.FC = () => {
                     </button>
                     <h1 className="min-w-[220px] flex-1 text-2xl font-bold text-gray-900">{selectedSchool.name}</h1>
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             const newName = window.prompt('اكتب اسم المدرسة الجديد:', selectedSchool.name);
                             if (newName?.trim() && newName.trim() !== selectedSchool.name) {
                                 const nextName = newName.trim();
-                                updateGroup(selectedSchool.id, { name: nextName });
-                                setSelectedSchool({ ...selectedSchool, name: nextName });
+                                setSchoolActionPending('rename-school');
+                                setManagementError(null);
+                                setManagementNotice(null);
+                                try {
+                                    const persistedSchool = await updateGroupAsync(selectedSchool.id, { name: nextName });
+                                    setSelectedSchool(persistedSchool);
+                                    setManagementNotice('تم حفظ اسم المدرسة.');
+                                } catch (error) {
+                                    setManagementError(error instanceof Error ? error.message : 'تعذر تعديل اسم المدرسة الآن.');
+                                } finally {
+                                    setSchoolActionPending(null);
+                                }
                             }
                         }}
+                        disabled={Boolean(schoolActionPending)}
                         className="inline-flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 text-sm font-bold text-gray-600 hover:bg-amber-50 hover:text-amber-700 transition-colors"
                         title="تعديل اسم المدرسة"
                     >
@@ -2590,6 +2652,7 @@ export const SchoolsManager: React.FC = () => {
                                 type="button"
                                 data-testid="school-delete-confirm"
                                 onClick={confirmDeleteSelectedSchool}
+                                disabled={Boolean(schoolActionPending)}
                                 className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-red-700"
                             >
                                 حذف المدرسة نهائيًا
@@ -2842,8 +2905,9 @@ export const SchoolsManager: React.FC = () => {
                         <button
                             type="button"
                             data-testid="school-primary-add-class"
-                            onClick={() => {
-                                createGroup({
+                            disabled={Boolean(schoolActionPending)}
+                            onClick={async () => {
+                                await createGroupAsync({
                                     id: `class_${Date.now()}`,
                                     name: `فصل جديد - ${selectedSchool.name}`,
                                     type: 'CLASS',
@@ -3126,8 +3190,9 @@ export const SchoolsManager: React.FC = () => {
                                         <button
                                             type="button"
                                             data-testid="school-student-create-first-class"
-                                            onClick={() => {
-                                                createGroup({
+                                            disabled={Boolean(schoolActionPending)}
+                                            onClick={async () => {
+                                                await createGroupAsync({
                                                     id: `class_${Date.now()}`,
                                                     name: `فصل جديد - ${selectedSchool.name}`,
                                                     type: 'CLASS',
@@ -3393,8 +3458,9 @@ export const SchoolsManager: React.FC = () => {
                                             <Download size={16} /> تصدير كشف الطلاب
                                         </button>
                                         <button
-                                            onClick={() => {
-                                                createGroup({
+                                            disabled={Boolean(schoolActionPending)}
+                                            onClick={async () => {
+                                                await createGroupAsync({
                                                     id: `class_${Date.now()}`,
                                                     name: `فصل جديد - ${selectedSchool.name}`,
                                                     type: 'CLASS',
@@ -3435,6 +3501,7 @@ export const SchoolsManager: React.FC = () => {
                                         </div>
                                         <button
                                             onClick={handleCreateBulkClasses}
+                                            disabled={Boolean(schoolActionPending)}
                                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-amber-600"
                                         >
                                             <Plus size={16} />
@@ -3486,22 +3553,26 @@ export const SchoolsManager: React.FC = () => {
                                                                 <Printer size={18} />
                                                             </button>
                                                             <button
-                                                                onClick={() => {
+                                                                onClick={async () => {
                                                                     const newName = window.prompt('أدخل اسم الفصل الجديد:', classroom.name);
                                                                     if (newName?.trim()) {
-                                                                        updateGroup(classroom.id, { name: newName.trim() });
+                                                                        await updateGroupAsync(classroom.id, { name: newName.trim() });
+                                                                        setManagementNotice('تم حفظ اسم الفصل.');
                                                                     }
                                                                 }}
+                                                                disabled={Boolean(schoolActionPending)}
                                                                 className="text-gray-400 hover:text-amber-600 transition-colors"
                                                             >
                                                                 <Edit2 size={18} />
                                                             </button>
                                                             <button
-                                                                onClick={() => {
+                                                                onClick={async () => {
                                                                     if (window.confirm('هل أنت متأكد من حذف هذا الفصل؟')) {
-                                                                        deleteGroup(classroom.id);
+                                                                        await deleteGroupAsync(classroom.id);
+                                                                        setManagementNotice('تم حذف الفصل.');
                                                                     }
                                                                 }}
+                                                                disabled={Boolean(schoolActionPending)}
                                                                 className="text-gray-400 hover:text-red-600 transition-colors"
                                                             >
                                                                 <Trash2 size={18} />
@@ -5103,7 +5174,7 @@ export const SchoolsManager: React.FC = () => {
                             value={newSchoolName}
                             onChange={(event) => setNewSchoolName(event.target.value)}
                             onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
+                                if (event.key === 'Enter' && !schoolActionPending) {
                                     handleCreateSchool();
                                 }
                             }}
@@ -5114,6 +5185,7 @@ export const SchoolsManager: React.FC = () => {
                         <button
                             type="button"
                             onClick={handleCreateSchool}
+                            disabled={Boolean(schoolActionPending)}
                             className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-black text-white transition-colors hover:bg-amber-600"
                             data-testid="school-create-button"
                         >

@@ -162,6 +162,29 @@ If continuing from a new account and local skills are missing, continue using th
 - `npm run build`: PASS.
 - Status: PASS for the current simple UX and duplication checkpoint. Admin School Dashboard and School Portal command surfaces are contract-clean, and the school summary cards now guide users to the exact operational panels instead of leaving them to search manually.
 
+#### Checkpoint 5 Follow-up - School/Class CRUD Awaited API
+
+- Updated `store/useStore.ts` with awaited school/class group operations:
+  - `createGroupAsync`
+  - `updateGroupAsync`
+  - `deleteGroupAsync`
+- Updated `dashboards/admin/SchoolsManager.tsx` so key school/class actions use awaited API persistence before updating the visible workspace:
+  - create school
+  - create bulk classes
+  - rename school
+  - delete school
+  - create class shortcuts
+  - rename class
+  - delete class
+- Added operation pending state to prevent repeated clicks during school/class saves.
+- Updated `scripts/smoke-school-management-contract.mjs` so the delete action contract recognizes the safer awaited delete flow.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+- Status: PASS for this follow-up. The main school/class CRUD buttons no longer rely only on cosmetic optimistic store updates.
+
 ### Checkpoint 6 - Final Verification
 
 - `npm run typecheck`: PASS.

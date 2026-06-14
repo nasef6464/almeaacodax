@@ -119,7 +119,8 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, "handleDeleteSelectedSchool");
   assertIncludes(files.schools, 'data-testid="school-delete-button"');
   assertIncludes(files.schools, "window.confirm");
-  assertIncludes(files.schools, "deleteGroup(selectedSchool.id)");
+  assertIncludes(files.schools, "deleteGroupAsync(selectedSchool.id)");
+  assertIncludes(files.store, "deleteGroupAsync: async");
   assertIncludes(files.schools, "setSelectedSchool(null)");
   assertIncludes(files.store, "deletedGroupIds");
   assertIncludes(files.store, "deletedPackageIds");
