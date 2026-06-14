@@ -310,6 +310,22 @@ If continuing from a new account and local skills are missing, continue using th
     - Checked credential sources: no `ROLE_ADMIN_*`, `SMOKE_ADMIN_*`, `GOLIVE_ADMIN_*`, `ADMIN_*` credentials in the current process or local `.env*` files, and no `audit-artifacts/ROLE_CREDENTIALS.env` file was present.
 - Status: final verification is not closed until `smoke:school-from-scratch-live` is rerun with admin credentials and passes. Do not deploy or mark schools complete before that live proof.
 
+#### Extra Scope Re-check While Waiting For Credentials - 2026-06-14
+
+- Branch verified: `codex/schools-full-closure`.
+- Last commit verified: `aa12c62b docs: record schools final verification blocker`.
+- `git status`: clean before this documentation update.
+- Additional verification:
+  - `npm run smoke:supervisor-school-live`: PASS 8/8.
+    - Evidence: `audit-artifacts/ui-audit-exhaustive/supervisor-school-2026-06-14T13-29-46-514Z`.
+  - `npm run smoke:supervisor-executive-snapshot-live`: PASS 2/2.
+    - Evidence: `audit-artifacts/ui-audit-exhaustive/supervisor-executive-snapshot-2026-06-14T13-29-47-888Z`.
+  - `npm run smoke:saher-skills`: PASS 5/5.
+  - `npm run smoke:report-actions-live`: BLOCKED 5/5.
+    - Evidence: `audit-artifacts/ui-audit-exhaustive/report-actions-2026-06-14T13-29-46-532Z`.
+    - Reason: missing student, parent, teacher, supervisor, and admin role credentials. Network 5xx count was 0.
+- Status: supervisor live scope and Saher skills remain PASS. Final deployment is still blocked until live admin/role credentials are available and the live checks pass.
+
 - `npm run typecheck`: PASS.
 - `npm run build`: PASS.
 - `npm run server:check`: PASS.
