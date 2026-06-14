@@ -118,7 +118,12 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run build`: PASS.
   - `npm run smoke:report-actions-live` against the deployed site before deployment of this commit: FAIL 4, expected because the deployed bundle did not include the local fix yet.
   - Local preview run was not treated as authoritative because localhost did not load the same role-scoped report data/session shape as production.
-- Next required proof: after this commit is deployed, rerun `npm run smoke:report-actions-live` against `https://almeaacodax.vercel.app` with the same role environment and expect PASS 10/10.
+- Deployed the fix to Vercel production and aliased it to `https://almeaacodax.vercel.app`.
+- Final live verification after deployment:
+  - `npm run smoke:report-actions-live`: PASS 10/10.
+    - Evidence: `audit-artifacts/ui-audit-exhaustive/report-actions-2026-06-14T00-04-43-097Z`.
+  - `npm run smoke:reports-role`: PASS 20/20.
+- Status: PASS. Live report action buttons are now verified for student, parent, teacher, supervisor, and admin on desktop and mobile.
 
 ### Checkpoint 4 - Real Student In Class UI
 
