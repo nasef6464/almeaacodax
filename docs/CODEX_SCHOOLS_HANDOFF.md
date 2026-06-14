@@ -423,3 +423,31 @@ If continuing from a new account and local skills are missing, continue using th
 - Continue from the first incomplete checkpoint.
 - Do not use `git add .`.
 - Do not open goals outside schools.
+
+## UX Simplification - Selected School Workspace - 2026-06-15
+
+- Branch: `codex/schools-ux-simplification`.
+- Scope: frontend-only changes inside `dashboards/admin/SchoolsManager.tsx`.
+- No backend, database, API, barcode, question editor, homepage, or orphan cleanup changes were made.
+- Simplified the selected school workspace so the first view starts with:
+  - one readiness/status strip,
+  - readiness percentage,
+  - the most important missing items only,
+  - one visible operating journey for classes, students, supervisors, packages/codes, and handover report.
+- Hid older repeated visual blocks from the user-facing layout while preserving their existing test hooks for regression coverage.
+- Student import now shows a clear five-step wizard: template download, file upload, preview, import, and credentials download.
+- Single-student add is collapsed by default and opens from the main student action or a class action.
+- Supervisor empty-state copy remains clear when no supervisors are available.
+- Package/code tab keeps a summary-first entry point, with detailed management remaining inside the section.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
+- Visual check:
+  - Local production preview checked on desktop 1440 x 1000 and mobile 390 x 844.
+  - Horizontal overflow: PASS on both viewports.
+  - Wizard visibility: PASS.
+  - Single-student card collapsed by default and opens from the primary action: PASS.
