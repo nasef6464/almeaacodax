@@ -152,7 +152,9 @@ interface AppState {
     updateAnnouncementAd: (id: string, data: Partial<AnnouncementAd>) => void;
     deleteAnnouncementAd: (id: string) => void;
     createAccessCode: (code: AccessCode) => void;
+    createAccessCodeAsync: (code: AccessCode) => Promise<AccessCode>;
     deleteAccessCode: (id: string) => void;
+    deleteAccessCodeAsync: (id: string) => Promise<void>;
 
     // Taxonomy Actions
     addPath: (path: CategoryPath) => void;
@@ -1663,12 +1665,31 @@ export const useStore = create<AppState>()(
                     accessCodes: [...state.accessCodes, code]
                 };
             }),
+            createAccessCodeAsync: async (code) => {
+                const persisted = await api.createAccessCode(code);
+                const nextCode = {
+                    ...code,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<AccessCode> : {}),
+                };
+                set((state) => ({
+                    accessCodes: state.accessCodes.some(current => current.id === nextCode.id)
+                        ? state.accessCodes.map(current => current.id === nextCode.id ? nextCode : current)
+                        : [...state.accessCodes, nextCode]
+                }));
+                return nextCode;
+            },
             deleteAccessCode: (id) => set((state) => {
                 api.deleteAccessCode(id).catch(console.error);
                 return {
                     accessCodes: state.accessCodes.filter(c => c.id !== id)
                 };
             }),
+            deleteAccessCodeAsync: async (id) => {
+                await api.deleteAccessCode(id);
+                set((state) => ({
+                    accessCodes: state.accessCodes.filter(code => code.id !== id)
+                }));
+            },
 
             // Taxonomy Actions
             addPath: (path) => {

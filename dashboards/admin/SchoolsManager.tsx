@@ -20,7 +20,7 @@ import {
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { Group, Role, User, PackageContentType } from '../../types';
+import { AccessCode, B2BPackage, Group, Role, User, PackageContentType } from '../../types';
 import { api } from '../../services/api';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeRows } from '../../utils/xlsxLoader';
 
@@ -601,8 +601,8 @@ export const SchoolsManager: React.FC = () => {
         createB2BPackageAsync,
         updateB2BPackageAsync,
         deleteB2BPackageAsync,
-        createAccessCode,
-        deleteAccessCode,
+        createAccessCodeAsync,
+        deleteAccessCodeAsync,
         hydrateUsers,
         hydrateContentBootstrap,
     } = useStore();
@@ -633,6 +633,7 @@ export const SchoolsManager: React.FC = () => {
     const [managementNotice, setManagementNotice] = useState<string | null>(null);
     const [schoolActionPending, setSchoolActionPending] = useState<string | null>(null);
     const [packageActionPending, setPackageActionPending] = useState<string | null>(null);
+    const [accessCodeActionPending, setAccessCodeActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -1527,6 +1528,60 @@ export const SchoolsManager: React.FC = () => {
                 setManagementError(error instanceof Error ? error.message : 'تعذر إيقاف كل الباقات الآن.');
             } finally {
                 setPackageActionPending(null);
+            }
+        };
+        const handleCreateSchoolAccessCode = async () => {
+            setManagementError(null);
+            setManagementNotice(null);
+
+            if (activeSchoolPackages.length === 0) {
+                setManagementError('يجب وجود باقة نشطة قبل توليد كود تفعيل.');
+                return;
+            }
+
+            if (!selectedPackageIdForCode) {
+                setManagementError('اختر الباقة النشطة التي سيعمل عليها كود التفعيل أولًا.');
+                return;
+            }
+
+            if (!selectedPackageForCode || selectedPackageForCode.status !== 'active') {
+                setManagementError('لا يمكن توليد كود على باقة موقوفة. فعّل الباقة أو اختر باقة نشطة.');
+                return;
+            }
+
+            const now = Date.now();
+            const accessCode: AccessCode = {
+                id: `code_${now}`,
+                code: `${selectedSchool.name.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+                schoolId: selectedSchool.id,
+                packageId: selectedPackageIdForCode,
+                maxUses: Math.max(1, Number(newCodeMaxUses) || 50),
+                currentUses: 0,
+                expiresAt: now + Math.max(1, Number(newCodeDurationDays) || 30) * 24 * 60 * 60 * 1000,
+                createdAt: now,
+            };
+
+            setAccessCodeActionPending(`create-${accessCode.id}`);
+            try {
+                await createAccessCodeAsync(accessCode);
+                setManagementNotice('تم توليد كود التفعيل وحفظه على الخادم.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر توليد كود التفعيل الآن.');
+            } finally {
+                setAccessCodeActionPending(null);
+            }
+        };
+        const handleDeleteSchoolAccessCode = async (codeId: string) => {
+            setAccessCodeActionPending(`delete-${codeId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await deleteAccessCodeAsync(codeId);
+                setManagementNotice('تم حذف كود التفعيل من الخادم.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر حذف كود التفعيل الآن.');
+            } finally {
+                setAccessCodeActionPending(null);
             }
         };
         const readinessChecks = [
@@ -4376,41 +4431,19 @@ export const SchoolsManager: React.FC = () => {
                                             <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{usedSeats} استخدام</span>
                                         </div>
                                         <button
-                            onClick={() => {
-                                                setManagementError(null);
-                                                if (activeSchoolPackages.length === 0) {
-                                                    setManagementError('يجب وجود باقة نشطة قبل توليد كود تفعيل.');
-                                                    return;
-                                                }
-
-                                                if (!selectedPackageIdForCode) {
-                                                    setManagementError('اختر الباقة النشطة التي سيعمل عليها كود التفعيل أولًا.');
-                                                    return;
-                                                }
-
-                                                if (!selectedPackageForCode || selectedPackageForCode.status !== 'active') {
-                                                    setManagementError('لا يمكن توليد كود على باقة موقوفة. فعّل الباقة أو اختر باقة نشطة.');
-                                                    return;
-                                                }
-
-                                                createAccessCode({
-                                                    id: `code_${Date.now()}`,
-                                                    code: `${selectedSchool.name.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
-                                                    schoolId: selectedSchool.id,
-                                                    packageId: selectedPackageIdForCode,
-                                                    maxUses: Math.max(1, Number(newCodeMaxUses) || 50),
-                                                    currentUses: 0,
-                                                    expiresAt: Date.now() + Math.max(1, Number(newCodeDurationDays) || 30) * 24 * 60 * 60 * 1000,
-                                                    createdAt: Date.now(),
-                                                });
-                                            }}
-                                            disabled={activeSchoolPackages.length === 0}
+                                            onClick={() => void handleCreateSchoolAccessCode()}
+                                            disabled={activeSchoolPackages.length === 0 || Boolean(accessCodeActionPending)}
                                             className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                                         >
                                             <Key size={16} /> توليد كود جديد
                                         </button>
                                     </div>
                                 </div>
+                                {accessCodeActionPending && (
+                                    <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800">
+                                        جار حفظ تعديل أكواد التفعيل على الخادم...
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                                         <label className="block text-xs font-bold text-gray-600 mb-2">عدد المقاعد لكل كود</label>
@@ -4469,7 +4502,7 @@ export const SchoolsManager: React.FC = () => {
                                                             <button
                                                                 onClick={() => {
                                                                     if (window.confirm('هل تريد حذف كود التفعيل هذا؟')) {
-                                                                        deleteAccessCode(code.id);
+                                                                        void handleDeleteSchoolAccessCode(code.id);
                                                                     }
                                                                 }}
                                                                 className="text-gray-400 hover:text-red-500 transition-colors"

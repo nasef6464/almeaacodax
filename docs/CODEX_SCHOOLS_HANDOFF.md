@@ -25,10 +25,8 @@ Secured removal actions inside schools management:
 ## Remaining To Close Schools
 
 1. Convert the remaining quick student/supervisor roster assignment buttons to awaited API flows or document any unavoidable blocker.
-2. Audit school access-code generation/deletion for awaited loading/error/success behavior.
-3. Re-run final verification after the remaining awaited-flow fixes.
-4. Deploy the final schools branch and run one production visual check after deployment.
-5. Resolve or document the recurring `npm run typecheck` timeout; `npm run build` currently passes.
+2. Re-run final verification after the remaining awaited-flow fixes.
+3. Deploy the final schools branch and run one production visual check after deployment.
 
 ## Skills Available Locally
 
@@ -70,7 +68,7 @@ If continuing from a new account and local skills are missing, continue using th
 | Admin School Dashboard | Move/assign/remove student from class or school | Store group assignment APIs through `updateGroup` | `GroupModel.studentIds`, `User.groupIds` | Backend document scope required | `smoke:school-management` checks roster action presence | FIX: removal confirmations were added, but assignment/removal paths still need awaited API flow proof. |
 | Admin School Dashboard | Link parent | `applySchoolRelations -> /content/schools/:id/relations` | `UserModel.linkedStudentIds`, `schoolId` | `assertSchoolManagementScope` | `smoke:school-management`, `smoke:batch136-admin-users-schools-parent-payment`, `smoke:school-from-scratch-live` | PASS: awaited relation endpoint exists, batch136 passed, and live school-from-scratch proved parent relation with real created data. |
 | Admin School Dashboard | Link school/class supervisor | `applySchoolRelations` and `createAdminUser`; store assignment APIs | `UserModel.groupIds`, `GroupModel.supervisorIds`, `schoolId` | `assertSchoolManagementScope` and supervisor scope resolution | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | FIX: relation endpoint is scoped; quick assignment store actions still need awaited API proof. |
-| Admin School Dashboard | Link package/path/course | `createB2BPackageAsync/updateB2BPackageAsync/deleteB2BPackageAsync` | `B2BPackageModel`, `AccessCodeModel` cleanup | `hasSchoolIdManagementScope` | `smoke:admin-school-command`, `smoke:school-management`, `smoke:batch136-admin-users-schools-parent-payment` | PASS-PARTIAL: school package create/update/delete/path/course controls now await API with visible package saving state; access-code generation still needs its own awaited audit. |
+| Admin School Dashboard | Link package/path/course | `createB2BPackageAsync/updateB2BPackageAsync/deleteB2BPackageAsync`, `createAccessCodeAsync/deleteAccessCodeAsync` | `B2BPackageModel`, `AccessCodeModel` cleanup | `hasSchoolIdManagementScope` | `typecheck`, `build`, `smoke:admin-school-command`, `smoke:school-management`, `smoke:school-portal-command`, `smoke:batch136-admin-users-schools-parent-payment` | PASS: school package create/update/delete/path/course controls and access-code generation/deletion now await API with visible saving/error/success state. |
 | Admin School Dashboard | School report | `getSchoolReport -> /content/schools/:id/report` | `GroupModel`, `UserModel`, `B2BPackageModel`, `AccessCodeModel` | `assertSchoolManagementScope` | `smoke:reports-role`, `smoke:report-actions-live` | PASS: report loading, role report actions, and backend scope are verified. |
 | School Portal | Supervisor school/class scope | Frontend scoped from user groups and school/class supervisor IDs | Uses scoped groups, packages, access codes, results | Frontend scope exists; backend scope guards verified for sensitive school APIs | `smoke:supervisor-school-live`, `smoke:supervisor-executive-snapshot-live`, `smoke:rbac-school-scope` | PASS: supervisor school/class scope has live and backend contract evidence. |
 | School Portal | Student reports and weak skills | Uses scoped students/results and class/school filters | Exam results and skills analysis scoped by visible students | Role scope prevents cross-school/class leakage in report contracts | `smoke:reports-role`, `smoke:saher-skills`, `smoke:report-actions-live` | PASS: report and Saher skill scope checks passed, and role report actions passed live. |
@@ -206,6 +204,24 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:batch136-admin-users-schools-parent-payment`: PASS.
 - Status: PASS-PARTIAL for package/path/course controls. Package CRUD and package scope edits now await API; access-code generation still needs the same awaited-flow audit.
+
+#### Checkpoint 5 Follow-up - School Access Code Awaited API
+
+- Updated `store/useStore.ts` with awaited school access-code operations:
+  - `createAccessCodeAsync`
+  - `deleteAccessCodeAsync`
+- Updated `dashboards/admin/SchoolsManager.tsx` so school access-code actions wait for the API before changing visible state:
+  - generate school activation code
+  - delete school activation code
+- Added visible access-code saving state plus clear error/success messages in the school workspace.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-portal-command`: PASS 14/14.
+  - `npm run smoke:batch136-admin-users-schools-parent-payment`: PASS.
+- Status: PASS. Access-code generation/deletion no longer relies only on optimistic local updates.
 
 #### Checkpoint 5 Follow-up - Visual School Workspace Pass
 
