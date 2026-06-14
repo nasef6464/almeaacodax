@@ -2473,7 +2473,7 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
 
-                            {directedFollowUpOptions.length > 0 ? (
+                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER ? (
                                 <div className="rounded-3xl border border-emerald-100 bg-white p-4 shadow-sm">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                         <div>

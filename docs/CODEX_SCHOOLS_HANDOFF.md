@@ -104,6 +104,22 @@ If continuing from a new account and local skills are missing, continue using th
   - Reason: missing role credentials for student, parent, teacher, supervisor, and admin. `audit-artifacts/ROLE_CREDENTIALS.env` was not present.
 - Status: PASS for contract-level reports and Saher skill scope. Live report action buttons still require role credentials before this checkpoint can be fully closed.
 
+#### Checkpoint 3 Follow-up - Report Action Buttons
+
+- Role credentials were supplied from the existing operational scenario accounts and local admin environment for verification only; no credential file was committed.
+- `npm run smoke:report-actions-live` against the current deployed site changed from BLOCKED to FAIL:
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/report-actions-2026-06-13T23-42-48-216Z`.
+  - PASS 6 / FAIL 4 / BLOCKED 0.
+  - Student, parent, and teacher report actions passed on desktop and mobile.
+  - Supervisor and admin failed because `[data-testid="directed-quiz-analysis-export"]` was missing when no directed follow-up options existed.
+- Updated `pages/Reports.tsx` so the directed quiz analysis panel is visible for teacher, supervisor, and admin report users even when there are no directed follow-up attempts yet; the export action remains visible and disabled until exportable results exist.
+- Verification after the local code change:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run smoke:report-actions-live` against the deployed site before deployment of this commit: FAIL 4, expected because the deployed bundle did not include the local fix yet.
+  - Local preview run was not treated as authoritative because localhost did not load the same role-scoped report data/session shape as production.
+- Next required proof: after this commit is deployed, rerun `npm run smoke:report-actions-live` against `https://almeaacodax.vercel.app` with the same role environment and expect PASS 10/10.
+
 ### Checkpoint 4 - Real Student In Class UI
 
 - `npm run smoke:school-from-scratch-live`: PASS 12/12.
