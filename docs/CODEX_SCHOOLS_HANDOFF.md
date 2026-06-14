@@ -24,7 +24,7 @@ Secured removal actions inside schools management:
 
 ## Remaining To Close Schools
 
-1. Deploy the final schools branch and run one production visual check after deployment.
+1. No open schools release blocker is known after the latest production deploy and visual pass.
 2. If the local ignored credential file is missing in a future account, re-provide live admin credentials before re-running `npm run smoke:school-from-scratch-live`.
 
 ## Local Credential Note
@@ -345,7 +345,19 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-portal-command`: PASS 14/14.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
   - `npm run smoke:reports-role`: PASS 20/20.
-- Status: final contract/build verification is PASS. The remaining release step is production deployment and one production visual check.
+- Deployed to Vercel production:
+  - Production URL: `https://almeaacodax.vercel.app`.
+  - Deployment URL: `https://almeaacodax-9lkrcql3a-nasefs-projects-18e6bdb1.vercel.app`.
+- Production visual verification:
+  - Evidence: `audit-artifacts/ui-audit-exhaustive/prod-schools-visual-2026-06-14T18-43-10-935Z`.
+  - Desktop viewport 1440 x 1000: PASS.
+  - Mobile viewport 390 x 844: PASS.
+  - Visible selected-school panels: `school-workspace-shell`, `school-primary-add-class`, `school-students-panel`, `school-roster-panel`, `school-delete-button`, `school-wide-supervisors-panel`.
+  - Horizontal overflow: PASS, none found.
+  - Console errors: 0.
+  - Network 5xx responses: 0.
+  - Auth 401/403 responses during verified run: 0.
+- Status: final contract/build verification, production deployment, and production visual verification are PASS.
 
 - `npm run typecheck`: PASS.
 - `npm run build`: PASS.
