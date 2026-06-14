@@ -373,6 +373,48 @@ If continuing from a new account and local skills are missing, continue using th
 - No stale `typecheck`, `tsc --noEmit`, or `live-school-from-scratch` Node processes were left running after verification.
 - Status: final contract/build verification is PASS for all Checkpoint 6 commands.
 
+### Post-PASS Schools Reality QA - 2026-06-14
+
+- Branch verified and updated with fast-forward only: `codex/schools-full-closure`.
+- Last 5 commits reviewed:
+  - `0cf85a14` docs: record schools production visual pass
+  - `6a45271e` docs: record schools live admin verification pass
+  - `a67c94d7` docs: record additional schools credential-gated checks
+  - `aa12c62b` docs: record schools final verification blocker
+  - `0d16619e` fix: await school roster scope actions
+- Investigation result:
+  - Student import was not a database write failure. `/content/schools/:id/import-students` persisted users/classes/groups, but the frontend refreshed through `/auth/admin/users`, which is capped by the backend at 100 users and did not refresh school groups/classes. This could leave the selected school panel showing stale `users/groups/counts`.
+  - Supervisor lists could become empty because the relations response returned only school-scoped users and the frontend replaced the whole users store with that partial list. Available global supervisors could disappear after the relation flow.
+  - Database integrity dry-run found orphan data, but no DB-level case of imported students being invisible in the selected school.
+- Fixes applied:
+  - `/content/schools/:id/import-students` now returns authoritative `groups` and `users` for the affected school after import.
+  - `SchoolsManager.tsx` now merges partial school users/groups into the existing store instead of replacing global users/groups after import or relations.
+  - Supervisor dropdowns now show a clear empty state: `لا يوجد مشرفون متاحون، أنشئ مشرفًا جديدًا أو حرر مشرفًا مرتبطًا بنطاق آخر.`
+  - Added dry-run-only integrity audit script: `scripts/audit-school-integrity.mjs`.
+- Integrity dry-run evidence:
+  - Command: `node scripts/audit-school-integrity.mjs`.
+  - Mode: dry-run, writes performed: 0.
+  - Database totals: 58 users, 10 groups, 3 schools, 7 classes.
+  - Findings:
+    - users with missing schoolId group: 7.
+    - users with orphan groupIds: 14.
+    - groups with missing studentIds: 0.
+    - groups with missing supervisorIds: 0.
+    - supervisors linked to deleted schools/classes: 4.
+    - students imported but not visible in selected school: 0.
+    - students visible by school/class but missing from school roster: 0.
+  - No cleanup was executed. Orphan cleanup remains approval-gated.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0, evidence `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-14T20-32-59-186Z`.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+  - Additional nearby check `npm run smoke:batch100f-relationship-audit`: PASS 10/10.
+- Status: Post-PASS Reality QA fixes are code-complete and verified. Student import visibility is fixed as a frontend/API hydration issue. Supervisor dropdown disappearance is fixed as a partial-store replacement issue. Orphan data exists and must not be cleaned without explicit approval.
+
 ## Work Rule
 
 - No new account starts from scratch.

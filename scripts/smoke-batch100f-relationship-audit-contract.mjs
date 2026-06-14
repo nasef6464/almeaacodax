@@ -87,7 +87,7 @@ check("Backend school relation endpoint is protected and updates parent/supervis
   assertIncludes(sources.contentRoutes, "schoolRelationSchema.parse(req.body)");
   assertIncludes(sources.contentRoutes, "assertSchoolManagementScope(req.authUser!, school as any)");
   assertIncludes(sources.contentRoutes, "You cannot manage this school");
-  assertIncludes(sources.contentRoutes, "$addToSet: { groupIds: classId }");
+  assertIncludes(sources.contentRoutes, "groupIds: nextGroupIds");
   assertIncludes(sources.contentRoutes, "$addToSet: { linkedStudentIds: student.id");
   assertIncludes(sources.contentRoutes, "$addToSet: { supervisorIds: supervisor.id");
   assertIncludes(sources.contentRoutes, "groups: updatedGroups");
@@ -114,15 +114,15 @@ check("Group CRUD requires auth, role, and group-scope validation before mutatin
 check("Frontend uses the server relations endpoint and refreshes users/groups from authoritative response", () => {
   assertIncludes(sources.api, "applySchoolRelations");
   assertIncludes(sources.schoolsManager, "api.applySchoolRelations(selectedSchool.id");
-  assertIncludes(sources.schoolsManager, "hydrateUsers(response.users.map(buildStoreUser))");
-  assertIncludes(sources.schoolsManager, "hydrateContentBootstrap({ groups: response.groups })");
+  assertIncludes(sources.schoolsManager, "mergeSchoolUsers(response.users)");
+  assertIncludes(sources.schoolsManager, "mergeSchoolGroups(response.groups)");
   assertIncludes(sources.schoolsManager, "loadSchoolReport(selectedSchool.id)");
 });
 
 check("Admin UI exposes school/class supervisor assignment, class movement, and parent linking flows", () => {
-  assertIncludes(sources.schoolsManager, "assignSupervisorToGroup(value, selectedSchool.id)");
-  assertIncludes(sources.schoolsManager, "assignSupervisorToGroup(value, classroom.id)");
-  assertIncludes(sources.schoolsManager, "assignStudentToGroup(student.id, value)");
+  assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
+  assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(sources.schoolsManager, "handleAssignStudentToClass(student.id, value)");
   assertIncludes(sources.schoolsManager, "parentLinks.set(parent.id");
   assertIncludes(sources.usersManager, "handleSupervisorGroupsChange");
   assertIncludes(sources.usersManager, "handleParentLinkedStudentsChange");

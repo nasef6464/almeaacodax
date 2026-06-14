@@ -50,7 +50,7 @@ check("school relations endpoint is scoped for supervisors", () => {
 check("frontend uses server relation workflow and supports one student add", () => {
   assertIncludes(files.api, "applySchoolRelations");
   assertIncludes(files.schools, "api.applySchoolRelations");
-  assertIncludes(files.schools, "hydrateContentBootstrap({ groups: response.groups })");
+  assertIncludes(files.schools, "mergeSchoolGroups(response.groups)");
   assertIncludes(files.schools, "إضافة طالب منفرد");
   assertIncludes(files.schools, "handleAddSingleStudent");
 });
