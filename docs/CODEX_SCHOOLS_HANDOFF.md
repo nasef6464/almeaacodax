@@ -24,12 +24,14 @@ Secured removal actions inside schools management:
 
 ## Remaining To Close Schools
 
-1. Provide live admin credentials for `npm run smoke:school-from-scratch-live`:
-   - `ROLE_ADMIN_EMAIL` + `ROLE_ADMIN_PASSWORD`, or
-   - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`, or
-   - `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
-2. Re-run `npm run smoke:school-from-scratch-live`.
-3. Deploy the final schools branch and run one production visual check after deployment.
+1. Deploy the final schools branch and run one production visual check after deployment.
+2. If the local ignored credential file is missing in a future account, re-provide live admin credentials before re-running `npm run smoke:school-from-scratch-live`.
+
+## Local Credential Note
+
+- Local admin smoke credentials were saved in ignored file `audit-artifacts/ROLE_CREDENTIALS.env`.
+- Do not commit this file.
+- Do not copy credential values into this handoff.
 
 ## Skills Available Locally
 
@@ -325,6 +327,25 @@ If continuing from a new account and local skills are missing, continue using th
     - Evidence: `audit-artifacts/ui-audit-exhaustive/report-actions-2026-06-14T13-29-46-532Z`.
     - Reason: missing student, parent, teacher, supervisor, and admin role credentials. Network 5xx count was 0.
 - Status: supervisor live scope and Saher skills remain PASS. Final deployment is still blocked until live admin/role credentials are available and the live checks pass.
+
+#### Checkpoint 6 Re-run After Local Admin Credentials - 2026-06-14
+
+- Branch verified: `codex/schools-full-closure`.
+- Local admin credentials saved only in ignored file `audit-artifacts/ROLE_CREDENTIALS.env`.
+- `git check-ignore` confirmed the credential file is ignored through `.gitignore`.
+- Verification:
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12.
+    - Evidence: `audit-artifacts/ui-audit-exhaustive/school-from-scratch-2026-06-14T18-23-02-692Z`.
+    - Cleanup review: PASS 0 pending reviews.
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-portal-command`: PASS 14/14.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+  - `npm run smoke:reports-role`: PASS 20/20.
+- Status: final contract/build verification is PASS. The remaining release step is production deployment and one production visual check.
 
 - `npm run typecheck`: PASS.
 - `npm run build`: PASS.
