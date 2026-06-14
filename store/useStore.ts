@@ -143,8 +143,11 @@ interface AppState {
 
     // B2B Actions
     createB2BPackage: (pkg: B2BPackage) => void;
+    createB2BPackageAsync: (pkg: B2BPackage) => Promise<B2BPackage>;
     updateB2BPackage: (id: string, data: Partial<B2BPackage>) => void;
+    updateB2BPackageAsync: (id: string, data: Partial<B2BPackage>) => Promise<B2BPackage>;
     deleteB2BPackage: (id: string) => void;
+    deleteB2BPackageAsync: (id: string) => Promise<void>;
     createAnnouncementAd: (ad: AnnouncementAd) => void;
     updateAnnouncementAd: (id: string, data: Partial<AnnouncementAd>) => void;
     deleteAnnouncementAd: (id: string) => void;
@@ -1528,6 +1531,25 @@ export const useStore = create<AppState>()(
                     b2bPackages: [...state.b2bPackages, normalizedPackage]
                 };
             }),
+            createB2BPackageAsync: async (pkg) => {
+                const normalizedPackage: B2BPackage = {
+                    ...pkg,
+                    contentTypes: Array.isArray(pkg.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes : ['all'],
+                    pathIds: Array.isArray(pkg.pathIds) ? pkg.pathIds : [],
+                    subjectIds: Array.isArray(pkg.subjectIds) ? pkg.subjectIds : [],
+                };
+                const persisted = await api.createB2BPackage(normalizedPackage);
+                const nextPackage = {
+                    ...normalizedPackage,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                };
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.some(pkg => pkg.id === nextPackage.id)
+                        ? state.b2bPackages.map(pkg => pkg.id === nextPackage.id ? nextPackage : pkg)
+                        : [...state.b2bPackages, nextPackage]
+                }));
+                return nextPackage;
+            },
             updateB2BPackage: (id, data) => set((state) => {
                 const normalizedData: Partial<B2BPackage> = {
                     ...data,
@@ -1552,6 +1574,37 @@ export const useStore = create<AppState>()(
                     })
                 };
             }),
+            updateB2BPackageAsync: async (id, data) => {
+                const normalizedData: Partial<B2BPackage> = {
+                    ...data,
+                    ...(data.contentTypes ? { contentTypes: data.contentTypes as PackageContentType[] } : {}),
+                    ...(data.pathIds ? { pathIds: data.pathIds } : {}),
+                    ...(data.subjectIds ? { subjectIds: data.subjectIds } : {}),
+                };
+                const persisted = await api.updateB2BPackage(id, normalizedData);
+                let nextPackage: B2BPackage | null = null;
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.map((pkg): B2BPackage => {
+                        if (pkg.id !== id) {
+                            return pkg;
+                        }
+
+                        nextPackage = {
+                            ...pkg,
+                            ...normalizedData,
+                            ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                            contentTypes: normalizedData.contentTypes ?? pkg.contentTypes,
+                            pathIds: normalizedData.pathIds ?? pkg.pathIds,
+                            subjectIds: normalizedData.subjectIds ?? pkg.subjectIds,
+                        };
+                        return nextPackage;
+                    })
+                }));
+                if (!nextPackage) {
+                    throw new Error('تعذر العثور على الباقة المدرسية بعد الحفظ.');
+                }
+                return nextPackage;
+            },
             deleteB2BPackage: (id) => set((state) => {
                 api.deleteB2BPackage(id).catch(console.error);
                 return {
@@ -1559,6 +1612,13 @@ export const useStore = create<AppState>()(
                     accessCodes: state.accessCodes.filter(code => code.packageId !== id)
                 };
             }),
+            deleteB2BPackageAsync: async (id) => {
+                await api.deleteB2BPackage(id);
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.filter(pkg => pkg.id !== id),
+                    accessCodes: state.accessCodes.filter(code => code.packageId !== id)
+                }));
+            },
             createAnnouncementAd: (ad) => set((state) => {
                 const normalizedAd: AnnouncementAd = {
                     ...ad,

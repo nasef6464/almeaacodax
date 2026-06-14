@@ -598,9 +598,9 @@ export const SchoolsManager: React.FC = () => {
         removeCourseFromGroup,
         assignStudentToGroup,
         removeStudentFromGroup,
-        createB2BPackage,
-        updateB2BPackage,
-        deleteB2BPackage,
+        createB2BPackageAsync,
+        updateB2BPackageAsync,
+        deleteB2BPackageAsync,
         createAccessCode,
         deleteAccessCode,
         hydrateUsers,
@@ -632,6 +632,7 @@ export const SchoolsManager: React.FC = () => {
     const [managementError, setManagementError] = useState<string | null>(null);
     const [managementNotice, setManagementNotice] = useState<string | null>(null);
     const [schoolActionPending, setSchoolActionPending] = useState<string | null>(null);
+    const [packageActionPending, setPackageActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -1474,6 +1475,58 @@ export const SchoolsManager: React.FC = () => {
             } catch (error) {
                 setManagementError(error instanceof Error ? error.message : 'تعذر إنشاء أو ربط المشرف الآن.');
                 setManagementNotice(null);
+            }
+        };
+        const handleCreateSchoolPackage = async (pkg: B2BPackage) => {
+            setPackageActionPending(`create-${pkg.id}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await createB2BPackageAsync(pkg);
+                setManagementNotice('تم حفظ الباقة المدرسية وربطها بالمدرسة.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر حفظ الباقة المدرسية الآن.');
+            } finally {
+                setPackageActionPending(null);
+            }
+        };
+        const handleUpdateSchoolPackage = async (packageId: string, data: Partial<B2BPackage>) => {
+            setPackageActionPending(`update-${packageId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await updateB2BPackageAsync(packageId, data);
+                setManagementNotice('تم حفظ تعديل الباقة المدرسية.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر حفظ تعديل الباقة المدرسية الآن.');
+            } finally {
+                setPackageActionPending(null);
+            }
+        };
+        const handleDeleteSchoolPackage = async (packageId: string) => {
+            setPackageActionPending(`delete-${packageId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await deleteB2BPackageAsync(packageId);
+                setManagementNotice('تم حذف الباقة المدرسية وأكوادها المرتبطة.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر حذف الباقة المدرسية الآن.');
+            } finally {
+                setPackageActionPending(null);
+            }
+        };
+        const handleExpireAllSchoolPackages = async () => {
+            setPackageActionPending('expire-all');
+            setManagementError(null);
+            setManagementNotice(null);
+            try {
+                await Promise.all(schoolPackages.map((pkg) => updateB2BPackageAsync(pkg.id, { status: 'expired' })));
+                setManagementNotice('تم إيقاف كل باقات المدرسة بعد تأكيد الحفظ من الخادم.');
+            } catch (error) {
+                setManagementError(error instanceof Error ? error.message : 'تعذر إيقاف كل الباقات الآن.');
+            } finally {
+                setPackageActionPending(null);
             }
         };
         const readinessChecks = [
@@ -3930,17 +3983,15 @@ export const SchoolsManager: React.FC = () => {
                                             <Download size={16} /> تقرير الباقات
                                         </button>
                                         <button
-                                            onClick={() => {
-                                                schoolPackages.forEach((pkg) => updateB2BPackage(pkg.id, { status: 'expired' }));
-                                            }}
-                                            disabled={activeSchoolPackages.length === 0}
+                                            onClick={() => void handleExpireAllSchoolPackages()}
+                                            disabled={activeSchoolPackages.length === 0 || Boolean(packageActionPending)}
                                             className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 disabled:opacity-50 transition-colors"
                                         >
                                             إيقاف الكل
                                         </button>
                                         <button
                                             onClick={() => {
-                                                createB2BPackage({
+                                                void handleCreateSchoolPackage({
                                                     id: `pkg_${Date.now()}`,
                                                     schoolId: selectedSchool.id,
                                                     name: 'باقة جديدة',
@@ -3956,12 +4007,18 @@ export const SchoolsManager: React.FC = () => {
                                                     createdAt: Date.now(),
                                                 });
                                             }}
+                                            disabled={Boolean(packageActionPending)}
                                             className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-600 transition-colors flex items-center gap-2"
                                         >
                                             <Plus size={16} /> تخصيص باقة
                                         </button>
                                     </div>
                                 </div>
+                                {packageActionPending && (
+                                    <div className="mb-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">
+                                        جار حفظ تعديل الباقات على الخادم...
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {schoolPackages.map((pkg) => {
                                         const packageCourses = publishedCourses.filter((course) => pkg.courseIds.includes(course.id));
@@ -3978,7 +4035,7 @@ export const SchoolsManager: React.FC = () => {
                                                         onBlur={(event) => {
                                                             const value = event.target.value.trim();
                                                             if (value && value !== pkg.name) {
-                                                                updateB2BPackage(pkg.id, { name: value });
+                                                                void handleUpdateSchoolPackage(pkg.id, { name: value });
                                                             }
                                                         }}
                                                         className="font-bold text-gray-900 text-lg bg-transparent border-b border-transparent hover:border-gray-200 focus:border-amber-400 focus:outline-none transition-colors w-full"
@@ -3997,7 +4054,7 @@ export const SchoolsManager: React.FC = () => {
                                                         {pkg.status === 'active' ? 'نشطة' : 'منتهية'}
                                                     </span>
                                                     <button
-                                                        onClick={() => updateB2BPackage(pkg.id, {
+                                                        onClick={() => void handleUpdateSchoolPackage(pkg.id, {
                                                             status: pkg.status === 'active' ? 'expired' : 'active',
                                                         })}
                                                         className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
@@ -4012,7 +4069,7 @@ export const SchoolsManager: React.FC = () => {
                                                     <button
                                                         onClick={() => {
                                                             if (window.confirm('الحذف النهائي مخصص للتنظيف فقط. الأفضل إيقاف الباقة إذا كانت مستخدمة. هل تريد الحذف نهائيًا؟')) {
-                                                                deleteB2BPackage(pkg.id);
+                                                                void handleDeleteSchoolPackage(pkg.id);
                                                             }
                                                         }}
                                                         className="text-gray-300 hover:text-red-600 transition-colors"
@@ -4027,7 +4084,7 @@ export const SchoolsManager: React.FC = () => {
                                                     <label className="block text-xs font-bold text-gray-600 mb-2">نوع الباقة</label>
                                                     <select
                                                         value={pkg.type}
-                                                        onChange={(event) => updateB2BPackage(pkg.id, {
+                                                        onChange={(event) => void handleUpdateSchoolPackage(pkg.id, {
                                                             type: event.target.value as 'free_access' | 'discounted',
                                                         })}
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -4040,7 +4097,7 @@ export const SchoolsManager: React.FC = () => {
                                                     <label className="block text-xs font-bold text-gray-600 mb-2">حالة الباقة</label>
                                                     <select
                                                         value={pkg.status}
-                                                        onChange={(event) => updateB2BPackage(pkg.id, {
+                                                        onChange={(event) => void handleUpdateSchoolPackage(pkg.id, {
                                                             status: event.target.value as 'active' | 'expired',
                                                         })}
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -4053,7 +4110,7 @@ export const SchoolsManager: React.FC = () => {
                                                     <label className="block text-xs font-bold text-gray-600 mb-2">المعلم/المدرب المرتبط</label>
                                                     <select
                                                         value={pkg.assignedTeacherId || ''}
-                                                        onChange={(event) => updateB2BPackage(pkg.id, {
+                                                        onChange={(event) => void handleUpdateSchoolPackage(pkg.id, {
                                                             assignedTeacherId: event.target.value,
                                                         })}
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -4074,7 +4131,7 @@ export const SchoolsManager: React.FC = () => {
                                                         onChange={(event) => {
                                                             const value = event.target.value === '' ? undefined : Number(event.target.value);
                                                             if (value === undefined || (Number.isFinite(value) && value >= 0 && value <= 100)) {
-                                                                updateB2BPackage(pkg.id, { revenueSharePercentage: value });
+                                                                void handleUpdateSchoolPackage(pkg.id, { revenueSharePercentage: value });
                                                             }
                                                         }}
                                                         placeholder="مثال: 30"
@@ -4090,7 +4147,7 @@ export const SchoolsManager: React.FC = () => {
                                                         onBlur={(event) => {
                                                             const value = Number(event.target.value);
                                                             if (Number.isFinite(value) && value > 0 && value !== pkg.maxStudents) {
-                                                                updateB2BPackage(pkg.id, { maxStudents: value });
+                                                                void handleUpdateSchoolPackage(pkg.id, { maxStudents: value });
                                                             }
                                                         }}
                                                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -4107,7 +4164,7 @@ export const SchoolsManager: React.FC = () => {
                                                             onBlur={(event) => {
                                                                 const value = Number(event.target.value);
                                                                 if (Number.isFinite(value) && value > 0 && value <= 100 && value !== pkg.discountPercentage) {
-                                                                    updateB2BPackage(pkg.id, { discountPercentage: value });
+                                                                    void handleUpdateSchoolPackage(pkg.id, { discountPercentage: value });
                                                                 }
                                                             }}
                                                             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -4141,7 +4198,7 @@ export const SchoolsManager: React.FC = () => {
                                                                             nextTypes = [...selectedContentTypes.filter((item) => item !== 'all'), option.value] as PackageContentType[];
                                                                         }
 
-                                                                        updateB2BPackage(pkg.id, {
+                                                                        void handleUpdateSchoolPackage(pkg.id, {
                                                                             contentTypes: nextTypes.length > 0 ? nextTypes : ['all'],
                                                                         });
                                                                     }}
@@ -4167,7 +4224,7 @@ export const SchoolsManager: React.FC = () => {
                                                             onChange={(event) => {
                                                                 const value = event.target.value;
                                                                 if (!value) return;
-                                                                updateB2BPackage(pkg.id, {
+                                                                void handleUpdateSchoolPackage(pkg.id, {
                                                                     pathIds: Array.from(new Set([...(pkg.pathIds || []), value])),
                                                                 });
                                                                 event.target.value = '';
@@ -4186,7 +4243,7 @@ export const SchoolsManager: React.FC = () => {
                                                             ) : packagePaths.map((path) => (
                                                                 <button
                                                                     key={path.id}
-                                                                    onClick={() => updateB2BPackage(pkg.id, {
+                                                                    onClick={() => void handleUpdateSchoolPackage(pkg.id, {
                                                                         pathIds: (pkg.pathIds || []).filter((pathId) => pathId !== path.id),
                                                                     })}
                                                                     className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors"
@@ -4205,7 +4262,7 @@ export const SchoolsManager: React.FC = () => {
                                                             onChange={(event) => {
                                                                 const value = event.target.value;
                                                                 if (!value) return;
-                                                                updateB2BPackage(pkg.id, {
+                                                                void handleUpdateSchoolPackage(pkg.id, {
                                                                     subjectIds: Array.from(new Set([...(pkg.subjectIds || []), value])),
                                                                 });
                                                                 event.target.value = '';
@@ -4228,7 +4285,7 @@ export const SchoolsManager: React.FC = () => {
                                                             ) : packageSubjects.map((currentSubject) => (
                                                                 <button
                                                                     key={currentSubject.id}
-                                                                    onClick={() => updateB2BPackage(pkg.id, {
+                                                                    onClick={() => void handleUpdateSchoolPackage(pkg.id, {
                                                                         subjectIds: (pkg.subjectIds || []).filter((subjectId) => subjectId !== currentSubject.id),
                                                                     })}
                                                                     className="px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-xs font-bold hover:bg-purple-100 transition-colors"
@@ -4263,7 +4320,7 @@ export const SchoolsManager: React.FC = () => {
                                                                 assignCourseToGroup(value, selectedSchool.id);
                                                             }
 
-                                                            updateB2BPackage(pkg.id, {
+                                                            void handleUpdateSchoolPackage(pkg.id, {
                                                                 courseIds: Array.from(new Set([...pkg.courseIds, value])),
                                                             });
                                                             event.target.value = '';
@@ -4283,7 +4340,7 @@ export const SchoolsManager: React.FC = () => {
                                                     ) : packageCourses.map((course) => (
                                                         <button
                                                             key={course.id}
-                                                            onClick={() => updateB2BPackage(pkg.id, {
+                                                            onClick={() => void handleUpdateSchoolPackage(pkg.id, {
                                                                 courseIds: pkg.courseIds.filter((courseId) => courseId !== course.id),
                                                             })}
                                                             className="px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold hover:bg-amber-100 transition-colors"
