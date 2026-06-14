@@ -24,8 +24,12 @@ Secured removal actions inside schools management:
 
 ## Remaining To Close Schools
 
-1. Re-run final verification after the awaited-flow fixes.
-2. Deploy the final schools branch and run one production visual check after deployment.
+1. Provide live admin credentials for `npm run smoke:school-from-scratch-live`:
+   - `ROLE_ADMIN_EMAIL` + `ROLE_ADMIN_PASSWORD`, or
+   - `SMOKE_ADMIN_EMAIL` + `SMOKE_ADMIN_PASSWORD`, or
+   - `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
+2. Re-run `npm run smoke:school-from-scratch-live`.
+3. Deploy the final schools branch and run one production visual check after deployment.
 
 ## Skills Available Locally
 
@@ -286,6 +290,25 @@ If continuing from a new account and local skills are missing, continue using th
 - Status: PASS. The selected school workspace is visually contained on production mobile after deployment.
 
 ### Checkpoint 6 - Final Verification
+
+#### Checkpoint 6 Re-run After Roster Awaited API - 2026-06-14
+
+- Branch verified: `codex/schools-full-closure`.
+- Last commit verified: `0d16619e fix: await school roster scope actions`.
+- `git status`: clean before this documentation update.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-portal-command`: PASS 14/14.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+  - `npm run smoke:reports-role`: PASS 20/20.
+  - `npm run smoke:school-from-scratch-live`: BLOCKED.
+    - First useful error: `Error: Missing admin credentials`.
+    - Checked credential sources: no `ROLE_ADMIN_*`, `SMOKE_ADMIN_*`, `GOLIVE_ADMIN_*`, `ADMIN_*` credentials in the current process or local `.env*` files, and no `audit-artifacts/ROLE_CREDENTIALS.env` file was present.
+- Status: final verification is not closed until `smoke:school-from-scratch-live` is rerun with admin credentials and passes. Do not deploy or mark schools complete before that live proof.
 
 - `npm run typecheck`: PASS.
 - `npm run build`: PASS.
