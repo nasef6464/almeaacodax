@@ -451,3 +451,32 @@ If continuing from a new account and local skills are missing, continue using th
   - Horizontal overflow: PASS on both viewports.
   - Wizard visibility: PASS.
   - Single-student card collapsed by default and opens from the primary action: PASS.
+
+## UX Simplification Visible Difference Follow-up - 2026-06-15
+
+- Branch: `codex/schools-ux-simplification`.
+- PR: `#2`.
+- Scope remained frontend-only inside `dashboards/admin/SchoolsManager.tsx`; no backend, API, database, barcode, question editor, homepage, or orphan cleanup changes.
+- Updated the selected school first screen so it is visibly different:
+  - the first visible area is now one large status card with school name, readiness label, readiness percentage, and the top 3 missing items only;
+  - old workspace tabs and repeated command-center blocks are hidden from the user-facing layout;
+  - five large operating steps are shown collapsed by default: classes, students, supervisors, packages/codes, and handover report;
+  - opening one step shows only that step's details;
+  - student import is reached through the students step and keeps the five-stage wizard;
+  - single-student add stays hidden until the user opens it.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
+- Visual check:
+  - Local production preview checked on desktop 1440 x 1000 and mobile 390 x 844.
+  - Horizontal overflow: PASS on both viewports.
+  - First screen changed: PASS, `school-ux-launch-board` visible.
+  - Old command center and old tabs hidden: PASS.
+  - Details collapsed by default: PASS.
+  - Five UX steps visible: PASS.
+  - Student import wizard visible only after opening students step: PASS.
+  - Single-student form hidden by default and opens from its visible button: PASS.

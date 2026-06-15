@@ -649,7 +649,7 @@ export const SchoolsManager: React.FC = () => {
     const [accessCodeActionPending, setAccessCodeActionPending] = useState<string | null>(null);
     const [rosterActionPending, setRosterActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
-    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>('overview');
+    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
     const [isSingleStudentOpen, setIsSingleStudentOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -2904,7 +2904,7 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <div data-testid="school-workspace-tabs" className="flex flex-wrap gap-2 border-b border-gray-200">
+                <div data-testid="school-workspace-tabs" className="hidden">
                     {[
                         { id: 'overview', label: '1 الفصول والطلاب' },
                         { id: 'import', label: '2 استيراد الطلاب' },
@@ -2949,7 +2949,142 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <div data-testid="school-command-center" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <section data-testid="school-ux-launch-board" className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                    <div className="grid gap-0 lg:grid-cols-[0.95fr_1.35fr]">
+                        <div className={`p-6 ${
+                            readinessScore === readinessChecks.length
+                                ? 'bg-emerald-50'
+                                : readinessScore >= 3
+                                    ? 'bg-amber-50'
+                                    : 'bg-rose-50'
+                        }`}>
+                            <button
+                                type="button"
+                                onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }}
+                                className="mb-5 inline-flex items-center text-sm font-black text-slate-600 hover:text-slate-900"
+                            >
+                                &rarr; عودة لقائمة المدارس
+                            </button>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                    readinessScore === readinessChecks.length
+                                        ? 'bg-white text-emerald-700'
+                                        : readinessScore >= 3
+                                            ? 'bg-white text-amber-800'
+                                            : 'bg-white text-rose-700'
+                                }`}>
+                                    {readinessStatusLabel}
+                                </span>
+                                <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-black text-slate-600">
+                                    {readinessPercent}% جاهزية
+                                </span>
+                            </div>
+                            <h2 className="mt-4 text-2xl font-black leading-9 text-gray-950">{selectedSchool.name}</h2>
+                            <p data-testid="school-ux-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-700">{readinessNextStep}</p>
+                            <div className="mt-5">
+                                <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-600">
+                                    <span>جاهزية التشغيل</span>
+                                    <span>{readinessScore}/{readinessChecks.length}</span>
+                                </div>
+                                <div className="h-3 overflow-hidden rounded-full bg-white">
+                                    <div
+                                        className={`h-full rounded-full ${
+                                            readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-rose-500'
+                                        }`}
+                                        style={{ width: `${readinessPercent}%` }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-5 rounded-2xl bg-white/85 p-4">
+                                <div className="text-sm font-black text-gray-900">أهم 3 نواقص فقط</div>
+                                {visibleReadinessGaps.length === 0 ? (
+                                    <p className="mt-2 text-sm font-bold text-emerald-700">لا توجد نواقص تشغيلية تمنع التجربة.</p>
+                                ) : (
+                                    <div className="mt-3 space-y-2">
+                                        {visibleReadinessGaps.map((gap) => (
+                                            <button
+                                                key={gap.label}
+                                                type="button"
+                                                onClick={() => {
+                                                    setActiveTab(gap.tab);
+                                                    setExpandedSchoolStep(gap.tab);
+                                                }}
+                                                className="block w-full rounded-xl border border-slate-100 bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-slate-700 transition-colors hover:bg-slate-50"
+                                            >
+                                                <span className="block font-black text-gray-900">{gap.label}</span>
+                                                {gap.hint}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="p-5 lg:p-6">
+                            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                                <div>
+                                    <div className="text-xs font-black text-slate-500">خطوات تشغيل المدرسة</div>
+                                    <h3 className="text-lg font-black text-gray-950">افتح خطوة واحدة فقط للعمل عليها</h3>
+                                </div>
+                                {expandedSchoolStep && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedSchoolStep(null)}
+                                        className="w-fit rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-200"
+                                    >
+                                        إغلاق التفاصيل
+                                    </button>
+                                )}
+                            </div>
+                            <div className="grid gap-3">
+                                {commercialOperatingSteps.map((step, index) => {
+                                    const isOpen = expandedSchoolStep === step.tab;
+                                    return (
+                                        <button
+                                            key={step.id}
+                                            type="button"
+                                            data-testid={`school-ux-step-${step.id}`}
+                                            onClick={() => {
+                                                setActiveTab(step.tab);
+                                                setExpandedSchoolStep((current) => (current === step.tab ? null : step.tab));
+                                            }}
+                                            className={`grid gap-3 rounded-2xl border p-4 text-right transition-colors sm:grid-cols-[auto_1fr_auto] sm:items-center ${
+                                                isOpen
+                                                    ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                                                    : step.isReady
+                                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
+                                                        : 'border-slate-100 bg-white hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            <span className={`flex h-11 w-11 items-center justify-center rounded-2xl text-base font-black ${
+                                                isOpen ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
+                                            }`}>
+                                                {index + 1}
+                                            </span>
+                                            <span>
+                                                <span className={`block text-base font-black ${isOpen ? 'text-white' : 'text-gray-950'}`}>{step.title}</span>
+                                                <span className={`mt-1 block text-xs font-bold leading-5 ${isOpen ? 'text-white/75' : 'text-slate-600'}`}>{step.description}</span>
+                                            </span>
+                                            <span className="flex flex-wrap gap-2 sm:justify-end">
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                                    isOpen ? 'bg-white/15 text-white' : step.isReady ? 'bg-white text-emerald-700' : 'bg-slate-100 text-slate-700'
+                                                }`}>
+                                                    {step.statusLabel}
+                                                </span>
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                                    isOpen ? 'bg-white/15 text-white' : 'bg-white text-slate-700'
+                                                }`}>
+                                                    {step.metric}
+                                                </span>
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div data-testid="school-command-center" className="hidden">
                     <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                         <div>
                             <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
@@ -3292,8 +3427,8 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    {activeTab === 'overview' && (
+                <div className={`${expandedSchoolStep ? 'bg-white p-6 rounded-xl shadow-sm border border-gray-100' : 'hidden'}`}>
+                    {activeTab === 'overview' && expandedSchoolStep === 'overview' && (
                         <div data-testid="school-classes-panel" className="space-y-8">
                             <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -4182,7 +4317,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'packages' && (
+                    {activeTab === 'packages' && expandedSchoolStep === 'packages' && (
                         <div data-testid="school-packages-panel" className="space-y-8">
                             <div data-testid="school-access-decision-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -4743,7 +4878,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'relations' && (
+                    {activeTab === 'relations' && expandedSchoolStep === 'relations' && (
                         <div data-testid="school-supervisors-panel" className="space-y-8">
                             <div data-testid="school-supervisor-handover-guard" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -5063,7 +5198,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'import' && (
+                    {activeTab === 'import' && expandedSchoolStep === 'import' && (
                         <div className="max-w-4xl mx-auto py-8 space-y-8">
                             <div className="text-center">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-2">استيراد الطلاب دفعة واحدة</h2>
@@ -5238,7 +5373,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'reports' && (
+                    {activeTab === 'reports' && expandedSchoolStep === 'reports' && (
                         <div data-testid="school-reports-panel" className="space-y-6">
                             <div data-testid="school-handover-report-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
