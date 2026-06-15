@@ -503,3 +503,26 @@ If continuing from a new account and local skills are missing, continue using th
   - Five UX steps visible: PASS.
   - Student import wizard visible only after opening students step: PASS.
   - Single-student form hidden by default and opens from its visible button: PASS.
+
+## Schools Supervisor Controls Follow-up - 2026-06-15
+
+- Branch: `main`.
+- Scope: frontend-only changes inside `dashboards/admin/SchoolsManager.tsx`.
+- No backend, database, API schema, barcode, question editor, homepage, or orphan cleanup changes were made.
+- Production visual issue reported from `/admin-dashboard?tab=schools`:
+  - supervisor dropdowns showed names but selection did not give a clear result;
+  - class button "إنشاء مشرف جديد لهذا الفصل" did not visibly open the creation workflow;
+  - selected class action area needed button verification.
+- Fix:
+  - Schools page now loads all supervisor and teacher candidates by role pages, then merges them with the current user list so candidates are not lost by the first 100 users page.
+  - Supervisor link/remove actions now show explicit saving/success/error status while waiting for the backend.
+  - The "create supervisor" shortcut now selects the target school/class, scrolls to the supervisor creation card, and focuses the supervisor name field.
+  - Class action buttons reviewed: add student, roster, Excel import, content/codes, supervisor select/create, course select, class report download/print, edit, and delete are wired.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.

@@ -20,7 +20,7 @@ import {
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { AccessCode, B2BPackage, Group, Role, User, PackageContentType } from '../../types';
+import { AccessCode, AnnouncementAd, B2BPackage, Group, Lesson, LibraryItem, PackageContentType, Role, StudyPlan, Topic, User } from '../../types';
 import { api } from '../../services/api';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeRows } from '../../utils/xlsxLoader';
 
@@ -160,6 +160,17 @@ type AccessCodesListResponse = {
     pagination?: Partial<AccessCodesPagination>;
 };
 
+type ContentBootstrapPayload = {
+    topics?: Topic[];
+    lessons?: Lesson[];
+    libraryItems?: LibraryItem[];
+    groups?: Group[];
+    b2bPackages?: B2BPackage[];
+    accessCodes?: AccessCode[];
+    announcementAds?: AnnouncementAd[];
+    studyPlans?: StudyPlan[];
+};
+
 const buildStoreUser = (user: AdminUserPayload): User => ({
     id: String(user.id || user._id || user.email),
     name: user.name,
@@ -180,6 +191,56 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
         purchasedPackages: user.subscription?.purchasedPackages ?? [],
     },
 });
+
+const loadAllUsersByRole = async (role: Role): Promise<User[]> => {
+    const firstPage = await api.getAdminUsers({ role, page: 1, limit: 100 });
+    const totalPages = Math.max(1, Number(firstPage.pagination?.totalPages || 1));
+    const remainingPages = Array.from({ length: totalPages - 1 }, (_, index) => index + 2);
+    const remainingResponses = await Promise.all(
+        remainingPages.map((page) => api.getAdminUsers({ role, page, limit: 100 })),
+    );
+
+    return [
+        ...(firstPage.users || []),
+        ...remainingResponses.flatMap((response) => response.users || []),
+    ].map((user) => buildStoreUser(user as AdminUserPayload));
+};
+
+const loadSchoolAdminUsers = async (): Promise<User[]> => {
+    const [firstPage, supervisors, teachers] = await Promise.all([
+        api.getAdminUsers({ page: 1, limit: 100 }),
+        loadAllUsersByRole(Role.SUPERVISOR),
+        loadAllUsersByRole(Role.TEACHER),
+    ]);
+
+    const usersById = new Map<string, User>();
+    [
+        ...(firstPage.users || []).map((user) => buildStoreUser(user as AdminUserPayload)),
+        ...supervisors,
+        ...teachers,
+    ].forEach((user) => {
+        if (user.id) {
+            usersById.set(user.id, user);
+        }
+    });
+
+    return Array.from(usersById.values());
+};
+
+const mergeUsersById = (currentUsers: User[], incomingUsers: User[]): User[] => {
+    const usersById = new Map<string, User>();
+    currentUsers.forEach((user) => {
+        if (user.id) {
+            usersById.set(user.id, user);
+        }
+    });
+    incomingUsers.forEach((user) => {
+        if (user.id) {
+            usersById.set(user.id, user);
+        }
+    });
+    return Array.from(usersById.values());
+};
 
 const buildStoreGroup = (group: Group & { _id?: string; createdAt?: number | string }): Group => ({
     ...group,
@@ -863,8 +924,8 @@ export const SchoolsManager: React.FC = () => {
         }
 
         try {
-            const response = await api.getAdminUsers() as { users: User[] };
-            hydrateUsers(response.users || []);
+            const loadedUsers = await loadSchoolAdminUsers();
+            hydrateUsers(mergeUsersById(users, loadedUsers));
         } catch (error) {
             console.warn('Failed to refresh users after school updates:', error);
         }
@@ -879,12 +940,12 @@ export const SchoolsManager: React.FC = () => {
         api.clearContentBootstrapCache();
         const [bootstrap, adminUsersResponse] = await Promise.all([
             api.getContentBootstrapFresh(),
-            user.role === Role.ADMIN ? api.getAdminUsers() : Promise.resolve(null),
+            user.role === Role.ADMIN ? loadSchoolAdminUsers() : Promise.resolve(null),
         ]);
 
-        hydrateContentBootstrap(bootstrap);
-        if (adminUsersResponse && Array.isArray(adminUsersResponse.users)) {
-            hydrateUsers(adminUsersResponse.users || []);
+        hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
+        if (adminUsersResponse && Array.isArray(adminUsersResponse)) {
+            hydrateUsers(mergeUsersById(users, adminUsersResponse));
         }
 
         const freshGroups = (bootstrap.groups || []).map(buildStoreGroup).filter((group) => group.id && group.name);
@@ -1536,7 +1597,7 @@ export const SchoolsManager: React.FC = () => {
             await deleteGroupAsync(selectedSchool.id);
             api.clearContentBootstrapCache();
             const bootstrap = await api.getContentBootstrapFresh();
-            hydrateContentBootstrap(bootstrap);
+            hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
             setManagementNotice(`تم حذف ${deletedSchoolName} من قائمة المدارس.`);
             setIsDeleteSchoolConfirmOpen(false);
             setSelectedSchool(null);
@@ -1586,11 +1647,17 @@ export const SchoolsManager: React.FC = () => {
             setRosterActionPending(`supervisor-assign-${groupId}-${supervisorId}`);
             setManagementError(null);
             setManagementNotice(null);
+            setSaveVerificationState('saving');
+            setSaveVerificationMessage('جاري ربط المشرف وحفظ النطاق...');
             try {
                 await assignSupervisorToGroupAsync(supervisorId, groupId);
                 await refreshSchoolWorkspace(selectedSchool.id);
+                setSaveVerificationState('success');
+                setSaveVerificationMessage('تم ربط المشرف والتأكد من حفظ النطاق.');
                 setManagementNotice(`تم حفظ ربط ${targetSupervisor?.name || 'المشرف'} على ${targetGroup?.name || 'النطاق المحدد'}.`);
             } catch (error) {
+                setSaveVerificationState('error');
+                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر ربط المشرف الآن.');
                 setManagementError(error instanceof Error ? error.message : 'تعذر ربط المشرف الآن.');
             } finally {
                 setRosterActionPending(null);
@@ -1602,15 +1669,32 @@ export const SchoolsManager: React.FC = () => {
             setRosterActionPending(`supervisor-remove-${groupId}-${supervisorId}`);
             setManagementError(null);
             setManagementNotice(null);
+            setSaveVerificationState('saving');
+            setSaveVerificationMessage('جاري إزالة ربط المشرف وحفظ النطاق...');
             try {
                 await removeSupervisorFromGroupAsync(supervisorId, groupId);
                 await refreshSchoolWorkspace(selectedSchool.id);
+                setSaveVerificationState('success');
+                setSaveVerificationMessage('تم إزالة ربط المشرف والتأكد من حفظ النطاق.');
                 setManagementNotice(`تم حفظ إزالة ${targetSupervisor?.name || 'المشرف'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
             } catch (error) {
+                setSaveVerificationState('error');
+                setSaveVerificationMessage(error instanceof Error ? error.message : 'تعذر إزالة المشرف الآن.');
                 setManagementError(error instanceof Error ? error.message : 'تعذر إزالة المشرف الآن.');
             } finally {
                 setRosterActionPending(null);
             }
+        };
+        const focusQuickSupervisorEntry = (targetGroupId: string, targetGroupName: string) => {
+            setQuickSupervisor((current) => ({ ...current, targetGroupId }));
+            setManagementNotice(`تم اختيار ${targetGroupName}. اكتب بيانات المشرف ثم اضغط إنشاء/ربط المشرف.`);
+            setManagementError(null);
+            setActiveTab('relations');
+            window.setTimeout(() => {
+                document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const nameInput = document.querySelector<HTMLInputElement>('[data-testid="school-relations-supervisor-name"]');
+                nameInput?.focus();
+            }, 120);
         };
         const handleAssignStudentToClass = async (studentId: string, classId: string) => {
             const targetStudent = schoolStudents.find((student) => student.id === studentId);
@@ -3875,7 +3959,7 @@ export const SchoolsManager: React.FC = () => {
                                             <button
                                                 type="button"
                                                 data-testid="school-open-supervisor-entry"
-                                                onClick={() => setActiveTab('relations')}
+                                                onClick={() => focusQuickSupervisorEntry(selectedSchool.id, selectedSchool.name)}
                                                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-purple-700 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-purple-800"
                                             >
                                                 <UserPlus size={16} />
@@ -4230,15 +4314,7 @@ export const SchoolsManager: React.FC = () => {
                                                             <button
                                                                 type="button"
                                                                 data-testid="school-class-create-supervisor"
-                                                                onClick={() => {
-                                                                    setQuickSupervisor((current) => ({ ...current, targetGroupId: classroom.id }));
-                                                                    setManagementNotice(`تم اختيار فصل ${classroom.name}. اكتب بيانات المشرف في صندوق إنشاء المشرف ثم اضغط إنشاء/ربط.`);
-                                                                    setManagementError(null);
-                                                                    setActiveTab('relations');
-                                                                    window.setTimeout(() => {
-                                                                        document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                                    }, 50);
-                                                                }}
+                                                                onClick={() => focusQuickSupervisorEntry(classroom.id, classroom.name)}
                                                                 className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-purple-100 bg-purple-50 px-3 py-2 text-xs font-black text-purple-700 transition-colors hover:bg-purple-100"
                                                             >
                                                                 <UserPlus size={14} />
