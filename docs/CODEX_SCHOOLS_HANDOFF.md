@@ -45,6 +45,24 @@ If continuing from a new account and local skills are missing, continue using th
 
 ## Checkpoint Progress
 
+### 2026-06-15 - Schools Save Persistence Fix
+
+- Issue found from production-style QA: school changes could appear in the admin UI, then disappear after refresh because the frontend reused cached `content/bootstrap` data.
+- Fix shipped locally: school saves now clear the frontend bootstrap cache, refetch schools/classes/students/supervisors from the backend, and only show success after the fresh server data returns.
+- Added visible selected-school button: `حفظ وتأكيد البيانات`.
+- Button states verified locally: `جاري الحفظ`, `جاري التحقق`, `تم الحفظ والتأكد`, `فشل الحفظ`.
+- Fixed admin user refresh limit from 200 to 100 so the verification request matches backend validation.
+- Browser verification: opened a real school workspace locally against the connected API, confirmed the button is visible, clicked it, and got `تم الحفظ والتأكد من البيانات من الخادم`.
+- Gates:
+  - `npm run typecheck`: BLOCKED timeout after 120s, not a compile failure.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS.
+  - `npm run smoke:admin-school-command`: PASS.
+  - `npm run smoke:school-from-scratch-live`: PASS.
+  - `npm run smoke:rbac-school-scope`: PASS.
+- Remaining later only: orphan data cleanup as a separate dry-run-first goal.
+
 ### Checkpoint 0 - Baseline Gates
 
 - Branch verified: `codex/schools-full-closure`.

@@ -364,6 +364,13 @@ const withQuery = (path: string, query?: Record<string, string | number | boolea
 
 export const api = {
   baseUrl: API_BASE_URL,
+  clearContentBootstrapCache: () => {
+    clearPublicCache("content-bootstrap:full");
+    clearPublicCache("content-bootstrap:full:full");
+    clearPublicCache("content-bootstrap:learning:full");
+    clearPublicCache("content-bootstrap:learning:core");
+    clearPublicCache("content-bootstrap:minimal");
+  },
   health: () => request<{ status: string; database: string; timestamp: string }>("/health"),
   login: (email: string, password: string) =>
     request<{ token?: string; user: unknown }>("/auth/login", {
@@ -419,7 +426,7 @@ export const api = {
     }),
   getAdminUsers: async (pagination: PaginationOptions = {}) => {
     const payload = await request<{ users: unknown[]; pagination?: PaginatedResponseShape }>(
-      withQuery("/auth/admin/users", { limit: 200, ...pagination }),
+      withQuery("/auth/admin/users", { limit: 100, ...pagination }),
     );
 
     return {
@@ -427,7 +434,7 @@ export const api = {
       users: extractList(payload, "users"),
       pagination: payload.pagination || {
         page: 1,
-        limit: 200,
+        limit: 100,
         total: 0,
         totalPages: 0,
         items: 0,
@@ -698,6 +705,19 @@ export const api = {
       announcementAds: unknown[];
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap", { scope: "full" }), "content-bootstrap:full", BOOTSTRAP_CACHE_TTL_MS),
+  getContentBootstrapFresh: () => {
+    clearPublicCache("content-bootstrap:full");
+    return request<{
+      topics: unknown[];
+      lessons: unknown[];
+      libraryItems: unknown[];
+      groups: unknown[];
+      b2bPackages: unknown[];
+      accessCodes: unknown[];
+      announcementAds: unknown[];
+      studyPlans: unknown[];
+    }>(withQuery("/content/bootstrap", { scope: "full" }), { cache: "no-store" });
+  },
   getContentBootstrapByScope: (scope: "full" | "learning" = "full", phase: "full" | "core" = "full") =>
     requestCached<{
       topics: unknown[];
