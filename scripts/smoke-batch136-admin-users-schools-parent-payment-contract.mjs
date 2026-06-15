@@ -58,11 +58,11 @@ assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
   "toggleSchoolActions",
   "activeSchoolActionsId === school.id",
   "ربط المشرفين",
-  "فتح الإدارة",
+  "فتح تشغيل المدرسة",
 ]);
 
 assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
-  "setActiveAdminTab('groups')",
+  "setActiveAdminTab('schools')",
   "setActiveAdminTab('quizzes')",
   "setActiveAdminTab('announcement-ads')",
 ]);
@@ -74,12 +74,20 @@ assertAllIncludes("server/src/routes/payment.routes.ts", [
 ]);
 
 assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
-  "assignSupervisorToGroup(value, selectedSchool.id)",
-  "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)",
-  "assignSupervisorToGroup(value, classroom.id)",
-  "removeSupervisorFromGroup(currentUser.id, classroom.id)",
+  "handleAssignSchoolSupervisor(value, selectedSchool.id)",
+  "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)",
+  "handleAssignSchoolSupervisor(value, classroom.id)",
+  "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)",
+  "rosterActionPending",
   "setActiveTab('relations')",
   "setSelectedSchool((current) =>",
+]);
+
+assertAllIncludes("store/useStore.ts", [
+  "assignSupervisorToGroupAsync: async",
+  "removeSupervisorFromGroupAsync: async",
+  "assignStudentToGroupAsync: async",
+  "removeStudentFromGroupAsync: async",
 ]);
 
 assertAllIncludes("dashboards/admin/UsersManager.tsx", [

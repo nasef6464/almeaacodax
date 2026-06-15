@@ -129,24 +129,36 @@ interface AppState {
     
     // Group Actions
     createGroup: (group: Group) => void;
+    createGroupAsync: (group: Group) => Promise<Group>;
     updateGroup: (groupId: string, data: Partial<Group>) => void;
+    updateGroupAsync: (groupId: string, data: Partial<Group>) => Promise<Group>;
     deleteGroup: (groupId: string) => void;
+    deleteGroupAsync: (groupId: string) => Promise<void>;
     assignStudentToGroup: (userId: string, groupId: string) => void;
+    assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeStudentFromGroup: (userId: string, groupId: string) => void;
+    removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignSupervisorToGroup: (userId: string, groupId: string) => void;
+    assignSupervisorToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeSupervisorFromGroup: (userId: string, groupId: string) => void;
+    removeSupervisorFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignCourseToGroup: (courseId: string, groupId: string) => void;
     removeCourseFromGroup: (courseId: string, groupId: string) => void;
 
     // B2B Actions
     createB2BPackage: (pkg: B2BPackage) => void;
+    createB2BPackageAsync: (pkg: B2BPackage) => Promise<B2BPackage>;
     updateB2BPackage: (id: string, data: Partial<B2BPackage>) => void;
+    updateB2BPackageAsync: (id: string, data: Partial<B2BPackage>) => Promise<B2BPackage>;
     deleteB2BPackage: (id: string) => void;
+    deleteB2BPackageAsync: (id: string) => Promise<void>;
     createAnnouncementAd: (ad: AnnouncementAd) => void;
     updateAnnouncementAd: (id: string, data: Partial<AnnouncementAd>) => void;
     deleteAnnouncementAd: (id: string) => void;
     createAccessCode: (code: AccessCode) => void;
+    createAccessCodeAsync: (code: AccessCode) => Promise<AccessCode>;
     deleteAccessCode: (id: string) => void;
+    deleteAccessCodeAsync: (id: string) => Promise<void>;
 
     // Taxonomy Actions
     addPath: (path: CategoryPath) => void;
@@ -1114,12 +1126,46 @@ export const useStore = create<AppState>()(
                 };
             }),
 
+            createGroupAsync: async (group) => {
+                const persisted = await api.createGroup(group);
+                const nextGroup = {
+                    ...group,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<Group> : {}),
+                };
+                set((state) => ({
+                    groups: state.groups.some(g => g.id === nextGroup.id)
+                        ? state.groups.map(g => g.id === nextGroup.id ? nextGroup : g)
+                        : [...state.groups, nextGroup]
+                }));
+                return nextGroup;
+            },
+
             updateGroup: (groupId, data) => set((state) => {
                 api.updateGroup(groupId, data).catch(console.error);
                 return {
                     groups: state.groups.map(g => g.id === groupId ? { ...g, ...data } : g)
                 };
             }),
+
+            updateGroupAsync: async (groupId, data) => {
+                const persisted = await api.updateGroup(groupId, data);
+                let nextGroup: Group | null = null;
+                set((state) => ({
+                    groups: state.groups.map(g => {
+                        if (g.id !== groupId) return g;
+                        nextGroup = {
+                            ...g,
+                            ...data,
+                            ...((persisted && typeof persisted === 'object') ? persisted as Partial<Group> : {}),
+                        };
+                        return nextGroup;
+                    })
+                }));
+                if (!nextGroup) {
+                    throw new Error('تعذر العثور على المدرسة أو الفصل بعد الحفظ.');
+                }
+                return nextGroup;
+            },
 
             deleteGroup: (groupId) => set((state) => {
                 api.deleteGroup(groupId).catch(console.error);
@@ -1157,6 +1203,43 @@ export const useStore = create<AppState>()(
                     user: currentUser
                 };
             }),
+
+            deleteGroupAsync: async (groupId) => {
+                await api.deleteGroup(groupId);
+                set((state) => {
+                    const targetGroup = state.groups.find(g => g.id === groupId);
+                    const deletedGroupIds = new Set<string>([
+                        groupId,
+                        ...(targetGroup?.type === 'SCHOOL'
+                            ? state.groups.filter(g => g.parentId === groupId).map(g => g.id)
+                            : []),
+                    ]);
+                    const deletedPackageIds = new Set(
+                        targetGroup?.type === 'SCHOOL'
+                            ? state.b2bPackages.filter(pkg => pkg.schoolId === groupId).map(pkg => pkg.id)
+                            : [],
+                    );
+
+                    const newUsers = state.users.map(u => ({
+                        ...u,
+                        schoolId: u.schoolId === groupId ? undefined : u.schoolId,
+                        groupIds: u.groupIds?.filter(id => !deletedGroupIds.has(id)) || []
+                    }));
+                    const currentUser = newUsers.find(u => u.id === state.user.id) || state.user;
+
+                    return {
+                        groups: state.groups.filter(g => !deletedGroupIds.has(g.id)),
+                        b2bPackages: targetGroup?.type === 'SCHOOL'
+                            ? state.b2bPackages.filter(pkg => pkg.schoolId !== groupId)
+                            : state.b2bPackages,
+                        accessCodes: targetGroup?.type === 'SCHOOL'
+                            ? state.accessCodes.filter(code => code.schoolId !== groupId && !deletedPackageIds.has(code.packageId))
+                            : state.accessCodes,
+                        users: newUsers,
+                        user: currentUser
+                    };
+                });
+            },
 
             assignStudentToGroup: (userId, groupId) => set((state) => {
                 const targetGroup = state.groups.find(g => g.id === groupId);
@@ -1272,6 +1355,121 @@ export const useStore = create<AppState>()(
                 };
             }),
 
+            assignStudentToGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(g => g.id === groupId);
+                const currentUser = state.users.find(u => u.id === userId);
+                if (!targetGroup || !currentUser) return;
+
+                let nextSchoolId = currentUser.schoolId;
+                let nextGroupIds = [...(currentUser.groupIds || [])];
+                const groupsToPersist = new Set<string>();
+                let newGroups = [...state.groups];
+
+                const removeUserFromGroup = (targetId: string, student = true) => {
+                    newGroups = newGroups.map(group => {
+                        if (group.id !== targetId) return group;
+                        groupsToPersist.add(group.id);
+                        return student
+                            ? { ...group, studentIds: group.studentIds.filter(id => id !== userId), totalStudents: Math.max(0, (group.totalStudents || group.studentIds.length || 1) - 1) }
+                            : { ...group, supervisorIds: group.supervisorIds.filter(id => id !== userId), totalSupervisors: Math.max(0, (group.totalSupervisors || group.supervisorIds.length || 1) - 1) };
+                    });
+                };
+
+                const addUserToGroup = (targetId: string, student = true) => {
+                    newGroups = newGroups.map(group => {
+                        if (group.id !== targetId) return group;
+                        if (student && group.studentIds.includes(userId)) return group;
+                        if (!student && group.supervisorIds.includes(userId)) return group;
+                        groupsToPersist.add(group.id);
+                        return student
+                            ? { ...group, studentIds: [...group.studentIds, userId], totalStudents: (group.totalStudents || group.studentIds.length || 0) + 1 }
+                            : { ...group, supervisorIds: [...group.supervisorIds, userId], totalSupervisors: (group.totalSupervisors || group.supervisorIds.length || 0) + 1 };
+                    });
+                };
+
+                const getSchoolClassIds = (schoolId?: string) => {
+                    if (!schoolId) return [];
+                    return state.groups
+                        .filter(group => group.type === 'CLASS' && group.parentId === schoolId)
+                        .map(group => group.id);
+                };
+
+                const clearSchoolClassMemberships = (schoolId?: string) => {
+                    if (!schoolId) return;
+                    const schoolClassIds = getSchoolClassIds(schoolId);
+
+                    schoolClassIds.forEach(classId => removeUserFromGroup(classId, true));
+                    nextGroupIds = nextGroupIds.filter(id => !schoolClassIds.includes(id));
+                };
+
+                if (targetGroup.type === 'SCHOOL') {
+                    if (currentUser.schoolId && currentUser.schoolId !== targetGroup.id) {
+                        removeUserFromGroup(currentUser.schoolId, true);
+                        clearSchoolClassMemberships(currentUser.schoolId);
+                    }
+
+                    nextSchoolId = targetGroup.id;
+                    addUserToGroup(targetGroup.id, true);
+                } else {
+                    if (targetGroup.parentId && currentUser.schoolId !== targetGroup.parentId) {
+                        if (currentUser.schoolId) {
+                            removeUserFromGroup(currentUser.schoolId, true);
+                            clearSchoolClassMemberships(currentUser.schoolId);
+                        }
+                        nextSchoolId = targetGroup.parentId;
+                        addUserToGroup(targetGroup.parentId, true);
+                    }
+
+                    if (targetGroup.type === 'CLASS' && targetGroup.parentId) {
+                        getSchoolClassIds(targetGroup.parentId)
+                            .filter(classId => classId !== targetGroup.id)
+                            .forEach(classId => removeUserFromGroup(classId, true));
+                        nextGroupIds = nextGroupIds.filter(id => !getSchoolClassIds(targetGroup.parentId).includes(id) || id === targetGroup.id);
+                        addUserToGroup(targetGroup.parentId, true);
+                        nextSchoolId = targetGroup.parentId;
+                    }
+
+                    if (!nextGroupIds.includes(targetGroup.id)) {
+                        nextGroupIds = [...nextGroupIds, targetGroup.id];
+                    }
+                    addUserToGroup(targetGroup.id, true);
+                }
+
+                const normalizedGroupIds = Array.from(new Set(nextGroupIds));
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: normalizedGroupIds,
+                    }),
+                    ...Array.from(groupsToPersist).map((persistedGroupId) => {
+                        const persistedGroup = newGroups.find(group => group.id === persistedGroupId);
+                        if (!persistedGroup) return Promise.resolve();
+                        return api.updateGroup(persistedGroup.id, {
+                            studentIds: persistedGroup.studentIds,
+                            totalStudents: persistedGroup.totalStudents,
+                            supervisorIds: persistedGroup.supervisorIds,
+                            totalSupervisors: persistedGroup.totalSupervisors,
+                        });
+                    }),
+                ]);
+
+                const newUsers = state.users.map(existingUser => {
+                    if (existingUser.id !== userId) return existingUser;
+                    return {
+                        ...existingUser,
+                        schoolId: nextSchoolId,
+                        groupIds: normalizedGroupIds,
+                    };
+                });
+
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
             removeStudentFromGroup: (userId, groupId) => set((state) => {
                 const targetGroup = state.groups.find(group => group.id === groupId);
                 const currentUser = state.users.find(user => user.id === userId);
@@ -1340,6 +1538,75 @@ export const useStore = create<AppState>()(
                 };
             }),
 
+            removeStudentFromGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser) return;
+
+                let nextSchoolId = currentUser.schoolId;
+                let nextGroupIds = [...(currentUser.groupIds || [])];
+                const groupsToPersist = new Set<string>();
+
+                const newGroups = state.groups.map(group => {
+                    if (group.id !== groupId) return group;
+                    groupsToPersist.add(group.id);
+                    return {
+                        ...group,
+                        studentIds: group.studentIds.filter(id => id !== userId),
+                        totalStudents: Math.max(0, (group.totalStudents || group.studentIds.length || 1) - 1),
+                    };
+                }).map(group => {
+                    if (targetGroup.type === 'SCHOOL' && group.type === 'CLASS' && group.parentId === groupId && group.studentIds.includes(userId)) {
+                        groupsToPersist.add(group.id);
+                        return {
+                            ...group,
+                            studentIds: group.studentIds.filter(id => id !== userId),
+                            totalStudents: Math.max(0, (group.totalStudents || group.studentIds.length || 1) - 1),
+                        };
+                    }
+                    return group;
+                });
+
+                if (targetGroup.type === 'SCHOOL') {
+                    nextSchoolId = undefined;
+                    const relatedClassIds = state.groups.filter(group => group.type === 'CLASS' && group.parentId === groupId).map(group => group.id);
+                    nextGroupIds = nextGroupIds.filter(id => id !== groupId && !relatedClassIds.includes(id));
+                } else {
+                    nextGroupIds = nextGroupIds.filter(id => id !== groupId);
+                }
+
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: nextGroupIds,
+                    }),
+                    ...Array.from(groupsToPersist).map((persistedGroupId) => {
+                        const persistedGroup = newGroups.find(group => group.id === persistedGroupId);
+                        if (!persistedGroup) return Promise.resolve();
+                        return api.updateGroup(persistedGroup.id, {
+                            studentIds: persistedGroup.studentIds,
+                            totalStudents: persistedGroup.totalStudents,
+                        });
+                    }),
+                ]);
+
+                const newUsers = state.users.map(existingUser => {
+                    if (existingUser.id !== userId) return existingUser;
+                    return {
+                        ...existingUser,
+                        schoolId: nextSchoolId,
+                        groupIds: nextGroupIds,
+                    };
+                });
+
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
             assignSupervisorToGroup: (userId, groupId) => set((state) => {
                 const targetGroup = state.groups.find(group => group.id === groupId);
                 const currentUser = state.users.find(user => user.id === userId);
@@ -1377,6 +1644,48 @@ export const useStore = create<AppState>()(
                 };
             }),
 
+            assignSupervisorToGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser) return;
+
+                const nextGroupIds = currentUser.groupIds?.includes(groupId)
+                    ? (currentUser.groupIds || [])
+                    : [...(currentUser.groupIds || []), groupId];
+                const nextSchoolId = targetGroup.type === 'SCHOOL'
+                    ? targetGroup.id
+                    : targetGroup.parentId || currentUser.schoolId;
+
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId && !group.supervisorIds.includes(userId)) {
+                        return { ...group, supervisorIds: [...group.supervisorIds, userId], totalSupervisors: (group.totalSupervisors || group.supervisorIds.length || 0) + 1 };
+                    }
+                    return group;
+                });
+                const persistedGroup = newGroups.find(group => group.id === groupId);
+
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: nextGroupIds,
+                    }),
+                    persistedGroup
+                        ? api.updateGroup(persistedGroup.id, {
+                            supervisorIds: persistedGroup.supervisorIds,
+                            totalSupervisors: persistedGroup.totalSupervisors,
+                        })
+                        : Promise.resolve(),
+                ]);
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
             removeSupervisorFromGroup: (userId, groupId) => set((state) => {
                 const currentUser = state.users.find(user => user.id === userId);
                 if (!currentUser) return state;
@@ -1410,6 +1719,45 @@ export const useStore = create<AppState>()(
                     user: newUsers.find(u => u.id === state.user.id) || state.user,
                 };
             }),
+
+            removeSupervisorFromGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!currentUser) return;
+
+                const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId) {
+                        return { ...group, supervisorIds: group.supervisorIds.filter(id => id !== userId), totalSupervisors: Math.max(0, (group.totalSupervisors || group.supervisorIds.length || 1) - 1) };
+                    }
+                    return group;
+                });
+                const persistedGroup = newGroups.find(group => group.id === groupId);
+
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: nextGroupIds,
+                    }),
+                    persistedGroup
+                        ? api.updateGroup(persistedGroup.id, {
+                            supervisorIds: persistedGroup.supervisorIds,
+                            totalSupervisors: persistedGroup.totalSupervisors,
+                        })
+                        : Promise.resolve(),
+                ]);
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
 
             assignCourseToGroup: (courseId, groupId) => set((state) => {
                 const newGroups = state.groups.map(group => {
@@ -1454,6 +1802,25 @@ export const useStore = create<AppState>()(
                     b2bPackages: [...state.b2bPackages, normalizedPackage]
                 };
             }),
+            createB2BPackageAsync: async (pkg) => {
+                const normalizedPackage: B2BPackage = {
+                    ...pkg,
+                    contentTypes: Array.isArray(pkg.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes : ['all'],
+                    pathIds: Array.isArray(pkg.pathIds) ? pkg.pathIds : [],
+                    subjectIds: Array.isArray(pkg.subjectIds) ? pkg.subjectIds : [],
+                };
+                const persisted = await api.createB2BPackage(normalizedPackage);
+                const nextPackage = {
+                    ...normalizedPackage,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                };
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.some(pkg => pkg.id === nextPackage.id)
+                        ? state.b2bPackages.map(pkg => pkg.id === nextPackage.id ? nextPackage : pkg)
+                        : [...state.b2bPackages, nextPackage]
+                }));
+                return nextPackage;
+            },
             updateB2BPackage: (id, data) => set((state) => {
                 const normalizedData: Partial<B2BPackage> = {
                     ...data,
@@ -1478,6 +1845,37 @@ export const useStore = create<AppState>()(
                     })
                 };
             }),
+            updateB2BPackageAsync: async (id, data) => {
+                const normalizedData: Partial<B2BPackage> = {
+                    ...data,
+                    ...(data.contentTypes ? { contentTypes: data.contentTypes as PackageContentType[] } : {}),
+                    ...(data.pathIds ? { pathIds: data.pathIds } : {}),
+                    ...(data.subjectIds ? { subjectIds: data.subjectIds } : {}),
+                };
+                const persisted = await api.updateB2BPackage(id, normalizedData);
+                let nextPackage: B2BPackage | null = null;
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.map((pkg): B2BPackage => {
+                        if (pkg.id !== id) {
+                            return pkg;
+                        }
+
+                        nextPackage = {
+                            ...pkg,
+                            ...normalizedData,
+                            ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                            contentTypes: normalizedData.contentTypes ?? pkg.contentTypes,
+                            pathIds: normalizedData.pathIds ?? pkg.pathIds,
+                            subjectIds: normalizedData.subjectIds ?? pkg.subjectIds,
+                        };
+                        return nextPackage;
+                    })
+                }));
+                if (!nextPackage) {
+                    throw new Error('تعذر العثور على الباقة المدرسية بعد الحفظ.');
+                }
+                return nextPackage;
+            },
             deleteB2BPackage: (id) => set((state) => {
                 api.deleteB2BPackage(id).catch(console.error);
                 return {
@@ -1485,6 +1883,13 @@ export const useStore = create<AppState>()(
                     accessCodes: state.accessCodes.filter(code => code.packageId !== id)
                 };
             }),
+            deleteB2BPackageAsync: async (id) => {
+                await api.deleteB2BPackage(id);
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.filter(pkg => pkg.id !== id),
+                    accessCodes: state.accessCodes.filter(code => code.packageId !== id)
+                }));
+            },
             createAnnouncementAd: (ad) => set((state) => {
                 const normalizedAd: AnnouncementAd = {
                     ...ad,
@@ -1529,12 +1934,31 @@ export const useStore = create<AppState>()(
                     accessCodes: [...state.accessCodes, code]
                 };
             }),
+            createAccessCodeAsync: async (code) => {
+                const persisted = await api.createAccessCode(code);
+                const nextCode = {
+                    ...code,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<AccessCode> : {}),
+                };
+                set((state) => ({
+                    accessCodes: state.accessCodes.some(current => current.id === nextCode.id)
+                        ? state.accessCodes.map(current => current.id === nextCode.id ? nextCode : current)
+                        : [...state.accessCodes, nextCode]
+                }));
+                return nextCode;
+            },
             deleteAccessCode: (id) => set((state) => {
                 api.deleteAccessCode(id).catch(console.error);
                 return {
                     accessCodes: state.accessCodes.filter(c => c.id !== id)
                 };
             }),
+            deleteAccessCodeAsync: async (id) => {
+                await api.deleteAccessCode(id);
+                set((state) => ({
+                    accessCodes: state.accessCodes.filter(code => code.id !== id)
+                }));
+            },
 
             // Taxonomy Actions
             addPath: (path) => {

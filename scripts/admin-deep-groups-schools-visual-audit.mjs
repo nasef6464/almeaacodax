@@ -153,17 +153,17 @@ async function main() {
 
   try {
     await login(page);
-    await gotoTab(page, "groups");
-    await screenshot(page, "groups-initial");
-    pushCheck("groups tab open", "PASS", "tab loaded");
+    await gotoTab(page, "schools");
+    await screenshot(page, "schools-initial");
+    pushCheck("schools tab open", "PASS", "tab loaded");
 
     const groupsSearch = await runSearchExercise(page, "مدرسة");
-    await screenshot(page, "groups-search");
-    pushCheck("groups search/filter", groupsSearch ? "PASS" : "REVIEW", groupsSearch ? "search input exercised" : "no obvious search input");
+    await screenshot(page, "schools-search");
+    pushCheck("schools search/filter", groupsSearch ? "PASS" : "REVIEW", groupsSearch ? "search input exercised" : "no obvious search input");
 
     const groupsAction = await clickSafeAction(page);
-    await screenshot(page, "groups-action-open");
-    pushCheck("groups safe action", groupsAction.clicked ? "PASS" : "REVIEW", groupsAction.clicked ? `clicked: ${groupsAction.text}` : "no safe action found");
+    await screenshot(page, "schools-action-open");
+    pushCheck("schools safe action", groupsAction.clicked ? "PASS" : "REVIEW", groupsAction.clicked ? `clicked: ${groupsAction.text}` : "no safe action found");
 
     await gotoTab(page, "school-portal");
     await screenshot(page, "school-portal-initial");

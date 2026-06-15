@@ -129,22 +129,22 @@ async function run() {
   try {
     await login(page);
 
-    await gotoTab(page, "groups");
-    await snap(page, "groups-home");
-    addCheck("groups open", "PASS", "loaded");
+    await gotoTab(page, "schools");
+    await snap(page, "schools-home");
+    addCheck("schools open", "PASS", "loaded");
 
     const groupAction = await openButtonByText(page, ["إضافة", "اضافة", "جديد", "إنشاء", "create", "فتح الإدارة"]);
-    await snap(page, "groups-action");
-    addCheck("groups entry action", groupAction ? "PASS" : "REVIEW", groupAction || "no clear entry button");
+    await snap(page, "schools-action");
+    addCheck("schools entry action", groupAction ? "PASS" : "REVIEW", groupAction || "no clear entry button");
 
     const groupForm = await inspectFormState(page);
     addCheck(
-      "groups form state",
+      "schools form state",
       groupForm.formCount > 0 || groupForm.visibleInputs > 0 ? "PASS" : "REVIEW",
       `forms=${groupForm.formCount}, inputs=${groupForm.visibleInputs}, hasSave=${groupForm.hasSave}, saveDisabled=${groupForm.saveDisabled}`,
     );
     await closeDialogIfAny(page);
-    await snap(page, "groups-after-close");
+    await snap(page, "schools-after-close");
 
     await gotoTab(page, "school-portal");
     await snap(page, "school-home");

@@ -133,8 +133,8 @@ const flow = [
     checks: [{ label: "users export downloads workbook", selector: `button:has-text("${T.exportUsers}")` }],
   },
   {
-    tab: "groups",
-    screenshot: "groups-schools-xlsx-export",
+    tab: "schools",
+    screenshot: "schools-xlsx-export",
     checks: [{ label: "schools and groups readiness export downloads workbook", selector: `button:has-text("${T.exportSchoolReadiness}")` }],
   },
   {

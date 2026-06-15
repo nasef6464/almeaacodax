@@ -62,7 +62,7 @@ const ROUTES = [
     minControlCount: 8,
     expectedTextGroups: [
       ["متوسط الأداء", "متابعة الطلاب", "أضعف المهارات"],
-      ["المجموعات", "الطلاب", "تقارير"],
+      ["المدرسة", "الطلاب", "تقارير"],
     ],
   },
   {
@@ -70,6 +70,7 @@ const ROUTES = [
     path: "/admin-dashboard?tab=school-portal",
     allowScopeNotice: true,
     requireSupervisorScopeCard: true,
+    requireSupervisorRoleContract: true,
     minBodyLength: 1200,
     minControlCount: 12,
     expectedTextGroups: [
@@ -85,7 +86,7 @@ const ROUTES = [
     minControlCount: 8,
     expectedTextGroups: [
       ["تقارير", "الأداء", "المهارات"],
-      ["اختبار موجه", "خطة تدخل", "تصدير"],
+      ["توجيه اختبار", "تدخل علاجي", "تصدير"],
       ["Excel", "PDF", "متابعة"],
     ],
   },
@@ -202,6 +203,7 @@ async function inspectRoute(page, viewport, routeSpec) {
       hasScopeNotice: /(لا يوجد نطاق إشراف ظاهر|لم يتم ربط حسابك بمدرسة|اطلب من المدير ربطك بالمدرسة)/.test(text),
       hasSupervisorScopeCard: Boolean(document.querySelector('[data-testid="supervisor-school-scope-card"]')),
       hasSupervisorScopeActionGuide: Boolean(document.querySelector('[data-testid="supervisor-scope-action-guide"]')),
+      hasSupervisorRoleContract: Boolean(document.querySelector('[data-testid="supervisor-role-operating-contract"]')),
     };
   }, routeSpec);
 
@@ -209,6 +211,10 @@ async function inspectRoute(page, viewport, routeSpec) {
   const scopeCardFailure =
     routeSpec.requireSupervisorScopeCard && !state.hasScopeNotice && (!state.hasSupervisorScopeCard || !state.hasSupervisorScopeActionGuide)
       ? "missing supervisor scope card"
+      : "";
+  const roleContractFailure =
+    routeSpec.requireSupervisorRoleContract && !state.hasScopeNotice && !state.hasSupervisorRoleContract
+      ? "missing supervisor role operating contract"
       : "";
   const scopeNoticeOk =
     Boolean(routeSpec.allowScopeNotice) &&
@@ -218,6 +224,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     !state.hasBlockingError &&
     !layoutFailure &&
     !scopeCardFailure &&
+    !roleContractFailure &&
     network5xx.length === 0;
   const pass =
     scopeNoticeOk ||
@@ -229,6 +236,7 @@ async function inspectRoute(page, viewport, routeSpec) {
       !state.hasBlockingError &&
       !layoutFailure &&
       !scopeCardFailure &&
+      !roleContractFailure &&
       network5xx.length === 0);
 
   return {
@@ -242,6 +250,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     network5xx,
     layoutFailure,
     scopeCardFailure,
+    roleContractFailure,
     ...state,
   };
 }

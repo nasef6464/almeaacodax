@@ -36,3 +36,17 @@ load-tests/results/*.jsonl
 
 .vercel
 .env*.local
+
+# Local audit / verification artifacts
+audit-artifacts/
+audit-smoke-summary-*.json
+.vercel.bak-*/
+BATCH_*.md
+CONTENT_BOOTSTRAP_*.md
+FINAL_*_REPORT_*.md
+FINAL_PRODUCTION_READINESS_REPORT_*.md
+FIREBASE_LEGACY_CLEANUP_*.md
+LOAD_TESTING_SCRIPTS_*.md
+PAYMENT_AMOUNT_TAMPERING_FIX_*.md
+SENTRY_MONITORING_READY_*.md
+SEO_BROWSERROUTER_*.md

@@ -302,6 +302,38 @@ async function run() {
       relationGroupCount: relationGroups.length,
     });
 
+    const schoolSupervisorEmail = `audit.school.supervisor.${suffix}@almeaa.local`;
+    const schoolSupervisorPayload = await request(session, "/auth/admin/users", {
+      method: "POST",
+      body: {
+        name: `Temporary audit school supervisor ${suffix}`,
+        email: schoolSupervisorEmail,
+        password: "Audit@12345",
+        role: "supervisor",
+        schoolId,
+        groupIds: [schoolId],
+      },
+    });
+    const schoolSupervisorId = docId(schoolSupervisorPayload?.user);
+    if (schoolSupervisorId) created.users.push(schoolSupervisorId);
+    const schoolWithSupervisor = await request(session, `/content/groups/${encodeURIComponent(schoolId)}`, {
+      method: "PATCH",
+      body: {
+        supervisorIds: [schoolSupervisorId],
+        totalSupervisors: 1,
+      },
+    });
+    const schoolWideSupervisorOk =
+      schoolSupervisorId &&
+      String(schoolSupervisorPayload?.user?.schoolId || "") === schoolId &&
+      (schoolSupervisorPayload?.user?.groupIds || []).map(String).includes(schoolId) &&
+      (schoolWithSupervisor?.supervisorIds || []).map(String).includes(schoolSupervisorId);
+    addCheck(
+      "school-wide supervisor scope is separate from class supervisor",
+      schoolWideSupervisorOk ? "PASS" : "FAIL",
+      `schoolSupervisor=${short(schoolSupervisorId)}, schoolScope=${(schoolWithSupervisor?.supervisorIds || []).length}`,
+    );
+
     const packagePayload = await request(session, "/content/b2b-packages", {
       method: "POST",
       body: {
@@ -348,6 +380,12 @@ async function run() {
       activePackages: metrics.activePackages,
       activeCodes: metrics.activeCodes,
     }));
+    const classSummary = (reportPayload?.classSummaries || []).find((item) => String(item.id || "") === classId);
+    addCheck(
+      "school report preserves class supervisor count",
+      Number(classSummary?.supervisorCount || 0) >= 1 ? "PASS" : "FAIL",
+      `class=${short(classId)}, supervisors=${classSummary?.supervisorCount ?? "missing"}`,
+    );
   } finally {
     for (const id of created.accessCodes.reverse()) {
       if (id) await cleanupRequest(session, `delete access code ${short(id)}`, `/content/access-codes/${encodeURIComponent(id)}`, { method: "DELETE" });

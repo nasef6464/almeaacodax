@@ -50,7 +50,7 @@ check("school relations endpoint is scoped for supervisors", () => {
 check("frontend uses server relation workflow and supports one student add", () => {
   assertIncludes(files.api, "applySchoolRelations");
   assertIncludes(files.schools, "api.applySchoolRelations");
-  assertIncludes(files.schools, "hydrateContentBootstrap({ groups: response.groups })");
+  assertIncludes(files.schools, "mergeSchoolGroups(response.groups)");
   assertIncludes(files.schools, "إضافة طالب منفرد");
   assertIncludes(files.schools, "handleAddSingleStudent");
 });
@@ -102,6 +102,9 @@ check("selected school has a clear commercial operating flow", () => {
   assertIncludes(files.schools, 'data-testid="school-setup-progress"');
   assertIncludes(files.schools, 'data-testid="school-next-action"');
   assertIncludes(files.schools, 'data-testid="school-primary-actions"');
+  assertIncludes(files.schools, "commercialDecisionCards");
+  assertIncludes(files.schools, 'data-testid="school-commercial-summary-strip"');
+  assertIncludes(files.schools, "school-commercial-decision-");
   assertIncludes(files.schools, "document.querySelector('[data-testid=\"school-students-panel\"]')");
   assertIncludes(files.schools, "document.querySelector('[data-testid=\"school-wide-supervisors-panel\"]')");
   assertIncludes(files.schools, "commercialOperatingSteps");
@@ -116,7 +119,8 @@ check("selected school has a real delete action", () => {
   assertIncludes(files.schools, "handleDeleteSelectedSchool");
   assertIncludes(files.schools, 'data-testid="school-delete-button"');
   assertIncludes(files.schools, "window.confirm");
-  assertIncludes(files.schools, "deleteGroup(selectedSchool.id)");
+  assertIncludes(files.schools, "deleteGroupAsync(selectedSchool.id)");
+  assertIncludes(files.store, "deleteGroupAsync: async");
   assertIncludes(files.schools, "setSelectedSchool(null)");
   assertIncludes(files.store, "deletedGroupIds");
   assertIncludes(files.store, "deletedPackageIds");
@@ -168,19 +172,25 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "api.createAdminUser");
   assertIncludes(files.schools, "existingSupervisor");
   assertIncludes(files.schools, 'data-testid="school-class-create-supervisor"');
-  assertIncludes(files.schools, "assignSupervisorToGroup(value, selectedSchool.id)");
-  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, selectedSchool.id)");
-  assertIncludes(files.schools, "assignSupervisorToGroup(value, classroom.id)");
-  assertIncludes(files.schools, "removeSupervisorFromGroup(currentUser.id, classroom.id)");
+  assertIncludes(files.store, "assignSupervisorToGroupAsync: async");
+  assertIncludes(files.store, "removeSupervisorFromGroupAsync: async");
+  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
+  assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, classroom.id)");
+  assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)");
+  assertIncludes(files.schools, "rosterActionPending");
   assertIncludes(files.schools, "setActiveTab('relations')");
 });
 
 check("school student roster exposes direct removal actions", () => {
-  assertIncludes(files.schools, "removeStudentFromGroup");
+  assertIncludes(files.store, "assignStudentToGroupAsync: async");
+  assertIncludes(files.store, "removeStudentFromGroupAsync: async");
   assertIncludes(files.schools, "إخراج من الفصل");
   assertIncludes(files.schools, "إزالة من المدرسة");
-  assertIncludes(files.schools, "removeStudentFromGroup(student.id, currentClass.id)");
-  assertIncludes(files.schools, "removeStudentFromGroup(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "handleAssignStudentToClass(student.id, value)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, currentClass.id)");
+  assertIncludes(files.schools, "handleRemoveStudentScope(student.id, selectedSchool.id)");
+  assertIncludes(files.schools, "rosterActionPending");
 });
 
 check("school workspace avoids duplicate operating blocks", () => {
@@ -201,9 +211,11 @@ check("school from scratch live audit is wired and cleans up", () => {
   assertIncludes(files.schoolFromScratchAudit, "create temporary school");
   assertIncludes(files.schoolFromScratchAudit, "import one student into class");
   assertIncludes(files.schoolFromScratchAudit, "apply parent and class supervisor relations");
+  assertIncludes(files.schoolFromScratchAudit, "school-wide supervisor scope is separate from class supervisor");
   assertIncludes(files.schoolFromScratchAudit, "create school package with path scope");
   assertIncludes(files.schoolFromScratchAudit, "create school access code");
   assertIncludes(files.schoolFromScratchAudit, "school report sees new commercial setup");
+  assertIncludes(files.schoolFromScratchAudit, "school report preserves class supervisor count");
   assertIncludes(files.schoolFromScratchAudit, "cleanupRequest");
 });
 
