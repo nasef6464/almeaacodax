@@ -923,6 +923,16 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        if (!selectedSchool?.id || user.role !== Role.ADMIN) {
+            return;
+        }
+
+        void refreshSchoolWorkspace(selectedSchool.id).catch((error) => {
+            setManagementError(error instanceof Error ? error.message : 'تعذر تحديث بيانات المدرسة من الخادم.');
+        });
+    }, [selectedSchool?.id, user.role]);
+
     const mergeSchoolUsers = (incomingUsers: AdminUserPayload[] | undefined) => {
         if (!incomingUsers?.length) {
             return;

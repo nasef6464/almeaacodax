@@ -53,6 +53,9 @@ If continuing from a new account and local skills are missing, continue using th
 - Button states verified locally: `جاري الحفظ`, `جاري التحقق`, `تم الحفظ والتأكد`, `فشل الحفظ`.
 - Fixed admin user refresh limit from 200 to 100 so the verification request matches backend validation.
 - Browser verification: opened a real school workspace locally against the connected API, confirmed the button is visible, clicked it, and got `تم الحفظ والتأكد من البيانات من الخادم`.
+- Follow-up QA found one remaining refresh gap: after adding a single student, the API saved the student, but opening the school after refresh could show `0 طالب` until pressing `حفظ وتأكيد البيانات`.
+- Follow-up fix: opening any selected school as admin now performs a silent server refresh for the school workspace, so users/classes/students/supervisors hydrate before the manager relies on counters.
+- Local verification after the follow-up fix: opened the same QA school after refresh and the student counter showed `1 طالب` without pressing the save/verify button.
 - Gates:
   - `npm run typecheck`: BLOCKED timeout after 120s, not a compile failure.
   - `npm run build`: PASS.
