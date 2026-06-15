@@ -649,6 +649,8 @@ export const SchoolsManager: React.FC = () => {
     const [accessCodeActionPending, setAccessCodeActionPending] = useState<string | null>(null);
     const [rosterActionPending, setRosterActionPending] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
+    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
+    const [isSingleStudentOpen, setIsSingleStudentOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
     const [schoolStudentPage, setSchoolStudentPage] = useState(1);
@@ -1414,6 +1416,7 @@ export const SchoolsManager: React.FC = () => {
         const pagedVisibleSchoolStudents = visibleSchoolStudents.slice(schoolStudentStartIndex, schoolStudentEndIndex);
         const focusClassStudentForm = (classroomName: string) => {
             setSingleStudent((current) => ({ ...current, className: classroomName }));
+            setIsSingleStudentOpen(true);
             setManagementNotice(`تم اختيار فصل ${classroomName}. اكتب بيانات الطالب ثم اضغط إضافة الطالب.`);
             window.setTimeout(() => {
                 document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1759,6 +1762,7 @@ export const SchoolsManager: React.FC = () => {
         ];
         const readinessScore = readinessChecks.filter((check) => check.isReady).length;
         const handoverBlockingGaps = readinessChecks.filter((check) => !check.isReady);
+        const visibleReadinessGaps = handoverBlockingGaps.slice(0, 3);
         const operationalWarnings = [
             schoolClasses.length === 0 ? 'أضف فصلًا واحدًا على الأقل قبل تسليم المدرسة.' : '',
             schoolSupervisors.length === 0 ? 'اربط مشرفًا أو معلمًا ليتمكن من متابعة الطلاب.' : '',
@@ -2900,7 +2904,7 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <div data-testid="school-workspace-tabs" className="flex flex-wrap gap-2 border-b border-gray-200">
+                <div data-testid="school-workspace-tabs" className="hidden">
                     {[
                         { id: 'overview', label: '1 الفصول والطلاب' },
                         { id: 'import', label: '2 استيراد الطلاب' },
@@ -2914,6 +2918,7 @@ export const SchoolsManager: React.FC = () => {
                                 setManagementError(null);
                                 setManagementNotice(null);
                                 setActiveTab(tab.id as typeof activeTab);
+                                setExpandedSchoolStep(tab.id as typeof activeTab);
                             }}
                             className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
                                 activeTab === tab.id
@@ -2944,7 +2949,142 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <div data-testid="school-command-center" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <section data-testid="school-ux-launch-board" className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                    <div className="grid gap-0 lg:grid-cols-[0.95fr_1.35fr]">
+                        <div className={`p-6 ${
+                            readinessScore === readinessChecks.length
+                                ? 'bg-emerald-50'
+                                : readinessScore >= 3
+                                    ? 'bg-amber-50'
+                                    : 'bg-rose-50'
+                        }`}>
+                            <button
+                                type="button"
+                                onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }}
+                                className="mb-5 inline-flex items-center text-sm font-black text-slate-600 hover:text-slate-900"
+                            >
+                                &rarr; عودة لقائمة المدارس
+                            </button>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                    readinessScore === readinessChecks.length
+                                        ? 'bg-white text-emerald-700'
+                                        : readinessScore >= 3
+                                            ? 'bg-white text-amber-800'
+                                            : 'bg-white text-rose-700'
+                                }`}>
+                                    {readinessStatusLabel}
+                                </span>
+                                <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-black text-slate-600">
+                                    {readinessPercent}% جاهزية
+                                </span>
+                            </div>
+                            <h2 className="mt-4 text-2xl font-black leading-9 text-gray-950">{selectedSchool.name}</h2>
+                            <p data-testid="school-ux-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-700">{readinessNextStep}</p>
+                            <div className="mt-5">
+                                <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-600">
+                                    <span>جاهزية التشغيل</span>
+                                    <span>{readinessScore}/{readinessChecks.length}</span>
+                                </div>
+                                <div className="h-3 overflow-hidden rounded-full bg-white">
+                                    <div
+                                        className={`h-full rounded-full ${
+                                            readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-rose-500'
+                                        }`}
+                                        style={{ width: `${readinessPercent}%` }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-5 rounded-2xl bg-white/85 p-4">
+                                <div className="text-sm font-black text-gray-900">أهم 3 نواقص فقط</div>
+                                {visibleReadinessGaps.length === 0 ? (
+                                    <p className="mt-2 text-sm font-bold text-emerald-700">لا توجد نواقص تشغيلية تمنع التجربة.</p>
+                                ) : (
+                                    <div className="mt-3 space-y-2">
+                                        {visibleReadinessGaps.map((gap) => (
+                                            <button
+                                                key={gap.label}
+                                                type="button"
+                                                onClick={() => {
+                                                    setActiveTab(gap.tab);
+                                                    setExpandedSchoolStep(gap.tab);
+                                                }}
+                                                className="block w-full rounded-xl border border-slate-100 bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-slate-700 transition-colors hover:bg-slate-50"
+                                            >
+                                                <span className="block font-black text-gray-900">{gap.label}</span>
+                                                {gap.hint}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="p-5 lg:p-6">
+                            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                                <div>
+                                    <div className="text-xs font-black text-slate-500">خطوات تشغيل المدرسة</div>
+                                    <h3 className="text-lg font-black text-gray-950">افتح خطوة واحدة فقط للعمل عليها</h3>
+                                </div>
+                                {expandedSchoolStep && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedSchoolStep(null)}
+                                        className="w-fit rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-200"
+                                    >
+                                        إغلاق التفاصيل
+                                    </button>
+                                )}
+                            </div>
+                            <div className="grid gap-3">
+                                {commercialOperatingSteps.map((step, index) => {
+                                    const isOpen = expandedSchoolStep === step.tab;
+                                    return (
+                                        <button
+                                            key={step.id}
+                                            type="button"
+                                            data-testid={`school-ux-step-${step.id}`}
+                                            onClick={() => {
+                                                setActiveTab(step.tab);
+                                                setExpandedSchoolStep((current) => (current === step.tab ? null : step.tab));
+                                            }}
+                                            className={`grid gap-3 rounded-2xl border p-4 text-right transition-colors sm:grid-cols-[auto_1fr_auto] sm:items-center ${
+                                                isOpen
+                                                    ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                                                    : step.isReady
+                                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
+                                                        : 'border-slate-100 bg-white hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            <span className={`flex h-11 w-11 items-center justify-center rounded-2xl text-base font-black ${
+                                                isOpen ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
+                                            }`}>
+                                                {index + 1}
+                                            </span>
+                                            <span>
+                                                <span className={`block text-base font-black ${isOpen ? 'text-white' : 'text-gray-950'}`}>{step.title}</span>
+                                                <span className={`mt-1 block text-xs font-bold leading-5 ${isOpen ? 'text-white/75' : 'text-slate-600'}`}>{step.description}</span>
+                                            </span>
+                                            <span className="flex flex-wrap gap-2 sm:justify-end">
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                                    isOpen ? 'bg-white/15 text-white' : step.isReady ? 'bg-white text-emerald-700' : 'bg-slate-100 text-slate-700'
+                                                }`}>
+                                                    {step.statusLabel}
+                                                </span>
+                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                                                    isOpen ? 'bg-white/15 text-white' : 'bg-white text-slate-700'
+                                                }`}>
+                                                    {step.metric}
+                                                </span>
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div data-testid="school-command-center" className="hidden">
                     <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                         <div>
                             <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
@@ -2974,7 +3114,53 @@ export const SchoolsManager: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    <div data-testid="school-commercial-summary-strip" className="mb-4 grid gap-3 lg:grid-cols-4">
+                    <div className="mb-4 grid gap-3 lg:grid-cols-[0.7fr_1.3fr]">
+                        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                            <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-500">
+                                <span>نسبة الجاهزية</span>
+                                <span>{readinessPercent}%</span>
+                            </div>
+                            <div className="h-2 rounded-full bg-white">
+                                <div
+                                    className={`h-2 rounded-full ${readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-red-500'}`}
+                                    style={{ width: `${readinessPercent}%` }}
+                                />
+                            </div>
+                            <p className="mt-3 text-xs font-bold leading-6 text-slate-600">
+                                {readinessScore === readinessChecks.length ? 'جاهزة للتجربة والتسليم.' : `${readinessScore}/${readinessChecks.length} بنود جاهزة.`}
+                            </p>
+                        </div>
+                        <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
+                            <div className="mb-3 flex items-center justify-between gap-2">
+                                <span className="text-sm font-black text-gray-900">أهم النواقص الآن</span>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveTab('reports')}
+                                    className="rounded-xl bg-white px-3 py-1.5 text-xs font-black text-amber-800 transition-colors hover:bg-amber-100"
+                                >
+                                    التفاصيل في التقرير
+                                </button>
+                            </div>
+                            {visibleReadinessGaps.length === 0 ? (
+                                <p className="text-sm font-bold text-emerald-700">لا توجد نواقص تشغيلية تمنع التجربة.</p>
+                            ) : (
+                                <div className="grid gap-2 md:grid-cols-3">
+                                    {visibleReadinessGaps.map((gap) => (
+                                        <button
+                                            key={gap.label}
+                                            type="button"
+                                            onClick={() => setActiveTab(gap.tab)}
+                                            className="rounded-xl bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-amber-900 transition-colors hover:bg-amber-100"
+                                        >
+                                            <span className="block font-black">{gap.label}</span>
+                                            {gap.hint}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div data-testid="school-commercial-summary-strip" className="hidden">
                         {commercialDecisionCards.map((card) => (
                             <button
                                 key={card.id}
@@ -3008,7 +3194,7 @@ export const SchoolsManager: React.FC = () => {
                             </button>
                         ))}
                     </div>
-                    <div data-testid="school-handover-decision-board" className={`mb-4 rounded-2xl border p-4 ${
+                    <div data-testid="school-handover-decision-board" className={`hidden ${
                         handoverBlockingGaps.length === 0
                             ? 'border-emerald-100 bg-emerald-50'
                             : 'border-amber-100 bg-amber-50'
@@ -3097,22 +3283,31 @@ export const SchoolsManager: React.FC = () => {
                                     key={step.id}
                                     type="button"
                                     data-testid={`school-delivery-journey-step-${step.id}`}
-                                    onClick={() => setActiveTab(step.tab)}
-                                    className={`rounded-xl border px-3 py-2 text-right text-xs font-black transition-colors ${
-                                        step.isReady
+                                    onClick={() => {
+                                        setActiveTab(step.tab);
+                                        setExpandedSchoolStep(step.tab);
+                                    }}
+                                    className={`rounded-xl border px-3 py-3 text-right transition-colors ${
+                                        expandedSchoolStep === step.tab
+                                            ? 'border-slate-300 bg-slate-900 text-white shadow-sm'
+                                            : step.isReady
                                             ? 'border-emerald-100 bg-white text-emerald-700 hover:bg-emerald-50'
                                             : index === currentOperatingStepIndex
                                                 ? 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
                                                 : 'border-slate-100 bg-white text-slate-500 hover:bg-slate-100'
                                     }`}
                                 >
-                                    <span className="block text-[11px] text-slate-400">مرحلة {index + 1}</span>
-                                    {step.title}
+                                    <span className="block text-[11px] font-black text-slate-400">مرحلة {index + 1}</span>
+                                    <span className={`mt-1 block text-sm font-black ${expandedSchoolStep === step.tab ? 'text-white' : 'text-gray-900'}`}>{step.title}</span>
+                                    <span className="mt-1 block text-xs font-bold leading-5">{step.metric}</span>
+                                    <span className={`mt-2 inline-flex rounded-lg px-2.5 py-1 text-[11px] font-black ${expandedSchoolStep === step.tab ? 'bg-white/15 text-white' : 'bg-white text-gray-700'}`}>
+                                        {step.buttonLabel}
+                                    </span>
                                 </button>
                             ))}
                         </div>
                     </div>
-                    <div data-testid="school-setup-progress" className="grid gap-3 lg:grid-cols-5">
+                    <div data-testid="school-setup-progress" className="hidden">
                         {commercialOperatingSteps.map((step, index) => (
                             <div
                                 key={step.id}
@@ -3178,6 +3373,7 @@ export const SchoolsManager: React.FC = () => {
                             data-testid="school-primary-add-student"
                             onClick={() => {
                                 setActiveTab('overview');
+                                setIsSingleStudentOpen(true);
                                 window.setTimeout(() => {
                                     document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }, 50);
@@ -3231,8 +3427,8 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    {activeTab === 'overview' && (
+                <div className={`${expandedSchoolStep ? 'bg-white p-6 rounded-xl shadow-sm border border-gray-100' : 'hidden'}`}>
+                    {activeTab === 'overview' && expandedSchoolStep === 'overview' && (
                         <div data-testid="school-classes-panel" className="space-y-8">
                             <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -3418,15 +3614,14 @@ export const SchoolsManager: React.FC = () => {
                                         <p className="text-sm text-indigo-800">للطالب الواحد أو التصحيح السريع داخل فصل واضح.</p>
                                     </div>
                                     <button
-                                        data-testid="school-single-student-submit"
-                                        onClick={() => void handleAddSingleStudent()}
-                                        disabled={isImporting}
-                                        className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                        type="button"
+                                        onClick={() => setIsSingleStudentOpen((current) => !current)}
+                                        className="rounded-xl bg-white px-5 py-2.5 text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
                                     >
-                                        إضافة الطالب
+                                        {isSingleStudentOpen ? 'إغلاق البطاقة' : 'إضافة طالب منفرد'}
                                     </button>
                                 </div>
-                                {schoolClasses.length === 0 && (
+                                {isSingleStudentOpen && schoolClasses.length === 0 && (
                                     <div data-testid="school-student-needs-class-note" className="mb-4 flex flex-col gap-3 rounded-2xl border border-amber-100 bg-white px-4 py-3 md:flex-row md:items-center md:justify-between">
                                         <div>
                                             <div className="text-sm font-black text-amber-800">ابدأ بفصل واحد قبل إضافة الطلاب</div>
@@ -3461,40 +3656,54 @@ export const SchoolsManager: React.FC = () => {
                                         </button>
                                     </div>
                                 )}
-                                <div className="grid gap-3 md:grid-cols-4">
-                                    <input
-                                        data-testid="school-single-student-name"
-                                        value={singleStudent.name}
-                                        onChange={(event) => setSingleStudent((current) => ({ ...current, name: event.target.value }))}
-                                        placeholder="اسم الطالب"
-                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                    />
-                                    <input
-                                        data-testid="school-single-student-email"
-                                        value={singleStudent.email}
-                                        onChange={(event) => setSingleStudent((current) => ({ ...current, email: event.target.value }))}
-                                        placeholder="بريد الطالب"
-                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                    />
-                                    <select
-                                        data-testid="school-single-student-class"
-                                        value={singleStudent.className}
-                                        onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
-                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                    >
-                                        <option value="">اختر فصل الطالب</option>
-                                        {schoolClasses.map((classroom) => (
-                                            <option key={classroom.id} value={classroom.name}>{classroom.name}</option>
-                                        ))}
-                                    </select>
-                                    <input
-                                        data-testid="school-single-student-password"
-                                        value={singleStudent.password}
-                                        onChange={(event) => setSingleStudent((current) => ({ ...current, password: event.target.value }))}
-                                        placeholder="كلمة مرور اختيارية"
-                                        className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-                                    />
-                                </div>
+                                {isSingleStudentOpen && (
+                                    <div className="space-y-3">
+                                        <div className="grid gap-3 md:grid-cols-4">
+                                            <input
+                                                data-testid="school-single-student-name"
+                                                value={singleStudent.name}
+                                                onChange={(event) => setSingleStudent((current) => ({ ...current, name: event.target.value }))}
+                                                placeholder="اسم الطالب"
+                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                            />
+                                            <input
+                                                data-testid="school-single-student-email"
+                                                value={singleStudent.email}
+                                                onChange={(event) => setSingleStudent((current) => ({ ...current, email: event.target.value }))}
+                                                placeholder="بريد الطالب"
+                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                            />
+                                            <select
+                                                data-testid="school-single-student-class"
+                                                value={singleStudent.className}
+                                                onChange={(event) => setSingleStudent((current) => ({ ...current, className: event.target.value }))}
+                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                            >
+                                                <option value="">اختر فصل الطالب</option>
+                                                {schoolClasses.map((classroom) => (
+                                                    <option key={classroom.id} value={classroom.name}>{classroom.name}</option>
+                                                ))}
+                                            </select>
+                                            <input
+                                                data-testid="school-single-student-password"
+                                                value={singleStudent.password}
+                                                onChange={(event) => setSingleStudent((current) => ({ ...current, password: event.target.value }))}
+                                                placeholder="كلمة مرور اختيارية"
+                                                className="rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+                                            />
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <button
+                                                data-testid="school-single-student-submit"
+                                                onClick={() => void handleAddSingleStudent()}
+                                                disabled={isImporting}
+                                                className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                            >
+                                                إضافة الطالب
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -4108,7 +4317,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'packages' && (
+                    {activeTab === 'packages' && expandedSchoolStep === 'packages' && (
                         <div data-testid="school-packages-panel" className="space-y-8">
                             <div data-testid="school-access-decision-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -4669,7 +4878,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'relations' && (
+                    {activeTab === 'relations' && expandedSchoolStep === 'relations' && (
                         <div data-testid="school-supervisors-panel" className="space-y-8">
                             <div data-testid="school-supervisor-handover-guard" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -4989,11 +5198,35 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'import' && (
+                    {activeTab === 'import' && expandedSchoolStep === 'import' && (
                         <div className="max-w-4xl mx-auto py-8 space-y-8">
                             <div className="text-center">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-2">استيراد الطلاب دفعة واحدة</h2>
                                 <p className="text-gray-500">حمّل النموذج، ثم ارفع ملف Excel أو CSV وسيقوم النظام بإنشاء الحسابات وربطها بالمدرسة والفصول.</p>
+                            </div>
+
+                            <div className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3 md:grid-cols-5">
+                                {[
+                                    ['1', 'تحميل النموذج', true],
+                                    ['2', 'رفع الملف', importRows.length > 0 || Boolean(importSummary)],
+                                    ['3', 'معاينة', importRows.length > 0],
+                                    ['4', 'بدء الاستيراد', Boolean(importSummary)],
+                                    ['5', 'تحميل بيانات الدخول', importCredentials.length > 0],
+                                ].map(([number, label, isDone]) => (
+                                    <div
+                                        key={String(label)}
+                                        className={`rounded-xl border px-3 py-2 text-center ${
+                                            isDone
+                                                ? 'border-emerald-100 bg-white text-emerald-700'
+                                                : 'border-slate-100 bg-white text-slate-500'
+                                        }`}
+                                    >
+                                        <span className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-700">
+                                            {number}
+                                        </span>
+                                        <span className="block text-xs font-black">{label}</span>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -5140,7 +5373,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'reports' && (
+                    {activeTab === 'reports' && expandedSchoolStep === 'reports' && (
                         <div data-testid="school-reports-panel" className="space-y-6">
                             <div data-testid="school-handover-report-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
