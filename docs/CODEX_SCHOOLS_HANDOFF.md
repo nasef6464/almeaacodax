@@ -563,3 +563,29 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-management`: PASS 22/22.
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
+
+## Production Admin Journey Follow-up - 2026-06-18
+
+- Branch: `main`.
+- Scope: schools UI counters and supervisor overview scoping only.
+- No backend schema changes, DB direct edits, cleanup apply, deletion, barcode, question editor, or homepage changes were made.
+- Production QA issue:
+  - after adding a single student, the selected school workspace showed the student, but the school list card could still show 0 after refresh.
+  - supervisor school portal was scoped correctly, but the supervisor overview top cards still showed platform-level style counters.
+- Fix:
+  - school card counters, readiness, portfolio rows, and selected school metrics now use one shared school-student calculation.
+  - the shared calculation counts students linked by `schoolId`, school roster `studentIds`, class `studentIds`, or class/school `groupIds`.
+  - supervisor overview now builds scope from both `groupIds` and direct school/class `supervisorIds`.
+  - supervisor top KPI cards now show scoped school/class/student/follow-up counts instead of global platform counts.
+- Verification before push:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+- Next verification after deploy:
+  - retest Production admin journey from Chrome/Browser.
+  - confirm single-student and Excel import counts remain after refresh.
+  - confirm supervisor overview shows only scoped counters.

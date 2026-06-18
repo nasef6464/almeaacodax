@@ -748,6 +748,19 @@ export const SchoolsManager: React.FC = () => {
     const schools = useMemo(() => groups.filter((group) => group.type === 'SCHOOL'), [groups]);
     const classes = useMemo(() => groups.filter((group) => group.type === 'CLASS'), [groups]);
     const students = useMemo(() => users.filter((currentUser) => currentUser.role === Role.STUDENT), [users]);
+    const getStudentsForSchool = (school: Group, schoolClasses: Group[]) => {
+        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
+        const linkedStudentIds = new Set<string>([
+            ...(school.studentIds || []),
+            ...schoolClasses.flatMap((classroom) => classroom.studentIds || []),
+        ]);
+
+        return students.filter((student) => (
+            student.schoolId === school.id
+            || linkedStudentIds.has(student.id)
+            || (student.groupIds || []).some((groupId) => groupId === school.id || schoolClassIds.has(groupId))
+        ));
+    };
     const supervisors = useMemo(
         () => users.filter((currentUser) => currentUser.role === Role.SUPERVISOR || currentUser.role === Role.TEACHER),
         [users],
@@ -774,10 +787,7 @@ export const SchoolsManager: React.FC = () => {
 
     const getSchoolOperationalSnapshot = (school: Group) => {
         const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
-        const schoolStudents = students.filter((student) =>
-            student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
-        );
+        const schoolStudents = getStudentsForSchool(school, schoolClasses);
         const activePackageCount = b2bPackages.filter((pkg) => pkg.schoolId === school.id && pkg.status === 'active').length;
         const activeCodeCount = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now()).length;
         const readinessScore = [
@@ -830,10 +840,7 @@ export const SchoolsManager: React.FC = () => {
     );
     const schoolPortfolioRows = useMemo(() => schools.map((school) => {
         const schoolClasses = classes.filter((group) => group.parentId === school.id);
-        const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
-        const schoolStudents = students.filter((student) =>
-            student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
-        );
+        const schoolStudents = getStudentsForSchool(school, schoolClasses);
         const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
         const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
         const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
@@ -1475,7 +1482,7 @@ export const SchoolsManager: React.FC = () => {
         const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === selectedSchool.id);
         const schoolCodes = accessCodes.filter((code) => code.schoolId === selectedSchool.id);
         const schoolClasses = classes.filter((group) => group.parentId === selectedSchool.id);
-        const schoolStudents = students.filter((currentUser) => currentUser.schoolId === selectedSchool.id);
+        const schoolStudents = getStudentsForSchool(selectedSchool, schoolClasses);
         const schoolGroupIds = new Set([selectedSchool.id, ...schoolClasses.map((classroom) => classroom.id)]);
         const schoolSupervisors = supervisors.filter((currentUser) => (
             selectedSchool.supervisorIds.includes(currentUser.id)
@@ -3710,7 +3717,7 @@ export const SchoolsManager: React.FC = () => {
                                         <Users className="text-blue-500" size={24} />
                                         <h3 className="font-bold text-gray-900">إجمالي الطلاب</h3>
                                     </div>
-                                    <p className="text-3xl font-bold text-blue-600">{selectedSchool.studentIds.length}</p>
+                                    <p className="text-3xl font-bold text-blue-600">{schoolStudents.length}</p>
                                 </div>
                                 <div className="bg-purple-50 p-6 rounded-xl">
                                     <div className="flex items-center gap-3 mb-2">
@@ -6044,10 +6051,7 @@ export const SchoolsManager: React.FC = () => {
                     const schoolPackages = b2bPackages.filter((pkg) => pkg.schoolId === school.id);
                     const schoolCodes = accessCodes.filter((code) => code.schoolId === school.id && code.expiresAt > Date.now());
                     const schoolClasses = classes.filter((group) => group.parentId === school.id);
-                    const schoolClassIds = new Set(schoolClasses.map((group) => group.id));
-                    const schoolStudents = students.filter((student) =>
-                        student.schoolId === school.id || (student.groupIds || []).some((groupId) => schoolClassIds.has(groupId)),
-                    );
+                    const schoolStudents = getStudentsForSchool(school, schoolClasses);
                     const schoolClassCount = schoolClasses.length;
                     const activePackageCount = schoolPackages.filter((pkg) => pkg.status === 'active').length;
                     const cardOperationalSnapshot = getSchoolOperationalSnapshot(school);

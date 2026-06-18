@@ -679,7 +679,7 @@ export const AdminDashboard: React.FC = () => {
 
     const supervisorScopeSummary = useMemo(() => {
         const directGroupIds = new Set(user.groupIds || []);
-        const directGroups = groups.filter((group) => directGroupIds.has(group.id));
+        const directGroups = groups.filter((group) => directGroupIds.has(group.id) || group.supervisorIds.includes(user.id));
         const scopedSchoolIds = new Set<string>();
         if (user.schoolId) scopedSchoolIds.add(user.schoolId);
         directGroups.forEach((group) => {
@@ -687,7 +687,10 @@ export const AdminDashboard: React.FC = () => {
             if (group.parentId) scopedSchoolIds.add(group.parentId);
         });
 
-        const scopedGroupIds = new Set<string>(directGroupIds);
+        const scopedGroupIds = new Set<string>([
+            ...Array.from(directGroupIds),
+            ...directGroups.map((group) => group.id),
+        ]);
         groups.forEach((group) => {
             if (group.parentId && scopedSchoolIds.has(group.parentId)) {
                 scopedGroupIds.add(group.id);
@@ -695,6 +698,7 @@ export const AdminDashboard: React.FC = () => {
         });
 
         const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id) || scopedSchoolIds.has(group.id));
+        const scopedGroupStudentIds = new Set(scopedGroupList.flatMap((group) => group.studentIds || []));
         const scopedStudents = users.filter((item) => {
             if (item.role !== Role.STUDENT) {
                 return false;
@@ -702,7 +706,8 @@ export const AdminDashboard: React.FC = () => {
 
             const sharesGroup = (item.groupIds || []).some((groupId) => scopedGroupIds.has(groupId));
             const sharesSchool = !!item.schoolId && scopedSchoolIds.has(item.schoolId);
-            return sharesGroup || sharesSchool;
+            const linkedByGroup = scopedGroupStudentIds.has(item.id);
+            return sharesGroup || sharesSchool || linkedByGroup;
         });
         const scopedStudentIds = new Set(scopedStudents.map((student) => student.id));
         const scopedResults = examResults.filter((result) => result.userId && scopedStudentIds.has(result.userId));
@@ -809,7 +814,7 @@ export const AdminDashboard: React.FC = () => {
             bestClass,
             weakestClass,
         };
-    }, [examResults, groups, quizzes, user.groupIds, user.schoolId, users]);
+    }, [examResults, groups, quizzes, user.groupIds, user.id, user.schoolId, users]);
 
     const supervisorActionCards = useMemo(() => [
         {
@@ -1014,7 +1019,36 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
+                {(user.role === Role.SUPERVISOR ? [
+                    {
+                        title: 'طلاب نطاقك',
+                        value: supervisorScopeSummary.studentCount.toLocaleString('ar-EG'),
+                        trend: `${supervisorScopeSummary.schoolCount} مدرسة`,
+                        color: 'text-blue-600',
+                        bg: 'bg-blue-50',
+                    },
+                    {
+                        title: 'الفصول داخل نطاقك',
+                        value: supervisorScopeSummary.groupCount.toLocaleString('ar-EG'),
+                        trend: 'فصول/مدارس مرتبطة',
+                        color: 'text-emerald-600',
+                        bg: 'bg-emerald-50',
+                    },
+                    {
+                        title: 'طلاب يحتاجون متابعة',
+                        value: supervisorScopeSummary.weakStudentsCount.toLocaleString('ar-EG'),
+                        trend: `${supervisorScopeSummary.averageScore}% متوسط`,
+                        color: 'text-purple-600',
+                        bg: 'bg-purple-50',
+                    },
+                    {
+                        title: 'اختبارات المتابعة',
+                        value: supervisorScopeSummary.followUpCount.toLocaleString('ar-EG'),
+                        trend: 'داخل نطاقك',
+                        color: 'text-amber-600',
+                        bg: 'bg-amber-50',
+                    },
+                ] : [
                     {
                         title: 'إجمالي الطلاب',
                         value: overviewStats.totalStudents.toLocaleString('ar-EG'),
@@ -1043,7 +1077,7 @@ export const AdminDashboard: React.FC = () => {
                         color: 'text-amber-600',
                         bg: 'bg-amber-50',
                     },
-                ].map((kpi) => (
+                ]).map((kpi) => (
                     <div key={kpi.title} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start">
                             <h3 className="text-gray-500 text-sm font-medium">{kpi.title}</h3>
