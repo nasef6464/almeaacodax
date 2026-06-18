@@ -943,13 +943,31 @@ export const SchoolsManager: React.FC = () => {
         }
     };
 
+    const refreshSchoolListData = async () => {
+        if (user.role !== Role.ADMIN) {
+            return;
+        }
+
+        try {
+            api.clearContentBootstrapCache();
+            const [bootstrap, loadedUsers] = await Promise.all([
+                api.getContentBootstrapFresh(),
+                loadSchoolAdminUsers(),
+            ]);
+            hydrateContentBootstrap(bootstrap as ContentBootstrapPayload);
+            hydrateUsers(mergeUsersById(users, loadedUsers));
+        } catch (error) {
+            console.warn('Failed to refresh school list data:', error);
+        }
+    };
+
     useEffect(() => {
         if (user.role !== Role.ADMIN || hasLoadedSchoolRosterUsersRef.current) {
             return;
         }
 
         hasLoadedSchoolRosterUsersRef.current = true;
-        void refreshUsers();
+        void refreshSchoolListData();
     }, [user.role]);
 
     const refreshSchoolWorkspace = async (schoolId: string, mode: 'silent' | 'manual' = 'silent') => {
