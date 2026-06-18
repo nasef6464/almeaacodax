@@ -526,3 +526,40 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
+
+## School Orphan Cleanup Dry Run Only - 2026-06-18
+
+- Branch: `main`.
+- Scope: dry-run-only planning for old school orphan references.
+- Added `scripts/cleanup-school-orphans.mjs`.
+- No DB writes, no user deletion, no school deletion, no class/group deletion, and no cleanup apply were performed.
+- Safety:
+  - default mode is dry-run.
+  - future write mode requires both `--apply` and `--confirm-school-orphan-cleanup`.
+  - the script does not delete users, schools, classes, or groups.
+- Baseline audit:
+  - users with missing schoolId group: 7.
+  - users with orphan groupIds: 13.
+  - groups with missing studentIds: 0.
+  - groups with missing supervisorIds: 0.
+  - supervisors linked to deleted schools/classes: 3.
+  - students imported but not visible in selected school: 0.
+  - students visible by school/class but missing from school roster: 0.
+- Cleanup dry-run plan:
+  - affected users: 16.
+  - affected supervisors/teachers: 3.
+  - affected students: 10.
+  - user records that would change after future approval: 16.
+  - group records that would change: 0.
+  - users/schools/classes/groups that would be deleted: 0.
+  - proposed future changes: remove orphan groupIds from users, clear schoolId when the referenced school group no longer exists, and remove old supervisor/teacher links to deleted schools/classes by clearing stale user references.
+- Risk:
+  - current Production schools are not at risk based on dry-run.
+  - no correct student would be removed from an existing valid school/class.
+  - apply requires a separate explicit approval.
+- Verification:
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
