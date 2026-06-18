@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     BookOpen,
     Building2,
@@ -740,6 +740,7 @@ export const SchoolsManager: React.FC = () => {
     const [pagedAccessCodesPagination, setPagedAccessCodesPagination] = useState<AccessCodesPagination | null>(null);
     const [isLoadingPagedAccessCodes, setIsLoadingPagedAccessCodes] = useState(false);
     const [pagedAccessCodesError, setPagedAccessCodesError] = useState<string | null>(null);
+    const hasLoadedSchoolRosterUsersRef = useRef(false);
 
     const toggleSchoolActions = (schoolId: string) => {
         setActiveSchoolActionsId((current) => (current === schoolId ? null : schoolId));
@@ -941,6 +942,15 @@ export const SchoolsManager: React.FC = () => {
             console.warn('Failed to refresh users after school updates:', error);
         }
     };
+
+    useEffect(() => {
+        if (user.role !== Role.ADMIN || hasLoadedSchoolRosterUsersRef.current) {
+            return;
+        }
+
+        hasLoadedSchoolRosterUsersRef.current = true;
+        void refreshUsers();
+    }, [user.role]);
 
     const refreshSchoolWorkspace = async (schoolId: string, mode: 'silent' | 'manual' = 'silent') => {
         if (mode === 'manual') {
