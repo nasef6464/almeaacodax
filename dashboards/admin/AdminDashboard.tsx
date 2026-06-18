@@ -875,7 +875,7 @@ export const AdminDashboard: React.FC = () => {
         }
 
         if (user.role === Role.SUPERVISOR) {
-            return adminItems.filter((item) => ['overview', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'quizzes'].includes(item.id));
         }
 
         return adminItems;

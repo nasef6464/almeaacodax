@@ -188,6 +188,7 @@ const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: s
 
 export const PublicBarcodeTestsManager: React.FC = () => {
   const { user, paths, subjects, sections, questions, skills, addQuestion } = useStore();
+  const canCreateQuestions = user.role === 'admin' || user.role === 'teacher';
   const firstPathId = paths[0]?.id || '';
   const [pathId, setPathId] = useState(firstPathId);
   const activeSubjects = useMemo(() => subjects.filter((subject) => subject.pathId === pathId), [subjects, pathId]);
@@ -274,6 +275,11 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const saveQuestionFromBuilder = async (questionPayload: Partial<Question>) => {
     setError('');
     setFeedback('');
+    if (!canCreateQuestions) {
+      setError('المشرف يستخدم الأسئلة المعتمدة فقط ولا يمكنه إنشاء أسئلة جديدة.');
+      return;
+    }
+
     try {
       const created = await addQuestion({
         ...questionPayload,
@@ -736,8 +742,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               <button
                 type="button"
                 data-testid="barcode-add-question-from-builder"
-                onClick={() => setShowQuestionBuilder(true)}
-                className="inline-flex items-center gap-1 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700"
+                onClick={() => canCreateQuestions && setShowQuestionBuilder(true)}
+                disabled={!canCreateQuestions}
+                className={`${canCreateQuestions ? 'inline-flex' : 'hidden'} items-center gap-1 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700`}
               >
                 <Plus size={14} />
                 إنشاء سؤال
@@ -787,8 +794,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   <FileQuestion className="mx-auto mb-2 text-slate-300" />
                   <button
                     type="button"
-                    onClick={() => setShowQuestionBuilder(true)}
-                    className="mb-3 inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700"
+                    onClick={() => canCreateQuestions && setShowQuestionBuilder(true)}
+                    disabled={!canCreateQuestions}
+                    className={`${canCreateQuestions ? 'inline-flex' : 'hidden'} mb-3 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700`}
                   >
                     <Plus size={14} />
                     إنشاء سؤال لهذا الاختبار
@@ -1090,7 +1098,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
           )}
         </aside>
       </div>
-      {showQuestionBuilder && (
+      {showQuestionBuilder && canCreateQuestions && (
         <div data-testid="barcode-unified-question-builder">
           <UnifiedQuestionBuilder
             subjectId={normalizedSubjectId}

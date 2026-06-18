@@ -164,6 +164,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   } = useStore();
 
   const canReview = user.role === 'admin';
+  const isSupervisor = user.role === 'supervisor';
   const managedPathIds = user.managedPathIds || [];
   const managedSubjectIds = user.managedSubjectIds || [];
   const allowedPaths =
@@ -188,7 +189,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const initialTargetUserId = initialManagerParams.get('targetUserId') || '';
   const initialTargetGroupId = initialManagerParams.get('targetGroupId') || '';
   const [modeFilter, setModeFilter] = useState<'all' | 'regular' | 'saher' | 'central'>(
-    initialManagerParams.get('mode') === 'central' ? 'central' : initialManagerParams.get('mode') === 'saher' ? 'saher' : initialManagerParams.get('mode') === 'regular' ? 'regular' : 'all',
+    isSupervisor ? 'central' : initialManagerParams.get('mode') === 'central' ? 'central' : initialManagerParams.get('mode') === 'saher' ? 'saher' : initialManagerParams.get('mode') === 'regular' ? 'regular' : 'all',
   );
   const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'shown' | 'hidden'>('all');
   const [learningSlotFilter, setLearningSlotFilter] = useState<'all' | 'visible' | 'hidden'>(filterType ? 'visible' : 'all');
@@ -242,6 +243,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           if (managedSubjectIds.length > 0 && !managedSubjectIds.includes(quiz.subjectId)) return false;
           if (managedPathIds.length > 0 && quiz.pathId && !managedPathIds.includes(quiz.pathId)) return false;
         }
+        if (isSupervisor && (quiz.mode || 'regular') !== 'central') return false;
         if (!isLearningSpaceManager && filterType === 'bank' && !isTrainingQuiz(quiz)) return false;
         if (!isLearningSpaceManager && filterType === 'quiz' && !isMockQuiz(quiz)) return false;
         if (subjectId && quiz.subjectId !== subjectId) return false;
@@ -321,6 +323,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       questions,
       selectedSectionId,
       selectedSkillId,
+      isSupervisor,
       skills,
       user.role,
       visibilityFilter,
@@ -409,6 +412,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   const handleCreateNew = () => {
+    if (isSupervisor) {
+      handleCreateByMode('central');
+      return;
+    }
     if (isLearningSpaceManager) {
       handleCreateByMode('regular');
       return;
@@ -682,12 +689,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
             className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Plus size={18} />
-            إنشاء اختبار جديد
+            {isSupervisor ? 'إنشاء اختبار موجّه' : 'إنشاء اختبار جديد'}
           </button>
-          {!filterType && <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
+          {!filterType && !isSupervisor && <button onClick={() => handleCreateByMode('saher')} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors">
             + اختبار ساهر
           </button>}
-          {!filterType && <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
+          {!filterType && !isSupervisor && <button onClick={() => handleCreateByMode('central')} className="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl font-bold hover:bg-amber-100 transition-colors">
             + اختبار موجّه
           </button>}
         </div>
@@ -819,10 +826,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
       {!filterType && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white border border-purple-100 rounded-xl p-4">
+          {!isSupervisor && <div className="bg-white border border-purple-100 rounded-xl p-4">
             <p className="text-xs text-purple-500 mb-1">اختبارات ساهر</p>
             <p className="text-2xl font-black text-purple-700">{counts.saher}</p>
-          </div>
+          </div>}
           <div className="bg-white border border-amber-100 rounded-xl p-4">
             <p className="text-xs text-amber-600 mb-1">اختبارات موجّهة</p>
             <p className="text-2xl font-black text-amber-700">{counts.central}</p>
@@ -938,7 +945,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           ))}
         </select>
 
-        {!filterType && (
+        {!filterType && !isSupervisor && (
           <select
             value={modeFilter}
             onChange={(event) => setModeFilter(event.target.value as typeof modeFilter)}

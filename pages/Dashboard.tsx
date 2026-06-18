@@ -1941,8 +1941,9 @@ const SaherTab = () => {
                     
                     <Link 
                         to="/quiz" 
-                        className="cta-attention inline-flex w-full justify-center rounded-xl bg-white px-6 py-2.5 text-base font-black text-[#7c3aed] shadow-md transition-transform hover:-translate-y-1 hover:bg-gray-50 sm:w-auto"
+                        className="cta-attention inline-flex w-full justify-center rounded-xl bg-white px-6 py-2.5 text-base font-black text-[#7c3aed] shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-md hover:bg-gray-50 sm:w-auto"
                     >
+                        <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
                         ابدأ اختبار ساهر
                     </Link>
                 </div>

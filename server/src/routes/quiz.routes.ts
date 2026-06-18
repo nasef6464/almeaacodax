@@ -600,6 +600,58 @@ const assertTeacherManagedScope = async (
   }
 };
 
+const assertSupervisorDirectedQuizScope = async (
+  authUser: any,
+  payload: { mode?: unknown; targetGroupIds?: unknown; targetUserIds?: unknown },
+) => {
+  if (authUser.role !== "supervisor") {
+    return;
+  }
+
+  if (payload.mode !== "central") {
+    const error = new Error("Supervisors can only create directed quizzes") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+
+  const targetGroupIds = uniqueStrings(Array.isArray(payload.targetGroupIds) ? payload.targetGroupIds.map(String) : []);
+  const targetUserIds = uniqueStrings(Array.isArray(payload.targetUserIds) ? payload.targetUserIds.map(String) : []);
+
+  if (targetGroupIds.length === 0 && targetUserIds.length === 0) {
+    const error = new Error("Directed quiz requires scoped groups or students") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+
+  const supervisorScope = await resolveSupervisorSchoolReportScope(authUser);
+  const allowedGroupIds = new Set(uniqueStrings([...supervisorScope.groupIds, ...supervisorScope.schoolIds]));
+
+  const outsideGroups = targetGroupIds.filter((groupId) => !allowedGroupIds.has(groupId));
+  if (outsideGroups.length > 0) {
+    const error = new Error("Directed quiz targets groups outside supervisor scope") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+
+  if (targetUserIds.length > 0) {
+    const students = await UserModel.find(buildDocumentsByIdsQuery(targetUserIds)).select("id _id role schoolId groupIds").lean();
+    const foundStudentIds = new Set(students.map((student: any) => String(student.id || student._id || "")));
+    const missingStudentIds = targetUserIds.filter((studentId) => !foundStudentIds.has(studentId));
+    const outsideStudents = students.filter((student: any) => {
+      if (student.role !== "student") return true;
+      const schoolId = String(student.schoolId || "");
+      const groupIds = (student.groupIds || []).map(String);
+      return !supervisorScope.schoolIds.includes(schoolId) && !groupIds.some((groupId: string) => allowedGroupIds.has(groupId));
+    });
+
+    if (missingStudentIds.length > 0 || outsideStudents.length > 0) {
+      const error = new Error("Directed quiz targets students outside supervisor scope") as Error & { statusCode?: number };
+      error.statusCode = StatusCodes.FORBIDDEN;
+      throw error;
+    }
+  }
+};
+
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
@@ -1291,7 +1343,7 @@ quizRouter.get(
 quizRouter.post(
   "/questions",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = questionSchema.parse(req.body);
     await assertTeacherManagedScope(req.authUser!, payload);
@@ -1311,7 +1363,7 @@ quizRouter.post(
 quizRouter.patch(
   "/questions/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = questionBaseSchema.partial().parse(req.body);
     const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
@@ -1336,7 +1388,7 @@ quizRouter.patch(
 quizRouter.delete(
   "/questions/:id",
   requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
+  requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const deleted = await QuestionModel.findOneAndDelete(buildOwnedDocumentQuery(req.params.id, req.authUser!));
 
@@ -1375,13 +1427,29 @@ quizRouter.get(
       return res.json(publicQuizListCache.payload);
     }
 
-    const baseFilter = isStaffRole(req.authUser?.role)
+    let baseFilter: Record<string, any> = isStaffRole(req.authUser?.role)
       ? {}
       : {
           isPublished: true,
           showOnPlatform: { $ne: false },
           $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
         };
+    if (req.authUser?.role === "supervisor") {
+      const supervisorScope = await resolveSupervisorSchoolReportScope(req.authUser);
+      const { students: scopedStudents } = await resolveScopedStudents(req.authUser, { limit: 5000 });
+      const scopedStudentIds = scopedStudents.map((student: any) => String(student.id || student._id || ""));
+      const scopedGroupIds = uniqueStrings([...supervisorScope.groupIds, ...supervisorScope.schoolIds]);
+      const authUserId = String(req.authUser.id || "");
+      baseFilter = {
+        $or: [
+          { createdBy: authUserId },
+          { ownerId: authUserId },
+          ...(supervisorScope.schoolIds.length ? [{ ownerId: { $in: supervisorScope.schoolIds } }] : []),
+          ...(scopedGroupIds.length ? [{ targetGroupIds: { $in: scopedGroupIds } }] : []),
+          ...(scopedStudentIds.length ? [{ targetUserIds: { $in: scopedStudentIds } }] : []),
+        ],
+      };
+    }
     const scopeFilter: Record<string, unknown> = {};
     if (requestedPathId) scopeFilter.pathId = requestedPathId;
     if (requestedSubjectId) scopeFilter.subjectId = requestedSubjectId;
@@ -2105,6 +2173,7 @@ quizRouter.post(
   asyncHandler(async (req, res) => {
     const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
     await assertTeacherManagedScope(req.authUser!, payload);
+    await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const willBePublished = req.authUser?.role === "admin" ? Boolean(payload.isPublished) : false;
@@ -2341,6 +2410,10 @@ quizRouter.patch(
     }
 
     await assertTeacherManagedScope(req.authUser!, {
+      ...existing.toObject(),
+      ...payload,
+    });
+    await assertSupervisorDirectedQuizScope(req.authUser!, {
       ...existing.toObject(),
       ...payload,
     });

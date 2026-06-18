@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { Quiz, Question } from '../../types';
+import { Quiz, Question, Role } from '../../types';
 import { AlertTriangle, Plus, Search, Edit2, Trash2, Save, X, Settings, Link as LinkIcon, Users, FileQuestion, Filter, CheckCircle2, Lock, LockOpen } from 'lucide-react';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
@@ -22,7 +22,7 @@ const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
 };
 
 export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz' }) => {
-  const { quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
+  const { user, quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [questionSearchTerm, setQuestionSearchTerm] = useState('');
@@ -31,6 +31,51 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'settings' | 'access'>('info');
   const initialSubject = initialSubjectId ? useStore.getState().subjects.find(subject => subject.id === initialSubjectId) : undefined;
   const builderType: 'quiz' | 'bank' = initialType === 'bank' ? 'bank' : 'quiz';
+  const isSupervisor = user.role === Role.SUPERVISOR;
+  const canCreateQuestions = user.role === Role.ADMIN || user.role === Role.TEACHER;
+  const supervisorSchoolIds = useMemo(
+    () =>
+      new Set(
+        [
+          user.schoolId,
+          ...groups
+            .filter(group => group.type === 'SCHOOL' && (group.supervisorIds || []).includes(user.id))
+            .map(group => group.id),
+          ...groups
+            .filter(group => (user.groupIds || []).includes(group.id) && group.parentId)
+            .map(group => group.parentId),
+        ].filter(Boolean) as string[],
+      ),
+    [groups, user.groupIds, user.id, user.schoolId],
+  );
+  const supervisorTargetGroupIds = useMemo(
+    () =>
+      new Set(
+        [
+          ...(user.groupIds || []),
+          ...Array.from(supervisorSchoolIds),
+          ...groups
+            .filter(group => group.parentId && supervisorSchoolIds.has(group.parentId))
+            .map(group => group.id),
+        ].filter(Boolean),
+      ),
+    [groups, supervisorSchoolIds, user.groupIds],
+  );
+  const availableTargetGroups = useMemo(
+    () => (isSupervisor ? groups.filter(group => supervisorTargetGroupIds.has(group.id)) : groups),
+    [groups, isSupervisor, supervisorTargetGroupIds],
+  );
+  const availableTargetStudents = useMemo(
+    () =>
+      users.filter(student => {
+        if (student.role !== Role.STUDENT) return false;
+        if (!isSupervisor) return true;
+        const inSchool = !!student.schoolId && supervisorSchoolIds.has(student.schoolId);
+        const inGroup = (student.groupIds || []).some(groupId => supervisorTargetGroupIds.has(groupId));
+        return inSchool || inGroup;
+      }),
+    [isSupervisor, supervisorSchoolIds, supervisorTargetGroupIds, users],
+  );
   
   const [currentQuiz, setCurrentQuiz] = useState<Partial<Quiz>>(() => {
     if (initialQuizId) {
@@ -128,6 +173,15 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
 
   const [isAiGenerating, setIsAiGenerating] = useState(false);
 
+  useEffect(() => {
+    if (!isSupervisor || (currentQuiz.mode || 'regular') === 'central') return;
+    setCurrentQuiz(prev => ({
+      ...prev,
+      mode: 'central',
+      access: { ...(prev.access || { allowedGroupIds: [] }), type: 'private' },
+    }));
+  }, [currentQuiz.mode, isSupervisor]);
+
   const handleCopyLinkWithFeedback = async (text: string) => {
     setOperationError('');
     setOperationMessage('');
@@ -172,6 +226,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const handleAutoGenerateWithFeedback = async () => {
     setOperationError('');
     setOperationMessage('');
+
+    if (!canCreateQuestions) {
+      setOperationError('المشرف يستخدم أسئلة بنك المنصة فقط ولا يمكنه توليد أو إنشاء أسئلة جديدة.');
+      return;
+    }
 
     let pool = questions;
 
@@ -268,6 +327,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   };
 
   const handleSaveNewQuestion = async (savedQuestion: Partial<Question>) => {
+    if (!canCreateQuestions) {
+      setOperationError('المشرف يستخدم أسئلة بنك المنصة فقط ولا يمكنه إنشاء أسئلة جديدة.');
+      return;
+    }
+
     const q: Question = {
       ...savedQuestion,
       id: `q_${Date.now()}`,
@@ -593,7 +657,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                     >
                       <option value="regular">اختبار عادي</option>
-                      <option value="saher">اختبار ساهر</option>
+                      {!isSupervisor && <option value="saher">اختبار ساهر</option>}
                       <option value="central">اختبار مركزي موجّه</option>
                     </select>
                   </div>
@@ -659,7 +723,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
                       >
-                        {groups.map(group => (
+                        {availableTargetGroups.map(group => (
                           <option key={group.id} value={group.id}>{group.name}</option>
                         ))}
                       </select>
@@ -675,8 +739,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                         }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-28 bg-white"
                       >
-                        {users
-                          .filter(u => u.role === 'student')
+                        {availableTargetStudents
                           .map(student => (
                             <option key={student.id} value={student.id}>
                               {student.name} ({student.email || student.id})
@@ -742,20 +805,26 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
                 <div className="flex justify-between items-center">
                   <h3 className="font-bold text-gray-800">الأسئلة المحددة ({currentQuiz.questionIds?.length || 0})</h3>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => setIsAutoGenerateModalOpen(true)}
-                      className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors"
-                    >
-                      توليد تلقائي (نظام ساهر)
-                    </button>
-                    <button 
-                      onClick={() => setIsAddQuestionModalOpen(true)}
-                      className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors"
-                    >
-                      إضافة سؤال جديد
-                    </button>
-                  </div>
+                  {canCreateQuestions ? (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setIsAutoGenerateModalOpen(true)}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors"
+                      >
+                        توليد تلقائي (نظام ساهر)
+                      </button>
+                      <button
+                        onClick={() => setIsAddQuestionModalOpen(true)}
+                        className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors"
+                      >
+                        إضافة سؤال جديد
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-bold text-amber-700">
+                      اختر من بنك الأسئلة المعتمد فقط. إنشاء الأسئلة غير متاح للمشرف.
+                    </div>
+                  )}
                 </div>
 
                 {/* Question Selection List */}
@@ -1219,7 +1288,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
           </div>
         )}
 
-        {isAddQuestionModalOpen && (
+        {isAddQuestionModalOpen && canCreateQuestions && (
             <UnifiedQuestionBuilder 
               initialQuestion={{ pathId: currentQuiz.pathId || '', subject: currentQuiz.subjectId || '', sectionId: currentQuiz.sectionId, skillIds: [] }}
               subjectId={currentQuiz.subjectId}
