@@ -612,6 +612,7 @@ If continuing from a new account and local skills are missing, continue using th
   - Network 5xx responses: 0.
 - Fix applied during this completion pass:
   - `dashboards/admin/SchoolPortalManager.tsx` now treats `user.schoolId` as school-wide supervisor scope, matching the overview logic and the school-wide supervisor relation created from the schools UI.
+  - The supervisor school portal now loads scoped school reports and uses their totals as a safe fallback when the supervisor bootstrap has the linked school but not the full student/class roster yet.
 - Verification after fix:
   - `npm run typecheck`: PASS.
   - `npm run build`: PASS.

@@ -15,8 +15,22 @@ import {
     Users,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { api } from '../../services/api';
 import { Group, QuizResult, Role, User } from '../../types';
 import { loadXlsx } from '../../utils/xlsxLoader';
+
+interface SchoolReportSnapshot {
+    metrics?: {
+        totalStudents?: number;
+        totalClasses?: number;
+        averageScore?: number;
+    };
+    classSummaries?: Array<{
+        id?: string;
+        studentCount?: number;
+        averageScore?: number;
+    }>;
+}
 
 const packageContentTypeLabels: Record<string, string> = {
     all: 'كل المحتوى',
@@ -142,6 +156,7 @@ export const SchoolPortalManager: React.FC = () => {
     const [selectedClassId, setSelectedClassId] = useState('all');
     const [reportMode, setReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
     const [studentSearchTerm, setStudentSearchTerm] = useState('');
+    const [schoolReports, setSchoolReports] = useState<Record<string, SchoolReportSnapshot>>({});
 
     const scope = useMemo(() => {
         if (user.role === Role.ADMIN) {
@@ -267,6 +282,37 @@ export const SchoolPortalManager: React.FC = () => {
     }, [scope.classScopedIds, scope.classes, scope.schoolWideIds, scope.schools, user.role]);
 
     useEffect(() => {
+        const schoolIds = scope.schools.map((school) => school.id).filter(Boolean);
+        if (!schoolIds.length) {
+            setSchoolReports({});
+            return;
+        }
+
+        let isCancelled = false;
+        Promise.all(
+            schoolIds.map(async (schoolId) => {
+                try {
+                    const report = await api.getSchoolReport(schoolId) as SchoolReportSnapshot;
+                    return [schoolId, report] as const;
+                } catch {
+                    return [schoolId, null] as const;
+                }
+            }),
+        ).then((entries) => {
+            if (isCancelled) return;
+            const nextReports: Record<string, SchoolReportSnapshot> = {};
+            entries.forEach(([schoolId, report]) => {
+                if (report) nextReports[schoolId] = report;
+            });
+            setSchoolReports(nextReports);
+        });
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [scope.schools]);
+
+    useEffect(() => {
         if (selectedSchoolId !== 'all' && !scope.schools.some((school) => school.id === selectedSchoolId)) {
             setSelectedSchoolId('all');
         }
@@ -321,6 +367,35 @@ export const SchoolPortalManager: React.FC = () => {
             student.schoolId === selectedSchoolId || (student.groupIds || []).some((groupId) => classIds.has(groupId)),
         );
     }, [scope.classes, scope.students, selectedClassId, selectedSchoolId]);
+
+    const selectedReportSnapshots = useMemo(() => {
+        const visibleSchoolIds = selectedSchoolId === 'all'
+            ? scope.schools.map((school) => school.id)
+            : [selectedSchoolId];
+        return visibleSchoolIds
+            .map((schoolId) => schoolReports[schoolId])
+            .filter(Boolean) as SchoolReportSnapshot[];
+    }, [schoolReports, scope.schools, selectedSchoolId]);
+
+    const reportMetricFallback = useMemo(() => {
+        const classSummaryFallback = selectedReportSnapshots
+            .flatMap((report) => report.classSummaries || [])
+            .filter((summary) => selectedClassId === 'all' || summary.id === selectedClassId);
+        const totalStudents = selectedClassId === 'all'
+            ? selectedReportSnapshots.reduce((sum, report) => sum + Number(report.metrics?.totalStudents || 0), 0)
+            : classSummaryFallback.reduce((sum, summary) => sum + Number(summary.studentCount || 0), 0);
+        const totalClasses = selectedClassId === 'all'
+            ? selectedReportSnapshots.reduce((sum, report) => sum + Number(report.metrics?.totalClasses || 0), 0)
+            : classSummaryFallback.length;
+        const averageScoreValues = selectedClassId === 'all'
+            ? selectedReportSnapshots.map((report) => Number(report.metrics?.averageScore || 0))
+            : classSummaryFallback.map((summary) => Number(summary.averageScore || 0));
+        const averageScore = averageScoreValues.length
+            ? Math.round(averageScoreValues.reduce((sum, score) => sum + score, 0) / averageScoreValues.length)
+            : 0;
+
+        return { totalStudents, totalClasses, averageScore };
+    }, [selectedClassId, selectedReportSnapshots]);
 
     const reportStudentIds = useMemo(() => new Set(reportStudents.map((student) => student.id)), [reportStudents]);
     const reportStudentSummaries = useMemo(() => {
@@ -475,6 +550,9 @@ export const SchoolPortalManager: React.FC = () => {
     const usedSeats = reportCodes.reduce((sum, code) => sum + (code.currentUses || 0), 0);
     const activeCodes = reportCodes.filter((code) => code.expiresAt > Date.now());
     const average = averageScore(reportStudentSummaries.flatMap((item) => item.results));
+    const effectiveStudentCount = reportStudents.length || reportMetricFallback.totalStudents;
+    const effectiveClassCount = reportClasses.length || reportMetricFallback.totalClasses;
+    const effectiveAverage = average || reportMetricFallback.averageScore;
     const schoolTitle = scope.schools.map((school) => school.name).join('، ') || 'نطاق الإشراف الحالي';
     const primaryTargetGroupId = reportClasses[0]?.id || scope.schools.find((school) => school.id === selectedSchoolId)?.id || scope.schools[0]?.id || '';
     const followUpEmails = watchList
@@ -484,9 +562,9 @@ export const SchoolPortalManager: React.FC = () => {
     const followUpMessage = [
         `تقرير متابعة ${schoolTitle}`,
         '',
-        `عدد الطلاب داخل النطاق: ${reportStudents.length}`,
+        `عدد الطلاب داخل النطاق: ${effectiveStudentCount}`,
         `طلاب يحتاجون متابعة: ${watchList.length}`,
-        `متوسط الأداء: ${average}%`,
+        `متوسط الأداء: ${effectiveAverage}%`,
         '',
         'أولوية المتابعة:',
         ...watchList.slice(0, 8).map((summary, index) => {
@@ -514,9 +592,9 @@ export const SchoolPortalManager: React.FC = () => {
     ];
     const supervisorBrief = [
         `ملخص إشراف ${schoolTitle}`,
-        `الطلاب داخل النطاق: ${reportStudents.length}`,
+        `الطلاب داخل النطاق: ${effectiveStudentCount}`,
         `يحتاجون متابعة: ${watchList.length}`,
-        `متوسط الأداء: ${average}%`,
+        `متوسط الأداء: ${effectiveAverage}%`,
         `أفضل إجراء الآن: ${watchList.length ? 'اختبار قصير ثم رسالة متابعة' : 'تقرير أسبوعي للإدارة'}`,
         `نطاق الاختبار المقترح: ${reportClasses[0]?.name || scope.schools[0]?.name || 'نطاق الإشراف الحالي'}`,
     ].join('\n');
@@ -679,9 +757,9 @@ export const SchoolPortalManager: React.FC = () => {
                     ['البند', 'القيمة'],
                     ['النطاق', schoolTitle],
                     ['عدد المدارس', scope.schools.length],
-                    ['عدد الفصول', reportClasses.length],
-                    ['عدد الطلاب', reportStudents.length],
-                    ['متوسط الأداء', `${average}%`],
+                    ['عدد الفصول', effectiveClassCount],
+                    ['عدد الطلاب', effectiveStudentCount],
+                    ['متوسط الأداء', `${effectiveAverage}%`],
                     ['طلاب يحتاجون متابعة', watchList.length],
                     ['اختبارات متابعة', reportFollowUpQuizzes.length],
                     ['باقات نشطة', reportPackages.filter((pkg) => pkg.status === 'active').length],
@@ -777,9 +855,9 @@ export const SchoolPortalManager: React.FC = () => {
                 <p class="muted">${escapeHtml(new Date().toLocaleString('ar-SA'))}</p>
             </section>
             <section class="metrics">
-                <div class="metric"><span>الطلاب</span><strong>${reportStudents.length}</strong></div>
-                <div class="metric"><span>الفصول</span><strong>${reportClasses.length}</strong></div>
-                <div class="metric"><span>متوسط الأداء</span><strong>${average}%</strong></div>
+                <div class="metric"><span>الطلاب</span><strong>${effectiveStudentCount}</strong></div>
+                <div class="metric"><span>الفصول</span><strong>${effectiveClassCount}</strong></div>
+                <div class="metric"><span>متوسط الأداء</span><strong>${effectiveAverage}%</strong></div>
                 <div class="metric"><span>يحتاجون متابعة</span><strong>${watchList.length}</strong></div>
                 <div class="metric"><span>اختبارات متابعة</span><strong>${reportFollowUpQuizzes.length}</strong></div>
                 <div class="metric"><span>باقات نشطة</span><strong>${reportPackages.filter((pkg) => pkg.status === 'active').length}</strong></div>
@@ -1007,9 +1085,9 @@ export const SchoolPortalManager: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {[
-                    { label: 'الطلاب داخل النطاق', value: reportStudents.length, icon: <Users size={22} />, color: 'blue' },
-                    { label: 'الفصول المرتبطة', value: reportClasses.length, icon: <GraduationCap size={22} />, color: 'purple' },
-                    { label: 'متوسط الأداء', value: `${average}%`, icon: <CheckCircle2 size={22} />, color: 'emerald' },
+                    { label: 'الطلاب داخل النطاق', value: effectiveStudentCount, icon: <Users size={22} />, color: 'blue' },
+                    { label: 'الفصول المرتبطة', value: effectiveClassCount, icon: <GraduationCap size={22} />, color: 'purple' },
+                    { label: 'متوسط الأداء', value: `${effectiveAverage}%`, icon: <CheckCircle2 size={22} />, color: 'emerald' },
                     { label: 'يحتاجون متابعة', value: watchList.length, icon: <AlertTriangle size={22} />, color: 'amber' },
                 ].map((item) => (
                     <div key={item.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
