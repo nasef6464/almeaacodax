@@ -171,7 +171,10 @@ export const SchoolPortalManager: React.FC = () => {
 
         groups.forEach((group) => {
             if (group.type === 'SCHOOL') {
-                const isSchoolWideSupervisor = userGroupIds.has(group.id) || group.supervisorIds.includes(user.id);
+                const isSchoolWideSupervisor =
+                    userGroupIds.has(group.id) ||
+                    group.supervisorIds.includes(user.id) ||
+                    user.schoolId === group.id;
                 if (isSchoolWideSupervisor) {
                     schoolWideIds.add(group.id);
                 }
@@ -227,7 +230,7 @@ export const SchoolPortalManager: React.FC = () => {
             schoolWideIds: Array.from(schoolWideIds),
             classScopedIds: Array.from(classScopedIds),
         };
-    }, [accessCodes, b2bPackages, courses, examResults, groups, quizzes, user.groupIds, user.role, user.schoolId, users]);
+    }, [accessCodes, b2bPackages, courses, examResults, groups, quizzes, user.groupIds, user.id, user.role, user.schoolId, users]);
 
     const supervisorAccess = useMemo(() => {
         const hasWholeSchoolAccess = user.role === Role.ADMIN || scope.schoolWideIds.length > 0;

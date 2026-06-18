@@ -594,3 +594,28 @@ If continuing from a new account and local skills are missing, continue using th
   - Console errors during the final school-list check: 0.
   - Excel upload retest remains BLOCKED by browser automation file-upload limitations; automated school-management smoke still covers bulk import wiring.
   - Supervisor re-login retest remains BLOCKED because the QA supervisor password was not available in this run; scoped overview code and RBAC smoke passed.
+
+## Production Admin Journey Completion - 2026-06-18
+
+- Branch: `main`.
+- Scope: finish the real Production UI admin journey for schools only.
+- No backend schema changes, DB direct edits, cleanup apply, deletion, barcode, question editor, or homepage changes were made.
+- Production UI verification:
+  - Admin login: PASS.
+  - Existing QA school opened from `https://almeaacodax.vercel.app/admin-dashboard?tab=schools`: PASS.
+  - Excel/CSV import: PASS. The QA school moved from 1 student to 3 students after upload, preview, import, save/verify, and refresh.
+  - Save and verify button: PASS after import and after supervisor link.
+  - Supervisor creation/link from UI: PASS.
+  - Supervisor login: PASS.
+  - Supervisor school portal scope: PASS after the school-wide scope fix. A school-wide supervisor sees the linked QA school and student scope without unrelated schools.
+  - Console errors: 0.
+  - Network 5xx responses: 0.
+- Fix applied during this completion pass:
+  - `dashboards/admin/SchoolPortalManager.tsx` now treats `user.schoolId` as school-wide supervisor scope, matching the overview logic and the school-wide supervisor relation created from the schools UI.
+- Verification after fix:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
