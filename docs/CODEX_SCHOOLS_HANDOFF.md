@@ -575,6 +575,7 @@ If continuing from a new account and local skills are missing, continue using th
 - Fix:
   - school card counters, readiness, portfolio rows, and selected school metrics now use one shared school-student calculation.
   - the shared calculation counts students linked by `schoolId`, school roster `studentIds`, class `studentIds`, or class/school `groupIds`.
+  - school management now loads paginated admin users for students, parents, supervisors, and teachers so school cards do not depend on the first users page only.
   - supervisor overview now builds scope from both `groupIds` and direct school/class `supervisorIds`.
   - supervisor top KPI cards now show scoped school/class/student/follow-up counts instead of global platform counts.
 - Verification before push:

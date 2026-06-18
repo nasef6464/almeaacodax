@@ -207,8 +207,10 @@ const loadAllUsersByRole = async (role: Role): Promise<User[]> => {
 };
 
 const loadSchoolAdminUsers = async (): Promise<User[]> => {
-    const [firstPage, supervisors, teachers] = await Promise.all([
+    const [firstPage, students, parents, supervisors, teachers] = await Promise.all([
         api.getAdminUsers({ page: 1, limit: 100 }),
+        loadAllUsersByRole(Role.STUDENT),
+        loadAllUsersByRole(Role.PARENT),
         loadAllUsersByRole(Role.SUPERVISOR),
         loadAllUsersByRole(Role.TEACHER),
     ]);
@@ -216,6 +218,8 @@ const loadSchoolAdminUsers = async (): Promise<User[]> => {
     const usersById = new Map<string, User>();
     [
         ...(firstPage.users || []).map((user) => buildStoreUser(user as AdminUserPayload)),
+        ...students,
+        ...parents,
         ...supervisors,
         ...teachers,
     ].forEach((user) => {
