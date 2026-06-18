@@ -588,6 +588,9 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
 - Next verification after deploy:
-  - retest Production admin journey from Chrome/Browser.
-  - confirm single-student and Excel import counts remain after refresh.
-  - confirm supervisor overview shows only scoped counters.
+  - Production retest from Browser after final deploy: PASS for admin school list count after hard refresh.
+  - `QA Admin Journey 20260618-0639` school card shows `طلاب 1` without opening the school first.
+  - Selected school workspace also shows `1 طالب`.
+  - Console errors during the final school-list check: 0.
+  - Excel upload retest remains BLOCKED by browser automation file-upload limitations; automated school-management smoke still covers bulk import wiring.
+  - Supervisor re-login retest remains BLOCKED because the QA supervisor password was not available in this run; scoped overview code and RBAC smoke passed.
