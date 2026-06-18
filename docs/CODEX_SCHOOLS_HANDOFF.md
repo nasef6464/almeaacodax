@@ -563,6 +563,12 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-management`: PASS 22/22.
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
+- Production verification after deploy:
+  - School-wide supervisor login: PASS.
+  - `بوابة مدرستي` shows `QA Admin Journey 20260618-0639` only; unrelated schools were not visible.
+  - Supervisor portal counters show 3 students and 3 classes for the QA school.
+  - Console errors: 0.
+  - Network 5xx responses: 0.
 
 ## Production Admin Journey Follow-up - 2026-06-18
 
