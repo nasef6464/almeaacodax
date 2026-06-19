@@ -538,7 +538,7 @@ const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: s
 const sanitizeWorkflowUpdate = (
   payload: Record<string, unknown>,
   authUser: { id: string; role: string; schoolId?: string | null },
-  options?: { respectPublished?: boolean },
+  options?: { respectPublished?: boolean; allowPublished?: boolean },
 ) => {
   const nextPayload = { ...payload };
 
@@ -551,9 +551,14 @@ const sanitizeWorkflowUpdate = (
     delete nextPayload.reviewerNotes;
     delete nextPayload.revenueSharePercentage;
     if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
-      nextPayload.approvalStatus = "pending_review";
+      if (options?.allowPublished) {
+        nextPayload.approvedBy = authUser.id;
+        nextPayload.approvedAt = Date.now();
+      } else {
+        nextPayload.approvalStatus = "pending_review";
+      }
     }
-    if (options?.respectPublished && nextPayload.isPublished === true) {
+    if (options?.respectPublished && nextPayload.isPublished === true && !options.allowPublished) {
       nextPayload.isPublished = false;
     }
   } else if (typeof nextPayload.approvalStatus === "string") {
@@ -2191,7 +2196,8 @@ quizRouter.post(
     assertDirectedQuizHasQuestions(payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const willBePublished = req.authUser?.role === "admin" ? Boolean(payload.isPublished) : false;
+    const canPublishScopedDirected = req.authUser?.role === "supervisor" && payload.mode === "central";
+    const willBePublished = req.authUser?.role === "admin" || canPublishScopedDirected ? Boolean(payload.isPublished) : false;
     if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
       if (!integrity.ok) {
@@ -2212,8 +2218,12 @@ quizRouter.post(
       approvalStatus:
         req.authUser?.role === "admin"
           ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-      isPublished: req.authUser?.role === "admin" ? payload.isPublished : false,
+          : canPublishScopedDirected && willBePublished
+            ? "approved"
+            : workflowDefaults.approvalStatus,
+      approvedBy: canPublishScopedDirected && willBePublished ? req.authUser!.id : workflowDefaults.approvedBy,
+      approvedAt: canPublishScopedDirected && willBePublished ? Date.now() : workflowDefaults.approvedAt,
+      isPublished: willBePublished,
       showOnPlatform: typeof payload.showOnPlatform === "boolean" ? payload.showOnPlatform : false,
       skillIds: resolvedSkillIds,
     });
@@ -2436,13 +2446,14 @@ quizRouter.patch(
       ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
       : undefined;
     const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
+    const allowSupervisorDirectedPublish = req.authUser?.role === "supervisor" && String(existing.mode || payload.mode || "") === "central";
     const sanitizedPayload = sanitizeWorkflowUpdate(
       {
         ...normalizedPayload,
         ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
       } as Record<string, unknown>,
       req.authUser!,
-      { respectPublished: true },
+      { respectPublished: true, allowPublished: allowSupervisorDirectedPublish },
     );
     const nextQuizState = {
       ...existing.toObject(),
