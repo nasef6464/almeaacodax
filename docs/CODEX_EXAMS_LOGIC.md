@@ -72,4 +72,5 @@ The blocked learning-quiz smoke is an environment data fixture issue, not a supe
 - Supervisor question access remains read/select only. Supervisor still cannot create, edit, delete, auto-generate, or open the standalone question builder.
 - Directed quiz drafts are no longer persisted from the list button before the user chooses questions and targets.
 - Frontend and backend now reject saving a directed quiz without at least one selected question. Publishing integrity still validates referenced questions before learner visibility.
+- Quiz submission returns the saved result even if post-save skill progress or review-card updates fail; those side effects are logged without blocking the student response.
 - Saher remains a student self-practice flow and is not mixed with directed exams.

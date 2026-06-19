@@ -2405,17 +2405,34 @@ quizRouter.post(
       throw error;
     }
 
-    await updateSkillProgressFromResult(result, req.authUser!.id);
-    await upsertReviewCardsFromQuestionReview({
-      userId: req.authUser!.id,
-      questionReview: questionReview.map((item) => ({
-        questionId: String(item.questionId || ""),
-        selectedOptionIndex:
-          typeof item.selectedOptionIndex === "number" ? Number(item.selectedOptionIndex) : undefined,
-        isCorrect: Boolean(item.isCorrect),
-      })),
-      questionById,
-    });
+    try {
+      await updateSkillProgressFromResult(result, req.authUser!.id);
+    } catch (error) {
+      console.warn("Quiz skill progress update failed after submission:", {
+        userId: req.authUser!.id,
+        quizId,
+        error,
+      });
+    }
+
+    try {
+      await upsertReviewCardsFromQuestionReview({
+        userId: req.authUser!.id,
+        questionReview: questionReview.map((item) => ({
+          questionId: String(item.questionId || ""),
+          selectedOptionIndex:
+            typeof item.selectedOptionIndex === "number" ? Number(item.selectedOptionIndex) : undefined,
+          isCorrect: Boolean(item.isCorrect),
+        })),
+        questionById,
+      });
+    } catch (error) {
+      console.warn("Quiz review card update failed after submission:", {
+        userId: req.authUser!.id,
+        quizId,
+        error,
+      });
+    }
     clearQuizResultsCache();
     return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));
   }),
