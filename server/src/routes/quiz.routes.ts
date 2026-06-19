@@ -848,6 +848,19 @@ const getPaidQuizPackageContentTypes = (quiz: any, source?: string) => {
   return contentTypes.length ? contentTypes : ["tests"];
 };
 
+const isQuizTargetedToUser = (quiz: any, user: any) => {
+  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
+  const targetGroupIds = new Set((quiz.targetGroupIds || []).map(String));
+  const userGroupIds = (user.groupIds || []).map(String);
+  const hasExplicitTarget = targetUserIds.size > 0 || targetGroupIds.size > 0;
+
+  return (
+    !hasExplicitTarget ||
+    targetUserIds.has(String(user.id || user._id)) ||
+    userGroupIds.some((groupId: string) => targetGroupIds.has(groupId))
+  );
+};
+
 const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) {
     return true;
@@ -1501,6 +1514,13 @@ quizRouter.get(
       safeItems = items.filter((quiz: any) =>
         getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
       );
+    }
+
+    if (!isStaffRole(req.authUser?.role) && req.authUser) {
+      const authUser = await resolveAuthUserByAuthId(String(req.authUser.id || ""));
+      if (authUser) {
+        safeItems = safeItems.filter((quiz: any) => isQuizTargetedToUser(quiz, authUser));
+      }
     }
 
     const payload = {
