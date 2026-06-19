@@ -649,3 +649,43 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-management`: PASS 22/22.
   - `npm run smoke:admin-school-command`: PASS 6/6.
 - Remaining objective: continue simplifying the selected school workspace and prove the visible school manager journey with a live/visual check before considering schools commercially complete.
+## Selected School Commercial Workspace - 2026-06-19
+
+- Branch: `codex/schools-commercial-journey-cleanup`.
+- Scope: frontend-only simplification of the selected school workspace inside `dashboards/admin/SchoolsManager.tsx`.
+- The selected school workspace now presents a seven-step commercial journey for a non-technical school manager:
+  1. School data.
+  2. Classes.
+  3. Students.
+  4. Supervisors.
+  5. Package / paths.
+  6. Access codes.
+  7. Delivery report.
+- Each step now carries a status, next-action copy, direct action label, and opens the correct existing operational panel without duplicating backend logic.
+- Preserved operational functions:
+  - create class;
+  - add one student;
+  - Excel/CSV import path;
+  - link school/class supervisor;
+  - package/path access management;
+  - access codes;
+  - delivery report;
+  - save and verify data.
+- No backend, database, RBAC, exams, quiz permissions, barcode, question editor, orphan cleanup, or merge changes were made.
+- Verification after this selected-workspace pass:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+  - `npm run smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+- Production verification after Vercel deploy: PASS.
+  - platform admin login: PASS;
+  - visible commercial journey exposes 7 steps;
+  - school data, classes, students, supervisors, package/paths, codes, and delivery report all open their correct existing panels;
+  - refresh returns to a stable school list with school cards visible;
+  - post-deploy `smoke:school-from-scratch-live`: PASS 12/12, cleanupReview 0;
+  - Console errors: 0;
+  - Network 5xx: 0.
+- GitHub push is currently blocked by repository authentication: the supplied HTTPS token was rejected and the available SSH identity does not have write permission.

@@ -82,6 +82,28 @@ type RelationResponse = {
     groups?: Group[];
 };
 
+type SchoolWorkspaceTab = 'overview' | 'packages' | 'relations' | 'import' | 'reports';
+type SchoolOperatingStepId = 'school-data' | 'classes' | 'students' | 'supervisors' | 'packages' | 'codes' | 'reports';
+
+type CommercialOperatingStep = {
+    id: SchoolOperatingStepId;
+    title: string;
+    metric: string;
+    description: string;
+    statusLabel: string;
+    isReady: boolean;
+    tab: SchoolWorkspaceTab;
+    buttonLabel: string;
+    focusTarget: string;
+};
+
+const DEFAULT_SCHOOL_STEP_FOR_TAB: Record<SchoolWorkspaceTab, SchoolOperatingStepId> = {
+    overview: 'school-data',
+    import: 'students',
+    relations: 'supervisors',
+    packages: 'packages',
+    reports: 'reports',
+};
 type AdminUserPayload = {
     id?: string;
     _id?: string;
@@ -687,7 +709,7 @@ export const SchoolsManager: React.FC = () => {
 
     const [selectedSchool, setSelectedSchool] = useState<Group | null>(null);
     const [activeSchoolActionsId, setActiveSchoolActionsId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'packages' | 'relations' | 'import' | 'reports'>('overview');
+    const [activeTab, setActiveTab] = useState<SchoolWorkspaceTab>('overview');
     const [schoolSearch, setSchoolSearch] = useState('');
     const [schoolListMode, setSchoolListMode] = useState<'active' | 'needs_setup' | 'ready' | 'all'>('active');
     const [newSchoolName, setNewSchoolName] = useState('');
@@ -716,7 +738,7 @@ export const SchoolsManager: React.FC = () => {
     const [saveVerificationState, setSaveVerificationState] = useState<'idle' | 'saving' | 'verifying' | 'success' | 'error'>('idle');
     const [saveVerificationMessage, setSaveVerificationMessage] = useState<string | null>(null);
     const [isDeleteSchoolConfirmOpen, setIsDeleteSchoolConfirmOpen] = useState(false);
-    const [expandedSchoolStep, setExpandedSchoolStep] = useState<'overview' | 'import' | 'relations' | 'packages' | 'reports' | null>(null);
+    const [expandedSchoolStep, setExpandedSchoolStep] = useState<SchoolOperatingStepId | null>(null);
     const [isSingleStudentOpen, setIsSingleStudentOpen] = useState(false);
     const [studentSearch, setStudentSearch] = useState('');
     const [selectedClassFilter, setSelectedClassFilter] = useState<'all' | 'unassigned' | string>('all');
@@ -2020,7 +2042,20 @@ export const SchoolsManager: React.FC = () => {
                 ? 'قريبة من التسليم'
                 : 'تحتاج تجهيز';
         const readinessNextStep = operationalWarnings[0] || 'المدرسة جاهزة تشغيليًا. راجع تقرير الأداء أسبوعيًا بعد بدء الطلاب.';
-        const commercialOperatingSteps = [
+        const commercialOperatingSteps: CommercialOperatingStep[] = [
+            {
+                id: 'school-data',
+                title: 'بيانات المدرسة',
+                metric: readinessStatusLabel,
+                description: saveVerificationState === 'success'
+                    ? 'تم حفظ بيانات المدرسة والتأكد منها من الخادم.'
+                    : 'راجع اسم المدرسة وحالة التشغيل ثم احفظ التأكيد قبل التسليم.',
+                statusLabel: saveVerificationState === 'success' ? 'مؤكدة' : 'تحتاج تأكيد',
+                isReady: saveVerificationState === 'success' || readinessScore > 0,
+                tab: 'overview',
+                buttonLabel: 'حفظ وتأكيد البيانات',
+                focusTarget: 'school-save-verify-button',
+            },
             {
                 id: 'classes',
                 title: 'الفصول',
@@ -2028,8 +2063,9 @@ export const SchoolsManager: React.FC = () => {
                 description: schoolClasses.length > 0 ? 'الفصول جاهزة لاستقبال الطلاب.' : 'ابدأ بإنشاء فصول المدرسة.',
                 statusLabel: schoolClasses.length > 0 ? 'جاهز' : 'ناقص',
                 isReady: schoolClasses.length > 0,
-                tab: 'overview' as const,
-                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصول',
+                tab: 'overview',
+                buttonLabel: schoolClasses.length > 0 ? 'إدارة الفصول' : 'إضافة فصل',
+                focusTarget: 'school-class-creation-panel',
             },
             {
                 id: 'students',
@@ -2037,11 +2073,14 @@ export const SchoolsManager: React.FC = () => {
                 metric: `${schoolStudents.length} طالب`,
                 description: studentsWithoutClass.length > 0
                     ? `${studentsWithoutClass.length} طالب يحتاج فصل واضح.`
-                    : 'الطلاب مربوطون داخل نطاق المدرسة.',
+                    : schoolStudents.length > 0
+                        ? 'الطلاب مربوطون داخل نطاق المدرسة.'
+                        : 'أضف طالبًا فرديًا أو استورد ملف Excel للمدرسة.',
                 statusLabel: schoolStudents.length > 0 && studentsWithoutClass.length === 0 ? 'جاهز' : 'راجع',
                 isReady: schoolStudents.length > 0 && studentsWithoutClass.length === 0,
-                tab: 'import' as const,
-                buttonLabel: schoolStudents.length > 0 ? 'استيراد/إضافة طلاب' : 'إضافة الطلاب',
+                tab: 'overview',
+                buttonLabel: schoolStudents.length > 0 ? 'تنظيم الطلاب' : 'إضافة الطلاب',
+                focusTarget: 'school-students-panel',
             },
             {
                 id: 'supervisors',
@@ -2050,20 +2089,31 @@ export const SchoolsManager: React.FC = () => {
                 description: schoolSupervisors.length > 0 ? 'يمكن متابعة المدرسة أو الفصول حسب النطاق.' : 'اربط مدير المدرسة أو مشرفي الفصول.',
                 statusLabel: schoolSupervisors.length > 0 ? 'جاهز' : 'ناقص',
                 isReady: schoolSupervisors.length > 0,
-                tab: 'relations' as const,
+                tab: 'relations',
                 buttonLabel: 'ربط المشرفين',
+                focusTarget: 'school-relations-quick-supervisor-card',
             },
             {
-                id: 'access',
-                title: 'الباقة والمسارات',
+                id: 'packages',
+                title: 'الباقة / المسارات',
                 metric: `${activeSchoolPackages.length} باقة`,
-                description: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0
-                    ? 'الباقة والمسارات والأكواد جاهزة للتسليم.'
-                    : 'فعّل باقة مدرسية مرتبطة بالمسارات وولّد كود دخول.',
-                statusLabel: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
-                isReady: activeSchoolPackages.length > 0 && activeSchoolCodes.length > 0,
-                tab: 'packages' as const,
+                description: activeSchoolPackages.length > 0 ? 'الباقات والمسارات جاهزة لتحديد وصول طلاب المدرسة.' : 'فعّل باقة مدرسية مرتبطة بالمسارات.',
+                statusLabel: activeSchoolPackages.length > 0 ? 'جاهز' : 'ناقص',
+                isReady: activeSchoolPackages.length > 0,
+                tab: 'packages',
                 buttonLabel: 'إدارة الباقات والمسارات',
+                focusTarget: 'school-packages-panel',
+            },
+            {
+                id: 'codes',
+                title: 'الأكواد',
+                metric: `${activeSchoolCodes.length} كود`,
+                description: activeSchoolCodes.length > 0 ? 'يوجد كود صالح يمكن توزيعه على الطلاب.' : 'ولّد كود دخول صالحًا للطلاب عند التسليم.',
+                statusLabel: activeSchoolCodes.length > 0 ? 'جاهز' : 'ناقص',
+                isReady: activeSchoolCodes.length > 0,
+                tab: 'packages',
+                buttonLabel: 'إدارة الأكواد',
+                focusTarget: 'school-access-decision-summary',
             },
             {
                 id: 'reports',
@@ -2071,15 +2121,29 @@ export const SchoolsManager: React.FC = () => {
                 metric: schoolReport ? `${schoolReport.metrics.averageScore}%` : 'قريبًا',
                 description: schoolReport && schoolReport.metrics.quizAttempts > 0
                     ? 'تقرير الأداء جاهز للإدارة والمتابعة.'
-                    : 'يظهر التقرير بعد أول اختبارات أو تدريبات.',
+                    : 'راجع تقرير التسليم الآن، وتظهر بيانات الأداء بعد أول قياس.',
                 statusLabel: schoolReport && schoolReport.metrics.quizAttempts > 0 ? 'جاهز' : 'ينتظر بيانات',
                 isReady: !!schoolReport && schoolReport.metrics.quizAttempts > 0,
-                tab: 'reports' as const,
-                buttonLabel: 'فتح التقارير',
+                tab: 'reports',
+                buttonLabel: 'فتح التقارير / تقرير التسليم',
+                focusTarget: 'school-reports-panel',
             },
         ];
+
         const nextOperatingStep = commercialOperatingSteps.find((step) => !step.isReady) || commercialOperatingSteps[commercialOperatingSteps.length - 1];
         const currentOperatingStepIndex = Math.max(0, commercialOperatingSteps.findIndex((step) => step.id === nextOperatingStep.id));
+        const selectedOperatingStep = commercialOperatingSteps.find((step) => step.id === expandedSchoolStep) || nextOperatingStep;
+        const openSchoolOperatingStep = (stepId: SchoolOperatingStepId, shouldScroll = false) => {
+            const step = commercialOperatingSteps.find((item) => item.id === stepId);
+            if (!step) return;
+            setActiveTab(step.tab);
+            setExpandedSchoolStep(step.id);
+            if (shouldScroll) {
+                window.setTimeout(() => {
+                    document.querySelector(`[data-testid="${step.focusTarget}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 80);
+            }
+        };
         const readinessPercent = Math.round((readinessScore / Math.max(readinessChecks.length, 1)) * 100);
         const handoverDecisionTitle = handoverBlockingGaps.length === 0
             ? 'جاهزة للتسليم التجاري'
@@ -2149,7 +2213,7 @@ export const SchoolsManager: React.FC = () => {
                 tab: nextOperatingStep.tab,
                 target: nextOperatingStep.id === 'supervisors'
                     ? 'school-wide-supervisors-panel'
-                    : nextOperatingStep.id === 'access'
+                    : nextOperatingStep.id === 'packages' || nextOperatingStep.id === 'codes'
                         ? 'school-packages-panel'
                         : nextOperatingStep.id === 'reports'
                             ? 'school-reports-panel'
@@ -3199,7 +3263,7 @@ export const SchoolsManager: React.FC = () => {
                                 setManagementError(null);
                                 setManagementNotice(null);
                                 setActiveTab(tab.id as typeof activeTab);
-                                setExpandedSchoolStep(tab.id as typeof activeTab);
+                                setExpandedSchoolStep(DEFAULT_SCHOOL_STEP_FOR_TAB[tab.id as SchoolWorkspaceTab]);
                             }}
                             className={`px-6 py-3 font-medium text-sm transition-colors border-b-2 ${
                                 activeTab === tab.id
@@ -3303,7 +3367,7 @@ export const SchoolsManager: React.FC = () => {
                                                 type="button"
                                                 onClick={() => {
                                                     setActiveTab(gap.tab);
-                                                    setExpandedSchoolStep(gap.tab);
+                                                    setExpandedSchoolStep(DEFAULT_SCHOOL_STEP_FOR_TAB[gap.tab]);
                                                 }}
                                                 className="block w-full rounded-xl border border-slate-100 bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-slate-700 transition-colors hover:bg-slate-50"
                                             >
@@ -3333,7 +3397,7 @@ export const SchoolsManager: React.FC = () => {
                             </div>
                             <div className="grid gap-3">
                                 {commercialOperatingSteps.map((step, index) => {
-                                    const isOpen = expandedSchoolStep === step.tab;
+                                    const isOpen = expandedSchoolStep === step.id;
                                     return (
                                         <button
                                             key={step.id}
@@ -3341,7 +3405,7 @@ export const SchoolsManager: React.FC = () => {
                                             data-testid={`school-ux-step-${step.id}`}
                                             onClick={() => {
                                                 setActiveTab(step.tab);
-                                                setExpandedSchoolStep((current) => (current === step.tab ? null : step.tab));
+                                                setExpandedSchoolStep((current) => (current === step.id ? null : step.id));
                                             }}
                                             className={`grid gap-3 rounded-2xl border p-4 text-right transition-colors sm:grid-cols-[auto_1fr_auto] sm:items-center ${
                                                 isOpen
@@ -3431,7 +3495,7 @@ export const SchoolsManager: React.FC = () => {
                                 <span className="text-sm font-black text-gray-900">أهم النواقص الآن</span>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveTab('reports')}
+                                    onClick={() => openSchoolOperatingStep('reports', true)}
                                     className="rounded-xl bg-white px-3 py-1.5 text-xs font-black text-amber-800 transition-colors hover:bg-amber-100"
                                 >
                                     التفاصيل في التقرير
@@ -3511,7 +3575,7 @@ export const SchoolsManager: React.FC = () => {
                             <button
                                 type="button"
                                 data-testid="school-handover-decision-report"
-                                onClick={() => setActiveTab('reports')}
+                                onClick={() => openSchoolOperatingStep('reports', true)}
                                 className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
                             >
                                 فتح تقرير التسليم
@@ -3523,7 +3587,10 @@ export const SchoolsManager: React.FC = () => {
                                     key={`${item.label}-${index}`}
                                     type="button"
                                     data-testid={`school-handover-decision-item-${index}`}
-                                    onClick={() => setActiveTab(item.tab)}
+                                    onClick={() => {
+                                        setActiveTab(item.tab);
+                                        setExpandedSchoolStep(DEFAULT_SCHOOL_STEP_FOR_TAB[item.tab]);
+                                    }}
                                     className={`rounded-xl border bg-white px-3 py-2 text-right transition-colors hover:bg-gray-50 ${
                                         item.isReady ? 'border-emerald-100' : 'border-amber-200'
                                     }`}
@@ -3555,7 +3622,7 @@ export const SchoolsManager: React.FC = () => {
                             <button
                                 type="button"
                                 data-testid="school-next-step-button"
-                                onClick={() => setActiveTab(nextOperatingStep.tab)}
+                                onClick={() => openSchoolOperatingStep(nextOperatingStep.id, true)}
                                 className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
                             >
                                 {nextOperatingStep.buttonLabel}
@@ -3573,7 +3640,7 @@ export const SchoolsManager: React.FC = () => {
                                 />
                             </div>
                         </div>
-                        <div className="mt-4 grid gap-2 md:grid-cols-5">
+                        <div className="mt-4 grid gap-2 md:grid-cols-4 xl:grid-cols-7">
                             {commercialOperatingSteps.map((step, index) => (
                                 <button
                                     key={step.id}
@@ -3581,10 +3648,10 @@ export const SchoolsManager: React.FC = () => {
                                     data-testid={`school-delivery-journey-step-${step.id}`}
                                     onClick={() => {
                                         setActiveTab(step.tab);
-                                        setExpandedSchoolStep(step.tab);
+                                        setExpandedSchoolStep(step.id);
                                     }}
                                     className={`rounded-xl border px-3 py-3 text-right transition-colors ${
-                                        expandedSchoolStep === step.tab
+                                        expandedSchoolStep === step.id
                                             ? 'border-slate-300 bg-slate-900 text-white shadow-sm'
                                             : step.isReady
                                             ? 'border-emerald-100 bg-white text-emerald-700 hover:bg-emerald-50'
@@ -3594,16 +3661,34 @@ export const SchoolsManager: React.FC = () => {
                                     }`}
                                 >
                                     <span className="block text-[11px] font-black text-slate-400">مرحلة {index + 1}</span>
-                                    <span className={`mt-1 block text-sm font-black ${expandedSchoolStep === step.tab ? 'text-white' : 'text-gray-900'}`}>{step.title}</span>
+                                    <span className={`mt-1 block text-sm font-black ${expandedSchoolStep === step.id ? 'text-white' : 'text-gray-900'}`}>{step.title}</span>
                                     <span className="mt-1 block text-xs font-bold leading-5">{step.metric}</span>
-                                    <span className={`mt-2 inline-flex rounded-lg px-2.5 py-1 text-[11px] font-black ${expandedSchoolStep === step.tab ? 'bg-white/15 text-white' : 'bg-white text-gray-700'}`}>
+                                    <span className={`mt-2 inline-flex rounded-lg px-2.5 py-1 text-[11px] font-black ${expandedSchoolStep === step.id ? 'bg-white/15 text-white' : 'bg-white text-gray-700'}`}>
                                         {step.buttonLabel}
                                     </span>
                                 </button>
                             ))}
                         </div>
                     </div>
-                    <div data-testid="school-setup-progress" className="hidden">
+                    <div data-testid="school-selected-step-summary" className="mt-4 rounded-2xl border border-white bg-white p-4 shadow-sm">
+                        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <div className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${selectedOperatingStep.isReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                                    {selectedOperatingStep.statusLabel}
+                                </div>
+                                <h3 className="mt-2 text-lg font-black text-gray-950">{selectedOperatingStep.title}</h3>
+                                <p className="mt-1 text-sm font-bold leading-6 text-gray-600">{selectedOperatingStep.description}</p>
+                            </div>
+                            <button
+                                type="button"
+                                data-testid="school-selected-step-action"
+                                onClick={() => openSchoolOperatingStep(selectedOperatingStep.id, true)}
+                                className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-black text-white transition-colors hover:bg-amber-600"
+                            >
+                                {selectedOperatingStep.buttonLabel}
+                            </button>
+                        </div>
+                    </div>                    <div data-testid="school-setup-progress" className="hidden">
                         {commercialOperatingSteps.map((step, index) => (
                             <div
                                 key={step.id}
@@ -3629,7 +3714,7 @@ export const SchoolsManager: React.FC = () => {
                                 <p className="mt-2 min-h-[44px] text-xs font-bold leading-6 text-gray-600">{step.description}</p>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveTab(step.tab)}
+                                    onClick={() => openSchoolOperatingStep(step.id, true)}
                                     className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white"
                                 >
                                     {step.buttonLabel}
@@ -3644,6 +3729,7 @@ export const SchoolsManager: React.FC = () => {
                             disabled={isSchoolWorkspaceBusy}
                             onClick={async () => {
                                 setActiveTab('overview');
+                                setExpandedSchoolStep('classes');
                                 await handleCreateSingleClass();
                             }}
                             className="rounded-xl bg-slate-900 px-3 py-2.5 text-xs font-black text-white transition-colors hover:bg-slate-800"
@@ -3655,6 +3741,7 @@ export const SchoolsManager: React.FC = () => {
                             data-testid="school-primary-add-student"
                             onClick={() => {
                                 setActiveTab('overview');
+                                setExpandedSchoolStep('students');
                                 setIsSingleStudentOpen(true);
                                 window.setTimeout(() => {
                                     document.querySelector('[data-testid="school-students-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3669,6 +3756,7 @@ export const SchoolsManager: React.FC = () => {
                             data-testid="school-primary-add-supervisor"
                             onClick={() => {
                                 setActiveTab('relations');
+                                setExpandedSchoolStep('supervisors');
                                 window.setTimeout(() => {
                                     document.querySelector('[data-testid="school-relations-quick-supervisor-card"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }, 50);
@@ -3680,7 +3768,13 @@ export const SchoolsManager: React.FC = () => {
                         <button
                             type="button"
                             data-testid="school-primary-open-packages"
-                            onClick={() => setActiveTab('packages')}
+                            onClick={() => {
+                                setActiveTab('packages');
+                                setExpandedSchoolStep('packages');
+                                window.setTimeout(() => {
+                                    document.querySelector('[data-testid="school-packages-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 80);
+                            }}
                             className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100"
                         >
                             الباقة والمسارات
@@ -3688,7 +3782,7 @@ export const SchoolsManager: React.FC = () => {
                         <button
                             type="button"
                             data-testid="school-primary-open-reports"
-                            onClick={() => setActiveTab('reports')}
+                            onClick={() => openSchoolOperatingStep('reports', true)}
                             className="rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-black text-blue-700 transition-colors hover:bg-blue-100"
                         >
                             تقرير التسليم
@@ -3710,7 +3804,7 @@ export const SchoolsManager: React.FC = () => {
                 </div>
 
                 <div className={`${expandedSchoolStep ? 'bg-white p-6 rounded-xl shadow-sm border border-gray-100' : 'hidden'}`}>
-                    {activeTab === 'overview' && expandedSchoolStep === 'overview' && (
+                    {activeTab === 'overview' && ['school-data', 'classes', 'students'].includes(expandedSchoolStep || '') && (
                         <div data-testid="school-classes-panel" className="space-y-8">
                             <div data-testid="school-overview-focus-strip" className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -4337,7 +4431,13 @@ export const SchoolsManager: React.FC = () => {
                                                         <button
                                                             type="button"
                                                             data-testid="school-class-access"
-                                                            onClick={() => setActiveTab('packages')}
+                                                            onClick={() => {
+                                setActiveTab('packages');
+                                setExpandedSchoolStep('packages');
+                                window.setTimeout(() => {
+                                    document.querySelector('[data-testid="school-packages-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 80);
+                            }}
                                                             className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-emerald-600 hover:text-white"
                                                         >
                                                             محتوى وأكواد
@@ -4593,7 +4693,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'packages' && expandedSchoolStep === 'packages' && (
+                    {activeTab === 'packages' && (expandedSchoolStep === 'packages' || expandedSchoolStep === 'codes') && (
                         <div data-testid="school-packages-panel" className="space-y-8">
                             <div data-testid="school-access-decision-summary" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -5154,7 +5254,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'relations' && expandedSchoolStep === 'relations' && (
+                    {activeTab === 'relations' && expandedSchoolStep === 'supervisors' && (
                         <div data-testid="school-supervisors-panel" className="space-y-8">
                             <div data-testid="school-supervisor-handover-guard" className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -5474,7 +5574,7 @@ export const SchoolsManager: React.FC = () => {
                         </div>
                     )}
 
-                    {activeTab === 'import' && expandedSchoolStep === 'import' && (
+                    {activeTab === 'import' && expandedSchoolStep === 'students' && (
                         <div className="max-w-4xl mx-auto py-8 space-y-8">
                             <div className="text-center">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-2">استيراد الطلاب دفعة واحدة</h2>
@@ -6187,7 +6287,7 @@ export const SchoolsManager: React.FC = () => {
                                                 closeSchoolActions();
                                                 setSelectedSchool(school);
                                                 setActiveTab('overview');
-                                                setExpandedSchoolStep('overview');
+                                                setExpandedSchoolStep('school-data');
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
@@ -6199,7 +6299,7 @@ export const SchoolsManager: React.FC = () => {
                                                 closeSchoolActions();
                                                 setSelectedSchool(school);
                                                 setActiveTab('relations');
-                                                setExpandedSchoolStep('relations');
+                                                setExpandedSchoolStep('supervisors');
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
@@ -6257,7 +6357,7 @@ export const SchoolsManager: React.FC = () => {
                                         const nextTab = nextCardAction?.tab || 'overview';
                                         setSelectedSchool(school);
                                         setActiveTab(nextTab);
-                                        setExpandedSchoolStep(nextTab);
+                                        setExpandedSchoolStep(DEFAULT_SCHOOL_STEP_FOR_TAB[nextTab]);
                                     }}
                                     className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-gray-800"
                                 >
@@ -6272,7 +6372,7 @@ export const SchoolsManager: React.FC = () => {
                                             onClick={() => {
                                                 setSelectedSchool(school);
                                                 setActiveTab(action.tab);
-                                                setExpandedSchoolStep(action.tab);
+                                                setExpandedSchoolStep(DEFAULT_SCHOOL_STEP_FOR_TAB[action.tab]);
                                             }}
                                             className={`rounded-lg px-2 py-1.5 text-[11px] font-black transition-colors ${
                                                 action.isReady
@@ -6307,7 +6407,7 @@ export const SchoolsManager: React.FC = () => {
                                 onClick={() => {
                                     setSelectedSchool(school);
                                     setActiveTab('overview');
-                                    setExpandedSchoolStep('overview');
+                                    setExpandedSchoolStep('school-data');
                                 }}
                                 className="w-full bg-gray-900 text-white py-2.5 rounded-xl font-bold hover:bg-gray-800 transition-colors"
                             >
@@ -6320,7 +6420,7 @@ export const SchoolsManager: React.FC = () => {
                                     onClick={() => {
                                         setSelectedSchool(school);
                                         setActiveTab('overview');
-                                        setExpandedSchoolStep('overview');
+                                        setExpandedSchoolStep('school-data');
                                         setIsDeleteSchoolConfirmOpen(true);
                                         window.setTimeout(() => {
                                             document.querySelector('[data-testid="school-delete-confirm-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
