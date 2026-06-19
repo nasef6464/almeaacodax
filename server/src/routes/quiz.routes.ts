@@ -652,6 +652,20 @@ const assertSupervisorDirectedQuizScope = async (
   }
 };
 
+const assertDirectedQuizHasQuestions = (quizLike: any) => {
+  if ((quizLike?.mode || "regular") !== "central") {
+    return;
+  }
+
+  if (uniqueStrings(getQuizQuestionIds(quizLike).map((value) => String(value || "").trim())).length > 0) {
+    return;
+  }
+
+  const error = new Error("Directed quiz requires at least one selected question") as Error & { statusCode?: number };
+  error.statusCode = StatusCodes.BAD_REQUEST;
+  throw error;
+};
+
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.filter((value): value is string => typeof value === "string" && value.trim().length > 0))];
 
@@ -2174,6 +2188,7 @@ quizRouter.post(
     const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
     await assertTeacherManagedScope(req.authUser!, payload);
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
+    assertDirectedQuizHasQuestions(payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const willBePublished = req.authUser?.role === "admin" ? Boolean(payload.isPublished) : false;
@@ -2434,6 +2449,7 @@ quizRouter.patch(
       ...normalizedPayload,
       ...sanitizedPayload,
     };
+    assertDirectedQuizHasQuestions(nextQuizState);
     if (nextQuizState.isPublished === true) {
       const integrity = await validateQuizQuestionIntegrity(nextQuizState);
       if (!integrity.ok) {

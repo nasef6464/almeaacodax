@@ -196,6 +196,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [draftQuiz, setDraftQuiz] = useState<Partial<Quiz> | null>(null);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const activeSubject = useMemo(
     () => allowedSubjects.find((subject) => subject.id === (selectedSubjectId || subjectId)),
@@ -456,12 +457,14 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       approvalStatus: 'draft',
     };
 
-    addQuiz(draftQuiz);
-    setEditingQuizId(draftQuiz.id);
+    const { id: _draftId, ...unsavedDraftQuiz } = draftQuiz;
+    setDraftQuiz(unsavedDraftQuiz);
+    setEditingQuizId(null);
     setIsEditing(true);
   };
 
   const handleEdit = (id: string) => {
+    setDraftQuiz(null);
     setEditingQuizId(id);
     setIsEditing(true);
   };
@@ -658,12 +661,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 className="font-bold text-gray-800">{editingQuizId ? 'تعديل الاختبار' : 'إنشاء اختبار جديد'}</h3>
-          <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
+          <button onClick={() => { setDraftQuiz(null); setIsEditing(false); }} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
             العودة للقائمة
           </button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <QuizBuilder initialQuizId={editingQuizId || undefined} initialSubjectId={selectedSubjectId || undefined} initialType={filterType} />
+          <QuizBuilder initialQuizId={editingQuizId || undefined} initialQuiz={draftQuiz || undefined} initialSubjectId={selectedSubjectId || draftQuiz?.subjectId || undefined} initialType={filterType} />
         </div>
       </div>
     );

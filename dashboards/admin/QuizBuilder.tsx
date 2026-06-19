@@ -6,12 +6,14 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { api } from '../../services/api';
 
 interface QuizBuilderProps {
   onClose?: () => void;
   initialSubjectId?: string;
   initialQuizId?: string;
   initialType?: 'quiz' | 'bank';
+  initialQuiz?: Partial<Quiz>;
 }
 
 const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
@@ -21,7 +23,22 @@ const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
   return 'مجاني';
 };
 
-export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz' }) => {
+const normalizeRemoteQuestionForBuilder = (question: any): Question | null => {
+  const id = String(question?.id || question?._id || '');
+  if (!id) return null;
+
+  return {
+    ...question,
+    id,
+    text: typeof question?.text === 'string' ? question.text : '',
+    options: Array.isArray(question?.options) ? question.options : [],
+    skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
+    pathId: String(question?.pathId || ''),
+    subject: String(question?.subject || ''),
+  } as Question;
+};
+
+export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz', initialQuiz }) => {
   const { user, quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,6 +46,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
   const [questionSkillFilter, setQuestionSkillFilter] = useState('');
   const [activeTab, setActiveTab] = useState<'info' | 'questions' | 'settings' | 'access'>('info');
+  const [remoteQuestionBank, setRemoteQuestionBank] = useState<Question[]>([]);
+  const [isQuestionBankLoading, setIsQuestionBankLoading] = useState(false);
+  const [questionBankError, setQuestionBankError] = useState('');
   const initialSubject = initialSubjectId ? useStore.getState().subjects.find(subject => subject.id === initialSubjectId) : undefined;
   const builderType: 'quiz' | 'bank' = initialType === 'bank' ? 'bank' : 'quiz';
   const isSupervisor = user.role === Role.SUPERVISOR;
@@ -81,6 +101,9 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     if (initialQuizId) {
       const existingQuiz = useStore.getState().quizzes.find(q => q.id === initialQuizId);
       if (existingQuiz) return existingQuiz;
+    }
+    if (initialQuiz) {
+      return initialQuiz;
     }
     return {
       title: '',
@@ -181,6 +204,56 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       access: { ...(prev.access || { allowedGroupIds: [] }), type: 'private' },
     }));
   }, [currentQuiz.mode, isSupervisor]);
+
+  useEffect(() => {
+    const pathId = String(currentQuiz.pathId || '').trim();
+    const subjectId = String(currentQuiz.subjectId || '').trim();
+
+    if (!pathId || !subjectId) {
+      setRemoteQuestionBank([]);
+      setQuestionBankError('');
+      setIsQuestionBankLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setIsQuestionBankLoading(true);
+    setQuestionBankError('');
+
+    api.getQuestions({
+      pathId,
+      subject: subjectId,
+      sectionId: currentQuiz.sectionId || undefined,
+      approvalStatus: isSupervisor ? 'approved' : undefined,
+      summary: true,
+      noTotal: true,
+      limit: 200,
+    })
+      .then((items) => {
+        if (cancelled) return;
+        setRemoteQuestionBank(
+          (Array.isArray(items) ? items : [])
+            .map(normalizeRemoteQuestionForBuilder)
+            .filter((item): item is Question => Boolean(item)),
+        );
+      })
+      .catch((error) => {
+        console.error('Question bank lookup failed:', error);
+        if (!cancelled) {
+          setRemoteQuestionBank([]);
+          setQuestionBankError('تعذر تحميل أسئلة بنك المنصة لهذه المادة. حاول مرة أخرى.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsQuestionBankLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentQuiz.pathId, currentQuiz.sectionId, currentQuiz.subjectId, isSupervisor]);
 
   const handleCopyLinkWithFeedback = async (text: string) => {
     setOperationError('');
@@ -401,10 +474,29 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     return;
   };
 
-  const handleSaveWithFeedback = () => {
+  const handleSaveWithFeedback = async () => {
     if (!currentQuiz.title || !currentQuiz.subjectId) {
       setOperationError('يرجى إدخال عنوان الاختبار وتحديد المادة.');
       return;
+    }
+
+    if ((currentQuiz.mode || 'regular') === 'central') {
+      const hasTargets =
+        (currentQuiz.targetGroupIds || []).length > 0 ||
+        (currentQuiz.targetUserIds || []).length > 0 ||
+        (currentQuiz.access?.allowedGroupIds || []).length > 0;
+
+      if ((currentQuiz.questionIds || []).length === 0) {
+        setActiveTab('questions');
+        setOperationError('لا يمكن حفظ اختبار موجّه بدون أسئلة. اختر أسئلة من بنك المنصة أولًا.');
+        return;
+      }
+
+      if (!hasTargets) {
+        setActiveTab('info');
+        setOperationError('حدد مجموعة أو طالبًا مستهدفًا قبل حفظ الاختبار الموجّه.');
+        return;
+      }
     }
 
     setOperationError('');
@@ -413,19 +505,24 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     const quizPayload = normalizeQuizPlacement({ ...currentQuiz }, builderType);
     delete (quizPayload as any).skillIds;
 
-    if (currentQuiz.id) {
-      updateQuiz(currentQuiz.id, quizPayload as Quiz);
-    } else {
-      const newQuiz: Quiz = {
-        ...(quizPayload as Quiz),
-        id: `quiz_${Date.now()}`,
-        createdAt: Date.now(),
-      } as Quiz;
-      addQuiz(newQuiz);
-    }
+    try {
+      if (currentQuiz.id) {
+        await updateQuiz(currentQuiz.id, quizPayload as Quiz);
+      } else {
+        const newQuiz: Quiz = {
+          ...(quizPayload as Quiz),
+          id: `quiz_${Date.now()}`,
+          createdAt: Date.now(),
+        } as Quiz;
+        await addQuiz(newQuiz);
+      }
 
-    setOperationMessage('تم حفظ الاختبار بنجاح.');
-    setIsEditing(false);
+      setOperationMessage('تم حفظ الاختبار بنجاح.');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to save quiz:', error);
+      setOperationError(error instanceof Error ? error.message : 'تعذر حفظ الاختبار. راجع البيانات وحاول مرة أخرى.');
+    }
   };
 
   const toggleQuestionSelection = (questionId: string) => {
@@ -444,16 +541,27 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     (!initialSubjectId || q.subjectId === initialSubjectId)
   );
 
-  const availableQuestions = questions.filter(q =>
+  const questionPool = useMemo(() => {
+    const mergedById = new Map<string, Question>();
+    [...questions, ...remoteQuestionBank].forEach((question) => {
+      if (question?.id) {
+        mergedById.set(question.id, question);
+      }
+    });
+    return Array.from(mergedById.values());
+  }, [questions, remoteQuestionBank]);
+
+  const availableQuestions = questionPool.filter(q =>
+    (!currentQuiz.pathId || !q.pathId || q.pathId === currentQuiz.pathId) &&
     q.subject === currentQuiz.subjectId &&
     (!currentQuiz.sectionId || q.sectionId === currentQuiz.sectionId) &&
     (questionDifficultyFilter === 'all' || q.difficulty === questionDifficultyFilter) &&
     (!questionSkillFilter || (q.skillIds || []).includes(questionSkillFilter)) &&
-    (!questionSearchTerm.trim() || q.text.toLowerCase().includes(questionSearchTerm.trim().toLowerCase()))
+    (!questionSearchTerm.trim() || (q.text || '').toLowerCase().includes(questionSearchTerm.trim().toLowerCase()))
   );
   const selectedQuestions = useMemo(
-    () => questions.filter(q => currentQuiz.questionIds?.includes(q.id)),
-    [questions, currentQuiz.questionIds]
+    () => questionPool.filter(q => currentQuiz.questionIds?.includes(q.id)),
+    [questionPool, currentQuiz.questionIds]
   );
   const derivedQuizSkills = useMemo(() => {
     const skillQuestionCounts = new Map<string, number>();
@@ -862,7 +970,15 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     </div>
                   </div>
                   <div className="max-h-96 overflow-y-auto divide-y divide-gray-100">
-                    {availableQuestions.length === 0 ? (
+                    {isQuestionBankLoading ? (
+                      <div className="p-8 text-center text-gray-500">
+                        جاري تحميل أسئلة بنك المنصة...
+                      </div>
+                    ) : questionBankError ? (
+                      <div className="p-8 text-center text-red-600">
+                        {questionBankError}
+                      </div>
+                    ) : availableQuestions.length === 0 ? (
                       <div className="p-8 text-center text-gray-500">
                         لا توجد أسئلة متاحة لهذه المادة في بنك الأسئلة.
                       </div>

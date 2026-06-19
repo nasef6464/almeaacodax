@@ -113,8 +113,8 @@ interface AppState {
     deleteQuestion: (questionId: string) => Promise<void>;
 
     // Quiz Actions
-    addQuiz: (quiz: Quiz) => void;
-    updateQuiz: (quizId: string, data: Partial<Quiz>) => void;
+    addQuiz: (quiz: Quiz) => Promise<Quiz>;
+    updateQuiz: (quizId: string, data: Partial<Quiz>) => Promise<Quiz>;
     deleteQuiz: (quizId: string) => void;
 
     // Lesson Actions
@@ -1029,27 +1029,49 @@ export const useStore = create<AppState>()(
             },
 
             // Quiz Actions
-            addQuiz: (quiz) => {
+            addQuiz: async (quiz) => {
                 const normalizedQuiz = normalizeQuizPlacement({
                     ...quiz,
                     showOnPlatform: typeof quiz.showOnPlatform === 'boolean' ? quiz.showOnPlatform : false,
                 });
-                api.createQuiz(normalizedQuiz).catch(console.error);
-                set((state) => ({
-                    quizzes: [normalizedQuiz, ...state.quizzes]
-                }));
+                try {
+                    const created = await api.createQuiz(normalizedQuiz) as any;
+                    const persistedQuiz = normalizeQuizPlacement({
+                        ...normalizedQuiz,
+                        ...created,
+                        id: String(created?.id || created?._id || normalizedQuiz.id),
+                    }) as Quiz;
+                    set((state) => ({
+                        quizzes: [persistedQuiz, ...state.quizzes.filter((item) => item.id !== persistedQuiz.id)]
+                    }));
+                    return persistedQuiz;
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
             },
-            updateQuiz: (quizId, data) => {
+            updateQuiz: async (quizId, data) => {
                 const shouldNormalizePlacement =
                     'type' in data ||
                     'placement' in data ||
                     'showInTraining' in data ||
                     'showInMock' in data;
                 const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
-                api.updateQuiz(quizId, updatePayload).catch(console.error);
-                set((state) => ({
-                    quizzes: state.quizzes.map(q => q.id === quizId ? (shouldNormalizePlacement ? normalizeQuizPlacement({ ...q, ...updatePayload }) : { ...q, ...updatePayload }) : q)
-                }));
+                try {
+                    const updated = await api.updateQuiz(quizId, updatePayload) as any;
+                    const persistedQuiz = normalizeQuizPlacement({
+                        ...data,
+                        ...updated,
+                        id: String(updated?.id || updated?._id || quizId),
+                    }) as Quiz;
+                    set((state) => ({
+                        quizzes: state.quizzes.map(q => q.id === quizId ? normalizeQuizPlacement({ ...q, ...persistedQuiz }) : q)
+                    }));
+                    return persistedQuiz;
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
             },
             deleteQuiz: (quizId) => {
                 api.deleteQuiz(quizId).catch(console.error);

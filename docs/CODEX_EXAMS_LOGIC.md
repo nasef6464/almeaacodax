@@ -60,3 +60,16 @@ Date: 2026-06-18
 
 Exam organization and supervisor permissions are Pilot Ready after the passing checks above.
 The blocked learning-quiz smoke is an environment data fixture issue, not a supervisor permission regression.
+## Directed Exam Question Mapping Fix - 2026-06-19
+
+- Production evidence confirmed approved question-bank items exist for Qudrat quantitative content:
+  - `pathId`: `p_1777779639431`
+  - `subject`: `sub_1777779748206`
+  - approved matching questions observed: 13
+  - total matching questions observed: 51
+- Root cause: the supervisor quiz builder counted only questions already hydrated into the client store. App bootstrap loads a small generic question slice, so a real path/subject can have platform questions in the API while the builder shows 0 locally.
+- Fix: quiz builder now loads question-bank items from `/quizzes/questions` whenever `pathId` and `subjectId` are selected, using `subject` for question lookup and filtering by `pathId`, `sectionId`, skill, difficulty, and search locally.
+- Supervisor question access remains read/select only. Supervisor still cannot create, edit, delete, auto-generate, or open the standalone question builder.
+- Directed quiz drafts are no longer persisted from the list button before the user chooses questions and targets.
+- Frontend and backend now reject saving a directed quiz without at least one selected question. Publishing integrity still validates referenced questions before learner visibility.
+- Saher remains a student self-practice flow and is not mixed with directed exams.
