@@ -824,7 +824,7 @@ export const SchoolsManager: React.FC = () => {
 
     const filteredSchools = useMemo(() => {
         const keyword = schoolSearch.trim().toLowerCase();
-        return schools.filter((school) => {
+        const visibleSchools = schools.filter((school) => {
             const matchesSearch = !keyword || school.name.toLowerCase().includes(keyword);
             if (!matchesSearch) return false;
 
@@ -833,6 +833,28 @@ export const SchoolsManager: React.FC = () => {
             if (schoolListMode === 'ready') return snapshot.readinessScore === 5;
             if (schoolListMode === 'needs_setup') return snapshot.readinessScore < 5 && !snapshot.isCommerciallyHiddenDraft;
             return !snapshot.isCommerciallyHiddenDraft;
+        });
+
+        return [...visibleSchools].sort((first, second) => {
+            const firstSnapshot = getSchoolOperationalSnapshot(first);
+            const secondSnapshot = getSchoolOperationalSnapshot(second);
+            if (firstSnapshot.isCommerciallyHiddenDraft !== secondSnapshot.isCommerciallyHiddenDraft) {
+                return firstSnapshot.isCommerciallyHiddenDraft ? 1 : -1;
+            }
+            if (schoolListMode === 'ready') {
+                return secondSnapshot.schoolStudents.length - firstSnapshot.schoolStudents.length
+                    || secondSnapshot.activePackageCount - firstSnapshot.activePackageCount
+                    || first.name.localeCompare(second.name, 'ar');
+            }
+            if (schoolListMode === 'needs_setup') {
+                return firstSnapshot.readinessScore - secondSnapshot.readinessScore
+                    || secondSnapshot.schoolStudents.length - firstSnapshot.schoolStudents.length
+                    || first.name.localeCompare(second.name, 'ar');
+            }
+            return secondSnapshot.readinessScore - firstSnapshot.readinessScore
+                || secondSnapshot.schoolStudents.length - firstSnapshot.schoolStudents.length
+                || secondSnapshot.activePackageCount - firstSnapshot.activePackageCount
+                || first.name.localeCompare(second.name, 'ar');
         });
     }, [accessCodes, b2bPackages, classes, schoolListMode, schoolSearch, schools, students]);
     const hiddenDraftSchoolsCount = useMemo(
@@ -6165,6 +6187,7 @@ export const SchoolsManager: React.FC = () => {
                                                 closeSchoolActions();
                                                 setSelectedSchool(school);
                                                 setActiveTab('overview');
+                                                setExpandedSchoolStep('overview');
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
@@ -6176,6 +6199,7 @@ export const SchoolsManager: React.FC = () => {
                                                 closeSchoolActions();
                                                 setSelectedSchool(school);
                                                 setActiveTab('relations');
+                                                setExpandedSchoolStep('relations');
                                             }}
                                             className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
                                         >
@@ -6230,8 +6254,10 @@ export const SchoolsManager: React.FC = () => {
                                     type="button"
                                     data-testid="school-card-next-action"
                                     onClick={() => {
+                                        const nextTab = nextCardAction?.tab || 'overview';
                                         setSelectedSchool(school);
-                                        setActiveTab(nextCardAction?.tab || 'overview');
+                                        setActiveTab(nextTab);
+                                        setExpandedSchoolStep(nextTab);
                                     }}
                                     className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-gray-800"
                                 >
@@ -6246,6 +6272,7 @@ export const SchoolsManager: React.FC = () => {
                                             onClick={() => {
                                                 setSelectedSchool(school);
                                                 setActiveTab(action.tab);
+                                                setExpandedSchoolStep(action.tab);
                                             }}
                                             className={`rounded-lg px-2 py-1.5 text-[11px] font-black transition-colors ${
                                                 action.isReady
@@ -6280,6 +6307,7 @@ export const SchoolsManager: React.FC = () => {
                                 onClick={() => {
                                     setSelectedSchool(school);
                                     setActiveTab('overview');
+                                    setExpandedSchoolStep('overview');
                                 }}
                                 className="w-full bg-gray-900 text-white py-2.5 rounded-xl font-bold hover:bg-gray-800 transition-colors"
                             >
@@ -6292,6 +6320,7 @@ export const SchoolsManager: React.FC = () => {
                                     onClick={() => {
                                         setSelectedSchool(school);
                                         setActiveTab('overview');
+                                        setExpandedSchoolStep('overview');
                                         setIsDeleteSchoolConfirmOpen(true);
                                         window.setTimeout(() => {
                                             document.querySelector('[data-testid="school-delete-confirm-panel"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });

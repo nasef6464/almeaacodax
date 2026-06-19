@@ -626,3 +626,26 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-management`: PASS 22/22.
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
+
+## Commercial Journey Cleanup - 2026-06-19
+
+- Branch: `codex/schools-commercial-journey-cleanup`.
+- Scope: frontend-only improvement inside `dashboards/admin/SchoolsManager.tsx`.
+- Goal movement: reduce school-list clutter and make the manager journey act like one clear operational path rather than a loose set of technical panels.
+- School list now sorts visible schools by commercial usefulness:
+  - isolated demo/draft schools stay at the end when cleanup mode is open;
+  - ready schools prioritize schools with real students/packages;
+  - setup mode prioritizes the schools with the most urgent missing readiness steps;
+  - active mode shows higher-readiness, higher-student schools first.
+- School cards now open the exact selected operating step instead of only opening the general school workspace:
+  - next action opens its matching step;
+  - readiness chips open their matching step;
+  - open management and cleanup review open the overview step explicitly;
+  - action menu entries open overview or supervisors directly.
+- No backend, database, RBAC, orphan cleanup, barcode, exams, or question editor changes were made.
+- Verification:
+  - `npm run typecheck`: PASS.
+  - `npm run build`: PASS.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+- Remaining objective: continue simplifying the selected school workspace and prove the visible school manager journey with a live/visual check before considering schools commercially complete.
