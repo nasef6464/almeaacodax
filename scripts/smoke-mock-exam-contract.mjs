@@ -59,7 +59,8 @@ check('mock exam utilities keep standalone mock exams out of material quiz cente
 
 check('admin mock exam manager creates independent path mock exams from question center questions', () => {
   assertIncludes(adminSource, 'pathQuestions');
-  assertIncludes(adminSource, 'questions.filter((question) => question.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === question.subject))');
+  assertIncludes(adminSource, 'useExamQuestionBank');
+  assertIncludes(adminSource, 'const pathQuestions = questionBankQuestions');
   assertIncludes(adminSource, 'filterQuestionsForSection');
   assertIncludes(adminSource, 'skillFilter');
   assertIncludes(adminSource, 'difficultyFilter');

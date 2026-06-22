@@ -5,6 +5,7 @@ import { MockExamSection, Question, Quiz } from '../../types';
 import { getMockExamQuestionCount, getMockExamSections, isPathMockExam } from '../../utils/mockExam';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
+import { EXAM_QUESTION_BANK_EMPTY_MESSAGE, useExamQuestionBank } from '../../utils/exams/questionBankSource';
 
 type DraftSection = MockExamSection;
 
@@ -68,8 +69,14 @@ const buildQiyasSections = (pathName: string | undefined, pathSubjects: Array<{ 
 };
 
 export const MockExamManager: React.FC = () => {
-  const { paths, subjects, questions, quizzes, skills, addQuiz, updateQuiz, deleteQuiz } = useStore();
+  const { paths, subjects, quizzes, skills, addQuiz, updateQuiz, deleteQuiz } = useStore();
   const [selectedPathId, setSelectedPathId] = useState(paths[0]?.id || '');
+  const {
+    questions: questionBankQuestions,
+    total: questionBankTotal,
+    isLoading: isQuestionBankLoading,
+    error: questionBankError,
+  } = useExamQuestionBank({ pathId: selectedPathId, enabled: Boolean(selectedPathId) });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const [title, setTitle] = useState('اختبار محاكي جديد');
@@ -81,6 +88,7 @@ export const MockExamManager: React.FC = () => {
   const [questionSearchTerm, setQuestionSearchTerm] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
   const [skillFilter, setSkillFilter] = useState('');
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (!selectedPathId && paths[0]?.id) {
@@ -92,10 +100,7 @@ export const MockExamManager: React.FC = () => {
     () => subjects.filter((subject) => subject.pathId === selectedPathId),
     [selectedPathId, subjects],
   );
-  const pathQuestions = useMemo(
-    () => questions.filter((question) => question.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === question.subject)),
-    [pathSubjects, questions, selectedPathId],
-  );
+  const pathQuestions = questionBankQuestions;
   const pathSkills = useMemo(
     () => skills.filter((skill) => skill.pathId === selectedPathId || pathSubjects.some((subject) => subject.id === skill.subjectId)),
     [pathSubjects, selectedPathId, skills],
@@ -169,6 +174,11 @@ export const MockExamManager: React.FC = () => {
       .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
       .filter((section) => section.title.trim() && section.questionIds.length > 0);
     const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
+    if (allQuestionIds.length === 0) {
+      setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
+      return;
+    }
+    setSaveError('');
     const firstSubjectId = cleanSections[0]?.subjectId || pathSubjects[0]?.id || 'mock_exam';
 
     const payload: Quiz = {
@@ -237,6 +247,8 @@ export const MockExamManager: React.FC = () => {
             onChange={(event) => {
               setSelectedPathId(event.target.value);
               setEditingId(null);
+              setSections([]);
+              setSaveError('');
             }}
             className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-bold"
           >
@@ -376,6 +388,7 @@ export const MockExamManager: React.FC = () => {
               <Save size={18} />
               حفظ الاختبار المحاكي
             </button>
+            {saveError ? <p className="text-xs font-bold text-red-600">{saveError}</p> : null}
             {(!selectedPathId || sections.every((section) => section.questionIds.length === 0)) ? (
               <p className="text-xs font-bold text-indigo-700">
                 {!selectedPathId ? 'اختر مسارا أولا.' : 'اختر سؤالا واحدا على الأقل قبل حفظ الاختبار.'}
@@ -390,7 +403,7 @@ export const MockExamManager: React.FC = () => {
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg font-black text-gray-900">أسئلة مركز الأسئلة</h3>
                 <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">
-                  {pathQuestions.length} سؤال في المسار
+                  {questionBankTotal} سؤال معتمد في المسار
                 </span>
               </div>
               <div className="grid gap-2 md:grid-cols-[1.2fr_0.8fr_1fr]">
@@ -431,6 +444,15 @@ export const MockExamManager: React.FC = () => {
               </div>
             </div>
             <div className="max-h-[520px] space-y-4 overflow-y-auto pr-1">
+              {isQuestionBankLoading && (
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-6 text-center text-sm font-black text-gray-500">جارٍ تحميل أسئلة بنك المنصة...</div>
+              )}
+              {questionBankError && !isQuestionBankLoading && (
+                <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center text-sm font-black text-red-600">{questionBankError}</div>
+              )}
+              {!isQuestionBankLoading && !questionBankError && pathQuestions.length === 0 && (
+                <div className="rounded-xl border border-dashed border-gray-200 p-6 text-center text-sm font-black text-gray-500">{EXAM_QUESTION_BANK_EMPTY_MESSAGE}</div>
+              )}
               {sections.map((section) => {
                 const pool = filterQuestionsForSection(section);
                 return (
@@ -462,7 +484,7 @@ export const MockExamManager: React.FC = () => {
                       ))}
                       {pool.length === 0 && (
                         <div className="rounded-xl border border-dashed border-gray-200 p-4 text-center text-xs font-bold text-gray-400">
-                          لا توجد أسئلة لهذه المادة بعد.
+                          {EXAM_QUESTION_BANK_EMPTY_MESSAGE}
                         </div>
                       )}
                     </div>
@@ -599,7 +621,7 @@ export const MockExamManager: React.FC = () => {
                 {getMockExamSections(previewQuiz).map((section, index) => {
                   const linkedSubject = subjects.find((subject) => subject.id === section.subjectId);
                   const sectionQuestions = (section.questionIds || [])
-                    .map((questionId) => questions.find((question) => question.id === questionId))
+                    .map((questionId) => questionBankQuestions.find((question) => question.id === questionId))
                     .filter(Boolean) as Question[];
                   return (
                     <div key={section.id} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">

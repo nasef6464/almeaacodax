@@ -1,6 +1,6 @@
 # ALMEAA CODAX Exams Logic Handoff
 
-Date: 2026-06-18
+Date: 2026-06-22
 
 ## Current Exam Types
 
@@ -60,3 +60,44 @@ Date: 2026-06-18
 
 Exam organization and supervisor permissions are Pilot Ready after the passing checks above.
 The blocked learning-quiz smoke is an environment data fixture issue, not a supervisor permission regression.
+
+## Unified Question Source (2026-06-22)
+
+- `utils/exams/questionBankSource.ts` is now the shared, API-backed source for exam builders.
+- It reads approved questions from `api.getQuestionsPaginated` (`/quizzes/questions`) and supports path, subject, section, skill, and search filters.
+- `QuizBuilder`, `PublicBarcodeTestsManager`, and `MockExamManager` no longer consume the stale `useStore().questions` snapshot.
+- Directed exams use the same `QuizBuilder` source and open as an unsaved form. Opening the builder no longer persists a zero-question draft.
+- Normal, barcode, and mock exam saves are blocked when no real question IDs are selected.
+- Supervisors can read and select approved questions, but question creation controls remain hidden. Backend question POST/PATCH/DELETE routes remain restricted to admin and teacher roles.
+
+## Production Evidence (2026-06-22)
+
+- Admin question center: 47 questions are present in the real bank.
+- Admin normal builder, Qudrat path + quantitative subject: 9 approved questions are available.
+- Admin barcode builder, Qudrat path + quantitative subject: the same 9 approved questions are available.
+- Admin mock exam center: 9 approved path questions were verified from the shared bank; the mock source code was unchanged by the final directed-form follow-up.
+- Supervisor directed builder, Qudrat path + quantitative subject: 9 approved questions are available, no add-question action is shown, save is disabled at zero questions, and becomes enabled after selecting a real question.
+- Barcode live audit: admin workspace PASS on desktop and mobile with zero console errors and zero network 5xx. The public test route missed only the legacy audit minimum-body-length threshold; required selectors, layout, console, and network checks passed.
+- Supervisor live audit: zero console errors and zero network 5xx on all checked routes. Two legacy text-expectation rows remain FAIL because the audit expects old wording.
+- Production data blocker: both available supervisor fixtures currently report zero scoped students and zero classes. A supervisor-directed quiz cannot be validly targeted, approved, solved by a target student, or denied to a non-target student without changing school fixture data. No QA users/questions were added and no RBAC was weakened.
+
+## Verification (Unified Source)
+
+- PASS: `npm run typecheck`
+- PASS: `npm run build`
+- PASS: `npm run server:check`
+- PASS: `npm run smoke:exam-question-source` (13/13)
+- PASS: `npm run smoke:reports-role` (20/20)
+- PASS: `npm run smoke:rbac-school-scope` (4/4)
+- PASS: `npm run smoke:quiz-access` (18/18)
+- PASS: `npm run smoke:quiz-client-security` (4/4)
+- PASS: `npm run smoke:quiz-integrity-guard` (4/4)
+- PASS: `npm run smoke:quiz-answer-exposure` (5/5)
+- PASS: `npm run smoke:barcode-public-tests` (40/40)
+- PASS: `npm run smoke:mock-exams` (9/9)
+- PASS: `npm run smoke:saher-skills` (5/5)
+- PASS: `npm run smoke:my-quizzes` (9/9)
+
+## Decision (Unified Source)
+
+The unified question-source fix is code-complete and deployed. Production is PASS for the real bank in normal, barcode, mock, and supervisor-directed builders, with supervisor question-bank RBAC preserved. The full directed student delivery/result journey remains DATA BLOCKED until a real student/class is linked to a supervisor scope and the normal admin approval step is performed.

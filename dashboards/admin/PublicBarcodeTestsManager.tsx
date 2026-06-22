@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { Question } from '../../types';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
+import { EXAM_QUESTION_BANK_EMPTY_MESSAGE, useExamQuestionBank } from '../../utils/exams/questionBankSource';
 
 type CreatedBarcodeTest = {
   test: {
@@ -187,7 +188,7 @@ const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: s
 };
 
 export const PublicBarcodeTestsManager: React.FC = () => {
-  const { user, paths, subjects, sections, questions, skills, addQuestion } = useStore();
+  const { user, paths, subjects, sections, skills, addQuestion } = useStore();
   const canCreateQuestions = user.role === 'admin' || user.role === 'teacher';
   const firstPathId = paths[0]?.id || '';
   const [pathId, setPathId] = useState(firstPathId);
@@ -229,13 +230,23 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
+  const {
+    questions: questionBankQuestions,
+    isLoading: isQuestionBankLoading,
+    error: questionBankError,
+    refresh: refreshQuestionBank,
+  } = useExamQuestionBank({
+    pathId,
+    subjectId: normalizedSubjectId,
+    enabled: Boolean(pathId && normalizedSubjectId),
+  });
   const activeSections = useMemo(
     () => sections.filter((section) => section.subjectId === normalizedSubjectId),
     [normalizedSubjectId, sections],
   );
   const eligibleQuestions = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
-    return questions
+    return questionBankQuestions
       .filter((question) => {
         const approved = !question.approvalStatus || question.approvalStatus === 'approved';
         const matchesSection = !sectionId || question.sectionId === sectionId;
@@ -245,12 +256,12 @@ export const PublicBarcodeTestsManager: React.FC = () => {
       })
       .filter((question) => !term || question.text.toLowerCase().includes(term))
       .slice(0, 80);
-  }, [difficultyFilter, normalizedSubjectId, pathId, questionTypeFilter, questions, searchTerm, sectionId]);
+  }, [difficultyFilter, normalizedSubjectId, pathId, questionBankQuestions, questionTypeFilter, searchTerm, sectionId]);
 
   const selectedSkills = useMemo(() => {
-    const selectedQuestions = questions.filter((question) => selectedQuestionIds.includes(question.id));
+    const selectedQuestions = questionBankQuestions.filter((question) => selectedQuestionIds.includes(question.id));
     return [...new Set(selectedQuestions.flatMap((question) => question.skillIds || []))];
-  }, [questions, selectedQuestionIds]);
+  }, [questionBankQuestions, selectedQuestionIds]);
 
   const reportTopStudents = useMemo(() => {
     return [...(report?.rows || [])]
@@ -293,6 +304,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         createdBy: questionPayload.createdBy || user.id,
         approvalStatus: questionPayload.approvalStatus || (user.role === 'admin' ? 'approved' : 'pending_review'),
       } as Question);
+      refreshQuestionBank();
 
       if (!created.approvalStatus || created.approvalStatus === 'approved') {
         setSelectedQuestionIds((current) => current.includes(created.id) ? current : [created.id, ...current]);
@@ -763,7 +775,13 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               />
             </div>
             <div className="max-h-[430px] space-y-2 overflow-auto pr-1">
-              {eligibleQuestions.map((question) => {
+              {isQuestionBankLoading && (
+                <div className="rounded-2xl border border-slate-100 bg-white p-6 text-center text-sm font-black text-slate-500">جارٍ تحميل أسئلة بنك المنصة...</div>
+              )}
+              {questionBankError && !isQuestionBankLoading && (
+                <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center text-sm font-black text-red-600">{questionBankError}</div>
+              )}
+              {!isQuestionBankLoading && !questionBankError && eligibleQuestions.map((question) => {
                 const selected = selectedQuestionIds.includes(question.id);
                 const skillNames = (question.skillIds || [])
                   .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
@@ -789,7 +807,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                   </button>
                 );
               })}
-              {eligibleQuestions.length === 0 && (
+              {!isQuestionBankLoading && !questionBankError && eligibleQuestions.length === 0 && (
                 <div data-testid="barcode-question-center-empty-state" className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center">
                   <FileQuestion className="mx-auto mb-2 text-slate-300" />
                   <button
@@ -801,7 +819,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                     <Plus size={14} />
                     إنشاء سؤال لهذا الاختبار
                   </button>
-                  <p className="text-sm font-black text-slate-500">لا توجد أسئلة معتمدة لهذا الاختيار.</p>
+                  <p className="text-sm font-black text-slate-500">{EXAM_QUESTION_BANK_EMPTY_MESSAGE}</p>
                 </div>
               )}
             </div>
@@ -869,7 +887,7 @@ export const PublicBarcodeTestsManager: React.FC = () => {
               type="button"
               data-testid="barcode-create-real-test"
               onClick={createTest}
-              disabled={saving}
+              disabled={saving || selectedQuestionIds.length === 0}
               className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving ? <Loader2 size={16} className="animate-spin" /> : <QrCode size={16} />}

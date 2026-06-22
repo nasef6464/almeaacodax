@@ -6,12 +6,17 @@ import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
 import { getPlacementFromFlags, getQuizPlacementDefaults, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
 import { normalizeQuestionHtml } from '../../utils/questionHtml';
+import { EXAM_QUESTION_BANK_EMPTY_MESSAGE, useExamQuestionBank } from '../../utils/exams/questionBankSource';
 
 interface QuizBuilderProps {
   onClose?: () => void;
   initialSubjectId?: string;
   initialQuizId?: string;
   initialType?: 'quiz' | 'bank';
+  initialPathId?: string;
+  initialMode?: 'regular' | 'saher' | 'central';
+  initialTargetGroupIds?: string[];
+  initialTargetUserIds?: string[];
 }
 
 const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
@@ -21,9 +26,19 @@ const getAccessTypeLabel = (type?: Quiz['access']['type']) => {
   return 'مجاني';
 };
 
-export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjectId, initialQuizId, initialType = 'quiz' }) => {
-  const { user, quizzes, addQuiz, updateQuiz, deleteQuiz, questions, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
-  const [isEditing, setIsEditing] = useState(false);
+export const QuizBuilder: React.FC<QuizBuilderProps> = ({
+  onClose,
+  initialSubjectId,
+  initialQuizId,
+  initialType = 'quiz',
+  initialPathId,
+  initialMode,
+  initialTargetGroupIds = [],
+  initialTargetUserIds = [],
+}) => {
+  const { user, quizzes, addQuiz, updateQuiz, deleteQuiz, subjects, paths, groups, users, addQuestion, sections, skills } = useStore();
+  const resolvedInitialMode = initialMode || 'regular';
+  const [isEditing, setIsEditing] = useState(Boolean(initialMode || initialQuizId));
   const [searchTerm, setSearchTerm] = useState('');
   const [questionSearchTerm, setQuestionSearchTerm] = useState('');
   const [questionDifficultyFilter, setQuestionDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
@@ -83,24 +98,36 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       if (existingQuiz) return existingQuiz;
     }
     return {
-      title: '',
+      title: resolvedInitialMode === 'saher' ? 'اختبار ساهر جديد' : resolvedInitialMode === 'central' ? 'اختبار موجّه جديد' : '',
       description: '',
-      pathId: initialSubject?.pathId || '',
+      pathId: initialSubject?.pathId || initialPathId || '',
       subjectId: initialSubjectId || '',
       ...getQuizPlacementDefaults(builderType),
-      mode: 'regular',
+      mode: resolvedInitialMode,
       settings: getDefaultQuizSettings({ type: builderType }),
       access: {
-        type: 'free',
-        allowedGroupIds: [],
+        type: resolvedInitialMode === 'central' ? 'private' : 'free',
+        allowedGroupIds: resolvedInitialMode === 'central' ? initialTargetGroupIds : [],
       },
       questionIds: [],
-      targetGroupIds: [],
-      targetUserIds: [],
+      targetGroupIds: initialTargetGroupIds,
+      targetUserIds: initialTargetUserIds,
       dueDate: '',
       isPublished: false,
       showOnPlatform: false,
     };
+  });
+
+  const {
+    questions: questionBankQuestions,
+    total: questionBankTotal,
+    isLoading: isQuestionBankLoading,
+    error: questionBankError,
+    refresh: refreshQuestionBank,
+  } = useExamQuestionBank({
+    pathId: currentQuiz.pathId,
+    subjectId: currentQuiz.subjectId,
+    enabled: Boolean(currentQuiz.pathId && currentQuiz.subjectId),
   });
 
   const [isAutoGenerateModalOpen, setIsAutoGenerateModalOpen] = useState(false);
@@ -232,7 +259,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
       return;
     }
 
-    let pool = questions;
+    let pool = questionBankQuestions;
 
     if (currentQuiz.pathId) {
       pool = pool.filter(q => q.pathId === currentQuiz.pathId || q.subject === currentQuiz.subjectId);
@@ -341,6 +368,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     
     try {
       await addQuestion(q);
+      refreshQuestionBank();
       setCurrentQuiz(prev => ({
         ...prev,
         questionIds: [...(prev.questionIds || []), q.id]
@@ -356,20 +384,20 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     setOperationError('');
     setOperationMessage('');
     setCurrentQuiz({
-      title: '',
+      title: resolvedInitialMode === 'saher' ? 'اختبار ساهر جديد' : resolvedInitialMode === 'central' ? 'اختبار موجّه جديد' : '',
       description: '',
-      pathId: initialSubject?.pathId || '',
+      pathId: initialSubject?.pathId || initialPathId || '',
       subjectId: initialSubjectId || '',
       ...getQuizPlacementDefaults(builderType),
-      mode: 'regular',
+      mode: resolvedInitialMode,
       settings: getDefaultQuizSettings({ type: builderType }),
       access: {
-        type: 'free',
-        allowedGroupIds: [],
+        type: resolvedInitialMode === 'central' ? 'private' : 'free',
+        allowedGroupIds: resolvedInitialMode === 'central' ? initialTargetGroupIds : [],
       },
       questionIds: [],
-      targetGroupIds: [],
-      targetUserIds: [],
+      targetGroupIds: initialTargetGroupIds,
+      targetUserIds: initialTargetUserIds,
       dueDate: '',
       isPublished: false,
       showOnPlatform: false,
@@ -404,6 +432,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
   const handleSaveWithFeedback = () => {
     if (!currentQuiz.title || !currentQuiz.subjectId) {
       setOperationError('يرجى إدخال عنوان الاختبار وتحديد المادة.');
+      return;
+    }
+    if ((currentQuiz.questionIds || []).length === 0) {
+      setOperationError('لا يمكن حفظ الاختبار بدون أسئلة.');
       return;
     }
 
@@ -444,7 +476,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     (!initialSubjectId || q.subjectId === initialSubjectId)
   );
 
-  const availableQuestions = questions.filter(q =>
+  const availableQuestions = questionBankQuestions.filter(q =>
     q.subject === currentQuiz.subjectId &&
     (!currentQuiz.sectionId || q.sectionId === currentQuiz.sectionId) &&
     (questionDifficultyFilter === 'all' || q.difficulty === questionDifficultyFilter) &&
@@ -452,8 +484,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
     (!questionSearchTerm.trim() || q.text.toLowerCase().includes(questionSearchTerm.trim().toLowerCase()))
   );
   const selectedQuestions = useMemo(
-    () => questions.filter(q => currentQuiz.questionIds?.includes(q.id)),
-    [questions, currentQuiz.questionIds]
+    () => questionBankQuestions.filter(q => currentQuiz.questionIds?.includes(q.id)),
+    [questionBankQuestions, currentQuiz.questionIds]
   );
   const derivedQuizSkills = useMemo(() => {
     const skillQuestionCounts = new Map<string, number>();
@@ -529,7 +561,8 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
           <div className="flex items-center gap-3">
             <button 
               onClick={handleSaveWithFeedback}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"
+              disabled={(currentQuiz.questionIds || []).length === 0}
+              className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Save size={18} />
               حفظ الاختبار
@@ -585,6 +618,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                           subjectId: '',
                           sectionId: '',
                           skillIds: [],
+                          questionIds: [],
                         }))
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
@@ -605,6 +639,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                           subjectId: e.target.value,
                           sectionId: '',
                           skillIds: [],
+                          questionIds: [],
                         }))
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
@@ -629,6 +664,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                           ...prev,
                           sectionId: e.target.value,
                           skillIds: [],
+                          questionIds: [],
                         }))
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
@@ -804,7 +840,10 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
             {activeTab === 'questions' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-gray-800">الأسئلة المحددة ({currentQuiz.questionIds?.length || 0})</h3>
+                  <div>
+                    <h3 className="font-bold text-gray-800">الأسئلة المحددة ({currentQuiz.questionIds?.length || 0})</h3>
+                    <p className="mt-1 text-xs font-bold text-indigo-600">متاح من بنك المنصة: {questionBankTotal}</p>
+                  </div>
                   {canCreateQuestions ? (
                     <div className="flex gap-2">
                       <button
@@ -862,10 +901,12 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({ onClose, initialSubjec
                     </div>
                   </div>
                   <div className="max-h-96 overflow-y-auto divide-y divide-gray-100">
-                    {availableQuestions.length === 0 ? (
-                      <div className="p-8 text-center text-gray-500">
-                        لا توجد أسئلة متاحة لهذه المادة في بنك الأسئلة.
-                      </div>
+                    {isQuestionBankLoading ? (
+                      <div className="p-8 text-center text-gray-500">جارٍ تحميل أسئلة بنك المنصة...</div>
+                    ) : questionBankError ? (
+                      <div className="p-8 text-center text-red-600">{questionBankError}</div>
+                    ) : availableQuestions.length === 0 ? (
+                      <div className="p-8 text-center text-gray-500">{EXAM_QUESTION_BANK_EMPTY_MESSAGE}</div>
                     ) : (
                       availableQuestions.map(q => {
                         const isSelected = currentQuiz.questionIds?.includes(q.id);

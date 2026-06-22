@@ -196,6 +196,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
+  const [draftMode, setDraftMode] = useState<'regular' | 'saher' | 'central' | null>(null);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const activeSubject = useMemo(
     () => allowedSubjects.find((subject) => subject.id === (selectedSubjectId || subjectId)),
@@ -420,48 +421,18 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       handleCreateByMode('regular');
       return;
     }
+    setDraftMode('regular');
     setEditingQuizId(null);
     setIsEditing(true);
   };
 
   const handleCreateByMode = (mode: 'regular' | 'saher' | 'central') => {
-    const draftSubjectId = selectedSubjectId || subjectId || '';
-    const createdAt = Date.now();
-    const draftQuiz: Quiz = {
-      id: `quiz_${createdAt}_${mode}`,
-      title: mode === 'saher' ? 'اختبار ساهر جديد' : mode === 'central' ? 'اختبار موجّه جديد' : 'اختبار جديد',
-      description: '',
-      pathId: activePathId,
-      subjectId: draftSubjectId,
-      ...getQuizPlacementDefaults(filterType || 'quiz'),
-      learningPlacements:
-        activeLearningSlot && activePathId && draftSubjectId
-          ? [{ pathId: activePathId, subjectId: draftSubjectId, slot: activeLearningSlot, accessType: 'free', isVisible: true, order: 0, createdAt }]
-          : [],
-      mode,
-      settings: getDefaultQuizSettings({
-        type: filterType || 'quiz',
-        mode,
-        learningSlot: activeLearningSlot,
-      }),
-      access: mode === 'central' ? { type: 'private', allowedGroupIds: [] } : { type: 'free', allowedGroupIds: [] },
-      questionIds: [],
-      skillIds: selectedSkillId ? [selectedSkillId] : [],
-      createdAt,
-      isPublished: false,
-      showOnPlatform: false,
-      targetGroupIds: initialTargetGroupId ? [initialTargetGroupId] : [],
-      targetUserIds: initialTargetUserId ? [initialTargetUserId] : [],
-      dueDate: '',
-      approvalStatus: 'draft',
-    };
-
-    addQuiz(draftQuiz);
-    setEditingQuizId(draftQuiz.id);
+    setDraftMode(mode);
+    setEditingQuizId(null);
     setIsEditing(true);
   };
-
   const handleEdit = (id: string) => {
+    setDraftMode(null);
     setEditingQuizId(id);
     setIsEditing(true);
   };
@@ -658,12 +629,20 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 className="font-bold text-gray-800">{editingQuizId ? 'تعديل الاختبار' : 'إنشاء اختبار جديد'}</h3>
-          <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
+          <button onClick={() => { setIsEditing(false); setDraftMode(null); }} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
             العودة للقائمة
           </button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <QuizBuilder initialQuizId={editingQuizId || undefined} initialSubjectId={selectedSubjectId || undefined} initialType={filterType} />
+          <QuizBuilder
+            initialQuizId={editingQuizId || undefined}
+            initialSubjectId={selectedSubjectId || undefined}
+            initialPathId={activePathId || undefined}
+            initialType={filterType}
+            initialMode={draftMode || undefined}
+            initialTargetGroupIds={initialTargetGroupId ? [initialTargetGroupId] : []}
+            initialTargetUserIds={initialTargetUserId ? [initialTargetUserId] : []}
+          />
         </div>
       </div>
     );
