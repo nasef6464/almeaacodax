@@ -1417,6 +1417,10 @@ quizRouter.get(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const canUsePublicCache = !req.authUser;
+    const learnerAudienceUser =
+      req.authUser && !isStaffRole(req.authUser.role)
+        ? await resolveAuthUserByAuthId(String(req.authUser.id || ""))
+        : req.authUser;
     const requestedPathId = typeof req.query.pathId === "string" ? req.query.pathId.trim() : "";
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
@@ -1493,7 +1497,7 @@ quizRouter.get(
 
       safeItems = items.filter(
         (quiz: any) =>
-          isQuizTargetedToLearner(quiz, req.authUser) &&
+          isQuizTargetedToLearner(quiz, learnerAudienceUser) &&
           getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
       );
     }

@@ -85,7 +85,9 @@ check('supervisors stay read-only in normal and barcode question selection', () 
 
 check('learner quiz lists are audience-scoped and never share a public cache across signed-in students', () => {
   assertIncludes(quizRoutesSource, 'const canUsePublicCache = !req.authUser;');
-  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, req.authUser)');
+  assertIncludes(quizRoutesSource, 'const learnerAudienceUser =');
+  assertIncludes(quizRoutesSource, 'await resolveAuthUserByAuthId(String(req.authUser.id || ""))');
+  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceUser)');
 });
 
 for (const item of checks) {
