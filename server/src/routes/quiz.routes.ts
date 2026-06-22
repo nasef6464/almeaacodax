@@ -829,6 +829,25 @@ const getPaidQuizPackageContentTypes = (quiz: any, source?: string) => {
   return contentTypes.length ? contentTypes : ["tests"];
 };
 
+const isQuizTargetedToLearner = (quiz: any, user?: any) => {
+  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
+  const targetGroupIds = new Set((quiz.targetGroupIds || []).map(String));
+  const hasExplicitTarget = targetUserIds.size > 0 || targetGroupIds.size > 0;
+
+  if (!hasExplicitTarget) {
+    return true;
+  }
+  if (!user) {
+    return false;
+  }
+
+  const userGroupIds = (user.groupIds || []).map(String);
+  return (
+    targetUserIds.has(String(user.id || user._id)) ||
+    userGroupIds.some((groupId: string) => targetGroupIds.has(groupId))
+  );
+};
+
 const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) {
     return true;
@@ -848,16 +867,9 @@ const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
     }
   }
 
-  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
-  const targetGroupIds = new Set((quiz.targetGroupIds || []).map(String));
   const userGroupIds = (user.groupIds || []).map(String);
-  const hasExplicitTarget = targetUserIds.size > 0 || targetGroupIds.size > 0;
-  const isTargeted =
-    !hasExplicitTarget ||
-    targetUserIds.has(String(user.id || user._id)) ||
-    userGroupIds.some((groupId: string) => targetGroupIds.has(groupId));
-
-  if (!isTargeted) {
+  const hasExplicitTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
+  if (!isQuizTargetedToLearner(quiz, user)) {
     return false;
   }
 
@@ -1404,7 +1416,7 @@ quizRouter.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
-    const canUsePublicCache = !isStaffRole(req.authUser?.role);
+    const canUsePublicCache = !req.authUser;
     const requestedPathId = typeof req.query.pathId === "string" ? req.query.pathId.trim() : "";
     const requestedSubjectId = typeof req.query.subjectId === "string" ? req.query.subjectId.trim() : "";
     const requestedPage = typeof req.query.page === "string" ? req.query.page.trim() : "1";
@@ -1479,8 +1491,10 @@ quizRouter.get(
         }
       });
 
-      safeItems = items.filter((quiz: any) =>
-        getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
+      safeItems = items.filter(
+        (quiz: any) =>
+          isQuizTargetedToLearner(quiz, req.authUser) &&
+          getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true),
       );
     }
 

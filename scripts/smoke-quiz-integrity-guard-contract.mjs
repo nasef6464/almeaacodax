@@ -40,7 +40,8 @@ check("integrity report endpoint exists for admins", () => {
 });
 
 check("learner quiz listing excludes unusable quizzes", () => {
-  assertIncludes(quizRoutesSource, "safeItems = items.filter((quiz: any) =>");
+  assertIncludes(quizRoutesSource, "safeItems = items.filter(");
+  assertIncludes(quizRoutesSource, "isQuizTargetedToLearner(quiz, req.authUser)");
   assertIncludes(quizRoutesSource, "getQuizQuestionIds(quiz).some((questionId: string) => usableById.get(String(questionId)) === true)");
 });
 

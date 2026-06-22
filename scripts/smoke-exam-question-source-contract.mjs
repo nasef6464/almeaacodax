@@ -5,6 +5,7 @@ const quizBuilderSource = await readFile(new URL('../dashboards/admin/QuizBuilde
 const barcodeSource = await readFile(new URL('../dashboards/admin/PublicBarcodeTestsManager.tsx', import.meta.url), 'utf8');
 const mockSource = await readFile(new URL('../dashboards/admin/MockExamManager.tsx', import.meta.url), 'utf8');
 const quizzesManagerSource = await readFile(new URL('../dashboards/admin/QuizzesManager.tsx', import.meta.url), 'utf8');
+const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
 
 const checks = [];
 
@@ -80,6 +81,11 @@ check('supervisors stay read-only in normal and barcode question selection', () 
   assertIncludes(quizBuilderSource, 'isAddQuestionModalOpen && canCreateQuestions');
   assertIncludes(barcodeSource, "const canCreateQuestions = user.role === 'admin' || user.role === 'teacher'");
   assertIncludes(barcodeSource, 'showQuestionBuilder && canCreateQuestions');
+});
+
+check('learner quiz lists are audience-scoped and never share a public cache across signed-in students', () => {
+  assertIncludes(quizRoutesSource, 'const canUsePublicCache = !req.authUser;');
+  assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, req.authUser)');
 });
 
 for (const item of checks) {
