@@ -53,6 +53,13 @@ const interventionAlertSchema = z.object({
   channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
 });
 
+const studentAlertSchema = z.object({
+  studentIds: z.array(z.string().min(1).max(120)).min(1).max(50),
+  title: z.string().min(2).max(220),
+  body: z.string().min(2).max(1200),
+  channels: z.array(z.literal("in_app")).optional().default(["in_app"]),
+});
+
 const processPendingSchema = z.object({
   limit: z.number().int().min(1).max(50).optional().default(25),
 });
@@ -276,6 +283,87 @@ notificationRouter.post("/intervention-alert", requireAuth, requireRole(["admin"
     res.status(StatusCodes.ACCEPTED).json({
       ...result,
       message: "Intervention alert created for linked parent and supervisor recipients.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+notificationRouter.post("/student-alert", requireAuth, requireRole(["admin", "supervisor", "teacher"]), async (req, res, next) => {
+  try {
+    const payload = studentAlertSchema.parse(req.body || {});
+    const authUser = req.authUser!;
+    const requestedIds = Array.from(new Set(payload.studentIds.map(String)));
+    const requestedObjectIds = requestedIds.filter((id) => mongoose.isValidObjectId(id));
+    const students = await UserModel.find({
+      role: "student",
+      $or: [
+        { id: { $in: requestedIds } },
+        ...(requestedObjectIds.length ? [{ _id: { $in: requestedObjectIds } }] : []),
+      ],
+    })
+      .select("_id id name role schoolId groupIds")
+      .lean();
+
+    if (!students.length) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "No students found for alert recipients" });
+    }
+
+    const recipientIds = students.map((student: any) => String(student.id || student._id));
+    const studentGroupIds = Array.from(
+      new Set(students.flatMap((student: any) => (Array.isArray(student.groupIds) ? student.groupIds.map(String) : []))),
+    );
+    const groupObjectIds = studentGroupIds.filter((id) => mongoose.isValidObjectId(id));
+    const scopedGroups = await GroupModel.find({
+      $or: [
+        { studentIds: { $in: recipientIds } },
+        { id: { $in: studentGroupIds } },
+        ...(groupObjectIds.length ? [{ _id: { $in: groupObjectIds } }] : []),
+      ],
+    })
+      .select("_id id supervisorIds studentIds")
+      .lean();
+
+    if (authUser.role !== "admin") {
+      const authGroupIds = Array.isArray((authUser as any).groupIds) ? (authUser as any).groupIds.map(String) : [];
+      const authSchoolId = String((authUser as any).schoolId || "");
+      const scopedGroupIds = new Set(scopedGroups.map((group: any) => String(group.id || group._id)));
+      const supervisedGroups = scopedGroups.filter((group: any) =>
+        (group.supervisorIds || []).map(String).includes(String(authUser.id)),
+      );
+
+      const forbiddenStudent = students.find((student: any) => {
+        const studentId = String(student.id || student._id);
+        const groupsForStudent = Array.isArray(student.groupIds) ? student.groupIds.map(String) : [];
+        const sharesSchool = authSchoolId && String(student.schoolId || "") === authSchoolId;
+        const sharesAssignedGroup = authGroupIds.some((groupId: string) => groupsForStudent.includes(groupId) || scopedGroupIds.has(groupId));
+        const supervisedGroupContainsStudent = supervisedGroups.some((group: any) => {
+          const groupId = String(group.id || group._id);
+          return groupsForStudent.includes(groupId) || (group.studentIds || []).map(String).includes(studentId);
+        });
+        return !sharesSchool && !sharesAssignedGroup && !supervisedGroupContainsStudent;
+      });
+
+      if (forbiddenStudent) {
+        return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to one or more students" });
+      }
+    }
+
+    const result = await createNotificationDeliveries({
+      title: payload.title,
+      subject: payload.title,
+      body: payload.body,
+      channels: ["in_app"],
+      userIds: recipientIds,
+      variables: {
+        recipientCount: recipientIds.length,
+      },
+      createdBy: authUser.id,
+    });
+
+    res.status(StatusCodes.ACCEPTED).json({
+      ...result,
+      message: "Student alert created for scoped student recipients.",
     });
   } catch (error) {
     next(error);

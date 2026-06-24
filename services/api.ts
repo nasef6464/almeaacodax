@@ -939,6 +939,20 @@ export const api = {
       body: payload,
       token,
     }),
+  sendStudentAlert: (
+    payload: {
+      studentIds: string[];
+      title: string;
+      body: string;
+      channels?: Array<"in_app">;
+    },
+    token?: string | null,
+  ) =>
+    request<unknown>("/notifications/student-alert", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   processPendingNotifications: (payload?: { limit?: number }, token?: string | null) =>
     request<unknown>("/notifications/admin/process-pending", {
       method: "POST",

@@ -2071,7 +2071,7 @@ export const AdminDashboard: React.FC = () => {
             case 'groups':
                 return <SchoolsManager />;
             case 'school-portal':
-                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
+                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} onOpenSchoolOperations={() => setActiveAdminTab('schools')} />;
             case 'memberships':
                 return <MembershipsManager />;
             case 'financial':

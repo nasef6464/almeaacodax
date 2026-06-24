@@ -7,6 +7,8 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const schoolPortal = read("dashboards/admin/SchoolPortalManager.tsx");
 const adminDashboard = read("dashboards/admin/AdminDashboard.tsx");
 const authContext = read("contexts/AuthContext.tsx");
+const apiService = read("services/api.ts");
+const notificationRoutes = read("server/src/routes/notification.routes.ts");
 const packageJson = JSON.parse(read("package.json"));
 const liveSupervisorSchoolAudit = read("scripts/live-supervisor-school-command-audit.mjs");
 const liveExecutiveSnapshotAudit = read("scripts/live-supervisor-executive-snapshot-audit.mjs");
@@ -34,8 +36,32 @@ const checks = [
       schoolPortal.includes("openFollowUpEmail") &&
       schoolPortal.includes("copyFollowUpMessage") &&
       schoolPortal.includes("copySupervisorBrief") &&
+      schoolPortal.includes("sendPriorityStudentAlerts") &&
+      schoolPortal.includes("sendStudentFollowUpAlert") &&
+      schoolPortal.includes("supervisor-send-priority-alerts") &&
+      schoolPortal.includes("supervisor-send-student-alert") &&
       schoolPortal.includes("exportWatchList") &&
       schoolPortal.includes("actionFeedback"),
+  },
+  {
+    name: "school portal opens school operations through dashboard state instead of manual history events",
+    ok:
+      schoolPortal.includes("onOpenSchoolOperations") &&
+      schoolPortal.includes("openSchoolOperations") &&
+      adminDashboard.includes("onOpenSchoolOperations={() => setActiveAdminTab('schools')}") &&
+      !schoolPortal.includes("window.history.pushState(null, '', `${url.pathname}${url.search}`)") &&
+      !schoolPortal.includes("new HashChangeEvent('hashchange')"),
+  },
+  {
+    name: "student alerts are scoped from frontend api to backend rbac",
+    ok:
+      apiService.includes("sendStudentAlert") &&
+      apiService.includes("/notifications/student-alert") &&
+      notificationRoutes.includes("studentAlertSchema") &&
+      notificationRoutes.includes('notificationRouter.post("/student-alert"') &&
+      notificationRoutes.includes('requireRole(["admin", "supervisor", "teacher"])') &&
+      notificationRoutes.includes("You do not have access to one or more students") &&
+      notificationRoutes.includes("Student alert created for scoped student recipients."),
   },
   {
     name: "targeted quiz opens the quiz center with a scoped target group",
@@ -88,9 +114,12 @@ const checks = [
       schoolPortal.includes("bestClassSnapshot") &&
       schoolPortal.includes("weakestClassSnapshot") &&
       schoolPortal.includes("sharedWeakSkillSnapshot") &&
+      schoolPortal.includes("directedQuizSnapshots") &&
       schoolPortal.includes("createDecisionIntervention") &&
       schoolPortal.includes('data-testid="supervisor-executive-decision-snapshot"') &&
+      schoolPortal.includes('data-testid="supervisor-issued-tests-panel"') &&
       schoolPortal.includes("لقطة قرار الإدارة") &&
+      schoolPortal.includes("اختباراتي الموجهة ونتائجها") &&
       schoolPortal.includes("أفضل فصل") &&
       schoolPortal.includes("أضعف فصل") &&
       schoolPortal.includes("مهارة ضعيفة مشتركة") &&

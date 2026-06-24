@@ -626,3 +626,36 @@ If continuing from a new account and local skills are missing, continue using th
   - `npm run smoke:school-management`: PASS 22/22.
   - `npm run smoke:admin-school-command`: PASS 6/6.
   - `npm run smoke:rbac-school-scope`: PASS 4/4.
+
+## Supervisor Portal Production Pass - 2026-06-24
+
+- Branch: `codex/supervisor-dashboard-production`.
+- Scope: supervisor school portal / `بوابة مدرستي` only, plus the notification API needed for scoped student alerts.
+- Fix:
+  - removed the portal's manual `window.history.pushState` + synthetic `hashchange` school-operations navigation that could make the page shake or fail.
+  - `SchoolPortalManager` now receives a dashboard callback for opening school operations; the action is visible for platform admin only.
+  - supervisors stay in a follow-up portal and get clear action feedback instead of a broken setup navigation.
+  - added scoped in-app student alerts from the supervisor portal:
+    - bulk alert for priority students.
+    - single-student alert from the watch list.
+    - backend route blocks supervisors/teachers from alerting students outside their school/class scope.
+  - added a simple `اختباراتي الموجهة ونتائجها` panel showing directed quizzes, attempts, and average score inside the supervisor scope.
+- Verification:
+  - `npm run smoke:school-portal-command`: PASS 16/16.
+  - `npm run smoke:supervisor-dashboard`: PASS 3/3.
+  - `npm run build`: PASS.
+  - `npm run server:check`: PASS.
+  - `npm run smoke:reports-role`: PASS 20/20.
+  - `npm run smoke:rbac-school-scope`: PASS 4/4.
+  - `npm run smoke:school-management`: PASS 22/22.
+  - `npm run smoke:admin-school-command`: PASS 6/6.
+- Notes:
+  - `npm run typecheck` did not finish within 5 minutes in this run; `npm run build` and `npm run server:check` passed.
+  - Local visual QA was blocked by missing authenticated supervisor scope on the local dev session; use a real supervisor session after deploy to confirm Console errors and Network 5xx.
+- Next checkpoint:
+  - deploy this branch and retest Production as a real school supervisor:
+    1. open `بوابة مدرستي`.
+    2. confirm no `فتح تشغيل المدارس` button appears for supervisor.
+    3. confirm priority alert and single-student alert work only inside scope.
+    4. confirm directed quiz panel shows the supervisor's scoped tests/results.
+    5. confirm Console errors = 0 and Network 5xx = 0.
