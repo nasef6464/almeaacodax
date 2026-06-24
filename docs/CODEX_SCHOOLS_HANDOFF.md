@@ -678,3 +678,4 @@ If continuing from a new account and local skills are missing, continue using th
   - Network 5xx responses: 0 in the smoke run.
 - Remaining risk:
   - Alert buttons are wired through scoped backend API and visible in the supervisor portal. A live click against real students was not performed to avoid sending real notifications outside an audit fixture.
+  - A direct Production API send check was attempted with `supervisor.school@almeaa.local`, but no scoped audit student existed under that audit supervisor, so no real notification was sent.
