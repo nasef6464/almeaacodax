@@ -1043,6 +1043,40 @@ const upsertReviewCardsFromQuestionReview = async (args: {
   await ReviewCardModel.bulkWrite(operations as any[], { ordered: false });
 };
 
+const runQuizSubmissionSideEffects = async (args: {
+  requestId?: string;
+  result: any;
+  userId: string;
+  questionReview: Array<{
+    questionId: string;
+    selectedOptionIndex?: number;
+    isCorrect?: boolean;
+  }>;
+  questionById: Map<string, any>;
+}) => {
+  const outcomes = await Promise.allSettled([
+    updateSkillProgressFromResult(args.result, args.userId),
+    upsertReviewCardsFromQuestionReview({
+      userId: args.userId,
+      questionReview: args.questionReview,
+      questionById: args.questionById,
+    }),
+  ]);
+
+  outcomes.forEach((outcome, index) => {
+    if (outcome.status === "fulfilled") return;
+    const sideEffect = index === 0 ? "skill-progress" : "review-cards";
+    const reason = outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason || "unknown");
+    console.warn("[quiz-submit] non-critical side effect failed", {
+      requestId: args.requestId || "",
+      userId: args.userId,
+      quizId: String(args.result?.quizId || ""),
+      sideEffect,
+      reason,
+    });
+  });
+};
+
 const matchesManagedScope = (
   gap: any,
   managedPathIds: Set<string>,
@@ -2398,8 +2432,9 @@ quizRouter.post(
       throw error;
     }
 
-    await updateSkillProgressFromResult(result, req.authUser!.id);
-    await upsertReviewCardsFromQuestionReview({
+    await runQuizSubmissionSideEffects({
+      requestId: req.requestId,
+      result,
       userId: req.authUser!.id,
       questionReview: questionReview.map((item) => ({
         questionId: String(item.questionId || ""),

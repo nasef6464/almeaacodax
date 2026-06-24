@@ -79,14 +79,23 @@ The blocked learning-quiz smoke is an environment data fixture issue, not a supe
 - Supervisor directed builder, Qudrat path + quantitative subject: 9 approved questions are available, no add-question action is shown, save is disabled at zero questions, and becomes enabled after selecting a real question.
 - Barcode live audit: admin workspace PASS on desktop and mobile with zero console errors and zero network 5xx. The public test route missed only the legacy audit minimum-body-length threshold; required selectors, layout, console, and network checks passed.
 - Supervisor live audit: zero console errors and zero network 5xx on all checked routes. Two legacy text-expectation rows remain FAIL because the audit expects old wording.
-- Production data blocker: both available supervisor fixtures currently report zero scoped students and zero classes. A supervisor-directed quiz cannot be validly targeted, approved, solved by a target student, or denied to a non-target student without changing school fixture data. No QA users/questions were added and no RBAC was weakened.
+
+## Directed Delivery Evidence (2026-06-24)
+
+- A temporary production school/class fixture was used with existing users only; no QA questions were added.
+- Supervisor-directed quiz `quiz_1782108549508` was created from one real approved Qudrat/quantitative question.
+- Target student `student.a@almeaa.local` sees the directed quiz in the learner quiz list.
+- Non-target student `student.b@almeaa.local` does not see the quiz and the direct frontend route shows the no-access state.
+- Supervisor scoped results report sees one scoped student and one saved result for the directed quiz.
+- Production submit revealed a non-critical post-save failure path: the quiz result was saved and visible to the supervisor, but the submit response could return 500 if post-save skill/review-card side effects failed.
+- Quiz submit now isolates those non-critical side effects with `Promise.allSettled`; saving the result remains the primary transaction and the learner response is not broken by skill-progress or review-card side-effect failures.
 
 ## Verification (Unified Source)
 
 - PASS: `npm run typecheck`
 - PASS: `npm run build`
 - PASS: `npm run server:check`
-- PASS: `npm run smoke:exam-question-source` (13/13)
+- PASS: `npm run smoke:exam-question-source` (15/15)
 - PASS: `npm run smoke:reports-role` (20/20)
 - PASS: `npm run smoke:rbac-school-scope` (4/4)
 - PASS: `npm run smoke:quiz-access` (18/18)
@@ -100,4 +109,4 @@ The blocked learning-quiz smoke is an environment data fixture issue, not a supe
 
 ## Decision (Unified Source)
 
-The unified question-source fix is code-complete and deployed. Production is PASS for the real bank in normal, barcode, mock, and supervisor-directed builders, with supervisor question-bank RBAC preserved. The full directed student delivery/result journey remains DATA BLOCKED until a real student/class is linked to a supervisor scope and the normal admin approval step is performed.
+The unified question-source fix is code-complete. Production is PASS for the real bank in normal, barcode, mock, and supervisor-directed builders, with supervisor question-bank RBAC preserved. Directed delivery was verified with an existing-user temporary fixture: target student visible, non-target blocked, and supervisor scoped result visible. Final deployment must include the submit side-effect isolation before considering the production submit response clean.

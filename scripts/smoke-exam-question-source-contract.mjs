@@ -90,6 +90,13 @@ check('learner quiz lists are audience-scoped and never share a public cache acr
   assertIncludes(quizRoutesSource, 'isQuizTargetedToLearner(quiz, learnerAudienceUser)');
 });
 
+check('quiz submission result response is not broken by non-critical side effects', () => {
+  assertIncludes(quizRoutesSource, 'const runQuizSubmissionSideEffects = async');
+  assertIncludes(quizRoutesSource, 'Promise.allSettled');
+  assertIncludes(quizRoutesSource, '[quiz-submit] non-critical side effect failed');
+  assertIncludes(quizRoutesSource, 'return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));');
+});
+
 for (const item of checks) {
   console.log(`${item.status} ${item.name}${item.details ? ` - ${item.details}` : ''}`);
 }
