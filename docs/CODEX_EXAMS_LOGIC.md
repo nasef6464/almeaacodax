@@ -89,6 +89,7 @@ The blocked learning-quiz smoke is an environment data fixture issue, not a supe
 - Supervisor scoped results report sees one scoped student and one saved result for the directed quiz.
 - Production submit revealed a non-critical post-save failure path: the quiz result was saved and visible to the supervisor, but the submit response could return 500 if post-save skill/review-card side effects failed.
 - Quiz submit now isolates those non-critical side effects with `Promise.allSettled`; saving the result remains the primary transaction and the learner response is not broken by skill-progress or review-card side-effect failures.
+- Temporary fixture data was cleaned after verification: the audit school/class/quiz/results were removed and the existing users were restored to their original school/group scope.
 
 ## Verification (Unified Source)
 
