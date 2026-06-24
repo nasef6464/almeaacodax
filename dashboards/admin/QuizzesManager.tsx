@@ -182,6 +182,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const initialManagerParams = useMemo(() => getQuizManagerParams(), []);
   const openedFromReports = initialManagerParams.get('source') === 'reports';
+  const openedFromSchoolPortal = initialManagerParams.get('source') === 'school-portal';
   const [selectedPathId, setSelectedPathId] = useState(initialManagerParams.get('pathId') || '');
   const [selectedSubjectId, setSelectedSubjectId] = useState(subjectId || initialManagerParams.get('subjectId') || '');
   const [selectedSectionId, setSelectedSectionId] = useState(initialManagerParams.get('sectionId') || '');
@@ -678,6 +679,26 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
           </button>}
         </div>
       </div>
+
+      {openedFromSchoolPortal && (
+        <div data-testid="school-portal-directed-quiz-context" className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h3 className="text-sm font-black text-violet-900">اختبار موجه مركزي من بوابة مدرستي</h3>
+              <p className="mt-1 text-xs font-bold leading-6 text-violet-800">
+                أنت الآن داخل مركز الاختبارات لإنشاء اختبار موجه مركزي لنطاق المدرسة أو الفصل. المشرف يختار الأسئلة والنطاق فقط بدون إدارة بنك الأسئلة.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleCreateByMode('central')}
+              className="self-start rounded-xl bg-violet-600 px-4 py-2 text-xs font-black text-white shadow-sm hover:bg-violet-700"
+            >
+              إنشاء اختبار موجه
+            </button>
+          </div>
+        </div>
+      )}
 
       {openedFromReports && (
         <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
