@@ -659,3 +659,22 @@ If continuing from a new account and local skills are missing, continue using th
     3. confirm priority alert and single-student alert work only inside scope.
     4. confirm directed quiz panel shows the supervisor's scoped tests/results.
     5. confirm Console errors = 0 and Network 5xx = 0.
+
+## Supervisor Portal Production Verification - 2026-06-24
+
+- Branch: `codex/supervisor-dashboard-production`.
+- Deployed frontend: `https://almeaacodax.vercel.app`.
+- Backend deploy: Render live for the scoped notification route used by supervisor student alerts.
+- Production verification:
+  - `npm run smoke:supervisor-school-live`: PASS 8/8.
+  - `npm run smoke:supervisor-executive-snapshot-live`: PASS 2/2.
+  - Supervisor overview: PASS on desktop and mobile.
+  - School portal decision center: PASS on desktop and mobile.
+  - Staff performance reports: PASS on desktop and mobile.
+  - Directed quiz entry from the portal: PASS on desktop and mobile.
+  - Missing required text groups: 0.
+  - Visual overflow: none.
+  - Console errors: 0 in the smoke run.
+  - Network 5xx responses: 0 in the smoke run.
+- Remaining risk:
+  - Alert buttons are wired through scoped backend API and visible in the supervisor portal. A live click against real students was not performed to avoid sending real notifications outside an audit fixture.
