@@ -687,6 +687,7 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
               <h3 className="text-sm font-black text-violet-900">اختبار موجه مركزي من بوابة مدرستي</h3>
               <p className="mt-1 text-xs font-bold leading-6 text-violet-800">
                 أنت الآن داخل مركز الاختبارات لإنشاء اختبار موجه مركزي لنطاق المدرسة أو الفصل. المشرف يختار الأسئلة والنطاق فقط بدون إدارة بنك الأسئلة.
+                بعد الحفظ تظهر النتائج في تقارير المشرف، ولا يراها إلا الطلاب المستهدفون داخل نطاق المدرسة أو الفصل.
               </p>
             </div>
             <button
