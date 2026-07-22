@@ -4863,3 +4863,18 @@ pm run smoke:operational PASS (71/71).
   - external blocker accepted: teacher export target mismatch.
 - Next exact task:
   1. No pending technical actions.
+
+## BATCH 241 - Exam/Learning Smoke Closure (2026-07-22)
+- Status: Closed.
+- Scope:
+  - Reviewed `docs/CODEX_EXAMS_LOGIC.md`.
+  - Inspected Jun 18 exam-permissions commit `f2f36348` (`Organize exams supervisor permissions`).
+  - Added missing `smoke:course-quiz-context` npm path.
+  - Removed default dependency on hardcoded production quiz `quiz_smoke_math_training_learning`; `smoke:learning-quiz` now selects a published visible training quiz from the current environment unless `SMOKE_LEARNING_QUIZ_ID` is provided.
+- Gate Results:
+  - PASS: `npm run smoke:course-quiz-context` (6/6 checks, Course quiz context contract passed).
+  - PASS: `npm run smoke:learning-quiz` (7/7 checks, selected `quiz_1778152431956` with 8/8 review questions).
+- Blockers:
+  - None for these two smokes.
+- Next exact task:
+  1. Continue with unrelated handoff items only.

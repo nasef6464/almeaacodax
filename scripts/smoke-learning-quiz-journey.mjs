@@ -1,9 +1,9 @@
 const API_URL = (process.env.SMOKE_API_URL || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
-const TARGET_QUIZ_ID = process.env.SMOKE_LEARNING_QUIZ_ID || 'quiz_smoke_math_training_learning';
-const TARGET_PATH_ID = process.env.SMOKE_LEARNING_PATH_ID || 'p_1777779653351';
-const TARGET_SUBJECT_ID = process.env.SMOKE_LEARNING_SUBJECT_ID || 'sub_1777784609152';
+let TARGET_QUIZ_ID = process.env.SMOKE_LEARNING_QUIZ_ID || '';
+let TARGET_PATH_ID = process.env.SMOKE_LEARNING_PATH_ID || '';
+let TARGET_SUBJECT_ID = process.env.SMOKE_LEARNING_SUBJECT_ID || '';
 const TARGET_COPY_QUIZ_ID = process.env.SMOKE_LEARNING_COPY_QUIZ_ID || 'quiz_1777887901798_copy';
-const TARGET_RETURN_TO = `/category/${TARGET_PATH_ID}?subject=${TARGET_SUBJECT_ID}&tab=banks`;
+let TARGET_RETURN_TO = '';
 
 const checks = [];
 
@@ -115,6 +115,51 @@ function getQuizQuestionRefs(quiz) {
     Array.isArray(section?.questionIds) ? section.questionIds.map(String).filter(Boolean) : [],
   );
 }
+
+function hasVisibleTrainingPlacement(quiz) {
+  const placements = Array.isArray(quiz?.learningPlacements) ? quiz.learningPlacements : [];
+  return placements.some((placement) =>
+    (!TARGET_PATH_ID || placement.pathId === TARGET_PATH_ID) &&
+    (!TARGET_SUBJECT_ID || placement.subjectId === TARGET_SUBJECT_ID) &&
+    placement.slot === 'training' &&
+    placement.isVisible !== false
+  );
+}
+
+function getQuizId(quiz) {
+  return String(quiz?.id || quiz?._id || '').trim();
+}
+
+function resolveTargetQuizId() {
+  const candidates = quizzes
+    .filter((quiz) =>
+      (!TARGET_PATH_ID || quiz?.pathId === TARGET_PATH_ID) &&
+      (!TARGET_SUBJECT_ID || quiz?.subjectId === TARGET_SUBJECT_ID) &&
+      quiz?.isPublished === true &&
+      quiz?.showOnPlatform !== false &&
+      hasVisibleTrainingPlacement(quiz)
+    )
+    .sort((a, b) => getQuizQuestionRefs(b).length - getQuizQuestionRefs(a).length);
+
+  const selected = candidates.find((quiz) => getQuizQuestionRefs(quiz).length >= 2) || candidates[0];
+  const selectedId = getQuizId(selected);
+  if (!selectedId) throw new Error('no published training quiz found');
+  const placement = (Array.isArray(selected?.learningPlacements) ? selected.learningPlacements : []).find((item) => item.slot === 'training' && item.isVisible !== false);
+  TARGET_PATH_ID = TARGET_PATH_ID || selected.pathId || placement?.pathId || '';
+  TARGET_SUBJECT_ID = TARGET_SUBJECT_ID || selected.subjectId || placement?.subjectId || '';
+  return selectedId;
+}
+
+function hydrateTargetContext() {
+  const selected = quizzes.find((quiz) => getQuizId(quiz) === TARGET_QUIZ_ID);
+  const placement = (Array.isArray(selected?.learningPlacements) ? selected.learningPlacements : []).find((item) => item.slot === 'training' && item.isVisible !== false);
+  TARGET_PATH_ID = TARGET_PATH_ID || selected?.pathId || placement?.pathId || '';
+  TARGET_SUBJECT_ID = TARGET_SUBJECT_ID || selected?.subjectId || placement?.subjectId || '';
+}
+
+if (!TARGET_QUIZ_ID) TARGET_QUIZ_ID = resolveTargetQuizId();
+hydrateTargetContext();
+TARGET_RETURN_TO = `/category/${TARGET_PATH_ID}?subject=${TARGET_SUBJECT_ID}&tab=banks`;
 
 function assertReviewCoverage(quizId) {
   const quiz = quizzes.find((item) => String(item?.id || item?._id) === quizId);

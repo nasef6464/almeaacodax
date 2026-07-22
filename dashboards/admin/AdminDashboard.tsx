@@ -756,27 +756,45 @@ export const AdminDashboard: React.FC = () => {
                     ? Math.round(studentResults.reduce((total, result) => total + Number(result.score || 0), 0) / studentResults.length)
                     : 0;
                 const latestResult = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
+                const studentClass = scopedGroupList.find((group) =>
+                    group.type !== 'SCHOOL' &&
+                    ((group.studentIds || []).includes(student.id) || (student.groupIds || []).includes(group.id)),
+                );
                 const topWeakSkills = [...(latestResult?.skillsAnalysis || [])]
                     .filter((skill) => Number(skill.mastery || 0) < 70)
                     .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
                     .slice(0, 2)
                     .map((skill) => skill.skill)
                     .filter(Boolean);
+                const followUpReason = studentResults.length === 0
+                    ? 'لم يبدأ'
+                    : studentAverage < 60
+                        ? 'ضعف'
+                        : 'متابعة';
+                const status = studentResults.length === 0 || studentAverage < 60
+                    ? 'danger'
+                    : studentAverage < 70
+                        ? 'watch'
+                        : 'good';
 
                 return {
                     id: student.id,
                     name: student.name,
+                    className: studentClass?.name || 'بدون فصل',
                     average: studentAverage,
                     attempts: studentResults.length,
                     latestQuiz: latestResult?.quizTitle || 'لم يبدأ بعد',
                     weakSkills: topWeakSkills,
+                    followUpReason,
+                    status,
                 };
             })
             .filter((student) => student.attempts === 0 || student.average < 70)
             .sort((a, b) => a.attempts - b.attempts || a.average - b.average)
-            .slice(0, 5);
+            .slice(0, 6);
 
         const groupPerformanceSnapshots = scopedGroupList
+            .filter((group) => group.type !== 'SCHOOL')
             .map((group) => {
                 const groupStudentIds = new Set(group.studentIds || []);
                 const groupResults = scopedResults.filter((result) => result.userId && groupStudentIds.has(result.userId));
@@ -790,11 +808,15 @@ export const AdminDashboard: React.FC = () => {
                     studentCount: group.studentIds?.length || 0,
                     average: groupAverage,
                     attempts: groupResults.length,
+                    weakStudents: Array.from(groupStudentIds).filter((studentId) =>
+                        studentsNeedingFollowUp.some((student) => student.id === studentId),
+                    ).length,
+                    status: groupResults.length === 0 || groupAverage < 60 ? 'danger' : groupAverage < 70 ? 'watch' : 'good',
                 };
             });
         const groupSnapshots = [...groupPerformanceSnapshots]
             .sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)
-            .slice(0, 4);
+            .slice(0, 6);
         const groupsWithResults = groupPerformanceSnapshots.filter((group) => group.attempts > 0);
         const bestClass = [...groupsWithResults].sort((a, b) => b.average - a.average || b.studentCount - a.studentCount)[0] || null;
         const weakestClass = [...groupsWithResults].sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)[0] || null;
@@ -807,6 +829,7 @@ export const AdminDashboard: React.FC = () => {
             resultCount: scopedResults.length,
             averageScore,
             weakStudentsCount: studentsNeedingFollowUp.length,
+            inactiveStudentsCount: studentsNeedingFollowUp.filter((student) => student.attempts === 0).length,
             weakestSkills,
             studentsNeedingFollowUp,
             strugglingStudents: studentsNeedingFollowUp,
@@ -875,7 +898,7 @@ export const AdminDashboard: React.FC = () => {
         }
 
         if (user.role === Role.SUPERVISOR) {
-            return adminItems.filter((item) => ['overview', 'quizzes'].includes(item.id));
+            return adminItems.filter((item) => ['overview'].includes(item.id));
         }
 
         return adminItems;
@@ -944,7 +967,7 @@ export const AdminDashboard: React.FC = () => {
             ];
         }
 
-        if (!nextItems.some((item) => item.id === 'live-sessions') && [Role.ADMIN, Role.TEACHER, Role.SUPERVISOR].includes(user.role)) {
+        if (!nextItems.some((item) => item.id === 'live-sessions') && [Role.ADMIN, Role.TEACHER].includes(user.role)) {
             const dynamicInsertIndex = nextItems.findIndex((item) => item.id === 'notifications');
             const targetIndex = dynamicInsertIndex === -1 ? nextItems.length : dynamicInsertIndex;
             nextItems = [
@@ -954,7 +977,7 @@ export const AdminDashboard: React.FC = () => {
             ];
         }
 
-        if (!nextItems.some((item) => item.id === 'barcode-tests') && [Role.ADMIN, Role.TEACHER, Role.SUPERVISOR].includes(user.role)) {
+        if (!nextItems.some((item) => item.id === 'barcode-tests') && [Role.ADMIN, Role.TEACHER].includes(user.role)) {
             const quizzesIndex = nextItems.findIndex((item) => item.id === 'quizzes');
             const targetIndex = quizzesIndex === -1 ? nextItems.length : quizzesIndex + 1;
             nextItems = [
@@ -1012,43 +1035,16 @@ export const AdminDashboard: React.FC = () => {
     const renderOverview = () => (
         <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">نظرة عامة (Overview)</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{user.role === Role.SUPERVISOR ? 'مركز متابعة الطلاب' : 'نظرة عامة (Overview)'}</h1>
                 <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
                     آخر تحديث: مباشر من بيانات المنصة
                 </div>
             </div>
 
+            {user.role !== Role.SUPERVISOR && (
+            <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {(user.role === Role.SUPERVISOR ? [
-                    {
-                        title: 'طلاب نطاقك',
-                        value: supervisorScopeSummary.studentCount.toLocaleString('ar-EG'),
-                        trend: `${supervisorScopeSummary.schoolCount} مدرسة`,
-                        color: 'text-blue-600',
-                        bg: 'bg-blue-50',
-                    },
-                    {
-                        title: 'الفصول داخل نطاقك',
-                        value: supervisorScopeSummary.groupCount.toLocaleString('ar-EG'),
-                        trend: 'فصول/مدارس مرتبطة',
-                        color: 'text-emerald-600',
-                        bg: 'bg-emerald-50',
-                    },
-                    {
-                        title: 'طلاب يحتاجون متابعة',
-                        value: supervisorScopeSummary.weakStudentsCount.toLocaleString('ar-EG'),
-                        trend: `${supervisorScopeSummary.averageScore}% متوسط`,
-                        color: 'text-purple-600',
-                        bg: 'bg-purple-50',
-                    },
-                    {
-                        title: 'اختبارات المتابعة',
-                        value: supervisorScopeSummary.followUpCount.toLocaleString('ar-EG'),
-                        trend: 'داخل نطاقك',
-                        color: 'text-amber-600',
-                        bg: 'bg-amber-50',
-                    },
-                ] : [
+                {[
                     {
                         title: 'إجمالي الطلاب',
                         value: overviewStats.totalStudents.toLocaleString('ar-EG'),
@@ -1077,7 +1073,7 @@ export const AdminDashboard: React.FC = () => {
                         color: 'text-amber-600',
                         bg: 'bg-amber-50',
                     },
-                ]).map((kpi) => (
+                ].map((kpi) => (
                     <div key={kpi.title} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start">
                             <h3 className="text-gray-500 text-sm font-medium">{kpi.title}</h3>
@@ -1439,6 +1435,8 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
+            </>
+            )}
 
             {(user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SUPERVISOR) && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1514,6 +1512,125 @@ export const AdminDashboard: React.FC = () => {
                     )}
 
                     {user.role === Role.SUPERVISOR && (
+                        <div className="lg:col-span-2 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <h3 className="text-xl font-black text-gray-900">مركز متابعة الطلاب</h3>
+                                    <p className="mt-1 text-xs font-bold text-gray-500">
+                                        {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف فصل'}
+                                    </p>
+                                </div>
+                                <a href="#/reports" className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white hover:bg-gray-800">
+                                    التقارير
+                                </a>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                {[
+                                    ['الطلاب', supervisorScopeSummary.studentCount, 'bg-emerald-50 text-emerald-700'],
+                                    ['يحتاجون متابعة', supervisorScopeSummary.weakStudentsCount, 'bg-amber-50 text-amber-700'],
+                                    ['غير نشطين', supervisorScopeSummary.inactiveStudentsCount, 'bg-rose-50 text-rose-700'],
+                                    ['متوسط الإنجاز', `${supervisorScopeSummary.averageScore}%`, 'bg-blue-50 text-blue-700'],
+                                ].map(([label, value, tone]) => (
+                                    <div key={String(label)} className={`rounded-xl p-4 ${tone}`}>
+                                        <div className="text-xs font-black">{label}</div>
+                                        <div className="mt-2 text-2xl font-black">{value}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-2">
+                                <div className="rounded-xl border border-gray-100">
+                                    <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                                        <h4 className="text-sm font-black text-gray-900">من يحتاج متابعة؟</h4>
+                                        <span className="text-xs font-black text-gray-400">{supervisorScopeSummary.studentsNeedingFollowUp.length}</span>
+                                    </div>
+                                    <div className="divide-y divide-gray-100">
+                                        {supervisorScopeSummary.studentsNeedingFollowUp.length ? supervisorScopeSummary.studentsNeedingFollowUp.map((student) => (
+                                            <div key={student.id} className="grid grid-cols-[1fr_auto] gap-3 px-4 py-3 md:grid-cols-[1.2fr_1fr_auto_auto]">
+                                                <div className="min-w-0">
+                                                    <div className="truncate text-sm font-black text-gray-900">{student.name}</div>
+                                                    <div className="mt-1 truncate text-xs font-bold text-gray-500">{student.className}</div>
+                                                </div>
+                                                <div className={`self-center rounded-lg px-2.5 py-1 text-xs font-black ${
+                                                    student.status === 'danger' ? 'bg-rose-50 text-rose-700' :
+                                                    student.status === 'watch' ? 'bg-amber-50 text-amber-700' :
+                                                    'bg-emerald-50 text-emerald-700'
+                                                }`}>
+                                                    {student.followUpReason}
+                                                </div>
+                                                <div className="hidden self-center text-xs font-black text-gray-500 md:block">
+                                                    {student.attempts ? `${student.average}%` : '-'}
+                                                </div>
+                                                <a href="#/reports" className="self-center rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
+                                                    عرض
+                                                </a>
+                                            </div>
+                                        )) : (
+                                            <div className="px-4 py-8 text-center text-sm font-bold text-emerald-700">لا توجد حالات عاجلة</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-xl border border-gray-100">
+                                    <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                                        <h4 className="text-sm font-black text-gray-900">الفصول</h4>
+                                        <span className="text-xs font-black text-gray-400">{supervisorScopeSummary.groupSnapshots.length}</span>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full min-w-[520px] text-right text-sm">
+                                            <thead className="bg-gray-50 text-xs font-black text-gray-500">
+                                                <tr>
+                                                    <th className="px-4 py-3">الفصل</th>
+                                                    <th className="px-4 py-3">الطلاب</th>
+                                                    <th className="px-4 py-3">الأداء</th>
+                                                    <th className="px-4 py-3">الضعاف</th>
+                                                    <th className="px-4 py-3"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                                {supervisorScopeSummary.groupSnapshots.length ? supervisorScopeSummary.groupSnapshots.map((group) => (
+                                                    <tr key={group.id}>
+                                                        <td className="px-4 py-3 font-black text-gray-900">{group.name}</td>
+                                                        <td className="px-4 py-3 font-bold text-gray-600">{group.studentCount}</td>
+                                                        <td className="px-4 py-3">
+                                                            <span className={`rounded-lg px-2.5 py-1 text-xs font-black ${
+                                                                group.status === 'danger' ? 'bg-rose-50 text-rose-700' :
+                                                                group.status === 'watch' ? 'bg-amber-50 text-amber-700' :
+                                                                'bg-emerald-50 text-emerald-700'
+                                                            }`}>
+                                                                {group.attempts ? `${group.average}%` : '-'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 font-bold text-gray-600">{group.weakStudents}</td>
+                                                        <td className="px-4 py-3">
+                                                            <button onClick={() => setActiveAdminTab('school-portal')} className="rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
+                                                                فتح
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )) : (
+                                                    <tr>
+                                                        <td colSpan={5} className="px-4 py-8 text-center text-sm font-bold text-gray-500">لا توجد فصول في نطاقك</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                                {['تقرير الطلاب الضعاف', 'تقرير نشاط الطلاب', 'تقرير الفصل', 'تقرير ولي الأمر'].map((label) => (
+                                    <a key={label} href="#/reports" className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 text-center text-xs font-black text-gray-800 hover:bg-gray-100">
+                                        {label}
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {false && user.role === Role.SUPERVISOR && (
                         <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
