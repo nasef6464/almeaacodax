@@ -7,6 +7,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { PublicBarcodeTestModel } from "../models/PublicBarcodeTest.js";
 import { PublicBarcodeSubmissionModel } from "../models/PublicBarcodeSubmission.js";
 import { QuestionModel } from "../models/Question.js";
+import { GroupModel } from "../models/Group.js";
+import { UserModel } from "../models/User.js";
 
 export const publicTestsRouter = Router();
 
@@ -28,6 +30,9 @@ const publicBarcodeTestSchema = z.object({
   skillIds: z.array(z.string().trim().min(1)).optional().default([]),
   questionIds: z.array(z.string().trim().min(1)).min(1).max(120),
   testKind: z.enum(["quick", "mock"]).optional().default("quick"),
+  audience: z.enum(["open", "targeted"]).optional().default("open"),
+  targetGroupIds: z.array(z.string().trim().min(1)).optional().default([]),
+  targetUserIds: z.array(z.string().trim().min(1)).optional().default([]),
   status: z.enum(["draft", "active", "paused", "archived"]).optional().default("draft"),
   showResultToStudent: z.boolean().optional().default(true),
   collectSchool: z.boolean().optional().default(true),
@@ -131,12 +136,64 @@ const buildAttemptIdentityFilter = (testId: string, payload: z.infer<typeof publ
   return { testId, $or: or };
 };
 
+const assertTargetScope = async (authUser: any, targetGroupIds: string[], targetUserIds: string[]) => {
+  if (authUser.role === "admin" || (targetGroupIds.length === 0 && targetUserIds.length === 0)) return;
+
+  const directGroupIds = Array.isArray(authUser.groupIds) ? authUser.groupIds.map(String) : [];
+  const ownedGroups = await GroupModel.find({
+    $or: [
+      ...(directGroupIds.length ? [{ id: { $in: directGroupIds } }, { _id: { $in: directGroupIds.filter((id: string) => /^[a-f0-9]{24}$/i.test(id)) } }] : []),
+      { supervisorIds: String(authUser.id) },
+    ],
+  }).select("id _id parentId type").lean();
+  const ownedGroupIds = new Set(ownedGroups.map((group: any) => String(group.id || group._id)));
+  const schoolIds = new Set<string>();
+  ownedGroups.forEach((group: any) => {
+    if (group.type === "SCHOOL") schoolIds.add(String(group.id || group._id));
+  });
+  const schoolGroups = schoolIds.size
+    ? await GroupModel.find({ parentId: { $in: Array.from(schoolIds) } }).select("id _id").lean()
+    : [];
+  schoolGroups.forEach((group: any) => ownedGroupIds.add(String(group.id || group._id)));
+
+  if (targetGroupIds.some((groupId) => !ownedGroupIds.has(groupId))) {
+    const error = new Error("Barcode test targets are outside the staff scope") as Error & { statusCode?: number };
+    error.statusCode = StatusCodes.FORBIDDEN;
+    throw error;
+  }
+
+  if (targetUserIds.length) {
+    const students = await UserModel.find({
+      $or: [
+        { id: { $in: targetUserIds } },
+        { _id: { $in: targetUserIds.filter((id) => /^[a-f0-9]{24}$/i.test(id)) } },
+      ],
+    }).select("id _id role schoolId groupIds").lean();
+    const allowedStudents = students.filter((student: any) =>
+      student.role === "student" &&
+      ((!authUser.schoolId || String(student.schoolId || "") === String(authUser.schoolId)) ||
+        (student.groupIds || []).some((groupId: string) => ownedGroupIds.has(String(groupId)))),
+    );
+    if (allowedStudents.length !== targetUserIds.length) {
+      const error = new Error("Barcode test targets include students outside the staff scope") as Error & { statusCode?: number };
+      error.statusCode = StatusCodes.FORBIDDEN;
+      throw error;
+    }
+  }
+};
+
 publicTestsRouter.post(
   "/admin",
   requireAuth,
   requireRole(["admin", "supervisor", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = publicBarcodeTestSchema.parse(req.body || {});
+    const targetGroupIds = [...new Set(payload.targetGroupIds.map(String))];
+    const targetUserIds = [...new Set(payload.targetUserIds.map(String))];
+    if (payload.audience === "targeted" && targetGroupIds.length === 0 && targetUserIds.length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Targeted barcode tests require groups or students." });
+    }
+    await assertTargetScope(req.authUser, targetGroupIds, targetUserIds);
     const questionDocs = await QuestionModel.find({
       $or: [{ id: { $in: payload.questionIds } }, { _id: { $in: payload.questionIds.filter((id) => /^[a-f0-9]{24}$/i.test(id)) } }],
       pathId: payload.pathId,
@@ -156,6 +213,8 @@ publicTestsRouter.post(
     const now = Date.now();
     const test = await PublicBarcodeTestModel.create({
       ...payload,
+      targetGroupIds: payload.audience === "targeted" ? targetGroupIds : [],
+      targetUserIds: payload.audience === "targeted" ? targetUserIds : [],
       collectSchool: true,
       collectClassroom: true,
       id: payload.id || `pbt_${now}_${randomUUID().slice(0, 8)}`,
@@ -228,6 +287,9 @@ publicTestsRouter.get(
         pathId: test.pathId,
         subjectId: test.subjectId,
         testKind: test.testKind || "quick",
+        audience: test.audience || "open",
+        targetGroupIds: test.targetGroupIds || [],
+        targetUserIds: test.targetUserIds || [],
         status: test.status,
         questionCount: Array.isArray(test.questionIds) ? test.questionIds.length : 0,
         settings: test.settings || {},
@@ -235,6 +297,37 @@ publicTestsRouter.get(
         publicUrl: `/barcode-test/${test.slug}`,
         qrPayload: `/barcode-test/${test.slug}`,
         summary: summaryByTestId.get(String(test.id)) || { submissions: 0, averageScore: 0, lastSubmittedAt: 0 },
+      })),
+    });
+  }),
+);
+
+publicTestsRouter.get(
+  "/assigned",
+  requireAuth,
+  requireRole(["student"]),
+  asyncHandler(async (req, res) => {
+    const userId = String(req.authUser?.id || "");
+    const groupIds = Array.isArray(req.authUser?.groupIds) ? req.authUser.groupIds.map(String) : [];
+    const tests = await PublicBarcodeTestModel.find({
+      status: "active",
+      audience: "targeted",
+      $or: [
+        { targetUserIds: userId },
+        ...(groupIds.length ? [{ targetGroupIds: { $in: groupIds } }] : []),
+      ],
+    }).sort({ createdAt: -1 }).limit(30).lean();
+
+    return res.json({
+      items: tests.filter(ensureActiveWindow).map((test: any) => ({
+        id: test.id,
+        slug: test.slug,
+        title: test.title,
+        description: test.description,
+        testKind: test.testKind || "quick",
+        questionCount: Array.isArray(test.questionIds) ? test.questionIds.length : 0,
+        settings: test.settings || {},
+        publicUrl: `/barcode-test/${test.slug}`,
       })),
     });
   }),

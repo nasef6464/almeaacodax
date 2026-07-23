@@ -14,6 +14,7 @@ const apiSource = fs.readFileSync(path.join(root, "services", "api.ts"), "utf8")
 const appSource = fs.readFileSync(path.join(root, "App.tsx"), "utf8");
 const adminDashboardSource = fs.readFileSync(path.join(root, "dashboards", "admin", "AdminDashboard.tsx"), "utf8");
 const barcodePageSource = fs.readFileSync(path.join(root, "pages", "BarcodeTest.tsx"), "utf8");
+const studentSource = fs.readFileSync(path.join(root, "pages", "Quizzes.tsx"), "utf8");
 const barcodeManagerSource = fs.readFileSync(path.join(root, "dashboards", "admin", "PublicBarcodeTestsManager.tsx"), "utf8");
 const liveAuditSource = fs.readFileSync(path.join(root, "scripts", "live-barcode-public-tests-audit.mjs"), "utf8");
 
@@ -130,6 +131,24 @@ addCheck(
     apiSource.includes("submitPublicBarcodeTest") &&
     apiSource.includes("getPublicBarcodeTestReport"),
   "admin and public pages need typed API entry points",
+);
+addCheck(
+  "barcode tests support open QR access and targeted student delivery",
+  publicRoutes.includes('audience: z.enum(["open", "targeted"])') &&
+    publicRoutes.includes('"/assigned"') &&
+    publicTestModel.includes('audience: { type: String, enum: ["open", "targeted"]') &&
+    apiSource.includes("listAssignedPublicBarcodeTests") &&
+    barcodeManagerSource.includes('data-testid="barcode-audience-selector"') &&
+    barcodeManagerSource.includes("targetGroupIds") &&
+    barcodeManagerSource.includes("targetUserIds"),
+  "direct QR tests and targeted tests need separate audience behavior",
+);
+addCheck(
+  "student quiz center exposes assigned barcode tests",
+  studentSource.includes('data-testid="student-assigned-barcode-tests"') &&
+    studentSource.includes("listAssignedPublicBarcodeTests") &&
+    studentSource.includes("اختبارات مباشرة موجهة لك"),
+  "targeted barcode tests must be discoverable inside the student test center",
 );
 addCheck(
   "barcode public student route is registered",

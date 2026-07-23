@@ -188,7 +188,7 @@ const openPrintReport = (report: PublicBarcodeReport, skillNameById: (skillId: s
 };
 
 export const PublicBarcodeTestsManager: React.FC = () => {
-  const { user, paths, subjects, sections, skills, addQuestion } = useStore();
+  const { user, paths, subjects, sections, skills, groups, users, addQuestion } = useStore();
   const canCreateQuestions = user.role === 'admin' || user.role === 'teacher';
   const firstPathId = paths[0]?.id || '';
   const [pathId, setPathId] = useState(firstPathId);
@@ -203,6 +203,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
   const [showResultToStudent, setShowResultToStudent] = useState(true);
   const [testKind, setTestKind] = useState<'quick' | 'mock'>('quick');
+  const [audience, setAudience] = useState<'open' | 'targeted'>('open');
+  const [targetGroupIds, setTargetGroupIds] = useState<string[]>([]);
+  const [targetUserIds, setTargetUserIds] = useState<string[]>([]);
   const [timeLimit, setTimeLimit] = useState(20);
   const [maxAttempts, setMaxAttempts] = useState(1);
   const [passingScore, setPassingScore] = useState(60);
@@ -243,6 +246,24 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const activeSections = useMemo(
     () => sections.filter((section) => section.subjectId === normalizedSubjectId),
     [normalizedSubjectId, sections],
+  );
+  const targetGroups = useMemo(
+    () => groups.filter((group) => {
+      if (group.type === 'SCHOOL') return false;
+      if (user.role === 'admin') return true;
+      const userGroupIds = user.groupIds || [];
+      return userGroupIds.includes(group.id) || group.supervisorIds?.includes(user.id) || group.ownerId === user.id;
+    }),
+    [groups, user.groupIds, user.id, user.role],
+  );
+  const targetStudents = useMemo(
+    () => users.filter((item) => {
+      if (item.role !== 'student') return false;
+      if (user.role === 'admin') return true;
+      return (user.schoolId && item.schoolId === user.schoolId)
+        || (item.groupIds || []).some((groupId) => targetGroups.some((group) => group.id === groupId));
+    }),
+    [targetGroups, user.role, user.schoolId, users],
   );
   const eligibleQuestions = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -366,6 +387,10 @@ export const PublicBarcodeTestsManager: React.FC = () => {
       setError('اختر سؤالًا واحدًا على الأقل.');
       return;
     }
+    if (audience === 'targeted' && targetGroupIds.length === 0 && targetUserIds.length === 0) {
+      setError('اختر مجموعة أو طالبًا واحدًا على الأقل للاختبار الموجّه.');
+      return;
+    }
     setSaving(true);
     try {
       const response = (await api.createPublicBarcodeTest({
@@ -377,6 +402,9 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         skillIds: selectedSkills,
         questionIds: selectedQuestionIds,
         testKind,
+        audience,
+        targetGroupIds: audience === 'targeted' ? targetGroupIds : [],
+        targetUserIds: audience === 'targeted' ? targetUserIds : [],
         status: 'active',
         showResultToStudent,
         collectSchool: true,
@@ -574,6 +602,57 @@ export const PublicBarcodeTestsManager: React.FC = () => {
                 <div className="text-sm font-black">اختبار محاكي</div>
                 <div className="mt-1 text-xs font-bold leading-6 text-slate-500">شكل أقرب للاختبار الحقيقي بزمن وترتيب ثابت.</div>
               </button>
+            </div>
+            <div data-testid="barcode-audience-selector" className="mt-3 rounded-2xl border border-amber-100 bg-amber-50/50 p-3">
+              <div className="mb-2 text-xs font-black text-slate-700">طريقة الوصول للاختبار</div>
+              <div className="grid gap-2 md:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAudience('open');
+                    setTargetGroupIds([]);
+                    setTargetUserIds([]);
+                  }}
+                  className={`rounded-xl border p-3 text-right text-xs font-black ${audience === 'open' ? 'border-emerald-300 bg-white text-emerald-800' : 'border-transparent bg-transparent text-slate-600'}`}
+                >
+                  مفتوح بالرابط أو QR
+                  <span className="mt-1 block text-[11px] font-bold text-slate-500">مناسب لاختبار مباشر في قاعة أو حملة عامة.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAudience('targeted')}
+                  className={`rounded-xl border p-3 text-right text-xs font-black ${audience === 'targeted' ? 'border-amber-300 bg-white text-amber-800' : 'border-transparent bg-transparent text-slate-600'}`}
+                >
+                  موجّه لطلاب محددين
+                  <span className="mt-1 block text-[11px] font-bold text-slate-500">يظهر تلقائيًا في مركز اختبارات الطلاب المستهدفين.</span>
+                </button>
+              </div>
+              {audience === 'targeted' ? (
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-black text-slate-600">المجموعات أو الفصول</span>
+                    <select
+                      multiple
+                      value={targetGroupIds}
+                      onChange={(event) => setTargetGroupIds(Array.from(event.target.selectedOptions, (option) => option.value))}
+                      className="h-28 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold"
+                    >
+                      {targetGroups.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-black text-slate-600">طلاب محددون</span>
+                    <select
+                      multiple
+                      value={targetUserIds}
+                      onChange={(event) => setTargetUserIds(Array.from(event.target.selectedOptions, (option) => option.value))}
+                      className="h-28 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold"
+                    >
+                      {targetStudents.map((student) => <option key={student.id} value={student.id}>{student.name}</option>)}
+                    </select>
+                  </label>
+                </div>
+              ) : null}
             </div>
             <label className="block">
               <span className="mb-1 block text-xs font-black text-slate-600">المسار</span>

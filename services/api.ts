@@ -1181,6 +1181,9 @@ export const api = {
       skillIds?: string[];
       questionIds: string[];
       testKind?: "quick" | "mock";
+      audience?: "open" | "targeted";
+      targetGroupIds?: string[];
+      targetUserIds?: string[];
       status?: "draft" | "active" | "paused" | "archived";
       showResultToStudent?: boolean;
       collectSchool?: boolean;
@@ -1212,6 +1215,8 @@ export const api = {
     }),
   getPublicBarcodeTest: (slug: string, token?: string | null) =>
     request<unknown>(`/public-tests/${encodeURIComponent(slug)}`, { token }),
+  listAssignedPublicBarcodeTests: (token?: string | null) =>
+    request<unknown>("/public-tests/assigned", { token }),
   listPublicBarcodeTests: (
     params?: {
       pathId?: string;

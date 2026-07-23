@@ -21,6 +21,7 @@ import { useStore } from '../store/useStore';
 import { Quiz, QuizResult } from '../types';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { buildQuizRouteWithContext, isSafeInternalRoute } from '../utils/quizLinks';
+import { api } from '../services/api';
 
 interface QuizzesProps {
   view?: 'catalog' | 'attempts';
@@ -28,6 +29,17 @@ interface QuizzesProps {
 
 type AttemptCategory = 'regular' | 'mock';
 type AttemptScoreFilter = 'all' | 'needs-review' | 'good';
+
+type AssignedBarcodeTest = {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string;
+  testKind?: 'quick' | 'mock';
+  questionCount?: number;
+  publicUrl: string;
+  settings?: { timeLimit?: number };
+};
 
 type QuizAttemptGroup = {
   key: string;
@@ -66,7 +78,28 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const [activeAttemptScoreFilter, setActiveAttemptScoreFilter] = useState<AttemptScoreFilter>('all');
   const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
   const [lockedQuizForPayment, setLockedQuizForPayment] = useState<(typeof quizzes)[number] | null>(null);
+  const [assignedBarcodeTests, setAssignedBarcodeTests] = useState<AssignedBarcodeTest[]>([]);
+  const [assignedBarcodeTestsLoading, setAssignedBarcodeTestsLoading] = useState(false);
   const isAttemptsView = view === 'attempts';
+
+  useEffect(() => {
+    if (user.role !== 'student' || isAttemptsView) return;
+    let cancelled = false;
+    setAssignedBarcodeTestsLoading(true);
+    api.listAssignedPublicBarcodeTests()
+      .then((response) => {
+        if (!cancelled) setAssignedBarcodeTests((response as { items?: AssignedBarcodeTest[] }).items || []);
+      })
+      .catch(() => {
+        if (!cancelled) setAssignedBarcodeTests([]);
+      })
+      .finally(() => {
+        if (!cancelled) setAssignedBarcodeTestsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAttemptsView, user.role]);
 
   const totalQuizzes = examResults.length;
   const passedQuizzes = examResults.filter((quiz) => quiz.score >= 50).length;
@@ -699,6 +732,42 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       </header>
 
       <StudentNextActionStrip {...quizCenterNextAction} />
+
+      {!isAttemptsView && user.role === 'student' ? (
+        <section data-testid="student-assigned-barcode-tests" className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-black text-gray-900">اختبارات مباشرة موجهة لك</h2>
+              <p className="mt-1 text-xs font-bold text-gray-500">تظهر هنا الاختبارات التي أرسلها المشرف أو المعلم لمجموعتك أو لحسابك.</p>
+            </div>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{assignedBarcodeTests.length}</span>
+          </div>
+          {assignedBarcodeTestsLoading ? (
+            <div className="rounded-xl border border-dashed border-indigo-200 bg-white p-4 text-center text-xs font-black text-indigo-700">جارٍ تحميل الاختبارات الموجهة...</div>
+          ) : assignedBarcodeTests.length > 0 ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              {assignedBarcodeTests.map((test) => (
+                <a
+                  key={test.id}
+                  href={test.publicUrl}
+                  className="rounded-xl border border-white bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-sm font-black text-gray-900">{test.title}</h3>
+                      <p className="mt-1 line-clamp-2 text-xs font-bold leading-5 text-gray-500">{test.description || 'اختبار مباشر من المشرف أو المعلم.'}</p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-amber-50 px-2 py-1 text-[11px] font-black text-amber-700">{test.testKind === 'mock' ? 'محاكي' : 'مباشر'}</span>
+                  </div>
+                  <div className="mt-3 text-xs font-black text-indigo-700">{test.questionCount || 0} سؤال {test.settings?.timeLimit ? `• ${test.settings.timeLimit} دقيقة` : ''} ← ابدأ</div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-indigo-200 bg-white p-4 text-center text-xs font-bold text-gray-500">لا توجد اختبارات مباشرة موجهة لك الآن.</div>
+          )}
+        </section>
+      ) : null}
 
       <div className="hidden">
         <StatCard icon={<Zap size={24} />} value={saherQuizzes.length} label="ساهر جاهز" color="purple" />
