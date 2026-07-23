@@ -459,6 +459,7 @@ export const PlatformIntegrationsManager: React.FC = () => {
   const [testMessage, setTestMessage] = useState("هذه رسالة اختبار من منصة المئة.");
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState("");
+  const [activeIntegrationTab, setActiveIntegrationTab] = useState<"providers" | "ai-platforms" | "auth-registration" | "seo-branding" | "audit-tests">("providers");
 
   useEffect(() => {
     let cancelled = false;
@@ -1127,6 +1128,31 @@ export const PlatformIntegrationsManager: React.FC = () => {
         </div>
       </div>
 
+      {/* Category Sub-Navigation Tab Bar */}
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+        {[
+          { id: "providers", label: "مزودو الخدمات والتواصل", icon: "🔌" },
+          { id: "ai-platforms", label: "الذكاء الاصطناعي والتكاملات", icon: "🤖" },
+          { id: "auth-registration", label: "التسجيل والحقول", icon: "🔐" },
+          { id: "seo-branding", label: "محركات البحث SEO", icon: "🌐" },
+          { id: "audit-tests", label: "فحص التشغيل والاختبار", icon: "🧪" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveIntegrationTab(tab.id as any)}
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition-all ${
+              activeIntegrationTab === tab.id
+                ? "bg-amber-500 text-white shadow-sm"
+                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+            }`}
+          >
+            <span>{tab.icon}</span>
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
       {readiness ? (
         <div className="rounded-2xl border border-gray-100 bg-white p-6">
           <h3 className="text-lg font-black text-gray-900">جاهزية التكاملات</h3>
@@ -1143,30 +1169,10 @@ export const PlatformIntegrationsManager: React.FC = () => {
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
-        <h3 className="text-lg font-black text-gray-900">إعدادات التسجيل الأساسية</h3>
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>السماح بالتسجيل الذاتي</span>
-            <input type="checkbox" aria-label="السماح بالتسجيل الذاتي" title="السماح بالتسجيل الذاتي" checked={settings.auth.allowSelfRegistration} onChange={(e) => updateAuth("allowSelfRegistration", e.target.checked)} />
-          </label>
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>السماح بالبريد وكلمة المرور</span>
-            <input type="checkbox" aria-label="السماح بالبريد وكلمة المرور" title="السماح بالبريد وكلمة المرور" checked={settings.auth.allowEmailPassword} onChange={(e) => updateAuth("allowEmailPassword", e.target.checked)} />
-          </label>
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>تفعيل تحقق البريد</span>
-            <input type="checkbox" aria-label="تفعيل تحقق البريد" title="تفعيل تحقق البريد" checked={settings.auth.requireEmailVerification} onChange={(e) => updateAuth("requireEmailVerification", e.target.checked)} />
-          </label>
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>موافقة الإدارة قبل التفعيل</span>
-            <input type="checkbox" aria-label="موافقة الإدارة قبل التفعيل" title="موافقة الإدارة قبل التفعيل" checked={settings.auth.requireAdminApproval} onChange={(e) => updateAuth("requireAdminApproval", e.target.checked)} />
-          </label>
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
-        <h3 className="text-lg font-black text-gray-900">مزودو التكاملات</h3>
+      {activeIntegrationTab === "providers" && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6">
+            <h3 className="text-lg font-black text-gray-900">مزودو التكاملات</h3>
         <div className="mt-3 rounded-xl border border-indigo-100 bg-indigo-50 p-3 text-xs text-indigo-800">
           <div className="font-black">الدومين الحالي المقترح للروابط:</div>
           <div className="mt-1 flex items-center justify-between gap-2">
@@ -1473,30 +1479,37 @@ export const PlatformIntegrationsManager: React.FC = () => {
           </label>
         </div>
       </div>
+    </div>
+  )}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
-        <h3 className="text-lg font-black text-gray-900">إعدادات SEO والظهور في Google</h3>
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>تفعيل SEO</span>
-            <input type="checkbox" aria-label="تفعيل SEO" title="تفعيل SEO" checked={settings.seo.enabled} onChange={(e) => updateSeo("enabled", e.target.checked)} />
-          </label>
-          <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
-            <span>السماح بالأرشفة (robots index)</span>
-            <input type="checkbox" aria-label="السماح بالأرشفة" title="السماح بالأرشفة" checked={settings.seo.robotsIndexingEnabled} onChange={(e) => updateSeo("robotsIndexingEnabled", e.target.checked)} />
-          </label>
-          <input aria-label="اسم الموقع في SEO" title="اسم الموقع في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.siteName} onChange={(e) => updateSeo("siteName", e.target.value)} placeholder="اسم الموقع" />
-          <input aria-label="العنوان الافتراضي في SEO" title="العنوان الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultTitle} onChange={(e) => updateSeo("defaultTitle", e.target.value)} placeholder="العنوان الافتراضي" />
-          <input aria-label="الوصف الافتراضي في SEO" title="الوصف الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.seo.defaultDescription} onChange={(e) => updateSeo("defaultDescription", e.target.value)} placeholder="الوصف الافتراضي" />
-          <input aria-label="Canonical Base URL" title="Canonical Base URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.canonicalBaseUrl} onChange={(e) => updateSeo("canonicalBaseUrl", e.target.value)} placeholder="Canonical Base URL" />
-          <input aria-label="OG Image URL" title="OG Image URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultOgImage} onChange={(e) => updateSeo("defaultOgImage", e.target.value)} placeholder="OG Image URL" />
-          <input aria-label="Google Site Verification" title="Google Site Verification" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleSiteVerification} onChange={(e) => updateSeo("googleSiteVerification", e.target.value)} placeholder="Google Site Verification" />
-          <input aria-label="Google Analytics ID" title="Google Analytics ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleAnalyticsId} onChange={(e) => updateSeo("googleAnalyticsId", e.target.value)} placeholder="Google Analytics ID (G-XXXX)" />
-          <input aria-label="Google Tag Manager ID" title="Google Tag Manager ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleTagManagerId} onChange={(e) => updateSeo("googleTagManagerId", e.target.value)} placeholder="Google Tag Manager ID (GTM-XXXX)" />
+      {/* TAB 4: SEO & BRANDING */}
+      {activeIntegrationTab === "seo-branding" && (
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
+          <h3 className="text-lg font-black text-gray-900">إعدادات SEO والظهور في Google</h3>
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+              <span>تفعيل SEO</span>
+              <input type="checkbox" aria-label="تفعيل SEO" title="تفعيل SEO" checked={settings.seo.enabled} onChange={(e) => updateSeo("enabled", e.target.checked)} />
+            </label>
+            <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+              <span>السماح بالأرشفة (robots index)</span>
+              <input type="checkbox" aria-label="السماح بالأرشفة" title="السماح بالأرشفة" checked={settings.seo.robotsIndexingEnabled} onChange={(e) => updateSeo("robotsIndexingEnabled", e.target.checked)} />
+            </label>
+            <input aria-label="اسم الموقع في SEO" title="اسم الموقع في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.siteName} onChange={(e) => updateSeo("siteName", e.target.value)} placeholder="اسم الموقع" />
+            <input aria-label="العنوان الافتراضي في SEO" title="العنوان الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultTitle} onChange={(e) => updateSeo("defaultTitle", e.target.value)} placeholder="العنوان الافتراضي" />
+            <input aria-label="الوصف الافتراضي في SEO" title="الوصف الافتراضي في SEO" className="rounded-xl border border-gray-200 px-3 py-2 text-sm md:col-span-2" value={settings.seo.defaultDescription} onChange={(e) => updateSeo("defaultDescription", e.target.value)} placeholder="الوصف الافتراضي" />
+            <input aria-label="Canonical Base URL" title="Canonical Base URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.canonicalBaseUrl} onChange={(e) => updateSeo("canonicalBaseUrl", e.target.value)} placeholder="Canonical Base URL" />
+            <input aria-label="OG Image URL" title="OG Image URL" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.defaultOgImage} onChange={(e) => updateSeo("defaultOgImage", e.target.value)} placeholder="OG Image URL" />
+            <input aria-label="Google Site Verification" title="Google Site Verification" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleSiteVerification} onChange={(e) => updateSeo("googleSiteVerification", e.target.value)} placeholder="Google Site Verification" />
+            <input aria-label="Google Analytics ID" title="Google Analytics ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleAnalyticsId} onChange={(e) => updateSeo("googleAnalyticsId", e.target.value)} placeholder="Google Analytics ID (G-XXXX)" />
+            <input aria-label="Google Tag Manager ID" title="Google Tag Manager ID" className="rounded-xl border border-gray-200 px-3 py-2 text-sm" value={settings.seo.googleTagManagerId} onChange={(e) => updateSeo("googleTagManagerId", e.target.value)} placeholder="Google Tag Manager ID (GTM-XXXX)" />
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
+      {/* TAB 2: AI & EXTERNAL PLATFORMS */}
+      {activeIntegrationTab === "ai-platforms" && (
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-gray-900">ربط المنصات الخارجية (Eduoma وغيرها)</h3>
           <button onClick={addExternal} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700">
@@ -1697,20 +1710,43 @@ export const PlatformIntegrationsManager: React.FC = () => {
               ) : null}
             </div>
           ))}
-          {settings.externalPlatforms.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-200 p-4 text-sm text-gray-500">لا توجد منصات خارجية مضافة.</div>
-          ) : null}
         </div>
       </div>
+    )}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-black text-gray-900">حقول التسجيل المتقدمة</h3>
-          <button onClick={addField} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700">
-            <Plus size={14} />
-            إضافة حقل
-          </button>
-        </div>
+      {/* TAB 3: AUTH & REGISTRATION FIELDS */}
+      {activeIntegrationTab === "auth-registration" && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6">
+            <h3 className="text-lg font-black text-gray-900">إعدادات التسجيل الأساسية</h3>
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+                <span>السماح بالتسجيل الذاتي</span>
+                <input type="checkbox" aria-label="السماح بالتسجيل الذاتي" title="السماح بالتسجيل الذاتي" checked={settings.auth.allowSelfRegistration} onChange={(e) => updateAuth("allowSelfRegistration", e.target.checked)} />
+              </label>
+              <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+                <span>السماح بالبريد وكلمة المرور</span>
+                <input type="checkbox" aria-label="السماح بالبريد وكلمة المرور" title="السماح بالبريد وكلمة المرور" checked={settings.auth.allowEmailPassword} onChange={(e) => updateAuth("allowEmailPassword", e.target.checked)} />
+              </label>
+              <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+                <span>تفعيل تحقق البريد</span>
+                <input type="checkbox" aria-label="تفعيل تحقق البريد" title="تفعيل تحقق البريد" checked={settings.auth.requireEmailVerification} onChange={(e) => updateAuth("requireEmailVerification", e.target.checked)} />
+              </label>
+              <label className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm">
+                <span>موافقة الإدارة قبل التفعيل</span>
+                <input type="checkbox" aria-label="موافقة الإدارة قبل التفعيل" title="موافقة الإدارة قبل التفعيل" checked={settings.auth.requireAdminApproval} onChange={(e) => updateAuth("requireAdminApproval", e.target.checked)} />
+              </label>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-gray-100 bg-white p-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-black text-gray-900">حقول التسجيل المتقدمة</h3>
+              <button onClick={addField} className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black text-amber-700">
+                <Plus size={14} />
+                إضافة حقل
+              </button>
+            </div>
         <div className="mt-4 space-y-3">
           {settings.registrationFields.map((field) => (
             <div key={field.id} className="grid grid-cols-1 gap-2 rounded-xl border border-gray-100 p-3 md:grid-cols-12">
@@ -1748,10 +1784,15 @@ export const PlatformIntegrationsManager: React.FC = () => {
           ) : null}
         </div>
       </div>
+    </div>
+  )}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6">
-        <div className="mb-4 flex items-center justify-between gap-2">
-          <h3 className="text-lg font-black text-gray-900">سجل تغييرات التكاملات</h3>
+      {/* TAB 5: AUDIT, TESTS & HISTORY */}
+      {activeIntegrationTab === "audit-tests" && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h3 className="text-lg font-black text-gray-900">سجل تغييرات التكاملات</h3>
           <button
             onClick={() => void loadHistory()}
             className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700"
@@ -1786,16 +1827,18 @@ export const PlatformIntegrationsManager: React.FC = () => {
         )}
       </div>
 
-      <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 text-sm text-indigo-800">
-        <h3 className="mb-2 text-base font-black">دليل سريع للربط</h3>
-        <ul className="space-y-1">
-          <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Google/Facebook: ضع Client ID/Secret + Callback URL ثم فعّل المزود.</li>
-          <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> WhatsApp/Telegram: ضع Token + Webhook URL + Verify token، ثم اختبر الاستقبال.</li>
-          <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Zoom/Meet/Teams/YouTube Live: أضف مفاتيح OAuth/API وحدد callback ثم اربطها مع الدروس الحية.</li>
-          <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> SEO: أضف site verification + GA/GTM + canonical ثم احفظ.</li>
-          <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Eduoma أو منصة خارجية: أضف base URL + API keys + webhook وفعل مزامنة الطلاب/الكورسات.</li>
-        </ul>
-      </div>
+          <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 text-sm text-indigo-800">
+            <h3 className="mb-2 text-base font-black">دليل سريع للربط</h3>
+            <ul className="space-y-1">
+              <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Google/Facebook: ضع Client ID/Secret + Callback URL ثم فعّل المزود.</li>
+              <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> WhatsApp/Telegram: ضع Token + Webhook URL + Verify token، ثم اختبر الاستقبال.</li>
+              <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Zoom/Meet/Teams/YouTube Live: أضف مفاتيح OAuth/API وحدد callback ثم اربطها مع الدروس الحية.</li>
+              <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> SEO: أضف site verification + GA/GTM + canonical ثم احفظ.</li>
+              <li className="flex items-start gap-2"><Radio size={14} className="mt-1" /> Eduoma أو منصة خارجية: أضف base URL + API keys + webhook وفعل مزامنة الطلاب/الكورسات.</li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
