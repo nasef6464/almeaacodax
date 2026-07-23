@@ -122,6 +122,7 @@ export const SupervisorDashboard: React.FC = () => {
   const [studentActionFeedback, setStudentActionFeedback] = useState('');
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<{ name: string; level: 'critical' | 'watch' | 'mastered'; students: string[] } | null>(null);
+  const [showPrincipalReport, setShowPrincipalReport] = useState(false);
 
   const supervisorScopeSummary = useMemo(() => {
     const directGroupIds = new Set(user.groupIds || []);
@@ -135,6 +136,10 @@ export const SupervisorDashboard: React.FC = () => {
     const scopedGroupIds = new Set<string>([...Array.from(directGroupIds), ...directGroups.map((g) => g.id)]);
     groups.forEach((g) => { if (g.parentId && scopedSchoolIds.has(g.parentId)) scopedGroupIds.add(g.id); });
     const scopedGroupList = groups.filter((g) => scopedGroupIds.has(g.id) || scopedSchoolIds.has(g.id));
+
+    const primarySchool = scopedGroupList.find((g) => g.type === 'SCHOOL') || groups.find((g) => g.id === user.schoolId);
+    const primarySchoolName = primarySchool?.name || (scopedSchoolIds.size > 0 ? 'المدرسة المسندة' : 'جميع الفصول المسندة');
+    const scopeTypeName = primarySchool ? 'إشراف شامل على المدرسة' : scopedGroupList.length > 0 ? `إشراف مخصص (${scopedGroupList.length} فصل)` : 'إشراف عام';
     const scopedStudentIdSet = new Set(scopedGroupList.flatMap((g) => g.studentIds || []));
     const scopedStudents = users.filter((u) => {
       if (u.role !== Role.STUDENT) return false;
@@ -222,6 +227,7 @@ export const SupervisorDashboard: React.FC = () => {
       weakStudentsCount: studentsNeedingFollowUp.length, inactiveCount: studentsNeedingFollowUp.filter((s) => s.attempts === 0).length,
       improvedStudentsCount, declinedCount, weakestSkills, studentsNeedingFollowUp, allStudentsList,
       groupSnapshots, bestClass, weakestClass, pendingFollowUpCount, scopedStudentIdSet, scopedResults,
+      primarySchoolName, scopeTypeName,
     };
   }, [examResults, groups, quizzes, user.groupIds, user.id, user.schoolId, users]);
 
@@ -410,7 +416,11 @@ export const SupervisorDashboard: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <button onClick={() => setShowPrincipalReport(true)} className="flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-800 hover:bg-indigo-100 transition-colors shadow-sm">
+              <Building2 size={16} />
+              <span>تقرير مدير المدرسة (PDF)</span>
+            </button>
             <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
               <Printer size={16} />
               <span>طباعة التقرير</span>
@@ -454,6 +464,16 @@ export const SupervisorDashboard: React.FC = () => {
                     ? `أنت تشرف على ${supervisorScopeSummary.schoolCount} مدرسة، و ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`
                     : `أنت تشرف على ${supervisorScopeSummary.groupCount} فصل دراسي، بمجموع ${supervisorScopeSummary.studentCount} طالب.`}
                 </p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold backdrop-blur-sm border border-white/10">
+                    <Building2 size={13} className="text-amber-300" />
+                    <span>المدرسة: {supervisorScopeSummary.primarySchoolName}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold backdrop-blur-sm border border-white/10">
+                    <GraduationCap size={13} className="text-emerald-300" />
+                    <span>نطاق الصلاحية: {supervisorScopeSummary.scopeTypeName}</span>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -1168,6 +1188,144 @@ export const SupervisorDashboard: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        {/* ===== PRINCIPAL EXECUTIVE BRIEFING MODAL ===== */}
+        {showPrincipalReport && (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 print:p-0 print:static print:bg-white" role="dialog" aria-modal="true">
+            <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 text-right space-y-6 print:max-w-none print:max-h-none print:shadow-none print:border-none print:p-0">
+              
+              {/* Header */}
+              <div className="flex justify-between items-start border-b border-gray-100 pb-5 print:hidden">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-indigo-50 p-3 text-indigo-700">
+                    <Building2 size={28} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-gray-900">تقرير الإنجاز الدوري لمدير المدرسة</h2>
+                    <p className="text-xs text-gray-500 mt-1">{supervisorScopeSummary.primarySchoolName} • {supervisorScopeSummary.scopeTypeName}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-sm">
+                    <Printer size={15} />
+                    <span>طباعة التقرير التفيذي</span>
+                  </button>
+                  <button onClick={() => setShowPrincipalReport(false)} className="rounded-xl p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Printable Content Body */}
+              <div className="space-y-6">
+                <div className="hidden print:block text-center border-b pb-4 mb-4">
+                  <h1 className="text-2xl font-black text-gray-950">تقرير التقييم الإداري والأكاديمي للمدرسة</h1>
+                  <h2 className="text-lg font-bold text-indigo-700 mt-1">{supervisorScopeSummary.primarySchoolName}</h2>
+                  <p className="text-xs text-gray-500 mt-1">تاريخ التقديم لمدير المدرسة: {new Date().toLocaleDateString('ar-EG')} • إعداد المشرف: {user.name}</p>
+                </div>
+
+                {/* KPI Metrics */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gray-50/80 p-4 rounded-2xl border border-gray-100">
+                  <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">
+                    <span className="text-[11px] font-bold text-gray-500 block">إجمالي طلاب المدرسة</span>
+                    <strong className="text-xl font-black text-indigo-900 mt-1 block">{supervisorScopeSummary.studentCount}</strong>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">
+                    <span className="text-[11px] font-bold text-gray-500 block">متوسط تحصيل المدرسة</span>
+                    <strong className="text-xl font-black text-emerald-600 mt-1 block">{supervisorScopeSummary.averageScore}%</strong>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">
+                    <span className="text-[11px] font-bold text-gray-500 block">فصول تحت الإشراف</span>
+                    <strong className="text-xl font-black text-gray-900 mt-1 block">{supervisorScopeSummary.groupCount}</strong>
+                  </div>
+                  <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">
+                    <span className="text-[11px] font-bold text-gray-500 block">طلاب بحاجة لدعم</span>
+                    <strong className="text-xl font-black text-rose-600 mt-1 block">{supervisorScopeSummary.weakStudentsCount}</strong>
+                  </div>
+                </div>
+
+                {/* Class Performance Breakdown */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
+                    <Trophy size={18} className="text-amber-500" />
+                    مقارنة تحصيل الفصول والصفوف الدراسية
+                  </h3>
+                  <div className="border border-gray-100 rounded-2xl overflow-hidden">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-100 text-gray-600">
+                          <th className="p-3 font-bold">اسم الفصل</th>
+                          <th className="p-3 font-bold text-center">عدد الطلاب</th>
+                          <th className="p-3 font-bold text-center">متوسط الدرجات</th>
+                          <th className="p-3 font-bold text-center">حالات التعثر</th>
+                          <th className="p-3 font-bold">التوصية الإدارية</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {supervisorScopeSummary.groupSnapshots.map((g) => (
+                          <tr key={g.id} className="hover:bg-gray-50/50">
+                            <td className="p-3 font-bold text-gray-900">{g.name}</td>
+                            <td className="p-3 text-center text-gray-700">{g.studentCount}</td>
+                            <td className="p-3 text-center">
+                              <span className={`font-black ${g.average >= 75 ? 'text-emerald-600' : g.average >= 60 ? 'text-amber-600' : 'text-rose-600'}`}>
+                                {g.average}%
+                              </span>
+                            </td>
+                            <td className="p-3 text-center">
+                              {g.weakStudents > 0 ? (
+                                <span className="rounded-full bg-rose-50 border border-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">
+                                  {g.weakStudents} طالب
+                                </span>
+                              ) : (
+                                <span className="text-emerald-600 font-bold">لا يوجد</span>
+                              )}
+                            </td>
+                            <td className="p-3 text-gray-600">
+                              {g.average >= 80 ? 'فصل متميز - ينصح بتكريم المعلم والطلاب' : g.average >= 65 ? 'أداء متوسط - يحتاج متابعة دورية' : 'يحتاج ورشة عمل علاجية عاجلة'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Priority Skills Breakdown */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
+                    <Target size={18} className="text-rose-500" />
+                    المهارات الأكثر حرجاً والمستهدفة بالدعم
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {supervisorScopeSummary.weakestSkills.slice(0, 4).map((sk, idx) => (
+                      <div key={idx} className="border border-gray-100 rounded-xl p-3.5 bg-rose-50/30 flex justify-between items-center">
+                        <div>
+                          <div className="font-bold text-xs text-gray-900">{sk.skill}</div>
+                          <div className="text-[10px] text-gray-500 mt-0.5">يتأثر بها {sk.affectedStudents} طالب في المدرسة</div>
+                        </div>
+                        <span className="font-black text-xs text-rose-600 bg-white px-2.5 py-1 rounded-lg border border-rose-100 shadow-sm">
+                          تمكن {sk.mastery}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Signature Line */}
+                <div className="pt-6 border-t border-gray-100 flex justify-between items-end text-xs text-gray-600">
+                  <div>
+                    <span className="block font-bold text-gray-900">ملاحظات واعتماد مدير المدرسة:</span>
+                    <div className="w-64 h-12 border-b border-dashed border-gray-300 mt-2"></div>
+                  </div>
+                  <div className="text-left">
+                    <span className="block font-bold text-gray-900">توقيع مشرف المدرسة:</span>
+                    <span className="block text-indigo-700 font-bold mt-1">{user.name}</span>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
         )}
