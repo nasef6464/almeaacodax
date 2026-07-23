@@ -133,6 +133,18 @@ async function listApprovedQuestions(page) {
   }, { apiBaseUrl: API_BASE_URL });
 }
 
+async function hasLoadablePublicQuestions(page, slug) {
+  return page.evaluate(async ({ apiBaseUrl, slug }) => {
+    const response = await fetch(`${apiBaseUrl}/public-tests/${encodeURIComponent(slug)}`, {
+      credentials: "include",
+      cache: "no-store",
+      headers: { accept: "application/json" },
+    });
+    const payload = await response.json().catch(() => ({}));
+    return response.ok && Array.isArray(payload?.questions) && payload.questions.length > 0;
+  }, { apiBaseUrl: API_BASE_URL, slug });
+}
+
 function selectQuestionGroup(questions) {
   const groups = new Map();
   for (const question of questions || []) {
@@ -296,7 +308,13 @@ async function main() {
     loginResult = await login(page);
     publicTests = await listPublicTests(page);
     if (!publicTests.ok) throw new Error(`Public barcode admin list failed ${publicTests.status}: ${publicTests.message}`);
-    selectedTest = publicTests.items.find((item) => item.status === "active" && item.slug && Number(item.questionCount || 0) > 0) || null;
+    for (const item of publicTests.items) {
+      if (item.status !== "active" || !item.slug || !/^[a-zA-Z0-9\u0600-\u06ff-]+$/.test(item.slug) || Number(item.questionCount || 0) <= 0) continue;
+      if (await hasLoadablePublicQuestions(page, item.slug)) {
+        selectedTest = item;
+        break;
+      }
+    }
     if (!selectedTest) {
       createdAuditTest = await createAuditPublicTest(page);
       if (!createdAuditTest.ok || !createdAuditTest.test?.slug) {

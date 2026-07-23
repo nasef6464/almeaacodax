@@ -4983,3 +4983,32 @@ pm run smoke:operational PASS (71/71).
   - None for the three supervisor dashboard phases.
 - Next exact task:
   1. Move to the next product area; keep the supervisor dashboard in regression monitoring.
+
+## BATCH 247 - Barcode Open and Targeted Delivery (2026-07-23)
+- Status: Closed for the requested delivery modes.
+- Scope:
+  - Added `open` and `targeted` audience modes to barcode tests.
+  - Added group/student targeting controls in the barcode manager with clear validation before creation.
+  - Added an authenticated student endpoint and a compact student-center section for assigned barcode tests.
+  - Kept open QR/link tests public without login, while enforcing supervisor/teacher target scope on the server.
+  - Preserved quick versus mock barcode settings; full path mock exams continue to use ordered sections and the existing measurement-style runner.
+- Gate Results:
+  - PASS: `npm run typecheck -- --pretty false`.
+  - PASS: `npm run server:check`.
+  - PASS: `npm run build`.
+  - PASS: `npm run smoke:barcode-public-tests` (42/42).
+  - PASS: `npm run smoke:barcode-public-tests-live` (4/4 desktop/mobile admin and public barcode routes).
+  - PASS: `npm run smoke:mock-exams` (9/9).
+  - PASS: `npm run smoke:quiz-access` (18/18).
+  - PASS: `npm run smoke:my-quizzes` (9/9).
+  - PASS: unauthenticated `GET /api/public-tests/assigned` returns 401; Render health is ready with database and Redis connected.
+- Deploy/Commit Evidence:
+  - Commit: `37b843c6` (`feat: deliver targeted barcode tests to students`).
+  - GitHub/main and supervisor branch: `37b843c6`.
+  - Vercel production alias: `https://almeaacodax.vercel.app`.
+  - Render deployment: `dep-d9h182epbkes73cf0tmg`, live on `37b843c6`.
+  - Live audit selector robustness fix is recorded in the following test commit.
+- Note:
+  - `npm run smoke:role-pages-live` reported 18 PASS and 15 BLOCKED because role credentials for all optional roles were unavailable; it reported no failures.
+- Next exact task:
+  1. Validate a real targeted barcode test with one supervisor, one group, and one student account in the next live data session.

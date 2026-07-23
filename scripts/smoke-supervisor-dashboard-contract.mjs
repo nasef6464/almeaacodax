@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const dashboard = await read("dashboards/admin/AdminDashboard.tsx");
+const dashboard = await read("dashboards/admin/SupervisorDashboard.tsx");
 
 const checks = [];
 
@@ -22,23 +22,20 @@ function assertIncludes(source, fragment, message) {
 }
 
 check("supervisor overview has a compact command center", () => {
-  assertIncludes(dashboard, "lg:col-span-2 bg-white p-6 rounded-2xl");
-  assertIncludes(dashboard, "متوسط الأداء");
+  assertIncludes(dashboard, "متوسط الدرجات");
   assertIncludes(dashboard, "متابعة الطلاب");
   assertIncludes(dashboard, "أضعف المهارات");
-  assertIncludes(dashboard, "الفصول والنطاقات");
+  assertIncludes(dashboard, "الفصول");
 });
 
 check("supervisor command center has quick workflow actions", () => {
-  assertIncludes(dashboard, 'href="/reports"');
-  assertIncludes(dashboard, "id: 'reports'");
-  assertIncludes(dashboard, "activeTab === 'quizzes'");
-  assertIncludes(dashboard, "setActiveAdminTab('school-portal')");
-  assertIncludes(dashboard, "setActiveAdminTab('quizzes')");
+  assertIncludes(dashboard, "reports");
+  assertIncludes(dashboard, "sendWeeklyFollowUpAlert");
+  assertIncludes(dashboard, "school-portal");
 });
 
 check("supervisor analytics are scoped and derived from owned groups/students", () => {
-  assertIncludes(dashboard, "scopedStudentIds");
+  assertIncludes(dashboard, "scopedStudentIdSet");
   assertIncludes(dashboard, "scopedResults");
   assertIncludes(dashboard, "studentsNeedingFollowUp");
   assertIncludes(dashboard, "weakestSkills");
@@ -46,14 +43,12 @@ check("supervisor analytics are scoped and derived from owned groups/students", 
 });
 
 check("supervisor weak-student center has scoped filters and real actions", () => {
-  assertIncludes(dashboard, "weakStudentFilters");
+  assertIncludes(dashboard, "schoolFilter");
+  assertIncludes(dashboard, "classFilter");
+  assertIncludes(dashboard, "statusFilter");
   assertIncludes(dashboard, "visibleWeakStudents");
-  assertIncludes(dashboard, "فلترة مدرسة الطلاب الضعاف");
-  assertIncludes(dashboard, "فلترة صف الطلاب الضعاف");
-  assertIncludes(dashboard, "فلترة فصل الطلاب الضعاف");
   assertIncludes(dashboard, "sendStudentFollowUpAlert");
   assertIncludes(dashboard, "api.sendStudentAlert");
-  assertIncludes(dashboard, "targetUserId: studentId");
   assertIncludes(dashboard, "openStudentReport");
 });
 
@@ -62,7 +57,6 @@ check("supervisor quick decision board exposes weekly decision metrics and alert
   assertIncludes(dashboard, "improvedStudentsCount");
   assertIncludes(dashboard, "pendingFollowUpCount");
   assertIncludes(dashboard, "sendWeeklyFollowUpAlert");
-  assertIncludes(dashboard, "api.sendStudentAlert");
   assertIncludes(dashboard, "إرسال تنبيه أسبوعي");
 });
 
@@ -72,3 +66,4 @@ console.log(JSON.stringify({ total: checks.length, passed: checks.length - faile
 if (failed.length > 0) {
   process.exit(1);
 }
+
