@@ -4936,3 +4936,23 @@ pm run smoke:operational PASS (71/71).
   - None for phase one.
 - Next exact task:
   1. Start phase two: scoped smart reports and PDF/Excel summaries.
+
+## BATCH 245 - Supervisor Phase Two Smart Reports (2026-07-23)
+- Status: Closed.
+- Scope:
+  - Added a visible comparison report for the supervisor's scoped classes, including average performance, weak-student count, and attempts.
+  - Added a visible comparison report for linked teachers, including groups, average performance, and weak-student count.
+  - Extended the existing Excel performance workbook with a `teachers` sheet while preserving scoped student, skill, directed-quiz, and full-performance exports.
+  - Preserved the existing print/PDF summary and all supervisor scope guards; no database schema change was required.
+- Gate Results:
+  - PASS: `npm run typecheck -- --pretty false`.
+  - PASS: `npm run build`.
+  - PASS: `npm run smoke:reports-role` (20/20).
+  - PASS: `git diff --check`.
+- Deploy/Commit Evidence:
+  - Commit: `c6ebd365` (`feat: add supervisor report comparisons`).
+  - GitHub/main and supervisor branch, Vercel production, and Render health verification remain required for the final live closeout of this batch.
+- Blockers:
+  - None in local code or report contract checks.
+- Next exact task:
+  1. Build phase three: a compact quick-decision board with weekly alerts and action queues for supervisors.
