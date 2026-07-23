@@ -886,6 +886,23 @@ export const api = {
       body: payload,
       token,
     }),
+  convertSessionBookingToLiveSession: (
+    id: string,
+    payload?: {
+      provider?: "zoom" | "google_meet" | "teams" | "live_youtube";
+      meetingUrl?: string;
+      meetingDate?: string;
+      duration?: string;
+      pathId?: string;
+      subjectId?: string;
+    },
+    token?: string | null,
+  ) =>
+    request<{ success: boolean; lessonId: string; booking: unknown }>(`/activities/admin/session-bookings/${id}/convert`, {
+      method: "POST",
+      body: payload || {},
+      token,
+    }),
   markNotificationRead: (id: string, token?: string | null) =>
     request<unknown>(`/notifications/${id}/read`, {
       method: "PATCH",

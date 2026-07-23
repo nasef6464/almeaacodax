@@ -28,12 +28,14 @@ import {
   Printer,
   X,
   Eye,
+  Video,
 } from 'lucide-react';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useStore } from '../../store/useStore';
 import { Role } from '../../types';
+import { LiveSessionsManager } from './LiveSessionsManager';
 
-type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports';
+type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
 
 const KpiCard: React.FC<{
@@ -364,6 +366,7 @@ export const SupervisorDashboard: React.FC = () => {
   const sidebarItems = [
     { id: 'overview' as const, label: 'الملخص العام', icon: <BarChart3 size={20} /> },
     { id: 'students' as const, label: 'متابعة الطلاب', icon: <Users size={20} />, badge: supervisorScopeSummary.studentCount },
+    { id: 'live-sessions' as const, label: 'الحصص المباشرة', icon: <Video size={20} /> },
     { id: 'skills' as const, label: 'خريطة المهارات', icon: <Target size={20} /> },
     { id: 'reports' as const, label: 'تقارير الأداء', icon: <ClipboardList size={20} /> },
   ];
@@ -451,6 +454,9 @@ export const SupervisorDashboard: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* ===== LIVE SESSIONS TAB ===== */}
+        {activeTab === 'live-sessions' && <LiveSessionsManager />}
 
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (

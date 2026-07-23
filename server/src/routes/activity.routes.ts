@@ -104,6 +104,58 @@ activityRouter.patch(
   }),
 );
 
+activityRouter.post(
+  "/admin/session-bookings/:id/convert",
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const convertSchema = z.object({
+      provider: z.enum(["zoom", "google_meet", "teams", "live_youtube"]).optional().default("zoom"),
+      meetingUrl: z.string().optional().default(""),
+      meetingDate: z.string().optional().default(""),
+      duration: z.string().optional().default("60"),
+      pathId: z.string().optional().default(""),
+      subjectId: z.string().optional().default(""),
+    });
+
+    const payload = convertSchema.parse(req.body || {});
+    const activity = await ActivityModel.findOne({ _id: req.params.id, type: "session_booked" });
+    if (!activity) {
+      return res.status(404).json({ message: "Session booking request not found" });
+    }
+
+    const { LessonModel } = await import("../models/Lesson.js");
+    const lessonTitle = activity.title || "حصة خاصة - " + (activity.studentName || activity.studentEmail || "طالب");
+    const scheduledDate = payload.meetingDate || activity.scheduledDate || new Date().toISOString();
+
+    const lesson = await LessonModel.create({
+      id: `live_conv_${Date.now()}`,
+      title: lessonTitle,
+      type: payload.provider,
+      duration: payload.duration,
+      pathId: payload.pathId || null,
+      subjectId: payload.subjectId || null,
+      meetingUrl: payload.meetingUrl,
+      meetingDate: scheduledDate,
+      joinInstructions: activity.notes || "",
+      assignedTeacherName: activity.assignedTeacherName || req.authUser?.name || "",
+      approvalStatus: "approved",
+      showOnPlatform: true,
+      ownerType: req.authUser?.role === "admin" ? "platform" : "teacher",
+      ownerId: String(req.authUser?.id || ""),
+      createdBy: String(req.authUser?.id || ""),
+    });
+
+    activity.bookingStatus = "confirmed";
+    await activity.save();
+
+    res.json({
+      success: true,
+      lessonId: lesson.id,
+      booking: serializeActivity(activity.toObject()),
+    });
+  }),
+);
+
 activityRouter.get(
   "/me",
   asyncHandler(async (req, res) => {

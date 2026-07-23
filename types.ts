@@ -60,6 +60,12 @@ export interface Lesson extends ContentWorkflow {
     recordingUrl?: string;
     joinInstructions?: string;
     showRecordingOnPlatform?: boolean;
+    schoolId?: string;
+    classId?: string;
+    assignedTeacherId?: string;
+    assignedTeacherName?: string;
+    maxAttendees?: number;
+    attendedStudentIds?: string[];
     isLocked?: boolean;
     showOnPlatform?: boolean;
     accessControl?: 'public' | 'enrolled' | 'specific_groups';

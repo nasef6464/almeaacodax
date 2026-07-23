@@ -33,6 +33,11 @@ const lessonSchema = new Schema(
     ownerId: { type: String, default: "" },
     createdBy: { type: String, default: "" },
     assignedTeacherId: { type: String, default: "" },
+    assignedTeacherName: { type: String, default: "" },
+    schoolId: { type: String, default: "" },
+    classId: { type: String, default: "" },
+    maxAttendees: { type: Number, default: 0 },
+    attendedStudentIds: { type: [String], default: [] },
     approvalStatus: { type: String, enum: ["draft", "pending_review", "approved", "rejected"], default: "draft", index: true },
     approvedBy: { type: String, default: "" },
     approvedAt: { type: Number, default: null },
@@ -47,6 +52,7 @@ const lessonSchema = new Schema(
 lessonSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, createdAt: -1 });
 lessonSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1, createdAt: -1 });
 lessonSchema.index({ assignedTeacherId: 1, approvalStatus: 1, createdAt: -1 });
+lessonSchema.index({ schoolId: 1, createdAt: -1 });
 lessonSchema.index({ skillIds: 1, createdAt: -1 });
 
 export const LessonModel = mongoose.model("Lesson", lessonSchema);
