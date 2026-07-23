@@ -1190,6 +1190,8 @@ export const SupervisorDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+
         {/* ===== PRINCIPAL EXECUTIVE BRIEFING MODAL ===== */}
         {showPrincipalReport && (
           <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 print:p-0 print:static print:bg-white" role="dialog" aria-modal="true">
