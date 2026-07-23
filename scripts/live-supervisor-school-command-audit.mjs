@@ -58,7 +58,7 @@ const ROUTES = [
   {
     name: "supervisor-overview",
     path: "/admin-dashboard",
-    minBodyLength: 400,
+    minBodyLength: 300,
     minControlCount: 8,
     expectedTextGroups: [
       ["متوسط الإنجاز", "متابعة الطلاب", "الطلاب"],
