@@ -845,7 +845,7 @@ export const AdminDashboard: React.FC = () => {
             value: supervisorScopeSummary.weakStudentsCount,
             hint: 'ابدأ بمن لم يختبر أو متوسطه أقل من 70%.',
             actionLabel: 'فتح التقرير',
-            action: () => { window.location.hash = '#/reports'; },
+            action: () => { window.location.assign('/reports'); },
             tone: 'rose',
         },
         {
@@ -998,6 +998,16 @@ export const AdminDashboard: React.FC = () => {
             ];
         }
 
+        if (user.role === Role.SUPERVISOR && !nextItems.some((item) => item.id === 'reports')) {
+            const portalIndex = nextItems.findIndex((item) => item.id === 'school-portal');
+            const targetIndex = portalIndex === -1 ? nextItems.length : portalIndex + 1;
+            nextItems = [
+                ...nextItems.slice(0, targetIndex),
+                { id: 'reports', label: 'التقارير', icon: <Activity size={20} /> },
+                ...nextItems.slice(targetIndex),
+            ];
+        }
+
         return nextItems;
     }, [menuItems, user.role]);
 
@@ -1018,7 +1028,7 @@ export const AdminDashboard: React.FC = () => {
             {enhancedMenuItems.map((item) => (
                 <button
                     key={item.id}
-                    onClick={() => setActiveAdminTab(item.id)}
+                    onClick={() => item.id === 'reports' ? window.location.assign('/reports') : setActiveAdminTab(item.id)}
                     className={`w-full flex items-center gap-3 px-6 py-3 transition-colors ${
                         activeTab === item.id
                             ? 'bg-amber-50 text-amber-600 font-bold border-r-4 border-amber-500'
@@ -1244,7 +1254,7 @@ export const AdminDashboard: React.FC = () => {
                             <button onClick={() => setActiveAdminTab('schools')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
                                 تشغيل المدارس
                             </button>
-                            <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
+                            <a href="/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
                                 التقارير
                             </a>
                             <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
@@ -1319,7 +1329,7 @@ export const AdminDashboard: React.FC = () => {
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
                                 <h4 className="text-sm font-black text-gray-900">أداء المدارس</h4>
-                                <a href="#/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
+                                <a href="/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
                             </div>
                             <div className="space-y-3">
                                 {schoolCommandCenter.performanceWatch.length ? schoolCommandCenter.performanceWatch.map((school) => (
@@ -1520,7 +1530,7 @@ export const AdminDashboard: React.FC = () => {
                                         {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف فصل'}
                                     </p>
                                 </div>
-                                <a href="#/reports" className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white hover:bg-gray-800">
+                                <a href="/reports" className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white hover:bg-gray-800">
                                     التقارير
                                 </a>
                             </div>
@@ -1562,7 +1572,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="hidden self-center text-xs font-black text-gray-500 md:block">
                                                     {student.attempts ? `${student.average}%` : '-'}
                                                 </div>
-                                                <a href="#/reports" className="self-center rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
+                                                <a href="/reports" className="self-center rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
                                                     عرض
                                                 </a>
                                             </div>
@@ -1622,7 +1632,7 @@ export const AdminDashboard: React.FC = () => {
 
                             <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
                                 {['تقرير الطلاب الضعاف', 'تقرير نشاط الطلاب', 'تقرير الفصل', 'تقرير ولي الأمر'].map((label) => (
-                                    <a key={label} href="#/reports" className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 text-center text-xs font-black text-gray-800 hover:bg-gray-100">
+                                    <a key={label} href="/reports" className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 text-center text-xs font-black text-gray-800 hover:bg-gray-100">
                                         {label}
                                     </a>
                                 ))}

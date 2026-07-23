@@ -4878,3 +4878,19 @@ pm run smoke:operational PASS (71/71).
   - None for these two smokes.
 - Next exact task:
   1. Continue with unrelated handoff items only.
+
+## BATCH 242 - Supervisor Reports Navigation Closure (2026-07-23)
+- Status: Ready for production.
+- Scope:
+  - Added `التقارير` to the supervisor sidebar after `بوابة مدرستي`.
+  - Fixed supervisor report actions from the broken `#/reports` form to the React Router `/reports` route.
+- Gate Results:
+  - PASS: `npm run smoke:supervisor-dashboard` (3/3).
+  - PASS: `npm run smoke:reports-role` (20/20).
+  - PASS: `npm run smoke:school-portal-command` (16/16).
+  - PASS: `npm run build` (Vite production build completed).
+  - BLOCKED: `npm run typecheck -- --pretty false` exceeded the 4-minute execution limit without output.
+- Blockers:
+  - No functional blocker found in the affected dashboard/report paths.
+- Next exact task:
+  1. Verify the new production deployment and rotate exposed deployment credentials.
