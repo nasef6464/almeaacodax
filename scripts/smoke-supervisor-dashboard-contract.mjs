@@ -32,6 +32,7 @@ check("supervisor overview has a compact command center", () => {
 check("supervisor command center has quick workflow actions", () => {
   assertIncludes(dashboard, 'href="/reports"');
   assertIncludes(dashboard, "id: 'reports'");
+  assertIncludes(dashboard, "activeTab === 'quizzes'");
   assertIncludes(dashboard, "setActiveAdminTab('school-portal')");
   assertIncludes(dashboard, "setActiveAdminTab('quizzes')");
 });

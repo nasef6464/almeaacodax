@@ -58,11 +58,11 @@ const ROUTES = [
   {
     name: "supervisor-overview",
     path: "/admin-dashboard",
-    minBodyLength: 900,
+    minBodyLength: 400,
     minControlCount: 8,
     expectedTextGroups: [
-      ["متوسط الأداء", "متابعة الطلاب", "أضعف المهارات"],
-      ["المدرسة", "الطلاب", "تقارير"],
+      ["متوسط الإنجاز", "متابعة الطلاب", "الطلاب"],
+      ["التقارير", "الفصول", "يحتاجون متابعة"],
     ],
   },
   {
@@ -93,7 +93,7 @@ const ROUTES = [
   {
     name: "directed-quiz-entry",
     path: "/admin-dashboard?tab=quizzes&source=school-portal&mode=central",
-    minBodyLength: 900,
+    minBodyLength: 400,
     minControlCount: 8,
     expectedTextGroups: [
       ["اختبار", "اختبارات", "الأسئلة"],

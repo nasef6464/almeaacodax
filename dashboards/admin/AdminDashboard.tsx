@@ -1013,9 +1013,12 @@ export const AdminDashboard: React.FC = () => {
 
     useEffect(() => {
         if (!enhancedMenuItems.some((item) => item.id === activeTab)) {
+            if (user.role === Role.SUPERVISOR && activeTab === 'quizzes') {
+                return;
+            }
             setActiveTab(enhancedMenuItems[0]?.id || 'overview');
         }
-    }, [activeTab, enhancedMenuItems]);
+    }, [activeTab, enhancedMenuItems, user.role]);
 
     const renderSidebar = () => (
         <div className="py-6 space-y-1">
