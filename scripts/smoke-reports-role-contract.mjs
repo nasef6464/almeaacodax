@@ -180,11 +180,16 @@ check('admin, supervisor, and teacher reports expose separate skills and student
   assertIncludes(reportsSource, 'scopedSkillReportCards');
   assertIncludes(reportsSource, 'scopedStudentFocusCards');
   assertIncludes(reportsSource, 'scopedGroupPerformanceRows');
+  assertIncludes(reportsSource, 'scopedTeacherPerformanceRows');
+  assertIncludes(reportsSource, 'data-testid="staff-comparison-report"');
+  assertIncludes(reportsSource, 'مقارنة الفصول');
+  assertIncludes(reportsSource, 'مقارنة المعلمين');
   assertIncludes(reportsSource, 'weakestScopedGroup');
   assertIncludes(reportsSource, 'strongestScopedGroup');
   assertIncludes(reportsSource, 'buildScopedSmartRemediation');
   assertIncludes(reportsSource, 'groupRows');
   assertIncludes(reportsSource, "XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(groupRows), 'groups')");
+  assertIncludes(reportsSource, "XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(teacherRows), 'teachers')");
   assertIncludes(reportsSource, 'minSkillEvidence?: number');
   assertIncludes(reportsSource, 'earlyWeakSkillSignalCount?: number');
   assertIncludes(reportsSource, 'يتم عرض المهارات الضعيفة المؤكدة فقط بعد');

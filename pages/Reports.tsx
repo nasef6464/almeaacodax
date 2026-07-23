@@ -361,7 +361,7 @@ const getSkillRecommendation = (
 };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, enrolledPaths, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -1213,6 +1213,44 @@ const Reports: React.FC = () => {
             .filter((group) => group.attempts > 0)
             .sort((a, b) => b.averageScore - a.averageScore || a.weakStudentCount - b.weakStudentCount)[0] || null;
     }, [scopedGroupPerformanceRows]);
+    const scopedTeacherPerformanceRows = useMemo(() => {
+        if (!scopedAnalytics) return [];
+
+        const scopedGroupIds = new Set<string>([
+            ...scopedAnalytics.weakestStudents.flatMap((student) => student.groupIds || []),
+            ...scopedResults.flatMap((result) => result.studentGroupIds || []),
+        ]);
+        const scopedGroups = groups.filter((group) => scopedGroupIds.has(group.id));
+
+        return users
+            .filter((candidate) => candidate.role === Role.TEACHER)
+            .map((teacher) => {
+                const teacherGroupIds = new Set(
+                    scopedGroups
+                        .filter((group) => group.supervisorIds.includes(teacher.id) || (teacher.groupIds || []).includes(group.id))
+                        .map((group) => group.id),
+                );
+                const teacherResults = scopedResults.filter((result) =>
+                    (result.studentGroupIds || []).some((groupId) => teacherGroupIds.has(groupId)),
+                );
+                if (teacherGroupIds.size === 0 || teacherResults.length === 0) return null;
+
+                const weakStudentIds = new Set(
+                    teacherResults.filter((result) => Number(result.score || 0) < 70).map((result) => result.userId).filter(Boolean),
+                );
+                return {
+                    id: teacher.id,
+                    name: displayText(teacher.name) || displayText(teacher.email) || 'معلم',
+                    groupCount: teacherGroupIds.size,
+                    attempts: teacherResults.length,
+                    averageScore: Math.round(teacherResults.reduce((total, result) => total + Number(result.score || 0), 0) / teacherResults.length),
+                    weakStudentCount: weakStudentIds.size,
+                };
+            })
+            .filter((teacher): teacher is NonNullable<typeof teacher> => Boolean(teacher))
+            .sort((a, b) => a.averageScore - b.averageScore || b.weakStudentCount - a.weakStudentCount)
+            .slice(0, 8);
+    }, [groups, scopedAnalytics, scopedResults, users]);
     const directedFollowUpOptions = useMemo(
         () => (scopedAnalytics?.assignedFollowUps || []).filter((quiz) => {
             const mode = quiz.mode || 'regular';
@@ -1720,6 +1758,16 @@ const Reports: React.FC = () => {
                 group.weakAttempts,
             ]),
         ];
+        const teacherRows = [
+            ['المعلم', 'عدد الفصول', 'متوسط الأداء', 'طلاب متعثرون', 'محاولات'],
+            ...scopedTeacherPerformanceRows.map((teacher) => [
+                teacher.name,
+                teacher.groupCount,
+                `${teacher.averageScore}%`,
+                teacher.weakStudentCount,
+                teacher.attempts,
+            ]),
+        ];
 
         const attemptsRows = isStudentView
             ? [
@@ -1753,6 +1801,7 @@ const Reports: React.FC = () => {
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(actionRows), 'action-plan');
         if (!isStudentView) {
             XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(groupRows), 'groups');
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(teacherRows), 'teachers');
         }
         XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(attemptsRows), 'attempts');
         XLSX.writeFile(workbook, isStudentView ? 'student-performance-report.xlsx' : 'scoped-performance-report.xlsx');
@@ -2729,6 +2778,65 @@ const Reports: React.FC = () => {
                                 </div>
                                 ) : null}
                             </div>
+
+                            {showScopedAggregatedSections ? (
+                                <div data-testid="staff-comparison-report" className="mt-4 grid gap-4 xl:grid-cols-2">
+                                    <div className="rounded-3xl border border-slate-100 bg-white p-4">
+                                        <div className="mb-3 flex items-center justify-between gap-3">
+                                            <div>
+                                                <div className="text-xs font-black text-indigo-700">مقارنة الفصول</div>
+                                                <h3 className="mt-1 text-lg font-black text-gray-900">أداء الفصول داخل النطاق</h3>
+                                            </div>
+                                            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700">{scopedGroupPerformanceRows.length}</span>
+                                        </div>
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full min-w-[520px] text-right text-xs">
+                                                <thead className="border-b border-slate-100 text-slate-500">
+                                                    <tr><th className="px-2 py-2">الفصل</th><th className="px-2 py-2">المتوسط</th><th className="px-2 py-2">الطلاب الضعاف</th><th className="px-2 py-2">المحاولات</th></tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100">
+                                                    {scopedGroupPerformanceRows.map((group) => (
+                                                        <tr key={group.groupName}>
+                                                            <td className="px-2 py-2 font-black text-gray-900">{displayText(group.groupName)}</td>
+                                                            <td className="px-2 py-2 font-black text-indigo-700">{group.averageScore}%</td>
+                                                            <td className="px-2 py-2 font-bold text-rose-700">{group.weakStudentCount}</td>
+                                                            <td className="px-2 py-2 font-bold text-gray-600">{group.attempts}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {!scopedGroupPerformanceRows.length ? <div className="pt-3 text-xs font-bold text-gray-500">لا توجد نتائج كافية للمقارنة بعد.</div> : null}
+                                    </div>
+                                    <div className="rounded-3xl border border-slate-100 bg-white p-4">
+                                        <div className="mb-3 flex items-center justify-between gap-3">
+                                            <div>
+                                                <div className="text-xs font-black text-emerald-700">مقارنة المعلمين</div>
+                                                <h3 className="mt-1 text-lg font-black text-gray-900">أداء المعلمين المرتبطين</h3>
+                                            </div>
+                                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">{scopedTeacherPerformanceRows.length}</span>
+                                        </div>
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full min-w-[520px] text-right text-xs">
+                                                <thead className="border-b border-slate-100 text-slate-500">
+                                                    <tr><th className="px-2 py-2">المعلم</th><th className="px-2 py-2">الفصول</th><th className="px-2 py-2">المتوسط</th><th className="px-2 py-2">الضعاف</th></tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100">
+                                                    {scopedTeacherPerformanceRows.map((teacher) => (
+                                                        <tr key={teacher.id}>
+                                                            <td className="px-2 py-2 font-black text-gray-900">{displayText(teacher.name)}</td>
+                                                            <td className="px-2 py-2 font-bold text-gray-600">{teacher.groupCount}</td>
+                                                            <td className="px-2 py-2 font-black text-emerald-700">{teacher.averageScore}%</td>
+                                                            <td className="px-2 py-2 font-bold text-rose-700">{teacher.weakStudentCount}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {!scopedTeacherPerformanceRows.length ? <div className="pt-3 text-xs font-bold text-gray-500">لا توجد نتائج معلم مرتبطة بفصول هذا النطاق بعد.</div> : null}
+                                    </div>
+                                </div>
+                            ) : null}
 
                             <div className="rounded-3xl border border-gray-100 bg-slate-50/70 p-4">
                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-3">
