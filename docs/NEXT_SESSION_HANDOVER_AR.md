@@ -4894,3 +4894,22 @@ pm run smoke:operational PASS (71/71).
   - No functional blocker found in the affected dashboard/report paths.
 - Next exact task:
   1. Verify the new production deployment and rotate exposed deployment credentials.
+
+## BATCH 243 - Supervisor Live Closure (2026-07-23)
+- Status: Closed.
+- Scope:
+  - Preserved supervisor operational quiz routes requested by School Portal while keeping `الاختبارات` out of the simplified sidebar.
+  - Updated the live audit expectations for the compact supervisor center and mobile layout.
+- Gate Results:
+  - PASS: `npm run smoke:supervisor-dashboard` (3/3).
+  - PASS: `npm run smoke:reports-role` (20/20).
+  - PASS: `npm run smoke:school-portal-command` (16/16).
+  - PASS: `npm run smoke:supervisor-school-live` (8/8 desktop/mobile routes).
+  - PASS: Vercel production build and alias `https://almeaacodax.vercel.app`.
+  - PASS: Render deployment `dep-d9gus0jtqb8s73e97peg` live on commit `6a2d1474`.
+  - PASS: Render health `ready=true`, database connected, Redis rate-limit and queue ready.
+  - BLOCKED: Typecheck exceeded the 4-minute execution limit without output; production build passed.
+- Blockers:
+  - No affected supervisor UI or production deployment blocker remains.
+- Next exact task:
+  1. Rotate the credentials previously pasted into the chat.
