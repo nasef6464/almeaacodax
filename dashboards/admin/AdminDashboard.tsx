@@ -1,3 +1,4 @@
+// v2.2-utf8-cachebust-force-bundle-refresh
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Activity,
