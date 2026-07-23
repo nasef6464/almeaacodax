@@ -4951,7 +4951,11 @@ pm run smoke:operational PASS (71/71).
   - PASS: `git diff --check`.
 - Deploy/Commit Evidence:
   - Commit: `c6ebd365` (`feat: add supervisor report comparisons`).
-  - GitHub/main and supervisor branch, Vercel production, and Render health verification remain required for the final live closeout of this batch.
+  - GitHub/main and supervisor branch: `bc2e60b6`.
+  - Vercel production alias: `https://almeaacodax.vercel.app` (HTTP 200).
+  - Render deployment: `dep-d9gvo44vikkc73a7urug`, live on `bc2e60b6`.
+  - Render health: ready, database connected, Redis rate-limit and queue ready.
+  - Live supervisor audit: `npm run smoke:supervisor-school-live` PASS 8/8; production staff report screenshot confirms the class and teacher comparison sections render.
 - Blockers:
   - None in local code or report contract checks.
 - Next exact task:
