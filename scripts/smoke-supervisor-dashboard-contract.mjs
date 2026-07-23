@@ -57,6 +57,15 @@ check("supervisor weak-student center has scoped filters and real actions", () =
   assertIncludes(dashboard, "openStudentReport");
 });
 
+check("supervisor quick decision board exposes weekly decision metrics and alert", () => {
+  assertIncludes(dashboard, 'data-testid="supervisor-quick-decision-board"');
+  assertIncludes(dashboard, "improvedStudentsCount");
+  assertIncludes(dashboard, "pendingFollowUpCount");
+  assertIncludes(dashboard, "sendWeeklyFollowUpAlert");
+  assertIncludes(dashboard, "api.sendStudentAlert");
+  assertIncludes(dashboard, "إرسال تنبيه أسبوعي");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 

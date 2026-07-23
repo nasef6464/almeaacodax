@@ -170,6 +170,7 @@ export const AdminDashboard: React.FC = () => {
     const [weakStudentFilters, setWeakStudentFilters] = useState({ schoolId: 'all', grade: 'all', classId: 'all', status: 'all' });
     const [studentActionState, setStudentActionState] = useState<{ studentId: string; action: 'alert' | 'quiz' } | null>(null);
     const [studentActionFeedback, setStudentActionFeedback] = useState('');
+    const [weeklyAlertState, setWeeklyAlertState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
@@ -755,10 +756,11 @@ export const AdminDashboard: React.FC = () => {
         const studentsNeedingFollowUp = scopedStudents
             .map((student) => {
                 const studentResults = scopedResults.filter((result) => result.userId === student.id);
+                const orderedResults = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
                 const studentAverage = studentResults.length
                     ? Math.round(studentResults.reduce((total, result) => total + Number(result.score || 0), 0) / studentResults.length)
                     : 0;
-                const latestResult = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
+                const latestResult = orderedResults[0];
                 const studentClass = scopedGroupList.find((group) =>
                     group.type !== 'SCHOOL' &&
                     ((group.studentIds || []).includes(student.id) || (student.groupIds || []).includes(group.id)),
@@ -787,6 +789,10 @@ export const AdminDashboard: React.FC = () => {
                     : studentAverage < 70
                         ? 'watch'
                         : 'good';
+                const hasAssignedFollowUp = assignedFollowUps.some((quiz) =>
+                    (quiz.targetUserIds || []).includes(student.id)
+                    || (studentClass?.id ? (quiz.targetGroupIds || []).includes(studentClass.id) : false),
+                );
 
                 return {
                     id: student.id,
@@ -802,6 +808,9 @@ export const AdminDashboard: React.FC = () => {
                     weakSkills: topWeakSkills,
                     followUpReason,
                     status,
+                    hasAssignedFollowUp,
+                    latestScore: latestResult ? Number(latestResult.score || 0) : null,
+                    previousScore: orderedResults[1] ? Number(orderedResults[1].score || 0) : null,
                 };
             })
             .filter((student) => student.attempts === 0 || student.average < 70)
@@ -835,6 +844,13 @@ export const AdminDashboard: React.FC = () => {
         const groupsWithResults = groupPerformanceSnapshots.filter((group) => group.attempts > 0);
         const bestClass = [...groupsWithResults].sort((a, b) => b.average - a.average || b.studentCount - a.studentCount)[0] || null;
         const weakestClass = [...groupsWithResults].sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)[0] || null;
+        const improvedStudentsCount = scopedStudents.filter((student) => {
+            const results = scopedResults
+                .filter((result) => result.userId === student.id)
+                .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+            return results.length >= 2 && Number(results[0].score || 0) > Number(results[1].score || 0);
+        }).length;
+        const pendingFollowUpStudents = studentsNeedingFollowUp.filter((student) => !student.hasAssignedFollowUp);
 
         return {
             schoolCount: scopedSchoolIds.size,
@@ -845,6 +861,9 @@ export const AdminDashboard: React.FC = () => {
             averageScore,
             weakStudentsCount: studentsNeedingFollowUp.length,
             inactiveStudentsCount: studentsNeedingFollowUp.filter((student) => student.attempts === 0).length,
+            improvedStudentsCount,
+            pendingFollowUpCount: pendingFollowUpStudents.length,
+            pendingFollowUpStudents,
             weakestSkills,
             studentsNeedingFollowUp,
             strugglingStudents: studentsNeedingFollowUp,
@@ -898,6 +917,24 @@ export const AdminDashboard: React.FC = () => {
             setStudentActionFeedback('تعذر إرسال التنبيه. تحقق من اتصال الخادم ونطاق المشرف.');
         } finally {
             setStudentActionState(null);
+        }
+    };
+
+    const sendWeeklyFollowUpAlert = async () => {
+        const pendingStudents = supervisorScopeSummary.pendingFollowUpStudents;
+        if (!pendingStudents.length) return;
+        setWeeklyAlertState('sending');
+        try {
+            const weakestSkill = supervisorScopeSummary.weakestSkills[0]?.skill || 'المهارات الأساسية';
+            await api.sendStudentAlert({
+                studentIds: pendingStudents.map((student) => student.id),
+                title: 'ملخص المتابعة الأسبوعي',
+                body: `توجد ${pendingStudents.length} حالة تحتاج متابعة. ابدأ بمهارة ${weakestSkill} ثم راجع تقرير الطالب.`,
+                channels: ['in_app'],
+            });
+            setWeeklyAlertState('sent');
+        } catch {
+            setWeeklyAlertState('error');
         }
     };
 
@@ -1612,6 +1649,32 @@ export const AdminDashboard: React.FC = () => {
                                         <div className="mt-2 text-2xl font-black">{value}</div>
                                     </div>
                                 ))}
+                            </div>
+
+                            <div data-testid="supervisor-quick-decision-board" className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                                    <div>
+                                        <h4 className="text-sm font-black text-gray-900">لوحة القرار السريع</h4>
+                                        <p className="mt-1 text-xs font-bold text-gray-500">أهم أرقام هذا الأسبوع داخل نطاقك</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => void sendWeeklyFollowUpAlert()}
+                                        disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
+                                        className="rounded-lg bg-indigo-600 px-3 py-2 text-xs font-black text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {weeklyAlertState === 'sending' ? 'جارٍ الإرسال...' : 'إرسال تنبيه أسبوعي'}
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
+                                    <div className="rounded-lg bg-white p-3"><div className="text-[11px] font-black text-emerald-700">أفضل فصل</div><div className="mt-1 truncate text-sm font-black text-gray-900">{supervisorScopeSummary.bestClass?.name || 'بانتظار نتائج'}</div><div className="mt-1 text-xs font-bold text-emerald-700">{supervisorScopeSummary.bestClass ? `${supervisorScopeSummary.bestClass.average}%` : '-'}</div></div>
+                                    <div className="rounded-lg bg-white p-3"><div className="text-[11px] font-black text-rose-700">أضعف فصل</div><div className="mt-1 truncate text-sm font-black text-gray-900">{supervisorScopeSummary.weakestClass?.name || 'بانتظار نتائج'}</div><div className="mt-1 text-xs font-bold text-rose-700">{supervisorScopeSummary.weakestClass ? `${supervisorScopeSummary.weakestClass.average}%` : '-'}</div></div>
+                                    <div className="rounded-lg bg-white p-3"><div className="text-[11px] font-black text-amber-700">المهارة الأهم</div><div className="mt-1 truncate text-sm font-black text-gray-900">{supervisorScopeSummary.weakestSkills[0]?.skill || 'بانتظار نتائج'}</div><div className="mt-1 text-xs font-bold text-amber-700">{supervisorScopeSummary.weakestSkills[0] ? `${supervisorScopeSummary.weakestSkills[0].mastery}%` : '-'}</div></div>
+                                    <div className="rounded-lg bg-white p-3"><div className="text-[11px] font-black text-blue-700">تحسنوا</div><div className="mt-1 text-2xl font-black text-gray-900">{supervisorScopeSummary.improvedStudentsCount}</div><div className="mt-1 text-xs font-bold text-gray-500">مقارنة بآخر محاولة</div></div>
+                                    <div className="rounded-lg bg-white p-3"><div className="text-[11px] font-black text-purple-700">لم تتم متابعتهم</div><div className="mt-1 text-2xl font-black text-gray-900">{supervisorScopeSummary.pendingFollowUpCount}</div><div className="mt-1 text-xs font-bold text-gray-500">يحتاجون إجراءً الآن</div></div>
+                                </div>
+                                {weeklyAlertState === 'sent' ? <div role="status" className="mt-3 text-xs font-black text-emerald-700">تم إرسال التنبيه الأسبوعي للحالات غير المتابعة.</div> : null}
+                                {weeklyAlertState === 'error' ? <div role="alert" className="mt-3 text-xs font-black text-rose-700">تعذر إرسال التنبيه الأسبوعي. حاول مرة أخرى.</div> : null}
                             </div>
 
                             <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-2">
