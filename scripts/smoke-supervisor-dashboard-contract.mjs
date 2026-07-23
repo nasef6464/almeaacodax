@@ -45,6 +45,18 @@ check("supervisor analytics are scoped and derived from owned groups/students", 
   assertIncludes(dashboard, "groupSnapshots");
 });
 
+check("supervisor weak-student center has scoped filters and real actions", () => {
+  assertIncludes(dashboard, "weakStudentFilters");
+  assertIncludes(dashboard, "visibleWeakStudents");
+  assertIncludes(dashboard, "فلترة مدرسة الطلاب الضعاف");
+  assertIncludes(dashboard, "فلترة صف الطلاب الضعاف");
+  assertIncludes(dashboard, "فلترة فصل الطلاب الضعاف");
+  assertIncludes(dashboard, "sendStudentFollowUpAlert");
+  assertIncludes(dashboard, "api.sendStudentAlert");
+  assertIncludes(dashboard, "targetUserId: studentId");
+  assertIncludes(dashboard, "openStudentReport");
+});
+
 const failed = checks.filter((item) => item.status === "FAIL");
 console.log(JSON.stringify({ total: checks.length, passed: checks.length - failed.length, failed: failed.length, checks }, null, 2));
 

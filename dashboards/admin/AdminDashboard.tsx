@@ -167,6 +167,9 @@ export const AdminDashboard: React.FC = () => {
     } = useStore();
     const [activeTab, setActiveTab] = useState(() => getRequestedAdminTab() || (user.role === Role.ADMIN ? 'paths' : 'overview'));
     const [tabRequestVersion, setTabRequestVersion] = useState(0);
+    const [weakStudentFilters, setWeakStudentFilters] = useState({ schoolId: 'all', grade: 'all', classId: 'all', status: 'all' });
+    const [studentActionState, setStudentActionState] = useState<{ studentId: string; action: 'alert' | 'quiz' } | null>(null);
+    const [studentActionFeedback, setStudentActionFeedback] = useState('');
     const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
@@ -760,6 +763,14 @@ export const AdminDashboard: React.FC = () => {
                     group.type !== 'SCHOOL' &&
                     ((group.studentIds || []).includes(student.id) || (student.groupIds || []).includes(group.id)),
                 );
+                const studentSchool = scopedGroupList.find((group) =>
+                    group.type === 'SCHOOL' &&
+                    (group.id === student.schoolId || group.id === studentClass?.parentId),
+                );
+                const groupSettings = studentClass?.metadata?.settings as Record<string, unknown> | undefined;
+                const gradeName = String(
+                    groupSettings?.grade || groupSettings?.gradeName || groupSettings?.stage || groupSettings?.level || 'غير محدد',
+                ).trim();
                 const topWeakSkills = [...(latestResult?.skillsAnalysis || [])]
                     .filter((skill) => Number(skill.mastery || 0) < 70)
                     .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
@@ -780,6 +791,10 @@ export const AdminDashboard: React.FC = () => {
                 return {
                     id: student.id,
                     name: student.name,
+                    schoolId: studentSchool?.id || student.schoolId || '',
+                    schoolName: studentSchool?.name || 'بدون مدرسة',
+                    gradeName,
+                    classId: studentClass?.id || '',
                     className: studentClass?.name || 'بدون فصل',
                     average: studentAverage,
                     attempts: studentResults.length,
@@ -838,6 +853,53 @@ export const AdminDashboard: React.FC = () => {
             weakestClass,
         };
     }, [examResults, groups, quizzes, user.groupIds, user.id, user.schoolId, users]);
+
+    const visibleWeakStudents = useMemo(() => supervisorScopeSummary.studentsNeedingFollowUp.filter((student) => {
+        const matchesSchool = weakStudentFilters.schoolId === 'all' || student.schoolId === weakStudentFilters.schoolId;
+        const matchesGrade = weakStudentFilters.grade === 'all' || student.gradeName === weakStudentFilters.grade;
+        const matchesClass = weakStudentFilters.classId === 'all' || student.classId === weakStudentFilters.classId;
+        const matchesStatus = weakStudentFilters.status === 'all'
+            || (weakStudentFilters.status === 'inactive' && student.attempts === 0)
+            || (weakStudentFilters.status === 'low' && student.attempts > 0 && student.average < 70)
+            || (weakStudentFilters.status === 'urgent' && student.status === 'danger');
+        return matchesSchool && matchesGrade && matchesClass && matchesStatus;
+    }), [supervisorScopeSummary.studentsNeedingFollowUp, weakStudentFilters]);
+
+    const supervisorWeakStudentOptions = useMemo(() => {
+        const students = supervisorScopeSummary.studentsNeedingFollowUp;
+        return {
+            schools: Array.from(new Map(students.filter((student) => student.schoolId).map((student) => [student.schoolId, student.schoolName] as const)).entries()),
+            grades: Array.from(new Set(students.map((student) => student.gradeName).filter(Boolean))),
+            classes: Array.from(new Map(students.filter((student) => student.classId).map((student) => [student.classId, student.className] as const)).entries()),
+        };
+    }, [supervisorScopeSummary.studentsNeedingFollowUp]);
+
+    const openStudentReport = (studentId: string) => {
+        window.location.assign(`/reports?studentId=${encodeURIComponent(studentId)}`);
+    };
+
+    const openStudentQuiz = (studentId: string) => {
+        const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal', targetUserId: studentId });
+        window.location.hash = `/admin-dashboard?${params.toString()}`;
+    };
+
+    const sendStudentFollowUpAlert = async (student: (typeof supervisorScopeSummary.studentsNeedingFollowUp)[number]) => {
+        setStudentActionState({ studentId: student.id, action: 'alert' });
+        setStudentActionFeedback('');
+        try {
+            await api.sendStudentAlert({
+                studentIds: [student.id],
+                title: 'تنبيه متابعة دراسية',
+                body: `يرجى بدء متابعة ${student.name} عبر ${student.latestQuiz}. السبب: ${student.followUpReason}.`,
+                channels: ['in_app'],
+            });
+            setStudentActionFeedback(`تم إرسال تنبيه إلى ${student.name}.`);
+        } catch {
+            setStudentActionFeedback('تعذر إرسال التنبيه. تحقق من اتصال الخادم ونطاق المشرف.');
+        } finally {
+            setStudentActionState(null);
+        }
+    };
 
     const supervisorActionCards = useMemo(() => [
         {
@@ -1556,14 +1618,35 @@ export const AdminDashboard: React.FC = () => {
                                 <div className="rounded-xl border border-gray-100">
                                     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                                         <h4 className="text-sm font-black text-gray-900">من يحتاج متابعة؟</h4>
-                                        <span className="text-xs font-black text-gray-400">{supervisorScopeSummary.studentsNeedingFollowUp.length}</span>
+                                        <span className="text-xs font-black text-gray-400">{visibleWeakStudents.length} من {supervisorScopeSummary.studentsNeedingFollowUp.length}</span>
                                     </div>
+                                    <div className="grid grid-cols-2 gap-2 border-b border-gray-100 bg-gray-50/70 p-3 md:grid-cols-4">
+                                        <select aria-label="فلترة مدرسة الطلاب الضعاف" value={weakStudentFilters.schoolId} onChange={(event) => setWeakStudentFilters((current) => ({ ...current, schoolId: event.target.value }))} className="min-w-0 rounded-lg border border-gray-200 bg-white px-2 py-2 text-xs font-bold text-gray-700">
+                                            <option value="all">كل المدارس</option>
+                                            {supervisorWeakStudentOptions.schools.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+                                        </select>
+                                        <select aria-label="فلترة صف الطلاب الضعاف" value={weakStudentFilters.grade} onChange={(event) => setWeakStudentFilters((current) => ({ ...current, grade: event.target.value }))} className="min-w-0 rounded-lg border border-gray-200 bg-white px-2 py-2 text-xs font-bold text-gray-700">
+                                            <option value="all">كل الصفوف</option>
+                                            {supervisorWeakStudentOptions.grades.map((grade) => <option key={grade} value={grade}>{grade}</option>)}
+                                        </select>
+                                        <select aria-label="فلترة فصل الطلاب الضعاف" value={weakStudentFilters.classId} onChange={(event) => setWeakStudentFilters((current) => ({ ...current, classId: event.target.value }))} className="min-w-0 rounded-lg border border-gray-200 bg-white px-2 py-2 text-xs font-bold text-gray-700">
+                                            <option value="all">كل الفصول</option>
+                                            {supervisorWeakStudentOptions.classes.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+                                        </select>
+                                        <select aria-label="فلترة حالة الطلاب الضعاف" value={weakStudentFilters.status} onChange={(event) => setWeakStudentFilters((current) => ({ ...current, status: event.target.value }))} className="min-w-0 rounded-lg border border-gray-200 bg-white px-2 py-2 text-xs font-bold text-gray-700">
+                                            <option value="all">كل الحالات</option>
+                                            <option value="urgent">عاجل</option>
+                                            <option value="inactive">غير نشط</option>
+                                            <option value="low">منخفض التحصيل</option>
+                                        </select>
+                                    </div>
+                                    {studentActionFeedback && <div className="border-b border-gray-100 px-4 py-2 text-xs font-bold text-indigo-700" role="status">{studentActionFeedback}</div>}
                                     <div className="divide-y divide-gray-100">
-                                        {supervisorScopeSummary.studentsNeedingFollowUp.length ? supervisorScopeSummary.studentsNeedingFollowUp.map((student) => (
-                                            <div key={student.id} className="grid grid-cols-[1fr_auto] gap-3 px-4 py-3 md:grid-cols-[1.2fr_1fr_auto_auto]">
+                                        {visibleWeakStudents.length ? visibleWeakStudents.map((student) => (
+                                            <div key={student.id} className="grid gap-3 px-4 py-3 md:grid-cols-[1.3fr_1fr_auto_auto]">
                                                 <div className="min-w-0">
                                                     <div className="truncate text-sm font-black text-gray-900">{student.name}</div>
-                                                    <div className="mt-1 truncate text-xs font-bold text-gray-500">{student.className}</div>
+                                                    <div className="mt-1 truncate text-xs font-bold text-gray-500">{student.schoolName} • {student.gradeName} • {student.className}</div>
                                                 </div>
                                                 <div className={`self-center rounded-lg px-2.5 py-1 text-xs font-black ${
                                                     student.status === 'danger' ? 'bg-rose-50 text-rose-700' :
@@ -1573,14 +1656,18 @@ export const AdminDashboard: React.FC = () => {
                                                     {student.followUpReason}
                                                 </div>
                                                 <div className="hidden self-center text-xs font-black text-gray-500 md:block">
-                                                    {student.attempts ? `${student.average}%` : '-'}
+                                                    {student.attempts ? `${student.average}%` : 'لم يبدأ'}
                                                 </div>
-                                                <a href="/reports" className="self-center rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-100">
-                                                    عرض
-                                                </a>
+                                                <div className="flex flex-wrap gap-2 md:justify-end">
+                                                    <button type="button" title="فتح تقرير الطالب" aria-label={`فتح تقرير ${student.name}`} onClick={() => openStudentReport(student.id)} className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-black text-white hover:bg-gray-800">تقرير</button>
+                                                    <button type="button" title="تعيين اختبار علاجي" aria-label={`تعيين اختبار علاجي لـ ${student.name}`} onClick={() => openStudentQuiz(student.id)} className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-800 hover:bg-amber-100">اختبار</button>
+                                                    <button type="button" title="إرسال تنبيه متابعة" aria-label={`إرسال تنبيه إلى ${student.name}`} disabled={studentActionState?.studentId === student.id} onClick={() => void sendStudentFollowUpAlert(student)} className="rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 hover:bg-indigo-100 disabled:cursor-wait disabled:opacity-60">
+                                                        {studentActionState?.studentId === student.id ? 'جارٍ الإرسال...' : 'تنبيه'}
+                                                    </button>
+                                                </div>
                                             </div>
                                         )) : (
-                                            <div className="px-4 py-8 text-center text-sm font-bold text-emerald-700">لا توجد حالات عاجلة</div>
+                                            <div className="px-4 py-8 text-center text-sm font-bold text-emerald-700">لا توجد حالات مطابقة للفلاتر</div>
                                         )}
                                     </div>
                                 </div>
