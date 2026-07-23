@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
-import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
@@ -133,6 +133,9 @@ export const QuizPage: React.FC = () => {
   const [quizStatusMessage, setQuizStatusMessage] = useState<string | null>(null);
   const [quizStatusTone, setQuizStatusTone] = useState<'success' | 'info'>('info');
   const [quizScopedQuestions, setQuizScopedQuestions] = useState<Question[]>([]);
+  const [flaggedQuestionIds, setFlaggedQuestionIds] = useState<string[]>([]);
+  const [showFormulaSheet, setShowFormulaSheet] = useState(false);
+  const [videoModalUrl, setVideoModalUrl] = useState<string | null>(null);
   const [isResolvingScopedQuestions, setIsResolvingScopedQuestions] = useState(false);
   const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
   const activeQuizLoadKeyRef = useRef('');
@@ -997,6 +1000,15 @@ export const QuizPage: React.FC = () => {
               {isNightMode ? <Sun size={18} /> : <Moon size={18} />}
               {isNightMode ? 'النظام العادي' : 'النظام الليلي'}
             </button>
+            <button
+              type="button"
+              onClick={() => setShowFormulaSheet(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2 text-sm font-black text-amber-800 hover:bg-amber-100 shadow-sm"
+              title="عرض قوانين الهندسية والرياضيات الخاصة بقياس"
+            >
+              <BookOpen size={17} />
+              <span>قوانين قياس</span>
+            </button>
             {timeLeft !== null && !isFinished && (
               <div className={`${isNightMode ? 'bg-amber-950 text-amber-200' : 'bg-amber-50 text-amber-600'} self-start md:self-auto flex items-center gap-2 px-4 py-2 rounded-xl font-bold`}>
                 <Clock size={20} />
@@ -1224,6 +1236,28 @@ export const QuizPage: React.FC = () => {
                 </button>
                 <button
                   type="button"
+                  onClick={() => {
+                    if (!currentQuestion) return;
+                    setFlaggedQuestionIds((prev) =>
+                      prev.includes(currentQuestion.id)
+                        ? prev.filter((id) => id !== currentQuestion.id)
+                        : [...prev, currentQuestion.id]
+                    );
+                  }}
+                  className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs sm:text-sm font-black transition ${
+                    currentQuestion && flaggedQuestionIds.includes(currentQuestion.id)
+                      ? 'border-amber-400 bg-amber-500 text-white shadow-sm'
+                      : isNightMode
+                        ? 'border-amber-800 bg-amber-950/60 text-amber-200 hover:bg-amber-900'
+                        : 'border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100'
+                  }`}
+                  title="حفظ السؤال للمراجعة قبل التسليم"
+                >
+                  <Bookmark size={15} />
+                  <span>{currentQuestion && flaggedQuestionIds.includes(currentQuestion.id) ? 'تعليم للمراجعة 🚩' : 'حفظ للمراجعة'}</span>
+                </button>
+                <button
+                  type="button"
                   data-testid="quiz-pause-button"
                   onClick={handlePauseQuiz}
                   disabled={isSubmittingResult}
@@ -1398,10 +1432,24 @@ export const QuizPage: React.FC = () => {
                               })}
                             </div>
 
-                            {quiz.settings.showExplanations && question.explanation && (
-                              <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                                <h4 className="font-bold text-indigo-900 mb-2 text-sm">شرح الإجابة:</h4>
-                                <div className="question-html text-indigo-800 text-sm" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
+                            {(quiz.settings.showExplanations || question.videoUrl) && (
+                              <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100 space-y-3">
+                                {question.explanation && (
+                                  <div>
+                                    <h4 className="font-bold text-indigo-900 mb-1 text-sm">شرح الإجابة:</h4>
+                                    <div className="question-html text-indigo-800 text-sm leading-6" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
+                                  </div>
+                                )}
+                                {question.videoUrl && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setVideoModalUrl(question.videoUrl || null)}
+                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700 transition-colors shadow-sm"
+                                  >
+                                    <Video size={16} />
+                                    <span>مشاهدة فيديو الشرح التفصيلي للحل</span>
+                                  </button>
+                                )}
                               </div>
                             )}
                           </div>
@@ -1523,6 +1571,83 @@ export const QuizPage: React.FC = () => {
           />
         </div>
       ) : null}
+
+      {/* Qiyas Formula Sheet Modal */}
+      {showFormulaSheet && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl border border-amber-100">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="text-xl font-black text-amber-900 flex items-center gap-2">
+                <BookOpen className="text-amber-600" size={24} />
+                قوانين قياس الهندسية والرياضية المهمة
+              </h3>
+              <button onClick={() => setShowFormulaSheet(false)} className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="space-y-4 text-sm text-gray-800 leading-7">
+              <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                <h4 className="font-black text-amber-900 mb-1">📐 أشكال ومساحات هندسية</h4>
+                <ul className="list-disc list-inside space-y-1 text-amber-950">
+                  <li><strong>مساحة المثلث:</strong> (القاعدة × الارتفاع) ÷ 2</li>
+                  <li><strong>مساحة الدائرة:</strong> ط × نق² (حيث ط ≈ 3.14 أو 22/7)</li>
+                  <li><strong>محيط الدائرة:</strong> 2 × ط × نق</li>
+                  <li><strong>مساحة المستطيل:</strong> الطول × العرض</li>
+                  <li><strong>مجموع زوايا المثلث:</strong> 180 درجة | <strong>مجموع زوايا الشكل الرباعي:</strong> 360 درجة</li>
+                </ul>
+              </div>
+              <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-200">
+                <h4 className="font-black text-indigo-900 mb-1">📊 القوانين الجبرية والنسبة</h4>
+                <ul className="list-disc list-inside space-y-1 text-indigo-950">
+                  <li><strong>المتوسط الحسابي:</strong> مجموع القيم ÷ عددها</li>
+                  <li><strong>النسبة المئوية:</strong> (الجزء ÷ الكل) × 100%</li>
+                  <li><strong>السرعة:</strong> المسافة ÷ الزمن</li>
+                  <li><strong>الربح الصافي:</strong> البيع - التكلفة</li>
+                </ul>
+              </div>
+            </div>
+            <div className="pt-2 text-left">
+              <button onClick={() => setShowFormulaSheet(false)} className="px-5 py-2.5 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700">
+                فهمت، العودة للاختبار
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Question Video Explanation Modal */}
+      {videoModalUrl && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl p-5 max-w-3xl w-full space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="text-lg font-black text-indigo-900 flex items-center gap-2">
+                <Video className="text-indigo-600" size={22} />
+                فيديو الشرح التفصيلي للحل
+              </h3>
+              <button onClick={() => setVideoModalUrl(null)} className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200">
+                <XCircle size={20} />
+              </button>
+            </div>
+            <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black">
+              {videoModalUrl.includes('youtube.com') || videoModalUrl.includes('youtu.be') ? (
+                <iframe
+                  src={videoModalUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')}
+                  className="w-full h-full"
+                  allowFullScreen
+                  title="شرح السؤال"
+                />
+              ) : (
+                <video src={videoModalUrl} controls className="w-full h-full" autoPlay />
+              )}
+            </div>
+            <div className="text-left">
+              <button onClick={() => setVideoModalUrl(null)} className="px-5 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200">
+                إغلاق الشرح
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

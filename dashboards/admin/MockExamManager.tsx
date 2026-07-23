@@ -34,16 +34,16 @@ const buildQiyasSections = (pathName: string | undefined, pathSubjects: Array<{ 
 
   if (isTahsili) {
     const tahsiliSubjects = [
-      { title: 'الرياضيات', keywords: ['رياضيات', 'math'] },
-      { title: 'الفيزياء', keywords: ['فيزياء', 'physics'] },
-      { title: 'الكيمياء', keywords: ['كيمياء', 'chemistry'] },
-      { title: 'الأحياء', keywords: ['أحياء', 'احياء', 'biology'] },
+      { title: 'القسم الأول - الرياضيات', keywords: ['رياضيات', 'math'], domain: 'math' as const },
+      { title: 'القسم الثاني - الفيزياء', keywords: ['فيزياء', 'physics'], domain: 'physics' as const },
+      { title: 'القسم الثالث - الكيمياء', keywords: ['كيمياء', 'chemistry'], domain: 'chemistry' as const },
+      { title: 'القسم الرابع - الأحياء', keywords: ['أحياء', 'احياء', 'biology'], domain: 'biology' as const },
     ];
 
     const matchedSections = tahsiliSubjects
       .map((item, index) => {
         const subject = findSubjectByKeywords(pathSubjects, item.keywords);
-        return subject ? createSection(item.title, subject.id, index) : null;
+        return subject ? { ...createSection(item.title, subject.id, index), domain: item.domain, isStrictSectionLock: true, timeLimit: 25 } : null;
       })
       .filter(Boolean) as DraftSection[];
 
@@ -54,18 +54,18 @@ const buildQiyasSections = (pathName: string | undefined, pathSubjects: Array<{ 
     const quantitativeSubject = findSubjectByKeywords(pathSubjects, ['كمي', 'الكمي', 'quant']);
     const verbalSubject = findSubjectByKeywords(pathSubjects, ['لفظي', 'اللفظي', 'verbal']);
     const qudratSections = [
-      { title: 'القسم الأول - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '' },
-      { title: 'القسم الثاني - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '' },
-      { title: 'القسم الثالث - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '' },
-      { title: 'القسم الرابع - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '' },
+      { title: 'القسم الأول - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '', domain: 'quantitative' as const },
+      { title: 'القسم الثاني - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '', domain: 'verbal' as const },
+      { title: 'القسم الثالث - كمي', subjectId: quantitativeSubject?.id || pathSubjects[0]?.id || '', domain: 'quantitative' as const },
+      { title: 'القسم الرابع - لفظي', subjectId: verbalSubject?.id || pathSubjects[1]?.id || pathSubjects[0]?.id || '', domain: 'verbal' as const },
     ];
 
     return qudratSections
       .filter((section) => section.subjectId)
-      .map((section, index) => ({ ...createSection(section.title, section.subjectId, index), timeLimit: 25 }));
+      .map((section, index) => ({ ...createSection(section.title, section.subjectId, index), domain: section.domain, isStrictSectionLock: true, timeLimit: 25 }));
   }
 
-  return pathSubjects.slice(0, 4).map((subject, index) => ({ ...createSection(subject.name, subject.id, index), timeLimit: 25 }));
+  return pathSubjects.slice(0, 4).map((subject, index) => ({ ...createSection(subject.name, subject.id, index), domain: 'general' as const, isStrictSectionLock: true, timeLimit: 25 }));
 };
 
 export const MockExamManager: React.FC = () => {

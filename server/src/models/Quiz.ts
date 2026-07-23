@@ -55,6 +55,9 @@ const quizSchema = new Schema(
     mockExam: {
       enabled: { type: Boolean, default: false, index: true },
       pathId: { type: String, default: "" },
+      qiyasCategory: { type: String, default: "qudrat" },
+      targetScore: { type: Number, default: 90 },
+      isStrictSectionLock: { type: Boolean, default: true },
       sections: {
         type: [
           {
@@ -64,6 +67,8 @@ const quizSchema = new Schema(
             questionIds: { type: [String], default: [] },
             timeLimit: { type: Number, default: null },
             order: { type: Number, default: 0 },
+            domain: { type: String, default: "general" },
+            isStrictSectionLock: { type: Boolean, default: true },
           },
         ],
         default: [],

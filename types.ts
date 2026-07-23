@@ -396,12 +396,17 @@ export interface MockExamSection {
     questionIds: string[];
     timeLimit?: number;
     order?: number;
+    domain?: 'quantitative' | 'verbal' | 'math' | 'physics' | 'chemistry' | 'biology' | 'general';
+    isStrictSectionLock?: boolean;
 }
 
 export interface MockExamConfig {
     enabled: boolean;
     pathId: string;
     sections: MockExamSection[];
+    qiyasCategory?: 'qudrat' | 'tahsili' | 'specialized';
+    targetScore?: number;
+    isStrictSectionLock?: boolean;
 }
 
 export interface Quiz extends ContentWorkflow {
