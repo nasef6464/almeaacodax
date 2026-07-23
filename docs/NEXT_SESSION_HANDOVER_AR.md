@@ -4960,3 +4960,26 @@ pm run smoke:operational PASS (71/71).
   - None in local code or report contract checks.
 - Next exact task:
   1. Build phase three: a compact quick-decision board with weekly alerts and action queues for supervisors.
+
+## BATCH 246 - Supervisor Phase Three Quick Decision Board (2026-07-23)
+- Status: Closed.
+- Scope:
+  - Added a compact decision board inside the supervisor overview with best class, weakest class, top weak skill, improved students, and pending follow-up cases.
+  - Added a weekly alert action that sends an in-app notification only to scoped students who need follow-up and have no targeted quiz assigned.
+  - Kept the board responsive for desktop and mobile and preserved the existing weak-student filters and direct actions.
+- Gate Results:
+  - PASS: `npm run typecheck -- --pretty false`.
+  - PASS: `npm run build`.
+  - PASS: `npm run smoke:supervisor-dashboard` (5/5).
+  - PASS: `npm run smoke:supervisor-school-live` (8/8 desktop/mobile production routes).
+  - PASS: production Vercel page HTTP 200 and Render health ready with database/Redis ready.
+- Deploy/Commit Evidence:
+  - Commit: `dac5ca09` (`feat: add supervisor quick decision board`).
+  - GitHub/main and supervisor branch: `dac5ca09`.
+  - Vercel production alias: `https://almeaacodax.vercel.app`.
+  - Render deployment: `dep-d9h05nrbc2fs739dtin0`, live on `dac5ca09`.
+  - Visual evidence: latest live supervisor desktop and mobile screenshots show the decision board without overflow.
+- Blockers:
+  - None for the three supervisor dashboard phases.
+- Next exact task:
+  1. Move to the next product area; keep the supervisor dashboard in regression monitoring.
