@@ -4913,3 +4913,26 @@ pm run smoke:operational PASS (71/71).
   - No affected supervisor UI or production deployment blocker remains.
 - Next exact task:
   1. Rotate the credentials previously pasted into the chat.
+
+## BATCH 244 - Supervisor Phase One Weak-Student Center (2026-07-23)
+- Status: Closed.
+- Scope:
+  - Added school, grade, class, and status filters to the supervisor weak-student center.
+  - Added priority classification, reason, school/class context, and direct actions for report, directed therapeutic quiz, and in-app follow-up alert.
+  - Kept the data source scoped to the supervisor's owned school/classes and reused existing notification and directed-quiz APIs.
+- Gate Results:
+  - PASS: `npm run typecheck -- --pretty false`.
+  - PASS: `npm run build`.
+  - PASS: `npm run smoke:supervisor-dashboard` (4/4).
+  - PASS: `npm run smoke:reports-role` (20/20).
+  - PASS: `npm run smoke:school-portal-command` (16/16).
+  - PASS: `npm run smoke:supervisor-school-live` (8/8 desktop/mobile production routes).
+- Deploy/Commit Evidence:
+  - GitHub/main and supervisor branch: `f5795b57`.
+  - Vercel production alias: `https://almeaacodax.vercel.app`.
+  - Render deployment: `dep-d9gvdqjtqb8s73eaa7cg`, live on `f5795b57`.
+  - Health: database connected, Redis rate-limit and queue ready.
+- Blockers:
+  - None for phase one.
+- Next exact task:
+  1. Start phase two: scoped smart reports and PDF/Excel summaries.
