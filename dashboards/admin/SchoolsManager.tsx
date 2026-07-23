@@ -3223,137 +3223,102 @@ export const SchoolsManager: React.FC = () => {
                     </div>
                 )}
 
-                <section data-testid="school-ux-launch-board" className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                    <div className="grid gap-0 lg:grid-cols-[0.95fr_1.35fr]">
-                        <div className={`p-6 ${
-                            readinessScore === readinessChecks.length
-                                ? 'bg-emerald-50'
-                                : readinessScore >= 3
-                                    ? 'bg-amber-50'
-                                    : 'bg-rose-50'
-                        }`}>
+                <section data-testid="school-ux-launch-board" className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm p-6 space-y-6">
+                    {/* Header Row: Back button, Name, Readiness Badge, and Action Pills */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
                             <button
                                 type="button"
                                 onClick={() => { setManagementError(null); setManagementNotice(null); setIsDeleteSchoolConfirmOpen(false); setSelectedSchool(null); }}
-                                className="mb-5 inline-flex items-center text-sm font-black text-slate-600 hover:text-slate-900"
+                                className="mb-2 inline-flex items-center text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors"
                             >
                                 &rarr; عودة لقائمة المدارس
                             </button>
-                            <div className="flex flex-wrap items-center gap-2">
-                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-2xl font-black text-gray-950">{selectedSchool.name}</h2>
+                                <span className={`rounded-full px-3 py-1 text-xs font-black border ${
                                     readinessScore === readinessChecks.length
-                                        ? 'bg-white text-emerald-700'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                         : readinessScore >= 3
-                                            ? 'bg-white text-amber-800'
-                                            : 'bg-white text-rose-700'
+                                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                            : 'bg-rose-50 text-rose-700 border-rose-200'
                                 }`}>
-                                    {readinessStatusLabel}
-                                </span>
-                                <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-black text-slate-600">
-                                    {readinessPercent}% جاهزية
+                                    {readinessStatusLabel} ({readinessPercent}%)
                                 </span>
                             </div>
-                            <h2 className="mt-4 text-2xl font-black leading-9 text-gray-950">{selectedSchool.name}</h2>
-                            <p data-testid="school-ux-next-action" className="mt-2 text-sm font-bold leading-7 text-gray-700">{readinessNextStep}</p>
-                            <div className="mt-5">
-                                <div className="mb-2 flex items-center justify-between text-xs font-black text-slate-600">
-                                    <span>جاهزية التشغيل</span>
-                                    <span>{readinessScore}/{readinessChecks.length}</span>
-                                </div>
-                                <div className="h-3 overflow-hidden rounded-full bg-white">
-                                    <div
-                                        className={`h-full rounded-full ${
-                                            readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-rose-500'
-                                        }`}
-                                        style={{ width: `${readinessPercent}%` }}
-                                    />
-                                </div>
+                            <p data-testid="school-ux-next-action" className="mt-1.5 text-xs font-bold leading-6 text-gray-600">{readinessNextStep}</p>
+                        </div>
+                        
+                        {/* Progress Bar & Gaps Quick Pill */}
+                        <div className="min-w-[240px] space-y-2">
+                            <div className="flex justify-between items-center text-xs font-black text-gray-500">
+                                <span>نسبة الإنجاز</span>
+                                <span>{readinessScore}/{readinessChecks.length} خطوات</span>
                             </div>
-                            <div className="mt-5 rounded-2xl bg-white/85 p-4">
-                                <div className="text-sm font-black text-gray-900">أهم 3 نواقص فقط</div>
-                                {visibleReadinessGaps.length === 0 ? (
-                                    <p className="mt-2 text-sm font-bold text-emerald-700">لا توجد نواقص تشغيلية تمنع التجربة.</p>
-                                ) : (
-                                    <div className="mt-3 space-y-2">
-                                        {visibleReadinessGaps.map((gap) => (
-                                            <button
-                                                key={gap.label}
-                                                type="button"
-                                                onClick={() => {
-                                                    setActiveTab(gap.tab);
-                                                    setExpandedSchoolStep(gap.tab);
-                                                }}
-                                                className="block w-full rounded-xl border border-slate-100 bg-white px-3 py-2 text-right text-xs font-bold leading-5 text-slate-700 transition-colors hover:bg-slate-50"
-                                            >
-                                                <span className="block font-black text-gray-900">{gap.label}</span>
-                                                {gap.hint}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
+                            <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 p-0.5">
+                                <div
+                                    className={`h-full rounded-full transition-all duration-500 ${
+                                        readinessScore === readinessChecks.length ? 'bg-emerald-500' : readinessScore >= 3 ? 'bg-amber-500' : 'bg-rose-500'
+                                    }`}
+                                    style={{ width: `${readinessPercent}%` }}
+                                />
                             </div>
                         </div>
-                        <div className="p-5 lg:p-6">
-                            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                                <div>
-                                    <div className="text-xs font-black text-slate-500">خطوات تشغيل المدرسة</div>
-                                    <h3 className="text-lg font-black text-gray-950">افتح خطوة واحدة فقط للعمل عليها</h3>
-                                </div>
-                                {expandedSchoolStep && (
+                    </div>
+
+                    {/* 5-Step Workflow Stepper Bar */}
+                    <div>
+                        <div className="mb-3 flex items-center justify-between">
+                            <h3 className="text-sm font-black text-gray-900">مسار إعداد ومتابعة المدرسة</h3>
+                            {expandedSchoolStep && (
+                                <button
+                                    type="button"
+                                    onClick={() => setExpandedSchoolStep(null)}
+                                    className="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-black text-slate-700 hover:bg-slate-200"
+                                >
+                                    إغلاق التفاصيل
+                                </button>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                            {commercialOperatingSteps.map((step, index) => {
+                                const isOpen = expandedSchoolStep === step.tab;
+                                return (
                                     <button
+                                        key={step.id}
                                         type="button"
-                                        onClick={() => setExpandedSchoolStep(null)}
-                                        className="w-fit rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-200"
+                                        data-testid={`school-ux-step-${step.id}`}
+                                        onClick={() => {
+                                            setActiveTab(step.tab);
+                                            setExpandedSchoolStep((current) => (current === step.tab ? null : step.tab));
+                                        }}
+                                        className={`rounded-2xl border p-3.5 text-right transition-all flex flex-col justify-between h-full ${
+                                            isOpen
+                                                ? 'border-indigo-600 bg-indigo-950 text-white shadow-md'
+                                                : step.isReady
+                                                    ? 'border-emerald-100 bg-emerald-50/60 hover:bg-emerald-100/80 text-emerald-950'
+                                                    : 'border-slate-100 bg-slate-50/60 hover:bg-slate-100 text-slate-900'
+                                        }`}
                                     >
-                                        إغلاق التفاصيل
-                                    </button>
-                                )}
-                            </div>
-                            <div className="grid gap-3">
-                                {commercialOperatingSteps.map((step, index) => {
-                                    const isOpen = expandedSchoolStep === step.tab;
-                                    return (
-                                        <button
-                                            key={step.id}
-                                            type="button"
-                                            data-testid={`school-ux-step-${step.id}`}
-                                            onClick={() => {
-                                                setActiveTab(step.tab);
-                                                setExpandedSchoolStep((current) => (current === step.tab ? null : step.tab));
-                                            }}
-                                            className={`grid gap-3 rounded-2xl border p-4 text-right transition-colors sm:grid-cols-[auto_1fr_auto] sm:items-center ${
-                                                isOpen
-                                                    ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
-                                                    : step.isReady
-                                                        ? 'border-emerald-100 bg-emerald-50 hover:bg-emerald-100'
-                                                        : 'border-slate-100 bg-white hover:bg-slate-50'
-                                            }`}
-                                        >
-                                            <span className={`flex h-11 w-11 items-center justify-center rounded-2xl text-base font-black ${
-                                                isOpen ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-700'
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className={`flex h-7 w-7 items-center justify-center rounded-xl text-xs font-black ${
+                                                isOpen ? 'bg-white/20 text-white' : 'bg-white text-slate-700 shadow-sm border border-slate-100'
                                             }`}>
                                                 {index + 1}
                                             </span>
-                                            <span>
-                                                <span className={`block text-base font-black ${isOpen ? 'text-white' : 'text-gray-950'}`}>{step.title}</span>
-                                                <span className={`mt-1 block text-xs font-bold leading-5 ${isOpen ? 'text-white/75' : 'text-slate-600'}`}>{step.description}</span>
+                                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
+                                                isOpen ? 'bg-white/20 text-white' : step.isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                                            }`}>
+                                                {step.statusLabel}
                                             </span>
-                                            <span className="flex flex-wrap gap-2 sm:justify-end">
-                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
-                                                    isOpen ? 'bg-white/15 text-white' : step.isReady ? 'bg-white text-emerald-700' : 'bg-slate-100 text-slate-700'
-                                                }`}>
-                                                    {step.statusLabel}
-                                                </span>
-                                                <span className={`rounded-full px-3 py-1 text-xs font-black ${
-                                                    isOpen ? 'bg-white/15 text-white' : 'bg-white text-slate-700'
-                                                }`}>
-                                                    {step.metric}
-                                                </span>
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
+                                        </div>
+                                        <div>
+                                            <span className={`block text-xs font-black ${isOpen ? 'text-white' : 'text-gray-950'}`}>{step.title}</span>
+                                            <span className={`mt-0.5 block text-[11px] font-bold ${isOpen ? 'text-white/70' : 'text-slate-500'}`}>{step.metric}</span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 </section>
