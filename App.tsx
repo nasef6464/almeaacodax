@@ -57,6 +57,8 @@ const BarcodeTest = React.lazy(() => import('./pages/BarcodeTest'));
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
 const AdminDashboard = React.lazy(() => loadAdminDashboardModule().then(module => ({ default: module.AdminDashboard })));
+const loadSupervisorDashboardModule = () => import('./dashboards/admin/SupervisorDashboard');
+const SupervisorDashboard = React.lazy(() => loadSupervisorDashboardModule().then(module => ({ default: module.SupervisorDashboard })));
 
 const prefetchCommonRouteModules = (role?: string | null) => {
   void import('./pages/Dashboard');
@@ -65,8 +67,11 @@ const prefetchCommonRouteModules = (role?: string | null) => {
   void import('./pages/MockExams');
   void import('./pages/Courses');
 
-  if (role === 'admin' || role === 'teacher' || role === 'supervisor') {
+  if (role === 'admin' || role === 'teacher') {
     void loadAdminDashboardModule();
+  }
+  if (role === 'supervisor') {
+    void loadSupervisorDashboardModule();
   }
 };
 
@@ -901,7 +906,13 @@ const App: React.FC = () => {
           {/* Admin Routes */}
           <Route path="/admin-dashboard" element={staffDashboard} />
           <Route path="/instructor-dashboard" element={staffDashboard} />
-          <Route path="/supervisor-dashboard" element={staffDashboard} />
+          <Route path="/supervisor-dashboard" element={
+            <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
+              <Suspense fallback={<LoadingFallback />}>
+                <SupervisorDashboard />
+              </Suspense>
+            </RequireRole>
+          } />
           <Route
             path="/parent-dashboard"
             element={
