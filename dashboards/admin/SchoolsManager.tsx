@@ -6139,26 +6139,37 @@ export const SchoolsManager: React.FC = () => {
                             key={school.id}
                             data-testid="school-card"
                             data-cleanup-draft={cardOperationalSnapshot.isCommerciallyHiddenDraft ? 'true' : 'false'}
-                            className={`bg-white rounded-2xl p-6 border shadow-sm hover:shadow-md transition-all group ${
+                            className={`bg-white rounded-3xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 ${
                                 cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all'
                                     ? 'border-amber-200 bg-amber-50/30'
-                                    : 'border-gray-100'
+                                    : 'border-slate-100 hover:border-indigo-100'
                             }`}
                         >
                             <div className="relative flex justify-between items-start mb-4">
-                                <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                                <div className="w-13 h-13 bg-indigo-50/80 border border-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
                                     <Building2 size={24} />
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => toggleSchoolActions(school.id)}
-                                    className="text-gray-400 hover:text-gray-600"
-                                    title="إجراءات تشغيل المدرسة"
-                                >
-                                    <MoreVertical size={18} />
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <span className={`px-2.5 py-1 rounded-full text-[11px] font-black border ${
+                                        cardReadinessScore === cardReadinessTotal
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                            : cardReadinessScore >= 2
+                                                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                                : 'bg-rose-50 text-rose-700 border-rose-200'
+                                    }`}>
+                                        {cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل 🟢' : 'قيد التجهيز 🟠'}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleSchoolActions(school.id)}
+                                        className="rounded-xl p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                        title="إجراءات تشغيل المدرسة"
+                                    >
+                                        <MoreVertical size={18} />
+                                    </button>
+                                </div>
                                 {activeSchoolActionsId === school.id && (
-                                    <div className="absolute z-20 mt-2 min-w-[170px] rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
+                                    <div className="absolute left-0 top-10 z-20 min-w-[180px] rounded-2xl border border-gray-100 bg-white p-1.5 shadow-xl animate-in fade-in zoom-in-95 duration-150">
                                         <button
                                             type="button"
                                             onClick={() => {
@@ -6166,7 +6177,7 @@ export const SchoolsManager: React.FC = () => {
                                                 setSelectedSchool(school);
                                                 setActiveTab('overview');
                                             }}
-                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                            className="w-full rounded-xl px-3 py-2 text-right text-xs font-bold text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
                                         >
                                             فتح التشغيل
                                         </button>
@@ -6177,7 +6188,7 @@ export const SchoolsManager: React.FC = () => {
                                                 setSelectedSchool(school);
                                                 setActiveTab('relations');
                                             }}
-                                            className="w-full rounded-lg px-3 py-2 text-right text-sm text-gray-700 hover:bg-gray-50"
+                                            className="w-full rounded-xl px-3 py-2 text-right text-xs font-bold text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
                                         >
                                             المشرفون والتسليم
                                         </button>
@@ -6186,44 +6197,44 @@ export const SchoolsManager: React.FC = () => {
                             </div>
 
                             {cardOperationalSnapshot.isCommerciallyHiddenDraft && schoolListMode === 'all' && (
-                                <div data-testid="school-card-cleanup-badge" className="mb-3 rounded-xl border border-amber-200 bg-white px-3 py-2 text-xs font-black leading-5 text-amber-800">
+                                <div data-testid="school-card-cleanup-badge" className="mb-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-3.5 py-2 text-xs font-black leading-5 text-amber-900 shadow-sm">
                                     مسودة/تجربة معزولة عن الأولوية التجارية. راجعها قبل حذفها حتى لا تحذف عقدًا حقيقيًا بالخطأ.
                                 </div>
                             )}
 
-                            <h3 className="text-lg font-bold text-gray-900 mb-1">{school.name}</h3>
-                            <p data-testid="school-card-operating-copy" className="text-sm text-gray-500 mb-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقة/مسارات، أكواد، ثم تقرير تسليم.</p>
+                            <h3 className="text-lg font-black text-gray-900 mb-1">{school.name}</h3>
+                            <p data-testid="school-card-operating-copy" className="text-xs text-gray-500 mb-4 leading-5">مسار تشغيل المدرسة: فصول، طلاب، مشرفون، باقة/مسارات، أكواد، ثم تقرير تسليم.</p>
 
-                            <div data-testid="school-card-readiness" className={`mb-3 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between ${
+                            <div data-testid="school-card-readiness" className={`mb-2.5 rounded-2xl px-3.5 py-2 text-xs font-bold flex items-center justify-between border ${
                                 cardReadinessScore === cardReadinessTotal
-                                    ? 'bg-emerald-50 text-emerald-700'
+                                    ? 'bg-emerald-50/70 text-emerald-800 border-emerald-100'
                                     : cardReadinessScore >= 2
-                                        ? 'bg-amber-50 text-amber-700'
-                                        : 'bg-red-50 text-red-700'
+                                        ? 'bg-amber-50/70 text-amber-800 border-amber-100'
+                                        : 'bg-rose-50/70 text-rose-800 border-rose-100'
                             }`}>
-                                <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال'}</span>
-                                <span>{cardReadinessScore}/{cardReadinessTotal}</span>
+                                <span>{cardReadinessScore === cardReadinessTotal ? 'جاهزة للتشغيل' : 'تحتاج استكمال المسار'}</span>
+                                <span className="font-black">{cardReadinessScore}/{cardReadinessTotal}</span>
                             </div>
-                            <div data-testid="school-card-readiness-progress" className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100">
+                            <div data-testid="school-card-readiness-progress" className="mb-4 h-2 overflow-hidden rounded-full bg-gray-100 p-0.5">
                                 <div
-                                    className={`h-full rounded-full ${
+                                    className={`h-full rounded-full transition-all duration-500 ${
                                         cardReadinessScore === cardReadinessTotal
-                                            ? 'bg-emerald-500'
+                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
                                             : cardReadinessScore >= 2
-                                                ? 'bg-amber-500'
-                                                : 'bg-red-500'
+                                                ? 'bg-gradient-to-r from-amber-400 to-amber-500'
+                                                : 'bg-gradient-to-r from-rose-500 to-red-500'
                                     }`}
                                     style={{ width: `${Math.round((cardReadinessScore / cardReadinessTotal) * 100)}%` }}
                                 />
                             </div>
-                            <div data-testid="school-card-next-action-panel" className="mb-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
-                                <div className="mb-2 flex items-center justify-between gap-2">
-                                    <p className="text-xs font-black text-gray-500">الخطوة التالية</p>
-                                    <span className="rounded-full bg-white px-2 py-1 text-[11px] font-black text-gray-600">
+                            <div data-testid="school-card-next-action-panel" className="mb-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-3.5 space-y-3">
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="text-[11px] font-black text-gray-400">الخطوة التالية</p>
+                                    <span className="rounded-full bg-white border border-gray-100 px-2.5 py-0.5 text-[11px] font-black text-gray-700 shadow-sm">
                                         {nextCardAction ? nextCardAction.label : 'جاهزة'}
                                     </span>
                                 </div>
-                                <p className="text-sm font-bold text-gray-800">
+                                <p className="text-xs font-bold text-gray-800 leading-5">
                                     {nextCardAction ? nextCardAction.hint : 'افتح تشغيل المدرسة لمراجعة التسليم أو التقرير.'}
                                 </p>
                                 <button
@@ -6233,11 +6244,11 @@ export const SchoolsManager: React.FC = () => {
                                         setSelectedSchool(school);
                                         setActiveTab(nextCardAction?.tab || 'overview');
                                     }}
-                                    className="mt-3 w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-gray-800"
+                                    className="w-full rounded-xl bg-indigo-600 px-3.5 py-2.5 text-xs font-black text-white transition-all hover:bg-indigo-700 shadow-md shadow-indigo-100"
                                 >
                                     {nextCardAction ? `ابدأ: ${nextCardAction.label}` : 'فتح مراجعة التسليم'}
                                 </button>
-                                <div className="mt-3 grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1">
                                     {cardReadinessActions.map((action) => (
                                         <button
                                             key={action.label}
@@ -6247,30 +6258,30 @@ export const SchoolsManager: React.FC = () => {
                                                 setSelectedSchool(school);
                                                 setActiveTab(action.tab);
                                             }}
-                                            className={`rounded-lg px-2 py-1.5 text-[11px] font-black transition-colors ${
+                                            className={`rounded-xl px-2 py-1.5 text-[10px] font-black transition-all border ${
                                                 action.isReady
-                                                    ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                                                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100'
+                                                    : 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100'
                                             }`}
                                         >
-                                            {action.label}
+                                            {action.label} {action.isReady ? '✓' : '•'}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-3 mb-5">
-                                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                                    <p className="text-xs text-gray-500 mb-1">طلاب</p>
-                                    <p className="font-bold text-gray-900">{schoolStudents.length}</p>
+                            <div className="grid grid-cols-3 gap-2.5 mb-5">
+                                <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
+                                    <p className="text-[11px] text-gray-500 font-bold mb-0.5">طلاب</p>
+                                    <p className="font-black text-gray-900 text-sm">{schoolStudents.length}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                                    <p className="text-xs text-gray-500 mb-1">باقات نشطة</p>
-                                    <p className="font-bold text-gray-900">{activePackageCount}</p>
+                                <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
+                                    <p className="text-[11px] text-gray-500 font-bold mb-0.5">باقات</p>
+                                    <p className="font-black text-gray-900 text-sm">{activePackageCount}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                                    <p className="text-xs text-gray-500 mb-1">أكواد</p>
-                                    <p className="font-bold text-gray-900">{schoolCodes.length}</p>
+                                <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-2.5 text-center">
+                                    <p className="text-[11px] text-gray-500 font-bold mb-0.5">أكواد</p>
+                                    <p className="font-black text-gray-900 text-sm">{schoolCodes.length}</p>
                                 </div>
                             </div>
 
@@ -6281,7 +6292,7 @@ export const SchoolsManager: React.FC = () => {
                                     setSelectedSchool(school);
                                     setActiveTab('overview');
                                 }}
-                                className="w-full bg-gray-900 text-white py-2.5 rounded-xl font-bold hover:bg-gray-800 transition-colors"
+                                className="w-full bg-slate-900 text-white py-3 rounded-2xl font-black hover:bg-black transition-all shadow-md text-xs"
                             >
                                 فتح تشغيل المدرسة
                             </button>

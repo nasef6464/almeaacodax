@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Activity,
     Bell,
@@ -127,8 +127,8 @@ type OperationalStatus = {
 const AdminTabLoading = () => (
     <div className="rounded-3xl border border-gray-100 bg-white p-10 text-center shadow-sm">
         <div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-2xl bg-indigo-50" />
-        <div className="text-sm font-black text-gray-700">Ø¬Ø§Ø±ÙŠ ØªØ¬Ù‡ÙŠØ² Ø§Ù„Ù‚Ø³Ù…...</div>
-        <div className="mt-2 text-xs text-gray-400">ÙŠØªÙ… ØªØ­Ù…ÙŠÙ„ Ø£Ø¯ÙˆØ§Øª Ø§Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© ÙÙ‚Ø·.</div>
+        <div className="text-sm font-black text-gray-700">جاري تجهيز القسم...</div>
+        <div className="mt-2 text-xs text-gray-400">يتم تحميل أدوات الإدارة المطلوبة فقط.</div>
     </div>
 );
 
@@ -167,10 +167,6 @@ export const AdminDashboard: React.FC = () => {
     } = useStore();
     const [activeTab, setActiveTab] = useState(() => getRequestedAdminTab() || (user.role === Role.ADMIN ? 'paths' : 'overview'));
     const [tabRequestVersion, setTabRequestVersion] = useState(0);
-    const [weakStudentFilters, setWeakStudentFilters] = useState({ schoolId: 'all', grade: 'all', classId: 'all', status: 'all' });
-    const [studentActionState, setStudentActionState] = useState<{ studentId: string; action: 'alert' | 'quiz' } | null>(null);
-    const [studentActionFeedback, setStudentActionFeedback] = useState('');
-    const [weeklyAlertState, setWeeklyAlertState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [selectedLibrarySubjectId, setSelectedLibrarySubjectId] = useState('');
     const [aiStatus, setAiStatus] = useState<AiStatus | null>(null);
     const [aiStatusLoading, setAiStatusLoading] = useState(false);
@@ -212,8 +208,8 @@ export const AdminDashboard: React.FC = () => {
             setOperationalStatus(operationsResponse as OperationalStatus);
         } catch (error) {
             console.error('Failed to load AI status', error);
-            setAiStatusError('ØªØ¹Ø°Ø± Ù‚Ø±Ø§Ø¡Ø© Ø­Ø§Ù„Ø© Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ Ø§Ù„Ø¢Ù†. ØªØ£ÙƒØ¯ Ù…Ù† ØªØ´ØºÙŠÙ„ Ø§Ù„Ø®Ø§Ø¯Ù… Ø«Ù… Ø£Ø¹Ø¯ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©.');
-            setOperationalStatusError('ØªØ¹Ø°Ø± Ù‚Ø±Ø§Ø¡Ø© Ø­Ø§Ù„Ø© Ø§Ù„ØªØ´ØºÙŠÙ„ Ù…Ù† Ø§Ù„Ø®Ø§Ø¯Ù… Ø§Ù„Ø¢Ù†.');
+            setAiStatusError('تعذر قراءة حالة الذكاء الاصطناعي الآن. تأكد من تشغيل الخادم ثم أعد المحاولة.');
+            setOperationalStatusError('تعذر قراءة حالة التشغيل من الخادم الآن.');
         } finally {
             setAiStatusLoading(false);
         }
@@ -348,16 +344,16 @@ export const AdminDashboard: React.FC = () => {
 
         const nextActions = [
             overviewStats.pendingReview > 0
-                ? `Ø±Ø§Ø¬Ø¹ ${overviewStats.pendingReview.toLocaleString('ar-EG')} Ø¹Ù†ØµØ±Ù‹Ø§ Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ Ù‚Ø¨Ù„ Ø¸Ù‡ÙˆØ±Ù‡ Ù„Ù„Ø·Ù„Ø§Ø¨.`
+                ? `راجع ${overviewStats.pendingReview.toLocaleString('ar-EG')} عنصرًا بانتظار الاعتماد قبل ظهوره للطلاب.`
                 : '',
             hiddenContent > 0
-                ? `Ø§ÙØ­Øµ ${hiddenContent.toLocaleString('ar-EG')} Ø¹Ù†ØµØ±Ù‹Ø§ Ù…Ø®ÙÙŠÙ‹Ø§ Ø£Ùˆ ØºÙŠØ± Ù…Ù†Ø´ÙˆØ± Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚.`
+                ? `افحص ${hiddenContent.toLocaleString('ar-EG')} عنصرًا مخفيًا أو غير منشور قبل الإطلاق.`
                 : '',
             quizzesWithoutQuestions > 0
-                ? `Ø£Ø¶Ù Ø£Ø³Ø¦Ù„Ø© Ø¥Ù„Ù‰ ${quizzesWithoutQuestions.toLocaleString('ar-EG')} Ø§Ø®ØªØ¨Ø§Ø±Ù‹Ø§ Ø­ØªÙ‰ Ù„Ø§ ÙŠØ¸Ù‡Ø± ÙØ§Ø±ØºÙ‹Ø§.`
+                ? `أضف أسئلة إلى ${quizzesWithoutQuestions.toLocaleString('ar-EG')} اختبارًا حتى لا يظهر فارغًا.`
                 : '',
             unlinkedContent > 0
-                ? `Ø§Ø±Ø¨Ø· ${unlinkedContent.toLocaleString('ar-EG')} Ø¹Ù†ØµØ±Ù‹Ø§ Ø¨Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø­ØªÙ‰ ØªØ¹Ù…Ù„ Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ± ÙˆØ§Ù„ØªÙˆØµÙŠØ§Øª Ø¨Ø¯Ù‚Ø©.`
+                ? `اربط ${unlinkedContent.toLocaleString('ar-EG')} عنصرًا بالمهارات حتى تعمل التقارير والتوصيات بدقة.`
                 : '',
         ].filter(Boolean);
 
@@ -380,56 +376,56 @@ export const AdminDashboard: React.FC = () => {
         const items = [
             {
                 id: 'pending-review',
-                title: 'Ù…Ø±Ø§Ø¬Ø¹Ø© ÙˆØ§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ù…Ø­ØªÙˆÙ‰',
-                description: 'ÙŠÙˆØ¬Ø¯ Ù…Ø­ØªÙˆÙ‰ Ø£Ø¶Ø§ÙÙ‡ Ø§Ù„ÙØ±ÙŠÙ‚ ÙˆÙŠÙ†ØªØ¸Ø± Ù‚Ø±Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ Ù‚Ø¨Ù„ Ø¸Ù‡ÙˆØ±Ù‡ Ù„Ù„Ø·Ù„Ø§Ø¨.',
+                title: 'مراجعة واعتماد المحتوى',
+                description: 'يوجد محتوى أضافه الفريق وينتظر قرار الاعتماد قبل ظهوره للطلاب.',
                 count: overviewStats.pendingReview,
                 tab: 'overview',
-                actionLabel: 'Ø±Ø§Ø¬Ø¹ Ø·Ø§Ø¨ÙˆØ± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯',
+                actionLabel: 'راجع طابور الاعتماد',
                 color: 'amber',
             },
             {
                 id: 'empty-quizzes',
-                title: 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø¨Ù„Ø§ Ø£Ø³Ø¦Ù„Ø©',
-                description: 'Ø£ÙŠ Ø§Ø®ØªØ¨Ø§Ø± Ø¨Ù„Ø§ Ø£Ø³Ø¦Ù„Ø© Ù‚Ø¯ ÙŠØ¸Ù‡Ø± Ù„Ù„Ø·Ø§Ù„Ø¨ ÙØ§Ø±ØºÙ‹Ø§ Ø£Ùˆ ÙŠØ±Ø¨Ùƒ Ø±Ø­Ù„Ø© Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±.',
+                title: 'اختبارات بلا أسئلة',
+                description: 'أي اختبار بلا أسئلة قد يظهر للطالب فارغًا أو يربك رحلة الاختبار.',
                 count: platformReadiness.quizzesWithoutQuestions,
                 tab: 'quizzes',
-                actionLabel: 'ÙØªØ­ Ù…Ø±ÙƒØ² Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª',
+                actionLabel: 'فتح مركز الاختبارات',
                 color: 'rose',
             },
             {
                 id: 'question-skills',
-                title: 'Ø£Ø³Ø¦Ù„Ø© ØºÙŠØ± Ù…Ø±Ø¨ÙˆØ·Ø© Ø¨Ù…Ù‡Ø§Ø±Ø§Øª',
-                description: 'Ø±Ø¨Ø· Ø§Ù„Ø£Ø³Ø¦Ù„Ø© Ø¨Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª ÙŠØ¬Ø¹Ù„ Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ± ÙˆØ§Ù„ØªÙˆØµÙŠØ§Øª Ø§Ù„Ø°ÙƒÙŠØ© Ø£Ø¯Ù‚.',
+                title: 'أسئلة غير مربوطة بمهارات',
+                description: 'ربط الأسئلة بالمهارات يجعل التقارير والتوصيات الذكية أدق.',
                 count: platformReadiness.details.questionsWithoutSkills,
                 tab: 'questions',
-                actionLabel: 'ÙØªØ­ Ø¨Ù†Ùƒ Ø§Ù„Ø£Ø³Ø¦Ù„Ø©',
+                actionLabel: 'فتح بنك الأسئلة',
                 color: 'indigo',
             },
             {
                 id: 'lesson-skills',
-                title: 'Ø¯Ø±ÙˆØ³ ØºÙŠØ± Ù…Ø±Ø¨ÙˆØ·Ø© Ø¨Ù…Ù‡Ø§Ø±Ø§Øª',
-                description: 'Ø±Ø¨Ø· Ø§Ù„Ø¯Ø±ÙˆØ³ Ø¨Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª ÙŠØ³Ø§Ø¹Ø¯ Ø§Ù„Ø·Ø§Ù„Ø¨ ÙŠÙ†ØªÙ‚Ù„ Ù…Ù† Ù†ØªÙŠØ¬Ø© Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø± Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨.',
+                title: 'دروس غير مربوطة بمهارات',
+                description: 'ربط الدروس بالمهارات يساعد الطالب ينتقل من نتيجة الاختبار إلى العلاج المناسب.',
                 count: platformReadiness.details.lessonsWithoutSkills,
                 tab: 'lessons',
-                actionLabel: 'ÙØªØ­ Ù…Ø±ÙƒØ² Ø§Ù„Ø¯Ø±ÙˆØ³',
+                actionLabel: 'فتح مركز الدروس',
                 color: 'emerald',
             },
             {
                 id: 'hidden-content',
-                title: 'Ù…Ø­ØªÙˆÙ‰ Ù…Ø®ÙÙŠ Ø¹Ù† Ø§Ù„Ø·Ù„Ø§Ø¨',
-                description: 'Ø±Ø§Ø¬Ø¹ Ø§Ù„Ø¹Ù†Ø§ØµØ± Ø§Ù„Ù…Ø®ÙÙŠØ© Ø­ØªÙ‰ ØªØªØ£ÙƒØ¯ Ø£Ù†Ù‡Ø§ Ù…Ù‚ØµÙˆØ¯Ø© ÙˆÙ„ÙŠØ³Øª Ø³Ø¨Ø¨Ù‹Ø§ ÙÙŠ Ø§Ø®ØªÙØ§Ø¡ Ù…Ø§Ø¯Ø© Ø£Ùˆ Ù…Ø³Ø§Ø±.',
+                title: 'محتوى مخفي عن الطلاب',
+                description: 'راجع العناصر المخفية حتى تتأكد أنها مقصودة وليست سببًا في اختفاء مادة أو مسار.',
                 count: platformReadiness.hiddenContent,
                 tab: 'paths',
-                actionLabel: 'ÙØªØ­ Ù…Ø³Ø§Ø­Ø§Øª Ø§Ù„ØªØ¹Ù„Ù…',
+                actionLabel: 'فتح مساحات التعلم',
                 color: 'slate',
             },
             {
                 id: 'library-skills',
-                title: 'Ù…Ù„ÙØ§Øª Ù…ÙƒØªØ¨Ø© Ø¨Ù„Ø§ Ù…Ù‡Ø§Ø±Ø§Øª',
-                description: 'Ø±Ø¨Ø· Ù…Ù„ÙØ§Øª Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø¨Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª ÙŠØ¬Ø¹Ù„Ù‡Ø§ ØªØ¸Ù‡Ø± ÙƒØªÙˆØµÙŠØ§Øª Ø¹Ù„Ø§Ø¬ÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±.',
+                title: 'ملفات مكتبة بلا مهارات',
+                description: 'ربط ملفات المراجعة بالمهارات يجعلها تظهر كتوصيات علاجية بعد الاختبار.',
                 count: platformReadiness.details.libraryWithoutSkills,
                 tab: 'library',
-                actionLabel: 'ÙØªØ­ Ù…Ø±ÙƒØ² Ø§Ù„Ù…ÙƒØªØ¨Ø©',
+                actionLabel: 'فتح مركز المكتبة',
                 color: 'purple',
             },
         ];
@@ -532,16 +528,16 @@ export const AdminDashboard: React.FC = () => {
             itemId: item.id,
             contentType,
             type,
-            title: item.title || item.name || item.question || item.text || 'Ø¹Ù†ØµØ± Ø¨Ø¯ÙˆÙ† Ø¹Ù†ÙˆØ§Ù†',
+            title: item.title || item.name || item.question || item.text || 'عنصر بدون عنوان',
             ownerType: item.ownerType || 'platform',
         });
 
         return [
-            ...courses.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('Ø¯ÙˆØ±Ø©', 'course', item)),
-            ...lessons.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('Ø¯Ø±Ø³', 'lesson', item)),
-            ...questions.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('Ø³Ø¤Ø§Ù„', 'question', item)),
-            ...quizzes.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('Ø§Ø®ØªØ¨Ø§Ø±', 'quiz', item)),
-            ...libraryItems.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('Ù…Ù„Ù', 'library', item)),
+            ...courses.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('دورة', 'course', item)),
+            ...lessons.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('درس', 'lesson', item)),
+            ...questions.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('سؤال', 'question', item)),
+            ...quizzes.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('اختبار', 'quiz', item)),
+            ...libraryItems.filter((item) => item.approvalStatus === 'pending_review').map((item) => normalizeItem('ملف', 'library', item)),
         ].slice(0, 8);
     }, [courses, lessons, libraryItems, questions, quizzes]);
 
@@ -553,7 +549,7 @@ export const AdminDashboard: React.FC = () => {
             approvalStatus: decision,
             approvedBy: isApproved ? user.id : undefined,
             approvedAt: isApproved ? Date.now() : undefined,
-            reviewerNotes: isApproved ? 'ØªÙ… Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ø³Ø±ÙŠØ¹ Ù…Ù† Ù„ÙˆØ­Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.' : 'ØªÙ… Ø§Ù„Ø±ÙØ¶ Ø§Ù„Ø³Ø±ÙŠØ¹ Ù…Ù† Ù„ÙˆØ­Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.',
+            reviewerNotes: isApproved ? 'تم الاعتماد السريع من لوحة الإدارة.' : 'تم الرفض السريع من لوحة الإدارة.',
         };
 
         if (item.contentType === 'course') {
@@ -648,42 +644,42 @@ export const AdminDashboard: React.FC = () => {
 
         if (provider === 'ollama') {
             return {
-                label: 'Ollama / Gemma Ù…Ø­Ù„ÙŠ',
-                badge: 'Ø¨Ø¯ÙˆÙ† ØªÙƒÙ„ÙØ© Ù„ÙƒÙ„ Ø·Ù„Ø¨',
+                label: 'Ollama / Gemma محلي',
+                badge: 'بدون تكلفة لكل طلب',
                 color: 'emerald',
-                description: 'Ø§Ù„Ù…Ù†ØµØ© ØªØ³ØªØ®Ø¯Ù… Ù†Ù…ÙˆØ°Ø¬Ù‹Ø§ Ù…Ø­Ù„ÙŠÙ‹Ø§ Ù…ÙØªÙˆØ­ Ø§Ù„Ù…ØµØ¯Ø± Ø¹Ù†Ø¯ ØªÙˆÙØ± OllamaØŒ ÙˆÙ‡Ø°Ø§ Ù‡Ùˆ Ø§Ù„Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø£ÙØ¶Ù„ Ù„ØªÙ‚Ù„ÙŠÙ„ Ø§Ù„ØªÙƒÙ„ÙØ© Ù…Ø³ØªÙ‚Ø¨Ù„Ø§Ù‹.',
+                description: 'المنصة تستخدم نموذجًا محليًا مفتوح المصدر عند توفر Ollama، وهذا هو الاختيار الأفضل لتقليل التكلفة مستقبلاً.',
             };
         }
 
         if (provider === 'gemini') {
             return {
                 label: 'Gemini API',
-                badge: 'Ù…Ø²ÙˆØ¯ Ø®Ø§Ø±Ø¬ÙŠ',
+                badge: 'مزود خارجي',
                 color: 'blue',
-                description: 'Ø§Ù„Ù…Ù†ØµØ© ØªØ³ØªØ®Ø¯Ù… Ù…ÙØªØ§Ø­ Gemini Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ Ù„ØªÙˆÙ„ÙŠØ¯ Ø§Ù„ØªØ­Ù„ÙŠÙ„Ø§Øª ÙˆØ§Ù„Ù…Ù‚ØªØ±Ø­Ø§Øª Ø§Ù„Ø°ÙƒÙŠØ© Ø¹Ø¨Ø± Ø§Ù„Ø®Ø§Ø¯Ù… ÙˆÙ„ÙŠØ³ Ù…Ù† Ø§Ù„Ù…ØªØµÙØ­.',
+                description: 'المنصة تستخدم مفتاح Gemini الخارجي لتوليد التحليلات والمقترحات الذكية عبر الخادم وليس من المتصفح.',
             };
         }
 
         if (provider === 'lmstudio') {
             return {
-                label: 'LM Studio Ù…Ø­Ù„ÙŠ',
-                badge: 'Ù†Ù…ÙˆØ°Ø¬ Ù…Ø­Ù„ÙŠ OpenAI-compatible',
+                label: 'LM Studio محلي',
+                badge: 'نموذج محلي OpenAI-compatible',
                 color: 'emerald',
-                description: 'Ø§Ù„Ù…Ù†ØµØ© ØªØ³ØªØ®Ø¯Ù… Ø®Ø§Ø¯Ù… LM Studio Ø§Ù„Ù…Ø­Ù„ÙŠ Ø¹Ø¨Ø± Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø®Ø§Ø¯Ù…ØŒ ÙˆÙ‡Ø°Ø§ ÙŠØ³Ù…Ø­ Ø¨ØªØ´ØºÙŠÙ„ Ù†Ù…Ø§Ø°Ø¬ Ù…ÙØªÙˆØ­Ø© Ø§Ù„Ù…ØµØ¯Ø± Ø¨Ø¯ÙˆÙ† ÙƒØ´Ù Ù…ÙØ§ØªÙŠØ­ ÙÙŠ Ø§Ù„Ù…ØªØµÙØ­.',
+                description: 'المنصة تستخدم خادم LM Studio المحلي عبر بوابة الخادم، وهذا يسمح بتشغيل نماذج مفتوحة المصدر بدون كشف مفاتيح في المتصفح.',
             };
         }
 
         return {
-            label: 'Fallback Ø¢Ù…Ù†',
-            badge: 'ØªØ´ØºÙŠÙ„ Ø§Ø­ØªÙŠØ§Ø·ÙŠ',
+            label: 'Fallback آمن',
+            badge: 'تشغيل احتياطي',
             color: 'slate',
-            description: 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø²ÙˆØ¯ Ø°ÙƒØ§Ø¡ Ù…ÙØ¹Ù‘Ù„ Ø­Ø§Ù„ÙŠÙ‹Ø§ØŒ Ù„Ø°Ù„Ùƒ ØªØ³ØªØ®Ø¯Ù… Ø§Ù„Ù…Ù†ØµØ© Ø±Ø¯ÙˆØ¯Ù‹Ø§ Ø¢Ù…Ù†Ø© Ø¯Ø§Ø®Ù„ÙŠØ© Ø­ØªÙ‰ Ù„Ø§ ØªØªÙˆÙ‚Ù ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø·Ø§Ù„Ø¨.',
+            description: 'لا يوجد مزود ذكاء مفعّل حاليًا، لذلك تستخدم المنصة ردودًا آمنة داخلية حتى لا تتوقف تجربة الطالب.',
         };
     }, [aiStatus?.provider]);
 
     const supervisorScopeSummary = useMemo(() => {
         const directGroupIds = new Set(user.groupIds || []);
-        const directGroups = groups.filter((group) => directGroupIds.has(group.id) || group.supervisorIds.includes(user.id));
+        const directGroups = groups.filter((group) => directGroupIds.has(group.id));
         const scopedSchoolIds = new Set<string>();
         if (user.schoolId) scopedSchoolIds.add(user.schoolId);
         directGroups.forEach((group) => {
@@ -691,10 +687,7 @@ export const AdminDashboard: React.FC = () => {
             if (group.parentId) scopedSchoolIds.add(group.parentId);
         });
 
-        const scopedGroupIds = new Set<string>([
-            ...Array.from(directGroupIds),
-            ...directGroups.map((group) => group.id),
-        ]);
+        const scopedGroupIds = new Set<string>(directGroupIds);
         groups.forEach((group) => {
             if (group.parentId && scopedSchoolIds.has(group.parentId)) {
                 scopedGroupIds.add(group.id);
@@ -702,7 +695,6 @@ export const AdminDashboard: React.FC = () => {
         });
 
         const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id) || scopedSchoolIds.has(group.id));
-        const scopedGroupStudentIds = new Set(scopedGroupList.flatMap((group) => group.studentIds || []));
         const scopedStudents = users.filter((item) => {
             if (item.role !== Role.STUDENT) {
                 return false;
@@ -710,8 +702,7 @@ export const AdminDashboard: React.FC = () => {
 
             const sharesGroup = (item.groupIds || []).some((groupId) => scopedGroupIds.has(groupId));
             const sharesSchool = !!item.schoolId && scopedSchoolIds.has(item.schoolId);
-            const linkedByGroup = scopedGroupStudentIds.has(item.id);
-            return sharesGroup || sharesSchool || linkedByGroup;
+            return sharesGroup || sharesSchool;
         });
         const scopedStudentIds = new Set(scopedStudents.map((student) => student.id));
         const scopedResults = examResults.filter((result) => result.userId && scopedStudentIds.has(result.userId));
@@ -756,69 +747,31 @@ export const AdminDashboard: React.FC = () => {
         const studentsNeedingFollowUp = scopedStudents
             .map((student) => {
                 const studentResults = scopedResults.filter((result) => result.userId === student.id);
-                const orderedResults = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
                 const studentAverage = studentResults.length
                     ? Math.round(studentResults.reduce((total, result) => total + Number(result.score || 0), 0) / studentResults.length)
                     : 0;
-                const latestResult = orderedResults[0];
-                const studentClass = scopedGroupList.find((group) =>
-                    group.type !== 'SCHOOL' &&
-                    ((group.studentIds || []).includes(student.id) || (student.groupIds || []).includes(group.id)),
-                );
-                const studentSchool = scopedGroupList.find((group) =>
-                    group.type === 'SCHOOL' &&
-                    (group.id === student.schoolId || group.id === studentClass?.parentId),
-                );
-                const groupSettings = studentClass?.metadata?.settings as Record<string, unknown> | undefined;
-                const gradeName = String(
-                    groupSettings?.grade || groupSettings?.gradeName || groupSettings?.stage || groupSettings?.level || 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
-                ).trim();
+                const latestResult = [...studentResults].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))[0];
                 const topWeakSkills = [...(latestResult?.skillsAnalysis || [])]
                     .filter((skill) => Number(skill.mastery || 0) < 70)
                     .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
                     .slice(0, 2)
                     .map((skill) => skill.skill)
                     .filter(Boolean);
-                const followUpReason = studentResults.length === 0
-                    ? 'Ù„Ù… ÙŠØ¨Ø¯Ø£'
-                    : studentAverage < 60
-                        ? 'Ø¶Ø¹Ù'
-                        : 'Ù…ØªØ§Ø¨Ø¹Ø©';
-                const status = studentResults.length === 0 || studentAverage < 60
-                    ? 'danger'
-                    : studentAverage < 70
-                        ? 'watch'
-                        : 'good';
-                const hasAssignedFollowUp = assignedFollowUps.some((quiz) =>
-                    (quiz.targetUserIds || []).includes(student.id)
-                    || (studentClass?.id ? (quiz.targetGroupIds || []).includes(studentClass.id) : false),
-                );
 
                 return {
                     id: student.id,
                     name: student.name,
-                    schoolId: studentSchool?.id || student.schoolId || '',
-                    schoolName: studentSchool?.name || 'Ø¨Ø¯ÙˆÙ† Ù…Ø¯Ø±Ø³Ø©',
-                    gradeName,
-                    classId: studentClass?.id || '',
-                    className: studentClass?.name || 'Ø¨Ø¯ÙˆÙ† ÙØµÙ„',
                     average: studentAverage,
                     attempts: studentResults.length,
-                    latestQuiz: latestResult?.quizTitle || 'Ù„Ù… ÙŠØ¨Ø¯Ø£ Ø¨Ø¹Ø¯',
+                    latestQuiz: latestResult?.quizTitle || 'لم يبدأ بعد',
                     weakSkills: topWeakSkills,
-                    followUpReason,
-                    status,
-                    hasAssignedFollowUp,
-                    latestScore: latestResult ? Number(latestResult.score || 0) : null,
-                    previousScore: orderedResults[1] ? Number(orderedResults[1].score || 0) : null,
                 };
             })
             .filter((student) => student.attempts === 0 || student.average < 70)
             .sort((a, b) => a.attempts - b.attempts || a.average - b.average)
-            .slice(0, 6);
+            .slice(0, 5);
 
         const groupPerformanceSnapshots = scopedGroupList
-            .filter((group) => group.type !== 'SCHOOL')
             .map((group) => {
                 const groupStudentIds = new Set(group.studentIds || []);
                 const groupResults = scopedResults.filter((result) => result.userId && groupStudentIds.has(result.userId));
@@ -832,25 +785,14 @@ export const AdminDashboard: React.FC = () => {
                     studentCount: group.studentIds?.length || 0,
                     average: groupAverage,
                     attempts: groupResults.length,
-                    weakStudents: Array.from(groupStudentIds).filter((studentId) =>
-                        studentsNeedingFollowUp.some((student) => student.id === studentId),
-                    ).length,
-                    status: groupResults.length === 0 || groupAverage < 60 ? 'danger' : groupAverage < 70 ? 'watch' : 'good',
                 };
             });
         const groupSnapshots = [...groupPerformanceSnapshots]
             .sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)
-            .slice(0, 6);
+            .slice(0, 4);
         const groupsWithResults = groupPerformanceSnapshots.filter((group) => group.attempts > 0);
         const bestClass = [...groupsWithResults].sort((a, b) => b.average - a.average || b.studentCount - a.studentCount)[0] || null;
         const weakestClass = [...groupsWithResults].sort((a, b) => a.average - b.average || b.studentCount - a.studentCount)[0] || null;
-        const improvedStudentsCount = scopedStudents.filter((student) => {
-            const results = scopedResults
-                .filter((result) => result.userId === student.id)
-                .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-            return results.length >= 2 && Number(results[0].score || 0) > Number(results[1].score || 0);
-        }).length;
-        const pendingFollowUpStudents = studentsNeedingFollowUp.filter((student) => !student.hasAssignedFollowUp);
 
         return {
             schoolCount: scopedSchoolIds.size,
@@ -860,10 +802,6 @@ export const AdminDashboard: React.FC = () => {
             resultCount: scopedResults.length,
             averageScore,
             weakStudentsCount: studentsNeedingFollowUp.length,
-            inactiveStudentsCount: studentsNeedingFollowUp.filter((student) => student.attempts === 0).length,
-            improvedStudentsCount,
-            pendingFollowUpCount: pendingFollowUpStudents.length,
-            pendingFollowUpStudents,
             weakestSkills,
             studentsNeedingFollowUp,
             strugglingStudents: studentsNeedingFollowUp,
@@ -871,103 +809,38 @@ export const AdminDashboard: React.FC = () => {
             bestClass,
             weakestClass,
         };
-    }, [examResults, groups, quizzes, user.groupIds, user.id, user.schoolId, users]);
-
-    const visibleWeakStudents = useMemo(() => supervisorScopeSummary.studentsNeedingFollowUp.filter((student) => {
-        const matchesSchool = weakStudentFilters.schoolId === 'all' || student.schoolId === weakStudentFilters.schoolId;
-        const matchesGrade = weakStudentFilters.grade === 'all' || student.gradeName === weakStudentFilters.grade;
-        const matchesClass = weakStudentFilters.classId === 'all' || student.classId === weakStudentFilters.classId;
-        const matchesStatus = weakStudentFilters.status === 'all'
-            || (weakStudentFilters.status === 'inactive' && student.attempts === 0)
-            || (weakStudentFilters.status === 'low' && student.attempts > 0 && student.average < 70)
-            || (weakStudentFilters.status === 'urgent' && student.status === 'danger');
-        return matchesSchool && matchesGrade && matchesClass && matchesStatus;
-    }), [supervisorScopeSummary.studentsNeedingFollowUp, weakStudentFilters]);
-
-    const supervisorWeakStudentOptions = useMemo(() => {
-        const students = supervisorScopeSummary.studentsNeedingFollowUp;
-        return {
-            schools: Array.from(new Map(students.filter((student) => student.schoolId).map((student) => [student.schoolId, student.schoolName] as const)).entries()),
-            grades: Array.from(new Set(students.map((student) => student.gradeName).filter(Boolean))),
-            classes: Array.from(new Map(students.filter((student) => student.classId).map((student) => [student.classId, student.className] as const)).entries()),
-        };
-    }, [supervisorScopeSummary.studentsNeedingFollowUp]);
-
-    const openStudentReport = (studentId: string) => {
-        window.location.assign(`/reports?studentId=${encodeURIComponent(studentId)}`);
-    };
-
-    const openStudentQuiz = (studentId: string) => {
-        const params = new URLSearchParams({ tab: 'quizzes', mode: 'central', source: 'school-portal', targetUserId: studentId });
-        window.location.hash = `/admin-dashboard?${params.toString()}`;
-    };
-
-    const sendStudentFollowUpAlert = async (student: (typeof supervisorScopeSummary.studentsNeedingFollowUp)[number]) => {
-        setStudentActionState({ studentId: student.id, action: 'alert' });
-        setStudentActionFeedback('');
-        try {
-            await api.sendStudentAlert({
-                studentIds: [student.id],
-                title: 'ØªÙ†Ø¨ÙŠÙ‡ Ù…ØªØ§Ø¨Ø¹Ø© Ø¯Ø±Ø§Ø³ÙŠØ©',
-                body: `ÙŠØ±Ø¬Ù‰ Ø¨Ø¯Ø¡ Ù…ØªØ§Ø¨Ø¹Ø© ${student.name} Ø¹Ø¨Ø± ${student.latestQuiz}. Ø§Ù„Ø³Ø¨Ø¨: ${student.followUpReason}.`,
-                channels: ['in_app'],
-            });
-            setStudentActionFeedback(`ØªÙ… Ø¥Ø±Ø³Ø§Ù„ ØªÙ†Ø¨ÙŠÙ‡ Ø¥Ù„Ù‰ ${student.name}.`);
-        } catch {
-            setStudentActionFeedback('ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØªÙ†Ø¨ÙŠÙ‡. ØªØ­Ù‚Ù‚ Ù…Ù† Ø§ØªØµØ§Ù„ Ø§Ù„Ø®Ø§Ø¯Ù… ÙˆÙ†Ø·Ø§Ù‚ Ø§Ù„Ù…Ø´Ø±Ù.');
-        } finally {
-            setStudentActionState(null);
-        }
-    };
-
-    const sendWeeklyFollowUpAlert = async () => {
-        const pendingStudents = supervisorScopeSummary.pendingFollowUpStudents;
-        if (!pendingStudents.length) return;
-        setWeeklyAlertState('sending');
-        try {
-            const weakestSkill = supervisorScopeSummary.weakestSkills[0]?.skill || 'Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©';
-            await api.sendStudentAlert({
-                studentIds: pendingStudents.map((student) => student.id),
-                title: 'Ù…Ù„Ø®Øµ Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠ',
-                body: `ØªÙˆØ¬Ø¯ ${pendingStudents.length} Ø­Ø§Ù„Ø© ØªØ­ØªØ§Ø¬ Ù…ØªØ§Ø¨Ø¹Ø©. Ø§Ø¨Ø¯Ø£ Ø¨Ù…Ù‡Ø§Ø±Ø© ${weakestSkill} Ø«Ù… Ø±Ø§Ø¬Ø¹ ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ø·Ø§Ù„Ø¨.`,
-                channels: ['in_app'],
-            });
-            setWeeklyAlertState('sent');
-        } catch {
-            setWeeklyAlertState('error');
-        }
-    };
+    }, [examResults, groups, quizzes, user.groupIds, user.schoolId, users]);
 
     const supervisorActionCards = useMemo(() => [
         {
-            title: 'Ø§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ø°ÙŠÙ† ÙŠØ­ØªØ§Ø¬ÙˆÙ† Ù…ØªØ§Ø¨Ø¹Ø©',
+            title: 'الطلاب الذين يحتاجون متابعة',
             value: supervisorScopeSummary.weakStudentsCount,
-            hint: 'Ø§Ø¨Ø¯Ø£ Ø¨Ù…Ù† Ù„Ù… ÙŠØ®ØªØ¨Ø± Ø£Ùˆ Ù…ØªÙˆØ³Ø·Ù‡ Ø£Ù‚Ù„ Ù…Ù† 70%.',
-            actionLabel: 'ÙØªØ­ Ø§Ù„ØªÙ‚Ø±ÙŠØ±',
-            action: () => { window.location.assign('/reports'); },
+            hint: 'ابدأ بمن لم يختبر أو متوسطه أقل من 70%.',
+            actionLabel: 'فتح التقرير',
+            action: () => { window.location.hash = '#/reports'; },
             tone: 'rose',
         },
         {
-            title: 'Ø§Ø®ØªØ¨Ø§Ø± Ù…ÙˆØ¬Ù‡ Ù„Ù„Ù†Ø·Ø§Ù‚',
+            title: 'اختبار موجه للنطاق',
             value: supervisorScopeSummary.followUpCount,
-            hint: 'Ø§Ø³ØªØ®Ø¯Ù…Ù‡ Ù„Ù‚ÙŠØ§Ø³ ÙØµÙ„ Ø£Ùˆ Ù…Ø¯Ø±Ø³Ø© Ø£Ùˆ Ø·Ù„Ø§Ø¨ Ù…Ø­Ø¯Ø¯ÙŠÙ†.',
-            actionLabel: 'ØªÙˆØ¬ÙŠÙ‡ Ø§Ø®ØªØ¨Ø§Ø±',
+            hint: 'استخدمه لقياس فصل أو مدرسة أو طلاب محددين.',
+            actionLabel: 'توجيه اختبار',
             action: () => setActiveAdminTab('quizzes'),
             tone: 'emerald',
         },
         {
-            title: 'Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„ÙØµÙˆÙ„ ÙˆØ§Ù„Ø·Ù„Ø§Ø¨',
+            title: 'متابعة الفصول والطلاب',
             value: supervisorScopeSummary.groupCount,
-            hint: 'Ø±Ø§Ø¬Ø¹ Ø§Ù„ÙØµÙˆÙ„ ÙˆØ§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ù…Ø±ØªØ¨Ø·ÙŠÙ† Ø¨Ø­Ø³Ø§Ø¨Ùƒ.',
-            actionLabel: 'Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ù…Ø¯Ø±Ø³Ø©',
+            hint: 'راجع الفصول والطلاب المرتبطين بحسابك.',
+            actionLabel: 'بوابة المدرسة',
             action: () => setActiveAdminTab('school-portal'),
             tone: 'indigo',
         },
         {
-            title: 'Ø±Ø³Ø§Ù„Ø© Ù…ØªØ§Ø¨Ø¹Ø© Ø¬Ø§Ù‡Ø²Ø©',
+            title: 'رسالة متابعة جاهزة',
             value: supervisorScopeSummary.studentCount,
-            hint: 'Ø¬Ù‡Ø² Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø·Ù„Ø§Ø¨ Ù…Ù† Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø«Ù… Ø£Ø±Ø³Ù„ ØªÙ†Ø¨ÙŠÙ‡Ù‹Ø§ Ù…Ù†Ø§Ø³Ø¨Ù‹Ø§.',
-            actionLabel: 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø·Ù„Ø§Ø¨',
+            hint: 'جهز قائمة الطلاب من التقرير ثم أرسل تنبيهًا مناسبًا.',
+            actionLabel: 'قائمة الطلاب',
             action: () => setActiveAdminTab('school-portal'),
             tone: 'amber',
         },
@@ -975,21 +848,21 @@ export const AdminDashboard: React.FC = () => {
 
     const menuItems = useMemo(() => {
         const adminItems = [
-            { id: 'overview', label: 'Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø©', icon: <LayoutDashboard size={20} /> },
-            { id: 'paths', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª (Ù…Ø³Ø§Ø­Ø§Øª Ø§Ù„Ø¹Ù…Ù„)', icon: <FolderOpen size={20} /> },
-            { id: 'lessons', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ø¯Ø±ÙˆØ³', icon: <BookOpen size={20} /> },
-            { id: 'library', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ù…ÙƒØªØ¨Ø© ÙˆÙ…Ù„ÙØ§Øª Ø§Ù„Ø¯Ø¹Ù…', icon: <BookOpen size={20} /> },
-            { id: 'quizzes', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª', icon: <FileQuestion size={20} /> },
-            { id: 'mock-exams', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø­Ø§ÙƒÙŠØ©', icon: <Award size={20} /> },
-            { id: 'questions', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ø£Ø³Ø¦Ù„Ø©', icon: <Target size={20} /> },
-            { id: 'skills', label: 'Ù…Ø±ÙƒØ² Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª', icon: <Award size={20} /> },
-            { id: 'users', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†', icon: <Users size={20} /> },
-            { id: 'schools', label: 'ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø¯Ø§Ø±Ø³', icon: <Building2 size={20} /> },
-            { id: 'memberships', label: 'Ø§Ù„Ø¹Ø¶ÙˆÙŠØ§Øª', icon: <CreditCard size={20} /> },
-            { id: 'financial', label: 'Ø§Ù„Ù…Ø§Ù„ÙŠØ© ÙˆØ§Ù„Ø§Ø´ØªØ±Ø§ÙƒØ§Øª', icon: <CreditCard size={20} /> },
-            { id: 'notifications', label: 'Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª', icon: <Bell size={20} /> },
-            { id: 'monitoring', label: 'Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ù†Ø¸Ø§Ù…', icon: <Activity size={20} /> },
-            { id: 'settings', label: 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª', icon: <Settings size={20} /> },
+            { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
+            { id: 'paths', label: 'إدارة المسارات (مساحات العمل)', icon: <FolderOpen size={20} /> },
+            { id: 'lessons', label: 'مركز الدروس', icon: <BookOpen size={20} /> },
+            { id: 'library', label: 'مركز المكتبة وملفات الدعم', icon: <BookOpen size={20} /> },
+            { id: 'quizzes', label: 'مركز الاختبارات', icon: <FileQuestion size={20} /> },
+            { id: 'mock-exams', label: 'مركز الاختبارات المحاكية', icon: <Award size={20} /> },
+            { id: 'questions', label: 'مركز الأسئلة', icon: <Target size={20} /> },
+            { id: 'skills', label: 'مركز المهارات', icon: <Award size={20} /> },
+            { id: 'users', label: 'إدارة المستخدمين', icon: <Users size={20} /> },
+            { id: 'schools', label: 'تشغيل المدارس', icon: <Building2 size={20} /> },
+            { id: 'memberships', label: 'العضويات', icon: <CreditCard size={20} /> },
+            { id: 'financial', label: 'المالية والاشتراكات', icon: <CreditCard size={20} /> },
+            { id: 'notifications', label: 'الإشعارات', icon: <Bell size={20} /> },
+            { id: 'monitoring', label: 'مراقبة النظام', icon: <Activity size={20} /> },
+            { id: 'settings', label: 'الإعدادات', icon: <Settings size={20} /> },
         ];
 
         if (user.role === Role.TEACHER) {
@@ -997,7 +870,7 @@ export const AdminDashboard: React.FC = () => {
         }
 
         if (user.role === Role.SUPERVISOR) {
-            return adminItems.filter((item) => ['overview'].includes(item.id));
+            return adminItems.filter((item) => ['overview', 'quizzes', 'mock-exams', 'questions', 'skills'].includes(item.id));
         }
 
         return adminItems;
@@ -1011,7 +884,7 @@ export const AdminDashboard: React.FC = () => {
         if (user.role === Role.ADMIN && !nextItems.some((item) => item.id === 'homepage')) {
             nextItems = [
                 ...nextItems.slice(0, insertIndex),
-                { id: 'homepage', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©', icon: <BookOpen size={20} /> },
+                { id: 'homepage', label: 'إدارة الصفحة الرئيسية', icon: <BookOpen size={20} /> },
                 ...nextItems.slice(insertIndex),
             ];
         }
@@ -1021,7 +894,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = homepageIndex === -1 ? insertIndex : homepageIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'announcement-ads', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¥Ø¹Ù„Ø§Ù†Ø§Øª', icon: <Megaphone size={20} /> },
+                { id: 'announcement-ads', label: 'إدارة الإعلانات', icon: <Megaphone size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1031,7 +904,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = adsIndex === -1 ? insertIndex : adsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'platform-fonts', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø®Ø·ÙˆØ· Ø§Ù„Ù…Ù†ØµØ©', icon: <Type size={20} /> },
+                { id: 'platform-fonts', label: 'إدارة خطوط المنصة', icon: <Type size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1041,7 +914,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = fontsIndex === -1 ? insertIndex : fontsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'platform-integrations', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ØªÙƒØ§Ù…Ù„Ø§Øª ÙˆØ§Ù„ØªØ³Ø¬ÙŠÙ„', icon: <Settings size={20} /> },
+                { id: 'platform-integrations', label: 'إدارة التكاملات والتسجيل', icon: <Settings size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1051,7 +924,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = settingsIndex === -1 ? nextItems.length : settingsIndex;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'backups', label: 'Ø§Ù„Ù†Ø³Ø® Ø§Ù„Ø§Ø­ØªÙŠØ§Ø·ÙŠ', icon: <Activity size={20} /> },
+                { id: 'backups', label: 'النسخ الاحتياطي', icon: <Activity size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1061,27 +934,27 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = monitoringIndex === -1 ? nextItems.length : monitoringIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'ai-assistant', label: 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ', icon: <Bot size={20} /> },
+                { id: 'ai-assistant', label: 'إدارة المساعد الذكي', icon: <Bot size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
 
-        if (!nextItems.some((item) => item.id === 'live-sessions') && [Role.ADMIN, Role.TEACHER].includes(user.role)) {
+        if (!nextItems.some((item) => item.id === 'live-sessions') && [Role.ADMIN, Role.TEACHER, Role.SUPERVISOR].includes(user.role)) {
             const dynamicInsertIndex = nextItems.findIndex((item) => item.id === 'notifications');
             const targetIndex = dynamicInsertIndex === -1 ? nextItems.length : dynamicInsertIndex;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'live-sessions', label: 'Ø§Ù„Ø­ØµØµ Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø©', icon: <Video size={20} /> },
+                { id: 'live-sessions', label: 'الحصص المباشرة', icon: <Video size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
 
-        if (!nextItems.some((item) => item.id === 'barcode-tests') && [Role.ADMIN, Role.TEACHER].includes(user.role)) {
+        if (!nextItems.some((item) => item.id === 'barcode-tests') && [Role.ADMIN, Role.TEACHER, Role.SUPERVISOR].includes(user.role)) {
             const quizzesIndex = nextItems.findIndex((item) => item.id === 'quizzes');
             const targetIndex = quizzesIndex === -1 ? nextItems.length : quizzesIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'barcode-tests', label: 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø¨Ø§Ø±ÙƒÙˆØ¯', icon: <QrCode size={20} /> },
+                { id: 'barcode-tests', label: 'اختبارات باركود', icon: <QrCode size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1092,17 +965,7 @@ export const AdminDashboard: React.FC = () => {
             const targetIndex = schoolsIndex === -1 ? (overviewIndex === -1 ? 0 : overviewIndex + 1) : schoolsIndex + 1;
             nextItems = [
                 ...nextItems.slice(0, targetIndex),
-                { id: 'school-portal', label: user.role === Role.ADMIN ? 'Ø¨ÙˆØ§Ø¨Ø© Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ù…Ø¯Ø§Ø±Ø³' : 'Ø¨ÙˆØ§Ø¨Ø© Ù…Ø¯Ø±Ø³ØªÙŠ', icon: <Building2 size={20} /> },
-                ...nextItems.slice(targetIndex),
-            ];
-        }
-
-        if (user.role === Role.SUPERVISOR && !nextItems.some((item) => item.id === 'reports')) {
-            const portalIndex = nextItems.findIndex((item) => item.id === 'school-portal');
-            const targetIndex = portalIndex === -1 ? nextItems.length : portalIndex + 1;
-            nextItems = [
-                ...nextItems.slice(0, targetIndex),
-                { id: 'reports', label: 'Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ±', icon: <Activity size={20} /> },
+                { id: 'school-portal', label: user.role === Role.ADMIN ? 'بوابة متابعة المدارس' : 'بوابة مدرستي', icon: <Building2 size={20} /> },
                 ...nextItems.slice(targetIndex),
             ];
         }
@@ -1112,25 +975,22 @@ export const AdminDashboard: React.FC = () => {
 
     useEffect(() => {
         if (!enhancedMenuItems.some((item) => item.id === activeTab)) {
-            if (user.role === Role.SUPERVISOR && activeTab === 'quizzes') {
-                return;
-            }
             setActiveTab(enhancedMenuItems[0]?.id || 'overview');
         }
-    }, [activeTab, enhancedMenuItems, user.role]);
+    }, [activeTab, enhancedMenuItems]);
 
     const renderSidebar = () => (
         <div className="py-6 space-y-1">
             <div className="mb-8 px-6">
-                <h2 className="text-xl font-bold text-gray-900">Ù„ÙˆØ­Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©</h2>
+                <h2 className="text-xl font-bold text-gray-900">لوحة الإدارة</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                    {user.role === Role.ADMIN ? 'Ø§Ù„ØªØ­ÙƒÙ… Ø§Ù„ÙƒØ§Ù…Ù„ Ø¨Ø§Ù„Ù…Ù†ØµØ©' : user.role === Role.TEACHER ? 'Ù„ÙˆØ­Ø© ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø¹Ù„Ù… ÙˆØ§Ù„Ù…Ø­ØªÙˆÙ‰' : 'Ù„ÙˆØ­Ø© Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ù…Ø´Ø±Ù'}
+                    {user.role === Role.ADMIN ? 'التحكم الكامل بالمنصة' : user.role === Role.TEACHER ? 'لوحة تشغيل المعلم والمحتوى' : 'لوحة متابعة المشرف'}
                 </p>
             </div>
             {enhancedMenuItems.map((item) => (
                 <button
                     key={item.id}
-                    onClick={() => item.id === 'reports' ? window.location.assign('/reports') : setActiveAdminTab(item.id)}
+                    onClick={() => setActiveAdminTab(item.id)}
                     className={`w-full flex items-center gap-3 px-6 py-3 transition-colors ${
                         activeTab === item.id
                             ? 'bg-amber-50 text-amber-600 font-bold border-r-4 border-amber-500'
@@ -1147,41 +1007,39 @@ export const AdminDashboard: React.FC = () => {
     const renderOverview = () => (
         <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">{user.role === Role.SUPERVISOR ? 'Ù…Ø±ÙƒØ² Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø·Ù„Ø§Ø¨' : 'Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø© (Overview)'}</h1>
+                <h1 className="text-2xl font-bold text-gray-900">نظرة عامة (Overview)</h1>
                 <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-                    Ø¢Ø®Ø± ØªØ­Ø¯ÙŠØ«: Ù…Ø¨Ø§Ø´Ø± Ù…Ù† Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ù†ØµØ©
+                    آخر تحديث: مباشر من بيانات المنصة
                 </div>
             </div>
 
-            {user.role !== Role.SUPERVISOR && (
-            <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                     {
-                        title: 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø·Ù„Ø§Ø¨',
+                        title: 'إجمالي الطلاب',
                         value: overviewStats.totalStudents.toLocaleString('ar-EG'),
-                        trend: `${overviewStats.totalSchools} Ù…Ø¯Ø±Ø³Ø©`,
+                        trend: `${overviewStats.totalSchools} مدرسة`,
                         color: 'text-blue-600',
                         bg: 'bg-blue-50',
                     },
                     {
-                        title: 'Ø§Ù„Ù…Ø¹Ù„Ù…ÙˆÙ† Ø§Ù„Ù†Ø´Ø·ÙˆÙ†',
+                        title: 'المعلمون النشطون',
                         value: overviewStats.totalTeachers.toLocaleString('ar-EG'),
-                        trend: 'Ø¨ØµÙ„Ø§Ø­ÙŠØ§Øª ØªØ¯Ø±ÙŠØ³',
+                        trend: 'بصلاحيات تدريس',
                         color: 'text-emerald-600',
                         bg: 'bg-emerald-50',
                     },
                     {
-                        title: 'Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ø¹ØªÙ…Ø§Ø¯',
+                        title: 'المحتوى بانتظار اعتماد',
                         value: overviewStats.pendingReview.toLocaleString('ar-EG'),
-                        trend: `${overviewStats.pendingBreakdown.questions} Ø³Ø¤Ø§Ù„ / ${overviewStats.pendingBreakdown.lessons} Ø¯Ø±Ø³`,
+                        trend: `${overviewStats.pendingBreakdown.questions} سؤال / ${overviewStats.pendingBreakdown.lessons} درس`,
                         color: 'text-purple-600',
                         bg: 'bg-purple-50',
                     },
                     {
-                        title: 'Ù†ØªØ§Ø¦Ø¬ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª',
+                        title: 'نتائج الاختبارات',
                         value: overviewStats.totalResults.toLocaleString('ar-EG'),
-                        trend: `${overviewStats.pendingBreakdown.quizzes} Ø§Ø®ØªØ¨Ø§Ø±Ù‹Ø§ Ù…Ø¹Ù„Ù‚Ù‹Ø§`,
+                        trend: `${overviewStats.pendingBreakdown.quizzes} اختبارًا معلقًا`,
                         color: 'text-amber-600',
                         bg: 'bg-amber-50',
                     },
@@ -1201,9 +1059,9 @@ export const AdminDashboard: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <h3 className="text-lg font-black text-gray-900">Ù…Ø±ÙƒØ² Ø§Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„ÙŠÙˆÙ…ÙŠ</h3>
+                        <h3 className="text-lg font-black text-gray-900">مركز التشغيل اليومي</h3>
                         <p className="mt-1 text-sm leading-6 text-gray-500">
-                            Ù‡Ø°Ù‡ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© ØªØ¬Ù…Ø¹ Ø£Ù‡Ù… Ø§Ù„Ø£Ø´ÙŠØ§Ø¡ Ø§Ù„ØªÙŠ Ù‚Ø¯ ØªÙ…Ù†Ø¹ Ø§Ù„Ø·Ø§Ù„Ø¨ Ù…Ù† Ø±Ø¤ÙŠØ© Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø£Ùˆ Ø§Ù„Ø§Ø³ØªÙØ§Ø¯Ø© Ù…Ù† Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ±. Ø§Ø¨Ø¯Ø£ Ù…Ù† Ø§Ù„Ø£Ø¹Ù„Ù‰ Ø«Ù… Ø§Ù†ØªÙ‚Ù„ Ù„Ù„Ù…Ø±ÙƒØ² Ø§Ù„Ù…Ù†Ø§Ø³Ø¨ Ù„Ù„Ø¥ØµÙ„Ø§Ø­.
+                            هذه القائمة تجمع أهم الأشياء التي قد تمنع الطالب من رؤية المحتوى أو الاستفادة من التقارير. ابدأ من الأعلى ثم انتقل للمركز المناسب للإصلاح.
                         </p>
                     </div>
                     <div className={`rounded-2xl px-5 py-3 text-center ${
@@ -1211,7 +1069,7 @@ export const AdminDashboard: React.FC = () => {
                             ? 'bg-emerald-50 text-emerald-700'
                             : 'bg-amber-50 text-amber-700'
                     }`}>
-                        <div className="text-xs font-bold">Ù…Ù‡Ø§Ù… Ø­Ø±Ø¬Ø© Ø§Ù„Ø¢Ù†</div>
+                        <div className="text-xs font-bold">مهام حرجة الآن</div>
                         <div className="mt-1 text-2xl font-black">{dailyOperationQueue.length}</div>
                     </div>
                 </div>
@@ -1245,7 +1103,7 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                 ) : (
                     <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
-                        Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹ÙˆØ§Ø¦Ù‚ ØªØ´ØºÙŠÙ„ÙŠØ© Ø¸Ø§Ù‡Ø±Ø© Ø§Ù„Ø¢Ù†. Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…Ù†Ø´ÙˆØ± ÙˆØ§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª ÙˆØ§Ù„Ø±Ø¨Ø· Ø¨Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª ÙÙŠ Ø­Ø§Ù„Ø© Ø¬ÙŠØ¯Ø© Ø­Ø³Ø¨ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø­Ø§Ù„ÙŠØ©.
+                        لا توجد عوائق تشغيلية ظاهرة الآن. المحتوى المنشور والاختبارات والربط بالمهارات في حالة جيدة حسب البيانات الحالية.
                     </div>
                 )}
             </div>
@@ -1253,9 +1111,9 @@ export const AdminDashboard: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900">Ù…Ø¤Ø´Ø± Ø¬Ø§Ù‡Ø²ÙŠØ© Ø§Ù„Ù…Ù†ØµØ© Ù‚Ø¨Ù„ Ø§Ù„Ù†Ø´Ø±</h3>
+                        <h3 className="text-lg font-bold text-gray-900">مؤشر جاهزية المنصة قبل النشر</h3>
                         <p className="text-sm text-gray-500 mt-1">
-                            ÙØ­Øµ Ø³Ø±ÙŠØ¹ ÙŠØ³Ø§Ø¹Ø¯Ùƒ ØªØ¹Ø±Ù Ù‡Ù„ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø¬Ø§Ù‡Ø² Ù„Ù„Ø·Ù„Ø§Ø¨ Ø£Ù… ÙŠØ­ØªØ§Ø¬ Ù…Ø±Ø§Ø¬Ø¹Ø© Ø£Ùˆ Ø±Ø¨Ø· Ù…Ù‡Ø§Ø±Ø§Øª.
+                            فحص سريع يساعدك تعرف هل المحتوى جاهز للطلاب أم يحتاج مراجعة أو ربط مهارات.
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -1263,9 +1121,9 @@ export const AdminDashboard: React.FC = () => {
                             <span className="text-xl font-black text-emerald-700">{platformReadiness.readinessScore}%</span>
                         </div>
                         <div>
-                            <div className="text-sm text-gray-500">Ø­Ø§Ù„Ø© Ø§Ù„ØªØ´ØºÙŠÙ„</div>
+                            <div className="text-sm text-gray-500">حالة التشغيل</div>
                             <div className={`font-black ${platformReadiness.readinessScore >= 85 ? 'text-emerald-700' : platformReadiness.readinessScore >= 60 ? 'text-amber-700' : 'text-rose-700'}`}>
-                                {platformReadiness.readinessScore >= 85 ? 'Ø¬Ø§Ù‡Ø²ÙŠØ© Ø¹Ø§Ù„ÙŠØ©' : platformReadiness.readinessScore >= 60 ? 'ØªØ­ØªØ§Ø¬ Ø¶Ø¨Ø· Ø¨Ø³ÙŠØ·' : 'ØªØ­ØªØ§Ø¬ Ù…Ø±Ø§Ø¬Ø¹Ø© Ù‚Ø¨Ù„ Ø§Ù„Ù†Ø´Ø±'}
+                                {platformReadiness.readinessScore >= 85 ? 'جاهزية عالية' : platformReadiness.readinessScore >= 60 ? 'تحتاج ضبط بسيط' : 'تحتاج مراجعة قبل النشر'}
                             </div>
                         </div>
                     </div>
@@ -1274,30 +1132,30 @@ export const AdminDashboard: React.FC = () => {
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                     {[
                         {
-                            title: 'Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯',
+                            title: 'بانتظار الاعتماد',
                             value: overviewStats.pendingReview,
-                            hint: 'Ø¯ÙˆØ±Ø§ØªØŒ Ø¯Ø±ÙˆØ³ØŒ Ø£Ø³Ø¦Ù„Ø© Ø£Ùˆ Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø£Ø¶ÙŠÙØª ÙˆØªØ­ØªØ§Ø¬ Ù‚Ø±Ø§Ø± Ù†Ø´Ø±.',
+                            hint: 'دورات، دروس، أسئلة أو اختبارات أضيفت وتحتاج قرار نشر.',
                             icon: <AlertTriangle size={18} />,
                             color: 'amber',
                         },
                         {
-                            title: 'Ù…Ø®ÙÙŠ Ø¹Ù† Ø§Ù„Ø·Ù„Ø§Ø¨',
+                            title: 'مخفي عن الطلاب',
                             value: platformReadiness.hiddenContent,
-                            hint: 'Ø¹Ù†Ø§ØµØ± Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ø¥Ø¯Ø§Ø±Ø© Ù„ÙƒÙ†Ù‡Ø§ Ù„Ù† ØªØ¸Ù‡Ø± ÙÙŠ ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ø·Ø§Ù„Ø¨.',
+                            hint: 'عناصر موجودة في الإدارة لكنها لن تظهر في واجهة الطالب.',
                             icon: <EyeOff size={18} />,
                             color: 'slate',
                         },
                         {
-                            title: 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ø¨Ù„Ø§ Ø£Ø³Ø¦Ù„Ø©',
+                            title: 'اختبارات بلا أسئلة',
                             value: platformReadiness.quizzesWithoutQuestions,
-                            hint: 'Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª ØªØ­ØªØ§Ø¬ Ø³Ø­Ø¨ Ø£Ø³Ø¦Ù„Ø© Ù…Ù† Ø¨Ù†Ùƒ Ø§Ù„Ø£Ø³Ø¦Ù„Ø© Ù‚Ø¨Ù„ Ø¹Ø±Ø¶Ù‡Ø§.',
+                            hint: 'اختبارات تحتاج سحب أسئلة من بنك الأسئلة قبل عرضها.',
                             icon: <FileQuestion size={18} />,
                             color: 'rose',
                         },
                         {
-                            title: 'Ù…Ø­ØªÙˆÙ‰ Ø¨Ù„Ø§ Ù…Ù‡Ø§Ø±Ø§Øª',
+                            title: 'محتوى بلا مهارات',
                             value: platformReadiness.unlinkedContent,
-                            hint: 'ÙŠØ¤Ø«Ø± Ø¹Ù„Ù‰ ØªÙ‚Ø§Ø±ÙŠØ± Ø§Ù„Ø¶Ø¹Ù ÙˆØ§Ù„ØªÙˆØµÙŠØ§Øª Ø§Ù„Ø°ÙƒÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±.',
+                            hint: 'يؤثر على تقارير الضعف والتوصيات الذكية بعد الاختبار.',
                             icon: <Target size={18} />,
                             color: 'indigo',
                         },
@@ -1324,7 +1182,7 @@ export const AdminDashboard: React.FC = () => {
                     <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
                         <div className="flex items-center gap-2 font-black text-emerald-800 mb-3">
                             <CheckCircle2 size={18} />
-                            Ø£ÙˆÙ„ÙˆÙŠØ© Ø§Ù„Ø¹Ù…Ù„ Ø§Ù„ØªØ§Ù„ÙŠØ©
+                            أولوية العمل التالية
                         </div>
                         {platformReadiness.nextActions.length > 0 ? (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -1336,7 +1194,7 @@ export const AdminDashboard: React.FC = () => {
                             </div>
                         ) : (
                             <p className="text-sm text-emerald-700">
-                                Ù…Ù…ØªØ§Ø². Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹ÙˆØ§Ø¦Ù‚ ØªØ´ØºÙŠÙ„ÙŠØ© ÙˆØ§Ø¶Ø­Ø© ÙÙŠ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø­Ø§Ù„ÙŠØŒ ÙˆÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„ØªØ±ÙƒÙŠØ² Ø¹Ù„Ù‰ Ø¥Ø¶Ø§ÙØ© Ù…Ø­ØªÙˆÙ‰ Ø¬Ø¯ÙŠØ¯ Ø£Ùˆ Ù…Ø±Ø§Ø¬Ø¹Ø© ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø·Ø§Ù„Ø¨.
+                                ممتاز. لا توجد عوائق تشغيلية واضحة في المحتوى الحالي، ويمكنك التركيز على إضافة محتوى جديد أو مراجعة تجربة الطالب.
                             </p>
                         )}
                     </div>
@@ -1347,35 +1205,35 @@ export const AdminDashboard: React.FC = () => {
                 <div className="rounded-2xl border border-indigo-100 bg-white shadow-sm overflow-hidden">
                     <div className="flex flex-col gap-4 border-b border-indigo-50 bg-indigo-50/50 p-6 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <h3 className="text-xl font-black text-gray-900">Ù…Ø±ÙƒØ² Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ± ÙˆØ§Ù„Ø¥Ø´Ø±Ø§Ù Ø§Ù„Ù…Ø¯Ø±Ø³ÙŠ</h3>
+                            <h3 className="text-xl font-black text-gray-900">مركز التقارير والإشراف المدرسي</h3>
                             <p className="mt-1 text-sm text-gray-500">
-                                Ù…ØªØ§Ø¨Ø¹Ø© Ø¬Ø§Ù‡Ø²ÙŠØ© Ø§Ù„Ù…Ø¯Ø§Ø±Ø³ ÙˆØ§Ù„ÙØµÙˆÙ„ ÙˆØ§Ù„Ø·Ù„Ø§Ø¨ Ù‚Ø¨Ù„ Ø§Ù„ØªØ¹Ø§Ù‚Ø¯ Ø£Ùˆ Ø§Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„ÙØ¹Ù„ÙŠ.
+                                متابعة جاهزية المدارس والفصول والطلاب قبل التعاقد أو التشغيل الفعلي.
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <button onClick={() => setActiveAdminTab('schools')} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
-                                ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø¯Ø§Ø±Ø³
+                                تشغيل المدارس
                             </button>
-                            <a href="/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
-                                Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ±
+                            <a href="#/reports" className="rounded-xl bg-white px-4 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
+                                التقارير
                             </a>
                             <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
-                                ØªÙˆØ¬ÙŠÙ‡ Ø§Ø®ØªØ¨Ø§Ø±
+                                توجيه اختبار
                             </button>
                             <button onClick={() => setActiveAdminTab('announcement-ads')} className="rounded-xl bg-white px-4 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
-                                Ø±Ø³Ø§Ù„Ø© Ø£Ùˆ Ø¥Ø¹Ù„Ø§Ù†
+                                رسالة أو إعلان
                             </button>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 p-6 lg:grid-cols-6">
                         {[
-                            { label: 'Ù…Ø¯Ø§Ø±Ø³', value: schoolCommandCenter.schoolCount, tone: 'indigo' },
-                            { label: 'ÙØµÙˆÙ„', value: schoolCommandCenter.classCount, tone: 'blue' },
-                            { label: 'Ø·Ù„Ø§Ø¨ Ù…Ø¯Ø§Ø±Ø³', value: schoolCommandCenter.schoolStudentCount, tone: 'emerald' },
-                            { label: 'Ø¨Ù„Ø§ ÙØµÙ„', value: schoolCommandCenter.studentsWithoutClass, tone: 'amber' },
-                            { label: 'Ø¨Ù„Ø§ ÙˆÙ„ÙŠ Ø£Ù…Ø±', value: schoolCommandCenter.studentsWithoutParent, tone: 'rose' },
-                            { label: 'Ø£ÙƒÙˆØ§Ø¯ Ù†Ø´Ø·Ø©', value: schoolCommandCenter.activeCodes, tone: 'purple' },
+                            { label: 'مدارس', value: schoolCommandCenter.schoolCount, tone: 'indigo' },
+                            { label: 'فصول', value: schoolCommandCenter.classCount, tone: 'blue' },
+                            { label: 'طلاب مدارس', value: schoolCommandCenter.schoolStudentCount, tone: 'emerald' },
+                            { label: 'بلا فصل', value: schoolCommandCenter.studentsWithoutClass, tone: 'amber' },
+                            { label: 'بلا ولي أمر', value: schoolCommandCenter.studentsWithoutParent, tone: 'rose' },
+                            { label: 'أكواد نشطة', value: schoolCommandCenter.activeCodes, tone: 'purple' },
                         ].map((item) => (
                             <div key={item.label} className={`rounded-2xl border p-4 ${
                                 item.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50 text-indigo-700' :
@@ -1394,9 +1252,9 @@ export const AdminDashboard: React.FC = () => {
                     <div className="grid grid-cols-1 gap-5 px-6 pb-6 lg:grid-cols-2">
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
-                                <h4 className="text-sm font-black text-gray-900">Ù…Ø¯Ø§Ø±Ø³ ØªØ­ØªØ§Ø¬ Ø¶Ø¨Ø·</h4>
+                                <h4 className="text-sm font-black text-gray-900">مدارس تحتاج ضبط</h4>
                                 <button onClick={() => setActiveAdminTab('schools')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">
-                                    Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø¯Ø§Ø±Ø³
+                                    إدارة المدارس
                                 </button>
                             </div>
                             <div className="space-y-3">
@@ -1406,23 +1264,23 @@ export const AdminDashboard: React.FC = () => {
                                             <div className="min-w-0">
                                                 <div className="truncate text-sm font-black text-gray-900">{school.name}</div>
                                                 <div className="mt-1 text-xs text-gray-500">
-                                                    {school.studentCount} Ø·Ø§Ù„Ø¨ - {school.classCount} ÙØµÙ„ - {school.supervisorCount} Ù…Ø´Ø±Ù
+                                                    {school.studentCount} طالب - {school.classCount} فصل - {school.supervisorCount} مشرف
                                                 </div>
                                             </div>
                                             <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
-                                                {school.issueCount} ØªÙ†Ø¨ÙŠÙ‡
+                                                {school.issueCount} تنبيه
                                             </span>
                                         </div>
                                         <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-gray-500">
-                                            <span>Ø¨Ù„Ø§ ÙØµÙ„: <b className="text-gray-900">{school.studentsWithoutClass}</b></span>
-                                            <span>Ø¨Ù„Ø§ ÙˆÙ„ÙŠ Ø£Ù…Ø±: <b className="text-gray-900">{school.studentsWithoutParent}</b></span>
-                                            <span>Ø¨Ø§Ù‚Ø§Øª: <b className="text-gray-900">{school.packageCount}</b></span>
-                                            <span>Ø£ÙƒÙˆØ§Ø¯: <b className="text-gray-900">{school.activeCodeCount}</b></span>
+                                            <span>بلا فصل: <b className="text-gray-900">{school.studentsWithoutClass}</b></span>
+                                            <span>بلا ولي أمر: <b className="text-gray-900">{school.studentsWithoutParent}</b></span>
+                                            <span>باقات: <b className="text-gray-900">{school.packageCount}</b></span>
+                                            <span>أكواد: <b className="text-gray-900">{school.activeCodeCount}</b></span>
                                         </div>
                                     </div>
                                 )) : (
                                     <div className="rounded-xl border border-dashed border-emerald-200 bg-white p-4 text-sm font-bold text-emerald-700">
-                                        Ø§Ù„Ù…Ø¯Ø§Ø±Ø³ Ø§Ù„Ø­Ø§Ù„ÙŠØ© Ø¬Ø§Ù‡Ø²Ø© Ù…Ø¨Ø¯Ø¦ÙŠÙ‹Ø§ ÙˆÙ„Ø§ ØªÙˆØ¬Ø¯ Ù†ÙˆØ§Ù‚Øµ Ø¸Ø§Ù‡Ø±Ø©.
+                                        المدارس الحالية جاهزة مبدئيًا ولا توجد نواقص ظاهرة.
                                     </div>
                                 )}
                             </div>
@@ -1430,8 +1288,8 @@ export const AdminDashboard: React.FC = () => {
 
                         <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
                             <div className="mb-3 flex items-center justify-between">
-                                <h4 className="text-sm font-black text-gray-900">Ø£Ø¯Ø§Ø¡ Ø§Ù„Ù…Ø¯Ø§Ø±Ø³</h4>
-                                <a href="/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">ØªÙ‚Ø±ÙŠØ± Ù…ÙØµÙ„</a>
+                                <h4 className="text-sm font-black text-gray-900">أداء المدارس</h4>
+                                <a href="#/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
                             </div>
                             <div className="space-y-3">
                                 {schoolCommandCenter.performanceWatch.length ? schoolCommandCenter.performanceWatch.map((school) => (
@@ -1439,7 +1297,7 @@ export const AdminDashboard: React.FC = () => {
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="min-w-0">
                                                 <div className="truncate text-sm font-black text-gray-900">{school.name}</div>
-                                                <div className="mt-1 text-xs text-gray-500">{school.quizAttempts} Ù†ØªÙŠØ¬Ø© Ù…Ø³Ø¬Ù„Ø©</div>
+                                                <div className="mt-1 text-xs text-gray-500">{school.quizAttempts} نتيجة مسجلة</div>
                                             </div>
                                             <span className={`rounded-lg px-2.5 py-1 text-xs font-black ${
                                                 school.average < 60 ? 'bg-rose-50 text-rose-700' :
@@ -1452,7 +1310,7 @@ export const AdminDashboard: React.FC = () => {
                                     </div>
                                 )) : (
                                     <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
-                                        Ø³ÙŠØ¸Ù‡Ø± Ø£Ø¯Ø§Ø¡ Ø§Ù„Ù…Ø¯Ø§Ø±Ø³ Ø¨Ø¹Ø¯ ØªÙˆÙØ± Ù†ØªØ§Ø¦Ø¬ Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª Ù…ÙˆØ¬Ù‡Ø© Ù„Ù„Ø·Ù„Ø§Ø¨.
+                                        سيظهر أداء المدارس بعد توفر نتائج اختبارات موجهة للطلاب.
                                     </div>
                                 )}
                             </div>
@@ -1465,21 +1323,21 @@ export const AdminDashboard: React.FC = () => {
                 <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-96">
                     <div className="flex items-center justify-between mb-5">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900">Ù…Ø¤Ø´Ø±Ø§Øª Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ ÙˆØ§Ù„ØªØ´ØºÙŠÙ„</h3>
-                            <p className="text-sm text-gray-500 mt-1">ØªÙˆØ²ÙŠØ¹ Ø§Ù„Ø¹Ù†Ø§ØµØ± Ø§Ù„ØªÙŠ ØªÙ†ØªØ¸Ø± Ø§Ø¹ØªÙ…Ø§Ø¯Ùƒ Ø§Ù„Ø¢Ù† Ø­Ø³Ø¨ Ù†ÙˆØ¹ Ø§Ù„Ù…Ø­ØªÙˆÙ‰.</p>
+                            <h3 className="text-lg font-bold text-gray-900">مؤشرات الاعتماد والتشغيل</h3>
+                            <p className="text-sm text-gray-500 mt-1">توزيع العناصر التي تنتظر اعتمادك الآن حسب نوع المحتوى.</p>
                         </div>
                         <div className="text-sm text-amber-600 font-bold">
-                            {overviewStats.pendingReview.toLocaleString('ar-EG')} Ø¹Ù†ØµØ±
+                            {overviewStats.pendingReview.toLocaleString('ar-EG')} عنصر
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
-                            { label: 'Ø§Ù„Ø¯ÙˆØ±Ø§Øª', value: overviewStats.pendingBreakdown.courses, color: 'bg-blue-500' },
-                            { label: 'Ø§Ù„Ø¯Ø±ÙˆØ³', value: overviewStats.pendingBreakdown.lessons, color: 'bg-emerald-500' },
-                            { label: 'Ø§Ù„Ø£Ø³Ø¦Ù„Ø©', value: overviewStats.pendingBreakdown.questions, color: 'bg-purple-500' },
-                            { label: 'Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª', value: overviewStats.pendingBreakdown.quizzes, color: 'bg-amber-500' },
-                            { label: 'Ù…Ù„ÙØ§Øª Ø§Ù„Ù…ÙƒØªØ¨Ø©', value: overviewStats.pendingBreakdown.library, color: 'bg-pink-500' },
+                            { label: 'الدورات', value: overviewStats.pendingBreakdown.courses, color: 'bg-blue-500' },
+                            { label: 'الدروس', value: overviewStats.pendingBreakdown.lessons, color: 'bg-emerald-500' },
+                            { label: 'الأسئلة', value: overviewStats.pendingBreakdown.questions, color: 'bg-purple-500' },
+                            { label: 'الاختبارات', value: overviewStats.pendingBreakdown.quizzes, color: 'bg-amber-500' },
+                            { label: 'ملفات المكتبة', value: overviewStats.pendingBreakdown.library, color: 'bg-pink-500' },
                         ].map((item) => {
                             const percentage = overviewStats.pendingReview
                                 ? Math.round((item.value / overviewStats.pendingReview) * 100)
@@ -1497,7 +1355,7 @@ export const AdminDashboard: React.FC = () => {
                                             style={{ width: `${Math.max(percentage, item.value ? 8 : 0)}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">ÙŠÙ…Ø«Ù„ {percentage}% Ù…Ù† Ø·Ø§Ø¨ÙˆØ± Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ø­Ø§Ù„ÙŠ.</p>
+                                    <p className="text-xs text-gray-500 mt-2">يمثل {percentage}% من طابور المراجعة الحالي.</p>
                                 </div>
                             );
                         })}
@@ -1505,13 +1363,13 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-96 flex flex-col">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Ø£Ø­Ø¯Ø« Ù…Ø§ ÙŠÙ†ØªØ¸Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">أحدث ما ينتظر الاعتماد</h3>
                     <div className="flex-1 overflow-y-auto space-y-4">
                         {reviewQueue.length === 0 ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-400">
                                 <Activity size={42} className="mb-3 text-gray-200" />
-                                <p className="font-medium">Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø­ØªÙˆÙ‰ Ù…Ø¹Ù„Ù‚ Ø§Ù„Ø¢Ù†</p>
-                                <p className="text-xs mt-1">ÙƒÙ„ Ù…Ø§ Ø£Ø¶ÙŠÙÙ‡ Ø§Ù„Ù…Ø¹Ù„Ù…ÙˆÙ† ØªÙ…Øª Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡ Ø£Ùˆ Ù„Ø§ ÙŠØ²Ø§Ù„ ÙÙŠ Ø§Ù„Ù…Ø³ÙˆØ¯Ø©.</p>
+                                <p className="font-medium">لا يوجد محتوى معلق الآن</p>
+                                <p className="text-xs mt-1">كل ما أضيفه المعلمون تمت مراجعته أو لا يزال في المسودة.</p>
                             </div>
                         ) : (
                             reviewQueue.map((item) => (
@@ -1522,7 +1380,7 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm text-gray-800 font-bold truncate">{item.title}</p>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {item.type} â€¢ Ø§Ù„Ù…ØµØ¯Ø±: {item.ownerType === 'teacher' ? 'Ù…Ø¹Ù„Ù…' : item.ownerType === 'school' ? 'Ù…Ø¯Ø±Ø³Ø©' : 'Ø§Ù„Ù…Ù†ØµØ©'}
+                                            {item.type} • المصدر: {item.ownerType === 'teacher' ? 'معلم' : item.ownerType === 'school' ? 'مدرسة' : 'المنصة'}
                                         </p>
                                         {user.role === Role.ADMIN && (
                                             <div className="mt-3 flex flex-wrap gap-2">
@@ -1530,13 +1388,13 @@ export const AdminDashboard: React.FC = () => {
                                                     onClick={() => reviewContentItem(item, 'approved')}
                                                     className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 hover:bg-emerald-100"
                                                 >
-                                                    Ø§Ø¹ØªÙ…Ø§Ø¯ ÙˆÙ†Ø´Ø±
+                                                    اعتماد ونشر
                                                 </button>
                                                 <button
                                                     onClick={() => reviewContentItem(item, 'rejected')}
                                                     className="rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-700 hover:bg-rose-100"
                                                 >
-                                                    Ø±ÙØ¶
+                                                    رفض
                                                 </button>
                                             </div>
                                         )}
@@ -1547,8 +1405,6 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
-            </>
-            )}
 
             {(user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SUPERVISOR) && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1556,11 +1412,11 @@ export const AdminDashboard: React.FC = () => {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900">Ù†Ø´Ø§Ø· Ø§Ù„Ù…Ø¹Ù„Ù…ÙŠÙ† ÙˆØ§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ù…Ø­ØªÙˆÙ‰</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Ø§Ù„Ù…Ø¹Ù„Ù…ÙˆÙ† Ø§Ù„Ø£ÙƒØ«Ø± Ø¥Ø¶Ø§ÙØ© Ù„Ù„Ù…Ø­ØªÙˆÙ‰ ÙˆØ§Ù„Ù†Ø·Ø§Ù‚Ø§Øª Ø§Ù„Ù…Ø³Ù†Ø¯Ø© Ù„Ù‡Ù… Ø§Ù„Ø¢Ù†.</p>
+                                    <h3 className="text-lg font-bold text-gray-900">نشاط المعلمين واعتماد المحتوى</h3>
+                                    <p className="text-sm text-gray-500 mt-1">المعلمون الأكثر إضافة للمحتوى والنطاقات المسندة لهم الآن.</p>
                                 </div>
                                 <div className="text-sm text-emerald-600 font-bold">
-                                    {teacherContributionStats.length.toLocaleString('ar-EG')} Ù…Ø¹Ù„Ù…
+                                    {teacherContributionStats.length.toLocaleString('ar-EG')} معلم
                                 </div>
                             </div>
 
@@ -1572,20 +1428,20 @@ export const AdminDashboard: React.FC = () => {
                                             <div className="text-sm font-black text-amber-600">{teacher.pendingItems}</div>
                                         </div>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
-                                            <div>Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ: <span className="font-bold text-gray-900">{teacher.totalItems}</span></div>
-                                            <div>Ù…Ø¹ØªÙ…Ø¯: <span className="font-bold text-emerald-700">{teacher.approvedItems}</span></div>
-                                            <div>Ù…Ù†Ø´ÙˆØ±: <span className="font-bold text-indigo-700">{teacher.publishedItems}</span></div>
-                                            <div>Ø¨Ø§Ù†ØªØ¸Ø§Ø±Ùƒ: <span className="font-bold text-amber-700">{teacher.pendingItems}</span></div>
+                                            <div>الإجمالي: <span className="font-bold text-gray-900">{teacher.totalItems}</span></div>
+                                            <div>معتمد: <span className="font-bold text-emerald-700">{teacher.approvedItems}</span></div>
+                                            <div>منشور: <span className="font-bold text-indigo-700">{teacher.publishedItems}</span></div>
+                                            <div>بانتظارك: <span className="font-bold text-amber-700">{teacher.pendingItems}</span></div>
                                         </div>
                                         <div className="mt-2 text-xs text-gray-500">
-                                            Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø³Ù†Ø¯Ø©: <span className="font-bold">{teacher.managedPaths}</span>
-                                            {' â€¢ '}
-                                            Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…Ø³Ù†Ø¯Ø©: <span className="font-bold">{teacher.managedSubjects}</span>
+                                            المسارات المسندة: <span className="font-bold">{teacher.managedPaths}</span>
+                                            {' • '}
+                                            المواد المسندة: <span className="font-bold">{teacher.managedSubjects}</span>
                                         </div>
                                     </div>
                                 )) : (
                                     <div className="border border-dashed border-gray-200 rounded-xl p-4 text-sm text-gray-500">
-                                        Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ø³Ø§Ù‡Ù…Ø§Øª Ù…Ø¹Ù„Ù…ÙŠÙ† Ø¸Ø§Ù‡Ø±Ø© Ø¨Ø¹Ø¯ Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ù†ØµØ©.
+                                        لا توجد مساهمات معلمين ظاهرة بعد داخل المنصة.
                                     </div>
                                 )}
                             </div>
@@ -1596,34 +1452,233 @@ export const AdminDashboard: React.FC = () => {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900">Ù†Ø·Ø§Ù‚ Ø¹Ù…Ù„ÙŠ Ø§Ù„Ø­Ø§Ù„ÙŠ</h3>
-                                    <p className="text-sm text-gray-500 mt-1">Ø£ÙŠ Ø¥Ø¶Ø§ÙØ© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù†Ùƒ Ø³ØªØ¸Ù‡Ø± Ø£ÙˆÙ„Ù‹Ø§ ÙÙŠ Ø·Ø§Ø¨ÙˆØ± Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø­ØªÙ‰ Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ Ù…Ù† Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.</p>
+                                    <h3 className="text-lg font-bold text-gray-900">نطاق عملي الحالي</h3>
+                                    <p className="text-sm text-gray-500 mt-1">أي إضافة جديدة منك ستظهر أولًا في طابور المراجعة حتى اعتمادها من الإدارة.</p>
                                 </div>
-                                <div className="text-sm text-indigo-600 font-bold">Ù…Ø¹Ù„Ù… Ù…Ø§Ø¯Ø©</div>
+                                <div className="text-sm text-indigo-600 font-bold">معلم مادة</div>
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div className="rounded-xl bg-indigo-50 p-4">
-                                    <div className="text-xs text-indigo-600 mb-1">Ø§Ù„Ù…Ø³Ø§Ø±Ø§Øª Ø§Ù„Ù…Ø³Ù†Ø¯Ø©</div>
+                                    <div className="text-xs text-indigo-600 mb-1">المسارات المسندة</div>
                                     <div className="text-2xl font-black text-indigo-700">{user.managedPathIds?.length || 0}</div>
                                 </div>
                                 <div className="rounded-xl bg-emerald-50 p-4">
-                                    <div className="text-xs text-emerald-600 mb-1">Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…Ø³Ù†Ø¯Ø©</div>
+                                    <div className="text-xs text-emerald-600 mb-1">المواد المسندة</div>
                                     <div className="text-2xl font-black text-emerald-700">{user.managedSubjectIds?.length || 0}</div>
                                 </div>
                                 <div className="rounded-xl bg-amber-50 p-4">
-                                    <div className="text-xs text-amber-600 mb-1">Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯</div>
+                                    <div className="text-xs text-amber-600 mb-1">بانتظار الاعتماد</div>
                                     <div className="text-2xl font-black text-amber-700">{currentTeacherContribution?.pendingItems || 0}</div>
                                 </div>
                                 <div className="rounded-xl bg-purple-50 p-4">
-                                    <div className="text-xs text-purple-600 mb-1">Ù…Ø­ØªÙˆÙ‰ Ù…Ù†Ø´ÙˆØ±</div>
+                                    <div className="text-xs text-purple-600 mb-1">محتوى منشور</div>
                                     <div className="text-2xl font-black text-purple-700">{currentTeacherContribution?.publishedItems || 0}</div>
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {user.role === Role.SUPERVISOR && (
+                        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div className="flex items-center justify-between mb-5">
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900">نطاق الإشراف الحالي</h3>
+                                    <p className="text-sm text-gray-500 mt-1">متابعة سريعة للفصول والطلاب والاختبارات الموجهة داخل نطاقك.</p>
+                                </div>
+                                <div className="text-sm text-amber-600 font-bold">
+                                    {supervisorScopeSummary.schoolCount > 0 ? 'مشرف مدرسة' : 'مشرف نطاق'}
+                                </div>
+                            </div>
 
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div className="rounded-xl bg-indigo-50 p-4">
+                                    <div className="text-xs text-indigo-600 mb-1">تشغيل المدارس</div>
+                                    <div className="text-2xl font-black text-indigo-700">{supervisorScopeSummary.groupCount}</div>
+                                </div>
+                                <div className="rounded-xl bg-emerald-50 p-4">
+                                    <div className="text-xs text-emerald-600 mb-1">الطلاب داخل النطاق</div>
+                                    <div className="text-2xl font-black text-emerald-700">{supervisorScopeSummary.studentCount}</div>
+                                </div>
+                                <div className="rounded-xl bg-blue-50 p-4">
+                                    <div className="text-xs text-blue-600 mb-1">متوسط الأداء</div>
+                                    <div className="text-2xl font-black text-blue-700">{supervisorScopeSummary.averageScore}%</div>
+                                </div>
+                                <div className="rounded-xl bg-rose-50 p-4">
+                                    <div className="text-xs text-rose-600 mb-1">الطلاب الضعاف</div>
+                                    <div className="text-2xl font-black text-rose-700">{supervisorScopeSummary.weakStudentsCount}</div>
+                                </div>
+                                <div className="rounded-xl bg-purple-50 p-4">
+                                    <div className="text-xs text-purple-600 mb-1">اختبارات المتابعة</div>
+                                    <div className="text-2xl font-black text-purple-700">{supervisorScopeSummary.followUpCount}</div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                <a href="#/reports" className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white hover:bg-indigo-700">
+                                    التقارير
+                                </a>
+                                <button onClick={() => setActiveAdminTab('school-portal')} className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-black text-amber-700 hover:bg-amber-100">
+                                    بوابة المتابعة
+                                </button>
+                                <button onClick={() => setActiveAdminTab('quizzes')} className="rounded-xl bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100">
+                                    توجيه اختبار
+                                </button>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                                    <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
+                                    <div className="mt-2 flex items-center justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className="truncate text-sm font-black text-gray-900">{supervisorScopeSummary.bestClass?.name || 'بانتظار نتائج كافية'}</div>
+                                            <div className="mt-1 text-xs text-gray-500">
+                                                {supervisorScopeSummary.bestClass ? `${supervisorScopeSummary.bestClass.studentCount} طالب - ${supervisorScopeSummary.bestClass.attempts} نتيجة` : 'يظهر بعد أول نتائج للفصول.'}
+                                            </div>
+                                        </div>
+                                        <div className="rounded-xl bg-white px-3 py-1.5 text-sm font-black text-emerald-700">
+                                            {supervisorScopeSummary.bestClass ? `${supervisorScopeSummary.bestClass.average}%` : '-'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-4">
+                                    <div className="text-xs font-black text-rose-700">أضعف فصل</div>
+                                    <div className="mt-2 flex items-center justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className="truncate text-sm font-black text-gray-900">{supervisorScopeSummary.weakestClass?.name || 'بانتظار نتائج كافية'}</div>
+                                            <div className="mt-1 text-xs text-gray-500">
+                                                {supervisorScopeSummary.weakestClass ? `${supervisorScopeSummary.weakestClass.studentCount} طالب - ${supervisorScopeSummary.weakestClass.attempts} نتيجة` : 'يظهر بعد أول نتائج للفصول.'}
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="#/admin-dashboard?tab=quizzes&source=supervisor&mode=central"
+                                            onClick={() => setActiveAdminTab('quizzes')}
+                                            className="rounded-xl bg-white px-3 py-1.5 text-xs font-black text-rose-700 hover:bg-rose-100"
+                                        >
+                                            أنشئ تدخل علاجي
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                {supervisorActionCards.map((card) => (
+                                    <button
+                                        key={card.title}
+                                        onClick={card.action}
+                                        className={`rounded-2xl border p-4 text-right transition hover:-translate-y-0.5 hover:shadow-sm ${
+                                            card.tone === 'rose' ? 'border-rose-100 bg-rose-50/70' :
+                                            card.tone === 'emerald' ? 'border-emerald-100 bg-emerald-50/70' :
+                                            card.tone === 'indigo' ? 'border-indigo-100 bg-indigo-50/70' :
+                                            'border-amber-100 bg-amber-50/70'
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between gap-3">
+                                            <span className="text-sm font-black text-gray-900">{card.title}</span>
+                                            <span className={`rounded-xl px-2.5 py-1 text-sm font-black ${
+                                                card.tone === 'rose' ? 'bg-white text-rose-700' :
+                                                card.tone === 'emerald' ? 'bg-white text-emerald-700' :
+                                                card.tone === 'indigo' ? 'bg-white text-indigo-700' :
+                                                'bg-white text-amber-700'
+                                            }`}>
+                                                {card.value.toLocaleString('ar-EG')}
+                                            </span>
+                                        </div>
+                                        <p className="mt-2 min-h-[40px] text-xs leading-5 text-gray-500">{card.hint}</p>
+                                        <div className={`mt-3 text-xs font-black ${
+                                            card.tone === 'rose' ? 'text-rose-700' :
+                                            card.tone === 'emerald' ? 'text-emerald-700' :
+                                            card.tone === 'indigo' ? 'text-indigo-700' :
+                                            'text-amber-700'
+                                        }`}>
+                                            {card.actionLabel}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">متابعة الطلاب</h4>
+                                        <a href="#/reports" className="text-xs font-black text-indigo-600 hover:text-indigo-700">تقرير مفصل</a>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.studentsNeedingFollowUp.length ? supervisorScopeSummary.studentsNeedingFollowUp.map((student) => (
+                                            <div key={student.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate text-sm font-black text-gray-900">{student.name}</div>
+                                                        <div className="mt-1 truncate text-xs text-gray-500">{student.latestQuiz}</div>
+                                                    </div>
+                                                    <div className={`rounded-lg px-2.5 py-1 text-xs font-black ${student.average < 60 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                                        {student.attempts ? `${student.average}%` : 'جديد'}
+                                                    </div>
+                                                </div>
+                                                {student.weakSkills.length ? (
+                                                    <div className="mt-2 text-xs text-gray-500">الأولوية: {student.weakSkills.join('، ')}</div>
+                                                ) : null}
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm font-bold text-emerald-700">
+                                                لا توجد حالات حرجة ظاهرة الآن.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">أضعف المهارات</h4>
+                                        <button onClick={() => setActiveAdminTab('skills')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">المهارات</button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.weakestSkills.length ? supervisorScopeSummary.weakestSkills.map((skill) => (
+                                            <div key={skill.skill} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div className="min-w-0 truncate text-sm font-black text-gray-900">{skill.skill}</div>
+                                                    <div className="text-xs font-black text-rose-700">{skill.mastery}%</div>
+                                                </div>
+                                                <div className="mt-2 h-2 rounded-full bg-gray-100">
+                                                    <div className="h-full rounded-full bg-rose-500" style={{ width: `${Math.max(8, Math.min(skill.mastery, 100))}%` }} />
+                                                </div>
+                                                <div className="mt-2 text-xs text-gray-500">{skill.affectedStudents} طالب - {skill.attempts} محاولة</div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
+                                                تظهر المهارات بعد توفر نتائج كافية.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h4 className="text-sm font-black text-gray-900">الفصول والنطاقات</h4>
+                                        <button onClick={() => setActiveAdminTab('school-portal')} className="text-xs font-black text-indigo-600 hover:text-indigo-700">إدارة</button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {supervisorScopeSummary.groupSnapshots.length ? supervisorScopeSummary.groupSnapshots.map((group) => (
+                                            <div key={group.id} className="rounded-xl bg-white p-3 shadow-sm">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate text-sm font-black text-gray-900">{group.name}</div>
+                                                        <div className="mt-1 text-xs text-gray-500">{group.studentCount} طالب - {group.attempts} نتيجة</div>
+                                                    </div>
+                                                    <div className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">{group.average}%</div>
+                                                </div>
+                                            </div>
+                                        )) : (
+                                            <div className="rounded-xl border border-dashed border-gray-200 bg-white p-4 text-sm text-gray-500">
+                                                اربط المشرف بمجموعة لعرض بياناتها هنا.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
@@ -1632,7 +1687,7 @@ export const AdminDashboard: React.FC = () => {
     const renderLibraryCenter = () => {
         const selectedOption = librarySubjectOptions.find((item) => item.subject.id === selectedLibrarySubjectId);
         const selectedSubject = selectedOption?.subject;
-        const selectedPathName = selectedOption?.path?.name || 'Ù…Ø³Ø§Ø± ØºÙŠØ± Ù…Ø­Ø¯Ø¯';
+        const selectedPathName = selectedOption?.path?.name || 'مسار غير محدد';
         const visibleFiles = libraryItems.filter((item) => item.showOnPlatform !== false).length;
         const readySupportFiles = libraryItems.filter(
             (item) =>
@@ -1655,13 +1710,13 @@ export const AdminDashboard: React.FC = () => {
             <div className="space-y-6 animate-fade-in">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Ù…Ø±ÙƒØ² Ø§Ù„Ù…ÙƒØªØ¨Ø© ÙˆÙ…Ù„ÙØ§Øª Ø§Ù„Ø¯Ø¹Ù…</h1>
+                        <h1 className="text-2xl font-bold text-gray-900">مركز المكتبة وملفات الدعم</h1>
                         <p className="mt-1 text-sm text-gray-500">
-                            Ù…ÙƒØ§Ù† ÙˆØ§Ø­Ø¯ Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ù„ÙØ§Øª ÙˆØ§Ù„ØªÙ„Ø®ÙŠØµØ§Øª Ø§Ù„ØªÙŠ ØªØ¸Ù‡Ø± ÙÙŠ Ù…ÙƒØªØ¨Ø© Ø§Ù„Ù…Ø§Ø¯Ø© ÙˆØ¯Ø§Ø®Ù„ Ù…ÙˆØ¶ÙˆØ¹Ø§Øª Ø§Ù„ØªØ£Ø³ÙŠØ³.
+                            مكان واحد لإدارة الملفات والتلخيصات التي تظهر في مكتبة المادة وداخل موضوعات التأسيس.
                         </p>
                     </div>
                     <div className="w-full lg:w-80">
-                        <label className="mb-2 block text-xs font-black text-gray-500">Ø§Ø®ØªØ± Ø§Ù„Ù…Ø§Ø¯Ø©</label>
+                        <label className="mb-2 block text-xs font-black text-gray-500">اختر المادة</label>
                         <select
                             value={selectedLibrarySubjectId}
                             onChange={(event) => setSelectedLibrarySubjectId(event.target.value)}
@@ -1669,7 +1724,7 @@ export const AdminDashboard: React.FC = () => {
                         >
                             {librarySubjectOptions.map((item) => (
                                 <option key={item.subject.id} value={item.subject.id}>
-                                    {(item.path?.name || 'Ù…Ø³Ø§Ø± ØºÙŠØ± Ù…Ø­Ø¯Ø¯')} / {item.subject.name} ({item.fileCount})
+                                    {(item.path?.name || 'مسار غير محدد')} / {item.subject.name} ({item.fileCount})
                                 </option>
                             ))}
                         </select>
@@ -1678,10 +1733,10 @@ export const AdminDashboard: React.FC = () => {
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                     {[
-                        { label: 'ÙƒÙ„ Ø§Ù„Ù…Ù„ÙØ§Øª', value: libraryItems.length, className: 'bg-slate-50 text-slate-700 border-slate-100' },
-                        { label: 'Ø¸Ø§Ù‡Ø± Ù„Ù„Ø·Ù„Ø§Ø¨', value: visibleFiles, className: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
-                        { label: 'Ø¬Ø§Ù‡Ø² ÙƒÙ…Ù„Ù Ø¯Ø¹Ù…', value: readySupportFiles, className: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
-                        { label: 'ÙŠØ­ØªØ§Ø¬ Ù…Ø±Ø§Ø¬Ø¹Ø©', value: needsAttentionFiles, className: 'bg-amber-50 text-amber-700 border-amber-100' },
+                        { label: 'كل الملفات', value: libraryItems.length, className: 'bg-slate-50 text-slate-700 border-slate-100' },
+                        { label: 'ظاهر للطلاب', value: visibleFiles, className: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+                        { label: 'جاهز كملف دعم', value: readySupportFiles, className: 'bg-indigo-50 text-indigo-700 border-indigo-100' },
+                        { label: 'يحتاج مراجعة', value: needsAttentionFiles, className: 'bg-amber-50 text-amber-700 border-amber-100' },
                     ].map((item) => (
                         <div key={item.label} className={`rounded-2xl border p-5 ${item.className}`}>
                             <div className="text-xs font-black">{item.label}</div>
@@ -1695,21 +1750,21 @@ export const AdminDashboard: React.FC = () => {
                         <div className="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
                             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div>
-                                    <div className="text-xs font-black text-indigo-600">Ø§Ù„Ù…Ø§Ø¯Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©</div>
+                                    <div className="text-xs font-black text-indigo-600">المادة الحالية</div>
                                     <h2 className="mt-1 text-xl font-black text-gray-900">{selectedSubject.name}</h2>
                                     <p className="mt-1 text-sm text-gray-500">{selectedPathName}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-3 text-center md:grid-cols-3">
                                     <div className="rounded-xl bg-white px-4 py-3">
-                                        <div className="text-xs font-bold text-gray-500">Ù…Ù„ÙØ§Øª Ø§Ù„Ù…Ø§Ø¯Ø©</div>
+                                        <div className="text-xs font-bold text-gray-500">ملفات المادة</div>
                                         <div className="mt-1 text-lg font-black text-gray-900">{selectedOption?.fileCount || 0}</div>
                                     </div>
                                     <div className="rounded-xl bg-white px-4 py-3">
-                                        <div className="text-xs font-bold text-gray-500">Ø¬Ø§Ù‡Ø² Ù„Ù„Ø¯Ø¹Ù…</div>
+                                        <div className="text-xs font-bold text-gray-500">جاهز للدعم</div>
                                         <div className="mt-1 text-lg font-black text-emerald-700">{selectedOption?.readyCount || 0}</div>
                                     </div>
                                     <div className="rounded-xl bg-white px-4 py-3">
-                                        <div className="text-xs font-bold text-gray-500">Ø§Ù„Ù…Ø³Ø§Ø±</div>
+                                        <div className="text-xs font-bold text-gray-500">المسار</div>
                                         <div className="mt-1 text-sm font-black text-gray-900">{selectedPathName}</div>
                                     </div>
                                 </div>
@@ -1720,8 +1775,8 @@ export const AdminDashboard: React.FC = () => {
                 ) : (
                     <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
                         <BookOpen className="mx-auto mb-4 text-gray-300" size={44} />
-                        <h2 className="text-xl font-black text-gray-900">Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…ÙˆØ§Ø¯ Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…ÙƒØªØ¨Ø©</h2>
-                        <p className="mt-2 text-sm text-gray-500">Ø£Ø¶Ù Ù…Ø³Ø§Ø±Ø§ ÙˆÙ…Ø§Ø¯Ø© Ø£ÙˆÙ„Ø§ØŒ Ø«Ù… Ø§Ø±Ø¬Ø¹ Ù„Ø¥Ø¯Ø§Ø±Ø© Ù…Ù„ÙØ§Øª Ø§Ù„Ø¯Ø¹Ù… ÙˆØ§Ù„ØªÙ„Ø®ÙŠØµØ§Øª Ù…Ù† Ù‡Ù†Ø§.</p>
+                        <h2 className="text-xl font-black text-gray-900">لا توجد مواد لإدارة المكتبة</h2>
+                        <p className="mt-2 text-sm text-gray-500">أضف مسارا ومادة أولا، ثم ارجع لإدارة ملفات الدعم والتلخيصات من هنا.</p>
                     </div>
                 )}
             </div>
@@ -1733,10 +1788,10 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">
-                        {activeTab === 'settings' ? 'Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„ØªØ´ØºÙŠÙ„ÙŠØ©' : 'Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ù†Ø¸Ø§Ù…'}
+                        {activeTab === 'settings' ? 'الإعدادات التشغيلية' : 'مراقبة النظام'}
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">
-                        Ù…ØªØ§Ø¨Ø¹Ø© Ø­Ø§Ù„Ø© Ø§Ù„Ø®Ø¯Ù…Ø§Øª Ø§Ù„Ù…Ù‡Ù…Ø© Ø¨Ø¯ÙˆÙ† ØªØºÙŠÙŠØ± ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø·Ø§Ù„Ø¨ Ø£Ùˆ ØªØ¹Ø·ÙŠÙ„ Ø£ÙŠ Ø¬Ø²Ø¡ ÙŠØ¹Ù…Ù„ Ø¨Ø§Ù„ÙØ¹Ù„.
+                        متابعة حالة الخدمات المهمة بدون تغيير تجربة الطالب أو تعطيل أي جزء يعمل بالفعل.
                     </p>
                 </div>
                 <button
@@ -1744,16 +1799,16 @@ export const AdminDashboard: React.FC = () => {
                     disabled={aiStatusLoading}
                     className="rounded-xl bg-gray-900 px-5 py-3 text-sm font-black text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    {aiStatusLoading ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„ØªØ­Ø¯ÙŠØ«...' : 'ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø­Ø§Ù„Ø©'}
+                    {aiStatusLoading ? 'جاري التحديث...' : 'تحديث الحالة'}
                 </button>
             </div>
 
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <h2 className="text-xl font-black text-gray-900">Ø­Ø§Ù„Ø© Ø§Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„Ø­ÙŠØ©</h2>
+                        <h2 className="text-xl font-black text-gray-900">حالة التشغيل الحية</h2>
                         <p className="mt-1 text-sm leading-6 text-gray-500">
-                            ÙØ­Øµ Ù…Ø¨Ø§Ø´Ø± Ù…Ù† Ø§Ù„Ø®Ø§Ø¯Ù… Ù„Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§ØªØŒ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…Ø±Ø¦ÙŠ Ù„Ù„Ø·Ø§Ù„Ø¨ØŒ ÙˆØ±ÙˆØ§Ø¨Ø· Ø§Ù„ØªØ¹Ù„Ù… Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©.
+                            فحص مباشر من الخادم لقاعدة البيانات، المحتوى المرئي للطالب، وروابط التعلم الأساسية.
                         </p>
                     </div>
                     <div className={`rounded-2xl px-5 py-3 text-center ${
@@ -1763,7 +1818,7 @@ export const AdminDashboard: React.FC = () => {
                                 ? 'bg-amber-50 text-amber-700'
                                 : 'bg-rose-50 text-rose-700'
                     }`}>
-                        <div className="text-xs font-bold">Ø¬Ø§Ù‡Ø²ÙŠØ© Ø§Ù„ØªØ¹Ù„Ù…</div>
+                        <div className="text-xs font-bold">جاهزية التعلم</div>
                         <div className="mt-1 text-2xl font-black">
                             {operationalStatus ? `${operationalStatus.learningReadiness.score}%` : '...'}
                         </div>
@@ -1779,25 +1834,25 @@ export const AdminDashboard: React.FC = () => {
                 <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                     {[
                         {
-                            title: 'Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
-                            value: operationalStatus?.database.status === 'connected' ? 'Ù…ØªØµÙ„Ø©' : 'ØºÙŠØ± Ù…ØªØµÙ„Ø©',
-                            hint: operationalStatus?.database.name || 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
+                            title: 'قاعدة البيانات',
+                            value: operationalStatus?.database.status === 'connected' ? 'متصلة' : 'غير متصلة',
+                            hint: operationalStatus?.database.name || 'غير محدد',
                             ok: operationalStatus?.database.status === 'connected',
                         },
                         {
-                            title: 'Ù…Ø³Ø§Ø­Ø§Øª Ø¸Ø§Ù‡Ø±Ø©',
+                            title: 'مساحات ظاهرة',
                             value: `${operationalStatus?.learningReadiness.usableSpaces || 0}`,
-                            hint: `ÙØ§Ø±ØºØ©: ${operationalStatus?.learningReadiness.emptySpaces || 0}`,
+                            hint: `فارغة: ${operationalStatus?.learningReadiness.emptySpaces || 0}`,
                             ok: (operationalStatus?.learningReadiness.usableSpaces || 0) > 0 && (operationalStatus?.learningReadiness.emptySpaces || 0) === 0,
                         },
                         {
-                            title: 'Ø±ÙˆØ§Ø¨Ø· Ø§Ù„Ø¯Ø±ÙˆØ³',
+                            title: 'روابط الدروس',
                             value: `${operationalStatus?.issues.missingLessonRefs || 0}`,
-                            hint: `Ø¯Ø±ÙˆØ³ ØºÙŠØ± Ù‚Ø§Ø¨Ù„Ø© Ù„Ù„ØªØ´ØºÙŠÙ„: ${operationalStatus?.issues.unplayableLinkedLessons || 0}`,
+                            hint: `دروس غير قابلة للتشغيل: ${operationalStatus?.issues.unplayableLinkedLessons || 0}`,
                             ok: (operationalStatus?.issues.missingLessonRefs || 0) === 0 && (operationalStatus?.issues.unplayableLinkedLessons || 0) === 0,
                         },
                         {
-                            title: 'Ø§Ù„Ù†Ø´Ø±',
+                            title: 'النشر',
                             value: operationalStatus?.deployment.api || 'Render',
                             hint: `${operationalStatus?.deployment.frontend || 'Vercel'} + ${operationalStatus?.deployment.database || 'Atlas'}`,
                             ok: true,
@@ -1808,7 +1863,7 @@ export const AdminDashboard: React.FC = () => {
                                 <span className={`rounded-full px-2.5 py-1 text-xs font-black ${
                                     item.ok ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
                                 }`}>
-                                    {item.ok ? 'Ø³Ù„ÙŠÙ…' : 'ÙŠØ­ØªØ§Ø¬ Ù…Ø±Ø§Ø¬Ø¹Ø©'}
+                                    {item.ok ? 'سليم' : 'يحتاج مراجعة'}
                                 </span>
                                 <div className="text-sm font-bold text-gray-500">{item.title}</div>
                             </div>
@@ -1821,11 +1876,11 @@ export const AdminDashboard: React.FC = () => {
                 {operationalStatus?.learningReadiness.spaces?.length ? (
                     <div className="mt-5 overflow-hidden rounded-2xl border border-gray-100">
                         <div className="grid grid-cols-6 bg-gray-50 px-4 py-3 text-xs font-black text-gray-500">
-                            <div className="col-span-2 text-right">Ø§Ù„Ù…Ø§Ø¯Ø©</div>
-                            <div className="text-center">Ù…ÙˆØ¶ÙˆØ¹Ø§Øª</div>
-                            <div className="text-center">Ø¯Ø±ÙˆØ³</div>
-                            <div className="text-center">Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª</div>
-                            <div className="text-center">Ù…Ù„ÙØ§Øª</div>
+                            <div className="col-span-2 text-right">المادة</div>
+                            <div className="text-center">موضوعات</div>
+                            <div className="text-center">دروس</div>
+                            <div className="text-center">اختبارات</div>
+                            <div className="text-center">ملفات</div>
                         </div>
                         {operationalStatus.learningReadiness.spaces.map((space) => (
                             <div key={`${space.pathId}-${space.subjectId}`} className="grid grid-cols-6 border-t border-gray-100 px-4 py-3 text-sm">
@@ -1855,8 +1910,8 @@ export const AdminDashboard: React.FC = () => {
                                     <Activity size={22} />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-black text-gray-900">Ø­Ø§Ù„Ø© Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ</h2>
-                                    <p className="text-sm text-gray-500">Ù…ØµØ¯Ø± Ø§Ù„ØªØ­Ù„ÙŠÙ„ ÙˆØ§Ù„ØªÙˆØµÙŠØ§Øª Ø§Ù„Ø°ÙƒÙŠØ© Ø¯Ø§Ø®Ù„ Ø§Ù„Ù…Ù†ØµØ©</p>
+                                    <h2 className="text-xl font-black text-gray-900">حالة الذكاء الاصطناعي</h2>
+                                    <p className="text-sm text-gray-500">مصدر التحليل والتوصيات الذكية داخل المنصة</p>
                                 </div>
                             </div>
                             <p className="text-sm leading-7 text-gray-600 max-w-2xl">{aiProviderMeta.description}</p>
@@ -1868,7 +1923,7 @@ export const AdminDashboard: React.FC = () => {
                                     ? 'bg-blue-50 text-blue-700'
                                     : 'bg-slate-50 text-slate-700'
                         }`}>
-                            <div className="text-xs font-bold opacity-80">Ø§Ù„Ù…Ø²ÙˆØ¯ Ø§Ù„Ø­Ø§Ù„ÙŠ</div>
+                            <div className="text-xs font-bold opacity-80">المزود الحالي</div>
                             <div className="text-lg font-black mt-1">{aiProviderMeta.label}</div>
                             <div className="text-xs font-bold mt-2">{aiProviderMeta.badge}</div>
                         </div>
@@ -1882,47 +1937,47 @@ export const AdminDashboard: React.FC = () => {
 
                     <div className="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
-                            <div className="text-xs text-gray-500 mb-2">Ø§Ù„Ù†Ù…ÙˆØ°Ø¬</div>
-                            <div className="font-black text-gray-900 break-words">{aiStatus?.model || 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯'}</div>
+                            <div className="text-xs text-gray-500 mb-2">النموذج</div>
+                            <div className="font-black text-gray-900 break-words">{aiStatus?.model || 'غير محدد'}</div>
                         </div>
                         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
-                            <div className="text-xs text-gray-500 mb-2">Ù…Ù‡Ù„Ø© Ø§Ù„Ø·Ù„Ø¨</div>
+                            <div className="text-xs text-gray-500 mb-2">مهلة الطلب</div>
                             <div className="font-black text-gray-900">
-                                {aiStatus?.timeoutMs ? `${aiStatus.timeoutMs.toLocaleString('ar-EG')} ms` : 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯'}
+                                {aiStatus?.timeoutMs ? `${aiStatus.timeoutMs.toLocaleString('ar-EG')} ms` : 'غير محدد'}
                             </div>
                         </div>
                         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
                             <div className="text-xs text-gray-500 mb-2">Ollama / Gemma</div>
                             <div className={`font-black ${aiStatus?.ollamaConfigured ? 'text-emerald-700' : 'text-gray-500'}`}>
-                                {aiStatus?.ollamaConfigured ? 'Ù…ÙØ¹Ù„' : 'ØºÙŠØ± Ù…ÙØ¹Ù„'}
+                                {aiStatus?.ollamaConfigured ? 'مفعل' : 'غير مفعل'}
                             </div>
                         </div>
                         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
                             <div className="text-xs text-gray-500 mb-2">LM Studio</div>
                             <div className={`font-black ${aiStatus?.lmStudioConfigured ? 'text-emerald-700' : 'text-gray-500'}`}>
-                                {aiStatus?.lmStudioConfigured ? 'Ù…ÙØ¹Ù„' : 'ØºÙŠØ± Ù…ÙØ¹Ù„'}
+                                {aiStatus?.lmStudioConfigured ? 'مفعل' : 'غير مفعل'}
                             </div>
                         </div>
                         <div className="rounded-2xl bg-gray-50 border border-gray-100 p-4">
                             <div className="text-xs text-gray-500 mb-2">Gemini</div>
                             <div className={`font-black ${aiStatus?.geminiConfigured ? 'text-emerald-700' : 'text-gray-500'}`}>
-                                {aiStatus?.geminiConfigured ? 'Ù…ÙØ¹Ù„' : 'ØºÙŠØ± Ù…ÙØ¹Ù„'}
+                                {aiStatus?.geminiConfigured ? 'مفعل' : 'غير مفعل'}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                    <h3 className="text-lg font-black text-gray-900 mb-4">Ù‚Ø±Ø§Ø± Ø§Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„Ø§Ø­ØªØ±Ø§ÙÙŠ</h3>
+                    <h3 className="text-lg font-black text-gray-900 mb-4">قرار التشغيل الاحترافي</h3>
                     <div className="space-y-3 text-sm leading-7 text-gray-600">
                         <p className="rounded-2xl bg-emerald-50 border border-emerald-100 p-4 text-emerald-800">
-                            Ø§Ù„Ø£ÙˆÙ„ÙˆÙŠØ© Ø§Ù„Ù…Ø³ØªÙ‚Ø¨Ù„ÙŠØ©: ØªØ´ØºÙŠÙ„ Ollama/Gemma Ø£Ùˆ LM Studio Ø¹Ù„Ù‰ Ø³ÙŠØ±ÙØ± Ù…Ø³ØªÙ‚Ù„ Ø£Ùˆ Ø¬Ù‡Ø§Ø² Ø¯Ø§Ø¦Ù… Ù„ØªÙ‚Ù„ÙŠÙ„ ØªÙƒÙ„ÙØ© Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ.
+                            الأولوية المستقبلية: تشغيل Ollama/Gemma أو LM Studio على سيرفر مستقل أو جهاز دائم لتقليل تكلفة الذكاء الاصطناعي.
                         </p>
                         <p className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-blue-800">
-                            ÙÙŠ Ø§Ù„Ø¥Ù†ØªØ§Ø¬: ÙƒÙ„ Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø°ÙƒØ§Ø¡ ØªÙ…Ø± Ù…Ù† Ø§Ù„Ø®Ø§Ø¯Ù…ØŒ Ù„Ø°Ù„Ùƒ Ù…ÙØ§ØªÙŠØ­ API Ù„Ø§ ØªØ¸Ù‡Ø± Ù„Ù„Ø·Ø§Ù„Ø¨ ÙˆÙ„Ø§ Ù„Ù„Ù…ØªØµÙØ­.
+                            في الإنتاج: كل طلبات الذكاء تمر من الخادم، لذلك مفاتيح API لا تظهر للطالب ولا للمتصفح.
                         </p>
                         <p className="rounded-2xl bg-amber-50 border border-amber-100 p-4 text-amber-800">
-                            Ù„Ùˆ ØªØ¹Ø·Ù„ Ù…Ø²ÙˆØ¯ Ø§Ù„Ø°ÙƒØ§Ø¡ØŒ Ø§Ù„Ù…Ù†ØµØ© Ù„Ø§ ØªØªÙˆÙ‚Ù ÙˆØªØ¹Ø±Ø¶ Ù…Ù‚ØªØ±Ø­Ø§Øª Ø§Ø­ØªÙŠØ§Ø·ÙŠØ© Ù…Ù†Ø§Ø³Ø¨Ø© Ø­ØªÙ‰ Ù†Ø¹ÙŠØ¯ Ø¶Ø¨Ø· Ø§Ù„Ù…Ø²ÙˆØ¯.
+                            لو تعطل مزود الذكاء، المنصة لا تتوقف وتعرض مقترحات احتياطية مناسبة حتى نعيد ضبط المزود.
                         </p>
                     </div>
                 </div>
@@ -1931,19 +1986,19 @@ export const AdminDashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     {
-                        title: 'Ù…ØµØ¯Ø± Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª',
+                        title: 'مصدر البيانات',
                         value: 'MongoDB Atlas',
-                        hint: 'Ø§Ù„Ù…Ø³Ø§Ø±Ø§ØªØŒ Ø§Ù„Ù…Ù‡Ø§Ø±Ø§ØªØŒ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§ØªØŒ Ø§Ù„Ù†ØªØ§Ø¦Ø¬ØŒ ÙˆØ§Ù„ØªÙ‚Ø§Ø±ÙŠØ± Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ù…ØµØ¯Ø± Ø¨ÙŠØ§Ù†Ø§Øª Ø­Ù‚ÙŠÙ‚ÙŠ.',
+                        hint: 'المسارات، المهارات، الاختبارات، النتائج، والتقارير مرتبطة بمصدر بيانات حقيقي.',
                     },
                     {
-                        title: 'Ø§Ù„Ù†Ø´Ø± Ø§Ù„Ø­Ø§Ù„ÙŠ',
+                        title: 'النشر الحالي',
                         value: 'Vercel + Render',
-                        hint: 'Ø§Ù„ÙˆØ§Ø¬Ù‡Ø© ÙˆØ§Ù„Ø®Ø§Ø¯Ù… Ù…Ù†ÙØµÙ„Ø§Ù† ÙˆØ¬Ø§Ù‡Ø²Ø§Ù† Ù„Ù„ØªØ·ÙˆÙŠØ± Ø§Ù„Ù…Ø³ØªÙ…Ø± Ø¨Ø¯ÙˆÙ† Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ Ø¹Ù„Ù‰ Ø¬Ù‡Ø§Ø²Ùƒ.',
+                        hint: 'الواجهة والخادم منفصلان وجاهزان للتطوير المستمر بدون الاعتماد على جهازك.',
                     },
                     {
-                        title: 'Ø§Ù„Ø³Ù„Ø§Ù…Ø©',
+                        title: 'السلامة',
                         value: 'JWT + Server AI',
-                        hint: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ ÙˆØ­Ù…Ø§ÙŠØ© Ù…ÙØ§ØªÙŠØ­ Ø§Ù„Ø°ÙƒØ§Ø¡ Ø¯Ø§Ø®Ù„ Ø§Ù„Ø®Ø§Ø¯Ù… Ø¨Ø¯Ù„ Ø§Ù„Ù…ØªØµÙØ­.',
+                        hint: 'تسجيل الدخول الحقيقي وحماية مفاتيح الذكاء داخل الخادم بدل المتصفح.',
                     },
                 ].map((item) => (
                     <div key={item.title} className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
@@ -1982,7 +2037,7 @@ export const AdminDashboard: React.FC = () => {
             case 'groups':
                 return <SchoolsManager />;
             case 'school-portal':
-                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} onOpenSchoolOperations={() => setActiveAdminTab('schools')} />;
+                return <SchoolPortalManager key={`school-portal-${tabRequestVersion}`} />;
             case 'memberships':
                 return <MembershipsManager />;
             case 'financial':
