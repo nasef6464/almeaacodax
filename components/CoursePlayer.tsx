@@ -52,7 +52,24 @@ interface CoursePlayerProps {
 export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, initialLessonId, onLessonChange }) => {
   const navigate = useNavigate();
   const { completedLessons, markLessonComplete, questions, user, enrolledCourses, hasScopedPackageAccess } = useStore();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('course_player_night_mode');
+      if (saved !== null) return saved === 'true';
+      return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('course_player_night_mode', String(isDarkMode));
+    } catch {
+      // ignore
+    }
+  }, [isDarkMode]);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(() =>
     typeof window === 'undefined' ? true : window.innerWidth >= 1024,
   );
@@ -413,12 +430,12 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                       </button>
                     </div>
                   ) : activeLesson.type === 'file' ? (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gray-50 text-gray-900">
+                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-gray-50 text-gray-900'}`}>
                       <div className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-100 text-rose-600 rounded-3xl flex items-center justify-center mb-6">
                         <FileText size={48} />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-black mb-4 leading-tight">{activeLesson.title}</h2>
-                      <p className="text-gray-500 mb-8 max-w-md">يمكنك استعراض هذا الملف أو تحميله للمذاكرة لاحقًا من داخل نفس الدرس.</p>
+                      <p className={`mb-8 max-w-md ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>يمكنك استعراض هذا الملف أو تحميله للمذاكرة لاحقًا من داخل نفس الدرس.</p>
                       <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                         <button
                           onClick={() => handleOpenLessonFile('download')}
@@ -430,14 +447,16 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                         <button
                           onClick={() => handleOpenLessonFile('preview')}
                           disabled={!activeLesson.fileUrl}
-                          className="bg-white border border-gray-200 text-gray-700 px-8 py-4 rounded-2xl font-black text-base sm:text-lg hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                          className={`px-8 py-4 rounded-2xl font-black text-base sm:text-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto ${
+                            isDarkMode ? 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          }`}
                         >
                           <Eye size={20} /> استعراض
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gray-100 text-gray-600">
+                    <div className={`w-full h-full flex flex-col items-center justify-center p-5 sm:p-8 text-center ${isDarkMode ? 'bg-slate-900 text-slate-200' : 'bg-gray-100 text-gray-600'}`}>
                       <FileText size={64} className="mb-4 opacity-20" />
                       <h2 className="text-xl sm:text-2xl font-bold mb-2">محتوى غير متاح</h2>
                     </div>
