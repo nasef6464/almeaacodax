@@ -252,13 +252,13 @@ const Plan: React.FC = () => {
         courses
           .filter(
             (course) =>
-              enrolledCourses.includes(course.id) ||
-              (user.subscription?.purchasedCourses || []).includes(course.id) ||
+              (enrolledCourses || []).includes(course.id) ||
+              (user?.subscription?.purchasedCourses || []).includes(course.id) ||
               hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject),
           )
           .map((course) => course.id),
       ),
-    [courses, enrolledCourses, hasScopedPackageAccess, user.subscription?.purchasedCourses],
+    [courses, enrolledCourses, hasScopedPackageAccess, user?.subscription?.purchasedCourses],
   );
 
   const canUseCourseInStudentPlan = (course: (typeof courses)[number]) =>
@@ -1077,7 +1077,7 @@ const Plan: React.FC = () => {
 
     const payload: StudyPlan = {
       id: editingPlanId || `plan_${Date.now()}`,
-      userId: user.id,
+      userId: user?.id || 'guest',
       name: draft.name.trim(),
       pathId: draft.pathId,
       subjectIds: draft.subjectIds,
