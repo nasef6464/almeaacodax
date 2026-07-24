@@ -1480,8 +1480,19 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         };
     }, []);
 
-    // Debugging logs as requested
     // Get full course objects for enrolled courses
+    const activeCourses = (courses || []).filter(c => !c.isPackage && (enrolledCourses || []).includes(c.id));
+
+    // Calculate overall progress
+    let totalLessonsInEnrolled = 0;
+    activeCourses.forEach(course => {
+        (course.modules || []).forEach(mod => {
+            totalLessonsInEnrolled += (mod.lessons || []).length;
+        });
+    });
+    const overallProgress = totalLessonsInEnrolled > 0 
+        ? Math.round(((completedLessons || []).length / totalLessonsInEnrolled) * 100) 
+        : 0;
 
     // --- Smart Action Logic ---
     let smartAction = null;
