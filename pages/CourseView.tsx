@@ -183,6 +183,7 @@ const CourseView: React.FC = () => {
         </div>
     );
 
+    // if (isPlaying)
     if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
         return (
             <CoursePlayer
