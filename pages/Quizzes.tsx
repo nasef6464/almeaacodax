@@ -605,73 +605,50 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <div className="bg-secondary-500 text-white p-3 text-center font-bold text-base">اختباراتي</div>
 
           <div className="border-b border-gray-100 bg-gray-50/70 p-4 space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <AttemptCategoryButton
-                active={activeAttemptCategory === 'regular'}
-                label="اختبارات عادية"
-                description="اختبارات وتدريبات المواد"
-                count={attemptGroupsByCategory.regular.length}
-                onClick={() => setActiveAttemptCategory('regular')}
-              />
-              <AttemptCategoryButton
-                active={activeAttemptCategory === 'mock'}
-                label="اختبارات محاكية"
-                description="محاكيات كاملة حسب المسار"
-                count={attemptGroupsByCategory.mock.length}
-                onClick={() => setActiveAttemptCategory('mock')}
-              />
+            <div className="flex flex-col sm:flex-row gap-3">
+              <select
+                value={activeAttemptCategory}
+                onChange={(e) => setActiveAttemptCategory(e.target.value as AttemptCategory)}
+                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 focus:border-indigo-400 focus:outline-none"
+              >
+                <option value="regular">اختبارات عادية ({attemptGroupsByCategory.regular.length})</option>
+                <option value="mock">اختبارات محاكية ({attemptGroupsByCategory.mock.length})</option>
+              </select>
+
+              {attemptTitleFilters.length > 2 ? (
+                <select
+                  value={activeFilter}
+                  onChange={(e) => setActiveFilter(e.target.value)}
+                  className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 focus:border-indigo-400 focus:outline-none"
+                >
+                  {attemptTitleFilters.map((filter) => (
+                    <option key={filter} value={filter === 'الكل' ? 'all' : filter}>{filter}</option>
+                  ))}
+                </select>
+              ) : null}
             </div>
 
-            {attemptTitleFilters.length > 2 ? (
-              <div className="flex flex-wrap gap-2">
-                {attemptTitleFilters.map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setActiveFilter(filter === 'الكل' ? 'all' : filter)}
-                    className={`rounded-full px-3 py-1.5 text-xs font-black transition-all ${
-                      (activeFilter === 'all' && filter === 'الكل') || activeFilter === filter
-                        ? 'bg-gray-900 text-white shadow-sm'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-200 hover:text-indigo-700'
-                    }`}
-                  >
-                    {filter}
-                  </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <select
+                value={activePathFilter}
+                onChange={(event) => setActivePathFilter(event.target.value)}
+                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none"
+              >
+                <option value="all">كل المسارات</option>
+                {visiblePathOptions.map((path) => (
+                  <option key={path.id} value={path.id}>{path.name}</option>
                 ))}
-              </div>
-            ) : null}
+              </select>
 
-            <select
-              value={activePathFilter}
-              onChange={(event) => setActivePathFilter(event.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none"
-            >
-              <option value="all">كل المسارات</option>
-              {visiblePathOptions.map((path) => (
-                <option key={path.id} value={path.id}>{path.name}</option>
-              ))}
-            </select>
-
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              <AttemptScoreFilterButton
-                active={activeAttemptScoreFilter === 'all'}
-                label="كل النتائج"
-                value={activeAttemptGroups.length}
-                onClick={() => setActiveAttemptScoreFilter('all')}
-              />
-              <AttemptScoreFilterButton
-                active={activeAttemptScoreFilter === 'needs-review'}
-                label="يحتاج مراجعة"
-                value={activeAttemptSummary.needsReview}
-                tone="rose"
-                onClick={() => setActiveAttemptScoreFilter('needs-review')}
-              />
-              <AttemptScoreFilterButton
-                active={activeAttemptScoreFilter === 'good'}
-                label="مطمئن"
-                value={activeAttemptSummary.good}
-                tone="emerald"
-                onClick={() => setActiveAttemptScoreFilter('good')}
-              />
+              <select
+                value={activeAttemptScoreFilter}
+                onChange={(e) => setActiveAttemptScoreFilter(e.target.value as AttemptScoreFilter)}
+                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 focus:border-emerald-400 focus:outline-none"
+              >
+                <option value="all">كل النتائج ({activeAttemptGroups.length})</option>
+                <option value="needs-review">يحتاج مراجعة ({activeAttemptSummary.needsReview})</option>
+                <option value="good">مطمئن ({activeAttemptSummary.good})</option>
+              </select>
             </div>
 
             <div className="hidden">
@@ -796,28 +773,25 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           <div className="p-6 space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               <ActionCard
-                icon={<Zap size={24} />}
+                icon={<Zap size={20} />}
                 title="اختبار ساهر الذاتي"
-                description="أنشئ اختبارك بنفسك: المسار، المادة، عدد الأسئلة، الصعوبة، والوقت."
                 to="/quiz"
                 buttonLabel="ابدأ الآن"
                 tone="purple"
               />
               <ActionCard
-                icon={<Target size={24} />}
+                icon={<Target size={20} />}
                 title="اختبارات موجهة لك"
-                description="اختبارات مخصصة لك من الإدارة أو المدرسة أو المشرف، وتظهر فقط عندما تكون مستهدفًا بها."
                 to={directedQuizzes[0] ? `/quiz/${directedQuizzes[0].id}` : '/quiz'}
-                buttonLabel={directedQuizzes.length > 0 ? 'افتح الاختبارات الموجهة' : 'لا يوجد حاليًا'}
+                buttonLabel={directedQuizzes.length > 0 ? 'افتح الاختبارات' : 'لا يوجد حاليًا'}
                 tone="amber"
                 disabled={directedQuizzes.length === 0}
               />
               <ActionCard
-                icon={<FileText size={24} />}
+                icon={<FileText size={20} />}
                 title="اختباراتي السابقة"
-                description="هنا فقط تراجع المحاولات التي حللتها بالفعل، وتشاهد التفاصيل وتحليل المهارات لكل اختبار."
                 to="/dashboard?tab=quizzes"
-                buttonLabel="افتح سجل اختباراتي"
+                buttonLabel="افتح السجل"
                 tone="purple"
               />
             </div>
@@ -1229,39 +1203,27 @@ const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
 
   return (
     <article className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-colors hover:border-indigo-100">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-black text-gray-600">{categoryLabel}</span>
             <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">{pathLabel}</span>
-            <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${isPassed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
-              أفضل نتيجة {best.score}%
-            </span>
           </div>
-          <h3 className="mt-2 text-lg font-black leading-7 text-gray-900">{group.quizTitle}</h3>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-gray-500">
+          <h3 className="mt-1 text-base font-black leading-tight text-gray-900">{group.quizTitle}</h3>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-bold text-gray-500">
             <span>{group.attempts.length} محاولة</span>
-            <span>{latest.totalQuestions} سؤال</span>
-            <span>آخر حل {new Date(latest.date).toLocaleDateString('ar-SA')}</span>
+            <span>• آخر حل {new Date(latest.date).toLocaleDateString('ar-SA')}</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:w-[520px]">
-          <div className="rounded-2xl bg-gray-50 p-3 text-center">
-            <div className="text-[11px] font-bold text-gray-500">آخر درجة</div>
-            <div className={`mt-1 text-xl font-black ${latest.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{latest.score}%</div>
+        <div className="flex items-center gap-3">
+          <div className="text-center">
+            <div className="text-[10px] font-bold text-gray-500">آخر درجة</div>
+            <div className={`text-lg font-black ${latest.score >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>{latest.score}%</div>
           </div>
-          <div className="rounded-2xl bg-indigo-50 p-3 text-center">
-            <div className="text-[11px] font-bold text-indigo-500">أفضل درجة</div>
-            <div className="mt-1 text-xl font-black text-indigo-700">{best.score}%</div>
-          </div>
-          <div className="rounded-2xl bg-amber-50 p-3 text-center">
-            <div className="text-[11px] font-bold text-amber-600">المحاولات</div>
-            <div className="mt-1 text-xl font-black text-amber-700">{group.attempts.length}</div>
-          </div>
-          <div className="rounded-2xl bg-emerald-50 p-3 text-center">
-            <div className="text-[11px] font-bold text-emerald-600">الحالة</div>
-            <div className="mt-1 text-sm font-black text-emerald-700">{isPassed ? 'جيد' : 'يحتاج مراجعة'}</div>
+          <div className="text-center border-r pr-3 border-gray-100">
+            <div className="text-[10px] font-bold text-gray-500">أفضل درجة</div>
+            <div className="text-lg font-black text-indigo-700">{best.score}%</div>
           </div>
         </div>
       </div>
@@ -1342,7 +1304,6 @@ const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({
 const ActionCard = ({
   icon,
   title,
-  description,
   to,
   buttonLabel,
   tone,
@@ -1350,7 +1311,6 @@ const ActionCard = ({
 }: {
   icon: React.ReactNode;
   title: string;
-  description: string;
   to: string;
   buttonLabel: string;
   tone: 'purple' | 'amber';
@@ -1358,23 +1318,17 @@ const ActionCard = ({
 }) => {
   const toneClasses =
     tone === 'purple'
-      ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white border-indigo-200'
-      : 'bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-200';
-  const iconClass = tone === 'purple' ? 'text-indigo-700' : 'text-amber-700';
+      ? 'bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100'
+      : 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100';
 
   return (
-    <div className={`rounded-2xl border p-4 shadow-sm ${toneClasses}`}>
-      <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white/90 ${iconClass}`}>{icon}</div>
-      <h3 className="mb-3 text-lg font-black">{title}</h3>
-      <p className="sr-only">{description}</p>
-      {disabled ? (
-        <div className="rounded-lg bg-white/60 py-2 text-center text-sm font-bold text-gray-500">لا يوجد الآن</div>
-      ) : (
-        <Link to={to} className="cta-attention block rounded-lg bg-white px-4 py-2 text-center text-sm font-black text-gray-900 hover:bg-gray-50">
-          {buttonLabel}
-        </Link>
-      )}
-    </div>
+    <Link to={disabled ? '#' : to} className={`flex items-center justify-between rounded-xl border p-4 transition-all shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : toneClasses}`}>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm">{icon}</div>
+        <h3 className="text-sm font-black">{title}</h3>
+      </div>
+      <div className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white/50">{buttonLabel}</div>
+    </Link>
   );
 };
 

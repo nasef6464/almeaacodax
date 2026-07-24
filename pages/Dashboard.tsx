@@ -1438,135 +1438,52 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
     const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
-    const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
-    const [reviewStats, setReviewStats] = useState<{ dueToday: number; dueThisWeek: number; totalCards: number } | null>(null);
-    const [myCertificates, setMyCertificates] = useState<any[]>([]);
-    const [certificatesLoading, setCertificatesLoading] = useState(false);
-    const [mockExamGenerating, setMockExamGenerating] = useState(false);
-    const [mockExamMessage, setMockExamMessage] = useState('');
-
-    useEffect(() => {
-        let mounted = true;
-        api.getReviewStats()
-            .then((stats) => {
-                if (mounted) setReviewStats(stats);
-            })
-            .catch((error) => {
-                console.warn('Review stats unavailable:', error);
-            });
-        return () => {
-            mounted = false;
-        };
-    }, []);
-
-    useEffect(() => {
-        let mounted = true;
-        setCertificatesLoading(true);
-        api.getMyCertificates()
-            .then((payload) => {
-                if (!mounted) return;
-                setMyCertificates(Array.isArray((payload as any)?.certificates) ? (payload as any).certificates : []);
-            })
-            .catch(() => {
-                if (!mounted) return;
-                setMyCertificates([]);
-            })
-            .finally(() => {
-                if (!mounted) return;
-                setCertificatesLoading(false);
-            });
-        return () => {
-            mounted = false;
-        };
-    }, []);
-
-    // Get full course objects for enrolled courses
-    const activeCourses = (courses || []).filter(c => !c.isPackage && (enrolledCourses || []).includes(c.id));
-
-    // Calculate overall progress
-    let totalLessonsInEnrolled = 0;
-    activeCourses.forEach(course => {
-        (course.modules || []).forEach(mod => {
-            totalLessonsInEnrolled += (mod.lessons || []).length;
-        });
-    });
-    const overallProgress = totalLessonsInEnrolled > 0 
-        ? Math.round(((completedLessons || []).length / totalLessonsInEnrolled) * 100) 
-        : 0;
-
-    // --- Smart Action Logic ---
-    let smartAction = null;
     
-    // 1. Check for weak skills in recent exams
-    const recentExamsWithSkills = examResults.filter(r => r.skillsAnalysis && r.skillsAnalysis.length > 0);
-    if (recentExamsWithSkills.length > 0) {
-        const latestExam = recentExamsWithSkills[0];
-        const weakSkill = latestExam.skillsAnalysis.find(s => s.status === 'weak' || s.mastery < 50);
-        if (weakSkill) {
-            smartAction = {
-                type: 'skill',
-                title: 'مراجعة مهارة ضعيفة',
-                desc: `ابدأ بمهارة "${weakSkill.skill}" ثم أعد القياس.`,
-                buttonText: 'افتح التقرير',
-                link: '/reports',
-                icon: <AlertTriangle size={24} className="text-rose-500" />,
-                tone: 'rose' as const,
-                secondaryText: 'خطة العلاج',
-                secondaryLink: '/plan'
-            };
+    // Calculate Streak
+    const calculateStreak = () => {
+        if (!recentActivity || recentActivity.length === 0) return 0;
+        let streak = 0;
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        
+        const activityDates = Array.from(new Set(
+            recentActivity.map(a => {
+                const d = new Date(a.date);
+                d.setHours(0, 0, 0, 0);
+                return d.getTime();
+            })
+        )).sort((a, b) => b - a);
+
+        if (activityDates.length === 0) return 0;
+        
+        let lastDate = currentDate.getTime();
+        if (activityDates[0] > lastDate) lastDate = activityDates[0];
+        
+        for (const date of activityDates) {
+            const diffDays = Math.round((lastDate - date) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 1) {
+                if (diffDays === 1 || streak === 0) streak++;
+                lastDate = date;
+            } else {
+                break;
+            }
         }
-    }
+        return Math.max(streak, 1);
+    };
+    
+    const streakDays = calculateStreak();
 
-    // 2. If no weak skill, check for next lesson in an active course
-    if (!smartAction && activeCourses.length > 0) {
-        const courseToContinue = activeCourses.find(course => {
-            const courseLessons = course.modules?.flatMap(m => m.lessons) || [];
-            const completedInCourse = courseLessons.filter(l => completedLessons.includes(l.id)).length;
-            return completedInCourse < courseLessons.length;
-        });
-
-        if (courseToContinue) {
-            smartAction = {
-                type: 'course',
-                title: 'استكمل تعلمك',
-                desc: `واصل من "${courseToContinue.title}".`,
-                buttonText: 'متابعة الدورة',
-                link: `/course/${courseToContinue.id}`,
-                icon: <TrendingUp size={24} className="text-indigo-500" />,
-                tone: 'indigo' as const,
-                secondaryText: 'تقاريري',
-                secondaryLink: '/reports'
-            };
-        }
-    }
-
-    // 3. Fallback action
-    if (!smartAction) {
-        smartAction = {
-            type: 'quiz',
-            title: 'اختبر مستواك',
-            desc: 'جرب اختبار ساهر السريع لتقييم مستواك العام.',
-            buttonText: 'ابدأ اختبار ساهر',
-            link: '/quiz',
-            icon: <Zap size={24} className="text-amber-500" />,
-            tone: 'amber' as const,
-            secondaryText: 'مساراتي',
-            secondaryLink: '/courses'
-        };
-    }
-
-    // --- Group learning by registered paths for "My Paths" ---
+    // Group learning by registered paths
     const getSmallPathStyle = (pathId: string) => {
-        if (pathId === 'p_qudrat') return { icon: <Target size={20} className="text-purple-500" />, bg: 'bg-purple-50' };
-        if (pathId === 'p_tahsili') return { icon: <BookOpen size={20} className="text-blue-500" />, bg: 'bg-blue-50' };
-        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={20} className="text-emerald-500" />, bg: 'bg-emerald-50' };
-        return { icon: <RouteIcon size={20} className="text-indigo-500" />, bg: 'bg-indigo-50' };
+        if (pathId === 'p_qudrat') return { icon: <Target size={24} className="text-purple-500" />, bg: 'bg-purple-100 text-purple-700' };
+        if (pathId === 'p_tahsili') return { icon: <BookOpen size={24} className="text-blue-500" />, bg: 'bg-blue-100 text-blue-700' };
+        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={24} className="text-emerald-500" />, bg: 'bg-emerald-100 text-emerald-700' };
+        return { icon: <RouteIcon size={24} className="text-indigo-500" />, bg: 'bg-indigo-100 text-indigo-700' };
     };
 
     const enrolledPathSet = new Set(enrolledPaths ?? []);
-    const hasExplicitEnrolledPaths = enrolledPathSet.size > 0;
-    const relevantPaths = hasExplicitEnrolledPaths
-        ? storePaths.filter((path) => enrolledPathSet.has(path.id) && (canSeeHiddenPaths || path.isActive !== false))
+    const relevantPaths = enrolledPathSet.size > 0
+        ? storePaths.filter((path) => enrolledPathSet.has(path.id))
         : [];
 
     const paths = relevantPaths
@@ -1585,232 +1502,150 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         .filter((path) => path.courses.length > 0 || path.stats.examsCount > 0);
 
     return (
-    <div className="space-y-8 animate-fade-in pb-20">
-        {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-end">
-            <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 leading-tight">
-                    لوحة تحكم ذكية - مرحباً، {String(user?.name || user?.email || 'طالبنا العزيز').trim().split(' ')[0] || 'طالبنا العزيز'} 👋
-                </h2>
-                <p className="text-gray-500 text-base md:text-lg">جاهز لتحقيق أهدافك اليوم؟</p>
+    <div className="space-y-6 animate-fade-in pb-20">
+        {/* Header & Streak */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+            <div className="flex items-center gap-4">
+                <img src={user.avatar} alt="Profile" className="w-16 h-16 rounded-full border-4 border-amber-100" />
+                <div>
+                    <h2 className="text-2xl font-black text-gray-900">مرحباً يا بطل! 👋</h2>
+                    <p className="text-gray-500 text-sm font-bold mt-1">جاهز تحقق أهدافك اليوم؟</p>
+                </div>
             </div>
-            <Link to="/book-session" className="w-full md:w-auto bg-indigo-100 text-indigo-700 px-4 py-2 md:px-6 md:py-3 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-sm hover:bg-indigo-200 transition-colors">
-                <Clock size={20} />
-                <span className="hidden md:inline">حجز حصة خاصة</span>
-                <span className="md:hidden">حجز حصة</span>
-            </Link>
+            <div className="flex items-center gap-3 bg-orange-50 border border-orange-100 p-3 rounded-2xl">
+                <div className="w-12 h-12 flex items-center justify-center text-2xl bg-white rounded-xl shadow-sm">🔥</div>
+                <div>
+                    <div className="text-xs font-black text-orange-600">شريط الاستمرارية</div>
+                    <div className="text-xl font-black text-orange-700">{streakDays} أيام متتالية</div>
+                </div>
+            </div>
         </div>
 
-        {/* Quick Student Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-4 border border-indigo-100 bg-gradient-to-l from-indigo-50/60 to-white flex flex-col justify-between">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm">🔄</div>
-                        <h3 className="font-bold text-gray-900 text-sm">المراجعة اليومية</h3>
-                    </div>
-                    <p className="text-xs text-gray-500 leading-5">
-                        {reviewStats
-                            ? `${reviewStats.dueToday} أسئلة اليوم`
-                            : 'حالة المراجعة اليومية'}
-                    </p>
-                </div>
-                <Link
-                    to="/review"
-                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-indigo-700 shadow-sm"
+        {/* Shortcuts for Students */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+                { id: 'saher', icon: <Zap size={28} />, label: 'ساهر (اختبار سريع)', color: 'text-purple-600', bg: 'bg-purple-50', hover: 'hover:bg-purple-600' },
+                { id: 'plan', icon: <MapIcon size={28} />, label: 'خطتي اليومية', color: 'text-indigo-600', bg: 'bg-indigo-50', hover: 'hover:bg-indigo-600' },
+                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', color: 'text-blue-600', bg: 'bg-blue-50', hover: 'hover:bg-blue-600' },
+                { id: 'reports', icon: <PieChart size={28} />, label: 'تقاريري', color: 'text-emerald-600', bg: 'bg-emerald-50', hover: 'hover:bg-emerald-600' }
+            ].map(btn => (
+                <button 
+                    key={btn.id}
+                    onClick={() => setActiveTab(btn.id as any)} 
+                    className={`flex flex-col items-center justify-center p-4 rounded-2xl border border-gray-100 shadow-sm transition-all group ${btn.bg} bg-opacity-50 hover:bg-opacity-100 bg-white`}
                 >
-                    ابدأ المراجعة
-                </Link>
-            </Card>
-
-            <Card className="p-4 border border-fuchsia-100 bg-gradient-to-l from-fuchsia-50/60 to-white flex flex-col justify-between">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-8 rounded-xl bg-fuchsia-100 text-fuchsia-700 flex items-center justify-center font-black text-sm">🎯</div>
-                        <h3 className="font-bold text-gray-900 text-sm">اختبار مخصص لي</h3>
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${btn.bg} ${btn.color} group-${btn.hover} group-hover:text-white transition-colors`}>
+                        {btn.icon}
                     </div>
-                    <p className="text-xs text-gray-500 leading-5">
-                        {mockExamMessage || 'اختبار محاكي حسب نقاط ضعفك'}
-                    </p>
-                </div>
-                <button
-                    type="button"
-                    onClick={async () => {
-                        setMockExamGenerating(true);
-                        setMockExamMessage('');
-                        try {
-                            const generated = await api.aiGenerateMockExam({ examType: 'qudurat' });
-                            setMockExamMessage(`تم إنشاء (${generated.questionCount} سؤال).`);
-                        } catch (error) {
-                            setMockExamMessage(error instanceof Error ? error.message : 'تعذر إنشاء الاختبار.');
-                        } finally {
-                            setMockExamGenerating(false);
-                        }
-                    }}
-                    disabled={mockExamGenerating}
-                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-fuchsia-700 disabled:opacity-60 shadow-sm"
-                >
-                    {mockExamGenerating ? 'جاري التوليد...' : 'إنشاء اختبار مخصص'}
+                    <span className="font-black text-gray-800 text-sm">{btn.label}</span>
                 </button>
+            ))}
+        </div>
+
+        {/* Student Tools: Parent Code & Notifications */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">🔗</div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">كود ربط ولي الأمر</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">شاركه مع ولي أمرك لمتابعة أدائك.</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl shadow-sm border border-indigo-100">
+                    <span className="font-mono font-black text-indigo-700 tracking-widest">{String(user?.id || '883921').slice(-6).toUpperCase()}</span>
+                    <button 
+                        onClick={() => {
+                            navigator.clipboard?.writeText(String(user?.id || '883921').slice(-6).toUpperCase());
+                            alert('تم نسخ الكود!');
+                        }}
+                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1.5 rounded-lg"
+                    >
+                        <Copy size={16} />
+                    </button>
+                </div>
             </Card>
 
-            <Card className="p-4 border border-emerald-100 bg-gradient-to-l from-emerald-50/60 to-white flex flex-col justify-between">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">📜</div>
-                        <h3 className="font-bold text-gray-900 text-sm">شهاداتي</h3>
+            <Card className="p-5 flex items-center justify-between border border-amber-100 bg-amber-50/30 shadow-sm">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">🔔</div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">التنبيهات والمذاكرة</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">تفعيل الإشعارات اليومية.</p>
                     </div>
-                    <p className="text-xs text-gray-500 leading-5">
-                        {certificatesLoading
-                            ? 'جاري التحميل...'
-                            : myCertificates.length > 0
-                                ? `${myCertificates.length} شهادة جاهزة`
-                                : 'أكمل دورة لإصدار شهادتك'}
-                    </p>
                 </div>
-                <Link
-                    to="/profile"
-                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-emerald-700 shadow-sm"
-                >
-                    عرض الشهادات
-                </Link>
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" defaultChecked className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                </label>
             </Card>
         </div>
 
-        <ParentFollowUpPanel setActiveTab={setActiveTab} />
-
-        <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-                
-                {/* 1. Smart Summary Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Card className="p-4 flex flex-col items-center text-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-0">
-                        <div className="font-black text-2xl sm:text-3xl mb-1">{overallProgress}%</div>
-                        <div className="text-xs font-medium text-indigo-100">التقدم العام</div>
-                    </Card>
-                    <Card className="p-4 flex flex-col items-center text-center justify-center">
-                        <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-2">
-                            <CheckCircle size={20} />
-                        </div>
-                        <div className="font-black text-xl text-gray-800">{completedLessons.length}</div>
-                        <div className="text-xs font-medium text-gray-500">دروس مكتملة</div>
-                    </Card>
-                    <Card className="p-4 flex flex-col items-center text-center justify-center">
-                        <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-2">
-                            <FileText size={20} />
-                        </div>
-                        <div className="font-black text-xl text-gray-800">{examResults.length}</div>
-                        <div className="text-xs font-medium text-gray-500">اختبارات منتهية</div>
-                    </Card>
-                </div>
-
-                <StudentNextActionStrip
-                    title={smartAction.title}
-                    description={smartAction.desc}
-                    primaryLabel={smartAction.buttonText}
-                    primaryHref={smartAction.link || '#'}
-                    icon={smartAction.icon}
-                    tone={smartAction.tone}
-                    secondaryLabel={smartAction.secondaryText}
-                    secondaryHref={smartAction.secondaryLink}
-                />
-
-                {/* 3. My Paths ("مساراتي") */}
+        <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+                {/* My Paths (مساراتي) */}
                 {paths.length > 0 && (
                     <section>
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">مساراتي</h3>
-                        <div className="space-y-4">
-                            {paths.map(path => {
-                                return (
-                                    <Card key={path.id} className="p-5 flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${path.bg}`}>
-                                            {path.icon}
+                        <h3 className="text-lg font-black text-gray-900 mb-3">أكمل مساراتك</h3>
+                        <div className="space-y-3">
+                            {paths.map(path => (
+                                <Card key={path.id} className="p-4 flex items-center gap-4 hover:shadow-md transition-shadow border-gray-100">
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                        {path.icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0 text-right">
+                                        <h4 className="font-black text-gray-900 text-base truncate">{path.title}</h4>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <div className="flex-1"><ProgressBar percentage={path.stats.progress} color="secondary" /></div>
+                                            <span className="text-xs font-black text-gray-500 min-w-[30px]">{path.stats.progress}%</span>
                                         </div>
-                                        <div className="flex-1 w-full text-center md:text-right">
-                                            <h4 className="font-bold text-gray-900 mb-1">{path.title}</h4>
-                                            <p className="text-xs text-gray-500 mb-3">{path.courses.length} دورات · {path.stats.examsCount} اختبارات</p>
-                                            <ProgressBar percentage={path.stats.progress} color="secondary" showPercentage={true} />
-                                        </div>
-                                        <Link 
-                                            to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}
-                                            className="w-full md:w-auto mt-4 md:mt-0 bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-bold text-sm hover:bg-gray-200 transition-colors text-center"
-                                        >
-                                            استكمل
-                                        </Link>
-                                    </Card>
-                                );
-                            })}
+                                    </div>
+                                    <Link 
+                                        to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}
+                                        className="hidden sm:flex bg-gray-900 text-white px-5 py-2.5 rounded-xl font-black text-xs hover:bg-gray-800 items-center justify-center whitespace-nowrap"
+                                    >
+                                        متابعة
+                                    </Link>
+                                </Card>
+                            ))}
                         </div>
                     </section>
                 )}
 
-                {/* Quick Access Grid (Shortcuts) */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-                    <button onClick={() => setActiveTab('saher')} className="min-h-[120px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-2 group">
-                        <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                            <Zap size={24} />
-                        </div>
-                        <span className="font-bold text-gray-800 text-xs">ساهر</span>
-                    </button>
-                    <button onClick={() => setActiveTab('quizzes')} className="min-h-[120px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-2 group">
-                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                            <FileText size={24} />
-                        </div>
-                        <span className="font-bold text-gray-800 text-xs">اختباراتي</span>
-                    </button>
-                    <button onClick={() => setActiveTab('reports')} className="min-h-[120px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-2 group">
-                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                            <PieChart size={24} />
-                        </div>
-                        <span className="font-bold text-gray-800 text-xs">التقارير</span>
-                    </button>
-                    <button onClick={() => setActiveTab('plan')} className="min-h-[120px] bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-2 group">
-                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                <MapIcon size={24} />
-                        </div>
-                        <span className="font-bold text-gray-800 text-xs">خطتي</span>
-                    </button>
-                </div>
+                <SmartLearningPath skills={smartPathSkills} />
             </div>
 
-            {/* Right Column */}
-            <div className="space-y-8">
-                {/* 4. Recent Activity (100% from useStore) */}
-                <section className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-6">
-                        <h3 className="text-lg font-bold text-gray-900">آخر الأنشطة</h3>
-                    </div>
+            {/* Recent Activity */}
+            <div className="space-y-6">
+                <section className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
+                    <h3 className="text-lg font-black text-gray-900 mb-4">آخر إنجازاتك</h3>
                     {recentActivity.length > 0 ? (
-                        <div className="space-y-4">
-                            {recentActivity.slice(0, 5).map((activity, index) => (
-                                <div key={activity.id} className="flex items-start gap-3 border-b border-gray-50 last:border-0 pb-3 last:pb-0">
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                                        activity.type === 'lesson_complete' ? 'bg-emerald-50 text-emerald-600' :
-                                        activity.type === 'quiz_complete' ? 'bg-blue-50 text-blue-600' :
-                                        activity.type === 'skill_practice' ? 'bg-purple-50 text-purple-600' :
-                                        'bg-gray-50 text-gray-600'
+                        <div className="space-y-3">
+                            {recentActivity.slice(0, 4).map((activity) => (
+                                <div key={activity.id} className="flex items-center gap-3 bg-gray-50 p-3 rounded-2xl">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                        activity.type === 'lesson_complete' ? 'bg-emerald-100 text-emerald-600' :
+                                        activity.type === 'quiz_complete' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-purple-100 text-purple-600'
                                     }`}>
                                         {activity.type === 'lesson_complete' ? <CheckCircle size={18} /> :
                                          activity.type === 'quiz_complete' ? <FileText size={18} /> :
-                                         activity.type === 'skill_practice' ? <Clock size={18} /> :
-                                         <Clock size={18} />}
+                                         <Star size={18} />}
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="font-bold text-sm text-gray-800 leading-snug">{activity.title}</p>
-                                        <p className="text-xs text-gray-500 mt-1">{new Date(activity.date).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-xs text-gray-800 truncate">{activity.title}</p>
+                                        <p className="text-[10px] font-bold text-gray-500 mt-0.5">{new Date(activity.date).toLocaleDateString('ar-SA')}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-8 text-gray-400">
-                            <Clock size={32} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">لم تقم بأي نشاط بعد.</p>
+                        <div className="text-center py-6 text-gray-400">
+                            <Clock size={28} className="mx-auto mb-2 opacity-30" />
+                            <p className="text-xs font-bold">لم تقم بأي نشاط بعد.</p>
                         </div>
                     )}
                 </section>
-
-                <SmartLearningPath skills={smartPathSkills} />
             </div>
         </div>
     </div>

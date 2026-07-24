@@ -1112,105 +1112,13 @@ const Plan: React.FC = () => {
           <ArrowRight size={24} />
         </Link>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-indigo-800 leading-tight">إدارة الخطط الدراسية</h1>
-          <p className="text-sm text-gray-500">أنشئ خطة مذاكرة وقتية تناسب مسارك ووقتك بشكل مرن ومنظم.</p>
+          <h1 className="text-2xl font-black text-indigo-900 leading-tight">خطتي اليومية</h1>
+          <p className="text-sm font-bold text-gray-500 mt-1">تابع جدولك ومهامك بانتظام لتحقيق أهدافك.</p>
         </div>
       </header>
 
+      {/* Simplified Plan Action Strip */}
       <StudentNextActionStrip {...planTodayNextAction} />
-
-      {/* 1-Click Fast Study Plan Presets */}
-      <Card className="border border-indigo-100 bg-gradient-to-r from-indigo-50/90 via-purple-50/90 to-indigo-100/90 p-4 sm:p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-indigo-600 text-white font-black shadow-md text-lg">
-              <Sparkles size={22} />
-            </div>
-            <div>
-              <span className="text-xs font-black text-indigo-700 bg-white/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider">مولد الجدول التلقائي بضغطة واحدة</span>
-              <h3 className="text-lg font-black text-gray-900 mt-1">اختر مسارك أو مادتك لتوليد جدولك الدراسي فوراً</h3>
-              <p className="text-xs leading-5 text-gray-600">سواء كنت مشتركاً في باقة أو تصفح عادي، اختر المسار ليتم توزيع الدروس والتمارين تلقائياً على الأيام.</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2 w-full md:w-auto">
-            {storePaths.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => {
-                  setSelectedPathId(p.id);
-                  setDraft((prev) => ({
-                    ...prev,
-                    name: `جدول مذاكرة ${p.name || 'المسار'}`,
-                    pathId: p.id,
-                    dailyMinutes: 45,
-                    startDate: new Date().toISOString().split('T')[0],
-                    endDate: addDaysToToday(14),
-                  }));
-                  setShowCreateWizard(true);
-                }}
-                className="flex-1 md:flex-none bg-white hover:bg-indigo-600 hover:text-white text-indigo-700 border border-indigo-200 px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-sm flex items-center justify-center gap-1.5"
-              >
-                <Target size={14} /> {p.name} (14 يوماً)
-              </button>
-            ))}
-          </div>
-        </div>
-      </Card>
-
-      {/* Clean & Lightweight Plan Header */}
-
-      <div className="space-y-4">
-        {smartSkillPlan.length > 0 ? (
-          <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
-            {smartSkillPlan.map((item) => (
-              <div key={`${item.skillId || item.skillName}-${item.subjectId || 'general'}`} className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-black text-gray-900">{item.skillName}</h3>
-                    <p className="mt-1 text-xs text-gray-500">ظهرت في {item.attempts} محاولة اختبار</p>
-                  </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>
-                    {item.mastery}% إتقان
-                  </span>
-                </div>
-                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                  <Link
-                    to={item.lesson?.link || '/reports'}
-                    className="cta-attention rounded-xl bg-emerald-500 px-3 py-2.5 text-center text-sm font-black text-white shadow-sm transition hover:bg-emerald-600"
-                  >
-                    {item.lesson ? `درس: ${item.lesson.title}` : 'درس مقترح لاحقًا'}
-                  </Link>
-                  <Link
-                    to={item.quiz?.link || '/dashboard?tab=saher'}
-                    className="cta-attention rounded-xl bg-indigo-600 px-3 py-2.5 text-center text-sm font-black text-white shadow-sm transition hover:bg-indigo-700"
-                  >
-                    {item.quiz ? `اختبار: ${item.quiz.title}` : 'اختبار قصير'}
-                  </Link>
-                  {item.resource?.link ? (
-                    <a
-                      href={item.resource.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-xl bg-white px-3 py-3 text-sm font-bold text-amber-700 shadow-sm transition hover:bg-amber-50"
-                    >
-                      ملف: {item.resource.title}
-                    </a>
-                  ) : (
-                    <span className="rounded-xl bg-white px-3 py-3 text-sm font-bold text-gray-500 shadow-sm">
-                      ملف مراجعة لاحقًا
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-5 rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/50 p-5 text-sm leading-7 text-emerald-800">
-            لا توجد مهارة ضعيفة واضحة لهذا المسار حتى الآن. بعد حل اختبار تشخيصي أو محاكي، ستظهر هنا خطة ذكية تلقائيًا مبنية على الأسئلة والمهارات.
-          </div>
-        )}
-      </div>
 
       <div className="grid grid-cols-1 sm:flex gap-2 rounded-2xl bg-gray-100 p-1">
         {availablePaths.map((path) => (
