@@ -47,7 +47,7 @@ export const StudentNextActionStrip: React.FC<StudentNextActionStripProps> = ({
   secondaryLabel,
   secondaryHref,
 }) => {
-  const styles = toneStyles[tone];
+  const styles = toneStyles[tone] || toneStyles.indigo;
 
   return (
     <section aria-labelledby="student-next-action-title" data-testid="student-next-action-strip" aria-live="polite">

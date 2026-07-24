@@ -1,4 +1,4 @@
-﻿
+
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
