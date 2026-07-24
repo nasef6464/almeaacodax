@@ -2192,7 +2192,7 @@ const Reports: React.FC = () => {
                         <h2 className={isStudentView ? 'text-lg font-black leading-7 text-gray-900 sm:text-xl' : 'text-2xl font-black leading-9'}>
                             {isStudentView ? 'ابدأ بخطوة واحدة واضحة اليوم' : 'ابدأ التدخل من أعلى نقطة تأثير'}
                         </h2>
-                        <p className={isStudentView ? 'mt-2 max-w-3xl text-sm font-bold leading-7 text-gray-600' : 'mt-3 max-w-3xl text-sm leading-8 text-indigo-100'}>
+                        <p className={isStudentView ? 'mt-1 max-w-3xl text-xs font-medium leading-relaxed text-gray-500 line-clamp-2' : 'mt-3 max-w-3xl text-sm leading-8 text-indigo-100'}>
                             {isStudentView
                                 ? (studentFollowUpSummary || 'حل اختبارًا قصيرًا أولًا حتى نحدد المهارة التي تحتاج متابعة.')
                                 : (scopedFollowUpSummary || 'بمجرد تحميل بيانات النطاق سيظهر هنا ملخص سريع للطالب أو المهارة التي تحتاج تدخلًا.')}

@@ -792,7 +792,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
                 title="اختباراتي السابقة"
                 to="/dashboard?tab=quizzes"
                 buttonLabel="افتح السجل"
-                tone="purple"
+                tone="emerald"
               />
             </div>
 
@@ -1313,13 +1313,17 @@ const ActionCard = ({
   title: string;
   to: string;
   buttonLabel: string;
-  tone: 'purple' | 'amber';
+  tone: 'purple' | 'amber' | 'blue' | 'emerald' | 'rose' | 'slate';
   disabled?: boolean;
 }) => {
-  const toneClasses =
-    tone === 'purple'
-      ? 'bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100'
-      : 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100';
+  const toneClasses = {
+    purple: 'bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100',
+    amber: 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100',
+    blue: 'bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100',
+    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100',
+    rose: 'bg-rose-50 text-rose-700 border-rose-100 hover:bg-rose-100',
+    slate: 'bg-slate-50 text-slate-700 border-slate-100 hover:bg-slate-100'
+  }[tone];
 
   return (
     <Link to={disabled ? '#' : to} className={`flex items-center justify-between rounded-xl border p-4 transition-all shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : toneClasses}`}>
