@@ -183,20 +183,18 @@ const CourseView: React.FC = () => {
         </div>
     );
 
-    if (isPlaying) {
-        if (canOpenCoursePlayer) {
-            return (
-                <CoursePlayer
-                    course={courseForCurrentAccess}
-                    initialLessonId={searchParams.get('lesson') || undefined}
-                    onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
-                    onBack={() => {
-                        setIsPlaying(false);
-                        updateLearningUrlState(false);
-                    }}
-                />
-            );
-        }
+    if (isPlaying && (isEnrolled || isStaffViewer || isFreeCourse || hasPlayablePreviewLesson)) {
+        return (
+            <CoursePlayer
+                course={courseForCurrentAccess}
+                initialLessonId={searchParams.get('lesson') || undefined}
+                onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
+                onBack={() => {
+                    setIsPlaying(false);
+                    updateLearningUrlState(false);
+                }}
+            />
+        );
     }
 
     if (isEnrolled) {
