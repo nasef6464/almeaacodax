@@ -1,4 +1,4 @@
-﻿
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronLeft, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, Bell, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -605,7 +605,7 @@ const Reports: React.FC = () => {
     const primaryReportSkill = focusedReportSkills[0] || weakestSkill;
     const selectedReportSkill = aggregatedSkills.find((skill) => getReportSkillKey(skill) === selectedSkillKey) || primaryReportSkill;
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
-    const isStudentView = user.role === Role.STUDENT;
+    const isStudentView = user?.role === Role.STUDENT;
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
     const studentTrackLabel = studentEnrolledPathLabels.length > 0 ? studentEnrolledPathLabels.join('، ') : '';
@@ -1832,7 +1832,7 @@ const Reports: React.FC = () => {
         );
     }
 
-    if (user.role === Role.PARENT) {
+    if (user?.role === Role.PARENT) {
         const latestResult = scopedLatestResults[0];
         const averageScore = scopedResults.length
             ? Math.round(scopedResults.reduce((total, result) => total + (Number(result.score) || 0), 0) / scopedResults.length)

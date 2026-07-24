@@ -1482,18 +1482,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
 
     // Debugging logs as requested
     // Get full course objects for enrolled courses
-    const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
-
-    // Calculate overall progress
-    let totalLessonsInEnrolled = 0;
-    activeCourses.forEach(course => {
-        course.modules?.forEach(mod => {
-            totalLessonsInEnrolled += mod.lessons.length;
-        });
-    });
-    const overallProgress = totalLessonsInEnrolled > 0 
-        ? Math.round((completedLessons.length / totalLessonsInEnrolled) * 100) 
-        : 0;
 
     // --- Smart Action Logic ---
     let smartAction = null;
@@ -1590,7 +1578,9 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-end">
             <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 leading-tight">لوحة تحكم ذكية - مرحباً، {user.name.split(' ')[0]} 👋</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 leading-tight">
+                    لوحة تحكم ذكية - مرحباً، {String(user?.name || user?.email || 'طالبنا العزيز').trim().split(' ')[0] || 'طالبنا العزيز'} 👋
+                </h2>
                 <p className="text-gray-500 text-base md:text-lg">جاهز لتحقيق أهدافك اليوم؟</p>
             </div>
             <Link to="/book-session" className="w-full md:w-auto bg-indigo-100 text-indigo-700 px-4 py-2 md:px-6 md:py-3 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-sm hover:bg-indigo-200 transition-colors">

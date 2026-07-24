@@ -296,10 +296,10 @@ const Plan: React.FC = () => {
 
   const pathPlans = useMemo(
     () =>
-      studyPlans
-        .filter((plan) => plan.userId === user.id && plan.pathId === activePathId)
+      (studyPlans || [])
+        .filter((plan) => plan.userId === user?.id && plan.pathId === activePathId)
         .sort((a, b) => b.updatedAt - a.updatedAt),
-    [activePathId, studyPlans, user.id],
+    [activePathId, studyPlans, user?.id],
   );
 
   const activePlan = useMemo(
@@ -605,7 +605,7 @@ const Plan: React.FC = () => {
 
     const lessonTasks = coursePool.flatMap((course) =>
       (course.modules || []).flatMap((module) =>
-        module.lessons.filter(canUseLessonInStudentPlan).map((lesson) => ({
+        (module.lessons || []).filter(canUseLessonInStudentPlan).map((lesson) => ({
           id: `lesson-${lesson.id}`,
           title: lesson.title,
           type: 'lesson' as const,

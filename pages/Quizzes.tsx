@@ -328,7 +328,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           if (quiz.showOnPlatform === false) return false;
           if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
           if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
-          if (quiz.access.type !== 'paid') return false;
+          if (quiz.access?.type !== 'paid') return false;
           return !canAccessQuiz(quiz);
         })
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
