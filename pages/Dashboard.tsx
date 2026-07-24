@@ -1590,84 +1590,81 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
             </Link>
         </div>
 
-        <Card className="p-5 border border-indigo-100 bg-gradient-to-l from-indigo-50 to-white">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="text-right">
-                    <h3 className="text-lg font-bold text-gray-900">المراجعة اليومية</h3>
-                    <p className="text-sm text-gray-600 mt-1">
+        {/* Quick Student Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4 border border-indigo-100 bg-gradient-to-l from-indigo-50/60 to-white flex flex-col justify-between">
+                <div>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm">🔄</div>
+                        <h3 className="font-bold text-gray-900 text-sm">المراجعة اليومية</h3>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-5">
                         {reviewStats
-                            ? `لديك ${reviewStats.dueToday} سؤال للمراجعة اليوم، و${reviewStats.dueThisWeek} خلال الأسبوع.`
-                            : 'نعمل على تحميل حالة المراجعة اليومية الآن...'}
+                            ? `${reviewStats.dueToday} أسئلة اليوم`
+                            : 'حالة المراجعة اليومية'}
                     </p>
                 </div>
                 <Link
                     to="/review"
-                    className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-indigo-700"
+                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-indigo-700 shadow-sm"
                 >
                     ابدأ المراجعة
                 </Link>
-            </div>
-        </Card>
+            </Card>
 
-        <Card className="p-5 border border-fuchsia-100 bg-gradient-to-l from-fuchsia-50 to-white">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="text-right">
-                    <h3 className="text-lg font-bold text-gray-900">اختبار مخصص لي</h3>
-                    <p className="text-sm text-gray-600 mt-1">توليد اختبار محاكي تلقائي بناء على نقاط الضعف لديك.</p>
-                    {mockExamMessage ? <p className="mt-2 text-xs font-bold text-fuchsia-700">{mockExamMessage}</p> : null}
+            <Card className="p-4 border border-fuchsia-100 bg-gradient-to-l from-fuchsia-50/60 to-white flex flex-col justify-between">
+                <div>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 rounded-xl bg-fuchsia-100 text-fuchsia-700 flex items-center justify-center font-black text-sm">🎯</div>
+                        <h3 className="font-bold text-gray-900 text-sm">اختبار مخصص لي</h3>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-5">
+                        {mockExamMessage || 'اختبار محاكي حسب نقاط ضعفك'}
+                    </p>
                 </div>
                 <button
+                    type="button"
                     onClick={async () => {
                         setMockExamGenerating(true);
                         setMockExamMessage('');
                         try {
                             const generated = await api.aiGenerateMockExam({ examType: 'qudurat' });
-                            setMockExamMessage(`تم إنشاء الاختبار بنجاح (${generated.questionCount} سؤال).`);
+                            setMockExamMessage(`تم إنشاء (${generated.questionCount} سؤال).`);
                         } catch (error) {
-                            setMockExamMessage(error instanceof Error ? error.message : 'تعذر إنشاء الاختبار الآن.');
+                            setMockExamMessage(error instanceof Error ? error.message : 'تعذر إنشاء الاختبار.');
                         } finally {
                             setMockExamGenerating(false);
                         }
                     }}
                     disabled={mockExamGenerating}
-                    className="inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-fuchsia-700 disabled:opacity-60"
+                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-fuchsia-700 disabled:opacity-60 shadow-sm"
                 >
                     {mockExamGenerating ? 'جاري التوليد...' : 'إنشاء اختبار مخصص'}
                 </button>
-            </div>
-        </Card>
+            </Card>
 
-        <Card className="p-5 border border-emerald-100 bg-gradient-to-l from-emerald-50 to-white">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="text-right">
-                    <h3 className="text-lg font-bold text-gray-900">شهاداتي</h3>
-                    <p className="text-sm text-gray-600 mt-1">
+            <Card className="p-4 border border-emerald-100 bg-gradient-to-l from-emerald-50/60 to-white flex flex-col justify-between">
+                <div>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">📜</div>
+                        <h3 className="font-bold text-gray-900 text-sm">شهاداتي</h3>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-5">
                         {certificatesLoading
-                            ? 'جاري تحميل الشهادات...'
+                            ? 'جاري التحميل...'
                             : myCertificates.length > 0
-                                ? `لديك ${myCertificates.length} شهادة جاهزة للعرض والتحقق.`
-                                : 'لا توجد شهادات بعد. أكمل دورة بنسبة 100% لإصدار شهادتك.'}
+                                ? `${myCertificates.length} شهادة جاهزة`
+                                : 'أكمل دورة لإصدار شهادتك'}
                     </p>
-                    {!certificatesLoading && myCertificates.length > 0 ? (
-                        <div className="mt-3 rounded-xl border border-emerald-200 bg-white px-3 py-2 text-xs text-gray-700">
-                            آخر شهادة: <span className="font-bold">{String(myCertificates[0]?.courseName || 'دورة بدون اسم')}</span>
-                            <Link
-                                to={`/certificate/${encodeURIComponent(String(myCertificates[0]?.verificationCode || ''))}`}
-                                className="mr-2 inline-flex rounded-lg bg-emerald-100 px-2 py-1 font-black text-emerald-700 hover:bg-emerald-200"
-                            >
-                                معاينة
-                            </Link>
-                        </div>
-                    ) : null}
                 </div>
                 <Link
                     to="/profile"
-                    className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white transition-colors hover:bg-emerald-700"
+                    className="mt-3 w-full inline-flex items-center justify-center rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-emerald-700 shadow-sm"
                 >
                     عرض الشهادات
                 </Link>
-            </div>
-        </Card>
+            </Card>
+        </div>
 
         <ParentFollowUpPanel setActiveTab={setActiveTab} />
 
