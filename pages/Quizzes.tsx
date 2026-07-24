@@ -585,7 +585,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           </div>
         </header>
 
-        <StudentNextActionStrip {...quizCenterNextAction} />
+        {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
 
         <div className="hidden">
           <StatCard icon={<Sparkles size={24} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
@@ -701,9 +701,9 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
       </header>
 
-      <StudentNextActionStrip {...quizCenterNextAction} />
+      {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
 
-      {!isAttemptsView && user.role === 'student' ? (
+      {false && !isAttemptsView && user.role === 'student' ? (
         <section data-testid="student-assigned-barcode-tests" className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
