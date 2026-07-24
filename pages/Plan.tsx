@@ -1119,6 +1119,45 @@ const Plan: React.FC = () => {
 
       <StudentNextActionStrip {...planTodayNextAction} />
 
+      {/* 1-Click Fast Study Plan Presets */}
+      <Card className="border border-indigo-100 bg-gradient-to-r from-indigo-50/90 via-purple-50/90 to-indigo-100/90 p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-indigo-600 text-white font-black shadow-md text-lg">
+              <Sparkles size={22} />
+            </div>
+            <div>
+              <span className="text-xs font-black text-indigo-700 bg-white/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider">مولد الجدول التلقائي بضغطة واحدة</span>
+              <h3 className="text-lg font-black text-gray-900 mt-1">اختر مسارك أو مادتك لتوليد جدولك الدراسي فوراً</h3>
+              <p className="text-xs leading-5 text-gray-600">سواء كنت مشتركاً في باقة أو تصفح عادي، اختر المسار ليتم توزيع الدروس والتمارين تلقائياً على الأيام.</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 w-full md:w-auto">
+            {storePaths.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => {
+                  setSelectedPathId(p.id);
+                  setDraft((prev) => ({
+                    ...prev,
+                    name: `جدول مذاكرة ${p.name || 'المسار'}`,
+                    pathId: p.id,
+                    dailyMinutes: 45,
+                    startDate: new Date().toISOString().split('T')[0],
+                    endDate: addDaysToToday(14),
+                  }));
+                  setShowCreateWizard(true);
+                }}
+                className="flex-1 md:flex-none bg-white hover:bg-indigo-600 hover:text-white text-indigo-700 border border-indigo-200 px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-sm flex items-center justify-center gap-1.5"
+              >
+                <Target size={14} /> {p.name} (14 يوماً)
+              </button>
+            ))}
+          </div>
+        </div>
+      </Card>
+
       <Card className="border border-blue-100 bg-blue-50/70 p-4 sm:p-6">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 rounded-full bg-white p-2 text-blue-600 shadow-sm">
