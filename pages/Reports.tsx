@@ -2159,7 +2159,7 @@ const Reports: React.FC = () => {
                 </div>
             </header>
 
-            {studentReportNextAction ? (
+            {false && studentReportNextAction ? (
                 <StudentNextActionStrip
                     title={studentReportNextAction.title}
                     description={studentReportNextAction.description}
@@ -2183,7 +2183,8 @@ const Reports: React.FC = () => {
                         <div className="absolute -bottom-12 right-10 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
                     </>
                 ) : null}
-                <div className={isStudentView ? 'relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center' : 'relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center'}>
+                <div className={isStudentView ? 'relative z-10 flex flex-col sm:flex-row gap-3 items-center w-full' : 'relative z-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center'}>
+                    {!isStudentView && (
                     <div>
                         <div className={isStudentView ? 'mb-2 inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700' : 'mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-indigo-100'}>
                             <Sparkles size={14} />
@@ -2242,7 +2243,8 @@ const Reports: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    <div className={isStudentView ? 'grid gap-2 sm:grid-cols-3 lg:grid-cols-1' : 'grid gap-3 sm:grid-cols-3 lg:grid-cols-1'}>
+                    )}
+                    <div className={isStudentView ? 'flex w-full gap-2 sm:gap-3 flex-wrap sm:flex-nowrap' : 'grid gap-3 sm:grid-cols-3 lg:grid-cols-1'}>
                         <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
                             <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أهم مؤشر</div>
                             <div className={isStudentView ? 'mt-1 text-lg font-black text-indigo-700' : 'mt-2 text-xl font-black'}>
@@ -2252,7 +2254,7 @@ const Reports: React.FC = () => {
                                 {isStudentView ? 'متوسط الأداء' : 'داخل نطاق المتابعة'}
                             </div>
                         </div>
-                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                        <div className={isStudentView ? 'flex-1 rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
                             <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>أولوية الآن</div>
                             <div className={isStudentView ? 'mt-1 text-sm font-black leading-6 text-gray-900' : 'mt-2 text-sm font-black leading-6'}>
                                 {isStudentView
@@ -2260,7 +2262,7 @@ const Reports: React.FC = () => {
                                     : displayText(scopedAnalytics?.weakestSkills?.[0]?.skill) || 'بانتظار بيانات المهارات'}
                             </div>
                         </div>
-                        <div className={isStudentView ? 'rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
+                        <div className={isStudentView ? 'flex-1 rounded-2xl border border-slate-100 bg-slate-50 p-3' : 'rounded-2xl border border-white/10 bg-white/10 p-3'}>
                             <div className={isStudentView ? 'text-xs font-bold text-slate-500' : 'text-xs font-bold text-indigo-100'}>الخطوة التالية</div>
                             <div className={isStudentView ? 'mt-1 text-sm font-bold leading-6 text-gray-700' : 'mt-2 text-sm font-bold leading-6'}>
                                 {isStudentView ? 'شرح قصير + تدريب + إعادة قياس' : 'تدخل موجه + اختبار متابعة'}
@@ -3365,15 +3367,6 @@ const Reports: React.FC = () => {
                                 تقرير أداء المهارات من الاختبارات
                             </div>
                             <h2 className="text-xl font-black text-gray-900">المهارات التي تبدأ بها</h2>
-                            <p className="mt-1 text-sm leading-6 text-gray-500">
-                                ملخص قصير حسب الفترة المختارة. كل مهارة في سطر واحد ومعها خطوة مباشرة.
-                            </p>
-                            <p className="mt-1 text-xs font-bold text-indigo-600">
-                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة في {studentPeriodLabel}.
-                            </p>
-                            <p className="mt-1 text-[11px] font-bold text-slate-400">
-                                مصدر التقرير: تحليل إجابات الاختبارات المرتبطة بهذه المهارة.
-                            </p>
                         </div>
                         <div className="print-hide flex flex-wrap gap-2">
                             {(['month', 'quarter', 'all'] as StudentReportPeriod[]).map((period) => (
@@ -3399,18 +3392,7 @@ const Reports: React.FC = () => {
                             <div key={getReportSkillKey(skill)} className={`rounded-2xl border p-3 ${skill.tone.bg} ${skill.tone.border}`}>
                                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
                                     <div className="min-w-0">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className={`rounded-full bg-white px-2.5 py-1 text-[11px] font-black ${skill.tone.text}`}>
-                                                {skill.tone.label}
-                                            </span>
-                                            <span className="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-black text-slate-500">
-                                                {skill.evidenceLabel}
-                                            </span>
-                                        </div>
-                                        <div className="mt-2 font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
-                                        <div className="mt-1 text-xs font-bold text-gray-500">
-                                            {[displayText(skill.subjectName), displayText(skill.sectionName)].filter(Boolean).join(' - ') || 'مهارة من اختباراتك'}
-                                        </div>
+                                        <div className="font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <div className={`w-14 text-center text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>

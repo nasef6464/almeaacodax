@@ -1522,7 +1522,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
 
         {/* Shortcuts for Students */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             {[
                 { id: 'saher', icon: <Zap size={28} />, label: 'ساهر (اختبار سريع)', color: 'text-purple-600', bg: 'bg-purple-50', hover: 'hover:bg-purple-600' },
                 { id: 'plan', icon: <MapIcon size={28} />, label: 'خطتي اليومية', color: 'text-indigo-600', bg: 'bg-indigo-50', hover: 'hover:bg-indigo-600' },
@@ -1532,9 +1532,9 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 <button 
                     key={btn.id}
                     onClick={() => setActiveTab(btn.id as any)} 
-                    className={`flex flex-col items-center justify-center p-4 rounded-2xl border border-gray-100 shadow-sm transition-all group ${btn.bg} bg-opacity-50 hover:bg-opacity-100 bg-white`}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-gray-100 shadow-sm transition-all group ${btn.bg} bg-white`}
                 >
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${btn.bg} ${btn.color} group-${btn.hover} group-hover:text-white transition-colors`}>
+                    <div className={`${btn.color}`}>
                         {btn.icon}
                     </div>
                     <span className="font-black text-gray-800 text-sm">{btn.label}</span>
@@ -1543,6 +1543,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
 
         {/* Student Tools: Parent Code & Notifications */}
+        {false && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
                 <div className="flex items-center gap-4">
@@ -1580,6 +1581,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 </label>
             </Card>
         </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
