@@ -397,6 +397,54 @@ const Profile: React.FC = () => {
                         </button>
                     </div>
 
+                    {/* Parent Pairing Code & Notification Preferences */}
+                    <div className="mt-8 pt-8 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-5 rounded-2xl bg-indigo-50/60 border border-indigo-100">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 rounded-xl bg-indigo-600 text-white font-black">🔗</div>
+                                <div>
+                                    <h4 className="font-black text-gray-900 text-base">كود ربط ولي الأمر</h4>
+                                    <p className="text-xs text-gray-500">أعط هذا الكود لولي أمرك ليربط حسابه ويمدك بالدعم والتقارير.</p>
+                                </div>
+                            </div>
+                            <div className="mt-4 flex items-center justify-between gap-3 bg-white p-3 rounded-xl border border-indigo-100 shadow-sm">
+                                <span className="font-mono text-lg font-black tracking-widest text-indigo-700">
+                                    {String(user?.id || '883921').slice(-6).toUpperCase()}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const code = String(user?.id || '883921').slice(-6).toUpperCase();
+                                        navigator.clipboard?.writeText(code);
+                                        alert('تم نسخ كود ربط ولي الأمر بنجاح!');
+                                    }}
+                                    className="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-black hover:bg-indigo-700 transition"
+                                >
+                                    نسخ الكود
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-100">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-2 rounded-xl bg-amber-500 text-white font-black">🔔</div>
+                                <div>
+                                    <h4 className="font-black text-gray-900 text-base">تفضيلات التنبيهات وإشعارات المذاكرة</h4>
+                                    <p className="text-xs text-gray-500">تحكم بالتنبيهات اليومية ليصلك الجديد أولاً بأول.</p>
+                                </div>
+                            </div>
+                            <div className="space-y-2 text-xs font-bold text-gray-700">
+                                <label className="flex items-center justify-between p-2 rounded-lg hover:bg-white/60 cursor-pointer">
+                                    <span>تنبيهات الحصص المباشرة والجلسات</span>
+                                    <input type="checkbox" defaultChecked className="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+                                </label>
+                                <label className="flex items-center justify-between p-2 rounded-lg hover:bg-white/60 cursor-pointer">
+                                    <span>تذكيرات المذاكرة اليومية (Streak)</span>
+                                    <input type="checkbox" defaultChecked className="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </Card>
         </div>
