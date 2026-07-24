@@ -569,16 +569,9 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     return (
       <div className="space-y-5 pb-20">
         <header className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-black">
-            <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700">أنت الآن في: اختباراتي</span>
-            <Link to="/dashboard?tab=saher" className="rounded-full bg-white px-3 py-1.5 text-gray-700 border border-gray-200 hover:bg-gray-50">
-              الانتقال إلى مركز الاختبارات
-            </Link>
-          </div>
           <div className="flex flex-col gap-3 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">اختباراتي</h1>
-              <p className="mt-1 text-sm text-gray-500">كل اختبار يظهر مرة واحدة، والمحاولات داخله عند الحاجة.</p>
             </div>
             {weakestTrackedSkill ? (
               <Link
@@ -796,7 +789,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               />
             </div>
 
-            {subjectQuizReadiness.length > 0 ? (
+            {false && subjectQuizReadiness.length > 0 ? (
               <div className="rounded-2xl border border-gray-100 bg-white p-4">
                 <h3 className="mb-3 font-black text-gray-900">اختبارات حسب المادة</h3>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -819,7 +812,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               </div>
             ) : null}
 
-            {weakSkillRecommendations.length > 0 && (
+            {false && weakSkillRecommendations.length > 0 && (
               <div className="rounded-2xl border border-amber-100 bg-amber-50/40 p-5 space-y-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
