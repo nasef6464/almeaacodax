@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { randomUUID } from "node:crypto";
 import { env } from "./config/env.js";
 import { apiRouter } from "./routes/index.js";
+import { authRouter } from "./routes/auth.routes.js";
 import { csrfGuard } from "./middleware/csrf.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { rejectUnsafeMongoKeys } from "./middleware/mongoSanitize.js";
@@ -91,6 +92,7 @@ export function createApp() {
     });
   });
 
+  app.use("/auth", authRouter);
   app.use("/api", apiRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);

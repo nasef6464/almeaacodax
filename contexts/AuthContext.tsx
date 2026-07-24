@@ -398,7 +398,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGoogle = async () => {
     const returnTo = window.location.hash.replace(/^#/, '') || '/';
-    const startUrl = `${api.baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`;
+    const baseUrl = api.baseUrl.endsWith('/api') ? api.baseUrl : `${api.baseUrl.replace(/\/$/, '')}/api`;
+    const startUrl = `${baseUrl}/auth/google/start?returnTo=${encodeURIComponent(returnTo)}`;
     window.location.assign(startUrl);
   };
 

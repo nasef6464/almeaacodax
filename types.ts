@@ -435,6 +435,26 @@ export interface Quiz extends ContentWorkflow {
     dueDate?: string;
 }
 
+export interface PublicBarcodeTestConfig {
+    id: string;
+    slug: string;
+    title: string;
+    testKind?: 'quick' | 'mock';
+    testMode?: 'public' | 'live' | 'targeted';
+    pinCode?: string;
+    targetSchoolIds?: string[];
+    targetClassroomIds?: string[];
+    availableFrom?: string;
+    availableUntil?: string;
+    isLiveActive?: boolean;
+    currentLiveQuestionIndex?: number;
+    showLeaderboard?: boolean;
+    status?: string;
+    questionCount?: number;
+    publicUrl?: string;
+    qrPayload?: string;
+}
+
 export interface Question extends ContentWorkflow {
     id: string;
     text: string;

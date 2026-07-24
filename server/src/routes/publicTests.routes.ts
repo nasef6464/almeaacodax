@@ -211,8 +211,10 @@ publicTestsRouter.post(
     }
 
     const now = Date.now();
+    const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
     const test = await PublicBarcodeTestModel.create({
       ...payload,
+      pinCode,
       targetGroupIds: payload.audience === "targeted" ? targetGroupIds : [],
       targetUserIds: payload.audience === "targeted" ? targetUserIds : [],
       collectSchool: true,
@@ -225,6 +227,7 @@ publicTestsRouter.post(
 
     return res.status(StatusCodes.CREATED).json({
       test,
+      pinCode,
       publicUrl: `/barcode-test/${test.slug}`,
       qrPayload: `/barcode-test/${test.slug}`,
     });
@@ -380,6 +383,57 @@ publicTestsRouter.get(
         };
       }),
     });
+  }),
+);
+
+publicTestsRouter.get(
+  "/pin/:pinCode",
+  asyncHandler(async (req, res) => {
+    const pinCode = String(req.params.pinCode || "").trim();
+    const test = await PublicBarcodeTestModel.findOne({ pinCode }).lean();
+    if (!test || !ensureActiveWindow(test)) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "رمز الدخول غير صحيح أو أن الاختبار غير متاح حالياً" });
+    }
+    return res.json({
+      slug: test.slug,
+      title: test.title,
+      testMode: test.testMode || "public",
+      isLiveActive: test.isLiveActive || false,
+      publicUrl: `/barcode-test/${test.slug}`,
+    });
+  }),
+);
+
+publicTestsRouter.post(
+  "/admin/tests/:id/live-control",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const actionSchema = z.object({
+      action: z.enum(["toggle_live", "next_question", "prev_question", "toggle_leaderboard"]),
+      isLiveActive: z.boolean().optional(),
+      questionIndex: z.number().optional(),
+      showLeaderboard: z.boolean().optional(),
+    });
+    const payload = actionSchema.parse(req.body || {});
+    const test = await PublicBarcodeTestModel.findOne({ id });
+    if (!test) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Public barcode test not found" });
+    }
+
+    if (payload.action === "toggle_live") {
+      test.isLiveActive = payload.isLiveActive !== undefined ? payload.isLiveActive : !test.isLiveActive;
+    } else if (payload.action === "next_question") {
+      test.currentLiveQuestionIndex = Math.min((test.currentLiveQuestionIndex || 0) + 1, (test.questionIds?.length || 1) - 1);
+    } else if (payload.action === "prev_question") {
+      test.currentLiveQuestionIndex = Math.max((test.currentLiveQuestionIndex || 0) - 1, 0);
+    } else if (payload.action === "toggle_leaderboard") {
+      test.showLeaderboard = payload.showLeaderboard !== undefined ? payload.showLeaderboard : !test.showLeaderboard;
+    }
+
+    await test.save();
+    return res.json({ success: true, test });
   }),
 );
 

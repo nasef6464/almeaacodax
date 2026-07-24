@@ -4,6 +4,11 @@ const publicBarcodeTestSchema = new Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
     slug: { type: String, required: true, unique: true, index: true },
+    pinCode: { type: String, default: "", index: true },
+    testMode: { type: String, enum: ["public", "live", "targeted"], default: "public", index: true },
+    isLiveActive: { type: Boolean, default: false },
+    currentLiveQuestionIndex: { type: Number, default: 0 },
+    showLeaderboard: { type: Boolean, default: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     pathId: { type: String, required: true, index: true },

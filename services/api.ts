@@ -903,6 +903,22 @@ export const api = {
       body: payload || {},
       token,
     }),
+  lookupBarcodeTestByPin: (pinCode: string) =>
+    request<{ slug: string; title: string; testMode: string; isLiveActive: boolean; publicUrl: string }>(`/public-tests/pin/${pinCode}`),
+  controlLiveBarcodeTest: (
+    id: string,
+    payload: {
+      action: "toggle_live" | "next_question" | "prev_question" | "toggle_leaderboard";
+      isLiveActive?: boolean;
+      showLeaderboard?: boolean;
+    },
+    token?: string | null,
+  ) =>
+    request<{ success: boolean; test: unknown }>(`/public-tests/admin/tests/${id}/live-control`, {
+      method: "POST",
+      body: payload,
+      token,
+    }),
   markNotificationRead: (id: string, token?: string | null) =>
     request<unknown>(`/notifications/${id}/read`, {
       method: "PATCH",

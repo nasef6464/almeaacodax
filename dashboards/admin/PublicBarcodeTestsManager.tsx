@@ -229,8 +229,11 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [loadingTests, setLoadingTests] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
   const [liveMonitoring, setLiveMonitoring] = useState(false);
-  const [lastReportRefreshAt, setLastReportRefreshAt] = useState<number | null>(null);
   const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
+  const [activeTab, setActiveTab] = useState<'live-broadcast' | 'targeted-assignments' | 'reports-analytics'>('live-broadcast');
+  const [pinCode, setPinCode] = useState('');
+  const [isLiveActive, setIsLiveActive] = useState(false);
+  const [showProjectorModal, setShowProjectorModal] = useState(false);
 
   const normalizedSubjectId = subjectId || activeSubjects[0]?.id || '';
   const {
@@ -336,6 +339,28 @@ export const PublicBarcodeTestsManager: React.FC = () => {
         : 'تم حفظ السؤال في مركز الأسئلة، وسيظهر بعد الاعتماد.');
     } catch (err) {
       setError(getErrorMessage(err, 'تعذر حفظ السؤال الآن.'));
+    }
+  };
+
+  const handleLiveHostControl = async (action: 'toggle_live' | 'next_question' | 'prev_question' | 'toggle_leaderboard') => {
+    if (!createdTest?.test.id) return;
+    try {
+      const res = await api.controlLiveBarcodeTest(createdTest.test.id, {
+        action,
+        isLiveActive: action === 'toggle_live' ? !isLiveActive : isLiveActive,
+      });
+      if (res.success) {
+        if (action === 'toggle_live') {
+          setIsLiveActive(!isLiveActive);
+          setFeedback(!isLiveActive ? 'تم بدء البث المباشر التفاعلي للحصة الآن!' : 'تم إيقاف البث المباشر مؤقتاً.');
+        } else if (action === 'next_question') {
+          setFeedback('تم الانتقال للسؤال التالي على شاشة البروجيكتور والطلاب!');
+        } else if (action === 'prev_question') {
+          setFeedback('تم العودة للسؤال السابق.');
+        }
+      }
+    } catch (err) {
+      setError(getErrorMessage(err, 'تعذر التحكم في البث المباشر الآن.'));
     }
   };
 

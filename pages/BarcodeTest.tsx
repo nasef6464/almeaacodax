@@ -91,7 +91,32 @@ const BarcodeTest: React.FC = () => {
     return () => window.clearInterval(timer);
   }, []);
 
+  const [pinInput, setPinInput] = useState('');
+  const [pinLoading, setPinLoading] = useState(false);
+  const [pinError, setPinError] = useState('');
+
+  const handlePinSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!pinInput.trim()) return;
+    setPinLoading(true);
+    setPinError('');
+    try {
+      const res = await api.lookupBarcodeTestByPin(pinInput.trim());
+      if (res?.slug) {
+        window.location.href = `/barcode-test/${res.slug}`;
+      }
+    } catch (err) {
+      setPinError(getErrorMessage(err, 'رمز الاختبار السريع غير صحيح أو غير متاح حالياً.'));
+    } finally {
+      setPinLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     setError('');
@@ -186,6 +211,39 @@ const BarcodeTest: React.FC = () => {
         <div className="rounded-2xl border border-slate-100 bg-white p-8 text-center shadow-sm">
           <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-indigo-600" />
           <p className="text-sm font-black text-slate-700">جاري تجهيز الاختبار...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!slug) {
+    return (
+      <main className="mx-auto max-w-lg px-4 py-16 text-center">
+        <div className="rounded-3xl border border-indigo-100 bg-white p-8 shadow-xl">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+            <School size={32} />
+          </div>
+          <h1 className="text-2xl font-black text-slate-900">الانضمام لاختبار مباشر برمز PIN</h1>
+          <p className="mt-2 text-sm text-slate-500">أدخل رمز الدخول السريع المكون من 6 أرقام للبدء بالإجابة بالحصة</p>
+
+          <form onSubmit={handlePinSubmit} className="mt-6 space-y-4">
+            <input
+              type="text"
+              maxLength={6}
+              placeholder="مثال: 482910"
+              value={pinInput}
+              onChange={(e) => setPinInput(e.target.value)}
+              className="w-full rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 p-4 text-center text-2xl font-black tracking-widest text-indigo-900 focus:border-indigo-600 focus:outline-none"
+            />
+            {pinError && <p className="text-xs font-bold text-rose-600">{pinError}</p>}
+            <button
+              type="submit"
+              disabled={pinLoading || !pinInput.trim()}
+              className="w-full rounded-2xl bg-indigo-600 py-3.5 text-base font-black text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-md"
+            >
+              {pinLoading ? 'جاري التحقق...' : 'انضمام للاختبار المباشر 🚀'}
+            </button>
+          </form>
         </div>
       </main>
     );

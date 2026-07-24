@@ -1,4 +1,4 @@
-﻿
+
 import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -953,7 +953,9 @@ const App: React.FC = () => {
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Cart />} />
+                  <Route path="/barcode-test" element={<BarcodeTest />} />
                   <Route path="/barcode-test/:slug" element={<BarcodeTest />} />
+                  <Route path="/b/:slug" element={<BarcodeTest />} />
                   <Route path="/about" element={<StaticInfoPage kind="about" />} />
                   <Route path="/contact" element={<StaticInfoPage kind="contact" />} />
                   <Route path="/faq" element={<StaticInfoPage kind="faq" />} />
