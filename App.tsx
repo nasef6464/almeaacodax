@@ -44,6 +44,7 @@ const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const VerifyEmail = React.lazy(() => import('./pages/VerifyEmail'));
 const BookSession = React.lazy(() => import('./pages/BookSession').then(module => ({ default: module.BookSession })));
 const LiveSessions = React.lazy(() => import('./pages/LiveSessions'));
+const LiveSessionLobby = React.lazy(() => import('./pages/LiveSessionLobby'));
 const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ default: module.QuizPage })));
 const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
 const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
@@ -941,6 +942,7 @@ const App: React.FC = () => {
                   <Route path="/qa" element={<RequireAuth><QA /></RequireAuth>} />
                   <Route path="/book-session" element={<RequireAuth><BookSession /></RequireAuth>} />
                   <Route path="/live-sessions" element={<RequireAuth><LiveSessions /></RequireAuth>} />
+                  <Route path="/live-sessions/:lessonId" element={<RequireAuth><LiveSessionLobby /></RequireAuth>} />
                   <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
                   <Route path="/admin/quiz-gen" element={<QuizGenerator />} />
                   <Route path="/achievements" element={<Achievements />} />

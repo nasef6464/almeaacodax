@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Lesson, LessonType, Question } from '../../../types';
 import { Plus, Save, Search, Trash2, X, Video, FileText, HelpCircle, Video as VideoIcon, Youtube } from 'lucide-react';
 import { QuizBuilder } from '../QuizBuilder';
@@ -815,7 +815,32 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                   rows={3}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-y"
                   placeholder="مثال: ادخل قبل الموعد بعشر دقائق، جهّز القلم والدفتر، واستخدم اسمك الحقيقي داخل الجلسة."
-                />
+                /> 
+              </div>
+
+              {/* Teacher Assignment */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">المعلم المعيّن للحصة</label>
+                  <input
+                    type="text"
+                    value={lesson.assignedTeacherName || ''}
+                    onChange={event => setLesson({ ...lesson, assignedTeacherName: event.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="اسم المعلم أو المدرس..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">الحد الأقصى للحضور</label>
+                  <input
+                    type="number"
+                    value={lesson.maxAttendees || ''}
+                    onChange={event => setLesson({ ...lesson, maxAttendees: Number(event.target.value) || undefined })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="اتركه فارغاً لعدم التحديد..."
+                    min={1}
+                  />
+                </div>
               </div>
             </div>
           )}

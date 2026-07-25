@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CalendarDays, CheckCircle2, Copy, ExternalLink, PlayCircle, Video } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
@@ -155,20 +156,21 @@ const LiveSessions: React.FC = () => {
 
                                 <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {lesson.meetingUrl ? (
-                                        <a
-                                            href={lesson.meetingUrl}
-                                            target="_blank"
-                                            rel="noreferrer"
+                                        <Link
+                                            to={`/live-sessions/${lesson.id}`}
                                             className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-colors"
                                         >
                                             <ExternalLink size={18} />
                                             دخول الحصة
-                                        </a>
+                                        </Link>
                                     ) : (
-                                        <div className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">
+                                        <Link
+                                            to={`/live-sessions/${lesson.id}`}
+                                            className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold hover:bg-gray-200 transition-colors"
+                                        >
                                             <CalendarDays size={18} />
-                                            بانتظار رابط الدخول
-                                        </div>
+                                            تفاصيل الحصة
+                                        </Link>
                                     )}
                                     <button
                                         onClick={() => void copySessionInvite(lesson)}

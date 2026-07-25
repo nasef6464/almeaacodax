@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, RefreshCw, Video } from 'lucide-react';
+import { CalendarDays, Copy, Download, ExternalLink, Lock, LockOpen, Plus, RefreshCw, Search, Video } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Activity, Lesson, LessonType } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
@@ -185,21 +185,39 @@ export const LiveSessionsManager: React.FC = () => {
         ]);
     };
 
-    const updateSessionBooking = async (booking: Activity, bookingStatus: 'pending' | 'confirmed' | 'cancelled') => {
-        const assignedTeacherName =
-            bookingStatus === 'confirmed'
-                ? (window.prompt('اسم المدرس أو المسؤول عن الحصة', booking.assignedTeacherName || '') ?? (booking.assignedTeacherName || ''))
-                : booking.assignedTeacherName || '';
-        const adminNotes = window.prompt('ملاحظة داخلية للطلب (اختياري)', booking.adminNotes || '') ?? (booking.adminNotes || '');
+    const [confirmModal, setConfirmModal] = useState<{
+        booking: Activity;
+        action: 'confirmed' | 'pending' | 'cancelled' | 'convert';
+        teacherName: string;
+        notes: string;
+        meetingUrl: string;
+        provider: string;
+    } | null>(null);
 
+    const submitConfirmModal = async () => {
+        if (!confirmModal) return;
+        const { booking, action, teacherName, notes, meetingUrl, provider } = confirmModal;
+        setConfirmModal(null);
         try {
             setUpdatingBookingId(booking.id);
-            await api.updateAdminSessionBooking(booking.id, {
-                bookingStatus,
-                assignedTeacherName,
-                adminNotes,
-            });
-            await loadSessionBookings();
+            if (action === 'convert') {
+                const res = await api.convertSessionBookingToLiveSession(booking.id, {
+                    provider: provider as any,
+                    meetingUrl,
+                    meetingDate: booking.scheduledDate ? `${booking.scheduledDate} ${booking.scheduledTime || ''}` : new Date().toISOString(),
+                });
+                if (res.success) {
+                    setCopyMessage('تم تحويل الطلب إلى حصة مباشرة معتمدة بنجاح!');
+                    await loadSessionBookings();
+                }
+            } else {
+                await api.updateAdminSessionBooking(booking.id, {
+                    bookingStatus: action,
+                    assignedTeacherName: teacherName,
+                    adminNotes: notes,
+                });
+                await loadSessionBookings();
+            }
         } catch (error) {
             window.alert(error instanceof Error ? error.message : 'تعذر تحديث طلب الحصة الآن.');
         } finally {
@@ -207,26 +225,23 @@ export const LiveSessionsManager: React.FC = () => {
         }
     };
 
-    const convertBookingToLiveSession = async (booking: Activity) => {
-        const meetingUrl = window.prompt('رابط اجتماع الحصة (Zoom/Meet/Teams/YouTube):', '') || '';
-        const providerChoice = (window.prompt('نوع المزود (zoom / google_meet / teams / live_youtube):', 'zoom') || 'zoom') as any;
+    const openConfirmModal = (booking: Activity, action: 'confirmed' | 'pending' | 'cancelled' | 'convert') => {
+        setConfirmModal({
+            booking,
+            action,
+            teacherName: booking.assignedTeacherName || '',
+            notes: booking.adminNotes || '',
+            meetingUrl: '',
+            provider: 'zoom',
+        });
+    };
 
-        try {
-            setUpdatingBookingId(booking.id);
-            const res = await api.convertSessionBookingToLiveSession(booking.id, {
-                provider: providerChoice,
-                meetingUrl,
-                meetingDate: booking.scheduledDate ? `${booking.scheduledDate} ${booking.scheduledTime || ''}` : new Date().toISOString(),
-            });
-            if (res.success) {
-                setCopyMessage('تم تحويل الطلب إلى حصة مباشرة معتمدة بنجاح!');
-                await loadSessionBookings();
-            }
-        } catch (error) {
-            window.alert(error instanceof Error ? error.message : 'تعذر تحويل الطلب الآن.');
-        } finally {
-            setUpdatingBookingId('');
-        }
+    const updateSessionBooking = (booking: Activity, bookingStatus: 'pending' | 'confirmed' | 'cancelled') => {
+        openConfirmModal(booking, bookingStatus);
+    };
+
+    const convertBookingToLiveSession = (booking: Activity) => {
+        openConfirmModal(booking, 'convert');
     };
 
     const filteredLiveLessons = useMemo(() => {
@@ -293,6 +308,91 @@ export const LiveSessionsManager: React.FC = () => {
             {copyMessage && (
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-700">
                     {copyMessage}
+                </div>
+            )}
+
+            {/* Confirm / Convert Modal */}
+            {confirmModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" dir="rtl">
+                    <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
+                        <h3 className="text-lg font-black text-gray-900">
+                            {confirmModal.action === 'convert' ? '🔄 تحويل الطلب لحصة مباشرة' :
+                             confirmModal.action === 'confirmed' ? '✅ تأكيد الحصة' :
+                             confirmModal.action === 'cancelled' ? '❌ إلغاء الطلب' : '🔄 تحديث الطلب'}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                            {displayText(confirmModal.booking.title) || 'طلب حصة خاصة'}
+                            {' — '}
+                            {displayText(confirmModal.booking.studentName) || confirmModal.booking.studentEmail}
+                        </p>
+
+                        {confirmModal.action === 'convert' && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">المزود</label>
+                                    <select
+                                        value={confirmModal.provider}
+                                        onChange={e => setConfirmModal(m => m ? { ...m, provider: e.target.value } : m)}
+                                        className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm font-bold focus:outline-none focus:border-indigo-500"
+                                    >
+                                        <option value="zoom">Zoom</option>
+                                        <option value="google_meet">Google Meet</option>
+                                        <option value="teams">Microsoft Teams</option>
+                                        <option value="live_youtube">YouTube Live</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">رابط الاجتماع</label>
+                                    <input
+                                        type="text"
+                                        value={confirmModal.meetingUrl}
+                                        onChange={e => setConfirmModal(m => m ? { ...m, meetingUrl: e.target.value } : m)}
+                                        className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                                        placeholder="https://zoom.us/j/..."
+                                    />
+                                </div>
+                            </>
+                        )}
+
+                        {(confirmModal.action === 'confirmed' || confirmModal.action === 'pending') && (
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">المعلم المعيّن</label>
+                                <input
+                                    type="text"
+                                    value={confirmModal.teacherName}
+                                    onChange={e => setConfirmModal(m => m ? { ...m, teacherName: e.target.value } : m)}
+                                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                                    placeholder="اسم المعلم أو المسؤول..."
+                                />
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">ملاحظة داخلية (اختياري)</label>
+                            <textarea
+                                value={confirmModal.notes}
+                                onChange={e => setConfirmModal(m => m ? { ...m, notes: e.target.value } : m)}
+                                rows={2}
+                                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 resize-none"
+                                placeholder="ملاحظة للسجل الداخلي..."
+                            />
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <button
+                                onClick={() => void submitConfirmModal()}
+                                className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-black text-white hover:bg-indigo-700 transition-colors"
+                            >
+                                تأكيد
+                            </button>
+                            <button
+                                onClick={() => setConfirmModal(null)}
+                                className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-black text-gray-600 hover:bg-gray-50 transition-colors"
+                            >
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -413,7 +513,14 @@ export const LiveSessionsManager: React.FC = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-600">{providerLabelMap[lesson.type] || lesson.type}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">{pathName} - {subjectName}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-600">
+                                                    <div>{pathName} - {subjectName}</div>
+                                                    {lesson.assignedTeacherName && (
+                                                        <div className="mt-1 text-xs font-bold text-indigo-600">
+                                                            👨‍🏫 {displayText(lesson.assignedTeacherName)}
+                                                        </div>
+                                                    )}
+                                                </td>
                                                 <td className="px-6 py-4 text-sm text-gray-600">{meetingDateLabel}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${
@@ -474,9 +581,18 @@ export const LiveSessionsManager: React.FC = () => {
                                                                 className="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold hover:bg-indigo-100 inline-flex items-center gap-1"
                                                             >
                                                                 <ExternalLink size={13} />
-                                                                فتح
+                                                                فتح الرابط
                                                             </a>
                                                         ) : null}
+                                                        <a
+                                                            href={`/live-sessions/${lesson.id}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="px-3 py-2 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold hover:bg-purple-100 inline-flex items-center gap-1"
+                                                        >
+                                                            <Video size={13} />
+                                                            معاينة الطالب
+                                                        </a>
                                                         <button
                                                             onClick={() => {
                                                                 if (confirm('هل أنت متأكد من حذف هذه الحصة؟')) {
