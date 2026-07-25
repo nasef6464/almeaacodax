@@ -1517,12 +1517,12 @@ const Plan: React.FC = () => {
 
               <div className="space-y-8">
                 {Object.entries(
-                  (plannedTasks || []).reduce((acc, task) => {
+                  (generatedTasks || []).reduce((acc, task) => {
                     const date = task.scheduledDate || 'بدون تاريخ';
                     if (!acc[date]) acc[date] = [];
                     acc[date].push(task);
                     return acc;
-                  }, {} as Record<string, typeof plannedTasks>)
+                  }, {} as Record<string, typeof generatedTasks>)
                 )
                   .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
                   .map(([date, tasks]) => {
@@ -1594,7 +1594,7 @@ const Plan: React.FC = () => {
                     );
                   })}
                   
-                  {(!plannedTasks || plannedTasks.length === 0) && (
+                  {(!generatedTasks || generatedTasks.length === 0) && (
                     <div className="text-center py-10 text-gray-500 font-bold bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                       لا توجد مهام مجدولة بعد لهذه الخطة. جرّب توسيع المدة أو إضافة مواد أكثر.
                     </div>
