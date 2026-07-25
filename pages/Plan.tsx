@@ -1136,7 +1136,11 @@ const Plan: React.FC = () => {
         ))}
       </div>
 
-      <Card className="overflow-hidden border border-gray-100 bg-white">
+      <details className="group print-hide mb-6" open={!currentPlan}>
+        <summary className="p-4 bg-white text-indigo-700 font-bold cursor-pointer rounded-2xl border border-gray-200 mb-2 list-none text-center shadow-sm hover:bg-gray-50 transition-colors">
+          ⚙️ إعدادات الخطة (إنشاء وتعديل)
+        </summary>
+      <Card className="overflow-hidden border border-gray-100 bg-white mt-2">
         <div className="border-b border-gray-100 bg-gray-50 p-5 text-center sm:p-8">
           <h2 className="text-2xl font-black text-emerald-600">
             {editingPlanId ? `تعديل خطة ${selectedPath?.name || ''}` : `إضافة خطة ${selectedPath?.name || ''}`}
@@ -1432,6 +1436,7 @@ const Plan: React.FC = () => {
           </div>
         </div>
       </Card>
+      </details>
 
       {currentPlan && (
         <div id="study-plan-print-area" className="space-y-6">
@@ -1497,126 +1502,99 @@ const Plan: React.FC = () => {
             </div>
           </Card>
 
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_0.95fr]">
-            <Card className="p-4 sm:p-6">
-              <div className="mb-4 flex items-center gap-2 text-gray-800">
-                <Calendar size={20} className="text-indigo-500" />
-                <h3 className="text-lg font-bold">
-                  مهام الخطة {selectedDayTasks.some((task) => task.scheduledDate === todayKey) ? `(${formatTodayLabel()})` : 'القادمة'}
-                </h3>
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr]">
+            <Card className="p-4 sm:p-6 shadow-sm border-0 bg-white/50">
+              <div className="mb-6 flex items-center justify-between text-gray-800 border-b border-gray-100 pb-4">
+                <div className="flex items-center gap-3">
+                  <Calendar size={24} className="text-indigo-600" />
+                  <h3 className="text-xl font-black">الجدول الزمني للخطة (يوم بيوم)</h3>
+                </div>
               </div>
 
-              {selectedDayTasks.length > 0 && (
-                <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="rounded-2xl bg-white/80 p-3">
-                      <div className="text-xs font-bold text-indigo-600">بداية الجلسة</div>
-                      <div className="mt-1 text-lg font-black text-indigo-900">{selectedDaySummary.startTime}</div>
-                    </div>
-                    <div className="rounded-2xl bg-white/80 p-3">
-                      <div className="text-xs font-bold text-indigo-600">النهاية التقريبية</div>
-                      <div className="mt-1 text-lg font-black text-indigo-900">{selectedDaySummary.endTime}</div>
-                    </div>
-                    <div className="rounded-2xl bg-white/80 p-3">
-                      <div className="text-xs font-bold text-indigo-600">إجمالي وقت اليوم</div>
-                      <div className="mt-1 text-lg font-black text-indigo-900">{selectedDaySummary.totalMinutes} دقيقة</div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1">
-                    {selectedDayTasks.map((task, index) => {
-                      const phaseMeta = getPlanPhaseMeta(task.phase);
-                      return (
-                        <React.Fragment key={`${task.id}-timeline`}>
-                          <div className="min-w-[130px] rounded-2xl border border-white/80 bg-white px-3 py-2 shadow-sm">
-                            <div className={`text-[11px] font-black ${phaseMeta.accent}`}>{task.phaseLabel}</div>
-                            <div className="mt-1 line-clamp-1 text-sm font-bold text-gray-800">{task.title}</div>
-                            <div className="mt-1 text-[11px] text-gray-500">
-                              {task.scheduledTime} - {task.scheduledEndTime}
-                            </div>
+              <div className="space-y-8">
+                {Object.entries(
+                  (plannedTasks || []).reduce((acc, task) => {
+                    const date = task.scheduledDate || 'بدون تاريخ';
+                    if (!acc[date]) acc[date] = [];
+                    acc[date].push(task);
+                    return acc;
+                  }, {} as Record<string, typeof plannedTasks>)
+                )
+                  .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+                  .map(([date, tasks]) => {
+                    const isLate = date < todayKey && tasks.some(t => !t.completed);
+                    
+                    return (
+                      <div key={date} className={`relative pt-2 ${isLate ? 'opacity-90' : ''}`}>
+                        <div className={`sticky top-0 z-10 mb-3 flex items-center justify-between rounded-xl px-4 py-2 font-bold shadow-sm border ${
+                          isLate ? 'bg-red-50 text-red-700 border-red-100' : 
+                          date === todayKey ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-gray-100 text-gray-700 border-gray-200'
+                        }`}>
+                          <div className="flex items-center gap-2">
+                            <span>{formatDateForPlan(date)}</span>
+                            <span className="text-sm opacity-80">({date})</span>
                           </div>
-                          {index < selectedDayTasks.length - 1 && (
-                            <div className="h-[2px] min-w-8 rounded-full bg-indigo-200" />
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div className="relative mr-3 space-y-5 border-r-2 border-indigo-100">
-                {selectedDayTasks.length > 0 ? (
-                  selectedDayTasks.map((task) => (
-                    <div key={task.id} className="relative pr-8">
-                      <div className={`absolute -right-[9px] top-4 h-4 w-4 rounded-full border-2 border-white shadow-sm ${task.completed ? 'bg-emerald-500' : 'bg-amber-400'}`} />
-                      <Card className={`p-4 transition-all hover:shadow-md ${task.completed ? 'bg-gray-50 opacity-75' : 'bg-white'}`}>
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                          <div>
-                            <div className="mb-2 flex flex-wrap items-center gap-2">
-                              <span className="rounded bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-600">
-                                {task.scheduledTime} - {task.scheduledEndTime}
-                              </span>
-                              <span className="rounded bg-gray-100 px-2 py-1 text-xs font-bold text-gray-500">
-                                {task.scheduledDate}
-                              </span>
-                              <span
-                                className={`rounded px-2 py-1 text-xs font-bold ${getPlanPhaseMeta(task.phase).bg} ${getPlanPhaseMeta(task.phase).accent}`}
-                              >
-                                {task.phaseLabel}
-                              </span>
-                            </div>
-                            <h4 className={`text-lg font-bold ${task.completed ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
-                              {task.title}
-                            </h4>
-                            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-                              <Clock size={14} />
-                              <span>{task.durationLabel}</span>
-                              <span className="mx-1">•</span>
-                              <span>
-                                {task.type === 'lesson'
-                                  ? 'درس'
-                                  : task.type === 'quiz'
-                                    ? 'اختبار'
-                                    : 'ملف مراجعة'}
-                              </span>
-                            </div>
-
-                            {task.link ? (
-                              task.external ? (
-                                <a
-                                  href={task.link}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700"
-                                >
-                                  <FileText size={14} />
-                                  فتح المهمة
-                                </a>
-                              ) : (
-                                <Link
-                                  to={task.link}
-                                  className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700"
-                                >
-                                  {task.type === 'quiz' ? <FileText size={14} /> : <PlayCircle size={14} />}
-                                  فتح المهمة
-                                </Link>
-                              )
-                            ) : null}
-                          </div>
-
-                          <div className={`rounded-full p-2 ${task.completed ? 'bg-emerald-50 text-emerald-500' : 'bg-gray-50 text-gray-300'}`}>
-                            {task.completed ? <CheckCircle size={24} /> : <Circle size={24} />}
-                          </div>
+                          {isLate && <span className="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-md">متأخر ⚠️</span>}
+                          {date === todayKey && <span className="text-xs bg-white/20 px-2 py-1 rounded-md">اليوم</span>}
                         </div>
-                      </Card>
+                        
+                        <div className="relative mr-3 space-y-3 border-r-2 border-gray-100 pr-5">
+                          {tasks.map((task) => (
+                            <div key={task.id} className="relative">
+                              <div className={`absolute -right-[27px] top-4 h-4 w-4 rounded-full border-2 border-white shadow-sm ${task.completed ? 'bg-emerald-500' : isLate ? 'bg-red-400' : 'bg-amber-400'}`} />
+                              <Card className={`p-4 transition-all hover:shadow-md border-0 ring-1 ${
+                                task.completed ? 'bg-gray-50/50 ring-gray-100 opacity-60' : 
+                                isLate ? 'bg-red-50/30 ring-red-100' : 'bg-white ring-gray-100 shadow-sm'
+                              }`}>
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                  <div>
+                                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                                      <span className="rounded bg-indigo-50 px-2 py-1 text-[11px] font-bold text-indigo-600">
+                                        {task.scheduledTime} - {task.scheduledEndTime}
+                                      </span>
+                                      <span className={`rounded px-2 py-1 text-[11px] font-bold ${getPlanPhaseMeta(task.phase).bg} ${getPlanPhaseMeta(task.phase).accent}`}>
+                                        {task.phaseLabel}
+                                      </span>
+                                    </div>
+                                    <h4 className={`text-base font-black ${task.completed ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                                      {task.title}
+                                    </h4>
+                                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500 font-bold">
+                                      <Clock size={14} />
+                                      <span>{task.durationLabel}</span>
+                                      <span className="mx-1">•</span>
+                                      <span>{task.type === 'lesson' ? 'درس' : task.type === 'quiz' ? 'اختبار' : 'ملف مراجعة'}</span>
+                                    </div>
+        
+                                    {!task.completed && task.link && (
+                                      task.external ? (
+                                        <a href={task.link} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg print-hide">
+                                          <FileText size={14} /> فتح المهمة
+                                        </a>
+                                      ) : (
+                                        <Link to={task.link} className="mt-3 inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg print-hide">
+                                          {task.type === 'quiz' ? <FileText size={14} /> : <PlayCircle size={14} />} فتح المهمة
+                                        </Link>
+                                      )
+                                    )}
+                                  </div>
+                                  <div className={`rounded-full p-2 mt-2 sm:mt-0 ${task.completed ? 'bg-emerald-50 text-emerald-500' : 'bg-gray-50 text-gray-300'}`}>
+                                    {task.completed ? <CheckCircle size={24} /> : <Circle size={24} />}
+                                  </div>
+                                </div>
+                              </Card>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {(!plannedTasks || plannedTasks.length === 0) && (
+                    <div className="text-center py-10 text-gray-500 font-bold bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                      لا توجد مهام مجدولة بعد لهذه الخطة. جرّب توسيع المدة أو إضافة مواد أكثر.
                     </div>
-                  ))
-                ) : (
-                  <Card className="p-6 sm:p-8 text-center text-gray-500">
-                    لا توجد مهام مجدولة بعد لهذه الخطة. جرّب توسيع المدة أو إضافة مواد ودورات أكثر.
-                  </Card>
-                )}
+                  )}
               </div>
             </Card>
 
