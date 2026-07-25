@@ -1120,20 +1120,24 @@ const Plan: React.FC = () => {
       {/* Simplified Plan Action Strip */}
       <StudentNextActionStrip {...planTodayNextAction} />
 
-      <div className="grid grid-cols-1 sm:flex gap-2 rounded-2xl bg-gray-100 p-1">
-        {availablePaths.map((path) => (
-          <button
-            key={path.id}
-            onClick={() => setActivePathId(path.id)}
-            className={`rounded-xl px-5 py-3 text-sm font-bold transition-all ${
-              activePathId === path.id
-                ? 'bg-emerald-500 text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {path.name}
-          </button>
-        ))}
+      {/* Path Selector - Master Switch */}
+      <div className="mb-6">
+        <label className="mb-3 block text-base font-black text-gray-800">اختر المسار أولاً:</label>
+        <div className="grid grid-cols-2 gap-2 rounded-2xl bg-gray-100 p-1.5 shadow-inner">
+          {availablePaths.map((path) => (
+            <button
+              key={path.id}
+              onClick={() => setActivePathId(path.id)}
+              className={`rounded-xl px-5 py-4 text-base font-black transition-all ${
+                activePathId === path.id
+                  ? 'bg-emerald-500 text-white shadow-md transform scale-[1.02]'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
+              }`}
+            >
+              خطة {path.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       <details className="group print-hide mb-6" open={!currentPlan}>
