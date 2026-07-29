@@ -510,6 +510,19 @@ const getWorkflowDefaults = (authUser?: { id: string; role: string; schoolId?: s
       approvalStatus: "approved",
       approvedBy: authUser.id,
       approvedAt: Date.now(),
+      isPublished: true,
+    };
+  }
+
+  if (authUser.role === "supervisor") {
+    return {
+      ownerType: "school",
+      ownerId: authUser.schoolId || authUser.id,
+      createdBy: authUser.id,
+      approvalStatus: "approved",
+      approvedBy: authUser.id,
+      approvedAt: Date.now(),
+      isPublished: true,
     };
   }
 
@@ -542,7 +555,7 @@ const sanitizeWorkflowUpdate = (
 ) => {
   const nextPayload = { ...payload };
 
-  if (authUser.role !== "admin") {
+  if (authUser.role !== "admin" && authUser.role !== "supervisor") {
     delete nextPayload.ownerType;
     delete nextPayload.ownerId;
     delete nextPayload.createdBy;
@@ -553,7 +566,7 @@ const sanitizeWorkflowUpdate = (
     if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
       nextPayload.approvalStatus = "pending_review";
     }
-    if (options?.respectPublished && nextPayload.isPublished === true) {
+  }  if (options?.respectPublished && nextPayload.isPublished === true) {
       nextPayload.isPublished = false;
     }
   } else if (typeof nextPayload.approvalStatus === "string") {
@@ -2228,7 +2241,8 @@ quizRouter.post(
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
-    const willBePublished = req.authUser?.role === "admin" ? Boolean(payload.isPublished) : false;
+    const isPowerRole = req.authUser?.role === "admin" || req.authUser?.role === "supervisor";
+    const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : true) : false;
     if (willBePublished) {
       const integrity = await validateQuizQuestionIntegrity(payload);
       if (!integrity.ok) {
@@ -2246,11 +2260,10 @@ quizRouter.post(
     const created = await QuizModel.create({
       ...payload,
       ...workflowDefaults,
-      approvalStatus:
-        req.authUser?.role === "admin"
-          ? payload.approvalStatus || workflowDefaults.approvalStatus
-          : workflowDefaults.approvalStatus,
-      isPublished: req.authUser?.role === "admin" ? payload.isPublished : false,
+      approvalStatus: isPowerRole
+        ? payload.approvalStatus || "approved"
+        : workflowDefaults.approvalStatus,
+      isPublished: willBePublished,
       showOnPlatform: typeof payload.showOnPlatform === "boolean" ? payload.showOnPlatform : false,
       skillIds: resolvedSkillIds,
     });

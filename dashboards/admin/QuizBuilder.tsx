@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { Quiz, Question, Role } from '../../types';
 import { AlertTriangle, Plus, Search, Edit2, Trash2, Save, X, Settings, Link as LinkIcon, Users, FileQuestion, Filter, CheckCircle2, Lock, LockOpen } from 'lucide-react';
@@ -127,7 +127,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
   } = useExamQuestionBank({
     pathId: currentQuiz.pathId,
     subjectId: currentQuiz.subjectId,
-    enabled: Boolean(currentQuiz.pathId && currentQuiz.subjectId),
+    enabled: Boolean(currentQuiz.pathId || currentQuiz.subjectId),
   });
 
   const [isAutoGenerateModalOpen, setIsAutoGenerateModalOpen] = useState(false);
@@ -254,11 +254,6 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
     setOperationError('');
     setOperationMessage('');
 
-    if (!canCreateQuestions) {
-      setOperationError('المشرف يستخدم أسئلة بنك المنصة فقط ولا يمكنه توليد أو إنشاء أسئلة جديدة.');
-      return;
-    }
-
     let pool = questionBankQuestions;
 
     if (currentQuiz.pathId) {
@@ -298,7 +293,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
     const totalRequested = (autoGenConfig.difficulty.Easy || 0) + (autoGenConfig.difficulty.Medium || 0) + (autoGenConfig.difficulty.Hard || 0);
     const missingCount = totalRequested - selectedIds.length;
 
-    if (missingCount > 0) {
+    if (missingCount > 0 && canCreateQuestions) {
       const useAi = window.confirm(`لم يتم العثور على عدد كافٍ من الأسئلة في المنصة (مطلوب: ${totalRequested}، متوفر: ${selectedIds.length}). هل تريد توليد الباقي (${missingCount}) باستخدام الذكاء الاصطناعي؟`);
       if (useAi) {
         setIsAiGenerating(true);
@@ -442,8 +437,24 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
     setOperationError('');
     setOperationMessage('');
 
-    const quizPayload = normalizeQuizPlacement({ ...currentQuiz }, builderType);
+    let quizPayload = normalizeQuizPlacement({ ...currentQuiz }, builderType);
     delete (quizPayload as any).skillIds;
+
+    if (isSupervisor) {
+      const existingTargets = quizPayload.targetGroupIds || [];
+      const existingUserTargets = quizPayload.targetUserIds || [];
+      const resolvedTargetGroups = existingTargets.length > 0 || existingUserTargets.length > 0
+        ? existingTargets
+        : availableTargetGroups.map(g => g.id);
+
+      quizPayload = {
+        ...quizPayload,
+        mode: 'central',
+        targetGroupIds: resolvedTargetGroups,
+        isPublished: true,
+        showOnPlatform: true,
+      };
+    }
 
     if (currentQuiz.id) {
       updateQuiz(currentQuiz.id, quizPayload as Quiz);
@@ -456,7 +467,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       addQuiz(newQuiz);
     }
 
-    setOperationMessage('تم حفظ الاختبار بنجاح.');
+    setOperationMessage('تم حفظ وتوجيه الاختبار بنجاح.');
     setIsEditing(false);
   };
 
@@ -630,28 +641,29 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">{'\u0627\u0644\u0645\u0627\u062f\u0629 \u0627\u0644\u0623\u0633\u0627\u0633\u064a\u0629'}</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">المادة الأساسية</label>
                     <select
                       value={currentQuiz.subjectId || ''}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const selectedSubId = e.target.value;
+                        const matchedSub = subjects.find(s => s.id === selectedSubId);
                         setCurrentQuiz(prev => ({
                           ...prev,
-                          subjectId: e.target.value,
+                          subjectId: selectedSubId,
+                          pathId: matchedSub?.pathId || prev.pathId,
                           sectionId: '',
                           skillIds: [],
                           questionIds: [],
-                        }))
-                      }
+                        }));
+                      }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
-                      disabled={!currentQuiz.pathId || subjects.filter(subject => subject.pathId === currentQuiz.pathId).length === 0}
                     >
-                      <option value="">
-                        {!currentQuiz.pathId ? '-- اختر المسار أولًا --' : '-- اختر المادة --'}
-                      </option>
-                      {subjects
-                        .filter(subject => subject.pathId === currentQuiz.pathId)
-                        .map(subject => (
-                          <option key={subject.id} value={subject.id}>{subject.name}</option>
+                      <option value="">-- اختر المادة --</option>
+                      {(currentQuiz.pathId 
+                        ? subjects.filter(subject => subject.pathId === currentQuiz.pathId)
+                        : subjects
+                      ).map(subject => (
+                        <option key={subject.id} value={subject.id}>{subject.name}</option>
                       ))}
                     </select>
                   </div>
