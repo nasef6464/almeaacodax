@@ -4,7 +4,7 @@ import {
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
-    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle
+    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -1436,8 +1436,18 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths } = useStore();
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
+    
+    const assignedQuizzes = useMemo(() => {
+        return quizzes.filter(q => {
+            if (!q.isPublished) return false;
+            const userGroups = user.groupIds || [];
+            const isGroupTargeted = q.targetGroupIds && q.targetGroupIds.some(groupId => userGroups.includes(groupId));
+            const isUserTargeted = q.targetUserIds && q.targetUserIds.includes(user.id);
+            return isGroupTargeted || isUserTargeted;
+        });
+    }, [quizzes, user]);
     
     // Calculate Streak
     const calculateStreak = () => {
@@ -1610,6 +1620,53 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                     </Link>
                                 </Card>
                             ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Assigned Quizzes (الاختبارات الموجهة) */}
+                {assignedQuizzes.length > 0 && (
+                    <section>
+                        <h3 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
+                            <ClipboardList className="text-indigo-600" size={24} />
+                            الاختبارات الموجهة لك
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {assignedQuizzes.map(quiz => {
+                                const hasCompleted = examResults.some(r => r.quizId === quiz.id && r.userId === user.id);
+                                return (
+                                    <Card key={quiz.id} className={`p-5 flex flex-col justify-between transition-all border ${hasCompleted ? 'border-emerald-100 bg-emerald-50/30' : 'border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
+                                        <div>
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div className={`p-2 rounded-lg ${quiz.placement === 'mock' ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                                                    {quiz.placement === 'mock' ? <Activity size={20} /> : <FileText size={20} />}
+                                                </div>
+                                                <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${quiz.placement === 'mock' ? 'bg-rose-50 text-rose-700' : 'bg-indigo-50 text-indigo-700'}`}>
+                                                    {quiz.placement === 'mock' ? 'اختبار محاكي' : 'اختبار عادي'}
+                                                </span>
+                                            </div>
+                                            <h4 className="font-black text-gray-900 text-sm mb-1">{quiz.title}</h4>
+                                            {quiz.dueDate && (
+                                                <p className="text-xs text-rose-600 font-bold mb-4 flex items-center gap-1">
+                                                    <Clock size={12} /> أخر موعد: {new Date(quiz.dueDate).toLocaleDateString('ar-EG')}
+                                                </p>
+                                            )}
+                                        </div>
+                                        {hasCompleted ? (
+                                            <div className="mt-4 flex items-center justify-center gap-2 py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">
+                                                <CheckCircle size={16} /> تم الإنجاز
+                                            </div>
+                                        ) : (
+                                            <Link 
+                                                to={`/quiz/${quiz.id}`}
+                                                className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors block text-center text-xs"
+                                            >
+                                                بدء الاختبار
+                                            </Link>
+                                        )}
+                                    </Card>
+                                );
+                            })}
                         </div>
                     </section>
                 )}

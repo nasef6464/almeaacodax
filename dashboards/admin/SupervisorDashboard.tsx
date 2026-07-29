@@ -35,7 +35,9 @@ import { useStore } from '../../store/useStore';
 import { Role } from '../../types';
 import { LiveSessionsManager } from './LiveSessionsManager';
 
-type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions';
+import { SupervisorTestsManager } from './SupervisorTestsManager';
+
+type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
 
 const KpiCard: React.FC<{
@@ -367,6 +369,7 @@ export const SupervisorDashboard: React.FC = () => {
     { id: 'overview' as const, label: 'الملخص العام', icon: <BarChart3 size={20} /> },
     { id: 'students' as const, label: 'متابعة الطلاب', icon: <Users size={20} />, badge: supervisorScopeSummary.studentCount },
     { id: 'live-sessions' as const, label: 'الحصص المباشرة', icon: <Video size={20} /> },
+    { id: 'tests' as const, label: 'الاختبارات والتحليل', icon: <ClipboardList size={20} /> },
     { id: 'skills' as const, label: 'خريطة المهارات', icon: <Target size={20} /> },
     { id: 'reports' as const, label: 'تقارير الأداء', icon: <ClipboardList size={20} /> },
   ];
@@ -457,6 +460,9 @@ export const SupervisorDashboard: React.FC = () => {
 
         {/* ===== LIVE SESSIONS TAB ===== */}
         {activeTab === 'live-sessions' && <LiveSessionsManager />}
+
+        {/* ===== TESTS TAB ===== */}
+        {activeTab === 'tests' && <SupervisorTestsManager />}
 
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (
