@@ -127,6 +127,7 @@ export const SupervisorDashboard: React.FC = () => {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<{ name: string; level: 'critical' | 'watch' | 'mastered'; students: string[] } | null>(null);
   const [showPrincipalReport, setShowPrincipalReport] = useState(false);
+  const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
 
   const supervisorScopeSummary = useMemo(() => {
     const directGroupIds = new Set(user.groupIds || []);
@@ -904,35 +905,104 @@ export const SupervisorDashboard: React.FC = () => {
                     <tbody className="divide-y divide-gray-50">
                       {[...supervisorScopeSummary.groupSnapshots].sort((a, b) => b.average - a.average).map((g, index) => {
                         const rankColors = index === 0 ? 'bg-amber-100 text-amber-900' : index === 1 ? 'bg-slate-100 text-slate-900' : index === 2 ? 'bg-amber-50 text-amber-800' : 'bg-gray-100 text-gray-800';
+                        const isExpanded = expandedGroupId === g.id;
+                        const groupStudents = supervisorScopeSummary.allStudentsList.filter(s => s.classId === g.id || s.schoolId === g.id);
+
                         return (
-                          <tr key={g.id} className="hover:bg-gray-50/50 transition-colors">
-                            <td className="px-5 py-4 font-bold text-gray-900 flex items-center gap-3">
-                              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${rankColors}`}>
-                                {index + 1}
-                              </span>
-                              <span>{g.name}</span>
-                            </td>
-                            <td className="px-5 py-4 text-center text-gray-700">{g.studentCount} طلاب</td>
-                            <td className="px-5 py-4 text-center text-gray-700">{g.attempts} نتيجة مسجلة</td>
-                            <td className="px-5 py-4 text-center text-gray-700">
-                              <span className={`font-bold ${g.weakStudents > 0 ? 'text-rose-600' : 'text-gray-400'}`}>
-                                {g.weakStudents} طالب
-                              </span>
-                            </td>
-                            <td className="px-5 py-4 text-center">
-                              <span className={`font-black text-base ${g.attempts > 0 ? (g.average >= 75 ? 'text-emerald-600' : g.average >= 60 ? 'text-amber-600' : 'text-rose-600') : 'text-gray-400'}`}>
-                                {g.attempts ? `${g.average}%` : 'لا توجد نتائج'}
-                              </span>
-                            </td>
-                            <td className="px-5 py-4">
-                              <span className="text-xs text-gray-600 leading-6 block">
-                                {g.attempts === 0 ? '⚠️ لا توجد قياسات كافية، ينصح بتوجيه اختبار تشخيصي أولاً.' :
-                                 g.average < 60 ? '🔴 ينصح بتدخل المعلم لتعزيز المهارات الأساسية وتكثيف الدروس العلاجية.' :
-                                 g.weakStudents > 0 ? '🟡 ينصح بعمل خطة دعم مخصصة للطلاب المتعثرين فردياً.' :
-                                 '🟢 يستمر الفصل في المنهج الطبيعي بمستوى ممتاز، مع تعزيز التحديات للمتميزين.'}
-                              </span>
-                            </td>
-                          </tr>
+                          <React.Fragment key={g.id}>
+                            <tr 
+                              className="hover:bg-gray-50/50 transition-colors cursor-pointer"
+                              onClick={() => setExpandedGroupId(isExpanded ? null : g.id)}
+                            >
+                              <td className="px-5 py-4 font-bold text-gray-900 flex items-center gap-3">
+                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${rankColors}`}>
+                                  {index + 1}
+                                </span>
+                                <span>{g.name}</span>
+                              </td>
+                              <td className="px-5 py-4 text-center text-gray-700">{g.studentCount} طلاب</td>
+                              <td className="px-5 py-4 text-center text-gray-700">{g.attempts} نتيجة مسجلة</td>
+                              <td className="px-5 py-4 text-center text-gray-700">
+                                <span className={`font-bold ${g.weakStudents > 0 ? 'text-rose-600' : 'text-gray-400'}`}>
+                                  {g.weakStudents} طالب
+                                </span>
+                              </td>
+                              <td className="px-5 py-4 text-center">
+                                <span className={`font-black text-base ${g.attempts > 0 ? (g.average >= 75 ? 'text-emerald-600' : g.average >= 60 ? 'text-amber-600' : 'text-rose-600') : 'text-gray-400'}`}>
+                                  {g.attempts ? `${g.average}%` : 'لا توجد نتائج'}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4">
+                                <span className="text-xs text-gray-600 leading-6 block">
+                                  {g.attempts === 0 ? '⚠️ لا توجد قياسات كافية، ينصح بتوجيه اختبار تشخيصي أولاً.' :
+                                   g.average < 60 ? '🔴 ينصح بتدخل المعلم لتعزيز المهارات الأساسية وتكثيف الدروس العلاجية.' :
+                                   g.weakStudents > 0 ? '🟡 ينصح بعمل خطة دعم مخصصة للطلاب المتعثرين فردياً.' :
+                                   '🟢 يستمر الفصل في المنهج الطبيعي بمستوى ممتاز، مع تعزيز التحديات للمتميزين.'}
+                                </span>
+                              </td>
+                            </tr>
+                            {isExpanded && (
+                              <tr className="bg-gray-50/50">
+                                <td colSpan={6} className="px-10 py-6 border-b-2 border-indigo-100">
+                                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                    <div className="bg-indigo-50/50 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                                      <h4 className="font-bold text-gray-900 text-sm">قائمة طلاب الفصل ({g.name})</h4>
+                                      <span className="text-xs font-bold text-indigo-600 bg-indigo-100 px-2.5 py-1 rounded-lg">
+                                        {groupStudents.length} طلاب فعليين
+                                      </span>
+                                    </div>
+                                    {groupStudents.length > 0 ? (
+                                      <div className="overflow-x-auto">
+                                        <table className="w-full text-right text-sm">
+                                          <thead>
+                                            <tr className="bg-gray-50 text-xs text-gray-500 border-b border-gray-100">
+                                              <th className="px-4 py-2 font-bold">اسم الطالب</th>
+                                              <th className="px-4 py-2 font-bold text-center">المعدل العام</th>
+                                              <th className="px-4 py-2 font-bold text-center">المهارات الضعيفة</th>
+                                              <th className="px-4 py-2 font-bold text-center">الإجراء</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody className="divide-y divide-gray-50">
+                                            {groupStudents.map(student => (
+                                              <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-4 py-3 font-bold text-gray-800">{student.name}</td>
+                                                <td className="px-4 py-3 text-center">
+                                                  <span className={`font-black ${student.attempts > 0 ? (student.average >= 75 ? 'text-emerald-600' : student.average >= 60 ? 'text-amber-600' : 'text-rose-600') : 'text-gray-400'}`}>
+                                                    {student.attempts ? `${student.average}%` : '—'}
+                                                  </span>
+                                                </td>
+                                                <td className="px-4 py-3 text-center">
+                                                  {student.weakSkills.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1 justify-center">
+                                                      {student.weakSkills.slice(0, 2).map(ws => (
+                                                        <span key={ws} className="text-[10px] bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100 truncate max-w-[80px]">{ws}</span>
+                                                      ))}
+                                                      {student.weakSkills.length > 2 && <span className="text-[10px] text-gray-400">+{student.weakSkills.length - 2}</span>}
+                                                    </div>
+                                                  ) : (
+                                                    <span className="text-xs text-gray-400">لا يوجد</span>
+                                                  )}
+                                                </td>
+                                                <td className="px-4 py-3 text-center">
+                                                  <button onClick={() => { setActiveTab('students'); setSelectedStudentId(student.id); }} className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">
+                                                    عرض التفاصيل
+                                                  </button>
+                                                </td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    ) : (
+                                      <div className="py-8 text-center text-gray-500 text-sm">
+                                        لا يوجد طلاب مسجلين في هذا الفصل بعد.
+                                      </div>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
                         );
                       })}
                     </tbody>
