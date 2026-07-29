@@ -134,9 +134,28 @@ export const SupervisorDashboard: React.FC = () => {
     const loadStudents = async () => {
       try {
         const { api } = await import('../../services/api');
-        const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 1000 });
-        if (response.users) {
-          const storeUsers = response.users.map(u => ({
+        
+        let allStudents: any[] = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+          const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 1000, page });
+          if (response?.users && response.users.length > 0) {
+            allStudents = [...allStudents, ...response.users];
+            const pagination = (response as any).pagination;
+            if (pagination && pagination.page < pagination.totalPages) {
+              page++;
+            } else {
+              hasMore = false;
+            }
+          } else {
+            hasMore = false;
+          }
+        }
+
+        if (allStudents.length > 0) {
+          const storeUsers = allStudents.map(u => ({
             id: u._id || u.id || '',
             name: u.name,
             email: u.email,

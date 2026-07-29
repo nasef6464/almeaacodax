@@ -639,11 +639,14 @@ authRouter.post(
 authRouter.get(
   "/admin/users",
   requireAuth,
-  requireRole(["admin"]),
+  requireRole(["admin", "supervisor", "school_manager", "teacher"]),
   asyncHandler(async (req, res) => {
     const query = adminUsersQuerySchema.parse(req.query);
+    const authUser = req.authUser!;
+    const maxLimit = authUser.role === "admin" ? 100 : 2000;
+    
     const pagination = resolvePagination(
-      { page: query.page, limit: Math.min(query.limit || 50, 100) },
+      { page: query.page, limit: Math.min(query.limit || 50, maxLimit) },
       { limit: 50 },
     );
 
@@ -664,6 +667,27 @@ authRouter.get(
         { name: { $regex: escapedSearch, $options: "i" } },
         { email: { $regex: escapedSearch, $options: "i" } },
       ];
+    }
+
+    if (authUser.role !== "admin") {
+      const supervisedGroups = await GroupModel.find({ supervisorIds: String(authUser.id || authUser._id || "") }).lean();
+      const scopedGroupIds = supervisedGroups.map((g: any) => String(g.id || g._id));
+      const scopedSchoolIds = authUser.schoolId ? [String(authUser.schoolId)] : [];
+      supervisedGroups.forEach((g: any) => {
+        if (g.type === 'SCHOOL') scopedSchoolIds.push(String(g.id || g._id));
+        if (g.parentId) scopedSchoolIds.push(String(g.parentId));
+      });
+      const explicitStudentIds = supervisedGroups.flatMap((g: any) => (g.studentIds || []).map(String));
+
+      const scopeOr: any[] = [
+        { _id: authUser._id },
+        { groupIds: { $in: scopedGroupIds } }
+      ];
+      if (scopedSchoolIds.length > 0) scopeOr.push({ schoolId: { $in: scopedSchoolIds } });
+      if (explicitStudentIds.length > 0) {
+        scopeOr.push({ id: { $in: explicitStudentIds } });
+      }
+      mongoQuery.$and = [{ $or: scopeOr }];
     }
 
     const [users, total] = await Promise.all([
