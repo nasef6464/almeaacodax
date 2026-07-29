@@ -4,7 +4,7 @@ import {
     Clock, TrendingUp, AlertTriangle, Zap, FileText, 
     PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
-    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList
+    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
@@ -1639,7 +1639,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                         <div>
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className={`p-2 rounded-lg ${quiz.placement === 'mock' ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                                                    {quiz.placement === 'mock' ? <Activity size={20} /> : <FileText size={20} />}
+                                                    {quiz.placement === 'mock' ? <ActivityIcon size={20} /> : <FileText size={20} />}
                                                 </div>
                                                 <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${quiz.placement === 'mock' ? 'bg-rose-50 text-rose-700' : 'bg-indigo-50 text-indigo-700'}`}>
                                                     {quiz.placement === 'mock' ? 'اختبار محاكي' : 'اختبار عادي'}
