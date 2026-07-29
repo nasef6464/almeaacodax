@@ -543,7 +543,7 @@ export const LibraryManager: React.FC<LibraryManagerProps> = ({ subjectId }) => 
                   <Edit2 size={18} />
                 </button>
                 <button
-                  onClick={() => deleteLibraryItem(item.id)}
+                  onClick={() => { if (window.confirm('هل أنت متأكد من حذف هذا العنصر من المكتبة؟')) deleteLibraryItem(item.id); }}
                   className="text-gray-400 hover:text-red-600"
                   aria-label={`حذف ملف المكتبة ${item.title}`}
                   title={`حذف ملف المكتبة ${item.title}`}

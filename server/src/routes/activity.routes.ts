@@ -124,7 +124,8 @@ activityRouter.post(
     }
 
     const { LessonModel } = await import("../models/Lesson.js");
-    const lessonTitle = activity.title || "حصة خاصة - " + (activity.studentName || activity.studentEmail || "طالب");
+    const activityDoc = activity as any;
+    const lessonTitle = activity.title || "حصة خاصة - " + (activityDoc.studentName || activityDoc.studentEmail || "طالب");
     const scheduledDate = payload.meetingDate || activity.scheduledDate || new Date().toISOString();
 
     const lesson = await LessonModel.create({

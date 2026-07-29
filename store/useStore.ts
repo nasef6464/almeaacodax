@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
 import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, AnnouncementAd, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress, CartItem } from '../types';
@@ -722,7 +722,7 @@ export const useStore = create<AppState>()(
                     api.createQuestionAttempt(serverAttempt).catch(console.error);
                 }
                 set((state) => ({
-                    questionAttempts: [...state.questionAttempts, attempt]
+                    questionAttempts: [...state.questionAttempts, attempt].slice(-500)
                 }));
             },
 

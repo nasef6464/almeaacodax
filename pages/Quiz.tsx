@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, Save, Trash2, Heart, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -621,19 +621,24 @@ const Quiz: React.FC = () => {
 
     const resultDate = new Date().toISOString();
 
-    saveExamResult({
-      quizId: `self-quiz-${Date.now()}`,
-      quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
-      score,
-      correctAnswers: correct,
-      wrongAnswers: wrong,
-      unanswered,
-      timeSpent: formatTime(Math.max(0, timeLimitMinutes * 60 - timeLeft)),
-      date: resultDate,
-      skillsAnalysis,
-      totalQuestions: questions.length,
-      questionReview,
-    });
+    try {
+      saveExamResult({
+        quizId: `self-quiz-${Date.now()}`,
+        quizTitle: `اختبار ذاتي - ${selectedSubjectLabel} (${getQuizDifficultyLabel(difficulty)})`,
+        score,
+        correctAnswers: correct,
+        wrongAnswers: wrong,
+        unanswered,
+        timeSpent: formatTime(Math.max(0, timeLimitMinutes * 60 - timeLeft)),
+        date: resultDate,
+        skillsAnalysis,
+        totalQuestions: questions.length,
+        questionReview,
+      });
+    } catch (err) {
+      console.error('فشل في حفظ نتيجة الاختبار:', err);
+      alert('حدث خطأ في حفظ النتيجة. يرجى المحاولة مرة أخرى.');
+    }
 
     localStorage.removeItem(QUIZ_PROGRESS_KEY);
     clearSavedSnapshot();

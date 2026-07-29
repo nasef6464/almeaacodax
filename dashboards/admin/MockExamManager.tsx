@@ -520,7 +520,7 @@ export const MockExamManager: React.FC = () => {
                     <button onClick={() => updateQuiz(quiz.id, { showOnPlatform: quiz.showOnPlatform === false })} className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-700">
                       {quiz.showOnPlatform === false ? 'إظهار' : 'إخفاء'}
                     </button>
-                    <button onClick={() => deleteQuiz(quiz.id)} className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600">
+                    <button onClick={() => { if (window.confirm('هل أنت متأكد من حذف هذا الاختبار؟')) deleteQuiz(quiz.id); }} className="rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600">
                       حذف
                     </button>
                   </div>

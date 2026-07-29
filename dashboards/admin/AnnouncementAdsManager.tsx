@@ -350,6 +350,7 @@ export const AnnouncementAdsManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!window.confirm('هل أنت متأكد من حذف هذا الإعلان؟ لا يمكن التراجع عن هذا الإجراء.')) return;
                     deleteAnnouncementAd(selectedAd.id);
                     setSelectedId(sortedAds.find((ad) => ad.id !== selectedAd.id)?.id || '');
                   }}

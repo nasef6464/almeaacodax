@@ -54,6 +54,7 @@ const Cart = React.lazy(() => import('./pages/Cart'));
 const MyRequests = React.lazy(() => import('./pages/MyRequests').then(module => ({ default: module.MyRequests })));
 const StaticInfoPage = React.lazy(() => import('./pages/StaticInfoPage'));
 const BarcodeTest = React.lazy(() => import('./pages/BarcodeTest'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Dashboards
 const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
@@ -973,6 +974,7 @@ const App: React.FC = () => {
                   
                   {/* Placeholder for other routes */}
                   <Route path="/section/:catId" element={<Navigate replace to="/dashboard" />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
             </Layout>
