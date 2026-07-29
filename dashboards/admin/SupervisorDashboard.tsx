@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -114,7 +114,7 @@ const ActionButton: React.FC<{
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes } = useStore();
+  const { user, groups, users, examResults, quizzes, hydrateUsers } = useStore();
   const [activeTab, setActiveTab] = useState<SupervisorTab>('overview');
   const [studentTab, setStudentTab] = useState<StudentSubTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -128,6 +128,41 @@ export const SupervisorDashboard: React.FC = () => {
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<{ name: string; level: 'critical' | 'watch' | 'mastered'; students: string[] } | null>(null);
   const [showPrincipalReport, setShowPrincipalReport] = useState(false);
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Ensure we have loaded students for the supervisor to view
+    const loadStudents = async () => {
+      try {
+        const { api } = await import('../../services/api');
+        const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 1000 });
+        if (response.users) {
+          const storeUsers = response.users.map(u => ({
+            id: u._id || u.id || '',
+            name: u.name,
+            email: u.email,
+            phone: u.phone,
+            role: u.role as Role,
+            avatar: u.avatar,
+            academicStage: u.academicStage,
+            classNumber: u.classNumber,
+            points: u.points || 0,
+            badges: u.badges || [],
+            groupIds: u.groupIds || [],
+            schoolId: u.schoolId,
+            isActive: u.isActive !== false,
+            createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString()
+          }));
+          hydrateUsers(storeUsers);
+        }
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    if (users.filter(u => u.role === Role.STUDENT).length === 0) {
+      loadStudents();
+    }
+  }, [hydrateUsers, users]);
 
   const supervisorScopeSummary = useMemo(() => {
     const directGroupIds = new Set(user.groupIds || []);
