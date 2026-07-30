@@ -703,41 +703,63 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
       {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
 
-      {false && !isAttemptsView && user.role === 'student' ? (
-        <section data-testid="student-assigned-barcode-tests" className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-black text-gray-900">اختبارات مباشرة موجهة لك</h2>
-              <p className="mt-1 text-xs font-bold text-gray-500">تظهر هنا الاختبارات التي أرسلها المشرف أو المعلم لمجموعتك أو لحسابك.</p>
+      {/* Directed Tests (Exam Hall) Section */}
+      {!isAttemptsView && user.role === 'student' && directedQuizzes.length > 0 && (
+        <section data-testid="student-directed-tests" className="rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md mb-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
+          <div className="mb-4 flex items-center justify-between gap-3 relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
+                <Target size={24} />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                  قاعة الاختبارات الموجهة
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                </h2>
+                <p className="mt-1 text-xs font-bold text-gray-500">اختبارات تم تحديدها لك من قبل معلمك أو إدارة المدرسة.</p>
+              </div>
             </div>
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{assignedBarcodeTests.length}</span>
+            <span className="rounded-full bg-white px-4 py-1.5 text-sm font-black text-indigo-700 shadow-sm border border-indigo-100">
+              {directedQuizzes.length} اختبار متاح
+            </span>
           </div>
-          {assignedBarcodeTestsLoading ? (
-            <div className="rounded-xl border border-dashed border-indigo-200 bg-white p-4 text-center text-xs font-black text-indigo-700">جارٍ تحميل الاختبارات الموجهة...</div>
-          ) : assignedBarcodeTests.length > 0 ? (
-            <div className="grid gap-3 md:grid-cols-2">
-              {assignedBarcodeTests.map((test) => (
-                <a
-                  key={test.id}
-                  href={test.publicUrl}
-                  className="rounded-xl border border-white bg-white p-4 transition hover:border-indigo-300 hover:shadow-sm"
+          
+          <div className="grid gap-4 md:grid-cols-2 relative z-10 mt-6">
+            {directedQuizzes.map((quiz) => {
+              const route = buildQuizRouteWithContext(quiz, null);
+              const pathName = getPathName(quiz.pathId);
+              return (
+                <Link
+                  key={quiz.id}
+                  to={route}
+                  className="rounded-xl border border-white bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md group flex flex-col"
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="min-w-0">
-                      <h3 className="truncate text-sm font-black text-gray-900">{test.title}</h3>
-                      <p className="mt-1 line-clamp-2 text-xs font-bold leading-5 text-gray-500">{test.description || 'اختبار مباشر من المشرف أو المعلم.'}</p>
+                      <h3 className="truncate text-base font-black text-gray-900 group-hover:text-indigo-700 transition-colors">{quiz.title}</h3>
+                      <p className="mt-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full inline-block">{pathName}</p>
                     </div>
-                    <span className="shrink-0 rounded-full bg-amber-50 px-2 py-1 text-[11px] font-black text-amber-700">{test.testKind === 'mock' ? 'محاكي' : 'مباشر'}</span>
+                    <span className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-black ${quiz.placement === 'mock' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      {quiz.placement === 'mock' ? 'محاكي' : 'عادي'}
+                    </span>
                   </div>
-                  <div className="mt-3 text-xs font-black text-indigo-700">{test.questionCount || 0} سؤال {test.settings?.timeLimit ? `• ${test.settings.timeLimit} دقيقة` : ''} ← ابدأ</div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-xl border border-dashed border-indigo-200 bg-white p-4 text-center text-xs font-bold text-gray-500">لا توجد اختبارات مباشرة موجهة لك الآن.</div>
-          )}
+                  <p className="line-clamp-2 text-xs font-bold leading-5 text-gray-500 flex-grow">{quiz.description || 'اختبار موجه'}</p>
+                  <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-black text-indigo-700">
+                    <span className="flex items-center gap-1.5"><FileText size={14} /> {(quiz.questionIds || []).length} أسئلة</span>
+                    <span className="flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                      دخول الاختبار <ArrowRight size={14} className="mr-1" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </section>
-      ) : null}
+      )}
 
       <div className="hidden">
         <StatCard icon={<Zap size={24} />} value={saherQuizzes.length} label="ساهر جاهز" color="purple" />

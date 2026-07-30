@@ -5,6 +5,7 @@ import { Role } from '../types';
 import { Shield, User, Users, BookOpen, UserCheck, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { injectB2BSimulation } from '../utils/simulateB2B';
 
 export const RoleSwitcher: React.FC = () => {
   const { user, changeRole } = useStore();
@@ -55,6 +56,22 @@ export const RoleSwitcher: React.FC = () => {
                 <span className="text-sm">{role.label}</span>
               </button>
             ))}
+            
+            {/* B2B Simulation Button */}
+            <div className="border-t border-gray-100 mt-1 pt-1">
+              <button
+                onClick={() => {
+                  injectB2BSimulation();
+                  setIsOpen(false);
+                }}
+                className="flex w-full items-center gap-3 border-r-4 border-transparent px-4 py-3 text-right transition-colors text-indigo-600 hover:bg-indigo-50 hover:text-indigo-800"
+              >
+                <div className="text-indigo-500">
+                  <UserCheck size={16} />
+                </div>
+                <span className="text-sm font-bold">حقن بيانات المحاكاة (B2B)</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

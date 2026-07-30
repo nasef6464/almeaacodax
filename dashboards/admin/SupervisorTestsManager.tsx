@@ -13,6 +13,8 @@ export const SupervisorTestsManager: React.FC = () => {
   const [reassignQuizId, setReassignQuizId] = useState<string | null>(null);
   const [reassignGroupIds, setReassignGroupIds] = useState<string[]>([]);
   const [notifiedQuizId, setNotifiedQuizId] = useState<string | null>(null);
+  const [selectedQuizzesForComparison, setSelectedQuizzesForComparison] = useState<string[]>([]);
+  const [isComparing, setIsComparing] = useState(false);
 
   // 1. Calculate Scope
   const scopedGroupIds = useMemo(() => {
@@ -115,7 +117,10 @@ export const SupervisorTestsManager: React.FC = () => {
           title: 'تذكير بأداء الاختبار',
           body: `نذكرك بضرورة أداء الاختبار: ${quizWithStats.title}`,
           channels: ['in_app'],
-          userIds: absentIds
+          userIds: absentIds,
+          variables: {
+            link: `/dashboard?tab=quizzes` // Send them to the Quizzes tab where the directed test sits at the top
+          }
         }, user.token || '');
         
         setNotifiedQuizId(quizWithStats.id);
@@ -145,19 +150,29 @@ export const SupervisorTestsManager: React.FC = () => {
     );
   }
 
-  if (selectedQuizId) {
+  if (selectedQuizId || isComparing) {
     const selectedQuiz = quizzes.find(q => q.id === selectedQuizId);
-    if (!selectedQuiz) return null;
+    const comparisonQuizzes = quizzes.filter(q => selectedQuizzesForComparison.includes(q.id));
+    
+    if (!selectedQuiz && comparisonQuizzes.length === 0) return null;
+    
     return (
       <div className="space-y-6">
         <button 
-          onClick={() => setSelectedQuizId(null)} 
+          onClick={() => {
+            setSelectedQuizId(null);
+            setIsComparing(false);
+          }} 
           className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-colors font-bold print:hidden"
         >
           <ArrowRight size={20} />
           العودة للقائمة
         </button>
-        <TestAnalyticsReport quiz={selectedQuiz} studentIds={scopedStudentIds} />
+        {isComparing ? (
+          <TestAnalyticsReport quizzes={comparisonQuizzes} studentIds={scopedStudentIds} />
+        ) : (
+          <TestAnalyticsReport quiz={selectedQuiz!} studentIds={scopedStudentIds} />
+        )}
       </div>
     );
   }
@@ -172,13 +187,24 @@ export const SupervisorTestsManager: React.FC = () => {
           </h2>
           <p className="text-sm text-gray-500 mt-1">إدارة الاختبارات وتحليل أداء الطلاب وتحديد الفجوات المهارية</p>
         </div>
-        <button 
-          onClick={() => setIsCreating(true)}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-indigo-700 transition-all"
-        >
-          <Plus size={18} />
-          توجيه اختبار جديد
-        </button>
+        <div className="flex gap-2">
+          {selectedQuizzesForComparison.length > 1 && (
+            <button 
+              onClick={() => setIsComparing(true)}
+              className="flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-amber-600 transition-all animate-fade-in"
+            >
+              <Activity size={18} />
+              مقارنة ({selectedQuizzesForComparison.length}) اختبارات
+            </button>
+          )}
+          <button 
+            onClick={() => setIsCreating(true)}
+            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-indigo-700 transition-all"
+          >
+            <Plus size={18} />
+            توجيه اختبار جديد
+          </button>
+        </div>
       </div>
 
       {quizzesWithStats.length > 0 && (
@@ -228,8 +254,19 @@ export const SupervisorTestsManager: React.FC = () => {
           quizzesWithStats.map(q => (
             <div key={q.id} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all group flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-2.5 rounded-xl ${q.placement === 'mock' ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'}`}>
-                  {q.placement === 'mock' ? <Activity size={24} /> : <FileText size={24} />}
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="checkbox"
+                    checked={selectedQuizzesForComparison.includes(q.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) setSelectedQuizzesForComparison([...selectedQuizzesForComparison, q.id]);
+                      else setSelectedQuizzesForComparison(selectedQuizzesForComparison.filter(id => id !== q.id));
+                    }}
+                    className="w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <div className={`p-2.5 rounded-xl ${q.placement === 'mock' ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                    {q.placement === 'mock' ? <Activity size={24} /> : <FileText size={24} />}
+                  </div>
                 </div>
                 <span className={`text-xs font-bold px-3 py-1 rounded-full ${q.placement === 'mock' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                   {q.placement === 'mock' ? 'اختبار محاكي' : q.type === 'bank' ? 'بنك أسئلة' : 'اختبار عادي'}

@@ -5,12 +5,20 @@ import { Quiz, QuizResult, SkillGap, QuizQuestionReview } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { api } from '../../services/api';
 
-export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }> = ({ quiz, studentIds }) => {
+export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[] }> = ({ quiz, quizzes, studentIds }) => {
   const { examResults, users, groups } = useStore();
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [inspectedStudentId, setInspectedStudentId] = useState<string | null>(null);
   const [showInterventionReport, setShowInterventionReport] = useState(false);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+
+  const activeQuizzes = useMemo(() => {
+    if (quizzes && quizzes.length > 0) return quizzes;
+    if (quiz) return [quiz];
+    return [];
+  }, [quiz, quizzes]);
+
+  const quizTitle = activeQuizzes.length === 1 ? activeQuizzes[0].title : 'تقرير الأداء التراكمي';
 
   const WEAKNESS_THRESHOLD = 60; // 60% as per user requirement
 
@@ -28,19 +36,21 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
   }, [selectedGroupId, studentIds, groups]);
 
   const results = useMemo(() => {
-    return examResults.filter(r => r.quizId === quiz.id && filteredStudentIds.includes(r.userId || ''));
-  }, [examResults, quiz.id, filteredStudentIds]);
+    const quizIds = activeQuizzes.map(q => q.id);
+    return examResults.filter(r => quizIds.includes(r.quizId) && filteredStudentIds.includes(r.userId || ''));
+  }, [examResults, activeQuizzes, filteredStudentIds]);
 
   const studentsDetails = useMemo(() => {
     return users.filter(u => filteredStudentIds.includes(u.id));
   }, [users, filteredStudentIds]);
 
-  const participantIds = useMemo(() => results.map(r => r.userId).filter(Boolean) as string[], [results]);
+  // For participant ids, we need unique userIds who participated in ANY of the quizzes
+  const participantIds = useMemo(() => Array.from(new Set(results.map(r => r.userId).filter(Boolean) as string[])), [results]);
   const nonParticipantIds = useMemo(() => filteredStudentIds.filter(id => !participantIds.includes(id)), [filteredStudentIds, participantIds]);
   const nonParticipantsDetails = useMemo(() => users.filter(u => nonParticipantIds.includes(u.id)), [users, nonParticipantIds]);
 
   // 2. Compute KPIs
-  const participationRate = filteredStudentIds.length > 0 ? Math.round((results.length / filteredStudentIds.length) * 100) : 0;
+  const participationRate = filteredStudentIds.length > 0 ? Math.round((participantIds.length / filteredStudentIds.length) * 100) : 0;
   const averageScore = results.length > 0 ? Math.round(results.reduce((acc, r) => acc + r.score, 0) / results.length) : 0;
   const maxScore = results.length > 0 ? Math.max(...results.map(r => r.score)) : 0;
   const minScore = results.length > 0 ? Math.min(...results.map(r => r.score)) : 0;
@@ -68,17 +78,30 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
     })).sort((a, b) => a.mastery - b.mastery); // lowest mastery first
   }, [results]);
 
-  // 4. Compute Student Breakdown
+  // 4. Compute Student Breakdown (Average if multiple results per student)
   const studentBreakdown = useMemo(() => {
-    return results.map(result => {
-      const student = studentsDetails.find(u => u.id === result.userId);
-      const weakSkills = (result.skillsAnalysis || []).filter(s => s.mastery < WEAKNESS_THRESHOLD).map(s => s.skill);
+    const studentMap = new Map<string, { scoreSum: number; count: number; weakSkills: Set<string> }>();
+    
+    results.forEach(result => {
+      const uId = result.userId || '';
+      if (!studentMap.has(uId)) {
+        studentMap.set(uId, { scoreSum: 0, count: 0, weakSkills: new Set() });
+      }
+      const data = studentMap.get(uId)!;
+      data.scoreSum += result.score;
+      data.count += 1;
+      (result.skillsAnalysis || []).filter(s => s.mastery < WEAKNESS_THRESHOLD).forEach(s => data.weakSkills.add(s.skill));
+    });
+
+    return Array.from(studentMap.entries()).map(([uId, data]) => {
+      const student = studentsDetails.find(u => u.id === uId);
+      const avgScore = Math.round(data.scoreSum / data.count);
       return {
-        id: result.userId || '',
+        id: uId,
         name: student?.name || 'طالب غير معروف',
-        score: result.score,
-        isWeak: result.score < WEAKNESS_THRESHOLD,
-        weakSkills,
+        score: avgScore,
+        isWeak: avgScore < WEAKNESS_THRESHOLD,
+        weakSkills: Array.from(data.weakSkills),
       };
     }).sort((a, b) => a.score - b.score); // lowest scores first
   }, [results, studentsDetails]);
@@ -145,9 +168,12 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
       const token = localStorage.getItem('token') || '';
       await api.sendNotifications({
         title: "تذكير بالاختبار",
-        body: `يرجى إجراء الاختبار: ${quiz.title} في أقرب وقت.`,
+        body: `يرجى إجراء الاختبار: ${quizTitle} في أقرب وقت.`,
         channels: ['in_app'],
-        userIds: nonParticipantIds
+        userIds: nonParticipantIds,
+        variables: {
+          link: `/dashboard?tab=quizzes` // Send them to the Quizzes tab where the directed test sits at the top
+        }
       }, token);
       setActionFeedback("تم إرسال التنبيهات بنجاح!");
     } catch (error) {
@@ -168,7 +194,7 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
       {/* Top Bar with Filter */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print:hidden">
         <div>
-          <h2 className="text-2xl font-black text-gray-900">{quiz.title}</h2>
+          <h2 className="text-2xl font-black text-gray-900">{quizTitle}</h2>
           <p className="text-sm text-gray-500 mt-1">تحليل مفصل لنتائج الطلاب في هذا الاختبار</p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -195,7 +221,7 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
       {/* Print Header */}
       <div className="hidden print:block text-center border-b border-gray-200 pb-6 mb-8">
         <h1 className="text-3xl font-black text-gray-900 mb-2">تقرير تحليل الاختبار</h1>
-        <h2 className="text-xl text-gray-700 mb-4">{quiz.title}</h2>
+        <h2 className="text-xl text-gray-700 mb-4">{quizTitle}</h2>
         <div className="flex justify-center gap-8 text-sm text-gray-500">
           <span>تاريخ التقرير: {new Date().toLocaleDateString('ar-EG')}</span>
           <span>عدد المشاركين: {results.length} من {filteredStudentIds.length}</span>
@@ -224,6 +250,8 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
               </div>
               <p className={`text-3xl font-black ${averageScore >= WEAKNESS_THRESHOLD ? 'text-gray-900' : 'text-rose-600'}`}>{averageScore}%</p>
             </div>
+
+
             <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
               <div className="flex items-center gap-3 text-blue-600 mb-2">
                 <Users size={20} />
@@ -248,7 +276,31 @@ export const TestAnalyticsReport: React.FC<{ quiz: Quiz; studentIds: string[] }>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Leaderboard Section */}
+          {studentBreakdown.length > 0 && (
+            <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6 shadow-sm mt-6">
+              <h3 className="text-lg font-bold text-amber-900 mb-6 flex items-center gap-2">
+                <Target className="text-amber-600" />
+                لوحة الشرف (أوائل الاختبار)
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {studentBreakdown.slice().sort((a, b) => b.score - a.score).slice(0, 3).map((student, idx) => (
+                  <div key={student.id} className="bg-white rounded-xl p-4 shadow-sm border border-amber-100 flex items-center gap-4 relative overflow-hidden">
+                    <div className={`absolute top-0 right-0 w-2 h-full ${idx === 0 ? 'bg-amber-400' : idx === 1 ? 'bg-gray-400' : 'bg-amber-700'}`}></div>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-amber-100 text-amber-700' : idx === 1 ? 'bg-gray-100 text-gray-700' : 'bg-orange-100 text-orange-700'}`}>
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 truncate">{student.name}</h4>
+                      <p className="text-amber-600 font-black text-sm">{student.score}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             {/* Skills Chart */}
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">

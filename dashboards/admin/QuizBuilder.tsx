@@ -710,7 +710,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">مكان الظهور للطالب</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">نوع الاختبار (محاكي / عادي)</label>
                     <select
                       value={getPlacementFromFlags(currentQuiz)}
                       onChange={(e) => {
@@ -727,11 +727,11 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
                       }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                     >
-                      <option value="training">التدريب فقط</option>
-                      <option value="mock">الاختبارات فقط</option>
-                      <option value="both">التدريب والاختبارات</option>
+                      <option value="training">اختبار عادي / تدريب</option>
+                      <option value="mock">اختبار محاكي (Mock)</option>
+                      <option value="both">شامل (محاكي وتدريب)</option>
                     </select>
-                    <p className="mt-1 text-xs text-gray-500">هذا هو الفصل الحقيقي بين تبويب التدريب وتبويب الاختبارات داخل صفحة المادة.</p>
+                    <p className="mt-1 text-xs text-gray-500">الاختبار المحاكي يظهر للطالب كاختبار رسمي، والعادي للتدريب.</p>
                   </div>
                 </div>
 
