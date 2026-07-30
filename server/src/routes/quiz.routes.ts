@@ -566,7 +566,7 @@ const sanitizeWorkflowUpdate = (
     if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
       nextPayload.approvalStatus = "pending_review";
     }
-  }  if (options?.respectPublished && nextPayload.isPublished === true) {
+    if (options?.respectPublished && nextPayload.isPublished === true) {
       nextPayload.isPublished = false;
     }
   } else if (typeof nextPayload.approvalStatus === "string") {

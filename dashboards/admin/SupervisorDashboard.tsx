@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   ArrowUp,
   ArrowDown,
+  ArrowRightLeft,
   BarChart3,
   BookOpen,
   Building2,
@@ -12,6 +13,7 @@ import {
   Download,
   Filter,
   GraduationCap,
+  LogOut,
   Mail,
   Search,
   Target,
@@ -20,6 +22,7 @@ import {
   TrendingDown,
   Users,
   UserCheck,
+  UserPlus,
   UserX,
   ClipboardList,
   Send,
@@ -114,7 +117,7 @@ const ActionButton: React.FC<{
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes, hydrateUsers } = useStore();
+  const { user, groups, users, examResults, quizzes, hydrateUsers, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
   const [activeTab, setActiveTab] = useState<SupervisorTab>('overview');
   const [studentTab, setStudentTab] = useState<StudentSubTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -171,7 +174,8 @@ export const SupervisorDashboard: React.FC = () => {
             isActive: u.isActive !== false,
             createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString()
           }));
-          hydrateUsers(storeUsers);
+          const existingNonStudents = users.filter(u => u.role !== Role.STUDENT);
+          hydrateUsers([...existingNonStudents, ...storeUsers]);
         }
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -238,7 +242,7 @@ export const SupervisorDashboard: React.FC = () => {
       const avg = results.length ? Math.round(results.reduce((t, r) => t + Number(r.score || 0), 0) / results.length) : 0;
       const latest = results[0];
       const studentClass = scopedGroupList.find((g) => g.type !== 'SCHOOL' && ((g.studentIds || []).includes(student.id) || (student.groupIds || []).includes(g.id)));
-      const studentSchool = scopedGroupList.find((g) => g.type === 'SCHOOL' && (g.id === student.schoolId || g.id === studentClass?.parentId));
+      const studentSchool = groups.find((g) => g.type === 'SCHOOL' && (g.id === student.schoolId || g.id === studentClass?.parentId)) || scopedGroupList.find((g) => g.type === 'SCHOOL');
       const gs = studentClass?.metadata?.settings as Record<string, unknown> | undefined;
       const grade = String(gs?.grade || gs?.gradeName || gs?.stage || gs?.level || 'غير محدد').trim();
       const weakSkills = [...(latest?.skillsAnalysis || [])].filter((s) => Number(s.mastery || 0) < 70).sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0)).slice(0, 3).map((s) => s.skill).filter(Boolean);
@@ -248,7 +252,7 @@ export const SupervisorDashboard: React.FC = () => {
         (q.targetUserIds || []).includes(student.id) || (studentClass?.id ? (q.targetGroupIds || []).includes(studentClass.id) : false));
       return {
         id: student.id, name: student.name, email: student.email || '', schoolName: studentSchool?.name || 'بدون مدرسة',
-        className: studentClass?.name || 'بدون فصل', classId: studentClass?.id || '', schoolId: studentSchool?.id || '', gradeName: grade, average: avg,
+        className: studentClass?.name || 'بدون فصل', classId: studentClass?.id || '', schoolId: studentSchool?.id || '', groupIds: student.groupIds || [], gradeName: grade, average: avg,
         attempts: results.length, latestQuiz: latest?.quizTitle || 'لم يبدأ بعد',
         weakSkills, followUpReason: reason, status, hasAssignedFollowUp: hasFollowUp,
         latestScore: latest ? Number(latest.score || 0) : null,
@@ -260,10 +264,22 @@ export const SupervisorDashboard: React.FC = () => {
     const studentsNeedingFollowUp = allStudentsList.filter((s) => s.attempts === 0 || s.average < 70);
 
     const groupSnapshots = scopedGroupList.filter((g) => g.type !== 'SCHOOL').map((g) => {
-      const gsIds = new Set(g.studentIds || []);
-      const gResults = scopedResults.filter((r) => r.userId && gsIds.has(r.userId));
+      const classStudents = allStudentsList.filter((s) =>
+        s.classId === g.id ||
+        (g.studentIds || []).includes(s.id) ||
+        (s.groupIds || []).includes(g.id)
+      );
+      const classStudentIds = new Set(classStudents.map((s) => s.id));
+      const gResults = scopedResults.filter((r) => r.userId && classStudentIds.has(r.userId));
       const gAvg = gResults.length ? Math.round(gResults.reduce((t, r) => t + Number(r.score || 0), 0) / gResults.length) : 0;
-      return { id: g.id, name: g.name, studentCount: g.studentIds?.length || 0, average: gAvg, attempts: gResults.length, weakStudents: studentsNeedingFollowUp.filter((s) => gsIds.has(s.id)).length };
+      return {
+        id: g.id,
+        name: g.name,
+        studentCount: classStudents.length || g.studentIds?.length || 0,
+        average: gAvg,
+        attempts: gResults.length,
+        weakStudents: studentsNeedingFollowUp.filter((s) => classStudentIds.has(s.id)).length
+      };
     });
     const withResults = groupSnapshots.filter((g) => g.attempts > 0);
     const bestClass = [...withResults].sort((a, b) => b.average - a.average || b.studentCount - a.studentCount)[0] || null;
@@ -670,7 +686,7 @@ export const SupervisorDashboard: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
                 <h1 className="text-2xl font-black text-gray-900">متابعة تحصيل الطلاب</h1>
-                <p className="mt-1 text-sm text-gray-500">عرض أداء الطلاب في نطاقك، وإرسال التدخلات والتنبيهات المباشرة</p>
+                <p className="mt-1 text-sm text-gray-500">عرض أداء الطلاب في نطاقك، وإرسال التدخلات والتنبيهات المباشرة، وإدارة نقل وإضافة الطلاب</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
@@ -753,13 +769,14 @@ export const SupervisorDashboard: React.FC = () => {
                       <th className="px-5 py-4 font-bold text-gray-500 text-xs text-center">المعدل</th>
                       <th className="px-5 py-4 font-bold text-gray-500 text-xs">أبرز الفجوات والمهارات الضعيفة</th>
                       <th className="px-5 py-4 font-bold text-gray-500 text-xs">الحالة</th>
+                      <th className="px-5 py-4 font-bold text-gray-500 text-xs text-center">نقل / إدارة</th>
                       <th className="px-5 py-4 font-bold text-gray-500 text-xs text-center">إجراء تدخل</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {filteredStudents.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-5 py-16 text-center text-sm text-gray-500">
+                        <td colSpan={8} className="px-5 py-16 text-center text-sm text-gray-500">
                           لا توجد نتائج تطابق الفلترة واختيارات البحث.
                         </td>
                       </tr>
@@ -797,6 +814,54 @@ export const SupervisorDashboard: React.FC = () => {
                           <span className={`rounded-full px-3 py-1 text-xs font-bold border ${
                             s.status === 'danger' ? 'bg-rose-50 border-rose-100 text-rose-700' : s.status === 'watch' ? 'bg-amber-50 border-amber-100 text-amber-700' : 'bg-emerald-50 border-emerald-100 text-emerald-700'
                           }`}>{s.followUpReason}</span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex gap-1 items-center justify-center">
+                            {(() => {
+                              const supervisorClasses = groups.filter(g => g.type === 'CLASS' && (g.supervisorIds?.includes(user.id) || (user.groupIds || []).includes(g.id) || (g.parentId && (g.parentId === user.schoolId || (user.groupIds || []).includes(g.parentId)))));
+                              const currentClassId = s.classId || (s.groupIds || []).find(gid => supervisorClasses.some(c => c.id === gid));
+                              return supervisorClasses.length > 1 ? (
+                                <select
+                                  value={currentClassId || ''}
+                                  onChange={async (e) => {
+                                    const targetId = e.target.value;
+                                    if (!targetId || targetId === currentClassId) return;
+                                    const targetClass = groups.find(g => g.id === targetId);
+                                    if (!window.confirm(`هل تريد نقل ${s.name} إلى ${targetClass?.name || 'الفصل المحدد'}؟`)) { e.target.value = currentClassId || ''; return; }
+                                    try {
+                                      await assignStudentToGroupAsync(s.id, targetId);
+                                      setStudentActionFeedback(`✅ تم نقل ${s.name} إلى ${targetClass?.name || 'الفصل الجديد'} بنجاح`);
+                                    } catch { setStudentActionFeedback(`❌ تعذر نقل الطالب`); }
+                                    setTimeout(() => setStudentActionFeedback(null), 3000);
+                                  }}
+                                  className="rounded-lg border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 py-1.5 px-2 max-w-[110px] focus:border-indigo-500 focus:outline-none"
+                                  title="نقل الطالب إلى فصل آخر"
+                                >
+                                  <option value="" disabled>نقل لـ...</option>
+                                  {supervisorClasses.map(c => (
+                                    <option key={c.id} value={c.id}>{c.name}{c.id === currentClassId ? ' (حالي)' : ''}</option>
+                                  ))}
+                                </select>
+                              ) : null;
+                            })()}
+                            <button
+                              onClick={async () => {
+                                const currentClassId = s.classId || (s.groupIds || []).find(gid => groups.some(g => g.id === gid && g.type === 'CLASS'));
+                                if (!currentClassId) return;
+                                const currentClass = groups.find(g => g.id === currentClassId);
+                                if (!window.confirm(`هل تريد إخراج ${s.name} من فصل ${currentClass?.name || ''}؟`)) return;
+                                try {
+                                  await removeStudentFromGroupAsync(s.id, currentClassId);
+                                  setStudentActionFeedback(`✅ تم إخراج ${s.name} من ${currentClass?.name || 'الفصل'}`);
+                                } catch { setStudentActionFeedback(`❌ تعذر إخراج الطالب`); }
+                                setTimeout(() => setStudentActionFeedback(null), 3000);
+                              }}
+                              title="إخراج الطالب من الفصل"
+                              className="rounded-lg bg-rose-50 border border-rose-200 p-1.5 text-rose-600 hover:bg-rose-100 transition-colors"
+                            >
+                              <LogOut size={14} />
+                            </button>
+                          </div>
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex gap-1 justify-center">
@@ -960,7 +1025,7 @@ export const SupervisorDashboard: React.FC = () => {
                       {[...supervisorScopeSummary.groupSnapshots].sort((a, b) => b.average - a.average).map((g, index) => {
                         const rankColors = index === 0 ? 'bg-amber-100 text-amber-900' : index === 1 ? 'bg-slate-100 text-slate-900' : index === 2 ? 'bg-amber-50 text-amber-800' : 'bg-gray-100 text-gray-800';
                         const isExpanded = expandedGroupId === g.id;
-                        const groupStudents = supervisorScopeSummary.allStudentsList.filter(s => s.classId === g.id || s.schoolId === g.id);
+                        const groupStudents = supervisorScopeSummary.allStudentsList.filter(s => s.classId === g.id || (s.groupIds || []).includes(g.id));
 
                         return (
                           <React.Fragment key={g.id}>
