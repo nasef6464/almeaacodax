@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useStore } from '../store/useStore';
 import { Role } from '../types';
-import { Shield, User, Users, BookOpen, UserCheck, ChevronUp } from 'lucide-react';
+import { Shield, User, Users, BookOpen, UserCheck, ChevronUp, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { injectB2BSimulation } from '../utils/simulateB2B';
+import { injectCompleteHumanE2ESimulation } from '../utils/completeHumanE2ESimulation';
 
 export const RoleSwitcher: React.FC = () => {
   const { user, changeRole } = useStore();
@@ -57,19 +58,32 @@ export const RoleSwitcher: React.FC = () => {
               </button>
             ))}
             
-            {/* B2B Simulation Button */}
-            <div className="border-t border-gray-100 mt-1 pt-1">
+            {/* B2B Simulation Buttons */}
+            <div className="border-t border-gray-100 mt-1 pt-1 space-y-1">
+              <button
+                onClick={() => {
+                  const summary = injectCompleteHumanE2ESimulation();
+                  alert(`تم حقن المحاكاة الشاملة للأدوار الـ 5 بنجاح! 🚀\n\n1. المدير: ${summary.admin.name}\n2. المشرف: ${summary.supervisor.name}\n3. المعلم: ${summary.teacher.name}\n4. الطالب: ${summary.student.name}\n5. ولي الأمر: ${summary.parent.name}\n\nيمكنك الآن التنقل بين الأدوار وتجربة المنصة بالكامل!`);
+                  setIsOpen(false);
+                }}
+                className="flex w-full items-center gap-3 border-r-4 border-transparent px-4 py-2.5 text-right transition-colors text-emerald-700 hover:bg-emerald-50 font-bold"
+              >
+                <div className="text-emerald-600">
+                  <Sparkles size={16} />
+                </div>
+                <span className="text-xs">حقن محاكاة المنصة الشاملة (5 أدوار)</span>
+              </button>
               <button
                 onClick={() => {
                   injectB2BSimulation();
                   setIsOpen(false);
                 }}
-                className="flex w-full items-center gap-3 border-r-4 border-transparent px-4 py-3 text-right transition-colors text-indigo-600 hover:bg-indigo-50 hover:text-indigo-800"
+                className="flex w-full items-center gap-3 border-r-4 border-transparent px-4 py-2.5 text-right transition-colors text-indigo-600 hover:bg-indigo-50"
               >
                 <div className="text-indigo-500">
                   <UserCheck size={16} />
                 </div>
-                <span className="text-sm font-bold">حقن بيانات المحاكاة (B2B)</span>
+                <span className="text-xs font-bold">حقن بيانات موجهة سريعة (B2B)</span>
               </button>
             </div>
           </div>
