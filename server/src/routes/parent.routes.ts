@@ -140,7 +140,6 @@ parentRouter.post(
       recipients: delivery.recipients,
       created: delivery.created,
     });
-    });
   }),
 );
 
