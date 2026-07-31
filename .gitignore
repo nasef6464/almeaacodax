@@ -50,3 +50,7 @@ LOAD_TESTING_SCRIPTS_*.md
 PAYMENT_AMOUNT_TAMPERING_FIX_*.md
 SENTRY_MONITORING_READY_*.md
 SEO_BROWSERROUTER_*.md
+.codex/
+.agents/
+migrated_prompt_history/
+
