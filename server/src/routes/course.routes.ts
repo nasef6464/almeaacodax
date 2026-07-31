@@ -624,10 +624,9 @@ const handleCourseEnrollment = asyncHandler(async (req, res) => {
       : [];
     if (!currentPurchased.includes(courseId)) {
       currentPurchased.push(courseId);
-      if (!user.subscription) {
-        user.subscription = { plan: "free", status: "active" } as any;
-      }
-      user.subscription.purchasedCourses = currentPurchased;
+      const subscriptionObj = user.subscription || ({ plan: "free", status: "active", purchasedCourses: [] } as any);
+      subscriptionObj.purchasedCourses = currentPurchased;
+      user.subscription = subscriptionObj;
       await user.save();
     }
   }
