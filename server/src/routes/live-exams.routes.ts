@@ -1,8 +1,7 @@
 import express from "express";
-import { authenticate } from "../middleware/auth.js";
+import { requireAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
-import { Role } from "../models/User.js";
 
 const router = express.Router();
 
@@ -11,11 +10,11 @@ const router = express.Router();
  */
 
 // Start an exam session
-router.post("/start", authenticate, async (req, res) => {
+router.post("/start", requireAuth, async (req, res) => {
   try {
     const { quizId, quizTitle, totalQuestions } = req.body;
-    const userId = req.user!.id;
-    const userName = req.user!.name || "طالب";
+    const userId = req.authUser!.id;
+    const userName = (req.authUser as any).name || "طالب";
 
     // Upsert an active session (in case they refresh)
     const session = await LiveExamSessionModel.findOneAndUpdate(
@@ -39,10 +38,10 @@ router.post("/start", authenticate, async (req, res) => {
 });
 
 // Update progress
-router.post("/progress", authenticate, async (req, res) => {
+router.post("/progress", requireAuth, async (req, res) => {
   try {
     const { quizId, answeredQuestions, totalQuestions } = req.body;
-    const userId = req.user!.id;
+    const userId = req.authUser!.id;
 
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
@@ -59,10 +58,10 @@ router.post("/progress", authenticate, async (req, res) => {
 });
 
 // End exam session
-router.post("/end", authenticate, async (req, res) => {
+router.post("/end", requireAuth, async (req, res) => {
   try {
     const { quizId } = req.body;
-    const userId = req.user!.id;
+    const userId = req.authUser!.id;
 
     await LiveExamSessionModel.findOneAndUpdate(
       { studentId: userId, quizId, status: "active" },
@@ -81,16 +80,16 @@ router.post("/end", authenticate, async (req, res) => {
  */
 
 // Get active exam sessions for students under this supervisor's purview
-router.get("/supervisor", authenticate, async (req, res) => {
+router.get("/supervisor", requireAuth, async (req, res) => {
   try {
-    const user = req.user!;
-    if (user.role !== Role.SUPERVISOR && user.role !== Role.ADMIN) {
+    const user = req.authUser!;
+    if (user.role !== "supervisor" && user.role !== "admin") {
       return res.status(403).json({ error: "Forbidden" });
     }
 
     let targetStudentIds: string[] = [];
 
-    if (user.role === Role.ADMIN) {
+    if (user.role === "admin") {
       // Admin sees everyone (or maybe limit it, but for now fetch all active)
       const sessions = await LiveExamSessionModel.find({ status: "active" }).sort({ startTime: -1 }).limit(50);
       return res.json(sessions);
@@ -98,9 +97,9 @@ router.get("/supervisor", authenticate, async (req, res) => {
 
     // Supervisor sees only their group's students
     const groups = await GroupModel.find({ supervisorIds: user.id });
-    groups.forEach((g) => {
+    groups.forEach((g: any) => {
       if (g.studentIds && Array.isArray(g.studentIds)) {
-        targetStudentIds.push(...g.studentIds);
+        targetStudentIds.push(...g.studentIds.map(String));
       }
     });
 
@@ -123,10 +122,10 @@ router.get("/supervisor", authenticate, async (req, res) => {
 });
 
 // Admin endpoint to clear test data
-router.delete("/clear-test-data", authenticate, async (req, res) => {
+router.delete("/clear-test-data", requireAuth, async (req, res) => {
   try {
-    const user = req.user!;
-    if (user.role !== Role.ADMIN) {
+    const user = req.authUser!;
+    if (user.role !== "admin") {
       return res.status(403).json({ error: "Forbidden" });
     }
     
