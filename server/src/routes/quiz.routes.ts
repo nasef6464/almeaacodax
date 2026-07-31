@@ -2225,6 +2225,35 @@ quizRouter.post(
   }),
 );
 
+quizRouter.get(
+  "/:id",
+  optionalAuth,
+  asyncHandler(async (req, res) => {
+    const documentQuery = buildDocumentQuery(req.params.id);
+    const quiz = await QuizModel.findOne(documentQuery).lean();
+
+    if (!quiz) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+    }
+
+    const questionIds = Array.isArray(quiz.questionIds) ? quiz.questionIds.map(String).filter(Boolean) : [];
+    let questions: any[] = [];
+    if (questionIds.length > 0) {
+      const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
+      const isLearner = req.authUser?.role === "student" || !req.authUser;
+      questions = questionIds
+        .map((qid) => rawQuestions.find((q: any) => String(q.id || q._id) === qid || String(q._id) === qid))
+        .filter(Boolean)
+        .map((q: any) => (isLearner ? sanitizeQuestionForLearner(q) : q));
+    }
+
+    return res.json({
+      ...quiz,
+      questions,
+    });
+  }),
+);
+
 const processInlineQuestions = async (questions: any[], pathId: string, subjectId: string, authUser: any) => {
   if (!Array.isArray(questions) || questions.length === 0) return [];
   const createdIds: string[] = [];

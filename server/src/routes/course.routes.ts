@@ -5,6 +5,7 @@ import { z } from "zod";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { QuizModel } from "../models/Quiz.js";
+import { UserModel } from "../models/User.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
@@ -604,3 +605,42 @@ courseRouter.delete(
     return res.status(StatusCodes.NO_CONTENT).send();
   }),
 );
+
+const handleCourseEnrollment = asyncHandler(async (req, res) => {
+  const courseId = String(req.params.id || "").trim();
+  const identityFilter = buildCourseIdentityQuery(courseId);
+  const course = await CourseModel.findOne(identityFilter);
+
+  if (!course) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
+  }
+
+  const userId = req.authUser!.id;
+  const user = await UserModel.findById(userId);
+
+  if (user) {
+    const currentPurchased = Array.isArray(user.subscription?.purchasedCourses)
+      ? user.subscription.purchasedCourses.map(String)
+      : [];
+    if (!currentPurchased.includes(courseId)) {
+      currentPurchased.push(courseId);
+      if (!user.subscription) {
+        user.subscription = { plan: "free", status: "active" } as any;
+      }
+      user.subscription.purchasedCourses = currentPurchased;
+      await user.save();
+    }
+  }
+
+  await CourseModel.updateOne(identityFilter, { $inc: { studentCount: 1 } });
+
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    enrolled: true,
+    courseId,
+    message: "Enrolled in course successfully",
+  });
+});
+
+courseRouter.post("/:id/enroll", requireAuth, handleCourseEnrollment);
+courseRouter.post("/:id/join", requireAuth, handleCourseEnrollment);
