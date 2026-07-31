@@ -517,80 +517,80 @@ courseRouter.post(
       modules: normalizedPayload.modules as CurriculumModule[],
     });
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
+    const courseId = String(normalizedPayload.id || `course_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
     const created = await CourseModel.create({
       ...normalizedPayload,
+      id: courseId,
+      _id: courseId,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
           ? normalizedPayload.approvalStatus || workflowDefaults.approvalStatus
           : workflowDefaults.approvalStatus,
       isPublished: req.authUser?.role === "admin" ? normalizedPayload.isPublished : false,
-      ...(normalizedPayload.id ? { _id: normalizedPayload.id } : {}),
     });
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
 
-courseRouter.patch(
-  "/:id",
-  requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const payload = courseSchema.partial().parse(req.body);
-    const normalizedPayload = {
-      ...payload,
-      ...(Object.prototype.hasOwnProperty.call(payload, "modules")
-        ? { modules: normalizeCourseModules(payload.modules) }
-        : {}),
-      ...(Object.prototype.hasOwnProperty.call(payload, "assessments")
-        ? { assessments: normalizeCourseAssessments(payload.assessments) }
-        : {}),
-    } as Record<string, unknown>;
-    const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!)).lean();
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
-    }
+const handleCourseUpdate = asyncHandler(async (req, res) => {
+  const payload = courseSchema.partial().parse(req.body);
+  const normalizedPayload = {
+    ...payload,
+    ...(Object.prototype.hasOwnProperty.call(payload, "modules")
+      ? { modules: normalizeCourseModules(payload.modules) }
+      : {}),
+    ...(Object.prototype.hasOwnProperty.call(payload, "assessments")
+      ? { assessments: normalizeCourseAssessments(payload.assessments) }
+      : {}),
+  } as Record<string, unknown>;
+  const existing = await CourseModel.findOne(buildOwnedCourseQuery(req.params.id, req.authUser!)).lean();
+  if (!existing) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
+  }
 
-    const nextPathId = String(normalizedPayload.pathId || (existing as { pathId?: string }).pathId || "").trim();
-    const nextSubjectId = String(normalizedPayload.subjectId || (existing as { subjectId?: string }).subjectId || "").trim();
-    const nextModules = Array.isArray(normalizedPayload.modules)
-      ? (normalizedPayload.modules as CurriculumModule[])
-      : ((existing as { modules?: CurriculumModule[] }).modules || []);
+  const nextPathId = String(normalizedPayload.pathId || (existing as { pathId?: string }).pathId || "").trim();
+  const nextSubjectId = String(normalizedPayload.subjectId || (existing as { subjectId?: string }).subjectId || "").trim();
+  const nextModules = Array.isArray(normalizedPayload.modules)
+    ? (normalizedPayload.modules as CurriculumModule[])
+    : ((existing as { modules?: CurriculumModule[] }).modules || []);
 
-    await assertCurriculumImportScope({
-      coursePathId: nextPathId,
-      courseSubjectId: nextSubjectId,
-      modules: nextModules,
-    });
+  await assertCurriculumImportScope({
+    coursePathId: nextPathId,
+    courseSubjectId: nextSubjectId,
+    modules: nextModules,
+  });
 
-    const sanitizedPayload = sanitizeWorkflowUpdate(normalizedPayload, req.authUser!);
-    if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "title")) {
-      const value = typeof sanitizedPayload.title === "string" ? sanitizedPayload.title.trim() : "";
-      if (value) {
-        sanitizedPayload.title = value;
-      } else {
-        delete sanitizedPayload.title;
-      }
+  const sanitizedPayload = sanitizeWorkflowUpdate(normalizedPayload, req.authUser!);
+  if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "title")) {
+    const value = typeof sanitizedPayload.title === "string" ? sanitizedPayload.title.trim() : "";
+    if (value) {
+      sanitizedPayload.title = value;
+    } else {
+      delete sanitizedPayload.title;
     }
-    if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "instructor")) {
-      const value = typeof sanitizedPayload.instructor === "string" ? sanitizedPayload.instructor.trim() : "";
-      if (value) {
-        sanitizedPayload.instructor = value;
-      } else {
-        delete sanitizedPayload.instructor;
-      }
+  }
+  if (Object.prototype.hasOwnProperty.call(sanitizedPayload, "instructor")) {
+    const value = typeof sanitizedPayload.instructor === "string" ? sanitizedPayload.instructor.trim() : "";
+    if (value) {
+      sanitizedPayload.instructor = value;
+    } else {
+      delete sanitizedPayload.instructor;
     }
-    const updated = await CourseModel.findOneAndUpdate(
-      { _id: (existing as { _id: string })._id },
-      sanitizedPayload,
-      { new: true },
-    );
-    if (!updated) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
-    }
-    return res.json(updated);
-  }),
-);
+  }
+  const updated = await CourseModel.findOneAndUpdate(
+    { _id: (existing as { _id: string })._id },
+    sanitizedPayload,
+    { new: true },
+  );
+  if (!updated) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Course not found" });
+  }
+  return res.json(updated);
+});
+
+courseRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleCourseUpdate);
+courseRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleCourseUpdate);
 
 courseRouter.delete(
   "/:id",
@@ -604,4 +604,3 @@ courseRouter.delete(
     return res.status(StatusCodes.NO_CONTENT).send();
   }),
 );
-

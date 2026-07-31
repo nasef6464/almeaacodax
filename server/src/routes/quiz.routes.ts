@@ -2237,13 +2237,25 @@ quizRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
+    
+    // Auto-fill supervisor defaults if needed
+    if (req.authUser?.role === "supervisor") {
+      if (!payload.mode) payload.mode = "central";
+      if ((!payload.targetGroupIds || payload.targetGroupIds.length === 0) && (!payload.targetUserIds || payload.targetUserIds.length === 0)) {
+        const scope = await resolveSupervisorSchoolReportScope(req.authUser);
+        payload.targetGroupIds = uniqueStrings([...scope.groupIds, ...scope.schoolIds]);
+      }
+    }
+
     await assertTeacherManagedScope(req.authUser!, payload);
     await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const isPowerRole = req.authUser?.role === "admin" || req.authUser?.role === "supervisor";
-    const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : true) : false;
-    if (willBePublished) {
+    const hasQuestions = getQuizQuestionIds(payload).length > 0;
+    const willBePublished = isPowerRole ? (typeof payload.isPublished === "boolean" ? payload.isPublished : hasQuestions) : false;
+    
+    if (willBePublished && hasQuestions) {
       const integrity = await validateQuizQuestionIntegrity(payload);
       if (!integrity.ok) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -2257,8 +2269,12 @@ quizRouter.post(
         });
       }
     }
+
+    const quizId = String(payload.id || `quiz_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
     const created = await QuizModel.create({
       ...payload,
+      id: quizId,
+      _id: quizId,
       ...workflowDefaults,
       approvalStatus: isPowerRole
         ? payload.approvalStatus || "approved"
@@ -2462,62 +2478,60 @@ quizRouter.post(
   }),
 );
 
-quizRouter.patch(
-  "/:id",
-  requireAuth,
-  requireRole(["admin", "teacher", "supervisor"]),
-  asyncHandler(async (req, res) => {
-    const payload = quizSchema.partial().parse(req.body);
-    const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
-    const existing = await QuizModel.findOne(documentQuery);
+const handleQuizUpdate = asyncHandler(async (req, res) => {
+  const payload = quizSchema.partial().parse(req.body);
+  const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
+  const existing = await QuizModel.findOne(documentQuery);
 
-    if (!existing) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
-    }
+  if (!existing) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+  }
 
-    await assertTeacherManagedScope(req.authUser!, {
-      ...existing.toObject(),
-      ...payload,
-    });
-    await assertSupervisorDirectedQuizScope(req.authUser!, {
-      ...existing.toObject(),
-      ...payload,
-    });
-    const resolvedSkillIds = payload.questionIds || payload.mockExam
-      ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
-      : undefined;
-    const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
-    const sanitizedPayload = sanitizeWorkflowUpdate(
-      {
-        ...normalizedPayload,
-        ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
-      } as Record<string, unknown>,
-      req.authUser!,
-      { respectPublished: true },
-    );
-    const nextQuizState = {
-      ...existing.toObject(),
+  await assertTeacherManagedScope(req.authUser!, {
+    ...existing.toObject(),
+    ...payload,
+  });
+  await assertSupervisorDirectedQuizScope(req.authUser!, {
+    ...existing.toObject(),
+    ...payload,
+  });
+  const resolvedSkillIds = payload.questionIds || payload.mockExam
+    ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
+    : undefined;
+  const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
+  const sanitizedPayload = sanitizeWorkflowUpdate(
+    {
       ...normalizedPayload,
-      ...sanitizedPayload,
-    };
-    if (nextQuizState.isPublished === true) {
-      const integrity = await validateQuizQuestionIntegrity(nextQuizState);
-      if (!integrity.ok) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: integrity.message,
-          integrity: {
-            totalReferenced: integrity.totalReferenced,
-            resolved: integrity.resolved,
-            missingIds: integrity.missingIds.slice(0, 20),
-            invalidContentIds: integrity.invalidContentIds.slice(0, 20),
-          },
-        });
-      }
+      ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
+    } as Record<string, unknown>,
+    req.authUser!,
+    { respectPublished: true },
+  );
+  const nextQuizState = {
+    ...existing.toObject(),
+    ...normalizedPayload,
+    ...sanitizedPayload,
+  };
+  if (nextQuizState.isPublished === true) {
+    const integrity = await validateQuizQuestionIntegrity(nextQuizState);
+    if (!integrity.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: integrity.message,
+        integrity: {
+          totalReferenced: integrity.totalReferenced,
+          resolved: integrity.resolved,
+          missingIds: integrity.missingIds.slice(0, 20),
+          invalidContentIds: integrity.invalidContentIds.slice(0, 20),
+        },
+      });
     }
-    const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
-    return res.json(updated);
-  }),
-);
+  }
+  const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  return res.json(updated);
+});
+
+quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
+quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
 
 quizRouter.get(
   "/integrity-report",
