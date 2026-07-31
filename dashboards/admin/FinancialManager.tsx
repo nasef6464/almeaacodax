@@ -206,6 +206,19 @@ export const FinancialManager: React.FC = () => {
         const hasOnlySchoolPackages = purchasedPackages.length > 0 && purchasedPackages.every((packageId) => schoolPackageIds.has(packageId));
         return hasPublicPackage || (user.subscription?.plan === 'premium' && !hasOnlySchoolPackages);
     }), [publicPackageIds, schoolPackageIds, users]);
+
+    const premiumRows = useMemo(() => {
+        return b2cPremiumUsers.map((user) => ({
+            id: user.id,
+            name: user.name || 'طالب',
+            email: user.email || '',
+            plan: user.subscription?.plan || 'free',
+            courses: (user.subscription?.purchasedCourses || []).length,
+            packages: (user.subscription?.purchasedPackages || []).length,
+            status: user.isActive !== false ? 'نشط' : 'معطل',
+        }));
+    }, [b2cPremiumUsers]);
+
     const activePackages = useMemo(() => b2bPackages.filter((pkg) => pkg.status === 'active'), [b2bPackages]);
     const activeCodes = useMemo(() => accessCodes.filter((code) => code.expiresAt > Date.now()), [accessCodes]);
 
