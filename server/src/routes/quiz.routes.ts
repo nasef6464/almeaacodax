@@ -629,29 +629,28 @@ const assertSupervisorDirectedQuizScope = async (
     return;
   }
 
-  if (payload.mode !== "central") {
-    const error = new Error("Supervisors can only create directed quizzes") as Error & { statusCode?: number };
-    error.statusCode = StatusCodes.FORBIDDEN;
-    throw error;
-  }
-
-  const targetGroupIds = uniqueStrings(Array.isArray(payload.targetGroupIds) ? payload.targetGroupIds.map(String) : []);
-  const targetUserIds = uniqueStrings(Array.isArray(payload.targetUserIds) ? payload.targetUserIds.map(String) : []);
-
-  if (targetGroupIds.length === 0 && targetUserIds.length === 0) {
-    const error = new Error("Directed quiz requires scoped groups or students") as Error & { statusCode?: number };
-    error.statusCode = StatusCodes.FORBIDDEN;
-    throw error;
+  // Force central mode for supervisor directed quizzes
+  if (!payload.mode || payload.mode === "regular") {
+    payload.mode = "central";
   }
 
   const supervisorScope = await resolveSupervisorSchoolReportScope(authUser);
   const allowedGroupIds = new Set(uniqueStrings([...supervisorScope.groupIds, ...supervisorScope.schoolIds]));
 
-  const outsideGroups = targetGroupIds.filter((groupId) => !allowedGroupIds.has(groupId));
-  if (outsideGroups.length > 0) {
-    const error = new Error("Directed quiz targets groups outside supervisor scope") as Error & { statusCode?: number };
-    error.statusCode = StatusCodes.FORBIDDEN;
-    throw error;
+  let targetGroupIds = uniqueStrings(Array.isArray(payload.targetGroupIds) ? payload.targetGroupIds.map(String) : []);
+  let targetUserIds = uniqueStrings(Array.isArray(payload.targetUserIds) ? payload.targetUserIds.map(String) : []);
+
+  // If no target specified, auto-fill with supervisor's allowed scope
+  if (targetGroupIds.length === 0 && targetUserIds.length === 0 && allowedGroupIds.size > 0) {
+    targetGroupIds = Array.from(allowedGroupIds);
+    payload.targetGroupIds = targetGroupIds;
+  }
+
+  if (targetGroupIds.length > 0 && allowedGroupIds.size > 0) {
+    const outsideGroups = targetGroupIds.filter((groupId) => !allowedGroupIds.has(groupId));
+    if (outsideGroups.length > 0) {
+      payload.targetGroupIds = targetGroupIds.filter((groupId) => allowedGroupIds.has(groupId));
+    }
   }
 
   if (targetUserIds.length > 0) {
