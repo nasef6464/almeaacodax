@@ -299,9 +299,10 @@ const quizSchema = z.object({
     updatedAt: z.number().optional(),
   })).optional(),
   mode: z.enum(["regular", "saher", "central"]).default("regular"),
-  settings: z.record(z.any()),
-  access: z.record(z.any()),
+  settings: z.record(z.any()).optional().default({}),
+  access: z.record(z.any()).optional().default({}),
   questionIds: z.array(z.string()).default([]),
+  questions: z.array(z.any()).optional(),
   mockExam: z.object({
     enabled: z.boolean().default(false),
     pathId: z.string().default(""),
@@ -332,6 +333,13 @@ const quizSchema = z.object({
 });
 
 const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T, fallbackType = "quiz") => {
+  if (payload.access && typeof payload.access === "object") {
+    const rawType = String(payload.access.type || "").toLowerCase();
+    if (rawType === "public" || rawType === "all") {
+      payload.access.type = "free";
+    }
+  }
+
   const hasPlacementFields =
     payload.type !== undefined ||
     payload.placement !== undefined ||
@@ -2217,6 +2225,50 @@ quizRouter.post(
   }),
 );
 
+const processInlineQuestions = async (questions: any[], pathId: string, subjectId: string, authUser: any) => {
+  if (!Array.isArray(questions) || questions.length === 0) return [];
+  const createdIds: string[] = [];
+
+  for (const q of questions) {
+    if (typeof q === "string") {
+      createdIds.push(q);
+      continue;
+    }
+    if (q && typeof q === "object") {
+      if (q.id && !q.text && !q.options) {
+        createdIds.push(String(q.id));
+        continue;
+      }
+      const qId = String(q.id || `q_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`).trim();
+      const formattedOptions = Array.isArray(q.options)
+        ? q.options.map((opt: any, idx: number) => {
+            if (typeof opt === "string") return { id: `opt_${idx}`, text: opt, isCorrect: idx === 0 };
+            return {
+              id: String(opt.id || `opt_${idx}`),
+              text: String(opt.text || opt.title || ""),
+              isCorrect: Boolean(opt.isCorrect),
+            };
+          })
+        : [];
+
+      const createdQuestion = await QuestionModel.create({
+        id: qId,
+        _id: qId,
+        text: String(q.text || q.title || "سؤال جديد"),
+        type: q.type || "multiple_choice",
+        pathId: String(q.pathId || pathId || "").trim(),
+        subjectId: String(q.subjectId || subjectId || "").trim(),
+        options: formattedOptions,
+        explanation: String(q.explanation || ""),
+        ownerId: String(authUser?.id || ""),
+        createdBy: String(authUser?.id || ""),
+      });
+      createdIds.push(createdQuestion.id || (createdQuestion._id as string));
+    }
+  }
+  return createdIds;
+};
+
 quizRouter.get(
   "/results/latest",
   requireAuth,
@@ -2245,6 +2297,11 @@ quizRouter.post(
         const scope = await resolveSupervisorSchoolReportScope(req.authUser);
         payload.targetGroupIds = uniqueStrings([...scope.groupIds, ...scope.schoolIds]);
       }
+    }
+
+    if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
+      const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser);
+      payload.questionIds = uniqueStrings([...(payload.questionIds || []), ...inlineQuestionIds]);
     }
 
     await assertTeacherManagedScope(req.authUser!, payload);
@@ -2284,6 +2341,100 @@ quizRouter.post(
       skillIds: resolvedSkillIds,
     });
     res.status(StatusCodes.CREATED).json(created);
+  }),
+);
+
+const handleQuizUpdate = asyncHandler(async (req, res) => {
+  const payload = quizSchema.partial().parse(req.body);
+  const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
+  const existing = await QuizModel.findOne(documentQuery);
+
+  if (!existing) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+  }
+
+  if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
+    const nextPathId = String(payload.pathId || existing.pathId || "").trim();
+    const nextSubjectId = String(payload.subjectId || existing.subjectId || "").trim();
+    const inlineQuestionIds = await processInlineQuestions(req.body.questions, nextPathId, nextSubjectId, req.authUser);
+    const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
+    payload.questionIds = uniqueStrings([...existingQuestionIds, ...(payload.questionIds || []), ...inlineQuestionIds]);
+  }
+
+  await assertTeacherManagedScope(req.authUser!, {
+    ...existing.toObject(),
+    ...payload,
+  });
+  await assertSupervisorDirectedQuizScope(req.authUser!, {
+    ...existing.toObject(),
+    ...payload,
+  });
+  const resolvedSkillIds = payload.questionIds || payload.mockExam
+    ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
+    : undefined;
+  const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
+  const sanitizedPayload = sanitizeWorkflowUpdate(
+    {
+      ...normalizedPayload,
+      ...(resolvedSkillIds ? { skillIds: resolvedSkillIds } : {}),
+    } as Record<string, unknown>,
+    req.authUser!,
+    { respectPublished: true },
+  );
+  const nextQuizState = {
+    ...existing.toObject(),
+    ...normalizedPayload,
+    ...sanitizedPayload,
+  };
+  if (nextQuizState.isPublished === true) {
+    const integrity = await validateQuizQuestionIntegrity(nextQuizState);
+    if (!integrity.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: integrity.message,
+        integrity: {
+          totalReferenced: integrity.totalReferenced,
+          resolved: integrity.resolved,
+          missingIds: integrity.missingIds.slice(0, 20),
+          invalidContentIds: integrity.invalidContentIds.slice(0, 20),
+        },
+      });
+    }
+  }
+  const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  return res.json(updated);
+});
+
+quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
+quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
+
+quizRouter.post(
+  "/:id/questions",
+  requireAuth,
+  requireRole(["admin", "teacher", "supervisor"]),
+  asyncHandler(async (req, res) => {
+    const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
+    const existing = await QuizModel.findOne(documentQuery);
+    if (!existing) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+    }
+
+    const rawQuestions = Array.isArray(req.body.questions) ? req.body.questions : [req.body];
+    const newQuestionIds = await processInlineQuestions(
+      rawQuestions,
+      String(existing.pathId || ""),
+      String(existing.subjectId || ""),
+      req.authUser,
+    );
+
+    const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
+    const updatedQuestionIds = uniqueStrings([...existingQuestionIds, ...newQuestionIds]);
+
+    const updated = await QuizModel.findOneAndUpdate(
+      documentQuery,
+      { questionIds: updatedQuestionIds },
+      { new: true },
+    );
+    return res.json(updated);
   }),
 );
 

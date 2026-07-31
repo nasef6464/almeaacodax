@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const quizSchema = new Schema(
   {
+    _id: { type: String },
     id: { type: String, index: true, sparse: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
@@ -45,7 +46,7 @@ const quizSchema = new Schema(
     access: {
       type: {
         type: String,
-        enum: ["free", "paid", "private", "course_only"],
+        enum: ["free", "paid", "private", "course_only", "public"],
         default: "free",
       },
       price: { type: Number, default: 0 },
