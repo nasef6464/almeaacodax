@@ -131,6 +131,26 @@ export const SupervisorDashboard: React.FC = () => {
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<{ name: string; level: 'critical' | 'watch' | 'mastered'; students: string[] } | null>(null);
   const [showPrincipalReport, setShowPrincipalReport] = useState(false);
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
+  const [liveExams, setLiveExams] = useState<any[]>([]);
+
+  useEffect(() => {
+    let timer: number;
+    if (activeTab === 'live-monitoring') {
+      const fetchExams = async () => {
+        try {
+          const { api } = await import('../../services/api');
+          const exams = await api.getSupervisorLiveExams();
+          setLiveExams(exams);
+        } catch (error) {
+          console.error('Failed to fetch live exams:', error);
+        }
+      };
+      
+      fetchExams();
+      timer = window.setInterval(fetchExams, 10000);
+    }
+    return () => window.clearInterval(timer);
+  }, [activeTab]);
 
   useEffect(() => {
     // Ensure we have loaded students for the supervisor to view
@@ -552,42 +572,45 @@ export const SupervisorDashboard: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-100 w-fit">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  متصل (6 نشط)
+                  متصل ({liveExams.length} نشط)
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((idx) => (
-                  <div key={idx} className="bg-gray-50 hover:bg-white hover:shadow-md transition-all rounded-2xl p-4 border border-gray-200">
+                {liveExams.length > 0 ? liveExams.map((exam) => (
+                  <div key={exam.id || exam._id} className="bg-gray-50 hover:bg-white hover:shadow-md transition-all rounded-2xl p-4 border border-gray-200">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-bold text-gray-900">طالب رقم {idx}</h3>
-                        <p className="text-xs text-gray-500 font-medium mt-1">اختبار القدرات الشامل</p>
+                        <h3 className="font-bold text-gray-900">{exam.studentName || 'طالب'}</h3>
+                        <p className="text-xs text-gray-500 font-medium mt-1">{exam.quizTitle}</p>
                       </div>
                       <span className={`px-2 py-1 rounded-full text-[10px] font-black ${
-                        idx % 3 === 0 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                        exam.status === 'completed' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'
                       }`}>
-                        {idx % 3 === 0 ? 'في الانتظار' : 'يختبر الآن'}
+                        {exam.status === 'completed' ? 'مكتمل' : 'يختبر الآن'}
                       </span>
                     </div>
                     
                     <div className="space-y-3">
                       <div>
                         <div className="flex justify-between text-xs font-bold mb-1">
-                          <span className="text-gray-600">التقدم (سؤال 12 من 20)</span>
-                          <span className="text-indigo-600">60%</span>
+                          <span className="text-gray-600">التقدم (سؤال {exam.answeredQuestions} من {exam.totalQuestions})</span>
+                          <span className="text-indigo-600">{exam.progress}%</span>
                         </div>
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: '60%' }}></div>
+                          <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${exam.progress}%` }}></div>
                         </div>
                       </div>
                       <div className="flex justify-between text-xs font-medium text-gray-500 border-t border-gray-200 pt-2">
-                        <span className="flex items-center gap-1"><Activity size={12} /> 10:15 ص</span>
-                        <span className="flex items-center gap-1 text-rose-600 font-bold">متبقي: 15 د</span>
+                        <span className="flex items-center gap-1"><Activity size={12} /> {exam.startTime ? new Date(exam.startTime).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
                       </div>
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 text-gray-500">
+                    لا يوجد اختبارات نشطة حالياً.
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -346,6 +346,106 @@ export const FinancialManager: React.FC = () => {
 
         return raw.slice(0, 480);
     };
+
+    const paymentReadinessWarnings = useMemo(() => {
+        const warnings: string[] = [];
+        if (!settings.card.enabled && !settings.transfer.enabled && !settings.wallet.enabled) {
+            warnings.push('جميع وسائل الدفع معطلة. لن يتمكن الطلاب من الدفع.');
+        }
+        if (settings.transfer.enabled && !settings.transfer.accountNumber && !settings.transfer.iban) {
+            warnings.push('الدفع بالتحويل البنكي مفعل ولكن بيانات الحساب غير مكتملة.');
+        }
+        if (publicPackages.length === 0) {
+            warnings.push('لا توجد باقات أفراد (B2C) متاحة للبيع حالياً.');
+        }
+        return warnings;
+    }, [settings, publicPackages]);
+
+    const paymentReadinessScore = Math.max(0, 100 - (paymentReadinessWarnings.length * 25));
+
+    const exportFinancialSnapshot = () => {
+        downloadCsv('financial-snapshot.csv', [
+            ['المؤشر', 'القيمة'],
+            ['الإيرادات الإجمالية التقديرية', estimatedTotalRevenue],
+            ['قيمة الطلبات المعلقة', pendingRevenue],
+            ['باقات المدارس', b2bPackages.length],
+            ['الطلاب المميزون', b2cPremiumUsers.length],
+        ]);
+    };
+
+    const recentTransactions = useMemo<TransactionRow[]>(() => {
+        return paymentRequests.slice(0, 5).map(req => ({
+            id: req.id,
+            user: req.userName || 'غير معروف',
+            type: requestItemTypeLabel(req.itemType),
+            amount: `${req.currency} ${req.amount}`,
+            date: requestDateLabel(req.createdAt),
+            status: requestStatusLabel(req.status)
+        }));
+    }, [paymentRequests]);
+
+    const paymentRequestStatusCounts = useMemo(() => {
+        return {
+            all: requestsAllCountGlobal,
+            pending: pendingRequestsCountGlobal,
+            approved: requestsSummary?.approved ?? paymentRequests.filter(r => r.status === 'approved').length,
+            rejected: requestsSummary?.rejected ?? paymentRequests.filter(r => r.status === 'rejected').length,
+            cancelled: requestsSummary?.cancelled ?? paymentRequests.filter(r => r.status === 'cancelled').length,
+        };
+    }, [requestsAllCountGlobal, pendingRequestsCountGlobal, requestsSummary, paymentRequests]);
+
+    const visiblePaymentRequests = paymentRequests;
+
+    const paymentCountryLabel = (code?: string) => {
+        if (!code) return 'غير محدد';
+        return paymentCountryOptions.find(c => c.code === code)?.label || code;
+    };
+
+    const reviewRequest = async (request: PaymentRequest, status: 'approved' | 'rejected') => {
+        setRequestActionLoading(request.id);
+        try {
+            await api.reviewPaymentRequest(request.id, { status, reviewerNotes: '' });
+            setFeedback(`تم ${status === 'approved' ? 'اعتماد' : 'رفض'} الطلب بنجاح`);
+            setPaymentRequests(prev => prev.map(r => r.id === request.id ? { ...r, status } : r));
+        } catch (err: any) {
+            setError(err.message || 'حدث خطأ أثناء مراجعة الطلب');
+        } finally {
+            setRequestActionLoading(null);
+            setTimeout(() => setFeedback(null), 3000);
+        }
+    };
+
+    const resetRequestFilters = () => {
+        setRequestStatusFilter('all');
+        setRequestCountryFilter('all');
+        setRequestMethodFilter('all');
+        setRequestSearchTerm('');
+    };
+
+    const loadRequestsSummary = async () => {
+        setSummaryLoading(true);
+        try {
+            const summary = await api.getPaymentRequestsSummary();
+            setRequestsSummary(summary as any);
+        } catch (err) {
+            console.error('Failed to load summary', err);
+        } finally {
+            setSummaryLoading(false);
+        }
+    };
+
+    const exportPaymentRequests = () => {
+        downloadCsv('payment-requests.csv', [
+            ['رقم الطلب', 'المستخدم', 'المبلغ', 'الحالة', 'التاريخ'],
+            ...paymentRequests.map(r => [
+                r.id,
+                r.userName || '',
+                r.amount,
+                requestStatusLabel(r.status),
+                requestDateLabel(r.createdAt)
+            ])
+        ]);
+    };
     const exportSchoolPackages = () => {
         downloadCsv('school-packages.csv', [
             ['اسم الباقة', 'السعر', 'الحالة', 'الطلاب'],

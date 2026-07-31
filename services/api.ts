@@ -1948,6 +1948,33 @@ export const api = {
       body: {},
       token,
     }),
+  clearLiveExamsTestData: (token?: string | null) =>
+    request<{ success: boolean; message: string }>("/live-exams/clear-test-data", {
+      method: "DELETE",
+      token,
+    }),
+  getSupervisorLiveExams: (token?: string | null) =>
+    request<any[]>("/live-exams/supervisor", {
+      token,
+    }),
+  startLiveExam: (payload: { quizId: string; quizTitle: string; totalQuestions: number }, token?: string | null) =>
+    request<any>("/live-exams/start", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number }, token?: string | null) =>
+    request<{ success: boolean }>("/live-exams/progress", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+  endLiveExam: (payload: { quizId: string }, token?: string | null) =>
+    request<{ success: boolean }>("/live-exams/end", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
 };
 
 export { API_BASE_URL };

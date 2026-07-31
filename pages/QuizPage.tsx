@@ -461,6 +461,11 @@ export const QuizPage: React.FC = () => {
     setQuizQuestions(nextQuestions);
     if (nextQuestions.length > 0) {
       setQuestionHydrationStartedAt(null);
+      api.startLiveExam({
+        quizId: foundQuiz.id,
+        quizTitle: foundQuiz.title || 'اختبار',
+        totalQuestions: nextQuestions.length,
+      }).catch((err: any) => console.warn('Failed to start live exam session:', err));
     }
     setDraftRestored(canRestoreProgress);
 
@@ -645,7 +650,15 @@ export const QuizPage: React.FC = () => {
 
   const handleOptionSelect = (optionIndex: number) => {
     if (isFinished || !currentQuestion) return;
-    setSelectedOptions((prev) => ({ ...prev, [currentQuestion.id]: optionIndex }));
+    setSelectedOptions((prev) => {
+      const next = { ...prev, [currentQuestion.id]: optionIndex };
+      api.updateLiveExamProgress({
+        quizId: quiz?.id || '',
+        answeredQuestions: Object.keys(next).length,
+        totalQuestions: quizQuestions.length,
+      }).catch((err: any) => console.warn('Failed to update live exam progress:', err));
+      return next;
+    });
     recordQuestionAttempt({
       questionId: currentQuestion.id.toString(),
       selectedOptionIndex: optionIndex,
@@ -773,6 +786,8 @@ export const QuizPage: React.FC = () => {
 
     if (!quiz) return;
     setIsSubmittingResult(true);
+
+    api.endLiveExam({ quizId: quiz.id }).catch((err: any) => console.warn('Failed to end live exam:', err));
 
     const skillStats: Record<string, { total: number; correct: number }> = {};
     quizQuestions.forEach((question) => {
