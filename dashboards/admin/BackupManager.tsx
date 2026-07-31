@@ -568,6 +568,35 @@ export const BackupManager: React.FC = () => {
                 ) : null}
             </section>
 
+            <section className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-5 shadow-sm mt-6">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                    <div>
+                        <h3 className="flex items-center gap-2 text-lg font-black text-indigo-950">
+                            <History size={19} className="text-indigo-700" />
+                            جدولة النسخ الاحتياطي السحابي التلقائي
+                        </h3>
+                        <p className="mt-1 max-w-3xl text-sm font-bold leading-7 text-indigo-800">
+                            قم بإعداد نظام النسخ الاحتياطي ليعمل تلقائياً بدون تدخل بشري لضمان حفظ بيانات المنصة في خوادم سحابية آمنة.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 bg-white p-2 rounded-2xl border border-indigo-200">
+                        <select className="rounded-xl bg-gray-50 border-transparent px-4 py-2.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="daily">تلقائي يومي (02:00 ص)</option>
+                            <option value="weekly">تلقائي أسبوعي (الجمعة)</option>
+                            <option value="monthly">تلقائي شهري</option>
+                        </select>
+                        <button
+                            type="button"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-black text-white hover:bg-indigo-700 transition-colors"
+                            onClick={() => alert('تم تفعيل الجدولة بنجاح!')}
+                        >
+                            <Save size={18} />
+                            حفظ وتفعيل
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <section className="rounded-3xl border border-blue-100 bg-blue-50/60 p-5 shadow-sm">
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div>

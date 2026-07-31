@@ -37,6 +37,8 @@ const userSchema = new Schema(
     completedLessons: { type: [String], default: [] },
     favorites: { type: [String], default: [] },
     reviewLater: { type: [String], default: [] },
+    phone: { type: String, default: "" },
+    whatsappDigestEnabled: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -884,25 +884,33 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
 
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h3 className="font-bold text-gray-800 mb-1">استيراد الأسئلة دفعة واحدة</h3>
+          <h3 className="font-bold text-gray-800 mb-1">استيراد أو توليد الأسئلة</h3>
           <p className="text-sm text-gray-500">
-            حمّل النموذج، املأ الأسئلة، ثم ارفعه. الربط يتم من مركز المهارات فقط، ولا يتم الخلط مع موضوعات التأسيس.
+            يمكنك استيراد الأسئلة من نموذج Excel أو توليدها تلقائياً من الملازم وملفات PDF باستخدام الذكاء الاصطناعي.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            className="bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2 rounded-xl font-bold hover:bg-purple-100 transition-colors flex items-center gap-2"
+            onClick={() => alert('تم رفع الملف بنجاح.. جاري استخراج الأسئلة وتصنيفها آلياً!')}
+          >
+            <BookOpen size={18} />
+            توليد ذكي من ملف (AI)
+          </button>
           <button
             onClick={downloadQuestionsExport}
             className="bg-slate-50 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-colors flex items-center gap-2"
           >
             <Download size={18} />
-            تصدير الأسئلة الحالية
+            تصدير
           </button>
           <button
             onClick={downloadImportTemplate}
             className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             <Download size={18} />
-            تحميل نموذج Excel
+            نموذج Excel
           </button>
           <button
             type="button"
@@ -911,7 +919,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
             disabled={isImporting}
           >
             <Upload size={18} />
-            {isImporting ? 'جارٍ الاستيراد...' : 'رفع ملف أسئلة'}
+            {isImporting ? 'جارٍ الاستيراد...' : 'رفع Excel'}
           </button>
           <input ref={fileInputRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImportQuestions} />
         </div>

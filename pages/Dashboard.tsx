@@ -17,6 +17,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { EmptyState } from '../components/ui/EmptyState';
+import { ParentApprovalsModal } from './ParentApprovalsModal';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -25,6 +26,7 @@ const Favorites = React.lazy(() => import('./Favorites'));
 const Plan = React.lazy(() => import('./Plan'));
 const QA = React.lazy(() => import('./QA'));
 const MyRequests = React.lazy(() => import('./MyRequests').then(module => ({ default: module.MyRequests })));
+const FlashcardsManager = React.lazy(() => import('./FlashcardsManager'));
 
 const TabLoading = () => (
     <div className="flex items-center justify-center h-64 text-amber-500">
@@ -770,7 +772,8 @@ const Dashboard: React.FC = () => {
         { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
         { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
         { id: 'favorites', label: 'مركز مراجعة الأسئلة', icon: <Heart size={20} /> },
-                { id: 'plan', label: 'خطتي', icon: <MapIcon size={20} /> },
+        { id: 'flashcards', label: 'بطاقات التذكر', icon: <BookOpen size={20} /> },
+        { id: 'plan', label: 'خطتي', icon: <MapIcon size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
         { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
     ];
@@ -820,6 +823,7 @@ const Dashboard: React.FC = () => {
             case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes view="attempts" /></Suspense>;
             case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
             case 'favorites': return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
+            case 'flashcards': return <Suspense fallback={<TabLoading />}><FlashcardsManager /></Suspense>;
             case 'plan': return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
             case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
             case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
@@ -1439,6 +1443,30 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
     const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
     
+    const [showApprovalsModal, setShowApprovalsModal] = useState(false);
+    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
+    const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+
+    useEffect(() => {
+        if (user.role === Role.PARENT) {
+            setWhatsappEnabled((user as any).whatsappDigestEnabled || false);
+            api.get('/parent/approvals').then(data => {
+                if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+            }).catch(console.error);
+        }
+    }, [user]);
+
+    const toggleWhatsapp = async () => {
+        try {
+            const next = !whatsappEnabled;
+            setWhatsappEnabled(next);
+            await api.post('/parent/settings/whatsapp', { enabled: next });
+        } catch (error) {
+            console.error('Failed to toggle whatsapp digest', error);
+            setWhatsappEnabled(!whatsappEnabled); // revert
+        }
+    };
+    
     const assignedQuizzes = useMemo(() => {
         return quizzes.filter(q => {
             if (!q.isPublished) return false;
@@ -1535,7 +1563,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             {[
                 { id: 'saher', icon: <Zap size={28} />, label: 'ساهر (اختبار سريع)', color: 'text-purple-600', bg: 'bg-purple-50', hover: 'hover:bg-purple-600' },
-                { id: 'plan', icon: <MapIcon size={28} />, label: 'خطتي اليومية', color: 'text-indigo-600', bg: 'bg-indigo-50', hover: 'hover:bg-indigo-600' },
+                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'بطاقات التذكر', color: 'text-rose-600', bg: 'bg-rose-50', hover: 'hover:bg-rose-600' },
                 { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', color: 'text-blue-600', bg: 'bg-blue-50', hover: 'hover:bg-blue-600' },
                 { id: 'reports', icon: <PieChart size={28} />, label: 'تقاريري', color: 'text-emerald-600', bg: 'bg-emerald-50', hover: 'hover:bg-emerald-600' }
             ].map(btn => (
@@ -1553,7 +1581,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
 
         {/* Student Tools: Parent Code & Notifications */}
-        {false && (
+        {user.role === Role.STUDENT && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
                 <div className="flex items-center gap-4">
@@ -1590,6 +1618,63 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
             </Card>
+        </div>
+        )}
+
+        {/* Parent Tools: WhatsApp Digest & Approvals */}
+        {user.role === Role.PARENT && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="p-5 flex items-center justify-between border border-emerald-100 bg-emerald-50/30 shadow-sm">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                        <MessageCircle size={24} />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">ملخصات واتساب الأسبوعية</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">احصل على تقرير أسبوعي لأداء أبنائك.</p>
+                    </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={whatsappEnabled}
+                        onChange={toggleWhatsapp}
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                </label>
+            </Card>
+
+            <Card className="p-5 flex items-center justify-between border border-blue-100 bg-blue-50/30 shadow-sm">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">
+                        <CheckCircle size={24} />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">سير عمل الموافقات</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">طلبات واشتراكات تحتاج لموافقتك ({pendingApprovalsCount}).</p>
+                    </div>
+                </div>
+                <button 
+                    onClick={() => setShowApprovalsModal(true)}
+                    className="text-blue-600 hover:text-blue-800 font-bold text-sm bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors"
+                >
+                    مراجعة الطلبات
+                </button>
+            </Card>
+
+            {showApprovalsModal && (
+                <ParentApprovalsModal 
+                    isOpen={showApprovalsModal} 
+                    onClose={() => {
+                        setShowApprovalsModal(false);
+                        // Refresh count
+                        api.get('/parent/approvals').then(data => {
+                            if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+                        }).catch(console.error);
+                    }} 
+                />
+            )}
         </div>
         )}
 

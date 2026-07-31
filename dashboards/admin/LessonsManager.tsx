@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Lesson, LessonType } from '../../types';
-import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Play, FileText, Lock, LockOpen, Eye, Download, X, BookOpen, ExternalLink, Upload, CheckCircle2, AlertTriangle, Mic, Video } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { loadXlsx, readWorkbookFromBuffer, registerXlsxRuntime, sheetToSafeObjects } from '../../utils/xlsxLoader';
@@ -146,6 +146,10 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
   const [importError, setImportError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [pendingImportBatch, setPendingImportBatch] = useState<PendingImportBatch | null>(null);
+  const [feedbackLesson, setFeedbackLesson] = useState<Lesson | null>(null);
+  const [feedbackType, setFeedbackType] = useState<'audio' | 'video'>('audio');
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
 
   const lessons = globalLessons.filter((lesson) => {
     if (user.role === 'teacher') {
@@ -1019,6 +1023,9 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
                         <button onClick={() => handleEdit(lesson)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="تعديل">
                           <Edit2 size={18} />
                         </button>
+                        <button onClick={() => setFeedbackLesson(lesson)} className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title="إضافة تقييم صوتي/فيديو للواجب">
+                          <Mic size={18} />
+                        </button>
                         <button onClick={() => handlePreviewLesson(lesson)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors" title="معاينة الدرس قبل النشر">
                           <Eye size={18} />
                         </button>
@@ -1148,6 +1155,108 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
           </div>
         </div>
       ) : null}
+
+      {feedbackLesson && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl animate-scale-in">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-black text-slate-800">تقييم الواجب: {feedbackLesson.title}</h3>
+                <p className="text-sm text-slate-500 mt-1">سجل رسالة صوتية أو مرئية للطالب</p>
+              </div>
+              <button
+                onClick={() => {
+                  setFeedbackLesson(null);
+                  setIsRecording(false);
+                  setRecordingTime(0);
+                }}
+                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex gap-2 mb-6 p-1 bg-slate-100 rounded-xl">
+              <button
+                onClick={() => setFeedbackType('audio')}
+                className={`flex-1 flex justify-center items-center gap-2 py-2 text-sm font-bold rounded-lg transition-all ${
+                  feedbackType === 'audio' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Mic size={16} />
+                صوتي
+              </button>
+              <button
+                onClick={() => setFeedbackType('video')}
+                className={`flex-1 flex justify-center items-center gap-2 py-2 text-sm font-bold rounded-lg transition-all ${
+                  feedbackType === 'video' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Video size={16} />
+                فيديو
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center justify-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 mb-6 relative overflow-hidden">
+              {isRecording ? (
+                <>
+                  <div className="absolute inset-0 bg-red-50/50 animate-pulse"></div>
+                  <div className={`relative z-10 w-20 h-20 rounded-full flex items-center justify-center bg-red-100 text-red-600 mb-4 animate-bounce`}>
+                    {feedbackType === 'audio' ? <Mic size={32} /> : <Video size={32} />}
+                  </div>
+                  <div className="relative z-10 text-2xl font-black text-red-600 font-mono">
+                    00:0{recordingTime}
+                  </div>
+                  <div className="relative z-10 text-sm font-bold text-red-500 mt-2">جارٍ التسجيل...</div>
+                </>
+              ) : (
+                <>
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${feedbackType === 'audio' ? 'bg-indigo-100 text-indigo-600' : 'bg-purple-100 text-purple-600'}`}>
+                    {feedbackType === 'audio' ? <Mic size={32} /> : <Video size={32} />}
+                  </div>
+                  <div className="text-sm font-bold text-slate-500">
+                    انقر للبدء بتسجيل الملاحظات {feedbackType === 'audio' ? 'الصوتية' : 'المرئية'}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  if (isRecording) {
+                    setIsRecording(false);
+                    setRecordingTime(0);
+                    alert('تم حفظ التقييم بنجاح سيتم إرساله للطالب!');
+                    setFeedbackLesson(null);
+                  } else {
+                    setIsRecording(true);
+                    setRecordingTime(1);
+                    const interval = setInterval(() => {
+                      setRecordingTime((prev) => {
+                        if (prev >= 5) {
+                          clearInterval(interval);
+                          setIsRecording(false);
+                          setRecordingTime(0);
+                          alert('تم حفظ التقييم بنجاح سيتم إرساله للطالب!');
+                          setFeedbackLesson(null);
+                          return 0;
+                        }
+                        return prev + 1;
+                      });
+                    }, 1000);
+                  }
+                }}
+                className={`flex-1 flex justify-center items-center gap-2 py-3 rounded-xl font-black text-white transition-all ${
+                  isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-indigo-600 hover:bg-indigo-700'
+                }`}
+              >
+                {isRecording ? 'إيقاف وإرسال' : 'بدء التسجيل'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

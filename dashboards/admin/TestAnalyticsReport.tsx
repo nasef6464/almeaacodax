@@ -213,20 +213,28 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
           </div>
           <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl bg-indigo-50 border border-indigo-200 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm">
             <Printer size={18} />
-            طباعة التقرير
+            طباعة سريعة
+          </button>
+          <button onClick={handlePrint} className="flex items-center gap-2 rounded-xl bg-indigo-600 border border-indigo-700 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-sm">
+            <FileText size={18} />
+            تصدير تقرير تنفيذي PDF
           </button>
         </div>
       </div>
 
-      {/* Print Header */}
-      <div className="hidden print:block text-center border-b border-gray-200 pb-6 mb-8">
-        <h1 className="text-3xl font-black text-gray-900 mb-2">تقرير تحليل الاختبار</h1>
-        <h2 className="text-xl text-gray-700 mb-4">{quizTitle}</h2>
-        <div className="flex justify-center gap-8 text-sm text-gray-500">
-          <span>تاريخ التقرير: {new Date().toLocaleDateString('ar-EG')}</span>
-          <span>عدد المشاركين: {results.length} من {filteredStudentIds.length}</span>
+      {/* Print Header (Executive Report) */}
+      <div className="hidden print:flex flex-col items-center text-center border-b-2 border-indigo-900 pb-8 mb-10 mt-4">
+        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4 border-2 border-indigo-100 overflow-hidden">
+          {/* Logo Placeholder */}
+          <img src="/logo.png" alt="شعار المدرسة" className="w-16 h-16 object-contain opacity-80" onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/150?text=Logo'; }} />
+        </div>
+        <h1 className="text-3xl font-black text-indigo-950 mb-2">التقرير التنفيذي لأداء الطلاب</h1>
+        <h2 className="text-2xl font-bold text-indigo-800 mb-4">{quizTitle}</h2>
+        <div className="flex justify-center gap-8 text-sm font-bold text-gray-600 bg-gray-50 px-6 py-3 rounded-2xl">
+          <span>تاريخ التقرير: {new Date().toLocaleDateString('ar-SA')}</span>
+          <span>إجمالي المختبرين: {results.length} من {filteredStudentIds.length}</span>
           {selectedGroupId !== 'all' && (
-            <span>الفصل: {groups.find(g => g.id === selectedGroupId)?.name}</span>
+            <span>الفصل/المجموعة: {groups.find(g => g.id === selectedGroupId)?.name}</span>
           )}
         </div>
       </div>

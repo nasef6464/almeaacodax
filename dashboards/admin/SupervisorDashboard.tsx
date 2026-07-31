@@ -40,7 +40,7 @@ import { LiveSessionsManager } from './LiveSessionsManager';
 
 import { SupervisorTestsManager } from './SupervisorTestsManager';
 
-type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests';
+type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
 type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
 
 const KpiCard: React.FC<{
@@ -441,6 +441,7 @@ export const SupervisorDashboard: React.FC = () => {
     { id: 'students' as const, label: 'متابعة الطلاب', icon: <Users size={20} />, badge: supervisorScopeSummary.studentCount },
     { id: 'live-sessions' as const, label: 'الحصص المباشرة', icon: <Video size={20} /> },
     { id: 'tests' as const, label: 'الاختبارات والتحليل', icon: <ClipboardList size={20} /> },
+    { id: 'live-monitoring' as const, label: 'المراقبة الحية', icon: <Activity size={20} /> },
     { id: 'skills' as const, label: 'خريطة المهارات', icon: <Target size={20} /> },
     { id: 'reports' as const, label: 'تقارير الأداء', icon: <ClipboardList size={20} /> },
   ];
@@ -534,6 +535,63 @@ export const SupervisorDashboard: React.FC = () => {
 
         {/* ===== TESTS TAB ===== */}
         {activeTab === 'tests' && <SupervisorTestsManager />}
+
+        {/* ===== LIVE MONITORING TAB ===== */}
+        {activeTab === 'live-monitoring' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 border-b border-gray-100 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                    <Activity className="text-rose-500 animate-pulse" size={24} />
+                    شاشة المراقبة الحية للاختبارات
+                  </h2>
+                  <p className="text-sm font-medium text-gray-500 mt-1">
+                    تابع تقدم الطلاب في الاختبارات النشطة حالياً لحظة بلحظة
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-100 w-fit">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  متصل (6 نشط)
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[1, 2, 3, 4, 5, 6].map((idx) => (
+                  <div key={idx} className="bg-gray-50 hover:bg-white hover:shadow-md transition-all rounded-2xl p-4 border border-gray-200">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-bold text-gray-900">طالب رقم {idx}</h3>
+                        <p className="text-xs text-gray-500 font-medium mt-1">اختبار القدرات الشامل</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-black ${
+                        idx % 3 === 0 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                      }`}>
+                        {idx % 3 === 0 ? 'في الانتظار' : 'يختبر الآن'}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-xs font-bold mb-1">
+                          <span className="text-gray-600">التقدم (سؤال 12 من 20)</span>
+                          <span className="text-indigo-600">60%</span>
+                        </div>
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: '60%' }}></div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-xs font-medium text-gray-500 border-t border-gray-200 pt-2">
+                        <span className="flex items-center gap-1"><Activity size={12} /> 10:15 ص</span>
+                        <span className="flex items-center gap-1 text-rose-600 font-bold">متبقي: 15 د</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ===== OVERVIEW TAB ===== */}
         {activeTab === 'overview' && (

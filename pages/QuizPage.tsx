@@ -143,6 +143,10 @@ export const QuizPage: React.FC = () => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(QUIZ_THEME_STORAGE_KEY) === 'true';
   });
+  const [isOfflineMode, setIsOfflineMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !navigator.onLine || window.localStorage.getItem('almeaa-quiz-offline') === 'true';
+  });
   const returnToParam = searchParams.get('returnTo') || '';
   const sourceParam = searchParams.get('source') || '';
   const courseIdParam = searchParams.get('courseId') || '';
@@ -999,6 +1003,22 @@ export const QuizPage: React.FC = () => {
             >
               {isNightMode ? <Sun size={18} /> : <Moon size={18} />}
               {isNightMode ? 'النظام العادي' : 'النظام الليلي'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const newValue = !isOfflineMode;
+                setIsOfflineMode(newValue);
+                window.localStorage.setItem('almeaa-quiz-offline', String(newValue));
+                setQuizStatusMessage(newValue ? 'تم تفعيل وضع عدم الاتصال (حفظ مؤقت محلي)' : 'تم العودة لوضع الاتصال (مزامنة سحابية)');
+                setTimeout(() => setQuizStatusMessage(null), 3000);
+              }}
+              className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-black shadow-sm ${
+                isOfflineMode ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <Save size={18} />
+              {isOfflineMode ? 'أوفلاين مفعل' : 'دعم أوفلاين'}
             </button>
             <button
               type="button"
