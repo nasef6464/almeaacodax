@@ -775,9 +775,9 @@ const Dashboard: React.FC = () => {
         { id: 'sessions', label: 'جلساتي', icon: <Calendar size={20} /> },
         { id: 'saher', label: 'مركز الاختبارات', icon: <Zap size={20} /> },
         { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
-        { id: 'mock-exams', label: 'اختباراتي المحاكية', icon: <Star size={20} /> },
+        { id: 'mock-exams', label: 'محاكي قياس', icon: <Star size={20} /> },
         { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
-        { id: 'favorites', label: 'مركز مراجعة الأسئلة', icon: <Heart size={20} /> },
+        { id: 'favorites', label: 'مراجعة الأسئلة', icon: <Heart size={20} /> },
         { id: 'flashcards', label: 'بطاقات التذكر', icon: <BookOpen size={20} /> },
         { id: 'plan', label: 'خطتي', icon: <MapIcon size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
@@ -1738,11 +1738,19 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                                     <Card key={quiz.id} className={`p-5 flex flex-col justify-between transition-all border ${hasCompleted ? 'border-emerald-100 bg-emerald-50/30' : 'border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
                                         <div>
                                             <div className="flex justify-between items-start mb-3">
-                                                <div className={`p-2 rounded-lg ${quiz.placement === 'mock' ? 'bg-rose-100 text-rose-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                                                    {quiz.placement === 'mock' ? <ActivityIcon size={20} /> : <FileText size={20} />}
-                                                </div>
-                                                <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${quiz.placement === 'mock' ? 'bg-rose-50 text-rose-700' : 'bg-indigo-50 text-indigo-700'}`}>
-                                                    {quiz.placement === 'mock' ? 'اختبار محاكي' : 'اختبار عادي'}
+                                                <div className={`p-2 rounded-lg ${
+                                              quiz.quizKind === 'drill' ? 'bg-emerald-100 text-emerald-600'
+                                              : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'bg-violet-100 text-violet-600'
+                                              : 'bg-indigo-100 text-indigo-600'
+                                            }`}>
+                                                {quiz.quizKind === 'mock' || quiz.placement === 'mock' ? <ActivityIcon size={20} /> : <FileText size={20} />}
+                                            </div>
+                                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                                              quiz.quizKind === 'drill' ? 'bg-emerald-50 text-emerald-700'
+                                              : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'bg-violet-50 text-violet-700'
+                                              : 'bg-indigo-50 text-indigo-700'
+                                            }`}>
+                                                {quiz.quizKind === 'drill' ? 'تدريب' : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? 'محاكي قياس' : 'اختبار'}
                                                 </span>
                                             </div>
                                             <h4 className="font-black text-gray-900 text-sm mb-1">{quiz.title}</h4>

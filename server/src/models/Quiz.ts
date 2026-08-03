@@ -10,6 +10,11 @@ const quizSchema = new Schema(
     subjectId: { type: String, required: true, index: true },
     sectionId: { type: String, default: null },
     type: { type: String, enum: ["quiz", "bank"], default: "quiz" },
+    // quizKind: تمييز نوع الاختبار عند الإنشاء
+    // drill = تدريب على مهارة واحدة
+    // test  = اختبار على مجموعة مهارات
+    // mock  = محاكي على غرار قياس (قدرات / تحصيلي)
+    quizKind: { type: String, enum: ["drill", "test", "mock"], default: "test", index: true },
     placement: { type: String, enum: ["training", "mock", "both"], default: undefined },
     showInTraining: { type: Boolean, default: undefined },
     showInMock: { type: Boolean, default: undefined },
@@ -19,9 +24,18 @@ const quizSchema = new Schema(
           pathId: { type: String, required: true },
           subjectId: { type: String, default: "" },
           slot: { type: String, enum: ["training", "tests", "foundation", "course"], required: true },
-          accessType: { type: String, enum: ["inherit", "free", "paid"], default: "inherit" },
+          // accessType: التحكم بالوصول لكل مكان عرض مستقلاً
+          // inherit  = يرث إعداد المكان الأصل (الدورة / التأسيس)
+          // free     = مجاني بغض النظر عن أي شيء
+          // paid     = مدفوع
+          // package  = مرتبط بباقة اشتراكية
+          accessType: { type: String, enum: ["inherit", "free", "paid", "package"], default: "inherit" },
           isVisible: { type: Boolean, default: true },
           order: { type: Number, default: 0 },
+          // روابط دقيقة لمكان العرض
+          courseId: { type: String, default: null },   // الدورة
+          lessonId: { type: String, default: null },   // الدرس داخل الدورة
+          topicId: { type: String, default: null },    // الموضوع التأسيسي
           createdAt: { type: Number, default: Date.now },
           updatedAt: { type: Number, default: Date.now },
         },

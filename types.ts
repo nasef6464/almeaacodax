@@ -382,9 +382,22 @@ export interface QuizLearningPlacement {
     pathId: string;
     subjectId?: string;
     slot: 'training' | 'tests' | 'foundation' | 'course';
-    accessType?: 'inherit' | 'free' | 'paid';
+    /**
+     * التحكم بالوصول لكل مكان عرض مستقلاً
+     * - inherit: يرث إعداد الدورة / التأسيس الأصل
+     * - free: مجاني بغض النظر
+     * - paid: مدفوع
+     * - package: مرتبط بباقة اشتراكية
+     */
+    accessType?: 'inherit' | 'free' | 'paid' | 'package';
     isVisible?: boolean;
     order?: number;
+    /** ربط بدورة محددة (slot: 'course') */
+    courseId?: string;
+    /** ربط بدرس داخل الدورة */
+    lessonId?: string;
+    /** ربط بموضوع تأسيسي (slot: 'foundation') */
+    topicId?: string;
     createdAt?: number;
     updatedAt?: number;
 }
@@ -416,7 +429,19 @@ export interface Quiz extends ContentWorkflow {
     pathId: string;
     subjectId: string;
     sectionId?: string;
-    type?: 'quiz' | 'bank'; // Added type for Training vs Simulated Test
+    type?: 'quiz' | 'bank';
+    /**
+     * تصنيف الاختبار عند الإنشاء — النظام الموحد
+     * - drill: تدريب على مهارة واحدة (بعد درس، في التأسيس، في التدريبات القصيرة)
+     * - test: اختبار على مجموعة مهارات (صفحة الاختبارات، داخل دورة)
+     * - mock: محاكي على غرار قياس (قدرات / تحصيلي) متعدد الأقسام
+     *
+     * الصلاحيات:
+     * - Admin: ينشئ جميع الأنواع، ينشر مباشرة، يربط بأي مكان
+     * - Supervisor: ينشئ drill/test/mock، موجّه لمجموعاته فقط، ينشر مباشرة
+     * - Teacher: ينشئ drill/test، يحتاج موافقة Admin للنشر على المنصة
+     */
+    quizKind?: 'drill' | 'test' | 'mock';
     placement?: 'training' | 'mock' | 'both';
     showInTraining?: boolean;
     showInMock?: boolean;
@@ -425,7 +450,7 @@ export interface Quiz extends ContentWorkflow {
     mode?: 'regular' | 'saher' | 'central';
     settings: QuizSettings;
     access: QuizAccess;
-    questionIds: string[]; // References to Question bank
+    questionIds: string[];
     createdAt: number;
     isPublished: boolean;
     showOnPlatform?: boolean;

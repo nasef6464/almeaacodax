@@ -2,16 +2,17 @@ import React, { useState, useMemo } from 'react';
 import {
   ClipboardList, Plus, FileText, Activity, BarChart, Target, Calendar,
   Users, ArrowRight, AlertTriangle, Bell, RefreshCw, CheckCircle, XCircle,
-  Award, BookOpen,
+  Award, BookOpen, Dumbbell,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Quiz } from '../../types';
 import { TestAnalyticsReport } from './TestAnalyticsReport';
-import { MockExamManager } from './MockExamManager';
+import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { api } from '../../services/api';
 
 type ViewMode = 'list' | 'create' | 'analytics' | 'compare';
-type TabFilter = 'all' | 'regular' | 'mock';
+// drill = تدريبات | test = اختبارات عادية | mock = محاكيات قياس
+type TabFilter = 'all' | 'drill' | 'test' | 'mock';
 
 export const SupervisorTestsManager: React.FC = () => {
   const { user, groups, quizzes, examResults, updateQuiz } = useStore();
@@ -136,8 +137,10 @@ export const SupervisorTestsManager: React.FC = () => {
   // ── Filtered list for tabs ─────────────────────────────────────────────────
   const filteredQuizzes = useMemo(() => {
     if (tabFilter === 'all') return quizzesWithStats;
-    if (tabFilter === 'mock') return quizzesWithStats.filter((q) => q.placement === 'mock');
-    return quizzesWithStats.filter((q) => q.placement !== 'mock');
+    if (tabFilter === 'mock') return quizzesWithStats.filter((q) => q.quizKind === 'mock' || q.placement === 'mock');
+    if (tabFilter === 'drill') return quizzesWithStats.filter((q) => q.quizKind === 'drill');
+    // test = كل ما ليس mock وليس drill
+    return quizzesWithStats.filter((q) => q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock'));
   }, [quizzesWithStats, tabFilter]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -173,8 +176,10 @@ export const SupervisorTestsManager: React.FC = () => {
 
   if (viewMode === 'create') {
     return (
-      <MockExamManager
-        {...builderProps}
+      <UnifiedQuizBuilder
+        role="supervisor"
+        allowedGroupIds={builderProps.allowedGroupIds}
+        defaultKind="test"
         onClose={() => setViewMode('list')}
       />
     );
@@ -277,20 +282,21 @@ export const SupervisorTestsManager: React.FC = () => {
 
       {/* Tab Filter */}
       {quizzesWithStats.length > 0 && (
-        <div className="flex gap-2 border-b border-gray-100 pb-1">
-          {(['all', 'regular', 'mock'] as TabFilter[]).map((tab) => (
+        <div className="flex gap-2 border-b border-gray-100 pb-1 overflow-x-auto">
+          {(['all', 'drill', 'test', 'mock'] as TabFilter[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setTabFilter(tab)}
-              className={`flex items-center gap-2 rounded-t-xl px-4 py-2 text-sm font-black transition-all ${
+              className={`flex items-center gap-2 rounded-t-xl px-4 py-2 text-sm font-black transition-all shrink-0 ${
                 tabFilter === tab
                   ? 'bg-indigo-600 text-white shadow-sm'
                   : 'text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'
               }`}
             >
               {tab === 'all' && <><ClipboardList size={14} /> الكل ({quizzesWithStats.length})</>}
-              {tab === 'regular' && <><BookOpen size={14} /> عادية ({quizzesWithStats.filter(q => q.placement !== 'mock').length})</>}
-              {tab === 'mock' && <><Award size={14} /> محاكية ({quizzesWithStats.filter(q => q.placement === 'mock').length})</>}
+              {tab === 'drill' && <><Dumbbell size={14} /> تدريبات ({quizzesWithStats.filter(q => q.quizKind === 'drill').length})</>}
+              {tab === 'test' && <><BookOpen size={14} /> اختبارات ({quizzesWithStats.filter(q => q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock')).length})</>}
+              {tab === 'mock' && <><Award size={14} /> محاكيات ({quizzesWithStats.filter(q => q.quizKind === 'mock' || q.placement === 'mock').length})</>}
             </button>
           ))}
         </div>
@@ -341,22 +347,30 @@ export const SupervisorTestsManager: React.FC = () => {
                   />
                   <div
                     className={`p-2.5 rounded-xl ${
-                      q.placement === 'mock'
+                      (q.quizKind === 'mock' || q.placement === 'mock')
                         ? 'bg-violet-100 text-violet-600'
-                        : 'bg-emerald-100 text-emerald-600'
+                        : q.quizKind === 'drill'
+                          ? 'bg-emerald-100 text-emerald-600'
+                          : 'bg-indigo-100 text-indigo-600'
                     }`}
                   >
-                    {q.placement === 'mock' ? <Award size={22} /> : <FileText size={22} />}
+                    {(q.quizKind === 'mock' || q.placement === 'mock') ? <Award size={22} />
+                      : q.quizKind === 'drill' ? <Dumbbell size={22} />
+                        : <FileText size={22} />}
                   </div>
                 </div>
                 <span
                   className={`text-xs font-bold px-3 py-1 rounded-full border ${
-                    q.placement === 'mock'
+                    (q.quizKind === 'mock' || q.placement === 'mock')
                       ? 'bg-violet-50 text-violet-700 border-violet-200'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : q.quizKind === 'drill'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-indigo-50 text-indigo-700 border-indigo-200'
                   }`}
                 >
-                  {q.placement === 'mock' ? 'محاكي' : 'عادي'}
+                  {(q.quizKind === 'mock' || q.placement === 'mock') ? 'محاكي'
+                    : q.quizKind === 'drill' ? 'تدريب'
+                      : 'اختبار'}
                 </span>
               </div>
 

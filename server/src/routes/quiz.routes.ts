@@ -285,6 +285,8 @@ const quizSchema = z.object({
   subjectId: z.string().min(1),
   sectionId: z.string().nullable().optional(),
   type: z.enum(["quiz", "bank"]).default("quiz"),
+  // quizKind: التصنيف الموحد للاختبارات
+  quizKind: z.enum(["drill", "test", "mock"]).default("test"),
   placement: z.enum(["training", "mock", "both"]).optional(),
   showInTraining: z.boolean().optional(),
   showInMock: z.boolean().optional(),
@@ -292,9 +294,12 @@ const quizSchema = z.object({
     pathId: z.string().min(1),
     subjectId: z.string().optional().default(""),
     slot: z.enum(["training", "tests", "foundation", "course"]),
-    accessType: z.enum(["inherit", "free", "paid"]).optional().default("inherit"),
+    accessType: z.enum(["inherit", "free", "paid", "package"]).optional().default("inherit"),
     isVisible: z.boolean().optional().default(true),
     order: z.number().optional().default(0),
+    courseId: z.string().nullable().optional(),
+    lessonId: z.string().nullable().optional(),
+    topicId: z.string().nullable().optional(),
     createdAt: z.number().optional(),
     updatedAt: z.number().optional(),
   })).optional(),
@@ -2654,6 +2659,87 @@ quizRouter.post(
     });
     clearQuizResultsCache();
     return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));
+  }),
+);
+
+// ── Smart Question Suggest ─────────────────────────────────────────────────
+// الاختيار الذكي التلقائي للأسئلة بناءً على المهارات والصعوبة
+// يُستخدم من UnifiedQuizBuilder / MockExamManager لتوليد الأسئلة تلقائياً
+quizRouter.get(
+  "/smart-suggest",
+  requireAuth,
+  requireRole(["admin", "supervisor", "teacher"]),
+  asyncHandler(async (req, res) => {
+    const skillIds = String(req.query.skillIds || "").split(",").map(s => s.trim()).filter(Boolean);
+    const pathId   = String(req.query.pathId || "").trim();
+    const subjectId = String(req.query.subjectId || "").trim();
+    const count    = Math.min(Math.max(Number(req.query.count || 10), 1), 100);
+    const mode     = String(req.query.mode || "balanced"); // balanced | easy | hard
+
+    if (!pathId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "pathId is required" });
+    }
+
+    // بناء الاستعلام الأساسي
+    const baseQuery: Record<string, any> = {
+      pathId,
+      approvalStatus: "approved",
+    };
+    if (subjectId) baseQuery.subject = subjectId;
+    if (skillIds.length > 0) baseQuery.skillIds = { $in: skillIds };
+
+    // توزيع الصعوبة حسب mode
+    const getDifficultyDistribution = (total: number, mode: string) => {
+      if (mode === "easy") return { Easy: Math.ceil(total * 0.6), Medium: Math.ceil(total * 0.3), Hard: Math.floor(total * 0.1) };
+      if (mode === "hard") return { Easy: Math.floor(total * 0.1), Medium: Math.ceil(total * 0.3), Hard: Math.ceil(total * 0.6) };
+      // balanced (default): سهل 30% / متوسط 50% / صعب 20%
+      return { Easy: Math.ceil(total * 0.3), Medium: Math.ceil(total * 0.5), Hard: Math.floor(total * 0.2) };
+    };
+
+    const dist = getDifficultyDistribution(count, mode);
+
+    // جلب الأسئلة لكل مستوى صعوبة بالتوازي
+    const [easyQuestions, mediumQuestions, hardQuestions] = await Promise.all([
+      QuestionModel.find({ ...baseQuery, difficulty: "Easy" })
+        .select("id text imageUrl options type difficulty skillIds subject sectionId")
+        .limit(dist.Easy * 3) // نجلب أكثر ثم نختار عشوائياً
+        .lean(),
+      QuestionModel.find({ ...baseQuery, difficulty: "Medium" })
+        .select("id text imageUrl options type difficulty skillIds subject sectionId")
+        .limit(dist.Medium * 3)
+        .lean(),
+      QuestionModel.find({ ...baseQuery, difficulty: "Hard" })
+        .select("id text imageUrl options type difficulty skillIds subject sectionId")
+        .limit(dist.Hard * 3)
+        .lean(),
+    ]);
+
+    // اختيار عشوائي من كل مجموعة
+    const shuffleAndTake = (arr: any[], n: number) => {
+      const shuffled = [...arr].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, n);
+    };
+
+    const selected = [
+      ...shuffleAndTake(easyQuestions, dist.Easy),
+      ...shuffleAndTake(mediumQuestions, dist.Medium),
+      ...shuffleAndTake(hardQuestions, dist.Hard),
+    ].sort(() => Math.random() - 0.5); // خلط نهائي
+
+    return res.status(StatusCodes.OK).json({
+      questions: selected,
+      meta: {
+        requested: count,
+        returned: selected.length,
+        distribution: {
+          Easy: selected.filter((q: any) => q.difficulty === "Easy").length,
+          Medium: selected.filter((q: any) => q.difficulty === "Medium").length,
+          Hard: selected.filter((q: any) => q.difficulty === "Hard").length,
+        },
+        skillIds,
+        mode,
+      },
+    });
   }),
 );
 

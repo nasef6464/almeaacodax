@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Question, Quiz } from '../../types';
-import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion, Lock, LockOpen, Eye, Download, X, BookOpen, Target, PlayCircle, ExternalLink, Dumbbell, Award, FileText } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
+import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import {
   getQuizLearningPlacementAccessType,
@@ -198,6 +199,10 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   const [searchTerm, setSearchTerm] = useState('');
   const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
   const [draftMode, setDraftMode] = useState<'regular' | 'saher' | 'central' | null>(null);
+  // جديد: فلتر quizKind (drill | test | mock | all)
+  const [quizKindFilter, setQuizKindFilter] = useState<'all' | 'drill' | 'test' | 'mock'>('all');
+  // جديد: فتح UnifiedQuizBuilder كـ overlay لإنشاء جديد
+  const [isUnifiedBuilderOpen, setIsUnifiedBuilderOpen] = useState(false);
   const [previewQuiz, setPreviewQuiz] = useState<Quiz | null>(null);
   const activeSubject = useMemo(
     () => allowedSubjects.find((subject) => subject.id === (selectedSubjectId || subjectId)),
@@ -332,17 +337,24 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
     ],
   );
 
+  // جديد: filteredQuizzes تأخذ quizKindFilter بعين الاعتبار
   const filteredQuizzes = useMemo(
     () =>
       quizzes
-        .filter((quiz) => quiz.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter((quiz) => {
+          if (!quiz.title.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+          if (quizKindFilter === 'drill') return quiz.quizKind === 'drill';
+          if (quizKindFilter === 'mock') return quiz.quizKind === 'mock' || quiz.placement === 'mock';
+          if (quizKindFilter === 'test') return quiz.quizKind === 'test' || (!quiz.quizKind && quiz.placement !== 'mock');
+          return true;
+        })
         .sort((a, b) => {
           if (!activeLearningScope) return (b.createdAt || 0) - (a.createdAt || 0);
           const aVisible = isQuizVisibleInLearningSlot(a, activeLearningScope) ? 1 : 0;
           const bVisible = isQuizVisibleInLearningSlot(b, activeLearningScope) ? 1 : 0;
           return bVisible - aVisible || (b.createdAt || 0) - (a.createdAt || 0);
         }),
-    [activeLearningScope, quizzes, searchTerm],
+    [activeLearningScope, quizzes, searchTerm, quizKindFilter],
   );
 
   const counts = useMemo(
@@ -351,6 +363,12 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       saher: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.mode || 'regular') === 'saher').length,
       central: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && (quiz.mode || 'regular') === 'central').length,
       hidden: globalQuizzes.filter((quiz) => isMaterialQuizCandidate(quiz) && quiz.showOnPlatform === false).length,
+      // جديد: تصنيف quizKind
+      byKind: {
+        drill: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && q.quizKind === 'drill').length,
+        test: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && (q.quizKind === 'test' || (!q.quizKind && q.placement !== 'mock'))).length,
+        mock: globalQuizzes.filter((q) => isMaterialQuizCandidate(q) && (q.quizKind === 'mock' || q.placement === 'mock')).length,
+      },
     }),
     [globalQuizzes],
   );
@@ -415,16 +433,16 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   const handleCreateNew = () => {
     if (isSupervisor) {
-      handleCreateByMode('central');
+      // المشرف يستخدم UnifiedQuizBuilder مباشرة
+      setIsUnifiedBuilderOpen(true);
       return;
     }
     if (isLearningSpaceManager) {
       handleCreateByMode('regular');
       return;
     }
-    setDraftMode('regular');
-    setEditingQuizId(null);
-    setIsEditing(true);
+    // المدير والمعلم يفتحون UnifiedQuizBuilder
+    setIsUnifiedBuilderOpen(true);
   };
 
   const handleCreateByMode = (mode: 'regular' | 'saher' | 'central') => {
@@ -651,6 +669,16 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* ── UnifiedQuizBuilder Overlay ───────────────────────────────────── */}
+      {isUnifiedBuilderOpen && (
+        <UnifiedQuizBuilder
+          role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
+          allowedGroupIds={undefined}
+          allowedPathIds={user.role === 'teacher' ? (user.managedPathIds?.length ? user.managedPathIds : undefined) : undefined}
+          defaultKind={isSupervisor ? 'test' : 'test'}
+          onClose={() => setIsUnifiedBuilderOpen(false)}
+        />
+      )}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{managerTitle}</h2>
@@ -994,6 +1022,31 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* ── quizKind Tabs ────────────────────────────────────────────── */}
+        <div className="flex gap-0 border-b border-gray-100 overflow-x-auto">
+          {([
+            { key: 'all' as const, label: 'الكل', count: counts.all, icon: null },
+            { key: 'drill' as const, label: 'تدريب', count: counts.byKind.drill, icon: <Dumbbell size={13} /> },
+            { key: 'test' as const, label: 'اختبار', count: counts.byKind.test, icon: <FileText size={13} /> },
+            { key: 'mock' as const, label: 'محاكي', count: counts.byKind.mock, icon: <Award size={13} /> },
+          ]).map(({ key, label, count, icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setQuizKindFilter(key)}
+              className={`flex items-center gap-1.5 px-5 py-3 text-xs font-black border-b-2 shrink-0 transition-all ${
+                quizKindFilter === key
+                  ? 'border-indigo-600 text-indigo-700 bg-indigo-50/50'
+                  : 'border-transparent text-gray-500 hover:text-indigo-600 hover:bg-gray-50'
+              }`}
+            >
+              {icon}{label}
+              <span className={`mr-1 text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                quizKindFilter === key ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
+              }`}>{count}</span>
+            </button>
+          ))}
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-right">
             <thead className="bg-gray-50 border-b border-gray-100">
@@ -1048,14 +1101,28 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <span className="text-sm font-bold text-gray-700">{getQuizPlacementLabel(quiz)}</span>
-                        {hasPlacementDrift(quiz) ? (
-                          <div className="inline-flex w-fit rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-black text-indigo-700">
+                      <div className="space-y-1.5">
+                        {/* quizKind badge — المرجع الأساسي */}
+                        {quiz.quizKind === 'drill' ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black text-emerald-700 border border-emerald-100">
+                            <Dumbbell size={10} /> تدريب
+                          </span>
+                        ) : quiz.quizKind === 'mock' || quiz.placement === 'mock' ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-black text-violet-700 border border-violet-100">
+                            <Award size={10} /> محاكي
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700 border border-indigo-100">
+                            <FileText size={10} /> اختبار
+                          </span>
+                        )}
+                        {/* تحذير التصنيف القديم */}
+                        {hasPlacementDrift(quiz) && (
+                          <div className="inline-flex w-fit rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-700 border border-amber-100">
                             يحتاج تثبيت
                           </div>
-                        ) : null}
-                        <div className="text-[11px] text-gray-400">من مركز الاختبارات</div>
+                        )}
+                        <div className="text-[10px] text-gray-400">{getQuizPlacementLabel(quiz)}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
