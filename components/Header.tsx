@@ -73,7 +73,6 @@ const text = {
   otpSend: '\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0631\u0645\u0632',
   otpVerify: '\u062a\u062d\u0642\u0642 \u0648\u062f\u062e\u0648\u0644',
 };
-
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -88,6 +87,23 @@ export const Header: React.FC = () => {
   const [otpCode, setOtpCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
+  const [signupName, setSignupName] = useState('');
+  const [smartInput, setSmartInput] = useState('');
+  const [smartPassword, setSmartPassword] = useState('');
+  const [smartLoginLoading, setSmartLoginLoading] = useState(false);
+
+  const detectInputType = (value: string): 'email' | 'phone' | 'nationalId' | 'unknown' => {
+    const v = value.trim();
+    if (v.includes('@')) return 'email';
+    const digits = v.replace(/\D/g, '');
+    if (/^[12]\d{9}$/.test(digits)) return 'nationalId';
+    if (digits.length >= 8) return 'phone';
+    return 'unknown';
+  };
+
+  const smartInputType = detectInputType(smartInput);
+  const smartInputNeedsPassword = smartInputType === 'email' || smartInputType === 'nationalId';
+  const smartInputIsPhone = smartInputType === 'phone';
   const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -358,31 +374,49 @@ export const Header: React.FC = () => {
     }
   };
 
-  const handleWhatsappStart = async () => {
+  const handleSmartLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (smartLoginLoading) return;
     setAuthError('');
-    setOtpLoading(true);
+    setSmartLoginLoading(true);
+    const v = smartInput.trim();
+    const pw = smartPassword.trim();
+    const digits = v.replace(/\D/g, '');
     try {
-      await api.whatsappStartLogin(otpPhone.trim());
-      setOtpSent(true);
+      let sessionUser: any;
+      if (smartInputType === 'email') {
+        sessionUser = await signInWithEmail(v.toLowerCase(), pw);
+      } else if (smartInputType === 'nationalId') {
+        const resp = await api.nationalIdLogin(digits, pw);
+        window.location.reload();
+        return;
+      } else if (smartInputType === 'phone') {
+        setOtpPhone(v);
+        setSmartLoginLoading(false);
+        if (!otpSent) {
+          await api.whatsappStartLogin(v);
+          setOtpSent(true);
+        } else {
+          await api.whatsappVerifyLogin(v, otpCode.trim());
+          window.location.reload();
+        }
+        return;
+      } else {
+        setAuthError('أدخل بريد إلكتروني أو رقم جوال أو رقم الهوية');
+        setSmartLoginLoading(false);
+        return;
+      }
+      if (sessionUser) {
+        setIsLoginModalOpen(false);
+        setSmartInput('');
+        setSmartPassword('');
+        navigate(getDashboardPathForRole(sessionUser.role));
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : text.authFallbackError;
       setAuthError(message);
     } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  const handleWhatsappVerify = async () => {
-    setAuthError('');
-    setOtpLoading(true);
-    try {
-      await api.whatsappVerifyLogin(otpPhone.trim(), otpCode.trim());
-      window.location.reload();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : text.authFallbackError;
-      setAuthError(message);
-    } finally {
-      setOtpLoading(false);
+      setSmartLoginLoading(false);
     }
   };
 
@@ -626,161 +660,220 @@ export const Header: React.FC = () => {
       ) : null}
 
       {isLoginModalOpen ? (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden animate-fade-in shadow-xl">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {isSignUp ? text.createAccount : text.login}
-                </h2>
-                <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                  <X size={24} />
-                </button>
-              </div>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in">
 
+            <div className="flex justify-between items-center px-6 pt-6 pb-4 border-b border-gray-100">
+              <div>
+                <h2 className="text-xl font-black text-gray-900">
+                  {isSignUp ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {isSignUp ? 'انضم إلى منصة المئة اليوم' : 'مرحباً بعودتك!'}
+                </p>
+              </div>
+              <button
+                id="login-modal-close"
+                onClick={() => { setIsLoginModalOpen(false); setAuthError(''); setSmartInput(''); setSmartPassword(''); setOtpSent(false); setOtpCode(''); }}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
               {authError ? (
-                <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100">
-                  {authError}
+                <div id="login-error-banner" className="p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">⚠️</span>
+                  <span>{authError}</span>
                 </div>
               ) : null}
 
-              <form onSubmit={handleEmailAuth} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">{text.email}</label>
-                  <input
-                    type="email"
-                    aria-label="Email"
-                    required
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-left"
-                    dir="ltr"
-                    placeholder="user@example.com"
-                  />
-                </div>
-                <div>
-                  <div className="mb-1 flex items-center justify-between gap-2">
-                    <label className="block text-sm font-bold text-gray-700">{text.password}</label>
-                    {!isSignUp ? (
-                      <Link
-                        to="/forgot-password"
-                        onClick={() => setIsLoginModalOpen(false)}
-                        className="text-xs font-bold text-emerald-600 hover:underline"
-                      >
-                        {text.forgotPassword}
-                      </Link>
-                    ) : null}
-                  </div>
-                  <input
-                    type="password"
-                    aria-label="Password"
-                    required
-                    minLength={isSignUp ? 8 : undefined}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-left"
-                    dir="ltr"
-                    placeholder="********"
-                  />
-                  {isSignUp ? (
-                    <p className="mt-1 text-xs text-gray-400">8 أحرف على الأقل، مع حرف ورقم.</p>
-                  ) : null}
-                </div>
+              {!isSignUp ? (
                 <button
-                  type="submit"
-                  disabled={isAuthSubmitting}
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isAuthSubmitting ? '...' : isSignUp ? text.signUp : text.signIn}
-                </button>
-              </form>
-
-              <div className="mt-6 flex items-center gap-4">
-                <div className="flex-1 h-px bg-gray-200" />
-                <span className="text-sm text-gray-400">{text.or}</span>
-                <div className="flex-1 h-px bg-gray-200" />
-              </div>
-
-              <button
-                onClick={async () => {
-                  try {
-                    await signInWithGoogle();
-                    setIsLoginModalOpen(false);
-                  } catch (error) {
-                    const message = error instanceof Error ? error.message : text.authFallbackError;
-                    setAuthError(message);
-                  }
-                }}
-                className="mt-6 w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl transition-colors"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#EA4335"
-                  />
-                </svg>
-                {text.continueWithGoogle}
-              </button>
-
-              <div className="mt-4 space-y-2 rounded-xl border border-emerald-100 bg-emerald-50 p-3">
-                <div className="text-xs font-bold text-emerald-700">{text.continueWithWhatsApp}</div>
-                <input
-                  type="tel"
-                  aria-label="WhatsApp phone"
-                  value={otpPhone}
-                  onChange={(event) => setOtpPhone(event.target.value)}
-                  className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-                  dir="ltr"
-                  placeholder={`${text.otpPhone} (9665xxxxxxx)`}
-                />
-                {otpSent ? (
-                  <input
-                    type="text"
-                    aria-label="OTP code"
-                    value={otpCode}
-                    onChange={(event) => setOtpCode(event.target.value)}
-                    className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-                    dir="ltr"
-                    placeholder={text.otpCode}
-                  />
-                ) : null}
-                <button
-                  type="button"
-                  disabled={otpLoading || !otpPhone.trim() || (otpSent && otpCode.trim().length !== 6)}
-                  onClick={otpSent ? handleWhatsappVerify : handleWhatsappStart}
-                  className="w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {otpLoading ? '...' : otpSent ? text.otpVerify : text.otpSend}
-                </button>
-              </div>
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => {
-                    setIsSignUp((value) => !value);
-                    setAuthError('');
+                  id="login-google-btn"
+                  onClick={async () => {
+                    try {
+                      await signInWithGoogle();
+                      setIsLoginModalOpen(false);
+                    } catch (error) {
+                      const message = error instanceof Error ? error.message : text.authFallbackError;
+                      setAuthError(message);
+                    }
                   }}
+                  className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 font-bold py-3 rounded-xl transition-all"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                  </svg>
+                  الدخول بحساب Google
+                </button>
+              ) : null}
+
+              {!isSignUp ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-gray-400 font-medium">أو سجّل بأحد الطرق التالية</span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+              ) : null}
+
+              {!isSignUp ? (
+                <form id="smart-login-form" onSubmit={handleSmartLogin} className="space-y-3">
+                  <div>
+                    <div className="relative">
+                      <input
+                        id="smart-login-input"
+                        type="text"
+                        inputMode="email"
+                        value={smartInput}
+                        onChange={(e) => { setSmartInput(e.target.value); setAuthError(''); setOtpSent(false); setOtpCode(''); }}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-emerald-400 outline-none transition-colors"
+                        dir="auto"
+                        placeholder="البريد الإلكتروني أو رقم الجوال أو رقم الهوية"
+                        autoComplete="username"
+                        autoFocus
+                      />
+                      {smartInput.trim().length > 3 && (
+                        <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold px-2 py-0.5 rounded-full ${
+                          smartInputType === 'email' ? 'bg-blue-100 text-blue-700' :
+                          smartInputType === 'nationalId' ? 'bg-purple-100 text-purple-700' :
+                          smartInputType === 'phone' ? 'bg-green-100 text-green-700' :
+                          'bg-gray-100 text-gray-400'
+                        }`}>
+                          {smartInputType === 'email' ? '✉ إيميل' :
+                           smartInputType === 'nationalId' ? '🪪 هوية' :
+                           smartInputType === 'phone' ? '📱 جوال' : '...'}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-gray-400">الهوية: 10 أرقام تبدأ بـ 1 أو 2 — الجوال: يُرسل رمز على واتساب</p>
+                  </div>
+
+                  {smartInputNeedsPassword && smartInput.trim().length > 3 ? (
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-sm font-bold text-gray-700">كلمة المرور</label>
+                        <Link to="/forgot-password" onClick={() => setIsLoginModalOpen(false)} className="text-xs text-emerald-600 hover:underline font-bold">
+                          {text.forgotPassword}
+                        </Link>
+                      </div>
+                      <input
+                        id="smart-login-password"
+                        type="password"
+                        value={smartPassword}
+                        onChange={(e) => setSmartPassword(e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-emerald-400 outline-none text-left transition-colors"
+                        dir="ltr"
+                        placeholder="كلمة المرور"
+                        autoComplete="current-password"
+                      />
+                    </div>
+                  ) : null}
+
+                  {smartInputIsPhone && otpSent ? (
+                    <div>
+                      <label className="text-sm font-bold text-gray-700 block mb-1">رمز التحقق (واتساب)</label>
+                      <input
+                        id="smart-otp-code"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-4 py-3 border-2 border-emerald-300 rounded-xl focus:ring-0 focus:border-emerald-500 outline-none text-center text-2xl font-mono tracking-widest"
+                        dir="ltr"
+                        placeholder="• • • • • •"
+                        autoFocus
+                      />
+                      <p className="text-xs text-emerald-600 mt-1 text-center">تم إرسال الرمز على واتساب</p>
+                    </div>
+                  ) : null}
+
+                  <button
+                    id="smart-login-submit"
+                    type="submit"
+                    disabled={smartLoginLoading || smartInput.trim().length < 4 || (smartInputNeedsPassword && !smartPassword.trim()) || (smartInputIsPhone && otpSent && otpCode.length !== 6)}
+                    className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white font-black py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                  >
+                    {smartLoginLoading ? (
+                      <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />جارٍ...</span>
+                    ) : smartInputIsPhone && !otpSent ? 'إرسال رمز واتساب'
+                      : smartInputIsPhone && otpSent ? 'تحقق وادخل'
+                      : 'دخول'}
+                  </button>
+                </form>
+              ) : null}
+
+              {isSignUp ? (
+                <form id="signup-form" onSubmit={handleEmailAuth} className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">الاسم الكامل</label>
+                    <input
+                      type="text"
+                      aria-label="Name"
+                      required
+                      value={signupName}
+                      onChange={(e) => setSignupName(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-400 outline-none"
+                      placeholder="الاسم الثلاثي"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">البريد الإلكتروني</label>
+                    <input
+                      type="email"
+                      aria-label="Email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-400 outline-none text-left"
+                      dir="ltr"
+                      placeholder="user@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">كلمة المرور</label>
+                    <input
+                      type="password"
+                      aria-label="Password"
+                      required
+                      minLength={8}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-400 outline-none text-left"
+                      dir="ltr"
+                      placeholder="8 أحرف على الأقل"
+                    />
+                    <p className="mt-1 text-xs text-gray-400">8 أحرف على الأقل، مع حرف ورقم.</p>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isAuthSubmitting}
+                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl transition-colors disabled:opacity-60"
+                  >
+                    {isAuthSubmitting ? '...' : 'إنشاء الحساب'}
+                  </button>
+                </form>
+              ) : null}
+
+              <div className="text-center pt-2 border-t border-gray-100">
+                <button
+                  id="toggle-signup-login"
+                  onClick={() => { setIsSignUp((v) => !v); setAuthError(''); setSmartInput(''); setSmartPassword(''); }}
                   className="text-sm text-emerald-600 hover:underline font-bold"
                 >
-                  {isSignUp ? text.hasAccount : text.noAccount}
+                  {isSignUp ? 'لديّ حساب بالفعل — تسجيل الدخول' : 'ليس لديّ حساب — إنشاء حساب جديد'}
                 </button>
               </div>
             </div>
           </div>
         </div>
       ) : null}
+
       <SearchModal open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </header>
   );
@@ -795,4 +888,3 @@ const UserMenuItem = ({ to, icon, label }: { to: string; icon: React.ReactNode; 
     {label}
   </Link>
 );
-

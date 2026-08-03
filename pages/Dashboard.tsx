@@ -18,6 +18,7 @@ import { isStandaloneMockExam } from '../utils/mockExam';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { EmptyState } from '../components/ui/EmptyState';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
+import { ParentStudentLinker } from '../components/ParentStudentLinker';
 
 // Lazy Load Sub-Pages to optimize Dashboard initial load
 const Quizzes = React.lazy(() => import('./Quizzes'));
@@ -184,7 +185,8 @@ type DashboardTab =
     | 'requests'
     | 'parent-results'
     | 'parent-skills'
-    | 'parent-followup';
+    | 'parent-followup'
+    | 'parent-link';
 
 const formatParentDate = (result: ScopedQuizResult) => {
     const timestamp = getResultTimestamp(result);
@@ -786,6 +788,7 @@ const Dashboard: React.FC = () => {
         { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
         { id: 'parent-results', label: 'نتائج الأبناء', icon: <FileText size={20} /> },
         { id: 'parent-skills', label: 'المهارات الضعيفة', icon: <Target size={20} /> },
+        { id: 'parent-link', label: 'ربط طالب', icon: <User size={20} /> },
         { id: 'reports', label: 'تقرير مبسط', icon: <PieChart size={20} /> },
         { id: 'requests', label: 'طلبات الدفع', icon: <ShoppingCart size={20} /> },
         { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
@@ -810,6 +813,13 @@ const Dashboard: React.FC = () => {
                 case 'parent-results': return <ParentResultsTab />;
                 case 'parent-skills': return <ParentSkillsTab />;
                 case 'parent-followup': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+                case 'parent-link': return (
+                    <div className="max-w-lg mx-auto py-6 px-4">
+                        <ParentStudentLinker
+                            linkedStudentIds={[]} 
+                        />
+                    </div>
+                );
                 case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
                 case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
                 case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;

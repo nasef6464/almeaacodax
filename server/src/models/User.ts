@@ -38,6 +38,7 @@ const userSchema = new Schema(
     favorites: { type: [String], default: [] },
     reviewLater: { type: [String], default: [] },
     phone: { type: String, default: "" },
+    nationalId: { type: String, default: null, sparse: true },
     whatsappDigestEnabled: { type: Boolean, default: false },
   },
   {
@@ -60,6 +61,7 @@ userSchema.set("toJSON", {
 });
 
 userSchema.index({ role: 1, createdAt: -1 });
+userSchema.index({ nationalId: 1 }, { unique: true, sparse: true });
 userSchema.index({ schoolId: 1, role: 1, createdAt: -1 });
 userSchema.index({ groupIds: 1, role: 1 });
 userSchema.index({ linkedStudentIds: 1 });

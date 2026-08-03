@@ -1217,3 +1217,155 @@ authRouter.post(
     });
   }),
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// National ID Login — POST /api/auth/login/national-id
+// Allows login using Saudi National ID (رقم الهوية) + password
+// ─────────────────────────────────────────────────────────────────────────────
+const nationalIdLoginSchema = z.object({
+  nationalId: z.string().regex(/^[12]\d{9}$/, "National ID must be 10 digits starting with 1 or 2"),
+  password: z.string().min(1).max(160),
+});
+
+authRouter.post(
+  "/login/national-id",
+  asyncHandler(async (req, res) => {
+    const payload = nationalIdLoginSchema.parse(req.body);
+    const user = await UserModel.findOne({ nationalId: payload.nationalId });
+
+    if (!user) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "رقم الهوية أو كلمة المرور غير صحيحة" });
+    }
+
+    if (isLoginLocked(user)) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({ message: "تم تجاوز عدد المحاولات. حاول مجدداً بعد قليل." });
+    }
+
+    if (user.isActive === false) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "الحساب موقوف. تواصل مع الإدارة." });
+    }
+
+    const valid = await bcrypt.compare(payload.password, user.passwordHash);
+    if (!valid) {
+      await recordFailedLogin(user);
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "رقم الهوية أو كلمة المرور غير صحيحة" });
+    }
+
+    await clearFailedLoginState(user);
+    const token = signAccessToken({ id: user.id, email: user.email, role: user.role, name: user.name });
+    setAuthCookie(res, token);
+    return res.json({
+      ...(shouldExposeTokenInAuthResponse ? { token } : {}),
+      user: serializeUser(user),
+    });
+  }),
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Update National ID / Phone — PATCH /api/auth/me/identity
+// Allows a logged-in user to set their nationalId and/or phone
+// ─────────────────────────────────────────────────────────────────────────────
+const identityUpdateSchema = z.object({
+  nationalId: z.string().regex(/^[12]\d{9}$/).optional().nullable(),
+  phone: z.string().min(8).max(24).optional().nullable(),
+});
+
+authRouter.patch(
+  "/me/identity",
+  requireAuth,
+  asyncHandler(async (req: any, res) => {
+    const payload = identityUpdateSchema.parse(req.body);
+    const update: Record<string, unknown> = {};
+
+    if (payload.nationalId !== undefined) {
+      // Check uniqueness
+      if (payload.nationalId) {
+        const conflict = await UserModel.findOne({ nationalId: payload.nationalId, _id: { $ne: req.user._id } });
+        if (conflict) {
+          return res.status(StatusCodes.CONFLICT).json({ message: "رقم الهوية مرتبط بحساب آخر" });
+        }
+      }
+      update.nationalId = payload.nationalId || null;
+    }
+
+    if (payload.phone !== undefined) {
+      update.phone = payload.phone ? normalizePhone(payload.phone) : "";
+    }
+
+    const user = await UserModel.findByIdAndUpdate(req.user._id, { $set: update }, { new: true });
+    return res.json({ user: serializeUser(user) });
+  }),
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Parent ↔ Student Linking — POST /api/auth/parent/link-student
+// Parent links a student via their nationalId OR phone number
+// ─────────────────────────────────────────────────────────────────────────────
+const linkStudentSchema = z.object({
+  nationalId: z.string().regex(/^[12]\d{9}$/).optional(),
+  phone: z.string().min(8).max(24).optional(),
+}).refine((d) => d.nationalId || d.phone, { message: "يجب تقديم رقم الهوية أو رقم الجوال" });
+
+authRouter.post(
+  "/parent/link-student",
+  requireAuth,
+  asyncHandler(async (req: any, res) => {
+    if (req.user.role !== "parent") {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
+    }
+
+    const payload = linkStudentSchema.parse(req.body);
+
+    // Find student by nationalId or phone
+    const query: any = { role: "student" };
+    if (payload.nationalId) query.nationalId = payload.nationalId;
+    else query.phone = normalizePhone(payload.phone!);
+
+    const student = await UserModel.findOne(query);
+    if (!student) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: payload.nationalId
+          ? "لم يُعثر على طالب بهذا الرقم الوطني"
+          : "لم يُعثر على طالب بهذا الجوال",
+      });
+    }
+
+    const studentId = String(student.id || student._id);
+    const parentId = String(req.user.id || req.user._id);
+
+    // Prevent duplicate linking
+    const parent = await UserModel.findById(req.user._id);
+    if (parent?.linkedStudentIds?.includes(studentId)) {
+      return res.status(StatusCodes.CONFLICT).json({ message: "الطالب مرتبط بك بالفعل" });
+    }
+
+    // Link student to parent
+    await UserModel.findByIdAndUpdate(req.user._id, { $addToSet: { linkedStudentIds: studentId } });
+
+    return res.json({
+      message: "تم ربط الطالب بنجاح",
+      student: {
+        id: studentId,
+        name: student.name,
+        role: student.role,
+        schoolId: student.schoolId,
+      },
+    });
+  }),
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Unlink Student — DELETE /api/auth/parent/link-student/:studentId
+// ─────────────────────────────────────────────────────────────────────────────
+authRouter.delete(
+  "/parent/link-student/:studentId",
+  requireAuth,
+  asyncHandler(async (req: any, res) => {
+    if (req.user.role !== "parent") {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
+    }
+    const { studentId } = req.params;
+    await UserModel.findByIdAndUpdate(req.user._id, { $pull: { linkedStudentIds: studentId } });
+    return res.json({ message: "تم إلغاء ربط الطالب" });
+  }),
+);

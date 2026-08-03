@@ -389,6 +389,24 @@ export const api = {
       method: "POST",
       body: { phone, code },
     }),
+  nationalIdLogin: (nationalId: string, password: string) =>
+    request<{ token?: string; user: unknown }>("/auth/login/national-id", {
+      method: "POST",
+      body: { nationalId, password },
+    }),
+  updateMyIdentity: (payload: { nationalId?: string | null; phone?: string | null }, token?: string | null) =>
+    request<{ user: unknown }>("/auth/me/identity", {
+      method: "PATCH",
+      body: payload,
+      token,
+    }),
+  parentLinkStudent: (payload: { nationalId?: string; phone?: string }) =>
+    request<{ message: string; student: { id: string; name: string; role: string; schoolId?: string | null } }>(
+      "/auth/parent/link-student",
+      { method: "POST", body: payload },
+    ),
+  parentUnlinkStudent: (studentId: string) =>
+    request<{ message: string }>(`/auth/parent/link-student/${studentId}`, { method: "DELETE" }),
   register: (name: string, email: string, password: string) =>
     request<{ token?: string; user: unknown }>("/auth/register", {
       method: "POST",
