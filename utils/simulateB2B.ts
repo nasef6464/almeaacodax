@@ -38,10 +38,10 @@ export const injectB2BSimulation = () => {
 
     // 2. Create mock users
     const mockUsers: User[] = [
-        { id: 'stu1', name: 'أحمد محمود', role: Role.STUDENT, email: 'stu1@mock.com' },
-        { id: 'stu2', name: 'سارة خالد', role: Role.STUDENT, email: 'stu2@mock.com' },
-        { id: 'stu3', name: 'عمر فهد', role: Role.STUDENT, email: 'stu3@mock.com' },
-        { id: 'stu4', name: 'ريم علي', role: Role.STUDENT, email: 'stu4@mock.com' },
+        { id: 'stu1', name: 'أحمد محمود', role: Role.STUDENT, email: 'stu1@mock.com', avatar: '', points: 0, badges: [], subscription: { plan: 'free' as const, purchasedCourses: [], purchasedPackages: [] } },
+        { id: 'stu2', name: 'سارة خالد', role: Role.STUDENT, email: 'stu2@mock.com', avatar: '', points: 0, badges: [], subscription: { plan: 'free' as const, purchasedCourses: [], purchasedPackages: [] } },
+        { id: 'stu3', name: 'عمر فهد', role: Role.STUDENT, email: 'stu3@mock.com', avatar: '', points: 0, badges: [], subscription: { plan: 'free' as const, purchasedCourses: [], purchasedPackages: [] } },
+        { id: 'stu4', name: 'ريم علي', role: Role.STUDENT, email: 'stu4@mock.com', avatar: '', points: 0, badges: [], subscription: { plan: 'free' as const, purchasedCourses: [], purchasedPackages: [] } },
     ];
     const existingUserIds = new Set(store.users.map(u => u.id));
     const newUsers = mockUsers.filter(u => !existingUserIds.has(u.id));
@@ -53,22 +53,25 @@ export const injectB2BSimulation = () => {
     const mockQuizId = 'q_mock_b2b_directed_1';
     const existingQuiz = store.quizzes.find(q => q.id === mockQuizId);
     if (!existingQuiz) {
-        const newQuiz: Quiz = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newQuiz: any = {
             id: mockQuizId,
             title: 'اختبار تجريبي شامل (قاعة الاختبارات)',
             description: 'هذا الاختبار موجه لك خصيصاً من المشرف لتحديد مستواك في الكمي واللفظي.',
             pathId: 'p_qudrat',
             subjectId: 'sub_quant',
-            mode: 'central', // This is what makes it a directed test!
+            mode: 'central',
             targetGroupIds: [mockGroupId],
             questionIds: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'],
             timeLimit: 15,
             isPublished: true,
             createdAt: Date.now(),
             authorId: currentUser.id,
-            placement: 'mock'
+            placement: 'mock',
+            settings: {},
+            access: { type: 'free' },
         };
-        useStore.setState({ quizzes: [newQuiz, ...store.quizzes] });
+        useStore.setState({ quizzes: [newQuiz as import('../types').Quiz, ...store.quizzes] });
     }
 
     // 4. Create mock results for the analytics to show up

@@ -583,6 +583,40 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               </Link>
             ) : null}
           </div>
+
+          {/* Quick Category Switcher in header */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('regular')}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black transition-all ${
+                activeAttemptCategory === 'regular'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-200 hover:bg-indigo-50'
+              }`}
+            >
+              <FileText size={16} />
+              اختباراتي
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'regular' ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-600'
+              }`}>{attemptGroupsByCategory.regular.length}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('mock')}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black transition-all ${
+                activeAttemptCategory === 'mock'
+                  ? 'bg-violet-600 text-white shadow-md'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-violet-200 hover:bg-violet-50'
+              }`}
+            >
+              <Sparkles size={16} />
+              اختبارات محاكية
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'mock' ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-600'
+              }`}>{attemptGroupsByCategory.mock.length}</span>
+            </button>
+          </div>
         </header>
 
         {/* <StudentNextActionStrip {...quizCenterNextAction} /> */}
@@ -595,17 +629,54 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="bg-secondary-500 text-white p-3 text-center font-bold text-base">اختباراتي</div>
+          {/* Category Toggle Buttons */}
+          <div className="grid grid-cols-2 border-b border-gray-100">
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('regular')}
+              className={`flex items-center justify-center gap-2 py-3.5 text-sm font-black transition-all ${
+                activeAttemptCategory === 'regular'
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+              }`}
+            >
+              <FileText size={16} />
+              اختباراتي
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'regular' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+              }`}>
+                {attemptGroupsByCategory.regular.length}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveAttemptCategory('mock')}
+              className={`flex items-center justify-center gap-2 py-3.5 text-sm font-black transition-all border-r border-gray-100 ${
+                activeAttemptCategory === 'mock'
+                  ? 'bg-violet-600 text-white shadow-sm'
+                  : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+              }`}
+            >
+              <Sparkles size={16} />
+              اختبارات محاكية
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-black ${
+                activeAttemptCategory === 'mock' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+              }`}>
+                {attemptGroupsByCategory.mock.length}
+              </span>
+            </button>
+          </div>
 
           <div className="border-b border-gray-100 bg-gray-50/70 p-4 space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
+              {/* hidden select kept for state compatibility */}
               <select
                 value={activeAttemptCategory}
                 onChange={(e) => setActiveAttemptCategory(e.target.value as AttemptCategory)}
-                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 focus:border-indigo-400 focus:outline-none"
+                className="hidden"
               >
-                <option value="regular">اختبارات عادية ({attemptGroupsByCategory.regular.length})</option>
-                <option value="mock">اختبارات محاكية ({attemptGroupsByCategory.mock.length})</option>
+                <option value="regular">اختبارات عادية</option>
+                <option value="mock">اختبارات محاكية</option>
               </select>
 
               {attemptTitleFilters.length > 2 ? (
@@ -730,7 +801,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
           
           <div className="grid gap-4 md:grid-cols-2 relative z-10 mt-6">
             {directedQuizzes.map((quiz) => {
-              const route = buildQuizRouteWithContext(quiz, null);
+              const route = buildQuizRouteWithContext(quiz.id, null);
               const pathName = getPathName(quiz.pathId);
               return (
                 <Link

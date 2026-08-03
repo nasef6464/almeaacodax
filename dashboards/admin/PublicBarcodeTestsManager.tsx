@@ -228,6 +228,8 @@ export const PublicBarcodeTestsManager: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [loadingTests, setLoadingTests] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
+  const [lastReportRefreshAt, setLastReportRefreshAt] = useState<number | null>(null);
+
   const [liveMonitoring, setLiveMonitoring] = useState(false);
   const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
   const [activeTab, setActiveTab] = useState<'live-broadcast' | 'targeted-assignments' | 'reports-analytics'>('live-broadcast');

@@ -27,6 +27,7 @@ const Plan = React.lazy(() => import('./Plan'));
 const QA = React.lazy(() => import('./QA'));
 const MyRequests = React.lazy(() => import('./MyRequests').then(module => ({ default: module.MyRequests })));
 const FlashcardsManager = React.lazy(() => import('./FlashcardsManager'));
+const MockExamStudentHub = React.lazy(() => import('./MockExamStudentHub'));
 
 const TabLoading = () => (
     <div className="flex items-center justify-center h-64 text-amber-500">
@@ -174,8 +175,10 @@ type DashboardTab =
     | 'sessions'
     | 'saher'
     | 'quizzes'
+    | 'mock-exams'
     | 'reports'
     | 'favorites'
+    | 'flashcards'
     | 'plan'
     | 'qa'
     | 'requests'
@@ -770,6 +773,7 @@ const Dashboard: React.FC = () => {
         { id: 'sessions', label: 'جلساتي', icon: <Calendar size={20} /> },
         { id: 'saher', label: 'مركز الاختبارات', icon: <Zap size={20} /> },
         { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
+        { id: 'mock-exams', label: 'اختباراتي المحاكية', icon: <Star size={20} /> },
         { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
         { id: 'favorites', label: 'مركز مراجعة الأسئلة', icon: <Heart size={20} /> },
         { id: 'flashcards', label: 'بطاقات التذكر', icon: <BookOpen size={20} /> },
@@ -821,6 +825,7 @@ const Dashboard: React.FC = () => {
             case 'sessions': return <SessionsTab />;
             case 'saher': return <Suspense fallback={<TabLoading />}><Quizzes /></Suspense>;
             case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes view="attempts" /></Suspense>;
+            case 'mock-exams': return <Suspense fallback={<TabLoading />}><MockExamStudentHub /></Suspense>;
             case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
             case 'favorites': return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
             case 'flashcards': return <Suspense fallback={<TabLoading />}><FlashcardsManager /></Suspense>;

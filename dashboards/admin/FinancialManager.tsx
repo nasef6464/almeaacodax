@@ -447,6 +447,83 @@ export const FinancialManager: React.FC = () => {
         }
     };
 
+    // ── Payment Settings Handlers ─────────────────────────────────────────
+    const saveSettings = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            await api.updatePaymentSettings(settings);
+            setFeedback('تم حفظ إعدادات وسائل الدفع بنجاح');
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر حفظ الإعدادات');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateMethodSettings = (
+        method: 'card' | 'transfer' | 'wallet',
+        field: string,
+        value: unknown,
+    ) => {
+        setSettings((current) => ({
+            ...current,
+            [method]: { ...current[method], [field]: value },
+        }));
+    };
+
+    const toggleMethodCountry = (method: 'card' | 'transfer' | 'wallet', countryCode: string) => {
+        setSettings((current) => {
+            const supported = current[method].supportedCountries || [];
+            const next = supported.includes(countryCode)
+                ? supported.filter((c) => c !== countryCode)
+                : [...supported, countryCode];
+            return { ...current, [method]: { ...current[method], supportedCountries: next } };
+        });
+    };
+
+    const applyCountryPreset = async (country: 'SA' | 'EG') => {
+        const saPreset = {
+            card: { ...defaultSettings.card, supportedCountries: ['SA'], providerName: 'Tap / MyFatoorah / HyperPay', providerCode: 'tap' },
+            transfer: { ...defaultSettings.transfer, supportedCountries: ['SA'] },
+            wallet: { ...defaultSettings.wallet, supportedCountries: ['SA'], providerName: 'STC Pay' },
+        };
+        const egPreset = {
+            card: { ...defaultSettings.card, supportedCountries: ['EG'], providerName: 'Paymob / Fawry', providerCode: 'paymob' },
+            transfer: { ...defaultSettings.transfer, supportedCountries: ['EG'] },
+            wallet: { ...defaultSettings.wallet, supportedCountries: ['EG'], providerName: 'Vodafone Cash / Fawry' },
+        };
+        const preset = country === 'SA' ? saPreset : egPreset;
+        setSettings((current) => ({ ...current, ...preset }));
+    };
+
+    const applyProviderPreset = (
+        method: 'card' | 'transfer' | 'wallet',
+        preset: { code: string; label: string; countries: readonly string[] },
+    ) => {
+        setSettings((current) => ({
+            ...current,
+            [method]: {
+                ...current[method],
+                providerName: preset.label,
+                providerCode: preset.code,
+                supportedCountries: [...preset.countries],
+            },
+        }));
+    };
+
+    // ── Discount Summary ───────────────────────────────────────────────
+    const discountSummary = useMemo(() => {
+        const total = discountCodes.length;
+        const active = discountCodes.filter((c) => c.status === 'active').length;
+        const requestCount = paymentRequests.filter((r) => !!(r as any).discountCode).length;
+        const savedAmount = paymentRequests
+            .filter((r) => !!(r as any).discountAmount)
+            .reduce((sum, r) => sum + ((r as any).discountAmount as number || 0), 0);
+        return { total, active, requestCount, savedAmount };
+    }, [discountCodes, paymentRequests]);
+
     const exportPaymentRequests = () => {
         downloadCsv('payment-requests.csv', [
             ['رقم الطلب', 'المستخدم', 'المبلغ', 'الحالة', 'التاريخ'],
@@ -461,14 +538,300 @@ export const FinancialManager: React.FC = () => {
     };
     const exportSchoolPackages = () => {
         downloadCsv('school-packages.csv', [
-            ['اسم الباقة', 'السعر', 'الحالة', 'الطلاب'],
+            ['اسم الباقة', 'الحالة', 'الطلاب'],
             ...b2bPackages.map(pkg => [
-                pkg.title,
-                pkg.price || 0,
+                pkg.name,
                 pkg.status,
                 pkg.maxStudents || 0
             ])
         ]);
+    };
+
+    // ── Content Type Label ─────────────────────────────────────────────────
+    const contentTypeLabel = (type: PackageContentType): string => {
+        const map: Record<string, string> = {
+            courses: 'دورات',
+            foundation: 'تأسيس',
+            banks: 'بنوك أسئلة',
+            tests: 'اختبارات',
+            library: 'مكتبة',
+        };
+        return map[type] ?? type;
+    };
+
+    // ── Discount Code Rows (enriched) ──────────────────────────────────────
+    const discountCodeRows = useMemo(() => {
+        return discountCodes.map((code) => {
+            const packagesLabel = (code.packageIds || []).length > 0
+                ? (code.packageIds || []).map((id) => courses.find((c) => c.id === id)?.title ?? id).join('، ')
+                : 'كل الباقات';
+            const totalDiscount = paymentRequests
+                .filter((r) => (r as any).discountCode === code.code)
+                .reduce((sum, r) => sum + ((r as any).discountAmount as number || 0), 0);
+            return { ...code, packagesLabel, totalDiscount };
+        });
+    }, [discountCodes, courses, paymentRequests]);
+
+    const toggleDiscountPackage = (pkgId: string) => {
+        setDiscountForm((current) => {
+            const ids = current.packageIds || [];
+            const next = ids.includes(pkgId) ? ids.filter((id) => id !== pkgId) : [...ids, pkgId];
+            return { ...current, packageIds: next };
+        });
+    };
+
+    const saveDiscountCode = async () => {
+        if (!discountForm.code.trim()) return;
+        setLoading(true);
+        setError(null);
+        try {
+            await api.createDiscountCode(discountForm);
+            setFeedback('تم إنشاء كود الخصم بنجاح');
+            const res = await api.getDiscountCodes();
+            setDiscountCodes(((res as { codes?: typeof discountCodes })?.codes || []).map((c) => ({ ...c, code: String(c.code).toUpperCase() })));
+            setDiscountForm({ code: '', label: '', type: 'percentage', value: 10, status: 'active', minAmount: 0, maxRedemptions: 0, packageIds: [], pathIds: [], subjectIds: [], contentTypes: [] });
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر حفظ كود الخصم');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const exportDiscountCodes = () => {
+        downloadCsv('discount-codes.csv', [
+            ['الكود', 'النوع', 'القيمة', 'الحالة', 'استخدامات'],
+            ...discountCodes.map((c) => [c.code, c.type, c.value, c.status, c.currentRedemptions || 0]),
+        ]);
+    };
+
+    const toggleDiscountStatus = async (code: DiscountCode) => {
+        const next: DiscountCode['status'] = code.status === 'active' ? 'paused' : 'active';
+        try {
+            await api.updateDiscountCode(code.code, { status: next });
+            setDiscountCodes((prev) => prev.map((c) => c.code === code.code ? { ...c, status: next } : c));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر تعديل حالة الكود');
+        }
+    };
+
+    // ── School Packages Summary ────────────────────────────────────────────
+    const schoolPackagesSummary = useMemo(() => {
+        const total = b2bPackages.length;
+        const active = b2bPackages.filter((p) => p.status === 'active').length;
+        const paused = b2bPackages.filter((p) => p.status === 'expired').length;
+        const activeCodes = accessCodes.filter((c) => c.expiresAt > Date.now()).length;
+        const usedSeats = accessCodes.reduce((s, c) => s + (c.currentUses || 0), 0);
+        const totalSeats = b2bPackages.reduce((s, p) => s + (p.maxStudents || 0), 0);
+        const teacherShares = b2bPackages.reduce((s, p) => {
+            if (!p.assignedTeacherId || !p.revenueSharePercentage) return s;
+            const courseValue = (p.courseIds || []).reduce((cv, cid) => cv + (courses.find((c) => c.id === cid)?.price || 0), 0);
+            return s + (courseValue * (p.revenueSharePercentage / 100));
+        }, 0);
+        return { total, active, paused, activeCodes, usedSeats, totalSeats, teacherShares };
+    }, [b2bPackages, accessCodes, courses]);
+
+    // ── School Rows (per-school aggregation) ──────────────────────────────
+    const schoolRows = useMemo(() => {
+        return schools.map((school) => {
+            const pkgs = b2bPackages.filter((p) => p.schoolId === school.id);
+            const pkgIds = new Set(pkgs.map((p) => p.id));
+            const schoolCodes = accessCodes.filter((c) => pkgIds.has((c as any).packageId || ''));
+            const activeCodes = schoolCodes.filter((c) => c.expiresAt > Date.now()).length;
+            const usedSeats = schoolCodes.reduce((s, c) => s + (c.currentUses || 0), 0);
+            const totalCapacity = pkgs.reduce((s, p) => s + (p.maxStudents || 0), 0);
+            const estimatedValue = pkgs.reduce((s, p) => {
+                const cv = (p.courseIds || []).reduce((cv, cid) => cv + (courses.find((c) => c.id === cid)?.price || 0), 0);
+                return s + cv;
+            }, 0);
+            return { id: school.id, name: school.name, packages: pkgs.length, activeCodes, usedSeats, totalCapacity, estimatedValue };
+        });
+    }, [schools, b2bPackages, accessCodes, courses]);
+
+    // ── Package Coverage Rows ──────────────────────────────────────────────
+    const packageCoverageRows = useMemo(() => {
+        return b2bPackages.map((pkg) => {
+            const school = schools.find((s) => s.id === pkg.schoolId);
+            const teacher = teachers.find((t) => t.id === pkg.assignedTeacherId);
+            const pkgCodes = accessCodes.filter((c) => (c as any).packageId === pkg.id);
+            const activeCodes = pkgCodes.filter((c) => c.expiresAt > Date.now()).length;
+            const usedSeats = pkgCodes.reduce((s, c) => s + (c.currentUses || 0), 0);
+            const seatRate = pkg.maxStudents ? Math.min(100, Math.round((usedSeats / pkg.maxStudents) * 100)) : 0;
+
+            const pathNames = (pkg.pathIds || []).map((id) => paths.find((p) => p.id === id)?.name ?? id);
+            const subjectNames = (pkg.subjectIds || []).map((id) => subjects.find((s) => s.id === id)?.name ?? id);
+
+            const coursesCount = (pkg.courseIds || []).length;
+            const foundationCount = lessons.filter((l) => (pkg.subjectIds || []).includes((l as any).subjectId || '') && (l as any).type === 'foundation').length;
+            const banksCount = quizzes.filter((q) => (pkg.subjectIds || []).includes((q as any).subjectId || '') && q.type === 'bank').length;
+            const testsCount = quizzes.filter((q) => (pkg.subjectIds || []).includes((q as any).subjectId || '') && q.type === 'quiz').length;
+            const libraryCount = libraryItems.filter((li) => (pkg.subjectIds || []).includes((li as any).subjectId || '')).length;
+            const totalItems = coursesCount + foundationCount + banksCount + testsCount + libraryCount;
+
+            const hasFullScope = (pkg.pathIds || []).length === 0 && (pkg.subjectIds || []).length === 0;
+            const scopeMode = hasFullScope ? 'كل المنصة' : pathNames.length > 0 ? 'مسارات محددة' : 'مواد محددة';
+
+            const operationalWarnings: string[] = [];
+            if ((pkg.courseIds || []).length === 0 && (pkg.pathIds || []).length === 0) operationalWarnings.push('لا يوجد محتوى مربوط');
+            if (pkg.maxStudents === 0) operationalWarnings.push('السعة صفر');
+
+            return {
+                id: pkg.id,
+                name: pkg.name,
+                status: pkg.status,
+                isActive: pkg.status === 'active',
+                schoolName: school?.name ?? 'غير محدد',
+                assignedTeacherName: teacher?.name,
+                revenueSharePercentage: pkg.revenueSharePercentage,
+                type: pkg.type,
+                discountPercentage: pkg.discountPercentage,
+                contentTypes: pkg.contentTypes,
+                pathNames,
+                subjectNames,
+                scopeMode,
+                maxStudents: pkg.maxStudents,
+                usedSeats,
+                activeCodes,
+                seatRate,
+                totalItems,
+                operationalWarnings,
+                counts: { courses: coursesCount, foundation: foundationCount, banks: banksCount, tests: testsCount, library: libraryCount },
+            };
+        });
+    }, [b2bPackages, schools, teachers, accessCodes, paths, subjects, lessons, quizzes, libraryItems]);
+
+    const toggleSchoolPackageStatus = async (pkgId: string, currentStatus: string) => {
+        const next = currentStatus === 'active' ? 'expired' : 'active';
+        try {
+            await updateB2BPackage(pkgId, { status: next as 'active' | 'expired' });
+            setFeedback(`تم ${next === 'active' ? 'تنشيط' : 'إيقاف'} الباقة`);
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر تعديل حالة الباقة');
+        }
+    };
+
+    const setAllSchoolPackagesStatus = async (status: 'active' | 'expired') => {
+        setLoading(true);
+        try {
+            await Promise.all(b2bPackages.map((p) => updateB2BPackage(p.id, { status })));
+            setFeedback(`تم ${status === 'active' ? 'تنشيط' : 'إيقاف'} جميع الباقات`);
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر تعديل الباقات');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ── Public Packages (B2C) Summary & Rows ──────────────────────────────
+    const publicPackagesSummary = useMemo(() => {
+        const total = publicPackages.length;
+        const visible = publicPackages.filter((p) => p.isPublished !== false).length;
+        const hidden = total - visible;
+        const ready = publicPackages.filter((p) => (p.price || 0) > 0 && p.isPublished !== false).length;
+        const needsSetup = total - ready;
+        const pending = paymentRequests.filter((r) => r.status === 'pending' && publicPackageIds.has(r.itemId || '')).length;
+        const buyers = b2cPremiumUsers.length;
+        return { total, visible, hidden, ready, needsSetup, pending, buyers };
+    }, [publicPackages, publicPackageIds, paymentRequests, b2cPremiumUsers]);
+
+    const publicPackageRows = useMemo(() => {
+        return publicPackages.map((pkg) => {
+            const path = paths.find((p) => p.id === pkg.pathId);
+            const subject = subjects.find((s) => s.id === (pkg as any).subjectId);
+            const isVisible = pkg.isPublished !== false;
+            const isReadyForSale = (pkg.price || 0) > 0 && isVisible;
+            const pkgRequests = paymentRequests.filter((r) => r.itemId === pkg.id);
+            const pending = pkgRequests.filter((r) => r.status === 'pending').length;
+            const buyers = pkgRequests.filter((r) => r.status === 'approved').length;
+            const revenue = pkgRequests.filter((r) => r.status === 'approved').reduce((s, r) => s + (r.amount || 0), 0);
+
+            const hasFullScope = !(pkg as any).subjectId;
+            const scopeMode = hasFullScope ? 'كل المسار' : 'مادة محددة';
+
+            const readinessWarnings: string[] = [];
+            if (!pkg.price || pkg.price <= 0) readinessWarnings.push('السعر غير محدد');
+            if (!path) readinessWarnings.push('المسار غير مرتبط');
+
+            const contentTypes: PackageContentType[] = (pkg as any).contentTypes || [];
+            const coursesCount = (pkg as any).courseIds?.length || 0;
+            const coverageCounts = { courses: coursesCount, foundation: 0, banks: 0, tests: 0, library: 0 };
+
+            return {
+                id: pkg.id,
+                title: pkg.title,
+                price: pkg.price || 0,
+                originalPrice: (pkg as any).originalPrice || pkg.price || 0,
+                isVisible,
+                isReadyForSale,
+                pathName: path?.name ?? 'غير محدد',
+                subjectName: subject?.name,
+                scopeMode,
+                contentTypes,
+                coverageCounts,
+                readinessWarnings,
+                pending,
+                buyers,
+                revenue,
+            };
+        });
+    }, [publicPackages, paths, subjects, paymentRequests]);
+
+    const togglePublicPackageVisibility = async (pkgId: string) => {
+        const pkg = publicPackages.find((p) => p.id === pkgId);
+        if (!pkg) return;
+        const next = pkg.isPublished === false ? true : false;
+        try {
+            await updateCourse(pkgId, { isPublished: next });
+            setFeedback(next ? 'تم إظهار الباقة للطلاب' : 'تم إخفاء الباقة');
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر تعديل الظهور');
+        }
+    };
+
+    const syncPublicPackagesByReadiness = async () => {
+        setLoading(true);
+        try {
+            const readyIds = publicPackages.filter((p) => (p.price || 0) > 0).map((p) => p.id);
+            const notReadyIds = publicPackages.filter((p) => !((p.price || 0) > 0)).map((p) => p.id);
+            await Promise.all([
+                ...readyIds.map((id) => updateCourse(id, { isPublished: true })),
+                ...notReadyIds.map((id) => updateCourse(id, { isPublished: false })),
+            ]);
+            setFeedback('تمت المزامنة: الباقات الجاهزة ظاهرة والناقصة مخفية');
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر المزامنة');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const hideAllPublicPackages = async () => {
+        setLoading(true);
+        try {
+            await Promise.all(publicPackages.map((p) => updateCourse(p.id, { isPublished: false })));
+            setFeedback('تم إخفاء جميع الباقات العامة');
+            setTimeout(() => setFeedback(null), 3000);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'تعذّر الإخفاء');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const exportPublicPackages = () => {
+        downloadCsv('public-packages.csv', [
+            ['العنوان', 'السعر', 'الظهور', 'الجاهزية', 'مشتركون'],
+            ...publicPackageRows.map((p) => [p.title, p.price, p.isVisible ? 'ظاهر' : 'مخفي', p.isReadyForSale ? 'جاهز' : 'ناقص', p.buyers]),
+        ]);
+    };
+
+    const previewPublicPackage = (pkgId: string) => {
+        const pkg = publicPackages.find((p) => p.id === pkgId);
+        if (pkg) window.open(`/courses/${pkgId}`, '_blank');
     };
 
     return (

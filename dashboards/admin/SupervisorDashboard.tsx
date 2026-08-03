@@ -184,16 +184,17 @@ export const SupervisorDashboard: React.FC = () => {
             email: u.email,
             phone: u.phone,
             role: u.role as Role,
-            avatar: u.avatar,
+            avatar: u.avatar || '',
             academicStage: u.academicStage,
             classNumber: u.classNumber,
             points: u.points || 0,
             badges: u.badges || [],
+            subscription: u.subscription || { plan: 'free' as const, expiresAt: null },
             groupIds: u.groupIds || [],
             schoolId: u.schoolId,
             isActive: u.isActive !== false,
             createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString()
-          }));
+          })) as import('../../types').User[];
           const existingNonStudents = users.filter(u => u.role !== Role.STUDENT);
           hydrateUsers([...existingNonStudents, ...storeUsers]);
         }

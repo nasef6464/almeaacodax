@@ -29,12 +29,12 @@ import { Role } from '../../types';
 import { api } from '../../services/api';
 
 const lazyNamed = <TProps extends object>(
-    loader: () => Promise<Record<string, React.ComponentType<TProps>>>,
+    loader: () => Promise<any>,
     exportName: string,
 ) =>
     React.lazy(async () => {
         const module = await loader();
-        return { default: module[exportName] };
+        return { default: module[exportName] as React.ComponentType<TProps> };
     });
 
 const UsersManager = lazyNamed(() => import('./UsersManager'), 'UsersManager');

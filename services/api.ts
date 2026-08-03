@@ -364,6 +364,8 @@ const withQuery = (path: string, query?: Record<string, string | number | boolea
 
 export const api = {
   baseUrl: API_BASE_URL,
+  get: <T = unknown>(path: string, token?: string | null) => request<T>(path, { token }),
+  post: <T = unknown>(path: string, body: unknown, token?: string | null) => request<T>(path, { method: 'POST', body, token }),
   clearContentBootstrapCache: () => {
     clearPublicCache("content-bootstrap:full");
     clearPublicCache("content-bootstrap:full:full");

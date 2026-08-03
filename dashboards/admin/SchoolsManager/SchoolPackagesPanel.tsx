@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShieldCheck, Download, Plus, Trash2, Key } from 'lucide-react';
-import { AccessCode, B2BPackage, Course, Group, PackageContentType, Path, Subject, User } from '../../types';
+import { AccessCode, B2BPackage, CategoryPath, CategorySubject, Course, Group, PackageContentType, User } from '../../../types';
 import { PACKAGE_CONTENT_OPTIONS } from '../SchoolsManager';
 
 interface SchoolPackagesPanelProps {
@@ -18,8 +18,8 @@ interface SchoolPackagesPanelProps {
     handleExpireAllSchoolPackages: () => Promise<void>;
     downloadPackagesReport: () => void;
     publishedCourses: Course[];
-    paths: Path[];
-    subjects: Subject[];
+    paths: CategoryPath[];
+    subjects: CategorySubject[];
     teachers: User[];
     assignCourseToGroup: (courseId: string, groupId: string) => void;
     selectedPackageIdForCode: string;

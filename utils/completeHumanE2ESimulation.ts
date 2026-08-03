@@ -1,5 +1,13 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { useStore } from '../store/useStore';
 import { B2BPackage, Course, Group, Quiz, QuizResult, Role, User } from '../types';
+type _SimUser = User & { schoolName?: string; phone?: string; academicStage?: string; classNumber?: string };
+type _SimCourse = Course & { [key: string]: unknown };
+type _SimSubscription = { plan: 'free'; purchasedCourses: string[]; purchasedPackages: string[] };
+const _freeSub: _SimSubscription = { plan: 'free', purchasedCourses: [], purchasedPackages: [] };
+type _SimQuiz = Omit<Quiz, 'settings'> & { settings?: Partial<Quiz['settings']>; authorId?: string; timeLimit?: number };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _SimB2BPackage = any;
 
 export interface SimulationSummary {
   admin: { name: string; email: string; schoolsCount: number; packagesCount: number };
@@ -25,12 +33,16 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
   const mockCourseId = 'c_qudrat_masterclass_2026';
 
   // 2. Create the 5 Interconnected Users
-  const simulatedUsers: User[] = [
+  const simulatedUsers: _SimUser[] = [
     {
       id: adminId,
       name: 'د. عبد الله المنصور (مدير النظام)',
       email: 'admin.master@almeaa.edu.sa',
       role: Role.ADMIN,
+      avatar: '',
+      points: 0,
+      badges: [],
+      subscription: _freeSub,
       schoolName: 'مجموعة مدارس الرواد النموذجية',
     },
     {
@@ -38,6 +50,10 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
       name: 'أ. سارة العتيبي (المشرف الأكاديمي)',
       email: 'supervisor.sarah@almeaa.edu.sa',
       role: Role.SUPERVISOR,
+      avatar: '',
+      points: 0,
+      badges: [],
+      subscription: _freeSub,
       schoolName: 'مدرسة الرواد الثانوية',
       schoolId: schoolId,
     },
@@ -46,6 +62,10 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
       name: 'م. أحمد الخالد (معلم القدرات والكمي)',
       email: 'teacher.ahmed@almeaa.edu.sa',
       role: Role.TEACHER,
+      avatar: '',
+      points: 0,
+      badges: [],
+      subscription: _freeSub,
       schoolName: 'مدرسة الرواد الثانوية',
       schoolId: schoolId,
     },
@@ -54,6 +74,8 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
       name: 'عمر فهد السالم (طالب قدرات)',
       email: 'omar.student@almeaa.edu.sa',
       role: Role.STUDENT,
+      avatar: '',
+      subscription: _freeSub,
       schoolName: 'مدرسة الرواد الثانوية',
       schoolId: schoolId,
       groupIds: [classId],
@@ -67,6 +89,10 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
       name: 'الشيخ فهد السالم (ولي الأمر)',
       email: 'fahad.parent@almeaa.edu.sa',
       role: Role.PARENT,
+      avatar: '',
+      points: 0,
+      badges: [],
+      subscription: _freeSub,
       phone: '0509988776',
     },
   ];
@@ -97,14 +123,16 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
   ];
 
   // 4. Peer Students for Leaderboard & Class Analytics
-  const peerUsers: User[] = [
-    { id: 'u_stud_peer1', name: 'أحمد محمود', role: Role.STUDENT, email: 'peer1@almeaa.edu.sa' },
-    { id: 'u_stud_peer2', name: 'سارة عبد الله', role: Role.STUDENT, email: 'peer2@almeaa.edu.sa' },
-    { id: 'u_stud_peer3', name: 'خالد التميمي', role: Role.STUDENT, email: 'peer3@almeaa.edu.sa' },
+  const peerUsers: _SimUser[] = [
+    { id: 'u_stud_peer1', name: 'أحمد محمود', role: Role.STUDENT, email: 'peer1@almeaa.edu.sa', avatar: '', points: 0, badges: [], subscription: _freeSub },
+    { id: 'u_stud_peer2', name: 'سارة عبد الله', role: Role.STUDENT, email: 'peer2@almeaa.edu.sa', avatar: '', points: 0, badges: [], subscription: _freeSub },
+    { id: 'u_stud_peer3', name: 'خالد التميمي', role: Role.STUDENT, email: 'peer3@almeaa.edu.sa', avatar: '', points: 0, badges: [], subscription: _freeSub },
   ];
 
   // 5. Create Teacher's Course & Lessons
-  const simulatedCourse: Course = {
+  const simulatedCourse: _SimCourse = {
+    thumbnail: '',
+    progress: 0,
     id: mockCourseId,
     title: 'الدورة الشاملة لتأسيس وتكتيكات القدرات الكمية 2026',
     description: 'دورة تأسيسية متكاملة تضمن لك الوصول لدرجة +95 في القسم الكمي مع نماذج محاكية حديثة.',
@@ -150,7 +178,7 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
   };
 
   // 6. Create Supervisor's Directed Central Quiz (Exam Hall Test)
-  const simulatedQuiz: Quiz = {
+  const simulatedQuiz: _SimQuiz = {
     id: mockQuizId,
     title: 'الاختبار المحاكي الموجه - مهارات القدرات الكمية (الفصل الأول)',
     description: 'اختبار محاكي قياسي مصمم من المشرف الأكاديمي لقياس جاهزية الطالب في الجبر والهندسة.',
@@ -166,7 +194,8 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
     authorId: supervisorId,
     placement: 'mock',
     access: { type: 'free' },
-  };
+    settings: {},
+  } as _SimQuiz;
 
   // 7. Create Student Exam Results for Analytics & Leaderboard
   const simulatedResults: QuizResult[] = [
@@ -233,7 +262,7 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
   ];
 
   // 8. Create B2B Packages for Admin
-  const simulatedPackages: B2BPackage[] = [
+  const simulatedPackages: _SimB2BPackage[] = [
     {
       id: 'pkg_b2b_school_unlimited',
       title: 'باقة المدارس الكبرى الشاملة (B2B Enterprise)',
@@ -245,8 +274,9 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
       price: 4999,
       durationDays: 365,
       createdAt: Date.now(),
-    },
+    } as _SimB2BPackage,
   ];
+
 
   // 9. Update Store State atomically
   const currentUsers = store.users.filter((u) => !simulatedUsers.some((su) => su.id === u.id) && !peerUsers.some((pu) => pu.id === u.id));
@@ -259,7 +289,7 @@ export const injectCompleteHumanE2ESimulation = (): SimulationSummary => {
   useStore.setState({
     users: [...simulatedUsers, ...peerUsers, ...currentUsers],
     groups: [...simulatedGroups, ...currentGroups],
-    quizzes: [simulatedQuiz, ...currentQuizzes],
+    quizzes: [simulatedQuiz as unknown as Quiz, ...currentQuizzes],
     courses: [simulatedCourse, ...currentCourses],
     examResults: [...simulatedResults, ...currentResults],
     b2bPackages: [...simulatedPackages, ...currentPackages],
