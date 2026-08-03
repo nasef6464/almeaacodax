@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserPlus, UserMinus, Search, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LinkedStudent {
   id: string;
@@ -18,17 +19,33 @@ interface ParentStudentLinkerProps {
 type InputMode = 'nationalId' | 'phone';
 
 export const ParentStudentLinker: React.FC<ParentStudentLinkerProps> = ({
-  linkedStudentIds,
+  linkedStudentIds: initialIds,
   onLinked,
   onUnlinked,
 }) => {
+  const { user } = useAuth();
   const [mode, setMode] = useState<InputMode>('nationalId');
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fetchingExisting, setFetchingExisting] = useState(false);
   const [unlinkingId, setUnlinkingId] = useState<string | null>(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [linkedStudents, setLinkedStudents] = useState<LinkedStudent[]>([]);
+
+  // Load already-linked students on mount
+  useEffect(() => {
+    if (!user) return;
+    setFetchingExisting(true);
+    api.get('/auth/parent/linked-students')
+      .then((data: unknown) => {
+        const students = Array.isArray(data) ? data : (data as { students?: LinkedStudent[] }).students ?? [];
+        setLinkedStudents(students as LinkedStudent[]);
+      })
+      .catch(() => { /* silently ignore if endpoint not ready */ })
+      .finally(() => setFetchingExisting(false));
+  }, [user]);
+
 
   const handleLink = async (e: React.FormEvent) => {
     e.preventDefault();

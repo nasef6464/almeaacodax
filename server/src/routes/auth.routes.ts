@@ -1369,3 +1369,33 @@ authRouter.delete(
     return res.json({ message: "تم إلغاء ربط الطالب" });
   }),
 );
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Get Linked Students — GET /api/auth/parent/linked-students
+// ──────────────────────────────────────────────────────────────────────────────
+authRouter.get(
+  "/parent/linked-students",
+  requireAuth,
+  asyncHandler(async (req: any, res) => {
+    if (req.user.role !== "parent") {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الإجراء متاح لأولياء الأمور فقط" });
+    }
+    const parent = await UserModel.findById(req.user._id).select("linkedStudentIds").lean();
+    const ids: string[] = (parent as any)?.linkedStudentIds ?? [];
+    if (ids.length === 0) return res.json({ students: [] });
+
+    const students = await UserModel.find({ _id: { $in: ids } })
+      .select("_id name role schoolId")
+      .lean();
+
+    return res.json({
+      students: students.map((s: any) => ({
+        id: s._id.toString(),
+        name: s.name,
+        role: s.role,
+        schoolId: s.schoolId ?? null,
+      })),
+    });
+  }),
+);
+
