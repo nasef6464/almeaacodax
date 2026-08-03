@@ -1399,3 +1399,51 @@ authRouter.get(
   }),
 );
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Phone + Password Login — POST /api/auth/login/phone-password
+// Allows login using registered phone number + password (alternative to OTP)
+// ──────────────────────────────────────────────────────────────────────────────
+const phonePasswordLoginSchema = z.object({
+  phone: z.string().min(8).max(24),
+  password: z.string().min(1).max(160),
+});
+
+authRouter.post(
+  "/login/phone-password",
+  asyncHandler(async (req, res) => {
+    const payload = phonePasswordLoginSchema.parse(req.body);
+    const normalized = normalizePhone(payload.phone);
+
+    const user = await UserModel.findOne({ phone: normalized });
+    if (!user) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "رقم الجوال أو كلمة المرور غير صحيحة" });
+    }
+
+    if (isLoginLocked(user)) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({ message: "تم تجاوز عدد المحاولات. حاول مجدداً بعد قليل." });
+    }
+
+    if (user.isActive === false) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "الحساب موقوف. تواصل مع الإدارة." });
+    }
+
+    if (!user.passwordHash) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "لا توجد كلمة مرور مضبوطة لهذا الحساب — استخدم رمز واتساب بدلاً" });
+    }
+
+    const valid = await bcrypt.compare(payload.password, user.passwordHash);
+    if (!valid) {
+      await recordFailedLogin(user);
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "رقم الجوال أو كلمة المرور غير صحيحة" });
+    }
+
+    await clearFailedLoginState(user);
+    const token = signAccessToken({ id: user.id, email: user.email, role: user.role, name: user.name });
+    setAuthCookie(res, token);
+    return res.json({
+      ...(shouldExposeTokenInAuthResponse ? { token } : {}),
+      user: serializeUser(user),
+    });
+  }),
+);
+
