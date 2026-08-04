@@ -7,6 +7,7 @@ import { normalizeQuestionHtml } from '../../utils/questionHtml';
 import { getDefaultQuizSettings } from '../../utils/quizSettings';
 import { EXAM_QUESTION_BANK_EMPTY_MESSAGE, useExamQuestionBank } from '../../utils/exams/questionBankSource';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
+import { SmartQuestionSelector } from './SmartQuestionSelector';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -1256,39 +1257,16 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
                 <div className="rounded-xl border border-dashed border-gray-200 p-6 text-center text-sm font-black text-gray-500">{EXAM_QUESTION_BANK_EMPTY_MESSAGE}</div>
               )}
 
-              {/* Regular exam: flat question list */}
+              {/* Regular exam: SmartQuestionSelector */}
               {examType === 'regular' && (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-bold text-gray-500 mb-2">
-                    <span>{filterRegularQuestions.length} سؤال متاح</span>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setRegularQuestionIds(unique([...regularQuestionIds, ...filterRegularQuestions.slice(0, 30).map(q => q.id)]))}
-                        className="rounded-xl bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700"
-                      >
-                        اختيار الكل
-                      </button>
-                      <button
-                        onClick={() => setRegularQuestionIds([])}
-                        className="rounded-xl bg-red-50 px-3 py-1 text-xs font-black text-red-600"
-                      >
-                        مسح الكل ({regularQuestionIds.length})
-                      </button>
-                    </div>
-                  </div>
-                  {filterRegularQuestions.slice(0, 100).map((question) => (
-                    <QuestionCard
-                      key={question.id}
-                      question={question}
-                      isSelected={regularQuestionIds.includes(question.id)}
-                      onToggle={() => toggleRegularQuestion(question.id)}
-                    />
-                  ))}
-                  {filterRegularQuestions.length > 100 && (
-                    <div className="text-center text-xs font-bold text-gray-400">
-                      يُعرض أول 100 سؤال. استخدم فلتر البحث لتضييق النتائج.
-                    </div>
-                  )}
+                  <SmartQuestionSelector
+                    pathId={selectedPathId}
+                    subjectId={regularSubjectId || undefined}
+                    selectedIds={regularQuestionIds}
+                    onChange={(ids) => setRegularQuestionIds(ids)}
+                    maxQuestions={100}
+                  />
                 </div>
               )}
 

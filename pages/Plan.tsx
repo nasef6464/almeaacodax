@@ -27,10 +27,13 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { shareTextSummary } from '../utils/shareText';
 import { printElementAsPdf } from '../utils/printPdf';
 
+type QuizKind = 'drill' | 'test' | 'mock';
+
 type GeneratedTask = {
   id: string;
   title: string;
   type: 'lesson' | 'quiz' | 'resource';
+  quizKind?: QuizKind;
   phase: 'foundation' | 'practice' | 'review';
   phaseLabel: string;
   durationMinutes: number;
@@ -631,6 +634,7 @@ const Plan: React.FC = () => {
         id: `quiz-${quiz.id}`,
         title: quiz.title,
         type: 'quiz' as const,
+        quizKind: (quiz.quizKind as QuizKind | undefined) ?? (quiz.placement === 'mock' ? 'mock' : quiz.placement === 'training' ? 'drill' : 'test'),
         phase: 'practice' as const,
         phaseLabel: 'مرحلة التدريب',
         durationMinutes: quiz.settings?.timeLimit || 25,
@@ -1567,7 +1571,12 @@ const Plan: React.FC = () => {
                                       <Clock size={14} />
                                       <span>{task.durationLabel}</span>
                                       <span className="mx-1">•</span>
-                                      <span>{task.type === 'lesson' ? 'درس' : task.type === 'quiz' ? 'اختبار' : 'ملف مراجعة'}</span>
+                                      {task.type === 'lesson' && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-black text-blue-600">درس</span>}
+                                      {task.type === 'resource' && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-600">ملف مراجعة</span>}
+                                      {task.type === 'quiz' && task.quizKind === 'drill' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">🟢 تدريب</span>}
+                                      {task.type === 'quiz' && task.quizKind === 'test' && <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-black text-indigo-700">🔵 اختبار</span>}
+                                      {task.type === 'quiz' && task.quizKind === 'mock' && <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-black text-violet-700">🟣 محاكي</span>}
+                                      {task.type === 'quiz' && !task.quizKind && <span className="rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-black text-gray-600">اختبار</span>}
                                     </div>
         
                                     {!task.completed && task.link && (
