@@ -5,6 +5,7 @@ import { FoundationManager } from './FoundationManager';
 import { SkillsTreeManager } from './SkillsTreeManager';
 import { QuizBuilder } from './QuizBuilder';
 import { QuizzesManager } from './QuizzesManager';
+import { SubjectQuizzesPanel } from './SubjectQuizzesPanel';
 import { LibraryManager } from './LibraryManager';
 import { 
   FolderOpen, BookOpen, Target, FileQuestion, 
@@ -2217,13 +2218,13 @@ export const PathsManager: React.FC = () => {
 
         {subjectTab === 'questions' && (
           <div className="animate-fade-in p-6">
-            <QuizzesManager subjectId={currentSubject?.id || ''} filterType="bank" />
+            <SubjectQuizzesPanel subjectId={currentSubject?.id || ''} kind="drill" />
           </div>
         )}
 
         {subjectTab === 'exams' && (
           <div className="animate-fade-in p-6">
-            <QuizzesManager subjectId={currentSubject?.id || ''} filterType="quiz" />
+            <SubjectQuizzesPanel subjectId={currentSubject?.id || ''} kind="test" />
           </div>
         )}
 
