@@ -113,8 +113,8 @@ interface AppState {
     deleteQuestion: (questionId: string) => Promise<void>;
 
     // Quiz Actions
-    addQuiz: (quiz: Quiz) => void;
-    updateQuiz: (quizId: string, data: Partial<Quiz>) => void;
+    addQuiz: (quiz: Quiz) => Promise<Quiz>;
+    updateQuiz: (quizId: string, data: Partial<Quiz>) => Promise<Quiz>;
     deleteQuiz: (quizId: string) => void;
 
     // Lesson Actions
@@ -1029,27 +1029,38 @@ export const useStore = create<AppState>()(
             },
 
             // Quiz Actions
-            addQuiz: (quiz) => {
+            addQuiz: async (quiz) => {
                 const normalizedQuiz = normalizeQuizPlacement({
                     ...quiz,
                     showOnPlatform: typeof quiz.showOnPlatform === 'boolean' ? quiz.showOnPlatform : false,
                 });
-                api.createQuiz(normalizedQuiz).catch(console.error);
+                const saved = await api.createQuiz(normalizedQuiz).catch(() => null);
+                const finalQuiz: Quiz = (saved && typeof saved === 'object' && 'id' in saved ? saved as Quiz : null) ?? normalizedQuiz;
                 set((state) => ({
-                    quizzes: [normalizedQuiz, ...state.quizzes]
+                    quizzes: [finalQuiz, ...state.quizzes.filter(q => q.id !== finalQuiz.id)]
                 }));
+                return finalQuiz;
             },
-            updateQuiz: (quizId, data) => {
+            updateQuiz: async (quizId, data) => {
                 const shouldNormalizePlacement =
                     'type' in data ||
                     'placement' in data ||
                     'showInTraining' in data ||
                     'showInMock' in data;
                 const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
-                api.updateQuiz(quizId, updatePayload).catch(console.error);
+                const saved = await api.updateQuiz(quizId, updatePayload).catch(() => null);
+                const savedData = saved && typeof saved === 'object' ? (saved as Partial<Quiz>) : null;
+                const mergedPayload: Partial<Quiz> = savedData ?? updatePayload;
                 set((state) => ({
-                    quizzes: state.quizzes.map(q => q.id === quizId ? (shouldNormalizePlacement ? normalizeQuizPlacement({ ...q, ...updatePayload }) : { ...q, ...updatePayload }) : q)
+                    quizzes: state.quizzes.map(q =>
+                        q.id === quizId
+                            ? (shouldNormalizePlacement
+                                ? normalizeQuizPlacement({ ...q, ...mergedPayload })
+                                : { ...q, ...mergedPayload })
+                            : q
+                    )
                 }));
+                return mergedPayload as Quiz;
             },
             deleteQuiz: (quizId) => {
                 api.deleteQuiz(quizId).catch(console.error);
