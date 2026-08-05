@@ -177,6 +177,7 @@ type DashboardTab =
     | 'saher'
     | 'quizzes'
     | 'mock-exams'
+    | 'exams'
     | 'reports'
     | 'favorites'
     | 'flashcards'
@@ -759,6 +760,34 @@ const MyCoursesTab = () => {
     );
 };
 
+/** Unified Exams Hub: merges \u0633\u0627\u0647\u0631 + \u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a\u064a + \u0645\u062d\u0627\u0643\u064a \u0642\u064a\u0627\u0633 into one tab */
+const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> = ({ initialView = 'explore' }) => {
+    const [view, setView] = React.useState<'explore' | 'attempts' | 'mock'>(initialView);
+    const examViews = [
+        { id: 'explore' as const, label: '\u0645\u0631\u0643\u0632 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a', icon: <Zap size={16} /> },
+        { id: 'attempts' as const, label: '\u0645\u062d\u0627\u0648\u0644\u0627\u062a\u064a', icon: <FileText size={16} /> },
+        { id: 'mock' as const, label: '\u0645\u062d\u0627\u0643\u064a \u0642\u064a\u0627\u0633', icon: <Star size={16} /> },
+    ];
+    return (
+        <div className="space-y-4">
+            <div className="flex gap-2 rounded-2xl border border-gray-100 bg-white p-1.5 shadow-sm w-fit">
+                {examViews.map(v => (
+                    <button key={v.id} onClick={() => setView(v.id)}
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+                            view === v.id ? 'bg-amber-500 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                        }`}
+                    >{v.icon}{v.label}</button>
+                ))}
+            </div>
+            <Suspense fallback={<TabLoading />}>
+                {view === 'explore'  && <Quizzes />}
+                {view === 'attempts' && <Quizzes view="attempts" />}
+                {view === 'mock'     && <MockExamStudentHub />}
+            </Suspense>
+        </div>
+    );
+};
+
 const Dashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -971,44 +1000,6 @@ const Dashboard: React.FC = () => {
 };
 
 // -- Sub-Components --
-
-/** Unified Exams Hub: merges ساهر + اختباراتي + محاكي قياس into one tab */
-const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> = ({ initialView = 'explore' }) => {
-    const [view, setView] = React.useState<'explore' | 'attempts' | 'mock'>(initialView);
-
-    const views = [
-        { id: 'explore' as const, label: 'مركز الاختبارات', icon: <Zap size={16} /> },
-        { id: 'attempts' as const, label: 'محاولاتي', icon: <FileText size={16} /> },
-        { id: 'mock' as const, label: 'محاكي قياس', icon: <Star size={16} /> },
-    ];
-
-    return (
-        <div className="space-y-4">
-            {/* Sub-nav pill bar */}
-            <div className="flex gap-2 rounded-2xl border border-gray-100 bg-white p-1.5 shadow-sm w-fit">
-                {views.map(v => (
-                    <button
-                        key={v.id}
-                        onClick={() => setView(v.id)}
-                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
-                            view === v.id
-                                ? 'bg-amber-500 text-white shadow-sm'
-                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-                        }`}
-                    >
-                        {v.icon}{v.label}
-                    </button>
-                ))}
-            </div>
-            {/* Content */}
-            <Suspense fallback={<TabLoading />}>
-                {view === 'explore'  && <Quizzes />}
-                {view === 'attempts' && <Quizzes view="attempts" />}
-                {view === 'mock'     && <MockExamStudentHub />}
-            </Suspense>
-        </div>
-    );
-};
 
 const ParentLoadingState = () => (
     <div className="rounded-3xl border border-dashed border-emerald-100 bg-white p-6">

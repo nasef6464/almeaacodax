@@ -2159,7 +2159,7 @@ const Reports: React.FC = () => {
                 </div>
             </header>
 
-            {false && studentReportNextAction ? (
+            {studentReportNextAction && isStudentView ? (
                 <StudentNextActionStrip
                     title={studentReportNextAction.title}
                     description={studentReportNextAction.description}
