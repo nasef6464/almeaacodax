@@ -768,20 +768,18 @@ const Dashboard: React.FC = () => {
     const { logout } = useAuth();
 
     const studentMenuItems = [
-        { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={20} /> },
-        { id: 'paths', label: 'مساراتي', icon: <RouteIcon size={20} /> },
-        { id: 'my-courses', label: 'دوراتي', icon: <BookOpen size={20} /> },
-        { id: 'smart-path', label: 'التعلم الذكي', icon: <Brain size={20} /> },
-        { id: 'sessions', label: 'جلساتي', icon: <Calendar size={20} /> },
-        { id: 'saher', label: 'مركز الاختبارات', icon: <Zap size={20} /> },
-        { id: 'quizzes', label: 'اختباراتي', icon: <FileText size={20} /> },
-        { id: 'mock-exams', label: 'محاكي قياس', icon: <Star size={20} /> },
-        { id: 'reports', label: 'تقاريري', icon: <PieChart size={20} /> },
-        { id: 'favorites', label: 'مراجعة الأسئلة', icon: <Heart size={20} /> },
-        { id: 'flashcards', label: 'بطاقات التذكر', icon: <BookOpen size={20} /> },
-        { id: 'plan', label: 'خطتي', icon: <MapIcon size={20} /> },
-        { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
-        { id: 'requests', label: 'طلباتي', icon: <ShoppingCart size={20} /> },
+        { id: 'overview',    label: 'نظرة عامة',       icon: <LayoutDashboard size={20} /> },
+        { id: 'paths',       label: 'مساراتي',          icon: <RouteIcon size={20} /> },
+        { id: 'my-courses',  label: 'دوراتي',            icon: <BookOpen size={20} /> },
+        { id: 'smart-path',  label: 'التعلم الذكي',     icon: <Brain size={20} /> },
+        { id: 'sessions',    label: 'جلساتي',            icon: <Calendar size={20} /> },
+        { id: 'exams',       label: 'مركز الاختبارات',  icon: <Zap size={20} /> },
+        { id: 'reports',     label: 'تقاريري',           icon: <PieChart size={20} /> },
+        { id: 'plan',        label: 'خطتي',              icon: <MapIcon size={20} /> },
+        { id: 'favorites',   label: 'مراجعة الأسئلة',   icon: <Heart size={20} /> },
+        { id: 'flashcards',  label: 'بطاقات التذكر',    icon: <BookOpen size={20} /> },
+        { id: 'qa',          label: 'سؤال وجواب',        icon: <HelpCircle size={20} /> },
+        { id: 'requests',    label: 'طلباتي',            icon: <ShoppingCart size={20} /> },
     ];
 
     const parentMenuItems = [
@@ -799,13 +797,14 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const requestedTab = new URLSearchParams(location.search).get('tab');
         const allowedTabs = new Set(menuItems.map((item) => item.id));
-
-        if (requestedTab && allowedTabs.has(requestedTab)) {
-            setActiveTab(requestedTab as typeof activeTab);
+        // Alias legacy tab IDs to the merged 'exams' tab
+        const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams' };
+        const resolved = requestedTab ? (aliasMap[requestedTab] ?? requestedTab) : null;
+        if (resolved && allowedTabs.has(resolved)) {
+            setActiveTab(resolved as typeof activeTab);
         }
     }, [location.search]);
 
-    // Render Content Based on Tab
     const renderContent = () => {
         if (isParentDashboard) {
             switch(activeTab) {
@@ -828,21 +827,25 @@ const Dashboard: React.FC = () => {
         }
 
         switch(activeTab) {
-            case 'overview': return <OverviewTab setActiveTab={setActiveTab} />;
-            case 'paths': return <PathsTab />;
+            case 'overview':   return <OverviewTab setActiveTab={setActiveTab} />;
+            case 'paths':      return <PathsTab />;
             case 'my-courses': return <MyCoursesTab />;
             case 'smart-path': return <SmartPathTab />;
-            case 'sessions': return <SessionsTab />;
-            case 'saher': return <Suspense fallback={<TabLoading />}><Quizzes /></Suspense>;
-            case 'quizzes': return <Suspense fallback={<TabLoading />}><Quizzes view="attempts" /></Suspense>;
-            case 'mock-exams': return <Suspense fallback={<TabLoading />}><MockExamStudentHub /></Suspense>;
-            case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
-            case 'favorites': return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
+            case 'sessions':   return <SessionsTab />;
+            // Merged exams hub — replaces saher + quizzes + mock-exams
+            case 'exams':
+            // Legacy aliases (direct URL access still works)
+            case 'saher':
+            case 'quizzes':
+            case 'mock-exams':
+                return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'quizzes' ? 'attempts' : 'explore'} />;
+            case 'reports':    return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
+            case 'plan':       return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
+            case 'favorites':  return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
             case 'flashcards': return <Suspense fallback={<TabLoading />}><FlashcardsManager /></Suspense>;
-            case 'plan': return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
-            case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
-            case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
-            default: return <OverviewTab setActiveTab={setActiveTab} />;
+            case 'qa':         return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
+            case 'requests':   return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
+            default:           return <OverviewTab setActiveTab={setActiveTab} />;
         }
     };
 
@@ -872,24 +875,70 @@ const Dashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    <nav className="space-y-2">
-                        {menuItems.map(item => (
+                    <nav className="space-y-1">
+                        {/* Group: التعلم */}
+                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">التعلم</p>
+                        {menuItems.filter(i => ['overview','paths','my-courses','smart-path','sessions'].includes(i.id)).map(item => (
                             <button
                                 key={item.id}
-                                onClick={() => {
-                                    setActiveTab(item.id as any);
-                                    setIsSidebarOpen(false);
-                                }}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === item.id 
-                                    ? 'bg-amber-50 text-amber-600 shadow-sm' 
+                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                    activeTab === item.id
+                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                             >
-                                <div className="flex items-center gap-3">
-                                    {item.icon}
-                                    {item.label}
-                                </div>
+                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                {activeTab === item.id && <ChevronLeft size={16} />}
+                            </button>
+                        ))}
+                        {/* Group: الاختبارات */}
+                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الاختبارات</p>
+                        {menuItems.filter(i => ['exams','reports','plan'].includes(i.id)).map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                    ['exams','saher','quizzes','mock-exams'].includes(activeTab) && item.id === 'exams'
+                                        ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                        : activeTab === item.id
+                                            ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                {(item.id === 'exams' ? ['exams','saher','quizzes','mock-exams'].includes(activeTab) : activeTab === item.id) && <ChevronLeft size={16} />}
+                            </button>
+                        ))}
+                        {/* Group: الأدوات */}
+                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الأدوات</p>
+                        {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                    activeTab === item.id
+                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                {activeTab === item.id && <ChevronLeft size={16} />}
+                            </button>
+                        ))}
+                        {/* Group: الدعم */}
+                        <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
+                        {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                    activeTab === item.id
+                                    ? 'bg-amber-50 text-amber-600 shadow-sm'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">{item.icon}{item.label}</div>
                                 {activeTab === item.id && <ChevronLeft size={16} />}
                             </button>
                         ))}
@@ -922,6 +971,44 @@ const Dashboard: React.FC = () => {
 };
 
 // -- Sub-Components --
+
+/** Unified Exams Hub: merges ساهر + اختباراتي + محاكي قياس into one tab */
+const ExamsHubTab: React.FC<{ initialView?: 'explore' | 'attempts' | 'mock' }> = ({ initialView = 'explore' }) => {
+    const [view, setView] = React.useState<'explore' | 'attempts' | 'mock'>(initialView);
+
+    const views = [
+        { id: 'explore' as const, label: 'مركز الاختبارات', icon: <Zap size={16} /> },
+        { id: 'attempts' as const, label: 'محاولاتي', icon: <FileText size={16} /> },
+        { id: 'mock' as const, label: 'محاكي قياس', icon: <Star size={16} /> },
+    ];
+
+    return (
+        <div className="space-y-4">
+            {/* Sub-nav pill bar */}
+            <div className="flex gap-2 rounded-2xl border border-gray-100 bg-white p-1.5 shadow-sm w-fit">
+                {views.map(v => (
+                    <button
+                        key={v.id}
+                        onClick={() => setView(v.id)}
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+                            view === v.id
+                                ? 'bg-amber-500 text-white shadow-sm'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                        }`}
+                    >
+                        {v.icon}{v.label}
+                    </button>
+                ))}
+            </div>
+            {/* Content */}
+            <Suspense fallback={<TabLoading />}>
+                {view === 'explore'  && <Quizzes />}
+                {view === 'attempts' && <Quizzes view="attempts" />}
+                {view === 'mock'     && <MockExamStudentHub />}
+            </Suspense>
+        </div>
+    );
+};
 
 const ParentLoadingState = () => (
     <div className="rounded-3xl border border-dashed border-emerald-100 bg-white p-6">
