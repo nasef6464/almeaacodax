@@ -8,6 +8,8 @@ export const isPathMockExam = (quiz: Quiz, pathId?: string) => {
 
 export const isStandaloneMockExam = (quiz: Quiz) => quiz.mockExam?.enabled === true;
 
+export const isMockExam = isStandaloneMockExam;
+
 export const isMaterialQuizCandidate = (quiz: Quiz) => !isStandaloneMockExam(quiz);
 
 export const getMockExamSections = (quiz: Quiz) =>
