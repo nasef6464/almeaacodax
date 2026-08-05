@@ -1,15 +1,17 @@
 # سجل تقدم إعادة بناء نظام الاختبارات
 
 - **التاريخ:** 5 أغسطس 2026
-- **المرحلة الحالية:** التدقيق الهندسي الكامل والإصلاحات الطفيفة (المرحلة صفر والأولى)
-- **المشكلات المُثبتة:**
-  1. توليد معرفات محلية باستخدام `Date.now()`.
-  2. دوال החفظ `addQuiz` و `updateQuiz` متزامنة `sync` ولا تنتظر استجابة الخادم API.
-  3. تعارض في علامات `placement: 'mock'` حيث تستخدم للاختبار العادي أيضاً.
-  4. عدم تطابق الحقول: `shuffleQuestions` في واجهة المستخدم مقابل `randomizeQuestions` في الـ Types.
+- **المرحلة الحالية:** تنفيذ المرحلة الأولى (الإصلاحات الحرجة)
+- **المشكلات المُثبتة وتم إصلاحها:**
+  1. دوال החفظ `addQuiz` و `updateQuiz` أصبحت `async` وتمت إضافة معالجة الأخطاء `try/catch` في منشئات الاختبارات.
+  2. تم توحيد حقل `shuffleQuestions` إلى `randomizeQuestions` في `UnifiedQuizBuilder.tsx` ليتوافق مع العقد في `types.ts`.
+  3. تمت إضافة دالة `getAllQuizQuestionIds` في `utils/mockExam.ts` كأداة موحدة لجمع جميع المعرفات.
 - **الملفات المعدلة:** 
-  - `docs/assessment-system-code-audit.md` (تم الإنشاء)
-  - `docs/assessment-refactor-progress.md` (تم الإنشاء)
-  - `utils/mockExam.ts` (إضافة الدالة isMockExam)
+  - `store/useStore.ts`
+  - `dashboards/admin/QuizBuilder.tsx`
+  - `dashboards/admin/UnifiedQuizBuilder.tsx`
+  - `dashboards/admin/MockExamManager.tsx`
+  - `utils/mockExam.ts`
+  - `docs/assessment-refactor-progress.md`
 - **الخطوة التالية المقترحة:** 
-  - تحويل دوال الحالة في `useStore.ts` المتعلقة بـ `addQuiz` و `updateQuiz` لتكون `async` (تنتظر الخادم) لحل مشكلة الحفظ الوهمي والمعرفات المحلية.
+  - الانتقال للمرحلة الثانية أو متابعة تحسينات واجهة المستخدم لمعالجة التحميل (Loading states).

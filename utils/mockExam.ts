@@ -26,3 +26,8 @@ export const getMockExamTimeLimit = (quiz: Quiz) => {
   const sectionTotal = getMockExamSections(quiz).reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0);
   return sectionTotal || quiz.settings?.timeLimit || 60;
 };
+export function getAllQuizQuestionIds(quiz: Quiz): string[] {
+  const root = quiz.questionIds || [];
+  const fromSections = (quiz.mockExam?.sections || []).flatMap(s => s.questionIds || []);
+  return [...new Set([...root, ...fromSections])];
+}

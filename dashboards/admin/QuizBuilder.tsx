@@ -424,7 +424,7 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
     return;
   };
 
-  const handleSaveWithFeedback = () => {
+  const handleSaveWithFeedback = async () => {
     if (!currentQuiz.title || !currentQuiz.subjectId) {
       setOperationError('يرجى إدخال عنوان الاختبار وتحديد المادة.');
       return;
@@ -456,19 +456,23 @@ export const QuizBuilder: React.FC<QuizBuilderProps> = ({
       };
     }
 
-    if (currentQuiz.id) {
-      updateQuiz(currentQuiz.id, quizPayload as Quiz);
-    } else {
-      const newQuiz: Quiz = {
-        ...(quizPayload as Quiz),
-        id: `quiz_${Date.now()}`,
-        createdAt: Date.now(),
-      } as Quiz;
-      addQuiz(newQuiz);
-    }
+    try {
+      if (currentQuiz.id) {
+        await updateQuiz(currentQuiz.id, quizPayload as Quiz);
+      } else {
+        const newQuiz: Quiz = {
+          ...(quizPayload as Quiz),
+          id: `quiz_${Date.now()}`,
+          createdAt: Date.now(),
+        } as Quiz;
+        await addQuiz(newQuiz);
+      }
 
-    setOperationMessage('تم حفظ وتوجيه الاختبار بنجاح.');
-    setIsEditing(false);
+      setOperationMessage('تم حفظ وتوجيه الاختبار بنجاح.');
+      setIsEditing(false);
+    } catch (err) {
+      setOperationError(err instanceof Error ? err.message : 'حدث خطأ أثناء حفظ الاختبار.');
+    }
   };
 
   const toggleQuestionSelection = (questionId: string) => {

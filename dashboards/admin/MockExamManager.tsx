@@ -556,13 +556,122 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     );
   };
 
-  const applySmartPick = (sectionId: string, questionIds: string[]) => {
+  const applySmartPick = async (sectionId: string, questionIds: string[]) => {
     setSections((prev) =>
       prev.map((section) => {
         if (section.id !== sectionId) return section;
         return { ...section, questionIds: unique([...section.questionIds, ...questionIds]) };
       }),
     );
+  };
+
+  const handleSave = async () => {
+    if (!title.trim() && examType === 'regular') {
+      setSaveError('يرجى إدخال عنوان الاختبار.');
+      return;
+    }
+    setSaveError('');
+    const now = Date.now();
+
+    try {
+      if (examType === 'regular') {
+        if (regularQuestionIds.length === 0) {
+          setSaveError('لا يمكن حفظ الاختبار العادي بدون أسئلة.');
+          return;
+        }
+
+        const isAdminPlatform = role === 'admin' && publishMode === 'platform';
+        const finalTargetGroupIds = role === 'supervisor'
+          ? targetGroupIds
+          : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
+
+        const payload: Quiz = {
+          id: editingId || `quiz_${now}`,
+          title: title.trim() || 'اختبار موجه',
+          description,
+          pathId: selectedPathId,
+          subjectId: regularSubjectId,
+          type: 'quiz',
+          placement: 'training',
+          showInTraining: true,
+          showInMock: false,
+          mode: 'central',
+          settings: {
+            ...getDefaultQuizSettings({ mode: 'central' }),
+            passingScore,
+            timeLimit: regularTimeLimit,
+          },
+          access: { type: 'free', allowedGroupIds: [] },
+          questionIds: unique(regularQuestionIds),
+          targetGroupIds: finalTargetGroupIds,
+          dueDate: dueDate || undefined,
+          createdAt: now,
+          isPublished: true,
+          showOnPlatform: false,
+          approvalStatus: 'approved',
+          approvedAt: now,
+        };
+
+        if (editingId) await updateQuiz(editingId, payload);
+        else await addQuiz(payload);
+        resetDraft();
+        return;
+      }
+
+      // Mock exam
+      const cleanSections = sections
+        .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
+        .filter((section) => section.title.trim() && section.questionIds.length > 0);
+      const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
+      if (allQuestionIds.length === 0) {
+        setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
+        return;
+      }
+
+      const firstSubjectId = cleanSections[0]?.subjectId || pathSubjects[0]?.id || 'mock_exam';
+
+      // Determine mode and targeting
+      const isAdminPlatform = role === 'admin' && publishMode === 'platform';
+      const finalTargetGroupIds = role === 'supervisor'
+        ? targetGroupIds
+        : (publishMode === 'school' ? [targetSchoolId, ...targetGroupIds].filter(Boolean) : []);
+
+      const payload: Quiz = {
+        id: editingId || `mock_exam_${now}`,
+        title: title.trim() || 'اختبار محاكي',
+        description,
+        pathId: selectedPathId,
+        subjectId: firstSubjectId,
+        type: 'quiz',
+        placement: 'mock',
+        showInTraining: false,
+        showInMock: false,
+        mode: isAdminPlatform ? 'saher' : 'central',
+        settings: {
+          ...getDefaultQuizSettings({ mode: isAdminPlatform ? 'saher' : 'central', mockExam: true }),
+          passingScore,
+          timeLimit: cleanSections.reduce((sum, section) => sum + (Number(section.timeLimit) || 0), 0) || 60,
+        },
+        access: isAdminPlatform
+          ? { type: accessType, price: accessType === 'paid' ? accessPrice : undefined, allowedGroupIds: [] }
+          : { type: 'free', allowedGroupIds: [] },
+        questionIds: allQuestionIds,
+        mockExam: { enabled: true, pathId: selectedPathId, sections: cleanSections },
+        targetGroupIds: finalTargetGroupIds,
+        dueDate: (!isAdminPlatform && dueDate) ? dueDate : undefined,
+        createdAt: now,
+        isPublished: true,
+        showOnPlatform: isAdminPlatform,
+        approvalStatus: 'approved',
+        approvedAt: now,
+      };
+
+      if (editingId) await updateQuiz(editingId, payload);
+      else await addQuiz(payload);
+      resetDraft();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'حدث خطأ أثناء الحفظ.');
+    }
   };
 
   const toggleSectionExpanded = (sectionId: string) => {

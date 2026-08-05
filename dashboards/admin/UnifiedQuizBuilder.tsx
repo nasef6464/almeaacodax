@@ -119,7 +119,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [passingScore, setPassingScore] = useState<number>((editingQuiz?.settings as any)?.passingScore ?? 60);
   const [showCorrectAnswers, setShowCorrectAnswers] = useState<boolean>((editingQuiz?.settings as any)?.showCorrectAnswers ?? true);
   const [showExplanations, setShowExplanations] = useState<boolean>((editingQuiz?.settings as any)?.showExplanations ?? true);
-  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleQuestions ?? false);
+  const [shuffleQuestions, setShuffleQuestions] = useState<boolean>(editingQuiz?.settings?.randomizeQuestions ?? (editingQuiz?.settings as any)?.shuffleQuestions ?? false);
   const [shuffleOptions, setShuffleOptions] = useState<boolean>((editingQuiz?.settings as any)?.shuffleOptions ?? false);
 
   // Step 4
@@ -201,7 +201,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
           passingScore,
           showCorrectAnswers,
           showExplanations,
-          shuffleQuestions,
+          randomizeQuestions: shuffleQuestions,
           shuffleOptions,
         } as any,
         access: { type: accessType === "package" ? "paid" : accessType } as any,
