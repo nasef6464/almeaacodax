@@ -138,6 +138,10 @@ export const QuizPage: React.FC = () => {
   const [videoModalUrl, setVideoModalUrl] = useState<string | null>(null);
   const [isResolvingScopedQuestions, setIsResolvingScopedQuestions] = useState(false);
   const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
+  // Per-section timer (قياس-style): tracks seconds left in the CURRENT section
+  const [sectionTimeLeft, setSectionTimeLeft] = useState<number | null>(null);
+  // Sections that have been locked (time expired or manually advanced)
+  const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
   const activeQuizLoadKeyRef = useRef('');
   const [isNightMode, setIsNightMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -509,16 +513,95 @@ export const QuizPage: React.FC = () => {
     }
   }, [quizQuestions.length]);
 
+  // \u2500\u2500 Mock exam section memos \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  const mockExamSections = useMemo(
+    () => (quiz?.mockExam?.enabled ? getMockExamSections(quiz) : []),
+    [quiz],
+  );
+  const mockExamSectionSummaries = useMemo(
+    () =>
+      mockExamSections
+        .map((mockSection, sectionIndex) => {
+          const questionIndexes = (mockSection.questionIds || [])
+            .map((questionId) => {
+              const resolvedQuestion = resolveQuestionFromBank(quizQuestions, questionId);
+              return resolvedQuestion
+                ? quizQuestions.findIndex((question) => question.id === resolvedQuestion.id)
+                : -1;
+            })
+            .filter((index): index is number => index >= 0);
+          const uniqueIndexes = Array.from(new Set(questionIndexes));
+          const answered = uniqueIndexes.filter((index) => {
+            const questionId = quizQuestions[index]?.id;
+            return questionId ? selectedOptions[questionId] !== undefined : false;
+          }).length;
+          const subjectName = mockSection.subjectId
+            ? subjects.find((subject) => subject.id === mockSection.subjectId)?.name
+            : '';
+          return {
+            id: mockSection.id,
+            title: mockSection.title || subjectName || `\u0627\u0644\u0642\u0633\u0645 ${sectionIndex + 1}`,
+            questionIndexes: uniqueIndexes,
+            firstQuestionIndex: uniqueIndexes[0] ?? -1,
+            total: uniqueIndexes.length,
+            answered,
+            timeLimit: mockSection.timeLimit,
+          };
+        })
+        .filter((section) => section.total > 0),
+    [mockExamSections, quizQuestions, selectedOptions, subjects],
+  );
+  const currentMockExamSection = useMemo(
+    () =>
+      mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
+    [currentQuestionIndex, mockExamSectionSummaries],
+  );
+
+  // \u2500\u2500 Global exam timer \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !isFinished && !isSubmittingResult) {
-      const timerId = window.setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      const timerId = window.setTimeout(() => setTimeLeft((t) => (t !== null ? t - 1 : null)), 1000);
       return () => window.clearTimeout(timerId);
     }
-
     if (timeLeft === 0 && !isFinished && !isSubmittingResult) {
       handleFinish();
     }
   }, [timeLeft, isFinished, isSubmittingResult]);
+
+  // ── Per-section timer initialiser (runs when active section changes) ─────
+  useEffect(() => {
+    if (!currentMockExamSection) { setSectionTimeLeft(null); return; }
+    const sectionTimeLimitMinutes = currentMockExamSection.timeLimit;
+    if (!sectionTimeLimitMinutes || sectionTimeLimitMinutes <= 0) { setSectionTimeLeft(null); return; }
+    // Only reset if we moved to a NEW section that hasn't been locked yet
+    if (lockedSectionIds.has(currentMockExamSection.id)) { setSectionTimeLeft(0); return; }
+    setSectionTimeLeft(sectionTimeLimitMinutes * 60);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMockExamSection?.id]);
+
+  // ── Per-section countdown ─────────────────────────────────────────────────
+  useEffect(() => {
+    if (sectionTimeLeft === null || sectionTimeLeft <= 0 || isFinished || isSubmittingResult) return;
+    const timerId = window.setTimeout(() => setSectionTimeLeft((t) => (t !== null && t > 0 ? t - 1 : t)), 1000);
+    return () => window.clearTimeout(timerId);
+  }, [sectionTimeLeft, isFinished, isSubmittingResult]);
+
+  // ── Section time-up: lock section and advance ─────────────────────────────
+  useEffect(() => {
+    if (sectionTimeLeft !== 0 || !currentMockExamSection || isFinished || isSubmittingResult) return;
+    const expiredId = currentMockExamSection.id;
+    setLockedSectionIds((prev) => new Set([...prev, expiredId]));
+    // Advance to the first question of the next unlocked section
+    const currentIdx = mockExamSectionSummaries.findIndex((s) => s.id === expiredId);
+    const nextSection = mockExamSectionSummaries.slice(currentIdx + 1).find((s) => !lockedSectionIds.has(s.id));
+    if (nextSection && nextSection.firstQuestionIndex >= 0) {
+      setCurrentQuestionIndex(nextSection.firstQuestionIndex);
+    } else {
+      // All sections exhausted → finish the exam
+      handleFinish();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionTimeLeft]);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
 
@@ -544,49 +627,6 @@ export const QuizPage: React.FC = () => {
   const passingScore = quiz?.settings?.passingScore ?? 50;
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quiz.settings?.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
-  const mockExamSections = useMemo(
-    () => (quiz?.mockExam?.enabled ? getMockExamSections(quiz) : []),
-    [quiz],
-  );
-  const mockExamSectionSummaries = useMemo(
-    () =>
-      mockExamSections
-        .map((mockSection, sectionIndex) => {
-          const questionIndexes = (mockSection.questionIds || [])
-            .map((questionId) => {
-              const resolvedQuestion = resolveQuestionFromBank(quizQuestions, questionId);
-              return resolvedQuestion
-                ? quizQuestions.findIndex((question) => question.id === resolvedQuestion.id)
-                : -1;
-            })
-            .filter((index): index is number => index >= 0);
-          const uniqueIndexes = Array.from(new Set(questionIndexes));
-          const answered = uniqueIndexes.filter((index) => {
-            const questionId = quizQuestions[index]?.id;
-            return questionId ? selectedOptions[questionId] !== undefined : false;
-          }).length;
-          const subjectName = mockSection.subjectId
-            ? subjects.find((subject) => subject.id === mockSection.subjectId)?.name
-            : '';
-
-          return {
-            id: mockSection.id,
-            title: mockSection.title || subjectName || `القسم ${sectionIndex + 1}`,
-            questionIndexes: uniqueIndexes,
-            firstQuestionIndex: uniqueIndexes[0] ?? -1,
-            total: uniqueIndexes.length,
-            answered,
-            timeLimit: mockSection.timeLimit,
-          };
-        })
-        .filter((section) => section.total > 0),
-    [mockExamSections, quizQuestions, selectedOptions, subjects],
-  );
-  const currentMockExamSection = useMemo(
-    () =>
-      mockExamSectionSummaries.find((section) => section.questionIndexes.includes(currentQuestionIndex)) || null,
-    [currentQuestionIndex, mockExamSectionSummaries],
-  );
   const activeOptionLayout = 'horizontal' as const;
   const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
   const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
@@ -695,17 +735,32 @@ export const QuizPage: React.FC = () => {
 
   const handleNext = () => {
     if (isNextBlocked) return;
-    if (currentQuestionIndex < quizQuestions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < quizQuestions.length) {
+      // Block crossing into a locked section
+      const targetSection = mockExamSectionSummaries.find((s) => s.questionIndexes.includes(nextIndex));
+      if (targetSection && lockedSectionIds.has(targetSection.id)) {
+        // Skip the locked section — advance to next valid section
+        const afterLocked = mockExamSectionSummaries
+          .filter((s) => !lockedSectionIds.has(s.id) && s.firstQuestionIndex > currentQuestionIndex)
+          .sort((a, b) => a.firstQuestionIndex - b.firstQuestionIndex)[0];
+        if (afterLocked) { setCurrentQuestionIndex(afterLocked.firstQuestionIndex); return; }
+        setShowFinishDialog(true);
+        return;
+      }
+      setCurrentQuestionIndex(nextIndex);
       return;
     }
     setShowFinishDialog(true);
   };
 
   const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-    }
+    if (currentQuestionIndex <= 0) return;
+    const prevIndex = currentQuestionIndex - 1;
+    // Block going back into a locked section
+    const targetSection = mockExamSectionSummaries.find((s) => s.questionIndexes.includes(prevIndex));
+    if (targetSection && lockedSectionIds.has(targetSection.id)) return;
+    setCurrentQuestionIndex(prevIndex);
   };
 
   const saveCurrentProgressDraft = () => {
@@ -1044,6 +1099,21 @@ export const QuizPage: React.FC = () => {
               <BookOpen size={17} />
               <span>قوانين قياس</span>
             </button>
+            {/* Section timer (per-section, قياس-style) */}
+            {sectionTimeLeft !== null && !isFinished && currentMockExamSection && (
+              <div className={`self-start md:self-auto flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl font-bold text-center ${
+                sectionTimeLeft <= 60
+                  ? 'bg-red-100 text-red-700 animate-pulse'
+                  : isNightMode ? 'bg-violet-950 text-violet-200' : 'bg-violet-50 text-violet-700'
+              }`}>
+                <span className="text-[10px] font-black opacity-70">{currentMockExamSection.title}</span>
+                <span className="flex items-center gap-1.5">
+                  <Clock size={16} />
+                  {Math.floor(sectionTimeLeft / 60)}:{String(sectionTimeLeft % 60).padStart(2, '0')}
+                </span>
+              </div>
+            )}
+            {/* Global exam timer */}
             {timeLeft !== null && !isFinished && (
               <div className={`${isNightMode ? 'bg-amber-950 text-amber-200' : 'bg-amber-50 text-amber-600'} self-start md:self-auto flex items-center gap-2 px-4 py-2 rounded-xl font-bold`}>
                 <Clock size={20} />
@@ -1093,29 +1163,43 @@ export const QuizPage: React.FC = () => {
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {mockExamSectionSummaries.map((section) => {
                   const isActive = currentMockExamSection?.id === section.id;
+                  const isLocked = lockedSectionIds.has(section.id);
                   return (
                     <button
                       key={section.id}
                       type="button"
+                      disabled={isLocked}
+                      title={isLocked ? 'انتهى وقت هذا القسم ولا يمكن العودة إليه' : undefined}
                       onClick={() => {
-                        if (section.firstQuestionIndex >= 0) {
-                          setCurrentQuestionIndex(section.firstQuestionIndex);
-                        }
+                        if (isLocked || section.firstQuestionIndex < 0) return;
+                        setCurrentQuestionIndex(section.firstQuestionIndex);
                       }}
                       className={`shrink-0 rounded-xl border px-4 py-2 text-xs font-black transition-colors ${
-                        isActive
-                          ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
-                          : isNightMode
-                            ? 'border-slate-700 bg-slate-950 text-slate-200 hover:border-indigo-500'
-                            : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
+                        isLocked
+                          ? isNightMode
+                            ? 'border-slate-700 bg-slate-800 text-slate-500 cursor-not-allowed opacity-60'
+                            : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
+                          : isActive
+                            ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm'
+                            : isNightMode
+                              ? 'border-slate-700 bg-slate-950 text-slate-200 hover:border-indigo-500'
+                              : 'border-gray-200 bg-gray-50 text-gray-700 hover:border-indigo-200 hover:bg-white'
                       }`}
                     >
+                      {isLocked && <span className="ml-1">🔒</span>}
                       <span>{section.title}</span>
                       <span className={`mr-2 rounded-full px-2 py-0.5 ${
-                        isActive ? 'bg-white/15 text-white' : isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-white text-gray-500'
+                        isLocked
+                          ? isNightMode ? 'bg-slate-700 text-slate-400' : 'bg-gray-200 text-gray-400'
+                          : isActive ? 'bg-white/15 text-white' : isNightMode ? 'bg-slate-800 text-slate-300' : 'bg-white text-gray-500'
                       }`}>
                         {section.answered}/{section.total}
                       </span>
+                      {section.timeLimit && !isLocked && (
+                        <span className={`mr-1 text-[10px] opacity-60`}>
+                          {section.timeLimit}د
+                        </span>
+                      )}
                     </button>
                   );
                 })}
