@@ -1050,7 +1050,10 @@ export const useStore = create<AppState>()(
                     'type' in data ||
                     'placement' in data ||
                     'showInTraining' in data ||
-                    'showInMock' in data;
+                    'showInMock' in data ||
+                    'quizKind' in data ||
+                    'mockExam' in data ||
+                    'learningPlacements' in data;
                 const updatePayload = shouldNormalizePlacement ? normalizeQuizPlacement(data) : data;
                 const saved = await api.updateQuiz(quizId, updatePayload) as any;
                 const mergedPayload: Partial<Quiz> = {

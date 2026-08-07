@@ -348,32 +348,77 @@ const normalizeQuizPlacementPayload = <T extends Record<string, any>>(payload: T
     }
   }
 
-  const hasPlacementFields =
-    payload.type !== undefined ||
-    payload.placement !== undefined ||
-    payload.showInTraining !== undefined ||
-    payload.showInMock !== undefined;
+  const nextPayload = { ...payload };
+  const quizKind = nextPayload.quizKind;
+  const mockExamEnabled = nextPayload.mockExam?.enabled === true;
+  const placements = Array.isArray(nextPayload.learningPlacements) ? nextPayload.learningPlacements : [];
+  
+  let showInTraining = false;
+  let showInMock = false;
+  let type = fallbackType;
+  let placement = "mock";
 
-  if (!hasPlacementFields) return payload;
+  if (quizKind || placements.length > 0 || mockExamEnabled) {
+    if (placements.length > 0) {
+      showInTraining = placements.some(p => p.slot === "training");
+      showInMock = placements.some(p => p.slot === "tests" || p.slot === "mock");
+    }
 
-  const inferredType = payload.type || fallbackType;
-  const showInTraining =
-    typeof payload.showInTraining === "boolean"
-      ? payload.showInTraining
-      : payload.placement
-        ? payload.placement === "training" || payload.placement === "both"
-        : inferredType === "bank";
-  const showInMock =
-    typeof payload.showInMock === "boolean"
-      ? payload.showInMock
-      : payload.placement
-        ? payload.placement === "mock" || payload.placement === "both"
-        : inferredType !== "bank";
-  const placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+    if (quizKind === "mock" || mockExamEnabled) {
+      showInMock = true;
+      showInTraining = false;
+      placement = "mock";
+      type = "quiz";
+      nextPayload.quizKind = "mock";
+      if (!nextPayload.mockExam) nextPayload.mockExam = { enabled: true, sections: [] };
+      nextPayload.mockExam.enabled = true;
+    } else if (quizKind === "drill") {
+      showInTraining = true;
+      placement = showInMock ? "both" : "training";
+      type = "bank";
+    } else if (quizKind === "test") {
+      showInTraining = true;
+      showInMock = true;
+      placement = "both";
+      type = "quiz";
+    } else {
+      placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+      type = showInTraining && !showInMock ? "bank" : "quiz";
+    }
+  } else {
+    const hasPlacementFields =
+      nextPayload.type !== undefined ||
+      nextPayload.placement !== undefined ||
+      nextPayload.showInTraining !== undefined ||
+      nextPayload.showInMock !== undefined;
+
+    if (!hasPlacementFields) return nextPayload;
+
+    const inferredType = nextPayload.type || fallbackType;
+    showInTraining =
+      typeof nextPayload.showInTraining === "boolean"
+        ? nextPayload.showInTraining
+        : nextPayload.placement
+          ? nextPayload.placement === "training" || nextPayload.placement === "both"
+          : inferredType === "bank";
+    showInMock =
+      typeof nextPayload.showInMock === "boolean"
+        ? nextPayload.showInMock
+        : nextPayload.placement
+          ? nextPayload.placement === "mock" || nextPayload.placement === "both"
+          : inferredType !== "bank";
+    
+    placement = showInTraining && showInMock ? "both" : showInTraining ? "training" : "mock";
+    type = showInTraining && !showInMock ? "bank" : "quiz";
+
+    if (placement === "mock") nextPayload.quizKind = "mock";
+    else if (placement === "training" || type === "bank") nextPayload.quizKind = "drill";
+    else nextPayload.quizKind = "test";
+  }
 
   return {
-    ...payload,
-    type: showInTraining && !showInMock ? "bank" : "quiz",
+    ...nextPayload,
+    type,
     placement,
     showInTraining,
     showInMock,

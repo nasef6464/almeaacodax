@@ -56,6 +56,38 @@ export const getPlacementFromFlags = (quiz: QuizPlacementSource): Quiz['placemen
 };
 
 export const normalizeQuizPlacement = <T extends Partial<Quiz>>(quiz: T, fallbackType: Quiz['type'] = 'quiz'): T => {
+  // أولويًا: استنتاج من quizKind إن وُجد (المصدر الحديث من UnifiedQuizBuilder)
+  const qk = quiz.quizKind;
+  if (qk === 'mock') {
+    return {
+      ...quiz,
+      type: 'quiz' as Quiz['type'],
+      placement: 'mock' as Quiz['placement'],
+      showInTraining: false,
+      showInMock: true,
+      mockExam: { ...(quiz.mockExam || {}), enabled: true } as Quiz['mockExam'],
+    };
+  }
+  if (qk === 'drill') {
+    return {
+      ...quiz,
+      type: 'bank' as Quiz['type'],
+      placement: 'training' as Quiz['placement'],
+      showInTraining: true,
+      showInMock: false,
+    };
+  }
+  if (qk === 'test') {
+    return {
+      ...quiz,
+      type: 'quiz' as Quiz['type'],
+      placement: 'both' as Quiz['placement'],
+      showInTraining: true,
+      showInMock: true,
+    };
+  }
+
+  // fallback: الاستنتاج من الحقول القديمة (placement/type/showInTraining/showInMock)
   const inferredType = quiz.type || fallbackType;
   const showInTraining =
     typeof quiz.showInTraining === 'boolean'
