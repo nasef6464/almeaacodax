@@ -3,7 +3,6 @@ import { CoursesManager } from './CoursesManager';
 import { QuestionBankManager } from './QuestionBankManager';
 import { FoundationManager } from './FoundationManager';
 import { SkillsTreeManager } from './SkillsTreeManager';
-import { QuizBuilder } from './QuizBuilder';
 import { QuizzesManager } from './QuizzesManager';
 import { SubjectQuizzesPanel } from './SubjectQuizzesPanel';
 import { LibraryManager } from './LibraryManager';

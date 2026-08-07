@@ -20,8 +20,8 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { useStore } from '../store/useStore';
 import { Quiz, Topic, ContentWorkflow, Activity, QuizResult } from "../types";
 import { isTrueMockExam } from "../utils/quizPlacement";
-import { UserLevel, getLevelMeta } from "../utils/leveling";
 import { buildQuizRouteWithContext, isSafeInternalRoute } from '../utils/quizLinks';
+import { isStandaloneMockExam } from '../utils/mockExam';
 import { api } from '../services/api';
 
 interface QuizzesProps {

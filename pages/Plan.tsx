@@ -1453,65 +1453,46 @@ const Plan: React.FC = () => {
 
       {currentPlan && (
         <div id="study-plan-print-area" className="space-y-6">
-          <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 p-4 text-white shadow-lg sm:p-6">
-            <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-300 opacity-20 rounded-full blur-2xl -ml-10 -mb-10"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <h2 className="text-2xl font-black">{currentPlan.name}</h2>
-                <p className="mt-2 text-sm text-indigo-100">
-                  خطة وقتية من {currentPlan.startDate} إلى {currentPlan.endDate} بمتوسط {currentPlan.dailyMinutes} دقيقة يوميًا.
-                </p>
+                <h2 className="text-3xl font-black mb-2">{currentPlan.name}</h2>
+                <div className="flex flex-wrap items-center gap-3 text-indigo-100 text-sm font-medium">
+                  <span className="flex items-center gap-1.5"><Calendar size={16} /> من {currentPlan.startDate} إلى {currentPlan.endDate}</span>
+                  <span className="opacity-50">•</span>
+                  <span className="flex items-center gap-1.5"><Clock size={16} /> {currentPlan.dailyMinutes} دقيقة يومياً</span>
+                  <span className="opacity-50">•</span>
+                  <span className="flex items-center gap-1.5"><Target size={16} /> {generatedTasks.length} مهمة إجمالاً</span>
+                </div>
               </div>
-              <div className="print-hide flex flex-wrap gap-2 self-start">
-                <button
-                  type="button"
-                  onClick={() => printElementAsPdf('study-plan-print-area', currentPlan.name || 'الخطة الدراسية')}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-indigo-700 shadow-sm transition hover:bg-indigo-50"
-                >
-                  <Download size={16} />
-                  تحميل PDF
-                </button>
-                <div className="rounded-2xl bg-white/15 p-3 backdrop-blur-sm">
-                  <Target size={24} />
+
+              <div className="flex flex-col items-end gap-3 min-w-[200px]">
+                <div className="flex items-end gap-2 w-full justify-between md:justify-end">
+                  <span className="text-indigo-100 font-bold mb-1">نسبة الإنجاز</span>
+                  <span className="text-4xl font-black">{overallProgress}%</span>
+                </div>
+                <div className="h-2.5 w-full rounded-full bg-black/20 overflow-hidden">
+                  <div className="h-full rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)] transition-all duration-1000" style={{ width: `${overallProgress}%` }} />
                 </div>
               </div>
             </div>
 
-            <div className="mb-2 flex flex-wrap items-end gap-2">
-              <span className="text-4xl font-black">{overallProgress}%</span>
-              <span className="mb-1 text-indigo-100">من الخطة المنجزة</span>
-            </div>
-            <div className="h-2 w-full rounded-full bg-black/20">
-              <div className="h-2 rounded-full bg-white" style={{ width: `${overallProgress}%` }} />
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">عدد المهام</div>
-                <div className="mt-1 text-2xl font-black">{generatedTasks.length}</div>
+            <div className="relative z-10 mt-6 pt-6 border-t border-white/10 flex flex-wrap gap-3 justify-between items-center">
+              <div className="text-indigo-100 text-sm font-bold flex items-center gap-2">
+                <CheckCircle size={16} className="text-emerald-400" /> 
+                الاستمرارية تصنع الفرق، واصل التقدم!
               </div>
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">أيام المذاكرة</div>
-                <div className="mt-1 text-2xl font-black">{activePlanStudyDays}</div>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">وقت الجلسة</div>
-                <div className="mt-1 text-2xl font-black">{currentPlan.preferredStartTime || '17:00'}</div>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">أيام الراحة</div>
-                <div className="mt-1 text-sm font-black">{offDayLabels}</div>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">وقت أسبوعي تقريبي</div>
-                <div className="mt-1 text-2xl font-black">{weeklyCadence.minutesPerWeek} دقيقة</div>
-              </div>
-              <div className="rounded-2xl bg-white/10 p-4">
-                <div className="text-sm text-indigo-100">نوع الخطة</div>
-                <div className="mt-1 text-sm font-black">زمنية ذكية قابلة للتعديل</div>
-              </div>
+              <button
+                type="button"
+                onClick={() => printElementAsPdf('study-plan-print-area', currentPlan.name || 'الخطة الدراسية')}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm px-5 py-2.5 text-sm font-bold text-white transition-colors"
+              >
+                <Download size={16} />
+                تحميل PDF
+              </button>
             </div>
           </Card>
 
@@ -1705,91 +1686,40 @@ const Plan: React.FC = () => {
                   </div>
                 </Card>
               )}
-
-              <Card className="p-4 sm:p-6">
-                <div className="mb-4 flex items-center gap-2 text-gray-800">
-                  <Clock size={20} className="text-emerald-500" />
-                  <h3 className="text-lg font-bold">إيقاع الخطة الأسبوعي</h3>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                    <div className="text-xs font-bold text-gray-500">أيام الدراسة في الأسبوع</div>
-                    <div className="mt-1 text-2xl font-black text-gray-800">{weeklyCadence.activeDaysPerWeek} أيام</div>
-                    <div className="mt-1 text-xs text-gray-500">مع {currentPlan.offDays.length} يوم راحة داخل الأسبوع.</div>
+              {weeklyGoals.length > 0 && (
+                <Card className="p-4 sm:p-6 shadow-sm border-0 bg-white/50">
+                  <div className="mb-5 flex items-center justify-between border-b border-gray-100 pb-4">
+                    <div className="flex items-center gap-3">
+                      <Target size={22} className="text-emerald-500" />
+                      <h3 className="text-lg font-black text-gray-800">الأهداف الأسبوعية للمواد</h3>
+                    </div>
                   </div>
-                  <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                    <div className="text-xs font-bold text-gray-500">وقت المذاكرة الأسبوعي</div>
-                    <div className="mt-1 text-2xl font-black text-gray-800">{weeklyCadence.minutesPerWeek} دقيقة</div>
-                    <div className="mt-1 text-xs text-gray-500">أي حوالي {Math.round(weeklyCadence.minutesPerWeek / 60)} ساعة أسبوعيًا.</div>
-                  </div>
-                  <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 sm:col-span-2">
-                    <div className="text-xs font-bold text-gray-500">أيام الراحة المختارة</div>
-                    <div className="mt-1 text-sm font-bold text-gray-800">{offDayLabels}</div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6">
-                <div className="mb-4 flex items-center gap-2 text-gray-800">
-                  <BookOpen size={20} className="text-indigo-500" />
-                  <h3 className="text-lg font-bold">صورة سريعة عن مدة الخطة</h3>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-gray-100 p-4">
-                    <div className="text-xs font-bold text-gray-500">مدة الخطة الكاملة</div>
-                    <div className="mt-1 text-2xl font-black text-gray-800">{activePlanCalendarDays} يوم</div>
-                  </div>
-                  <div className="rounded-2xl border border-gray-100 p-4">
-                    <div className="text-xs font-bold text-gray-500">المهام المجدولة</div>
-                    <div className="mt-1 text-2xl font-black text-gray-800">{generatedTasks.length}</div>
-                  </div>
-                  <div className="rounded-2xl border border-gray-100 p-4">
-                    <div className="text-xs font-bold text-gray-500">المتوسط اليومي</div>
-                    <div className="mt-1 text-2xl font-black text-gray-800">{currentPlan.dailyMinutes} دقيقة</div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6">
-                <div className="mb-4 flex items-center gap-2 text-gray-800">
-                  <TimerReset size={20} className="text-emerald-500" />
-                  <h3 className="text-lg font-bold">الأهداف الأسبوعية</h3>
-                </div>
-
-                <div className="space-y-4">
-                  {weeklyGoals.length > 0 ? (
-                    weeklyGoals.map((goal) => (
-                      <div key={goal.id} className="rounded-2xl border border-gray-100 p-4">
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {weeklyGoals.map((goal) => (
+                      <div key={goal.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
                         <div className="mb-3 flex items-start justify-between gap-3">
                           <div>
-                            <h4 className="font-bold text-gray-800">{goal.title}</h4>
-                            <p className="text-xs text-gray-500">
+                            <h4 className="font-bold text-gray-800 text-sm">{goal.title}</h4>
+                            <p className="text-xs text-gray-500 mt-0.5">
                               {goal.completed} من {goal.total} منجز
                             </p>
                           </div>
-                          <span className="font-bold text-indigo-600">{goal.progress}%</span>
+                          <span className={`font-black text-sm px-2.5 py-1 rounded-lg ${goal.progress === 100 ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}`}>
+                            {goal.progress}%
+                          </span>
                         </div>
-                        <ProgressBar percentage={goal.progress} showPercentage={false} color="primary" />
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                          <div
+                            className={`h-full rounded-full transition-all duration-700 ${goal.progress === 100 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
+                            style={{ width: `${goal.progress}%` }}
+                          />
+                        </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">
-                      ستظهر الأهداف الأسبوعية هنا بعد حفظ خطة فعلية تحتوي على مهام قابلة للتوزيع.
-                    </div>
-                  )}
-                </div>
-              </Card>
-
-              <Card className="border border-amber-200 bg-amber-50/60 p-4 sm:p-5">
-                <h3 className="mb-2 font-bold text-amber-800">ملاحظات الخطة الوقتية</h3>
-                <ul className="space-y-2 text-sm leading-7 text-amber-800">
-                  <li>يعيد النظام توزيع المهام تلقائيًا حسب الأيام المتاحة بين تاريخ البداية والنهاية.</li>
-                  <li>إذا اخترت مواد فقط بدون دورات، فسيبني الخطة من كل الدورات المتاحة في هذه المواد.</li>
-                  <li>يمكنك تعديل الخطة في أي وقت أو أرشفتها وإنشاء خطة جديدة لمسار آخر.</li>
-                </ul>
-              </Card>
+                    ))}
+                  </div>
+                </Card>
+              )}
             </div>
           </div>
         </div>

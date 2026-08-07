@@ -2,16 +2,17 @@ import React, { useState, useMemo } from 'react';
 import {
   ClipboardList, Plus, FileText, Activity, BarChart, Target, Calendar,
   Users, ArrowRight, AlertTriangle, Bell, RefreshCw, CheckCircle, XCircle,
-  Award, BookOpen, Dumbbell,
+  Award, BookOpen, Dumbbell, X,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { Quiz } from '../../types';
 import { TestAnalyticsReport } from './TestAnalyticsReport';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
+import { MockExamManager } from './MockExamManager';
 import { api } from '../../services/api';
 import { isTrueMockExam } from '../../utils/quizPlacement';
 
-type ViewMode = 'list' | 'create' | 'analytics' | 'compare';
+type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics' | 'compare';
 // drill = تدريبات | test = اختبارات عادية | mock = محاكيات قياس
 type TabFilter = 'all' | 'drill' | 'test' | 'mock';
 
@@ -172,15 +173,83 @@ export const SupervisorTestsManager: React.FC = () => {
     }
   };
 
+  // ── Allowed paths for supervisor (paths that their groups belong to) ──────
+  const allowedPathIds = useMemo(() => {
+    const pathSet = new Set<string>();
+    groups
+      .filter((g) => scopedGroupIds.has(g.id))
+      .forEach((g) => {
+        // groups don't directly carry pathId; infer from quizzes or leave undefined for all paths
+        // MockExamManager handles filtering by allowedPathIds; undefined = all paths
+      });
+    return pathSet.size > 0 ? Array.from(pathSet) : undefined;
+  }, [groups, scopedGroupIds]);
+
   // ── Sub-views ──────────────────────────────────────────────────────────────
 
+  // نافذة اختيار نوع الاختبار
   if (viewMode === 'create') {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-5 text-white flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-black">اختر نوع الاختبار</h2>
+              <p className="text-white/80 text-sm mt-0.5">سيُوجَّه لمجموعاتك المحددة فقط</p>
+            </div>
+            <button onClick={() => setViewMode('list')} className="p-2 rounded-full hover:bg-white/20 transition-all">
+              <X size={20} />
+            </button>
+          </div>
+          <div className="p-6 space-y-3">
+            {/* تدريب */}
+            <button
+              onClick={() => setViewMode('create_normal')}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-400 transition-all text-right"
+            >
+              <div className="p-3 bg-emerald-100 rounded-xl text-emerald-600"><Dumbbell size={24} /></div>
+              <div>
+                <p className="font-black text-gray-900">تدريب / اختبار عادي</p>
+                <p className="text-xs text-gray-500 mt-0.5">تدريب قصير أو اختبار على مجموعة مهارات — مادة واحدة</p>
+              </div>
+            </button>
+            {/* محاكي */}
+            <button
+              onClick={() => setViewMode('create_mock')}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-violet-200 bg-violet-50 hover:bg-violet-100 hover:border-violet-400 transition-all text-right"
+            >
+              <div className="p-3 bg-violet-100 rounded-xl text-violet-600"><Award size={24} /></div>
+              <div>
+                <p className="font-black text-gray-900">محاكي قياس</p>
+                <p className="text-xs text-gray-500 mt-0.5">محاكي متعدد الأقسام — قدرات أو تحصيلي — مُوجَّه لمجموعاتك</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (viewMode === 'create_normal') {
     return (
       <UnifiedQuizBuilder
         role="supervisor"
         allowedGroupIds={builderProps.allowedGroupIds}
         defaultKind="test"
         onClose={() => setViewMode('list')}
+      />
+    );
+  }
+
+  if (viewMode === 'create_mock') {
+    return (
+      <MockExamManager
+        role="supervisor"
+        allowedGroupIds={builderProps.allowedGroupIds}
+        allowedPathIds={allowedPathIds}
+        allowedSchoolGroupId={user.schoolId || undefined}
+        onClose={() => setViewMode('list')}
+        initialExamType="mock"
       />
     );
   }

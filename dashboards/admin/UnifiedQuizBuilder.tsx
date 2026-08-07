@@ -265,8 +265,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               placement: "mock" as const,
             }
           : {
-              placement: kind === "drill" ? ("training" as const) : ("mock" as const),
-              showInTraining: kind === "drill",
+              // drill → يظهر في التدريبات فقط
+              // test  → يظهر في الاختبارات + التدريبات (both)
+              placement: kind === "drill" ? ("training" as const) : ("both" as const),
+              showInTraining: kind === "drill" || kind === "test",
               showInMock: kind === "test",
             }),
         approvalStatus: isTeacher ? "pending_review" : "approved",

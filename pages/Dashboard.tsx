@@ -14,9 +14,9 @@ import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { UserLevel, getLevelMeta } from "../utils/leveling";
 import { isTrueMockExam } from "../utils/quizPlacement";
 import { EmptyState } from '../components/ui/EmptyState';
+import { isStandaloneMockExam } from '../utils/mockExam';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 
@@ -1653,22 +1653,26 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         </div>
 
         {/* Shortcuts for Students */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {[
-                { id: 'saher', icon: <Zap size={28} />, label: 'ساهر (اختبار سريع)', color: 'text-purple-600', bg: 'bg-purple-50', hover: 'hover:bg-purple-600' },
-                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'بطاقات التذكر', color: 'text-rose-600', bg: 'bg-rose-50', hover: 'hover:bg-rose-600' },
-                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', color: 'text-blue-600', bg: 'bg-blue-50', hover: 'hover:bg-blue-600' },
-                { id: 'reports', icon: <PieChart size={28} />, label: 'تقاريري', color: 'text-emerald-600', bg: 'bg-emerald-50', hover: 'hover:bg-emerald-600' }
+                { id: 'saher', icon: <Zap size={28} />, label: 'اختبار سريع', sub: 'تدريب ذكي', color: 'text-purple-600', bg: 'bg-purple-50', ring: 'focus:ring-purple-200' },
+                { id: 'flashcards', icon: <BookOpen size={28} />, label: 'البطاقات', sub: 'المراجعة السريعة', color: 'text-rose-600', bg: 'bg-rose-50', ring: 'focus:ring-rose-200' },
+                { id: 'quizzes', icon: <FileText size={28} />, label: 'اختباراتي', sub: 'السابقة', color: 'text-blue-600', bg: 'bg-blue-50', ring: 'focus:ring-blue-200' },
+                { id: 'reports', icon: <PieChart size={28} />, label: 'التقارير', sub: 'أداء المستوى', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'focus:ring-emerald-200' }
             ].map(btn => (
                 <button 
                     key={btn.id}
                     onClick={() => setActiveTab(btn.id as any)} 
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-gray-100 shadow-sm transition-all group ${btn.bg} bg-white`}
+                    className={`group relative flex flex-col items-center justify-center gap-3 rounded-3xl bg-white p-5 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 focus:outline-none focus:ring-4 ${btn.ring}`}
                 >
-                    <div className={`${btn.color}`}>
+                    <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${btn.bg}`}></div>
+                    <div className={`relative z-10 w-14 h-14 flex items-center justify-center rounded-2xl ${btn.bg} ${btn.color} transition-transform duration-300 group-hover:scale-110`}>
                         {btn.icon}
                     </div>
-                    <span className="font-black text-gray-800 text-sm">{btn.label}</span>
+                    <div className="relative z-10 text-center">
+                        <span className="block font-black text-gray-800 text-sm mb-0.5">{btn.label}</span>
+                        <span className="block text-xs font-bold text-gray-400">{btn.sub}</span>
+                    </div>
                 </button>
             ))}
         </div>

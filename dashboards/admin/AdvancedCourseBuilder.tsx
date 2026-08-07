@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Course, Module, Lesson, LessonType, InteractiveQuestion, Role, CourseAssessment, CourseFile } from '../../types';
 import { UnifiedLessonBuilder } from './builders/UnifiedLessonBuilder';
 import { UnifiedQuestionBuilder } from './builders/UnifiedQuestionBuilder';
-import { QuizBuilder } from './QuizBuilder';
 import { RichTextEditor } from '../../components/RichTextEditor';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useStore } from '../../store/useStore';

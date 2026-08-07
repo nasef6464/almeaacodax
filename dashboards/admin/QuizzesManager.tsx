@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, Plus, Search, Edit2, Trash2, FileQuestion,
 import { useStore } from '../../store/useStore';
 import { QuizBuilder } from './QuizBuilder';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
-import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, normalizeQuizPlacement } from '../../utils/quizPlacement';
+import { getQuizPlacementDefaults, getQuizPlacementLabel, isMockQuiz, isTrainingQuiz, isTrueMockExam, normalizeQuizPlacement } from '../../utils/quizPlacement';
 import {
   getQuizLearningPlacementAccessType,
   isQuizVisibleInLearningSlot,
@@ -644,10 +644,23 @@ export const QuizzesManager: React.FC<QuizzesManagerProps> = ({ subjectId, filte
   };
 
   if (isEditing) {
+    // الاختبارات الجديدة (لها quizKind) تُعدَّل عبر UnifiedQuizBuilder
+    const editingQuiz = editingQuizId ? globalQuizzes.find((q) => q.id === editingQuizId) : null;
+    if (editingQuiz?.quizKind) {
+      return (
+        <UnifiedQuizBuilder
+          role={isSupervisor ? 'supervisor' : user.role === 'teacher' ? 'teacher' : 'admin'}
+          editingQuiz={editingQuiz}
+          onSave={() => { setIsEditing(false); setEditingQuizId(null); }}
+          onClose={() => { setIsEditing(false); setEditingQuizId(null); setDraftMode(null); }}
+        />
+      );
+    }
+    // الاختبارات القديمة (بلا quizKind) تبقى تُعدَّل عبر QuizBuilder لضمان التوافق العكسي
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-120px)] animate-fade-in">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 className="font-bold text-gray-800">{editingQuizId ? 'تعديل الاختبار' : 'إنشاء اختبار جديد'}</h3>
+          <h3 className="font-bold text-gray-800">{editingQuizId ? 'تعديل الاختبار (نظام قديم)' : 'إنشاء اختبار جديد'}</h3>
           <button onClick={() => { setIsEditing(false); setDraftMode(null); }} className="text-gray-500 hover:text-gray-700 font-bold text-sm">
             العودة للقائمة
           </button>
