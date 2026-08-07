@@ -26,6 +26,7 @@ import type { HomepageSettings } from '../types';
 import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
 import { ThemeToggle } from './ThemeToggle';
 import { SearchModal } from './SearchModal';
+import { calculateStreak } from '../utils/streak';
 
 const NavIcons: Record<string, React.ReactNode> = {
   home: <Home size={18} />,
@@ -111,7 +112,7 @@ export const Header: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels, cartItems } = useStore();
+  const { paths, subjects, levels, cartItems, recentActivity } = useStore();
   const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null) => {
@@ -524,6 +525,13 @@ export const Header: React.FC = () => {
                 {cartItems.length}
               </span>
             </Link>
+
+            {user ? (
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-100 rounded-full text-orange-600 shadow-sm" title="أيام متتالية">
+                <span className="text-[13px] font-black">{calculateStreak(recentActivity)}</span>
+                <span className="text-base leading-none drop-shadow-sm">🔥</span>
+              </div>
+            ) : null}
 
             <div className="relative">
               {user ? (

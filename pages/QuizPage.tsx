@@ -140,6 +140,7 @@ export const QuizPage: React.FC = () => {
   const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
   // Per-section timer (قياس-style): tracks seconds left in the CURRENT section
   const [sectionTimeLeft, setSectionTimeLeft] = useState<number | null>(null);
+  const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
   // Sections that have been locked (time expired or manually advanced)
   const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
   const activeQuizLoadKeyRef = useRef('');
@@ -162,10 +163,12 @@ export const QuizPage: React.FC = () => {
   }, [returnToParam]);
   const resultSource = useMemo(() => {
     if (sourceParam) return sourceParam;
-    if (quiz?.mockExam?.enabled) return 'mock-exam';
+    if (quiz?.quizKind === 'mock' || quiz?.mockExam?.enabled) return 'mock-exam';
+    if (quiz?.quizKind === 'test') return 'tests';
+    if (quiz?.quizKind === 'drill') return 'training';
     if (quiz?.mode === 'saher') return 'self';
     return undefined;
-  }, [quiz?.mockExam?.enabled, quiz?.mode, sourceParam]);
+  }, [quiz?.mockExam?.enabled, quiz?.quizKind, quiz?.mode, sourceParam]);
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
     (searchParams.get('returnOnFinish') === '1' ||
@@ -586,6 +589,20 @@ export const QuizPage: React.FC = () => {
     return () => window.clearTimeout(timerId);
   }, [sectionTimeLeft, isFinished, isSubmittingResult]);
 
+  // ── Per-question time tracking ────────────────────────────────────────────
+  useEffect(() => {
+    if (isFinished || isSubmittingResult || quizQuestions.length === 0) return;
+    const currentQ = quizQuestions[currentQuestionIndex];
+    if (!currentQ) return;
+    const timerId = window.setTimeout(() => {
+      setQuestionTimeSpent((prev) => ({
+        ...prev,
+        [currentQ.id]: (prev[currentQ.id] || 0) + 1,
+      }));
+    }, 1000);
+    return () => window.clearTimeout(timerId);
+  }, [currentQuestionIndex, isFinished, isSubmittingResult, quizQuestions]);
+
   // ── Section time-up: lock section and advance ─────────────────────────────
   useEffect(() => {
     if (sectionTimeLeft !== 0 || !currentMockExamSection || isFinished || isSubmittingResult) return;
@@ -899,6 +916,7 @@ export const QuizPage: React.FC = () => {
         videoUrl: question.videoUrl,
         imageUrl: question.imageUrl,
         isCorrect: selectedOptionIndex === question.correctOptionIndex,
+        timeSpentSeconds: questionTimeSpent[question.id] || 0,
       };
     });
 

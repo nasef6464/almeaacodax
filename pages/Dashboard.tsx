@@ -10,8 +10,11 @@ import { Card } from '../components/ui/Card';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { Link, useLocation } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
+import { resolvePathProgress } from '../utils/pathProgress';
+import { calculateStreak } from '../utils/streak';
 import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
+import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { isTrueMockExam } from "../utils/quizPlacement";
@@ -1539,6 +1542,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const [showApprovalsModal, setShowApprovalsModal] = useState(false);
     const [whatsappEnabled, setWhatsappEnabled] = useState(false);
     const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+    const [showCalculator, setShowCalculator] = useState(false);
 
     useEffect(() => {
         if (user.role === Role.PARENT) {
@@ -1570,39 +1574,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         });
     }, [quizzes, user]);
     
-    // Calculate Streak
-    const calculateStreak = () => {
-        if (!recentActivity || recentActivity.length === 0) return 0;
-        let streak = 0;
-        let currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        
-        const activityDates = Array.from(new Set(
-            recentActivity.map(a => {
-                const d = new Date(a.date);
-                d.setHours(0, 0, 0, 0);
-                return d.getTime();
-            })
-        )).sort((a, b) => b - a);
-
-        if (activityDates.length === 0) return 0;
-        
-        let lastDate = currentDate.getTime();
-        if (activityDates[0] > lastDate) lastDate = activityDates[0];
-        
-        for (const date of activityDates) {
-            const diffDays = Math.round((lastDate - date) / (1000 * 60 * 60 * 24));
-            if (diffDays <= 1) {
-                if (diffDays === 1 || streak === 0) streak++;
-                lastDate = date;
-            } else {
-                break;
-            }
-        }
-        return Math.max(streak, 1);
-    };
-    
-    const streakDays = calculateStreak();
+    const streakDays = calculateStreak(recentActivity);
 
     // Group learning by registered paths
     const getSmallPathStyle = (pathId: string) => {
@@ -1680,6 +1652,21 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         {/* Student Tools: Parent Code & Notifications */}
         {user.role === Role.STUDENT && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black">
+                        <Target size={24} />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-gray-900 text-sm">حاسبة القبول الجامعي</h4>
+                        <p className="text-xs text-gray-500 font-bold mt-1">احسب النسبة الموزونة وفرصتك.</p>
+                    </div>
+                </div>
+                <div className="text-indigo-600 bg-indigo-100 p-2 rounded-xl">
+                    <Calculator size={20} />
+                </div>
+            </Card>
+
             <Card className="p-5 flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">🔗</div>
@@ -1700,20 +1687,6 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                         <Copy size={16} />
                     </button>
                 </div>
-            </Card>
-
-            <Card className="p-5 flex items-center justify-between border border-amber-100 bg-amber-50/30 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">🔔</div>
-                    <div>
-                        <h4 className="font-black text-gray-900 text-sm">التنبيهات والمذاكرة</h4>
-                        <p className="text-xs text-gray-500 font-bold mt-1">تفعيل الإشعارات اليومية.</p>
-                    </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
             </Card>
         </div>
         )}
@@ -1897,6 +1870,8 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
                 </section>
             </div>
         </div>
+        
+        {showCalculator && <QiyasCalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />}
     </div>
 )};
 

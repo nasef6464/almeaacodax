@@ -316,6 +316,7 @@ export interface QuizQuestionReview {
     videoUrl?: string;
     imageUrl?: string;
     isCorrect: boolean;
+    timeSpentSeconds?: number;
 }
 
 export interface QuizResult {

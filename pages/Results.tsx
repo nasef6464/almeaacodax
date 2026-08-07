@@ -25,6 +25,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { VideoModal } from '../components/VideoModal';
 import { DetailedAnalysisModal } from '../components/DetailedAnalysisModal';
+import { ShareScorecard } from '../components/ShareScorecard';
 import { useStore } from '../store/useStore';
 import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
@@ -693,6 +694,14 @@ const Results: React.FC = () => {
     }
   };
 
+  const averageTimeSeconds = React.useMemo(() => {
+    if (!latestResult || !latestResult.questionReview || latestResult.questionReview.length === 0) return 0;
+    const answeredQuestions = latestResult.questionReview.filter((q) => q.timeSpentSeconds !== undefined);
+    if (answeredQuestions.length === 0) return 0;
+    const totalSeconds = answeredQuestions.reduce((sum, q) => sum + (q.timeSpentSeconds || 0), 0);
+    return Math.round(totalSeconds / answeredQuestions.length);
+  }, [latestResult]);
+
   const donutData = [
     { name: 'Success', value: latestResult?.score || 0 },
     { name: 'Fail', value: 100 - (latestResult?.score || 0) },
@@ -1020,11 +1029,12 @@ const Results: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <SimpleResultStat label="عدد الأسئلة" value={latestResult.totalQuestions.toString()} />
                     <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                     <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
                     <SimpleResultStat label="وقت الحل" value={latestResult.timeSpent} />
+                    <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/سؤال` : 'غير متاح'} />
                   </div>
 
                   <div className="rounded-2xl border border-gray-100 bg-white p-4">
@@ -1093,11 +1103,12 @@ const Results: React.FC = () => {
                     ) : null}
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                     <SimpleResultStat label="الأسئلة" value={latestResult.totalQuestions.toString()} />
                     <SimpleResultStat label="الصحيح" value={latestResult.correctAnswers.toString()} tone="success" />
                     <SimpleResultStat label="الخطأ" value={latestResult.wrongAnswers.toString()} tone="danger" />
                     <SimpleResultStat label="الوقت" value={latestResult.timeSpent} />
+                    <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/س` : 'غير متاح'} />
                   </div>
 
                   <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-3">
@@ -1203,6 +1214,12 @@ const Results: React.FC = () => {
             ) : null}
           </div>
         </Card>
+
+        {isFullResult ? null : (
+          <div className="flex justify-center py-4">
+            <ShareScorecard result={latestResult} />
+          </div>
+        )}
 
         <Card className="p-4 sm:p-6">
           <h3 className="text-lg font-bold text-gray-800">خطوتك التالية</h3>
@@ -1609,6 +1626,9 @@ const ReviewSolutions = ({
             <Star size={15} className={isReviewLater ? 'fill-current' : ''} />
             {isReviewLater ? 'للمراجعة' : 'راجع لاحقًا'}
           </button>
+          <span className="bg-slate-50 text-slate-600 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 flex items-center gap-1.5" title="الوقت المستغرق في حل هذا السؤال">
+            ⏳ {q.timeSpentSeconds || 0} ث
+          </span>
         </div>
       </header>
 
